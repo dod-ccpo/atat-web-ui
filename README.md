@@ -1,6 +1,14 @@
 # atat-web-ui
 ATAT Web - Front end
 
+## global install
+
+```
+ nvm use lts/fermium 
+ npm install -g @vue/cli
+ npm i -g @vue/cli-service-global
+```
+
 ## Project setup
 ```
 npm install
