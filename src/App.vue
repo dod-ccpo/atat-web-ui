@@ -1,10 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
+    <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -38,19 +34,43 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
+    <v-footer>
+      <v-container>
+        <v-row>
+          <v-col> footer: counter: {{ countNumber(4) }} | blue </v-col>
+          <v-col class="text-right">
+            Last login: Jun 24 2021 13:25 -04:00
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-footer>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
 
 export default Vue.extend({
-  name: 'App',
+  name: "App",
 
-  data: () => ({
-    //
-  }),
+  data: () => {
+    // testing for format
+  },
+  methods: {
+    countNumber(number: string | number) {
+      // TESTING FOR FORMAT
+      for (let i = 1; number > i; i++) {
+        console.log("count: " + i);
+      }
+      // TESTING IF FORMAT
+      if (number) {
+        return "counted to " + number + " done";
+      } else {
+        return "Nor number counted";
+      }
+    },
+  },
 });
 </script>
