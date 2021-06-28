@@ -66,6 +66,39 @@ npm ci
 
 ```
 
+## Setting IDE
+
+### Visual Studio Code
+Use the dbaeumer.vscode-eslint (opens new window) extension that Microsoft provides officially.
+
+You have to configure the eslint.validate option of the extension to check .vue files, because the extension targets only *.js or *.jsx files by default.
+
+Example .vscode/settings.json:
+```
+{
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "vue"
+    ]
+}
+```
+If you use the Vetur plugin, set "vetur.validation.template": false to avoid default Vetur template validation. Check out [vetur documentation](https://vuejs.github.io/vetur/guide/linting-error.html#linting) for more info.
+
+
+### IntelliJ IDEA / JetBrains WebStorm
+
+In the Settings/Preferences dialog (Cmd+,/Ctrl+Alt+S), choose JavaScript under Languages and Frameworks and then choose ESLint under Code Quality Tools. On the ESLint page that opens, select the Enable checkbox.
+
+If your ESLint configuration is updated (manually or from your version control), open it in the editor and choose Apply ESLint Code Style Rules in the context menu.
+
+read more: [JetBrains - ESLint](https://www.jetbrains.com/help/idea/eslint.html)
+
+#
+
+
+#
+
 
 ## More references:
 
