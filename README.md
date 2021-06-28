@@ -1,6 +1,22 @@
 # atat-web-ui
 ATAT Web - Front end
 
+## nvm install
+
+Install: To install, run the following command:
+
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+```
+
+Set up for use: The script clones the nvm repository to ~/.nvm, and attempts to add the source lines from the snippet below to the correct profile file (~/.bash_profile, ~/.zshrc, ~/.profile, or ~/.bashrc).
+
+```
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+```
+
+
 ## global install
 
 ```
@@ -41,6 +57,14 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Updating dependencies:
+After a version change or any dependencies change please run also if you're switching branches.: 
+
+```
+npm ci 
+
+```
 
 
 ## More references:
