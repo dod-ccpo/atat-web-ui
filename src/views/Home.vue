@@ -1,5 +1,7 @@
 <template>
-  <hello-world />
+  <div id="hello-world-view">
+    <HelloWorld />
+  </div>
 </template>
 
 <script lang="ts">
