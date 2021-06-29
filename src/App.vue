@@ -3,7 +3,7 @@
     <v-app-bar
       app
       color="primary"
-      dark
+      elevate-on-scroll
     >
       <div class="d-flex align-center">
         <v-img
@@ -36,15 +36,24 @@
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
-
+    <!-- <v-navigation-drawer>
+    
+    </v-navigation-drawer> -->
     <v-main>
-      <router-view/>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
     </v-main>
+    <v-footer app>
+      <!-- -->
+      timestamp goes here
+    </v-footer>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+
 
 export default Vue.extend({
   name: 'App',
