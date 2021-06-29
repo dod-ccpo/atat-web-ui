@@ -6,7 +6,7 @@
       dark
     >
       <div class="d-flex align-center">
-        
+
       </div>
 
       <v-spacer></v-spacer>
@@ -23,7 +23,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Footer from './components/Footer.vue';
-
 
 export default Vue.extend({
   name: 'App',
