@@ -13,7 +13,7 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "atat-footer",
+  name: "ATATFooter",
   data: () => ({}),
   methods: {
     getToday() {

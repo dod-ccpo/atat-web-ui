@@ -9,18 +9,18 @@
     <v-main>
       <router-view />
     </v-main>
-    <AtatFooter />
+    <ATATFooter />
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import AtatFooter from "./components/AtatFooter.vue";
+import ATATFooter from "./components/ATATFooter.vue";
 
 export default Vue.extend({
   name: "App",
   components: {
-    AtatFooter,
+    ATATFooter,
   },
   data: () => {
     //
