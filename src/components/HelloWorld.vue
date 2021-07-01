@@ -1,4 +1,4 @@
-<template >
+<template>
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
@@ -23,7 +23,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="4" offset="4" class="mb-4"> 
+      <v-col cols="4" offset="4" class="mb-4">
         <atat-select />
       </v-col>
     </v-row>

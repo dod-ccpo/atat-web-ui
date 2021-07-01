@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Prop, Emit } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextField extends VTextField {
@@ -24,6 +24,5 @@ export default class ATATTextField extends VTextField {
 
   //data
   private rounded = false;
-
 }
 </script>
