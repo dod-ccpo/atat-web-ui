@@ -3,6 +3,8 @@ node_modules
 /dist
 /coverage
 
+
+/tests/e2e/reports/**
 /tests/e2e/logs/
 /coverage/
 
@@ -292,3 +294,4 @@ $RECYCLE.BIN/
 
 # not relly on lock files
 package-lock.json
+*.log
