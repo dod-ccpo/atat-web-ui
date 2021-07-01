@@ -1,0 +1,75 @@
+---
+on:
+  push:
+    branches:
+      - "develop"
+
+jobs:
+  build:
+    name: Build SPA
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Configure npm caching
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Setup node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Checkout code base
+        uses: actions/checkout@v2
+      - name: Install global dependencies
+        run: |
+          npm install -g @vue/cli
+          npm i -g @vue/cli-service-global
+      - name: Install dependencies
+        run: npm ci
+      - name: Build application
+        run: npm run build
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: atat-web-ui
+          path: dist
+  deploy:
+    name: Deploy SPA
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+      - name: Checkout code base
+        uses: actions/checkout@v2
+      - name: Install and configure Terraform CLI
+        uses: hashicorp/setup-terraform@v1
+      - name: Login to Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # Update the Storage Account configuration
+      - name: Terraform init
+        run: |
+          terraform init \
+            -backend-config=resource_group_name=$STATE_RESOURCE_GROUP \
+            -backend-config=storage_account_name=$STATE_STORAGE_ACCOUNT \
+        env:
+          STATE_RESOURCE_GROUP: ${{ secrets.STATE_AZURE_RESOURCE_GROUP }}
+          STATE_STORAGE_ACCOUNT: ${{ secrets.STATE_AZURE STORAGE_ACCOUNT }}
+      - name: Terraform plan
+        run: terraform plan -no-color
+      - name: Terraform apply
+        run: terraform apply -auto-approve
+      # Upload the web app to Azure Storage
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: atat-web-ui
+          path: ..
+      - name: Upload to Azure Storage
+        run:
+          az storage blob upload-batch \
+            --account-name "$(terraform output -raw spa_account_name)" \
+            -d '$web'
+            -s ../dist/
