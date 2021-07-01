@@ -24,7 +24,7 @@ module.exports = {
       selector: "#app",
 
       elements: {
-        logo: "img",
+        logo: ".v-image__image",
       },
 
       // - a page object section can also have sub-sections
@@ -37,11 +37,11 @@ module.exports = {
         welcome: {
           // the equivalent css selector for the "welcome" sub-section would be:
           //  '#app div.hello'
-          selector: "div.hello",
+          selector: "#hello-world-view",
 
           elements: {
             cliPluginLinks: {
-              selector: "ul",
+              selector: "h1",
               index: 0,
             },
           },

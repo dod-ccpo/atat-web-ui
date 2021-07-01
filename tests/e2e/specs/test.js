@@ -12,7 +12,7 @@ module.exports = {
       .end();
   },
 
-  // "example e2e test using a custom command": (browser) => {
-  //   browser.openHomepage().assert.elementPresent(".hello").end();
-  // },
+  "example e2e test using a custom command": (browser) => {
+    browser.openHomepage().assert.elementPresent("#hello-world-view").end();
+  },
 };

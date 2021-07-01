@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuites errors="0"
             failures="0"
-            tests="1">
+            tests="2">
 
   <testsuite name="test"
     errors="0" failures="0" hostname="" id="" package="test" skipped="0"
-    tests="1" time="1.438" timestamp="">
+    tests="2" time="2.848" timestamp="">
   
-    <testcase name="default e2e tests" classname="test" time="1.438" assertions="4">
+    <testcase name="default e2e tests" classname="test" time="1.453" assertions="4">
 
     
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="example e2e test using a custom command" classname="test" time="1.395" assertions="3">
 
     
 
