@@ -8,7 +8,8 @@ module.exports = {
       .waitForElementVisible("#app")
       .assert.elementPresent("#hello-world-view")
       .assert.containsText("h1", "Hello World")
-      .assert.elementCount(".v-image__image", 1)
+      .assert.elementCount(".v-image__image", 2)
+      .assert.cssProperty("header", "background-color", "rgba(25, 118, 210, 1)")
       .end();
   },
 

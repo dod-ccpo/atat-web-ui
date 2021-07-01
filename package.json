@@ -8,7 +8,8 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "serve-dev": "vue-cli-service serve --mode development --https"
+    "serve-dev": "vue-cli-service serve --mode development --https",
+    "test": "npm run lint && npm run test:unit && npm run test:e2e"
   },
   "dependencies": {
     "core-js": "^3.6.5",

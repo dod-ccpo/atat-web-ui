@@ -5,9 +5,9 @@
 
   <testsuite name="test-with-pageobjects"
     errors="0" failures="0" hostname="" id="" package="test-with-pageobjects" skipped="0"
-    tests="2" time="2.431" timestamp="">
+    tests="2" time="2.494" timestamp="">
   
-    <testcase name="e2e tests using page objects" classname="test-with-pageobjects" time="1.015" assertions="4">
+    <testcase name="e2e tests using page objects" classname="test-with-pageobjects" time="1.086" assertions="4">
 
     
 
@@ -18,7 +18,7 @@
     
     </testcase>
   
-    <testcase name="verify if string &#34;e2e-nightwatch&#34; is within the cli plugin links" classname="test-with-pageobjects" time="1.416" assertions="1">
+    <testcase name="verify if string &#34;e2e-nightwatch&#34; is within the cli plugin links" classname="test-with-pageobjects" time="1.408" assertions="1">
 
     
     </testcase>

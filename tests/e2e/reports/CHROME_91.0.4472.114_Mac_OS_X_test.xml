@@ -5,9 +5,11 @@
 
   <testsuite name="test"
     errors="0" failures="0" hostname="" id="" package="test" skipped="0"
-    tests="2" time="2.848" timestamp="">
+    tests="2" time="1.846" timestamp="">
   
-    <testcase name="default e2e tests" classname="test" time="1.453" assertions="4">
+    <testcase name="default e2e tests" classname="test" time="0.4170" assertions="5">
+
+    
 
     
 
@@ -18,7 +20,7 @@
     
     </testcase>
   
-    <testcase name="example e2e test using a custom command" classname="test" time="1.395" assertions="3">
+    <testcase name="example e2e test using a custom command" classname="test" time="1.429" assertions="3">
 
     
 
