@@ -9,6 +9,6 @@ output "spa_web_url" {
 }
 
 output "spa_account_name" {
-    value = azurerm_storage_account.spa_storage_account.name
-    description = "The name of the SPA storage account"
+  value       = azurerm_storage_account.spa_storage_account.name
+  description = "The name of the SPA storage account"
 }
