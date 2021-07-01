@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve-dev": "vue-cli-service serve --mode development --https",
+    "serve-dev-win": "vue-cli-service serve --mode development --https --host localhost",
+    "serve": "vue-cli-service serve --https",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
@@ -12,15 +14,19 @@
   "dependencies": {
     "@wdio/cli": "^7.7.4",
     "core-js": "^3.6.5",
+    "eslint-plugin-wdio": "^7.4.2",
     "register-service-worker": "^1.7.1",
+    "typeface-source-sans-pro": "^1.1.13",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
+    "vue-moment": "^4.1.0",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
     "vuetify": "^2.4.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@mdi/font": "^5.9.55",
     "@types/jest": "^24.0.19",
     "@types/mocha": "^8.0.1",
     "@typescript-eslint/eslint-plugin": "^4.18.0",

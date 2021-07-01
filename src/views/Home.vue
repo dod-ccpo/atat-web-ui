@@ -1,45 +1,13 @@
 <template>
-<div>
-    <!-- <HelloWorld /> -->
-        <v-row>
-          <v-col
-            cols="12"
-            sm="6"
-            md="3"
-          >
-          <ATATTextField />
-          </v-col>
-           <v-col
-            cols="12"
-            sm="6"
-            md="3"
-          >
-          <ATATSelect />
-          </v-col>
-           <v-col
-            cols="12"
-            sm="6"
-            md="3"
-          >
-           </v-col>
-        </v-row>
-   </div>      
+  <div>
+    <hello-world />
+  </div>
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
-  import Vuetify from 'vuetify'
-  import HelloWorld from '../components/HelloWorld.vue'
-  import ATATTextField from '../components/ATATTextField.vue'
-  import ATATSelect from '../components/ATATSelect.vue'
-
-export default Vue.extend({
-    name: 'Home',
-
-    components: {
-      // HelloWorld,
-      ATATTextField,
-      ATATSelect
-    },
-  })
+import Vue from "vue";
+import HelloWorld from "../components/HelloWorld.vue";
+import { Component } from "vue-property-decorator";
+@Component({})
+export default class Home extends Vue {}
 </script>

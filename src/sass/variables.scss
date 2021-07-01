@@ -1,11 +1,11 @@
 // src/sass/variables.scss
 
-@import '~vuetify/src/styles/styles.sass';
-
 // Globals
 $body-font-family: 'Source Sans Pro', sans-serif !default;
 $border-radius-root: 6px;
 $font-size-root: 16px;
+
+@import '~vuetify/src/styles/styles.sass';
 
 // Variables must come before the import
 $btn-letter-spacing: 0;
@@ -20,8 +20,6 @@ $btn-sizes: (
   'default': 41,
   'large': 54
 );
-
-// $blue:(( 'base': #005EA2 ));
 
 $color:(
   (
