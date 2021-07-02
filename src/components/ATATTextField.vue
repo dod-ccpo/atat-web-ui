@@ -1,5 +1,5 @@
 <template>
-  <div :id="id + '_text_field_control'">
+  <div :id="id + '_text_field_control'" class="atat-text-field">
     <v-flex>
       <div :id="id + '_text_field_label'" class="text-form-field-label my-1">
         Text Field label
