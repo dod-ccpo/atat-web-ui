@@ -56,6 +56,32 @@ npm run test:e2e
 npm run lint
 ```
 
+### Run all test in one command
+
+```
+npm run test
+```
+
+### run e2e with browserstack
+
+set your username, and access key as a local variable: 
+```
+ export BROWSERSTACK_USERNAME=<YOUR USERNAME>
+ export BROWSERSTACK_ACCESS_KEY=<YOUR ACCESS KEY>
+```
+
+then you can run: 
+
+for chrome:
+```
+test:browserstack:chrome
+```
+
+And for Firefox: 
+```
+test:browserstack:firefox
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
