@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary_darken" elevate-on-scroll>
+    <v-app-bar app color="primary_darken">
       <div class="d-flex align-center"></div>
       <v-spacer></v-spacer>
     </v-app-bar>
@@ -14,6 +14,10 @@
     <atat-footer />
   </v-app>
 </template>
+
+<style lang="scss">
+@import "./sass/atat.scss";
+</style>
 
 <script lang="ts">
 import Vue from "vue";

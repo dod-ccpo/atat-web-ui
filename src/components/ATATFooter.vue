@@ -11,18 +11,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-
-export default Vue.extend({
-  name: "ATATFooter",
-  data: () => ({}),
-  methods: {
-    getToday() {
-      const today = new Date();
-      console.log(today);
-      return today;
-    },
-  },
-});
+import { Component } from "vue-property-decorator";
+@Component({})
+export default class ATATFooter extends Vue {
+  private getToday() {
+    return new Date();
+  }
+}
 </script>
 
 <style scoped>
