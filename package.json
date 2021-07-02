@@ -10,7 +10,9 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "serve-dev": "vue-cli-service serve --mode development --https",
-    "test": "npm run lint && npm run test:unit && npm run test:e2e"
+    "test": "npm run lint && npm run test:unit && npm run test:e2e",
+    "test:browserstack:chrome": "vue-cli-service test:browserstack -c browserstack_config/nightwatch.conf.js -e chrome -t \"tests/e2e/specs/test.js\"",
+    "test:browserstack:firefox": "vue-cli-service test:browserstack -c browserstack_config/nightwatch.conf.js -e firefox tests/e2e/specs/test.js"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -48,6 +50,7 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^1.0.3",
+    "browserstack-automate": "^1.0.2",
     "chromedriver": "91",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.3.1",
@@ -56,11 +59,13 @@
     "material-design-icons-iconfont": "^6.1.0",
     "node-sass": "^6.0.1",
     "geckodriver": "^1.20.0",
+    "nightwatch": "^1.3.4",
     "prettier": "^2.2.1",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
     "ts-node": "^8.10.2",
     "typescript": "~4.1.5",
+    "vue-cli-plugin-e2e-nightwatch-browserstack": "^4.0.1",
     "vue-cli-plugin-vuetify": "~2.4.1",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0"
