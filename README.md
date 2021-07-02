@@ -20,10 +20,11 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 ## global install
 
 ```
- nvm use lts/fermium 
+ nvm use 
  npm install -g @vue/cli
  npm i -g @vue/cli-service-global
 ```
+Node.js version is specified in file .nvmrc
 
 ## Project setup
 ```
