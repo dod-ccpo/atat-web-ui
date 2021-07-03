@@ -7,6 +7,7 @@
     "serve-dev-win": "vue-cli-service serve --mode development --host localhost",
     "serve": "vue-cli-service serve --https",
     "build": "vue-cli-service build",
+    "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint"
