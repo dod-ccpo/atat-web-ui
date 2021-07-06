@@ -1,30 +1,28 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app color="primary_darken">
       <div class="d-flex align-center"></div>
-
       <v-spacer></v-spacer>
     </v-app-bar>
-
+    <!-- <v-navigation-drawer>
+    </v-navigation-drawer> -->
     <v-main>
-      <router-view />
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
     </v-main>
-    <ATATFooter />
+    <atat-footer />
   </v-app>
 </template>
 
+<style lang="scss">
+@import "./sass/atat.scss";
+</style>
+
 <script lang="ts">
 import Vue from "vue";
-import ATATFooter from "./components/ATATFooter.vue";
+import { Component } from "vue-property-decorator";
 
-export default Vue.extend({
-  name: "App",
-  components: {
-    ATATFooter,
-  },
-  data: () => {
-    //
-    return {};
-  },
-});
+@Component({})
+export default class App extends Vue {}
 </script>

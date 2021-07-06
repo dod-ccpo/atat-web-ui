@@ -6,14 +6,14 @@ module.exports = {
     browser
       .init()
       .waitForElementVisible("#app")
-      .assert.elementPresent("#hello-world-view")
+      .assert.elementPresent(".hello-world-view")
       .assert.containsText("h1", "Hello World")
       .assert.elementCount(".v-image__image", 1)
-      .assert.cssProperty("header", "background-color", "rgba(25, 118, 210, 1)")
+      .assert.cssProperty("header", "background-color", "rgba(22, 46, 81, 1)")
       .end();
   },
 
   "example e2e test using a custom command": (browser) => {
-    browser.openHomepage().assert.elementPresent("#hello-world-view").end();
+    browser.openHomepage().assert.elementPresent(".hello-world-view").end();
   },
 };
