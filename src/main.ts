@@ -5,6 +5,7 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+import moment from 'moment';
 
 import ATATFooter from "./components/ATATFooter.vue"
 import ATATSelect from "./components/ATATSelect.vue"
@@ -17,6 +18,7 @@ Vue.component('atat-text-field', ATATTextField);
 Vue.component('hello-world', HelloWorld);
 
 Vue.config.productionTip = false;
+Vue.prototype.moment = moment;
 
 new Vue({
   router,

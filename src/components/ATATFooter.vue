@@ -11,11 +11,12 @@
 
 <script lang="ts">
 import Vue from "vue";
+import moment from "moment";
 import { Component } from "vue-property-decorator";
 @Component({})
 export default class ATATFooter extends Vue {
   private getToday() {
-    return new Date();
+    return moment(new Date()).format("MMMM DD, YYYY, hh:mm Z");
   }
 }
 </script>
