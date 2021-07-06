@@ -1,5 +1,5 @@
 <template>
-  <v-footer class="app-footer">
+  <v-footer class="atat-footer">
     <v-container>
       <v-row>
         <v-col>.</v-col>

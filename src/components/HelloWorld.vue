@@ -9,9 +9,25 @@
           height="200"
         />
       </v-col>
-
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">Hello World</h1>
+    </v-row>
+    <v-row class="text-center">
+      <v-col cols="12" class="mb-4">
+        <h1 class="font-weight-bold mb-3">Hello World</h1>
+      </v-col>
+    </v-row>
+    <v-row class="text-center">
+      <v-col cols="12" class="mb-4">
+        <v-icon large success> mdi-domain </v-icon>
+        <v-icon large> mdi-message-text </v-icon>
+        <a href="google.com" target="blank"> google.com</a>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="4" offset="4" class="mb-4">
+        <atat-select id="html-select-dummy" />
+        <atat-text-field id="plain-text-box" />
+        <atat-text-field :success="true" id="success" />
+        <atat-text-field :error="true" id="error" />
       </v-col>
     </v-row>
   </v-container>
@@ -19,11 +35,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Component } from "vue-property-decorator";
 
-export default Vue.extend({
-  name: "HelloWorld",
-  data: () => {
-    return {};
-  },
-});
+@Component({})
+export default class HelloWorld extends Vue {}
 </script>
