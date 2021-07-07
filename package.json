@@ -12,7 +12,8 @@
     "serve-dev": "vue-cli-service serve --mode development --https",
     "test": "npm run lint && npm run test:unit && npm run test:e2e",
     "test:browserstack:chrome": "vue-cli-service test:browserstack -c browserstack_config/nightwatch.conf.js -e chrome -t \"tests/e2e/specs/test.js\"",
-    "test:browserstack:firefox": "vue-cli-service test:browserstack -c browserstack_config/nightwatch.conf.js -e firefox tests/e2e/specs/test.js"
+    "test:browserstack:firefox": "vue-cli-service test:browserstack -c browserstack_config/nightwatch.conf.js -e firefox tests/e2e/specs/test.js",
+    "test:browserstack:ie11": "vue-cli-service test:browserstack -c browserstack_config/nightwatch.conf.js -e ie11 tests/e2e/specs/test.js\n"
   },
   "dependencies": {
     "@wdio/cli": "^7.7.4",
