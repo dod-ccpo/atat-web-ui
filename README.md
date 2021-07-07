@@ -59,27 +59,44 @@ npm run lint
 ### Run all test in one command
 
 ```
-npm run test
+npm test
 ```
 
 ### run e2e with browserstack
 
-set your username, and access key as a local variable: 
+set your username, and access key as a local variable on unix, linux, and MacOS: 
 ```
  export BROWSERSTACK_USERNAME=<YOUR USERNAME>
  export BROWSERSTACK_ACCESS_KEY=<YOUR ACCESS KEY>
+ export BROWSERSTACK_BUILD=<BUILD NAME> 
+ export BROWSERSTACK_PROJECT=<PROJECT NAME> 
+```
+
+same examples on Windows:  
+
+```
+$Env:BROWSERSTACK_USERNAME=<YOUR USERNAME>
+$Env:BROWSERSTACK_ACCESS_KEY=<YOUR ACCESS KEY>
+$Env:BROWSERSTACK_BUILD=<BUILD NAME> 
+$Env:BROWSERSTACK_PROJECT=<PROJECT NAME> 
 ```
 
 then you can run: 
 
 for chrome:
 ```
-test:browserstack:chrome
+npm run test:browserstack:chrome
 ```
 
-And for Firefox: 
+for Firefox: 
 ```
-test:browserstack:firefox
+npm run test:browserstack:firefox
+```
+
+for IE:
+
+```
+npm run test:browserstack:ie11
 ```
 
 ### Customize configuration
