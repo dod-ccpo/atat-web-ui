@@ -1,35 +1,37 @@
-const path = require('path')
-const deepmerge = require('deepmerge')
-const chromedriver = require('chromedriver')
+import path from "path";
+import deepmerge from "deepmerge";
+import chromedriver from "chromedriver";
 
-const startHeadless = process.env.VUE_NIGHTWATCH_HEADLESS === '1'
-const concurrentMode = process.env.VUE_NIGHTWATCH_CONCURRENT === '1'
-const userOptions = JSON.parse(process.env.VUE_NIGHTWATCH_USER_OPTIONS || '{}')
-const chromeArgs = []
-const geckoArgs = []
+const startHeadless = process.env.VUE_NIGHTWATCH_HEADLESS === "1";
+const concurrentMode = process.env.VUE_NIGHTWATCH_CONCURRENT === "1";
+const userOptions = JSON.parse(process.env.VUE_NIGHTWATCH_USER_OPTIONS || "{}");
+const chromeArgs = [];
+const geckoArgs = [];
 
 // user may have not installed geckodriver
-let geckodriver = {}
+let geckodriver = {};
 try {
-  geckodriver = require('geckodriver')
-} catch (e) {}
+  geckodriver = require("geckodriver");
+} catch (e) {
+  console.info("Not Firefox driver install");
+}
 
 if (startHeadless) {
-  chromeArgs.push('headless')
-  geckoArgs.push('--headless')
+  chromeArgs.push("headless");
+  geckoArgs.push("--headless");
 }
 
 const defaultSettings = {
-  src_folders: ['tests/e2e/specs'],
-  output_folder: 'tests/e2e/reports/junit',
-  page_objects_path: 'tests/e2e/page-objects',
-  custom_assertions_path: 'tests/e2e/custom-assertions',
-  custom_commands_path: 'tests/e2e/custom-commands',
+  src_folders: ["tests/e2e/specs"],
+  output_folder: "tests/e2e/reports/junit",
+  page_objects_path: "tests/e2e/page-objects",
+  custom_assertions_path: "tests/e2e/custom-assertions",
+  custom_commands_path: "tests/e2e/custom-commands",
   test_workers: concurrentMode,
 
   test_settings: {
     default: {
-      launch_url: '${VUE_DEV_SERVER_URL}',
+      launch_url: "${VUE_DEV_SERVER_URL}",
       detailed_output: !concurrentMode,
       globals: {
         waitForConditionTimeout: 5000,
@@ -37,7 +39,7 @@ const defaultSettings = {
     },
     chrome: {
       desiredCapabilities: {
-        browserName: 'chrome',
+        browserName: "chrome",
         chromeOptions: {
           w3c: false,
           args: chromeArgs,
@@ -46,10 +48,10 @@ const defaultSettings = {
     },
     firefox: {
       desiredCapabilities: {
-        browserName: 'firefox',
+        browserName: "firefox",
         alwaysMatch: {
           acceptInsecureCerts: true,
-          'moz:firefoxOptions': {
+          "moz:firefoxOptions": {
             args: geckoArgs,
           },
         },
@@ -58,74 +60,74 @@ const defaultSettings = {
     },
     ie11: {
       desiredCapabilities: {
-        browser: 'internet explorer',
-        version: '11',
-        platform: 'WINDOWS',
-        'browserstack.selenium_version': '3.6.0'
-      }
+        browser: "internet explorer",
+        version: "11",
+        platform: "WINDOWS",
+        "browserstack.selenium_version": "3.6.0",
+      },
     },
   },
-}
-const baseSettings = deepmerge(defaultSettings, webdriverServerSettings())
-module.exports = deepmerge(baseSettings, adaptUserSettings(userOptions))
+};
+const baseSettings = deepmerge(defaultSettings, webdriverServerSettings());
+module.exports = deepmerge(baseSettings, adaptUserSettings(userOptions));
 
 function adaptUserSettings(settings) {
   // The path to nightwatch external globals file needs to be made absolute
   // if it is supplied in an additional config file, due to merging of config files
   if (settings.globals_path) {
-    settings.globals_path = path.resolve(settings.globals_path)
+    settings.globals_path = path.resolve(settings.globals_path);
   }
 
-  return settings
+  return settings;
 }
 
 function webdriverServerSettings() {
   return {
     selenium: {
       start_process: false,
-      host: 'hub-cloud.browserstack.com',
+      host: "hub-cloud.browserstack.com",
       port: 443,
       cli_args: {
-        'webdriver.chrome.driver': chromedriver.path,
-        'webdriver.gecko.driver': geckodriver.path,
+        "webdriver.chrome.driver": chromedriver.path,
+        "webdriver.gecko.driver": geckodriver.path,
       },
     },
     test_settings: {
       default: {
         desiredCapabilities: {
-          'browserstack.user':
-            process.env.BROWSERSTACK_USERNAME || 'BROWSERSTACK_USERNAME',
-          'browserstack.key':
-            process.env.BROWSERSTACK_ACCESS_KEY || 'BROWSERSTACK_ACCESS_KEY',
-          build: process.env.BROWSERSTACK_BUILD || 'default_build',
-          project: process.env.BROWSERSTACK_PROJECT || 'default_project',
-          'browserstack.debug': true,
-          'browserstack.local': true,
+          "browserstack.user":
+            process.env.BROWSERSTACK_USERNAME || "BROWSERSTACK_USERNAME",
+          "browserstack.key":
+            process.env.BROWSERSTACK_ACCESS_KEY || "BROWSERSTACK_ACCESS_KEY",
+          build: process.env.BROWSERSTACK_BUILD || "default_build",
+          project: process.env.BROWSERSTACK_PROJECT || "default_project",
+          "browserstack.debug": true,
+          "browserstack.local": true,
         },
       },
       chrome: {
         desiredCapabilities: {
-          'browserstack.user':
-            process.env.BROWSERSTACK_USERNAME || 'BROWSERSTACK_USERNAME',
-          'browserstack.key':
-            process.env.BROWSERSTACK_ACCESS_KEY || 'BROWSERSTACK_ACCESS_KEY',
-          build: process.env.BROWSERSTACK_BUILD || 'default_build',
-          project: process.env.BROWSERSTACK_PROJECT || 'default_project',
-          'browserstack.debug': true,
-          'browserstack.local': true,
+          "browserstack.user":
+            process.env.BROWSERSTACK_USERNAME || "BROWSERSTACK_USERNAME",
+          "browserstack.key":
+            process.env.BROWSERSTACK_ACCESS_KEY || "BROWSERSTACK_ACCESS_KEY",
+          build: process.env.BROWSERSTACK_BUILD || "default_build",
+          project: process.env.BROWSERSTACK_PROJECT || "default_project",
+          "browserstack.debug": true,
+          "browserstack.local": true,
         },
       },
       ie11: {
         desiredCapabilities: {
-          'browserstack.user':
-              process.env.BROWSERSTACK_USERNAME || 'BROWSERSTACK_USERNAME',
-          'browserstack.key':
-              process.env.BROWSERSTACK_ACCESS_KEY || 'BROWSERSTACK_ACCESS_KEY',
-          build: process.env.BROWSERSTACK_BUILD || 'default_build',
-          project: process.env.BROWSERSTACK_PROJECT || 'default_project',
-          'browserstack.debug': true,
+          "browserstack.user":
+            process.env.BROWSERSTACK_USERNAME || "BROWSERSTACK_USERNAME",
+          "browserstack.key":
+            process.env.BROWSERSTACK_ACCESS_KEY || "BROWSERSTACK_ACCESS_KEY",
+          build: process.env.BROWSERSTACK_BUILD || "default_build",
+          project: process.env.BROWSERSTACK_PROJECT || "default_project",
+          "browserstack.debug": true,
         },
       },
     },
-  }
+  };
 }
