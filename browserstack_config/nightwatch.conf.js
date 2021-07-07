@@ -56,6 +56,14 @@ const defaultSettings = {
       },
       webdriver: {},
     },
+    ie11: {
+      desiredCapabilities: {
+        browser: 'internet explorer',
+        version: '11',
+        platform: 'WINDOWS',
+        'browserstack.selenium_version': '3.6.0'
+      }
+    },
   },
 }
 const baseSettings = deepmerge(defaultSettings, webdriverServerSettings())
@@ -105,6 +113,17 @@ function webdriverServerSettings() {
           project: process.env.BROWSERSTACK_PROJECT || 'default_project',
           'browserstack.debug': true,
           'browserstack.local': true,
+        },
+      },
+      ie11: {
+        desiredCapabilities: {
+          'browserstack.user':
+              process.env.BROWSERSTACK_USERNAME || 'BROWSERSTACK_USERNAME',
+          'browserstack.key':
+              process.env.BROWSERSTACK_ACCESS_KEY || 'BROWSERSTACK_ACCESS_KEY',
+          build: process.env.BROWSERSTACK_BUILD || 'default_build',
+          project: process.env.BROWSERSTACK_PROJECT || 'default_project',
+          'browserstack.debug': true,
         },
       },
     },
