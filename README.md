@@ -85,7 +85,7 @@ then you can run:
 
 for chrome:
 ```
-npm run test:browserstack:chrome
+npm run test:browserstack
 ```
 
 for Firefox: 
