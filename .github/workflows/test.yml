@@ -69,6 +69,8 @@ jobs:
         run: npm run lint
       - name: Run unit tests
         run: npm run test:unit
+      - name: Run e2e tests IE11
+        run: npm run test:browserstack:ie11
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
