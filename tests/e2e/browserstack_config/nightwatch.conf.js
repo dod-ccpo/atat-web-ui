@@ -1,6 +1,6 @@
-import path from "path";
-import deepmerge from "deepmerge";
-import chromedriver from "chromedriver";
+const path = require("path");
+const deepmerge = require("deepmerge");
+const chromedriver = require("chromedriver");
 
 const startHeadless = process.env.VUE_NIGHTWATCH_HEADLESS === "1";
 const concurrentMode = process.env.VUE_NIGHTWATCH_CONCURRENT === "1";
