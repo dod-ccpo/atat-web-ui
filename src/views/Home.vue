@@ -1,6 +1,47 @@
 <template>
-  <div class="hello-world-view">
-    <hello-world />
+  <div class="home-view">
+    <v-container>
+      <v-row align="center">
+        <v-col>
+          <h1 class="home-header-title text-center">Access the ATAT Cloud</h1>
+        </v-col>
+      </v-row>
+      <v-row align="center">
+        <v-col class="home-shield-cont text-center py-2" align="center">
+          <v-img
+              lazy-src="../assets/CCPO-Logo.png"
+              max-height="258"
+              max-width="250"
+              src="../assets/CCPO-Logo.png"
+          ></v-img>
+        </v-col>
+      </v-row>
+      <br><br>
+      <v-row align="center">
+        <v-col class="home-btn-cont text-center">
+          <v-btn
+              elevation="2"
+              x-large
+              color="primary"
+              class="font-weight-bold text-capitalize"
+          >
+            Sign in with CAC
+          </v-btn>
+        </v-col>
+      </v-row>
+      <br><br><br>
+      <v-row align="center">
+        <v-col class="home-info-alert text-center px-10">
+          <v-alert outlined
+                   type="info"
+                   prominent
+                   border="left">
+            Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Suspendisse non nisl sit amet velit hendrerit rutrum. Nullam vel sem. Pellentesque dapibus hendrerit tortor.
+          </v-alert>
+        </v-col>
+      </v-row>
+
+    </v-container>
   </div>
 </template>
 
