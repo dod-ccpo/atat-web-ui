@@ -1,6 +1,8 @@
+/* eslint-disable */
 const path = require("path");
 const deepmerge = require("deepmerge");
 const chromedriver = require("chromedriver");
+/* eslint-enable */
 
 const startHeadless = process.env.VUE_NIGHTWATCH_HEADLESS === "1";
 const concurrentMode = process.env.VUE_NIGHTWATCH_CONCURRENT === "1";
