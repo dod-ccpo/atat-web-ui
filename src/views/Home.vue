@@ -12,6 +12,7 @@
               lazy-src="../assets/CCPO-Logo.png"
               max-height="258"
               max-width="250"
+              id="atat-main-child-img"
               src="../assets/CCPO-Logo.png"
           ></v-img>
         </v-col>
