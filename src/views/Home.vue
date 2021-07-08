@@ -30,14 +30,20 @@
           </v-btn>
         </v-col>
       </v-row>
-      <br><br><br>
+      <br><br><br><br>
       <v-row align="center">
-        <v-col class="home-info-alert text-center px-10">
+        <v-col class="home-info-alert text-center"
+               md="8"
+               offset-md="2">
           <v-alert outlined
+                   color="black"
                    type="info"
-                   prominent
-                   border="left">
-            Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Suspendisse non nisl sit amet velit hendrerit rutrum. Nullam vel sem. Pellentesque dapibus hendrerit tortor.
+                   class="text-left atat-v-alert-info cyan lighten-5"
+                   border="left cyan">
+            <h2>Certificate Selection</h2>
+            <p class="atat-v-alert-info__msg">
+              Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Suspendisse non nisl sit amet velit hendrerit rutrum. Nullam vel sem. Pellentesque dapibus hendrerit tortor.
+            </p>
           </v-alert>
         </v-col>
       </v-row>
