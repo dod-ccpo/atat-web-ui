@@ -10,7 +10,7 @@
  *
  */
 
-const assert = require("assert");
+const assert = require("assert"); // eslint-disable-line
 
 module.exports = class {
   async command() {
