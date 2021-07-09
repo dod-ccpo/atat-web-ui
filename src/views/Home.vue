@@ -10,10 +10,10 @@
         <v-col class="home-shield-cont text-center py-2" align="center">
           <v-img
             lazy-src="../assets/CCPO-Logo.png"
+            src="../assets/CCPO-Logo.png"
             max-height="258"
             max-width="250"
             id="atat-main-child-img"
-            src="../assets/CCPO-Logo.png"
           ></v-img>
         </v-col>
       </v-row>
