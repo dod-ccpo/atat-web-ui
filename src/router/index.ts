@@ -25,6 +25,12 @@ const routes: Array<RouteConfig> = [
     name: "Dashboard",
     component: Dashboard,
   },
+  {
+    path: "/sample/style",
+    name: "Style",
+    component: () =>
+      import(/* webpackChunkName: "style" */ "../views/sample/Style.vue"),
+  },
 ];
 
 const router = new VueRouter({

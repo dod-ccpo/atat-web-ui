@@ -1,0 +1,17 @@
+.v-alert{
+  &.atat-v-alert-info.v-sheet{
+    border-radius: unset;
+
+    .v-alert__border:not(.v-alert__border--has-color){
+      opacity: unset;
+    }
+    .v-alert__icon.v-icon{
+      font-size: 2rem;
+      top: .4rem;
+      margin: 0 1rem 0 .5rem;
+    }
+    .atat-v-alert-info__msg{
+      opacity: .8;
+    }
+  }
+}
