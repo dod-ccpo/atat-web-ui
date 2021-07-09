@@ -27,7 +27,7 @@
             color="primary"
             class="font-weight-bold text-capitalize"
           >
-            Sign in with CAC
+            Sign in
           </v-btn>
         </v-col>
       </v-row>
