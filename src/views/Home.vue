@@ -43,9 +43,7 @@
           >
             <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
             <p class="atat-v-alert-info__msg">
-              Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis,
-              ipsum. Suspendisse non nisl sit amet velit hendrerit rutrum.
-              Nullam vel sem. Pellentesque dapibus hendrerit tortor.
+              When you are prompted to select a certificate, please select an Authentication (Identification) Certificate from the provided choices.
             </p>
           </v-alert>
         </v-col>
