@@ -41,7 +41,7 @@
             class="text-left atat-v-alert-info cyan lighten-5"
             border="left cyan"
           >
-            <h2>Certificate Selection</h2>
+            <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
             <p class="atat-v-alert-info__msg">
               Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis,
               ipsum. Suspendisse non nisl sit amet velit hendrerit rutrum.
