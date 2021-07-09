@@ -84,12 +84,16 @@
             </v-row>
             <v-row>
               <v-col>
-                <p class="profile-card-text">maria.missionowner-civ@mail.mil</p>
-                <p class="profile-card-text">(555) 555-55555</p>
+                <p class="profile-card-email">
+                  maria.missionowner-civ@mail.mil
+                </p>
+                <p class="profile-card-phone">(555) 555-55555</p>
               </v-col>
               <v-col>
-                <p class="profile-card-text">Service Branch: Army</p>
-                <p class="profile-card-text">Citizenship: United States</p>
+                <p class="profile-card-service">Service Branch: Army</p>
+                <p class="profile-card-citizenship">
+                  Citizenship: United States
+                </p>
               </v-col>
             </v-row>
             <v-btn
