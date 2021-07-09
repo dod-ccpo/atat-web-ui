@@ -69,7 +69,7 @@
           <v-col cols="6">
             <hr />
           </v-col>
-          <h2 class="">Getting Started</h2>
+          <h2 class="dashboard-getting-started">Getting Started</h2>
           <p class="dashboard-content">
             First, you will need to verify your contact information that was
             imported from your Active Directory user profile. Our administrators
@@ -98,7 +98,7 @@
               to="#"
               elevation="2"
               x-large
-              class="font-weight-bold text-capitalize"
+              class="profile-card-button font-weight-bold text-capitalize"
             >
               Update Your Profile
             </v-btn>
