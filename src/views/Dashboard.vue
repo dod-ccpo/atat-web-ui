@@ -4,7 +4,9 @@
       <v-col cols="8">
         <div>
           <h1 class="dashboard-header">ATAT Cloud Services</h1>
-          <h2>Welcome to the Account Tracking and Automation Tool, Maria!</h2>
+          <h2 class="dashboard-welcome">
+            Welcome to the Account Tracking and Automation Tool, Maria!
+          </h2>
           <p class="dashboard-content">
             ATAT is your tool for provisioning new cloud resources across
             multiple vendors and classification levels. Within ATAT, you can
@@ -12,7 +14,7 @@
             single location, including:
           </p>
           <v-row class="pl-5">
-            <v-col cols="1">
+            <v-col class="stepper-img" cols="1">
               <v-img
                 :src="require('../assets/dashboard/Step1.svg')"
                 contain
@@ -21,11 +23,11 @@
               />
             </v-col>
             <v-col cols="5">
-              <p>Task Orders</p>
+              <p class="stepper-text">Task Orders</p>
             </v-col>
           </v-row>
           <v-row class="pl-5">
-            <v-col cols="1">
+            <v-col class="stepper-img" cols="1">
               <v-img
                 :src="require('../assets/dashboard/Step2.svg')"
                 contain
@@ -34,11 +36,11 @@
               />
             </v-col>
             <v-col cols="5">
-              <p>Application and Environments</p>
+              <p class="stepper-text">Application and Environments</p>
             </v-col>
           </v-row>
           <v-row class="pl-5">
-            <v-col cols="1">
+            <v-col class="stepper-img" cols="1">
               <v-img
                 :src="require('../assets/dashboard/Step3.svg')"
                 contain
@@ -47,7 +49,7 @@
               />
             </v-col>
             <v-col cols="5">
-              <p>Team Members</p>
+              <p class="stepper-text">Team Members</p>
             </v-col>
           </v-row>
           <v-spacer></v-spacer>
@@ -67,7 +69,7 @@
           <v-col cols="6">
             <hr />
           </v-col>
-          <h2>Getting Started</h2>
+          <h2 class="">Getting Started</h2>
           <p class="dashboard-content">
             First, you will need to verify your contact information that was
             imported from your Active Directory user profile. Our administrators
@@ -77,20 +79,27 @@
           <v-container class="profile-card">
             <v-row>
               <v-col>
-                <h3>Maria Missionowner</h3>
+                <h3 class="profile-card-name">Maria Missionowner</h3>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <p class="pb-0">maria.missionowner-civ@mail.mil</p>
-                <p>(555) 555-55555</p>
+                <p class="profile-card-text">maria.missionowner-civ@mail.mil</p>
+                <p class="profile-card-text">(555) 555-55555</p>
               </v-col>
               <v-col>
-                <p>Service Branch: Army</p>
-                <p>Citizenship: United States</p>
+                <p class="profile-card-text">Service Branch: Army</p>
+                <p class="profile-card-text">Citizenship: United States</p>
               </v-col>
             </v-row>
-            <v-btn depressed color="primary" href="#">
+            <v-btn
+              depressed
+              color="primary"
+              to="#"
+              elevation="2"
+              x-large
+              class="font-weight-bold text-capitalize"
+            >
               Update Your Profile
             </v-btn>
           </v-container>
