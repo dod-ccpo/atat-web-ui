@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "@/views/Home.vue";
-import Style from "../views/test/Style.vue";
+import Home from "../views/Home.vue";
 
 Vue.use(VueRouter);
 
@@ -23,7 +22,8 @@ const routes: Array<RouteConfig> = [
   {
     path: "/test/style",
     name: "Style",
-    component: Style,
+    component: () =>
+      import(/* webpackChunkName: "style" */ "../views/test/Style.vue"),
   },
 ];
 
