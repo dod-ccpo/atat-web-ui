@@ -21,7 +21,7 @@
       <v-row align="center">
         <v-col class="home-btn-cont text-center">
           <v-btn
-            to="t/style"
+            to="sample/style"
             elevation="2"
             x-large
             color="primary"

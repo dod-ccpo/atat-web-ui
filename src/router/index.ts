@@ -20,10 +20,10 @@ const routes: Array<RouteConfig> = [
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
-    path: "/test/style",
+    path: "/sample/style",
     name: "Style",
     component: () =>
-      import(/* webpackChunkName: "style" */ "../views/t/Style.vue"),
+      import(/* webpackChunkName: "style" */ "../views/sample/Style.vue"),
   },
 ];
 
