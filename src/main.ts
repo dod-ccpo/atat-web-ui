@@ -7,10 +7,10 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import moment from 'moment';
 
-import ATATFooter from "./components/ATATFooter.vue"
-import ATATSelect from "./components/ATATSelect.vue"
-import ATATTextField from "./components/ATATTextField.vue"
-import HelloWorld from "./components/HelloWorld.vue"
+import ATATFooter from "./components/ATATFooter.vue";
+import ATATSelect from "./components/ATATSelect.vue";
+import ATATTextField from "./components/ATATTextField.vue";
+import HelloWorld from "./components/HelloWorld.vue";
 
 Vue.component('atat-footer', ATATFooter);
 Vue.component('atat-select', ATATSelect);
