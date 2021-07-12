@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve-dev": "vue-cli-service serve --mode development --https",
-    "serve-dev-win": "vue-cli-service serve --mode development --host localhost",
+    "serve-dev-win": "vue-cli-service serve --mode development --host localhost --watch",
     "serve": "vue-cli-service serve --https",
     "build": "vue-cli-service build",
     "test:unit-watch": "vue-cli-service test:unit --watch ",

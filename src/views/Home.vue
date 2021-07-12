@@ -36,14 +36,16 @@
         <v-col class="home-info-alert text-center" md="8" offset-md="2">
           <v-alert
             outlined
-            color="black"
+            color="blac"
             type="info"
             class="text-left atat-v-alert-info cyan lighten-5"
-            border="left cyan"
+            border="left"
           >
             <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
             <p class="atat-v-alert-info__msg">
-              When you are prompted to select a certificate, please select an Authentication (Identification) Certificate from the provided choices.
+              When you are prompted to select a certificate, please select an
+              Authentication (Identification) Certificate from the provided
+              choices.
             </p>
           </v-alert>
         </v-col>
