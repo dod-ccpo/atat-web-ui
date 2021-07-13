@@ -36,10 +36,10 @@
         <v-col class="home-info-alert text-center" md="8" offset-md="2">
           <v-alert
             outlined
-            color="blac"
+            color="black"
             type="info"
             class="text-left atat-v-alert-info cyan lighten-5"
-            border="left"
+            border="left cyan"
           >
             <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
             <p class="atat-v-alert-info__msg">
