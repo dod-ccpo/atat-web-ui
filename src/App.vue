@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <div>
-        <ATATHeader />
+      <ATATHeader />
       <v-spacer></v-spacer>
     </div>
     <!-- <v-navigation-drawer>
@@ -21,12 +21,12 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import ATATHeader from "./components/ATATHeader.vue"
+import ATATHeader from "./components/ATATHeader.vue";
 
 @Component({
   components: {
-    ATATHeader
-  }
+    ATATHeader,
+  },
 })
 export default class App extends Vue {}
 </script>
