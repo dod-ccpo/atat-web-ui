@@ -26,10 +26,10 @@ const routes: Array<RouteConfig> = [
     component: Dashboard,
   },
   {
-    path: "/sample/style",
+    path: "/formFields",
     name: "Style",
     component: () =>
-      import(/* webpackChunkName: "style" */ "../views/sample/Style.vue"),
+      import(/* webpackChunkName: "style" */ "../views/FormFields.vue"),
   },
 ];
 

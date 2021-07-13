@@ -1,6 +1,6 @@
 <template>
-  <div class="hello-world-view">
-    <hello-world />
+  <div class="home-view">
+   <styled-fields />
   </div>
 </template>
 
@@ -8,5 +8,5 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
-export default class Style extends Vue {}
+export default class FormFields extends Vue {}
 </script>

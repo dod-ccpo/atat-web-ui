@@ -3,7 +3,7 @@
 // Globals
 $body-font-family: 'Source Sans Pro', sans-serif !default;
 $border-radius-root: 6px;
-$font-size-root: 16px;
+$font-size-root: 17px;
 
 @import '~vuetify/src/styles/styles.sass';
 
@@ -21,8 +21,8 @@ $btn-sizes: (
   'large': 54
 );
 
-// variables for colors
-$cyan : #05bfe7; // exact cyan color on atat
+
+
 
 $color:(
   (
@@ -48,6 +48,8 @@ $color:(
     'shades': $shades
   )
 );
+
+
 
 $shades: () !default;
 $shades: (
