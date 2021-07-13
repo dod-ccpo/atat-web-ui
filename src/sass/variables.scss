@@ -9,6 +9,7 @@ $font-size-root: 16px;
 
 // Variables must come before the import
 $btn-letter-spacing: 0;
+
 $btn-font-weight: 400;
 $list-item-title-font-size: 0.929rem;
 $list-item-dense-title-font-size: 0.929rem;
@@ -21,8 +22,11 @@ $btn-sizes: (
   'large': 54
 );
 
-// variables for colors
-$cyan : #05bfe7; // exact cyan color on atat
+$btn-font-sizes: (
+    'default': 1rem,
+    'large': 1.5rem
+);
+
 
 $color:(
   (

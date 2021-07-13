@@ -22,8 +22,7 @@
         <v-col class="home-btn-cont text-center">
           <v-btn
             to="/dashboard"
-            elevation="2"
-            x-large
+            large
             color="primary"
             class="font-weight-bold text-capitalize"
           >
@@ -36,14 +35,18 @@
         <v-col class="home-info-alert text-center" md="8" offset-md="2">
           <v-alert
             outlined
-            color="black"
+            color="cyan"
             type="info"
-            class="text-left atat-v-alert-info cyan lighten-5"
-            border="left cyan"
+            class="text-left atat-v-alert-info cyan info_lighter"
+            border="left"
+            width="600"
           >
-            <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
-            <p class="atat-v-alert-info__msg">
-              When you are prompted to select a certificate, please select an Authentication (Identification) Certificate from the provided choices.
+            <h2 class="black--text">Certificate Selection</h2>
+            <p class="black--text">
+              When you are prompted to select a certificate, please select an
+              <br />
+              Authentication (Identification) Certificate from the provided
+              choices.
             </p>
           </v-alert>
         </v-col>
