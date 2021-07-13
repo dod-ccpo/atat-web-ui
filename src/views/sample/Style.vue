@@ -8,5 +8,5 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
-export default class FormFields extends Vue {}
+export default class Style extends Vue {}
 </script>
