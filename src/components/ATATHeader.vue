@@ -58,34 +58,29 @@
                 class="USWDC-official-banner_drawer__content"
               >
                 <v-row align="center">
-                  <v-col sm="1" md="1">
-                    <img
-                      src="../../public/img/icon-dot-gov.svg"
-                      width="30"
-                      class="USWDC-official-banner_drawer__content__icon1"
-                    />
+                  <v-col cols="12" md="4" lg="3" xl="2">
+                    <div class="USWDC-official-banner__col-01">
+                      <h3>Official websites use .mil </h3>
+                      <p>
+                        A <strong>.mil</strong> website belongs to an official U.S.
+                        Department of Defense organization.
+                      </p>
+                    </div>
                   </v-col>
-                  <v-col sm="11" md="4">
-                    <h3>Official websites use .mil</h3>
-                    <p>
-                      A .mil website belongs to an official government
-                      organization in the United States.
-                    </p>
-                  </v-col>
-                  <v-col sm="1" md="1">
-                    <img
-                      src="../../public/img/icon-https.svg"
-                      width="30"
-                      class="USWDC-official-banner_drawer__content__icon2"
-                    />
-                  </v-col>
-                  <v-col sm="11" md="4">
-                    <h3>Secure .mil websites use HTTPS</h3>
-                    <p>
-                      A lock ( ) or https:// means you’ve safely connected to
-                      the .mil website. Share sensitive information only on
-                      official, secure websites.
-                    </p>
+                  <v-col cols="12" md="4" lg="3" xl="2">
+                    <div class="USWDC-official-banner__col-02">
+                      <h3>Secure .mil websites use HTTPS </h3>
+                      <p>
+                        A <strong>lock</strong> (
+                        <span class="icon-lock"><svg xmlns="http://www.w3.org/2000/svg" width="8"  viewBox="0 0 52 64" class="usa-banner__lock-image" role="img" aria-labelledby="banner-lock-title-dot-mil banner-lock-description-dot-mil" focusable="false">
+                  <title id="banner-lock-title-dot-mil">Lock</title>
+                  <desc id="banner-lock-description-dot-mil">A locked padlock</desc>
+                  <path fill="#000000" fill-rule="evenodd" d="M26 0c10.493 0 19 8.507 19 19v9h3a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V32a4 4 0 0 1 4-4h3v-9C7 8.507 15.507 0 26 0zm0 8c-5.979 0-10.843 4.77-10.996 10.712L15 19v9h22v-9c0-6.075-4.925-11-11-11z"></path></svg></span>
+                        ) or <strong>https://</strong> means you’ve safely connected to
+                        the .mil website. Share sensitive information only on official,
+                        secure websites.
+                      </p>
+                    </div>
                   </v-col>
                 </v-row>
               </v-expansion-panel-content>
@@ -181,6 +176,30 @@ export default class ATATHeader extends Vue {
         position: relative;
         padding-top: 2rem;
         min-height: 96px;
+        .USWDC-official-banner__col-01,
+        .USWDC-official-banner__col-02 {
+          margin-left: 45px;
+          display: block;
+          position: relative;
+          &::before {
+            content: " ";
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            display: block;
+            left: -45px;
+            margin-right: 4px;
+            background-position: top center;
+            background-size: 40px 40px;
+            background-image: url("../../public/img/icon-dot-gov.svg");
+          }
+        }
+
+
+        .USWDC-official-banner__col-02::before {
+          background-image: url("../../public/img/icon-https.svg");
+        }
+
         .USWDC-official-banner_drawer__content__icon2,
         .USWDC-official-banner_drawer__content__icon1 {
           position: relative;
