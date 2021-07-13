@@ -97,7 +97,14 @@
         class="atat-header-nav primary_darken white--text font-weight-bold"
       >
         <v-col>
-          <div>ATAT</div>
+          <div class="atat-nav-logo">
+            <img
+              src="../../public/img/icons/shield.svg"
+              width="20"
+              class="atat-nav-logo__icon"
+            />
+            <span class="atat-header-logo">ATAT</span>
+          </div>
           <v-spacer></v-spacer>
         </v-col>
       </v-row>
@@ -109,9 +116,17 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
+interface ClassificationType {
+  color: string;
+  text: string;
+}
+interface ClassificationTypeArray {
+  [key: string]: ClassificationType;
+}
+
 @Component({})
 export default class ATATHeader extends Vue {
-  private classificationTypes: [string: { color: string; text: string }] = {
+  private classificationTypes: ClassificationTypeArray = {
     U: {
       color: "light-green",
       text: "UNCLASSIFIED",
@@ -140,7 +155,6 @@ export default class ATATHeader extends Vue {
 </script>
 <style lang="scss">
 .atat-header {
-  border: blue 2px solid;
   .classification-banner .col {
     padding: 0.2rem;
     font-size: 0.7rem;
@@ -152,9 +166,13 @@ export default class ATATHeader extends Vue {
       box-shadow: none;
       border-radius: 0;
       .USWDC-official-banner_drawer__header {
+        display: block;
         font-size: 0.7rem;
         padding: 0.2rem 0.5em;
         min-height: 10px;
+        .v-expansion-panel-header__icon {
+          display: inline-block;
+        }
       }
       .USWDC-official-banner_drawer__content {
         position: relative;
@@ -183,6 +201,18 @@ export default class ATATHeader extends Vue {
     .USWDC-official-banner__link_msg {
       position: relative;
       top: -1px;
+    }
+  }
+  .atat-nav-logo {
+    .atat-nav-logo__icon {
+      display: inline-block;
+      position: relative;
+      top: 0.2em;
+      margin-right: 0.5rem;
+    }
+    .atat-header-logo {
+      display: inline-block;
+      position: relative;
     }
   }
 }
