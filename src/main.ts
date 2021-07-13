@@ -11,7 +11,7 @@ import cssVars from 'css-vars-ponyfill'; // needed to process css vars in IE11
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATSelect from "./components/ATATSelect.vue";
 import ATATTextField from "./components/ATATTextField.vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import StyledFields from "./components/StyledFields.vue";
 
 Vue.component('atat-footer', ATATFooter);
 Vue.component('atat-select', ATATSelect);
