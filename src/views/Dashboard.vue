@@ -129,7 +129,7 @@ export default {
 </script>
 
 <style scoped>
-.profile-card {
+/* .profile-card {
   background-color: #faf3d1;
   border: 1px solid #e5a000;
 }
@@ -155,5 +155,5 @@ p.dashboard-content {
 }
 .dashboard-body {
   max-width: 960px;
-}
+} */
 </style>

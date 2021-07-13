@@ -1,6 +1,6 @@
 <template>
-  <div class="hello-world-view">
-    <hello-world />
+  <div class="home-view">
+   <styled-fields />
   </div>
 </template>
 
