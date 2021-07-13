@@ -55,35 +55,35 @@
                 </span>
               </v-expansion-panel-header>
               <v-expansion-panel-content
-                class="USWDC-official-banner_drawer__content black white--text"
+                class="USWDC-official-banner_drawer__content"
               >
                 <v-row align="center">
-                  <v-col cols="1">
+                  <v-col sm="1" md="1">
                     <img
                       src="../../public/img/icon-dot-gov.svg"
                       width="30"
                       class="USWDC-official-banner_drawer__content__icon1"
                     />
                   </v-col>
-                  <v-col cols="4">
-                    <h3>Official websites use .gov</h3>
+                  <v-col sm="11" md="4">
+                    <h3>Official websites use .mil</h3>
                     <p>
-                      A .gov website belongs to an official government
+                      A .mil website belongs to an official government
                       organization in the United States.
                     </p>
                   </v-col>
-                  <v-col cols="1">
+                  <v-col sm="1" md="1">
                     <img
                       src="../../public/img/icon-https.svg"
                       width="30"
                       class="USWDC-official-banner_drawer__content__icon2"
                     />
                   </v-col>
-                  <v-col cols="4">
-                    <h3>Secure .gov websites use HTTPS</h3>
+                  <v-col sm="11" md="4">
+                    <h3>Secure .mil websites use HTTPS</h3>
                     <p>
                       A lock ( ) or https:// means you’ve safely connected to
-                      the .gov website. Share sensitive information only on
+                      the .mil website. Share sensitive information only on
                       official, secure websites.
                     </p>
                   </v-col>
@@ -99,11 +99,10 @@
         <v-col>
           <div class="atat-nav-logo">
             <img
-              src="../../public/img/icons/shield.svg"
-              width="20"
+              src="../../public/img/icons/atat-logo.svg"
+              width="56"
               class="atat-nav-logo__icon"
             />
-            <span class="atat-header-logo">ATAT</span>
           </div>
           <v-spacer></v-spacer>
         </v-col>
@@ -165,7 +164,10 @@ export default class ATATHeader extends Vue {
     .USWDC-official-banner_drawer {
       box-shadow: none;
       border-radius: 0;
+      color: #1b1b1b;
+      background-color: #f0f0f0;
       .USWDC-official-banner_drawer__header {
+        background-color: #f0f0f0;
         display: block;
         font-size: 0.7rem;
         padding: 0.2rem 0.5em;
@@ -175,6 +177,7 @@ export default class ATATHeader extends Vue {
         }
       }
       .USWDC-official-banner_drawer__content {
+        background-color: #f0f0f0;
         position: relative;
         padding-top: 2rem;
         min-height: 96px;
