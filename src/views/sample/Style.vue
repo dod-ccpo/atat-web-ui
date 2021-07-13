@@ -1,6 +1,6 @@
 <template>
   <div class="home-view">
-   <styled-fields />
+    <styled-fields />
   </div>
 </template>
 
