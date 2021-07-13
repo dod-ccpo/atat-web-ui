@@ -27,8 +27,6 @@ module.exports = {
     const homepage = browser.page.homepage();
     const welcomeSection = homepage.section.app.section.welcome;
 
-    welcomeSection.expect
-      .element("@cliPluginLinks")
-      .text.to.contain("ATAT");
+    welcomeSection.expect.element("@cliPluginLinks").text.to.contain("ATAT");
   },
 };
