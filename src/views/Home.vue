@@ -21,13 +21,13 @@
       <v-row align="center">
         <v-col class="home-btn-cont text-center">
           <v-btn
-            to="sample/style"
+            to="/dashboard"
             elevation="2"
             x-large
             color="primary"
             class="font-weight-bold text-capitalize"
           >
-            Sign in with CAC
+            Sign in
           </v-btn>
         </v-col>
       </v-row>
@@ -43,9 +43,7 @@
           >
             <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
             <p class="atat-v-alert-info__msg">
-              Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis,
-              ipsum. Suspendisse non nisl sit amet velit hendrerit rutrum.
-              Nullam vel sem. Pellentesque dapibus hendrerit tortor.
+              When you are prompted to select a certificate, please select an Authentication (Identification) Certificate from the provided choices.
             </p>
           </v-alert>
         </v-col>
