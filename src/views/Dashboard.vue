@@ -128,32 +128,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* .profile-card {
-  background-color: #faf3d1;
-  border: 1px solid #e5a000;
-}
 
-h1.dashboard-header {
-  font-family: Source Sans Pro;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 44px;
-  line-height: 51px;
-  padding-bottom: 20px;
-}
-h2 {
-  padding-bottom: 15px;
-  padding-top: 15px;
-}
-p.dashboard-content {
-  padding-bottom: 15px;
-}
-.dashboard-image {
-  position: relative;
-  top: 60px;
-}
-.dashboard-body {
-  max-width: 960px;
-} */
-</style>

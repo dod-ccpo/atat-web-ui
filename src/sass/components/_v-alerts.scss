@@ -1,17 +1,26 @@
 .v-alert{
-  &.atat-v-alert-info.v-sheet{
-    border-radius: unset;
+  font-size: 1.06rem !important; //17 pixels
+  
+    border-radius: 0px;
+
+    .v-alert__border--left {
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      left: 0px;
+    }
 
     .v-alert__border:not(.v-alert__border--has-color){
-      opacity: unset;
+      opacity: 1 !important;
     }
     .v-alert__icon.v-icon{
       font-size: 2rem;
       top: .4rem;
       margin: 0 1rem 0 .5rem;
     }
-    .atat-v-alert-info__msg{
-      opacity: .8;
+
+  &.black-icon{
+    .v-icon{
+      color: black !important;
     }
   }
 }
