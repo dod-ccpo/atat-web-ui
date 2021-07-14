@@ -1,11 +1,10 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary_darken">
+    <v-app-bar app color="primary_darken" clipped-left>
       <div class="d-flex align-center"></div>
       <v-spacer></v-spacer>
     </v-app-bar>
-    <!-- <v-navigation-drawer>
-    </v-navigation-drawer> -->
+    <atat-sidebar />
     <v-main>
       <v-container fluid>
         <router-view></router-view>
