@@ -20,7 +20,7 @@
           <v-btn
             @click="login()"
             elevation="2"
-            x-large
+            large
             color="primary"
             class="text-capitalize"
             :ripple="false"
