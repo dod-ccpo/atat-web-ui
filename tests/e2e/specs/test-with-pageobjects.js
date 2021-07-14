@@ -16,7 +16,7 @@ module.exports = {
     const app = homepage.section.app;
     app.assert.elementCount("@logo", 1);
     app.expect.section("@welcome").to.be.visible;
-    app.expect.section("@headline").text.to.match(/^Hello World$/);
+    app.expect.section("@headline").text.to.match(/ATAT/);
 
     browser.end();
   },
@@ -27,8 +27,6 @@ module.exports = {
     const homepage = browser.page.homepage();
     const welcomeSection = homepage.section.app.section.welcome;
 
-    welcomeSection.expect
-      .element("@cliPluginLinks")
-      .text.to.contain("Hello World");
+    welcomeSection.expect.element("@cliPluginLinks").text.to.contain("ATAT");
   },
 };
