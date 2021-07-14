@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve-dev": "vue-cli-service serve --mode development --https",
-    "serve-dev-win": "vue-cli-service serve --mode development --host localhost",
+    "serve-dev-win": "vue-cli-service serve --mode development --host localhost --watch",
     "serve": "vue-cli-service serve --https",
     "build": "vue-cli-service build",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@wdio/cli": "^7.7.4",
     "core-js": "^3.6.5",
+    "css-vars-ponyfill": "^2.4.5",
     "eslint-plugin-wdio": "^7.4.2",
     "register-service-worker": "^1.7.1",
     "typeface-source-sans-pro": "^1.1.13",
@@ -48,7 +49,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
     "eslint-plugin-wdio": "^7.4.2",
-    "node-sass": "^4.12.0",
+    "node-sass": "^6.0.1",
     "prettier": "^2.2.1",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",

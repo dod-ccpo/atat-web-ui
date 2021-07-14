@@ -17,8 +17,8 @@
     </v-row>
     <v-row class="text-center">
       <v-col cols="12" class="mb-4">
-        <v-icon large success> mdi-domain </v-icon>
-        <v-icon large> mdi-message-text </v-icon>
+        <v-icon large color="success"> mdi-domain </v-icon>
+        <v-icon large color="primary"> mdi-message-text </v-icon>
         <a href="google.com" target="blank"> google.com</a>
       </v-col>
     </v-row>
@@ -38,5 +38,5 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class HelloWorld extends Vue {}
+export default class StyledFields extends Vue {}
 </script>

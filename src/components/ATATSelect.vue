@@ -1,12 +1,13 @@
 <template>
   <div :id="id + '_dropdown_field_control'" class="atat-select">
     <v-flex>
-      <div
+      <label
         :id="id + '_dropdown_field_label'"
         class="text-form-field-label my-1"
+        :for="id + '_dropdown'"
       >
         DropDown Label
-      </div>
+      </label>
     </v-flex>
     <v-flex>
       <v-select
@@ -18,7 +19,7 @@
         :rounded="rounded"
       >
         <template v-slot:selection="{ item }">
-          {{ item.text }}
+          {{ item }}
         </template>
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">
