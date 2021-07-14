@@ -6,17 +6,17 @@
       :class="item.cssClass"
       :id="item.cssClass"
       :title="item.title"
-      :to="item.url"
+      @click="itemCLicked(item)"
       :key="item.id"
     >
       <span>{{ item.title }}</span>
     </v-btn>
 
-<!--    <pre>-->
-<!--      loginStatus: {{ loginStatus }}-->
-<!--      navData: {{ navData }}-->
+    <!--    <pre>-->
+    <!--      loginStatus: {{ loginStatus }}-->
+    <!--      navData: {{ navData }}-->
 
-<!--    </pre>-->
+    <!--    </pre>-->
   </div>
 </template>
 
@@ -80,7 +80,7 @@ const all_navs: Navs = {
         id: 3,
         cssClass: "atat-header-nav__logout",
         title: "Logout",
-        url: "#",
+        url: "/",
         component: "logout-action",
         newWindow: false,
       },
@@ -110,8 +110,19 @@ export default class ATATHeaderNav extends Vue {
     console.log("action logout");
     this.$store.dispatch("logout");
   }
+  private itemCLicked(item: NavItem): void {
+    if (item.component) {
+      if (item.component === "logout-action") {
+        this.logout();
+      }
+    }
+    if (item.url) {
+      this.$router.push(item.url);
+    }
+  }
 }
 </script>
+
 <style lang="scss">
 .atat-header-nav {
   .atat-header-nav__link {
