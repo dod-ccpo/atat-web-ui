@@ -8,12 +8,12 @@ import vuetify from "./plugins/vuetify";
 import moment from 'moment';
 import cssVars from 'css-vars-ponyfill'; // needed to process css vars in IE11
 
-
-import ATATFooter from "./components/ATATFooter.vue"
-import ATATSelect from "./components/ATATSelect.vue"
-import ATATTextField from "./components/ATATTextField.vue"
-import StyledFields from "./components/StyledFields.vue"
+import ATATFooter from "./components/ATATFooter.vue";
+import ATATSelect from "./components/ATATSelect.vue";
+import ATATTextField from "./components/ATATTextField.vue";
+import StyledFields from "./components/StyledFields.vue";
 import ATATSideBar from "./components/ATATSideBar.vue"
+
 
 Vue.component('atat-footer', ATATFooter);
 Vue.component('atat-select', ATATSelect);

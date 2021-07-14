@@ -10,9 +10,17 @@ export default {
   success: "#2E8540",
   error: "#E21C3D",
 
+  warning_lighter: "#faf3d1",
+  warning_light: "#fee685",
+  warning: "#ffbe2e",
+  warning_dark: "#e5a000",
+  warning_darker: "#936f38",
+
   info_darker: "#2e6276",
   info_dark: "#009ec1",
   info: "#05bfe7",
   info_light: "#99deea",
   info_lighter: "#e7f6f8",
+
+  hr_color: "#DFE1E2",
 };

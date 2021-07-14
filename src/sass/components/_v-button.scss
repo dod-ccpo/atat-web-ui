@@ -1,6 +1,15 @@
 
 .v-btn{
-  font-weight: 600 !important;
+
+  box-shadow: none !important;
+  font-size: 1.7rem !important;
+  line-height: 2.5rem !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+
+
+
+
   &::before{
     display: block;
   }
@@ -27,6 +36,10 @@
   }
 
   &.v-size--large{
-    letter-spacing: .05rem;
+    font-weight: 600 !important;
+    font-size: 2.2rem !important;
+    line-height: 3.3rem !important;
+    letter-spacing: .05rem !important;
+    padding: 10px 24px !important;
   }
 }

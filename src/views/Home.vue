@@ -1,15 +1,15 @@
 <template>
   <div class="home-view">
     <v-container>
-      <h3 class="text-center mb-10 text-h3 font-weight-bold">
+      <div class="text-center mb-10 h1 font-weight-bold">
         Access the ATAT Cloud
-      </h3>
+      </div>
       <v-row>
         <v-col class="d-flex justify-center py-2">
           <img
             alt="CCPO logo"
             src="../assets/CCPO-Logo.png"
-            width="240px"
+            width="320"
             id="atat-main-child-img"
             class="mb-3"
           />
@@ -38,13 +38,13 @@
             border="left"
             width="600"
           >
-            <h2 class="black--text">Certificate Selection</h2>
-            <p class="black--text">
+            <div class="black--text h3">Certificate Selection</div>
+            <div class="black--text body-lg">
               When you are prompted to select a certificate, please select an
               <br />
               Authentication (Identification) Certificate from the provided
               choices.
-            </p>
+            </div>
           </v-alert>
         </v-col>
       </v-row>

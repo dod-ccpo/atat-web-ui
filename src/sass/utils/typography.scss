@@ -1,0 +1,97 @@
+.v-application{
+    .h1{
+        font-size: 4.4rem;
+        font-weight: 700;
+        line-height: 5.7rem;
+    } 
+    .h2{
+        font-size: 3.4rem;
+        font-weight: 700;
+        line-height: 4.4rem;
+    }
+    .h3{
+        font-size: 2.4rem;
+        font-weight: 700;
+        line-height: 3.1rem;
+    }
+    .h4{
+        font-size: 1.9rem;
+        font-weight: 700;
+        line-height: 2.5rem;
+    }
+    .h5{
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 2rem;
+        }
+    .h6{
+        font-size: 1.3rem;
+        font-weight: 400;
+        line-height: 1.7rem;
+    }
+    .display-1{
+        font-size: 5.2rem;
+        font-weight: 600;
+        line-height: 6.2rem;
+    }
+    .display-2{
+        font-size: 4.4rem;
+        font-weight: 300;
+        line-height: 5.7rem;
+    }
+    .lead-paragraph{
+        font-size: 2.2rem;
+        font-weight: 400;
+        line-height: 3.3rem;
+    }
+    .body-lg{
+        font-size: 1.7rem;
+        font-weight: 400;
+        line-height: 2.6rem;
+    }
+    .body{
+        font-size: 1.5rem;
+        font-weight: 400;
+        line-height: 2.4rem;
+    }
+    .label{
+        font-size: 1.2rem;
+        font-weight: 400;
+        line-height: 1.6rem;
+    }
+    .micro{
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.1rem;
+    }
+    .form-field-label{
+        font-size: 1.2rem;
+        font-weight: 400;
+        line-height: 1.6rem;
+    }
+    .link-body-lg{
+        font-size: 1.9rem;
+        font-weight: 400;
+        line-height: 2.8rem;
+        text-decoration: underline;
+    }
+    .link-body-md{
+        font-size: 1.7rem;
+        font-weight: 400;
+        line-height: 2.6rem;
+        text-decoration: underline;
+    }
+    .link-body-sm{
+        font-size: 1.5rem;
+        font-weight: 400;
+        line-height: 2.4rem;
+        text-decoration: underline;
+    }
+
+    .hr{
+        border-color: var(--v-hr_color-base) !important;
+        -ieVar-❗border-color: var(--v-hr_color-base) !important;
+        border-width: 1px !important;
+        border-style: solid !important;
+    }
+}

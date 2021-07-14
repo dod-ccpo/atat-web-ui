@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary_darken" clipped-left>
-      <div class="d-flex align-center"></div>
+    <div>
+      <ATATHeader />
       <v-spacer></v-spacer>
-    </v-app-bar>
-    <atat-sidebar v-show="loginStatus" />
+    </div>
+    <atat-sidebar />
     <v-main>
       <v-container fluid>
         <router-view></router-view>
@@ -19,13 +19,13 @@
 </style>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
+import ATATHeader from "./components/ATATHeader.vue";
 
-@Component({})
-export default class App extends Vue {
-  get loginStatus(): boolean {
-    return this.$store.getters.getLoginStatus;
-  }
-}
+@Component({
+  components: {
+    ATATHeader,
+  },
+})
+export default class App extends Vue {}
 </script>

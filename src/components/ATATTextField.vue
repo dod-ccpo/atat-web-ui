@@ -3,7 +3,7 @@
     <v-flex>
       <label
         :id="id + '_text_field_label'"
-        class="text-form-field-label my-1"
+        class="form-field-label my-1"
         :for="id + '_text_field'"
       >
         Text Field label
