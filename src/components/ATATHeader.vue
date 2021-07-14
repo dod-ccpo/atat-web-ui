@@ -69,6 +69,7 @@
                           ><svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="8"
+                            height="8"
                             style="overflow: hidden"
                             viewBox="0 0 52 64"
                             class="usa-banner__lock-image"
