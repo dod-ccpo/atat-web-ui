@@ -59,7 +59,6 @@ import { Component } from "vue-property-decorator";
 @Component({})
 export default class Home extends Vue {
   private login(): void {
-    console.log("action login");
     this.$store.dispatch("login");
     this.$router.push("/dashboard");
   }

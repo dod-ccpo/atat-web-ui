@@ -97,11 +97,9 @@ export default class ATATHeaderNav extends Vue {
   }
 
   private login(): void {
-    console.log("action login");
     this.$store.dispatch("login");
   }
   private logout(): void {
-    console.log("action logout");
     this.$store.dispatch("logout");
   }
   private itemCLicked(item: NavItem): void {
