@@ -20,19 +20,12 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
 export default class ATATSideBar extends Vue {
-  data() {
-    return {
-      show: true,
-      selectedItem: 0,
-      items: [
-        { text: "Dashboard" },
-        { text: "My Portfolios" },
-        { text: "Reports" },
-      ],
-    };
-  }
+  private show = true;
+  private selectedItem = 0;
+  private items = [
+    { text: "Dashboard" },
+    { text: "My Portfolios" },
+    { text: "Reports" },
+  ];
 }
 </script>
-t>
-
-<style scoped></style>

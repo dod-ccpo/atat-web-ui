@@ -6,25 +6,26 @@
       </h3>
       <v-row>
         <v-col class="d-flex justify-center py-2">
-            <img
-              alt="CCPO logo"
-              src="../assets/CCPO-Logo.png"
-              width="240px"
-              id="atat-main-child-img"
-              class="mb-3"
-            />
+          <img
+            alt="CCPO logo"
+            src="../assets/CCPO-Logo.png"
+            width="240px"
+            id="atat-main-child-img"
+            class="mb-3"
+          />
         </v-col>
       </v-row>
       <v-row>
         <v-col class="d-flex justify-center mb-9">
+          <!-- to="/dashboard" -->
           <v-btn
-            to="/dashboard"
             large
             color="primary"
             class="text-capitalize"
             :ripple="false"
+            @click="login()"
           >
-            Sign in
+            > Sign in
           </v-btn>
         </v-col>
       </v-row>
@@ -54,7 +55,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Emit } from "vue-property-decorator";
 @Component({})
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  @Emit()
+  private login() {
+    this.$emit("isAuthenticated", true);
+  }
+}
 </script>
