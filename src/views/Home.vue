@@ -5,15 +5,14 @@
         Access the ATAT Cloud
       </h3>
       <v-row>
-        <v-col class="d-flex justify-center py-2" align="center">
-          <v-img
-            lazy-src="../assets/CCPO-Logo.png"
-            src="../assets/CCPO-Logo.png"
-            max-height="258"
-            max-width="250"
-            id="atat-main-child-img"
-            class="mb-3"
-          ></v-img>
+        <v-col class="d-flex justify-center py-2">
+            <img
+              alt="CCPO logo"
+              src="../assets/CCPO-Logo.png"
+              width="240px"
+              id="atat-main-child-img"
+              class="mb-3"
+            />
         </v-col>
       </v-row>
       <v-row>
