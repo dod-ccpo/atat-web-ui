@@ -1,9 +1,9 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
     <v-flex>
-      <label 
-        :id="id + '_text_field_label'" 
-        class="text-form-field-label my-1"
+      <label
+        :id="id + '_text_field_label'"
+        class="form-field-label my-1"
         :for="id + '_text_field'"
       >
         Text Field label
