@@ -34,16 +34,9 @@
                   />
                 </span>
                 <span class="USWDC-official-banner__text">
-                  U.S. flag An official website of the United States government
+                  An official website of the United States government
                 </span>
-                <span class="USWDC-official-banner__link blue--text">
-                  <v-icon
-                    color="blue"
-                    small
-                    class="USWDC-official-banner__link_icon"
-                    x-small
-                    >mdi-help-circle-outline</v-icon
-                  >
+                <span class="USWDC-official-banner__link">
                   <span
                     class="
                       USWDC-official-banner__link_msg
@@ -194,6 +187,15 @@ export default class ATATHeader extends Vue {
         .v-expansion-panel-header__icon {
           display: inline-block;
         }
+        .mdi:before, .mdi-set{
+          color: #005EA2;
+
+        }
+        .v-icon.v-icon{
+          color: #005EA2;
+          font-size: 16px;
+        }
+
       }
       .USWDC-official-banner_drawer__content {
         background-color: #f0f0f0;
@@ -228,7 +230,9 @@ export default class ATATHeader extends Vue {
           position: relative;
           top: -1.5em;
           right: -2em;
+
         }
+
       }
     }
 
@@ -239,6 +243,8 @@ export default class ATATHeader extends Vue {
     }
     .USWDC-official-banner__link {
       text-transform: none;
+      color: #005EA2;
+      margin-left: 4px;
     }
     .USWDC-official-banner__link_icon {
       margin-right: 0.2em;
