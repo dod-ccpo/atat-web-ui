@@ -117,7 +117,7 @@ export default class ATATHeaderNav extends Vue {
     &.atat-header-nav__user-display-name {
       padding-left: 25px;
       color: #f0f0f0;
-      span {
+      > span:first-child {
         display: inline-block;
         position: relative;
         overflow: visible;
@@ -140,18 +140,18 @@ export default class ATATHeaderNav extends Vue {
       }
     }
     &.atat-header-nav__support {
-      span::before {
+      > span:first-child::before {
         background-image: url("../../public/img/icons/question.svg");
       }
     }
-    &.atat-header-nav__logout{
+    &.atat-header-nav__logout {
       &.v-btn:not(.v-btn--round).v-size--default {
         padding-left: 0px;
       }
       margin-right: 10px;
       padding-right: 25px;
 
-      span {
+      > span:first-child {
         display: inline-block;
         position: relative;
         overflow: visible;
@@ -167,6 +167,7 @@ export default class ATATHeaderNav extends Vue {
           background-position: top center;
           background-size: 16px 16px;
           background-image: url("../../public/img/icons/logout.svg");
+          background-repeat: no-repeat;
           color: #f0f0f0;
           fill: #f0f0f0;
         }
