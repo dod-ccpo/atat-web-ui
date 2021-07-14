@@ -25,10 +25,13 @@ import { Component, Emit } from "vue-property-decorator";
 @Component({})
 export default class App extends Vue {
   private IsAuthenticated = false;
+<<<<<<< HEAD
   
   private isAuthenticated() {
     this.IsAuthenticated = true;
     this.$router.push("/dashboard");
   }
+=======
+>>>>>>> 4aa2bd233a50456e96f2ceb2e0cbdfccd5cb73ae
 }
 </script>
