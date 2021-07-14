@@ -23,6 +23,7 @@
           <v-btn
             to="/dashboard"
             elevation="2"
+            @click="login"
             x-large
             color="primary"
             class="font-weight-bold text-capitalize"
@@ -43,7 +44,9 @@
           >
             <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
             <p class="atat-v-alert-info__msg">
-              When you are prompted to select a certificate, please select an Authentication (Identification) Certificate from the provided choices.
+              When you are prompted to select a certificate, please select an
+              Authentication (Identification) Certificate from the provided
+              choices.
             </p>
           </v-alert>
         </v-col>

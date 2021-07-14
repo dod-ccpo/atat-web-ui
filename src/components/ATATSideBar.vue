@@ -1,7 +1,53 @@
 <template>
-  <v-navigation-drawer app clipped :mini-variant.sync="show" permanent>
+  <v-navigation-drawer
+    app
+    clipped
+    mini-variant-width="70"
+    :mini-variant.sync="show"
+    permanent
+  >
     <v-list dense>
-      <v-subheader class="text-h6" @click.stop="show = !show">Menu</v-subheader>
+      <div class="d-flex flex-row">
+        <v-subheader v-if="!show" class="font-weight-bold text-h6"
+          >Menu</v-subheader
+        >
+        <div v-if="show" class="ml-auto d-flex flex-row">
+          <v-img
+            :src="require('../assets/greater than.svg')"
+            contain
+            height="30px"
+          ></v-img>
+          <a
+            class="
+              font-weight-bold
+              text-subtitle-2 text-decoration-underline
+              mt-1
+              mx-1
+            "
+            @click.stop="show = !show"
+          >
+            Show
+          </a>
+        </div>
+        <div v-else class="ml-auto d-flex flex-row">
+          <v-img
+            :src="require('../assets/less than.svg')"
+            contain
+            height="30px"
+          ></v-img>
+          <a
+            class="
+              font-weight-bold
+              text-subtitle-2 text-decoration-underline
+              mt-1
+              mx-1
+            "
+            @click.stop="show = !show"
+          >
+            Hide
+          </a>
+        </div>
+      </div>
       <v-divider></v-divider>
       <v-list-item-group v-if="!show" v-model="selectedItem" color="primary">
         <v-list-item v-for="(item, i) in items" :key="i" :ripple="false">
