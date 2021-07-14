@@ -1,0 +1,87 @@
+{
+    "src_folders" : "tests",
+    "output_folder" : "reports",
+    "selenium": { 
+        "start_process": true,
+        "server_path" : "node_modules/selenium-server/lib/runner/selenium-server-standalone-3.141.59.jar",
+        "log_path" : "./reports",
+        "host": "127.0.0.1",
+        "port" : 4444,
+        "cli_args" : {
+            "webdriver.chrome.driver" : "chromedriver",
+            "webdriver.gecko.driver" : "geckodriver",
+            "webdriver.edge.driver" : "MicrosoftWebDriver",
+            "webdriver.ie.driver" : "InternetExplorerDriver"
+    }
+  },
+    
+
+      "test_settings" : {
+        "default" : {
+            "launch_url" : "http://localhost",
+            "selenium_port"  : 4444,
+            "selenium_host"  : "localhost",
+            "silent": true,
+            "screenshots" : {
+                "enabled" : false,
+                "path" : ""
+      },
+      "desiredCapabilities" :{
+          "browserName" : "firefox"
+      }
+    },
+        "chrome" : { 
+            "launch_url" : "http://localhost:8080",
+            "selenium_port"  : 4444,
+            "selenium_host"  : "localhost",
+            "silent": true,
+            "screenshots" : {
+                "enabled" : false,
+                "path" : ""
+            },
+            "desiredCapabilities" : {
+                "browserName" : "chrome"            
+              }           
+            },
+        "firefox" : {
+            "launch_url" : "http://localhost:8080",
+            "selenium_port"  : 4444,
+            "selenium_host"  : "localhost",
+            "silent": true,
+            "screenshots" : {
+                "enabled" : false,
+                "path" : ""
+            },
+            "desiredCapabilities" : {
+                "browserName": "firefox"
+            }
+        },
+        "edge": {
+            "launch_url" : "http://localhost:8080",
+            "selenium_port"  : 4444,
+            "selenium_host"  : "localhost",
+            "silent": true,
+            "screenshots" : {
+                "enabled" : false,
+                "path" : ""
+            },
+            "desiredCapabilities": {
+                "browserName": "MicrosoftEdge"
+            }
+        },
+        "ie": {
+            "launch_url" : "http://localhost:8080",
+            "selenium_port"  : 4444,
+            "selenium_host"  : "localhost",
+            "silent": true,
+            "screenshots" : {
+                "enabled" : false,
+                "path" : ""
+            },
+            "desiredCapabilities": {
+                "browserName": "internet explorer"
+            }
+        
+      }
+}
+}
