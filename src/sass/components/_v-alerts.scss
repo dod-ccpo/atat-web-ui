@@ -1,7 +1,8 @@
 .v-alert{
   font-size: 1.06rem !important; //17 pixels
   
-    border-radius: 0px;
+    border-radius: 0px !important;
+    box-shadow: none !important;
 
     .v-alert__border--left {
       border-top-left-radius: 0px;
@@ -13,9 +14,15 @@
       opacity: 1 !important;
     }
     .v-alert__icon.v-icon{
-      font-size: 2rem;
+      font-size: 4rem;
       top: .4rem;
       margin: 0 1rem 0 .5rem;
+    }
+
+    .warning_lighter {
+      border-color: var(--v-warning-base) !important;
+      border-width: 2px !important;
+      border-style: solid !important;
     }
 
   &.black-icon{
@@ -23,4 +30,11 @@
       color: black !important;
     }
   }
+}
+
+
+.v-application .warning_lighter.border {
+  border-color: var(--v-warning-base) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
 }

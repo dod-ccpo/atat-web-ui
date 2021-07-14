@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>.</v-col>
-        <v-col class="text-right"> Last login: {{ getToday() }} </v-col>
+        <v-col class="body text-right"> Last login: {{ getToday() }} </v-col>
       </v-row>
     </v-container>
   </v-footer>
