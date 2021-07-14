@@ -2,12 +2,7 @@
   <div class="atat-header">
     <v-container fluid>
       <v-row
-        class="
-          classification-banner
-          text-center
-          white--text
-          font-weight-bold
-        "
+        class="classification-banner text-center white--text font-weight-bold"
       >
         <v-col>
           <span class="classification-banner__text">
