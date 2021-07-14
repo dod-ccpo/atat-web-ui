@@ -1,17 +1,40 @@
 .v-alert{
-  &.atat-v-alert-info.v-sheet{
-    border-radius: unset;
+  font-size: 1.06rem !important; //17 pixels
+  
+    border-radius: 0px !important;
+    box-shadow: none !important;
+
+    .v-alert__border--left {
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      left: 0px;
+    }
 
     .v-alert__border:not(.v-alert__border--has-color){
-      opacity: unset;
+      opacity: 1 !important;
     }
     .v-alert__icon.v-icon{
-      font-size: 2rem;
+      font-size: 4rem;
       top: .4rem;
       margin: 0 1rem 0 .5rem;
     }
-    .atat-v-alert-info__msg{
-      opacity: .8;
+
+    .warning_lighter {
+      border-color: var(--v-warning-base) !important;
+      border-width: 2px !important;
+      border-style: solid !important;
+    }
+
+  &.black-icon{
+    .v-icon{
+      color: black !important;
     }
   }
+}
+
+
+.v-application .warning_lighter.border {
+  border-color: var(--v-warning-base) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
 }

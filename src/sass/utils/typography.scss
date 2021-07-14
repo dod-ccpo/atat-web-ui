@@ -87,4 +87,11 @@
         line-height: 2.4rem;
         text-decoration: underline;
     }
+
+    .hr{
+        border-color: var(--v-hr_color-base) !important;
+        -ieVar-❗border-color: var(--v-hr_color-base) !important;
+        border-width: 1px !important;
+        border-style: solid !important;
+    }
 }

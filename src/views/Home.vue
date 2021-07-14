@@ -1,52 +1,50 @@
 <template>
   <div class="home-view">
     <v-container>
-      <v-row align="center">
-        <v-col>
-          <h1 class="home-header-title text-center">Access the ATAT Cloud</h1>
-        </v-col>
-      </v-row>
-      <v-row align="center">
-        <v-col class="home-shield-cont text-center py-2" align="center">
-          <v-img
-            lazy-src="../assets/CCPO-Logo.png"
+      <div class="text-center mb-10 h1 font-weight-bold">
+        Access the ATAT Cloud
+      </div>
+      <v-row>
+        <v-col class="d-flex justify-center py-2">
+          <img
+            alt="CCPO logo"
             src="../assets/CCPO-Logo.png"
-            max-height="258"
-            max-width="250"
+            width="240px"
             id="atat-main-child-img"
-          ></v-img>
+            class="mb-3"
+          />
         </v-col>
       </v-row>
-      <br /><br />
-      <v-row align="center">
-        <v-col class="home-btn-cont text-center">
+      <v-row>
+        <v-col class="d-flex justify-center mb-9">
           <v-btn
             to="/dashboard"
-            elevation="2"
-            x-large
+            large
             color="primary"
-            class="font-weight-bold text-capitalize"
+            class="text-capitalize"
+            :ripple="false"
           >
             Sign in
           </v-btn>
         </v-col>
       </v-row>
-      <br /><br /><br /><br />
-      <v-row align="center">
-        <v-col class="home-info-alert text-center" md="8" offset-md="2">
+      <v-row>
+        <v-col class="d-flex justify-center mt-9">
           <v-alert
             outlined
-            color="black"
+            color="cyan"
             type="info"
-            class="text-left atat-v-alert-info cyan lighten-5"
-            border="left cyan"
+            class="text-left cyan info_lighter black-icon"
+            border="left"
+            width="600"
           >
-            <h2 class="atat-v-alert-info__title">Certificate Selection</h2>
-            <p class="atat-v-alert-info__msg">
+            <div class="black--text h3">Certificate Selection</div>
+            <div class="black--text body-lg">
               When you are prompted to select a certificate, please select an
+              <br />
               Authentication (Identification) Certificate from the provided
               choices.
-            </p>
+            </div>
           </v-alert>
         </v-col>
       </v-row>
