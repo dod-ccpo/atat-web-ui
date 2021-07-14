@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    loginStatus: true,
+    loginStatus: false,
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
