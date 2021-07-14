@@ -67,6 +67,7 @@ import { Component } from "vue-property-decorator";
 @Component({})
 export default class ATATSideBar extends Vue {
   private show = true;
+
   private selectedItem = 0;
   private items = [
     { text: "Dashboard" },

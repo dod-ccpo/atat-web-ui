@@ -4,10 +4,10 @@
       <div class="d-flex align-center"></div>
       <v-spacer></v-spacer>
     </v-app-bar>
-    <atat-sidebar v-show="IsAuthenticated" />
+    <atat-sidebar v-show="loginStatus" />
     <v-main>
       <v-container fluid>
-        <router-view @isAuthenticated="isAuthenticated"></router-view>
+        <router-view></router-view>
       </v-container>
     </v-main>
     <atat-footer />
@@ -20,18 +20,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 @Component({})
 export default class App extends Vue {
-  private IsAuthenticated = false;
-<<<<<<< HEAD
-  
-  private isAuthenticated() {
-    this.IsAuthenticated = true;
-    this.$router.push("/dashboard");
+  get loginStatus(): boolean {
+    return this.$store.getters.getLoginStatus;
   }
-=======
->>>>>>> 4aa2bd233a50456e96f2ceb2e0cbdfccd5cb73ae
 }
 </script>

@@ -17,7 +17,6 @@
       </v-row>
       <v-row>
         <v-col class="d-flex justify-center mb-9">
-          <!-- to="/dashboard" -->
           <v-btn
             large
             color="primary"
@@ -25,7 +24,7 @@
             :ripple="false"
             @click="login()"
           >
-            > Sign in
+            Sign in
           </v-btn>
         </v-col>
       </v-row>
@@ -55,12 +54,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 @Component({})
 export default class Home extends Vue {
-  @Emit()
-  private login() {
-    this.$emit("isAuthenticated", true);
+  private login(): void {
+    this.$store.dispatch("login");
+    this.$router.push("/dashboard");
   }
 }
 </script>
