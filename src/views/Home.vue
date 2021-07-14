@@ -21,7 +21,7 @@
       <v-row align="center">
         <v-col class="home-btn-cont text-center">
           <v-btn
-            to="/dashboard"
+            @click="login()"
             elevation="2"
             x-large
             color="primary"
@@ -58,5 +58,12 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
-export default class Home extends Vue {}
+export default class Home extends Vue {
+
+  private login(): void {
+    console.log("action login");
+    this.$store.dispatch("login");
+    this.$router.push("/dashboard");
+  }
+}
 </script>

@@ -1,26 +1,28 @@
 <template>
   <div class="atat-header-nav" :id="navData.id" :title="navData.title">
-    <v-btn class="atat-header-nav__link"
+    <v-btn
+      class="atat-header-nav__link"
       v-for="item in navData.items"
       :class="item.cssClass"
       :id="item.cssClass"
       :title="item.title"
       :to="item.url"
-      :key="item.id">
+      :key="item.id"
+    >
       <span>{{ item.title }}</span>
     </v-btn>
 
-    <pre>
-      loginStatus: {{loginStatus}}
-      navData: {{ navData }}
+<!--    <pre>-->
+<!--      loginStatus: {{ loginStatus }}-->
+<!--      navData: {{ navData }}-->
 
-    </pre>
+<!--    </pre>-->
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 export interface NavItem {
   title: string;
@@ -88,9 +90,8 @@ const all_navs: Navs = {
 
 @Component({})
 export default class ATATHeaderNav extends Vue {
-
   get loginStatus(): boolean {
-    return this.$store.state.loginStatus;
+    return this.$store.getters.getLoginStatus;
   }
 
   get navData(): Nav {
@@ -99,6 +100,15 @@ export default class ATATHeaderNav extends Vue {
     } else {
       return all_navs["logout"];
     }
+  }
+
+  private login(): void {
+    console.log("action login");
+    this.$store.dispatch("login");
+  }
+  private logout(): void {
+    console.log("action logout");
+    this.$store.dispatch("logout");
   }
 }
 </script>
