@@ -1,7 +1,32 @@
+
 .v-btn{
-  font-weight: 600px !important;
+  font-weight: 600 !important;
+  &::before{
+    display: block;
+  }
+  
+  &:hover::before{
+    background-color: var(--v-primary_dark-base) !important;
+    opacity: initial  !important;
+    box-shadow: none !important;
+    -ieVar-❗border-color: var(--v-primary_dark-base) !important;
+  }
+
+  &:active::before,
+  &:focus::before,
+  &:focus-visible::before,
+  &:focus-within::before{
+    background-color: var(--v-primary_darker-base) !important;
+    -ieVar-❗border-color: var(--v-primary_darker-base) !important;
+    box-shadow: none !important;
+    opacity: initial !important;
+  }
+
+  &.v-btn--is-elevated:active {
+     box-shadow: none;
+  }
+
   &.v-size--large{
     letter-spacing: .05rem;
   }
-
 }

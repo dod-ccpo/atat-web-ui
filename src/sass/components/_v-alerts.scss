@@ -3,6 +3,8 @@
   &.atat-v-alert-info.v-sheet{
     border-radius: 0px;
 
+    
+
     .v-alert__border--left {
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
@@ -16,6 +18,11 @@
       font-size: 2rem;
       top: .4rem;
       margin: 0 1rem 0 .5rem;
+    }
+  }
+
+  &.black-icon{
+    .v-icon{
       color: black !important;
     }
   }

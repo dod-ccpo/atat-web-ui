@@ -1,43 +1,42 @@
 <template>
   <div class="home-view">
     <v-container>
-      <v-row align="center">
-        <v-col>
-          <h1 class="home-header-title text-center">Access the ATAT Cloud</h1>
-        </v-col>
-      </v-row>
-      <v-row align="center">
-        <v-col class="home-shield-cont text-center py-2" align="center">
+      <h3 class="text-center mb-10 text-h3 font-weight-bold">
+        Access the ATAT Cloud
+      </h3>
+      <v-row>
+        <v-col class="d-flex justify-center py-2" align="center">
           <v-img
             lazy-src="../assets/CCPO-Logo.png"
             src="../assets/CCPO-Logo.png"
             max-height="258"
             max-width="250"
             id="atat-main-child-img"
+            class="mb-3"
           ></v-img>
         </v-col>
       </v-row>
-      <br /><br />
-      <v-row align="center">
-        <v-col class="home-btn-cont text-center">
+      <v-row>
+        <v-col class="d-flex justify-center mb-9">
           <v-btn
             to="/dashboard"
             large
             color="primary"
-            class="font-weight-bold text-capitalize"
+            class="text-capitalize"
+            :ripple="false"
+            hover-color="primary"
           >
             Sign in
           </v-btn>
         </v-col>
       </v-row>
-      <br /><br /><br /><br />
-      <v-row align="center">
-        <v-col class="home-info-alert text-center" md="8" offset-md="2">
+      <v-row>
+        <v-col class="d-flex justify-center mt-9">
           <v-alert
             outlined
             color="cyan"
             type="info"
-            class="text-left atat-v-alert-info cyan info_lighter"
+            class="text-left atat-v-alert-info cyan info_lighter black-icon"
             border="left"
             width="600"
           >
