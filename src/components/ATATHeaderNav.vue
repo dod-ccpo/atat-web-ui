@@ -1,14 +1,20 @@
 <template>
-  <div class="atat-header-nav" id="atat-nav__login">
-    <v-btn class="atat-header-nav__link atat-header-nav__user-display-name">
-      <span>Maria Missionowner</span>
+  <div class="atat-header-nav" :id="navData.id" :title="navData.title">
+    <v-btn class="atat-header-nav__link"
+      v-for="item in navData.items"
+      :class="item.cssClass"
+      :id="item.cssClass"
+      :title="item.title"
+      :to="item.url"
+      :key="item.id">
+      <span>{{ item.title }}</span>
     </v-btn>
-    <v-btn class="atat-header-nav__link atat-header-nav__support">
-      <span>Support</span>
-    </v-btn>
-    <v-btn class="atat-header-nav__link atat-header-nav__logout">
-      <span>Logout</span>
-    </v-btn>
+
+    <pre>
+      loginStatus: {{loginStatus}}
+      navData: {{ navData }}
+
+    </pre>
   </div>
 </template>
 
@@ -82,13 +88,17 @@ const all_navs: Navs = {
 
 @Component({})
 export default class ATATHeaderNav extends Vue {
-  @Prop({ default: false }) private loginStatus = false;
+
+  get loginStatus(): boolean {
+    return this.$store.state.loginStatus;
+  }
 
   get navData(): Nav {
     if (this.loginStatus) {
       return all_navs["login"];
+    } else {
+      return all_navs["logout"];
     }
-    return all_navs["logout"];
   }
 }
 </script>

@@ -187,15 +187,14 @@ export default class ATATHeader extends Vue {
         .v-expansion-panel-header__icon {
           display: inline-block;
         }
-        .mdi:before, .mdi-set{
-          color: #005EA2;
-
+        .mdi:before,
+        .mdi-set {
+          color: #005ea2;
         }
-        .v-icon.v-icon{
-          color: #005EA2;
+        .v-icon.v-icon {
+          color: #005ea2;
           font-size: 16px;
         }
-
       }
       .USWDC-official-banner_drawer__content {
         background-color: #f0f0f0;
@@ -230,9 +229,7 @@ export default class ATATHeader extends Vue {
           position: relative;
           top: -1.5em;
           right: -2em;
-
         }
-
       }
     }
 
@@ -243,7 +240,7 @@ export default class ATATHeader extends Vue {
     }
     .USWDC-official-banner__link {
       text-transform: none;
-      color: #005EA2;
+      color: #005ea2;
       margin-left: 4px;
     }
     .USWDC-official-banner__link_icon {
