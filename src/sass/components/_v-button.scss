@@ -1,0 +1,45 @@
+
+.v-btn{
+
+  box-shadow: none !important;
+  font-size: 1.7rem !important;
+  line-height: 2.5rem !important;
+  text-transform: none !important;
+  font-weight: 700 !important;
+
+
+
+
+  &::before{
+    display: block;
+  }
+  
+  &:hover::before{
+    background-color: var(--v-primary_dark-base) !important;
+    opacity: initial  !important;
+    box-shadow: none !important;
+    -ieVar-❗border-color: var(--v-primary_dark-base) !important;
+  }
+
+  &:active::before,
+  &:focus::before,
+  &:focus-visible::before,
+  &:focus-within::before{
+    background-color: var(--v-primary_darker-base) !important;
+    -ieVar-❗border-color: var(--v-primary_darker-base) !important;
+    box-shadow: none !important;
+    opacity: initial !important;
+  }
+
+  &.v-btn--is-elevated:active {
+     box-shadow: none;
+  }
+
+  &.v-size--large{
+    font-weight: 600 !important;
+    font-size: 2.2rem !important;
+    line-height: 3.3rem !important;
+    letter-spacing: .05rem !important;
+    padding: 10px 24px !important;
+  }
+}
