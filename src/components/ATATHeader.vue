@@ -5,7 +5,6 @@
         class="
           classification-banner
           text-center
-          light-green
           white--text
           font-weight-bold
         "
@@ -167,13 +166,16 @@ export default class ATATHeader extends Vue {
 </script>
 <style lang="scss">
 .atat-header {
+  .classification-banner {
+    background-color: green;
+  }
   .classification-banner .col {
     padding: 0.2rem;
-    font-size: 0.7rem;
+    font-size: 12px;
   }
   .USWDC-official-banner .col {
     padding: 0;
-    font-size: 0.7rem;
+    font-size: 12px;
     .USWDC-official-banner_drawer {
       box-shadow: none;
       border-radius: 0;
@@ -182,9 +184,9 @@ export default class ATATHeader extends Vue {
       .USWDC-official-banner_drawer__header {
         background-color: #f0f0f0;
         display: block;
-        font-size: 0.7rem;
-        padding: 0.2rem 0.5em;
-        min-height: 10px;
+        font-size: 12px;
+        padding: 0.5em 0.3em 0.3em 2em;
+        min-height: 1px;
         .v-expansion-panel-header__icon {
           display: inline-block;
         }
