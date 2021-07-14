@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary_darken">
-      <div class="d-flex align-center"></div>
+    <div>
+      <ATATHeader />
       <v-spacer></v-spacer>
-    </v-app-bar>
+    </div>
     <!-- <v-navigation-drawer>
     </v-navigation-drawer> -->
     <v-main>
@@ -20,9 +20,13 @@
 </style>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
+import ATATHeader from "./components/ATATHeader.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATHeader,
+  },
+})
 export default class App extends Vue {}
 </script>

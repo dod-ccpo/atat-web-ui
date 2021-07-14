@@ -22,5 +22,5 @@ export default {
   info_light: "#99deea",
   info_lighter: "#e7f6f8",
 
-  hr_color: "#DFE1E2"
+  hr_color: "#DFE1E2",
 };

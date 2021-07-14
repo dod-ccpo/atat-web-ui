@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col cols="6" offset="2">
-         <h3 class="h3 mb-7">
+        <h3 class="h3 mb-7">
           Welcome to the Account Tracking and Automation Tool, Maria!
         </h3>
         <div>
@@ -18,15 +18,30 @@
             single location, including:
           </p>
           <div class="d-flex align-center mb-2 ml-6">
-            <img src="../assets/dashboard/Step1.svg" width="25" class="mr-4" alt="Step 1" />
+            <img
+              src="../assets/dashboard/Step1.svg"
+              width="25"
+              class="mr-4"
+              alt="Step 1"
+            />
             <span class="stepper-text">Task Orders</span>
           </div>
           <div class="d-flex align-center mb-2 ml-6">
-            <img src="../assets/dashboard/Step2.svg" width="25" class="mr-4" alt="Step 2"/>
+            <img
+              src="../assets/dashboard/Step2.svg"
+              width="25"
+              class="mr-4"
+              alt="Step 2"
+            />
             <span class="stepper-text">Application and Environments</span>
           </div>
           <div class="d-flex align-center mb-6 ml-6">
-            <img src="../assets/dashboard/Step3.svg" width="25" class="mr-4" alt="Step 3" />
+            <img
+              src="../assets/dashboard/Step3.svg"
+              width="25"
+              class="mr-4"
+              alt="Step 3"
+            />
             <span class="stepper-text">Team Members</span>
           </div>
           <p>
@@ -45,13 +60,17 @@
       </v-col>
       <v-col cols="2">
         <div>
-          <img class="mt-9" src="../assets/dashboard/dashboard-image.png" alt="Applications & Environments, Task Orders, Team Members" />
+          <img
+            class="mt-9"
+            src="../assets/dashboard/dashboard-image.png"
+            alt="Applications & Environments, Task Orders, Team Members"
+          />
         </div>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="2" offset="2">
-        <hr class="hr">
+        <hr class="hr" />
       </v-col>
     </v-row>
     <v-row>

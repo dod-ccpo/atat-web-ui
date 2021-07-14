@@ -9,7 +9,7 @@
           <img
             alt="CCPO logo"
             src="../assets/CCPO-Logo.png"
-            width="240px"
+            width="320"
             id="atat-main-child-img"
             class="mb-3"
           />
@@ -18,7 +18,8 @@
       <v-row>
         <v-col class="d-flex justify-center mb-9">
           <v-btn
-            to="/dashboard"
+            @click="login()"
+            elevation="2"
             large
             color="primary"
             class="text-capitalize"
@@ -56,5 +57,10 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  private login(): void {
+    this.$store.dispatch("login");
+    this.$router.push("/dashboard");
+  }
+}
 </script>
