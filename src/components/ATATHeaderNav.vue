@@ -133,7 +133,7 @@ export default class ATATHeaderNav extends Vue {
           margin-right: 8px;
           background-position: top center;
           background-size: 16px 16px;
-          background-image: url("../../public/img/icons/user.svg");
+          background-image: url("../../public/img/icons/avatar_white.svg");
           color: #f0f0f0;
           fill: #f0f0f0;
         }
@@ -141,7 +141,7 @@ export default class ATATHeaderNav extends Vue {
     }
     &.atat-header-nav__support {
       > span:first-child::before {
-        background-image: url("../../public/img/icons/question.svg");
+        background-image: url("../../public/img/icons/help_white.svg");
       }
     }
     &.atat-header-nav__logout {
@@ -166,7 +166,7 @@ export default class ATATHeaderNav extends Vue {
           top: 3px;
           background-position: top center;
           background-size: 16px 16px;
-          background-image: url("../../public/img/icons/logout.svg");
+          background-image: url("../../public/img/icons/logout_white.svg");
           background-repeat: no-repeat;
           color: #f0f0f0;
           fill: #f0f0f0;
