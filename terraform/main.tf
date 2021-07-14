@@ -15,5 +15,6 @@ resource "azurerm_storage_account" "spa_storage_account" {
 
   static_website {
     index_document = "index.html"
+    error_404_document = "index.html"
   }
 }
