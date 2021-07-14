@@ -11,12 +11,6 @@
     >
       <span>{{ item.title }}</span>
     </v-btn>
-
-    <!--    <pre>-->
-    <!--      loginStatus: {{ loginStatus }}-->
-    <!--      navData: {{ navData }}-->
-
-    <!--    </pre>-->
   </div>
 </template>
 
