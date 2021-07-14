@@ -24,7 +24,6 @@
             color="primary"
             class="text-capitalize"
             :ripple="false"
-            hover-color="primary"
           >
             Sign in
           </v-btn>
@@ -36,7 +35,7 @@
             outlined
             color="cyan"
             type="info"
-            class="text-left atat-v-alert-info cyan info_lighter black-icon"
+            class="text-left cyan info_lighter black-icon"
             border="left"
             width="600"
           >
