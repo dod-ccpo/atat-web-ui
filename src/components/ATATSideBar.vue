@@ -5,6 +5,7 @@
     mini-variant-width="70"
     :mini-variant.sync="show"
     permanent
+    class="body-bg"
   >
     <v-list dense>
       <div class="d-flex flex-row">
@@ -18,12 +19,7 @@
             height="30px"
           ></v-img>
           <a
-            class="
-              font-weight-bold
-              text-subtitle-2 text-decoration-underline
-              mt-1
-              mx-1
-            "
+            class="font-weight-bold h6 text-decoration-underline mt-1 mx-1"
             @click.stop="show = !show"
           >
             Show
@@ -36,12 +32,7 @@
             height="30px"
           ></v-img>
           <a
-            class="
-              font-weight-bold
-              text-subtitle-2 text-decoration-underline
-              mt-1
-              mx-1
-            "
+            class="font-weight-bold text-decoration-underline mt-1 mx-1"
             @click.stop="show = !show"
           >
             Hide
@@ -52,7 +43,10 @@
       <v-list-item-group v-if="!show" v-model="selectedItem" color="primary">
         <v-list-item v-for="(item, i) in items" :key="i" :ripple="false">
           <v-list-item-content>
-            <v-list-item-title v-text="item.text"></v-list-item-title>
+            <v-list-item-title
+              v-text="item.text"
+              class="body"
+            ></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
