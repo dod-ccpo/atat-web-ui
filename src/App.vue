@@ -11,10 +11,10 @@
       extension-height="100%"
       class="atat-header-nav"
     >
-    <!-- <USWDCBanner /> -->
+      <!-- <USWDCBanner /> -->
       <ATATHeader />
-     </v-app-bar>
-    <atat-sidebar v-show="loginStatus"/>
+    </v-app-bar>
+    <atat-sidebar v-show="loginStatus" />
     <v-main>
       <v-container fluid>
         <router-view></router-view>
@@ -34,7 +34,6 @@ import ATATHeader from "./components/ATATHeader.vue";
 import USWDCBanner from "./components/USWDCBanner.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 
-
 @Component({
   components: {
     ATATHeader,
@@ -48,4 +47,3 @@ export default class App extends Vue {
   }
 }
 </script>
-
