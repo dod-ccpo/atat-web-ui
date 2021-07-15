@@ -7,13 +7,27 @@
 .v-application{
     .atat-header-nav.v-sheet{
         width: 100% !important;
-        height: 50px !important;
+        // height: 50px !important;
+        padding: 0px !important;
         background-color: $primary_darken !important;
         -ieVar-❗border-color: var(--v-primary_darker-base) !important;
 
-        .v-toolbar__content{
-            height: 52px !important;
+        // usa gov
+        .v_card{
+            .v-card__actions{
+                padding: 10px 0px !important;
+            }
+        }
+
+        .v-toolbar__content,
+        .v-toolbar__extension{
             display: block !important;
+            padding: 0px !important;
+        }
+
+        .v-toolbar__content
+        {
+            height: 0px !important;
         }
     }
 }
