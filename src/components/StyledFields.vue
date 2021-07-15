@@ -7,6 +7,7 @@
           class="my-3"
           contain
           height="200"
+          alt="Vuetify logo"
         />
       </v-col>
     </v-row>

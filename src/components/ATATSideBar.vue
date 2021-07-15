@@ -17,6 +17,7 @@
             :src="require('../assets/greater than.svg')"
             contain
             height="30px"
+            width="10px"
           ></v-img>
           <a
             class="font-weight-bold h6 text-decoration-underline mt-1 mx-1"
@@ -30,9 +31,10 @@
             :src="require('../assets/less than.svg')"
             contain
             height="30px"
+            width="10px"
           ></v-img>
           <a
-            class="font-weight-bold text-decoration-underline mt-1 mx-1"
+            class="font-weight-bold h6 text-decoration-underline mt-1 mx-1"
             @click.stop="show = !show"
           >
             Hide

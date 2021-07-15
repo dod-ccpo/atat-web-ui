@@ -29,7 +29,7 @@
             <v-list-item-content
               :id="id + '_dropdown_list_item_' + item.replace(/ /g, '_')"
             >
-              <v-list-item-title>
+              <v-list-item-title class="body">
                 <v-row no-gutters align="center">
                   <span>{{ item }}</span>
                 </v-row>
