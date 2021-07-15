@@ -1,5 +1,5 @@
 <template>
-  <div class="atat-header-nav" :id="navData.id" :title="navData.title">
+  <div class="atat-header-nav my-1" :id="navData.id" :title="navData.title">
     <v-btn
       class="atat-header-nav__link"
       v-for="item in navData.items"
@@ -8,8 +8,11 @@
       :title="item.title"
       @click="itemCLicked(item)"
       :key="item.id"
+      :ripple="false"
     >
-      <span>{{ item.title }}</span>
+      <span class="body white--text font-weight-bold nav-button-text">
+        {{ item.title }}
+      </span>
     </v-btn>
   </div>
 </template>
@@ -116,6 +119,9 @@ export default class ATATHeaderNav extends Vue {
 </script>
 
 <style lang="scss">
+.nav-button-text {
+  letter-spacing: 0.01rem;
+}
 .atat-header-nav {
   .atat-header-nav__link {
     border-radius: unset;
@@ -139,6 +145,7 @@ export default class ATATHeaderNav extends Vue {
     &.atat-header-nav__support,
     &.atat-header-nav__user-display-name {
       padding-left: 25px;
+      margin-right: 25px;
       color: #f0f0f0;
       > span:first-child {
         display: inline-block;
@@ -163,6 +170,7 @@ export default class ATATHeaderNav extends Vue {
       }
     }
     &.atat-header-nav__support {
+      margin-right: -2px;
       > span:first-child::before {
         background-image: url("../../public/img/icons/help_white.svg");
       }
@@ -171,8 +179,9 @@ export default class ATATHeaderNav extends Vue {
       &.v-btn:not(.v-btn--round).v-size--default {
         padding-left: 0px;
       }
-      margin-right: 10px;
+      margin-right: 25px;
       padding-right: 25px;
+      margin-left: 10px;
 
       > span:first-child {
         display: inline-block;

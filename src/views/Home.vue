@@ -18,12 +18,11 @@
       <v-row>
         <v-col class="d-flex justify-center mb-9">
           <v-btn
-            @click="login()"
-            elevation="2"
             large
             color="primary"
             class="text-capitalize"
             :ripple="false"
+            @click="login()"
           >
             Sign in
           </v-btn>

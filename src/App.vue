@@ -1,11 +1,20 @@
 <template>
   <v-app>
-    <div>
+    <v-system-bar app height="27">
+      <SecurityBanner />
+    </v-system-bar>
+    <!-- class="atat-header-nav -->
+    <v-app-bar
+      clipped-left
+      app
+      absolute
+      extension-height="100%"
+      class="atat-header-nav"
+    >
+    <!-- <USWDCBanner /> -->
       <ATATHeader />
-      <v-spacer></v-spacer>
-    </div>
-    <!-- <v-navigation-drawer>
-    </v-navigation-drawer> -->
+     </v-app-bar>
+    <atat-sidebar v-show="loginStatus"/>
     <v-main>
       <v-container fluid>
         <router-view></router-view>
@@ -22,11 +31,21 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ATATHeader from "./components/ATATHeader.vue";
+import USWDCBanner from "./components/USWDCBanner.vue";
+import SecurityBanner from "./components/SecurityBanner.vue";
+
 
 @Component({
   components: {
     ATATHeader,
+    USWDCBanner,
+    SecurityBanner,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  get loginStatus(): boolean {
+    return this.$store.getters.getLoginStatus;
+  }
+}
 </script>
+

@@ -3,7 +3,7 @@
 // Globals
 $body-font-family: 'Source Sans Pro', sans-serif !default;
 $border-radius-root: 6px;
-$font-size-root: 10px;
+$font-size-root: 10px !default;
 
 @import '~vuetify/src/styles/styles.sass';
 
@@ -207,5 +207,4 @@ $material-light:(
 // //     'inactive-icon-percent': 0.38
 // //   )
 )
-
 

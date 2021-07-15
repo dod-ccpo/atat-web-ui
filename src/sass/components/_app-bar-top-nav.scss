@@ -1,0 +1,19 @@
+@import "../utils/colors.scss";
+
+.v-system-bar{
+    padding: 0px !important;
+    background-color: $unclass_header !important;
+}
+.v-application{
+    .atat-header-nav.v-sheet{
+        width: 100% !important;
+        height: 50px !important;
+        background-color: $primary_darken !important;
+        -ieVar-❗border-color: var(--v-primary_darker-base) !important;
+
+        .v-toolbar__content{
+            height: 52px !important;
+            display: block !important;
+        }
+    }
+}

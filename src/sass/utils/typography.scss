@@ -1,4 +1,4 @@
-.v-application{
+// .v-application{
     .h1{
         font-size: 4.4rem;
         font-weight: 700;
@@ -45,14 +45,14 @@
         line-height: 3.3rem;
     }
     .body-lg{
-        font-size: 1.7rem;
-        font-weight: 400;
-        line-height: 2.6rem;
+        font-size: 1.7rem !important;
+        font-weight: 400 !important;
+        line-height: 2.6rem !important;
     }
     .body{
-        font-size: 1.5rem;
-        font-weight: 400;
-        line-height: 2.4rem;
+        font-size: 1.5rem !important;
+        font-weight: 400 !important;
+        line-height: 2.4rem !important;
     }
     .label{
         font-size: 1.2rem;
@@ -65,9 +65,9 @@
         line-height: 1.1rem;
     }
     .form-field-label{
-        font-size: 1.2rem;
+        font-size: 1.7rem;
         font-weight: 400;
-        line-height: 1.6rem;
+        line-height: 2.4rem;
     }
     .link-body-lg{
         font-size: 1.9rem;
@@ -94,4 +94,4 @@
         border-width: 1px !important;
         border-style: solid !important;
     }
-}
+// }
