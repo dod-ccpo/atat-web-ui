@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <SecurityBanner />
-    <USWDCBanner />
     <ATATHeader />
     <ATATSideBar v-show="loginStatus" />
     <v-main>
@@ -23,7 +22,7 @@ import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
-import USWDCBanner from "./components/USWDCBanner.vue";
+// import USWDCBanner from "./components/USWDCBanner.vue";
 
 @Component({
   components: {
@@ -31,7 +30,6 @@ import USWDCBanner from "./components/USWDCBanner.vue";
     ATATHeader,
     ATATSideBar,
     SecurityBanner,
-    USWDCBanner,
   },
 })
 export default class App extends Vue {
