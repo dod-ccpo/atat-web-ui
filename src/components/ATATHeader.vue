@@ -39,8 +39,6 @@ export default class ATATHeader extends Vue {}
 </script>
 <style lang="scss">
 .atat-header {
-  
-  
   .atat-nav-logo {
     .atat-nav-logo__icon {
       display: inline-block;
