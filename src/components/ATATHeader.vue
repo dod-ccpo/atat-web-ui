@@ -47,7 +47,7 @@
           </div>
         </v-card-actions>
 
-        <v-expand>
+       
           <div v-show="show">
             <v-divider></v-divider>
 
@@ -98,7 +98,6 @@
               </v-row>
             </v-card-text>
           </div>
-        </v-expand>
       </v-card>
       <!-- </div> -->
       <div class="d-flex align-center justify-space-between">

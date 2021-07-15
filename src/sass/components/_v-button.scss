@@ -1,21 +1,5 @@
 
 .v-btn{
-
-  &.btn-usa-gov-expand{
-    font-weight: 600 !important;
-    font-size: 1.3rem !important;
-    line-height: 1.7rem !important;
-    color: var(--v-primary-base) !important;
-    -ieVar-❗border-color: var(--v-primary-base) !important;
-  
-    &:hover::before{
-      background-color: none !important;
-      opacity: initial  !important;
-      box-shadow: none !important;
-      -ieVar-❗border-color: none!important;
-    }
-  }
-
   box-shadow: none !important;
   font-size: 1.7rem !important;
   line-height: 2.5rem !important;
@@ -53,6 +37,26 @@
     line-height: 3.3rem !important;
     letter-spacing: .05rem !important;
     padding: 10px 24px !important;
+  }
+
+
+  &.btn-usa-gov-expand{
+    font-weight: 600 !important;
+    font-size: 1.3rem !important;
+    line-height: 1.7rem !important;
+    color: var(--v-primary-base) !important;
+    -ieVar-❗border-color: var(--v-primary-base) !important;
+    
+    // &:active::before,
+    // &:focus::before,
+    // &:focus-visible::before,
+    // &:focus-within::before
+    &:hover::before{
+      background-color: transparent !important;
+      opacity: initial  !important;
+      box-shadow: none !important;
+      -ieVar-❗border-color: none!important;
+    }
   }
 
 }
