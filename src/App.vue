@@ -1,26 +1,14 @@
 <template>
   <v-app>
-    <v-system-bar app height="27">
-      <SecurityBanner />
-    </v-system-bar>
-    <!-- class="atat-header-nav -->
-    <v-app-bar
-      clipped-left
-      app
-      absolute
-      extension-height="100%"
-      class="atat-header-nav"
-    >
-      <!-- <USWDCBanner /> -->
-      <ATATHeader />
-    </v-app-bar>
-    <atat-sidebar v-show="loginStatus" />
+    <SecurityBanner />
+    <ATATHeader />
+    <ATATSideBar v-show="loginStatus" />
     <v-main>
       <v-container fluid>
         <router-view></router-view>
       </v-container>
     </v-main>
-    <atat-footer />
+    <ATATFooter />
   </v-app>
 </template>
 
@@ -30,14 +18,17 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
-import USWDCBanner from "./components/USWDCBanner.vue";
+import ATATSideBar from "./components/ATATSideBar.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
+// import USWDCBanner from "./components/USWDCBanner.vue";
 
 @Component({
   components: {
+    ATATFooter,
     ATATHeader,
-    USWDCBanner,
+    ATATSideBar,
     SecurityBanner,
   },
 })

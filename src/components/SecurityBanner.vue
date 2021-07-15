@@ -1,25 +1,20 @@
 <template>
-  <div class="w-100">
-    <div
-      class="
-        atat-header
-        classification-banner
-        text-center
-        white--text
-        body-lg
-        d-block
-      "
-    >
-      <div>
-        <span class="classification-banner__text">
-          {{ getClassificationText }}
-        </span>
-        <span class="classification-banner__msg">
-          - {{ classificationMsg }}
-        </span>
+  <v-system-bar app height="28">
+    <div class="w-100">
+      <div
+        class="classification-banner text-center white--text body-lg d-block"
+      >
+        <div>
+          <span class="classification-banner__text">
+            {{ getClassificationText }}
+          </span>
+          <span class="classification-banner__msg">
+            - {{ classificationMsg }}
+          </span>
+        </div>
       </div>
     </div>
-  </div>
+  </v-system-bar>
 </template>
 
 <script lang="ts">

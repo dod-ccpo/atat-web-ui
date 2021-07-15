@@ -1,14 +1,26 @@
 
 .v-btn{
 
+  &.btn-usa-gov-expand{
+    font-weight: 600 !important;
+    font-size: 1.3rem !important;
+    line-height: 1.7rem !important;
+    color: var(--v-primary-base) !important;
+    -ieVar-❗border-color: var(--v-primary-base) !important;
+  
+    &:hover::before{
+      background-color: none !important;
+      opacity: initial  !important;
+      box-shadow: none !important;
+      -ieVar-❗border-color: none!important;
+    }
+  }
+
   box-shadow: none !important;
   font-size: 1.7rem !important;
   line-height: 2.5rem !important;
   text-transform: none !important;
   font-weight: 700 !important;
-
-
-
 
   &::before{
     display: block;
@@ -42,4 +54,7 @@
     letter-spacing: .05rem !important;
     padding: 10px 24px !important;
   }
+
 }
+
+
