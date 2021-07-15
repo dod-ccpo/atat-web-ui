@@ -16,6 +16,7 @@
           src="../../public/img/icons/atat-logo.svg"
           width="56"
           class="atat-nav-logo__icon"
+          alt="atat-shield"
         />
       </div>
     </div>
