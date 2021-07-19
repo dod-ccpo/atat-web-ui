@@ -1,6 +1,8 @@
 ---
 name: Build and Deploy SPA
 
+concurrency: "deploy-develop"
+
 on:
   push:
     branches:
