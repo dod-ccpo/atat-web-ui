@@ -5,7 +5,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class CreatePortfolio extends Vue {}
+export default class Step_1 extends Vue {}
 </script>
 
 <style scoped></style>
