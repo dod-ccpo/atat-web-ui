@@ -6,7 +6,7 @@
     :mini-variant.sync="show"
     permanent
     class="body-bg"
-  > 
+  >
     <v-list dense>
       <div class="d-flex flex-row">
         <v-subheader v-if="!show" class="font-weight-bold text-h6"
