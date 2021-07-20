@@ -22,7 +22,6 @@ import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
-// import USWDCBanner from "./components/USWDCBanner.vue";
 
 @Component({
   components: {
