@@ -38,16 +38,23 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" offset="2">
+      <v-col cols="2" offset="2">
         <hr class="hr step-1-divider" />
       </v-col>
     </v-row>
     <br />
     <v-row>
       <v-col cols="6" offset="2">
-        <div class="">
-          <v-btn class="primary" to="#">Create a New Portfolio</v-btn>
-        </div>
+        <v-alert
+            :icon="false"
+            class="grey lighten-4 black--text body-lg border px-13"
+        >
+          <v-btn class="primary"
+                 block
+                 to="#">
+            Create a New Portfolio
+          </v-btn>
+        </v-alert>
       </v-col>
     </v-row>
   </v-container>
