@@ -17,6 +17,7 @@ import ATATTextField from "./components/ATATTextField.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import StyledFields from "./components/StyledFields.vue";
 import USWDCBanner from "./components/USWDCBanner.vue";
+import ViewPortfolio from "./wizard/Step_1/components/ViewPortfolio.vue";
 
 Vue.component('atat-footer', ATATFooter);
 Vue.component('atat-header', ATATHeader);
@@ -27,6 +28,7 @@ Vue.component('atat-text-field', ATATTextField);
 Vue.component('security-banner', SecurityBanner);
 Vue.component('styled-fields', StyledFields);
 Vue.component('usdwc-banner', USWDCBanner);
+Vue.component('view-portfolio',ViewPortfolio)
 
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;

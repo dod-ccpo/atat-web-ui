@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
+import ViewPortfolio from "../wizard/Step_1/components/ViewPortfolio.vue";
 
 Vue.use(VueRouter);
 
@@ -30,6 +31,11 @@ const routes: Array<RouteConfig> = [
     name: "Style",
     component: () =>
       import(/* webpackChunkName: "style" */ "../views/sample/Style.vue"),
+  },
+  {
+    path: "/viewportfolio",
+    name: "View-portfolio",
+    component: ViewPortfolio,
   },
 ];
 
