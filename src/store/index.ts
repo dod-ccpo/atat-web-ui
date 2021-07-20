@@ -6,7 +6,7 @@ Vue.use(Vuex);
 
 const vuexLocalStorage = new VuexPersist({
   key: "vuex", // The key to store the state on in the storage provider.
-  storage: window.localStorage, // or window.sessionStorage or localForage
+  storage: window.sessionStorage, // or window.sessionStorage or localForage
   // Function that passes the state and returns the state with only the objects you want to store.
   // reducer: state => state,
   // Function that passes a mutation and lets you decide if it should update the state in localStorage.
@@ -33,6 +33,7 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit("changeLoginStatus", false);
+      window.sessionStorage.clear();
     },
   },
   modules: {},
