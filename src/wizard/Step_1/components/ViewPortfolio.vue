@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div class="view-portfolio body-lg">
     <v-row>
       <v-col cols="12" offset="1">
         <h1 class="mt-5 mb-3 h1 font-weight-bold">My Porfolios WIP</h1>
@@ -19,39 +19,39 @@
     </div>
     <v-row>
       <v-col offset="1">
-        <v-card width="30rem" class="mt-5">
-          <v-card-title class="h3 font-weight-bold">Portfolio ></v-card-title>
-          <v-card-subtitle>portfolio description</v-card-subtitle>
-          <v-card-text>portfolio managers</v-card-text>
-          <v-card-actions class="d-flex">
-            <a
-              class="font-weight-bold h6 text-decoration-underline mt-1 mx-1"
-              href="#"
-              >Open</a
+        <v-card width="30rem" class="mt-5 flex-nowrap">
+          <div class="d-flex flex-nowrap align-center">
+            <v-card-title class="portfolio-name h3 font-weight-bold pb-0 col-11"
+              >Portfolio ></v-card-title
             >
-            <a
-              class="
-                font-weight-bold
-                h6
-                text-decoration-underline
-                mt-1
-                mx-1
-                ml-auto
-              "
-              href="#"
+            <div class="draft d-flex align-center ml-auto">draft</div>
+          </div>
+          <div>
+            <v-card-subtitle class="body pt-0">
+              This Portfolio will be used to build,test and manage the native
+              applications for the defense logistics agency.
+            </v-card-subtitle>
+          </div>
+          <div class="d-flex portfolio-info pa-0 ml-5">
+            <v-card-text class="body pa-0 ml-3">portfolio managers</v-card-text>
+            <v-card-text class="body col-1 pa-0 mr-2">2</v-card-text>
+          </div>
+          <v-divider></v-divider>
+          <v-card-actions class="d-flex">
+            <a class="h6 text-decoration-underline mt-1 mx-1" href="#">Open</a>
+            <a class="h6 text-decoration-underline mt-1 mx-1 ml-auto" href="#"
               >Delete</a
             >
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Nav } from "@/components/ATATHeaderNav.vue";
 export interface Portfolio {
   id: string;
   name: string;
@@ -125,7 +125,25 @@ export default class ViewPortfolio extends Vue {}
 </script>
 
 <style scoped>
+.v-card {
+  position: relative;
+  border-radius: 0;
+}
 .portfolio-banner {
-  background-color: #f1f3f6;
+  background-color: #f0f0f0;
+}
+.portfolio-name {
+  color: #005ea2;
+}
+.portfolio-info {
+  border-left: solid 4px #73b3e7;
+}
+.draft {
+  color: #ffffff;
+  background-color: #00a91c;
+  border-radius: 2px;
+  font-weight: bold;
+  text-transform: uppercase;
+  height: 23px;
 }
 </style>
