@@ -5,6 +5,7 @@
 @import "./components/v-button";
 @import "./components/app-bar-top-nav";
 @import "./components/_atat_sidebar";
+@import "./components/v-card";
 
 body,html{
     background-color: $light_gray !important;
@@ -14,6 +15,6 @@ body,html{
 }
 
 .v-navigation-drawer{
-    top: 95px !important;   
+    top: 95px !important;
     max-height: calc(100% - 135px) !important;
 }

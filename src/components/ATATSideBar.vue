@@ -72,8 +72,8 @@ export default class ATATSideBar extends Vue {
 
   private selectedItem = 0;
   private items = [
-    { text: "Dashboard", link: "/wizard/step-1" },
-    { text: "My Portfolios", link: "#" },
+    { text: "Dashboard", link: "/createportfolio" },
+    { text: "My Portfolios", link: "/portfolios" },
     { text: "Reports", link: "#" },
   ];
 }

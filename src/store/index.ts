@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
+import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
+    portfolios: allPortfolios,
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -84,6 +86,9 @@ export default new Vuex.Store({
           ],
         },
       };
+    },
+    getAllPortfolios(state) {
+      return state.portfolios;
     },
   },
 });

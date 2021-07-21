@@ -49,7 +49,19 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/portfolios",
-    redirect: { name: "step1" },
+    name: "portfolios",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step_1/components/ViewPortfolio.vue"
+      ),
+  },
+  {
+    path: "/createportfolio",
+    name: "createPortfolio",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step_1/components/CreatePortfolio.vue"
+      ),
   },
 ];
 
