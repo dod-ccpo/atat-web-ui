@@ -18,6 +18,7 @@ import SecurityBanner from "./components/SecurityBanner.vue";
 import StyledFields from "./components/StyledFields.vue";
 import USAGovBanner from "./components/USAGovBanner.vue";
 import ViewPortfolio from "./wizard/Step_1/components/ViewPortfolio.vue";
+import CreatePortfolio from "@/wizard/Step_1/components/CreatePortfolio.vue";
 
 Vue.component('atat-footer', ATATFooter);
 Vue.component('atat-header', ATATHeader);
@@ -29,6 +30,7 @@ Vue.component('security-banner', SecurityBanner);
 Vue.component('styled-fields', StyledFields);
 Vue.component('usa-gov-banner', USAGovBanner);
 Vue.component('view-portfolio',ViewPortfolio)
+Vue.component('create-portfolio',CreatePortfolio)
 
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
