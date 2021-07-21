@@ -2,7 +2,7 @@
 export interface NavItem {
     title: string;
     url?: string;
-    component?: string;
+    action?: string;
     cssClass?: string;
     newWindow?: string | boolean; // = false | true
     children?: NavItem[]; // = [];

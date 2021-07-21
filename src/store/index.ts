@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
+import { Navs } from "../../types/NavItem";
 
 Vue.use(Vuex);
 
@@ -40,6 +41,49 @@ export default new Vuex.Store({
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;
+    },
+    getNavBarItems(): Navs {
+      return {
+        logout: {
+          id: "atat-nav__logout",
+          title: "logout Nav",
+          items: [],
+        },
+        login: {
+          id: "atat-nav__login",
+          title: "login Nav",
+          items: [
+            {
+              id: 1,
+              cssClass: "atat-header-nav__user-display-name",
+              title: "Maria Missionowner",
+              url: "#",
+              newWindow: false,
+              icon: "mdi-account-circle",
+              iconPlacement: "left",
+            },
+            {
+              id: 2,
+              cssClass: "atat-header-nav__support",
+              title: "Support",
+              url: "#",
+              newWindow: false,
+              icon: "mdi-help-circle-outline",
+              iconPlacement: "left",
+            },
+            {
+              id: 3,
+              cssClass: "atat-header-nav__logout",
+              title: "Logout",
+              url: "/",
+              newWindow: false,
+              icon: "mdi-logout",
+              iconPlacement: "right",
+              action: "logout",
+            },
+          ],
+        },
+      };
     },
   },
 });

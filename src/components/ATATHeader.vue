@@ -3,11 +3,11 @@
     app
     clipped-left
     :class="[show ? 'expandedHeader' : 'condensedHeader']"
-    class="atat-header-nav py-2"
+    class="atat-header-nav"
   >
     <template v-slot:extension>
       <USAGovBanner @toggle="toggle" />
-      <div class="d-flex align-center justify-space-between pt-1">
+      <div class="d-flex align-center justify-space-between pt-2 nav-header">
         <div class="d-flex align-center px-4">
           <img
             src="../../public/img/icons/atat-logo.svg"
@@ -41,33 +41,3 @@ export default class ATATHeader extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-.expandedHeader {
-  height: 183px !important;
-}
-
-.condensedHeader {
-  height: 65px !important;
-}
-
-.usa-gov {
-  height: 20px !important;
-  background-color: lightgray !important;
-}
-
-// .atat-header {
-//   .atat-nav-logo {
-//     .atat-nav-logo__icon {
-//       display: inline-block;
-//       position: relative;
-//       top: 0.2em;
-//       margin-right: 0.5rem;
-//     }
-//     .atat-header-logo {
-//       display: inline-block;
-//       position: relative;
-//     }
-//   }
-// }
-</style>

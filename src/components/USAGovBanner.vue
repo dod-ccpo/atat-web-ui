@@ -43,12 +43,12 @@
       <v-divider></v-divider>
 
       <v-card-text class="h6 pb-0">
-        <v-row align="center" class="mb-3" style="height: '90px' !important">
+        <v-row align="center" class="mb-3">
           <v-col
             cols="12"
             md="4"
-            lg="3"
-            xl="2"
+            sm="6"
+            xs="6"
             align-self="start"
             class="d-flex align-left pb-0"
           >
@@ -73,8 +73,8 @@
           <v-col
             cols="12"
             md="4"
-            lg="3"
-            xl="2"
+            sm="6"
+            xs="6"
             align-self="start"
             class="d-flex align-left pb-0"
           >
