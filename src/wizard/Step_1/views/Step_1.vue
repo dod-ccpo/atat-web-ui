@@ -45,14 +45,11 @@
     <br />
     <v-row>
       <v-col cols="6" offset="2">
-        <v-alert
-          :icon="false"
-          class="grey lighten-4 black--text body-lg border px-13"
-        >
-          <v-btn class="primary" block :ripple="false" to="#">
+        <div :icon="false" class="bg-base-lightest body-lg border px-13 py-5">
+          <v-btn class="primary" block :ripple="false" to="/wizard/step-2">
             Create a New Portfolio
           </v-btn>
-        </v-alert>
+        </div>
       </v-col>
     </v-row>
   </v-container>

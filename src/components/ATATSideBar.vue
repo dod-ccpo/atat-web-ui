@@ -45,10 +45,7 @@
       <v-list-item-group v-if="!show" v-model="selectedItem" color="primary">
         <v-list-item v-for="(item, i) in items" :key="i" :ripple="false">
           <v-list-item-content>
-            <router-link
-              :to="item.link"
-              v-slot="{ href, route, navigate, isActive}"
-            >
+            <router-link :to="item.link" v-slot="{ href, navigate, isActive }">
               <NavLink
                 class="body"
                 :active="isActive"
@@ -75,8 +72,8 @@ export default class ATATSideBar extends Vue {
 
   private selectedItem = 0;
   private items = [
-    { text: "Dashboard", link: "/dashboard" },
-    { text: "My Portfolios", link: "/wizard/step-1" },
+    { text: "Dashboard", link: "/wizard/step-1" },
+    { text: "My Portfolios", link: "#" },
     { text: "Reports", link: "#" },
   ];
 }

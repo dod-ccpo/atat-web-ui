@@ -40,6 +40,14 @@ const routes: Array<RouteConfig> = [
       ),
   },
   {
+    path: "/wizard/step-2",
+    name: "step2",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step_2/views/Step_2.vue"
+      ),
+  },
+  {
     path: "/portfolios",
     redirect: { name: "step1" },
   },
