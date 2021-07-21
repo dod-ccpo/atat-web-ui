@@ -24,5 +24,5 @@ export default {
 
   hr_color: "#DFE1E2",
 
-  light_gray: "#F2F2F2"
+  light_gray: "#F2F2F2",
 };

@@ -36,7 +36,7 @@ import USAGovBanner from "../components/USAGovBanner.vue";
 export default class ATATHeader extends Vue {
   public show = false;
 
-  public toggle(toggle: boolean) {
+  public toggle(toggle: boolean): void {
     this.show = toggle;
   }
 }
