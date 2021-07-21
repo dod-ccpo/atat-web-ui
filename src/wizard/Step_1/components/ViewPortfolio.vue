@@ -73,13 +73,13 @@
           <div class="mb-2">
             <v-card-actions class="d-flex justify-space-between">
               <a class="h6 text-decoration-underline mt-1 mx-1" href="#"
-                >Open</a
+                >OPEN</a
               >
               <a
                 v-if="portfolio.csp_provisioning_status === 'in_progress'"
                 class="h6 text-decoration-underline mt-1 mx-1"
                 href="#"
-                >Delete</a
+                >DELETE</a
               >
             </v-card-actions>
           </div>
