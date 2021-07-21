@@ -19,5 +19,5 @@ export interface Application {
 export interface Environment {
   id: string;
   name: string;
-  funding_source: string;
+  funding_source: string[];
 }
