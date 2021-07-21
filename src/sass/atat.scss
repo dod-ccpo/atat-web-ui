@@ -3,17 +3,18 @@
 @import "./utils/typography.scss";
 @import "./utils/colors.scss";
 @import "./components/v-button";
-@import "./components/v-list-item";
 @import "./components/app-bar-top-nav";
+@import "./components/_atat_sidebar";
 @import "./components/v-card";
 
 body,html{
-    font-size: 10px !important;
+    background-color: $light_gray !important;
 }
 .v-main{
     padding: 90px 0px 39px 0px !important;
 }
 
 .v-navigation-drawer{
-    top: 85px !important;   
+    top: 95px !important;
+    max-height: calc(100% - 135px) !important;
 }

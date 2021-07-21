@@ -24,3 +24,34 @@
   $hr_color: #DFE1E2 !default;
 
   $unclass_header:  #008000 !default;
+
+  $light_gray: #f2f2f2 !default;
+
+  $base_darkest: #1b1b1b !default;
+  $base_darker: #3d4551 !default;
+  $base_dark: #565c65 !default;
+  $base: #71767a !default;
+  $base_light: #a9aeb1 !default;
+  $base_lighter: #dfe1e2 !default;
+  $base_lightest: #f0f0f0 !default;
+
+
+
+//incoporate this into a mixin soon
+
+  .bg-base-darkest{background-color: #1b1b1b !important};
+  .bg-base-darker{background-color: #3d4551 !important};
+  .bg-base-dark{background-color: #565c65 !important};
+  .bg-base{background-color: #71767a !important};
+  .bg-base-light{background-color: #a9aeb1 !important};
+  .bg-base-lighter{background-color: #dfe1e2 !important};
+  .bg-base-lightest{background-color: #f0f0f0 !important};
+
+  .text--base-darkest{color: #1b1b1b !important};
+  .text--base-darker{color: #3d4551 !important};
+  .text--base-dark{color: #565c65 !important};
+  .text--base{color: #71767a !important};
+  .text--base-light{color: #a9aeb1 !important};
+  .text--base-lighter{color: #dfe1e2 !important};
+  .text--base-lightest{color: #f0f0f0 !important};
+
