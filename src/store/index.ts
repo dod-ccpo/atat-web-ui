@@ -1,11 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { allPortfolios } from "../wizard/Step_1/components/ViewPortfolio.vue";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     loginStatus: false,
+    portfolios: allPortfolios,
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -28,6 +30,9 @@ export default new Vuex.Store({
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;
+    },
+    getAllPortfolios(state) {
+      return state.portfolios;
     },
   },
 });
