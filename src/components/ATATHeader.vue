@@ -12,6 +12,7 @@
           <img
             src="../../public/img/icons/atat-logo.svg"
             width="56"
+            alt="ATAT logo"
             class="atat-nav-logo__icon"
           />
         </div>
