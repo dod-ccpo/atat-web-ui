@@ -46,14 +46,10 @@
     <v-row>
       <v-col cols="6" offset="2">
         <v-alert
-            :icon="false"
-            class="grey lighten-4 black--text body-lg border px-13"
+          :icon="false"
+          class="grey lighten-4 black--text body-lg border px-13"
         >
-          <v-btn class="primary"
-                 block
-                 to="#">
-            Create a New Portfolio
-          </v-btn>
+          <v-btn class="primary" block to="#"> Create a New Portfolio </v-btn>
         </v-alert>
       </v-col>
     </v-row>
