@@ -39,14 +39,20 @@
     </v-row>
     <v-row>
       <v-col cols="2" offset="2">
-        <hr class="hr step-1-divider" />
+        <hr class="hr text-base-lightest" />
       </v-col>
     </v-row>
     <br />
     <v-row>
       <v-col cols="6" offset="2">
         <div :icon="false" class="bg-base-lightest body-lg border px-13 py-5">
-          <v-btn class="primary" block :ripple="false" to="/wizard/step-2">
+          <v-btn
+            class="primary"
+            id="create-portfolio-btn"
+            block
+            :ripple="false"
+            to="/wizard/step-2"
+          >
             Create a New Portfolio
           </v-btn>
         </div>

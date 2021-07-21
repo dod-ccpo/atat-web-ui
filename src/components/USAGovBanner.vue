@@ -6,6 +6,7 @@
           <div class="mr-3">
             <img
               src="../../public/img/us_flag_small.png"
+              alt="USA Flag"
               height="11"
               width="16"
             />
