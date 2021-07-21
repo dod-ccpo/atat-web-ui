@@ -23,6 +23,7 @@
             class="text-capitalize"
             :ripple="false"
             @click="login()"
+            id="login_button"
           >
             Sign in
           </v-btn>
