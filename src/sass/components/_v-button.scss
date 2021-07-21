@@ -58,6 +58,17 @@
     }
   }
 
+  &.primary.theme--light{
+    background-color:  $primary !important;
+    color: #fff !important;
+    &:hover::before,
+    span:hover{
+      background-color: $primary !important;
+      -ieVar-❗background--color: $primary!important;
+      box-shadow: none !important;
+    }
+  }
+  
   &.primary_darken.theme--light{
     background-color: transparent !important;
     color: #fff !important;

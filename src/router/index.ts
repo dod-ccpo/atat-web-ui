@@ -31,6 +31,26 @@ const routes: Array<RouteConfig> = [
     component: () =>
       import(/* webpackChunkName: "style" */ "../views/sample/Style.vue"),
   },
+  {
+    path: "/wizard/step-1",
+    name: "step1",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step_1/views/Step_1.vue"
+      ),
+  },
+  {
+    path: "/wizard/step-2",
+    name: "step2",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step_2/views/Step_2.vue"
+      ),
+  },
+  {
+    path: "/portfolios",
+    redirect: { name: "step1" },
+  },
 ];
 
 const router = new VueRouter({

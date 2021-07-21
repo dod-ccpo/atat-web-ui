@@ -1,0 +1,11 @@
+@import "../utils/colors.scss";
+
+nav.v-navigation-drawer{
+    .v-list-item-group .v-list-item--active {
+        color: inherit;
+        border-left: solid 4px;
+        .v-list-item__content navlink{
+            font-weight: 900 !important;
+        }
+    }
+}
