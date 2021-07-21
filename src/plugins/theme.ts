@@ -23,4 +23,6 @@ export default {
   info_lighter: "#e7f6f8",
 
   hr_color: "#DFE1E2",
+
+  light_gray: "#F2F2F2",
 };

@@ -1,18 +1,23 @@
 <template>
-  <div class="atat-header-nav my-1" :id="navData.id" :title="navData.title">
+  <div class="atat-header-nav mr-3" :id="navData.id" :title="navData.title">
     <v-btn
-      class="atat-header-nav__link"
       v-for="item in navData.items"
-      :class="item.cssClass"
       :id="item.cssClass"
       :title="item.title"
-      @click="itemCLicked(item)"
+      @click="itemClicked(item)"
       :key="item.id"
       :ripple="false"
+      class="px-0 mr-4 ml-4 primary_darken"
+      small
+      text
     >
-      <span class="body white--text font-weight-bold nav-button-text">
-        {{ item.title }}
-      </span>
+      <v-icon v-show="item.iconPlacement === 'left'" left>
+        {{ item.icon }}
+      </v-icon>
+      {{ item.title }}
+      <v-icon v-show="item.iconPlacement === 'right'" right>
+        {{ item.icon }}
+      </v-icon>
     </v-btn>
   </div>
 </template>
@@ -20,191 +25,39 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-
-export interface NavItem {
-  title: string;
-  url?: string;
-  component?: string;
-  cssClass?: string;
-  newWindow?: string | boolean; // = false | true
-  children?: NavItem[]; // = [];
-  order?: number;
-  attachment?: number;
-  parentIndex?: number;
-  uuid?: number;
-  id?: number;
-}
-export interface Meta {
-  key: string;
-  value: string;
-}
-export interface Nav {
-  id: string;
-  title: string;
-  items: NavItem[];
-  meta?: Meta[];
-}
-export interface Navs {
-  [key: string]: Nav;
-}
-
-// simulating nav connection
-const all_navs: Navs = {
-  logout: {
-    id: "atat-nav__logout",
-    title: "logout Nav",
-    items: [],
-  },
-  login: {
-    id: "atat-nav__login",
-    title: "login Nav",
-    items: [
-      {
-        id: 1,
-        cssClass: "atat-header-nav__user-display-name",
-        title: "Maria Missionowner",
-        url: "#",
-        newWindow: false,
-      },
-      {
-        id: 2,
-        cssClass: "atat-header-nav__support",
-        title: "Support",
-        url: "#",
-        newWindow: false,
-      },
-      {
-        id: 3,
-        cssClass: "atat-header-nav__logout",
-        title: "Logout",
-        url: "/",
-        component: "logout-action",
-        newWindow: false,
-      },
-    ],
-  },
-};
+import { Nav, NavItem } from "../../types/NavItem";
 
 @Component({})
 export default class ATATHeaderNav extends Vue {
+  //computed
   get loginStatus(): boolean {
     return this.$store.getters.getLoginStatus;
   }
 
   get navData(): Nav {
-    if (this.loginStatus) {
-      return all_navs["login"];
-    } else {
-      return all_navs["logout"];
-    }
+    return this.$store.getters.getNavBarItems[
+      this.loginStatus ? "login" : "logout"
+    ];
   }
 
+  //Methods
   private login(): void {
     this.$store.dispatch("login");
   }
+
   private logout(): void {
     this.$store.dispatch("logout");
   }
-  private itemCLicked(item: NavItem): void {
-    if (item.component) {
-      if (item.component === "logout-action") {
-        this.logout();
-      }
+
+  //Events
+  private itemClicked(item: NavItem): void {
+    if (item.action && item.action.toLowerCase() === "logout") {
+      this.logout();
     }
+
     if (item.url) {
       this.$router.push(item.url);
     }
   }
 }
 </script>
-
-<style lang="scss">
-.nav-button-text {
-  letter-spacing: 0.01rem;
-}
-.atat-header-nav {
-  .atat-header-nav__link {
-    border-radius: unset;
-
-    &.v-btn:not(.v-btn--round).v-size--default {
-      height: 0;
-    }
-    &.theme--light.v-btn.v-btn--has-bg {
-      background-color: none;
-    }
-    &.theme--light.v-btn {
-      color: #f0f0f0;
-      font-family: Source Sans Pro;
-      font-style: normal;
-      font-weight: bold;
-      font-size: 15px;
-      line-height: 24px;
-      text-transform: capitalize;
-    }
-
-    &.atat-header-nav__support,
-    &.atat-header-nav__user-display-name {
-      padding-left: 25px;
-      margin-right: 25px;
-      color: #f0f0f0;
-      > span:first-child {
-        display: inline-block;
-        position: relative;
-        overflow: visible;
-        color: #f0f0f0;
-        &::before {
-          content: " ";
-          width: 16px;
-          height: 16px;
-          position: absolute;
-          display: block;
-          left: -24px;
-          top: 3px;
-          margin-right: 8px;
-          background-position: top center;
-          background-size: 16px 16px;
-          background-image: url("../../public/img/icons/avatar_white.svg");
-          color: #f0f0f0;
-          fill: #f0f0f0;
-        }
-      }
-    }
-    &.atat-header-nav__support {
-      margin-right: -2px;
-      > span:first-child::before {
-        background-image: url("../../public/img/icons/help_white.svg");
-      }
-    }
-    &.atat-header-nav__logout {
-      &.v-btn:not(.v-btn--round).v-size--default {
-        padding-left: 0px;
-      }
-      margin-right: 25px;
-      padding-right: 25px;
-      margin-left: 10px;
-
-      > span:first-child {
-        display: inline-block;
-        position: relative;
-        overflow: visible;
-        &::after {
-          position: absolute;
-          display: block;
-          content: " ";
-          margin-left: 8px;
-          width: 16px;
-          height: 16px;
-          right: -24px;
-          top: 3px;
-          background-position: top center;
-          background-size: 16px 16px;
-          background-image: url("../../public/img/icons/logout_white.svg");
-          background-repeat: no-repeat;
-          color: #f0f0f0;
-          fill: #f0f0f0;
-        }
-      }
-    }
-  }
-}
-</style>

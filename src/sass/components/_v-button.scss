@@ -1,3 +1,4 @@
+@import "../utils/colors.scss";
 
 .v-btn{
   box-shadow: none !important;
@@ -8,21 +9,20 @@
 
   &::before{
     display: block;
+    transition: none;
   }
   
   &:hover::before{
-    background-color: var(--v-primary_dark-base) !important;
+    background-color: $primary_darken !important;
     opacity: initial  !important;
     box-shadow: none !important;
-    -ieVar-❗border-color: var(--v-primary_dark-base) !important;
   }
 
   &:active::before,
   &:focus::before,
   &:focus-visible::before,
   &:focus-within::before{
-    background-color: var(--v-primary_darker-base) !important;
-    -ieVar-❗border-color: var(--v-primary_darker-base) !important;
+    background-color: $primary_darken !important;
     box-shadow: none !important;
     opacity: initial !important;
   }
@@ -39,14 +39,13 @@
     padding: 10px 24px !important;
   }
 
-
   &.btn-usa-gov-expand{
     font-weight: 600 !important;
     font-size: 1.3rem !important;
     line-height: 1.7rem !important;
-    color: var(--v-primary-base) !important;
-    -ieVar-❗border-color: var(--v-primary-base) !important;
-    
+    span{
+      color: $primary !important;
+    }
     // &:active::before,
     // &:focus::before,
     // &:focus-visible::before,
@@ -55,8 +54,21 @@
       background-color: transparent !important;
       opacity: initial  !important;
       box-shadow: none !important;
-      -ieVar-❗border-color: none!important;
+      -ieVar-❗background-color: none!important;
     }
+  }
+
+  &.primary_darken.theme--light{
+    background-color: transparent !important;
+    color: #fff !important;
+    &:hover::before,
+    span:hover{
+      background-color: transparent !important;
+      -ieVar-❗background--color: transparent!important;
+      box-shadow: none !important;
+    }
+
+
   }
 
 }
