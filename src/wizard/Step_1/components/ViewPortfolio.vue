@@ -11,9 +11,9 @@
           >My Portfolios</v-col
         >
         <v-col class="d-flex justify-space-around">
-          <v-btn class="banner-btn" color="primary" to="#">
-            Create New Portfolio</v-btn
-          >
+          <v-btn class="primary" :ripple="false" to="/wizard/step-1">
+            Create a New Portfolio
+          </v-btn>
         </v-col>
       </v-row>
     </div>
@@ -92,12 +92,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import {
-  Portfolios,
-  Portfolio,
-  Application,
-} from "../../../../types/Portfolios";
-
+import { Portfolios } from "../../../../types/Portfolios";
 @Component({})
 export default class ViewPortfolio extends Vue {
   get portfolios(): Portfolios {

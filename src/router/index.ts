@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
-import ViewPortfolio from "../wizard/Step_1/components/ViewPortfolio.vue";
 
 Vue.use(VueRouter);
 
@@ -50,12 +49,19 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/portfolios",
-    redirect: { name: "step1" },
+    name: "portfolios",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step_1/components/ViewPortfolio.vue"
+      ),
   },
   {
-    path: "/viewportfolio",
-    name: "View-portfolio",
-    component: ViewPortfolio,
+    path: "/createportfolio",
+    name: "createPortfolio",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step_1/components/CreatePortfolio.vue"
+      ),
   },
 ];
 
