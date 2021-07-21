@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { allPortfolios } from "../wizard/Step_1/components/ViewPortfolio.vue";
+import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 
 Vue.use(Vuex);
 
