@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined style="border-radius: 0px">
+  <v-card outlined style="border-radius: 0px" class="bg-base-lightest usa-gov-head">
     <v-card-actions class="py-0">
       <div class="h6">
         <div class="d-flex align-center">
@@ -55,7 +55,7 @@
             <div>
               <img
                 class="usa-banner__icon usa-media-block__img responsive mr-3"
-                src="/img/icons/icon-https.svg"
+                src="/img/icons/icon-dot-gov.svg"
                 role="img"
                 alt=""
                 width="40"
@@ -81,7 +81,7 @@
             <div>
               <img
                 class="usa-banner__icon usa-media-block__img responsive mr-3"
-                src="/img/icons/icon-dot-gov.svg"
+                src="/img/icons/icon-https.svg"
                 role="img"
                 alt=""
                 width="40"
