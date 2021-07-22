@@ -7,7 +7,7 @@ export default {
   primary_vivid: "#0050d8",
 
   tertiary: "#162E51",
-  success: "#2E8540",
+  success: "#00A91C",
   error: "#E21C3D",
 
   warning_lighter: "#faf3d1",

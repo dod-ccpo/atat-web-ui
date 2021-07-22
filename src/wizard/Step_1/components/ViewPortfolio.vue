@@ -1,39 +1,45 @@
 <template>
-  <v-container class="view-portfolio body-lg">
+  <v-container class="view-portfolio body">
     <v-row>
-      <v-col cols="12" offset="1">
+      <v-col cols="12" offset="2">
         <h1 class="mt-5 mb-3 h1 font-weight-bold">My Porfolios WIP</h1>
       </v-col>
     </v-row>
-    <div class="portfolio-banner">
-      <v-row class="d-flex">
-        <v-col class="h3 font-weight-bold align-self-center" offset="1"
-          >My Portfolios</v-col
-        >
-        <v-col class="d-flex justify-space-around">
-          <v-btn class="primary" :ripple="false" to="/wizard/step-1">
-            Create a New Portfolio
-          </v-btn>
-        </v-col>
-      </v-row>
-    </div>
+    <v-row class="d-flex portfolio-banner">
+      <v-col class="h3" offset="2"
+        >My Portfolios</v-col
+      >
+      <v-col class="d-flex justify-space-around">
+        <v-btn class="primary" :ripple="false" to="/wizard/step-1">
+          Create a New Portfolio
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-row>
-      <v-col class="d-flex flex-row" offset="1">
+      <v-col class="d-flex flex-row" offset="2">
         <v-card
-          width="35rem"
-          class="v-card ma-5"
+          width="40rem"
+          class="v-card ma-9 ml-0 body"
           v-for="portfolio in portfolios"
           :key="portfolio.id"
         >
           <div class="d-flex flex-nowrap align-center">
-            <v-card-title class="portfolio-name h3 font-weight-bold pb-0 col-11"
-              >{{ portfolio.name }} ></v-card-title
-            >
-            <div
-              v-if="portfolio.csp_provisioning_status === 'in_progress'"
-              class="draft d-flex align-center ml-auto"
-            >
-              draft
+            <v-card-title class="portfolio-name h3 font-weight-bold pb-0 col-10"
+              >{{ portfolio.name }} >
+            </v-card-title>
+            <div>
+              <v-chip
+                v-if="
+                  portfolio.csp_provisioning_status.toLowerCase() ===
+                  'in_progress'
+                "
+                class="body font-weight-bold pa-2 ml-5 mt-4 rounded-0"
+                label
+                color="success"
+                outline
+              >
+                DRAFT
+              </v-chip>
             </div>
           </div>
           <div>
