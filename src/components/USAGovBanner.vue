@@ -1,5 +1,9 @@
 <template>
-  <v-card outlined style="border-radius: 0px" class="bg-base-lightest usa-gov-head">
+  <v-card
+    outlined
+    style="border-radius: 0px"
+    class="bg-base-lightest usa-gov-head"
+  >
     <v-card-actions class="py-0">
       <div class="h6">
         <div class="d-flex align-center">
