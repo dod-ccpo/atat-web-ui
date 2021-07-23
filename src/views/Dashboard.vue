@@ -1,12 +1,12 @@
 <template>
   <v-container class="dashboard-body body-lg">
     <v-row>
-      <v-col cols="6" offset="2">
-        <h1 class="my-5 h1 font-weight-bold">ATAT Cloud Services</h1>
+      <v-col cols="6">
+        <h1 class="mb-5 h1 font-weight-bold">ATAT Cloud Services</h1>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" offset="2">
+      <v-col cols="6">
         <h3 class="h3 mb-7">
           Welcome to the Account Tracking and Automation Tool, Maria!
         </h3>

@@ -1,22 +1,20 @@
 <template>
   <v-container class="dashboard-body body-lg wizard-step-1-view">
     <v-row>
-      <v-col cols="6" offset="2">
-        <h1 class="h1 step-1-title my-5font-weight-bold">
-          ATAT Cloud Services
-        </h1>
+      <v-col cols="6">
+        <h1 class="h1 step-1-title font-weight-bold">ATAT Cloud Services</h1>
       </v-col>
     </v-row>
 
     <br />
     <v-row>
-      <v-col cols="6" offset="2">
+      <v-col cols="6">
         <h2 class="h2 step-1-subtitle">Create a Portfolio</h2>
       </v-col>
     </v-row>
     <br />
     <v-row>
-      <v-col cols="6" offset="2">
+      <v-col cols="6">
         <p class="p step-1">
           To get started with provisioning your cloud resources, you will need
           to set up a Portfolio. We will walk you through adding your contract
@@ -38,15 +36,15 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="2" offset="2">
+      <v-col cols="2">
         <hr class="hr step-1-divider" />
       </v-col>
     </v-row>
     <br />
     <v-row>
-      <v-col cols="6" offset="2">
+      <v-col cols="6">
         <div :icon="false" class="bg-base-lightest body-lg border px-13 py-5">
-          <v-btn class="primary" block :ripple="false" to="/wizard/step-2">
+          <v-btn class="primary" block :ripple="false" to="/wizard">
             Create a New Portfolio
           </v-btn>
         </div>

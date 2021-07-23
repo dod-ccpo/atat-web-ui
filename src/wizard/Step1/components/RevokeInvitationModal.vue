@@ -1,5 +1,5 @@
 <template>
-  <h1>Step1</h1>
+  <div>RevokeInvitationModal</div>
 </template>
 
 <script lang="ts">
@@ -7,7 +7,5 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class Step_1 extends Vue {}
+export default class RevokeInvitationModal extends Vue {}
 </script>
-
-<style></style>
