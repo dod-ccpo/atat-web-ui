@@ -42,6 +42,7 @@ const defaultSettings = {
     chrome: {
       desiredCapabilities: {
         browserName: "chrome",
+        resolution: "1920x1080",
         chromeOptions: {
           w3c: false,
           args: chromeArgs,
@@ -51,6 +52,7 @@ const defaultSettings = {
     firefox: {
       desiredCapabilities: {
         browserName: "firefox",
+        resolution: "1920x1080",
         alwaysMatch: {
           acceptInsecureCerts: true,
           "moz:firefoxOptions": {
@@ -65,7 +67,11 @@ const defaultSettings = {
         browser: "internet explorer",
         version: "11",
         platform: "WINDOWS",
-        "browserstack.selenium_version": "3.6.0",
+        "browserstack.selenium_version": "3.141.59",
+        "browserstack.ie.arch": "x32",
+        "browserstack.ie.driver": "3.141.59",
+        resolution: "1920x1080",
+
       },
     },
   },
