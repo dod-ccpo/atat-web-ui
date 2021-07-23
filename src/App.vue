@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <SecurityBanner />
+    <ATATSideBar v-if="loginStatus" />
     <ATATHeader />
-    <ATATSideBar v-show="loginStatus" />
-    <v-main>
+    <v-main style="padding-top: 90px;">
       <v-container fluid>
-        <router-view></router-view>
+        <router-view> </router-view>
       </v-container>
     </v-main>
     <ATATFooter />

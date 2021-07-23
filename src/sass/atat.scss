@@ -1,17 +1,20 @@
-@import "./components/v-text-field.scss";
-@import "./components/v-alerts";
+
 @import "./utils/typography.scss";
 @import "./utils/colors.scss";
-@import "./components/v-button";
-@import "./components/app-bar-top-nav";
+
 @import "./components/_atat_sidebar";
+@import "./components/app-bar-top-nav";
+@import "./components/v-alerts";
+@import "./components/v-button";
 @import "./components/v-card";
+@import "./components/v-list_item";
+@import "./components/v-text-field.scss";
 
 body,html{
     background-color: $light_gray !important;
 }
 .v-main{
-    padding: 90px 0px 39px 0px !important;
+    @extend .body;
 }
 
 .v-navigation-drawer{

@@ -1,11 +1,11 @@
-<!--<template></template>-->
+<template>
+  <div>Permissions Modal</div>
+</template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class Step_2 extends Vue {}
+export default class PermissionsModal extends Vue {}
 </script>
-
-<style scoped></style>

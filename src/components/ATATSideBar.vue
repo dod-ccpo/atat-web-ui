@@ -5,7 +5,7 @@
     mini-variant-width="70"
     :mini-variant.sync="show"
     permanent
-    class="body-bg"
+    class="global-side-nav-bar"
   >
     <v-list dense>
       <div class="d-flex flex-row">
@@ -42,18 +42,13 @@
         </div>
       </div>
       <v-divider></v-divider>
-      <v-list-item-group v-if="!show" v-model="selectedItem" color="primary">
+      <v-list-item-group v-if="!show" color="primary">
         <v-list-item v-for="(item, i) in items" :key="i" :ripple="false">
           <v-list-item-content>
             <router-link :to="item.link" v-slot="{ href, navigate, isActive }">
-              <NavLink
-                class="body"
-                :active="isActive"
-                :href="href"
-                @click="navigate"
-              >
+              <a class="body" :active="isActive" :href="href" @click="navigate">
                 {{ item.text }}
-              </NavLink>
+              </a>
             </router-link>
           </v-list-item-content>
         </v-list-item>
@@ -70,7 +65,6 @@ import { Component } from "vue-property-decorator";
 export default class ATATSideBar extends Vue {
   private show = true;
 
-  private selectedItem = 0;
   private items = [
     { text: "Dashboard", link: "/createportfolio" },
     { text: "My Portfolios", link: "/portfolios" },

@@ -32,19 +32,27 @@ const routes: Array<RouteConfig> = [
       import(/* webpackChunkName: "style" */ "../views/sample/Style.vue"),
   },
   {
-    path: "/wizard/step-1",
+    path: "/wizard/step1",
     name: "step1",
     component: () =>
       import(
-        /* webpackChunkName: "style" */ "../wizard/Step_1/views/Step_1.vue"
+        /* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"
       ),
   },
   {
-    path: "/wizard/step-2",
+    path: "/wizard",
+    name: "wizard",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/wizard.vue"
+      ),
+  },
+  {
+    path: "/wizard/step2",
     name: "step2",
     component: () =>
       import(
-        /* webpackChunkName: "style" */ "../wizard/Step_2/views/Step_2.vue"
+        /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
       ),
   },
   {
@@ -52,7 +60,7 @@ const routes: Array<RouteConfig> = [
     name: "portfolios",
     component: () =>
       import(
-        /* webpackChunkName: "style" */ "../wizard/Step_1/components/ViewPortfolio.vue"
+        /* webpackChunkName: "style" */ "../wizard/Step0/components/ViewPortfolio/ViewPortfolio.vue"
       ),
   },
   {
@@ -60,7 +68,7 @@ const routes: Array<RouteConfig> = [
     name: "createPortfolio",
     component: () =>
       import(
-        /* webpackChunkName: "style" */ "../wizard/Step_1/components/CreatePortfolio.vue"
+        /* webpackChunkName: "style" */ "../wizard/Step0/components/CreatePortfolio/CreatePortfolio.vue"
       ),
   },
 ];

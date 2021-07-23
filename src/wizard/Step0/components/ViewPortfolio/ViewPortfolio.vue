@@ -1,22 +1,22 @@
 <template>
-  <v-container class="view-portfolio body">
+  <v-container class="view-portfolio">
     <v-row>
-      <v-col cols="12" offset="2">
-        <h1 class="mt-5 mb-3 h1 font-weight-bold">My Porfolios WIP</h1>
+      <v-col cols="12">
+        <h1 class="mb-3 h1 font-weight-bold">My Porfolios</h1>
       </v-col>
     </v-row>
-    <v-row class="d-flex portfolio-banner">
-      <v-col class="h3" offset="2"
-        >My Portfolios</v-col
-      >
-      <v-col class="d-flex justify-space-around">
-        <v-btn class="primary" :ripple="false" to="/wizard/step-1">
-          Create a New Portfolio
-        </v-btn>
+    <v-row class="portfolio-banner">
+      <v-col class="d-flex justify-space-between align-center">
+        <div class="h3">My Portfolios</div>
+        <div>
+          <v-btn class="primary" :ripple="false" to="/wizard">
+            Create a New Portfolio
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="d-flex flex-row" offset="2">
+      <v-col class="d-flex flex-row">
         <v-card
           width="40rem"
           class="v-card ma-9 ml-0 body"
@@ -36,7 +36,6 @@
                 class="body font-weight-bold pa-2 ml-5 mt-4 rounded-0"
                 label
                 color="success"
-                outline
               >
                 DRAFT
               </v-chip>
@@ -98,7 +97,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Portfolios } from "../../../../types/Portfolios";
+import { Portfolios } from "types/Portfolios";
 @Component({})
 export default class ViewPortfolio extends Vue {
   get portfolios(): Portfolios {
