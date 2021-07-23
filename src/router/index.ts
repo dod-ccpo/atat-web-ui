@@ -35,25 +35,19 @@ const routes: Array<RouteConfig> = [
     path: "/wizard/step1",
     name: "step1",
     component: () =>
-      import(
-        /* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"
-      ),
+      import(/* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"),
   },
   {
     path: "/wizard",
     name: "wizard",
     component: () =>
-      import(
-        /* webpackChunkName: "style" */ "../wizard/wizard.vue"
-      ),
+      import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
   },
   {
     path: "/wizard/step2",
     name: "step2",
     component: () =>
-      import(
-        /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
-      ),
+      import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
   },
   {
     path: "/portfolios",

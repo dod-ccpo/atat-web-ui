@@ -22,7 +22,7 @@ import PermissionsModal from "./PermissionsModal.vue";
 @Component({
   components: {
     PortfolioPermissionsMenu,
-    PermissionsModal 
+    PermissionsModal,
   },
 })
 export default class InvitePortfolioManagersTable extends Vue {}

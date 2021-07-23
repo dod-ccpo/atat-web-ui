@@ -39,6 +39,23 @@
     padding: 10px 24px !important;
   }
 
+  &.link-button{
+    background-color: transparent !important; 
+    span{
+      color: $primary !important;
+      text-decoration: underline;
+      font-weight: normal;
+    }
+
+    &:hover::before{
+      background-color: transparent !important;
+      opacity: initial  !important;
+      box-shadow: none !important;
+      -ieVar-❗background-color: none!important;
+    }
+  
+  }
+
   &.btn-usa-gov-expand{
     font-weight: 600 !important;
     font-size: 1.3rem !important;
