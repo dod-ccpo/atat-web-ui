@@ -2,7 +2,6 @@
   <v-navigation-drawer
     app
     clipped
-    v-model="drawer"
     mini-variant-width="70"
     :mini-variant.sync="show"
     permanent

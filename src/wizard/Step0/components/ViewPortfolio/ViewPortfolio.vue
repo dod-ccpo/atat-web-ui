@@ -36,7 +36,6 @@
                 class="body font-weight-bold pa-2 ml-5 mt-4 rounded-0"
                 label
                 color="success"
-                outline
               >
                 DRAFT
               </v-chip>
