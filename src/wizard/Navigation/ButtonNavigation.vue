@@ -7,6 +7,7 @@
           :ripple="false"
           :key="button.id"
           :color="button.primary ? 'primary' : ''"
+          class="ml-4"
         >
         <!-- :class="[button.link ? 'link-button' :'' ,"ml-5"]" -->
 
