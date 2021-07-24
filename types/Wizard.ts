@@ -4,11 +4,9 @@ export interface NavButton {
   text: string;
   route?: string;
   link?: boolean;
-  primary?: boolean;
+  color?: string;
   disabled?: boolean;
   outlined?: boolean;
-  icon?: string;
-  iconPlacement?: string;
 }
 
 export interface NavButtonPanel {
