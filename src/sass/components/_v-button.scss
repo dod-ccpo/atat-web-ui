@@ -56,6 +56,15 @@
   
   }
 
+  &.v-btn--outlined{
+    &:hover::before{
+      background-color: transparent !important;
+      opacity: initial  !important;
+      box-shadow: none !important;
+      -ieVar-❗background-color: none!important;
+    }
+  }
+
   &.btn-usa-gov-expand{
     font-weight: 600 !important;
     font-size: 1.3rem !important;
