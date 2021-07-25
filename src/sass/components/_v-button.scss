@@ -1,4 +1,10 @@
 @import "../utils/colors.scss";
+.atat-button-hover{
+  background-color: transparent !important;
+  opacity: initial  !important;
+  box-shadow: none !important;
+  -ieVar-❗background-color: none!important;
+}
 
 .v-btn{
   box-shadow: none !important;
@@ -48,20 +54,14 @@
     }
 
     &:hover::before{
-      background-color: transparent !important;
-      opacity: initial  !important;
-      box-shadow: none !important;
-      -ieVar-❗background-color: none!important;
+      @extend .atat-button-hover;
     }
   
   }
 
   &.v-btn--outlined{
     &:hover::before{
-      background-color: transparent !important;
-      opacity: initial  !important;
-      box-shadow: none !important;
-      -ieVar-❗background-color: none!important;
+      @extend .atat-button-hover;
     }
   }
 
@@ -77,10 +77,7 @@
     // &:focus-visible::before,
     // &:focus-within::before
     &:hover::before{
-      background-color: transparent !important;
-      opacity: initial  !important;
-      box-shadow: none !important;
-      -ieVar-❗background-color: none!important;
+      @extend .atat-button-hover;
     }
   }
 
@@ -99,10 +96,12 @@
     background-color: transparent !important;
     color: #fff !important;
     &:hover::before,
+    &:focus::before,
     span:hover{
       background-color: transparent !important;
       -ieVar-❗background--color: transparent!important;
       box-shadow: none !important;
+
     }
 
 
