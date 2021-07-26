@@ -69,12 +69,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="2" offset="2">
+      <v-col cols="2">
         <hr class="hr" />
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" offset="2">
+      <v-col cols="6">
         <div class="h3 font-weight-bold mt-4 mb-7">Getting Started</div>
         <p class="dashboard-content">
           First, you will need to verify your contact information that was

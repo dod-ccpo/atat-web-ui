@@ -1,5 +1,5 @@
 <template>
-  <v-container class="view-portfolio">
+  <v-container fluid class="view-portfolio">
     <v-row>
       <v-col cols="12">
         <h1 class="mb-3 h1 font-weight-bold">My Porfolios</h1>

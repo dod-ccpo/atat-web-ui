@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <h3 class="h3">Invite Portfolio Managers Table Component</h3>
@@ -22,7 +22,7 @@ import PermissionsModal from "./PermissionsModal.vue";
 @Component({
   components: {
     PortfolioPermissionsMenu,
-    PermissionsModal 
+    PermissionsModal,
   },
 })
 export default class InvitePortfolioManagersTable extends Vue {}
