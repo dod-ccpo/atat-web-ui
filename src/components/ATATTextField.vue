@@ -6,7 +6,7 @@
         class="form-field-label my-1"
         :for="id + '_text_field'"
       >
-        Text Field label
+        {{ label }}
       </label>
     </v-flex>
     <v-flex>
@@ -39,6 +39,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private success!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
+  @Prop( {default: "text input"}) private label: string;
 
   //data
   private rounded = false;

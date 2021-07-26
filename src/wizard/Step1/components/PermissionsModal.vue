@@ -13,7 +13,10 @@
           permissions at once.
         </p>
         <br />
-        <ATATTextField>Email address</ATATTextField>
+        <ATATTextField label="Email address"
+                       :messages="['Messages']">
+          Email address
+        </ATATTextField>
         <br />
         <v-btn class="link-body-md">Add another portfolio manager</v-btn>
         <br /><br />
