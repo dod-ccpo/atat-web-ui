@@ -1,8 +1,20 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="step_1-portfolio-managers">
     <v-row>
       <v-col cols="12">
-        <h3 class="h3">Invite Portfolio Managers Table Component</h3>
+        <h3 class="h3">Invite Portfolio Managers</h3>
+        <p>
+          Invite others to join ATAT and give them access to areas of <br />
+          your Portfolio relevant to their work.
+        </p>
+        <v-btn
+          ripple="false"
+          id="'step_1-portfolio-managers-action"
+          color="primary"
+          @click="clickedAction()"
+          class="portfolio-managers-action mr-5"
+          >Invite Portfolio Managers</v-btn
+        >
       </v-col>
     </v-row>
     <v-row>
@@ -25,5 +37,9 @@ import PermissionsModal from "./PermissionsModal.vue";
     PermissionsModal,
   },
 })
-export default class InvitePortfolioManagersTable extends Vue {}
+export default class InvitePortfolioManagersTable extends Vue {
+  private clickedAction() {
+    return 0;
+  }
+}
 </script>
