@@ -13,13 +13,13 @@
           color="primary"
           @click="clickedAction()"
           class="portfolio-managers-action mr-5"
-          >Invite Portfolio Managers</v-btn
+          >Invite Portfolio Manager</v-btn
         >
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-        <PortfolioPermissionsMenu />
+        <PortfolioPermissionsMenu isDialogVisible="true" />
       </v-col>
     </v-row>
   </v-container>
