@@ -15,9 +15,26 @@
           users to identify the portfolio. you may consider naming based on your
           organization.
         </p>
-
-        <v-checkbox v-for="dod in dodComponents" :key="dod" :label="dod">
-        </v-checkbox>
+        <atat-text-area id="Portfolio Description" />
+        <p class="mt-0">
+          Add a brief one to two sentence description of your Portfolio.
+          Consider this your statement of work.
+        </p>
+        <div>
+          <v-row>
+            <v-col cols="8">
+              <hr class="hr" />
+            </v-col>
+          </v-row>
+        </div>
+        <div class="h5 font-weight-bold mt-4">
+          Select DoD component(s) funding your Portfolio
+        </div>
+        <p>
+          Select the Dod component(s) that will fund all applications within
+          this portfolio. Multiple DoD organizations can fund the same Portfolio
+        </p>
+        <v-checkbox v-for="dod in dodComponents" :key="dod" :label="dod" />
       </v-col>
     </v-row>
   </v-container>
