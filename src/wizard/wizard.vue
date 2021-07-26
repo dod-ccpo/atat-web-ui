@@ -61,6 +61,9 @@ export default class Wizard extends Vue {
         case "close":
           this.$router.push("portfolios");
           break;
+        // case "provision_cloud_resources":
+        //   alert("All is complete. Cloud resources are to be provisioned.");
+        //   break;
         default:
           break;
       }
