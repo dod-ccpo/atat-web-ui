@@ -1,5 +1,5 @@
 <template>
-  <v-container class="dashboard-body body-lg wizard-step-1-view">
+  <v-container fluid class="dashboard-body body-lg wizard-step-1-view">
     <v-row>
       <v-col cols="6">
         <h1 class="h1 step-1-title font-weight-bold">ATAT Cloud Services</h1>

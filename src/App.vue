@@ -3,7 +3,7 @@
     <SecurityBanner />
     <ATATSideBar v-if="loginStatus" />
     <ATATHeader />
-    <v-main style="padding-top: 90px;">
+    <v-main style="padding-top: 90px">
       <v-container fluid>
         <router-view> </router-view>
       </v-container>
