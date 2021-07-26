@@ -1,7 +1,8 @@
 <template>
   <v-dialog
     v-model="isDialogVisible"
-    max-width="500px"
+    max-width="600px"
+    persistent
     class="portfolio-managers-modal"
   >
     <v-card>
