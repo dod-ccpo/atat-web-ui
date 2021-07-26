@@ -6,7 +6,7 @@
         class="form-field-label my-1"
         :for="id + '_text_field'"
       >
-        Text Field label
+        {{ id }}
       </label>
     </v-flex>
     <v-flex>

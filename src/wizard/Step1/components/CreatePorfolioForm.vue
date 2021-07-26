@@ -8,7 +8,7 @@
     <v-row>
       <v-col cols="6">
         <v-form ref="form">
-          <atat-text-field id="Portfolio Name">Portfolio Name</atat-text-field>
+          <atat-text-field id="Portfolio Name" name="Portfolio Name" />
         </v-form>
         <p class="mt-0">
           Naming can be difficult. Choose a name that is descriptive enough for
