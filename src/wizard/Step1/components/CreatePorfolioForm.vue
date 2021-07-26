@@ -8,33 +8,44 @@
     <v-row>
       <v-col cols="6">
         <v-form ref="form">
-          <atat-text-field id="Portfolio Name" name="Portfolio Name" />
-        </v-form>
-        <p class="mt-0">
-          Naming can be difficult. Choose a name that is descriptive enough for
-          users to identify the portfolio. you may consider naming based on your
-          organization.
-        </p>
-        <atat-text-area id="Portfolio Description" />
-        <p class="mt-0">
-          Add a brief one to two sentence description of your Portfolio.
-          Consider this your statement of work.
-        </p>
-        <div>
+          <atat-text-field id="Portfolio Name" />
+          <p class="mb-11">
+            Naming can be difficult. Choose a name that is descriptive enough
+            for users to identify the portfolio. you may consider naming based
+            on your organization.
+          </p>
+          <atat-text-area id="Portfolio Description" />
+          <p>
+            Add a brief one to two sentence description of your Portfolio.
+            Consider this your statement of work.
+          </p>
+          <div>
+            <v-row>
+              <v-col cols="6">
+                <hr class="hr my-5" />
+              </v-col>
+            </v-row>
+          </div>
+          <div class="h5 font-weight-bold mt-6">
+            Select DoD component(s) funding your Portfolio
+          </div>
+          <p>
+            Select the Dod component(s) that will fund all applications within
+            this portfolio. Multiple DoD organizations can fund the same
+            Portfolio
+          </p>
+          <v-checkbox
+            class="ma-0 pa-0"
+            v-for="dod in dodComponents"
+            :key="dod"
+            :label="dod"
+          />
           <v-row>
-            <v-col cols="8">
-              <hr class="hr" />
+            <v-col cols="6">
+              <hr class="hr my-5" />
             </v-col>
           </v-row>
-        </div>
-        <div class="h5 font-weight-bold mt-4">
-          Select DoD component(s) funding your Portfolio
-        </div>
-        <p>
-          Select the Dod component(s) that will fund all applications within
-          this portfolio. Multiple DoD organizations can fund the same Portfolio
-        </p>
-        <v-checkbox v-for="dod in dodComponents" :key="dod" :label="dod" />
+        </v-form>
       </v-col>
     </v-row>
   </v-container>
