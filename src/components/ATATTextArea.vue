@@ -6,7 +6,8 @@
         class="form-field-label my-1"
         :for="id + '_text_field'"
       >
-        {{ id }}
+        {{ label }}
+        <span class="ml-2 optional" v-show="optional">Optional</span>
       </label>
     </v-flex>
     <v-flex>
@@ -20,6 +21,7 @@
         :error="error"
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
+        v-model="textAreaValue"
       >
       </v-textarea>
     </v-flex>
@@ -40,10 +42,12 @@ export default class ATATTextArea extends VTextarea {
   @Prop({ default: false }) private success!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
-
+  @Prop({ default: "input" }) private label!: string;
+  @Prop({ default: false }) private optional!: boolean;
   //data
   private rounded = false;
   private appendedOuterIcon = "";
+  private textAreaValue = "";
 
   private getStatusIcon() {
     if (this.success) {

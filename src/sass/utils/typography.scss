@@ -1,4 +1,5 @@
 // .v-application{
+@import "colors";
     .h1{
         font-size: 4.4rem;
         font-weight: 700;
@@ -69,6 +70,12 @@
         font-weight: 400;
         line-height: 2.4rem;
     }
+    .form-field-label-error{
+        font-size: 1.7rem;
+        font-weight: 400;
+        line-height: 2.4rem;
+        color: $error;
+    }
     .link-body-lg{
         font-size: 1.9rem;
         font-weight: 400;
@@ -93,5 +100,12 @@
         -ieVar-❗border-color: var(--v-hr_color-base) !important;
         border-width: 1px !important;
         border-style: solid !important;
+    }
+
+    .optional{
+        font-size: 1.3rem;
+        font-weight: 400;
+        line-height: 1.7rem;
+        color: #71767a;
     }
 // }

@@ -7,14 +7,24 @@
     </v-row>
     <v-row>
       <v-col cols="6">
-        <v-form ref="form">
-          <atat-text-field id="Portfolio Name" />
+        <v-form ref="form" lazy-validation v-model="valid">
+          <atat-text-field
+            v-model="portfolioName"
+            id="Portfolio Name"
+            label="Portfolio Name"
+            :rules="portfolioNameRules"
+          />
           <p class="mb-11">
             Naming can be difficult. Choose a name that is descriptive enough
             for users to identify the portfolio. you may consider naming based
             on your organization.
           </p>
-          <atat-text-area id="Portfolio Description" />
+          <atat-text-area
+            v-model="portfolioDescription"
+            optional="true"
+            id="Portfolio Description"
+            label="Portfolio Description"
+          />
           <p>
             Add a brief one to two sentence description of your Portfolio.
             Consider this your statement of work.
@@ -35,10 +45,13 @@
             Portfolio
           </p>
           <v-checkbox
+            :rules="fundingRules"
             class="ma-0 pa-0"
             v-for="dod in dodComponents"
+            v-model="funding"
             :key="dod"
             :label="dod"
+            :value="dod"
           />
           <v-row>
             <v-col cols="6">
@@ -56,7 +69,8 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class CreatePorfolioForm extends Vue {
+export default class CreatePortfolioForm extends Vue {
+  private valid = true;
   private dodComponents = [
     "Air Force",
     "Army",
@@ -68,6 +82,13 @@ export default class CreatePorfolioForm extends Vue {
     "Defense Agency and Field Activity (DAFA)",
     "Office of the Secretary of Defense (OSD) /Principal Staff Assitants",
     "National Security Agency (NSA)",
+  ];
+  private portfolioName = "";
+  private portfolioNameRules = [(v: string) => !!v || "Name is required"];
+  private portfolioDescription = "";
+  private funding = [];
+  private fundingRules = [
+    this.funding.length > 0 || "At least one item should be selected",
   ];
 }
 </script>

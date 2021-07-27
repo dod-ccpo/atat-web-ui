@@ -6,11 +6,13 @@
         class="form-field-label my-1"
         :for="id + '_text_field'"
       >
-        {{ id }}
+        {{ label }}
+        <span v-show="optional">Optional</span>
       </label>
     </v-flex>
     <v-flex>
       <v-text-field
+        :rules="rules"
         :id="id + '_text_field'"
         outlined
         dense
@@ -19,6 +21,7 @@
         :height="42"
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
+        v-model="textFieldValue"
       >
       </v-text-field>
     </v-flex>
@@ -39,10 +42,13 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private success!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
+  @Prop({ default: "input" }) private label!: string;
+  @Prop({ default: false }) private optional!: boolean;
 
   //data
   private rounded = false;
   private appendedOuterIcon = "";
+  private textFieldValue = "";
 
   private getStatusIcon() {
     if (this.success) {
