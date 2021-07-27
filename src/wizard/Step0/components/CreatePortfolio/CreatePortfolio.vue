@@ -44,7 +44,13 @@
     <v-row>
       <v-col cols="6">
         <div :icon="false" class="bg-base-lightest body-lg border px-13 py-5">
-          <v-btn class="primary" block :ripple="false" to="/wizard">
+          <v-btn
+            id="btn-create-new-portfolio"
+            class="primary"
+            block
+            :ripple="false"
+            to="/wizard"
+          >
             Create a New Portfolio
           </v-btn>
         </div>

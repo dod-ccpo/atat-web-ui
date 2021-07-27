@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import Stepper from "./Navigation/Stepper.vue";
+import Stepper from "./Navigation/StepperNavigation.vue";
 import ButtonNavigation from "./Navigation/ButtonNavigation.vue";
 import Step1 from "./Step1/views/Step1.vue";
 import Step2 from "./Step2/views/Step2.vue";

@@ -19,3 +19,18 @@ export interface NavButtonPanel {
 export interface NavigationButtons {
   NavButtonPanels: NavButtonPanel []
 }
+
+export interface Step{
+  id?: number,
+  step: number,
+  text: string,
+  primary?: boolean,
+  error?: boolean,
+  success?: boolean,
+  disabled?: boolean,
+  route?: string,
+  action?: string[];
+}
+export interface Stepper{
+  Steps: Step[]
+}

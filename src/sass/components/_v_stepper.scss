@@ -1,0 +1,40 @@
+@import "../utils/colors.scss";
+@import "../utils/typography.scss";
+.v-stepper{
+  &.wizard-stepper{
+    .v-stepper__header{
+      .v-stepper__step{
+        align-items: start;
+        flex-basis: 50px;
+        .v-stepper__step__step{
+          @extend .stepper-step-lg;
+          height: 48px;
+          width: 48px;
+          border: #fff 4px solid !important;
+        }
+        .v-stepper__label{
+          @extend .body-lg
+        }
+        &.v-stepper__step--active{
+          .v-stepper__step__step{
+            border: #fff 4px solid !important;
+            background-color: $primary !important;
+            color: #fff !important;
+          }
+        }
+        &.v-stepper__step--inactive{
+          .v-stepper__step__step{
+            border: $base_lighter 4px solid !important;
+            background-color: #fff !important;
+            color: $primary_darken !important;
+          }
+        }
+      }
+     
+      hr{
+        margin: 44px -64px 0;
+        border-width: 4px;
+      }
+    }
+  }
+}
