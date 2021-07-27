@@ -1,7 +1,13 @@
 <template>
   <div class="portfolio-managers-modal">
     hola {{ isDialogVisible }}
-    <v-dialog v-model="isDialogVisible" max-width="600px" persistent>
+    <v-dialog
+      v-model="isDialogVisible"
+      max-width="800px"
+      persistent
+      content-class="v-dialog v-dialog--active v-dialog--persistent portfolio-managers-modal-dialog"
+      class="portfolio-managers-modal-dialog"
+    >
       <v-card>
         <v-card-title>
           <h2 class="h2">Invite Portfolio Manager</h2>
@@ -17,31 +23,49 @@
             Email address
           </ATATTextField>
           <br />
-          <v-btn class="link-body-md"> Add another portfolio manager </v-btn>
+          <v-btn class="link-body-md" :ripple="false">
+            Add another portfolio manager
+          </v-btn>
           <br /><br />
           <h3 class="h3">Portfolio Permissions</h3>
           <div class="permissions-set-list">
             <div class="permission-set-checkbox">
-              <v-checkbox class="ma-0 pa-0" label="Edit Funding" />
+              <v-checkbox
+                class="ma-0 pa-0"
+                :ripple="false"
+                label="Edit Funding"
+              />
               <p>Can add or modify Task Orders to fund this Portfolio</p>
             </div>
             <div class="permission-set-checkbox">
-              <v-checkbox class="ma-0 pa-0" label="Edit Funding" />
+              <v-checkbox
+                class="ma-0 pa-0"
+                :ripple="false"
+                label="Edit Funding"
+              />
               <p>Can add or modify Task Orders to fund this Portfolio</p>
             </div>
             <div class="permission-set-checkbox">
-              <v-checkbox class="ma-0 pa-0" label="Edit Funding" />
+              <v-checkbox
+                class="ma-0 pa-0"
+                :ripple="false"
+                label="Edit Funding"
+              />
               <p>Can add or modify Task Orders to fund this Portfolio</p>
             </div>
             <div class="permission-set-checkbox">
-              <v-checkbox class="ma-0 pa-0" label="Edit Funding" />
+              <v-checkbox
+                class="ma-0 pa-0"
+                :ripple="false"
+                label="Edit Funding"
+              />
               <p>Can add or modify Task Orders to fund this Portfolio</p>
             </div>
           </div>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="text-rigth">
           <v-btn color="primary" text @click="doCancel()"> Close </v-btn>
-          <v-btn color="primary" text @click="doSave()"> Save </v-btn>
+          <v-btn color="primary" @click="doSave()"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -93,6 +117,16 @@ export default class PermissionsModal extends Vue {
 </script>
 
 <style lang="scss">
+.portfolio-managers-modal-dialog {
+  border-radius: 0;
+  .v-card.v-sheet {
+    padding: 16px;
+    .v-card__text {
+      padding: 20px 56px 40px 24px;
+      overflow-x: scroll;
+    }
+  }
+}
 .permissions-set-list {
   flex: none;
   order: 1;
