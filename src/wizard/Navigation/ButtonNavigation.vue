@@ -134,7 +134,7 @@ export default class ButtonNavigation extends Vue {
             text: "Save and Close",
             link: true,
             id: "save_and_close",
-            action: ["save,close"],
+            action: ["save", "close"],
           },
           {
             text: "Previous",
