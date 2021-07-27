@@ -8,7 +8,7 @@
           your Portfolio relevant to their work.
         </p>
         <v-btn
-          ripple="false"
+          :ripple="false"
           id="'step_1-portfolio-managers-action"
           color="primary"
           @click="clickedAction"
@@ -19,10 +19,14 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <PortfolioPermissionsMenu @modalAction="modalAction"
-                                  :isDialogVisible="isPermissionDialogOpen" />
+        <PortfolioPermissionsMenu :is-dialog-open="isPermissionDialogOpen" />
       </v-col>
     </v-row>
+    <pre>
+      state: 
+      isPermissionDialogOpen: {{ isPermissionDialogOpen }}
+
+    </pre>
   </v-container>
 </template>
 
