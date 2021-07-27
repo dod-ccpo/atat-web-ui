@@ -63,9 +63,9 @@
             </div>
           </div>
         </v-card-text>
-        <v-card-actions class="text-rigth">
+        <v-card-actions class="d-flex justify-end">
           <v-btn color="primary" text @click="doCancel()"> Close </v-btn>
-          <v-btn color="primary" @click="doSave()"> Save </v-btn>
+          <v-btn color="primary" @click="doSave()"> Send Invitation </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -118,12 +118,26 @@ export default class PermissionsModal extends Vue {
 
 <style lang="scss">
 .portfolio-managers-modal-dialog {
+  position: relative;
+  display: block;
+  overflow: hidden;
   border-radius: 0;
   .v-card.v-sheet {
     padding: 16px;
     .v-card__text {
       padding: 20px 56px 40px 24px;
       overflow-x: scroll;
+    }
+    .v-card__actions{
+      position:absolute; 
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      align-items: flex-end;
+      padding: 16px 24px;
+      bottom: 0; 
+      left: 0px;
+      background: #F0F0F0;
     }
   }
 }
