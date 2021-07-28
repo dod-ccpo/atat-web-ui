@@ -99,9 +99,9 @@ export default class CreatePortfolioForm extends Vue {
     //let the DOM update
     this.$nextTick(() => {
       //manually trigger Vuetify validation
-      if (this.$refs.form.validate()) {
-        //it’s valid, do work
-      }
+      // if (this.$refs.form.validate()) {
+      //   //it’s valid, do work
+      // }
       //if not valid, errors will be automatically displayed
     });
   }
