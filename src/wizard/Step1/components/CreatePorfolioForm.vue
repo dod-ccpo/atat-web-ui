@@ -46,12 +46,13 @@
           </p>
           <v-checkbox
             :rules="rules.fundingRules"
-            class="ma-0 pa-0"
+            class="ma-2 pa-0"
             v-for="dod in dodComponents"
             v-model="funding"
             :key="dod"
             :label="dod"
             :value="dod"
+            hide-details="auto"
           />
           <v-row>
             <v-col cols="6">
