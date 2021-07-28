@@ -45,7 +45,7 @@
             Portfolio
           </p>
           <v-checkbox
-            :rules="fundingRules"
+            :rules="rules.fundingRules"
             class="ma-0 pa-0"
             v-for="dod in dodComponents"
             v-model="funding"
@@ -58,6 +58,7 @@
               <hr class="hr my-5" />
             </v-col>
           </v-row>
+          <v-btn :disabled="!valid" @click="onSubmit"> temporary submit </v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -99,9 +100,9 @@ export default class CreatePortfolioForm extends Vue {
     //let the DOM update
     this.$nextTick(() => {
       //manually trigger Vuetify validation
-      // if (this.$refs.form.validate()) {
-      //   //it’s valid, do work
-      // }
+      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+        //it’s valid, do work
+      }
       //if not valid, errors will be automatically displayed
     });
   }
