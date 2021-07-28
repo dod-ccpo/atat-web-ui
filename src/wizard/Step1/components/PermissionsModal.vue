@@ -124,20 +124,31 @@ export default class PermissionsModal extends Vue {
   border-radius: 0;
   .v-card.v-sheet {
     padding: 16px;
-    .v-card__text {
-      padding: 20px 56px 40px 24px;
-      overflow-x: scroll;
+    .v-card__title {
+      height: 120px;
+      position: absolute;
+      background-color: white;
+      z-index: 10;
     }
-    .v-card__actions{
-      position:absolute; 
+    .v-card__text {
+      position: relative;
+      padding: 20px 56px 40px 24px;
+      height: 60vh;
+      margin-top: 120px;
+      margin-bottom: 72px;
+      overflow-y: auto;
+    }
+    .v-card__actions {
+      position: absolute;
+      z-index: 10;
       display: flex;
       width: 100%;
       flex-direction: row;
       align-items: flex-end;
       padding: 16px 24px;
-      bottom: 0; 
+      bottom: 0;
       left: 0px;
-      background: #F0F0F0;
+      background: #f0f0f0;
     }
   }
 }
