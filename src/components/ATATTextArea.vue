@@ -22,6 +22,7 @@
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
         v-model="textAreaValue"
+        hide-details="auto"
       >
       </v-textarea>
     </v-flex>

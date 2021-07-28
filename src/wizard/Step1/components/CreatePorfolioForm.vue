@@ -12,7 +12,7 @@
             v-model="portfolioName"
             id="Portfolio Name"
             label="Portfolio Name"
-            :rules="portfolioNameRules"
+            :rules="rules.portfolioNameRules"
           />
           <p class="mb-11">
             Naming can be difficult. Choose a name that is descriptive enough
@@ -84,11 +84,26 @@ export default class CreatePortfolioForm extends Vue {
     "National Security Agency (NSA)",
   ];
   private portfolioName = "";
-  private portfolioNameRules = [(v: string) => !!v || "Name is required"];
   private portfolioDescription = "";
   private funding = [];
-  private fundingRules = [
-    this.funding.length > 0 || "At least one item should be selected",
-  ];
+  private rules = {};
+
+  public onSubmit() {
+    //replace empty rules with real rules
+    this.rules = {
+      portfolioNameRules: [(v: string) => !!v || "Name is required"],
+      fundingRules: [
+        this.funding.length > 0 || "At least one item should be selected",
+      ],
+    };
+    //let the DOM update
+    this.$nextTick(() => {
+      //manually trigger Vuetify validation
+      if (this.$refs.form.validate()) {
+        //it’s valid, do work
+      }
+      //if not valid, errors will be automatically displayed
+    });
+  }
 }
 </script>

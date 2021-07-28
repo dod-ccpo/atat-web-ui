@@ -22,8 +22,8 @@ import USAGovBanner from "./components/USAGovBanner.vue";
 // wizard
 import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfolio.vue";
 import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
-Vue.component('atat-text-field', ATATTextField);
 Vue.component('atat-text-area', ATATTextArea);
+Vue.component('atat-text-field', ATATTextField);
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
 
