@@ -5,11 +5,6 @@
         <h2 class="h2">Portfolio Details</h2>
       </v-col>
     </v-row>
-    <pre>
-      portfolioName: {{ portfolioName }}
-      portfolioDescription: {{ portfolioDescription }}
-      funding: {{ funding }}
-    </pre>
     <v-row>
       <v-col cols="6">
         <v-form ref="form" lazy-validation v-model="valid">
