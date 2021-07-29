@@ -1,7 +1,6 @@
 <template>
   <v-toolbar
     elevation="0"
-    v-model="stepNumber"
     width="100%"
     class="d-flex justify-end"
     style="position: fixed; bottom: 40px; left: 0px"
@@ -14,6 +13,7 @@
       :disabled="button.disabled"
       :outlined="button.outlined"
       :color="button.color"
+      v-model="stepNumber"
       @click="clickedAction(button.action)"
       :class="[button.link ? 'link-button' : '', 'mr-5']"
       :width="button.width || 225"
@@ -31,7 +31,7 @@ import { NavButtonPanel, NavigationButtons } from "../../../types/Wizard";
 @Component({})
 export default class ButtonNavigation extends Vue {
   @Prop({ default: 1 }) private stepNumber!: number;
-
+  private currentStepNumber = this.stepNumber;
   @Emit()
   private clickedAction(actions: string[]): string[] {
     return actions;

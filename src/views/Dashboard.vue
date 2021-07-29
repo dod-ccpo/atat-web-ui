@@ -70,7 +70,7 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <hr class="hr" />
+        <hr class="hr border-base-lighter" />
       </v-col>
     </v-row>
     <v-row>

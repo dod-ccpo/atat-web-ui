@@ -28,12 +28,9 @@
         }
         .v-stepper__step__step{
           @extend .step;
-
         }
         .v-stepper__label{
           @extend .body-lg;
-          // position: fixed;
-          // margin-top: 53px;
           color: $primary_darken;
         }
         &.v-stepper__step--inactive,
@@ -42,6 +39,9 @@
             border: $base_lighter 4px solid !important;
             background-color: #fff !important;
             color: $primary_darken !important;
+          }
+          .v-ripple__container{
+            display: none !important;
           }
         }
         &.v-stepper__step--active{

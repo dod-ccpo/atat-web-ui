@@ -2,7 +2,11 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <Stepper :step-number="stepNumber" @clicked-action="goToStep" />
+        <Stepper
+          :step-number="stepNumber"
+          :current-step-number.sync="stepNumber"
+          @clicked-action="goToStep"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -70,7 +74,7 @@ export default class Wizard extends Vue {
     }, this);
   }
 
-  public goToStep(currStepNumber: number) {
+  public goToStep(currStepNumber: number): void {
     this.stepNumber = currStepNumber;
   }
 }

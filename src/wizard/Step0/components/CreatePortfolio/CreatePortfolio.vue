@@ -37,7 +37,7 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <hr class="hr step-1-divider" />
+        <hr class="hr step-1-divider border-base-lighter" />
       </v-col>
     </v-row>
     <br />

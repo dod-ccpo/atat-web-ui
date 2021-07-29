@@ -7,8 +7,8 @@
           width="100%"
           alt-labels
           class="wizard-stepper"
-          non-linear
-          v-model="currentStepNumber"
+          complete
+          v-model="getStepNumber"
         >
           <v-stepper-header>
             <template v-for="(step, index) in stepperControl.Steps">
@@ -16,7 +16,7 @@
                 editable
                 :step="index + 1"
                 :key="'stepper_' + index"
-                @click="clickedAction(index+1)"
+                @click="clickedAction(index + 1, this)"
               >
                 {{ step.description }}
               </v-stepper-step>
@@ -55,7 +55,7 @@ import { Stepper } from "types/Wizard";
 @Component({})
 export default class StepperNavigation extends Vue {
   @Prop({ default: 1 }) private stepNumber!: number;
-  private currentStepNumber = 1;
+  private currentStepNumber = this.stepNumber;
   public stepperControl: Stepper = {
     Steps: [
       {
@@ -81,27 +81,24 @@ export default class StepperNavigation extends Vue {
     ],
   };
 
-  @Emit() 
-  public clickedAction(e: MouseEvent, stepSelected: number): number {
-    debugger;
-    e.preventDefault();
+  @Emit()
+  public clickedAction(stepSelected: number): number {
     return stepSelected;
   }
 
   public getStepDescription(): string {
     return this.stepperControl.Steps[this.stepNumber - 1].description;
   }
-  
+
   get getStepNumber(): number {
     return this.stepNumber;
   }
 
-  set getStepNumber(newValue: number){
+  set getStepNumber(newValue: number) {
     this.currentStepNumber = newValue + 1;
   }
 
   public getDividerColor(dividerNumber: number): string {
-    console.log(dividerNumber);
     return dividerNumber + 1 <= this.stepNumber
       ? "bg-primary"
       : "bg-base-lighter";
