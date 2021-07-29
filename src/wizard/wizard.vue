@@ -56,6 +56,7 @@ export default class Wizard extends Vue {
           this.$router.push("portfolios");
           break;
         case "save":
+          console.log(this.$refs.form);
           alert("Data has been saved");
           break;
         case "close":

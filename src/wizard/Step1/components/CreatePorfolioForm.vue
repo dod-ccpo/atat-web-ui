@@ -107,13 +107,10 @@ export default class CreatePortfolioForm extends Vue {
         this.funding.length > 0 || "At least one item should be selected",
       ],
     };
-    //let the DOM update
     this.$nextTick(() => {
-      //manually trigger Vuetify validation
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        //it’s valid, do work
+        alert("data saved");
       }
-      //if not valid, errors will be automatically displayed
     });
   }
 }
