@@ -11,7 +11,7 @@
           :ripple="false"
           id="'step_1-portfolio-managers-action"
           color="primary"
-          @click="clickedAction"
+          @click="modalAction('open-add-manager-dialog')"
           class="portfolio-managers-action mr-5"
           >Invite Portfolio Manager</v-btn
         >
@@ -19,7 +19,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <PortfolioPermissionsMenu :isDialogOpen="true" />
+        <PermissionsModal :isDialogOpen="isPermissionDialogOpen" />
       </v-col>
     </v-row>
     <pre>
@@ -47,10 +47,13 @@ export default class InvitePortfolioManagersTable extends Vue {
   private isPermissionDialogOpen = false;
   private clickedAction(): void {
     console.log("action on invite portfolio");
-    this.isPermissionDialogOpen = true;
+    this.isPermissionDialogOpen = false;
   }
   private modalAction(action: ActionObject): void {
     console.log("modalAction on invite portfolio", action);
+    if (action === "open-add-manager-dialog" ){
+      this.isPermissionDialogOpen =true;
+    }
   }
 }
 </script>

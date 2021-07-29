@@ -24,15 +24,18 @@
               currentManagerEmail: {{ currentManagerEmail }}
               currentPermisionsSet: {{ currentPermisionsSet }}
           </pre>
-          <ATATTextField
-            label="Email address"
+          <label class="">Email address</label>
+          <v-text-field
+            outlined
+            dense
+            height="42"
             :messages="['Messages']"
             v-model="currentManagerEmail"
+            placeholder="add e-mail"
             hide-details="true"
             class="invite-portfolio-manager-email"
           >
-            Email address
-          </ATATTextField>
+          </v-text-field>
           <v-btn
             class="add-portfolio-manager-email link-button body-lg"
             :ripple="false"
@@ -52,6 +55,7 @@
                 label="Edit Funding"
                 value="EDIT_TASK_ORDER"
                 hide-details="true"
+                v-model="currentPermisionsSet"
               />
               <p class="permission-set-description">
                 Can add or modify Task Orders to fund this Portfolio
@@ -62,8 +66,9 @@
                 class="ma-0 pa-0"
                 :ripple="false"
                 label="Edit Application"
-                value="EDIT_TASK_ORDER"
+                value="EDIT_APPLICATION"
                 hide-details="true"
+                v-model="currentPermisionsSet"
               />
               <p class="permission-set-description">
                 Can create, edit and remove Applications in this Portfolio
@@ -74,8 +79,9 @@
                 class="ma-0 pa-0"
                 :ripple="false"
                 label="Manage Reporting"
-                value="EDIT_TASK_ORDER"
+                value="VIEW_PORTFOLIO_FUNDING"
                 hide-details="true"
+                v-model="currentPermisionsSet"
               />
               <p class="permission-set-description">
                 Can view and export reports about this Portfolio’s funding and
@@ -87,8 +93,9 @@
                 class="ma-0 pa-0"
                 :ripple="false"
                 label="Edit Portfolio"
-                value="EDIT_TASK_ORDER"
+                value="EDIT_PORTFOLIO_POC"
                 hide-details="true"
+                v-model="currentPermisionsSet"
               />
               <p class="permission-set-description">
                 Can update Portfolio settings, add Portfolio Managers and delete
@@ -138,11 +145,11 @@ export interface PortfolioManagers {
   components: { ATATTextField },
 })
 export default class PermissionsModal extends Vue {
-  @Prop({ default: true }) private isDialogOpen!: boolean;
+  @Prop({ default: false }) private isDialogOpen!: boolean;
 
   private portfolioID = "ptfl-00001-001";
   private listManagers: string[] = [];
-  private currentManagerEmail = "";
+  private currentManagerEmail = "blue";
   private currentPermisionsSet: string[] = [];
 
   get getCurrentPermisionsSet(): string[] {
