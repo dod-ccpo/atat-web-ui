@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <Stepper :step-number="stepNumber" />
+        <Stepper :step-number="stepNumber" @clicked-action="goToStep" />
       </v-col>
     </v-row>
     <v-row>
@@ -67,7 +67,11 @@ export default class Wizard extends Vue {
         default:
           break;
       }
-    });
+    }, this);
+  }
+
+  public goToStep(currStepNumber: number) {
+    this.stepNumber = currStepNumber;
   }
 }
 </script>

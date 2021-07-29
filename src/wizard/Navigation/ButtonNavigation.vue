@@ -1,6 +1,7 @@
 <template>
   <v-toolbar
     elevation="0"
+    v-model="stepNumber"
     width="100%"
     class="d-flex justify-end"
     style="position: fixed; bottom: 40px; left: 0px"
