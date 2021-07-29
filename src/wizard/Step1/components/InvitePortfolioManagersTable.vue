@@ -19,7 +19,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <PortfolioPermissionsMenu :is-dialog-open="isPermissionDialogOpen" />
+        <PortfolioPermissionsMenu :isDialogOpen="true" />
       </v-col>
     </v-row>
     <pre>

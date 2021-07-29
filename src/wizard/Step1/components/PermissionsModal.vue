@@ -1,8 +1,8 @@
 <template>
   <div class="portfolio-managers-modal">
-    hola {{ isDialogVisible }}
+    hola {{ isDialogOpen }}
     <v-dialog
-      v-model="isDialogVisible"
+      v-model="isDialogOpen"
       max-width="800px"
       persistent
       content-class="v-dialog v-dialog--active v-dialog--persistent portfolio-managers-modal-dialog"
@@ -19,12 +19,28 @@
           <br />
         </v-card-title>
         <v-card-text>
-          <ATATTextField label="Email address" :messages="['Messages']">
+          <pre class="">
+              listManagers: {{ listManagers }}
+              currentManagerEmail: {{ currentManagerEmail }}
+              currentPermisionsSet: {{ currentPermisionsSet }}
+          </pre>
+          <ATATTextField
+            label="Email address"
+            :messages="['Messages']"
+            v-model="currentManagerEmail"
+            hide-details="true"
+            class="invite-portfolio-manager-email"
+          >
             Email address
           </ATATTextField>
-          <br />
-          <v-btn class="link-body-md" :ripple="false">
-            Add another portfolio manager
+          <v-btn
+            class="add-portfolio-manager-email link-button body-lg"
+            :ripple="false"
+          >
+            <v-icon class="add-portfolio-manager-email__icon" left>
+              mdi-plus-circle-outline
+            </v-icon>
+            <strong> Add another portfolio manager </strong>
           </v-btn>
           <br /><br />
           <h3 class="h3">Portfolio Permissions</h3>
@@ -34,32 +50,53 @@
                 class="ma-0 pa-0"
                 :ripple="false"
                 label="Edit Funding"
+                value="EDIT_TASK_ORDER"
+                hide-details="true"
               />
-              <p>Can add or modify Task Orders to fund this Portfolio</p>
+              <p class="permission-set-description">
+                Can add or modify Task Orders to fund this Portfolio
+              </p>
             </div>
             <div class="permission-set-checkbox">
               <v-checkbox
                 class="ma-0 pa-0"
                 :ripple="false"
-                label="Edit Funding"
+                label="Edit Application"
+                value="EDIT_TASK_ORDER"
+                hide-details="true"
               />
-              <p>Can add or modify Task Orders to fund this Portfolio</p>
+              <p class="permission-set-description">
+                Can create, edit and remove Applications in this Portfolio
+              </p>
             </div>
             <div class="permission-set-checkbox">
               <v-checkbox
                 class="ma-0 pa-0"
                 :ripple="false"
-                label="Edit Funding"
+                label="Manage Reporting"
+                value="EDIT_TASK_ORDER"
+                hide-details="true"
               />
-              <p>Can add or modify Task Orders to fund this Portfolio</p>
+              <p class="permission-set-description">
+                Can view and export reports about this Portfolio’s funding and
+                expenditures
+              </p>
             </div>
             <div class="permission-set-checkbox">
               <v-checkbox
                 class="ma-0 pa-0"
                 :ripple="false"
-                label="Edit Funding"
+                label="Edit Portfolio"
+                value="EDIT_TASK_ORDER"
+                hide-details="true"
               />
-              <p>Can add or modify Task Orders to fund this Portfolio</p>
+              <p class="permission-set-description">
+                Can update Portfolio settings, add Portfolio Managers and delete
+                this Portfolio <br />
+                NOTE: The option to delete this Portfolio will only be available
+                as a draft. A Portfolio cannot be removed from ATAT after it has
+                been provisioned.
+              </p>
             </div>
           </div>
         </v-card-text>
@@ -86,11 +123,31 @@ export interface ActionObject {
   data: KeyValuePair[];
 }
 
+export interface Manager {
+  name?: string;
+  email: string;
+  permissionSets?: string[];
+}
+
+export interface PortfolioManagers {
+  portfolioID?: string;
+  managers: Manager[];
+}
+
 @Component({
   components: { ATATTextField },
 })
 export default class PermissionsModal extends Vue {
-  @Prop({ default: true }) private isDialogVisible!: boolean;
+  @Prop({ default: true }) private isDialogOpen!: boolean;
+
+  private portfolioID = "ptfl-00001-001";
+  private listManagers: string[] = [];
+  private currentManagerEmail = "";
+  private currentPermisionsSet: string[] = [];
+
+  get getCurrentPermisionsSet(): string[] {
+    return this.currentPermisionsSet;
+  }
 
   @Emit()
   private modalAction(action: string, data: KeyValuePair[] = []): ActionObject {
@@ -101,6 +158,20 @@ export default class PermissionsModal extends Vue {
     };
   }
 
+  private doAddManager(): void {
+    if (this.currentManagerEmail && this.currentManagerEmail != "") {
+      this.listManagers.unshift(this.currentManagerEmail);
+    }
+  }
+  private doRemoveManager(pemissionID: string): void {
+    this.currentPermisionsSet = this.currentPermisionsSet.filter(
+      (permission) => permission != pemissionID
+    );
+  }
+
+  private doSelectPermission(pemissionID: string): void {
+    this.currentPermisionsSet.unshift(pemissionID);
+  }
   private doCancel(): void {
     // do something
     // emit action and object
@@ -135,7 +206,7 @@ export default class PermissionsModal extends Vue {
       padding: 20px 56px 40px 24px;
       height: 60vh;
       margin-top: 120px;
-      margin-bottom: 72px;
+      margin-bottom: 60px;
       overflow-y: auto;
     }
     .v-card__actions {
@@ -177,5 +248,22 @@ export default class PermissionsModal extends Vue {
     flex-grow: 0;
     margin: 16px 0px 0px;
   }
+  .permission-set-description {
+  }
+}
+.invite-portfolio-manager-email {
+  .v-input__control {
+    font-family: Source Sans Pro;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 24px;
+  }
+}
+.add-portfolio-manager-email__icon {
+  text-decoration: none;
+  text-decoration-color: transparent;
+  text-decoration-style: unset;
+  text-decoration-line: none;
 }
 </style>
