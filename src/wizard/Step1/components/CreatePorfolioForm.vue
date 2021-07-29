@@ -13,57 +13,26 @@
     <v-row>
       <v-col cols="6">
         <v-form ref="form" lazy-validation v-model="valid">
-          <!--          <atat-text-field-->
-          <!--            v-model="portfolioName"-->
-          <!--            id="Portfolio Name"-->
-          <!--            label="Portfolio Name"-->
-          <!--            :rules="rules.portfolioNameRules"-->
-          <!--          />-->
-
-          <label class="form-field-label my-1"> Portfolio Name </label>
-          <v-text-field
-            :rules="rules.portfolioNameRules"
-            :id="id + '_text_field'"
-            outlined
-            dense
-            :success="success"
-            :error="error"
-            :height="42"
-            :append-outer-icon="appendedOuterIcon"
-            :rounded="rounded"
+          <atat-text-field
             v-model="portfolioName"
-            hide-details="auto"
-          >
-          </v-text-field>
+            id="Portfolio Name"
+            label="Portfolio Name"
+            @blur-action="getPortfolioName"
+            :rules="rules.portfolioNameRules"
+          />
+
           <p class="mb-11">
             Naming can be difficult. Choose a name that is descriptive enough
             for users to identify the portfolio. you may consider naming based
             on your organization.
           </p>
-          <!--          <atat-text-area-->
-          <!--            v-model="portfolioDescription"-->
-          <!--            optional="true"-->
-          <!--            id="Portfolio Description"-->
-          <!--            label="Portfolio Description"-->
-          <!--          />-->
-          <label class="form-field-label my-1">
-            Portfolio Description
-            <span class="ml-2 optional">Optional</span>
-          </label>
-
-          <v-textarea
-            auto-grow
-            rows="4"
-            :id="id + '_text_field'"
-            outlined
-            dense
-            :success="success"
-            :error="error"
-            :append-outer-icon="appendedOuterIcon"
-            :rounded="rounded"
+          <atat-text-area
             v-model="portfolioDescription"
-            hide-details="auto"
-          ></v-textarea>
+            optional="true"
+            id="Portfolio Description"
+            label="Portfolio Description"
+            @blur-action="getPortfolioDescription"
+          />
           <p>
             Add a brief one to two sentence description of your Portfolio.
             Consider this your statement of work.
@@ -111,6 +80,12 @@ import { Component } from "vue-property-decorator";
 
 @Component({})
 export default class CreatePortfolioForm extends Vue {
+  private getPortfolioName(name: string): void {
+    this.portfolioName = name;
+  }
+  private getPortfolioDescription(name: string): void {
+    this.portfolioDescription = name;
+  }
   private valid = true;
   private dodComponents = [
     "Air Force",

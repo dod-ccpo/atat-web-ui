@@ -23,6 +23,7 @@
         :rounded="rounded"
         v-model="textFieldValue"
         hide-details="auto"
+        @blur="blurAction"
       >
       </v-text-field>
     </v-flex>
@@ -31,7 +32,7 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Emit, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextField extends VTextField {
@@ -46,6 +47,10 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "input" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
 
+  @Emit()
+  private blurAction(e: MouseEvent): string {
+    return this.textFieldValue;
+  }
   //data
   private rounded = false;
   private appendedOuterIcon = "";

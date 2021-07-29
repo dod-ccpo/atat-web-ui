@@ -23,6 +23,7 @@
         :rounded="rounded"
         v-model="textAreaValue"
         hide-details="auto"
+        @blur="blurAction"
       >
       </v-textarea>
     </v-flex>
@@ -31,7 +32,7 @@
 
 <script lang="ts">
 import { VTextarea } from "vuetify/lib";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Emit, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextArea extends VTextarea {
@@ -45,6 +46,11 @@ export default class ATATTextArea extends VTextarea {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "input" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
+
+  @Emit()
+  private blurAction(e: MouseEvent): string {
+    return this.textAreaValue;
+  }
   //data
   private rounded = false;
   private appendedOuterIcon = "";
