@@ -1,19 +1,39 @@
 @import "../utils/colors.scss";
 @import "../utils/typography.scss";
+.step{
+  @extend .stepper-step-lg;
+  height: 48px !important;
+  width: 48px !important;
+  border: #fff 4px solid !important;
+}
+
 .v-stepper{
   &.wizard-stepper{
     .v-stepper__header{
       .v-stepper__step{
         align-items: start;
-        flex-basis: 50px;
+        flex-basis: 0;
+        padding: 20px 0px;
+        border: 4px solid #fff;
+        &:hover{
+          background-color: transparent !important;
+        }
         .v-stepper__step__step{
-          @extend .stepper-step-lg;
-          height: 48px;
-          width: 48px;
-          border: #fff 4px solid !important;
+          @extend .step;
         }
         .v-stepper__label{
-          @extend .body-lg
+          @extend .body-lg;
+          position: fixed;
+          margin-top: 53px;
+          color: $primary_darken;
+        }
+        &.v-stepper__step--inactive,
+        &.v-stepper__step--editable{
+          .v-stepper__step__step{
+            border: $base_lighter 4px solid !important;
+            background-color: #fff !important;
+            color: $primary_darken !important;
+          }
         }
         &.v-stepper__step--active{
           .v-stepper__step__step{
@@ -21,20 +41,30 @@
             background-color: $primary !important;
             color: #fff !important;
           }
-        }
-        &.v-stepper__step--inactive{
-          .v-stepper__step__step{
-            border: $base_lighter 4px solid !important;
-            background-color: #fff !important;
-            color: $primary_darken !important;
-          }
+          .v-stepper__label{
+            color: $primary !important;
+            font-weight: 700 !important;
+          } 
         }
       }
      
       hr{
-        margin: 44px -64px 0;
+        margin: 44px -50px 0;
         border-width: 4px;
       }
     }
   }
+}
+
+.step-of-pages-control{
+  .span-of-pages{
+    color: $primary !important;
+    font-weight: normal !important;
+    @extend .h3;
+
+    &.step-description{
+      color: $primary-darken !important;
+      font-weight: 700 !important;
+    }
+  }  
 }

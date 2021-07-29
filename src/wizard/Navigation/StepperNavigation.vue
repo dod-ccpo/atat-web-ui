@@ -2,26 +2,50 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <template>
-          <div>
-            <v-stepper :flat="true" alt-labels class="wizard-stepper">
-              <v-stepper-header>
-                <template v-for="(step, index) in stepperControl.Steps">
-                  <v-stepper-step :step="index + 1" :key="'stepper_' + index" >
-                    {{ step.text }}
-                    <!-- <template v-slot="{ step }">
-                      {{ step }}
-                    </template> -->
-                  </v-stepper-step>
-                  <v-divider
-                    :key="'divider_' + index"
-                    class="primary"
-                  ></v-divider>
-                </template>
-              </v-stepper-header>
-            </v-stepper>
-          </div>
-        </template>
+        <v-stepper
+          :flat="true"
+          width="100%"
+          alt-labels
+          class="wizard-stepper"
+          non-linear
+          v-model="stepNumber"
+        >
+          <v-stepper-header>
+            <template v-for="(step, index) in stepperControl.Steps">
+              <!-- :class="[
+                  (index + 1 === stepnumber)
+                    ? 'v-stepper__step--active'
+                    : 'v-stepper__step--inactive',
+                ]" -->
+              <v-stepper-step
+                editable
+                :step="index + 1"
+                :key="'stepper_' + index"
+              >
+                {{ step.description }}
+              </v-stepper-step>
+              <v-divider
+                :key="'divider_' + index"
+                :class="getDividerColor(index)"
+              ></v-divider>
+            </template>
+          </v-stepper-header>
+        </v-stepper>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="step-of-pages-control">
+        <span
+          class="v-stepper__step__step step bg-primary-darken white--text mx-0"
+        >
+          {{ this.stepNumber }}
+        </span>
+        <span class="span-of-pages mx-0">
+          of {{ stepperControl.Steps.length }}</span
+        >
+        <span class="span-of-pages step-description mx-1">
+          {{ getStepDescription() }}</span
+        >
       </v-col>
     </v-row>
   </v-container>
@@ -29,34 +53,46 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { Stepper } from "types/Wizard";
 
 @Component({})
 export default class StepperNavigation extends Vue {
+  @Prop({ default: 1 }) private stepNumber!: number;
   public stepperControl: Stepper = {
     Steps: [
       {
         step: 1,
-        text: "Create Portfolio",
+        description: "Create Portfolio",
       },
       {
         step: 2,
-        text: "Add Funding",
+        description: "Add Funding",
       },
       {
         step: 3,
-        text: "Add Application",
+        description: "Add Application",
       },
       {
         step: 4,
-        text: "Add Team Members",
+        description: "Add Team Members",
       },
       {
         step: 5,
-        text: "Review and Submit",
+        description: "Review and Submit",
       },
     ],
   };
+
+  public getStepDescription(): string {
+    return this.stepperControl.Steps[this.stepNumber - 1].description;
+  }
+
+  public getDividerColor(dividerNumber: number): string {
+    console.log(dividerNumber);
+    return dividerNumber + 1 <= this.stepNumber
+      ? "bg-primary"
+      : "bg-base-lighter";
+  }
 }
 </script>

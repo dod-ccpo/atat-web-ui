@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <Stepper />
+        <Stepper :step-number="stepNumber" />
       </v-col>
     </v-row>
     <v-row>
