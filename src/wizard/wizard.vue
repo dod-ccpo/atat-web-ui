@@ -2,7 +2,11 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <Stepper />
+        <Stepper
+          :step-number="stepNumber"
+          :current-step-number.sync="stepNumber"
+          @clicked-action="goToStep"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -21,7 +25,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import Stepper from "./Navigation/Stepper.vue";
+import Stepper from "./Navigation/StepperNavigation.vue";
 import ButtonNavigation from "./Navigation/ButtonNavigation.vue";
 import Step1 from "./Step1/views/Step1.vue";
 import Step2 from "./Step2/views/Step2.vue";
@@ -68,7 +72,11 @@ export default class Wizard extends Vue {
         default:
           break;
       }
-    });
+    }, this);
+  }
+
+  public goToStep(currStepNumber: number): void {
+    this.stepNumber = currStepNumber;
   }
 }
 </script>
