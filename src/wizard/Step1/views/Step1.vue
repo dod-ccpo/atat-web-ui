@@ -9,9 +9,9 @@
       <v-col cols="12">
         <CreatePortfolioForm />
       </v-col>
-      <v-col cols="12">
+      <!-- <v-col cols="12">
         <InvitePortfolioManagersTable />
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-container>
 </template>
@@ -20,12 +20,11 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
-import InvitePortfolioManagersTable from "../components/InvitePortfolioManagersTable.vue";
+// import InvitePortfolioManagersTable from "../components/InvitePortfolioManagersTable.vue";
 
 @Component({
   components: {
     CreatePortfolioForm,
-    InvitePortfolioManagersTable,
   },
 })
 export default class Step_1 extends Vue {}

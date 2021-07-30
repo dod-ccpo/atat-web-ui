@@ -16,14 +16,14 @@
         rows="4"
         :id="id + '_text_field'"
         outlined
-        dense
         :success="success"
         :error="error"
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
-        v-model="textAreaValue"
+        :value="value"
         hide-details="auto"
-        @blur="blurAction"
+        class="atat-text-area"
+        @keyup="$emit('update:value', $event.target.value)"
       >
       </v-textarea>
     </v-flex>
@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { VTextarea } from "vuetify/lib";
-import { Component, Emit, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextArea extends VTextarea {
@@ -47,14 +47,9 @@ export default class ATATTextArea extends VTextarea {
   @Prop({ default: "input" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
 
-  @Emit()
-  private blurAction(e: MouseEvent): string {
-    return this.textAreaValue;
-  }
   //data
   private rounded = false;
   private appendedOuterIcon = "";
-  private textAreaValue = "";
 
   private getStatusIcon() {
     if (this.success) {

@@ -61,10 +61,10 @@ export default class Wizard extends Vue {
           break;
         case "save":
           console.log(this.$refs.form);
-          alert("Data has been saved");
+          // alert("Data has been saved");
           break;
         case "close":
-          this.$router.push("portfolios");
+          // this.$router.push("portfolios");
           break;
         // case "provision_cloud_resources":
         //   alert("All is complete. Cloud resources are to be provisioned.");

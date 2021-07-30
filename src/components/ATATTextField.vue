@@ -21,9 +21,9 @@
         :height="42"
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
-        v-model="textFieldValue"
+        :value="value"
         hide-details="auto"
-        @blur="blurAction"
+        @keyup="$emit('update:value', $event.target.value)"
       >
       </v-text-field>
     </v-flex>
@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Emit, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextField extends VTextField {
@@ -47,14 +47,9 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "input" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
 
-  @Emit()
-  private blurAction(e: MouseEvent): string {
-    return this.textFieldValue;
-  }
   //data
   private rounded = false;
   private appendedOuterIcon = "";
-  private textFieldValue = "";
 
   private getStatusIcon() {
     if (this.success) {

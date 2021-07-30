@@ -9,11 +9,10 @@
       <v-col cols="6">
         <v-form ref="form" lazy-validation v-model="valid">
           <atat-text-field
-            v-model="portfolioName"
             id="Portfolio Name"
             label="Portfolio Name"
-            @blur-action="getPortfolioName"
             :rules="rules.portfolioNameRules"
+            :value.sync="model.name"
           />
 
           <p class="mb-11">
@@ -22,11 +21,11 @@
             on your organization.
           </p>
           <atat-text-area
-            v-model="portfolioDescription"
             optional="true"
             id="Portfolio Description"
             label="Portfolio Description"
             @blur-action="getPortfolioDescription"
+            :value.sync="model.description"
           />
           <p>
             Add a brief one to two sentence description of your Portfolio.
@@ -51,7 +50,7 @@
             :rules="rules.fundingRules"
             class="ma-2 pa-0"
             v-for="dod in dodComponents"
-            v-model="funding"
+            v-model="model.dod_components"
             :key="dod"
             :label="dod"
             :value="dod"
@@ -72,6 +71,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { CreatePortfolioFormModel } from "../../../../types/Wizard";
 
 @Component({})
 export default class CreatePortfolioForm extends Vue {
@@ -99,7 +99,13 @@ export default class CreatePortfolioForm extends Vue {
   private funding = [];
   private rules = {};
 
-  public onSubmit() {
+  private model: CreatePortfolioFormModel = {
+    name: "",
+    description: "",
+    dod_components: [],
+  };
+
+  public onSubmit(): void {
     //replace empty rules with real rules
     this.rules = {
       portfolioNameRules: [(v: string) => !!v || "Name is required"],
