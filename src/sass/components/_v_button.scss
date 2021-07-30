@@ -16,6 +16,7 @@
   &::before{
     display: block;
     transition: none;
+    background-color: inherit !important;
   }
   
   &:hover::before{
@@ -72,10 +73,6 @@
     span{
       color: $primary !important;
     }
-    // &:active::before,
-    // &:focus::before,
-    // &:focus-visible::before,
-    // &:focus-within::before
     &:hover::before{
       @extend .atat-button-hover;
     }

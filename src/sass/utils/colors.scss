@@ -38,6 +38,20 @@
 
 
 //incoporate this into a mixin soon
+.theme--light.v-application{
+  .bg-primary-lighter{ background-color: $primary_lighter !important };
+  .bg-primary-light{ background-color: $primary_light !important };
+  .bg-primary{ background-color: $primary !important };
+  .bg-primary-dark{ background-color: $primary_dark !important };
+  .bg-primary-darken{ background-color: $primary_darken !important };
+  .bg-primary-vivid{ background-color: $primary_vivid !important};
+
+  .text--primary-lighter{ color: $primary_lighter !important };
+  .text--primary-light{ color: $primary_light !important };
+  .text--primary{ color: $primary !important };
+  .text--primary-dark{ color: $primary_dark !important };
+  .text--primary-darken{ color: $primary_darken !important };
+  .text--primary-vivid{ color: $primary_vivid !important};
 
   .bg-base-darkest{background-color: #1b1b1b !important};
   .bg-base-darker{background-color: #3d4551 !important};
@@ -55,3 +69,11 @@
   .text--base-lighter{color: #dfe1e2 !important};
   .text--base-lightest{color: #f0f0f0 !important};
 
+  .border-base-darkest{border-color: #1b1b1b !important};
+  .border-base-darker{border-color: #3d4551 !important};
+  .border-base-dark{border-color: #565c65 !important};
+  .border-base-base{border-color: #71767a !important};
+  .border-base-light{border-color: #a9aeb1 !important};
+  .border-base-lighter{border-color: #dfe1e2 !important};
+  .border-base-lightest{border-color: #f0f0f0 !important};
+}
