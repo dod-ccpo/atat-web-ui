@@ -24,7 +24,7 @@
               currentManagerEmail: {{ currentManagerEmail }}
               currentPermisionsSet: {{ currentPermisionsSet }}
           </pre>
-          <label class="">Email address</label>
+          <label class="form-field-label">Email address</label>
           <v-text-field
             outlined
             dense
@@ -39,6 +39,7 @@
           <v-btn
             class="add-portfolio-manager-email link-button body-lg"
             :ripple="false"
+            @click="doAddManager"
           >
             <v-icon class="add-portfolio-manager-email__icon" left>
               mdi-plus-circle-outline
