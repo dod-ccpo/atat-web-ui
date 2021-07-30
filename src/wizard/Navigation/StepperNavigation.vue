@@ -8,6 +8,7 @@
           alt-labels
           class="wizard-stepper"
           v-model="getStepNumber"
+          non-linear
         >
           <v-stepper-header>
             <template v-for="(step, index) in stepperControl.Steps">
@@ -19,11 +20,12 @@
                 :complete="isStepComplete(index)"
                 :rules="[() => index + 1 !== 4]"
                 @click="clickedAction(index + 1, this)"
-               
+                :error-icon="'mdi-exclamation-thick '"
+                :class="[index + 1 === 2 ? 'visited' : '']"
               >
-              <a href="##" class="step-description">
-                {{ step.description }}
-              </a>
+                <a href="##" class="step-description">
+                  {{ step.description }}
+                </a>
                 <v-divider :key="'divider_' + index"></v-divider>
               </v-stepper-step>
             </template>
@@ -101,7 +103,7 @@ export default class StepperNavigation extends Vue {
   }
 
   public isStepComplete(stepNumber: number): boolean {
-    return this.getStepNumber > stepNumber + 1
+    return this.getStepNumber > stepNumber + 1;
   }
 }
 </script>

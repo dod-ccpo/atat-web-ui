@@ -10,6 +10,7 @@
 .v-stepper{
   &.wizard-stepper{
     .v-stepper__header{
+      box-shadow: none !important;
       .v-stepper__step{
         align-items: start;
         padding: 20px 0px;
@@ -33,8 +34,17 @@
          
         }
         .v-stepper__label{
-          @extend .body-lg;
-          color: $primary_darken;
+          a,
+          a:hover{ 
+            @extend .body-lg;
+            color: $primary_darken !important;
+            text-decoration: none;
+            &:focus{
+              background-color: $primary-lighter !important;
+              outline: none;
+              text-decoration: none;
+            }
+          }
         }
         &.v-stepper__step--inactive,
         &.v-stepper__step--editable{
@@ -43,6 +53,12 @@
             background-color: #fff !important;
             color: $primary_darken !important;
           }
+
+          &.visited .v-stepper__step__step{
+            background-color: $primary_darken !important;
+            color: #fff !important;
+          }
+
           .v-ripple__container{
             display: none !important;
           }
@@ -55,23 +71,24 @@
             color: #fff !important;
           }
           .v-stepper__label{
-            color: $primary !important;
-            font-weight: 700 !important;
+            a{
+              color: $primary !important;
+              font-weight: 700 !important;
+            }
             hr{
               border-color: $primary;
             }
           } 
         }
-        &.v-stepper__step--error{
+        &.v-stepper__step--error,
+        &.v-stepper__step--error.visited,
+        {
           .v-stepper__step__step{
             background-color: $error !important;
             border: #fff 4px solid !important;
             .v-icon{
               font-size: 2.5rem;
               color: #fff;
-              &:before{
-                content: "\F1238";
-              }
             }
           }
           .v-stepper__label{
@@ -80,7 +97,9 @@
             }
           }
         }
-        &.v-stepper__step--complete{
+        &.v-stepper__step--complete,
+        &.v-stepper__step--complete.visited
+        {
           .v-stepper__step__step{
             background-color: $success !important;
             border: #fff 4px solid !important;
