@@ -14,6 +14,8 @@
         align-items: start;
         padding: 20px 0px;
         display: inline-block !important;
+        width: 20% !important;
+        flex-basis: 20% !important;
         &:active::before,
         &:focus::before,
         &:focus-visible,
@@ -28,6 +30,7 @@
         }
         .v-stepper__step__step{
           @extend .step;
+         
         }
         .v-stepper__label{
           @extend .body-lg;
@@ -44,6 +47,7 @@
             display: none !important;
           }
         }
+  
         &.v-stepper__step--active{
           .v-stepper__step__step{
             border: #fff 4px solid !important;
@@ -53,13 +57,54 @@
           .v-stepper__label{
             color: $primary !important;
             font-weight: 700 !important;
+            hr{
+              border-color: $primary;
+            }
           } 
         }
+        &.v-stepper__step--error{
+          .v-stepper__step__step{
+            background-color: $error !important;
+            border: #fff 4px solid !important;
+            .v-icon{
+              font-size: 2.5rem;
+              color: #fff;
+              &:before{
+                content: "\F1238";
+              }
+            }
+          }
+          .v-stepper__label{
+            hr{
+              border-color: $error;
+            }
+          }
+        }
+        &.v-stepper__step--complete{
+          .v-stepper__step__step{
+            background-color: $success !important;
+            border: #fff 4px solid !important;
+            .v-icon{
+              font-size: 2.5rem;
+              color: #fff;
+              &:before{
+                content: "\F012C";
+              }
+            }
+          }
+          .v-stepper__label{
+            hr{
+              border-color: $success;
+            }
+          }
+        }
+
       }
      
       hr{
-        margin: 44px -130px 0;
+        margin: -63px 47px;
         border-width: 4px;
+        width: 100%;
       }
     }
   }

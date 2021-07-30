@@ -7,23 +7,25 @@
           width="100%"
           alt-labels
           class="wizard-stepper"
-          complete
           v-model="getStepNumber"
         >
           <v-stepper-header>
             <template v-for="(step, index) in stepperControl.Steps">
               <v-stepper-step
                 editable
+                :id="'step_0' + (index + 1)"
                 :step="index + 1"
                 :key="'stepper_' + index"
+                :complete="isStepComplete(index)"
+                :rules="[() => index + 1 !== 4]"
                 @click="clickedAction(index + 1, this)"
+               
               >
+              <a href="##" class="step-description">
                 {{ step.description }}
+              </a>
+                <v-divider :key="'divider_' + index"></v-divider>
               </v-stepper-step>
-              <v-divider
-                :key="'divider_' + index"
-                :class="getDividerColor(index)"
-              ></v-divider>
             </template>
           </v-stepper-header>
         </v-stepper>
@@ -98,10 +100,8 @@ export default class StepperNavigation extends Vue {
     this.currentStepNumber = newValue + 1;
   }
 
-  public getDividerColor(dividerNumber: number): string {
-    return dividerNumber + 1 <= this.stepNumber
-      ? "bg-primary"
-      : "bg-base-lighter";
+  public isStepComplete(stepNumber: number): boolean {
+    return this.getStepNumber > stepNumber + 1
   }
 }
 </script>
