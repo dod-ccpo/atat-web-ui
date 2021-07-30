@@ -21,7 +21,6 @@
         <v-card-text>
           <pre class="">
               listManagers: {{ listManagers }}
-              currentManagerEmail: {{ currentManagerEmail }}
               currentPermisionsSet: {{ currentPermisionsSet }}
           </pre>
           <label class="form-field-label"> Email address </label>
@@ -125,8 +124,12 @@
           </div>
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
-          <v-btn color="primary" text @click="doCancel()"> Close </v-btn>
-          <v-btn color="primary" @click="doSave()"> Send Invitation </v-btn>
+          <v-btn color="primary" text @click="modalAction('cancel')">
+            Close
+          </v-btn>
+          <v-btn color="primary" @click="modalAction('save')">
+            Send Invitation
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -135,7 +138,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 export interface KeyValuePair {
@@ -163,19 +166,26 @@ export interface PortfolioManagers {
 })
 export default class PermissionsModal extends Vue {
   @Prop({ default: false }) private isDialogOpen!: boolean;
+  @Prop({ default: "ptfl-00001-001" }) private portfolioID!: string;
 
-  private portfolioID = "ptfl-00001-001";
   private listManagers: string[] = [""];
-  private currentManagerEmail = "blue";
   private currentPermisionsSet: string[] = [];
 
   get getCurrentPermisionsSet(): string[] {
     return this.currentPermisionsSet;
   }
 
-  @Emit()
-  private modalAction(actionObj: ActionObject): ActionObject {
+  private modalAction(actionName: string): ActionObject {
+    const actionObj: ActionObject = {
+      action: actionName,
+      data: {
+        portfolioID: this.portfolioID,
+        listManagers: this.listManagers,
+        currentPermisionsSet: this.currentPermisionsSet,
+      },
+    };
     console.log("clickedAction in", actionObj);
+    this.$emit("modalAction", actionObj);
     return actionObj;
   }
 
@@ -183,30 +193,11 @@ export default class PermissionsModal extends Vue {
     this.listManagers.push("");
   }
   private doRemoveManager(counter: number): void {
-    console.log("doRemoveManager", counter);
     this.listManagers.splice(counter, 1);
   }
 
   private doSelectPermission(pemissionID: string): void {
     this.currentPermisionsSet.unshift(pemissionID);
-  }
-  private doCancel(): void {
-    // do something
-    // emit action and object
-    console.log("doCancel");
-    this.modalAction({ action: "cancel" });
-  }
-  private doSave(): void {
-    // do something
-    // emit action and object
-    console.log("doSave");
-    this.modalAction({
-      action: "save",
-      data: {
-        listManagers: this.listManagers,
-        currentPermisionsSet: this.currentPermisionsSet,
-      },
-    });
   }
 }
 </script>

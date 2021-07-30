@@ -11,7 +11,7 @@
           :ripple="false"
           id="'step_1-portfolio-managers-action"
           color="primary"
-          @click="modalAction({ action: 'open-add-manager-dialog', data: {} })"
+          @click="modalAction({ action: 'open-add-manager-dialog' })"
           class="portfolio-managers-action mr-5"
           >Invite Portfolio Manager</v-btn
         >
