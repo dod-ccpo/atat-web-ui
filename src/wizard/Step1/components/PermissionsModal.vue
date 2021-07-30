@@ -24,18 +24,34 @@
               currentManagerEmail: {{ currentManagerEmail }}
               currentPermisionsSet: {{ currentPermisionsSet }}
           </pre>
-          <label class="form-field-label">Email address</label>
-          <v-text-field
-            outlined
-            dense
-            height="42"
-            :messages="['Messages']"
-            v-model="currentManagerEmail"
-            placeholder="add e-mail"
-            hide-details="true"
-            class="invite-portfolio-manager-email"
-          >
-          </v-text-field>
+          <label class="form-field-label"> Email address </label>
+          <div class="form-field-group">
+            <div
+              class="form-field-item"
+              v-for="(manager, counter) in listManagers"
+              v-bind:key="counter"
+            >
+              <v-text-field
+                outlined
+                dense
+                height="42"
+                :messages="['Messages']"
+                v-model.lazy="listManagers[counter]"
+                placeholder="add e-mail"
+                hide-details="true"
+                class="invite-portfolio-manager-email"
+              >
+              </v-text-field>
+              <v-btn
+                @click="doRemoveManager(counter)"
+                v-if="listManagers.length > 1"
+                class="form-field-item__cancel form-field-label"
+              >
+                <v-icon> mdi-delete-forever-outline </v-icon>
+              </v-btn>
+            </div>
+          </div>
+
           <v-btn
             class="add-portfolio-manager-email link-button body-lg"
             :ripple="false"
@@ -123,12 +139,12 @@ import { Component, Emit, Prop } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 
 export interface KeyValuePair {
-  (key: string): any;
+  [key: string]: any;
 }
 
 export interface ActionObject {
   action: string;
-  data: KeyValuePair[];
+  data?: KeyValuePair;
 }
 
 export interface Manager {
@@ -149,7 +165,7 @@ export default class PermissionsModal extends Vue {
   @Prop({ default: false }) private isDialogOpen!: boolean;
 
   private portfolioID = "ptfl-00001-001";
-  private listManagers: string[] = [];
+  private listManagers: string[] = [""];
   private currentManagerEmail = "blue";
   private currentPermisionsSet: string[] = [];
 
@@ -158,23 +174,17 @@ export default class PermissionsModal extends Vue {
   }
 
   @Emit()
-  private modalAction(action: string, data: KeyValuePair[] = []): ActionObject {
-    console.log("clickedAction in");
-    return {
-      action,
-      data,
-    };
+  private modalAction(actionObj: ActionObject): ActionObject {
+    console.log("clickedAction in", actionObj);
+    return actionObj;
   }
 
   private doAddManager(): void {
-    if (this.currentManagerEmail && this.currentManagerEmail != "") {
-      this.listManagers.unshift(this.currentManagerEmail);
-    }
+    this.listManagers.push("");
   }
-  private doRemoveManager(pemissionID: string): void {
-    this.currentPermisionsSet = this.currentPermisionsSet.filter(
-      (permission) => permission != pemissionID
-    );
+  private doRemoveManager(counter: number): void {
+    console.log("doRemoveManager", counter);
+    this.listManagers.splice(counter, 1);
   }
 
   private doSelectPermission(pemissionID: string): void {
@@ -184,13 +194,19 @@ export default class PermissionsModal extends Vue {
     // do something
     // emit action and object
     console.log("doCancel");
-    this.modalAction("cancel");
+    this.modalAction({ action: "cancel" });
   }
   private doSave(): void {
     // do something
     // emit action and object
     console.log("doSave");
-    this.modalAction("save");
+    this.modalAction({
+      action: "save",
+      data: {
+        listManagers: this.listManagers,
+        currentPermisionsSet: this.currentPermisionsSet,
+      },
+    });
   }
 }
 </script>
