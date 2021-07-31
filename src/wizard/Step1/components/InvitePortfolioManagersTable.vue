@@ -56,6 +56,12 @@ export default class InvitePortfolioManagersTable extends Vue {
     console.log("modalAction on invite portfolio", actionObj);
     if (actionObj.action === "open-add-manager-dialog") {
       this.isPermissionDialogOpen = true;
+    } else if (actionObj.action === "portfolio-managers-modal-cancel") {
+      this.isPermissionDialogOpen = false;
+    } else if (actionObj.action === "portfolio-managers-modal-save") {
+      // get data to the store and/or API.
+      console.log("save this", actionObj.data);
+      this.isPermissionDialogOpen = false;
     }
   }
 }

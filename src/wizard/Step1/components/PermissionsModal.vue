@@ -124,10 +124,17 @@
           </div>
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
-          <v-btn color="primary" text @click="modalAction('cancel')">
+          <v-btn
+            color="primary"
+            text
+            @click="modalAction('portfolio-managers-modal-cancel')"
+          >
             Close
           </v-btn>
-          <v-btn color="primary" @click="modalAction('save')">
+          <v-btn
+            color="primary"
+            @click="modalAction('portfolio-managers-modal-save')"
+          >
             Send Invitation
           </v-btn>
         </v-card-actions>
