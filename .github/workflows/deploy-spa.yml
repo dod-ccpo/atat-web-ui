@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "develop"
+      - "feature/add-aws-deploy"
 
 jobs:
   build:
@@ -38,66 +39,33 @@ jobs:
           name: atat-web-ui
           path: dist
   deploy:
-    name: Deploy SPA
+    name: Deploy SPA to AWS (${{ matrix.region }})
     runs-on: ubuntu-20.04
     needs: build
-    env:
-      # Eventually there will need to be logic on how to select an environment based off the branch
-      # name or we will want to randomly generate a string; however, for an initial proof of concept
-      # this gets the point across and share a predictable name
-      TARGET_ENV: "dev1"
+    strategy:
+      matrix:
+        include:
+          - name: GovCloud
+            region: us-gov-west-1
+            secret_prefix: AWS_US_GOV
+          - name: Commerical
+            region: us-east-1
+            secret_prefix: AWS
     steps:
-      # - name: Checkout code base
-      #   uses: actions/checkout@v2
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
+      # Ensure that the account ID does not appear in any log messages in the pipeline
+      - run: echo ::add-mask::${{ secrets[format('{0}_ACCOUNT_ID', matrix.secret_prefix)] }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets[format('{0}_ACCESS_KEY_ID', matrix.secret_prefix)] }}
+          aws-secret-access-key: ${{ secrets[format('{0}_SECRET_ACCESS_KEY', matrix.secret_prefix)] }}
+          aws-region: ${{ matrix.region }}
+      - name: Download site artifact
         id: download
+        uses: actions/download-artifact@v2
         with:
           name: atat-web-ui
-      - name: Install and configure Terraform CLI
-        uses: hashicorp/setup-terraform@v1
-      - name: Login to Azure CLI
-        uses: azure/login@v1
-        with:
-          # We are not able to use the typical .json file because we also need these exact same
-          # values in a moment for Terraform configuration. And it is far easier (and safer!) to
-          # store them once and create the JSON object here than it is to try to parse the JSON
-          # object later.
-          creds: |
-            {
-              "clientId": "${{ secrets.AZURE_SPA_DEPLOY_CLIENT_ID }}",
-              "clientSecret": "${{ secrets.AZURE_SPA_DEPLOY_CLIENT_SECRET }}",
-              "subscriptionId": "${{ secrets.AZURE_SPA_DEPLOY_SUBSCRIPTION }}",
-              "tenantId": "${{ secrets.AZURE_SPA_DEPLOY_TENANT }}"
-            }
-      # NOTE: All commands beyond this point will have access to these variables
-      # - name: Set terraform env vars
-      #   # These are the values required by Terraform
-      #   # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret#configuring-the-service-principal-in-terraform
-      #   run: |
-      #     echo "ARM_CLIENT_ID=${{ secrets.AZURE_SPA_DEPLOY_CLIENT_ID }}" >> $GITHUB_ENV
-      #     echo "ARM_CLIENT_SECRET=${{ secrets.AZURE_SPA_DEPLOY_CLIENT_SECRET }}" >> $GITHUB_ENV
-      #     echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SPA_DEPLOY_SUBSCRIPTION }}" >> $GITHUB_ENV
-      #     echo "ARM_TENANT_ID=${{ secrets.AZURE_SPA_DEPLOY_SUBSCRIPTION }}" >> $GITHUB_ENV
-      # - name: Terraform init
-      #   run: |
-      #     terraform -chdir=terraform init \
-      #       -backend-config=resource_group_name=$STATE_RESOURCE_GROUP \
-      #       -backend-config=storage_account_name=$STATE_STORAGE_ACCOUNT
-      #   env:
-      #     STATE_RESOURCE_GROUP: ${{ secrets.STATE_AZURE_RESOURCE_GROUP }}
-      #     STATE_STORAGE_ACCOUNT: ${{ secrets.STATE_AZURE_STORAGE_ACCOUNT }}
-      # - name: Select workspace
-      #   run: terraform -chdir=terraform workspace select "$TARGET_ENV"
-      # Upload the web app to Azure Storage
-      - name: Sync to Azure Storage
-        # TODO: Switch to using `terraform output -raw spa_account_name` for the account name?
+      - name: Upload site
         run: |
-          az storage blob delete-batch \
-            --account-name "atatdev1" \
-            -s '$web' \
-            --pattern '*'
-          az storage blob upload-batch \
-            --account-name "atatdev1" \
-            -d '$web' \
-            -s ${{ steps.download.outputs.download-path }}
+          aws s3 sync . s3://${{ secrets[format('{0}_BUCKET_NAME', matrix.secret_prefix)] }} --delete --region ${{ matrix.region }}
+        working-directory: ${{ steps.download.outputs.download-path }}
