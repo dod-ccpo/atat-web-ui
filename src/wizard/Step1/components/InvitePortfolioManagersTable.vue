@@ -49,11 +49,9 @@ import { ActionObject } from "./PermissionsModal.vue";
 export default class InvitePortfolioManagersTable extends Vue {
   private isPermissionDialogOpen = false;
   private clickedAction(): void {
-    console.log("action on invite portfolio");
     this.isPermissionDialogOpen = false;
   }
   private modalAction(actionObj: ActionObject): void {
-    console.log("modalAction on invite portfolio", actionObj);
     if (actionObj.action === "open-add-manager-dialog") {
       this.isPermissionDialogOpen = true;
     } else if (actionObj.action === "portfolio-managers-modal-cancel") {

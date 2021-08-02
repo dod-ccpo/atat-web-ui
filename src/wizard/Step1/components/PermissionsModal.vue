@@ -1,6 +1,5 @@
 <template>
   <div class="portfolio-managers-modal">
-    hola {{ isDialogOpen }}
     <v-dialog
       v-model="isDialogOpen"
       max-width="800px"
@@ -44,7 +43,13 @@
               <v-btn
                 @click="doRemoveManager(counter)"
                 v-if="listManagers.length > 1"
-                class="form-field-item__cancel form-field-label"
+                class="
+                  form-field-item__cancel
+                  form-field-label
+                  link-button
+                  body-lg
+                "
+                :ripple="false"
               >
                 <v-icon> mdi-delete-forever-outline </v-icon>
               </v-btn>
@@ -191,7 +196,7 @@ export default class PermissionsModal extends Vue {
         currentPermisionsSet: this.currentPermisionsSet,
       },
     };
-    console.log("clickedAction in", actionObj);
+
     this.$emit("modalAction", actionObj);
     return actionObj;
   }
@@ -271,6 +276,8 @@ export default class PermissionsModal extends Vue {
     margin: 16px 0px 0px;
   }
   .permission-set-description {
+    margin-left: 32px;
+    margin-bottom: 0;
   }
 }
 .invite-portfolio-manager-email {
@@ -282,10 +289,37 @@ export default class PermissionsModal extends Vue {
     line-height: 24px;
   }
 }
-.add-portfolio-manager-email__icon {
-  text-decoration: none;
-  text-decoration-color: transparent;
-  text-decoration-style: unset;
-  text-decoration-line: none;
+.add-portfolio-manager-email.v-btn:not(.v-btn--round).v-size--default {
+  padding-left: 2px;
+  height: 26px;
+  margin-bottom: 40px;
+  .add-portfolio-manager-email__icon {
+    text-decoration: none;
+    text-decoration-color: transparent;
+    text-decoration-style: unset;
+    text-decoration-line: none;
+  }
+}
+
+.form-field-item {
+  display: block;
+  position: relative;
+  margin-bottom: 8px;
+  .form-field-item__cancel {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: -5px;
+    padding: 0;
+    &.theme--light.v-btn.v-btn--has-bg {
+      background-color: transparent;
+    }
+    .v-btn.link-button span {
+      text-decoration: unset !important;
+    }
+    .v-btn__content {
+      padding: 0;
+    }
+  }
 }
 </style>
