@@ -18,10 +18,6 @@
           <br />
         </v-card-title>
         <v-card-text>
-          <pre class="">
-              listManagers: {{ listManagers }}
-              currentPermisionsSet: {{ currentPermisionsSet }}
-          </pre>
           <label class="form-field-label"> Email address </label>
           <div class="form-field-group">
             <div
@@ -43,12 +39,7 @@
               <v-btn
                 @click="doRemoveManager(counter)"
                 v-if="listManagers.length > 1"
-                class="
-                  form-field-item__cancel
-                  form-field-label
-                  link-button
-                  body-lg
-                "
+                class="form-field-item__cancel link-button body-lg"
                 :ripple="false"
               >
                 <v-icon> mdi-delete-forever-outline </v-icon>
@@ -130,8 +121,11 @@
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
           <v-btn
-            color="primary"
-            text
+            color="portfolio-managers-modal-cancel
+                  link-button
+                  body-lg
+                "
+            :ripple="false"
             @click="modalAction('portfolio-managers-modal-cancel')"
           >
             Close
