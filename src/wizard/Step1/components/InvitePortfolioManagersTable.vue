@@ -25,11 +25,6 @@
         />
       </v-col>
     </v-row>
-    <pre>
-      state: 
-      isPermissionDialogOpen: {{ isPermissionDialogOpen }}
-
-    </pre>
   </v-container>
 </template>
 
