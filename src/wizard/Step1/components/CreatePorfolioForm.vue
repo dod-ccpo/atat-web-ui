@@ -7,11 +7,11 @@
     </v-row>
     <v-row>
       <v-col cols="6">
-        <v-form ref="form" lazy-validation v-model="valid">
+        <v-form ref="form" lazy-validation>
           <atat-text-field
             id="Portfolio Name"
             label="Portfolio Name"
-            :rules="rules.portfolioNameRules"
+            :rules="rules.model_name"
             :value.sync="model.name"
           />
 
@@ -24,7 +24,6 @@
             optional="true"
             id="Portfolio Description"
             label="Portfolio Description"
-            @blur-action="getPortfolioDescription"
             :value.sync="model.description"
           />
           <p>
@@ -47,21 +46,16 @@
             Portfolio
           </p>
           <v-checkbox
-            :rules="rules.fundingRules"
+            :rules="rules.model_dod_components"
+            multiple
             class="ma-2 pa-0"
-            v-for="dod in dodComponents"
+            v-for="(dod, index) in dodComponents"
             v-model="model.dod_components"
-            :key="dod"
+            :key="index"
             :label="dod"
             :value="dod"
-            hide-details="auto"
+            :hide-details="index !== dodComponents.length - 1"
           />
-          <v-row>
-            <v-col cols="6">
-              <hr class="hr my-5" />
-            </v-col>
-          </v-row>
-          <v-btn :disabled="!valid" @click="onSubmit"> temporary submit </v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -75,12 +69,6 @@ import { CreatePortfolioFormModel } from "../../../../types/Wizard";
 
 @Component({})
 export default class CreatePortfolioForm extends Vue {
-  private getPortfolioName(name: string): void {
-    this.portfolioName = name;
-  }
-  private getPortfolioDescription(name: string): void {
-    this.portfolioDescription = name;
-  }
   private valid = true;
   private dodComponents = [
     "Air Force",
@@ -105,19 +93,25 @@ export default class CreatePortfolioForm extends Vue {
     dod_components: [],
   };
 
-  public onSubmit(): void {
-    //replace empty rules with real rules
-    this.rules = {
-      portfolioNameRules: [(v: string) => !!v || "Name is required"],
-      fundingRules: [
-        this.funding.length > 0 || "At least one item should be selected",
+  get getRules(): any {
+    return (this.rules = {
+      model_name: [(v: string) => !!v || "Name is required"],
+      model_dod_components: [
+        this.model.dod_components.length > 0 ||
+          "At least one item should be selected",
       ],
-    };
-    this.$nextTick(() => {
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        alert("data saved");
-      }
     });
   }
+
+  public validateForm(): void {
+  debugger;
+    this.getRules;
+  }
+
+  // this.$nextTick(() => {
+  //   if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+  //     alert("data saved");
+  //   }
+  // });
 }
 </script>

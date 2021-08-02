@@ -16,8 +16,8 @@
         :id="id + '_text_field'"
         outlined
         dense
-        :success="success"
-        :error="error"
+        :success="isFieldValid"
+        :error="hasError"
         :height="42"
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
@@ -36,12 +36,12 @@ import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextField extends VTextField {
+  private isFieldValid = false;
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "color" }) private color!: string;
-  @Prop({ default: false }) private success!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "input" }) private label!: string;
@@ -52,14 +52,13 @@ export default class ATATTextField extends VTextField {
   private appendedOuterIcon = "";
 
   private getStatusIcon() {
-    if (this.success) {
-      this.appendedOuterIcon = "mdi-check-circle";
-    } else if (this.error) {
-      this.appendedOuterIcon = "mdi-alert-circle";
-    }
+    this.isFieldValid = this.$data["valid"];
+    this.appendedOuterIcon = this.isFieldValid
+      ? "mdi-check-circle"
+      : "mdi-alert-circle";
   }
 
-  private beforeMount() {
+  private updated() {
     this.getStatusIcon();
   }
 }

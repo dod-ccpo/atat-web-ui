@@ -67,14 +67,16 @@
     }
     .form-field-label{
         font-size: 1.7rem !important;
-        font-weight: 400 !important;
-        line-height: 2.4rem !important;
+        font-weight: 700 !important;
+        line-height: 2.6rem !important;
     }
     .form-field-label-error{
-        font-size: 1.7rem;
-        font-weight: 400;
-        line-height: 2.4rem;
+        @extend .form-field-label;
         color: $error;
+    }
+    .form-field-label-success{
+        @extend .form-field-label;
+        color: $success;
     }
     .link-body-lg{
         font-size: 1.9rem !important;

@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <CreatePortfolioForm />
+        <CreatePortfolioForm ref="createPortfolioForm" />
       </v-col>
       <!-- <v-col cols="12">
         <InvitePortfolioManagersTable />
@@ -27,5 +27,9 @@ import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
     CreatePortfolioForm,
   },
 })
-export default class Step_1 extends Vue {}
+export default class Step_1 extends Vue {
+  $refs!: {
+    createPortfolioForm: CreatePortfolioForm;
+  };
+}
 </script>
