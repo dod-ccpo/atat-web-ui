@@ -58,7 +58,9 @@
               <v-icon class="add-portfolio-manager-email__icon" left>
                 mdi-plus-circle-outline
               </v-icon>
-              <strong> Add another portfolio manager </strong>
+              <strong class="text-decoration-underline">
+                Add another portfolio manager
+              </strong>
             </v-btn>
             <br /><br />
             <h3 class="h3">Portfolio Permissions</h3>

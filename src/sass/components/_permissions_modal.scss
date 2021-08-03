@@ -83,6 +83,9 @@
       text-decoration-style: unset;
       text-decoration-line: none;
     }
+    .v-btn__content {
+        text-decoration: none;
+    }
   }
   
   .form-field-item {
@@ -103,6 +106,7 @@
       }
       .v-btn__content {
         padding: 0;
+        text-decoration: none;
       }
     }
   }
