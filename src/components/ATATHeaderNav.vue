@@ -11,11 +11,11 @@
       small
       text
     >
-      <v-icon v-show="item.iconPlacement === 'left'" left>
+      <v-icon v-show="item.iconPlacement === 'left'" left class="icon-20">
         {{ item.icon }}
       </v-icon>
       {{ item.title }}
-      <v-icon v-show="item.iconPlacement === 'right'" right>
+      <v-icon v-show="item.iconPlacement === 'right'" right  class="icon-20">
         {{ item.icon }}
       </v-icon>
     </v-btn>

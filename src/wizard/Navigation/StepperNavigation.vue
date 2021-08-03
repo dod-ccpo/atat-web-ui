@@ -20,7 +20,9 @@
                 :complete="isStepComplete(index)"
                 :rules="[() => index + 1 !== 4]"
                 @click="clickedAction(index + 1, this)"
-                :error-icon="'mdi-exclamation-thick '"
+                :error-icon="'  '"
+                :edit-icon="'  '"
+                :complete-icon="'  '"
                 :class="[index + 1 === 2 ? 'visited' : '']"
               >
                 <a href="##" class="step-description">
