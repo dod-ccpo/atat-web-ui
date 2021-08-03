@@ -9,6 +9,7 @@
 @import "./components/v-card";
 @import "./components/v-list_item";
 @import "./components/v-text-field.scss";
+@import "./components/permissions_modal.scss";
 
 body,html{
     background-color: $light_gray !important;
