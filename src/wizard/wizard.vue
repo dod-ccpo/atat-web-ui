@@ -1,23 +1,15 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <Stepper
-          :step-number="stepNumber"
-          :current-step-number.sync="stepNumber"
-          @clicked-action="goToStep"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <Step1 ref="stepOne" v-if="stepNumber === 1" />
-        <Step2 v-if="stepNumber === 2" />
-        <Step3 v-if="stepNumber === 3" />
-        <Step4 v-if="stepNumber === 4" />
-        <Step5 v-if="stepNumber === 5" />
-      </v-col>
-    </v-row>
+    <Stepper
+      :step-number="stepNumber"
+      :current-step-number.sync="stepNumber"
+      @clicked-action="goToStep"
+    />
+    <Step1 ref="stepOne" v-if="stepNumber === 1" />
+    <Step2 v-if="stepNumber === 2" />
+    <Step3 v-if="stepNumber === 3" />
+    <Step4 v-if="stepNumber === 4" />
+    <Step5 v-if="stepNumber === 5" />
     <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
   </v-container>
 </template>

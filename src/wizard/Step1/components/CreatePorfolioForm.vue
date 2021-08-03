@@ -11,7 +11,7 @@
           <atat-text-field
             id="Portfolio Name"
             label="Portfolio Name"
-            :rules="rules.model_name"
+            :rules="rules.portfolioName"
             :value.sync="model.name"
           />
 
@@ -24,6 +24,7 @@
             optional="true"
             id="Portfolio Description"
             label="Portfolio Description"
+            @blur-action="getPortfolioDescription"
             :value.sync="model.description"
           />
           <p>
@@ -46,16 +47,22 @@
             Portfolio
           </p>
           <v-checkbox
-            :rules="rules.model_dod_components"
-            multiple
-            class="ma-2 pa-0"
+            :rules="rules.dod_components"
+            class="ma-2 pa-0 validation-above"
+            :id="'checkbox_' + dod.replace(/ /gi, '_')"
             v-for="(dod, index) in dodComponents"
             v-model="model.dod_components"
-            :key="index"
-            :label="dod"
+            :key="dod"
             :value="dod"
-            :hide-details="index !== dodComponents.length - 1"
-          />
+            :hide-details="index !== 0"
+            :ripple="false"
+            :input-value="model.dod_components"
+            @click="validateForm"
+          >
+            <template v-slot:label>
+              {{ dod }}
+            </template>
+          </v-checkbox>
         </v-form>
       </v-col>
     </v-row>
@@ -66,7 +73,6 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { CreatePortfolioFormModel } from "../../../../types/Wizard";
-
 @Component({})
 export default class CreatePortfolioForm extends Vue {
   private valid = true;
@@ -79,39 +85,30 @@ export default class CreatePortfolioForm extends Vue {
     "Combatant Command (CCMD)",
     "Joint Staff (JS)",
     "Defense Agency and Field Activity (DAFA)",
-    "Office of the Secretary of Defense (OSD) /Principal Staff Assitants",
+    "Office of the Secretary of Defense (OSD) /Principal Staff Assistants",
     "National Security Agency (NSA)",
+    "Other",
   ];
-  private portfolioName = "";
-  private portfolioDescription = "";
-  private funding = [];
+ 
   private rules = {};
-
   private model: CreatePortfolioFormModel = {
     name: "",
     description: "",
     dod_components: [],
   };
-
-  get getRules(): any {
-    return (this.rules = {
-      model_name: [(v: string) => !!v || "Name is required"],
-      model_dod_components: [
+  public validateForm(): void {
+    this.rules = {
+      portfolioName: [(v: string) => !!v || "Name is required"],
+      dod_components: [
         this.model.dod_components.length > 0 ||
-          "At least one item should be selected",
+         "Please select all of the DoD components that will fund your Portfolio",
       ],
+    };
+    this.$nextTick(() => {
+      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+        alert("data saved");
+      }
     });
   }
-
-  public validateForm(): void {
-  debugger;
-    this.getRules;
-  }
-
-  // this.$nextTick(() => {
-  //   if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-  //     alert("data saved");
-  //   }
-  // });
 }
 </script>

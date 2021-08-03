@@ -1,19 +1,5 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="h1 step-1-title my-5font-weight-bold">Step 1</h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <CreatePortfolioForm ref="createPortfolioForm" />
-      </v-col>
-      <!-- <v-col cols="12">
-        <InvitePortfolioManagersTable />
-      </v-col> -->
-    </v-row>
-  </v-container>
+    <CreatePortfolioForm ref="createPortfolioForm" />
 </template>
 
 <script lang="ts">

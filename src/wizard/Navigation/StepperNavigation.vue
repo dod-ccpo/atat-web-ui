@@ -10,7 +10,7 @@
           v-model="getStepNumber"
           non-linear
         >
-          <v-stepper-header>
+          <v-stepper-header class="pb-2">
             <template v-for="(step, index) in stepperControl.Steps">
               <v-stepper-step
                 editable
@@ -48,7 +48,9 @@
         >
       </v-col>
     </v-row>
+     <v-divider class="mt-7"></v-divider>
   </v-container>
+ 
 </template>
 
 <script lang="ts">

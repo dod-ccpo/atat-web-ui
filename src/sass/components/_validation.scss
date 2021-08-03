@@ -12,17 +12,33 @@
             }
         }
     }
-    // &.v-input--is-dirty
-    // {
-
-    // }
     .v-input__append-outer{
         margin-bottom: 15px !important;
     }
 }
 
 div.error--text{
+    label.v-label{
+        animation: none !important;
+    }
     div.v-messages__message{
         @extend .form-field-label-error;
+    }
+}
+
+.v-input{
+    &.v-input--checkbox{
+        margin-left: 0px !important; 
+    }
+    &.validation-above{
+        .v-input__control{
+            flex-direction: column-reverse !important; 
+            .v-input__slot{
+                margin-bottom: 0px; 
+            } 
+        }
+        .v-messages.error--text{
+            margin-bottom: 20px;
+        }
     }
 }
