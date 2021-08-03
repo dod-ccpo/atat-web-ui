@@ -61,7 +61,7 @@ export default new Vuex.Store({
               title: "Maria Missionowner",
               url: "#",
               newWindow: false,
-              icon: "mdi-account-circle",
+              icon: "account_circle",
               iconPlacement: "left",
             },
             {
