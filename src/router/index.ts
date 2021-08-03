@@ -53,6 +53,14 @@ const routes: Array<RouteConfig> = [
         /* webpackChunkName: "style" */ "../wizard/Step0/components/CreatePortfolio/CreatePortfolio.vue"
       ),
   },
+  {
+    path: "/invite-portfolio-manager",
+    name: "invitePortfolioManager",
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../wizard/Step1/views/InvitePortfolioManager.vue"
+      ),
+  },
 ];
 
 const router = new VueRouter({

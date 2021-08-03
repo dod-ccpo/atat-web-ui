@@ -1,20 +1,18 @@
 <template>
-  <InvitePortfolioManagersTable>
+  <div class="">
+    <InvitePortfolioManagersTable />
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
+import InvitePortfolioManagersTable from "@/wizard/Step1/components/InvitePortfolioManagersTable.vue";
 
 @Component({
   components: {
-    CreatePortfolioForm,
+    InvitePortfolioManagersTable,
   },
 })
-export default class Step_1 extends Vue {
-  $refs!: {
-    createPortfolioForm: CreatePortfolioForm;
-  };
-}
+export default class invitePortfolioManager extends Vue {}
 </script>
