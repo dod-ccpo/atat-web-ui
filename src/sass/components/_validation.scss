@@ -2,22 +2,43 @@
 @import "../utils/colors.scss";
 @import "../utils/typography.scss";
 // .form-field-label-error
-.v-text-field{
+.v-text-field,
+.v-textarea{
     &.error--text{
         align-items: flex-end !important;
         .v-input__control{
             flex-direction: column-reverse !important;
+            fieldset{
+                border: 3px solid $error-darker !important;
+            }
             .v-text-field__details{
                 padding-left: 0px !important;
             }
         }
     }
-    .v-input__append-outer{
-        margin-bottom: 15px !important;
+   
+
+    &.success--text{
+        fieldset{
+            border: 3px solid $success !important;
+        }
     }
 }
 
+
+.v-input__append-outer-icon-holder{
+    margin-bottom: 15px !important;
+    position: absolute;
+    right: -30px;
+   
+}
+
 div.error--text{
+    .v-input__append-outer{
+        top: 35px !important;
+        @extend .v-input__append-outer-icon-holder
+    }
+
     label.v-label{
         animation: none !important;
     }
@@ -25,6 +46,15 @@ div.error--text{
         @extend .form-field-label-error;
     }
 }
+
+div.success--text{
+    .v-input__append-outer{
+        top: 0px !important;
+        @extend .v-input__append-outer-icon-holder
+    }
+}
+ 
+
 
 .v-input{
     &.v-input--checkbox{
@@ -35,10 +65,18 @@ div.error--text{
             flex-direction: column-reverse !important; 
             .v-input__slot{
                 margin-bottom: 0px; 
+                i.error--text,
+                label.error--text{
+                  color: $error-darker !important;    
+                }
             } 
         }
         .v-messages.error--text{
             margin-bottom: 20px;
+            .v-messages__message{
+                color: $error-darker !important;
+            }
+            
         }
     }
 }

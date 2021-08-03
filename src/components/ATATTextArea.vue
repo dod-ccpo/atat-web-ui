@@ -16,14 +16,15 @@
         rows="4"
         :id="id + '_text_field'"
         outlined
-        :success="success"
-        :error="error"
+        :success="isFieldValid"
+        :error="hasError"
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
         :value="value"
         hide-details="auto"
         class="atat-text-area"
         @keyup="$emit('update:value', $event.target.value)"
+        @change="showStatusIcon"
       >
       </v-textarea>
     </v-flex>
@@ -36,12 +37,12 @@ import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextArea extends VTextarea {
+  private isFieldValid = false;
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "color" }) private color!: string;
-  @Prop({ default: false }) private success!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "input" }) private label!: string;
@@ -51,16 +52,12 @@ export default class ATATTextArea extends VTextarea {
   private rounded = false;
   private appendedOuterIcon = "";
 
-  private getStatusIcon() {
-    if (this.success) {
-      this.appendedOuterIcon = "mdi-check-circle";
-    } else if (this.error) {
-      this.appendedOuterIcon = "mdi-alert-circle";
-    }
-  }
+  private showStatusIcon() {
+    this.isFieldValid = this.optional
+      ? this.$props["value"].length > 0
+      : this.$data["valid"];
 
-  private beforeMount() {
-    this.getStatusIcon();
+    this.appendedOuterIcon = this.isFieldValid ? "mdi-check-circle" : "";
   }
 }
 </script>

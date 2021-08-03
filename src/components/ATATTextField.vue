@@ -41,8 +41,6 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
-  @Prop({ default: "color" }) private color!: string;
-  @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "input" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;

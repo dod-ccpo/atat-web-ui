@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="my-9">
     <v-row>
       <v-col cols="12">
         <h2 class="h2">Portfolio Details</h2>
@@ -9,7 +9,7 @@
       <v-col cols="6">
         <v-form ref="form" lazy-validation>
           <atat-text-field
-            id="Portfolio Name"
+            id="portfolio-name"
             label="Portfolio Name"
             :rules="rules.portfolioName"
             :value.sync="model.name"
@@ -17,14 +17,13 @@
 
           <p class="mb-11">
             Naming can be difficult. Choose a name that is descriptive enough
-            for users to identify the portfolio. you may consider naming based
+            for users to identify the portfolio. You may consider naming based
             on your organization.
           </p>
           <atat-text-area
             optional="true"
-            id="Portfolio Description"
+            id="portfolio-description"
             label="Portfolio Description"
-            @blur-action="getPortfolioDescription"
             :value.sync="model.description"
           />
           <p>
@@ -33,8 +32,8 @@
           </p>
           <div>
             <v-row>
-              <v-col cols="6">
-                <hr class="hr my-5" />
+              <v-col cols="4">
+                <v-divider class="mt-7"></v-divider>
               </v-col>
             </v-row>
           </div>
@@ -48,7 +47,13 @@
           </p>
           <v-checkbox
             :rules="rules.dod_components"
-            class="ma-2 pa-0 validation-above"
+            class="
+              ma-2
+              pa-0
+              validation-above
+              errored-remain-default-color
+              text--black
+            "
             :id="'checkbox_' + dod.replace(/ /gi, '_')"
             v-for="(dod, index) in dodComponents"
             v-model="model.dod_components"
@@ -60,7 +65,7 @@
             @click="validateForm"
           >
             <template v-slot:label>
-              {{ dod }}
+              <span class="">{{ dod }}</span>
             </template>
           </v-checkbox>
         </v-form>
@@ -89,7 +94,7 @@ export default class CreatePortfolioForm extends Vue {
     "National Security Agency (NSA)",
     "Other",
   ];
- 
+
   private rules = {};
   private model: CreatePortfolioFormModel = {
     name: "",
@@ -101,12 +106,12 @@ export default class CreatePortfolioForm extends Vue {
       portfolioName: [(v: string) => !!v || "Name is required"],
       dod_components: [
         this.model.dod_components.length > 0 ||
-         "Please select all of the DoD components that will fund your Portfolio",
+          "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
     this.$nextTick(() => {
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        alert("data saved");
+        return true;
       }
     });
   }
