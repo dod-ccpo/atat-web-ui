@@ -47,13 +47,7 @@
           </p>
           <v-checkbox
             :rules="rules.dod_components"
-            class="
-              ma-2
-              pa-0
-              validation-above
-              errored-remain-default-color
-              text--black
-            "
+            class="ma-2 pa-0 validation-above text--black"
             :id="'checkbox_' + dod.replace(/ /gi, '_')"
             v-for="(dod, index) in dodComponents"
             v-model="model.dod_components"

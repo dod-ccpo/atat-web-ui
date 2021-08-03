@@ -42,7 +42,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
-  @Prop({ default: "input" }) private label!: string;
+  @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
 
   //data

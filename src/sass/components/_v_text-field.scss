@@ -5,13 +5,6 @@
     border: 3px solid currentColor !important;
 }
 
-//  .theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset{
-
- //}
- .v-text-field--outlined fieldset{
+.v-text-field--outlined fieldset{
     border: 1px solid $base_dark !important;
  }
-
-//  .v-text-field{
-//     width: calc(100% - 5px) !important
-//  }

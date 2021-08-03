@@ -1,12 +1,11 @@
 <template>
-    <CreatePortfolioForm ref="createPortfolioForm" />
+  <CreatePortfolioForm ref="createPortfolioForm" />
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
-// import InvitePortfolioManagersTable from "../components/InvitePortfolioManagersTable.vue";
 
 @Component({
   components: {
