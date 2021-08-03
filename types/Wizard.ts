@@ -34,3 +34,9 @@ export interface Step{
 export interface Stepper{
   Steps: Step[]
 }
+
+export interface CreatePortfolioFormModel{
+  name: string,
+  description?: string,
+  dod_components: string[],
+}

@@ -71,7 +71,8 @@
             color: #fff !important;
           }
           .v-stepper__label{
-            a{
+            a,
+            a:hover{
               color: $primary !important;
               font-weight: 700 !important;
             }
@@ -84,7 +85,7 @@
         &.v-stepper__step--error.visited,
         {
           .v-stepper__step__step{
-            background-color: $error !important;
+            background-color: $error-darker !important;
             border: #fff 4px solid !important;
             .v-icon{
               font-size: 2.5rem;
@@ -93,7 +94,7 @@
           }
           .v-stepper__label{
             hr{
-              border-color: $error;
+              border-color: $error-darker;
             }
           }
         }

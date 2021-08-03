@@ -1,23 +1,15 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <Stepper
-          :step-number="stepNumber"
-          :current-step-number.sync="stepNumber"
-          @clicked-action="goToStep"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <Step1 v-if="stepNumber === 1" />
-        <Step2 v-if="stepNumber === 2" />
-        <Step3 v-if="stepNumber === 3" />
-        <Step4 v-if="stepNumber === 4" />
-        <Step5 v-if="stepNumber === 5" />
-      </v-col>
-    </v-row>
+    <Stepper
+      :step-number="stepNumber"
+      :current-step-number.sync="stepNumber"
+      @clicked-action="goToStep"
+    />
+    <Step1 ref="stepOne" v-if="stepNumber === 1" />
+    <Step2 v-if="stepNumber === 2" />
+    <Step3 v-if="stepNumber === 3" />
+    <Step4 v-if="stepNumber === 4" />
+    <Step5 v-if="stepNumber === 5" />
     <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
   </v-container>
 </template>
@@ -46,6 +38,13 @@ import Step5 from "./Step5/views/Step5.vue";
 })
 export default class Wizard extends Vue {
   private stepNumber = 1;
+
+  $refs!: {
+    stepOne: Step1;
+    stepTwo: Step2;
+    stepThree: Step3;
+  };
+
   public getRoute(actions: string[]): void {
     actions.forEach((a) => {
       let action = a.toLowerCase();
@@ -60,6 +59,7 @@ export default class Wizard extends Vue {
           this.$router.push("portfolios");
           break;
         case "save":
+          this.$refs.stepOne.$refs.createPortfolioForm.validateForm();
           alert("Data has been saved");
           break;
         case "close":
