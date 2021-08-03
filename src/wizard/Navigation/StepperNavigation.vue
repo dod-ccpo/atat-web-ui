@@ -48,9 +48,8 @@
         >
       </v-col>
     </v-row>
-     <v-divider class="mt-7"></v-divider>
+    <v-divider class="mt-7"></v-divider>
   </v-container>
- 
 </template>
 
 <script lang="ts">
