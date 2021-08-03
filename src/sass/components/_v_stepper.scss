@@ -1,0 +1,147 @@
+@import "../utils/colors.scss";
+@import "../utils/typography.scss";
+.step{
+  @extend .stepper-step-lg;
+  height: 48px !important;
+  width: 48px !important;
+  border: #fff 4px solid !important;
+}
+
+.v-stepper{
+  &.wizard-stepper{
+    .v-stepper__header{
+      box-shadow: none !important;
+      .v-stepper__step{
+        align-items: start;
+        padding: 20px 0px;
+        display: inline-block !important;
+        width: 20% !important;
+        flex-basis: 20% !important;
+        &:active::before,
+        &:focus::before,
+        &:focus-visible,
+        &::selection,
+        &:focus-within{
+          background-color: transparent !important;
+          box-shadow: none !important;
+          opacity: initial !important;
+        }
+        &:hover{
+          background-color: transparent !important;
+        }
+        .v-stepper__step__step{
+          @extend .step;
+         
+        }
+        .v-stepper__label{
+          a,
+          a:hover{ 
+            @extend .body-lg;
+            color: $primary_darken !important;
+            text-decoration: none;
+            &:focus{
+              background-color: $primary-lighter !important;
+              outline: none;
+              text-decoration: none;
+            }
+          }
+        }
+        &.v-stepper__step--inactive,
+        &.v-stepper__step--editable{
+          .v-stepper__step__step{
+            border: $base_lighter 4px solid !important;
+            background-color: #fff !important;
+            color: $primary_darken !important;
+          }
+
+          &.visited .v-stepper__step__step{
+            background-color: $primary_darken !important;
+            color: #fff !important;
+          }
+
+          .v-ripple__container{
+            display: none !important;
+          }
+        }
+  
+        &.v-stepper__step--active{
+          .v-stepper__step__step{
+            border: #fff 4px solid !important;
+            background-color: $primary !important;
+            color: #fff !important;
+          }
+          .v-stepper__label{
+            a,
+            a:hover{
+              color: $primary !important;
+              font-weight: 700 !important;
+            }
+            hr{
+              border-color: $primary;
+            }
+          } 
+        }
+        &.v-stepper__step--error,
+        &.v-stepper__step--error.visited,
+        {
+          .v-stepper__step__step{
+            background-color: $error-darker !important;
+            border: #fff 4px solid !important;
+            .v-icon{
+              font-size: 2.5rem;
+              color: #fff;
+            }
+          }
+          .v-stepper__label{
+            hr{
+              border-color: $error-darker;
+            }
+          }
+        }
+        &.v-stepper__step--complete,
+        &.v-stepper__step--complete.visited
+        {
+          .v-stepper__step__step{
+            background-color: $success !important;
+            border: #fff 4px solid !important;
+            .v-icon{
+              font-size: 2.5rem;
+              color: #fff;
+              &:before{
+                content: "\F012C";
+              }
+            }
+          }
+          .v-stepper__label{
+            hr{
+              border-color: $success;
+            }
+          }
+        }
+
+      }
+     
+      hr{
+        margin: -63px 47px;
+        border-width: 4px;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.v-stepper__wrapper {
+  transition:none !important;
+}
+.step-of-pages-control{
+  .span-of-pages{
+    color: $primary !important;
+    font-weight: normal !important;
+    @extend .h3;
+
+    &.step-description{
+      color: $primary-darken !important;
+      font-weight: 700 !important;
+    }
+  }  
+}

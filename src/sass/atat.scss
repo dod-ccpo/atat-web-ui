@@ -4,11 +4,14 @@
 
 @import "./components/_atat_sidebar";
 @import "./components/app-bar-top-nav";
-@import "./components/v-alerts";
-@import "./components/v-button";
-@import "./components/v-card";
-@import "./components/v-list_item";
-@import "./components/v-text-field.scss";
+@import "./components/v_alerts";
+@import "./components/v_button";
+@import "./components/v_card";
+@import "./components/v_list_item";
+@import "./components/v_stepper.scss";
+@import "./components/v_text-field.scss";
+
+@import "./components/validation.scss";
 @import "./components/permissions_modal.scss";
 
 body,html{

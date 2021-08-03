@@ -1,19 +1,15 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <Stepper />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <Step1 v-if="stepNumber === 1" />
-        <Step2 v-if="stepNumber === 2" />
-        <Step3 v-if="stepNumber === 3" />
-        <Step4 v-if="stepNumber === 4" />
-        <Step5 v-if="stepNumber === 5" />
-      </v-col>
-    </v-row>
+    <Stepper
+      :step-number="stepNumber"
+      :current-step-number.sync="stepNumber"
+      @clicked-action="goToStep"
+    />
+    <Step1 ref="stepOne" v-if="stepNumber === 1" />
+    <Step2 v-if="stepNumber === 2" />
+    <Step3 v-if="stepNumber === 3" />
+    <Step4 v-if="stepNumber === 4" />
+    <Step5 v-if="stepNumber === 5" />
     <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
   </v-container>
 </template>
@@ -21,7 +17,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import Stepper from "./Navigation/Stepper.vue";
+import Stepper from "./Navigation/StepperNavigation.vue";
 import ButtonNavigation from "./Navigation/ButtonNavigation.vue";
 import Step1 from "./Step1/views/Step1.vue";
 import Step2 from "./Step2/views/Step2.vue";
@@ -42,6 +38,13 @@ import Step5 from "./Step5/views/Step5.vue";
 })
 export default class Wizard extends Vue {
   private stepNumber = 1;
+
+  $refs!: {
+    stepOne: Step1;
+    stepTwo: Step2;
+    stepThree: Step3;
+  };
+
   public getRoute(actions: string[]): void {
     actions.forEach((a) => {
       let action = a.toLowerCase();
@@ -56,6 +59,7 @@ export default class Wizard extends Vue {
           this.$router.push("portfolios");
           break;
         case "save":
+          this.$refs.stepOne.$refs.createPortfolioForm.validateForm();
           alert("Data has been saved");
           break;
         case "close":
@@ -67,7 +71,11 @@ export default class Wizard extends Vue {
         default:
           break;
       }
-    });
+    }, this);
+  }
+
+  public goToStep(currStepNumber: number): void {
+    this.stepNumber = currStepNumber;
   }
 }
 </script>

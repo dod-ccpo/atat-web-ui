@@ -1,48 +1,49 @@
 // .v-application{
+@import "colors";
     .h1{
-        font-size: 4.4rem;
-        font-weight: 700;
-        line-height: 5.7rem;
+        font-size: 4.4rem !important;
+        font-weight: 700 !important;
+        line-height: 5.7rem !important;
     } 
     .h2{
-        font-size: 3.4rem;
-        font-weight: 700;
-        line-height: 4.4rem;
+        font-size: 3.4rem !important;
+        font-weight: 700 !important;
+        line-height: 4.4rem !important;
     }
     .h3{
-        font-size: 2.4rem;
-        font-weight: 700;
-        line-height: 3.1rem;
+        font-size: 2.4rem !important;
+        font-weight: 700 !important;
+        line-height: 3.1rem !important;
     }
     .h4{
-        font-size: 1.9rem;
-        font-weight: 700;
-        line-height: 2.5rem;
+        font-size: 1.9rem !important;
+        font-weight: 700 !important;
+        line-height: 2.5rem !important;
     }
     .h5{
-        font-size: 1.5rem;
-        font-weight: 700;
-        line-height: 2rem;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        line-height: 2rem !important;
         }
     .h6{
-        font-size: 1.3rem;
-        font-weight: 400;
-        line-height: 1.7rem;
+        font-size: 1.3rem !important;
+        font-weight: 400 !important;
+        line-height: 1.7rem !important;
     }
     .display-1{
-        font-size: 5.2rem;
-        font-weight: 600;
-        line-height: 6.2rem;
+        font-size: 5.2rem !important;
+        font-weight: 600 !important;
+        line-height: 6.2rem !important;
     }
     .display-2{
-        font-size: 4.4rem;
-        font-weight: 300;
-        line-height: 5.7rem;
+        font-size: 4.4rem !important;
+        font-weight: 300 !important;
+        line-height: 5.7rem !important;
     }
     .lead-paragraph{
-        font-size: 2.2rem;
-        font-weight: 400;
-        line-height: 3.3rem;
+        font-size: 2.2rem !important;
+        font-weight: 400 !important;
+        line-height: 3.3rem !important;
     }
     .body-lg{
         font-size: 1.7rem !important;
@@ -56,37 +57,53 @@
         line-height: 2.4rem !important;
     }
     .label{
-        font-size: 1.2rem;
-        font-weight: 400;
-        line-height: 1.6rem;
+        font-size: 1.2rem !important;
+        font-weight: 400 !important;
+        line-height: 1.6rem !important;
     }
     .micro{
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.1rem;
+        font-size: 1rem !important;
+        font-weight: 400 !important;
+        line-height: 1.1rem !important;
     }
     .form-field-label{
-        font-size: 1.7rem;
-        font-weight: 400;
-        line-height: 2.6rem;
+        color: $base-darkest !important;
+        font-size: 1.7rem !important;
+        font-weight: 400 !important;
+        line-height: 2.6rem !important;
+    }
+    .form-field-label-error{
+        @extend .form-field-label;
+        font-weight: 700 !important;
+        color: $error-darker !important;
+    }
+    .form-field-label-success{
+        @extend .form-field-label;
+        color: $success;
+>>>>>>> develop
     }
     .link-body-lg{
-        font-size: 1.9rem;
-        font-weight: 400;
-        line-height: 2.8rem;
-        text-decoration: underline;
+        font-size: 1.9rem !important;
+        font-weight: 400 !important;
+        line-height: 2.8rem !important;
+        text-decoration: underline !important;
     }
     .link-body-md{
-        font-size: 1.7rem;
-        font-weight: 400;
-        line-height: 2.6rem;
-        text-decoration: underline;
+        font-size: 1.7rem !important;
+        font-weight: 400 !important;
+        line-height: 2.6rem !important;
+        text-decoration: underline !important;
     }
     .link-body-sm{
-        font-size: 1.5rem;
-        font-weight: 400;
-        line-height: 2.4rem;
-        text-decoration: underline;
+        font-size: 1.5rem !important;
+        font-weight: 400 !important;
+        line-height: 2.4rem !important;
+        text-decoration: underline !important;
+    }
+    .stepper-step-lg{
+        font-size: 1.9rem !important;
+        font-weight: 700 !important;
+        line-height: 2.5rem !important;
     }
 
     .hr{
@@ -94,5 +111,12 @@
         -ieVar-❗border-color: var(--v-hr_color-base) !important;
         border-width: 1px !important;
         border-style: solid !important;
+    }
+
+    .optional{
+        font-size: 1.5 rem;
+        font-weight: 400;
+        line-height: 2.3rem;
+        color: $base_dark;
     }
 // }
