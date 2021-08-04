@@ -78,9 +78,10 @@
                   hide-details="true"
                   v-model="currentPermisionsSet"
                 />
-                <p class="permission-set-description">
-                  {{ permission.description }}
-                </p>
+                <p
+                  class="permission-set-description"
+                  v-html="permission.description"
+                ></p>
               </div>
             </div>
           </v-card-text>
@@ -144,33 +145,12 @@ export interface PortfolioManagersPermissions {
   [id: string]: PortfolioManagersPermission;
 }
 
-/*
-<div class="permission-set-checkbox">
-                <v-checkbox
-                  class="ma-0 pa-0"
-                  :ripple="false"
-                  label="Edit Portfolio"
-                  value="EDIT_PORTFOLIO_POC"
-                  hide-details="true"
-                  v-model="currentPermisionsSet"
-                />
-                <p class="permission-set-description">
-                  Can update Portfolio settings, add Portfolio Managers and
-                  delete this Portfolio <br />
-                  NOTE: The option to delete this Portfolio will only be
-                  available as a draft. A Portfolio cannot be removed from ATAT
-                  after it has been provisioned.
-                </p>
-              </div>
-            </div>
-
-*/
-
 export let validEmail = (email: string): boolean => {
   let isValidEmail =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g;
   return isValidEmail.test(email);
 };
+
 export let portfoliManagerPermisions: PortfolioManagersPermissions = {
   EDIT_TASK_ORDER: {
     id: "EDIT_TASK_ORDER",
@@ -191,7 +171,7 @@ export let portfoliManagerPermisions: PortfolioManagersPermissions = {
     id: "EDIT_PORTFOLIO_POC",
     label: "Edit Portfolio",
     description: `Can update Portfolio settings, add Portfolio Managers and
-                  delete this Portfolio <br />
+                  delete this Portfolio <br>
                   NOTE: The option to delete this Portfolio will only be
                   available as a draft. A Portfolio cannot be removed from ATAT
                   after it has been provisioned.`,
