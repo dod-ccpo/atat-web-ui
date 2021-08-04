@@ -9,7 +9,12 @@
       <v-col class="d-flex justify-space-between align-center">
         <div class="h3">My Portfolios</div>
         <div>
-          <v-btn class="primary" :ripple="false" to="/wizard">
+          <v-btn
+            id="btn-create-new-portfolio"
+            class="primary"
+            :ripple="false"
+            to="/wizard"
+          >
             Create a New Portfolio
           </v-btn>
         </div>
