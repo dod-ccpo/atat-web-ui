@@ -1,58 +1,86 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
+// import { jest } from "@vue/cli-plugin-unit-jest"
 Vue.use(Vuetify);
 Vue.config.productionTip = false;
 
-import StyledFields from "@/components/StyledFields.vue";
+import buttonNav from "@/wizard/Navigation/ButtonNavigation.vue";
 
-import { mount } from "@vue/test-utils";
+import {
+  shallowMount,
+} from '@vue/test-utils'
 
- describe("Testing Button Navigation Bar", () => {
+const propsData = {
+  NavButtonPanels: [
+    {
+      step: 1,
+      buttons: [
+        {
+          text: "Save and Close",
+          link: true,
+          id: "save_and_close",
+          action: ["save", "close"],
+        },
+        {
+          id: "add_funding",
+          text: "Next: Add Funding",
+          color: "primary",
+          action: ["next"],
+        },
+      ],
+    },
+    {
+      step: 2,
+      buttons: [
+        {
+          text: "Cancel",
+          link: true,
+          id: "cancel",
+          action: ["cancel"],
+        },
+        {
+          text: "Previous",
+          outlined: true,
+          id: "previous",
+          color: "primary",
+          action: ["previous"],
+        },
+        {
+          text: "Next",
+          color: "primary",
+          id: "next",
+          action: ["next"],
+        },
+      ],
+    },
+  ]
+}
+
+describe("Testing Button Navigation Bar", () => {
+  // let shallowMountFunction: (options?: object) => Wrapper<Vue>
+  let sMount: any;
+  beforeEach(() => {
+    sMount = shallowMount(buttonNav, {
+      propsData: {
+        propsData: propsData,
+      }
+    });
+  })
  
-  describe("Component Initialization", () => {
-    it("wizard page", () => {
-      expect(true);
-    });
-    
-    it("button navigation bar", () => {
-      expect(true);
-    });
-    it("button navigation bar::data structure", () => {
-      expect(true);
-    });
-    
-  });
-  describe("Testing Interactivity", () => {
-    
-    it("Step 1 - Click to save and close", () => {
-      expect(true);
-    });
-    
-    it("Step 1 - Click to advance to step 2", () => {
-      expect(true);
-    });
-
-    it("Step 2 - Validate Button", () => {
-      expect(true);
-    });
-
-    it("Step 2 - Click to return to step 1", () => {
-      expect(true);
-    });
+  it("button navigation bar initialization", () => {
+    let mountedButtons = sMount.findAll("[type=button]").length
+    let expectedButtons = propsData.NavButtonPanels[0].buttons.length;
+    expect(mountedButtons === expectedButtons);
   });
 
+    it("get pageButtonPanel function()", async () => {
+      await sMount.setProps({stepNumber : 2});
+      expect(sMount.vm.pageButtonPanel.step).toBe(2);
+    });
 
+    it("clickedAction function()", async () => {
+      await sMount.vm.$emit('clickedAction', 'save');
+      expect(sMount.emitted().clickedAction[0][0]).toBe('save');
+    });
 
-  //   const vuetify = new Vuetify();
-//   it("renders props.msg when passed", () => {
-//     const msg = "Hello World";
-
-//     const wrapper = mount(StyledFields, {
-//       vuetify,
-//       stubs: ["atat-select", "atat-text-field"],
-//       propsData: { msg },
-//     });
-//     expect(true);
-//     expect(wrapper.text()).toMatch(msg);
-//   });
 });
