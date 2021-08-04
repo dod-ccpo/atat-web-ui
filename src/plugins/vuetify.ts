@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
 import "typeface-source-sans-pro";
-import "material-design-icons-iconfont/dist/material-design-icons.css"
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 import light from "./theme";
 
 Vue.use(Vuetify);

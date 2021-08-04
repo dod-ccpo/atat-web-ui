@@ -1,0 +1,17 @@
+
+@import "../utils/colors.scss";
+@import "../utils/typography.scss";
+// .form-field-label-error
+
+
+.v-input{
+    &.v-input--checkbox:focus{
+        background-color: $base_lighter !important;
+       .v-input--selection-controls__input{
+       .v-icon{
+            color: $primary !important;
+       }
+    }
+
+    }
+}
