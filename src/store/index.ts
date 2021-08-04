@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
-import { portfoliManagerPermisions } from "./mocks/managers.mock";
+import { portfolioManagerPermissions } from "./mocks/managers.mock";
 
 Vue.use(Vuex);
 
@@ -22,7 +22,7 @@ export default new Vuex.Store({
     loginStatus: false,
     portfolios: allPortfolios,
     ui: {
-      portfoliManagerPermisions: portfoliManagerPermisions,
+      portfoliManagerPermisions: portfolioManagerPermissions,
     },
   },
   mutations: {

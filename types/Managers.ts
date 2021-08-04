@@ -10,11 +10,11 @@ export interface PortfolioManagers {
     managers: Manager[];
 }
   
-export interface PortfolioManagersPermission {
+export interface PortfolioManagerPermission {
     id: string;
     label: string;
     description: string;
 }
-export interface PortfolioManagersPermissions {
-    [id: string]: PortfolioManagersPermission;
+export interface PortfolioManagerPermissions {
+    [id: string]: PortfolioManagerPermission;
 }

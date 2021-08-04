@@ -1,6 +1,6 @@
-import { PortfolioManagersPermissions } from "@/../types/Managers";
+import { PortfolioManagerPermissions } from "@/../types/Managers";
 
-export const portfoliManagerPermisions: PortfolioManagersPermissions = {
+export const portfolioManagerPermissions: PortfolioManagerPermissions = {
   EDIT_TASK_ORDER: {
     id: "EDIT_TASK_ORDER",
     label: "Edit Funding",

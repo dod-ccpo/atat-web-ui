@@ -116,7 +116,7 @@ import { Component, Prop } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { ActionObject } from "@/../types/Actions";
 import {
-  PortfolioManagersPermissions,
+  PortfolioManagerPermissions,
   Manager,
   PortfolioManagers,
 } from "@/../types/Managers";
@@ -132,7 +132,7 @@ export default class PermissionsModal extends Vue {
   private listManagers: string[] = [""];
   private currentPermisionsSet: string[] = [];
 
-  get portfoliManagerPermisionsSet(): PortfolioManagersPermissions {
+  get portfoliManagerPermisionsSet(): PortfolioManagerPermissions {
     return this.$store.getters.getPortfoliManagerPermisions;
   }
 
