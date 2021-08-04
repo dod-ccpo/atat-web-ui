@@ -64,62 +64,22 @@
             </v-btn>
             <br /><br />
             <h3 class="h3">Portfolio Permissions</h3>
-            <div class="permissions-set-list">
+            <div
+              class="permissions-set-list"
+              v-for="permission in portfoliManagerPermisionsSet"
+              :key="permission.id"
+            >
               <div class="permission-set-checkbox">
                 <v-checkbox
                   class="ma-0 pa-0"
                   :ripple="false"
-                  label="Edit Funding"
-                  value="EDIT_TASK_ORDER"
+                  :label="permission.label"
+                  :value="permission.id"
                   hide-details="true"
                   v-model="currentPermisionsSet"
                 />
                 <p class="permission-set-description">
-                  Can add or modify Task Orders to fund this Portfolio
-                </p>
-              </div>
-              <div class="permission-set-checkbox">
-                <v-checkbox
-                  class="ma-0 pa-0"
-                  :ripple="false"
-                  label="Edit Application"
-                  value="EDIT_APPLICATION"
-                  hide-details="true"
-                  v-model="currentPermisionsSet"
-                />
-                <p class="permission-set-description">
-                  Can create, edit and remove Applications in this Portfolio
-                </p>
-              </div>
-              <div class="permission-set-checkbox">
-                <v-checkbox
-                  class="ma-0 pa-0"
-                  :ripple="false"
-                  label="Manage Reporting"
-                  value="VIEW_PORTFOLIO_FUNDING"
-                  hide-details="true"
-                  v-model="currentPermisionsSet"
-                />
-                <p class="permission-set-description">
-                  Can view and export reports about this Portfolio’s funding and
-                  expenditures
-                </p>
-              </div>
-              <div class="permission-set-checkbox">
-                <v-checkbox
-                  class="ma-0 pa-0"
-                  :ripple="false"
-                  label="Edit Portfolio"
-                  value="EDIT_PORTFOLIO_POC"
-                  hide-details="true"
-                  v-model="currentPermisionsSet"
-                />
-                <p class="permission-set-description">
-                  Can update Portfolio settings, add Portfolio Managers and
-                  delete this Portfolio <br />
-                  NOTE: The option to delete this Portfolio will only be
-                  available as a draft. A Portfolio cannot be removed from ATAT
-                  after it has been provisioned.
+                  {{ permission.description }}
                 </p>
               </div>
             </div>
@@ -165,6 +125,7 @@ export interface ActionObject {
 
 export interface Manager {
   name?: string;
+  phone?: string;
   email: string;
   permissionSets?: string[];
 }
@@ -174,10 +135,67 @@ export interface PortfolioManagers {
   managers: Manager[];
 }
 
-let validEmail = (email: string): boolean => {
+export interface PortfolioManagersPermission {
+  id: string;
+  label: string;
+  description: string;
+}
+export interface PortfolioManagersPermissions {
+  [id: string]: PortfolioManagersPermission;
+}
+
+/*
+<div class="permission-set-checkbox">
+                <v-checkbox
+                  class="ma-0 pa-0"
+                  :ripple="false"
+                  label="Edit Portfolio"
+                  value="EDIT_PORTFOLIO_POC"
+                  hide-details="true"
+                  v-model="currentPermisionsSet"
+                />
+                <p class="permission-set-description">
+                  Can update Portfolio settings, add Portfolio Managers and
+                  delete this Portfolio <br />
+                  NOTE: The option to delete this Portfolio will only be
+                  available as a draft. A Portfolio cannot be removed from ATAT
+                  after it has been provisioned.
+                </p>
+              </div>
+            </div>
+
+*/
+
+export let validEmail = (email: string): boolean => {
   let isValidEmail =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g;
   return isValidEmail.test(email);
+};
+export let portfoliManagerPermisions: PortfolioManagersPermissions = {
+  EDIT_TASK_ORDER: {
+    id: "EDIT_TASK_ORDER",
+    label: "Edit Funding",
+    description: "Can add or modify Task Orders to fund this Portfolio",
+  },
+  EDIT_APPLICATION: {
+    id: "EDIT_APPLICATION",
+    label: "Edit Application",
+    description: "Can create, edit and remove Applications in this Portfolio",
+  },
+  VIEW_PORTFOLIO_FUNDING: {
+    id: "VIEW_PORTFOLIO_FUNDING",
+    label: "Manage Reporting",
+    description: "Can create, edit and remove Applications in this Portfolio",
+  },
+  EDIT_PORTFOLIO_POC: {
+    id: "EDIT_PORTFOLIO_POC",
+    label: "Edit Portfolio",
+    description: `Can update Portfolio settings, add Portfolio Managers and
+                  delete this Portfolio <br />
+                  NOTE: The option to delete this Portfolio will only be
+                  available as a draft. A Portfolio cannot be removed from ATAT
+                  after it has been provisioned.`,
+  },
 };
 
 @Component({
@@ -189,6 +207,8 @@ export default class PermissionsModal extends Vue {
 
   private listManagers: string[] = [""];
   private currentPermisionsSet: string[] = [];
+  private portfoliManagerPermisionsSet: PortfolioManagersPermissions =
+    portfoliManagerPermisions;
 
   get getCurrentPermisionsSet(): string[] {
     return this.currentPermisionsSet;
