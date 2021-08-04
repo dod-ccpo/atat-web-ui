@@ -76,6 +76,9 @@ describe("Testing Button Navigation Bar", () => {
     it("get pageButtonPanel function()", async () => {
       await sMount.setProps({stepNumber : 2});
       expect(sMount.vm.pageButtonPanel.step).toBe(2);
+
+      await sMount.setProps({stepNumber : 1400});
+      expect(sMount.vm.pageButtonPanel.step).toBe(1);
     });
 
     it("clickedAction function()", async () => {
