@@ -6,9 +6,7 @@ Vue.config.productionTip = false;
 
 import buttonNav from "@/wizard/Navigation/ButtonNavigation.vue";
 
-import {
-  shallowMount,
-} from '@vue/test-utils'
+import { shallowMount } from "@vue/test-utils";
 
 const propsData = {
   NavButtonPanels: [
@@ -53,8 +51,8 @@ const propsData = {
         },
       ],
     },
-  ]
-}
+  ],
+};
 
 describe("Testing Button Navigation Bar", () => {
   // let shallowMountFunction: (options?: object) => Wrapper<Vue>
@@ -63,27 +61,26 @@ describe("Testing Button Navigation Bar", () => {
     sMount = shallowMount(buttonNav, {
       propsData: {
         propsData: propsData,
-      }
+      },
     });
-  })
- 
+  });
+
   it("button navigation bar initialization", () => {
-    let mountedButtons = sMount.findAll("[type=button]").length
-    let expectedButtons = propsData.NavButtonPanels[0].buttons.length;
+    const mountedButtons = sMount.findAll("[type=button]").length;
+    const expectedButtons = propsData.NavButtonPanels[0].buttons.length;
     expect(mountedButtons === expectedButtons);
   });
 
-    it("get pageButtonPanel function()", async () => {
-      await sMount.setProps({stepNumber : 2});
-      expect(sMount.vm.pageButtonPanel.step).toBe(2);
+  it("get pageButtonPanel function()", async () => {
+    await sMount.setProps({ stepNumber: 2 });
+    expect(sMount.vm.pageButtonPanel.step).toBe(2);
 
-      await sMount.setProps({stepNumber : 1400});
-      expect(sMount.vm.pageButtonPanel.step).toBe(1);
-    });
+    await sMount.setProps({ stepNumber: 1400 });
+    expect(sMount.vm.pageButtonPanel.step).toBe(1);
+  });
 
-    it("clickedAction function()", async () => {
-      await sMount.vm.$emit('clickedAction', 'save');
-      expect(sMount.emitted().clickedAction[0][0]).toBe('save');
-    });
-
+  it("clickedAction function()", async () => {
+    await sMount.vm.$emit("clickedAction", "save");
+    expect(sMount.emitted().clickedAction[0][0]).toBe("save");
+  });
 });
