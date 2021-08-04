@@ -26,9 +26,13 @@
     <v-row>
       <v-col cols="4" offset="4" class="mb-4">
         <atat-select id="html-select-dummy" />
-        <atat-text-field id="plain-text-box" />
-        <atat-text-field :success="true" id="success" />
-        <atat-text-field :error="true" id="error" />
+        <atat-text-field id="plain-text-box" label="Form Field Label" />
+        <atat-text-field
+          :success="true"
+          id="success"
+          label="Form Field Label"
+        />
+        <atat-text-field :error="true" id="error" label="Form Field Label" />
       </v-col>
     </v-row>
   </v-container>

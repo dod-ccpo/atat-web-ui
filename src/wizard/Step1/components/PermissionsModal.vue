@@ -26,26 +26,31 @@
                 v-for="(manager, counter) in listManagers"
                 v-bind:key="counter"
               >
-                <v-text-field
+                <ATATTextField
                   outlined
                   dense
                   height="42"
                   type="email"
                   :rules="validEmailRules"
                   :messages="['Messages']"
-                  v-model.lazy="listManagers[counter]"
-                  placeholder="add e-mail"
+                  :value.sync="listManagers[counter]"
                   hide-details="true"
+                  no-icon="true"
                   class="invite-portfolio-manager-email"
                 >
-                </v-text-field>
+                </ATATTextField>
                 <v-btn
                   @click="doRemoveManager(counter)"
                   v-if="listManagers.length > 1"
-                  class="form-field-item__cancel link-button body-lg"
+                  class="
+                    form-field-item__cancel
+                    link-button
+                    body-lg
+                    text--base-dark
+                  "
                   :ripple="false"
                 >
-                  <v-icon> mdi-delete-forever-outline </v-icon>
+                  <v-icon class="text--base-dark"> mdi-close </v-icon>
                 </v-btn>
               </div>
             </div>
@@ -92,13 +97,15 @@
                   body-lg
                 "
               :ripple="false"
+              large
               @click="modalAction('portfolio-managers-modal-cancel')"
             >
-              Close
+              Cancel
             </v-btn>
             <v-btn
               color="primary"
-              :disabled="isSaveDisenable"
+              :disabled="isSaveDisabled"
+              large
               @click="modalAction('portfolio-managers-modal-save')"
             >
               Send Invitation
@@ -140,7 +147,7 @@ export default class PermissionsModal extends Vue {
     return this.currentPermisionsSet;
   }
 
-  get isSaveDisenable(): boolean {
+  get isSaveDisabled(): boolean {
     let isFormValid = !!this.$refs.formAddManagers;
     console.log("isFormValid", isFormValid);
     if (this.listManagers.length > 0 && this.listManagers[0].length > 3) {
@@ -173,8 +180,6 @@ export default class PermissionsModal extends Vue {
   }
 
   private validEmailRules = [
-    (v: string): boolean | string =>
-      v.length > 3 || "minimal amout of characters is 3",
     (v: string): boolean | string => validEmail(v) || "text must be a email",
   ];
 

@@ -2,6 +2,7 @@
   <div :id="id + '_text_field_control'" class="atat-text-field">
     <v-flex>
       <label
+        v-if="label"
         :id="id + '_text_field_label'"
         class="form-field-label my-1"
         :for="id + '_text_field'"
@@ -22,7 +23,7 @@
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
         :value="value"
-        hide-details="auto"
+        :hide-details="hideDetails"
         @keyup="$emit('update:value', $event.target.value)"
       >
       </v-text-field>
@@ -38,12 +39,11 @@ import { Component, Prop } from "vue-property-decorator";
 export default class ATATTextField extends VTextField {
   private isFieldValid = false;
   // props
-  @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
-  @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
+  @Prop({ default: false }) private noIcon!: boolean;
 
   //data
   private rounded = false;
@@ -52,9 +52,11 @@ export default class ATATTextField extends VTextField {
 
   private getStatusIcon() {
     this.isFieldValid = this.$data["valid"];
-    this.appendedOuterIcon = this.isFieldValid
-      ? "mdi-check-circle"
-      : "mdi-alert-circle";
+    if (!this.noIcon) {
+      this.appendedOuterIcon = this.isFieldValid
+        ? "mdi-check-circle"
+        : "mdi-alert-circle";
+    }
   }
 
   private updated() {
