@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
+import { portfoliManagerPermisions } from "./mocks/managers.mock";
 
 Vue.use(Vuex);
 
@@ -20,6 +21,9 @@ export default new Vuex.Store({
   state: {
     loginStatus: false,
     portfolios: allPortfolios,
+    ui: {
+      portfoliManagerPermisions: portfoliManagerPermisions,
+    },
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -89,6 +93,9 @@ export default new Vuex.Store({
     },
     getAllPortfolios(state) {
       return state.portfolios;
+    },
+    getPortfoliManagerPermisions(state) {
+      return state.ui.portfoliManagerPermisions;
     },
   },
 });

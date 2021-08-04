@@ -33,7 +33,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import PortfolioPermissionsMenu from "./PortfolioPermissionsMenu.vue";
 import PermissionsModal from "./PermissionsModal.vue";
-import { ActionObject } from "./PermissionsModal.vue";
+import { ActionObject } from "@/../types/Actions";
 
 @Component({
   components: {
@@ -53,7 +53,7 @@ export default class InvitePortfolioManagersTable extends Vue {
       this.isPermissionDialogOpen = false;
     } else if (actionObj.action === "portfolio-managers-modal-save") {
       // get data to the store and/or API.
-      console.log("save this", actionObj.data);
+      console.info("save this", actionObj.data);
       this.isPermissionDialogOpen = false;
     }
   }

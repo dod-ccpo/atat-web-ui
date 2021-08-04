@@ -114,69 +114,13 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
-
-export interface KeyValuePair {
-  [key: string]: any;
-}
-
-export interface ActionObject {
-  action: string;
-  data?: KeyValuePair;
-}
-
-export interface Manager {
-  name?: string;
-  phone?: string;
-  email: string;
-  permissionSets?: string[];
-}
-
-export interface PortfolioManagers {
-  portfolioID?: string;
-  managers: Manager[];
-}
-
-export interface PortfolioManagersPermission {
-  id: string;
-  label: string;
-  description: string;
-}
-export interface PortfolioManagersPermissions {
-  [id: string]: PortfolioManagersPermission;
-}
-
-export let validEmail = (email: string): boolean => {
-  let isValidEmail =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g;
-  return isValidEmail.test(email);
-};
-
-export let portfoliManagerPermisions: PortfolioManagersPermissions = {
-  EDIT_TASK_ORDER: {
-    id: "EDIT_TASK_ORDER",
-    label: "Edit Funding",
-    description: "Can add or modify Task Orders to fund this Portfolio",
-  },
-  EDIT_APPLICATION: {
-    id: "EDIT_APPLICATION",
-    label: "Edit Application",
-    description: "Can create, edit and remove Applications in this Portfolio",
-  },
-  VIEW_PORTFOLIO_FUNDING: {
-    id: "VIEW_PORTFOLIO_FUNDING",
-    label: "Manage Reporting",
-    description: "Can create, edit and remove Applications in this Portfolio",
-  },
-  EDIT_PORTFOLIO_POC: {
-    id: "EDIT_PORTFOLIO_POC",
-    label: "Edit Portfolio",
-    description: `Can update Portfolio settings, add Portfolio Managers and
-                  delete this Portfolio <br>
-                  NOTE: The option to delete this Portfolio will only be
-                  available as a draft. A Portfolio cannot be removed from ATAT
-                  after it has been provisioned.`,
-  },
-};
+import { ActionObject } from "@/../types/Actions";
+import {
+  PortfolioManagersPermissions,
+  Manager,
+  PortfolioManagers,
+} from "@/../types/Managers";
+import { validEmail } from "@/store/validation.modules";
 
 @Component({
   components: { ATATTextField },
@@ -187,8 +131,10 @@ export default class PermissionsModal extends Vue {
 
   private listManagers: string[] = [""];
   private currentPermisionsSet: string[] = [];
-  private portfoliManagerPermisionsSet: PortfolioManagersPermissions =
-    portfoliManagerPermisions;
+
+  get portfoliManagerPermisionsSet(): PortfolioManagersPermissions {
+    return this.$store.getters.getPortfoliManagerPermisions;
+  }
 
   get getCurrentPermisionsSet(): string[] {
     return this.currentPermisionsSet;
@@ -211,6 +157,21 @@ export default class PermissionsModal extends Vue {
     return true;
   }
 
+  get portfolioManagers(): PortfolioManagers {
+    let managers: PortfolioManagers = {
+      portfolioID: this.portfolioID,
+      managers: this.listManagers.map((val) => {
+        let manager: Manager = {
+          email: val,
+          permissionSets: this.currentPermisionsSet,
+        };
+        return manager;
+      }),
+    };
+    console.log("get portfolioManagers", managers);
+    return managers;
+  }
+
   private validEmailRules = [
     (v: string): boolean | string =>
       v.length > 3 || "minimal amout of characters is 3",
@@ -224,6 +185,7 @@ export default class PermissionsModal extends Vue {
         portfolioID: this.portfolioID,
         listManagers: this.listManagers,
         currentPermisionsSet: this.currentPermisionsSet,
+        portfolioManagers: this.portfolioManagers,
       },
     };
 
