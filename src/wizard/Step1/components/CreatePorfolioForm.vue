@@ -1,13 +1,13 @@
 <template>
-  <v-container fluid class="my-9">
-    <v-row>
-      <v-col cols="12">
-        <h2 class="h2">Portfolio Details</h2>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <v-form ref="form" lazy-validation>
+  <v-form ref="form" lazy-validation>
+    <v-container fluid class="my-9">
+      <v-row>
+        <v-col cols="12">
+          <h2 class="h2">Portfolio Details</h2>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="6">
           <atat-text-field
             id="portfolio-name"
             label="Portfolio Name"
@@ -17,7 +17,7 @@
 
           <p class="mb-11">
             Naming can be difficult. Choose a name that is descriptive enough
-            for users to identify the portfolio. You may consider naming based
+            for users to identify the Portfolio. You may consider naming based
             on your organization.
           </p>
           <atat-text-area
@@ -41,7 +41,7 @@
             Select DoD component(s) funding your Portfolio
           </div>
           <p>
-            Select the Dod component(s) that will fund all applications within
+            Select the DoD component(s) that will fund all applications within
             this portfolio. Multiple DoD organizations can fund the same
             Portfolio
           </p>
@@ -54,18 +54,18 @@
             :key="dod"
             :value="dod"
             :hide-details="index !== 0"
-            :ripple="false"
             :input-value="model.dod_components"
+            :color="primary"
             @click="validateForm"
           >
             <template v-slot:label>
               <span class="">{{ dod }}</span>
             </template>
           </v-checkbox>
-        </v-form>
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -95,7 +95,13 @@ export default class CreatePortfolioForm extends Vue {
     description: "",
     dod_components: [],
   };
-  public validateForm(): void {
+
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.form as Vue & { validate: () => boolean };
+  }
+
+  public async validateForm(): Promise<boolean> {
+    let validated = false;
     this.rules = {
       portfolioName: [(v: string) => !!v || "Name is required"],
       dod_components: [
@@ -103,11 +109,11 @@ export default class CreatePortfolioForm extends Vue {
           "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
-    this.$nextTick(() => {
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        return true;
-      }
+    await this.$nextTick(() => {
+      validated = this.Form.validate();
     });
+
+    return validated;
   }
 }
 </script>

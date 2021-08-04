@@ -46,11 +46,22 @@ export default class Wizard extends Vue {
   };
 
   public getRoute(actions: string[]): void {
-    actions.forEach((a) => {
+    actions.forEach(async (a) => {
       let action = a.toLowerCase();
+      let validated: Promise<boolean>;
       switch (action) {
         case "next":
-          this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
+          if (this.stepNumber === 1) {
+            validated =
+              this.$refs.stepOne.$refs.createPortfolioForm.validateForm();
+
+            if (await validated) {
+              alert("Data has been validated and is to be saved");
+              this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
+            }
+          } else {
+            this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
+          }
           break;
         case "previous":
           this.stepNumber = this.stepNumber > 1 ? this.stepNumber - 1 : 1;
@@ -59,12 +70,15 @@ export default class Wizard extends Vue {
           this.$router.push("portfolios");
           break;
         case "save":
-          this.$refs.stepOne.$refs.createPortfolioForm.validateForm();
-          // alert("Data has been saved");
+          validated =
+            this.$refs.stepOne.$refs.createPortfolioForm.validateForm();
+
+          if (await validated) {
+            alert("Data has been validated and is to be saved");
+            this.$router.push("portfolios");
+          }
+
           break;
-        // case "close":
-        //   this.$router.push("portfolios");
-        //   break;
         // case "provision_cloud_resources":
         //   alert("All is complete. Cloud resources are to be provisioned.");
         //   break;
