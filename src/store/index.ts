@@ -65,7 +65,7 @@ export default new Vuex.Store({
               title: "Maria Missionowner",
               url: "#",
               newWindow: false,
-              icon: "mdi-account-circle",
+              icon: "person",
               iconPlacement: "left",
             },
             {
@@ -74,7 +74,7 @@ export default new Vuex.Store({
               title: "Support",
               url: "#",
               newWindow: false,
-              icon: "mdi-help-circle-outline",
+              icon: "help_outline",
               iconPlacement: "left",
             },
             {
@@ -83,7 +83,7 @@ export default new Vuex.Store({
               title: "Logout",
               url: "/",
               newWindow: false,
-              icon: "mdi-logout",
+              icon: "logout",
               iconPlacement: "right",
               action: "logout",
             },

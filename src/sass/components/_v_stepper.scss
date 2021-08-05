@@ -90,6 +90,9 @@
             .v-icon{
               font-size: 2.5rem;
               color: #fff;
+              &::before{
+                content: "\e645";
+              }
             }
           }
           .v-stepper__label{
@@ -105,11 +108,12 @@
             background-color: $success !important;
             border: #fff 4px solid !important;
             .v-icon{
-              font-size: 2.5rem;
+              @extend .icon-24;
+              font-weight: bolder;
               color: #fff;
-              &:before{
-                content: "\F012C";
-              }
+                &::before{
+                  content: "\e5ca";
+                }
             }
           }
           .v-stepper__label{
