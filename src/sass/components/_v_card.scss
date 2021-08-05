@@ -18,3 +18,34 @@
   text-transform: uppercase;
   height: 23px;
 }
+
+.v-card.v-sheet.v-card-inner-scroll {
+      padding: 16px;
+      border-radius: 0;
+      .v-card__title {
+        height: 120px;
+        position: absolute;
+        background-color: white;
+        z-index: 10;
+      }
+      .v-card__text {
+        position: relative;
+        padding: 20px 56px 40px 24px;
+        height: 60vh;
+        margin-top: 120px;
+        margin-bottom: 60px;
+        overflow-y: auto;
+      }
+      .v-card__actions {
+        position: absolute;
+        z-index: 10;
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        align-items: flex-end;
+        padding: 16px 24px;
+        bottom: 0;
+        left: 0px;
+        background: #f0f0f0;
+      }
+}

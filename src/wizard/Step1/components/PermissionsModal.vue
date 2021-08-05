@@ -4,11 +4,10 @@
       v-model="isDialogOpen"
       max-width="800px"
       persistent
-      content-class="v-dialog v-dialog--active v-dialog--persistent portfolio-managers-modal-dialog"
-      class="portfolio-managers-modal-dialog"
+      content-class="v-dialog v-dialog--active v-dialog--persistent portfolio-managers-modal-dialog atat-modal-dialog"
     >
       <v-form ref="formAddManagers">
-        <v-card>
+        <v-card class="v-card-inner-scroll">
           <v-card-title>
             <h2 class="h2">Invite Portfolio Manager</h2>
             <p>
@@ -37,6 +36,7 @@
                   hide-details="true"
                   no-icon="true"
                   class="invite-portfolio-manager-email"
+                  :cssClass="body"
                 >
                 </ATATTextField>
                 <v-btn
@@ -68,13 +68,15 @@
               </strong>
             </v-btn>
             <br /><br />
-            <h3 class="h3">Portfolio Permissions</h3>
+            <h3 class="stepper-step-lg text--base-darkest mb-2">
+              Portfolio Permissions
+            </h3>
             <div
-              class="permissions-set-list"
+              class="permissions-set-list bold-list-sets"
               v-for="permission in portfoliManagerPermisionsSet"
               :key="permission.id"
             >
-              <div class="permission-set-checkbox">
+              <div class="bold-list-sets-checkbox">
                 <v-checkbox
                   class="ma-0 pa-0"
                   :ripple="false"
@@ -84,7 +86,7 @@
                   v-model="currentPermisionsSet"
                 />
                 <p
-                  class="permission-set-description"
+                  class="bold-list-sets-description"
                   v-html="permission.description"
                 ></p>
               </div>

@@ -18,3 +18,33 @@
 }
 
 
+.bold-list-sets {
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  .bold-list-sets-checkbox {
+    border: 1px solid #005ea2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    position: static;
+    box-sizing: border-box;
+    border-radius: 2px;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0px 0px 16px 0px;
+  }
+  .bold-list-sets-description {
+    margin-left: 32px;
+    margin-bottom: 0;
+  }
+}

@@ -8,3 +8,26 @@
 .v-text-field--outlined fieldset{
     border: 1px solid $base_dark !important;
  }
+
+ .form-field-item {
+    display: block;
+    position: relative;
+    margin-bottom: 8px;
+    .form-field-item__cancel {
+      position: absolute;
+      display: block;
+      top: 0;
+      right: -55px;
+      padding: 0;
+      &.theme--light.v-btn.v-btn--has-bg {
+        background-color: transparent;
+      }
+      .v-btn.link-button span {
+        text-decoration: unset !important;
+      }
+      .v-btn__content {
+        padding: 0;
+        text-decoration: none;
+      }
+    }
+  }

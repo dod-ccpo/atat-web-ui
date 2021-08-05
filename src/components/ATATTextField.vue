@@ -13,6 +13,7 @@
     </v-flex>
     <v-flex>
       <v-text-field
+        :class="cssClass"
         :rules="rules"
         :id="id + '_text_field'"
         outlined
@@ -44,6 +45,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: false }) private noIcon!: boolean;
+  @Prop({ default: "" }) private cssClass!: string;
 
   //data
   private rounded = false;

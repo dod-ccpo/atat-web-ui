@@ -107,3 +107,17 @@
 }
 
 
+.add-portfolio-manager-email.v-btn:not(.v-btn--round).v-size--default {
+  padding-left: 2px;
+  height: 26px;
+  margin-bottom: 40px;
+  .add-portfolio-manager-email__icon {
+    text-decoration: none;
+    text-decoration-color: transparent;
+    text-decoration-style: unset;
+    text-decoration-line: none;
+  }
+  .v-btn__content {
+      text-decoration: none;
+  }
+}
