@@ -1,7 +1,7 @@
 import Vue from "vue";
-import Vuetify from "vuetify/lib/framework";
+import Vuetify from "vuetify/lib";
 import "typeface-source-sans-pro";
-import "@mdi/font/css/materialdesignicons.css";
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 import light from "./theme";
 
 Vue.use(Vuetify);
@@ -9,7 +9,7 @@ Vue.use(Vuetify);
 export default new Vuetify({
   rtl: false,
   icons: {
-    iconfont: "mdi",
+    iconfont: "md",
   },
   theme: {
     dark: false,

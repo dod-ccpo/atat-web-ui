@@ -57,7 +57,7 @@ export default class ATATTextArea extends VTextarea {
       ? this.$props["value"].length > 0
       : this.$data["valid"];
 
-    this.appendedOuterIcon = this.isFieldValid ? "mdi-check-circle" : "";
+    this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "";
   }
 }
 </script>

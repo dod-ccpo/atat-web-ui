@@ -26,6 +26,7 @@
         :value="value"
         :hide-details="hideDetails"
         @keyup="$emit('update:value', $event.target.value)"
+        @change="getStatusIcon"
       >
       </v-text-field>
     </v-flex>
@@ -44,8 +45,8 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private optional!: boolean;
-  @Prop({ default: false }) private noIcon!: boolean;
-  @Prop({ default: "" }) private cssClass!: string;
+  @Prop({ default: "" }) private value!: string;
+  @Prop({ default: false }) private error!: boolean;
 
   //data
   private rounded = false;
@@ -55,9 +56,7 @@ export default class ATATTextField extends VTextField {
   private getStatusIcon() {
     this.isFieldValid = this.$data["valid"];
     if (!this.noIcon) {
-      this.appendedOuterIcon = this.isFieldValid
-        ? "mdi-check-circle"
-        : "mdi-alert-circle";
+      this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
     }
   }
 
