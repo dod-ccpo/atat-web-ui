@@ -61,7 +61,7 @@
               @click="doAddManager"
             >
               <v-icon class="add-portfolio-manager-email__icon" left>
-                mdi-plus-circle-outline
+                add_circle_outline
               </v-icon>
               <strong class="text-decoration-underline">
                 Add another portfolio manager
@@ -103,7 +103,7 @@
                       <p class="body ma-0 text--base-darkest">
                         {{ permission.description }}
                       </p>
-                      <p class="body ma-0 text--base-darkest font-italic ">
+                      <p class="body ma-0 text--base-darkest font-italic">
                         {{ permission.description_note }}
                       </p>
                     </div>
