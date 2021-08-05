@@ -1,17 +1,21 @@
 ---
 name: Build and Deploy SPA
 
+concurrency: deploy-spa
+
 on:
   push:
     branches:
       - "develop"
-      - "feature/add-aws-deploy"
 
 jobs:
   build:
     name: Build SPA
     runs-on: ubuntu-20.04
     steps:
+      - name: Get build timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date --iso-8601=seconds)"
       - name: Configure npm caching
         uses: actions/cache@v2
         with:
@@ -33,39 +37,51 @@ jobs:
         run: npm ci
       - name: Build application
         run: npm run build
+      - name: Generate build data file
+        run: |
+          cat <<EOF > dist/.build-data.json
+          {
+            "git_ref": "${{ github.ref }}",
+            "git_sha": "${{ github.sha }}",
+            "timestamp": "${{ steps.timestamp.outputs.timestamp }}"
+          }
+          EOF
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
           name: atat-web-ui
           path: dist
   deploy:
-    name: Deploy SPA to AWS (${{ matrix.region }})
+    name: Deploy SPA to AWS
     runs-on: ubuntu-20.04
     needs: build
-    strategy:
-      matrix:
-        include:
-          - name: GovCloud
-            region: us-gov-west-1
-            secret_prefix: AWS_US_GOV
-          - name: Commerical
-            region: us-east-1
-            secret_prefix: AWS
     steps:
       # Ensure that the account ID does not appear in any log messages in the pipeline
-      - run: echo ::add-mask::${{ secrets[format('{0}_ACCOUNT_ID', matrix.secret_prefix)] }}
+      - run: echo ::add-mask::${{ secrets.AWS_US_GOV_ACCOUNT_ID }}
+      - name: Get deployment timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date --iso-8601=seconds)"
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets[format('{0}_ACCESS_KEY_ID', matrix.secret_prefix)] }}
-          aws-secret-access-key: ${{ secrets[format('{0}_SECRET_ACCESS_KEY', matrix.secret_prefix)] }}
-          aws-region: ${{ matrix.region }}
+          aws-access-key-id: ${{ secrets.AWS_US_GOV_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_US_GOV_SECRET_ACCESS_KEY }}
+          aws-region: us-gov-west-1
       - name: Download site artifact
         id: download
         uses: actions/download-artifact@v2
         with:
           name: atat-web-ui
+      - name: Generate deployment data file
+        run: |
+          cat <<EOF > .deployment-data.json
+          {
+            "git_ref": "${{ github.ref }}",
+            "git_sha": "${{ github.sha }}",
+            "timestamp": "${{ steps.timestamp.outputs.timestamp }}"
+          }
+          EOF
       - name: Upload site
         run: |
-          aws s3 sync . s3://${{ secrets[format('{0}_BUCKET_NAME', matrix.secret_prefix)] }} --delete --region ${{ matrix.region }}
+          aws s3 sync . s3://${{ secrets.AWS_US_GOV_BUCKET_NAME }} --delete --region us-gov-west-1
         working-directory: ${{ steps.download.outputs.download-path }}
