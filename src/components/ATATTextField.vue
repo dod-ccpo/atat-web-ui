@@ -48,6 +48,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private noIcon!: boolean;
+  @Prop({ default: "" }) private cssClass!: string;
 
   //data
   private rounded = false;

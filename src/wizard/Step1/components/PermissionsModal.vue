@@ -36,7 +36,7 @@
                   hide-details="true"
                   no-icon="true"
                   class="invite-portfolio-manager-email"
-                  :cssClass="body"
+                  cssClass="body"
                 >
                 </ATATTextField>
                 <v-btn
@@ -50,7 +50,7 @@
                   "
                   :ripple="false"
                 >
-                  <v-icon class="text--base-dark"> mdi-close </v-icon>
+                  <v-icon class="text--base-dark"> close </v-icon>
                 </v-btn>
               </div>
             </div>
@@ -168,17 +168,11 @@ export default class PermissionsModal extends Vue {
   }
 
   get isSaveDisabled(): boolean {
-    let isFormValid = !!this.$refs.formAddManagers;
-    console.log("isFormValid", isFormValid);
-    if (this.listManagers.length > 0 && this.listManagers[0].length > 3) {
-      if (this.listManagers.length > 1) {
-        isFormValid = this.listManagers.reduce(
-          (prev: boolean, curr: string) => {
-            return prev && validEmail(curr);
-          },
-          true
-        );
-      }
+    let isFormValid = true;
+    if (this.listManagers.length > 0) {
+      isFormValid = this.listManagers.reduce((prev: boolean, curr: string) => {
+        return prev && validEmail(curr);
+      }, true);
       return !isFormValid;
     }
     return true;
