@@ -14,6 +14,7 @@ export interface PortfolioManagerPermission {
     id: string;
     label: string;
     description: string;
+    description_note?: string;
 }
 export interface PortfolioManagerPermissions {
     [id: string]: PortfolioManagerPermission;

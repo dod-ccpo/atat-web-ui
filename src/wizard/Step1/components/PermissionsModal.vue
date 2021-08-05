@@ -71,26 +71,46 @@
             <h3 class="stepper-step-lg text--base-darkest mb-2">
               Portfolio Permissions
             </h3>
-            <div
-              class="permissions-set-list bold-list-sets"
+            <v-sheet
+              outlined
+              color="primary"
+              class="my-4"
               v-for="permission in portfoliManagerPermisionsSet"
               :key="permission.id"
             >
-              <div class="bold-list-sets-checkbox">
-                <v-checkbox
-                  class="ma-0 pa-0"
-                  :ripple="false"
-                  :label="permission.label"
-                  :value="permission.id"
-                  hide-details="true"
-                  v-model="currentPermisionsSet"
-                />
-                <p
-                  class="bold-list-sets-description"
-                  v-html="permission.description"
-                ></p>
-              </div>
-            </div>
+              <v-card
+                class="permissions-set-list bold-list-sets pa-4"
+                elevation="0"
+              >
+                <div class="d-flex flex-row">
+                  <div class="bold-list-sets-checkbox">
+                    <v-checkbox
+                      class="ma-0"
+                      :ripple="false"
+                      :value="permission.id"
+                      hide-details="true"
+                      v-model="currentPermisionsSet"
+                    >
+                    </v-checkbox>
+                  </div>
+                  <div>
+                    <div
+                      class="d-flex flex-column text--base-darkest mt-1 ml-2"
+                    >
+                      <p class="body-lg ma-0">
+                        {{ permission.label }}
+                      </p>
+                      <p class="body ma-0 text--base-darkest">
+                        {{ permission.description }}
+                      </p>
+                      <p class="body ma-0 text--base-darkest font-italic ">
+                        {{ permission.description_note }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </v-card>
+            </v-sheet>
           </v-card-text>
           <v-card-actions class="d-flex justify-end">
             <v-btn
@@ -99,7 +119,6 @@
                   body-lg
                 "
               :ripple="false"
-              large
               @click="modalAction('portfolio-managers-modal-cancel')"
             >
               Cancel
@@ -107,7 +126,6 @@
             <v-btn
               color="primary"
               :disabled="isSaveDisabled"
-              large
               @click="modalAction('portfolio-managers-modal-save')"
             >
               Send Invitation
