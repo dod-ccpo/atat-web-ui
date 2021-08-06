@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 // import { jest } from "@vue/cli-plugin-unit-jest"
 Vue.use(Vuetify);
 Vue.config.productionTip = false;
+import sinon from 'sinon'
 
 import stepperNav from "@/wizard/Navigation/StepperNavigation.vue";
 
@@ -41,6 +42,7 @@ describe("Testing Button Navigation Bar", () => {
       propsData: {
         propsData: propsData,
       },
+      stubs:['#step-01']
     });
   });
 
@@ -55,10 +57,17 @@ describe("Testing Button Navigation Bar", () => {
     expect(sMount.vm.getStepDescription()).toBe('Add Funding');
   });
 
-  it("get getStepNumber function()", async () => {
+  it("get 'get getStepNumber' function()", async () => {
     await sMount.setProps({ stepNumber: 2 });
     expect(sMount.vm.getStepNumber).toBe(2);
   });
+
+  it("get 'set getStepNumber' function()", async () => {
+    await sMount.setProps({ stepNumber: 3 });
+    await sMount.setData({ currentStepNumber: 2 });
+    expect(sMount.vm.getStepNumber).toBe(3);
+  });
+
 
   it("get isStepComplete function()", async () => {
     await sMount.setProps({ stepNumber: 3 });
@@ -66,8 +75,19 @@ describe("Testing Button Navigation Bar", () => {
     expect(sMount.vm.isStepComplete()).toBe(false);
   });
 
+  // it("clickedAction function()", async () => {
+  //   await sMount.vm.$emit("clickedAction", 4);
+  //   await sMount.vm.$nextTick();
+  //   await sMount.vm.$nextTick();
+  //   await sMount.vm.$nextTick();
+  //   expect(sMount.emitted().clickedAction[0][0]).toBe(4);
+  // });
+  
   it("clickedAction function()", async () => {
-    await sMount.vm.$emit("clickedAction", 4);
-    expect(sMount.emitted().clickedAction[0][0]).toBe(4);
+    const spy = sinon.spy()
+    await sMount.vm.$nextTick();
+    await sMount.find("#step-01").trigger("click");
+    // await sMount.vm.clickedAction(4);
+    expect(spy).toHaveBeenCalledWith(1);
   });
 });
