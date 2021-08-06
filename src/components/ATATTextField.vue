@@ -2,7 +2,7 @@
   <div :id="id + '_text_field_control'" class="atat-text-field">
     <v-flex>
       <label
-        v-if="label"
+        v-if="label && !noLabel"
         :id="id + '_text_field_label'"
         class="form-field-label my-1"
         :for="id + '_text_field'"
@@ -25,6 +25,7 @@
         :rounded="rounded"
         :value="value"
         :hide-details="hideDetails"
+        :aria-label="label"
         @keyup="$emit('update:value', $event.target.value)"
         @change="getStatusIcon"
       >
@@ -48,6 +49,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private noIcon!: boolean;
+ @Prop({ default: false }) private noLabel!: boolean;
   @Prop({ default: "" }) private cssClass!: string;
 
   //data

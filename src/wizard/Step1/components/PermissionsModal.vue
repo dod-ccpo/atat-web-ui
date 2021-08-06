@@ -9,8 +9,8 @@
       <v-form ref="formAddManagers">
         <v-card class="v-card-inner-scroll">
           <v-card-title>
-            <h2 class="h2">Invite Portfolio Manager</h2>
-            <p>
+            <h2 class="h3">Invite Portfolio Manager</h2>
+            <p class="body">
               Portfolio Managers can have different levels of access based on
               their roles within your organization. Invite multiple people with
               the same permissions at once.
@@ -37,6 +37,8 @@
                   no-icon="true"
                   class="invite-portfolio-manager-email"
                   cssClass="body"
+                  label="add email"
+                  noLabel="true"
                 >
                 </ATATTextField>
                 <v-btn
@@ -47,6 +49,7 @@
                     link-button
                     body-lg
                     text--base-dark
+                    pr-4
                   "
                   :ripple="false"
                 >
@@ -88,6 +91,7 @@
                       class="ma-0"
                       :ripple="false"
                       :value="permission.id"
+                      :aria-label="permission.label"
                       hide-details="true"
                       v-model="currentPermisionsSet"
                     >
