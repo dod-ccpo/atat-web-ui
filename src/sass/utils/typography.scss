@@ -55,6 +55,11 @@
         font-weight: 400 !important;
         line-height: 2.4rem !important;
         word-break: keep-all;
+        overflow-wrap: normal;
+        overflow: hidden;
+        display: block;
+        word-wrap: normal;
+        width: 100%;
     }
     .label{
         font-size: 1.2rem !important;

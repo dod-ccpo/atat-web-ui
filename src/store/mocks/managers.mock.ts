@@ -19,9 +19,15 @@ export const portfolioManagerPermissions: PortfolioManagerPermissions = {
   EDIT_PORTFOLIO_POC: {
     id: "EDIT_PORTFOLIO_POC",
     label: "Edit Portfolio",
-    description:
-      "Can update Portfolio settings, add Portfolio Managers and delete this Portfolio",
-    description_note:
-      "NOTE: The option to delete this Portfolio will only be available as a draft. A Portfolio cannot be removed from ATAT after it has been provisioned.",
+    description: `
+    Can update Portfolio settings, add Portfolio Managers and delete this Portfolio <br />
+    <span class="font-italic">
+      NOTE: The option to delete this Portfolio will only be available as a draft. 
+    </span>
+    <br />
+    <span class="font-italic">
+      A Portfolio cannot be removed from ATAT after it has been provisioned.
+    </span>
+    `,
   },
 };

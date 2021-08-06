@@ -104,11 +104,7 @@
                       <p class="body-lg ma-0">
                         {{ permission.label }}
                       </p>
-                      <p class="body ma-0 text--base-darkest">
-                        {{ permission.description }}
-                      </p>
-                      <p class="body ma-0 text--base-darkest font-italic">
-                        {{ permission.description_note }}
+                      <p class="body ma-0 text--base-darkest" v-html="permission.description ">
                       </p>
                     </div>
                   </div>
