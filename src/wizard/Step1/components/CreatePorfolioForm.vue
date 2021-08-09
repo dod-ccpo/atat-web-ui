@@ -55,7 +55,7 @@
             :value="dod"
             :hide-details="index !== 0"
             :input-value="model.dod_components"
-            :color="primary"
+            color="primary"
             @click="validateForm"
           >
             <template v-slot:label>
