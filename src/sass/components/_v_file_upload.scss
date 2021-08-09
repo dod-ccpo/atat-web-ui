@@ -1,0 +1,17 @@
+@import "../utils/colors.scss";
+@import "../utils/typography.scss";
+
+.atat-file-upload {
+   
+    //border: 3px solid $primary !important;
+    border-width: 1px !important;
+    border-color: $base !important;
+    border-style: dashed !important;
+    box-sizing: border-box;
+    background-color: $gray_cool_1 !important;
+    .v-card__text{
+        @extend .body ;
+    }
+}
+
+

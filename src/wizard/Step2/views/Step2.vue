@@ -1,6 +1,10 @@
 <template>
   <v-flex>
-    <atat-file-upload v-on:files-selected="getUploadedFiles" />
+    <atat-file-upload
+      :dialog.sync="uploadDialog"
+      :multiple="true"
+      @filesUploaded="processUpload($event)"
+    />
   </v-flex>
 </template>
 
@@ -10,11 +14,16 @@ import { Component } from "vue-property-decorator";
 
 @Component({})
 export default class Step_2 extends Vue {
-  private getUploadedFiles(fileList: FileList) {
+  private processUpload(fileList: FileList) {
+    debugger;
     for (const item of fileList) {
       // eslint-disable-next-line
       console.log(item)
     }
+  }
+
+  private uploadDialog(){
+    debugger;
   }
 }
 </script>
