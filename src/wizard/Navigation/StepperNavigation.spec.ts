@@ -1,13 +1,9 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-// import { jest } from "@vue/cli-plugin-unit-jest"
-Vue.use(Vuetify);
-Vue.config.productionTip = false;
-import sinon from 'sinon'
-
 import stepperNav from "@/wizard/Navigation/StepperNavigation.vue";
+import { createLocalVue, mount } from "@vue/test-utils";
 
-import { shallowMount } from "@vue/test-utils";
+Vue.use(Vuetify);
 
 const propsData = {
   Steps: [
@@ -36,58 +32,55 @@ const propsData = {
 
 describe("Testing Button Navigation Bar", () => {
   // let shallowMountFunction: (options?: object) => Wrapper<Vue>
-  let sMount: any;
+  const localVue = createLocalVue();
+  let vuetify: any;
+  let wrapper: any;
   beforeEach(() => {
-    sMount = shallowMount(stepperNav, {
+    vuetify= new Vuetify();
+    wrapper = mount(stepperNav, {
+      localVue,
+      vuetify,
       propsData: {
         propsData: propsData,
-      },
-      stubs:['#step-01']
-    });
+      }
+    })
   });
 
-  it("stepper navigation initialization", () => {
-    const mountedSteps = sMount.findAll(".wizard-stepper").length;
+  it("stepper navigation initialized", () => {
+    const mountedSteps = wrapper.findAll(".wizard-stepper").length;
     const expectedSteps = propsData.Steps.length;
     expect(mountedSteps === expectedSteps);
+
   });
 
+  it('step-01 clicked', async () => {    
+    await wrapper.find("#step_01").trigger("click");
+    expect(wrapper.vm.getStepNumber).toBe(1);
+    await wrapper.vm.$nextTick();
+    await wrapper.find("#step_02").trigger("click");
+    expect(wrapper.vm.currentStepNumber).toBe(3);
+  })
+
   it("get getStepDescription function()", async () => {
-    await sMount.setProps({ stepNumber: 2 });
-    expect(sMount.vm.getStepDescription()).toBe('Add Funding');
+    await wrapper.setProps({ stepNumber: 2 });
+    expect(wrapper.vm.getStepDescription()).toBe('Add Funding');
   });
 
   it("get 'get getStepNumber' function()", async () => {
-    await sMount.setProps({ stepNumber: 2 });
-    expect(sMount.vm.getStepNumber).toBe(2);
+    await wrapper.setProps({ stepNumber: 2 });
+    expect(wrapper.vm.getStepNumber).toBe(2);
   });
-
-  it("get 'set getStepNumber' function()", async () => {
-    await sMount.setProps({ stepNumber: 3 });
-    await sMount.setData({ currentStepNumber: 2 });
-    expect(sMount.vm.getStepNumber).toBe(3);
-  });
-
 
   it("get isStepComplete function()", async () => {
-    await sMount.setProps({ stepNumber: 3 });
-    expect(sMount.vm.getStepNumber).toBe(3);
-    expect(sMount.vm.isStepComplete()).toBe(false);
+    await wrapper.setProps({ stepNumber: 3 });
+    expect(wrapper.vm.getStepNumber).toBe(3);
+    expect(wrapper.vm.isStepComplete()).toBe(false);
   });
 
-  // it("clickedAction function()", async () => {
-  //   await sMount.vm.$emit("clickedAction", 4);
-  //   await sMount.vm.$nextTick();
-  //   await sMount.vm.$nextTick();
-  //   await sMount.vm.$nextTick();
-  //   expect(sMount.emitted().clickedAction[0][0]).toBe(4);
-  // });
-  
   it("clickedAction function()", async () => {
-    const spy = sinon.spy()
-    await sMount.vm.$nextTick();
-    await sMount.find("#step-01").trigger("click");
-    // await sMount.vm.clickedAction(4);
-    expect(spy).toHaveBeenCalledWith(1);
+    await wrapper.vm.$emit("clickedAction", 4);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().clickedAction[0][0]).toBe(4);
   });
+  
 });
