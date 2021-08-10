@@ -12,7 +12,7 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "test": "jest",
-    "test:coverage": "jest --coverage --collectCoverageFrom='js/**/*.js' --collectCoverageFrom='js/**/*.vue'",
+    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
     "test-file:watch": "jest --watch --no-cache src/wizard/Navigation/ButtonNavigation.spec.ts "
   },
   "dependencies": {
