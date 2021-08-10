@@ -20,7 +20,7 @@
             id="task-order-number"
             label="Task Order Number"
             :rules="rules.taskOrderNumber"
-            :value.sync="model.taskOrderNumber"
+            :value.sync="model.task_order_number"
           />
           <p class="mt-1">This number must be between 13 and 17 digits</p>
         </v-col>
@@ -44,7 +44,7 @@
             class="ma-2"
             color="primary"
             outlined
-            value="Yes"
+            input-value="Yes"
           >
             Yes</v-btn
           >
@@ -53,7 +53,7 @@
             class="ma-2"
             color="primary"
             outlined
-            value="No"
+            input-value="No"
           >
             No</v-btn
           >
