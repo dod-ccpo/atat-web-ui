@@ -19,8 +19,9 @@
           <atat-text-field
             id="task-order-number"
             label="Task Order Number"
-            :rules="rules.taskOrderNumber"
+            :rules="rules.task_order_number"
             :value.sync="model.task_order_number"
+            helpText="tooltip info here"
           />
           <p class="mt-1">This number must be between 13 and 17 digits</p>
         </v-col>
@@ -40,24 +41,49 @@
           </p>
 
           <v-btn
-            v-model="singedTaskOrder"
+            :value.sync="model.task_order_number"
             class="ma-2"
             color="primary"
             outlined
-            input-value="Yes"
+            input-value="true"
           >
             Yes</v-btn
           >
           <v-btn
-            v-model="singedTaskOrder"
+            :value.sync="model.task_order_number"
             class="ma-2"
             color="primary"
             outlined
-            input-value="No"
+            input-value="false"
           >
             No</v-btn
           >
-
+          <v-alert
+            outlined
+            rounded
+            color="error"
+            type="info"
+            class="text-left error_lighter black-icon mt-3"
+            border="left"
+            width="600"
+          >
+            <div class="black--text h3 ml-2">
+              You must have a signed Task Order to proceed
+            </div>
+            <div class="black--text body-lg ml-2">
+              You will not be able to provision cloud resources within ATAT
+              without an awarded Task Order that is signed by a duly warranted
+              Contracting Officer. Please contact your Contracting Officer for
+              questions regarding your Task Order status or to obtain
+              authorization to spend government funds.
+              <br />
+              <br />
+              You are subject to potential penalties that may include fines,
+              imprisonment, or both, under the U.S. law and regulations for any
+              false statement or misrepresentation in association with this Task
+              Order submission or on any accompanying documentation.
+            </div>
+          </v-alert>
           <div>
             <v-row>
               <v-col cols="4">
@@ -77,10 +103,11 @@ import { Component } from "vue-property-decorator";
 import { CreateTaskOrderFormModel } from "../../../../types/Wizard";
 @Component({})
 export default class CreateTaskOrderForm extends Vue {
-  private singedTaskOrder = "";
+  private signedTaskOrder = "";
   private rules = {};
   private model: CreateTaskOrderFormModel = {
     task_order_number: "",
+    task_order_signed: true,
   };
 
   get Form(): Vue & { validate: () => boolean } {
@@ -90,7 +117,7 @@ export default class CreateTaskOrderForm extends Vue {
   public async validateForm(): Promise<boolean> {
     let validated = false;
     this.rules = {
-      taskOrderNumber: [
+      task_order_number: [
         (v: string) =>
           (v.length > 13 && v.length < 17) ||
           "This number must be between 13 and 17 digits",

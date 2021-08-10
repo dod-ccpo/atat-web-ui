@@ -9,6 +9,16 @@
         {{ label }}
         <span v-show="optional">Optional</span>
       </label>
+      <v-tooltip top v-if="helpText">
+        <template v-slot:activator="{ on }">
+          <v-btn class="ma-0 pa-0" icon v-on="on"
+            ><v-icon class="mb-1" small color="primary"
+              >help_outline</v-icon
+            ></v-btn
+          >
+        </template>
+        <span>{{ helpText }}</span>
+      </v-tooltip>
     </v-flex>
     <v-flex>
       <v-text-field
@@ -47,6 +57,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private error!: boolean;
+  @Prop({ default: "" }) private helpText!: string;
 
   //data
   private rounded = false;
