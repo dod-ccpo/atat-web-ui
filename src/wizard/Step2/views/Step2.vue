@@ -2,8 +2,10 @@
   <v-flex>
     <atat-file-upload
       :dialog.sync="uploadDialog"
-      :multiple="true"
+      :multiple="false"
       @filesUploaded="processUpload($event)"
+      label="Upload your approved Task Order"
+      message="Only PDF files with a max file size of 20 MB"
     />
   </v-flex>
 </template>
@@ -22,7 +24,7 @@ export default class Step_2 extends Vue {
     }
   }
 
-  private uploadDialog(){
+  private uploadDialog() {
     debugger;
   }
 }
