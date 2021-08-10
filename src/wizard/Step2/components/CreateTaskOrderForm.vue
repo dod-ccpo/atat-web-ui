@@ -38,6 +38,26 @@
             authorized you to upload the Task Order in accordance with your
             agency’s policy and procedures.
           </p>
+
+          <v-btn
+            v-model="singedTaskOrder"
+            class="ma-2"
+            color="primary"
+            outlined
+            value="Yes"
+          >
+            Yes</v-btn
+          >
+          <v-btn
+            v-model="singedTaskOrder"
+            class="ma-2"
+            color="primary"
+            outlined
+            value="No"
+          >
+            No</v-btn
+          >
+
           <div>
             <v-row>
               <v-col cols="4">
@@ -57,6 +77,7 @@ import { Component } from "vue-property-decorator";
 import { CreateTaskOrderFormModel } from "../../../../types/Wizard";
 @Component({})
 export default class CreateTaskOrderForm extends Vue {
+  private singedTaskOrder = "";
   private rules = {};
   private model: CreateTaskOrderFormModel = {
     task_order_number: "",
