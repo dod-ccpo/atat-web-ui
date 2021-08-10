@@ -28,17 +28,20 @@ export default Vue.extend({
         {
           label: "CSP 1",
           value: "CSP logo or optional text  1.",
-          content: "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  1.</div>",
+          content:
+            "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  1.</div>",
         },
         {
           label: "CSP 2",
           value: "CSP logo or optional text 2",
-          content: "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  2.</div>",
+          content:
+            "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  2.</div>",
         },
         {
           label: "CSP 3",
           value: "CSP logo or optional text 3",
-          content: "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  3.</div>",
+          content:
+            "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  3.</div>",
         }
       ),
     };

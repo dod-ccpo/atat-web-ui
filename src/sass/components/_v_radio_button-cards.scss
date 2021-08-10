@@ -1,3 +1,5 @@
+@import "../utils/colors.scss";
+
 ._v_radio-button-cards {
 
     .v-card {
@@ -5,7 +7,14 @@
         max-width: 278px !important;
         min-height: 128px !important;
         cursor: pointer;
+        background-color: #dfe1e2 ;
       }
+
+      .active {
+
+        background-color: $primary_lighter !important;
+        border-color: $primary !important;
+     }
       
       // creates a white background and black border for unselected state of radio button
      .v-radio .v-icon {
