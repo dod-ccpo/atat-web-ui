@@ -1,0 +1,18 @@
+._v_radio-button-cards {
+
+    .v-card {
+        border-radius: 4px;
+        max-width: 278px !important;
+        min-height: 128px !important;
+        cursor: pointer;
+      }
+      
+      // creates a white background and black border for unselected state of radio button
+     .v-radio .v-icon {
+        color: black;
+        border-color: black;
+        border-radius: 50%;
+        background-color: white;
+      }
+
+}

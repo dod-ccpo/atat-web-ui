@@ -12,35 +12,34 @@
           each CSP.
         </p>
       </div>
-      <RadioCards :items="items" @change="v=> $emit('change', v)"/>
+      <atat-button-card :items="items" @change="(v) => $emit('change', v)" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import RadioCardItem from "./RadioCardItem";
-import RadioCards from "./RadioCards.vue";
-export default Vue.extend({
-  components: {
-    RadioCards,
-  },
+import { ButtonCardItem } from "../../../../types/Wizard";
 
+export default Vue.extend({
   data: () => {
     return {
-      items: new Array<RadioCardItem>(
-        new RadioCardItem(
-          "CSP 1",
-          "CSP logo or optional text  1."
-        ),
-        new RadioCardItem(
-          "CSP 2",
-          "CSP logo or optional text 2"
-        ),
-        new RadioCardItem(
-          "CSP 3",
-          "CSP logo or optional text 3"
-        )
+      items: new Array<ButtonCardItem>(
+        {
+          label: "CSP 1",
+          value: "CSP logo or optional text  1.",
+          content: "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  1.</div>",
+        },
+        {
+          label: "CSP 2",
+          value: "CSP logo or optional text 2",
+          content: "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  2.</div>",
+        },
+        {
+          label: "CSP 3",
+          value: "CSP logo or optional text 3",
+          content: "<div class='text--base-darkest body-lg pl-7'>CSP logo or optional text  3.</div>",
+        }
       ),
     };
   },
@@ -49,7 +48,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .description {
-
-     max-width: 632px;
+  max-width: 632px;
 }
 </style>

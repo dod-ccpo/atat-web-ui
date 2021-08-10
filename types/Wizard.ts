@@ -40,3 +40,17 @@ export interface CreatePortfolioFormModel{
   description?: string,
   dod_components: string[],
 }
+
+/**
+ * Represents an object passed to ATAButtonCard items array
+ *
+ * @interface ButtonCardItem
+ * @member {string} label used for item
+ * @member {string} value unique value of the radio button
+ * @member {string} content used for ButtonCard content could be a string or HTML
+ */
+export interface ButtonCardItem {
+  label: string,
+  value: string,
+  content: string
+}
