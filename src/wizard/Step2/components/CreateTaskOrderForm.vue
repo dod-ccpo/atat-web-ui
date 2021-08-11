@@ -41,24 +41,23 @@
           </p>
 
           <v-btn
-            :value.sync="model.task_order_number"
             class="ma-2"
             color="primary"
             outlined
-            input-value="true"
+            @click="signedTaskOrder = true"
           >
             Yes</v-btn
           >
           <v-btn
-            :value.sync="model.task_order_number"
             class="ma-2"
             color="primary"
             outlined
-            input-value="false"
+            @click="signedTaskOrder = false"
           >
             No</v-btn
           >
           <v-alert
+            v-if="!signedTaskOrder"
             outlined
             rounded
             color="error"
@@ -103,17 +102,19 @@ import { Component } from "vue-property-decorator";
 import { CreateTaskOrderFormModel } from "../../../../types/Wizard";
 @Component({})
 export default class CreateTaskOrderForm extends Vue {
-  private signedTaskOrder = "";
+  private signedTaskOrder = true;
   private rules = {};
   private model: CreateTaskOrderFormModel = {
     task_order_number: "",
-    task_order_signed: true,
   };
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
-
+  // create a function that sets btn class to active after click
+  public handleClick(e: MouseEvent): void {
+    console.log(e.target);
+  }
   public async validateForm(): Promise<boolean> {
     let validated = false;
     this.rules = {

@@ -59,6 +59,15 @@ export default class Wizard extends Vue {
               alert("Data has been validated and is to be saved");
               this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
             }
+          } else if (this.stepNumber === 2) {
+            console.log(this.$refs);
+            // validated =
+            //   this.$refs.stepTwo.$refs.createTaskOrderForm.validateForm();
+
+            // if (await validated) {
+            //   alert("Data has been validated and is to be saved");
+            //   this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
+            // }
           } else {
             this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
           }

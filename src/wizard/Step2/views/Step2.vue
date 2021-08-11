@@ -1,5 +1,5 @@
 <template>
-  <CreateTaskOrderForm />
+  <CreateTaskOrderForm ref="createTaskOrderForm" />
 </template>
 
 <script lang="ts">
@@ -12,7 +12,9 @@ import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.v
     CreateTaskOrderForm,
   },
 })
-export default class Step_2 extends Vue {}
+export default class Step_2 extends Vue {
+  $refs!: {
+    createTaskOrderForm: CreateTaskOrderForm;
+  };
+}
 </script>
-
-<style scoped></style>

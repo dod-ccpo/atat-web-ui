@@ -41,5 +41,4 @@ export interface CreatePortfolioFormModel {
 }
 export interface CreateTaskOrderFormModel {
   task_order_number: string;
-  task_order_signed: boolean;
 }
