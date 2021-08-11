@@ -19,8 +19,8 @@
         'mb-2': true,
         'd-flex': true,
         'flex-column': true,
-         'active': selectedValue === item.value,
-        }"
+        active: selectedValue === item.value,
+      }"
       elevation="0"
       outlined
     >
@@ -44,45 +44,14 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
 import { ButtonCardItem } from "../../types/Wizard";
 
-export default Vue.extend({
-  props: {
-    items: {
-      type: Array,
-      default: () => Array<ButtonCardItem>(),
-      required: true,
-    },
-    activeColor:{
-      type: String,
-    },
-    extendedClasses: {
-      type: Object,
-      default: () => new Object(),
-      required: false,
-    },
-  },
-  computed: {
-    classObject: function () {
-      const defaultClasses = {
-        "px-2": true,
-        "py-2": true,
-        "mr-2": true,
-        "mb-2": true,
-        "d-flex": true,
-        "flex-column": true,
-      };
+@Component({})
+export default class ATATButtonCard extends Vue {
+  @Prop({ default: new Array<ButtonCardItem>() })
+  private items!: Array<ButtonCardItem>;
 
-      return {
-        ...defaultClasses,
-        ...this.extendedClasses,
-      };
-    },
-  },
-  data() {
-    return {
-      selectedValue: null,
-    };
-  },
-});
+  public selectedValue = "";
+}
 </script>
