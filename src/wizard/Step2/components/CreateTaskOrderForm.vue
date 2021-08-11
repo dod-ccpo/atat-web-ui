@@ -39,25 +39,32 @@
             authorized you to upload the Task Order in accordance with your
             agency’s policy and procedures.
           </p>
-
+          <!--          <v-row v-if="" class="mb-3">-->
+          <!--            <div class="ml-3 mb-3 error&#45;&#45;text" role="alert">-->
+          <!--              <div class="v-messages__message">-->
+          <!--                Please select Yes or No below to verify your Task Order-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </v-row>-->
+          <!--          <v-btn-->
           <v-btn
             class="ma-2"
+            :outlined="signedTaskOrder == 'No' || signedTaskOrder == ''"
             color="primary"
-            outlined
-            @click="signedTaskOrder = true"
+            @click="signedTaskOrder = 'Yes'"
           >
             Yes</v-btn
           >
           <v-btn
             class="ma-2"
+            :outlined="signedTaskOrder == 'Yes' || signedTaskOrder == ''"
             color="primary"
-            outlined
-            @click="signedTaskOrder = false"
+            @click="signedTaskOrder = 'No'"
           >
             No</v-btn
           >
           <v-alert
-            v-if="!signedTaskOrder"
+            v-if="signedTaskOrder === 'No'"
             outlined
             rounded
             color="error"
@@ -102,23 +109,19 @@ import { Component } from "vue-property-decorator";
 import { CreateTaskOrderFormModel } from "../../../../types/Wizard";
 @Component({})
 export default class CreateTaskOrderForm extends Vue {
-  private signedTaskOrder = true;
+  public signedTaskOrder = "";
   private rules = {};
   private model: CreateTaskOrderFormModel = {
     task_order_number: "",
   };
-
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
-  }
-  // create a function that sets btn class to active after click
-  public handleClick(e: MouseEvent): void {
-    console.log(e.target);
   }
   public async validateForm(): Promise<boolean> {
     let validated = false;
     this.rules = {
       task_order_number: [
+        (v: string) => !!v || "Please enter your Task Order Number",
         (v: string) =>
           (v.length > 13 && v.length < 17) ||
           "This number must be between 13 and 17 digits",

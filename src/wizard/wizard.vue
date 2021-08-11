@@ -6,7 +6,7 @@
       @clicked-action="goToStep"
     />
     <Step1 ref="stepOne" v-if="stepNumber === 1" />
-    <Step2 v-if="stepNumber === 2" />
+    <Step2 ref="stepTwo" v-if="stepNumber === 2" />
     <Step3 v-if="stepNumber === 3" />
     <Step4 v-if="stepNumber === 4" />
     <Step5 v-if="stepNumber === 5" />
@@ -60,14 +60,13 @@ export default class Wizard extends Vue {
               this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
             }
           } else if (this.stepNumber === 2) {
-            console.log(this.$refs);
-            // validated =
-            //   this.$refs.stepTwo.$refs.createTaskOrderForm.validateForm();
+            validated =
+              this.$refs.stepTwo.$refs.createTaskOrderForm.validateForm();
 
-            // if (await validated) {
-            //   alert("Data has been validated and is to be saved");
-            //   this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
-            // }
+            if (await validated) {
+              alert("Data has been validated and is to be saved");
+              this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
+            }
           } else {
             this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
           }

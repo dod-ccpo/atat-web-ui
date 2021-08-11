@@ -103,6 +103,17 @@
 
 
   }
+  &.error-button.theme--light{
+    &.v-btn--outlined{
+      color: $secondary !important;
+      border-color: $secondary !important;
+
+      &:hover{
+        color: #fff !important;
+        background-color: $secondary !important;
+      }
+    }
+  }
 
 }
 
