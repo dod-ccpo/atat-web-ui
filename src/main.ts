@@ -7,6 +7,8 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import moment from "moment";
 import cssVars from "css-vars-ponyfill"; // needed to process css vars in IE11
+import axios from 'axios';
+import VueAxios from 'vue-axios'
 
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
@@ -26,6 +28,11 @@ import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePo
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
 Vue.component('atat-file-upload', ATATFileUpload);
+
+//axios
+axios.defaults.baseURL = "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0"
+Vue.use(VueAxios, axios);
+
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
 

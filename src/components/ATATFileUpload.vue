@@ -98,14 +98,18 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Emit } from "vue-property-decorator";
 import { UploadedFile } from "../../types/FormFields";
+import { TaskOrderFile } from "types/Wizard";
 
 @Component
 export default class ATATFileUpload extends Vue {
   // internal properties
   private dragover = false;
   private uploadedFiles: UploadedFile[] = [];
+  private isUploadedFileValid = true;
+  private errorMessages: string[] = [];
+
   get isFileUploaded(): boolean {
     return this.uploadedFiles.length > 0;
   }
@@ -113,13 +117,12 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: "Message" }) private message!: string;
-  @Prop({ default: "", required: true }) private dialog!: boolean;
   @Prop({ default: false }) private multiple!: boolean;
   @Prop({ default: false }) private optional!: boolean;
+  @Prop() private pdfFile!: TaskOrderFile;
 
   private closeDialog() {
     this.uploadedFiles = [];
-    this.$emit("update:dialog", false);
   }
 
   private openFileDialog() {
@@ -128,25 +131,57 @@ export default class ATATFileUpload extends Vue {
     fileInput.click();
   }
 
+  @Emit()
   private addUploadedFiles() {
     let files = (this.$refs.fileInput as HTMLInputElement).files;
-    if (files) {
-      if (this.validateFile(files)) {
-        for (let i = 0; i < files.length; i++) {
-          this.uploadedFiles.push(files[i]);
-        }
+    if (files && files[0]) {
+      let file = files[0];
+      this.validateFile(file);
+      if (this.isUploadedFileValid) {
+        this.uploadedFiles.push(file);
+        let taskOrderFile: TaskOrderFile = {
+          description: file.name,
+          id: "",
+          created_at: "",
+          updated_at: "",
+          size: file.size,
+          name: file.name,
+          status: "Pending",
+        };
+        this.$emit("update:pdfFile", taskOrderFile);
       }
     }
   }
 
-  private validateFile(files: FileList): boolean {
-    // for (let i = 0; i < files.length; i++) {
-    //   files[i].type = "application/pdf";
+  private validateFile(file: File) {
+    console.log(file);
+    if (file.type !== "application/pdf" || file.name.indexOf(".pdf") === 0) {
+      this.errorMessages.push("File is not a valid PDF");
+    }
+    if (file.name === "") {
+      this.errorMessages.push("Please upload your Task Order Document");
 
-    //   this.uploadedFiles.push(files[i]);
-    // }
-    return true;
+      
+      // var reader = new FileReader();
+      // reader.readAsText(file);
+      // reader.onload = function () {
+      //   let regex = new RegExp("%PDF-1.[0-7]");
+      //   let arrayBufferData = reader.result && reader.result.slice(0, 8);
+      //   if (arrayBufferDtata)
+      //   let pdfData: string = String.fromCharCode.apply(new Uint16Array(arrayBufferData));
+      //  ;
+      //   if (pdfData.match(regex))
+      // };
+      // reader.onerror = function () {
+      //   console.log(reader.error);
+      // };
+    }
+    if (file.size > 20000000) {
+      this.errorMessages.push("File size cannot exceed 20MB");
+    }
+    this.isUploadedFileValid = this.errorMessages.length === 0;
   }
+
   private removeFile(fileName: string) {
     const index = this.uploadedFiles.findIndex(
       (file) => file.name === fileName
