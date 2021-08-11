@@ -2,6 +2,7 @@
   <v-radio-group
     row
     @change="(v) => $emit('change', v)"
+    :rules="rules"
     v-model="selectedValue"
     class="_v_radio-button-cards"
     column
@@ -49,8 +50,11 @@ import { ButtonCardItem } from "../../types/Wizard";
 
 @Component({})
 export default class ATATButtonCard extends Vue {
-  @Prop({ default: new Array<ButtonCardItem>() })
+  @Prop({ default: new Array<ButtonCardItem>(), required: true })
   private items!: Array<ButtonCardItem>;
+
+  @Prop({ default: {}, required: false })
+  private rules!: Array<unknown>;
 
   public selectedValue = "";
 }

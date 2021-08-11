@@ -12,7 +12,13 @@
           each CSP.
         </p>
       </div>
-      <atat-button-card :items="items" @change="(v) => $emit('change', v)" />
+      <v-form ref="form" lazy-validation>
+        <atat-button-card
+          :items="items"
+          :rules="[(v) => !!v || 'Selection Required']"
+          @change="(v) => $emit('change', v)"
+        />
+      </v-form>
     </div>
   </div>
 </template>
