@@ -21,7 +21,7 @@
             label="Task Order Number"
             :rules="rules.task_order_number"
             :value.sync="model.task_order_number"
-            helpText="tooltip info here"
+            :helpText="helpText"
           />
           <p class="mt-1">This number must be between 13 and 17 digits</p>
         </v-col>
@@ -53,7 +53,6 @@
               isYesButtonClicked ? '' : 'v-btn--outlined',
               'ma-2',
             ]"
-            
             @click="isTaskOrderSigned(true)"
           >
             Yes</v-btn
@@ -64,7 +63,6 @@
               isNoButtonClicked ? '' : 'v-btn--outlined',
               'ma-2',
             ]"
-           
             @click="isTaskOrderSigned(false)"
           >
             No</v-btn
@@ -111,7 +109,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Emit } from "vue-property-decorator";
 import { CreateTaskOrderFormModel } from "../../../../types/Wizard";
 @Component({})
 export default class CreateTaskOrderForm extends Vue {
@@ -119,6 +117,9 @@ export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrderErrorMessage = "";
   public isYesButtonClicked = false;
   public isNoButtonClicked = false;
+  private helpText = `If your Contracting Officer used:
+    Form 1149: Enter the “Order Number”
+    Form 1155: Enter the “Delivery Order/Call No.”`;
   private rules = {};
   private model: CreateTaskOrderFormModel = {
     task_order_number: "",
@@ -140,10 +141,12 @@ export default class CreateTaskOrderForm extends Vue {
     this.signedTaskOrderErrorMessage = "";
     this.rules = {
       task_order_number: [
-        (v: string) => !!v || "Please enter your Task Order Number",
+        (v: string) =>
+          /^\d+$/.test(v) ||
+          "Please enter your Task Order Number (Must Be Numbers)",
         (v: string) =>
           (v.length > 13 && v.length < 17) ||
-          "This number must be between 13 and 17 digits",
+          "Task Order Numbers must be between 13 and 17 digits",
       ],
     };
     if (this.signedTaskOrder === "") {

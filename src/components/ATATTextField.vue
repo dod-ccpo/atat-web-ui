@@ -9,7 +9,7 @@
         {{ label }}
         <span v-show="optional">Optional</span>
       </label>
-      <v-tooltip top v-if="helpText">
+      <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
         <template v-slot:activator="{ on }">
           <v-btn class="ma-0 pa-0" icon v-on="on"
             ><v-icon class="mb-1" small color="primary"
@@ -34,7 +34,6 @@
         :value="value"
         hide-details="auto"
         @keyup="$emit('update:value', $event.target.value)"
-        @change="getStatusIcon"
       >
       </v-text-field>
     </v-flex>
@@ -64,6 +63,7 @@ export default class ATATTextField extends VTextField {
   private appendedOuterIcon = "";
 
   private getStatusIcon() {
+    debugger;
     this.isFieldValid = this.$data["valid"];
     this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
   }
