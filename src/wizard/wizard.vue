@@ -52,8 +52,7 @@ export default class Wizard extends Vue {
       switch (action) {
         case "next":
           if (this.stepNumber === 1) {
-            validated =
-              this.$refs.stepOne.$refs.createPortfolioForm.validateForm();
+            validated = this.$refs.stepOne.validate();
 
             if (await validated) {
               alert("Data has been validated and is to be saved");
@@ -70,8 +69,7 @@ export default class Wizard extends Vue {
           this.$router.push("portfolios");
           break;
         case "save":
-          validated =
-            this.$refs.stepOne.$refs.createPortfolioForm.validateForm();
+          validated = this.$refs.stepOne.validate();
 
           if (await validated) {
             alert("Data has been validated and is to be saved");

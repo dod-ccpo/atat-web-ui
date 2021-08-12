@@ -35,10 +35,20 @@ export interface Stepper{
   Steps: Step[]
 }
 
+/**
+ * Model to represent Portfolio data
+ *
+ * @interface CreatePortfolioFormModel
+ * @member {name} label Portfolio Name
+ * @member {string} description Portfolio Description
+ * @member {string[]}  dod_components DoD component(s) funding the Portfolio
+ * @member {string} csp Cloud Service Provider
+ */
 export interface CreatePortfolioFormModel{
   name: string,
   description?: string,
   dod_components: string[],
+  csp: string
 }
 
 /**
@@ -53,4 +63,12 @@ export interface ButtonCardItem {
   label: string,
   value: string,
   content: string
+}
+
+
+export interface ValidatableForm {
+
+  validateForm(): Promise<boolean>
+
+
 }
