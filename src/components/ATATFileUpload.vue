@@ -11,7 +11,18 @@
       </label>
     </v-flex>
     <v-flex class="my-2">
-      <v-sheet class="atat-file-upload" width="416" v-show="!isFileUploaded">
+      <div class="error--text mb-2" role="alert" v-show="hasErrors">
+        <div class="v-messages__message">
+          <span v-for="(msg, idx) in errorMessages" :key="idx" class="d-block">
+            {{ msg }}
+          </span>
+        </div>
+      </div>
+      <v-sheet
+        :class="[hasErrors ? 'error' : '', 'atat-file-upload']"
+        width="416"
+        v-show="!isFileUploaded"
+      >
         <v-card
           id="file_upload"
           @drop.prevent="onDrop($event)"
@@ -27,26 +38,42 @@
               align="center"
               justify="center"
             >
-              <v-icon class="mt-1" size="60"> upload_file </v-icon>
-              <div class="lead-paragraph">Drag and Drop</div>
-              <div class="d-flex align-items-center">
-                <div>your file here or</div>
-                <v-btn
-                  id="open-file-dialog"
-                  class="link-button body pa-0 ma-0 ml-1"
-                  @click="openFileDialog"
-                  :ripple="false"
-                >
-                  browse to upload
-                </v-btn>
-                <input
-                  id="file-input-button"
-                  type="file"
-                  ref="fileInput"
-                  @change="addUploadedFiles"
-                  accept="application/pdf"
-                  hidden
-                />
+              <div v-show="!showProgressBar">
+                <v-icon class="mt-1" size="60"> upload_file </v-icon>
+                <div class="lead-paragraph">Drag and Drop</div>
+                <div class="d-flex align-items-center">
+                  <div>your file here or</div>
+                  <v-btn
+                    id="open-file-dialog"
+                    class="link-button body pa-0 ma-0 ml-1"
+                    @click="openFileDialog"
+                    :ripple="false"
+                  >
+                    browse to upload
+                  </v-btn>
+                  <input
+                    id="file-input-button"
+                    type="file"
+                    ref="fileInput"
+                    @change="addUploadedFiles"
+                    accept="application/pdf"
+                    hidden
+                  />
+                </div>
+              </div>
+              <div v-show="showProgressBar" >
+               <v-icon class="mt-1" size="60"> upload_file </v-icon>
+                <label
+                  id="progress-label"
+                  for="progress"
+                  ref="progress-label"
+                ></label>
+                <progress
+                  id="progress"
+                  value="0"
+                  max="100"
+                  ref="progress-bar"
+                ></progress>
               </div>
             </v-row>
           </v-card-text>
@@ -59,7 +86,7 @@
         item-height="50"
       >
         <template v-slot:default="{ item }">
-          <v-list-item :key="item.name" class="pa-0">
+          <v-list-item :key="item.name"  class="pa-0">
             <v-list-item-content>
               <v-list-item-title>
                 <div class="d-flex align-center justify-start">
@@ -107,8 +134,12 @@ export default class ATATFileUpload extends Vue {
   // internal properties
   private dragover = false;
   private uploadedFiles: UploadedFile[] = [];
-  private isUploadedFileValid = true;
   private errorMessages: string[] = [];
+  private showProgressBar = false;
+
+  get hasErrors(): boolean {
+    return this.errorMessages.length > 0;
+  }
 
   get isFileUploaded(): boolean {
     return this.uploadedFiles.length > 0;
@@ -120,24 +151,27 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: false }) private multiple!: boolean;
   @Prop({ default: false }) private optional!: boolean;
   @Prop() private pdfFile!: TaskOrderFile;
+  @Prop({ default: 0 }) private maxFileSize!: number; // in megabytes
 
   private closeDialog() {
     this.uploadedFiles = [];
   }
 
   private openFileDialog() {
+    this.errorMessages = [];
     let fileInput = this.$refs.fileInput as HTMLInputElement;
     fileInput.value = "";
     fileInput.click();
   }
 
   @Emit()
-  private addUploadedFiles() {
+  private async addUploadedFiles() {
     let files = (this.$refs.fileInput as HTMLInputElement).files;
     if (files && files[0]) {
       let file = files[0];
-      this.validateFile(file);
-      if (this.isUploadedFileValid) {
+      this.showProgress(file);
+      await this.validateFile(file);
+      if (!this.hasErrors) {
         this.uploadedFiles.push(file);
         let taskOrderFile: TaskOrderFile = {
           description: file.name,
@@ -148,13 +182,39 @@ export default class ATATFileUpload extends Vue {
           name: file.name,
           status: "Pending",
         };
-        this.$emit("update:pdfFile", taskOrderFile);
+        this.uploadFile(taskOrderFile);
       }
     }
   }
 
-  private validateFile(file: File) {
-    console.log(file);
+  private async showProgress(file: File): Promise<void> {
+    this.showProgressBar = true;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    await reader.addEventListener("progress", (event) => {
+      const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+      const progressLabel = this.$refs["progress-label"] as HTMLLabelElement;
+      if (event.loaded && event.total) {
+        const percent = (event.loaded / event.total) * 100;
+        if (progress) {
+          progress.value = percent;
+          progressLabel.innerHTML = Math.round(percent) + "%";
+          Math.round(percent) + "%";
+        }
+      }
+    });
+    // this.showProgressBar = false;
+  }
+
+  private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
+    await this.$http.post("taskOrderFiles", taskOrderFile).then(function (res) {
+      console.log(res);
+    });
+    this.$emit("update:pdfFile", taskOrderFile);
+    // this.showProgressBar = false;
+  }
+
+  private async validateFile(file: File) {
     if (file.type !== "application/pdf" || file.name.indexOf(".pdf") === 0) {
       this.errorMessages.push("File is not a valid PDF");
     }
@@ -163,26 +223,24 @@ export default class ATATFileUpload extends Vue {
     }
     if (file.name.indexOf(".pdf") > 0) {
       var reader = new FileReader();
-      reader.readAsText(file);
-      debugger;
-      let isFileValidPDF = true;
-      reader.onload = function () {
-        let regex = new RegExp("%PDF-1.[0-7]");
-        let pdfData: string = (reader.result &&
-          reader.result.slice(0, 8)) as string;
-          debugger;
-        isFileValidPDF =  pdfData.match(regex) !== null;
-        return isFileValidPDF;
-      };
-      debugger;
-      if (isFileValidPDF) {
-        this.errorMessages.push("File is not a valid PDF txt file");
-      }
+      reader.onload = (function (file, errorMessages, uploadedFiles) {
+        return function (e: any) {
+          let regex = new RegExp("%PDF-1.[0-7]");
+          let pdfData: string = e.target.result;
+          if (pdfData.match(regex) === null) {
+            errorMessages.push("File is not a valid PDF");
+            uploadedFiles.splice(0, 1);
+          }
+        };
+      })(file, this.errorMessages, this.uploadedFiles);
+      await reader.readAsText(file);
     }
-    if (file.size > 20000000) {
-      this.errorMessages.push("File size cannot exceed 20MB");
+    if (file.size > this.maxFileSize * 1048576) {
+      //1 Megabytes = 1048576 Bytes
+      this.errorMessages.push(
+        "File size cannot exceed " + this.maxFileSize + "MB"
+      );
     }
-    this.isUploadedFileValid = this.errorMessages.length === 0;
   }
 
   private removeFile(fileName: string) {
@@ -191,6 +249,7 @@ export default class ATATFileUpload extends Vue {
     );
     if (index > -1) {
       this.uploadedFiles.splice(index, 1);
+      this.errorMessages = [];
     }
   }
 

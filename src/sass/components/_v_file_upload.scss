@@ -6,9 +6,7 @@
         background-color: transparent !important;
         .v-card__text{
             @extend .body ;
-            // .v-virtual__scroll
         }
-
     }
 
     #open-file-dialog{
@@ -19,8 +17,9 @@
     &:hover{
         background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23005EA2' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");   
     }
-   
-
+    &.error{
+        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23B50909' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");   
+    }
 }
 
 .pdf-icon{
