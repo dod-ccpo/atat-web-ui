@@ -51,7 +51,7 @@ export default class Step_1 extends Vue {
     await Promise.all([
       createPortofolioValidation,
       cloudServiceProviderValidation,
-    ]).then((values) => (valid = values.every((value) => value === true)));
+    ]).then((values) => (valid = values.every((value) => value)));
 
     return valid;
   }

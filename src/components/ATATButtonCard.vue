@@ -39,7 +39,9 @@
       </v-radio>
       <v-card-text>
         <v-row>
-          <div class="card-content" v-html="item.content"></div>
+          <div class="card-content text--base-darkest body-lg pl-7">
+            {{ item.content }}
+          </div>
         </v-row>
       </v-card-text>
     </v-card>
