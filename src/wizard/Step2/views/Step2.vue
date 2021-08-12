@@ -52,7 +52,7 @@ export default class Step_2 extends Vue {
   //   this.$http.post("taskOrderFiles", newVal).then(function (res) {
   //     console.log(res);
   //   });
-  }
+  // }
 }
 </script>
 

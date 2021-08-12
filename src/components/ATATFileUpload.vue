@@ -19,7 +19,14 @@
         </div>
       </div>
       <v-sheet
-        :class="[hasErrors ? 'error' : '', 'atat-file-upload']"
+        :class="[
+          hasErrors
+            ? 'error-file-upload-border'
+            : showProgressBar
+            ? 'primary-file-upload-border'
+            : '',
+          'atat-file-upload',
+        ]"
         width="416"
         v-show="!isFileUploaded"
       >
@@ -32,16 +39,16 @@
           elevation="0"
         >
           <v-card-text>
-            <v-row
-              class="d-flex flex-column"
-              dense
-              align="center"
-              justify="center"
-            >
-              <div v-show="!showProgressBar">
-                <v-icon class="mt-1" size="60"> upload_file </v-icon>
-                <div class="lead-paragraph">Drag and Drop</div>
-                <div class="d-flex align-items-center">
+            <v-row dense>
+              <div
+                v-show="!showProgressBar"
+                class="d-flex-column justify-center align-center width-100"
+              >
+                <div class="text-center">
+                  <v-icon class="mt-1" size="60"> upload_file </v-icon>
+                </div>
+                <div class="text-center lead-paragraph">Drag and Drop</div>
+                <div class="d-flex justify-center">
                   <div>your file here or</div>
                   <v-btn
                     id="open-file-dialog"
@@ -61,19 +68,32 @@
                   />
                 </div>
               </div>
-              <div v-show="showProgressBar" >
-               <v-icon class="mt-1" size="60"> upload_file </v-icon>
-                <label
-                  id="progress-label"
-                  for="progress"
-                  ref="progress-label"
-                ></label>
-                <progress
-                  id="progress"
-                  value="0"
-                  max="100"
-                  ref="progress-bar"
-                ></progress>
+              <div v-show="showProgressBar" class="progress-view">
+                <div class="width-100 d-flex align-center my-12 ml-3">
+                  <div>
+                    <v-icon size="60"> upload_file </v-icon>
+                  </div>
+                  <div class="d-flex flex-column align-start">
+                    <div class="d-flex justify-space-between">
+                      <div
+                        class="text--base-darkest text-truncate mr-3"
+                        style="max-width: 260px"
+                      >
+                        {{ taskOrderFile.name }}
+                      </div>
+                      <v-icon color="success" size="25"> check_circle</v-icon>
+                    </div>
+                    <div class="d-flex align-baseline">
+                      <progress
+                        class="mt-1"
+                        id="progress"
+                        value="0"
+                        max="100"
+                        ref="progress-bar"
+                      ></progress>
+                    </div>
+                  </div>
+                </div>
               </div>
             </v-row>
           </v-card-text>
@@ -86,7 +106,7 @@
         item-height="50"
       >
         <template v-slot:default="{ item }">
-          <v-list-item :key="item.name"  class="pa-0">
+          <v-list-item :key="item.name" class="pa-0">
             <v-list-item-content>
               <v-list-item-title>
                 <div class="d-flex align-center justify-start">
@@ -136,6 +156,15 @@ export default class ATATFileUpload extends Vue {
   private uploadedFiles: UploadedFile[] = [];
   private errorMessages: string[] = [];
   private showProgressBar = false;
+  private taskOrderFile: TaskOrderFile = {
+    description: "",
+    id: "",
+    created_at: "",
+    updated_at: "",
+    size: 0,
+    name: "",
+    status: "Pending",
+  };
 
   get hasErrors(): boolean {
     return this.errorMessages.length > 0;
@@ -173,7 +202,7 @@ export default class ATATFileUpload extends Vue {
       await this.validateFile(file);
       if (!this.hasErrors) {
         this.uploadedFiles.push(file);
-        let taskOrderFile: TaskOrderFile = {
+        this.taskOrderFile = {
           description: file.name,
           id: "",
           created_at: "",
@@ -182,7 +211,7 @@ export default class ATATFileUpload extends Vue {
           name: file.name,
           status: "Pending",
         };
-        this.uploadFile(taskOrderFile);
+        this.uploadFile(this.taskOrderFile);
       }
     }
   }

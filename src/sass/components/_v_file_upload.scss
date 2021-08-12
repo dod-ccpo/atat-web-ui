@@ -1,7 +1,24 @@
 @import "../utils/colors.scss";
 @import "../utils/typography.scss";
+@import "../utils/utils.scss";
 
+.primary-file-upload-border{
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23005EA2' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;   
+}
+
+.error-file-upload-border{
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23B50909' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;   
+}
+
+.default-file-upload-border{
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%2371767A' stroke-width='2' stroke-dasharray='8, 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;  
+}
+
+.success-file-upload-border{
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%2300A91C' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;  
+}
 .atat-file-upload {
+
     .v-card{
         background-color: transparent !important;
         .v-card__text{
@@ -12,13 +29,29 @@
     #open-file-dialog{
         height: auto;
     }
-
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%2371767A' stroke-width='2' stroke-dasharray='8, 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");   
+    @extend .default-file-upload-border;
     &:hover{
-        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23005EA2' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");   
+        @extend .primary-file-upload-border;
     }
-    &.error{
-        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23B50909' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");   
+    &.error-file-upload-border{
+       @extend .error-file-upload-border;
+    }
+
+    &.primary-file-upload-border{
+        @extend .primary-file-upload-border;
+    }
+
+    &.suceess-file-upload-border{
+        @extend .success-file-upload-border;
+    }
+
+    progress{
+        height: 16px;
+        border-radius: 0px;
+        width: 300px;
+        &::-webkit-progress-value {
+            background:$success;
+        }
     }
 }
 
