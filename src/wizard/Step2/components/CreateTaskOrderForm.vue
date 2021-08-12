@@ -39,27 +39,33 @@
             authorized you to upload the Task Order in accordance with your
             agency’s policy and procedures.
           </p>
-          <!--          <v-row v-if="" class="mb-3">-->
-          <!--            <div class="ml-3 mb-3 error&#45;&#45;text" role="alert">-->
-          <!--              <div class="v-messages__message">-->
-          <!--                Please select Yes or No below to verify your Task Order-->
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--          </v-row>-->
-          <!--          <v-btn-->
+          <v-row v-if="signedTaskOrderErrorMessage !== ''" class="mb-3">
+            <div class="ml-3 mb-3 error--text" role="alert">
+              <div class="v-messages__message">
+                {{ signedTaskOrderErrorMessage }}
+              </div>
+            </div>
+          </v-row>
+
           <v-btn
-            class="ma-2"
-            :outlined="signedTaskOrder == 'No' || signedTaskOrder == ''"
-            color="primary"
-            @click="signedTaskOrder = 'Yes'"
+            :class="[
+              signedTaskOrderErrorMessage ? 'error-button' : 'primary',
+              isYesButtonClicked ? '' : 'v-btn--outlined',
+              'ma-2',
+            ]"
+            
+            @click="isTaskOrderSigned(true)"
           >
             Yes</v-btn
           >
           <v-btn
-            class="ma-2"
-            :outlined="signedTaskOrder == 'Yes' || signedTaskOrder == ''"
-            color="primary"
-            @click="signedTaskOrder = 'No'"
+            :class="[
+              signedTaskOrderErrorMessage ? 'error-button' : 'primary',
+              isNoButtonClicked ? '' : 'v-btn--outlined',
+              'ma-2',
+            ]"
+           
+            @click="isTaskOrderSigned(false)"
           >
             No</v-btn
           >
@@ -110,6 +116,9 @@ import { CreateTaskOrderFormModel } from "../../../../types/Wizard";
 @Component({})
 export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrder = "";
+  public signedTaskOrderErrorMessage = "";
+  public isYesButtonClicked = false;
+  public isNoButtonClicked = false;
   private rules = {};
   private model: CreateTaskOrderFormModel = {
     task_order_number: "",
@@ -117,8 +126,18 @@ export default class CreateTaskOrderForm extends Vue {
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
+
+  public isTaskOrderSigned(signed: boolean): void {
+    //clear out any error messages
+    this.signedTaskOrderErrorMessage = "";
+    this.signedTaskOrder = signed ? "Yes" : "No";
+    this.isYesButtonClicked = signed;
+    this.isNoButtonClicked = !signed;
+  }
+
   public async validateForm(): Promise<boolean> {
     let validated = false;
+    this.signedTaskOrderErrorMessage = "";
     this.rules = {
       task_order_number: [
         (v: string) => !!v || "Please enter your Task Order Number",
@@ -127,6 +146,10 @@ export default class CreateTaskOrderForm extends Vue {
           "This number must be between 13 and 17 digits",
       ],
     };
+    if (this.signedTaskOrder === "") {
+      this.signedTaskOrderErrorMessage =
+        "Please select Yes or No below to verify your Task Order";
+    }
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
