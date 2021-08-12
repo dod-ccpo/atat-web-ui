@@ -160,21 +160,24 @@ export default class ATATFileUpload extends Vue {
     }
     if (file.name === "") {
       this.errorMessages.push("Please upload your Task Order Document");
-
-      
-      // var reader = new FileReader();
-      // reader.readAsText(file);
-      // reader.onload = function () {
-      //   let regex = new RegExp("%PDF-1.[0-7]");
-      //   let arrayBufferData = reader.result && reader.result.slice(0, 8);
-      //   if (arrayBufferDtata)
-      //   let pdfData: string = String.fromCharCode.apply(new Uint16Array(arrayBufferData));
-      //  ;
-      //   if (pdfData.match(regex))
-      // };
-      // reader.onerror = function () {
-      //   console.log(reader.error);
-      // };
+    }
+    if (file.name.indexOf(".pdf") > 0) {
+      var reader = new FileReader();
+      reader.readAsText(file);
+      debugger;
+      let isFileValidPDF = true;
+      reader.onload = function () {
+        let regex = new RegExp("%PDF-1.[0-7]");
+        let pdfData: string = (reader.result &&
+          reader.result.slice(0, 8)) as string;
+          debugger;
+        isFileValidPDF =  pdfData.match(regex) !== null;
+        return isFileValidPDF;
+      };
+      debugger;
+      if (isFileValidPDF) {
+        this.errorMessages.push("File is not a valid PDF txt file");
+      }
     }
     if (file.size > 20000000) {
       this.errorMessages.push("File size cannot exceed 20MB");
