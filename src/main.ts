@@ -15,6 +15,7 @@ import ATATSelect from "./components/ATATSelect.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import ATATTextField from "./components/ATATTextField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
+import ATATButtonCard from "./components/ATATButtonCard.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import StyledFields from "./components/StyledFields.vue";
 import USAGovBanner from "./components/USAGovBanner.vue";
@@ -24,6 +25,7 @@ import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfoli
 import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
+Vue.component('atat-button-card', ATATButtonCard);
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
 

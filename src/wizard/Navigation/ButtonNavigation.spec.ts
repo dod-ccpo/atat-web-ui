@@ -56,14 +56,14 @@ describe("Testing Button Navigation Bar", () => {
   let vuetify: any;
   let wrapper: any;
   beforeEach(() => {
-    vuetify= new Vuetify();
+    vuetify = new Vuetify();
     wrapper = mount(buttonNav, {
       localVue,
       vuetify,
       propsData: {
         propsData: propsData,
-      }
-    })
+      },
+    });
   });
 
   it("button navigation bar initialized", () => {
@@ -72,13 +72,13 @@ describe("Testing Button Navigation Bar", () => {
     expect(mountedButtons === expectedButtons);
   });
 
-  it('Next button clicked', async () => {    
+  it("Next button clicked", async () => {
     await wrapper.find("#step_1_navbtn_add_funding").trigger("click");
     await wrapper.vm.$nextTick();
     await wrapper.vm.$emit("clickedAction", "save");
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().clickedAction[0][0]).toBe("save");
-   })
+  });
 
   it("get pageButtonPanel function()", async () => {
     await wrapper.setProps({ stepNumber: 2 });
