@@ -25,7 +25,7 @@
     "test:e2e:local:webdriver": "vue-cli-service test:e2e --config tests/nightwatch2.js -e webdriver.edge,webdriver.chrome -t tests/e2e/specs/loginpage.js",
     "test:e2e:run-local-webdriver": "npm-run-all --parallel start-chrome-driver start-edge-driver test:e2e:local:webdriver -r",
     "test:e2e:wd:local": "npm-run-all --parallel test:e2e:run-local-webdriver test:ie",
-    "ts:nightwatch": "vue-cli-service test:e2e --config dist/tests/nightwatch2.js -e webdriver.chrome -t dist/tests/e2e/specs/loginpage.js",
+    "ts:nightwatch": "vue-cli-service test:e2e --config dist/tests/nightwatchTS.conf.js -e webdriver.chrome -t dist/tests/e2e/specs/loginpage.js",
     "test:ts": "tsc && npm-run-all --parallel start-chrome-driver ts:nightwatch"
   },
   "dependencies": {
