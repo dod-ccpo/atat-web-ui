@@ -68,10 +68,7 @@
                   />
                 </div>
               </div>
-              <div
-                v-show="isProgressBarVisible && !isFileUploaded"
-                class="progress-view"
-              >
+              <div v-show="isProgressBarVisible" class="progress-view">
                 <div class="width-100 d-flex align-center my-12 ml-3">
                   <div>
                     <v-icon size="60"> upload_file </v-icon>
@@ -189,7 +186,7 @@ export default class ATATFileUpload extends Vue {
     this.uploadedFiles = [];
   }
 
-  private openFileDialog() {
+  private openFileDialog(): void {
     this.errorMessages = [];
     let fileInput = this.$refs.fileInput as HTMLInputElement;
     fileInput.value = "";
@@ -221,12 +218,23 @@ export default class ATATFileUpload extends Vue {
 
   private async showProgress(file: File): Promise<void> {
     const reader = new FileReader();
-    reader.readAsDataURL(file);
 
-    reader.onloadstart = function (e: ProgressEvent) {
-      console.log(e);
-      // isProgressBarVisible = true;
+    reader.onloadstart = (() => {
+      this.isProgressBarVisible = true;
+    }).bind(this);
+    reader.onprogress = (event: ProgressEvent) => {
+      const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+      if (event.loaded && event.total) {
+        debugger;
+        const percent = (event.loaded / event.total) * 100;
+        if (progress) {
+          progress.value = percent;
+          Math.round(percent) + "%";
+        }
+      }
     };
+
+    reader.readAsText(file);
     // reader.onprogress = function (event) {
     //   if (event.lengthComputable) {
     //     if (LoadingBarVisible) ShowLoadingBar();
@@ -253,10 +261,6 @@ export default class ATATFileUpload extends Vue {
 
     // this.showProgressBar = false;
   }
-
-  // private showProgressBar(): void {
-  //   this.isProgressBarVisible = true;
-  // }
 
   private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
     await this.$http.post("taskOrderFiles", taskOrderFile).then(function (res) {
