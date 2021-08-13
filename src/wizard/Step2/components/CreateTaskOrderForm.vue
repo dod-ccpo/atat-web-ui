@@ -20,7 +20,7 @@
             id="task-order-number"
             label="Task Order Number"
             :rules="rules.task_order_number"
-            :value.sync="model.task_order_number"
+            :value.sync="_task_order_number"
             :helpText="helpText"
           />
           <p class="mt-1">This number must be between 13 and 17 digits</p>
@@ -109,8 +109,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit } from "vue-property-decorator";
-import { CreateTaskOrderFormModel } from "../../../../types/Wizard";
+import { Component, PropSync } from "vue-property-decorator";
+
 @Component({})
 export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrder = "";
@@ -121,9 +121,9 @@ export default class CreateTaskOrderForm extends Vue {
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private rules = {};
-  private model: CreateTaskOrderFormModel = {
-    task_order_number: "",
-  };
+
+  @PropSync("task_order_number") _task_order_number!: string;
+
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
@@ -145,7 +145,7 @@ export default class CreateTaskOrderForm extends Vue {
           /^\d+$/.test(v) ||
           "Please enter your Task Order Number (Must Be Numbers)",
         (v: string) =>
-          (v.length > 13 && v.length < 17) ||
+          (v.length >= 13 && v.length <= 17) ||
           "Task Order Numbers must be between 13 and 17 digits",
       ],
     };

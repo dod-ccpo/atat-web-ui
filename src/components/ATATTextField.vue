@@ -63,9 +63,19 @@ export default class ATATTextField extends VTextField {
   private appendedOuterIcon = "";
 
   private getStatusIcon() {
-    debugger;
-    this.isFieldValid = this.$data["valid"];
-    this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
+    // if the rules property isn't set we won't display an icon
+    // when the rules property is populated (i.e when the parent form is saved)
+    // we evalute the rules to determine what icon to display
+    if (this.$props["rules"].length > 0) {
+      let value = this.value;
+
+      let valid = this.$props["rules"].every(
+        (rule: (a: string) => string | boolean) => rule(value) === true
+      );
+
+      this.isFieldValid = valid;
+      this.appendedOuterIcon = valid ? "check_circle" : "error";
+    }
   }
 
   private updated() {

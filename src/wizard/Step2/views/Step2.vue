@@ -1,5 +1,8 @@
 <template>
-  <CreateTaskOrderForm ref="createTaskOrderForm" />
+  <CreateTaskOrderForm
+    ref="createTaskOrderForm"
+    :task_order_number.sync="taskOrderDetails.task_order_number"
+  />
 </template>
 
 <script lang="ts">
@@ -17,6 +20,7 @@ export default class Step_2 extends Vue {
   $refs!: {
     createTaskOrderForm: CreateTaskOrderForm;
   };
+
   private taskOrderDetails: TaskOrderDetails = {
     task_order_number: "",
     task_order_file: {
@@ -39,5 +43,12 @@ export default class Step_2 extends Vue {
       },
     ],
   };
+
+  public async validate(): Promise<boolean> {
+    let valid = false;
+    valid = await this.$refs.createTaskOrderForm.validateForm();
+
+    return valid;
+  }
 }
 </script>

@@ -18,7 +18,7 @@
           <p class="mb-11">
             Naming can be difficult. Choose a name that is descriptive enough
             for users to identify the Portfolio. You may consider naming based
-            on your organization.
+            on your organization. (Must be between 4 - 100 characters)
           </p>
           <atat-text-area
             optional="true"
@@ -55,7 +55,6 @@
             :value="dod"
             :hide-details="index !== 0"
             color="primary"
-            @click="validateForm"
           >
             <template v-slot:label>
               <span class="">{{ dod }}</span>
@@ -103,11 +102,10 @@ export default class CreatePortfolioForm
   })
   _dod_components!: string[];
 
-  // added this because validation was reporting a false negative
-  // when selecting first checkbox value. This forces validation
-  // to update each time dod components change
   @Watch("_dod_components")
   onDodComponentsChanged(): void {
+    if (Object.keys(this.rules).length === 0) return;
+
     this.validateForm();
   }
 
@@ -127,7 +125,7 @@ export default class CreatePortfolioForm
           "Portfolio name must be between 4-100 characters.",
       ],
       dod_components: [
-        this._dod_components.length >= 1 ||
+        this._dod_components.length > 0 ||
           "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
