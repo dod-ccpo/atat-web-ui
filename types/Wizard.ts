@@ -48,7 +48,7 @@ export interface CreatePortfolioFormModel{
   name: string,
   description?: string,
   dod_components: string[],
-  csp: string
+  csp: string[]
 }
 
 /**

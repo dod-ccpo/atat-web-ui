@@ -16,7 +16,7 @@
         <atat-button-card
           :items="items"
           :rules="[isSelected]"
-          :value.sync="_csp"
+          :value.sync="cloudServiceProvider"
         />
       </v-form>
     </div>
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
 import { ButtonCardItem, ValidatableForm } from "../../../../types/Wizard";
 
 @Component({})
@@ -34,22 +34,22 @@ export default class CloudServiceProviderForm
   implements ValidatableForm
 {
   @PropSync("csp", { default: "", required: true })
-  _csp!: string;
+  _csp!: string[];
 
   public items = new Array<ButtonCardItem>(
     {
       label: "CSP 1",
-      value: "CSP logo or optional text  1.",
+      value: "CSP 1",
       content: "CSP logo or optional text  1.",
     },
     {
       label: "CSP 2",
-      value: "CSP logo or optional text 2",
+      value: "CSP 2",
       content: "CSP logo or optional text  2.",
     },
     {
       label: "CSP 3",
-      value: "CSP logo or optional text 3",
+      value: "CSP 3",
       content: "CSP logo or optional text  3.",
     }
   );
@@ -60,6 +60,13 @@ export default class CloudServiceProviderForm
 
   private isSelected(value: string): unknown {
     return !!value || "Please selected at least one Cloud Service Provider";
+  }
+
+  public cloudServiceProvider = "";
+
+  @Watch("cloudServiceProvider")
+  onCloudServiceProviderChange(): void {
+    this._csp = [this.cloudServiceProvider];
   }
 
   public async validateForm(): Promise<boolean> {

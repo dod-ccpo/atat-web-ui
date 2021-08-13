@@ -37,7 +37,7 @@ export default class Step_1 extends Vue {
     name: "",
     description: "",
     dod_components: [],
-    csp: "",
+    csp: [],
   };
 
   public async validate(): Promise<boolean> {
