@@ -22,7 +22,7 @@
         :class="[
           hasErrors
             ? 'error-file-upload-border'
-            : showProgressBar
+            : isProgressBarVisible
             ? 'primary-file-upload-border'
             : '',
           'atat-file-upload',
@@ -41,7 +41,7 @@
           <v-card-text>
             <v-row dense>
               <div
-                v-show="!showProgressBar"
+                v-show="!isProgressBarVisible"
                 class="d-flex-column justify-center align-center width-100"
               >
                 <div class="text-center">
@@ -68,7 +68,10 @@
                   />
                 </div>
               </div>
-              <div v-show="showProgressBar" class="progress-view">
+              <div
+                v-show="isProgressBarVisible && !isFileUploaded"
+                class="progress-view"
+              >
                 <div class="width-100 d-flex align-center my-12 ml-3">
                   <div>
                     <v-icon size="60"> upload_file </v-icon>
@@ -155,7 +158,7 @@ export default class ATATFileUpload extends Vue {
   private dragover = false;
   private uploadedFiles: UploadedFile[] = [];
   private errorMessages: string[] = [];
-  private showProgressBar = false;
+  private isProgressBarVisible = false;
   private taskOrderFile: TaskOrderFile = {
     description: "",
     id: "",
@@ -198,8 +201,8 @@ export default class ATATFileUpload extends Vue {
     let files = (this.$refs.fileInput as HTMLInputElement).files;
     if (files && files[0]) {
       let file = files[0];
-      this.showProgress(file);
       await this.validateFile(file);
+      await this.showProgress(file);
       if (!this.hasErrors) {
         this.uploadedFiles.push(file);
         this.taskOrderFile = {
@@ -217,30 +220,50 @@ export default class ATATFileUpload extends Vue {
   }
 
   private async showProgress(file: File): Promise<void> {
-    this.showProgressBar = true;
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    await reader.addEventListener("progress", (event) => {
-      const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-      const progressLabel = this.$refs["progress-label"] as HTMLLabelElement;
-      if (event.loaded && event.total) {
-        const percent = (event.loaded / event.total) * 100;
-        if (progress) {
-          progress.value = percent;
-          progressLabel.innerHTML = Math.round(percent) + "%";
-          Math.round(percent) + "%";
-        }
-      }
-    });
+
+    reader.onloadstart = function (e: ProgressEvent) {
+      console.log(e);
+      // isProgressBarVisible = true;
+    };
+    // reader.onprogress = function (event) {
+    //   if (event.lengthComputable) {
+    //     if (LoadingBarVisible) ShowLoadingBar();
+    //     AddProgress();
+    //   }
+    // };
+    // reader.onloadend = function (event) {
+    //   LoadingBarComplete();
+    // };
+
+    // await reader.addEventListener("progress", (event) => {
+    //   const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+    //   const progressLabel = this.$refs["progress-label"] as HTMLLabelElement;
+    //   if (event.loaded && event.total) {
+    //     debugger;
+    //     const percent = (event.loaded / event.total) * 100;
+    //     if (progress) {
+    //       progress.value = percent;
+    //       progressLabel.innerHTML = Math.round(percent) + "%";
+    //       Math.round(percent) + "%";
+    //     }
+    //   }
+    // });
+
     // this.showProgressBar = false;
   }
+
+  // private showProgressBar(): void {
+  //   this.isProgressBarVisible = true;
+  // }
 
   private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
     await this.$http.post("taskOrderFiles", taskOrderFile).then(function (res) {
       console.log(res);
     });
     this.$emit("update:pdfFile", taskOrderFile);
-    // this.showProgressBar = false;
+    // this.isProgressBarVisible = false;
   }
 
   private async validateFile(file: File) {
@@ -279,6 +302,7 @@ export default class ATATFileUpload extends Vue {
     if (index > -1) {
       this.uploadedFiles.splice(index, 1);
       this.errorMessages = [];
+      this.isProgressBarVisible = false;
     }
   }
 
