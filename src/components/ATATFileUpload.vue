@@ -68,33 +68,6 @@
                   />
                 </div>
               </div>
-              <div v-show="isProgressBarVisible" class="progress-view">
-                <div class="width-100 d-flex align-center my-12 ml-3">
-                  <div>
-                    <v-icon size="60"> upload_file </v-icon>
-                  </div>
-                  <div class="d-flex flex-column align-start">
-                    <div class="d-flex justify-space-between">
-                      <div
-                        class="text--base-darkest text-truncate mr-3"
-                        style="max-width: 260px"
-                      >
-                        {{ taskOrderFile.name }}
-                      </div>
-                      <v-icon color="success" size="25"> check_circle</v-icon>
-                    </div>
-                    <div class="d-flex align-baseline">
-                      <progress
-                        class="mt-1"
-                        id="progress"
-                        value="0"
-                        max="100"
-                        ref="progress-bar"
-                      ></progress>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </v-row>
           </v-card-text>
         </v-card>
@@ -141,8 +114,57 @@
         {{ message }}
       </label>
     </v-flex>
+    <div class="progress-view" v-show="isProgressBarVisible">
+      <div class="width-100 d-flex align-center my-12 ml-3">
+        <div>
+          <v-icon size="60"> upload_file </v-icon>
+        </div>
+        <div class="d-flex flex-column align-start">
+          <div class="d-flex justify-space-between">
+            <div
+              class="text--base-darkest text-truncate mr-3"
+              style="max-width: 260px"
+            >
+              {{ taskOrderFile.name }}
+            </div>
+            <v-icon color="success" size="25"> check_circle</v-icon>
+          </div>
+          <div class="d-flex align-baseline">
+            <div id="progressBarWrapper">
+              <div
+                class="mt-1"
+                id="progressBar"
+                value="0"
+                max="100"
+                ref="progress-bar"
+              ></div>
+            </div>
+            <!-- <progress
+              class="mt-1"
+              id="progress"
+              value="0"
+              max="100"
+              ref="progress-bar"
+            ></progress> -->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<style>
+#progressBarWrapper {
+  width: 300px;
+  background-color: #ddd;
+}
+
+#progressBar {
+  width: 1%;
+  height: 30px !important;
+  background-color: #04aa6d;
+}
+</style>
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Emit } from "vue-property-decorator";
@@ -222,19 +244,37 @@ export default class ATATFileUpload extends Vue {
     reader.onloadstart = (() => {
       this.isProgressBarVisible = true;
     }).bind(this);
-    reader.onprogress = (event: ProgressEvent) => {
+
+    reader.onprogress = ((event: ProgressEvent) => {
       const progress = this.$refs["progress-bar"] as HTMLProgressElement;
       if (event.loaded && event.total) {
-        debugger;
         const percent = (event.loaded / event.total) * 100;
         if (progress) {
           progress.value = percent;
           Math.round(percent) + "%";
         }
       }
-    };
+      
+      let i = 1;
+      var width = 1;
+      let frame = function () {
+        if (width >= 100) {
+          clearInterval(id);
+          i = 0;
+        } else {
+          width++;
+          progress.style.width = width + "%";
+        }
+      };
+      var id = setInterval(frame, 10, this.isProgressBarVisible);
+    }).bind(this);
+
+    reader.onloadend = (() => {
+        this.isProgressBarVisible = false;
+    }).bind(this);
 
     reader.readAsText(file);
+
     // reader.onprogress = function (event) {
     //   if (event.lengthComputable) {
     //     if (LoadingBarVisible) ShowLoadingBar();
