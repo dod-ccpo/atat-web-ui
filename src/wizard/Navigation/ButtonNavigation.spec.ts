@@ -1,12 +1,9 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-// import { jest } from "@vue/cli-plugin-unit-jest"
-Vue.use(Vuetify);
-Vue.config.productionTip = false;
-
 import buttonNav from "@/wizard/Navigation/ButtonNavigation.vue";
+import { createLocalVue, mount } from "@vue/test-utils";
 
-import { shallowMount } from "@vue/test-utils";
+Vue.use(Vuetify);
 
 const propsData = {
   NavButtonPanels: [
@@ -55,32 +52,45 @@ const propsData = {
 };
 
 describe("Testing Button Navigation Bar", () => {
-  // let shallowMountFunction: (options?: object) => Wrapper<Vue>
-  let sMount: any;
+  const localVue = createLocalVue();
+  let vuetify: any;
+  let wrapper: any;
   beforeEach(() => {
-    sMount = shallowMount(buttonNav, {
+    vuetify = new Vuetify();
+    wrapper = mount(buttonNav, {
+      localVue,
+      vuetify,
       propsData: {
         propsData: propsData,
       },
     });
   });
 
-  it("button navigation bar initialization", () => {
-    const mountedButtons = sMount.findAll("[type=button]").length;
+  it("button navigation bar initialized", () => {
+    const mountedButtons = wrapper.findAll("[type=button]").length;
     const expectedButtons = propsData.NavButtonPanels[0].buttons.length;
     expect(mountedButtons === expectedButtons);
   });
 
-  it("get pageButtonPanel function()", async () => {
-    await sMount.setProps({ stepNumber: 2 });
-    expect(sMount.vm.pageButtonPanel.step).toBe(2);
+  it("Next button clicked", async () => {
+    await wrapper.find("#step_1_navbtn_add_funding").trigger("click");
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$emit("clickedAction", "save");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().clickedAction[0][0]).toBe("save");
+  });
 
-    await sMount.setProps({ stepNumber: 1400 });
-    expect(sMount.vm.pageButtonPanel.step).toBe(1);
+  it("get pageButtonPanel function()", async () => {
+    await wrapper.setProps({ stepNumber: 2 });
+    expect(wrapper.vm.pageButtonPanel.step).toBe(2);
+
+    await wrapper.setProps({ stepNumber: 1400 });
+    expect(wrapper.vm.pageButtonPanel.step).toBe(1);
   });
 
   it("clickedAction function()", async () => {
-    await sMount.vm.$emit("clickedAction", "save");
-    expect(sMount.emitted().clickedAction[0][0]).toBe("save");
+    await wrapper.vm.$emit("clickedAction", "save");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().clickedAction[0][0]).toBe("save");
   });
 });

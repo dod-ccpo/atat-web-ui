@@ -4,6 +4,7 @@ node_modules
 /coverage
 
 /tests/e2e/logs/
+/coverage/
 
 # local env files
 .env.local
