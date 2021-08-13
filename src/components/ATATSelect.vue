@@ -6,7 +6,7 @@
         class="form-field-label my-1"
         :for="id + '_dropdown'"
       >
-        DropDown Label
+        {{ label }}
       </label>
     </v-flex>
     <v-flex>
@@ -23,9 +23,6 @@
         </template>
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">
-            <!-- <v-list-item-action>
-              <v-checkbox :input-value="active"></v-checkbox>
-            </v-list-item-action> -->
             <v-list-item-content
               :id="id + '_dropdown_list_item_' + item.replace(/ /g, '_')"
             >
@@ -48,6 +45,7 @@ import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATSelect extends VSelect {
+  @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({
     default: () => ["Foo", "Bar", "Fizz Tony", "Buzz"],
   })

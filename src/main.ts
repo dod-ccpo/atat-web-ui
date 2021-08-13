@@ -24,6 +24,7 @@ import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfoli
 import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
+Vue.component('atat-select', ATATSelect)
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
 
