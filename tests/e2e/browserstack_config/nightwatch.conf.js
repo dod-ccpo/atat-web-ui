@@ -71,7 +71,6 @@ const defaultSettings = {
         "browserstack.ie.arch": "x32",
         "browserstack.ie.driver": "3.141.59",
         resolution: "1920x1080",
-
       },
     },
   },
