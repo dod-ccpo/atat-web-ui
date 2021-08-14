@@ -10,6 +10,7 @@ import cssVars from "css-vars-ponyfill"; // needed to process css vars in IE11
 import axios from 'axios';
 import VueAxios from 'vue-axios'
 
+import ATATButtonCard from "./components/ATATButtonCard.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATHeaderNav from "./components/ATATHeaderNav.vue";
@@ -25,9 +26,10 @@ import USAGovBanner from "./components/USAGovBanner.vue";
 // wizard
 import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfolio.vue";
 import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
+Vue.component('atat-button-card', ATATButtonCard);
+Vue.component('atat-file-upload', ATATFileUpload);
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
-Vue.component('atat-file-upload', ATATFileUpload);
 
 //axios
 axios.defaults.baseURL = "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0"
@@ -47,3 +49,4 @@ new Vue({
   vuetify,
   render: (h) => h(App)
 }).$mount("#app");
+/* eslint-disable */

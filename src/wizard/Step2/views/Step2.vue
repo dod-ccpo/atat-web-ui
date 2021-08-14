@@ -1,5 +1,9 @@
 <template>
   <v-flex>
+    <CreateTaskOrderForm
+    ref="createTaskOrderForm"
+    :task_order_number.sync="taskOrderDetails.task_order_number"
+  />
     <atat-file-upload
       :multiple="false"
       :pdfFile.sync="taskOrderDetails.task_order_file"
@@ -9,16 +13,25 @@
       :maxFileSize="20"
     />
   </v-flex>
+  
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
-import { TaskOrderDetails, TaskOrderFile } from "types/Wizard";
+import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
+import { TaskOrderDetails } from "types/Wizard";
 
-@Component({})
+@Component({
+  components: {
+    CreateTaskOrderForm,
+  },
+})
 export default class Step_2 extends Vue {
-  //todo do we need this.
+  $refs!: {
+    createTaskOrderForm: CreateTaskOrderForm;
+  };
+
   private processUpload(fileList: FileList) {
     debugger;
     //this.taskOrderDetails.task_order_file = fileList[0]
@@ -56,4 +69,11 @@ export default class Step_2 extends Vue {
 }
 </script>
 
-<style scoped></style>
+  public async validate(): Promise<boolean> {
+    let valid = false;
+    valid = await this.$refs.createTaskOrderForm.validateForm();
+
+    return valid;
+  }
+}
+</script>

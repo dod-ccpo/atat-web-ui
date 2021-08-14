@@ -12,19 +12,19 @@
             id="portfolio-name"
             label="Portfolio Name"
             :rules="rules.portfolioName"
-            :value.sync="model.name"
+            :value.sync="portfolio_name"
           />
 
           <p class="mb-11">
             Naming can be difficult. Choose a name that is descriptive enough
             for users to identify the Portfolio. You may consider naming based
-            on your organization.
+            on your organization. (Must be between 4 - 100 characters)
           </p>
           <atat-text-area
             optional="true"
             id="portfolio-description"
             label="Portfolio Description"
-            :value.sync="model.description"
+            :value.sync="portfolio_description"
           />
           <p>
             Add a brief one to two sentence description of your Portfolio.
@@ -50,13 +50,11 @@
             class="ma-2 pa-0 validation-above text--black"
             :id="'checkbox_' + dod.replace(/ /gi, '_')"
             v-for="(dod, index) in dodComponents"
-            v-model="model.dod_components"
+            v-model="_dod_components"
             :key="dod"
             :value="dod"
             :hide-details="index !== 0"
-            :input-value="model.dod_components"
             color="primary"
-            @click="validateForm"
           >
             <template v-slot:label>
               <span class="">{{ dod }}</span>
@@ -69,11 +67,15 @@
 </template>
 
 <script lang="ts">
+import { ValidatableForm } from "types/Wizard";
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import { CreatePortfolioFormModel } from "../../../../types/Wizard";
+import { Component, PropSync, Watch } from "vue-property-decorator";
+
 @Component({})
-export default class CreatePortfolioForm extends Vue {
+export default class CreatePortfolioForm
+  extends Vue
+  implements ValidatableForm
+{
   private valid = true;
   private dodComponents = [
     "Air Force",
@@ -89,26 +91,45 @@ export default class CreatePortfolioForm extends Vue {
     "Other",
   ];
 
-  private rules = {};
-  private model: CreatePortfolioFormModel = {
-    name: "",
-    description: "",
-    dod_components: [],
-  };
+  @PropSync("name", { default: "", required: true }) portfolio_name!: string;
+
+  @PropSync("description", { default: "", required: true })
+  portfolio_description!: string;
+
+  @PropSync("dod_components", {
+    default: () => new Array<string>(),
+    required: true,
+  })
+  _dod_components!: string[];
+
+  @Watch("_dod_components")
+  onDodComponentsChanged(): void {
+    if (Object.keys(this.rules).length === 0) return;
+
+    this.validateForm();
+  }
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
 
+  public rules = {};
+
   public async validateForm(): Promise<boolean> {
     let validated = false;
     this.rules = {
-      portfolioName: [(v: string) => !!v || "Name is required"],
+      portfolioName: [
+        (v: string) => !!v || "Name is required",
+        (v: string) =>
+          (v.length >= 4 && v.length <= 100) ||
+          "Portfolio name must be between 4-100 characters.",
+      ],
       dod_components: [
-        this.model.dod_components.length > 0 ||
+        this._dod_components.length > 0 ||
           "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
+
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
