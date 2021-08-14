@@ -87,6 +87,17 @@
       -ieVar-❗background--color: $primary!important;
       box-shadow: none !important;
     }
+
+    &.v-btn--outlined{
+      color: $primary !important;
+      border-color: $primary !important;
+      background-color: #fff !important;
+
+      &:hover{
+        color: #fff !important;
+        background-color: $primary !important;
+      }
+    }
   }
   
   &.primary_darken.theme--light{
@@ -98,10 +109,21 @@
       background-color: transparent !important;
       -ieVar-❗background--color: transparent!important;
       box-shadow: none !important;
-
     }
 
 
+  }
+  &.error-button.theme--light{
+    &.v-btn--outlined{
+      color: $secondary !important;
+      border-color: $secondary !important;
+      background-color: #fff !important;
+
+      &:hover{
+        color: #fff !important;
+        background-color: $secondary !important;
+      }
+    }
   }
 
 }
