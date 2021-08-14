@@ -3,14 +3,7 @@
     <CreateTaskOrderForm
       ref="createTaskOrderForm"
       :task_order_number.sync="taskOrderDetails.task_order_number"
-    />
-    <atat-file-upload
-      :multiple="false"
-      :pdfFile.sync="taskOrderDetails.task_order_file"
-      @addUploadedFiles="processUpload($event)"
-      label="Upload your approved Task Order"
-      message="Only PDF files with a max file size of 20 MB"
-      :maxFileSize="20"
+      :task_order_file.sync="taskOrderDetails.task_order_file"
     />
   </v-flex>
 </template>

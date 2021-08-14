@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="width-100">
     <v-flex>
       <label
         :id="id + '_text_field_label'"
@@ -132,7 +132,6 @@
           <div class="d-flex align-baseline">
             <div id="progressBarWrapper">
               <div
-                class="mt-1"
                 id="progressBar"
                 value="0"
                 max="100"
@@ -157,11 +156,13 @@
 #progressBarWrapper {
   width: 300px;
   background-color: #ddd;
+  height: 16px;
 }
 
 #progressBar {
   width: 1%;
-  height: 30px !important;
+  margin: 0px;
+  height: 16px !important;
   background-color: #04aa6d;
 }
 </style>
@@ -240,66 +241,30 @@ export default class ATATFileUpload extends Vue {
 
   private async showProgress(file: File): Promise<void> {
     const reader = new FileReader();
-
-    reader.onloadstart = (() => {
-      this.isProgressBarVisible = true;
-    }).bind(this);
-
-    reader.onprogress = ((event: ProgressEvent) => {
-      const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-      if (event.loaded && event.total) {
-        const percent = (event.loaded / event.total) * 100;
-        if (progress) {
-          progress.value = percent;
-          Math.round(percent) + "%";
-        }
-      }
-      
-      let i = 1;
-      var width = 1;
-      let frame = function () {
-        if (width >= 100) {
-          clearInterval(id);
-          i = 0;
-        } else {
-          width++;
-          progress.style.width = width + "%";
-        }
-      };
-      var id = setInterval(frame, 10, this.isProgressBarVisible);
-    }).bind(this);
-
-    reader.onloadend = (() => {
-        this.isProgressBarVisible = false;
-    }).bind(this);
-
+    this.isProgressBarVisible = true;
+    reader.addEventListener("progress", this.fileUploadProgressEvent);
     reader.readAsText(file);
+  }
 
-    // reader.onprogress = function (event) {
-    //   if (event.lengthComputable) {
-    //     if (LoadingBarVisible) ShowLoadingBar();
-    //     AddProgress();
-    //   }
-    // };
-    // reader.onloadend = function (event) {
-    //   LoadingBarComplete();
-    // };
+  private fileUploadProgressEvent(event: ProgressEvent) {
+    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+    progress.style.width = "1%";
 
-    // await reader.addEventListener("progress", (event) => {
-    //   const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-    //   const progressLabel = this.$refs["progress-label"] as HTMLLabelElement;
-    //   if (event.loaded && event.total) {
-    //     debugger;
-    //     const percent = (event.loaded / event.total) * 100;
-    //     if (progress) {
-    //       progress.value = percent;
-    //       progressLabel.innerHTML = Math.round(percent) + "%";
-    //       Math.round(percent) + "%";
-    //     }
-    //   }
-    // });
-
-    // this.showProgressBar = false;
+    if (event.loaded && event.total) {
+      const percent = (event.loaded / event.total) * 100;
+      if (progress) {
+        progress.style.width = percent + "%";
+        Math.round(percent) + "%";
+      }
+      if (percent === 100) {
+        setTimeout(
+          function (this: ATATFileUpload) {
+            this.isProgressBarVisible = false;
+          }.bind(this),
+          3000
+        );
+      }
+    }
   }
 
   private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
@@ -347,6 +312,8 @@ export default class ATATFileUpload extends Vue {
       this.uploadedFiles.splice(index, 1);
       this.errorMessages = [];
       this.isProgressBarVisible = false;
+      const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+      progress.style.width = "1%";
     }
   }
 
