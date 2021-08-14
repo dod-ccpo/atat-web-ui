@@ -1,9 +1,9 @@
 <template>
   <v-flex>
     <CreateTaskOrderForm
-    ref="createTaskOrderForm"
-    :task_order_number.sync="taskOrderDetails.task_order_number"
-  />
+      ref="createTaskOrderForm"
+      :task_order_number.sync="taskOrderDetails.task_order_number"
+    />
     <atat-file-upload
       :multiple="false"
       :pdfFile.sync="taskOrderDetails.task_order_file"
@@ -13,7 +13,6 @@
       :maxFileSize="20"
     />
   </v-flex>
-  
 </template>
 
 <script lang="ts">
@@ -66,8 +65,6 @@ export default class Step_2 extends Vue {
   //     console.log(res);
   //   });
   // }
-}
-</script>
 
   public async validate(): Promise<boolean> {
     let valid = false;
