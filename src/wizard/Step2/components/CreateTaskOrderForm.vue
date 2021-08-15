@@ -27,14 +27,15 @@
         </v-col>
       </v-row>
       <v-row>
-        <atat-file-upload
-          :multiple="false"
-          :pdfFile.sync="_task_order_file"
-          label="Upload your approved Task Order"
-          message="Only PDF files with a max file size of 20 MB"
-          :maxFileSize="20"
-        />
-        <!-- @addUploadedFiles="processUpload($event)" -->
+        <v-col cols="6">
+          <atat-file-upload
+            :multiple="false"
+            :pdfFile.sync="_task_order_file"
+            label="Upload your approved Task Order"
+            message="Only PDF files with a max file size of 20 MB"
+            :maxFileSize="20"
+          />
+        </v-col>
       </v-row>
       <v-row>
         <v-col cols="9">
@@ -118,7 +119,6 @@
 </template>
 
 <script lang="ts">
-
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 import { TaskOrderFile } from "types/Wizard";
