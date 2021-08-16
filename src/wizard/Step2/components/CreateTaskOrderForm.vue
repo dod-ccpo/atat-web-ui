@@ -29,10 +29,12 @@
       <v-row>
         <v-col cols="6">
           <atat-file-upload
+            ref="pdfFileUpload"
             :multiple="false"
             :pdfFile.sync="_task_order_file"
             label="Upload your approved Task Order"
             message="Only PDF files with a max file size of 20 MB"
+            :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
             :maxFileSize="20"
           />
         </v-col>
@@ -129,6 +131,7 @@ export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrderErrorMessage = "";
   public isYesButtonClicked = false;
   public isNoButtonClicked = false;
+  private fileUploadRequiredErrorMessage = "";
   private helpText = `If your Contracting Officer used:
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
@@ -150,7 +153,7 @@ export default class CreateTaskOrderForm extends Vue {
   }
 
   public async validateForm(): Promise<boolean> {
-    let validated = false;
+    let validated: boolean[] = [];
     this.signedTaskOrderErrorMessage = "";
     this.rules = {
       task_order_number: [
@@ -162,15 +165,23 @@ export default class CreateTaskOrderForm extends Vue {
           "Task Order Numbers must be between 13 and 17 digits",
       ],
     };
+
+    if (this._task_order_file.name === "") {
+      this.fileUploadRequiredErrorMessage = "Task Order document is required";
+    }
+    validated.push(this._task_order_file.name !== "");
+
     if (this.signedTaskOrder === "") {
       this.signedTaskOrderErrorMessage =
         "Please select Yes or No below to verify your Task Order";
     }
+    validated.push(this.signedTaskOrder !== "");
+
     await this.$nextTick(() => {
-      validated = this.Form.validate();
+      validated.push(this.Form.validate());
     });
 
-    return validated;
+    return validated.every((v) => v === true);
   }
 }
 </script>

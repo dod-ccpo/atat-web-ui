@@ -45,13 +45,17 @@
         @extend .success-file-upload-border;
     }
 
-    progress{
-        height: 16px;
-        border-radius: 0px;
+    #progressBarWrapper {
         width: 300px;
-        &::-webkit-progress-value {
-            background:$success;
-        }
+        background-color: #ddd;
+        height: 16px;
+    }
+      
+    #progressBar {
+    width: 1%;
+    margin: 0px;
+    height: 16px !important;
+    background-color: $success ;
     }
 }
 
