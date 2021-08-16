@@ -135,6 +135,42 @@ export interface ButtonCardItem {
 
 
 export interface ValidatableForm {
+  validateForm(): Promise<boolean>
+}
+
+
+/**
+ * Model to represent Portfolio data
+ *
+ * @interface CreatePortfolioFormModel
+ * @member {name} label Portfolio Name
+ * @member {string} description Portfolio Description
+ * @member {string[]}  dod_components DoD component(s) funding the Portfolio
+ * @member {string} csp Cloud Service Provider
+ */
+ export interface CreatePortfolioFormModel{
+  name: string,
+  description?: string,
+  dod_components: string[],
+  csp: string[]
+}
+
+/**
+ * Represents an object passed to ATAButtonCard items array
+ *
+ * @interface ButtonCardItem
+ * @member {string} label used for item
+ * @member {string} value unique value of the radio button
+ * @member {string} content used for ButtonCard content could be a string or HTML
+ */
+export interface ButtonCardItem {
+  label: string,
+  value: string,
+  content: string
+}
+
+
+export interface ValidatableForm {
 
   validateForm(): Promise<boolean>
 
