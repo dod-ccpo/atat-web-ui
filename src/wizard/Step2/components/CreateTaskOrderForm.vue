@@ -167,7 +167,8 @@ export default class CreateTaskOrderForm extends Vue {
     };
 
     if (this._task_order_file.name === "") {
-      this.fileUploadRequiredErrorMessage = "Task Order document is required";
+      this.fileUploadRequiredErrorMessage =
+        "Please upload your Task Order document";
     }
     validated.push(this._task_order_file.name !== "");
 

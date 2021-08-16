@@ -47,13 +47,6 @@ export default class Step_2 extends Vue {
     ],
   };
 
-  // @Watch("taskOrderDetails.task_order_file")
-  // protected uploadFile(newVal: TaskOrderFile, oldVal: TaskOrderFile): void {
-  //   this.$http.post("taskOrderFiles", newVal).then(function (res) {
-  //     console.log(res);
-  //   });
-  // }
-
   public async validate(): Promise<boolean> {
     let valid = false;
     valid = await this.$refs.createTaskOrderForm.validateForm();
