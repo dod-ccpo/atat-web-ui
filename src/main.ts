@@ -15,6 +15,7 @@ import ATATSelect from "./components/ATATSelect.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import ATATTextField from "./components/ATATTextField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
+import ATATButtonCard from "./components/ATATButtonCard.vue";
 import ATATDatePicker from "./components/ATATDatePicker.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import StyledFields from "./components/StyledFields.vue";
@@ -26,6 +27,7 @@ import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePo
 Vue.component('atat-date-picker',ATATDatePicker)
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
+Vue.component('atat-button-card', ATATButtonCard);
 Vue.component('atat-select', ATATSelect)
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
