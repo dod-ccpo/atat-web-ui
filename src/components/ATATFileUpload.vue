@@ -174,7 +174,7 @@
 </style>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Emit } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { UploadedFile } from "../../types/FormFields";
 import { TaskOrderFile } from "types/Wizard";
 
@@ -350,7 +350,7 @@ export default class ATATFileUpload extends Vue {
   }
 
   private async isPDFInvalid(file: File): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>((resolve) => {
       var reader = new FileReader();
       reader.onload = (e: any) => {
         let regex = new RegExp("%PDF-1.[0-7]");

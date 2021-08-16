@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
 import { TaskOrderDetails } from "types/Wizard";
 
@@ -23,11 +23,6 @@ export default class Step_2 extends Vue {
   $refs!: {
     createTaskOrderForm: CreateTaskOrderForm;
   };
-
-  private processUpload(fileList: FileList) {
-    debugger;
-    //this.taskOrderDetails.task_order_file = fileList[0]
-  }
 
   private taskOrderDetails: TaskOrderDetails = {
     task_order_number: "",
