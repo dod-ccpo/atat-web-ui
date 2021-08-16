@@ -7,7 +7,8 @@
       @click="itemClicked(item)"
       :key="item.id"
       :ripple="false"
-      class="px-0 mr-4 ml-4 primary_darken"
+      tabindex="2"
+      class="px-2 mx-2   primary_darken"
       small
       text
     >

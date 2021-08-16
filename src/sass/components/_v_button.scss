@@ -19,20 +19,12 @@
     background-color: inherit !important;
   }
   
-  &:hover::before{
-    background-color: $primary_darken !important;
-    opacity: initial  !important;
-    box-shadow: none !important;
-  }
+  // &:hover::before{
+  //   background-color: $primary_darken !important;
+  //   opacity: initial  !important;
+  //   box-shadow: none !important;
+  // }
 
-  &:active::before,
-  &:focus::before,
-  &:focus-visible::before,
-  &:focus-within::before{
-    background-color: $primary_darken !important;
-    box-shadow: none !important;
-    opacity: initial !important;
-  }
 
   &.v-btn--is-elevated:active {
      box-shadow: none;
@@ -73,9 +65,6 @@
     span{
       color: $primary !important;
     }
-    &:hover::before{
-      @extend .atat-button-hover;
-    }
   }
 
   &.primary.theme--light{
@@ -103,13 +92,13 @@
   &.primary_darken.theme--light{
     background-color: transparent !important;
     color: #fff !important;
-    &:hover::before,
-    &:focus::before,
-    span:hover{
-      background-color: transparent !important;
-      -ieVar-❗background--color: transparent!important;
-      box-shadow: none !important;
-    }
+    // &:hover::before,
+    // &:focus::before,
+    // span:hover{
+    //   background-color: transparent !important;
+    //   -ieVar-❗background--color: transparent!important;
+    //   box-shadow: none !important;
+    // }
 
 
   }

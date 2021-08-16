@@ -1,4 +1,4 @@
-<template>
+<template v-slot:activator="{ on, attrs }">
   <v-navigation-drawer
     app
     clipped
@@ -6,6 +6,7 @@
     :mini-variant.sync="show"
     permanent
     class="global-side-nav-bar"
+    v-bind="attrs"
   >
     <v-list dense>
       <div class="d-flex flex-row">
@@ -19,12 +20,16 @@
             height="30px"
             width="10px"
           ></v-img>
-          <a
-            class="font-weight-bold h6 text-decoration-underline mt-1 mx-1"
+          <v-btn
+            class="font-weight-bold body link-button ma-0 pa-0"
             @click.stop="show = !show"
+            outlined
+            tabindex="3"
+            v-bind="attrs"
+            :ripple="false"
           >
             Show
-          </a>
+          </v-btn>
         </div>
         <div v-else class="ml-auto d-flex flex-row">
           <v-img
@@ -33,12 +38,16 @@
             height="30px"
             width="10px"
           ></v-img>
-          <a
-            class="font-weight-bold h6 text-decoration-underline mt-1 mx-1"
+          <v-btn
+            class="font-weight-bold body link-button ma-0 pa-0"
+            tabindex="3"
+            outlined
             @click.stop="show = !show"
+            v-bind="attrs"
+            :ripple="false"
           >
             Hide
-          </a>
+          </v-btn>
         </div>
       </div>
       <v-divider></v-divider>
