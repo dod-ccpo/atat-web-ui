@@ -1,8 +1,11 @@
 <template>
-  <CreateTaskOrderForm
-    ref="createTaskOrderForm"
-    :task_order_number.sync="taskOrderDetails.task_order_number"
-  />
+  <v-flex>
+    <CreateTaskOrderForm
+      ref="createTaskOrderForm"
+      :task_order_number.sync="taskOrderDetails.task_order_number"
+      :task_order_file.sync="taskOrderDetails.task_order_file"
+    />
+  </v-flex>
 </template>
 
 <script lang="ts">
