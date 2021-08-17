@@ -55,6 +55,7 @@
             :value="dod"
             :hide-details="index !== 0"
             color="primary"
+            tab-index="1"
           >
             <template v-slot:label>
               <span class="">{{ dod }}</span>
