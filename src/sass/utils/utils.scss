@@ -1,0 +1,11 @@
+$total: 20;
+@for $i from 1 through $total {  
+    .width-#{$i*5} { width: ($i * 5%) !important}; 
+    .min-width-#{$i*5} { min-width: ($i * 5%) !important}; 
+    .max-width-#{$i*5} { max-width: ($i * 5%) !important}; 
+    .height-#{$i*5} { height: ($i * 5%) !important}; 
+    .min-height-#{$i*5} { min-height: ($i * 5%) !important}; 
+    .max-height-#{$i*5} { max-height: ($i * 5%) !important}; 
+    .font-size-#{$i*1} { font-size: ($i * 1rem) !important};
+}
+
