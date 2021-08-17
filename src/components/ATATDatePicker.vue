@@ -3,8 +3,9 @@
     <v-col cols="12" sm="6" md="4">
       <v-menu
         v-model="menu2"
-        :close-on-content-click="false"
+        :close-on-content-click="true"
         :nudge-right="40"
+        :return-value.sync="date"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -31,7 +32,7 @@
             v-on="on"
           />
         </template>
-        <v-date-picker v-model="value" @input="menu2 = false" />
+        <v-date-picker v-model="date" @input="menu2 = false" />
       </v-menu>
     </v-col>
   </v-row>
@@ -50,7 +51,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
-  @Prop({ default: "" }) private value!: string;
+  @Prop({ default: "" }) private date!: string;
 
   private isFieldValid = false;
   private getStatusIcon() {
@@ -58,10 +59,10 @@ export default class ATATDatePicker extends Vue {
     // when the rules property is populated (i.e when the parent form is saved)
     // we evalute the rules to determine what icon to display
     if (this.$props["rules"].length > 0) {
-      let value = this.value;
+      let date = this.date;
 
       this.isFieldValid = this.$props["rules"].every(
-        (rule: (a: string) => string | boolean) => rule(value) === true
+        (rule: (a: string) => string | boolean) => rule(date) === true
       );
     }
   }
