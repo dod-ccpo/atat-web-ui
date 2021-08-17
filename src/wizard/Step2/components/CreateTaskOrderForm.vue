@@ -100,6 +100,7 @@
                 <v-divider class="mt-7"></v-divider>
               </v-col>
             </v-row>
+            <clins-card />
           </div>
         </v-col>
       </v-row>
@@ -110,8 +111,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
+import ClinsCard from "@/wizard/Step2/components/ClinsCard.vue";
 
-@Component({})
+@Component({
+  components: { ClinsCard },
+})
 export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrder = "";
   public signedTaskOrderErrorMessage = "";

@@ -35,15 +35,19 @@
                   class="mb-3"
                   id="total-clin-value"
                   label="Total CLIN Value"
-                  helpText="clinHelpText"
+                  :helpText="clinHelpText"
                 />
-                <atat-text-field id="obligated-funds" label="Obligated Funds" />
+                <atat-text-field
+                  id="obligated-funds"
+                  label="Obligated Funds"
+                  :helpText="obligatedFundsHelpText"
+                />
                 <v-row>
                   <v-col>
-                    <div class="h4 font-weight-bold mt-6">
+                    <div class="h4 font-weight-bold my-6">
                       Period of Performance (PoP)
                     </div>
-                    <atat-date-picker></atat-date-picker>
+                    <atat-date-picker />
                   </v-col>
                 </v-row> </v-expansion-panel-content
             ></v-expansion-panel>

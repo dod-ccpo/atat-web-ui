@@ -2,7 +2,7 @@
   <CreateTaskOrderForm
     ref="createTaskOrderForm"
     :task_order_number.sync="taskOrderDetails.task_order_number"
-  ><ClinsCard /> </CreateTaskOrderForm>
+  />
 </template>
 
 <script lang="ts">
@@ -15,7 +15,6 @@ import { TaskOrderDetails } from "types/Wizard";
 @Component({
   components: {
     CreateTaskOrderForm,
-    ClinsCard,
   },
 })
 export default class Step_2 extends Vue {
@@ -53,5 +52,3 @@ export default class Step_2 extends Vue {
   }
 }
 </script>
-
-
