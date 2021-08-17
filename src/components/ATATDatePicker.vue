@@ -10,21 +10,28 @@
         min-width="auto"
       >
         <template v-slot:activator="{ on, attrs }">
+          <label
+            :id="id + '_text_field_label'"
+            class="form-field-label font-weight-bold my-1"
+            :for="id + '_text_field'"
+          >
+            {{ label }}
+            <span v-show="optional">Optional</span>
+          </label>
           <v-text-field
             outlined
             dense
+            append-outer-icon="calendar_today"
             :success="isFieldValid"
             :error="hasError"
             :height="42"
             v-model="date"
-            label="Picker without buttons"
-            prepend-icon="mdi-calendar"
             readonly
             v-bind="attrs"
             v-on="on"
-          ></v-text-field>
+          />
         </template>
-        <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+        <v-date-picker v-model="value" @input="menu2 = false" />
       </v-menu>
     </v-col>
   </v-row>
@@ -43,8 +50,21 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
+  @Prop({ default: "" }) private value!: string;
 
   private isFieldValid = false;
+  private getStatusIcon() {
+    // if the rules property isn't set we won't display an icon
+    // when the rules property is populated (i.e when the parent form is saved)
+    // we evalute the rules to determine what icon to display
+    if (this.$props["rules"].length > 0) {
+      let value = this.value;
+
+      this.isFieldValid = this.$props["rules"].every(
+        (rule: (a: string) => string | boolean) => rule(value) === true
+      );
+    }
+  }
 }
 </script>
 

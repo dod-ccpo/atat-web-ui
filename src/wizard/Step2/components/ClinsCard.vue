@@ -47,7 +47,7 @@
                     <div class="h4 font-weight-bold my-6">
                       Period of Performance (PoP)
                     </div>
-                    <atat-date-picker />
+                    <atat-date-picker label="Start Date" />
                   </v-col>
                 </v-row> </v-expansion-panel-content
             ></v-expansion-panel>
