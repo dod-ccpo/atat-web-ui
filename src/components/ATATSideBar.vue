@@ -50,31 +50,28 @@
         </div>
       </div>
       <v-divider></v-divider>
-      <v-list-item-group v-if="!show" color="primary">
-        <v-list-item
+      <template>
+        <router-link
           v-for="(item, i) in items"
           :key="i"
-          :ripple="false"
-          class="pa-0"
+          :to="item.link"
+          v-slot="{ href, navigate, isActive }"
+          tabindex="0"
         >
-          <v-list-item-content>
-            <router-link
-              :to="item.link"
-              v-slot="{ href, navigate, isActive }"
-              tabindex="0"
-            >
-              <a
-                class="body link-button px-3"
-                :active="isActive"
-                :href="href"
-                @click="navigate"
-              >
-                {{ item.text }}
-              </a>
-            </router-link>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
+          <v-btn
+            v-if="!show"
+            tabindex="2"
+            class="body left-nav-menu-link d-flex justify-start"
+            :active="isActive"
+            :href="href"
+            :ripple="false"
+            @click="navigate"
+            :retain-focus-on-click="true"
+          >
+            {{ item.text }}
+          </v-btn>
+        </router-link>
+      </template>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -85,7 +82,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
 export default class ATATSideBar extends Vue {
-  private show = true;
+  private show = false;
 
   private items = [
     { text: "Dashboard", link: "/createportfolio" },
@@ -94,4 +91,3 @@ export default class ATATSideBar extends Vue {
   ];
 }
 </script>
-    

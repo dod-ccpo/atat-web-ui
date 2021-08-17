@@ -17,17 +17,17 @@
 
 
 // components
-.v-input{
-    &.v-input--checkbox:focus{
-        background-color: $base_lighter !important;
-       .v-input--selection-controls__input{
-       .v-icon{
-            color: $primary !important;
-       }
-    }
+// .v-input{
+//     &.v-input--checkbox:focus{
+//         background-color: $base_lighter !important;
+//        .v-input--selection-controls__input{
+//        .v-icon{
+//             color: $primary !important;
+//        }
+//     }
 
-    }
-}
+//     }
+// }
 
 .default-focus{
     background-color: $primary !important;
@@ -36,8 +36,8 @@
 }
 
 .v-btn{
-    &:focus::before,            
-    &:hover::before{
+    &:focus:before,
+    &:focus::before{
        @extend .default-focus;
     }
     
@@ -45,18 +45,39 @@
         &:focus::before,
         &:hover::before{
             background-color: transparent !important;
-            opacity: initial !important;
+            opacity: 1 !important;
             box-shadow: 0px 0px 0px 4px $primary_darken, 0px 0px 0px 8px $focus-blue !important;
         }
     }
-
+    &.link-button,
     &.v-btn--plain,
     &.v-btn--outlined{
-        &:focus::before,
-        &:hover::before{
+        &:focus:before,
+        &:focus::before{
             background-color: transparent !important;
-            opacity: initial !important;
+            opacity: 1 !important;
             box-shadow: 0px 0px 0px 4px transparent, 0px 0px 0px 4px $focus-blue !important;
+        }
+    }
+
+    &.link-button{
+        &:focus{
+            height: 60%;
+        }
+    }
+
+    &.left-nav-menu-link{
+        &:before, 
+        &:focus{
+            box-shadow: none !important;
+            border-left: solid 3px;
+            border-color: $primary_darken !important;
+            background-color: $primary-lighter !important;
+            color: $primary !important;
+            font-weight: 700 !important;
+            span{
+                font-weight: 700 !important;
+            }
         }
     }
 }
@@ -73,64 +94,52 @@
     }
 }
 
-//checkboxes
-
-.v-input.v-input--checkbox:focus {
-    // @extend .default-focus;
-    background-color: red !important;   
-}
-
-// .v-input--selection-controls__input
-// {
-//     i{
-//         &:focus, 
-//         &:focus-within,   
-//         &:focus-visible,
-//         &:hover{
-//             @extend .default-focus;
-//             // opacity: 1 !important;
-//             background-color: transparent !important; 
-//             max-height: 18px;
-//             opacity: .5 !important;
-//         }
-//     }
-// }
-
-// input[type=checkbox]{
-//     &:focus, 
-//     &:focus-within,   
-//     &:focus-visible,
-//     &:hover{
-//         @extend .default-focus;
-//         // opacity: 1 !important;
-//         background-color: transparent !important; 
-//         max-height: 18px;
-//         opacity: .5 !important;
-//     }
-// }
-
-.v-input--selection-controls__ripple{
-    background-color: transparent !important;
+//checkboxes and checkbox 'lists'
+.checkbox-default-focus{
+    background: none !important;
     border-radius: 0px !important;
     transition: none !important;
     width: 18px !important;
     height: 18px !important;
     left: -4px !important;
     top: -4px !important;
-    // &:before{
-    //     // @extend .default-focus;
-    //     background: none !important;
-    //     // opacity: 1 !important;
-    //     background-color: transparent !important; 
-    //     transform: none !important;
-    // }
-    // &:focus, 
-    // &:focus-within,   
-    // &:focus-visible,
-    // &:hover{
-    //     @extend .default-focus;
-    //     // opacity: 1 !important;
-    //     background-color: transparent !important; 
-    // }
+    
+}
+.checkbox-default-focus-before{
+    @extend .default-focus;
+    background: none !important;
+    background-color: transparent !important; 
+    transform: none !important;
 }
 
+.v-input--selection-controls{
+    &.v-input--is-focused .v-input--selection-controls__ripple{
+        @extend .checkbox-default-focus;
+        &:before {
+            @extend .checkbox-default-focus-before;
+        }
+    }
+    .v-input--selection-controls__ripple{
+        @extend .checkbox-default-focus;
+        &:before {
+           background-color: transparent !important;
+        }
+    }
+}
+
+
+
+
+._v_radio-button-cards {
+    .v-card {
+        &:focus{
+            box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
+        }
+        &.active{
+            background-color: $primary_lighter !important;
+            &::before{
+                background: none;
+            }
+        }
+    }
+}

@@ -16,7 +16,7 @@
 @import "./components/v_text-field.scss";
 
 @import "./components/validation.scss";
-@import "./components/accessibility";
+@import "./components/_accessibility";
 
 body,html{
     background-color: $light_gray !important;
