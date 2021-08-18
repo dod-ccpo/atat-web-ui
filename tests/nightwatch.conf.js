@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+let cd = require("chromedriver").path;
+
 module.exports = {
   src_folders: [],
 
@@ -78,6 +82,7 @@ module.exports = {
       extends: "selenium",
       desiredCapabilities: {
         browserName: "internet explorer",
+        javascriptEnabled: true,
       },
     },
   },
