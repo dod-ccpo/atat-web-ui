@@ -83,7 +83,7 @@ export default class ATATDatePicker extends Vue {
   private menu = false;
   private minDate = "2020-09-01";
   private maxDate = "2022-10-31";
-  private menu = false;
+  
   private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
