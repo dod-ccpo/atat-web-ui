@@ -4,6 +4,7 @@
       ref="createTaskOrderForm"
       :task_order_number.sync="taskOrderDetails.task_order_number"
       :task_order_file.sync="taskOrderDetails.task_order_file"
+      :clins.sync="taskOrderDetails.clins"
     />
   </v-flex>
 </template>
@@ -11,7 +12,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import ClinsCard from "@/wizard/Step2/components/ClinsCard.vue";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
 import { TaskOrderDetails } from "types/Wizard";
 

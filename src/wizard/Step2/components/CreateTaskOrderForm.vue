@@ -113,7 +113,7 @@
                 <v-divider class="mt-7"></v-divider>
               </v-col>
             </v-row>
-            <clins-card />
+            <clins-card :value.sync="_clins" />
           </div>
         </v-col>
       </v-row>
@@ -125,7 +125,7 @@
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 import ClinsCard from "@/wizard/Step2/components/ClinsCard.vue";
-import { TaskOrderFile } from "types/Wizard";
+import { CLIN, TaskOrderFile } from "types/Wizard";
 
 @Component({
   components: { ClinsCard },
@@ -143,6 +143,7 @@ export default class CreateTaskOrderForm extends Vue {
 
   @PropSync("task_order_number") _task_order_number!: string;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
+  @PropSync("clins") _clins!: CLIN[];
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };

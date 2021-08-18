@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="6" md="4">
+    <v-col>
       <v-menu
         v-model="menu2"
         :close-on-content-click="true"
@@ -24,7 +24,7 @@
             dense
             append-outer-icon="calendar_today"
             :success="isFieldValid"
-            :error="hasError"
+            :error="isFieldValid"
             :height="42"
             v-model="date"
             readonly
@@ -52,6 +52,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private date!: string;
+  @Prop({ default: false }) private menu!: boolean;
 
   private isFieldValid = false;
   private getStatusIcon() {

@@ -24,6 +24,8 @@
                   class="mb-3"
                   id="clin-number"
                   label="CLIN Number"
+                  :rules="rules.clinNumberRule"
+                  :value.sync="clin.clin_number"
                 />
                 <atat-select label="Corresponding IDIQ CLIN"></atat-select>
                 <v-row>
@@ -31,23 +33,34 @@
                     <div class="h4 font-weight-bold my-3">CLIN Funding</div>
                   </v-col>
                 </v-row>
-                <atat-text-field
-                  class="mb-3"
-                  id="total-clin-value"
-                  label="Total CLIN Value"
-                  :helpText="clinHelpText"
-                />
-                <atat-text-field
-                  id="obligated-funds"
-                  label="Obligated Funds"
-                  :helpText="obligatedFundsHelpText"
-                />
                 <v-row>
                   <v-col>
+                    <atat-text-field
+                      class="mb-3"
+                      id="total-clin-value"
+                      label="Total CLIN Value"
+                      :rules="rules.totalCLINRule"
+                      :helpText="clinHelpText"
+                      :value.sync="clin.total_clin_value"
+                    />
+                    <atat-text-field
+                      id="obligated-funds"
+                      label="Obligated Funds"
+                      :rules="rules.obligatedFundsRule"
+                      :helpText="obligatedFundsHelpText"
+                      :value.sync="clin.obligated_funds"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
                     <div class="h4 font-weight-bold my-6">
                       Period of Performance (PoP)
                     </div>
-                    <atat-date-picker label="Start Date" />
+                    <div class="d-flex align-center ma-0">
+                      <atat-date-picker label="Start Date" />
+                      <atat-date-picker class="ma-0" label="End Date" />
+                    </div>
                   </v-col>
                 </v-row> </v-expansion-panel-content
             ></v-expansion-panel>
@@ -60,11 +73,25 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, PropSync } from "vue-property-decorator";
+import { CLIN } from "../../../../types/Wizard";
 @Component({
   components: {},
 })
 export default class ClinsCard extends Vue {
+  @PropSync("CLIN") _clin!: CLIN;
+
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.form as Vue & { validate: () => boolean };
+  }
+  private clin: CLIN = {
+    clin_number: "",
+    idiq_clin: "",
+    total_clin_value: 0,
+    obligated_funds: 0,
+    pop_start_date: "",
+    pop_end_date: "",
+  };
   private clinHelpText =
     "This is the full amount of money requested\n" +
     "in a task order. It does not have to be spent\n" +
@@ -73,5 +100,31 @@ export default class ClinsCard extends Vue {
     "Obligated funds are the legal amount allocated\n" +
     "for a project or contract that can be spent during\n" +
     "the CLIN’s period of performance.";
+
+  public rules = {};
+
+  public async validateForm(): Promise<boolean> {
+    let validated = false;
+    this.rules = {
+      clinNumberRule: [
+        (v: number) => !!v || "Please enter your 4-digit CLIN Number",
+        (v: string) => v.length < 4 || "CLIN number cannot exceed 4 characters",
+      ],
+      correspondingIDIQRule: [
+        (v: string) => !!v || "Please select an IDIQ CLIN type",
+      ],
+      totalCLINRule: [(v: number) => !!v || "Please enter CLIN value"],
+      obligatedFundsRule: [
+        (v: number) => !!v || "Please enter your obligated Funds",
+        // (v: number) => v < totalCLIN  || "Obligated Funds cannot exceed total CLIN Value",
+      ],
+    };
+
+    await this.$nextTick(() => {
+      validated = this.Form.validate();
+    });
+
+    return validated;
+  }
 }
 </script>
