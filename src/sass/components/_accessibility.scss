@@ -3,6 +3,12 @@
 @import "../utils/typography.scss";
 // .form-field-label-error
 
+.sr-only{
+    height: 1px;
+    width: 1px;
+    overflow: hidden !important;
+}
+
 
 .v-input{
     &.v-input--checkbox:focus{
