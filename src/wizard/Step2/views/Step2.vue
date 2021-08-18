@@ -4,6 +4,7 @@
       ref="createTaskOrderForm"
       :task_order_number.sync="taskOrderDetails.task_order_number"
       :task_order_file.sync="taskOrderDetails.task_order_file"
+      :clins.sync="taskOrderDetails.clins"
     />
   </v-flex>
 </template>
@@ -11,7 +12,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import ClinsCard from "@/wizard/Step2/components/ClinsCard.vue";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
 import { TaskOrderDetails } from "types/Wizard";
 
@@ -37,12 +37,12 @@ export default class Step_2 extends Vue {
     },
     clins: [
       {
-        clin_number: "",
-        idiq_clin: "",
-        total_clin_value: 0,
-        obligated_funds: 0,
-        pop_start_date: "",
-        pop_end_date: "",
+        clin_number: "0001",
+        idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
+        total_clin_value: 200000,
+        obligated_funds: 10000,
+        pop_start_date: "2021-09-01",
+        pop_end_date: "2022-09-01",
       },
     ],
   };

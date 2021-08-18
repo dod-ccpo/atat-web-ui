@@ -113,7 +113,7 @@
                 <v-divider class="mt-7"></v-divider>
               </v-col>
             </v-row>
-            <clins-card />
+            <clins-card-list :clins="_clins"></clins-card-list>
           </div>
         </v-col>
       </v-row>
@@ -124,11 +124,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
-import ClinsCard from "@/wizard/Step2/components/ClinsCard.vue";
-import { TaskOrderFile } from "types/Wizard";
+import ClinsCardList from "./ClinsCardList.vue";
+import { CLIN, TaskOrderFile } from "types/Wizard";
 
 @Component({
-  components: { ClinsCard },
+  components: { ClinsCardList },
 })
 export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrder = "";
@@ -143,6 +143,8 @@ export default class CreateTaskOrderForm extends Vue {
 
   @PropSync("task_order_number") _task_order_number!: string;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
+
+  @PropSync("clins", { required: true }) _clins!: CLIN[];
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };

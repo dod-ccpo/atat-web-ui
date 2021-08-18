@@ -17,6 +17,9 @@
         dense
         :height="42"
         :rounded="rounded"
+        @change="(v) => $emit('change', v)"
+        v-model="_value"
+        :placeholder="placeholder"
       >
         <template v-slot:selection="{ item }">
           {{ item }}
@@ -34,6 +37,9 @@
             </v-list-item-content>
           </v-list-item>
         </template>
+        <template v-slot:append>
+          <v-icon>unfold_more</v-icon>
+        </template>
       </v-select>
     </v-flex>
   </div>
@@ -41,10 +47,12 @@
 
 <script lang="ts">
 import { VSelect } from "vuetify/lib";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({})
 export default class ATATSelect extends VSelect {
+  @PropSync("value") private _value!: unknown;
+  @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({
     default: () => ["Foo", "Bar", "Fizz Tony", "Buzz"],
