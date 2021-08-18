@@ -1,6 +1,6 @@
-import { NightwatchBrowser } from 'nightwatch';
+import { NightwatchBrowser } from "nightwatch";
 
-let loginpagetest = {
+const loginpagetest = {
   "verifying the loginpage": function (client: NightwatchBrowser) {
     client
       .init()
