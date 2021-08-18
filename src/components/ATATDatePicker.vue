@@ -26,10 +26,7 @@
             :success="isFieldValid"
             :error="isFieldValid"
             :height="42"
-<<<<<<< HEAD
-=======
             v-model="_date"
->>>>>>> 656b90903778df40c9fb78346a6ed568e7a16d6a
             readonly
             v-bind="attrs"
             v-on="on"
@@ -40,13 +37,8 @@
           ref="firstMonth"
           :min="minDate"
           :max="maxDate"
-<<<<<<< HEAD
-          :showCurrent="false"
-          v-model="selectedDate"
-=======
           v-model="_date"
           picker-date.sync="_date"
->>>>>>> 656b90903778df40c9fb78346a6ed568e7a16d6a
           @input="menu = false"
           no-title
           scrollable
@@ -58,7 +50,7 @@
           :min="minDate"
           :max="maxDate"
           :show-current="false"
-          v-model="selectedDate"
+          v-model="_date"
           @input="menu = false"
           no-title
           :reactive="true"
@@ -86,11 +78,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
-<<<<<<< HEAD
-  @Prop({ default: "" }) private date!: string;
-=======
   @PropSync("date") private _date!: string;
->>>>>>> 656b90903778df40c9fb78346a6ed568e7a16d6a
 
   private menu = false;
   private minDate = "2020-09-01";
@@ -100,11 +88,10 @@ export default class ATATDatePicker extends Vue {
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
     .format("YYYY-MM-DD");
-  private selectedDate = moment(new Date()).format("YYYY-MM-DD");
   private isFieldValid = false;
 
   get getDate() : string {
-    return this.selectedDate;
+    return this._date;
   }
 
   private firstMonthComp: any = this.$refs["firstMonth"];
