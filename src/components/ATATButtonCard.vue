@@ -7,6 +7,8 @@
     class="_v_radio-button-cards"
     column
     :ripple="false"
+    ref="radiogroup"
+    id="atat-button-cards"
   >
     <v-card
       v-for="(item, index) in items"

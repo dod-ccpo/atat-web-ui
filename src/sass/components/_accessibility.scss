@@ -2,6 +2,12 @@
 @import "../utils/colors.scss";
 @import "../utils/typography.scss";
 
+.sr-only{
+    height: 1px;
+    width: 1px;
+    overflow: hidden !important;
+}
+
 
 // utils
 
