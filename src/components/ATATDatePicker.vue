@@ -57,11 +57,12 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private date!: string;
-  @Prop({ default: false }) private menu!: boolean;
 
+  private menu = false;
   private minDate = "2020-09-01";
   private maxDate = "2022-10-31";
   private isFieldValid = false;
+  private showDate = this.date;
   private getStatusIcon() {
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
