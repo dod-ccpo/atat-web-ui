@@ -53,6 +53,9 @@
                       >
                         browse to upload
                       </v-btn>
+                      <label class="sr-only" for="file-input-button"
+                        >File Input</label
+                      >
                       <input
                         id="file-input-button"
                         type="file"
