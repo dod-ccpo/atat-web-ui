@@ -54,6 +54,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 @Component({})
 export default class ATATSelect extends VSelect {
   @PropSync("selectedValue") private _selectedValue!: unknown;
+  // @PropSync("value") private _value!: unknown;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({
