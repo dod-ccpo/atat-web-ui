@@ -158,7 +158,7 @@
                   v-show="_total_clin_value && _obligated_funds"
                 >
                   <v-col>
-                    <div>
+                    <div v-show="obligatedPrecent">
                       <span class="h4 font-weight-bold"
                         >{{ obligatedPrecent }}%</span
                       >
@@ -280,6 +280,9 @@ export default class ClinsCard extends Vue {
         (v: string) =>
           !!v ||
           "Please enter the start date for your CLIN's period of performance",
+        (v: string) =>
+          !!v ||
+          "Please enter the start date for your CLIN's period of performance",
       ],
       popEnd: [
         (v: string) =>
@@ -308,6 +311,7 @@ export default class ClinsCard extends Vue {
 
 #progressBar {
   width: 1%;
+  max-width: 100%;
   margin: 0px;
   height: 16px !important;
   background-color: #00a91c;
