@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row v-for="(clin, index) in _clins" :key="clin.clin_number">
+    <v-row v-for="(clin, index) in _clins" :key="index">
       <clins-card
         ref="clinscard"
         :card_number="index + 1"

@@ -24,7 +24,7 @@
                         card_number
                       }}</v-col>
                       <v-col cols="11" class="h4 text--base-darkest">{{
-                        `CLIN ${_clin_number}`
+                        `CLIN ${clin_number}`
                       }}</v-col>
                     </v-row>
                     <v-row v-if="!open">
@@ -122,7 +122,6 @@
                   id="clin-number"
                   label="CLIN Number"
                   :value.sync="_clin_number"
-                  @click.native.stop
                 />
                 <atat-select
                   class="clin-idiq-select"
@@ -194,7 +193,7 @@ export default class ClinsCard extends Vue {
   @PropSync("clin_number", { required: true }) _clin_number!: string;
 
   @PropSync("idiq_clin") _idiq_clin!: string;
-  @PropSync("total_clin_value") _total_clin_value!: number;
+  @PropSync("total_clin_value", { required: true }) _total_clin_value!: number;
   @PropSync("obligated_funds") _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
