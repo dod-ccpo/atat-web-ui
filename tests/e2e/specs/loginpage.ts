@@ -31,7 +31,10 @@ let loginpagetest = {
       .getText(".black--text:nth-child(2)")
       .assert.elementPresent("#login_button")
       .waitForElementVisible("button[id=login_button]", 2000)
-      .click("#login_button")
+      .execute(function () {
+        // @ts-ignore: Object is possibly 'null'
+        document.getElementById("login_button").click();
+      })
       .pause(10000)
       .assert.elementPresent("#atat-header-nav__logout")
       .assert.elementPresent("h1.mb-5.h1.font-weight-bold")
