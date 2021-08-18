@@ -17,8 +17,10 @@
     "start-chrome-driver": "chromedriver",
     "start-edge-driver": "MicrosoftWebDriver.exe --port=17556",
     "test:ie": "tsc && vue-cli-service test:e2e --config tests/nightwatch.conf.js -e selenium.ie -t dist/tests/e2e/specs/loginpage.js",
-    "test:chrome": "tsc && vue-cli-service test:e2e --config tests/nightwatch.config.js -e webdriver.chrome -t dist/tests/e2e/specs/loginpage.js",
-    "test:edge": "tsc && vue-cli-service test:e2e --config tests/nightwatch.conf.js -e webdriver.edge -t dist/tests/e2e/specs/loginpage.js",
+    "test:chrome:local": "vue-cli-service test:e2e --config tests/nightwatch.conf.js -e webdriver.chrome -t dist/tests/e2e/specs/loginpage.js",
+    "test:chrome": "tsc && npm-run-all --parallel start-chrome-driver test:chrome:local -r",
+    "test:edge:local": "vue-cli-service test:e2e --config tests/nightwatch.conf.js -e webdriver.edge -t dist/tests/e2e/specs/loginpage.js",
+    "test:edge": "tsc && npm-run-all --parallel  start-edge-driver test:edge:local -r",
     "test:nightwatch": "vue-cli-service test:e2e --config tests/nightwatch.conf.js -e webdriver.chrome,webdriver.edge,selenium.ie -t dist/tests/e2e/specs/loginpage.js",
     "test:ts": "tsc && npm-run-all --parallel start-chrome-driver start-edge-driver test:nightwatch -r"
   },
