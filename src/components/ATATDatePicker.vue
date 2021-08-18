@@ -25,7 +25,7 @@
             :success="isFieldValid"
             :error="isFieldValid"
             :height="42"
-            v-model="date"
+            v-model="_date"
             readonly
             v-bind="attrs"
             v-on="on"
@@ -34,8 +34,8 @@
         <v-date-picker
           :min="minDate"
           :max="maxDate"
-          v-model="date"
-          @change="$emit('update:date', date)"
+          v-model="_date"
+          picker-date.sync="_date"
           @input="menu = false"
         />
       </v-menu>
@@ -57,19 +57,18 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
-  @Prop({ default: "" }) private date!: string;
+  @PropSync("date") private _date!: string;
 
   private menu = false;
   private minDate = "2020-09-01";
   private maxDate = "2022-10-31";
   private isFieldValid = false;
-  private showDate = this.date;
   private getStatusIcon() {
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
     // we evalute the rules to determine what icon to display
     if (this.$props["rules"].length > 0) {
-      let date = this.date;
+      let date = this._date;
 
       this.isFieldValid = this.$props["rules"].every(
         (rule: (a: string) => string | boolean) => rule(date) === true
