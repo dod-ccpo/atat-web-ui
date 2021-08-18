@@ -7,7 +7,7 @@ node_modules
 /tests/e2e/reports/**
 /tests/e2e/logs/
 /coverage/
-/tests_output/
+/tests_output/**
 
 # local env files
 .env.local
