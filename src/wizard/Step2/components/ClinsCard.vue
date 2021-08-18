@@ -58,8 +58,15 @@
                       Period of Performance (PoP)
                     </div>
                     <div class="d-flex align-center ma-0">
-                      <atat-date-picker label="Start Date" />
-                      <atat-date-picker class="ma-0" label="End Date" />
+                      <atat-date-picker
+                        :date.sync="clin.pop_start_date"
+                        label="Start Date"
+                      />
+                      <atat-date-picker
+                        :date.sync="clin.pop_end_date"
+                        class="ma-0"
+                        label="End Date"
+                      />
                     </div>
                   </v-col>
                 </v-row> </v-expansion-panel-content

@@ -35,6 +35,7 @@
           :min="minDate"
           :max="maxDate"
           v-model="date"
+          @change="$emit('update:date', date)"
           @input="menu = false"
         />
       </v-menu>
