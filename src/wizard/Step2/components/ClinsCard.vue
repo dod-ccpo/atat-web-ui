@@ -151,7 +151,29 @@
                   :helpText="obligatedFundsHelpText"
                   :value.sync="_obligated_funds"
                   :rules="rules.obligatedFundsRule"
+                  @input="progressEvent"
                 />
+                <v-row
+                  class="mt-1"
+                  v-show="_total_clin_value && _obligated_funds"
+                >
+                  <v-col>
+                    <div>
+                      <span class="h4 font-weight-bold"
+                        >{{ obligatedPrecent }}%</span
+                      >
+                      of your Total Funds are obligated
+                    </div>
+                    <div id="progressBarWrapper">
+                      <div
+                        id="progressBar"
+                        value="0"
+                        max="100"
+                        ref="progress-bar"
+                      ></div>
+                    </div>
+                  </v-col>
+                </v-row>
                 <v-row>
                   <v-col cols="12">
                     <div class="h4 font-weight-bold my-6">
@@ -186,6 +208,14 @@ import moment from "moment";
   components: {},
 })
 export default class ClinsCard extends Vue {
+  @Prop({ required: true, default: () => -1 }) card_number!: number;
+  @PropSync("clin_number", { required: true }) _clin_number!: string;
+  @PropSync("idiq_clin") _idiq_clin!: string;
+  @PropSync("total_clin_value", { required: true }) _total_clin_value!: number;
+  @PropSync("obligated_funds") _obligated_funds!: number;
+  @PropSync("pop_start_date") _pop_start_date!: string;
+  @PropSync("pop_end_date") _pop_end_date!: string;
+
   private clinHelpText =
     "This is the full amount of money requested\n" +
     "in a task order. It does not have to be spent\n" +
@@ -201,15 +231,7 @@ export default class ClinsCard extends Vue {
     "IDIQ CLIN 0003 Unclassified Cloud Support Package",
     "IDIQ CLIN 0004 Classified Support Package",
   ];
-
-  @Prop({ required: true, default: () => -1 }) card_number!: number;
-  @PropSync("clin_number", { required: true }) _clin_number!: string;
-
-  @PropSync("idiq_clin") _idiq_clin!: string;
-  @PropSync("total_clin_value", { required: true }) _total_clin_value!: number;
-  @PropSync("obligated_funds") _obligated_funds!: number;
-  @PropSync("pop_start_date") _pop_start_date!: string;
-  @PropSync("pop_end_date") _pop_end_date!: string;
+  private obligatedPrecent = 0;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -226,6 +248,13 @@ export default class ClinsCard extends Vue {
 
   public formatDate(value: string): string {
     return moment(new Date(value)).format("MMMM DD, YYYY");
+  }
+
+  public progressEvent() {
+    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+    const width = (this._obligated_funds / this._total_clin_value) * 100;
+    progress.style.width = width + "%";
+    this.obligatedPrecent = width;
   }
 
   public rules = {};
@@ -265,5 +294,22 @@ export default class ClinsCard extends Vue {
 
     return validated;
   }
+  private updated() {
+    this.progressEvent();
+  }
 }
 </script>
+<style>
+#progressBarWrapper {
+  border-color: #1b1b1b;
+  background-color: #ddd;
+  height: 16px;
+}
+
+#progressBar {
+  width: 1%;
+  margin: 0px;
+  height: 16px !important;
+  background-color: #00a91c;
+}
+</style>
