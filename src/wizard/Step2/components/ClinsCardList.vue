@@ -2,6 +2,7 @@
   <v-container fluid>
     <v-row v-for="(clin, index) in _clins" :key="clin.clin_number">
       <clins-card
+        ref="clinscard"
         :card_number="index + 1"
         :clin_number.sync="clin.clin_number"
         :idiq_clin.sync="clin.idiq_clin"
@@ -28,5 +29,17 @@ import ClinsCard from "./ClinsCard.vue";
 })
 export default class ClinsCardList extends Vue {
   @PropSync("clins", { required: true }) _clins!: CLIN[];
+
+  public async validate(): Promise<boolean> {
+    let valid = false;
+    const clins = this.$refs.clinscard as Array<ClinsCard>;
+    const allValid = clins.map((clin) => clin.validateForm());
+
+    await Promise.all(allValid).then(
+      (value) => (valid = value.every((v) => v))
+    );
+
+    return valid;
+  }
 }
 </script>

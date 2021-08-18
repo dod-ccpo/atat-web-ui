@@ -30,42 +30,85 @@
                     <v-row v-if="!open">
                       <v-col cols="1"></v-col>
                       <v-col cols="11">
-                        <v-row class="mb-n8">
-                          <v-col
-                            class="micro font-weight-bold text--base-darkest"
-                          >
-                            IDIQ Type
-                          </v-col>
-                          <v-col
-                            class="micro font-weight-bold text--base-darkest"
-                          >
-                            Total Value
-                          </v-col>
-                          <v-col
-                            class="micro font-weight-bold text--base-darkest"
-                          >
-                            Obligated Funds
-                          </v-col>
-                          <v-col
-                            class="micro font-weight-bold text--base-darkest"
-                          >
-                            Period of Performance
-                          </v-col>
-                        </v-row>
                         <v-row>
-                          <v-col class="optional">{{ _idiq_clin }}</v-col>
-                          <v-col class="optional">
-                            {{ formatCurrency(_total_clin_value) }}
+                          <!--IDIQ Type-->
+                          <v-col>
+                            <v-row class="mb-n8">
+                              <v-col
+                                class="
+                                  micro
+                                  font-weight-bold
+                                  text--base-darkest
+                                "
+                              >
+                                IDIQ Type
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col class="optional">{{ _idiq_clin }}</v-col>
+                            </v-row>
                           </v-col>
-                          <v-col class="optional">{{
-                            formatCurrency(_obligated_funds)
-                          }}</v-col>
-                          <v-col class="optional">
-                            {{
-                              `${formatDate(_pop_start_date)} - ${formatDate(
-                                _pop_end_date
-                              )}`
-                            }}
+                          <!-- Total Value -->
+                          <v-col>
+                            <v-row class="mb-n8">
+                              <v-col
+                                class="
+                                  micro
+                                  font-weight-bold
+                                  text--base-darkest
+                                "
+                              >
+                                Total Value
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col class="optional">{{
+                                formatCurrency(total_clin_value)
+                              }}</v-col>
+                            </v-row>
+                          </v-col>
+
+                          <!-- Obligated Funds -->
+                          <v-col>
+                            <v-row class="mb-n8">
+                              <v-col
+                                class="
+                                  micro
+                                  font-weight-bold
+                                  text--base-darkest
+                                "
+                              >
+                                Obligated Funds
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col class="optional">{{
+                                formatCurrency(_obligated_funds)
+                              }}</v-col>
+                            </v-row>
+                          </v-col>
+                          <!-- Period of Performance -->
+                          <v-col>
+                            <v-row class="mb-n8">
+                              <v-col
+                                class="
+                                  micro
+                                  font-weight-bold
+                                  text--base-darkest
+                                "
+                              >
+                                Period of Performance
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col class="optional">
+                                {{
+                                  `${formatDate(
+                                    _pop_start_date
+                                  )} - ${formatDate(_pop_end_date)}`
+                                }}</v-col
+                              >
+                            </v-row>
                           </v-col>
                         </v-row>
                       </v-col>
@@ -168,6 +211,12 @@ export default class ClinsCard extends Vue {
 
   public formatDate(value: string): string {
     return moment(new Date(value)).format("MMMM DD, YYYY");
+  }
+
+  public async validateForm(): Promise<boolean> {
+    //todo: implement
+
+    return false;
   }
 }
 </script>
