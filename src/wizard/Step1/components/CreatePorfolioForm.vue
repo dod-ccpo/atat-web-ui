@@ -117,13 +117,13 @@ export default class CreatePortfolioForm
   private checkComponent(cbRef: string, dod: string) {
     // debugger;
     // console.log(this.$refs[cbRef]);
-    this.$nextTick(function(){
+    this.$nextTick(function () {
       let cb: any = this.$refs[cbRef];
       let isItemChecked = this._dod_components.findIndex((c) => c === dod) > -1;
       if (cb && cb.length > 0) {
         cb[0].$attrs["aria-checked"] = isItemChecked;
       }
-    })
+    });
   }
 
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;

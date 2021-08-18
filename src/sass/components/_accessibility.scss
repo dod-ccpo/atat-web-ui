@@ -39,9 +39,6 @@
     &:focus::before,
     &:focus{
         @include default-focus;
-    //    background-color: $primary !important;
-    //    opacity: initial !important;
-    //    box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
     }
     
     &.primary_darken{
@@ -54,12 +51,21 @@
     }
     &.link-button,
     &.v-btn--plain,
-    &.v-btn--outlined{
-        &:focus:before,
+    &.v-btn--outlined,
+    &.left-nav-menu-link {
+        &:focus,
         &:focus::before{
             background-color: transparent !important;
             opacity: 1 !important;
             box-shadow: 0px 0px 0px 4px transparent, 0px 0px 0px 4px $focus-blue !important;
+        }
+    }
+
+    &.left-nav-menu-link {
+        &:focus,
+        &:focus::before{
+            width: 99% !important;
+            border-radius: 6% !important;   
         }
     }
 
@@ -129,9 +135,6 @@
         }
     }
 }
-
-
-
 
 ._v_radio-button-cards {
     .v-card {
