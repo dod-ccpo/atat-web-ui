@@ -29,16 +29,19 @@
 //     }
 // }
 
-.default-focus{
+@mixin default-focus{
     background-color: $primary !important;
     opacity: initial !important;
     box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
 }
 
 .v-btn{
-    &:focus:before,
-    &:focus::before{
-       @extend .default-focus;
+    &:focus::before,
+    &:focus{
+        @include default-focus;
+    //    background-color: $primary !important;
+    //    opacity: initial !important;
+    //    box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
     }
     
     &.primary_darken{
@@ -88,14 +91,14 @@
         &:focus::before, 
         &:focus-within::before,   
         &:focus-visible{
-            @extend .default-focus; 
+            @include default-focus; 
             background-color: transparent !important;
         }
     }
 }
 
 //checkboxes and checkbox 'lists'
-.checkbox-default-focus{
+@mixin checkbox-default-focus{
     background: none !important;
     border-radius: 0px !important;
     transition: none !important;
@@ -103,24 +106,24 @@
     height: 18px !important;
     left: -4px !important;
     top: -4px !important;
-    
 }
-.checkbox-default-focus-before{
-    @extend .default-focus;
+@mixin checkbox-default-focus-before{
+    @include default-focus;
     background: none !important;
     background-color: transparent !important; 
     transform: none !important;
+    opacity: 1 !important;
 }
 
 .v-input--selection-controls{
     &.v-input--is-focused .v-input--selection-controls__ripple{
-        @extend .checkbox-default-focus;
+        @include checkbox-default-focus;
         &:before {
-            @extend .checkbox-default-focus-before;
+            @include checkbox-default-focus-before;
         }
     }
     .v-input--selection-controls__ripple{
-        @extend .checkbox-default-focus;
+        @include checkbox-default-focus;
         &:before {
            background-color: transparent !important;
         }
