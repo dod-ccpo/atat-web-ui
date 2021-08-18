@@ -127,6 +127,16 @@ export default class ClinsCard extends Vue {
           v < this.clin.total_clin_value ||
           "Obligated Funds cannot exceed total CLIN Value",
       ],
+      popStart: [
+        (v: string) =>
+          !!v ||
+          "Please enter the start date for your CLIN's period of performance",
+      ],
+      popEnd: [
+        (v: string) =>
+          !!v ||
+          "Please enter the End date for your CLIN's period of performance",
+      ],
     };
 
     await this.$nextTick(() => {
