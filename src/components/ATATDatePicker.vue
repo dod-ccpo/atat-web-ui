@@ -2,10 +2,9 @@
   <v-row>
     <v-col>
       <v-menu
-        v-model="menu2"
+        v-model="menu"
         :close-on-content-click="true"
         :nudge-right="40"
-        :return-value.sync="date"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -32,7 +31,12 @@
             v-on="on"
           />
         </template>
-        <v-date-picker v-model="date" @input="menu2 = false" />
+        <v-date-picker
+          :min="minDate"
+          :max="maxDate"
+          v-model="date"
+          @input="menu = false"
+        />
       </v-menu>
     </v-col>
   </v-row>
@@ -41,7 +45,8 @@
 <script lang="ts">
 import Vue from "vue";
 import moment from "moment";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+import { TaskOrderFile } from "../../types/Wizard";
 @Component({})
 export default class ATATDatePicker extends Vue {
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
@@ -54,6 +59,8 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private date!: string;
   @Prop({ default: false }) private menu!: boolean;
 
+  private minDate = "2020-09-01";
+  private maxDate = "2022-10-31";
   private isFieldValid = false;
   private getStatusIcon() {
     // if the rules property isn't set we won't display an icon

@@ -79,12 +79,12 @@ import { CLIN } from "../../../../types/Wizard";
   components: {},
 })
 export default class ClinsCard extends Vue {
-  @PropSync("CLIN") _clin!: CLIN;
+  // @PropSync("clins") _clin!: CLIN;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
-  private clin: CLIN = {
+  public clin: CLIN = {
     clin_number: "",
     idiq_clin: "",
     total_clin_value: 0,
@@ -116,7 +116,9 @@ export default class ClinsCard extends Vue {
       totalCLINRule: [(v: number) => !!v || "Please enter CLIN value"],
       obligatedFundsRule: [
         (v: number) => !!v || "Please enter your obligated Funds",
-        // (v: number) => v < totalCLIN  || "Obligated Funds cannot exceed total CLIN Value",
+        (v: number) =>
+          v < this.clin.total_clin_value ||
+          "Obligated Funds cannot exceed total CLIN Value",
       ],
     };
 
