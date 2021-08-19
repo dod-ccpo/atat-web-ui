@@ -82,8 +82,6 @@ export default class ATATSelect extends VSelect {
   private selected: unknown = undefined;
 
   private getStatusIcon() {
-    debugger;
-
     this.$nextTick(() => {
       // if the rules property isn't set we won't display an icon
       // when the rules property is populated (i.e when the parent form is saved)

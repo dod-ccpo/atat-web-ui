@@ -159,22 +159,7 @@
                   v-show="_total_clin_value && _obligated_funds"
                 >
                   <v-col>
-                    <atat-text-field
-                      class="mb-3"
-                      id="total-clin-value"
-                      label="Total CLIN Value"
-                      :rules="rules.totalCLINRule"
-                      :helpText="clinHelpText"
-                      :value.sync="_total_clin_value"
-                    />
-                    <atat-text-field
-                      id="obligated-funds"
-                      label="Obligated Funds"
-                      :rules="rules.obligatedFundsRule"
-                      :helpText="obligatedFundsHelpText"
-                      :value.sync="_obligated_funds"
-                    />
-                    <div v-show="obligatedPrecent">
+                    <div v-show="_obligated_funds && _total_clin_value">
                       <span class="h4 font-weight-bold"
                         >{{ obligatedPrecent }}%</span
                       >
@@ -199,11 +184,13 @@
                       <atat-date-picker
                         label="Start Date"
                         :date.sync="_pop_start_date"
+                        :rules="_pop_start_date"
                       />
                       <atat-date-picker
                         class="ma-0"
                         label="End Date"
                         :date.sync="_pop_end_date"
+                        :rules="_pop_end_date"
                       />
                     </div>
                   </v-col>
@@ -281,7 +268,7 @@ export default class ClinsCard extends Vue {
     this.rules = {
       clinNumberRule: [
         (v: number) => !!v || "Please enter your 4-digit CLIN Number",
-        (v: string) => v.length < 4 || "CLIN number cannot exceed 4 characters",
+        (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters",
       ],
       correspondingIDIQRule: [
         (v: string) => !!v || "Please select an IDIQ CLIN type",

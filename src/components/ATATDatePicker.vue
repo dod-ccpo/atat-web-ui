@@ -79,53 +79,51 @@ export default class ATATDatePicker extends Vue {
   private menu = false;
   private minDate = "2020-09-01";
   private maxDate = "2022-10-31";
-  
+
   private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
     .format("YYYY-MM-DD");
   private isFieldValid = false;
 
-  get getDate() : string {
+  get getDate(): string {
     return this._date;
   }
 
   private firstMonthComp: any = this.$refs["firstMonth"];
   private secondMonthComp: any = this.$refs["secondMonth"];
 
-
- @Watch("firstMonth")
-  protected getFirstMonth (newVal: string, oldVal: string): void {
+  @Watch("firstMonth")
+  protected getFirstMonth(newVal: string, oldVal: string): void {
     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-    
-    console.log("FirstMonth> new Val" + newVal );
-    console.log("FirstMonth> old Val" + oldVal );
-    
-      this.firstMonth = moment(newVal).format("YYYY-MM-DD");
-    if (newVal !== oldVal){
+
+    console.log("FirstMonth> new Val" + newVal);
+    console.log("FirstMonth> old Val" + oldVal);
+
+    this.firstMonth = moment(newVal).format("YYYY-MM-DD");
+    if (newVal !== oldVal) {
       this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
     }
     console.log(this.firstMonth);
     console.log(this.secondMonth);
   }
 
-// @Watch("secondMonth")
-//   protected getSecondMonth (newVal: string, oldVal: string): void {
-//     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-//     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-    
-//     console.log("secondMonth> new Val" + newVal );
-//     console.log("SecondMonth> old Val" + oldVal );
-    
-//       this.secondMonth = moment(newVal).format("YYYY-MM-DD");
-//     if (oldVal !== this.secondMonth){
-//       this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-//     }
-//     console.log(this.firstMonth);
-//     console.log(this.secondMonth);
-//   }
+  // @Watch("secondMonth")
+  //   protected getSecondMonth (newVal: string, oldVal: string): void {
+  //     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
+  //     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
 
+  //     console.log("secondMonth> new Val" + newVal );
+  //     console.log("SecondMonth> old Val" + oldVal );
+
+  //       this.secondMonth = moment(newVal).format("YYYY-MM-DD");
+  //     if (oldVal !== this.secondMonth){
+  //       this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
+  //     }
+  //     console.log(this.firstMonth);
+  //     console.log(this.secondMonth);
+  //   }
 
   // @Watch("secondMonth")
   // protected getSecondMonth (newVal: string, oldVal: string): void {
@@ -139,7 +137,6 @@ export default class ATATDatePicker extends Vue {
   //   }
   //   // firstMonthComp.$props["picker-date"] = this.firstMonth;
   // }
-
 
   // @Watch("selectedDate")
   // protected(newVal: string, oldVal: string): void {
@@ -157,7 +154,7 @@ export default class ATATDatePicker extends Vue {
   //   } else if (newVal > oldVal) {
   //     this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
   //     this.secondMonth = moment(newVal).format("YYYY-MM-DD");
-     
+
   //   }
   //   firstMonthComp.$props["picker-date"] = this.firstMonth;
   //   secondMonthComp.$props["picker-date"] = this.secondMonth;
