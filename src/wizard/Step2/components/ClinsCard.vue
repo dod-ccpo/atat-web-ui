@@ -198,12 +198,12 @@
                     <div class="d-flex align-center ma-0">
                       <atat-date-picker
                         label="Start Date"
-                        :_date.sync="_pop_start_date"
+                        :date.sync="_pop_start_date"
                       />
                       <atat-date-picker
                         class="ma-0"
                         label="End Date"
-                        :_date.sync="_pop_end_date"
+                        :date.sync="_pop_end_date"
                       />
                     </div>
                   </v-col>

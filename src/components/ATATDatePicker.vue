@@ -38,7 +38,6 @@
           :min="minDate"
           :max="maxDate"
           v-model="_date"
-          picker-date.sync="_date"
           @input="menu = false"
           no-title
           scrollable
@@ -68,9 +67,6 @@ import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 @Component({})
 export default class ATATDatePicker extends Vue {
-
-  
-
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: "color" }) private color!: string;
