@@ -113,6 +113,7 @@
                 <v-divider class="mt-7"></v-divider>
               </v-col>
             </v-row>
+            <clins-card-list ref="clinsCards" :clins="_clins"></clins-card-list>
           </div>
         </v-col>
       </v-row>
@@ -123,9 +124,12 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
-import { TaskOrderFile } from "types/Wizard";
+import { CLIN, TaskOrderFile } from "types/Wizard";
+import ClinsCardList from "./ClinsCardList.vue";
 
-@Component({})
+@Component({
+  components: { ClinsCardList },
+})
 export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrder = "";
   public signedTaskOrderErrorMessage = "";
@@ -139,6 +143,7 @@ export default class CreateTaskOrderForm extends Vue {
 
   @PropSync("task_order_number") _task_order_number!: string;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
+  @PropSync("clins") _clins!: CLIN[];
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -177,6 +182,10 @@ export default class CreateTaskOrderForm extends Vue {
         "Please select Yes or No below to verify your Task Order";
     }
     validated.push(this.signedTaskOrder !== "");
+
+    const clinsCards = this.$refs.clinsCards as ClinsCardList;
+
+    validated.push(await clinsCards.validate());
 
     await this.$nextTick(() => {
       validated.push(this.Form.validate());
