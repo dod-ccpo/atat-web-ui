@@ -113,7 +113,7 @@
                 <v-divider class="mt-7"></v-divider>
               </v-col>
             </v-row>
-            <clins-card-list ref="clinsCards" :clins="_clins"></clins-card-list>
+            <clins-card :value.sync="_clins" />
           </div>
         </v-col>
       </v-row>
@@ -182,10 +182,6 @@ export default class CreateTaskOrderForm extends Vue {
         "Please select Yes or No below to verify your Task Order";
     }
     validated.push(this.signedTaskOrder !== "");
-
-    const clinsCards = this.$refs.clinsCards as ClinsCardList;
-
-    validated.push(await clinsCards.validate());
 
     await this.$nextTick(() => {
       validated.push(this.Form.validate());

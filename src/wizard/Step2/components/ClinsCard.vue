@@ -27,16 +27,7 @@
                   :rules="rules.clinNumberRule"
                   :value.sync="clin.clin_number"
                 />
-                <atat-select
-                  class="clin-idiq-select"
-                  label="Corresponding IDIQ CLIN"
-                  placeholder="- Select -"
-                  :items="idiq_clin_items"
-                  :selectedValue="_idiq_clin"
-                  @change="(v) => (_idiq_clin = v)"
-                  :rules="rules.correspondingIDIQRule"
-                >
-                </atat-select>
+                <atat-select label="Corresponding IDIQ CLIN"></atat-select>
                 <v-row>
                   <v-col>
                     <div class="h4 font-weight-bold my-3">CLIN Funding</div>

@@ -15,16 +15,8 @@
         :items="items"
         outlined
         dense
-        :success="isFieldValid"
-        :append-outer-icon="appendedOuterIcon"
-        :error="hasError"
         :height="42"
         :rounded="rounded"
-        hide-details="auto"
-        @change="(v) => onSelectedValueChanged(v)"
-        :placeholder="placeholder"
-        :value.sync="_selectedValue"
-        v-model="_selectedValue"
       >
         <template v-slot:selection="{ item }">
           {{ item }}
@@ -49,59 +41,18 @@
 
 <script lang="ts">
 import { VSelect } from "vuetify/lib";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATSelect extends VSelect {
-  @PropSync("selectedValue") private _selectedValue!: unknown;
-  @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({
     default: () => ["Foo", "Bar", "Fizz Tony", "Buzz"],
   })
   private items!: string[];
   @Prop({ default: "id_is_missing" }) private id!: string;
-  @Prop({ default: false }) private error!: boolean;
-  @Prop({ default: "auto" }) private hideDetails!: boolean | string;
-  @Watch("errorBucket")
-  onErrorBucketChanged(): void {
-    this.getStatusIcon();
-  }
-
-  @Watch("selectedValue")
-  onSelectedValueChanged(value: unknown): void {
-    this.selected = value;
-     this.getStatusIcon();
-  }
 
   //data
   private rounded = false;
-  private appendedOuterIcon = "";
-  private isFieldValid = false;
-  private selected: unknown = undefined;
-
-  private getStatusIcon() {
-    debugger;
-
-    this.$nextTick(() => {
-      // if the rules property isn't set we won't display an icon
-      // when the rules property is populated (i.e when the parent form is saved)
-      // we evalute the rules to determine what icon to display
-      if (this.$props["rules"].length > 0) {
-        const v =
-          this.selected != undefined ? (this.selected as string) : undefined;
-
-        this.isFieldValid = this.$props["rules"].every(
-          (rule: (a: string | unknown) => string | boolean) => rule(v) === true
-        );
-
-        this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
-      }
-    });
-  }
-
-  private updated() {
-    this.getStatusIcon();
-  }
 }
 </script>
