@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="my-9">
+    <v-container fluid class="my-9 clins-card">
       <v-row>
         <v-col cols="7">
           <h3 class="h3 mb-2">Contract Line Items</h3>
@@ -63,7 +63,7 @@
                             </v-row>
                             <v-row>
                               <v-col class="optional">{{
-                                formatCurrency(_total_clin_value)
+                                formatCurrency(total_clin_value)
                               }}</v-col>
                             </v-row>
                           </v-col>
@@ -139,7 +139,25 @@
                     <div class="h4 font-weight-bold my-3">CLIN Funding</div>
                   </v-col>
                 </v-row>
-                <v-row>
+                <atat-text-field
+                  class="mb-3"
+                  id="total-clin-value"
+                  label="Total CLIN Value"
+                  :helpText="clinHelpText"
+                  :value.sync="_total_clin_value"
+                  :rules="rules.totalCLINRule"
+                />
+                <atat-text-field
+                  id="obligated-funds"
+                  label="Obligated Funds"
+                  :helpText="obligatedFundsHelpText"
+                  :value.sync="_obligated_funds"
+                  :rules="rules.obligatedFundsRule"
+                />
+                <v-row
+                  class="mt-1"
+                  v-show="_total_clin_value && _obligated_funds"
+                >
                   <v-col>
                     <atat-text-field
                       class="mb-3"
@@ -156,6 +174,20 @@
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                     />
+                    <div v-show="obligatedPrecent">
+                      <span class="h4 font-weight-bold"
+                        >{{ obligatedPrecent }}%</span
+                      >
+                      of your Total Funds are obligated
+                    </div>
+                    <div id="progressBarWrapper">
+                      <div
+                        id="progressBar"
+                        value="0"
+                        max="100"
+                        ref="progress-bar"
+                      ></div>
+                    </div>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -185,14 +217,20 @@
 </template>
 
 <script lang="ts">
-import moment from "moment";
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import moment from "moment";
 @Component({
   components: {},
 })
 export default class ClinsCard extends Vue {
-  // @PropSync("clins") _clin!: CLIN;
+  @Prop({ required: true, default: () => -1 }) card_number!: number;
+  @PropSync("clin_number", { required: true }) _clin_number!: string;
+  @PropSync("idiq_clin") _idiq_clin!: string;
+  @PropSync("total_clin_value", { required: true }) _total_clin_value!: number;
+  @PropSync("obligated_funds") _obligated_funds!: number;
+  @PropSync("pop_start_date") _pop_start_date!: string;
+  @PropSync("pop_end_date") _pop_end_date!: string;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -207,28 +245,28 @@ export default class ClinsCard extends Vue {
     "for a project or contract that can be spent during\n" +
     "the CLIN’s period of performance.";
 
-  public rules = {};
   private idiq_clin_items = [
     "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
     "IDIQ CLIN 0002 Classified IaaS/PaaS",
     "IDIQ CLIN 0003 Unclassified Cloud Support Package",
     "IDIQ CLIN 0004 Classified Support Package",
   ];
-
-  @Prop({ required: true, default: () => -1 }) card_number!: number;
-  @PropSync("clin_number", { required: true }) _clin_number!: string;
-
-  @PropSync("idiq_clin") _idiq_clin!: string;
-  @PropSync("total_clin_value", { required: true }) _total_clin_value!: number;
-  @PropSync("obligated_funds") _obligated_funds!: number;
-  @PropSync("pop_start_date") _pop_start_date!: string;
-  @PropSync("pop_end_date") _pop_end_date!: string;
+  private obligatedPrecent = 0;
 
   private formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
   });
+
+  public progressEvent() {
+    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+    const width = (this._obligated_funds / this._total_clin_value) * 100;
+    progress.style.width = width + "%";
+    this.obligatedPrecent = width;
+  }
+
+  public rules = {};
 
   public formatCurrency(value: number): string {
     return this.formatter.format(value);
@@ -255,6 +293,19 @@ export default class ClinsCard extends Vue {
           v < this._total_clin_value ||
           "Obligated Funds cannot exceed total CLIN Value",
       ],
+      popStart: [
+        (v: string) =>
+          !!v ||
+          "Please enter the start date for your CLIN's period of performance",
+      ],
+      popEnd: [
+        (v: string) =>
+          !!v ||
+          "Please enter the End date for your CLIN's period of performance",
+        (v: string) =>
+          v > this._pop_start_date ||
+          "the PoP start date be before the end date",
+      ],
     };
 
     await this.$nextTick(() => {
@@ -263,5 +314,23 @@ export default class ClinsCard extends Vue {
 
     return validated;
   }
+  private updated() {
+    this.progressEvent();
+  }
 }
 </script>
+<style>
+#progressBarWrapper {
+  border-color: #1b1b1b;
+  background-color: #ddd;
+  height: 16px;
+}
+
+#progressBar {
+  width: 1%;
+  max-width: 100%;
+  margin: 0px;
+  height: 16px !important;
+  background-color: #00a91c;
+}
+</style>
