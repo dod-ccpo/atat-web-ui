@@ -37,12 +37,12 @@ export default class Step_2 extends Vue {
     },
     clins: [
       {
-        clin_number: "",
+        clin_number: "0001",
         idiq_clin: "",
-        total_clin_value: 0,
-        obligated_funds: 0,
-        pop_start_date: "",
-        pop_end_date: "",
+        total_clin_value: 200000,
+        obligated_funds: 10000,
+        pop_start_date: "2021-09-01",
+        pop_end_date: "2022-09-01",
       },
     ],
   };
