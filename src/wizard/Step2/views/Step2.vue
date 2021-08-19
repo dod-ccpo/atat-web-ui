@@ -59,22 +59,22 @@ export default class Step_2 extends Vue {
   public addClin(): void {
     this.taskOrderDetails.clins.push({
       clin_number: `000${this.taskOrderDetails.clins.length + 1}`,
-      idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
-      total_clin_value: 200000,
-      obligated_funds: 10000,
-      pop_start_date: "2021-09-01",
-      pop_end_date: "2022-09-01",
+      idiq_clin: "",
+      total_clin_value: 0,
+      obligated_funds:0,
+      pop_start_date: "",
+      pop_end_date: "",
     });
   }
 
   public deleteClin(itemNumber: number): void {
+    
     console.log(`delete ${itemNumber}`);
-    if (this.taskOrderDetails.clins.length > itemNumber) {
-      this.taskOrderDetails.clins = this.taskOrderDetails.clins.splice(
-        itemNumber - 1,
-        1
-      );
+    const index = itemNumber - 1;
+    if (this.taskOrderDetails.clins.length >= itemNumber) {
+      this.taskOrderDetails.clins.splice(index, 1);
     }
   }
+
 }
 </script>

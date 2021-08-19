@@ -1,9 +1,9 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="clins-card">
+    <v-container fluid class="clins-card width-100" style="width:900px !important;">
       <v-row>
-        <v-col cols="9">
-          <v-expansion-panels>
+        <v-col cols="11" class="width-100 d-block" style="width:900px !important;">
+          <v-expansion-panels > 
             <v-expansion-panel>
               <v-expansion-panel-header class="body-lg font-weight-bold">
                 <template v-slot:default="{ open }">
@@ -16,7 +16,7 @@
                         `CLIN ${clin_number}`
                       }}</v-col>
                     </v-row>
-                    <v-row v-if="!open">
+                    <v-row v-if="!open &&  _idiq_clin !==''">
                       <v-col cols="1"></v-col>
                       <v-col cols="11">
                         <v-row>
@@ -34,7 +34,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">{{ _idiq_clin }}</v-col>
+                              <v-col class="optional body">{{ _idiq_clin }}</v-col>
                             </v-row>
                           </v-col>
                           <!-- Total Value -->
@@ -51,7 +51,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">{{
+                              <v-col class="optional body">{{
                                 formatCurrency(total_clin_value)
                               }}</v-col>
                             </v-row>
@@ -71,7 +71,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">{{
+                              <v-col class="optional body">{{
                                 formatCurrency(_obligated_funds)
                               }}</v-col>
                             </v-row>
@@ -90,8 +90,8 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">
-                                {{
+                              <v-col class="optional body" v-if="_pop_start_date!==''">
+                              {{
                                   `${formatDate(
                                     _pop_start_date
                                   )} - ${formatDate(_pop_end_date)}`
@@ -109,7 +109,7 @@
                 <v-row>
                   <v-col cols="11">
                     <atat-text-field
-                      class="mb-3"
+                      class="mb-3 "
                       id="clin-number"
                       label="CLIN Number"
                       :rules="rules.clinNumberRule"
@@ -142,13 +142,14 @@
                       :value.sync="_total_clin_value"
                     />
                     <atat-text-field
+                    class="mb-5"
                       id="obligated-funds"
                       label="Obligated Funds"
                       :rules="rules.obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                     />
-                    <div v-show="obligatedPrecent">
+                    <div v-show="obligatedPrecent" >
                       <span class="h4 font-weight-bold"
                         >{{ obligatedPrecent }}%</span
                       >
@@ -191,15 +192,8 @@
           ></v-col
         >
       </v-row>
-      <div
-        class="d-flex mt-4 text--primary body-lg"
-        style="cursor: pointer; color: #005ea2 !important"
-        @click="$emit('add')"
-      >
-        <v-icon style="color: #005ea2 !important">control_point</v-icon>
-        <div class="ml-2">Add another CLIN</div>
-      </div>
     </v-container>
+    
   </v-form>
 </template>
 

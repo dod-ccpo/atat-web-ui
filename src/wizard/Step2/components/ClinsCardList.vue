@@ -2,6 +2,7 @@
   <v-container fluid>
     <v-row v-for="(clin, index) in _clins" :key="index">
       <clins-card
+        style="width: 900px !important"
         ref="clinscard"
         :card_number="index + 1"
         :clin_number.sync="clin.clin_number"
@@ -14,6 +15,14 @@
         @add="() => $emit('add')"
       ></clins-card>
     </v-row>
+     <div
+        class="d-flex mt-4 text--primary body-lg"
+        style="cursor: pointer; color: #005ea2 !important"
+        @click="$emit('add')"
+      >
+        <v-icon style="color: #005ea2 !important">control_point</v-icon>
+        <div class="ml-2 font-weight-bold">Add another CLIN</div>
+      </div>
   </v-container>
 </template>
 
