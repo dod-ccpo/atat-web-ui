@@ -72,7 +72,7 @@ export default class ATATSelect extends VSelect {
   @Watch("selectedValue")
   onSelectedValueChanged(value: unknown): void {
     this.selected = value;
-     this.getStatusIcon();
+    this.getStatusIcon();
   }
 
   //data
