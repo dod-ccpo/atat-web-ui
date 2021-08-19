@@ -117,49 +117,52 @@
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <atat-text-field
-                  class="mb-3"
-                  id="clin-number"
-                  label="CLIN Number"
-                  :rules="rules.clinNumberRule"
-                  :value.sync="clin._clin_number"
-                />
-                <atat-select
-                  class="clin-idiq-select"
-                  label="Corresponding IDIQ CLIN"
-                  placeholder="- Select -"
-                  :items="idiq_clin_items"
-                  :selectedValue="_idiq_clin"
-                  @change="(v) => (_idiq_clin = v)"
-                  :rules="rules.correspondingIDIQRule"
-                >
-                </atat-select>
+                <v-row>
+                  <v-col cols="11">
+                    <atat-text-field
+                      class="mb-3"
+                      id="clin-number"
+                      label="CLIN Number"
+                      :rules="rules.clinNumberRule"
+                      :value.sync="_clin_number"
+                    />
+                    <atat-select
+                      class="clin-idiq-select"
+                      label="Corresponding IDIQ CLIN"
+                      placeholder="- Select -"
+                      :items="idiq_clin_items"
+                      :selectedValue="_idiq_clin"
+                      :rules="rules.correspondingIDIQRule"
+                    >
+                    </atat-select>
+                  </v-col>
+                </v-row>
                 <v-row>
                   <v-col>
                     <div class="h4 font-weight-bold my-3">CLIN Funding</div>
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col>
+                  <v-col cols="11">
                     <atat-text-field
                       class="mb-3"
                       id="total-clin-value"
                       label="Total CLIN Value"
                       :rules="rules.totalCLINRule"
                       :helpText="clinHelpText"
-                      :value.sync="clin._total_clin_value"
+                      :value.sync="_total_clin_value"
                     />
                     <atat-text-field
                       id="obligated-funds"
                       label="Obligated Funds"
                       :rules="rules.obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
-                      :value.sync="clin._oligated_funds"
+                      :value.sync="_obligated_funds"
                     />
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="11">
                     <div class="h4 font-weight-bold my-6">
                       Period of Performance (PoP)
                     </div>
@@ -191,14 +194,7 @@ export default class ClinsCard extends Vue {
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
-  public clin: CLIN = {
-    clin_number: "",
-    idiq_clin: "",
-    total_clin_value: 0,
-    obligated_funds: 0,
-    pop_start_date: "",
-    pop_end_date: "",
-  };
+
   private clinHelpText =
     "This is the full amount of money requested\n" +
     "in a task order. It does not have to be spent\n" +
@@ -244,7 +240,8 @@ export default class ClinsCard extends Vue {
     this.rules = {
       clinNumberRule: [
         (v: number) => !!v || "Please enter your 4-digit CLIN Number",
-        (v: string) => v.length < 4 || "CLIN number cannot exceed 4 characters",
+        (v: string) =>
+          v.length <= 4 || "CLIN number cannot exceed 4 characters",
       ],
       correspondingIDIQRule: [
         (v: string) => !!v || "Please select an IDIQ CLIN type",
@@ -253,7 +250,7 @@ export default class ClinsCard extends Vue {
       obligatedFundsRule: [
         (v: number) => !!v || "Please enter your obligated Funds",
         (v: number) =>
-          v < this.clin.total_clin_value ||
+          v >= this._total_clin_value ||
           "Obligated Funds cannot exceed total CLIN Value",
       ],
     };

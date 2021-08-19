@@ -38,7 +38,7 @@ export default class Step_2 extends Vue {
     clins: [
       {
         clin_number: "0001",
-        idiq_clin: "",
+        idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
         total_clin_value: 200000,
         obligated_funds: 10000,
         pop_start_date: "2021-09-01",

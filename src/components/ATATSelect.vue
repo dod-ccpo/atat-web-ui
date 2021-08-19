@@ -13,18 +13,16 @@
       <v-select
         :id="id + '_dropdown'"
         :items="items"
+        :rules="rules"
         outlined
         dense
-        :success="isFieldValid"
+        :success="selected !== ''"
         :append-outer-icon="appendedOuterIcon"
-        :error="hasError"
+        v-model="selected"
         :height="42"
         :rounded="rounded"
         hide-details="auto"
-        @change="(v) => onSelectedValueChanged(v)"
-        :placeholder="placeholder"
         :value.sync="_selectedValue"
-        v-model="_selectedValue"
       >
         <template v-slot:selection="{ item }">
           {{ item }}
@@ -70,8 +68,8 @@ export default class ATATSelect extends VSelect {
   }
 
   @Watch("selectedValue")
-  onSelectedValueChanged(value: unknown): void {
-    this.selected = value;
+  onSelectedValueChanged(newVal: string, oldVal: string): void {
+    this.selected = newVal;
     this.getStatusIcon();
   }
 
@@ -79,11 +77,13 @@ export default class ATATSelect extends VSelect {
   private rounded = false;
   private appendedOuterIcon = "";
   private isFieldValid = false;
-  private selected: unknown = undefined;
+  private selected = "";
+
+  get isSelectValid(): boolean {
+    return this.isFieldValid;
+  }
 
   private getStatusIcon() {
-    debugger;
-
     this.$nextTick(() => {
       // if the rules property isn't set we won't display an icon
       // when the rules property is populated (i.e when the parent form is saved)
@@ -91,11 +91,10 @@ export default class ATATSelect extends VSelect {
       if (this.$props["rules"].length > 0) {
         const v =
           this.selected != undefined ? (this.selected as string) : undefined;
-
         this.isFieldValid = this.$props["rules"].every(
           (rule: (a: string | unknown) => string | boolean) => rule(v) === true
         );
-
+        
         this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
       }
     });
