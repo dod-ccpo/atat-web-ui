@@ -1,7 +1,6 @@
 
 @import "../utils/colors.scss";
 @import "../utils/typography.scss";
-// .form-field-label-error
 
 .sr-only{
     height: 1px;
@@ -10,14 +9,153 @@
 }
 
 
-.v-input{
-    &.v-input--checkbox:focus{
-        background-color: $base_lighter !important;
-       .v-input--selection-controls__input{
-       .v-icon{
-            color: $primary !important;
-       }
+// utils
+
+    //removes the lines that sometimes appear over and uncer a 
+    //link during focus
+    a:-webkit-any-link:focus-visible {
+        outline-offset: 0px;
     }
 
+    :focus-visible {
+        outline: none !important;
+    }
+
+
+// components
+// .v-input{
+//     &.v-input--checkbox:focus{
+//         background-color: $base_lighter !important;
+//        .v-input--selection-controls__input{
+//        .v-icon{
+//             color: $primary !important;
+//        }
+//     }
+
+//     }
+// }
+
+@mixin default-focus{
+    background-color: $primary !important;
+    opacity: initial !important;
+    box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
+}
+
+.v-btn{
+    &:focus::before,
+    &:focus{
+        @include default-focus;
+    }
+    
+    &.primary_darken{
+        &:focus,
+        &:focus::before{
+            background-color: transparent !important;
+            opacity: 1 !important;
+            box-shadow: 0px 0px 0px 4px $primary_darken, 0px 0px 0px 8px $focus-blue !important;
+            transition: none !important;
+        }
+    }
+    &.link-button,
+    &.v-btn--plain,
+    &.v-btn--outlined,
+    &.left-nav-menu-link {
+        &:focus,
+        &:focus::before{
+            background-color: transparent !important;
+            opacity: 1 !important;
+            box-shadow: 0px 0px 0px 4px transparent, 0px 0px 0px 4px $focus-blue !important;
+        }
+    }
+
+    &.left-nav-menu-link {
+        &:focus,
+        &:focus::before{
+            width: 99% !important;
+            border-radius: 6px !important;   
+        }
+    }
+
+    &.link-button{
+        &:focus{
+            height: 60%;
+        }
+    }
+
+    &.left-nav-menu-link{
+        &:before, 
+        &:focus{
+            box-shadow: none !important;
+            border-left: solid 3px;
+            border-color: $primary_darken !important;
+            background-color: $primary-lighter !important;
+            color: $primary !important;
+            font-weight: 700 !important;
+            span{
+                font-weight: 700 !important;
+            }
+        }
+    }
+}
+
+.v-list-item--active, 
+.v-stepper__label{
+    a{
+        border-radius: 6px;
+        padding: 0px 8px;
+        &:focus,
+        &:focus::before, 
+       {
+            @include default-focus; 
+            background-color: transparent !important;
+            outline: none !important;
+        }
+    }
+}
+
+//checkboxes and checkbox 'lists'
+@mixin checkbox-default-focus{
+    background: none !important;
+    border-radius: 0px !important;
+    transition: none !important;
+    width: 18px !important;
+    height: 18px !important;
+    left: -4px !important;
+    top: -4px !important;
+}
+@mixin checkbox-default-focus-before{
+    @include default-focus;
+    background: none !important;
+    background-color: transparent !important; 
+    transform: none !important;
+    opacity: 1 !important;
+}
+
+.v-input--selection-controls{
+    &.v-input--is-focused .v-input--selection-controls__ripple{
+        @include checkbox-default-focus;
+        &:before {
+            @include checkbox-default-focus-before;
+        }
+    }
+    .v-input--selection-controls__ripple{
+        @include checkbox-default-focus;
+        &:before {
+           background-color: transparent !important;
+        }
+    }
+}
+
+._v_radio-button-cards {
+    .v-card {
+        &:focus{
+            box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
+        }
+        &.active{
+            background-color: $primary_lighter !important;
+            &::before{
+                background: none;
+            }
+        }
     }
 }

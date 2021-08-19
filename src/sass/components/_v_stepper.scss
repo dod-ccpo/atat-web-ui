@@ -9,11 +9,12 @@
 
 .v-stepper{
   &.wizard-stepper{
+    padding-left: 10px;
     .v-stepper__header{
       box-shadow: none !important;
       .v-stepper__step{
         align-items: start;
-        padding: 20px 0px;
+        padding: 30px 0px;
         display: inline-block !important;
         width: 20% !important;
         flex-basis: 20% !important;
@@ -39,11 +40,6 @@
             @extend .body-lg;
             color: $primary_darken !important;
             text-decoration: none;
-            &:focus{
-              background-color: $primary-lighter !important;
-              outline: none;
-              text-decoration: none;
-            }
           }
         }
         &.v-stepper__step--inactive,

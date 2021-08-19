@@ -3,7 +3,7 @@
 @import "./utils/colors.scss";
 @import "./utils/utils.scss";
 
-@import "./components/accessibility";
+
 @import "./components/_atat_sidebar";
 @import "./components/app-bar-top-nav";
 @import "./components/v_alerts";
@@ -16,6 +16,7 @@
 @import "./components/v_text-field.scss";
 
 @import "./components/validation.scss";
+@import "./components/_accessibility";
 
 body,html{
     background-color: $light_gray !important;

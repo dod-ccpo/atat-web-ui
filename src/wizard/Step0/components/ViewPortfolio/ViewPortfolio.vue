@@ -82,15 +82,16 @@
           <v-divider></v-divider>
           <div class="mb-2">
             <v-card-actions class="d-flex justify-space-between">
-              <a class="h6 text-decoration-underline mt-1 mx-1" href="#"
-                >OPEN</a
-              >
-              <a
+              <v-btn x-small class="v-btn link-button mt-1 mx-1 h6"
+                >OPEN
+              </v-btn>
+              <v-btn
                 v-if="portfolio.csp_provisioning_status === 'in_progress'"
-                class="h6 text-decoration-underline mt-1 mx-1"
+                x-small
+                class="v-btn link-button mt-1 mx-1 h6"
                 href="#"
-                >DELETE</a
-              >
+                >DELETE
+              </v-btn>
             </v-card-actions>
           </div>
         </v-card>
