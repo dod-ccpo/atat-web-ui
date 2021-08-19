@@ -63,7 +63,7 @@
                             </v-row>
                             <v-row>
                               <v-col class="optional">{{
-                                formatCurrency(total_clin_value)
+                                formatCurrency(_total_clin_value)
                               }}</v-col>
                             </v-row>
                           </v-col>
@@ -122,7 +122,7 @@
                   id="clin-number"
                   label="CLIN Number"
                   :rules="rules.clinNumberRule"
-                  :value.sync="clin._clin_number"
+                  :value.sync="_clin_number"
                 />
                 <atat-select
                   class="clin-idiq-select"
@@ -147,14 +147,14 @@
                       label="Total CLIN Value"
                       :rules="rules.totalCLINRule"
                       :helpText="clinHelpText"
-                      :value.sync="clin._total_clin_value"
+                      :value.sync="_total_clin_value"
                     />
                     <atat-text-field
                       id="obligated-funds"
                       label="Obligated Funds"
                       :rules="rules.obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
-                      :value.sync="clin._oligated_funds"
+                      :value.sync="_obligated_funds"
                     />
                   </v-col>
                 </v-row>
@@ -164,8 +164,15 @@
                       Period of Performance (PoP)
                     </div>
                     <div class="d-flex align-center ma-0">
-                      <atat-date-picker label="Start Date" />
-                      <atat-date-picker class="ma-0" label="End Date" />
+                      <atat-date-picker
+                        label="Start Date"
+                        :_date.sync="_pop_start_date"
+                      />
+                      <atat-date-picker
+                        class="ma-0"
+                        label="End Date"
+                        :_date.sync="_pop_end_date"
+                      />
                     </div>
                   </v-col>
                 </v-row> </v-expansion-panel-content
@@ -181,7 +188,6 @@
 import moment from "moment";
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
-import { CLIN } from "../../../../types/Wizard";
 @Component({
   components: {},
 })
@@ -191,14 +197,7 @@ export default class ClinsCard extends Vue {
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
-  public clin: CLIN = {
-    clin_number: "",
-    idiq_clin: "",
-    total_clin_value: 0,
-    obligated_funds: 0,
-    pop_start_date: "",
-    pop_end_date: "",
-  };
+
   private clinHelpText =
     "This is the full amount of money requested\n" +
     "in a task order. It does not have to be spent\n" +
@@ -253,7 +252,7 @@ export default class ClinsCard extends Vue {
       obligatedFundsRule: [
         (v: number) => !!v || "Please enter your obligated Funds",
         (v: number) =>
-          v < this.clin.total_clin_value ||
+          v < this._total_clin_value ||
           "Obligated Funds cannot exceed total CLIN Value",
       ],
     };
