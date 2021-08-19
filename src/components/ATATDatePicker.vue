@@ -38,7 +38,6 @@
           :min="minDate"
           :max="maxDate"
           v-model="_date"
-          picker-date.sync="_date"
           @input="menu = false"
           no-title
           scrollable

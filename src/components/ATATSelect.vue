@@ -40,6 +40,9 @@
             </v-list-item-content>
           </v-list-item>
         </template>
+        <template v-slot:append>
+          <v-icon>unfold_more</v-icon>
+        </template>
       </v-select>
     </v-flex>
   </div>
@@ -52,7 +55,6 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 @Component({})
 export default class ATATSelect extends VSelect {
   @PropSync("selectedValue") private _selectedValue!: unknown;
-  // @PropSync("value") private _value!: unknown;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({
