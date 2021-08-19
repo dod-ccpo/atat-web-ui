@@ -1,9 +1,9 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
-    <v-flex>
+    <v-flex class="d-flex align-center">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label my-1"
+        class="form-field-label my-1 mr-2"
         :for="id + '_text_field'"
       >
         {{ label }}
@@ -11,11 +11,16 @@
       </label>
       <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
         <template v-slot:activator="{ on }">
-          <v-btn class="ma-0 pa-0" icon v-on="on"
-            ><v-icon class="mb-1" small color="primary"
-              >help_outline</v-icon
-            ></v-btn
-          >
+          <v-btn
+            class="ma-0 pa-0 link-button no-border"
+            icon
+            x-small
+            v-on="on"
+            :ripple="false"
+            ><v-icon class="ma-0 pa-0" small color="primary"
+              >help_outline
+            </v-icon>
+          </v-btn>
         </template>
         <span>{{ helpText }}</span>
       </v-tooltip>

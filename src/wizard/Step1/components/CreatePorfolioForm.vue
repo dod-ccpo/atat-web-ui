@@ -45,14 +45,6 @@
             this portfolio. Multiple DoD organizations can fund the same
             Portfolio
           </p>
-          <input
-            id="checkbox_Armys"
-            role="checkbox"
-            aria-checked="false"
-            type="checkbox"
-            value="Army"
-          />
-
           <v-checkbox
             :rules="rules.dod_components"
             class="ma-2 pa-0 validation-above text--black"
@@ -64,10 +56,12 @@
             :value="dod"
             :hide-details="index !== 0"
             color="primary"
+            name="dod_components"
             :aria-checked="_dod_components.findIndex((c) => c === dod) > -1"
             @change="checkComponent('checkbox_' + dod.replace(/ /gi, '_'), dod)"
-            @keyup.enter="checkComponent"
+            
           >
+          <!-- @keyup.enter="checkComponent"   -->
             <!-- @click="dod.checked = !dod.checked"
           @keyup.space="dod.checked = !dod.checked" -->
             <template v-slot:label>
