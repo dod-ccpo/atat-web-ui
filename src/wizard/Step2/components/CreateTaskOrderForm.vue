@@ -113,7 +113,24 @@
                 <v-divider class="mt-7"></v-divider>
               </v-col>
             </v-row>
-            <clins-card-list ref="clinsCards" :clins="_clins"></clins-card-list>
+            <v-row>
+              <v-col cols="7">
+                <h3 class="h3 mb-2">Contract Line Items</h3>
+                <p>
+                  A CLIN is a line in your contract that lists the services and
+                  products to be delivered with a price or ceiling which cannot
+                  be exceeded. Refer to your Task Order to locate your Contract
+                  Line Item Numbers (CLINs).
+                </p>
+              </v-col>
+            </v-row>
+            <clins-card-list
+              class="my-9"
+              ref="clinsCards"
+              :clins="_clins"
+              @add="$emit('add')"
+              @delete="(cardNumber) => $emit('delete', cardNumber)"
+            ></clins-card-list>
           </div>
         </v-col>
       </v-row>

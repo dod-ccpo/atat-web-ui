@@ -16,13 +16,15 @@
         :rules="rules"
         outlined
         dense
-        :success="selected !== ''"
+        :success="_selectedValue !== '' && rules && rules.length > 0"
         :append-outer-icon="appendedOuterIcon"
-        v-model="selected"
+        v-model="_selectedValue"
         :height="42"
         :rounded="rounded"
         hide-details="auto"
         :value.sync="_selectedValue"
+        @change="(v) => $emit('change', v)"
+        :placeholder="placeholder"
       >
         <template v-slot:selection="{ item }">
           {{ item }}
@@ -91,12 +93,11 @@ export default class ATATSelect extends VSelect {
       // when the rules property is populated (i.e when the parent form is saved)
       // we evalute the rules to determine what icon to display
       if (this.$props["rules"].length > 0) {
-        const v =
-          this.selected != undefined ? (this.selected as string) : undefined;
+        const v = this._selectedValue;
         this.isFieldValid = this.$props["rules"].every(
-          (rule: (a: string | unknown) => string | boolean) => rule(v) === true
+          (rule: (a: unknown) => string | boolean) => rule(v) === true
         );
-        
+
         this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
       }
     });

@@ -1,17 +1,6 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="my-9 clins-card">
-      <v-row>
-        <v-col cols="7">
-          <h3 class="h3 mb-2">Contract Line Items</h3>
-          <p>
-            A CLIN is a line in your contract that lists the services and
-            products to be delivered with a price or ceiling which cannot be
-            exceeded. Refer to your Task Order to locate your Contract Line Item
-            Numbers (CLINs).
-          </p>
-        </v-col>
-      </v-row>
+    <v-container fluid class="clins-card">
       <v-row>
         <v-col cols="9">
           <v-expansion-panels>
@@ -131,7 +120,7 @@
                       label="Corresponding IDIQ CLIN"
                       placeholder="- Select -"
                       :items="idiq_clin_items"
-                      :selectedValue="_idiq_clin"
+                      :selectedValue.sync="_idiq_clin"
                       :rules="rules.correspondingIDIQRule"
                     >
                     </atat-select>
@@ -196,7 +185,20 @@
             ></v-expansion-panel>
           </v-expansion-panels>
         </v-col>
+        <v-col>
+          <v-icon style="cursor: pointer" @click="$emit('delete', card_number)"
+            >delete</v-icon
+          ></v-col
+        >
       </v-row>
+      <div
+        class="d-flex mt-4 text--primary body-lg"
+        style="cursor: pointer; color: #005ea2 !important"
+        @click="$emit('add')"
+      >
+        <v-icon style="color: #005ea2 !important">control_point</v-icon>
+        <div class="ml-2">Add another CLIN</div>
+      </div>
     </v-container>
   </v-form>
 </template>
@@ -276,7 +278,7 @@ export default class ClinsCard extends Vue {
       obligatedFundsRule: [
         (v: number) => !!v || "Please enter your obligated Funds",
         (v: number) =>
-          v >= this._total_clin_value ||
+          v <= this._total_clin_value ||
           "Obligated Funds cannot exceed total CLIN Value",
       ],
       popStart: [

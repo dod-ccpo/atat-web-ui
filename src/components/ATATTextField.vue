@@ -70,7 +70,7 @@ export default class ATATTextField extends VTextField {
       let value = this.value;
 
       this.isFieldValid = this.$props["rules"].every(
-        (rule: (a: string) => string | boolean) => rule(value) === true
+        (rule: (a: unknown) => string | boolean) => rule(value) === true
       );
 
       this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
