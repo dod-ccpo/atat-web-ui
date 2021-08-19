@@ -3,6 +3,7 @@
 @import "../utils/typography.scss";
 // .form-field-label-error
 .v-text-field,
+.v-select,
 .v-textarea{
     &.error--text{
         align-items: flex-end !important;

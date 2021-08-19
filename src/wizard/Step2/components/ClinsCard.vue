@@ -1,20 +1,9 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="my-9 clins-card">
+    <v-container fluid class="clins-card width-100" style="width:900px !important;">
       <v-row>
-        <v-col cols="7">
-          <h3 class="h3 mb-2">Contract Line Items</h3>
-          <p>
-            A CLIN is a line in your contract that lists the services and
-            products to be delivered with a price or ceiling which cannot be
-            exceeded. Refer to your Task Order to locate your Contract Line Item
-            Numbers (CLINs).
-          </p>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="9">
-          <v-expansion-panels>
+        <v-col cols="11" class="width-100 d-block" style="width:900px !important;">
+          <v-expansion-panels > 
             <v-expansion-panel>
               <v-expansion-panel-header class="body-lg font-weight-bold">
                 <template v-slot:default="{ open }">
@@ -27,7 +16,7 @@
                         `CLIN ${clin_number}`
                       }}</v-col>
                     </v-row>
-                    <v-row v-if="!open">
+                    <v-row v-if="!open &&  _idiq_clin !==''">
                       <v-col cols="1"></v-col>
                       <v-col cols="11">
                         <v-row>
@@ -45,7 +34,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">{{ _idiq_clin }}</v-col>
+                              <v-col class="optional body">{{ _idiq_clin }}</v-col>
                             </v-row>
                           </v-col>
                           <!-- Total Value -->
@@ -62,7 +51,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">{{
+                              <v-col class="optional body">{{
                                 formatCurrency(total_clin_value)
                               }}</v-col>
                             </v-row>
@@ -82,7 +71,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">{{
+                              <v-col class="optional body">{{
                                 formatCurrency(_obligated_funds)
                               }}</v-col>
                             </v-row>
@@ -101,8 +90,8 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional">
-                                {{
+                              <v-col class="optional body" v-if="_pop_start_date!==''">
+                              {{
                                   `${formatDate(
                                     _pop_start_date
                                   )} - ${formatDate(_pop_end_date)}`
@@ -117,49 +106,50 @@
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <atat-text-field
-                  class="mb-3"
-                  id="clin-number"
-                  label="CLIN Number"
-                  :rules="rules.clinNumberRule"
-                  :value.sync="_clin_number"
-                />
-                <atat-select
-                  class="clin-idiq-select"
-                  label="Corresponding IDIQ CLIN"
-                  placeholder="- Select -"
-                  :items="idiq_clin_items"
-                  :selectedValue="_idiq_clin"
-                  @change="(v) => (_idiq_clin = v)"
-                  :rules="rules.correspondingIDIQRule"
-                >
-                </atat-select>
+                <v-row>
+                  <v-col cols="11">
+                    <atat-text-field
+                      class="mb-3 "
+                      id="clin-number"
+                      label="CLIN Number"
+                      :rules="rules.clinNumberRule"
+                      :value.sync="_clin_number"
+                    />
+                    <atat-select
+                      class="clin-idiq-select"
+                      label="Corresponding IDIQ CLIN"
+                      placeholder="- Select -"
+                      :items="idiq_clin_items"
+                      :selectedValue.sync="_idiq_clin"
+                      :rules="rules.correspondingIDIQRule"
+                    >
+                    </atat-select>
+                  </v-col>
+                </v-row>
                 <v-row>
                   <v-col>
                     <div class="h4 font-weight-bold my-3">CLIN Funding</div>
                   </v-col>
                 </v-row>
-                <atat-text-field
-                  class="mb-3"
-                  id="total-clin-value"
-                  label="Total CLIN Value"
-                  :helpText="clinHelpText"
-                  :value.sync="_total_clin_value"
-                  :rules="rules.totalCLINRule"
-                />
-                <atat-text-field
-                  id="obligated-funds"
-                  label="Obligated Funds"
-                  :helpText="obligatedFundsHelpText"
-                  :value.sync="_obligated_funds"
-                  :rules="rules.obligatedFundsRule"
-                />
-                <v-row
-                  class="mt-1"
-                  v-show="_total_clin_value && _obligated_funds"
-                >
-                  <v-col>
-                    <div v-show="_obligated_funds && _total_clin_value">
+                <v-row>
+                  <v-col cols="11">
+                    <atat-text-field
+                      class="mb-3"
+                      id="total-clin-value"
+                      label="Total CLIN Value"
+                      :rules="rules.totalCLINRule"
+                      :helpText="clinHelpText"
+                      :value.sync="_total_clin_value"
+                    />
+                    <atat-text-field
+                    class="mb-5"
+                      id="obligated-funds"
+                      label="Obligated Funds"
+                      :rules="rules.obligatedFundsRule"
+                      :helpText="obligatedFundsHelpText"
+                      :value.sync="_obligated_funds"
+                    />
+                    <div v-show="obligatedPrecent" >
                       <span class="h4 font-weight-bold"
                         >{{ obligatedPrecent }}%</span
                       >
@@ -176,7 +166,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="11">
                     <div class="h4 font-weight-bold my-6">
                       Period of Performance (PoP)
                     </div>
@@ -198,8 +188,14 @@
             ></v-expansion-panel>
           </v-expansion-panels>
         </v-col>
+        <v-col>
+          <v-icon style="cursor: pointer" @click="$emit('delete', card_number)"
+            >delete</v-icon
+          ></v-col
+        >
       </v-row>
     </v-container>
+    
   </v-form>
 </template>
 
@@ -277,7 +273,7 @@ export default class ClinsCard extends Vue {
       obligatedFundsRule: [
         (v: number) => !!v || "Please enter your obligated Funds",
         (v: number) =>
-          v < this._total_clin_value ||
+          v <= this._total_clin_value ||
           "Obligated Funds cannot exceed total CLIN Value",
       ],
       popStart: [

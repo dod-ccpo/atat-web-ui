@@ -13,18 +13,18 @@
       <v-select
         :id="id + '_dropdown'"
         :items="items"
+        :rules="rules"
         outlined
         dense
-        :success="isFieldValid"
+        :success="_selectedValue !== '' && rules && rules.length > 0"
         :append-outer-icon="appendedOuterIcon"
-        :error="hasError"
+        v-model="_selectedValue"
         :height="42"
         :rounded="rounded"
         hide-details="auto"
-        @change="(v) => onSelectedValueChanged(v)"
-        :placeholder="placeholder"
         :value.sync="_selectedValue"
-        v-model="_selectedValue"
+        @change="(v) => $emit('change', v)"
+        :placeholder="placeholder"
       >
         <template v-slot:selection="{ item }">
           {{ item }}
@@ -42,6 +42,9 @@
             </v-list-item-content>
           </v-list-item>
         </template>
+        <template v-slot:append>
+          <v-icon>unfold_more</v-icon>
+        </template>
       </v-select>
     </v-flex>
   </div>
@@ -54,7 +57,6 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 @Component({})
 export default class ATATSelect extends VSelect {
   @PropSync("selectedValue") private _selectedValue!: unknown;
-  // @PropSync("value") private _value!: unknown;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({
@@ -70,8 +72,8 @@ export default class ATATSelect extends VSelect {
   }
 
   @Watch("selectedValue")
-  onSelectedValueChanged(value: unknown): void {
-    this.selected = value;
+  onSelectedValueChanged(newVal: string, oldVal: string): void {
+    this.selected = newVal;
     this.getStatusIcon();
   }
 
@@ -79,7 +81,7 @@ export default class ATATSelect extends VSelect {
   private rounded = false;
   private appendedOuterIcon = "";
   private isFieldValid = false;
-  private selected: unknown = undefined;
+  private selected = "";
 
   private getStatusIcon() {
     this.$nextTick(() => {
@@ -87,11 +89,9 @@ export default class ATATSelect extends VSelect {
       // when the rules property is populated (i.e when the parent form is saved)
       // we evalute the rules to determine what icon to display
       if (this.$props["rules"].length > 0) {
-        const v =
-          this.selected != undefined ? (this.selected as string) : undefined;
-
+        const v = this._selectedValue;
         this.isFieldValid = this.$props["rules"].every(
-          (rule: (a: string | unknown) => string | boolean) => rule(v) === true
+          (rule: (a: unknown) => string | boolean) => rule(v) === true
         );
 
         this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
