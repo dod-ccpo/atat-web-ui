@@ -124,11 +124,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
-import ClinsCard from "@/wizard/Step2/components/ClinsCard.vue";
 import { CLIN, TaskOrderFile } from "types/Wizard";
+import ClinsCardList from "./ClinsCardList.vue";
 
 @Component({
-  components: { ClinsCard },
+  components: { ClinsCardList },
 })
 export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrder = "";

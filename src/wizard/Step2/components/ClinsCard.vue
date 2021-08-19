@@ -122,7 +122,7 @@
                   id="clin-number"
                   label="CLIN Number"
                   :rules="rules.clinNumberRule"
-                  :value.sync="clin.clin_number"
+                  :value.sync="clin._clin_number"
                 />
                 <atat-select
                   class="clin-idiq-select"
@@ -147,14 +147,14 @@
                       label="Total CLIN Value"
                       :rules="rules.totalCLINRule"
                       :helpText="clinHelpText"
-                      :value.sync="clin.total_clin_value"
+                      :value.sync="clin._total_clin_value"
                     />
                     <atat-text-field
                       id="obligated-funds"
                       label="Obligated Funds"
                       :rules="rules.obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
-                      :value.sync="clin.obligated_funds"
+                      :value.sync="clin._oligated_funds"
                     />
                   </v-col>
                 </v-row>
