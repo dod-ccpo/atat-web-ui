@@ -17,11 +17,12 @@
       v-on:keydown.enter="selected_value = item.value"
       v-on:keydown.space="selected_value = item.value"
       :ripple="false"
+      tabindex="0"
       :class="{
         'radio-wrapper': true,
         'px-2': true,
         'py-2': true,
-        'mr-2': true,
+        'mr-4': true,
         'mb-2': true,
         'd-flex': true,
         'flex-column': true,

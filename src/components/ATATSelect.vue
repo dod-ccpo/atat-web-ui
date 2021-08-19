@@ -83,10 +83,6 @@ export default class ATATSelect extends VSelect {
   private isFieldValid = false;
   private selected = "";
 
-  get isSelectValid(): boolean {
-    return this.isFieldValid;
-  }
-
   private getStatusIcon() {
     this.$nextTick(() => {
       // if the rules property isn't set we won't display an icon

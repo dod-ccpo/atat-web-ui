@@ -24,6 +24,7 @@
               plain
               text
               x-small
+              tabindex="1"
               :ripple="false"
               class="p-0 btn-usa-gov-expand h6"
             >
@@ -36,7 +37,7 @@
                 Here’s how you know
               </span>
               <v-icon>
-                {{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}
+                {{ show ? "expand_more" : "expand_less" }}
               </v-icon>
             </v-btn>
           </div>

@@ -18,21 +18,6 @@
     transition: none;
     background-color: inherit !important;
   }
-  
-  &:hover::before{
-    background-color: $primary_darken !important;
-    opacity: initial  !important;
-    box-shadow: none !important;
-  }
-
-  &:active::before,
-  &:focus::before,
-  &:focus-visible::before,
-  &:focus-within::before{
-    background-color: $primary_darken !important;
-    box-shadow: none !important;
-    opacity: initial !important;
-  }
 
   &.v-btn--is-elevated:active {
      box-shadow: none;
@@ -52,6 +37,7 @@
       color: $primary !important;
       text-decoration: underline;
       font-weight: normal;
+      opacity: 1 !important;
     }
 
     &:hover::before{
@@ -66,21 +52,12 @@
   
   }
 
-  &.v-btn--outlined{
-    &:hover::before{
-      @extend .atat-button-hover;
-    }
-  }
-
   &.btn-usa-gov-expand{
     font-weight: 600 !important;
     font-size: 1.3rem !important;
     line-height: 1.7rem !important;
     span{
       color: $primary !important;
-    }
-    &:hover::before{
-      @extend .atat-button-hover;
     }
   }
 
@@ -109,13 +86,6 @@
   &.primary_darken.theme--light{
     background-color: transparent !important;
     color: #fff !important;
-    &:hover::before,
-    &:focus::before,
-    span:hover{
-      background-color: transparent !important;
-      -ieVar-❗background--color: transparent!important;
-      box-shadow: none !important;
-    }
   }
 
   &.error-button.theme--light{
@@ -143,5 +113,3 @@
   }
 
 }
-
-

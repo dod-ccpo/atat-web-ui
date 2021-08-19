@@ -49,13 +49,21 @@
             :rules="rules.dod_components"
             class="ma-2 pa-0 validation-above text--black"
             :id="'checkbox_' + dod.replace(/ /gi, '_')"
+            :ref="'checkbox_' + dod.replace(/ /gi, '_')"
             v-for="(dod, index) in dodComponents"
             v-model="_dod_components"
             :key="dod"
             :value="dod"
             :hide-details="index !== 0"
             color="primary"
+            name="dod_components"
+            :aria-checked="_dod_components.findIndex((c) => c === dod) > -1"
+            @change="checkComponent('checkbox_' + dod.replace(/ /gi, '_'), dod)"
+            
           >
+          <!-- @keyup.enter="checkComponent"   -->
+            <!-- @click="dod.checked = !dod.checked"
+          @keyup.space="dod.checked = !dod.checked" -->
             <template v-slot:label>
               <span class="">{{ dod }}</span>
             </template>
@@ -91,6 +99,27 @@ export default class CreatePortfolioForm
     "Other",
   ];
 
+  private checkboxClicked(cbRef: string) {
+    //this.$refs(cbRef)
+    // console.log(this.$refs[cbRef]);
+    // // alert("hi there");
+    // debugger;
+    // console.log("hi threre");
+    return true;
+  }
+
+  private checkComponent(cbRef: string, dod: string) {
+    // debugger;
+    // console.log(this.$refs[cbRef]);
+    this.$nextTick(function () {
+      let cb: any = this.$refs[cbRef];
+      let isItemChecked = this._dod_components.findIndex((c) => c === dod) > -1;
+      if (cb && cb.length > 0) {
+        cb[0].$attrs["aria-checked"] = isItemChecked;
+      }
+    });
+  }
+
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
 
   @PropSync("description", { default: "", required: true })
@@ -111,6 +140,12 @@ export default class CreatePortfolioForm
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
+  }
+
+  public mounted() {
+    this.$http.post("portfolioDrafts?offset=0&limit=20").then((response) => {
+      console.log(response);
+    });
   }
 
   public rules = {};

@@ -174,11 +174,13 @@
                       <atat-date-picker
                         label="Start Date"
                         :date.sync="_pop_start_date"
+                        :rules="_pop_start_date"
                       />
                       <atat-date-picker
                         class="ma-0"
                         label="End Date"
                         :date.sync="_pop_end_date"
+                        :rules="_pop_end_date"
                       />
                     </div>
                   </v-col>
@@ -262,8 +264,7 @@ export default class ClinsCard extends Vue {
     this.rules = {
       clinNumberRule: [
         (v: number) => !!v || "Please enter your 4-digit CLIN Number",
-        (v: string) =>
-          v.length <= 4 || "CLIN number cannot exceed 4 characters",
+        (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters",
       ],
       correspondingIDIQRule: [
         (v: string) => !!v || "Please select an IDIQ CLIN type",
