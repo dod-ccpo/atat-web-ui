@@ -42,6 +42,9 @@
             </v-list-item-content>
           </v-list-item>
         </template>
+        <template v-slot:append>
+          <v-icon>unfold_more</v-icon>
+        </template>
       </v-select>
     </v-flex>
   </div>
