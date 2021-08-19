@@ -31,7 +31,6 @@
                       <v-col cols="1"></v-col>
                       <v-col cols="11">
                         <v-row>
-                          <!--IDIQ Type-->
                           <v-col>
                             <v-row class="mb-n8">
                               <v-col
@@ -280,14 +279,14 @@ export default class ClinsCard extends Vue {
         (v: string) =>
           !!v ||
           "Please enter the start date for your CLIN's period of performance",
-        (v: string) =>
-          !!v ||
-          "Please enter the start date for your CLIN's period of performance",
       ],
       popEnd: [
         (v: string) =>
           !!v ||
           "Please enter the End date for your CLIN's period of performance",
+        (v: string) =>
+          v > this._pop_start_date ||
+          "the PoP start date be before the end date",
       ],
     };
 

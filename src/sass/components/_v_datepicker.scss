@@ -1,0 +1,12 @@
+@import "../utils/colors.scss";
+@import "../utils/typography.scss";
+
+.v-picker{
+  .v-date-picker-header{
+
+    .v-date-picker-header__value{
+      @extend .body;
+    }
+
+  }
+}
