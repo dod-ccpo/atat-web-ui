@@ -9,3 +9,17 @@ $total: 20;
     .font-size-#{$i*1} { font-size: ($i * 1rem) !important};
 }
 
+$total: 900;
+@for $i from 400 through $total{
+    .font-weight-#{$i} { font-weight: ($i) !important};
+    $i: $i + 100;
+} 
+
+
+.no-border{
+    border: none !important;
+}
+
+.no-text-decoration{
+    text-decoration: none;
+}

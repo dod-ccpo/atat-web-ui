@@ -144,20 +144,23 @@ export interface ValidatableForm {
 export interface ATATSummaryCardItem {
   type?: string;
   title?: string;
+  titleLink?: string;
+  showChevronRight?: boolean;
   description?: string;
   icon?: string;
   groupedItemsHeader?: string;
   items?: ATATSummaryCardGroupedItems[];
-  edit?: string,
-  delete?: string
+  leftButtonText?: string;
+  leftButtonLink?: string;
+  rightButtonText?: string;
+  rightButtonLink?: string;
 }
 
 export interface ATATSummaryCardGroupedItems {
-    title?: string,
-    prefix?: string,
-    value?: number,
+    title?: string;
+    prefix?: string;
+    value?: number;
 }
-
 
 export interface ATATSummaryCards {
   cards: ATATSummaryCardItem[];
