@@ -61,20 +61,18 @@ export default class Step_2 extends Vue {
       clin_number: `000${this.taskOrderDetails.clins.length + 1}`,
       idiq_clin: "",
       total_clin_value: 0,
-      obligated_funds:0,
+      obligated_funds: 0,
       pop_start_date: "",
       pop_end_date: "",
     });
   }
 
   public deleteClin(itemNumber: number): void {
-    
     console.log(`delete ${itemNumber}`);
     const index = itemNumber - 1;
     if (this.taskOrderDetails.clins.length >= itemNumber) {
       this.taskOrderDetails.clins.splice(index, 1);
     }
   }
-
 }
 </script>

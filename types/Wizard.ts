@@ -63,8 +63,12 @@ export interface CLIN {
 
 export interface TaskOrderDetails {
   task_order_number: string;
-  task_order_file: TaskOrderFile;
+  task_order_file?: TaskOrderFile;
   clins: CLIN[];
+}
+
+export interface TaskOrders{
+  details: TaskOrderDetails[];
 }
 
 export interface NavButton {
@@ -135,4 +139,26 @@ export interface ButtonCardItem {
 
 export interface ValidatableForm {
   validateForm(): Promise<boolean>;
+}
+
+export interface ATATSummaryCardItem {
+  type?: string;
+  title?: string;
+  description?: string;
+  icon?: string;
+  groupedItemsHeader?: string;
+  items?: ATATSummaryCardGroupedItems[];
+  edit?: string,
+  delete?: string
+}
+
+export interface ATATSummaryCardGroupedItems {
+    title?: string,
+    prefix?: string,
+    value?: number,
+}
+
+
+export interface ATATSummaryCards {
+  cards: ATATSummaryCardItem[];
 }

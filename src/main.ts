@@ -21,6 +21,7 @@ import ATATTextArea from "./components/ATATTextArea.vue";
 import ATATButtonCard from "./components/ATATButtonCard.vue";
 import ATATDatePicker from "./components/ATATDatePicker.vue";
 import ATATFileUpload from "./components/ATATFileUpload.vue";
+import ATATSummaryCard from "./components/ATATSummaryCard.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import StyledFields from "./components/StyledFields.vue";
 import USAGovBanner from "./components/USAGovBanner.vue";
@@ -34,6 +35,7 @@ Vue.component('atat-file-upload', ATATFileUpload);
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
 Vue.component('atat-select', ATATSelect)
+Vue.component('atat-summary-card', ATATSummaryCard)
 
 //axios
 axios.defaults.baseURL = "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0"
