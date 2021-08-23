@@ -1,4 +1,6 @@
 <template>
+<div>
+    title: hola
     <VDataTable class="ATATTable" 
         :items="data.items"
         :headers="data.headers"
@@ -6,6 +8,7 @@
     >
 
     </VDataTable>
+</div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -29,9 +32,9 @@ export interface DataTableHeader {
 }
 
 export interface ATATTableData {
-    headers: DataTableHeader;
-    items: [];
-    title: string;
+    headers?: DataTableHeader[];
+    items: any[];
+    title?: string;
 }
 
 
