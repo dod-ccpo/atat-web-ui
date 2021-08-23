@@ -14,7 +14,8 @@
           <!-- todo configure this link for the title  -->
           <div class="d-flex align-start">
             <v-btn
-              :href="card.titleLink"
+              href="www.google.com"
+              :id="'header_link_' + index"
               :ripple="false"
               small
               class="h3 link-button no-focus-shift pa-0"
@@ -72,6 +73,7 @@
             pa-0
           "
           small
+          :id="card.leftButtonText + '_' + index"
           :ripple="false"
           >{{ card.leftButtonText }}</v-btn
         >
@@ -86,22 +88,49 @@
             pa-0
           "
           small
+          @click="deleteClicked(card.title)"
           :ripple="false"
+          :id="card.rightButtonText + '_' + (index + 1)"
           >{{ card.rightButtonText }}</v-btn
         >
       </v-card-actions>
     </v-card>
+    <atat-modal-delete
+      :showDialog.sync="showDialog"
+      :title="dialogTitle"
+      :message="dialogMessage"
+      cancelText="Cancel"
+      okText="Delete Task Order"
+      width="450px"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { ATATSummaryCards } from "types/Wizard";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Emit } from "vue-property-decorator";
 import { VCard } from "vuetify/lib";
 
 @Component({})
 export default class ATATSummaryCard extends VCard {
   @Prop({ default: {}, required: false })
   private data!: ATATSummaryCards;
+
+  @Emit()
+  private clickedAction(actions: string[]): string[] {
+    return actions;
+  }
+
+  private showDialog = false;
+  private dialogTitle = "";
+  private dialogMessage = "";
+
+  private deleteClicked(taskOrder: string): void {
+    this.dialogTitle = "Delete Task Order " + taskOrder + "?";
+    this.dialogMessage =
+      "This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved.";
+
+    this.showDialog = true;
+  }
 }
 </script>
