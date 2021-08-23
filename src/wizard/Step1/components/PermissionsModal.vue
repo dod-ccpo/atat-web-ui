@@ -104,7 +104,7 @@
                       <p class="body-lg ma-0">
                         {{ permission.label }}
                       </p>
-                      <p class="body ma-0 text--base-darkest" v-html="permission.description ">
+                      <p class="body ma-0 text--base-darkest" v-html="permission.description "> <!-- Noncompliant -->
                       </p>
                     </div>
                   </div>
