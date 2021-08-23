@@ -1,10 +1,14 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="clins-card width-100" style="width:900px !important;">
+    <v-container
+      fluid
+      class="clins-card width-100"
+      style="width: 900px !important"
+    >
       <v-row>
-        <v-col cols="11" class="width-100 d-block" style="width:900px !important;">
-          <v-expansion-panels > 
-            <v-expansion-panel>
+        <v-col cols="11" class="width-100 d-block">
+          <v-expansion-panels>
+            <v-expansion-panel @click="calculateObligatedPercent">
               <v-expansion-panel-header class="body-lg font-weight-bold">
                 <template v-slot:default="{ open }">
                   <v-container>
@@ -16,7 +20,7 @@
                         `CLIN ${clin_number}`
                       }}</v-col>
                     </v-row>
-                    <v-row v-if="!open &&  _idiq_clin !==''">
+                    <v-row v-if="!open && _idiq_clin !== ''">
                       <v-col cols="1"></v-col>
                       <v-col cols="11">
                         <v-row>
@@ -34,7 +38,9 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body">{{ _idiq_clin }}</v-col>
+                              <v-col class="optional body">{{
+                                _idiq_clin
+                              }}</v-col>
                             </v-row>
                           </v-col>
                           <!-- Total Value -->
@@ -90,8 +96,11 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body" v-if="_pop_start_date!==''">
-                              {{
+                              <v-col
+                                class="optional body"
+                                v-if="_pop_start_date !== ''"
+                              >
+                                {{
                                   `${formatDate(
                                     _pop_start_date
                                   )} - ${formatDate(_pop_end_date)}`
@@ -109,7 +118,7 @@
                 <v-row>
                   <v-col cols="11">
                     <atat-text-field
-                      class="mb-3 "
+                      class="mb-3"
                       id="clin-number"
                       label="CLIN Number"
                       :rules="rules.clinNumberRule"
@@ -140,18 +149,21 @@
                       :rules="rules.totalCLINRule"
                       :helpText="clinHelpText"
                       :value.sync="_total_clin_value"
+                      prefix="$"
                     />
                     <atat-text-field
-                    class="mb-5"
+                      class="mb-5"
                       id="obligated-funds"
                       label="Obligated Funds"
                       :rules="rules.obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
+                      @onkeyup="calculateObligatedPercent"
+                      prefix="$"
                     />
-                    <div v-show="obligatedPrecent" >
+                    <div v-show="obligatedPercent <= 100">
                       <span class="h4 font-weight-bold"
-                        >{{ obligatedPrecent }}%</span
+                        >{{ obligatedPercent }}%</span
                       >
                       of your Total Funds are obligated
                     </div>
@@ -189,19 +201,52 @@
           </v-expansion-panels>
         </v-col>
         <v-col>
-          <v-icon style="cursor: pointer" @click="$emit('delete', card_number)"
-            >delete</v-icon
-          ></v-col
-        >
+          <v-dialog v-model="dialog" persistent max-width="450">
+            <template v-slot:activator="{ on, attrs }">
+              <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                Open Dialog
+              </v-btn> -->
+              <v-btn icon>
+                <v-icon v-bind="attrs" v-on="on">delete</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="h3">
+                Remove CLIN {{ clin_number }}?
+              </v-card-title>
+              <v-card-text class="body-lg"
+                >This CLIN will be deleted from your Task Order. Any changes you
+                made to CLIN details will not be saved.</v-card-text
+              >
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  class="link-button"
+                  @click="dialog = false"
+                  :ripple="false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  class="primary"
+                  width="140px"
+                  @click="$emit('delete', card_number), (dialog = false)"
+                  :ripple="false"
+                >
+                  Remove CLIN
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-col>
       </v-row>
     </v-container>
-    
   </v-form>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 @Component({
   components: {},
@@ -211,7 +256,7 @@ export default class ClinsCard extends Vue {
   @PropSync("clin_number", { required: true }) _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
   @PropSync("total_clin_value", { required: true }) _total_clin_value!: number;
-  @PropSync("obligated_funds") _obligated_funds!: number;
+  @PropSync("obligated_funds", { default: 0 }) _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
 
@@ -234,7 +279,7 @@ export default class ClinsCard extends Vue {
     "IDIQ CLIN 0003 Unclassified Cloud Support Package",
     "IDIQ CLIN 0004 Classified Support Package",
   ];
-  private obligatedPrecent = 0;
+  private obligatedPercent = "";
 
   private formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -242,12 +287,8 @@ export default class ClinsCard extends Vue {
     minimumFractionDigits: 2,
   });
 
-  public progressEvent() {
-    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-    const width = (this._obligated_funds / this._total_clin_value) * 100;
-    progress.style.width = width + "%";
-    this.obligatedPrecent = width;
-  }
+  private dialog = false;
+  private progress: HTMLProgressElement | undefined;
 
   public rules = {};
 
@@ -257,6 +298,15 @@ export default class ClinsCard extends Vue {
 
   public formatDate(value: string): string {
     return moment(new Date(value)).format("MMMM DD, YYYY");
+  }
+
+  public calculateObligatedPercent(): void {
+    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+    const percent: number = (this._obligated_funds / this._total_clin_value) * 100;
+    this.obligatedPercent = percent >= 100 ? this.obligatedPercent : percent.toFixed(2);
+    if (progress) {
+      progress.style.width = this.obligatedPercent + "%";
+    }
   }
 
   public async validateForm(): Promise<boolean> {
@@ -269,9 +319,13 @@ export default class ClinsCard extends Vue {
       correspondingIDIQRule: [
         (v: string) => !!v || "Please select an IDIQ CLIN type",
       ],
-      totalCLINRule: [(v: number) => !!v || "Please enter CLIN value"],
+      totalCLINRule: [
+        (v: number) => !!v || "Please enter CLIN value",
+        (v: number) => v > 0 || "Please enter a valid number",
+      ],
       obligatedFundsRule: [
         (v: number) => !!v || "Please enter your obligated Funds",
+        (v: number) => v > 0 || "Please enter a valid number",
         (v: number) =>
           v <= this._total_clin_value ||
           "Obligated Funds cannot exceed total CLIN Value",
@@ -297,8 +351,9 @@ export default class ClinsCard extends Vue {
 
     return validated;
   }
+
   private updated() {
-    this.progressEvent();
+    this.calculateObligatedPercent();
   }
 }
 </script>

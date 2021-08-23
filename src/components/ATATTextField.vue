@@ -32,6 +32,7 @@
         outlined
         dense
         :success="isFieldValid"
+        :prefix="prefix"
         :error="hasError"
         :height="42"
         :append-outer-icon="appendedOuterIcon"
@@ -62,6 +63,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "" }) private helpText!: string;
+  @Prop({ default: "" }) private prefix!: string;
 
   //data
   private rounded = false;

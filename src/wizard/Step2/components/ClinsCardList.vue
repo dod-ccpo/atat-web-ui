@@ -15,14 +15,14 @@
         @add="() => $emit('add')"
       ></clins-card>
     </v-row>
-     <div
-        class="d-flex mt-4 text--primary body-lg"
-        style="cursor: pointer; color: #005ea2 !important"
-        @click="$emit('add')"
-      >
-        <v-icon style="color: #005ea2 !important">control_point</v-icon>
-        <div class="ml-2 font-weight-bold">Add another CLIN</div>
-      </div>
+    <v-btn
+      class="link-button font-weight-bold no-border mt-3 px=-2 no-focus-shift"
+      :ripple="false"
+      @click="$emit('add')"
+    >
+      <v-icon color="primary" class="mr-2">control_point</v-icon>
+      Add another CLIN
+    </v-btn>
   </v-container>
 </template>
 
