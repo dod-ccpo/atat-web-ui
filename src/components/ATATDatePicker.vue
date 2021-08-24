@@ -4,32 +4,38 @@
       <v-menu
         v-model="menu"
         :close-on-content-click="true"
-        :nudge-right="40"
-        transition="scale-transition"
-        offset-y
+        :nudge-top="45"
+        :top="true"
         min-width="auto"
+        origin="top"
       >
         <template v-slot:activator="{ on, attrs }">
           <label
             :id="id + '_text_field_label'"
-            class="form-field-label font-weight-bold my-1"
+            class="form-field-label my-1"
             :for="id + '_text_field'"
           >
             {{ label }}
-            <span v-show="optional">Optional</span>
           </label>
-          <v-text-field
-            outlined
-            dense
-            append-outer-icon="calendar_today"
-            :success="isFieldValid"
-            :error="isFieldValid"
-            :height="42"
-            v-model="_date"
-            v-bind="attrs"
-            v-on="on"
-            :value="getDate"
-          />
+          <div class="d-flex align-start width-70">
+            <v-text-field
+              outlined
+              dense
+              :success="isFieldValid"
+              :error="isFieldValid"
+              :height="42"
+              v-model="_date"
+              v-bind="attrs"
+              v-on="on"
+              placeholder="YYYY-DD-MM"
+              :value="getDate"
+            ></v-text-field>
+            <v-btn icon :ripple="false" class="ml-2">
+              <v-icon v-bind="attrs" v-on="on" class="icon-32 black--text"
+                >calendar_today</v-icon
+              >
+            </v-btn>
+          </div>
         </template>
         <div class="two-date-pickers">
           <div class="h4 px-4 pt-7 pb-5">{{ title }}</div>
@@ -38,24 +44,28 @@
             ref="firstMonth"
             :min="minDate"
             :max="maxDate"
-            v-model="_date"
+            v-model="dateRange"
             @input="menu = false"
+            @click:date="updateDateRange(_date, true)"
             no-title
+            range
             id="firstMonthDatePicker"
             scrollable
             :reactive="true"
             :picker-date.sync="firstMonth"
           />
-          <div class="separator mt-14 mb-4"></div>
+          <!-- <div class="separator mt-14"></div> -->
           <v-date-picker
             ref="secondMonth"
             :min="minDate"
             :max="maxDate"
             :show-current="false"
-            v-model="_date"
+            v-model="dateRange"
             @input="menu = false"
             no-title
+            range
             :reactive="true"
+            @click:date="updateDateRange(_date, false)"
             id="secondMonthDatePicker"
             scrollable
             :picker-date.sync="secondMonth"
@@ -83,8 +93,9 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "title" }) private title!: string;
 
   private menu = false;
-  private minDate = "2020-09-01";
-  private maxDate = "2022-10-31";
+  private minDate = "2020-10-01";
+  private maxDate = "2021-10-02";
+  private dateRange: string[] = [];
 
   private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
@@ -96,13 +107,17 @@ export default class ATATDatePicker extends Vue {
     return this._date;
   }
 
-  private changeDirection() {
-    console.log("hi tony");
-  }
 
-  // private firstMonthComp: typeof VPicker = this.$refs["firstMonth"];
-  // private secondMonthComp: typeof VPicker = this.$refs["secondMonth"];
   private isDatePickerAdvancing = false;
+
+  private updateDateRange(_date: string, isFirstMonth: boolean) {
+    if (isFirstMonth) {
+      this.dateRange[0] = _date;
+    } else {
+      this.dateRange[1] = _date;
+    }
+    console.log(this.dateRange);
+  }
 
   @Watch("firstMonth")
   protected getFirstMonth(newVal: string, oldVal: string): void {
@@ -148,5 +163,3 @@ export default class ATATDatePicker extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

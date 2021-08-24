@@ -10,12 +10,21 @@
       button:nth-child(3){
         display: none;
       }
+      .v-date-picker-header__value{
+        margin-right: 41px;
+      }
+    }
+    .v-date-picker-table{
+      border-right: $base_light 1px solid !important;
     }
   }
   #secondMonthDatePicker{
     .v-date-picker-header{
-      button:nth-child(2){
+      .v-btn:nth-child(1){
         display: none;
+      }
+      .v-date-picker-header__value{
+        margin-left: 41px;
       }
     }
   }
@@ -25,36 +34,47 @@
     color: $base_darkest !important;
   }
 
-  hr{
-    background-color: $base_light;
-    width: calc(100%-32px);
-    margin: 0px 16px;
-  }
-
-  .separator{
-    border-left: 1px #a9aeb1 solid;
-    height: 218px;
-    display: inline-block;
-  }
   .v-picker{
     .v-picker__body{
       .v-date-picker-header{
         .v-date-picker-header__value{
           button{
             @extend .font-weight-700;
-            color: black !important;
+            pointer-events: none;
+            color: $base_darkest;
             &:hover{
-              color: black !important;
+              color: $base_darkest;
             }
           }
         }
       }
       .v-date-picker-table{
+        height: 275px !important;
+        margin-bottom: 16px !important;
+        padding: 0px !important;
         thead{
           tr{
             th{
               @extend .datepicker-text;
               color: $base_darkest;
+            }
+          }
+        }
+        tbody{
+          tr{
+            td{
+              button.v-btn--active{
+                background-color: $primary_vivid !important;
+                color: #fff !important;
+                border-radius: 0px !important;
+              }
+              button.v-date-picker-table__current{
+                border: $base-darkest 1px solid !important;
+                color: $base_darkest !important;
+              }
+              button.v-btn.v-btn--flat.v-btn--disabled{
+                color: $base_light !important;
+              }
             }
           }
         }

@@ -179,7 +179,7 @@
                 </v-row>
                 <v-row>
                   <v-col cols="11">
-                    <div class="h4 font-weight-bold my-6">
+                    <div class="h4 font-weight-bold mt-6">
                       Period of Performance (PoP)
                     </div>
                     <div class="d-flex align-center ma-0">
@@ -187,12 +187,14 @@
                         label="Start Date"
                         :date.sync="_pop_start_date"
                         :rules="_pop_start_date"
+                        title="What is the PoP Start Date?"
                       />
                       <atat-date-picker
                         class="ma-0"
                         label="End Date"
                         :date.sync="_pop_end_date"
                         :rules="_pop_end_date"
+                        title="What is the PoP End Date?"
                       />
                     </div>
                   </v-col>
@@ -203,9 +205,6 @@
         <v-col>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on, attrs }">
-              <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                Open Dialog
-              </v-btn> -->
               <v-btn icon>
                 <v-icon v-bind="attrs" v-on="on">delete</v-icon>
               </v-btn>
@@ -302,8 +301,10 @@ export default class ClinsCard extends Vue {
 
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-    const percent: number = (this._obligated_funds / this._total_clin_value) * 100;
-    this.obligatedPercent = percent >= 100 ? this.obligatedPercent : percent.toFixed(2);
+    const percent: number =
+      (this._obligated_funds / this._total_clin_value) * 100;
+    this.obligatedPercent =
+      percent >= 100 ? this.obligatedPercent : percent.toFixed(2);
     if (progress) {
       progress.style.width = this.obligatedPercent + "%";
     }

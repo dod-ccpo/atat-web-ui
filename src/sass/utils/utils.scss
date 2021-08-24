@@ -24,3 +24,8 @@ $total: 900;
     text-decoration: none;
 }
 
+//removes most unwanted effect of gray ripple when 
+//clicking stepper steps and datepicker buttons
+.v-ripple__container{
+    display: none !important;
+}
