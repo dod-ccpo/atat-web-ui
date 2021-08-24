@@ -77,7 +77,7 @@
     }
 
     &.link-button{
-        &:focus{
+        &:focus:not(.no-focus-shift){
             height: 60%;
         }
     }
