@@ -100,7 +100,6 @@ export default class PermissionsTable extends Vue {
   ): string[] {
     // filter out not granted permisssions and is not permission have been grante return 'no access'
     const grantedPermissionsArr = permissions.filter((item) => item.is_granted);
-    console.log("grantedPermissionsArr", grantedPermissionsArr);
     if (grantedPermissionsArr.length > 0) {
       return grantedPermissionsArr.map((item) => item.label);
     } else return ["No Access"];
