@@ -1,6 +1,18 @@
 <template>
   <div class="d-flex align-start">
     <v-card
+      v-show="data.cards.length === 0"
+      width="100rem"
+      class="v-card ma-9 ml-0 body"
+    >
+      <v-card-text
+        height="3px"
+        class="h5 d-flex justify-center align-center optional"
+        >You currently don't have any {{ emptyCard }} saved</v-card-text
+      >
+    </v-card>
+    <v-card
+      v-show="data.cards.length > 0"
       width="40rem"
       class="v-card ma-9 ml-0 body"
       v-for="(card, index) in data.cards"
@@ -117,6 +129,9 @@ import { VCard } from "vuetify/lib";
 @Component({})
 export default class ATATSummaryCard extends VCard {
   @Prop({ default: {}, required: false }) private data!: ATATSummaryCards;
+
+  @Prop({ default: "" })
+  private emptyCard!: string;
 
   @Prop({ default: "Dialog Title" })
   private dialogTitle!: string;

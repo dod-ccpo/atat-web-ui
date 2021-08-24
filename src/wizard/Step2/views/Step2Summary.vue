@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="10">
         <h2 class="h2">Your Task Order Summary</h2>
-        <p class="my-3">
+        <p class="my-3" v-show="cardsData.cards.length > 0">
           If you have more Task Orders, <b>add</b> them below. You can also
           <b>edit</b> or <b>delete</b> any of the Task Orders you already
           entered. When you are done, click <b>Next</b> and we will walk you
@@ -11,12 +11,15 @@
         </p>
       </v-col>
     </v-row>
-    <atat-summary-card :data="cardsData"></atat-summary-card>
+    <atat-summary-card
+      :emptyCard="cardType"
+      :data="cardsData"
+    ></atat-summary-card>
     <v-row>
       <v-col cols="10">
         <v-btn class="primary">
           <v-icon>control_point</v-icon>
-          <div class="ml-2 font-weight-bold">Add another CLIN</div>
+          <div class="ml-2 font-weight-bold">Add a Task Order</div>
         </v-btn>
       </v-col>
     </v-row>
@@ -117,6 +120,7 @@ export default class Step2Summary extends Vue {
   private mounted(): void {
     this.transformData();
   }
+  private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
