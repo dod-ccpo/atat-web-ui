@@ -102,11 +102,9 @@ import { applicationMembersMock } from "@/store/mocks/portfoliosMockData";
 export default class PermissionsTable extends Vue {
   @Prop({ default: true }) private sorting!: boolean;
   @Prop({ default: [] }) private data!: ApplicationMember[];
-  @Prop({ default: "Tracker Application" }) private name!: string;
+  @Prop({ default: "" }) private name!: string;
 
   get getData(): ApplicationMember[] {
-    // if (!this.data || this.data.length < 1) return applicationMembersMock;
-    // else
     return this.data;
   }
 
