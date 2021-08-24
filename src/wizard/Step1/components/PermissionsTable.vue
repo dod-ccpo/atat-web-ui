@@ -2,7 +2,7 @@
   <div class="permission-table">
     <v-card class="mt-4" elevation="2" max-width="100%">
       <v-card-title class="d-flex justify-space-between">
-        <span class="h4">Tracker Application</span>
+        <span class="h4">{{ name }}</span>
         <v-btn
           text
           x-small
@@ -92,114 +92,22 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-
-export interface ApplicationMember {
-  id: string;
-  email: string;
-  name: string;
-  permissions?: ApplicationMemberPermissions[];
-  environments_settings?: ApplicationMemberEnvironment[];
-}
-export interface ApplicationMemberPermissions {
-  id: string;
-  label: string;
-  is_granted: boolean;
-}
-export interface ApplicationMemberEnvironment {
-  id: string;
-  label: string;
-  accessLevel: "Administrator" | "Contributor" | "No Access";
-}
-
-let demoData: ApplicationMember[] = [
-  {
-    id: "john.smith@mail.mil",
-    email: "john.smith@mail.mil",
-    name: "John Smith",
-    permissions: [
-      {
-        id: "edit_team",
-        label: "Edit Team",
-        is_granted: true,
-      },
-      {
-        id: "manage_environments",
-        label: "Manage Environments",
-        is_granted: true,
-      },
-    ],
-    environments_settings: [
-      {
-        id: "development",
-        label: "Development",
-        accessLevel: "Administrator",
-      },
-      {
-        id: "testing",
-        label: "Testing",
-        accessLevel: "Administrator",
-      },
-      {
-        id: "staging",
-        label: "Staging",
-        accessLevel: "Administrator",
-      },
-      {
-        id: "production",
-        label: "Production",
-        accessLevel: "Administrator",
-      },
-    ],
-  },
-  {
-    id: "jane.doe@mail.mil",
-    email: "jane.doe@mail.mil",
-    name: "Jane Doe",
-    permissions: [
-      {
-        id: "edit_team",
-        label: "Edit Team",
-        is_granted: false,
-      },
-      {
-        id: "manage_environments",
-        label: "Manage Environments",
-        is_granted: false,
-      },
-    ],
-    environments_settings: [
-      {
-        id: "development",
-        label: "Development",
-        accessLevel: "Contributor",
-      },
-      {
-        id: "testing",
-        label: "Testing",
-        accessLevel: "Contributor",
-      },
-      {
-        id: "staging",
-        label: "Staging",
-        accessLevel: "Contributor",
-      },
-      {
-        id: "production",
-        label: "Production",
-        accessLevel: "No Access",
-      },
-    ],
-  },
-];
+import {
+  ApplicationMember,
+  ApplicationMemberPermissions,
+} from "types/Portfolios";
+import { applicationMembersMock } from "@/store/mocks/portfoliosMockData";
 
 @Component({})
 export default class PermissionsTable extends Vue {
   @Prop({ default: true }) private sorting!: boolean;
   @Prop({ default: [] }) private data!: ApplicationMember[];
+  @Prop({ default: "Tracker Application" }) private name!: string;
 
   get getData(): ApplicationMember[] {
-    if (!this.data || this.data.length < 1) return demoData;
-    else return this.data;
+    // if (!this.data || this.data.length < 1) return applicationMembersMock;
+    // else
+    return this.data;
   }
 
   private grantedPermissions(

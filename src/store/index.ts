@@ -90,5 +90,14 @@ export default new Vuex.Store({
     getAllPortfolios(state) {
       return state.portfolios;
     },
+    getPortfolioById: (state) => (id: string) => {
+      const values = Object.values(state.portfolios);
+      const portfoliobyId = values.filter((portfolio) => portfolio.id === id);
+      if (portfoliobyId.length > 0) {
+        return portfoliobyId[0];
+      } else {
+        return {};
+      }
+    },
   },
 });

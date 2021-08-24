@@ -1,3 +1,10 @@
-.ATATTable {
-  
+.permission-table{
+    .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper){
+        background: transparent;
+    }
+    .v-btn:focus::before, .v-btn:focus {
+        background-color: transparent !important;
+        opacity: initial !important;
+        box-shadow: none !important;
+    }
 }
