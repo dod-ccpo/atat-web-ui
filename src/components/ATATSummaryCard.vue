@@ -11,12 +11,11 @@
           <div class="type body" v-if="card.type">
             {{ card.type }}
           </div>
-          <!-- todo configure this link for the title  -->
           <div class="d-flex align-start">
             <v-btn
-              href="www.google.com"
               :id="'header_link_' + index"
               :ripple="false"
+              @click="titleClick(card)"
               small
               class="h3 link-button no-focus-shift pa-0"
             >
@@ -73,6 +72,7 @@
             pa-0
           "
           small
+          @click="leftButtonClicked(card)"
           :id="card.leftButtonText + '_' + index"
           :ripple="false"
           >{{ card.leftButtonText }}</v-btn
@@ -88,7 +88,7 @@
             pa-0
           "
           small
-          @click="deleteClicked(card.title)"
+          @click="rightButtonClicked(card)"
           :ripple="false"
           :id="card.rightButtonText + '_' + (index + 1)"
           >{{ card.rightButtonText }}</v-btn
@@ -96,41 +96,65 @@
       </v-card-actions>
     </v-card>
     <atat-modal-delete
-      :showDialog.sync="showDialog"
+      v-show="hasDialog"
+      :showDialogWhenClicked.sync="showDialogWhenClicked"
       :title="dialogTitle"
       :message="dialogMessage"
-      cancelText="Cancel"
-      okText="Delete Task Order"
-      width="450px"
+      :cancelText="cancelText"
+      persistent
+      no-click-animation
+      :okText="okText"
+      :width="dialogWidth + 'px'"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { ATATSummaryCards } from "types/Wizard";
+import { ATATSummaryCardItem, ATATSummaryCards } from "types/Wizard";
 import { Component, Prop, Emit } from "vue-property-decorator";
 import { VCard } from "vuetify/lib";
 
 @Component({})
 export default class ATATSummaryCard extends VCard {
-  @Prop({ default: {}, required: false })
-  private data!: ATATSummaryCards;
+  @Prop({ default: {}, required: false }) private data!: ATATSummaryCards;
 
+  @Prop({ default: "Dialog Title" })
+  private dialogTitle!: string;
+
+  @Prop({ default: "Dialog Message" })
+  private dialogMessage!: string;
+
+  @Prop({ default: "OK" })
+  private okText!: string;
+
+  @Prop({ default: "Cancel" })
+  private cancelText!: string;
+
+  @Prop({ default: true })
+  private hasDialog!: boolean;
+
+  @Prop({ default: "450" })
+  private dialogWidth!: string;
+
+  private showDialogWhenClicked = false;
+
+  // these stubbed in events will have to emit back to the parent
+  // might be easier to emit these directly from @click event like this.
+  // @click="$emit('update:value', $event.target.value)"
   @Emit()
-  private clickedAction(actions: string[]): string[] {
-    return actions;
+  private titleClick(card: ATATSummaryCardItem) {
+    return true;
   }
 
-  private showDialog = false;
-  private dialogTitle = "";
-  private dialogMessage = "";
+  @Emit()
+  private leftButtonClicked(card: ATATSummaryCardItem) {
+    return true;
+  }
 
-  private deleteClicked(taskOrder: string): void {
-    this.dialogTitle = "Delete Task Order " + taskOrder + "?";
-    this.dialogMessage =
-      "This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved.";
-
-    this.showDialog = true;
+  @Emit()
+  private rightButtonClicked(card: ATATSummaryCardItem) {
+    this.showDialogWhenClicked = true;
+    return true;
   }
 }
 </script>

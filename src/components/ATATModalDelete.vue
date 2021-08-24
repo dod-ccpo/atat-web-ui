@@ -10,14 +10,17 @@
           class="link-button no-focus-shift"
           :ripple="false"
           @click="_showDialog = false"
+          id="dialog_cancel"
           >{{ cancelText }}
         </v-btn>
         <v-btn
           color="primary"
           class="px-5"
           :ripple="false"
+          id="dialog_ok"
           @click="_showDialog = false"
         >
+        <!-- todo will have to emit OK event back to the parent  -->
           {{ okText }}
         </v-btn>
       </v-card-actions>
@@ -37,7 +40,7 @@ export default class ATATModalDelete extends VDialog {
   @Prop({ default: "Cancel" }) private cancelText!: string;
   @Prop({ default: "OK" }) private okText!: string;
 
-  @PropSync("showDialog")
+  @PropSync("showDialogWhenClicked")
   private _showDialog!: boolean;
 }
 </script>

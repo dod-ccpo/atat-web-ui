@@ -68,7 +68,6 @@ export default class Step_2 extends Vue {
   }
 
   public deleteClin(itemNumber: number): void {
-    console.log(`delete ${itemNumber}`);
     const index = itemNumber - 1;
     if (this.taskOrderDetails.clins.length >= itemNumber) {
       this.taskOrderDetails.clins.splice(index, 1);
