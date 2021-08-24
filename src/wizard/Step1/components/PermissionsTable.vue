@@ -18,38 +18,26 @@
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
-                <th
-                  class="
-                    text-left text--base-dark
-                    label
-                    font-weight-black
-                    py-3
-                    px-4
-                  "
-                >
-                  Name
+                <th>
+                  <span
+                    class="text-left text--base-dark label font-weight-black"
+                  >
+                    Name
+                  </span>
                 </th>
-                <th
-                  class="
-                    text-left text--base-dark
-                    label
-                    font-weight-black
-                    py-3
-                    px-4
-                  "
-                >
-                  App Permissions
+                <th>
+                  <span
+                    class="text-left text--base-dark label font-weight-black"
+                  >
+                    App Permissions
+                  </span>
                 </th>
-                <th
-                  class="
-                    text-left text--base-dark
-                    label
-                    font-weight-black
-                    py-3
-                    px-4
-                  "
-                >
-                  Environment Access
+                <th>
+                  <span
+                    class="text-left text--base-dark label font-weight-black"
+                  >
+                    Environment Access
+                  </span>
                 </th>
               </tr>
             </thead>
@@ -96,7 +84,6 @@ import {
   ApplicationMember,
   ApplicationMemberPermissions,
 } from "types/Portfolios";
-import { applicationMembersMock } from "@/store/mocks/portfoliosMockData";
 
 @Component({})
 export default class PermissionsTable extends Vue {

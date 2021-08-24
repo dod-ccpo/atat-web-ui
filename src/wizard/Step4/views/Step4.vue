@@ -2,7 +2,7 @@
   <div>
     <div>Step 4 View</div>
 
-    <b>Testing table:</b>
+    <strong>Testing table:</strong>
 
     <PermissionsTable
       :name="getApplicationUserData.name"

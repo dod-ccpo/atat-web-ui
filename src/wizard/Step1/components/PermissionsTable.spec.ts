@@ -28,4 +28,7 @@ describe("testing render component", () => {
   it("have the a member", () => {
     expect(wrapper.html()).toContain("john.smith@mail.mil");
   });
+  it("have the second member", () => {
+    expect(wrapper.html()).toContain("jane.doe@mail.mil");
+  });
 });

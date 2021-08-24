@@ -7,4 +7,9 @@
         opacity: initial !important;
         box-shadow: none !important;
     }
+    .v-data-table > .v-data-table__wrapper > table > tbody > tr > th, .v-data-table > .v-data-table__wrapper > table > thead > tr > th, .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
+        height: fit-content;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
 }

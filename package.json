@@ -75,7 +75,10 @@
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "<rootDir>/node_modules"
+      "<rootDir>/node_modules",
+      "<rootDir>/types",
+      "<rootDir>/**/*.scss",
+      "<rootDir>/**/*.spec.ts"
     ]
   }
 }
