@@ -13,81 +13,91 @@
     </v-row>
     <atat-summary-card :data="cardsData"></atat-summary-card>
     <v-row>
-      <v-btn class="primary">
-        <v-icon>control_point</v-icon>
-        <div class="ml-2 font-weight-bold">Add another CLIN</div>
-      </v-btn>
+      <v-col cols="10">
+        <v-btn class="primary">
+          <v-icon>control_point</v-icon>
+          <div class="ml-2 font-weight-bold">Add another CLIN</div>
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row>
-      <v-btn
-        @click="showAdditionalFundingText = !showAdditionalFundingText"
-        plain
-        text
-        x-small
-        tabindex="1"
-        :ripple="false"
-        class="p-0 btn-usa-gov-expand h6"
-      >
-        <span class="USWDC-official-banner__link_msg text-decoration-underline">
-          Can i add additional funding sources after my Portfolio is
-          provisioned?
-        </span>
-        <v-icon>
-          {{ showAdditionalFundingText ? "expand_more" : "expand_less" }}
-        </v-icon>
-      </v-btn>
-      <div v-show="showAdditionalFundingText">
-        <v-card-text class="h6 pb-0">
-          <v-row>
-            <p>
-              Yes. As the Portfolio Manager, you will be able add CLINs to
-              existing Task Orders or add a new Task Order in the future. This
-              will allow you to continue funding the Applications in this
-              Portfolio after the period of performance has expired or after
-              obligated funds have been exhausted.
-              <br />
-              <br />
-              You will have the opportunity to invite other Portfolio Managers
-              to help you manage funding for this Portfolio later.
-            </p>
-          </v-row>
-        </v-card-text>
-      </div>
+      <v-col cols="10">
+        <v-btn
+          @click="showAdditionalFundingText = !showAdditionalFundingText"
+          plain
+          text
+          x-small
+          tabindex="1"
+          :ripple="false"
+          class="p-0 btn-usa-gov-expand h6"
+        >
+          <span
+            class="USWDC-official-banner__link_msg text-decoration-underline"
+          >
+            Can i add additional funding sources after my Portfolio is
+            provisioned?
+          </span>
+          <v-icon>
+            {{ showAdditionalFundingText ? "expand_more" : "expand_less" }}
+          </v-icon>
+        </v-btn>
+        <div v-show="showAdditionalFundingText">
+          <v-card-text class="h6 pb-0">
+            <v-row>
+              <p>
+                Yes. As the Portfolio Manager, you will be able add CLINs to
+                existing Task Orders or add a new Task Order in the future. This
+                will allow you to continue funding the Applications in this
+                Portfolio after the period of performance has expired or after
+                obligated funds have been exhausted.
+                <br />
+                <br />
+                You will have the opportunity to invite other Portfolio Managers
+                to help you manage funding for this Portfolio later.
+              </p>
+            </v-row>
+          </v-card-text>
+        </div>
+      </v-col>
     </v-row>
     <v-row>
-      <v-btn
-        @click="showPopText = !showPopText"
-        plain
-        text
-        x-small
-        tabindex="1"
-        :ripple="false"
-        class="p-0 btn-usa-gov-expand h6"
-      >
-        <span class="USWDC-official-banner__link_msg text-decoration-underline">
-          What happens to my Portfolio if the period of performance or obligated
-          funds expire?
-        </span>
-        <v-icon>
-          {{ showPopText ? "expand_more" : "expand_less" }}
-        </v-icon>
-      </v-btn>
-      <div v-show="showPopText">
-        <v-card-text class="h6 pb-0">
-          <v-row align="center" class="mb-3">
-            <p>
-              If your Portfolio’s period of performance expires or if you run
-              out of obligated funds, your team members will not be able to
-              access your Applications within the CSP console.
-              <br />
-              <br />
-              We will notify you when your funding sources are in danger of
-              expiration, so that you have ample time to take action.
-            </p>
-          </v-row>
-        </v-card-text>
-      </div></v-row
-    >
+      <v-col cols="10">
+        <v-btn
+          @click="showPopText = !showPopText"
+          plain
+          text
+          x-small
+          tabindex="1"
+          :ripple="false"
+          class="p-0 btn-usa-gov-expand h6"
+        >
+          <span
+            class="USWDC-official-banner__link_msg text-decoration-underline"
+          >
+            What happens to my Portfolio if the period of performance or
+            obligated funds expire?
+          </span>
+          <v-icon>
+            {{ showPopText ? "expand_more" : "expand_less" }}
+          </v-icon>
+        </v-btn>
+        <div v-show="showPopText">
+          <v-card-text class="h6 pb-0">
+            <v-row align="center" class="mb-3">
+              <p>
+                If your Portfolio’s period of performance expires or if you run
+                out of obligated funds, your team members will not be able to
+                access your Applications within the CSP console.
+                <br />
+                <br />
+                We will notify you when your funding sources are in danger of
+                expiration, so that you have ample time to take action.
+              </p>
+            </v-row>
+          </v-card-text>
+        </div>
+      </v-col>
+    </v-row>
   </v-flex>
 </template>
 
