@@ -90,81 +90,54 @@ export default class ATATDatePicker extends Vue {
     return this._date;
   }
 
-  private firstMonthComp: any = this.$refs["firstMonth"];
-  private secondMonthComp: any = this.$refs["secondMonth"];
+  private changeDirection() {
+    console.log("hi tony");
+  }
+
+  // private firstMonthComp: typeof VPicker = this.$refs["firstMonth"];
+  // private secondMonthComp: typeof VPicker = this.$refs["secondMonth"];
+  private isDatePickerAdvancing = false;
 
   @Watch("firstMonth")
   protected getFirstMonth(newVal: string, oldVal: string): void {
     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-
-    console.log("FirstMonth> new Val" + newVal);
-    console.log("FirstMonth> old Val" + oldVal);
-
-    this.firstMonth = moment(newVal).format("YYYY-MM-DD");
+    console.log("newVal > " + newVal);
+    console.log("oldVal > " + oldVal);
     if (newVal !== oldVal) {
-      this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
+      this.isDatePickerAdvancing = newVal > oldVal;
+      if (!this.isDatePickerAdvancing) {
+        this.firstMonth = moment(newVal).format("YYYY-MM-DD");
+        if (newVal !== oldVal) {
+          this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
+        }
+      }
     }
-    console.log(this.firstMonth);
-    console.log(this.secondMonth);
+
+    console.log("this.firstMonth > " + this.firstMonth);
+    console.log("this.secondMonth > " + this.secondMonth);
   }
 
-  // @Watch("secondMonth")
-  //   protected getSecondMonth (newVal: string, oldVal: string): void {
-  //     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-  //     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
+  @Watch("secondMonth")
+  protected getSecondMonth(newVal: string, oldVal: string): void {
+    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
+    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
+    console.log("second newVal > " + newVal);
+    console.log("second oldVal > " + oldVal);
+    if (newVal !== oldVal) {
+      this.isDatePickerAdvancing = newVal > oldVal;
+      if (this.isDatePickerAdvancing) {
+        this.secondMonth = moment(newVal).format("YYYY-MM-DD");
+        if (oldVal !== this.secondMonth) {
+          this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
+        }
+      }
+    }
 
-  //     console.log("secondMonth> new Val" + newVal );
-  //     console.log("SecondMonth> old Val" + oldVal );
+    console.log("this.firstMonth > " + this.firstMonth);
+    console.log("this.secondMonth > " + this.secondMonth);
+  }
 
-  //       this.secondMonth = moment(newVal).format("YYYY-MM-DD");
-  //     if (oldVal !== this.secondMonth){
-  //       this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-  //     }
-  //     console.log(this.firstMonth);
-  //     console.log(this.secondMonth);
-  //   }
-
-  // @Watch("secondMonth")
-  // protected getSecondMonth (newVal: string, oldVal: string): void {
-  //   newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-  //   oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-  //   console.log("secondMOnth" + newVal + ":" + oldVal);
-  //   console.log(this.firstMonth);
-  //   debugger;
-  //   if (moment().month(this.secondMonth).isSame(moment().month(oldVal))){
-  //     this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-  //   }
-  //   // firstMonthComp.$props["picker-date"] = this.firstMonth;
-  // }
-
-  // @Watch("selectedDate")
-  // protected(newVal: string, oldVal: string): void {
-  //   newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-  //   oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-
-  //   let firstMonthComp: any = this.$refs["firstMonth"];
-  //   let secondMonthComp: any = this.$refs["secondMonth"];
-
-  //   if (newVal < oldVal) {
-  //     this.firstMonth = moment(newVal).format("YYYY-MM-DD");
-  //     this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
-
-  //     // this.selectedDate = moment(new Date()).format("YYYY-MM-DD");
-  //   } else if (newVal > oldVal) {
-  //     this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-  //     this.secondMonth = moment(newVal).format("YYYY-MM-DD");
-
-  //   }
-  //   firstMonthComp.$props["picker-date"] = this.firstMonth;
-  //   secondMonthComp.$props["picker-date"] = this.secondMonth;
-
-  //   console.log(this.firstMonth);
-  //   console.log(this.secondMonth);
-  //   // debugger;
-  //   console.log(firstMonthComp);
-  //   console.log(secondMonthComp);
-  // }
 
   private getStatusIcon() {
     // if the rules property isn't set we won't display an icon
