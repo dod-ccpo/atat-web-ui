@@ -76,6 +76,7 @@
   "jest": {
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules",
+      "<rootDir>/src/store/mocks",
       "<rootDir>/types",
       "<rootDir>/**/*.scss",
       "<rootDir>/*.json",
