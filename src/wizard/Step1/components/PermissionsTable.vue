@@ -18,21 +18,21 @@
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
-                <th>
+                <th id="name">
                   <span
                     class="text-left text--base-dark label font-weight-black"
                   >
                     Name
                   </span>
                 </th>
-                <th>
+                <th id="permissions">
                   <span
                     class="text-left text--base-dark label font-weight-black"
                   >
                     App Permissions
                   </span>
                 </th>
-                <th>
+                <th id="environment">
                   <span
                     class="text-left text--base-dark label font-weight-black"
                   >

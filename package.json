@@ -78,6 +78,7 @@
       "<rootDir>/node_modules",
       "<rootDir>/types",
       "<rootDir>/**/*.scss",
+      "<rootDir>/*.json",
       "<rootDir>/**/*.spec.ts"
     ]
   }
