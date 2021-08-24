@@ -4,10 +4,11 @@
       <v-col cols="10">
         <h2 class="h2">Your Task Order Summary</h2>
         <p class="my-3" v-show="cardsData.cards.length > 0">
-          If you have more Task Orders, <b>add</b> them below. You can also
-          <b>edit</b> or <b>delete</b> any of the Task Orders you already
-          entered. When you are done, click <b>Next</b> and we will walk you
-          through adding your applications and environments
+          If you have more Task Orders, <strong>add</strong> them below. You can
+          also <strong>edit</strong> or <strong>delete</strong> any of the Task
+          Orders you already entered. When you are done, click
+          <strong>Next</strong> and we will walk you through adding your
+          applications and environments
         </p>
       </v-col>
     </v-row>
