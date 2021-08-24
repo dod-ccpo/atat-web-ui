@@ -1,48 +1,92 @@
 <template>
   <div class="permission-table">
-    <v-simple-table>
-      <template v-slot:default>
-        <thead class="bg-base-lightest">
-          <tr>
-            <th class="text-left text--base-dark label font-weight-black py-3 px-4">
-                Name
-            </th>
-            <th class="text-left text--base-dark label font-weight-black py-3 px-4">
-                App Permissions
-            </th>
-            <th class="text-left text--base-dark label font-weight-black py-3 px-4">
-                Environment Access
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in getData" :key="item.id">
-            <td class="pa-4">
-              <span class="table-item font-weight-bold"> {{ item.name }} </span> <br />
-              <span class="table-item"> {{ item.email }} </span>
-            </td>
-            <td class="pa-4">
-              <span
-                class="table-item d-flex flex-column"
-                v-for="permission in grantedPermissions(item.permissions)"
-                :key="permission"
-              >
-                {{ permission }}
-              </span>
-            </td>
-            <td class="pa-4">
-              <span
-                class="table-item d-flex flex-column"
-                v-for="setting in item.environments_settings"
-                :key="setting.id"
-              >
-                {{ setting.label }} : {{ setting.accessLevel }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
+    <v-card class="mt-4" elevation="2" max-width="100%">
+      <v-card-title class="d-flex justify-space-between">
+        <span class="h4">Tracker Application</span>
+        <v-btn
+          text
+          x-small
+          class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
+          :ripple="false"
+        >
+          <v-icon x-small class="text-decoration-none mr-1">edit</v-icon>
+          <span class="text-decoration-underline">Edit</span>
+        </v-btn>
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead class="bg-base-lightest">
+              <tr>
+                <th
+                  class="
+                    text-left text--base-dark
+                    label
+                    font-weight-black
+                    py-3
+                    px-4
+                  "
+                >
+                  Name
+                </th>
+                <th
+                  class="
+                    text-left text--base-dark
+                    label
+                    font-weight-black
+                    py-3
+                    px-4
+                  "
+                >
+                  App Permissions
+                </th>
+                <th
+                  class="
+                    text-left text--base-dark
+                    label
+                    font-weight-black
+                    py-3
+                    px-4
+                  "
+                >
+                  Environment Access
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in getData" :key="item.id">
+                <td class="pa-4" style="vertical-align: top">
+                  <div class="d-flex flex-column">
+                    <span class="table-item font-weight-bold">
+                      {{ item.name }}
+                    </span>
+                    <span class="table-item"> {{ item.email }} </span>
+                  </div>
+                </td>
+                <td class="pa-4" style="vertical-align: top">
+                  <span
+                    class="table-item d-flex flex-column"
+                    v-for="permission in grantedPermissions(item.permissions)"
+                    :key="permission"
+                  >
+                    {{ permission }}
+                  </span>
+                </td>
+                <td class="pa-4" style="vertical-align: top">
+                  <span
+                    class="table-item d-flex flex-column"
+                    v-for="setting in item.environments_settings"
+                    :key="setting.id"
+                  >
+                    {{ setting.label }} : {{ setting.accessLevel }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 <script lang="ts">
