@@ -6,7 +6,6 @@
         :close-on-content-click="true"
         :nudge-right="40"
         transition="scale-transition"
-        class="two-date-pickers"
         offset-y
         min-width="auto"
       >
@@ -27,35 +26,41 @@
             :error="isFieldValid"
             :height="42"
             v-model="_date"
-            readonly
             v-bind="attrs"
             v-on="on"
             :value="getDate"
           />
         </template>
-        <v-date-picker
-          ref="firstMonth"
-          :min="minDate"
-          :max="maxDate"
-          v-model="_date"
-          @input="menu = false"
-          no-title
-          scrollable
-          :reactive="true"
-          :picker-date.sync="firstMonth"
-        />
-        <v-date-picker
-          ref="secondMonth"
-          :min="minDate"
-          :max="maxDate"
-          :show-current="false"
-          v-model="_date"
-          @input="menu = false"
-          no-title
-          :reactive="true"
-          scrollable
-          :picker-date.sync="secondMonth"
-        />
+        <div class="two-date-pickers">
+          <div class="h4 px-4 pt-7 pb-5">{{ title }}</div>
+          <hr />
+          <v-date-picker
+            ref="firstMonth"
+            :min="minDate"
+            :max="maxDate"
+            v-model="_date"
+            @input="menu = false"
+            no-title
+            id="firstMonthDatePicker"
+            scrollable
+            :reactive="true"
+            :picker-date.sync="firstMonth"
+          />
+          <div class="separator mt-14 mb-4"></div>
+          <v-date-picker
+            ref="secondMonth"
+            :min="minDate"
+            :max="maxDate"
+            :show-current="false"
+            v-model="_date"
+            @input="menu = false"
+            no-title
+            :reactive="true"
+            id="secondMonthDatePicker"
+            scrollable
+            :picker-date.sync="secondMonth"
+          />
+        </div>
       </v-menu>
     </v-col>
   </v-row>
@@ -75,6 +80,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
   @PropSync("date") private _date!: string;
+  @Prop({ default: "title" }) private title!: string;
 
   private menu = false;
   private minDate = "2020-09-01";
@@ -102,8 +108,6 @@ export default class ATATDatePicker extends Vue {
   protected getFirstMonth(newVal: string, oldVal: string): void {
     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-    console.log("newVal > " + newVal);
-    console.log("oldVal > " + oldVal);
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (!this.isDatePickerAdvancing) {
@@ -113,17 +117,12 @@ export default class ATATDatePicker extends Vue {
         }
       }
     }
-
-    console.log("this.firstMonth > " + this.firstMonth);
-    console.log("this.secondMonth > " + this.secondMonth);
   }
 
   @Watch("secondMonth")
   protected getSecondMonth(newVal: string, oldVal: string): void {
     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-    console.log("second newVal > " + newVal);
-    console.log("second oldVal > " + oldVal);
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (this.isDatePickerAdvancing) {
@@ -133,11 +132,7 @@ export default class ATATDatePicker extends Vue {
         }
       }
     }
-
-    console.log("this.firstMonth > " + this.firstMonth);
-    console.log("this.secondMonth > " + this.secondMonth);
   }
-
 
   private getStatusIcon() {
     // if the rules property isn't set we won't display an icon

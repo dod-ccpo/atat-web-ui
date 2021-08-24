@@ -1,12 +1,65 @@
 @import "../utils/colors.scss";
 @import "../utils/typography.scss";
+@import "../utils/utils.scss";
 
-.v-picker{
-  .v-date-picker-header{
+.two-date-pickers{
+  background-color: $base_lightest;
 
-    .v-date-picker-header__value{
-      @extend .body;
+  #firstMonthDatePicker{
+    .v-date-picker-header{
+      button:nth-child(3){
+        display: none;
+      }
     }
+  }
+  #secondMonthDatePicker{
+    .v-date-picker-header{
+      button:nth-child(2){
+        display: none;
+      }
+    }
+  }
 
+  button{
+    @extend .datepicker-text;
+    color: $base_darkest !important;
+  }
+
+  hr{
+    background-color: $base_light;
+    width: calc(100%-32px);
+    margin: 0px 16px;
+  }
+
+  .separator{
+    border-left: 1px #a9aeb1 solid;
+    height: 218px;
+    display: inline-block;
+  }
+  .v-picker{
+    .v-picker__body{
+      .v-date-picker-header{
+        .v-date-picker-header__value{
+          button{
+            @extend .font-weight-700;
+            color: black !important;
+            &:hover{
+              color: black !important;
+            }
+          }
+        }
+      }
+      .v-date-picker-table{
+        thead{
+          tr{
+            th{
+              @extend .datepicker-text;
+              color: $base_darkest;
+            }
+          }
+        }
+      }
+      background-color: $base_lightest !important;
+    }
   }
 }
