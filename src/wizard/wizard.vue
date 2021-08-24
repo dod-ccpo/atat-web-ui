@@ -59,7 +59,7 @@ export default class Wizard extends Vue {
               this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
             }
           } else if (this.stepNumber === 2) {
-            validated = this.$refs.stepTwo.validate();
+            validated = this.$refs.stepTwo.canGoNext();
 
             if (await validated) {
               alert("Data has been validated and is to be saved");
