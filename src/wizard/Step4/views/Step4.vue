@@ -4,16 +4,27 @@
 
     <b>Testing table:</b>
 
-    <ATATTable :data="getApplicationUserData" />
+    <v-card class="mt-4"
+      elevation="2"
+      max-width="100%">
+      <v-card-title class="d-flex justify-space-between">
+        <span class="h4">Tracker Application</span>
+        <v-btn text 
+          x-small 
+          class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
+          :ripple="false">
+          <v-icon x-small class="text-decoration-none mr-1" >edit</v-icon>
+          <span class="text-decoration-underline">Edit</span>
+        </v-btn>
 
-    <br />
-    <hr class="hr" />
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <PermissionsTable />
+      </v-card-text>
 
-    <br />
-    <br />
-    <br />
+    </v-card>
 
-    <PermissionsTable />
+   
   </div>
 </template>
 

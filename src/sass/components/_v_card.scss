@@ -18,3 +18,7 @@
   text-transform: uppercase;
   height: 23px;
 }
+
+.v-sheet:not(.v-sheet--outlined) {
+  box-shadow: 0px 4px 10px rgba(194, 194, 194, 0.5) !important;
+}

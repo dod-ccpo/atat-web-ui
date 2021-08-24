@@ -2,32 +2,38 @@
   <div class="permission-table">
     <v-simple-table>
       <template v-slot:default>
-        <thead>
+        <thead class="bg-base-lightest">
           <tr>
-            <th class="text-left">Name</th>
-            <th class="text-left">App Permissions</th>
-            <th class="text-left">Environment Access</th>
+            <th class="text-left text--base-dark label font-weight-black py-3 px-4">
+                Name
+            </th>
+            <th class="text-left text--base-dark label font-weight-black py-3 px-4">
+                App Permissions
+            </th>
+            <th class="text-left text--base-dark label font-weight-black py-3 px-4">
+                Environment Access
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in getData" :key="item.id">
-            <td>
-              <span class="font-weight-bold"> {{ item.name }} </span> <br />
-              <span class=""> {{ item.email }} </span>
+            <td class="pa-4">
+              <span class="table-item font-weight-bold"> {{ item.name }} </span> <br />
+              <span class="table-item"> {{ item.email }} </span>
             </td>
-            <td class="d-flex flex-column">
+            <td class="pa-4">
               <span
-                class=""
+                class="table-item d-flex flex-column"
                 v-for="permission in grantedPermissions(item.permissions)"
                 :key="permission"
               >
                 {{ permission }}
               </span>
             </td>
-            <td>
+            <td class="pa-4">
               <span
-                class="d-flex flex-column"
-                v-for="setting in item.enviroments_settings"
+                class="table-item d-flex flex-column"
+                v-for="setting in item.environments_settings"
                 :key="setting.id"
               >
                 {{ setting.label }} : {{ setting.accessLevel }}
@@ -48,14 +54,14 @@ export interface ApplicationMember {
   email: string;
   name: string;
   permissions?: ApplicationMemberPermissions[];
-  enviroments_settings?: ApplicationMemberEnviroment[];
+  environments_settings?: ApplicationMemberEnvironment[];
 }
 export interface ApplicationMemberPermissions {
   id: string;
   label: string;
   is_granted: boolean;
 }
-export interface ApplicationMemberEnviroment {
+export interface ApplicationMemberEnvironment {
   id: string;
   label: string;
   accessLevel: "Administrator" | "Contributor" | "No Access";
@@ -78,7 +84,7 @@ let demoData: ApplicationMember[] = [
         is_granted: true,
       },
     ],
-    enviroments_settings: [
+    environments_settings: [
       {
         id: "development",
         label: "Development",
@@ -117,7 +123,7 @@ let demoData: ApplicationMember[] = [
         is_granted: false,
       },
     ],
-    enviroments_settings: [
+    environments_settings: [
       {
         id: "development",
         label: "Development",

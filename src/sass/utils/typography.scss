@@ -116,6 +116,17 @@
         line-height: 2.3rem;
         color: $base_dark;
     }
+    .table-item{
+        font-size: 1.5rem;
+        line-height: 2.4rem;
+        font-style: normal;
+        font-weight: normal;
+        color: $base_darkest;
+    }
+
+    .text-decoration-none {
+        text-decoration: none !important;
+    }
 
     $sizes: 16, 18, 20, 24;
     @each $size in $sizes{
