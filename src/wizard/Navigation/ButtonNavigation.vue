@@ -76,6 +76,30 @@ export default class ButtonNavigation extends Vue {
             text: "Next",
             color: "primary",
             id: "next",
+            action: ["summary"],
+          },
+        ],
+      },
+      {
+        step: 2,
+        buttons: [
+          {
+            text: "Cancel",
+            link: true,
+            id: "cancel",
+            action: ["cancel"],
+          },
+          {
+            text: "Previous",
+            outlined: true,
+            id: "previous",
+            color: "primary",
+            action: ["previous"],
+          },
+          {
+            text: "Next",
+            color: "primary",
+            id: "next",
             action: ["next"],
           },
         ],

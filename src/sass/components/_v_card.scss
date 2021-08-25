@@ -1,5 +1,18 @@
+
+@import "../utils/colors.scss";
+
 .v-sheet.v-card {
   border-radius: 0px;
+  
+  .type{
+    font-weight: 600 !important;
+    color: $primary;
+  }
+
+  .grouped-items{
+    border-left: solid 4px $accent-cool;
+  }
+
 }
 .portfolio-banner {
   background-color: #f0f0f0;
