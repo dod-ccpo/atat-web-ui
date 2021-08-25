@@ -79,7 +79,7 @@ export const applicationMembersMock: ApplicationMember[] = [
       },
     ],
   },
-];
+]; // Noncompliant
 
 export const allPortfolios: Portfolios = {
   "13": {
@@ -246,4 +246,4 @@ export const allPortfolios: Portfolios = {
       },
     ],
   },
-};
+}; // Noncompliant

@@ -40,4 +40,4 @@ export const navs: Navs = {
       },
     ],
   },
-};
+}; // Noncompliant
