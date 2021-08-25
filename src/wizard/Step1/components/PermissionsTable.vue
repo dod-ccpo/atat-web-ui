@@ -14,13 +14,13 @@
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0">
-        <v-simple-table>
+        <v-simple-table class="pb-2">
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
                 <th id="name">
                   <span
-                    class="text-left text--base-dark label font-weight-black"
+                    class="pl-2 text-left text--base-dark label font-weight-black"
                   >
                     Name
                   </span>
@@ -34,7 +34,7 @@
                 </th>
                 <th id="environment">
                   <span
-                    class="text-left text--base-dark label font-weight-black"
+                    class="pr-2 text-left text--base-dark label font-weight-black"
                   >
                     Environment Access
                   </span>
@@ -43,7 +43,7 @@
             </thead>
             <tbody>
               <tr v-for="item in getData" :key="item.id">
-                <td class="pa-4" style="vertical-align: top">
+                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
                     <span class="table-item font-weight-bold">
                       {{ item.name }}
@@ -60,7 +60,7 @@
                     {{ permission }}
                   </span>
                 </td>
-                <td class="pa-4" style="vertical-align: top">
+                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span
                     class="table-item d-flex flex-column"
                     v-for="setting in item.environments_settings"
@@ -100,6 +100,7 @@ export default class PermissionsTable extends Vue {
   ): string[] {
     // filter out not granted permisssions and is not permission have been grante return 'no access'
     const grantedPermissionsArr = permissions.filter((item) => item.is_granted);
+
     if (grantedPermissionsArr.length > 0) {
       return grantedPermissionsArr.map((item) => item.label);
     } else return ["No Access"];
