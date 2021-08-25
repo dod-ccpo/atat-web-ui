@@ -14,9 +14,6 @@
         margin-right: 41px;
       }
     }
-    .v-date-picker-table{
-      border-right: $base_light 1px solid !important;
-    }
   }
   #secondMonthDatePicker{
     .v-date-picker-header{
@@ -40,7 +37,7 @@
         .v-date-picker-header__value{
           button{
             @extend .font-weight-700;
-            pointer-events: none;
+            // pointer-events: none;
             color: $base_darkest;
             &:hover{
               color: $base_darkest;
@@ -49,31 +46,39 @@
         }
       }
       .v-date-picker-table{
-        height: 275px !important;
-        margin-bottom: 16px !important;
+        // height: 275px !important;
         padding: 0px !important;
-        thead{
-          tr{
-            th{
-              @extend .datepicker-text;
-              color: $base_darkest;
+        
+        table{
+          border: none !important;
+          border-spacing: 0px !important;
+          thead{
+            tr{
+              th{
+                @extend .datepicker-text;
+                color: $base_darkest;
+              }
             }
           }
-        }
-        tbody{
-          tr{
-            td{
-              button.v-btn--active{
-                background-color: $primary_vivid !important;
-                color: #fff !important;
-                border-radius: 0px !important;
-              }
-              button.v-date-picker-table__current{
-                border: $base-darkest 1px solid !important;
-                color: $base_darkest !important;
-              }
-              button.v-btn.v-btn--flat.v-btn--disabled{
-                color: $base_light !important;
+          tbody{
+            tr{
+              td{
+                width: 44px !important;
+                height: 40px !important;
+                button.v-btn--active{
+                  background-color: $primary_lighter !important;
+                  border-radius: 0px !important;
+                  width: 100% !important;
+                  height: 100% !important;
+                  padding: 4px 2px !important;
+                }
+                button.v-date-picker-table__current{
+                  border: $base-darkest 1px solid !important;
+                  color: $base_darkest !important;
+                }
+                button.v-btn.v-btn--flat.v-btn--disabled{
+                  color: $base_light !important;
+                }
               }
             }
           }

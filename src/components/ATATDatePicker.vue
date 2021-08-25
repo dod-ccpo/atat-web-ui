@@ -4,11 +4,14 @@
       <v-menu
         v-model="menu"
         :close-on-content-click="true"
-        :nudge-top="45"
-        :top="true"
-        min-width="auto"
-        origin="top"
+        :position-x="0"
+        :position-y="0"
+        origin="top left"
+        :nudge-left="nudgeleft"
+        :nudge-top="40"
+        top
       >
+        <!-- 11 -->
         <template v-slot:activator="{ on, attrs }">
           <label
             :id="id + '_text_field_label'"
@@ -17,18 +20,22 @@
           >
             {{ label }}
           </label>
-          <div class="d-flex align-start width-70">
+          <div class="d-flex align-start width-70 datepicker-text-box">
             <v-text-field
+              :ref="id"
               outlined
               dense
               :success="isFieldValid"
               :error="isFieldValid"
               :height="42"
-              v-model="dateRange[0]"
               v-bind="attrs"
               v-on="on"
+              hide-details
               placeholder="YYYY-DD-MM"
-              :value="dateRange[0]"
+              :value="_textBoxValue"
+              :rules="_rules"
+              @blur="getErrorMessages"
+              @update:error="getErrorMessages"
             ></v-text-field>
             <v-btn icon :ripple="false" class="ml-2">
               <v-icon v-bind="attrs" v-on="on" class="icon-32 black--text"
@@ -37,15 +44,16 @@
             </v-btn>
           </div>
         </template>
-        <div class="two-date-pickers">
-          <div class="h4 px-4 pt-7 pb-5">{{ title }}</div>
+        <div class="two-date-pickers pa-6">
+          <div class="h4 pb-7">{{ title }}</div>
           <hr />
           <v-date-picker
             ref="firstMonth"
             :min="minDate"
             :max="maxDate"
-            v-model="getVModel"
+            v-model="_dateRange"
             @input="menu = false"
+            class="mr-5 mt-4"
             range
             no-title
             id="firstMonthDatePicker"
@@ -53,15 +61,13 @@
             :reactive="true"
             :picker-date.sync="firstMonth"
           />
-          <!-- range -->
-          <!-- <div class="separator mt-14"></div> -->
-          <!-- range="isDateRangeValid" -->
           <v-date-picker
             ref="secondMonth"
             :min="minDate"
             :max="maxDate"
             :show-current="false"
-            v-model="getVModel"
+            v-model="_dateRange"
+            class="ml-5 mt-4"
             range
             @input="menu = false"
             no-title
@@ -80,8 +86,14 @@
 import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { VTextField } from "vuetify/lib";
+import Vuetify from "vuetify/lib/framework";
 @Component({})
 export default class ATATDatePicker extends Vue {
+  $refs!: {
+    startDate: Vue & { errorBucket: () => string[] };
+  };
+
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: "color" }) private color!: string;
@@ -92,6 +104,10 @@ export default class ATATDatePicker extends Vue {
   @PropSync("date") private _date!: string;
   @PropSync("daterange") private _dateRange!: string[];
   @Prop({ default: "title" }) private title!: string;
+  @Prop() private nudgeleft!: string;
+  @PropSync("textboxvalue") private _textBoxValue!: string;
+  @PropSync("rules") private _rules!: any[];
+  @PropSync("errormessages") private _errorMessages!: string[];
 
   private menu = false;
   private minDate = "2020-10-01";
@@ -114,8 +130,14 @@ export default class ATATDatePicker extends Vue {
     return this.dateRange.every((d) => d !== "");
   }
 
-  get getVModel(): any {
-    return this.isDateRangeValid ? this._dateRange : this._date;
+  // get errorMessages(): string[] {
+  //   this.$vm.$refs.startDate.errorBucket
+  // }
+
+  public getErrorMessages() {
+    const startDate: any = this.$refs.startDate.errorBucket;
+    this._errorMessages = startDate;
+    return true;
   }
 
   @Watch("firstMonth")

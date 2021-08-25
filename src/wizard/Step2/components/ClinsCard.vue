@@ -155,7 +155,7 @@
                       class="mb-5"
                       id="obligated-funds"
                       label="Obligated Funds"
-                      :rules="rules.obligatedFundsRule"
+                      :rules="obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                       @onkeyup="calculateObligatedPercent"
@@ -184,21 +184,28 @@
                     </div>
                     <div class="d-flex align-center ma-0">
                       <atat-date-picker
+                        id="startDate"
                         label="Start Date"
-                        
-                        :rules="_pop_start_date"
+                        :rules="popStart"
+                        :errormessages.sync="datePickerErrorMessages"
                         title="What is the PoP Start Date?"
-                        :date-range="dateRange"
+                        :daterange.sync="dateRange"
+                        :date.sync="_pop_start_date"
+                        :textboxvalue="dateRange[0]"
+                        :nudgeleft="11"
                       />
-                      <!-- :date.sync="_pop_start_date" -->
-                      <!-- <atat-date-picker
+                      <atat-date-picker
+                        id="endDate"
                         class="ma-0"
                         label="End Date"
+                        :errormessages.sync="datePickerErrorMessages"
+                        :rules.sync="popEnd"
+                        :daterange.sync="dateRange"
                         :date.sync="_pop_end_date"
-                        :rules="_pop_end_date"
                         title="What is the PoP End Date?"
-                        :date-range="dateRange"
-                      /> -->
+                        :textboxvalue="dateRange[1]"
+                        :nudgeleft="355"
+                      />
                     </div>
                   </v-col>
                 </v-row> </v-expansion-panel-content
@@ -265,14 +272,28 @@ export default class ClinsCard extends Vue {
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
+
+  get getdateRange(): boolean {
+    this.dateRange.sort();
+    this._pop_start_date = this.dateRange[0];
+    this._pop_end_date = this.dateRange[1] || "";
+    return true;
+  }
+
   @Watch("_pop_start_date")
-  protected setPopStartDate(newVal: string): void {
-    this.dateRange = [newVal];
+  protected setDateRange(newVal: string, oldVal: string): void {
+    if (newVal < this._pop_end_date) {
+      this.dateRange[0] = newVal;
+      // this.dateRange.sort();
+    }
   }
 
   @Watch("_pop_end_date")
-  protected setEndStartDate(newVal: string): void {
-    this.dateRange = [newVal];
+  protected setEndDate(newVal: string): void {
+    if (newVal > this._pop_start_date) {
+      this.dateRange[1] = newVal;
+      // this.dateRange.sort();
+    }
   }
 
   private clinHelpText =
@@ -293,7 +314,7 @@ export default class ClinsCard extends Vue {
   private obligatedPercent = "";
 
   private dateRange = ["", ""];
-
+  private datePickerErrorMessages = [];
   private formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -323,6 +344,26 @@ export default class ClinsCard extends Vue {
       progress.style.width = this.obligatedPercent + "%";
     }
   }
+
+  public popStart = [
+    (v: string) =>
+      !!v ||
+      "Please enter the start date for your CLIN's period of performance",
+  ];
+  public popEnd = [
+    (v: string) =>
+      !!v || "Please enter the End date for your CLIN's period of performance",
+    (v: string) =>
+      v > this._pop_start_date || "the PoP start date be before the end date",
+  ];
+
+  public obligatedFundsRule = [
+        (v: number) => !!v || "Please enter your obligated Funds",
+        (v: number) => v > 0 || "Please enter a valid number",
+        (v: number) =>
+          v <= this._total_clin_value ||
+          "Obligated Funds cannot exceed total CLIN Value",
+      ]
 
   public async validateForm(): Promise<boolean> {
     let validated = false;
