@@ -185,17 +185,20 @@
                     <div class="d-flex align-center ma-0">
                       <atat-date-picker
                         label="Start Date"
-                        :date.sync="_pop_start_date"
+                        
                         :rules="_pop_start_date"
                         title="What is the PoP Start Date?"
+                        :date-range="dateRange"
                       />
-                      <atat-date-picker
+                      <!-- :date.sync="_pop_start_date" -->
+                      <!-- <atat-date-picker
                         class="ma-0"
                         label="End Date"
                         :date.sync="_pop_end_date"
                         :rules="_pop_end_date"
                         title="What is the PoP End Date?"
-                      />
+                        :date-range="dateRange"
+                      /> -->
                     </div>
                   </v-col>
                 </v-row> </v-expansion-panel-content
@@ -262,6 +265,15 @@ export default class ClinsCard extends Vue {
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
+  @Watch("_pop_start_date")
+  protected setPopStartDate(newVal: string): void {
+    this.dateRange = [newVal];
+  }
+
+  @Watch("_pop_end_date")
+  protected setEndStartDate(newVal: string): void {
+    this.dateRange = [newVal];
+  }
 
   private clinHelpText =
     "This is the full amount of money requested\n" +
@@ -279,6 +291,8 @@ export default class ClinsCard extends Vue {
     "IDIQ CLIN 0004 Classified Support Package",
   ];
   private obligatedPercent = "";
+
+  private dateRange = ["", ""];
 
   private formatter = new Intl.NumberFormat("en-US", {
     style: "currency",

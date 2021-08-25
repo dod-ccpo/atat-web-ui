@@ -44,28 +44,28 @@
             ref="firstMonth"
             :min="minDate"
             :max="maxDate"
-            v-model="dateRange"
+            v-model="_dateRange"
             @input="menu = false"
-            @click:date="updateDateRange(_date, true)"
-            no-title
             range
+            no-title
             id="firstMonthDatePicker"
             scrollable
             :reactive="true"
             :picker-date.sync="firstMonth"
           />
+          <!-- range -->
           <!-- <div class="separator mt-14"></div> -->
+           <!-- range="isDateRangeValid" -->
           <v-date-picker
             ref="secondMonth"
             :min="minDate"
             :max="maxDate"
             :show-current="false"
-            v-model="dateRange"
+            v-model="_dateRange"
+            range
             @input="menu = false"
             no-title
-            range
             :reactive="true"
-            @click:date="updateDateRange(_date, false)"
             id="secondMonthDatePicker"
             scrollable
             :picker-date.sync="secondMonth"
@@ -90,6 +90,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
   @PropSync("date") private _date!: string;
+  @PropSync("daterange") private _dateRange!: string[];
   @Prop({ default: "title" }) private title!: string;
 
   private menu = false;
@@ -107,17 +108,12 @@ export default class ATATDatePicker extends Vue {
     return this._date;
   }
 
-
   private isDatePickerAdvancing = false;
 
-  private updateDateRange(_date: string, isFirstMonth: boolean) {
-    if (isFirstMonth) {
-      this.dateRange[0] = _date;
-    } else {
-      this.dateRange[1] = _date;
-    }
-    console.log(this.dateRange);
+  get isDateRangeValid(): boolean {
+    return this._dateRange.every((d) => d !== "");
   }
+
 
   @Watch("firstMonth")
   protected getFirstMonth(newVal: string, oldVal: string): void {
