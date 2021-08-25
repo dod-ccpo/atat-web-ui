@@ -24,11 +24,11 @@
               :success="isFieldValid"
               :error="isFieldValid"
               :height="42"
-              v-model="_date"
+              v-model="dateRange[0]"
               v-bind="attrs"
               v-on="on"
               placeholder="YYYY-DD-MM"
-              :value="getDate"
+              :value="dateRange[0]"
             ></v-text-field>
             <v-btn icon :ripple="false" class="ml-2">
               <v-icon v-bind="attrs" v-on="on" class="icon-32 black--text"
@@ -44,7 +44,7 @@
             ref="firstMonth"
             :min="minDate"
             :max="maxDate"
-            v-model="dateRange"
+            v-model="getVModel"
             @input="menu = false"
             range
             no-title
@@ -61,7 +61,7 @@
             :min="minDate"
             :max="maxDate"
             :show-current="false"
-            v-model="dateRange"
+            v-model="getVModel"
             range
             @input="menu = false"
             no-title
@@ -111,7 +111,11 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
 
   get isDateRangeValid(): boolean {
-    return this._dateRange.every((d) => d !== "");
+    return this.dateRange.every((d) => d !== "");
+  }
+
+  get getVModel(): any {
+    return this.isDateRangeValid ? this._dateRange : this._date;
   }
 
   @Watch("firstMonth")
