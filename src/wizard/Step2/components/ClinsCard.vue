@@ -182,30 +182,67 @@
                     <div class="h4 font-weight-bold mt-6">
                       Period of Performance (PoP)
                     </div>
-                    <div class="d-flex align-center ma-0">
-                      <atat-date-picker
-                        id="startDate"
-                        label="Start Date"
-                        :rules="popStart"
-                        :errormessages.sync="datePickerErrorMessages"
-                        title="What is the PoP Start Date?"
-                        :daterange.sync="dateRange"
-                        :date.sync="_pop_start_date"
-                        :textboxvalue="dateRange[0]"
-                        :nudgeleft="11"
-                      />
-                      <atat-date-picker
-                        id="endDate"
-                        class="ma-0"
-                        label="End Date"
-                        :errormessages.sync="datePickerErrorMessages"
-                        :rules.sync="popEnd"
-                        :daterange.sync="dateRange"
-                        :date.sync="_pop_end_date"
-                        title="What is the PoP End Date?"
-                        :textboxvalue="dateRange[1]"
-                        :nudgeleft="355"
-                      />
+                    <div class="ma-0">
+                      <v-row class="d-flex align-center pt-3">
+                        <v-col cols="6">
+                          <label
+                            :id="'start_date_text_field_label'"
+                            class="form-field-label my-1"
+                            :for="'start_date_text_field'"
+                          >
+                            Start Date
+                          </label>
+                        </v-col>
+                        <v-col cols="6">
+                          <label
+                            :id="'end_date_text_field_label'"
+                            class="form-field-label my-1"
+                            :for="'end_date_text_field'"
+                          >
+                            End Date
+                          </label>
+                        </v-col>
+                      </v-row>
+                      <v-row v-if="datePickerErrorMessages.length > 0">
+                        <v-col ool="!2" class="py-0">
+                          <div
+                            v-for="(error, idx) in datePickerErrorMessages"
+                            :key="idx"
+                          >
+                            <div class="error--text">
+                              <div class="v-messages__message">{{ error }}</div>
+                            </div>
+                          </div>
+                        </v-col>
+                      </v-row>
+                      <v-row class="d-flex align-center">
+                        <v-col cols="6">
+                          <atat-date-picker
+                            id="startDate"
+                            label="Start Date"
+                            :rules="popStart"
+                            :errormessages.sync="datePickerErrorMessages"
+                            title="What is the PoP Start Date?"
+                            :daterange.sync="dateRange"
+                            :date.sync="_pop_start_date"
+                            :textboxvalue="dateRange[0]"
+                            :nudgeleft="11"
+                          />
+                        </v-col>
+                        <v-col cols="6">
+                          <atat-date-picker
+                            id="endDate"
+                            label="End Date"
+                            :errormessages.sync="datePickerErrorMessages"
+                            :rules="popEnd"
+                            :daterange.sync="dateRange"
+                            :date.sync="_pop_end_date"
+                            title="What is the PoP End Date?"
+                            :textboxvalue="dateRange[1]"
+                            :nudgeleft="355"
+                          />
+                        </v-col>
+                      </v-row>
                     </div>
                   </v-col>
                 </v-row> </v-expansion-panel-content
@@ -284,7 +321,6 @@ export default class ClinsCard extends Vue {
   protected setDateRange(newVal: string, oldVal: string): void {
     if (newVal < this._pop_end_date) {
       this.dateRange[0] = newVal;
-      // this.dateRange.sort();
     }
   }
 
@@ -292,7 +328,6 @@ export default class ClinsCard extends Vue {
   protected setEndDate(newVal: string): void {
     if (newVal > this._pop_start_date) {
       this.dateRange[1] = newVal;
-      // this.dateRange.sort();
     }
   }
 
@@ -346,24 +381,23 @@ export default class ClinsCard extends Vue {
   }
 
   public popStart = [
-    (v: string) =>
-      !!v ||
+    (v: string) =>!!v ||
       "Please enter the start date for your CLIN's period of performance",
   ];
   public popEnd = [
     (v: string) =>
-      !!v || "Please enter the End date for your CLIN's period of performance",
-    (v: string) =>
-      v > this._pop_start_date || "the PoP start date be before the end date",
+      !!v || "Please enter the end date for your CLIN's period of performance",
   ];
+  // (v: string) =>
+  //     v > this._pop_start_date || "the PoP start date be before the end date",
 
   public obligatedFundsRule = [
-        (v: number) => !!v || "Please enter your obligated Funds",
-        (v: number) => v > 0 || "Please enter a valid number",
-        (v: number) =>
-          v <= this._total_clin_value ||
-          "Obligated Funds cannot exceed total CLIN Value",
-      ]
+    (v: number) => !!v || "Please enter your obligated Funds",
+    (v: number) => v > 0 || "Please enter a valid number",
+    (v: number) =>
+      v <= this._total_clin_value ||
+      "Obligated Funds cannot exceed total CLIN Value",
+  ];
 
   public async validateForm(): Promise<boolean> {
     let validated = false;

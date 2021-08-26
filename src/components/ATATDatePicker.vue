@@ -13,13 +13,6 @@
       >
         <!-- 11 -->
         <template v-slot:activator="{ on, attrs }">
-          <label
-            :id="id + '_text_field_label'"
-            class="form-field-label my-1"
-            :for="id + '_text_field'"
-          >
-            {{ label }}
-          </label>
           <div class="d-flex align-start width-70 datepicker-text-box">
             <v-text-field
               :ref="id"
@@ -86,12 +79,12 @@
 import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import { VTextField } from "vuetify/lib";
-import Vuetify from "vuetify/lib/framework";
+
 @Component({})
 export default class ATATDatePicker extends Vue {
   $refs!: {
     startDate: Vue & { errorBucket: () => string[] };
+    endDate: Vue & { errorBucket: () => string[] };
   };
 
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
@@ -130,14 +123,21 @@ export default class ATATDatePicker extends Vue {
     return this.dateRange.every((d) => d !== "");
   }
 
-  // get errorMessages(): string[] {
-  //   this.$vm.$refs.startDate.errorBucket
-  // }
-
-  public getErrorMessages() {
-    const startDate: any = this.$refs.startDate.errorBucket;
-    this._errorMessages = startDate;
-    return true;
+  public getErrorMessages(): void {
+    let _messages = [];
+    if (this.$refs.startDate) {
+      const startDate: any = this.$refs.startDate.errorBucket;
+      messages = startDate;
+      // this._errorMessages = startDate.map((em: string) => {
+      //   // em is not in this._errorMessages
+      //   return this._errorMessages.indexOf(em) === -1;
+      // });
+    }
+    if (this.$refs.endDate) {
+      const endDate: any = this.$refs.endDate.errorBucket;
+      messages = endDate;
+      this._errorMessages = endDate;
+    }
   }
 
   @Watch("firstMonth")
