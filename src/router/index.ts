@@ -47,7 +47,7 @@ const routes: Array<RouteConfig> = [
           ),
       },
       {
-        path: "editportfolio:id",
+        path: "editportfolio/:id",
         name: "editPortfolio",
         component: () =>
           import(
@@ -67,12 +67,13 @@ const routes: Array<RouteConfig> = [
         name: "fundingsummary",
         component: () =>
           import(
-            /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
+            /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2Summary.vue"
           ),
       },
       {
-        path: "editfunding:id",
+        path: "editfunding/:id",
         name: "editfunding",
+        props: true,
         component: () =>
           import(
             /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
@@ -86,22 +87,22 @@ const routes: Array<RouteConfig> = [
             /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
           ),
       },
-      {
-        path: "applicationsummary",
-        name: "applicationsummary",
-        component: () =>
-          import(
-            /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
-          ),
-      },
-      {
-        path: "editapplication:id",
-        name: "editapplication",
-        component: () =>
-          import(
-            /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
-          ),
-      },
+      // {
+      //   path: "applicationsummary",
+      //   name: "applicationsummary",
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
+      //     ),
+      // },
+      // {
+      //   path: "editapplication:id",
+      //   name: "editapplication",
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
+      //     ),
+      // },
       {
         path: "addteammembers",
         name: "addteammembers",

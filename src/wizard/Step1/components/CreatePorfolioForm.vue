@@ -59,9 +59,8 @@
             name="dod_components"
             :aria-checked="_dod_components.findIndex((c) => c === dod) > -1"
             @change="checkComponent('checkbox_' + dod.replace(/ /gi, '_'), dod)"
-            
           >
-          <!-- @keyup.enter="checkComponent"   -->
+            <!-- @keyup.enter="checkComponent"   -->
             <!-- @click="dod.checked = !dod.checked"
           @keyup.space="dod.checked = !dod.checked" -->
             <template v-slot:label>

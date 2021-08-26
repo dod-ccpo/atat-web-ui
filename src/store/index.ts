@@ -95,8 +95,16 @@ export default new Vuex.Store({
     getMockTaskOrders(state) {
       return state.taskOrders;
     },
-    // getTaskOrderByName: (state) => (id: string) => {
-
-    // },
+    getTaskOrderByName: (state) => (id: string) => {
+      const values = Object.values(state.taskOrders.details);
+      const taskOrderName = values.filter(
+        (taskorder) => taskorder.task_order_number === id
+      );
+      if (taskOrderName.length > 0) {
+        return taskOrderName[0];
+      } else {
+        return {};
+      }
+    },
   },
 });

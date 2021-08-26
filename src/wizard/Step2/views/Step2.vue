@@ -15,7 +15,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails } from "types/Wizard";
+import { TaskOrderDetails, TaskOrders } from "types/Wizard";
 
 @Component({
   components: {
@@ -71,6 +71,15 @@ export default class Step_2 extends Vue {
     const index = itemNumber - 1;
     if (this.taskOrderDetails.clins.length >= itemNumber) {
       this.taskOrderDetails.clins.splice(index, 1);
+    }
+  }
+
+  mounted() {
+    console.log(this.$route);
+    if (this.$route.name === "editfunding") {
+      this.taskOrderDetails = this.$store.getters.getTaskOrderByName(
+        this.$route.params.id
+      );
     }
   }
 }

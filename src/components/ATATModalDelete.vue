@@ -20,7 +20,7 @@
           id="dialog_ok"
           @click="_showDialog = false"
         >
-        <!-- todo will have to emit OK event back to the parent  -->
+          <!-- todo will have to emit OK event back to the parent  -->
           {{ okText }}
         </v-btn>
       </v-card-actions>

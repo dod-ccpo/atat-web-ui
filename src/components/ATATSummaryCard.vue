@@ -161,9 +161,21 @@ export default class ATATSummaryCard extends VCard {
     return true;
   }
 
-  @Emit()
   private leftButtonClicked(card: ATATSummaryCardItem) {
-    return true;
+    let id = card.title;
+    switch (this.$route.name) {
+      case "fundingsummary":
+        this.$router.push({ name: "editfunding", params: { id: `${id}` } });
+        break;
+      case "applicationsummary":
+        this.$router.push({
+          name: "editapplication",
+          params: { id: `${id}` },
+        });
+        break;
+      default:
+      // code block
+    }
   }
 
   @Emit()

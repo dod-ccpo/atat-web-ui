@@ -110,6 +110,7 @@ import Vue from "vue";
 import {
   ATATSummaryCardItem,
   ATATSummaryCards,
+  TaskOrderDetails,
   TaskOrders,
 } from "types/Wizard";
 import { Component } from "vue-property-decorator";
