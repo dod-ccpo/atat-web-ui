@@ -19,7 +19,7 @@
                 :key="'stepper_' + index"
                 :complete="isStepComplete(index)"
                 :rules="[() => index + 1 !== 4]"
-                @click="clickedAction(index + 1, this)"
+                @click="$router.push({ name: step.name })"
                 :error-icon="'  '"
                 :edit-icon="'  '"
                 :complete-icon="'  '"
@@ -68,10 +68,12 @@ export default class StepperNavigation extends Vue {
       {
         step: 1,
         description: "Create Portfolio",
+        name: "createPortfolio",
       },
       {
         step: 2,
         description: "Add Funding",
+        name: "addfunding",
       },
       {
         step: 3,

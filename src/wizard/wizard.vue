@@ -5,16 +5,17 @@
       :current-step-number.sync="stepNumber"
       @clicked-action="goToStep"
     />
-    <Step1 ref="stepOne" v-if="stepNumber === 1" />
-    <Step2 ref="stepTwo" v-if="stepNumber === 2 && !showSummary" />
-    <Step2Summary
-      ref="stepTwoSummary"
-      v-if="stepNumber === 2 && showSummary"
-      @clicked-action="getRoute"
-    />
-    <Step3 v-if="stepNumber === 3" />
-    <Step4 v-if="stepNumber === 4" />
-    <Step5 v-if="stepNumber === 5" />
+    <router-view></router-view>
+    <!--    <Step1 ref="stepOne" v-if="stepNumber === 1" />-->
+    <!--    <Step2 ref="stepTwo" v-if="stepNumber === 2 && !showSummary" />-->
+    <!--    <Step2Summary-->
+    <!--      ref="stepTwoSummary"-->
+    <!--      v-if="stepNumber === 2 && showSummary"-->
+    <!--      @clicked-action="getRoute"-->
+    <!--    />-->
+    <!--    <Step3 v-if="stepNumber === 3" />-->
+    <!--    <Step4 v-if="stepNumber === 4" />-->
+    <!--    <Step5 v-if="stepNumber === 5" />-->
     <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
   </v-container>
 </template>

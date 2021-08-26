@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
+import ViewPortfolio from "@/wizard/Step0/components/ViewPortfolio/ViewPortfolio.vue";
 
 Vue.use(VueRouter);
 
@@ -36,6 +37,32 @@ const routes: Array<RouteConfig> = [
     name: "wizard",
     component: () =>
       import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
+    children: [
+      {
+        path: "",
+        name: "createPortfolio",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"
+          ),
+      },
+      {
+        path: "editportfolio:id",
+        name: "editPortfolio",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"
+          ),
+      },
+      {
+        path: "addfunding",
+        name: "addfunding",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
+          ),
+      },
+    ],
   },
   {
     path: "/portfolios",
