@@ -23,8 +23,13 @@
               <h3 class="h3">{{ step.title }}</h3>
               <v-divider :key="'divider_' + index"></v-divider>
             </v-stepper-step>
-            <v-stepper-content :step="index + 1" :key="'stepper_' + index">
-              content here
+            <v-stepper-content :step="index + 1" :key="'step_' + index">
+              <summary-card
+                v-if="step.type === 'summaryCard'"
+                :title="step.data.title"
+                :description="step.data.description"
+                :items="step.data.items"
+              ></summary-card>
             </v-stepper-content>
           </template>
         </v-stepper>
@@ -36,17 +41,20 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
-import {
-  ATATSummaryCardItem,
-  ATATSummaryCards,
-} from "types/Wizard";
+import SummaryCard from "./SummaryCard.vue";
 
 interface SummaryStep {
   step: number;
   title: string;
+  type?: string;
+  data?: Record<string, unknown>;
 }
 
-@Component({})
+@Component({
+  components: {
+    summaryCard: SummaryCard,
+  },
+})
 export default class SummaryStepper extends Vue {
   @PropSync("stepNumber", { default: 1 }) private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
@@ -54,6 +62,22 @@ export default class SummaryStepper extends Vue {
     {
       step: 1,
       title: "Portfolio Details",
+      type: "summaryCard",
+      data: {
+        title: "Defense Logistics Agency",
+        description:
+          "This portfolio will be used to build, test and manage the native applications for the defense logistics agency.",
+        items: [
+          {
+            prefix: "Funded by",
+            value: "Air Force, Marine Corps",
+          },
+          {
+            prefix: "Deploy to",
+            value: "CSP 1",
+          },
+        ],
+      },
     },
     {
       step: 2,
