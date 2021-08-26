@@ -1,5 +1,5 @@
 <template>
-  <div class="permission-table">
+  <div class="review-table">
     <v-card class="mt-4" elevation="2" max-width="100%">
       <v-card-title class="d-flex justify-space-between">
         <span class="h4">{{ name }}</span>
@@ -20,7 +20,12 @@
               <tr>
                 <th id="name">
                   <span
-                    class="pl-2 text-left text--base-dark label font-weight-black"
+                    class="
+                      pl-2
+                      text-left text--base-dark
+                      label
+                      font-weight-black
+                    "
                   >
                     Name
                   </span>
@@ -34,7 +39,12 @@
                 </th>
                 <th id="environment">
                   <span
-                    class="pr-2 text-left text--base-dark label font-weight-black"
+                    class="
+                      pr-2
+                      text-left text--base-dark
+                      label
+                      font-weight-black
+                    "
                   >
                     Environment Access
                   </span>

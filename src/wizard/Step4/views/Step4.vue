@@ -14,7 +14,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import PermissionsTable from "@/wizard/Step1/components/PermissionsTable.vue";
+import PermissionsTable from "@/wizard/Step5/components/PermissionsTable.vue";
 import { Portfolios } from "@/../types/Portfolios";
 
 @Component({
