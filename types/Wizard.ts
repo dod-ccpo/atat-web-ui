@@ -165,3 +165,10 @@ export interface ATATSummaryCardGroupedItems {
 export interface ATATSummaryCards {
   cards: ATATSummaryCardItem[];
 }
+
+export interface CustomErrorMessage {
+  key: number;
+  message: string;
+  description?: string;
+}
+

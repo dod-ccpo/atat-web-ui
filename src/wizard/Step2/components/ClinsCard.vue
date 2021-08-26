@@ -210,7 +210,9 @@
                             :key="idx"
                           >
                             <div class="error--text">
-                              <div class="v-messages__message">{{ error }}</div>
+                              <div class="v-messages__message">
+                                {{ error.message }}
+                              </div>
                             </div>
                           </div>
                         </v-col>
@@ -381,7 +383,8 @@ export default class ClinsCard extends Vue {
   }
 
   public popStart = [
-    (v: string) =>!!v ||
+    (v: string) =>
+      !!v ||
       "Please enter the start date for your CLIN's period of performance",
   ];
   public popEnd = [

@@ -79,12 +79,13 @@
 import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { CustomErrorMessage } from "types/Wizard";
 
 @Component({})
 export default class ATATDatePicker extends Vue {
   $refs!: {
-    startDate: Vue & { errorBucket: () => string[] };
-    endDate: Vue & { errorBucket: () => string[] };
+    startDate: Vue & { errorBucket: string[] };
+    endDate: Vue & { errorBucket: string[] };
   };
 
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
@@ -100,7 +101,10 @@ export default class ATATDatePicker extends Vue {
   @Prop() private nudgeleft!: string;
   @PropSync("textboxvalue") private _textBoxValue!: string;
   @PropSync("rules") private _rules!: any[];
-  @PropSync("errormessages") private _errorMessages!: string[];
+  @PropSync("errormessages") private _errorMessages!: (
+    | CustomErrorMessage
+    | undefined
+  )[];
 
   private menu = false;
   private minDate = "2020-10-01";
@@ -124,20 +128,39 @@ export default class ATATDatePicker extends Vue {
   }
 
   public getErrorMessages(): void {
-    let _messages = [];
-    if (this.$refs.startDate) {
-      const startDate: any = this.$refs.startDate.errorBucket;
-      messages = startDate;
-      // this._errorMessages = startDate.map((em: string) => {
-      //   // em is not in this._errorMessages
-      //   return this._errorMessages.indexOf(em) === -1;
-      // });
-    }
-    if (this.$refs.endDate) {
-      const endDate: any = this.$refs.endDate.errorBucket;
-      messages = endDate;
-      this._errorMessages = endDate;
-    }
+    let newMessages: (CustomErrorMessage | undefined)[] = [];
+    let oldMessages: (CustomErrorMessage | undefined)[] = [];
+    let errorBucket = this.$refs.startDate
+      ? this.$refs.startDate.errorBucket
+      : this.$refs.endDate.errorBucket;
+    let errorMessagesToKeep: string = this.$refs.startDate ? "end" : "start";
+    let newMessageDescription: string = this.$refs.startDate ? "start" : "end";
+
+    newMessages = this.convertToCustomErrorMessage(
+      errorBucket,
+      newMessageDescription
+    );
+    oldMessages = this._errorMessages.filter(
+      (em) => em?.description === errorMessagesToKeep
+    );
+    this._errorMessages = [];
+    this._errorMessages = [...newMessages, ...oldMessages];
+  }
+
+  private convertToCustomErrorMessage(
+    errorMessages: string[],
+    origin: string
+  ): CustomErrorMessage[] {
+    let customErrorMessages: CustomErrorMessage[] = errorMessages.map(
+      (em, idx) => {
+        return {
+          key: idx,
+          message: em,
+          description: origin,
+        };
+      }
+    );
+    return customErrorMessages;
   }
 
   @Watch("firstMonth")
