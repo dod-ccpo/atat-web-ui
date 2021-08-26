@@ -42,8 +42,8 @@
           <hr />
           <v-date-picker
             ref="firstMonth"
-            :min="minDate"
-            :max="maxDate"
+            :min="min"
+            :max="max"
             v-model="_dateRange"
             @input="menu = false"
             class="mr-5 mt-4"
@@ -51,13 +51,15 @@
             no-title
             id="firstMonthDatePicker"
             scrollable
+            @click:date="getSelectedDate"
             :reactive="true"
             :picker-date.sync="firstMonth"
+            transition="false"
           />
           <v-date-picker
             ref="secondMonth"
-            :min="minDate"
-            :max="maxDate"
+            :min="min"
+            :max="max"
             :show-current="false"
             v-model="_dateRange"
             class="ml-5 mt-4"
@@ -65,9 +67,11 @@
             @input="menu = false"
             no-title
             :reactive="true"
+            @click:date="getSelectedDate"
             id="secondMonthDatePicker"
             scrollable
             :picker-date.sync="secondMonth"
+            transition="false"
           />
         </div>
       </v-menu>
@@ -105,11 +109,11 @@ export default class ATATDatePicker extends Vue {
     | CustomErrorMessage
     | undefined
   )[];
+  @Prop({ default: "2020-10-01" }) private min!: string;
+  @Prop({ default: "2021-10-01" }) private max!: string;
 
   private menu = false;
-  private minDate = "2020-10-01";
-  private maxDate = "2021-10-02";
-  private dateRange: string[] = ["2021-05-27", "2021-08-01"];
+  private dateRange: string[] = ["", ""];
 
   private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
@@ -125,6 +129,10 @@ export default class ATATDatePicker extends Vue {
 
   get isDateRangeValid(): boolean {
     return this.dateRange.every((d) => d !== "");
+  }
+
+  public getSelectedDate(selectedDate: string): void {
+    this._date = selectedDate;
   }
 
   public getErrorMessages(): void {
