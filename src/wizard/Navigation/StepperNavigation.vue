@@ -78,14 +78,17 @@ export default class StepperNavigation extends Vue {
       {
         step: 3,
         description: "Add Application",
+        name: "addapplication",
       },
       {
         step: 4,
         description: "Add Team Members",
+        name: "addteammembers",
       },
       {
         step: 5,
         description: "Review and Submit",
+        name: "reviewandsubmit",
       },
     ],
   };
