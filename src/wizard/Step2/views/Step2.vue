@@ -75,7 +75,6 @@ export default class Step_2 extends Vue {
   }
 
   mounted() {
-    console.log(this.$route);
     if (this.$route.name === "editfunding") {
       this.taskOrderDetails = this.$store.getters.getTaskOrderByName(
         this.$route.params.id

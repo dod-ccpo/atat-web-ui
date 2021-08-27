@@ -153,6 +153,18 @@ export default class ATATSummaryCard extends VCard {
 
   private showDialogWhenClicked = false;
 
+  // private taskOrderMessage(card: ATATSummaryCardItem): void {
+  //   if (card.type) {
+  //     this.dialogMessage =
+  //       "This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved";
+  //   }
+  // }
+  // private taskOrderTitle(card: ATATSummaryCardItem): void {
+  //   if (card.type) {
+  //     this.dialogMessage = `Delete Task Order ${card.title}`;
+  //   }
+  // }
+
   // these stubbed in events will have to emit back to the parent
   // might be easier to emit these directly from @click event like this.
   // @click="$emit('update:value', $event.target.value)"
@@ -177,7 +189,6 @@ export default class ATATSummaryCard extends VCard {
       // code block
     }
   }
-
   @Emit()
   private rightButtonClicked(card: ATATSummaryCardItem) {
     this.showDialogWhenClicked = true;

@@ -1,9 +1,9 @@
 <template>
-  <v-flex>
+  <v-container>
     <v-row>
       <v-col cols="10">
         <h2 class="h2">Your Task Order Summary</h2>
-        <p class="my-3" v-show="cardsData.cards.length > 0">
+        <p class="my-3 body-lg" v-show="cardsData.cards.length > 0">
           If you have more Task Orders, <strong>add</strong> them below. You can
           also <strong>edit</strong> or <strong>delete</strong> any of the Task
           Orders you already entered. When you are done, click
@@ -18,7 +18,7 @@
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
-        <v-btn to="#" class="primary" :ripple="false">
+        <v-btn to="/wizard/addfunding" class="primary" :ripple="false">
           <v-icon>control_point</v-icon>
           <div class="ml-2 font-weight-bold">Add a Task Order</div>
         </v-btn>
@@ -36,7 +36,11 @@
           class="p-0 btn-usa-gov-expand h6"
         >
           <span
-            class="USWDC-official-banner__link_msg text-decoration-underline"
+            class="
+              USWDC-official-banner__link_msg
+              text-decoration-underline
+              body-lg
+            "
           >
             Can i add additional funding sources after my Portfolio is
             provisioned?
@@ -76,7 +80,11 @@
           class="p-0 btn-usa-gov-expand h6"
         >
           <span
-            class="USWDC-official-banner__link_msg text-decoration-underline"
+            class="
+              USWDC-official-banner__link_msg
+              text-decoration-underline
+              body-lg
+            "
           >
             What happens to my Portfolio if the period of performance or
             obligated funds expire?
@@ -102,7 +110,7 @@
         </div>
       </v-col>
     </v-row>
-  </v-flex>
+  </v-container>
 </template>
 
 <script lang="ts">

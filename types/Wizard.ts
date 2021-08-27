@@ -21,7 +21,7 @@ export interface NavigationButtons {
 
 export interface Step {
   id?: number;
-  name: string;
+  name?: string;
   step: number;
   description: string;
   primary?: boolean;

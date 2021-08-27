@@ -39,8 +39,8 @@ const routes: Array<RouteConfig> = [
       import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
     children: [
       {
-        path: "",
-        name: "createPortfolio",
+        path: "addportfolio",
+        name: "addportfolio",
         component: () =>
           import(
             /* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"

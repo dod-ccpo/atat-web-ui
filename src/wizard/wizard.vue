@@ -3,7 +3,7 @@
     <Stepper
       :step-number="stepNumber"
       :current-step-number.sync="stepNumber"
-      @clicked-action="goToStep"
+      @clicked-action="getStep"
     />
     <router-view></router-view>
     <!--    <Step1 ref="stepOne" v-if="stepNumber === 1" />-->
@@ -46,7 +46,7 @@ import Step5 from "./Step5/views/Step5.vue";
 })
 export default class Wizard extends Vue {
   private stepNumber = 1;
-
+  private route = "";
   $refs!: {
     stepOne: Step1;
     stepTwo: Step2;
@@ -61,6 +61,7 @@ export default class Wizard extends Vue {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
       let validated: Promise<boolean>;
+      console.log(this.$refs);
       switch (action) {
         case "next":
           if (this.stepNumber === 1) {
@@ -105,8 +106,32 @@ export default class Wizard extends Vue {
       }
     }, this);
   }
-
+  public getStep(currStepNumber: number): void {
+    switch (currStepNumber) {
+      case 1:
+        this.route = "addportfolio";
+        break;
+      case 2:
+        this.route = "addfunding";
+        break;
+      case 3:
+        this.route = "addapplication";
+        break;
+      case 4:
+        this.route = "addteammembers";
+        break;
+      case 5:
+        this.route = "reviewandsubmit";
+        break;
+      default:
+        break;
+    }
+    this.$router.push({ name: `${this.route}` });
+    this.stepNumber = currStepNumber;
+  }
+  // replaced by getstep
   public goToStep(currStepNumber: number): void {
+    console.log("hello");
     this.stepNumber = currStepNumber;
   }
 }
