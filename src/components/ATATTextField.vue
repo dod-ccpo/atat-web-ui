@@ -39,7 +39,7 @@
         :rounded="rounded"
         :value="value"
         hide-details="auto"
-        @keyup="$emit('update:value', $event.target.value)"
+        @blur="$emit('update:value', $event.target.value)"
       >
       </v-text-field>
     </v-flex>

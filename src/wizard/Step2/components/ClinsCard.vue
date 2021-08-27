@@ -121,7 +121,7 @@
                       class="mb-3"
                       id="clin-number"
                       label="CLIN Number"
-                      :rules="rules.clinNumberRule"
+                      :rules="clinNumberValidationRules"
                       :value.sync="_clin_number"
                     />
                     <atat-select
@@ -142,39 +142,41 @@
                 </v-row>
                 <v-row>
                   <v-col cols="11">
-                    <atat-text-field
-                      class="mb-3"
-                      id="total-clin-value"
-                      label="Total CLIN Value"
-                      :rules="rules.totalCLINRule"
-                      :helpText="clinHelpText"
-                      :value.sync="_total_clin_value"
-                      prefix="$"
-                    />
-                    <atat-text-field
-                      class="mb-5"
-                      id="obligated-funds"
-                      label="Obligated Funds"
-                      :rules="rules.obligatedFundsRule"
-                      :helpText="obligatedFundsHelpText"
-                      :value.sync="_obligated_funds"
-                      @onkeyup="calculateObligatedPercent"
-                      prefix="$"
-                    />
-                    <div v-show="obligatedPercent <= 100">
-                      <span class="h4 font-weight-bold"
-                        >{{ obligatedPercent }}%</span
-                      >
-                      of your Total Funds are obligated
-                    </div>
-                    <div id="progressBarWrapper" class="width-100">
-                      <div
-                        id="progressBar"
-                        value="0"
-                        max="100"
-                        ref="progress-bar"
-                      ></div>
-                    </div>
+                    <v-form ref="fundFields">
+                      <atat-text-field
+                        class="mb-3"
+                        id="total-clin-value"
+                        label="Total CLIN Value"
+                        :rules="totalClinRules"
+                        :helpText="clinHelpText"
+                        :value.sync="_total_clin_value"
+                        prefix="$"
+                      />
+                      <atat-text-field
+                        class="mb-5"
+                        id="obligated-funds"
+                        label="Obligated Funds"
+                        :rules="obligatedFundRules"
+                        :helpText="obligatedFundsHelpText"
+                        :value.sync="_obligated_funds"
+                        @onkeyup="calculateObligatedPercent"
+                        prefix="$"
+                      />
+                      <div v-show="obligatedPercent <= 100">
+                        <span class="h4 font-weight-bold"
+                          >{{ obligatedPercent }}%</span
+                        >
+                        of your Total Funds are obligated
+                      </div>
+                      <div id="progressBarWrapper" class="width-100">
+                        <div
+                          id="progressBar"
+                          value="0"
+                          max="100"
+                          ref="progress-bar"
+                        ></div>
+                      </div>
+                    </v-form>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -307,16 +309,21 @@ import moment from "moment";
   components: {},
 })
 export default class ClinsCard extends Vue {
+
   @Prop({ required: true, default: () => -1 }) card_number!: number;
   @PropSync("clin_number", { required: true }) _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
-  @PropSync("total_clin_value", { default: 0 }) _total_clin_value!: number;
-  @PropSync("obligated_funds", { default: 0 }) _obligated_funds!: number;
+  @PropSync("total_clin_value") _total_clin_value!: number;
+  @PropSync("obligated_funds") _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
+  }
+
+  get FundFields(): Vue & { validate: () => boolean } {
+    return this.$refs.fundFields as Vue & { validate: () => boolean };
   }
 
   @Watch("_pop_start_date")
@@ -358,6 +365,7 @@ export default class ClinsCard extends Vue {
   private progress: HTMLProgressElement | undefined;
   private minDate = "2020-01-01";
   private maxDate = "2021-12-31";
+  private rules = {};
 
   public formatCurrency(value: number): string {
     return this.formatter.format(value);
@@ -380,17 +388,66 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  private obligatedFundRulesTemp(): any[] {
-    return [
-      (v: number) => v > 0 || "Please enter a valid number",
-      (v: number) => v !== null || "Please enter your obligated Funds",
-      (v: number) => v < this._total_clin_value ||
-        "Obligated Funds cannot exceed total CLIN Value",
-    ];
+  get obligatedFundRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
+    );
+    validationRules.push(
+      (v: string) => /^\d+$/.test(v) || "Please enter a valid number"
+    );
+    validationRules.push(
+      (v: number) =>
+        v <= this._total_clin_value || "Obligated Funds cannot exceed total CLIN Values"
+    );
+    return validationRules;
+  }
+  get clinNumberValidationRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: string) => v !== "" || "Please enter your 4-digit CLIN Number"
+    );
+    validationRules.push(
+      (v: string) =>
+        /^\d+$/.test(v) || "Please enter a valid 4-digit CLIN Number"
+    );
+    validationRules.push(
+      (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters"
+    );
+    return validationRules;
   }
 
-  get rules(): any {
-    let rules = {
+  get totalClinRules(): any[] {
+    const validationRules = [];
+    validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
+    validationRules.push(
+      (v: string) =>
+        (v !== "" && /^\d+$/.test(v)) || "Please enter a valid number"
+    );
+    validationRules.push(
+      (v: number) =>
+        v >= this._obligated_funds ||
+        "Obligated Funds cannot exceed total CLIN Values"
+    );
+    return validationRules;
+  }
+
+  @Watch("_obligated_funds")
+  validateObligatedFunds(): void {
+    this.$refs.fundFields;
+    this.FundFields.validate();
+  }
+  @Watch("_clin_number")
+  validateClinNumber(): void {
+    this.Form.validate();
+  }
+  @Watch("_total_clin_value")
+  validateTotalClinr(): void {
+    this.FundFields.validate();
+  }
+
+  get getValidationRules(): boolean {
+    this.rules = {
       clinNumberRules: [
         (v: number) => !isNaN(v) || "Please enter your 4-digit CLIN Number",
         (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters",
@@ -398,11 +455,7 @@ export default class ClinsCard extends Vue {
       correspondingIDIQRule: [
         (v: string) => v !== "" || "Please select an IDIQ CLIN type",
       ],
-      // obligatedFundsRule: [
-      //   (v: number) => v > 0 || "Please enter a valid number",
-      //   (v: number) => v !== null || "Please enter your obligated Funds",
-      // ],
-      obligatedFundsRule: this.obligatedFundRulesTemp(),
+
       popStart: [
         (v: string) =>
           v !== "" ||
@@ -435,19 +488,9 @@ export default class ClinsCard extends Vue {
           v === "" ||
           Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
           "The end date must be before or on " + this.JWCCContractEndDate,
-      ],
-      totalCLINRule: [
-        (v: number) => v.toString().length > 0 || "Please enter CLIN value",
-        (v: number) => v > 0 || "Please enter a valid number",
-        (v: number) => {
-          return (
-            v > this._obligated_funds ||
-            "Obligated Funds cannot exceed total CLIN Values"
-          );
-        },
-      ],
+      ]
     };
-    return rules;
+    return true;
   }
 
   public async validateForm(): Promise<boolean> {
