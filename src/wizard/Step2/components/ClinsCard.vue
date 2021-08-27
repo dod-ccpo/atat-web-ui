@@ -155,7 +155,7 @@
                       class="mb-5"
                       id="obligated-funds"
                       label="Obligated Funds"
-                      :rules="obligatedFundsRule"
+                      :rules="rules.obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                       @onkeyup="calculateObligatedPercent"
@@ -225,7 +225,7 @@
                           <atat-date-picker
                             id="startDate"
                             label="Start Date"
-                            :rules="popStartRules"
+                            :rules="rules.popStart"
                             :errormessages.sync="datePickerErrorMessages"
                             title="What is the PoP Start Date?"
                             :daterange.sync="dateRange"
@@ -241,7 +241,7 @@
                             id="endDate"
                             label="End Date"
                             :errormessages.sync="datePickerErrorMessages"
-                            :rules="popEndRules"
+                            :rules="rules.popEnd"
                             :daterange.sync="dateRange"
                             :date.sync="_pop_end_date"
                             title="What is the PoP End Date?"
@@ -310,7 +310,7 @@ export default class ClinsCard extends Vue {
   @Prop({ required: true, default: () => -1 }) card_number!: number;
   @PropSync("clin_number", { required: true }) _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
-  @PropSync("total_clin_value", { required: true }) _total_clin_value!: number;
+  @PropSync("total_clin_value", { default: 0 }) _total_clin_value!: number;
   @PropSync("obligated_funds", { default: 0 }) _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
@@ -359,8 +359,6 @@ export default class ClinsCard extends Vue {
   private minDate = "2020-01-01";
   private maxDate = "2021-12-31";
 
-  public rules = {};
-
   public formatCurrency(value: number): string {
     return this.formatter.format(value);
   }
@@ -382,95 +380,81 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  get popStartRules(): any {
-    let popEndDate = this._pop_end_date;
-    let jwccContractEndDate = this.JWCCContractEndDate;
-    let min = this.minDate;
-    let max = this.maxDate;
+  private obligatedFundRulesTemp(): any[] {
     return [
-      (v: string) =>
-        !!v ||
-        "Please enter the start date for your CLIN's period of performance",
-      (v: string) =>
-        Date.parse(v) > 0 ||
-        "Please enter a start date using the format 'YYYY-MM-DD'",
-      (v: string) =>
-        Date.parse(v) < Date.parse(popEndDate) ||
-        "The PoP end date must be after the start date",
-      (v: string) =>
-        Date.parse(v) < Date.parse(jwccContractEndDate) ||
-        "The start date must be before or on " + jwccContractEndDate,
+      (v: number) => v > 0 || "Please enter a valid number",
+      (v: number) => v !== null || "Please enter your obligated Funds",
+      (v: number) => v < this._total_clin_value ||
+        "Obligated Funds cannot exceed total CLIN Value",
     ];
   }
-  get popEndRules(): any {
-    let popStartDate = this._pop_start_date;
-    let jwccContractEndDate = this.JWCCContractEndDate;
-    return [
-      (v: string) =>
-        !!v ||
-        "Please enter the end date for your CLIN's period of performance",
-      (v: string) =>
-        Date.parse(v) > 0 ||
-        "Please enter an end date using the format 'YYYY-MM-DD'",
-      (v: string) =>
-        Date.parse(v) > Date.parse(popStartDate) ||
-        "The PoP start date must be before the end date",
-      (v: string) =>
-        Date.parse(v) < Date.parse(jwccContractEndDate) ||
-        "The end date must be before or on " + jwccContractEndDate,
-    ];
-  }
-  // (v: string) =>
-  //     v > this._pop_start_date || "the PoP start date be before the end date",
 
-  public obligatedFundsRule = [
-    (v: number) => !!v || "Please enter your obligated Funds",
-    (v: number) => v > 0 || "Please enter a valid number",
-    (v: number) =>
-      v <= this._total_clin_value ||
-      "Obligated Funds cannot exceed total CLIN Value",
-  ];
-
-  public async validateForm(): Promise<boolean> {
-    let validated = false;
-    this.rules = {
-      clinNumberRule: [
-        (v: number) => !!v || "Please enter your 4-digit CLIN Number",
+  get rules(): any {
+    let rules = {
+      clinNumberRules: [
+        (v: number) => !isNaN(v) || "Please enter your 4-digit CLIN Number",
         (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters",
       ],
       correspondingIDIQRule: [
-        (v: string) => !!v || "Please select an IDIQ CLIN type",
+        (v: string) => v !== "" || "Please select an IDIQ CLIN type",
       ],
-      totalCLINRule: [
-        (v: number) => !!v || "Please enter CLIN value",
-        (v: number) => v > 0 || "Please enter a valid number",
-      ],
-      obligatedFundsRule: [
-        (v: number) => !!v || "Please enter your obligated Funds",
-        (v: number) => v > 0 || "Please enter a valid number",
-        (v: number) =>
-          v <= this._total_clin_value ||
-          "Obligated Funds cannot exceed total CLIN Value",
-      ],
+      // obligatedFundsRule: [
+      //   (v: number) => v > 0 || "Please enter a valid number",
+      //   (v: number) => v !== null || "Please enter your obligated Funds",
+      // ],
+      obligatedFundsRule: this.obligatedFundRulesTemp(),
       popStart: [
         (v: string) =>
-          !!v ||
+          v !== "" ||
           "Please enter the start date for your CLIN's period of performance",
+        (v: string) =>
+          Date.parse(v) > 0 ||
+          "Please enter a start date using the format 'YYYY-MM-DD'",
+        (v: string) =>
+          v !== "" ||
+          Date.parse(v) < Date.parse(this._pop_end_date) ||
+          "The PoP end date must be after the start date",
+        (v: string) =>
+          v === "" ||
+          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+          "The start date must be before or on " + this.JWCCContractEndDate,
       ],
       popEnd: [
         (v: string) =>
-          !!v ||
-          "Please enter the End date for your CLIN's period of performance",
+          v !== "" ||
+          "Please enter the end date for your CLIN's period of performance",
         (v: string) =>
-          v > this._pop_start_date ||
-          "the PoP start date be before the end date",
+          v !== "" ||
+          Date.parse(v) > 0 ||
+          "Please enter an end date using the format 'YYYY-MM-DD'",
+        (v: string) =>
+          v !== "" ||
+          Date.parse(v) > Date.parse(this._pop_start_date) ||
+          "The PoP start date must be before the end date",
+        (v: string) =>
+          v === "" ||
+          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+          "The end date must be before or on " + this.JWCCContractEndDate,
+      ],
+      totalCLINRule: [
+        (v: number) => v.toString().length > 0 || "Please enter CLIN value",
+        (v: number) => v > 0 || "Please enter a valid number",
+        (v: number) => {
+          return (
+            v > this._obligated_funds ||
+            "Obligated Funds cannot exceed total CLIN Values"
+          );
+        },
       ],
     };
+    return rules;
+  }
 
+  public async validateForm(): Promise<boolean> {
+    let validated = false;
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
-
     return validated;
   }
 
@@ -483,23 +467,8 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  private updated() {
+  private updated(): void {
     this.calculateObligatedPercent();
   }
 }
 </script>
-<style>
-#progressBarWrapper {
-  border-color: #1b1b1b;
-  background-color: #ddd;
-  height: 16px;
-}
-
-#progressBar {
-  width: 1%;
-  max-width: 100%;
-  margin: 0px;
-  height: 16px !important;
-  background-color: #00a91c;
-}
-</style>

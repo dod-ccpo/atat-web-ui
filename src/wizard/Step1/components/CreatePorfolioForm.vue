@@ -141,7 +141,7 @@ export default class CreatePortfolioForm
     return this.$refs.form as Vue & { validate: () => boolean };
   }
 
-  public mounted() {
+  public mounted(): void {
     this.$http.post("portfolioDrafts?offset=0&limit=20").then((response) => {
       console.log(response);
     });
