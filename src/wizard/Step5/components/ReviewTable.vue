@@ -96,7 +96,7 @@ import {
 } from "types/Portfolios";
 
 @Component({})
-export default class PermissionsTable extends Vue {
+export default class ReviewTable extends Vue {
   @Prop({ default: true }) private sorting!: boolean;
   @Prop({ default: [] }) private data!: ApplicationMember[];
   @Prop({ default: "" }) private name!: string;

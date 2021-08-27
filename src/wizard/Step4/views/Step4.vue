@@ -4,7 +4,7 @@
 
     <strong>Testing table:</strong>
 
-    <PermissionsTable
+    <ReviewTable
       :name="getApplicationUserData.name"
       :data="getApplicationUserData.members"
     />
@@ -14,11 +14,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import PermissionsTable from "@/wizard/Step5/components/PermissionsTable.vue";
+import ReviewTable from "@/wizard/Step5/components/ReviewTable.vue";
 import { Portfolios } from "@/../types/Portfolios";
 
 @Component({
-  components: { PermissionsTable },
+  components: { ReviewTable },
 })
 export default class Step_4 extends Vue {
   get getApplicationUserData(): Portfolios {

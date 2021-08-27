@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
-import PermissionsTable from "@/wizard/Step5/components/PermissionsTable.vue";
+import ReviewTable from "@/wizard/Step5/components/ReviewTable.vue";
 import { applicationMembersMock } from "@/store/mocks/portfoliosMockData";
 
 Vue.use(Vuetify);
@@ -12,7 +12,7 @@ describe("testing render component", () => {
   let wrapper: any;
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(PermissionsTable, {
+    wrapper = mount(ReviewTable, {
       localVue,
       vuetify,
       propsData: {
