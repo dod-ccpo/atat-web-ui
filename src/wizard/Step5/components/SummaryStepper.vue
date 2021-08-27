@@ -24,12 +24,12 @@
               <v-divider :key="'divider_' + index"></v-divider>
             </v-stepper-step>
             <v-stepper-content :step="index + 1" :key="'step_' + index">
-              <summary-card
-                v-if="step.type === 'summaryCard'"
+              <portfolio-summary-card
+                v-if="step.type === 'portfolio'"
                 :title="step.data.title"
                 :description="step.data.description"
                 :items="step.data.items"
-              ></summary-card>
+              ></portfolio-summary-card>
             </v-stepper-content>
           </template>
         </v-stepper>
@@ -41,7 +41,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
-import SummaryCard from "./SummaryCard.vue";
+import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 
 interface SummaryStep {
   step: number;
@@ -52,7 +52,7 @@ interface SummaryStep {
 
 @Component({
   components: {
-    summaryCard: SummaryCard,
+    PortfolioSummaryCard,
   },
 })
 export default class SummaryStepper extends Vue {
@@ -62,7 +62,7 @@ export default class SummaryStepper extends Vue {
     {
       step: 1,
       title: "Portfolio Details",
-      type: "summaryCard",
+      type: "portfolio",
       data: {
         title: "Defense Logistics Agency",
         description:

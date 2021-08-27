@@ -9,39 +9,10 @@
             <span class="link-body-md">Edit</span></v-btn
           >
         </div>
-        <p class="body width-80">
-          {{ description }}
-        </p>
+        <slot name="summary-description"> </slot>
       </v-card-title>
       <v-card-text class="body-lg text--base-darkest">
-        <!-- <v-container fluid>
-          <v-row class="border-0 border-left-4 border-accent-cool border-solid">
-            <v-col cols="3"><strong>Funded by</strong></v-col>
-            <v-col cols="6">Air Force, Marine Corps</v-col>
-          </v-row>
-          <v-row class="border-0 border-left-4 border-accent-cool border-solid">
-            <v-col cols="3"><strong>Deploy to</strong></v-col>
-            <v-col cols="6">CSP 1</v-col>
-          </v-row>
-        </v-container> -->
-        <table
-          class="
-            body-lg
-            black--text
-            border-0 border-solid border-l-4 border-accent-cool
-            pl-2
-            width-60
-          "
-        >
-          <tr v-for="(item, idx) in items" :key="idx">
-            <td v-if="item.value" class="pr-4">
-              <strong>{{ item.prefix }}</strong>
-            </td>
-            <td class="text-left" v-if="item.value">
-              {{ item.value }}
-            </td>
-          </tr>
-        </table>
+        <slot name="summary-body"></slot>
       </v-card-text>
     </v-card>
     <atat-modal-delete

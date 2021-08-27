@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col cols="10">
-        <p class="" v-if="!invalidStepsExist">
+        <p class="" v-if="!invalidStepsExist()">
           In this last step, we will review the information that you provided to
           make sure everything is complete and accurate. Once you have verified
           your Portfolio details, we will be able to provision your cloud
@@ -22,7 +22,11 @@
     </v-row>
     <v-row>
       <v-col>
-        <summary-stepper></summary-stepper>
+        <portfolio-validation-summary
+          v-if="invalidStepsExist()"
+          :items="getValidationResults()"
+        />
+        <summary-stepper v-else></summary-stepper>
       </v-col>
     </v-row>
   </v-container>
@@ -32,15 +36,34 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
+import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
+import { ValidationSummaryItem } from "types/Wizard";
 
 @Component({
   components: {
     SummaryStepper,
+    PortfolioValidationSummary,
   },
 })
 export default class PortfolioSummary extends Vue {
-  public async invalidStepsExist(): Promise<boolean> {
+  public invalidStepsExist(): boolean {
     return false;
+  }
+
+  public getValidationResults(): ValidationSummaryItem[] {
+    debugger;
+    return [
+      {
+        title: "Portfolio Details (or Portfolio Settings)",
+        description: "Ensures your Portfolio is set up correctly",
+        name: "createPortfolio",
+      },
+      {
+        title: "Funding Details",
+        description: "Ensures you have Task Orders to fund your Portfolio",
+        name: "",
+      },
+    ];
   }
 }
 </script>
