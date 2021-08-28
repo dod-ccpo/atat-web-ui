@@ -54,8 +54,6 @@ export default class Wizard extends Vue {
     stepThree: Step3;
   };
 
-  private showSummary = false;
-
   public getRoute(actions: string[]): void {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
@@ -97,6 +95,9 @@ export default class Wizard extends Vue {
             await this.$router.push({ name: "addfunding" });
             this.stepNumber = 2;
           } else if (this.$route.name == "addapplication") {
+            await this.$router.push({ name: "fundingsummary" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "editfunding") {
             await this.$router.push({ name: "fundingsummary" });
             this.stepNumber = 2;
           } else if (this.$route.name == "addteammembers") {
@@ -143,6 +144,37 @@ export default class Wizard extends Vue {
     }
     this.$router.push({ name: `${this.route}` });
     this.stepNumber = currStepNumber;
+  }
+  public checkPath(): void {
+    switch (this.$route.name) {
+      case "addportfolio":
+        this.stepNumber = 1;
+        break;
+      case "addfunding":
+        this.stepNumber = 2;
+        break;
+      case "editfunding":
+        this.stepNumber = 2;
+        break;
+      case "fundingsummary":
+        this.stepNumber = 2;
+        break;
+      case "addapplication":
+        this.stepNumber = 3;
+        break;
+      case "addteammembers":
+        this.stepNumber = 4;
+        break;
+      case "reviewandsubmit":
+        this.stepNumber = 5;
+        break;
+      default:
+        break;
+    }
+  }
+
+  mounted() {
+    this.checkPath();
   }
 }
 </script>

@@ -59,8 +59,22 @@ export default class Step_1 extends Vue {
     from: Route,
     next: VoidCallback
   ): Promise<void> {
-    console.log("before route leave");
     if (to.name === "addapplication") {
+      next();
+      return;
+    } else if (to.name === "applicationsummary") {
+      next();
+      return;
+    } else if (to.name === "addteammembers") {
+      next();
+      return;
+    } else if (to.name === "reviewandsubmit") {
+      next();
+      return;
+    } else if (to.name === "portfolios") {
+      next();
+      return;
+    } else if (to.name === "createportfolio") {
       next();
       return;
     }

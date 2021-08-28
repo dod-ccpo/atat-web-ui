@@ -16,6 +16,10 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
 import { TaskOrderDetails, TaskOrders } from "types/Wizard";
+import { Route } from "vue-router/types/router";
+interface VoidCallback {
+  (callback: void): void;
+}
 
 @Component({
   components: {
@@ -73,7 +77,35 @@ export default class Step_2 extends Vue {
       this.taskOrderDetails.clins.splice(index, 1);
     }
   }
-
+  public async beforeRouteLeave(
+    to: Route,
+    from: Route,
+    next: VoidCallback
+  ): Promise<void> {
+    console.log("before route leave");
+    if (to.name === "addteammembers") {
+      next();
+      return;
+    } else if (to.name === "addportfolio") {
+      next();
+      return;
+    } else if (to.name === "reviewandsubmit") {
+      next();
+      return;
+    } else if (to.name === "portfolios") {
+      next();
+      return;
+    } else if (to.name === "createportfolio") {
+      next();
+      return;
+    } else if (from.name === "editfunding") {
+      next();
+      return;
+    }
+    if (await this.validate()) {
+      next();
+    }
+  }
   mounted() {
     if (this.$route.name === "editfunding") {
       this.taskOrderDetails = this.$store.getters.getTaskOrderByName(
