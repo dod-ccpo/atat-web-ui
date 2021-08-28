@@ -63,35 +63,28 @@ export default class Wizard extends Vue {
       switch (action) {
         case "next":
           if (this.$route.name == "addportfolio") {
-            console.log(this.$route.name);
             await this.$router.push({ name: "addfunding" });
             this.stepNumber = 2;
           } else if (this.$route.name == "addfunding") {
-            console.log(this.$route.name);
             await this.$router.push({ name: "addapplication" });
             this.stepNumber = 3;
-            // } else if (this.route == "fundingsummary") {
-            //   this.stepNumber = 2;
-            //   await this.$router.push({ name: "addapplication" });
-            // } else if (this.route == "addapplication") {
-            //   this.stepNumber = 3;
-            //   await this.$router.push({ name: "addteammembers" });
-            // } else if (this.route == "addteammembers") {
-            //   this.stepNumber = 4;
-            //   await this.$router.push({ name: "reviewandsubmit" });
-            // } else {
-            //   this.stepNumber = 5;
-            //   await this.$router.push({ name: "reviewandsubmit" });
-            // }
+          } else if (this.$route.name == "addapplication") {
+            await this.$router.push({ name: "addteammembers" });
+            this.stepNumber = 4;
+          } else if (this.$route.name == "addteammembers") {
+            await this.$router.push({ name: "reviewandsubmit" });
+            this.stepNumber = 5;
           }
           break;
         case "summary":
           if (this.$route.name == "addfunding") {
-            console.log("here");
             await this.$router.push({ name: "fundingsummary" });
-          } else if (this.$route.name == "addapplication") {
-            //     this.stepNumber = 2;
-            //     await this.$router.push({ name: "applicationsummary" });
+          } else if (this.$route.name == "editfunding") {
+            await this.$router.push({ name: "fundingsummary" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "fundingsummary") {
+            await this.$router.push({ name: "addapplication" });
+            this.stepNumber = 3;
           }
           break;
         case "previous":
@@ -99,23 +92,27 @@ export default class Wizard extends Vue {
             return;
           } else if (this.$route.name == "addfunding") {
             await this.$router.push({ name: "addportfolio" });
+            this.stepNumber = 1;
           } else if (this.$route.name == "fundingsummary") {
             await this.$router.push({ name: "addfunding" });
-            // } else if (this.$route.name == "addapplication") {
-            //   await this.$router.push({ name: "fundingsummary" });
-            // } else if (this.$route.name == "addteammembers") {
-            //   await this.$router.push({ name: "addapplication" });
-            // } else if (this.$route.name == "reviewandsubmit") {
-            //   await this.$router.push({ name: "addteammembers" });
-            // }
+            this.stepNumber = 2;
+          } else if (this.$route.name == "addapplication") {
+            await this.$router.push({ name: "fundingsummary" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "addteammembers") {
+            await this.$router.push({ name: "addapplication" });
+            this.stepNumber = 3;
+          } else if (this.$route.name == "reviewandsubmit") {
+            await this.$router.push({ name: "addteammembers" });
+            this.stepNumber = 4;
           }
           break;
         case "cancel":
-          await this.$router.push("portfolios");
+          await this.$router.push({ name: "portfolios" });
           break;
         case "save":
           alert("Data has been validated and is to be saved");
-          await this.$router.push("portfolios");
+          await this.$router.push({ name: "portfolios" });
 
           break;
         // case "provision_cloud_resources":
