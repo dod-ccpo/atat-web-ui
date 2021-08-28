@@ -61,29 +61,34 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="isNoButtonClicked">
-      <v-col class="d-flex justify-center py-0">
-        <v-alert
-          :icon="false"
-          outlined
-          type="error"
-          class="error_lighter black--text body-lg black-icon"
-          border="left"
-        >
-          <div class="d-flex align-start">
-            <v-icon class="ml-5 mr-4 mt-1 icon-20">error</v-icon>
-            <div>
-              <div class="h3 black--text">
-                You must be authorized to submit this portfolio
+
+    <v-row style="min-height: 125px">
+      <v-col class="d-flex justify-start py-0">
+        <v-expand-transition>
+          <div v-if="isNoButtonClicked">
+            <v-alert
+              :icon="false"
+              outlined
+              type="error"
+              class="error_lighter black--text body-lg black-icon mx-auto"
+              border="left"
+            >
+              <div class="d-flex align-start">
+                <v-icon class="ml-5 mr-4 mt-1 icon-20">error</v-icon>
+                <div>
+                  <div class="h3 black--text">
+                    You must be authorized to submit this portfolio
+                  </div>
+                  <div class="body-lg black--text mt-1">
+                    Please contact your Contracting Officer to obtain
+                    authorization to submit government funds and proceed with
+                    provisioning cloud resources.
+                  </div>
+                </div>
               </div>
-              <div class="body-lg black--text mt-1">
-                Please contact your Contracting Officer to obtain authorization
-                to submit government funds and proceed with provisioning cloud
-                resources.
-              </div>
-            </div>
+            </v-alert>
           </div>
-        </v-alert>
+        </v-expand-transition>
       </v-col>
     </v-row>
   </v-container>
