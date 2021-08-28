@@ -1,7 +1,7 @@
 <template>
   <summary-card :title="title" :items="items">
     <template slot="summary-description">
-      <p class="body width-80">
+      <p class="body-lg width-80 word-break-normal">
         {{ description }}
       </p>
     </template>

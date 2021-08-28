@@ -4,8 +4,7 @@
       <v-col cols="12">
         <v-stepper
           :flat="true"
-          width="100%"
-          class="summary-stepper"
+          class="summary-stepper width-100"
           v-model="_stepNumber"
           vertical
           non-linear
@@ -19,8 +18,15 @@
               :error-icon="'  '"
               :edit-icon="'  '"
               :complete-icon="'  '"
+              :ref="'step' + index + 1"
             >
-              <h3 class="h3">{{ step.title }}</h3>
+              <a
+                href="##"
+                class="h3 step-description black--text no-text-decoration"
+                @click="stepperClicked('step0' + (index + 1))"
+              >
+                {{ step.title }}
+              </a>
               <v-divider :key="'divider_' + index"></v-divider>
             </v-stepper-step>
             <v-stepper-content :step="index + 1" :key="'step_' + index">
@@ -42,13 +48,7 @@
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
-
-interface SummaryStep {
-  step: number;
-  title: string;
-  type?: string;
-  data?: Record<string, unknown>;
-}
+import { SummaryStep } from "types/Wizard";
 
 @Component({
   components: {
@@ -58,6 +58,31 @@ interface SummaryStep {
 export default class SummaryStepper extends Vue {
   @PropSync("stepNumber", { default: 1 }) private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
+  $refs!: {
+    step01: Vue & { $el: HTMLElement };
+    step02: Vue & { $el: HTMLElement };
+    step03: Vue & { $el: HTMLElement };
+    step04: Vue & { $el: HTMLElement };
+  };
+
+  // keyboard navigation
+  // enables user to tab to stepper label and click stepper
+  public stepperClicked(stepper: string): void {
+    switch (stepper) {
+      case "step01":
+        this.$refs.step01.$el.click();
+        break;
+      case "step02":
+        this.$refs.step02.$el.click();
+        break;
+      case "step03":
+        this.$refs.step03.$el.click();
+        break;
+      case "step04":
+        this.$refs.step04.$el.click();
+        break;
+    }
+  }
   public stepperControl: SummaryStep[] = [
     {
       step: 1,
@@ -94,17 +119,3 @@ export default class SummaryStepper extends Vue {
   ];
 }
 </script>
-
-<style lang="scss" scoped>
-// .summary-stepper {
-//   .v-stepper__wrapper {
-//     transition: none !important;
-//   }
-
-//   .v-stepper__step--editable:hover {
-//     color: inherit;
-//     border: inherit;
-//     background: inherit;
-//   }
-// }
-</style>

@@ -107,6 +107,13 @@ export interface Stepper {
   Steps: Step[];
 }
 
+export interface SummaryStep {
+  step: number;
+  title: string;
+  type?: string;
+  data?: Record<string, unknown>;
+}
+
 /**
  * Model to represent Portfolio data
  *
@@ -181,3 +188,4 @@ export interface ValidationSummaryItem {
     description?: string;
     name: string;
 }
+

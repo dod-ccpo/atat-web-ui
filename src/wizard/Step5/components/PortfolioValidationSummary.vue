@@ -7,7 +7,7 @@
             <div class="d-flex w-100 justify-space-between">
               <div>
                 <h4 class="h4">{{ item.title }}</h4>
-                <p class="body">{{ item.description }}</p>
+                <p class="body-lg">{{ item.description }}</p>
               </div>
               <div class="d-flex align-center w-100 mb-4">
                 <div class="d-flex text-base-error-darker mr-6">

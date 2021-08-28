@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col cols="10">
-        <p class="" v-if="!invalidStepsExist()">
+        <p class="body-lg" v-if="!invalidStepsExist()">
           In this last step, we will review the information that you provided to
           make sure everything is complete and accurate. Once you have verified
           your Portfolio details, we will be able to provision your cloud
