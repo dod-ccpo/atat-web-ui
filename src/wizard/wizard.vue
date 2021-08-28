@@ -57,52 +57,70 @@ export default class Wizard extends Vue {
   private showSummary = false;
 
   public getRoute(actions: string[]): void {
-    this.showSummary = false;
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-      let validated: Promise<boolean>;
-      console.log(this.$refs);
+      console.log(action);
       switch (action) {
         case "next":
-          if (this.stepNumber === 1) {
-            validated = this.$refs.stepOne.validate();
-
-            if (await validated) {
-              alert("Data has been validated and is to be saved");
-              this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
-            }
-          } else if (this.stepNumber === 2) {
-            validated = this.$refs.stepTwo.validate();
-
-            if (await validated) {
-              alert("Data has been validated and is to be saved");
-              this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
-            }
-          } else {
-            this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
+          if (this.$route.name == "addportfolio") {
+            console.log(this.$route.name);
+            await this.$router.push({ name: "addfunding" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "addfunding") {
+            console.log(this.$route.name);
+            await this.$router.push({ name: "addapplication" });
+            this.stepNumber = 3;
+            // } else if (this.route == "fundingsummary") {
+            //   this.stepNumber = 2;
+            //   await this.$router.push({ name: "addapplication" });
+            // } else if (this.route == "addapplication") {
+            //   this.stepNumber = 3;
+            //   await this.$router.push({ name: "addteammembers" });
+            // } else if (this.route == "addteammembers") {
+            //   this.stepNumber = 4;
+            //   await this.$router.push({ name: "reviewandsubmit" });
+            // } else {
+            //   this.stepNumber = 5;
+            //   await this.$router.push({ name: "reviewandsubmit" });
+            // }
+          }
+          break;
+        case "summary":
+          if (this.$route.name == "addfunding") {
+            console.log("here");
+            await this.$router.push({ name: "fundingsummary" });
+          } else if (this.$route.name == "addapplication") {
+            //     this.stepNumber = 2;
+            //     await this.$router.push({ name: "applicationsummary" });
           }
           break;
         case "previous":
-          this.stepNumber = this.stepNumber > 1 ? this.stepNumber - 1 : 1;
+          if (this.$route.name == "addportfolio") {
+            return;
+          } else if (this.$route.name == "addfunding") {
+            await this.$router.push({ name: "addportfolio" });
+          } else if (this.$route.name == "fundingsummary") {
+            await this.$router.push({ name: "addfunding" });
+            // } else if (this.$route.name == "addapplication") {
+            //   await this.$router.push({ name: "fundingsummary" });
+            // } else if (this.$route.name == "addteammembers") {
+            //   await this.$router.push({ name: "addapplication" });
+            // } else if (this.$route.name == "reviewandsubmit") {
+            //   await this.$router.push({ name: "addteammembers" });
+            // }
+          }
           break;
         case "cancel":
-          this.$router.push("portfolios");
+          await this.$router.push("portfolios");
           break;
         case "save":
-          validated = this.$refs.stepOne.validate();
-          if (await validated) {
-            alert("Data has been validated and is to be saved");
-            this.$router.push("portfolios");
-          }
+          alert("Data has been validated and is to be saved");
+          await this.$router.push("portfolios");
+
           break;
         // case "provision_cloud_resources":
         //   alert("All is complete. Cloud resources are to be provisioned.");
         //   break;
-        case "summary":
-          this.showSummary = true;
-          break;
-        default:
-          break;
       }
     }, this);
   }
@@ -127,11 +145,6 @@ export default class Wizard extends Vue {
         break;
     }
     this.$router.push({ name: `${this.route}` });
-    this.stepNumber = currStepNumber;
-  }
-  // replaced by getstep
-  public goToStep(currStepNumber: number): void {
-    console.log("hello");
     this.stepNumber = currStepNumber;
   }
 }

@@ -13,14 +13,18 @@
     />
   </div>
 </template>
-
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
 import { CreatePortfolioFormModel } from "types/Wizard";
-
+import { Route } from "vue-router/types/router";
+interface VoidCallback {
+  (callback: void): void;
+}
+// Register the router hooks with their names
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   components: {
     CreatePortfolioForm,
@@ -32,28 +36,37 @@ export default class Step_1 extends Vue {
     createPortfolioForm: CreatePortfolioForm;
     cloudServiceProviderForm: CloudServiceProvider;
   };
-
   private model: CreatePortfolioFormModel = {
     name: "",
     description: "",
     dod_components: [],
     csp: [],
   };
-
   public async validate(): Promise<boolean> {
     const createPortofolioValidation =
       this.$refs.createPortfolioForm.validateForm();
     const cloudServiceProviderValidation =
       this.$refs.cloudServiceProviderForm.validateForm();
-
     let valid = false;
-
     await Promise.all([
       createPortofolioValidation,
       cloudServiceProviderValidation,
     ]).then((values) => (valid = values.every((value) => value)));
-
     return valid;
+  }
+  public async beforeRouteLeave(
+    to: Route,
+    from: Route,
+    next: VoidCallback
+  ): Promise<void> {
+    console.log("before route leave");
+    if (to.name === "addapplication") {
+      next();
+      return;
+    }
+    if (await this.validate()) {
+      next();
+    }
   }
 }
 </script>
