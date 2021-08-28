@@ -1,9 +1,17 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="clins-card width-100" style="width:900px !important;">
+    <v-container
+      fluid
+      class="clins-card width-100"
+      style="width: 900px !important"
+    >
       <v-row>
-        <v-col cols="11" class="width-100 d-block" style="width:900px !important;">
-          <v-expansion-panels > 
+        <v-col
+          cols="11"
+          class="width-100 d-block"
+          style="width: 900px !important"
+        >
+          <v-expansion-panels>
             <v-expansion-panel>
               <v-expansion-panel-header class="body-lg font-weight-bold">
                 <template v-slot:default="{ open }">
@@ -16,7 +24,7 @@
                         `CLIN ${clin_number}`
                       }}</v-col>
                     </v-row>
-                    <v-row v-if="!open &&  _idiq_clin !==''">
+                    <v-row v-if="!open && _idiq_clin !== ''">
                       <v-col cols="1"></v-col>
                       <v-col cols="11">
                         <v-row>
@@ -34,7 +42,9 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body">{{ _idiq_clin }}</v-col>
+                              <v-col class="optional body">{{
+                                _idiq_clin
+                              }}</v-col>
                             </v-row>
                           </v-col>
                           <!-- Total Value -->
@@ -90,8 +100,11 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body" v-if="_pop_start_date!==''">
-                              {{
+                              <v-col
+                                class="optional body"
+                                v-if="_pop_start_date !== ''"
+                              >
+                                {{
                                   `${formatDate(
                                     _pop_start_date
                                   )} - ${formatDate(_pop_end_date)}`
@@ -109,7 +122,7 @@
                 <v-row>
                   <v-col cols="11">
                     <atat-text-field
-                      class="mb-3 "
+                      class="mb-3"
                       id="clin-number"
                       label="CLIN Number"
                       :rules="rules.clinNumberRule"
@@ -142,14 +155,14 @@
                       :value.sync="_total_clin_value"
                     />
                     <atat-text-field
-                    class="mb-5"
+                      class="mb-5"
                       id="obligated-funds"
                       label="Obligated Funds"
                       :rules="rules.obligatedFundsRule"
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                     />
-                    <div v-show="obligatedPrecent" >
+                    <div v-show="obligatedPrecent">
                       <span class="h4 font-weight-bold"
                         >{{ obligatedPrecent }}%</span
                       >
@@ -195,7 +208,6 @@
         >
       </v-row>
     </v-container>
-    
   </v-form>
 </template>
 
