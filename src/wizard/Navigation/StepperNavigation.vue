@@ -58,6 +58,10 @@
 import Vue from "vue";
 import { Component, Prop, Emit } from "vue-property-decorator";
 import { Stepper } from "types/Wizard";
+import { Route } from "vue-router/types/router";
+interface VoidCallback {
+  (callback: void): void;
+}
 
 @Component({})
 export default class StepperNavigation extends Vue {
@@ -71,7 +75,7 @@ export default class StepperNavigation extends Vue {
       },
       {
         step: 2,
-        description: "Add Funding",
+        description: "Add Task Order",
       },
       {
         step: 3,

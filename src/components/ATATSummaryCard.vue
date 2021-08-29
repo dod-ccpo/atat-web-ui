@@ -1,6 +1,18 @@
 <template>
   <div class="d-flex align-start">
     <v-card
+      v-show="data.cards.length === 0"
+      width="100rem"
+      class="v-card ma-9 ml-0 body"
+    >
+      <v-card-text
+        height="3px"
+        class="h5 d-flex justify-center align-center optional"
+        >You currently don't have any {{ emptyCard }} saved</v-card-text
+      >
+    </v-card>
+    <v-card
+      v-show="data.cards.length > 0"
       width="40rem"
       class="v-card ma-9 ml-0 body"
       v-for="(card, index) in data.cards"
@@ -118,6 +130,9 @@ import { VCard } from "vuetify/lib";
 export default class ATATSummaryCard extends VCard {
   @Prop({ default: {}, required: false }) private data!: ATATSummaryCards;
 
+  @Prop({ default: "" })
+  private emptyCard!: string;
+
   @Prop({ default: "Dialog Title" })
   private dialogTitle!: string;
 
@@ -138,6 +153,18 @@ export default class ATATSummaryCard extends VCard {
 
   private showDialogWhenClicked = false;
 
+  // private taskOrderMessage(card: ATATSummaryCardItem): void {
+  //   if (card.type) {
+  //     this.dialogMessage =
+  //       "This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved";
+  //   }
+  // }
+  // private taskOrderTitle(card: ATATSummaryCardItem): void {
+  //   if (card.type) {
+  //     this.dialogMessage = `Delete Task Order ${card.title}`;
+  //   }
+  // }
+
   // these stubbed in events will have to emit back to the parent
   // might be easier to emit these directly from @click event like this.
   // @click="$emit('update:value', $event.target.value)"
@@ -146,11 +173,22 @@ export default class ATATSummaryCard extends VCard {
     return true;
   }
 
-  @Emit()
   private leftButtonClicked(card: ATATSummaryCardItem) {
-    return true;
+    let id = card.title;
+    switch (this.$route.name) {
+      case "fundingsummary":
+        this.$router.push({ name: "editfunding", params: { id: `${id}` } });
+        break;
+      case "applicationsummary":
+        this.$router.push({
+          name: "editapplication",
+          params: { id: `${id}` },
+        });
+        break;
+      default:
+      // code block
+    }
   }
-
   @Emit()
   private rightButtonClicked(card: ATATSummaryCardItem) {
     this.showDialogWhenClicked = true;
