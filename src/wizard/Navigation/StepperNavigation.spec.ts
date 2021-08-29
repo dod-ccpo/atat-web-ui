@@ -62,7 +62,7 @@ describe("Testing Button Navigation Bar", () => {
 
   it("get getStepDescription function()", async () => {
     await wrapper.setProps({ stepNumber: 2 });
-    expect(wrapper.vm.getStepDescription()).toBe("Add Funding");
+    expect(wrapper.vm.getStepDescription()).toBe("Add Task Order");
   });
 
   it("get 'get getStepNumber' function()", async () => {
