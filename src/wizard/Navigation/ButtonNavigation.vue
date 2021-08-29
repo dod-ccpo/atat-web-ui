@@ -38,12 +38,13 @@ export default class ButtonNavigation extends Vue {
   }
 
   public isDisabled(text: string): boolean {
-    if (text.toLowerCase() === "next") {
+    if (text.toLowerCase() === "next" && this.$route.name === "postreview") {
       return this.$store.getters.getisUserAuthorizedToProvisionCloudResources
         ? false
         : true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   public wizardNavButtons: NavigationButtons = {

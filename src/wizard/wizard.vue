@@ -6,16 +6,6 @@
       @clicked-action="getStep"
     />
     <router-view></router-view>
-    <!--    <Step1 ref="stepOne" v-if="stepNumber === 1" />-->
-    <!--    <Step2 ref="stepTwo" v-if="stepNumber === 2 && !showSummary" />-->
-    <!--    <Step2Summary-->
-    <!--      ref="stepTwoSummary"-->
-    <!--      v-if="stepNumber === 2 && showSummary"-->
-    <!--      @clicked-action="getRoute"-->
-    <!--    />-->
-    <!--    <Step3 v-if="stepNumber === 3" />-->
-    <!--    <Step4 v-if="stepNumber === 4" />-->
-    <!--    <Step5 v-if="stepNumber === 5" />-->
     <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
   </v-container>
 </template>
@@ -94,16 +84,16 @@ export default class Wizard extends Vue {
         case "previous":
           if (this.$route.name == "addportfolio") {
             return;
-          } else if (this.$route.name == "addfunding") {
+          } else if (this.$route.name === "addfunding") {
             await this.$router.push({ name: "addportfolio" });
             this.stepNumber = 1;
-          } else if (this.$route.name == "fundingsummary") {
+          } else if (this.$route.name === "fundingsummary") {
             await this.$router.push({ name: "addfunding" });
             this.stepNumber = 2;
-          } else if (this.$route.name == "addapplication") {
-            await this.$router.push({ name: "fundingsummary" });
-            this.stepNumber = 2;
-          } else if (this.$route.name == "editfunding") {
+          } else if (
+            this.$route.name === "addapplication" ||
+            this.$route.name === "editfunding"
+          ) {
             await this.$router.push({ name: "fundingsummary" });
             this.stepNumber = 2;
           } else if (this.$route.name == "addteammembers") {
