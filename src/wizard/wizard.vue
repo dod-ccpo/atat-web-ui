@@ -72,6 +72,12 @@ export default class Wizard extends Vue {
           } else if (this.$route.name == "addteammembers") {
             await this.$router.push({ name: "reviewandsubmit" });
             this.stepNumber = 5;
+          } else if (this.$route.name == "reviewandsubmit") {
+            await this.$router.push({ name: "postreview" });
+            this.stepNumber = 5;
+          } else if (this.$route.name == "postreview") {
+            await this.$router.push({ name: "submit" });
+            this.stepNumber = 5;
           }
           break;
         case "summary":
@@ -106,7 +112,14 @@ export default class Wizard extends Vue {
           } else if (this.$route.name == "reviewandsubmit") {
             await this.$router.push({ name: "addteammembers" });
             this.stepNumber = 4;
+          } else if (this.$route.name == "postreview") {
+            await this.$router.push({ name: "reviewandsubmit" });
+            this.stepNumber = 5;
+          } else if (this.$route.name == "submit") {
+            await this.$router.push({ name: "postreview" });
+            this.stepNumber = 5;
           }
+
           break;
         case "cancel":
           await this.$router.push({ name: "portfolios" });
@@ -116,9 +129,6 @@ export default class Wizard extends Vue {
           await this.$router.push({ name: "portfolios" });
 
           break;
-        // case "provision_cloud_resources":
-        //   alert("All is complete. Cloud resources are to be provisioned.");
-        //   break;
       }
     }, this);
   }
@@ -168,12 +178,18 @@ export default class Wizard extends Vue {
       case "reviewandsubmit":
         this.stepNumber = 5;
         break;
+      case "postreview":
+        this.stepNumber = 5;
+        break;
+      case "submit":
+        this.stepNumber = 5;
+        break;
       default:
         break;
     }
   }
 
-  mounted() {
+  mounted(): void {
     this.checkPath();
   }
 }
