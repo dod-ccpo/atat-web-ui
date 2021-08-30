@@ -7,8 +7,6 @@ module.exports = {
 
   test_settings: {
     default: {
-      //launch_url: "https://atatdev1.z13.web.core.windows.net",
-      //launch_url: "http://localhost:8080"
       launch_url: "${VUE_DEV_SERVER_URL}",
       globals: {
         waitForConditionTimeout: 5000,
@@ -22,8 +20,6 @@ module.exports = {
         port: 4444,
         server_path: require("selenium-server").path,
         cli_args: {
-          // "webdriver.gecko.driver": require("geckodriver").path,
-          // "webdriver.chrome.driver": require("chromedriver").path,
           "webdriver.ie.driver":
             process.platform === "win32" ? require("iedriver").path : "",
         },
@@ -49,15 +45,10 @@ module.exports = {
       selenium_host: "127.0.0.1",
       slient: false,
       default_path_prefix: "",
-      //server_path: "C:\\Windows\system32\\MicrosoftWebDriver.exe", //require("MicrosoftWebDriver").path,
-      // cli_args: ["--verbose"],
       desiredCapabilities: {
         browserName: "MicrosoftEdge",
         javascriptEnabled: true,
         acceptSslCerts: true,
-        // edgeOptions: {
-        //     w3c: false,
-        // },
       },
     },
 
