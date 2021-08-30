@@ -156,10 +156,10 @@ export default class ATATSummaryCard extends VCard {
   // these stubbed in events will have to emit back to the parent
   // might be easier to emit these directly from @click event like this.
   // @click="$emit('update:value', $event.target.value)"
-  @Emit()
-  private titleClick(card: ATATSummaryCardItem) {
-    return true;
-  }
+  // @Emit()
+  // private titleClick(card: ATATSummaryCardItem) {
+  //   return true;
+  // }
 
   private leftButtonClicked(card: ATATSummaryCardItem) {
     let id = card.title;

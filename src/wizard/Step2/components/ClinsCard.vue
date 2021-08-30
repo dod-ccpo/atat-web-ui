@@ -254,7 +254,7 @@ export default class ClinsCard extends Vue {
     minimumFractionDigits: 2,
   });
 
-  public progressEvent() {
+  public progressEvent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
     const width = (this._obligated_funds / this._total_clin_value) * 100;
     progress.style.width = width + "%";

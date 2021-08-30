@@ -173,7 +173,7 @@ export default class Wizard extends Vue {
     }
   }
 
-  mounted() {
+  mounted(): void {
     this.checkPath();
   }
 }

@@ -15,14 +15,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
-import { CreatePortfolioFormModel } from "types/Wizard";
+import { CreatePortfolioFormModel, VoidCallback } from "types/Wizard";
 import { Route } from "vue-router/types/router";
-interface VoidCallback {
-  (callback: void): void;
-}
+
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
 @Component({

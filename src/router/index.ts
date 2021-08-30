@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
-import ViewPortfolio from "@/wizard/Step0/components/ViewPortfolio/ViewPortfolio.vue";
 
 Vue.use(VueRouter);
 
