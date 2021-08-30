@@ -21,12 +21,6 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "valid-typeof": "warn",
-    "prettier/prettier": [
-      "error",
-      {
-        endOfLine: "auto",
-      },
-    ],
   },
   overrides: [
     {
