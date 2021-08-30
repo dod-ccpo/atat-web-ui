@@ -75,7 +75,7 @@ export default class StepperNavigation extends Vue {
       },
       {
         step: 2,
-        description: "Add Task Order",
+        description: "Add Funding",
       },
       {
         step: 3,
