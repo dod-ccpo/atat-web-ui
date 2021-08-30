@@ -29,9 +29,9 @@ export default new Vuex.Store({
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
     },
-    changeisUserAuthorizedToProvisionCloudResources(state, status: boolean){
+    changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
-    }
+    },
   },
   actions: {
     login({ commit }) {
@@ -41,19 +41,19 @@ export default new Vuex.Store({
       commit("changeLoginStatus", false);
       window.sessionStorage.clear();
     },
-    authorizeUser({ commit }){
-      commit("changeisUserAuthorizedToProvisionCloudResources", true)
+    authorizeUser({ commit }) {
+      commit("changeisUserAuthorizedToProvisionCloudResources", true);
     },
-    unauthorizeUser({ commit }){
-      commit("changeisUserAuthorizedToProvisionCloudResources", false)
-    }
+    unauthorizeUser({ commit }) {
+      commit("changeisUserAuthorizedToProvisionCloudResources", false);
+    },
   },
   modules: {},
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;
     },
-    getisUserAuthorizedToProvisionCloudResources(state){
+    getisUserAuthorizedToProvisionCloudResources(state) {
       return state.isUserAuthorizedToProvisionCloudResources;
     },
     getNavBarItems(): Navs {
@@ -115,6 +115,13 @@ export default new Vuex.Store({
       } else {
         return {};
       }
+    },
+    deleteTaskOrderByName: (state) => (id: string) => {
+      const values = Object.values(state.taskOrders.details);
+      const updatedArray = values.filter(
+        (taskorder) => taskorder.task_order_number !== id
+      );
+      return updatedArray;
     },
   },
 });

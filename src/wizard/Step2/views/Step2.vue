@@ -15,11 +15,8 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails } from "types/Wizard";
+import { TaskOrderDetails, VoidCallback } from "types/Wizard";
 import { Route } from "vue-router/types/router";
-interface VoidCallback {
-  (callback: void): void;
-}
 
 @Component({
   components: {
@@ -82,7 +79,6 @@ export default class Step_2 extends Vue {
     from: Route,
     next: VoidCallback
   ): Promise<void> {
-    console.log("before route leave");
     if (to.name === "addteammembers") {
       next();
       return;
@@ -102,9 +98,9 @@ export default class Step_2 extends Vue {
       next();
       return;
     }
-    if (await this.validate()) {
-      next();
-    }
+    // if (await this.validate()) {
+    //   next();
+    // }
   }
   mounted(): void {
     if (this.$route.name === "editfunding") {

@@ -166,3 +166,7 @@ export interface ATATSummaryCardGroupedItems {
 export interface ATATSummaryCards {
   cards: ATATSummaryCardItem[];
 }
+
+export interface VoidCallback {
+  (callback: void): void;
+}

@@ -98,7 +98,7 @@ export default class CreatePortfolioForm
     "Other",
   ];
 
-  private checkboxClicked(cbRef: string) {
+  private checkboxClicked() {
     //this.$refs(cbRef)
     // console.log(this.$refs[cbRef]);
     // // alert("hi there");

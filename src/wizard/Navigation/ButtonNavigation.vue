@@ -60,7 +60,7 @@ export default class ButtonNavigation extends Vue {
           },
           {
             id: "add_funding",
-            text: "Next: Add Funding",
+            text: "Next: Add Task Order",
             color: "primary",
             action: ["next"],
           },

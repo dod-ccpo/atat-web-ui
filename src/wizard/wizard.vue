@@ -47,7 +47,6 @@ export default class Wizard extends Vue {
   public getRoute(actions: string[]): void {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-      console.log(action);
       switch (action) {
         case "next":
           if (this.$route.name === "addportfolio") {

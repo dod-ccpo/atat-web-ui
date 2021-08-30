@@ -31,16 +31,16 @@
             <v-icon class="ml-5 mr-4 icon-24">error</v-icon>
             <div class="black--text body-lg">
               ATAT is not a system of record. After provisioning, your portfolio
-              details in ATAT may be different than your cloud console.  Learn
+              details in ATAT may be different than your cloud console. Learn
               More
             </div>
           </div>
         </v-alert>
       </v-col>
     </v-row>
-     <v-row>
+    <v-row>
       <v-col class="d-flex justify-center">
-       <v-icon color="success" class="icon-200">cloud_upload</v-icon>
+        <v-icon color="success" class="icon-200">cloud_upload</v-icon>
       </v-col>
     </v-row>
   </v-container>
