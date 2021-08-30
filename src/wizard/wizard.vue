@@ -6,16 +6,6 @@
       @clicked-action="getStep"
     />
     <router-view></router-view>
-    <!--    <Step1 ref="stepOne" v-if="stepNumber === 1" />-->
-    <!--    <Step2 ref="stepTwo" v-if="stepNumber === 2 && !showSummary" />-->
-    <!--    <Step2Summary-->
-    <!--      ref="stepTwoSummary"-->
-    <!--      v-if="stepNumber === 2 && showSummary"-->
-    <!--      @clicked-action="getRoute"-->
-    <!--    />-->
-    <!--    <Step3 v-if="stepNumber === 3" />-->
-    <!--    <Step4 v-if="stepNumber === 4" />-->
-    <!--    <Step5 v-if="stepNumber === 5" />-->
     <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
   </v-container>
 </template>
@@ -57,7 +47,6 @@ export default class Wizard extends Vue {
   public getRoute(actions: string[]): void {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-      console.log(action);
       switch (action) {
         case "next":
           if (this.$route.name == "addportfolio") {

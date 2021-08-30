@@ -79,7 +79,6 @@ export default class Step_2 extends Vue {
     from: Route,
     next: VoidCallback
   ): Promise<void> {
-    console.log("before route leave");
     if (to.name === "addteammembers") {
       next();
       return;
@@ -99,9 +98,9 @@ export default class Step_2 extends Vue {
       next();
       return;
     }
-    if (await this.validate()) {
-      next();
-    }
+    // if (await this.validate()) {
+    //   next();
+    // }
   }
   mounted(): void {
     if (this.$route.name === "editfunding") {

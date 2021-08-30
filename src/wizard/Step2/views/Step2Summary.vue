@@ -15,6 +15,7 @@
     <atat-summary-card
       :emptyCard="cardType"
       :data="cardsData"
+      :itemToDelete.sync="itemToDelete"
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
@@ -28,31 +29,23 @@
       <v-col cols="10">
         <v-btn
           @click="showAdditionalFundingText = !showAdditionalFundingText"
-          plain
           text
           x-small
-          tabindex="1"
           :ripple="false"
-          class="pl-0 pt-5 btn-usa-gov-expand h6"
+          class="pl-0 primary--text"
         >
-          <span
-            class="
-              USWDC-official-banner__link_msg
-              text-decoration-underline
-              body-lg
-            "
-          >
-            Can i add additional funding sources after my Portfolio is
+          <span class="link-body-md">
+            Can I add additional funding sources after my Portfolio is
             provisioned?
           </span>
-          <v-icon>
+          <v-icon >
             {{ showAdditionalFundingText ? "expand_less" : "expand_more" }}
           </v-icon>
         </v-btn>
         <div v-show="showAdditionalFundingText">
           <v-card-text class="h6 pb-0">
             <v-row>
-              <p class="body-lg mt-3">
+              <p class="body-lg mt-3 text--base-darkest">
                 Yes. As the Portfolio Manager, you will be able add CLINs to
                 existing Task Orders or add a new Task Order in the future. This
                 will allow you to continue funding the Applications in this
@@ -72,20 +65,12 @@
       <v-col cols="10">
         <v-btn
           @click="showPopText = !showPopText"
-          plain
-          text
+           text
           x-small
-          tabindex="1"
           :ripple="false"
-          class="pa-0 btn-usa-gov-expand h6 ml-0"
+          class="pl-0 primary--text"
         >
-          <span
-            class="
-              USWDC-official-banner__link_msg
-              text-decoration-underline
-              body-lg
-            "
-          >
+          <span class="link-body-md">
             What happens to my Portfolio if the period of performance or
             obligated funds expire?
           </span>
@@ -96,7 +81,7 @@
         <div v-show="showPopText">
           <v-card-text class="h6 pb-0">
             <v-row align="center" class="mb-10">
-              <p class="body-lg mt-3">
+              <p class="body-lg mt-3 text--base-darkest">
                 If your Portfolio’s period of performance expires or if you run
                 out of obligated funds, your team members will not be able to
                 access your Applications within the CSP console.
@@ -120,25 +105,44 @@ import {
   ATATSummaryCards,
   TaskOrders,
 } from "types/Wizard";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 @Component({})
 export default class Step2Summary extends Vue {
   private showPopText = false;
   private showAdditionalFundingText = false;
-  private mounted(): void {
-    this.transformData();
+  private async mounted(): Promise<void> {
+    await this.getMockTaskOrders;
   }
+
+  private itemToDelete = "";
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
+  private taskOrders: TaskOrders = {
+    details: [],
+  };
 
-  get taskOrders(): TaskOrders {
-    return this.$store.getters.getMockTaskOrders;
+  @Watch("itemToDelete")
+  private deleteItem(newVal: string) {
+    if (newVal !== "") {
+      this.taskOrders.details = this.$store.getters.deleteTaskOrderByName(
+        this.itemToDelete
+      );
+      this.transformData();
+      this.itemToDelete = "";
+    }
+  }
+
+  get getMockTaskOrders(): boolean {
+    this.taskOrders = this.$store.getters.getMockTaskOrders;
+    this.transformData();
+    return true;
   }
 
   public transformData(): void {
+    this.cardsData.cards = [];
     this.taskOrders.details.forEach((c) => {
       let totalClinValue = c.clins.reduce((prev, cur) => {
         return prev + cur.total_clin_value;
@@ -173,7 +177,7 @@ export default class Step2Summary extends Vue {
         rightButtonText: "Delete",
       };
       this.cardsData.cards.push(card);
-    });
+    }, this);
   }
 }
 </script>

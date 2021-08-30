@@ -76,9 +76,9 @@ export default class Step_1 extends Vue {
       next();
       return;
     }
-    if (await this.validate()) {
-      next();
-    }
+    // if (await this.validate()) {
+    //   next();
+    // }
   }
 }
 </script>
