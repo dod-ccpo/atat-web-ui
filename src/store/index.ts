@@ -111,7 +111,6 @@ export default new Vuex.Store({
       const updatedArray =  values.filter(
         (taskorder) => taskorder.task_order_number !== id
       );
-      console.log(updatedArray);
       return updatedArray;
       
     },
