@@ -32,7 +32,7 @@ npm run test:ts
 ### run e2e with browserstack
 
 Setting Environment Variables
-Set your Username, and Access key as a local variable 
+Create a `.env` file in the project's root directory and use the following Environment Variables: 
 
 
 | Environment Variable Name | Description                                                                     |
