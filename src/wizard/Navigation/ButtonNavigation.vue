@@ -179,7 +179,10 @@ export default class ButtonNavigation extends Vue {
             action: ["previous"],
           },
           {
-            text: "Next",
+            text:
+              this.$route.name === "submit"
+                ? "Provision Cloud Resources"
+                : "Next",
             color: "primary",
             disabled: true,
             id: "postReview",
