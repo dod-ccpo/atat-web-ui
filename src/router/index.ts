@@ -36,6 +36,89 @@ const routes: Array<RouteConfig> = [
     name: "wizard",
     component: () =>
       import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
+    children: [
+      {
+        path: "",
+        name: "addportfolio",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"
+          ),
+      },
+      {
+        path: "editportfolio/:id",
+        name: "editPortfolio",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"
+          ),
+      },
+      {
+        path: "addfunding",
+        name: "addfunding",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
+          ),
+      },
+      {
+        path: "fundingsummary",
+        name: "fundingsummary",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2Summary.vue"
+          ),
+      },
+      {
+        path: "editfunding/:id",
+        name: "editfunding",
+        props: true,
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
+          ),
+      },
+      {
+        path: "addapplication",
+        name: "addapplication",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
+          ),
+      },
+      // {
+      //   path: "applicationsummary",
+      //   name: "applicationsummary",
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
+      //     ),
+      // },
+      // {
+      //   path: "editapplication:id",
+      //   name: "editapplication",
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
+      //     ),
+      // },
+      {
+        path: "addteammembers",
+        name: "addteammembers",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"
+          ),
+      },
+      {
+        path: "reviewandsubmit",
+        name: "reviewandsubmit",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step5/views/Step5.vue"
+          ),
+      },
+    ],
   },
   {
     path: "/portfolios",

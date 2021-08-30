@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
+import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
 
 Vue.use(Vuex);
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
   state: {
     loginStatus: false,
     portfolios: allPortfolios,
+    taskOrders: mockTaskOrder,
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -89,6 +91,28 @@ export default new Vuex.Store({
     },
     getAllPortfolios(state) {
       return state.portfolios;
+    },
+    getMockTaskOrders(state) {
+      return state.taskOrders;
+    },
+    getTaskOrderByName: (state) => (id: string) => {
+      const values = Object.values(state.taskOrders.details);
+      const taskOrderName = values.filter(
+        (taskorder) => taskorder.task_order_number === id
+      );
+      if (taskOrderName.length > 0) {
+        return taskOrderName[0];
+      } else {
+        return {};
+      }
+    },
+    deleteTaskOrderByName: (state) => (id: string) => {
+      const values = Object.values(state.taskOrders.details);
+      const updatedArray =  values.filter(
+        (taskorder) => taskorder.task_order_number !== id
+      );
+      return updatedArray;
+      
     },
   },
 });

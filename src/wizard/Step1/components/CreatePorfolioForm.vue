@@ -59,9 +59,8 @@
             name="dod_components"
             :aria-checked="_dod_components.findIndex((c) => c === dod) > -1"
             @change="checkComponent('checkbox_' + dod.replace(/ /gi, '_'), dod)"
-            
           >
-          <!-- @keyup.enter="checkComponent"   -->
+            <!-- @keyup.enter="checkComponent"   -->
             <!-- @click="dod.checked = !dod.checked"
           @keyup.space="dod.checked = !dod.checked" -->
             <template v-slot:label>
@@ -99,7 +98,7 @@ export default class CreatePortfolioForm
     "Other",
   ];
 
-  private checkboxClicked(cbRef: string) {
+  private checkboxClicked() {
     //this.$refs(cbRef)
     // console.log(this.$refs[cbRef]);
     // // alert("hi there");
@@ -142,7 +141,7 @@ export default class CreatePortfolioForm
     return this.$refs.form as Vue & { validate: () => boolean };
   }
 
-  public mounted() {
+  public mounted(): void {
     this.$http.post("portfolioDrafts?offset=0&limit=20").then((response) => {
       console.log(response);
     });

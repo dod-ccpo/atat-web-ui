@@ -3,18 +3,9 @@
     <Stepper
       :step-number="stepNumber"
       :current-step-number.sync="stepNumber"
-      @clicked-action="goToStep"
+      @clicked-action="getStep"
     />
-    <Step1 ref="stepOne" v-if="stepNumber === 1" />
-    <Step2 ref="stepTwo" v-if="stepNumber === 2 && !showSummary" />
-    <Step2Summary
-      ref="stepTwoSummary"
-      v-if="stepNumber === 2 && showSummary"
-      @clicked-action="getRoute"
-    />
-    <Step3 v-if="stepNumber === 3" />
-    <Step4 v-if="stepNumber === 4" />
-    <Step5 v-if="stepNumber === 5" />
+    <router-view></router-view>
     <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
   </v-container>
 </template>
@@ -45,7 +36,7 @@ import Step5 from "./Step5/views/Step5.vue";
 })
 export default class Wizard extends Vue {
   private stepNumber = 1;
-
+  private route = "";
   $refs!: {
     stepOne: Step1;
     stepTwo: Step2;
@@ -53,60 +44,126 @@ export default class Wizard extends Vue {
     stepThree: Step3;
   };
 
-  private showSummary = false;
-
   public getRoute(actions: string[]): void {
-    this.showSummary = false;
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-      let validated: Promise<boolean>;
       switch (action) {
         case "next":
-          if (this.stepNumber === 1) {
-            validated = this.$refs.stepOne.validate();
-
-            if (await validated) {
-              alert("Data has been validated and is to be saved");
-              this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
-            }
-          } else if (this.stepNumber === 2) {
-            validated = this.$refs.stepTwo.validate();
-
-            if (await validated) {
-              alert("Data has been validated and is to be saved");
-              this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
-            }
-          } else {
-            this.stepNumber = this.stepNumber < 5 ? this.stepNumber + 1 : 5;
+          if (this.$route.name == "addportfolio") {
+            await this.$router.push({ name: "addfunding" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "addfunding") {
+            await this.$router.push({ name: "addapplication" });
+            this.stepNumber = 3;
+          } else if (this.$route.name == "addapplication") {
+            await this.$router.push({ name: "addteammembers" });
+            this.stepNumber = 4;
+          } else if (this.$route.name == "addteammembers") {
+            await this.$router.push({ name: "reviewandsubmit" });
+            this.stepNumber = 5;
+          }
+          break;
+        case "summary":
+          if (this.$route.name == "addfunding") {
+            await this.$router.push({ name: "fundingsummary" });
+          } else if (this.$route.name == "editfunding") {
+            await this.$router.push({ name: "fundingsummary" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "fundingsummary") {
+            await this.$router.push({ name: "addapplication" });
+            this.stepNumber = 3;
           }
           break;
         case "previous":
-          this.stepNumber = this.stepNumber > 1 ? this.stepNumber - 1 : 1;
+          if (this.$route.name == "addportfolio") {
+            return;
+          } else if (this.$route.name == "addfunding") {
+            await this.$router.push({ name: "addportfolio" });
+            this.stepNumber = 1;
+          } else if (this.$route.name == "fundingsummary") {
+            await this.$router.push({ name: "addfunding" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "addapplication") {
+            await this.$router.push({ name: "fundingsummary" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "editfunding") {
+            await this.$router.push({ name: "fundingsummary" });
+            this.stepNumber = 2;
+          } else if (this.$route.name == "addteammembers") {
+            await this.$router.push({ name: "addapplication" });
+            this.stepNumber = 3;
+          } else if (this.$route.name == "reviewandsubmit") {
+            await this.$router.push({ name: "addteammembers" });
+            this.stepNumber = 4;
+          }
           break;
         case "cancel":
-          this.$router.push("portfolios");
+          await this.$router.push({ name: "portfolios" });
           break;
         case "save":
-          validated = this.$refs.stepOne.validate();
-          if (await validated) {
-            alert("Data has been validated and is to be saved");
-            this.$router.push("portfolios");
-          }
+          alert("Data has been validated and is to be saved");
+          await this.$router.push({ name: "portfolios" });
+
           break;
         // case "provision_cloud_resources":
         //   alert("All is complete. Cloud resources are to be provisioned.");
         //   break;
-        case "summary":
-          this.showSummary = true;
-          break;
-        default:
-          break;
       }
     }, this);
   }
-
-  public goToStep(currStepNumber: number): void {
+  public getStep(currStepNumber: number): void {
+    switch (currStepNumber) {
+      case 1:
+        this.route = "addportfolio";
+        break;
+      case 2:
+        this.route = "addfunding";
+        break;
+      case 3:
+        this.route = "addapplication";
+        break;
+      case 4:
+        this.route = "addteammembers";
+        break;
+      case 5:
+        this.route = "reviewandsubmit";
+        break;
+      default:
+        break;
+    }
+    this.$router.push({ name: `${this.route}` });
     this.stepNumber = currStepNumber;
+  }
+  public checkPath(): void {
+    switch (this.$route.name) {
+      case "addportfolio":
+        this.stepNumber = 1;
+        break;
+      case "addfunding":
+        this.stepNumber = 2;
+        break;
+      case "editfunding":
+        this.stepNumber = 2;
+        break;
+      case "fundingsummary":
+        this.stepNumber = 2;
+        break;
+      case "addapplication":
+        this.stepNumber = 3;
+        break;
+      case "addteammembers":
+        this.stepNumber = 4;
+        break;
+      case "reviewandsubmit":
+        this.stepNumber = 5;
+        break;
+      default:
+        break;
+    }
+  }
+
+  mounted(): void {
+    this.checkPath();
   }
 }
 </script>
