@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation @keydown.native.space="alert('hi there')">
+  <v-form ref="form" lazy-validation>
     <v-container fluid class="my-9">
       <v-row>
         <v-col cols="12">
@@ -45,44 +45,53 @@
             this portfolio. Multiple DoD organizations can fund the same
             Portfolio
           </p>
+
           <div
-            v-for="(dod, index) in dodComponents"
-            :key="index"
-            class="d-flex align-center"
+            v-if="typeof isDodComponentsValid === 'boolean'"
+            class="mb-2 atat-error-message"
+            id="dod-components-errors"
+            role="alert"
           >
-            <div>
-              <input type="checkbox" v-model="_dod_components" value="dod" />
-            </div>
-            <div class="ml-2">
-              <span>{{ dod }}</span>
-            </div>
+            hi there
+            {{ isDodComponentsValid }}
           </div>
 
-          <!-- <v-checkbox
-            :rules="rules.dod_components"
-            class="ma-2 pa-0 validation-above text--black"
-            :id="'checkbox_' + dod.replace(/ /gi, '_')"
-            :ref="'checkbox_' + dod.replace(/ /gi, '_')"
+          <div
+            id="dod-component"
             v-for="(dod, index) in dodComponents"
-            v-model="_dod_components"
-            :input-value="dod"
-            :key="dod"
-            :value="dod"
-            :hide-details="index !== 0"
-            color="primary"
-            name="dod_components"
-            @change="checkComponent"
-          > -->
-          <!-- :aria-checked="_dod_components.findIndex((c) => c === dod) > -1" -->
-          <!-- @change="checkComponent('checkbox_' + dod.replace(/ /gi, '_'), dod)" -->
+            :key="index"
+            :class="[
+              typeof isDodComponentsValid === 'string'
+                ? 'error-item'
+                : 'default',
+              'width-80 my-3 atat-checkbox-list',
+            ]"
+          >
+            <input
+              :id="'dod-component-' + index"
+              type="checkbox"
+              v-model="_dod_components"
+              :value="dod"
+              style="width: 0px; height: 0px; position: absolute"
+            />
 
-          <!-- @keyup.enter="checkComponent"   -->
-          <!-- @click="dod.checked = !dod.checked"
-          @keyup.space="dod.checked = !dod.checked" -->
-          <!-- <template v-slot:label>
-              <span class="">{{ dod }}</span>
-            </template>
-          </v-checkbox> -->
+            <label
+              :tabindex="index + 1"
+              :for="'dod-component-' + index"
+              class="d-flex align-center'"
+              @keydown.space="check('dod-component-' + index)"
+            >
+              <v-icon class="checked-icon" v-if="isChecked(dod)"
+                >check_box</v-icon
+              >
+              <v-icon class="checkbox-icon" v-else
+                >check_box_outline_blank</v-icon
+              >
+              <div class="ml-2">
+                {{ dod }}
+              </div>
+            </label>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -113,6 +122,12 @@ export default class CreatePortfolioForm
     "National Security Agency (NSA)",
     "Other",
   ];
+
+  private isDodComponentsValid: boolean | string | undefined = false;
+
+  private isChecked(dodComp: string) {
+    return this._dod_components.some((d) => d === dodComp);
+  }
 
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
 
@@ -158,6 +173,9 @@ export default class CreatePortfolioForm
           "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
+    this.isDodComponentsValid =
+      this._dod_components.length > 0 ||
+      "Please select all of the DoD components that will fund your Portfolio";
 
     await this.$nextTick(() => {
       validated = this.Form.validate();
