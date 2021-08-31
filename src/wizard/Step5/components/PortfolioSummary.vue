@@ -22,10 +22,10 @@
     </v-row>
     <v-row>
       <v-col>
-        <!--        <portfolio-validation-summary-->
-        <!--          v-if="invalidStepsExist()"-->
-        <!--          :items="getValidationResults()"-->
-        <!--        />-->
+        <portfolio-validation-summary
+          v-if="invalidStepsExist()"
+          :items="getValidationResults()"
+        />
         <summary-stepper></summary-stepper>
       </v-col>
     </v-row>
@@ -42,7 +42,7 @@ import { ValidationSummaryItem } from "types/Wizard";
 @Component({
   components: {
     SummaryStepper,
-    // PortfolioValidationSummary,
+    PortfolioValidationSummary,
   },
 })
 export default class PortfolioSummary extends Vue {
