@@ -15,11 +15,11 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
+import { mapState } from "vuex";
 import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
-import { CreatePortfolioFormModel, VoidCallback } from "types/Wizard";
-import { Route } from "vue-router/types/router";
+import { CreatePortfolioFormModel, WizardNavigation } from "types/Wizard";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -28,12 +28,19 @@ Component.registerHooks(["beforeRouteLeave"]);
     CreatePortfolioForm,
     CloudServiceProvider,
   },
+  computed: {
+    ...mapState({
+      wizardNavigation: "wizardNavigation",
+    }),
+  },
 })
 export default class Step_1 extends Vue {
   $refs!: {
     createPortfolioForm: CreatePortfolioForm;
     cloudServiceProviderForm: CloudServiceProvider;
   };
+
+
   private model: CreatePortfolioFormModel = {
     name: "",
     description: "",
@@ -52,33 +59,54 @@ export default class Step_1 extends Vue {
     ]).then((values) => (valid = values.every((value) => value)));
     return valid;
   }
-  public async beforeRouteLeave(
-    to: Route,
-    from: Route,
-    next: VoidCallback
-  ): Promise<void> {
-    if (to.name === "addapplication") {
-      next();
-      return;
-    } else if (to.name === "applicationsummary") {
-      next();
-      return;
-    } else if (to.name === "addteammembers") {
-      next();
-      return;
-    } else if (to.name === "reviewandsubmit") {
-      next();
-      return;
-    } else if (to.name === "portfolios") {
-      next();
-      return;
-    } else if (to.name === "createportfolio") {
-      next();
-      return;
-    }
-    // if (await this.validate()) {
-    //   next();
-    // }
+
+  public mounted(): void {
+    //updates the current wizard step in the store
+    this.$store.dispatch("updateWizardStep", 1);
   }
+
+  // this store change will only be triggered by the wizard buttons next/previous
+  @Watch("wizardNavigation")
+  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
+    switch (navigation.action) {
+      case "next":
+        if (await this.validate()) {
+          this.$router.push({ name: navigation.step });
+        }
+        break;
+      case "previous":
+        this.$router.push({ name: navigation.step });
+        break;
+    }
+  }
+
+  // public async beforeRouteLeave(
+  //   to: Route,
+  //   from: Route,
+  //   next: VoidCallback
+  // ): Promise<void> {
+  //   if (to.name === "addapplication") {
+  //     next();
+  //     return;
+  //   } else if (to.name === "applicationsummary") {
+  //     next();
+  //     return;
+  //   } else if (to.name === "addteammembers") {
+  //     next();
+  //     return;
+  //   } else if (to.name === "reviewandsubmit") {
+  //     next();
+  //     return;
+  //   } else if (to.name === "portfolios") {
+  //     next();
+  //     return;
+  //   } else if (to.name === "createportfolio") {
+  //     next();
+  //     return;
+  //   }
+  //   // if (await this.validate()) {
+  //   //   next();
+  //   // }
+  // }
 }
 </script>
