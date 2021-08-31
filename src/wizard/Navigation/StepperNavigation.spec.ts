@@ -30,7 +30,7 @@ const propsData = {
   ],
 };
 
-describe("Testing Button Navigation Bar", () => {
+describe("Testing Stepper Navigation", () => {
   // let shallowMountFunction: (options?: object) => Wrapper<Vue>
   const localVue = createLocalVue();
   let vuetify: any;

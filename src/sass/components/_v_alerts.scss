@@ -2,10 +2,15 @@
 .v-alert{
   font-size: 1.06rem !important; //17 pixels
   
-    border-radius: 0px !important;
+    border-radius: 5px !important;
     box-shadow: none !important;
-
+    
+    &.v-sheet--outlined{
+      border: none !important;  
+    }
+    
     .v-alert__border--left {
+      border-width: initial;
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
       left: 0px;
@@ -22,11 +27,11 @@
 
     .warning_lighter {
       border-color: var(--v-warning-base) !important;
-      border-width: 2px !important;
+      border-width: 0px !important;
       border-style: solid !important;
     }
   &.error_lighter {
-    border-width: 2px !important;
+    border-width: 0px !important;
     border-style: solid !important;
     border-color: transparent !important;
     background-color:  #f8dfe2 !important;
@@ -37,6 +42,7 @@
       color: black !important;
     }
   }
+
 }
 
 

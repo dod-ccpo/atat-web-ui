@@ -67,6 +67,53 @@
               <span class="">{{ dod }}</span>
             </template>
           </v-checkbox>
+
+          <div
+            v-if="typeof isDodComponentsValid === 'string'"
+            class="mb-2 atat-error-message"
+            id="dod-components-errors"
+            role="alert"
+          >
+            
+            {{ isDodComponentsValid }}
+          </div>
+
+          <div
+            id="dod-component"
+            v-for="(dod, index) in dodComponents"
+            :key="index"
+            :class="[
+              typeof isDodComponentsValid === 'string'
+                ? 'error-item'
+                : 'default',
+              'width-80 my-3 atat-checkbox-list',
+            ]"
+          >
+            <input
+              :id="'dod-component-' + index"
+              type="checkbox"
+              v-model="_dod_components"
+              :value="dod"
+              style="width: 0px; height: 0px; position: absolute"
+            />
+
+            <label
+              :tabindex="index + 1"
+              :for="'dod-component-' + index"
+              class="d-flex align-center'"
+              @keydown.space="check('dod-component-' + index)"
+            >
+              <v-icon class="checked-icon" v-if="isChecked(dod)"
+                >check_box</v-icon
+              >
+              <v-icon class="checkbox-icon" v-else
+                >check_box_outline_blank</v-icon
+              >
+              <div class="ml-2">
+                {{ dod }}
+              </div>
+            </label>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -98,25 +145,10 @@ export default class CreatePortfolioForm
     "Other",
   ];
 
-  private checkboxClicked(cbRef: string) {
-    //this.$refs(cbRef)
-    // console.log(this.$refs[cbRef]);
-    // // alert("hi there");
-    // debugger;
-    // console.log("hi threre");
-    return true;
-  }
+  private isDodComponentsValid: boolean | string | undefined = false;
 
-  private checkComponent(cbRef: string, dod: string) {
-    // debugger;
-    // console.log(this.$refs[cbRef]);
-    this.$nextTick(function () {
-      let cb: any = this.$refs[cbRef];
-      let isItemChecked = this._dod_components.findIndex((c) => c === dod) > -1;
-      if (cb && cb.length > 0) {
-        cb[0].$attrs["aria-checked"] = isItemChecked;
-      }
-    });
+  private isChecked(dodComp: string) {
+    return this._dod_components.some((d) => d === dodComp);
   }
 
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
@@ -142,9 +174,9 @@ export default class CreatePortfolioForm
   }
 
   public mounted(): void {
-    // this.$http.post("portfolioDrafts?offset=0&limit=20").then((response: unknown) => {
-    //   console.log(response);
-    // });
+    this.$http.post("portfolioDrafts?offset=0&limit=20").then((response) => {
+      console.log(response);
+    });
   }
 
   public rules = {};
@@ -163,6 +195,9 @@ export default class CreatePortfolioForm
           "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
+    this.isDodComponentsValid =
+      this._dod_components.length > 0 ||
+      "Please select all of the DoD components that will fund your Portfolio";
 
     await this.$nextTick(() => {
       validated = this.Form.validate();
