@@ -4,6 +4,7 @@ import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
+import {WizardStep, WizardStepNames } from "../../types/Wizard";
 
 Vue.use(Vuex);
 
@@ -16,22 +17,54 @@ const vuexLocalStorage = new VuexPersist({
   // filter: mutation => (true)
 });
 
-
-const wizardStepNames: string[] = [
-  "addportfolio",
-  "addfunding",
-  "addapplication",
-  "addteammembers",
-  "reviewandsubmit"
-];
-
 function generateGuid(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
 
+
+const wizardList: Map<string, WizardStep | undefined> = 
+new Map<string, WizardStep | undefined>();
+
+wizardList.set(WizardStepNames.addportolioStep(), {
+  next: WizardStepNames.addfundingStep(),
+  previous: "",
+});
+
+wizardList.set(WizardStepNames.addfundingStep(), {
+  next: WizardStepNames.fundingsummaryStep(),
+  previous: WizardStepNames.addportolioStep(),
+});
+
+wizardList.set(WizardStepNames.fundingsummaryStep(), {
+  next: WizardStepNames.addapplicationStep(),
+  previous: WizardStepNames.addfundingStep(),
+});
+
+
+wizardList.set(WizardStepNames.addapplicationStep(), {
+  next: WizardStepNames.addteammembersStep(),
+  previous: WizardStepNames.fundingsummaryStep(),
+});
+
+wizardList.set(WizardStepNames.addteammembersStep(), {
+  next: WizardStepNames.reviewandsubmitStep(),
+  previous: WizardStepNames.addapplicationStep(),
+});
+
+wizardList.set(WizardStepNames.reviewandsubmitStep(), {
+  next: "",
+  previous: WizardStepNames.addteammembersStep(),
+});
+
+
+const step :WizardStep = {
+  next: "",
+  previous:""
+};
 
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
@@ -39,7 +72,7 @@ export default new Vuex.Store({
     loginStatus: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
-    currentWizardStep: 0,
+    currentStep: step,
     wizardNavigation: {},
   },
   mutations: {
@@ -51,19 +84,42 @@ export default new Vuex.Store({
       }
     },
 
-    setWizardStep(state, stepNumber: number) {
-      state.currentWizardStep = stepNumber;
+    setWizardStep(state, step: string) {
+      const foundStep = wizardList.get(step);
+      if (foundStep != undefined) {
+        state.currentStep = {... foundStep}
+      }
+      else{
+        throw new Error(`unable to navigate to step ${step}`);
+        
+      }
+
     },
     //provides wizard state handling for next and previous wizard buttons
     //eventually this may be moved to it's own module
-    setWizardNavigation(state, stepNumber: number) {
-      state.wizardNavigation = {
-        action: stepNumber > state.currentWizardStep ? 'next' : 'previous',
-        guid: generateGuid(), // generate a guid in order to trigger state change in the store
-        step: stepNumber > state.currentWizardStep ? wizardStepNames[state.currentWizardStep] :
-          wizardStepNames[state.currentWizardStep - 2]
+    setWizardNavigation(state, action: string) {
+      let stepName: string | undefined = undefined;
+
+      if (action === "next") {
+        if (state.currentStep.next != "") {
+          stepName = state.currentStep.next
+        }
       }
-    }
+
+      if (action === "previous") {
+        if (state.currentStep.previous !="") {
+          stepName = state.currentStep.previous;
+        }
+      }
+
+      if (stepName) {
+        state.wizardNavigation = {
+          action: action,
+          guid: generateGuid(), // generate a guid in order to trigger state change in the store
+          step: stepName,
+        };
+      }
+    },
   },
   actions: {
     login({ commit }) {
@@ -75,22 +131,14 @@ export default new Vuex.Store({
     },
 
     wizardNext({ commit }) {
-      if (this.state.currentWizardStep < 5) {
-
-        commit('setWizardNavigation', this.state.currentWizardStep + 1);
-      }
-
+      commit("setWizardNavigation", "next");
     },
     wizardPrevious({ commit }) {
-      if (this.state.currentWizardStep > 1) {
-
-        commit('setWizardNavigation', this.state.currentWizardStep - 1);
-      }
+      commit("setWizardNavigation", "previous");
     },
-    updateWizardStep({ commit }, currentStep: number) {
-
-      commit('setWizardStep', currentStep);
-    }
+    updateWizardStep({ commit }, stepName: string) {
+      commit("setWizardStep", stepName);
+    },
   },
   modules: {},
   getters: {
@@ -163,7 +211,6 @@ export default new Vuex.Store({
         (taskorder) => taskorder.task_order_number !== id
       );
       return updatedArray;
-
-    }
+    },
   },
 });

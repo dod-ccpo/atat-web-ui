@@ -172,7 +172,24 @@ export interface VoidCallback {
 }
 
 export interface WizardNavigation {
-     action: string;
-     guid: string;
-     step: string;
+  action: string;
+  guid: string;
+  step: string;
+}
+
+export interface WizardStep {
+  next: string;
+  previous: string;
+}
+
+
+export class WizardStepNames {
+
+  public static addportolioStep():string { return "addportfolio"} ;
+  public static addfundingStep():string {return "addfunding";}
+  public static fundingsummaryStep():string { return "fundingsummary";}
+  public static addapplicationStep():string {return "addapplication";}
+  public static addteammembersStep():string {return "addteammembers";}
+  public static reviewandsubmitStep():string {return "reviewandsubmit";}
+
 }

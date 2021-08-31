@@ -15,7 +15,11 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails, WizardNavigation } from "types/Wizard";
+import {
+  TaskOrderDetails,
+  WizardNavigation,
+  WizardStepNames,
+} from "../../../../types/Wizard";
 import { mapState } from "vuex";
 
 @Component({
@@ -123,7 +127,7 @@ export default class Step_2 extends Vue {
   //   // }
   // }
   public mounted(): void {
-    this.$store.dispatch("updateWizardStep", 2);
+    this.$store.dispatch("updateWizardStep", WizardStepNames.addfundingStep());
 
     if (this.$route.name === "editfunding") {
       this.taskOrderDetails = this.$store.getters.getTaskOrderByName(

@@ -172,5 +172,9 @@ export default class Wizard extends Vue {
   onRouteChanged(): void {
     this.checkPath();
   }
+
+  public mounted(): void {
+    this.checkPath();
+  }
 }
 </script>
