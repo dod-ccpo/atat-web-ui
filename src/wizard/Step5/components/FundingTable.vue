@@ -1,0 +1,104 @@
+<template>
+  <div class="review-table">
+    <v-card class="mt-4" elevation="2" max-width="100%">
+      <v-card-title class="d-flex justify-space-between">
+        <span class="h4">{{ name }}</span>
+        <v-btn
+          text
+          x-small
+          class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
+          :ripple="false"
+        >
+          <v-icon x-small class="text-decoration-none mr-1">edit</v-icon>
+          <span class="text-decoration-underline">Edit</span>
+        </v-btn>
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <v-simple-table class="pb-2">
+          <template v-slot:default>
+            <thead class="bg-base-lightest">
+              <tr>
+                <th id="name">
+                  <span
+                    class="
+                      pl-2
+                      text-left text--base-dark
+                      label
+                      font-weight-black
+                    "
+                  >
+                    Name
+                  </span>
+                </th>
+                <th id="permissions">
+                  <span
+                    class="text-left text--base-dark label font-weight-black"
+                  >
+                    App Permissions
+                  </span>
+                </th>
+                <th id="environment">
+                  <span
+                    class="
+                      pr-2
+                      text-left text--base-dark
+                      label
+                      font-weight-black
+                    "
+                  >
+                    Environment Access
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in getData" :key="item.id">
+                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
+                  <div class="d-flex flex-column">
+                    <span class="table-item font-weight-bold">
+                      {{ item.name }}
+                    </span>
+                    <span class="table-item"> {{ item.email }} </span>
+                  </div>
+                </td>
+                <td class="pa-4" style="vertical-align: top">
+                  <span
+                    class="table-item d-flex flex-column"
+                    v-for="permission in grantedPermissions(item.permissions)"
+                    :key="permission"
+                  >
+                    {{ permission }}
+                  </span>
+                </td>
+                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
+                  <span
+                    class="table-item d-flex flex-column"
+                    v-for="setting in item.environments_settings"
+                    :key="setting.id"
+                  >
+                    {{ setting.label }} : {{ setting.accessLevel }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-card-text>
+    </v-card>
+  </div>
+</template>
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
+import { TaskOrderDetails } from "../../../../types/Wizard";
+
+@Component({})
+export default class FundingTable extends Vue {
+  @Prop({ default: [] }) private data!: TaskOrderDetails;
+  @Prop({ default: "" }) private name!: string;
+
+  mounted() {
+    console.log(this.data);
+  }
+}
+</script>

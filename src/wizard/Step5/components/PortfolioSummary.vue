@@ -26,7 +26,7 @@
           v-if="invalidStepsExist()"
           :items="getValidationResults()"
         />
-        <summary-stepper></summary-stepper>
+        <summary-stepper :taskOrders="taskOrders"></summary-stepper>
       </v-col>
     </v-row>
   </v-container>
@@ -37,7 +37,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
-import { ValidationSummaryItem } from "types/Wizard";
+import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
 
 @Component({
   components: {
@@ -46,6 +46,7 @@ import { ValidationSummaryItem } from "types/Wizard";
   },
 })
 export default class PortfolioSummary extends Vue {
+  public taskOrders!: TaskOrders;
   public invalidStepsExist(): boolean {
     return false;
   }
@@ -64,6 +65,10 @@ export default class PortfolioSummary extends Vue {
         name: "",
       },
     ];
+  }
+
+  created() {
+    this.taskOrders = this.$store.getters.getMockTaskOrders.details;
   }
 }
 </script>

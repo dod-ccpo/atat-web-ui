@@ -36,9 +36,19 @@
                 :description="step.data.description"
                 :items="step.data.items"
               ></portfolio-summary-card>
+              <funding-summary-card
+                v-if="step.type === 'funding'"
+                :task-orders="taskOrders"
+              ></funding-summary-card>
             </v-stepper-content>
           </template>
         </v-stepper>
+        <funding-table
+          v-for="orders in taskOrders.details"
+          :key="orders"
+          :data="orders.clins"
+          :name="orders.task_order_number"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -46,17 +56,24 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
-import { SummaryStep } from "types/Wizard";
+import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
+import { SummaryStep, TaskOrders } from "types/Wizard";
+import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
 @Component({
   components: {
+    FundingTable,
     PortfolioSummaryCard,
+    FundingSummaryCard,
   },
 })
 export default class SummaryStepper extends Vue {
-  @PropSync("stepNumber", { default: 1 }) private _stepNumber!: number;
+  @Prop({ default: "TaskOrders" })
+  private taskOrders!: TaskOrders;
+  @PropSync("stepNumber", { default: 1 })
+  private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
   $refs!: {
     step01: Vue & { $el: HTMLElement };
@@ -107,6 +124,7 @@ export default class SummaryStepper extends Vue {
     {
       step: 2,
       title: "Funding Details",
+      type: "funding",
     },
     {
       step: 3,

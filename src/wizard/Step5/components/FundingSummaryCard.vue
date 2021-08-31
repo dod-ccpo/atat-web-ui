@@ -1,32 +1,28 @@
 <template>
-  <summary-card :title="title" :items="items">
-    <template slot="summary-body">
-      <table
-        class="
-          body-lg
-          black--text
-          border-0 border-solid border-l-4 border-accent-cool
-          pl-2
-          width-60
-        "
-      >
-        <tr v-for="(item, idx) in items" :key="idx">
-          <td v-if="item.value" class="pr-4">
-            <strong>{{ item.prefix }}</strong>
-          </td>
-          <td class="text-left" v-if="item.value">
-            {{ item.value }}
-          </td>
-        </tr>
-      </table>
-    </template>
-  </summary-card>
+  <summary-card>
+    <funding-table
+      v-for="taskOrder in taskOrders.details"
+      :key="taskOrder.task_order_number"
+      :data="taskOrder.clins"
+      :name="taskOrder.task_order_number"
+  /></summary-card>
 </template>
 
 <script lang="ts">
 import Component from "vue-class-component";
 import SummaryCard from "./SummaryCard.vue";
+import { TaskOrders } from "../../../../types/Wizard";
+import { Prop } from "vue-property-decorator";
+import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
-@Component({})
-export default class FundingSummaryCard extends SummaryCard {}
+@Component({
+  components: { FundingTable },
+})
+export default class FundingSummaryCard extends SummaryCard {
+  @Prop({ default: null, required: true })
+  private taskOrders!: TaskOrders;
+  mounted() {
+    console.log(this.taskOrders);
+  }
+}
 </script>
