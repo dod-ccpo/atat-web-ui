@@ -3,6 +3,8 @@ import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
+import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
+import { textSpanContainsTextSpan } from "typescript";
 
 Vue.use(Vuex);
 
@@ -19,15 +21,17 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
+    isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
+    taskOrders: mockTaskOrder,
+    selectedCSP: "CSP 1",
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
-      if (status) {
-        state.loginStatus = true;
-      } else {
-        state.loginStatus = false;
-      }
+      state.loginStatus = status;
+    },
+    changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
+      state.isUserAuthorizedToProvisionCloudResources = status;
     },
   },
   actions: {
@@ -38,11 +42,20 @@ export default new Vuex.Store({
       commit("changeLoginStatus", false);
       window.sessionStorage.clear();
     },
+    authorizeUser({ commit }) {
+      commit("changeisUserAuthorizedToProvisionCloudResources", true);
+    },
+    unauthorizeUser({ commit }) {
+      commit("changeisUserAuthorizedToProvisionCloudResources", false);
+    },
   },
   modules: {},
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;
+    },
+    getisUserAuthorizedToProvisionCloudResources(state) {
+      return state.isUserAuthorizedToProvisionCloudResources;
     },
     getNavBarItems(): Navs {
       return {
@@ -89,6 +102,27 @@ export default new Vuex.Store({
     },
     getAllPortfolios(state) {
       return state.portfolios;
+    },
+    getMockTaskOrders(state) {
+      return state.taskOrders;
+    },
+    getTaskOrderByName: (state) => (id: string) => {
+      const values = Object.values(state.taskOrders.details);
+      const taskOrderName = values.filter(
+        (taskorder) => taskorder.task_order_number === id
+      );
+      if (taskOrderName.length > 0) {
+        return taskOrderName[0];
+      } else {
+        return {};
+      }
+    },
+    deleteTaskOrderByName: (state) => (id: string) => {
+      const values = Object.values(state.taskOrders.details);
+      const updatedArray = values.filter(
+        (taskorder) => taskorder.task_order_number !== id
+      );
+      return updatedArray;
     },
   },
 });

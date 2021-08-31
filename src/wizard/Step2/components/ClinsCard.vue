@@ -309,7 +309,6 @@ import moment from "moment";
   components: {},
 })
 export default class ClinsCard extends Vue {
-
   @Prop({ required: true, default: () => -1 }) card_number!: number;
   @PropSync("clin_number", { required: true }) _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
@@ -365,7 +364,14 @@ export default class ClinsCard extends Vue {
   private progress: HTMLProgressElement | undefined;
   private minDate = "2020-01-01";
   private maxDate = "2021-12-31";
-  private rules = {};
+
+  public progressEvent(): void {
+    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+    const width = (this._obligated_funds / this._total_clin_value) * 100;
+    progress.style.width = width + "%";
+  }
+
+  public rules = {};
 
   public formatCurrency(value: number): string {
     return this.formatter.format(value);
@@ -398,7 +404,8 @@ export default class ClinsCard extends Vue {
     );
     validationRules.push(
       (v: number) =>
-        v <= this._total_clin_value || "Obligated Funds cannot exceed total CLIN Values"
+        v <= this._total_clin_value ||
+        "Obligated Funds cannot exceed total CLIN Values"
     );
     return validationRules;
   }
@@ -488,7 +495,7 @@ export default class ClinsCard extends Vue {
           v === "" ||
           Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
           "The end date must be before or on " + this.JWCCContractEndDate,
-      ]
+      ],
     };
     return true;
   }

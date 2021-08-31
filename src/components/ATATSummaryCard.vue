@@ -1,6 +1,18 @@
 <template>
   <div class="d-flex align-start">
     <v-card
+      v-show="data.cards.length === 0"
+      width="100rem"
+      class="v-card ma-9 ml-0 body"
+    >
+      <v-card-text class="pa-4 text-center">
+        <span class="body-lg text--base-dark"
+          >You currently don't have any {{ emptyCard }} saved</span
+        >
+      </v-card-text>
+    </v-card>
+    <v-card
+      v-show="data.cards.length > 0"
       width="40rem"
       class="v-card ma-9 ml-0 body"
       v-for="(card, index) in data.cards"
@@ -15,7 +27,7 @@
             <v-btn
               :id="'header_link_' + index"
               :ripple="false"
-              @click="titleClick(card)"
+              @click="leftButtonClicked(card)"
               small
               class="h3 link-button no-focus-shift pa-0"
             >
@@ -26,6 +38,7 @@
             <v-btn
               small
               :ripple="false"
+              @click="leftButtonClicked(card)"
               class="
                 no-focus-shift
                 pa-0
@@ -69,7 +82,8 @@
             text-uppercase
             my-4
             mx-6
-            pa-0
+            px-2
+            py-0
           "
           small
           @click="leftButtonClicked(card)"
@@ -85,7 +99,8 @@
             text-uppercase
             my-4
             mx-6
-            pa-0
+            py-0
+            px-2
           "
           small
           @click="rightButtonClicked(card)"
@@ -101,6 +116,7 @@
       :title="dialogTitle"
       :message="dialogMessage"
       :cancelText="cancelText"
+      :isItemDeleted.sync="isItemDeleted"
       persistent
       no-click-animation
       :okText="okText"
@@ -111,18 +127,15 @@
 
 <script lang="ts">
 import { ATATSummaryCardItem, ATATSummaryCards } from "types/Wizard";
-import { Component, Prop, Emit } from "vue-property-decorator";
-import { VCard } from "vuetify/lib";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue from "vue";
 
 @Component({})
-export default class ATATSummaryCard extends VCard {
+export default class ATATSummaryCard extends Vue {
   @Prop({ default: {}, required: false }) private data!: ATATSummaryCards;
 
-  @Prop({ default: "Dialog Title" })
-  private dialogTitle!: string;
-
-  @Prop({ default: "Dialog Message" })
-  private dialogMessage!: string;
+  @Prop({ default: "" })
+  private emptyCard!: string;
 
   @Prop({ default: "OK" })
   private okText!: string;
@@ -136,25 +149,50 @@ export default class ATATSummaryCard extends VCard {
   @Prop({ default: "450" })
   private dialogWidth!: string;
 
+  @PropSync("itemToDelete")
+  private _itemToDelete!: string;
+
+  private isItemDeleted = false;
+  private dialogMessage = "";
+  private dialogTitle = "";
   private showDialogWhenClicked = false;
+  private cardSelected: ATATSummaryCardItem = {};
 
-  // these stubbed in events will have to emit back to the parent
-  // might be easier to emit these directly from @click event like this.
-  // @click="$emit('update:value', $event.target.value)"
-  @Emit()
-  private titleClick(card: ATATSummaryCardItem) {
-    return true;
+  @Watch("isItemDeleted")
+  protected deleteItem(newVal: string): void {
+    if (newVal !== "") {
+      this._itemToDelete = newVal
+        ? this.cardSelected.title || ""
+        : (this._itemToDelete = "");
+    }
   }
 
-  @Emit()
   private leftButtonClicked(card: ATATSummaryCardItem) {
-    return true;
+    this.cardSelected = card;
+    let id = card.title;
+    switch (this.$route.name) {
+      case "fundingsummary":
+        this.$router.push({ name: "editfunding", params: { id: `${id}` } });
+        break;
+      case "applicationsummary":
+        this.$router.push({
+          name: "editapplication",
+          params: { id: `${id}` },
+        });
+        break;
+      default:
+      // code block
+    }
   }
 
-  @Emit()
-  private rightButtonClicked(card: ATATSummaryCardItem) {
+  private rightButtonClicked(card: ATATSummaryCardItem): void {
+    this.isItemDeleted = false;
+    this.cardSelected = card;
+    if (card.type === "TASK ORDER") {
+      this.dialogTitle = `Delete Task Order ${card.title}`;
+      this.dialogMessage = `This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved`;
+    }
     this.showDialogWhenClicked = true;
-    return true;
   }
 }
 </script>

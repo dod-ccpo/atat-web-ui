@@ -72,6 +72,12 @@ export default class ATATSelect extends Vue {
     this.getStatusIcon();
   }
 
+  @Watch("selectedValue")
+  onSelectedValueChanged(newVal: string): void {
+    this.selected = newVal;
+    this.getStatusIcon();
+  }
+
   //data
   private rounded = false;
   private appendedOuterIcon = "";
@@ -89,7 +95,7 @@ export default class ATATSelect extends Vue {
         this.isFieldValid = this.$props["rules"].every(
           (rule: (a: unknown) => string | boolean) => rule(v) === true
         );
-        this.success = this.isFieldValid ? true : false; 
+        this.success = this.isFieldValid ? true : false;
         this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
       }
     });

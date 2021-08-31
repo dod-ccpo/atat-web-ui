@@ -21,6 +21,7 @@ export interface NavigationButtons {
 
 export interface Step {
   id?: number;
+  name?: string;
   step: number;
   description: string;
   primary?: boolean;
@@ -67,7 +68,7 @@ export interface TaskOrderDetails {
   clins: CLIN[];
 }
 
-export interface TaskOrders{
+export interface TaskOrders {
   details: TaskOrderDetails[];
 }
 
@@ -157,9 +158,9 @@ export interface ATATSummaryCardItem {
 }
 
 export interface ATATSummaryCardGroupedItems {
-    title?: string;
-    prefix?: string;
-    value?: number;
+  title?: string;
+  prefix?: string;
+  value?: number;
 }
 
 export interface ATATSummaryCards {
@@ -172,3 +173,6 @@ export interface CustomErrorMessage {
   description?: string;
 }
 
+export interface VoidCallback {
+  (callback: void): void;
+}
