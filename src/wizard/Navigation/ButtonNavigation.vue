@@ -1,5 +1,6 @@
 <template>
   <v-toolbar
+    ref="buttonNavigation"
     elevation="0"
     width="100%"
     class="d-flex justify-end"
@@ -10,13 +11,12 @@
       :ripple="false"
       :key="button.id"
       :id="'step_' + stepNumber + '_navbtn_' + button.id"
-      :disabled="button.disabled"
+      :disabled="isDisabled(button.text)"
       :outlined="button.outlined"
       :color="button.color"
       v-model="stepNumber"
       @click="clickedAction(button.action)"
       :class="[button.link ? 'link-button' : '', 'mr-5']"
-      :width="button.width || 225"
     >
       {{ button.text }}
     </v-btn>
@@ -35,6 +35,16 @@ export default class ButtonNavigation extends Vue {
   @Emit()
   private clickedAction(actions: string[]): string[] {
     return actions;
+  }
+
+  public isDisabled(text: string): boolean {
+    if (text.toLowerCase() === "next" && this.$route.name === "postreview") {
+      return this.$store.getters.getisUserAuthorizedToProvisionCloudResources
+        ? false
+        : true;
+    } else {
+      return false;
+    }
   }
 
   public wizardNavButtons: NavigationButtons = {
@@ -121,7 +131,7 @@ export default class ButtonNavigation extends Vue {
             action: ["previous"],
           },
           {
-            text: "Next: Add Team Members",
+            text: "Next",
             color: "primary",
             id: "add_team_members",
             action: ["next"],
@@ -169,11 +179,14 @@ export default class ButtonNavigation extends Vue {
             action: ["previous"],
           },
           {
-            text: "Provision Cloud Resources",
+            text:
+              this.$route.name === "submit"
+                ? "Provision Cloud Resources"
+                : "Next",
             color: "primary",
             disabled: true,
-            id: "provision_cloud_resources",
-            action: ["provision_cloud_resources"],
+            id: "postReview",
+            action: ["next"],
           },
         ],
       },

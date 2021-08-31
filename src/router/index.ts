@@ -118,6 +118,22 @@ const routes: Array<RouteConfig> = [
             /* webpackChunkName: "style" */ "../wizard/Step5/views/Step5.vue"
           ),
       },
+      {
+        path: "postreview",
+        name: "postreview",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step5/views/PostReview.vue"
+          ),
+      },
+      {
+        path: "submit",
+        name: "submit",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step5/views/Submit.vue"
+          ),
+      },
     ],
   },
   {

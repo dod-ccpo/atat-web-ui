@@ -1,5 +1,5 @@
 <template>
-  <div>Step 5 View</div>
+  <div>Step 5</div>
 </template>
 
 <script lang="ts">

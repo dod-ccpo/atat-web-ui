@@ -38,7 +38,7 @@
             Can I add additional funding sources after my Portfolio is
             provisioned?
           </span>
-          <v-icon >
+          <v-icon>
             {{ showAdditionalFundingText ? "expand_less" : "expand_more" }}
           </v-icon>
         </v-btn>
@@ -65,7 +65,7 @@
       <v-col cols="10">
         <v-btn
           @click="showPopText = !showPopText"
-           text
+          text
           x-small
           :ripple="false"
           class="pl-0 primary--text"
