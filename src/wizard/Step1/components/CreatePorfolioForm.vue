@@ -47,12 +47,12 @@
           </p>
 
           <div
-            v-if="typeof isDodComponentsValid === 'boolean'"
+            v-if="typeof isDodComponentsValid === 'string'"
             class="mb-2 atat-error-message"
             id="dod-components-errors"
             role="alert"
           >
-            hi there
+            
             {{ isDodComponentsValid }}
           </div>
 
