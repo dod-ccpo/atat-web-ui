@@ -19,23 +19,27 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="d-flex justify-center py-0">
+      <v-col class="py-0">
         <v-alert
           :icon="false"
           outlined
           type="warning"
-          class="warning_lighter black--text body-lg black-icon"
+          class="warning_lighter black--text body-lg black-icon width-80"
           border="left"
         >
-          <div class="d-flex align-start">
-            <v-icon class="ml-5 mr-4 icon-20">warning</v-icon>
-            <div class="body-lg black--text">
-              By selecting Yes below, you acknowledge that you are subject to
-              potential penalties that may include fines, imprisonment, or both,
-              under the U.S. law and regulations for any false statement or
-              misrepresentation in association with this portfolio submission or
-              on any accompanying documentation.
-            </div>
+          <div>
+            <v-row>
+              <v-col cols="1" class="text-center px-0">
+                <v-icon class="icon-20">warning</v-icon>
+              </v-col>
+              <v-col cols="11" class="pl-0 body-lg black--text">
+                By selecting Yes below, you acknowledge that you are subject to
+                potential penalties that may include fines, imprisonment, or
+                both, under the U.S. law and regulations for any false statement
+                or misrepresentation in association with this portfolio
+                submission or on any accompanying documentation.
+              </v-col>
+            </v-row>
           </div>
         </v-alert>
       </v-col>

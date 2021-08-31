@@ -46,8 +46,8 @@
           time. Once you are ready to submit your portfolio, click the
           <strong>Provision Cloud Resources</strong> button. We will send the
           information you provided to
-          <strong> &lt;selected CSP&gt; </strong> and begin the process of
-          setting up your workspaces and team members.
+          <strong> {{ this.$store.state.selectedCSP }} </strong> and begin the
+          process of setting up your workspaces and team members.
         </p>
       </v-col>
     </v-row>
