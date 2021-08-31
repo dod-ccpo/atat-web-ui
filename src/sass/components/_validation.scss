@@ -116,3 +116,18 @@ div.success--text{
        
     }
 }
+
+.atat-checkbox-list{
+    &.error-item{
+        label, i{
+            color: $error-darker;
+            cursor: pointer;
+        }
+    }
+}
+
+.atat-error-message{
+    @extend .form-field-label-error;
+}
+
+
