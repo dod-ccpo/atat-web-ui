@@ -2,12 +2,13 @@
   <div class="review-table">
     <v-card class="mt-4" elevation="2" max-width="100%">
       <v-card-title class="d-flex justify-space-between">
-        <span class="h4">{{ name }}</span>
+        <span class="h4">Task Order #{{ name }}</span>
         <v-btn
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
           :ripple="false"
+          @click="handleClicked(name)"
         >
           <v-icon x-small class="text-decoration-none mr-1">edit</v-icon>
           <span class="text-decoration-underline">Edit</span>
@@ -18,7 +19,7 @@
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
-                <th id="name">
+                <th id="clin_number">
                   <span
                     class="
                       pl-2
@@ -27,17 +28,17 @@
                       font-weight-black
                     "
                   >
-                    Name
+                    CLIN #
                   </span>
                 </th>
-                <th id="permissions">
+                <th id="clin_type">
                   <span
                     class="text-left text--base-dark label font-weight-black"
                   >
-                    App Permissions
+                    CLIN type
                   </span>
                 </th>
-                <th id="environment">
+                <th id="description">
                   <span
                     class="
                       pr-2
@@ -46,37 +47,77 @@
                       font-weight-black
                     "
                   >
-                    Environment Access
+                    Description(IDIQ CLIN)
+                  </span>
+                </th>
+                <th id="PoP">
+                  <span
+                    class="
+                      pr-2
+                      text-left text--base-dark
+                      label
+                      font-weight-black
+                    "
+                  >
+                    Period of Performance
+                  </span>
+                </th>
+                <th id="clin_value">
+                  <span
+                    class="
+                      pr-2
+                      text-left text--base-dark
+                      label
+                      font-weight-black
+                    "
+                  >
+                    CLIN Value
+                  </span>
+                </th>
+                <th id="obligated_funds">
+                  <span
+                    class="
+                      pr-2
+                      text-left text--base-dark
+                      label
+                      font-weight-black
+                    "
+                  >
+                    Obligated Funds
                   </span>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in getData" :key="item.id">
+              <tr v-for="item in data" :key="item.clin_number">
                 <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
                     <span class="table-item font-weight-bold">
-                      {{ item.name }}
+                      {{ item.clin_number }}
                     </span>
-                    <span class="table-item"> {{ item.email }} </span>
                   </div>
                 </td>
                 <td class="pa-4" style="vertical-align: top">
-                  <span
-                    class="table-item d-flex flex-column"
-                    v-for="permission in grantedPermissions(item.permissions)"
-                    :key="permission"
-                  >
-                    {{ permission }}
+                  <span class="table-item d-flex flex-column"> Option </span>
+                </td>
+                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
+                  <span class="table-item d-flex flex-column">
+                    {{ item.idiq_clin }}
                   </span>
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span
-                    class="table-item d-flex flex-column"
-                    v-for="setting in item.environments_settings"
-                    :key="setting.id"
-                  >
-                    {{ setting.label }} : {{ setting.accessLevel }}
+                  <span class="table-item d-flex flex-column">
+                    {{ item.pop_start_date }} - {{ item.pop_end_date }}
+                  </span>
+                </td>
+                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
+                  <span class="table-item d-flex flex-column">
+                    {{ item.total_clin_value }}
+                  </span>
+                </td>
+                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
+                  <span class="table-item d-flex flex-column">
+                    {{ item.obligated_funds }}
                   </span>
                 </td>
               </tr>
@@ -90,15 +131,22 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { TaskOrderDetails } from "../../../../types/Wizard";
+import {
+  ATATSummaryCardItem,
+  CLIN,
+  TaskOrderDetails,
+} from "../../../../types/Wizard";
 
 @Component({})
 export default class FundingTable extends Vue {
-  @Prop({ default: [] }) private data!: TaskOrderDetails;
+  @Prop({ default: {} }) private data!: TaskOrderDetails;
   @Prop({ default: "" }) private name!: string;
 
-  mounted() {
+  mounted(): TaskOrderDetails {
     console.log(this.data);
+  }
+  private handleClicked(name: string) {
+    this.$router.push({ name: "editfunding", params: { id: `${name}` } });
   }
 }
 </script>

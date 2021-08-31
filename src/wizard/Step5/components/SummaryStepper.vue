@@ -43,12 +43,6 @@
             </v-stepper-content>
           </template>
         </v-stepper>
-        <funding-table
-          v-for="orders in taskOrders.details"
-          :key="orders"
-          :data="orders.clins"
-          :name="orders.task_order_number"
-        />
       </v-col>
     </v-row>
   </v-container>
@@ -64,7 +58,6 @@ import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
 @Component({
   components: {
-    FundingTable,
     PortfolioSummaryCard,
     FundingSummaryCard,
   },
