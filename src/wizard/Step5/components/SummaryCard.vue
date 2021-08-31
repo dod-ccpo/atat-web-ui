@@ -41,8 +41,8 @@ export default class SummaryCard extends VCard {
   @Prop({ default: "Description" })
   private description!: string;
 
-  @Prop({ default: [] })
-  private items!: Array<Record<string, unknown>>;
+  //   @Prop({ default: [] })
+  //   private items!: Array<Record<string, unknown>>;
 
   @Prop({ default: "Dialog Title" })
   private dialogTitle!: string;

@@ -1,8 +1,8 @@
 <template>
-  <summary-card :title="title" :items="items">
+  <summary-card :title="portfolio.name">
     <template slot="summary-description">
       <p class="body-lg width-80 word-break-normal">
-        {{ description }}
+        {{ portfolio.description }}
       </p>
     </template>
 
@@ -24,9 +24,32 @@
 </template>
 
 <script lang="ts">
+import { Portfolio } from "types/Portfolios";
 import Component from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 import SummaryCard from "./SummaryCard.vue";
 
 @Component({})
-export default class PortfolioSummaryCard extends SummaryCard {}
+export default class PortfolioSummaryCard extends SummaryCard {
+  @Prop({ default: null, required: true })
+  private portfolio!: Portfolio;
+
+  private items: Record<string, unknown>[] = new Array<
+    Record<string, unknown>
+  >();
+
+  public created(): void {
+    this.$nextTick(() => {
+      this.items.push({
+        prefix: "Funded by",
+        value: this.portfolio.dod_component.join(","),
+      });
+
+      this.items.push({
+        prefix: "Deploy to",
+        value: this.portfolio.csp_provisioning_status,
+      });
+    });
+  }
+}
 </script>

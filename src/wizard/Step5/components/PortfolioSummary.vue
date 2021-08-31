@@ -7,16 +7,15 @@
     </v-row>
     <v-row>
       <v-col cols="10">
-        <p class="body-lg" v-if="!invalidStepsExist()">
+        <p class="body-lg" v-if="!nvalidStepsExist()">
+          We found a few details that you need to review before we can provision
+          your cloud resources. Let's take care of these details now.
+        </p>
+        <p v-else>
           In this last step, we will review the information that you provided to
           make sure everything is complete and accurate. Once you have verified
           your Portfolio details, we will be able to provision your cloud
           resources.
-        </p>
-        <!-- Invalid steps found -->
-        <p v-else>
-          We found a few details that you need to review before we can provision
-          your cloud resources. Let's take care of these details now.
         </p>
       </v-col>
     </v-row>
@@ -26,7 +25,11 @@
           v-if="invalidStepsExist()"
           :items="getValidationResults()"
         />
-        <summary-stepper v-else></summary-stepper>
+
+        <summary-stepper
+          v-if="portfolio && !invalidStepsExist()"
+          :portfolio="portfolio"
+        ></summary-stepper>
       </v-col>
     </v-row>
   </v-container>
@@ -38,6 +41,7 @@ import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
 import { ValidationSummaryItem } from "types/Wizard";
+import { Portfolio } from "types/Portfolios";
 
 @Component({
   components: {
@@ -46,6 +50,14 @@ import { ValidationSummaryItem } from "types/Wizard";
   },
 })
 export default class PortfolioSummary extends Vue {
+  public portfolio!: Portfolio;
+
+  public created(): void {
+    debugger;
+    const portfolioId = this.$route.params.id || "11";
+    this.portfolio = this.getPorfolioById(portfolioId);
+  }
+
   public invalidStepsExist(): boolean {
     return false;
   }
@@ -64,6 +76,11 @@ export default class PortfolioSummary extends Vue {
         name: "",
       },
     ];
+  }
+
+  public getPorfolioById(id?: string): Portfolio {
+    id = id || "11";
+    return this.$store.getters.getPortfolioById(id);
   }
 }
 </script>
