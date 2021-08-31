@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="width-80 ml-0 mb-10">
-    <v-slide-x-reverse-transition >
+    <v-slide-x-reverse-transition>
       <div v-if="drawer" class="atat-info-side-drawer">
         <div class="d-flex justify-space-between align-center px-6 my-4">
           <div class="body text-uppercase font-weight-bold text--base-dark">
@@ -46,8 +46,8 @@
           time. Once you are ready to submit your portfolio, click the
           <strong>Provision Cloud Resources</strong> button. We will send the
           information you provided to
-          <strong> &lt;selected CSP&gt; </strong> and begin the process of
-          setting up your workspaces and team members.
+          <strong> {{ this.$store.state.selectedCSP }} </strong> and begin the
+          process of setting up your workspaces and team members.
         </p>
       </v-col>
     </v-row>

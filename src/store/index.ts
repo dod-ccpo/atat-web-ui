@@ -24,6 +24,7 @@ export default new Vuex.Store({
     isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
+    selectedCSP: 'CSP 1' 
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
