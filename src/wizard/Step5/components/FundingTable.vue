@@ -1,8 +1,15 @@
 <template>
   <div class="review-table">
-    <v-card class="mt-4" elevation="2" max-width="100%">
+    <v-card class="mt-4" elevation="4" max-width="100%">
       <v-card-title class="d-flex justify-space-between">
-        <span class="h4">Task Order #{{ name }}</span>
+        <span class="h4 justify-center">Task Order #{{ name }}</span>
+      </v-card-title>
+      <v-card-subtitle class="d-flex justify-space-between">
+        <p class="h6 text-decoration-underline mt-2 primary--text">
+          #{{ name
+          }}<v-icon x-small color="primary" class="mb-1">launch</v-icon>
+        </p>
+
         <v-btn
           text
           x-small
@@ -13,7 +20,7 @@
           <v-icon x-small class="text-decoration-none mr-1">edit</v-icon>
           <span class="text-decoration-underline">Edit</span>
         </v-btn>
-      </v-card-title>
+      </v-card-subtitle>
       <v-card-text class="pa-0">
         <v-simple-table class="pb-2">
           <template v-slot:default>
@@ -112,12 +119,12 @@
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span class="table-item d-flex flex-column">
-                    {{ item.total_clin_value }}
+                    {{ formatCurrency(item.total_clin_value) }}
                   </span>
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span class="table-item d-flex flex-column">
-                    {{ item.obligated_funds }}
+                    {{ formatCurrency(item.obligated_funds) }}
                   </span>
                 </td>
               </tr>
@@ -131,22 +138,23 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import {
-  ATATSummaryCardItem,
-  CLIN,
-  TaskOrderDetails,
-} from "../../../../types/Wizard";
+import { TaskOrderDetails } from "../../../../types/Wizard";
 
 @Component({})
 export default class FundingTable extends Vue {
   @Prop({ default: {} }) private data!: TaskOrderDetails;
   @Prop({ default: "" }) private name!: string;
 
-  mounted(): TaskOrderDetails {
-    console.log(this.data);
-  }
   private handleClicked(name: string) {
     this.$router.push({ name: "editfunding", params: { id: `${name}` } });
   }
+  public formatCurrency(value: number): string {
+    return this.formatter.format(value);
+  }
+  private formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  });
 }
 </script>

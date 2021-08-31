@@ -26,7 +26,10 @@
           v-if="invalidStepsExist()"
           :items="getValidationResults()"
         />
-        <summary-stepper :taskOrders="taskOrders"></summary-stepper>
+        <summary-stepper
+          v-if="!invalidStepsExist()"
+          :taskOrders="taskOrders"
+        ></summary-stepper>
       </v-col>
     </v-row>
   </v-container>
@@ -52,17 +55,16 @@ export default class PortfolioSummary extends Vue {
   }
 
   public getValidationResults(): ValidationSummaryItem[] {
-    debugger;
     return [
       {
         title: "Portfolio Details (or Portfolio Settings)",
         description: "Ensures your Portfolio is set up correctly",
-        name: "createPortfolio",
+        name: "addportfolio",
       },
       {
         title: "Funding Details",
         description: "Ensures you have Task Orders to fund your Portfolio",
-        name: "",
+        name: "addfunding",
       },
     ];
   }

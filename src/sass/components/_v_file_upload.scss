@@ -64,6 +64,9 @@
     width: 32px;
     height: 40px;
     background-size: 32px 40px;
+    &.small{
+        width: 16px;
+        height: 21px;
+        background-size: 16px 21px;
+    }
 }
-
-

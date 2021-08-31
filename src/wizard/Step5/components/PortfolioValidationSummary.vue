@@ -47,6 +47,7 @@ export default class PortfolioValidationSummary extends Vue {
   public onReviewPortfolioItem(componentName: string): void {
     //todo: route to component item for review
     console.log(componentName);
+    this.$router.push({ name: componentName });
   }
 }
 </script>

@@ -1,0 +1,21 @@
+.review-table{
+  .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper){
+    background: transparent;
+  }
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+    height: fit-content;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr:last-child > th {
+    border-bottom: none;
+  }
+  .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > td:not(.v-data-table__mobile-row) {
+    border-bottom: solid 1px $base_lighter;
+  }
+  .v-card__subtitle, .v-card__text, .v-card__title {
+    padding: 24px 24px 16px 24px;
+  }
+
+
+}
