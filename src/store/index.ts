@@ -5,6 +5,7 @@ import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
 import {WizardStep, WizardStepNames } from "../../types/Wizard";
+import { textSpanContainsTextSpan } from "typescript";
 
 Vue.use(Vuex);
 
@@ -70,18 +71,19 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
+    isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
     currentStep: step,
     wizardNavigation: {},
+    selectedCSP: 'CSP 1' 
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
-      if (status) {
-        state.loginStatus = true;
-      } else {
-        state.loginStatus = false;
-      }
+      state.loginStatus = status;
+    },
+    changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
+      state.isUserAuthorizedToProvisionCloudResources = status;
     },
 
     setWizardStep(state, step: string) {
@@ -139,11 +141,20 @@ export default new Vuex.Store({
     updateWizardStep({ commit }, stepName: string) {
       commit("setWizardStep", stepName);
     },
+    authorizeUser({ commit }) {
+      commit("changeisUserAuthorizedToProvisionCloudResources", true);
+    },
+    unauthorizeUser({ commit }) {
+      commit("changeisUserAuthorizedToProvisionCloudResources", false);
+    },
   },
   modules: {},
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;
+    },
+    getisUserAuthorizedToProvisionCloudResources(state) {
+      return state.isUserAuthorizedToProvisionCloudResources;
     },
     getNavBarItems(): Navs {
       return {
