@@ -129,7 +129,7 @@
     text-decoration: none !important;
 }
 
-    $sizes: 16, 18, 20, 24;
+    $sizes: 16, 18, 20, 24, 200;
     @each $size in $sizes{
         .icon-#{$size}{
             font-size: #{$size}px !important;

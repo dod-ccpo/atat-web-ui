@@ -45,28 +45,53 @@
             this portfolio. Multiple DoD organizations can fund the same
             Portfolio
           </p>
-          <v-checkbox
-            :rules="rules.dod_components"
-            class="ma-2 pa-0 validation-above text--black"
-            :id="'checkbox_' + dod.replace(/ /gi, '_')"
-            :ref="'checkbox_' + dod.replace(/ /gi, '_')"
-            v-for="(dod, index) in dodComponents"
-            v-model="_dod_components"
-            :key="dod"
-            :value="dod"
-            :hide-details="index !== 0"
-            color="primary"
-            name="dod_components"
-            :aria-checked="_dod_components.findIndex((c) => c === dod) > -1"
-            @change="checkComponent('checkbox_' + dod.replace(/ /gi, '_'), dod)"
+
+          <div
+            v-if="typeof isDodComponentsValid === 'string'"
+            class="mb-2 atat-error-message"
+            id="dod-components-errors"
+            role="alert"
           >
-            <!-- @keyup.enter="checkComponent"   -->
-            <!-- @click="dod.checked = !dod.checked"
-          @keyup.space="dod.checked = !dod.checked" -->
-            <template v-slot:label>
-              <span class="">{{ dod }}</span>
-            </template>
-          </v-checkbox>
+            
+            {{ isDodComponentsValid }}
+          </div>
+
+          <fieldset
+            id="dod-component"
+            v-for="(dod, index) in dodComponents"
+            :key="index"
+            :class="[
+              typeof isDodComponentsValid === 'string'
+                ? 'error-item'
+                : 'default',
+              ' my-3 atat-checkbox-list',
+            ]"
+          >
+            <input
+              :id="'dod-component-' + index"
+              type="checkbox"
+              v-model="_dod_components"
+              :value="dod"
+              style="width: 0px; height: 0px; position: absolute"
+            />
+
+            <label
+              :tabindex="index + 1"
+              :for="'dod-component-' + index"
+              class="d-flex align-center'"
+              @keydown.space="check('dod-component-' + index)"
+            >
+              <v-icon class="checked-icon" v-if="isChecked(dod)"
+                >check_box</v-icon
+              >
+              <v-icon class="checkbox-icon" v-else
+                >check_box_outline_blank</v-icon
+              >
+              <div class="ml-2">
+                {{ dod }}
+              </div>
+            </label>
+          </fieldset>
         </v-col>
       </v-row>
     </v-container>
@@ -77,7 +102,6 @@
 import { ValidatableForm } from "types/Wizard";
 import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
-
 @Component({})
 export default class CreatePortfolioForm
   extends Vue
@@ -97,60 +121,34 @@ export default class CreatePortfolioForm
     "National Security Agency (NSA)",
     "Other",
   ];
-
-  private checkboxClicked() {
-    //this.$refs(cbRef)
-    // console.log(this.$refs[cbRef]);
-    // // alert("hi there");
-    // debugger;
-    // console.log("hi threre");
-    return true;
+  private isDodComponentsValid: boolean | string | undefined = false;
+  private isChecked(dodComp: string) {
+    return this._dod_components.some((d) => d === dodComp);
   }
-
-  private checkComponent(cbRef: string, dod: string) {
-    // debugger;
-    // console.log(this.$refs[cbRef]);
-    this.$nextTick(function () {
-      let cb: any = this.$refs[cbRef];
-      let isItemChecked = this._dod_components.findIndex((c) => c === dod) > -1;
-      if (cb && cb.length > 0) {
-        cb[0].$attrs["aria-checked"] = isItemChecked;
-      }
-    });
-  }
-
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
-
   @PropSync("description", { default: "", required: true })
   portfolio_description!: string;
-
   @PropSync("dod_components", {
     default: () => new Array<string>(),
     required: true,
   })
   _dod_components!: string[];
-
   @Watch("_dod_components")
   onDodComponentsChanged(): void {
     if (Object.keys(this.rules).length === 0) return;
-
     this.validateForm();
   }
-
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
-
   public mounted(): void {
     this.$http.post("portfolioDrafts?offset=0&limit=20").then((response) => {
       console.log(response);
     });
   }
-
   public rules = {};
-
   public async validateForm(): Promise<boolean> {
-    let validated = false;
+    let validated = false;  
     this.rules = {
       portfolioName: [
         (v: string) => !!v || "Name is required",
@@ -163,11 +161,12 @@ export default class CreatePortfolioForm
           "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
-
+    this.isDodComponentsValid =
+      this._dod_components.length > 0 ||
+      "Please select all of the DoD components that will fund your Portfolio";
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
-
     return validated;
   }
 }
