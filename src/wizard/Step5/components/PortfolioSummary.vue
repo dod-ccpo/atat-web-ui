@@ -69,6 +69,17 @@ export default class PortfolioSummary extends Vue {
         description: "Ensures you have Task Orders to fund your Portfolio",
         name: "addfunding",
       },
+      {
+        title: "Applications and Environments",
+        description: "Ensures your cloud workspaces are correct",
+        name: "addapplication",
+      },
+      {
+        title: "Team Members",
+        description:
+          "Ensures your team can access their workspaces within the cloud console",
+        name: "addteammembers",
+      },
     ];
   }
 

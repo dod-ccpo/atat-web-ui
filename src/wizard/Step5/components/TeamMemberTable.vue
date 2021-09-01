@@ -1,16 +1,17 @@
 <template>
   <div class="review-table">
-    <v-card class="mt-4" elevation="2" max-width="100%">
+    <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
       <v-card-title class="d-flex justify-space-between">
         <span class="h4">{{ name }}</span>
         <v-btn
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
+          @click="handleClicked(name)"
           :ripple="false"
         >
-          <v-icon x-small class="text-decoration-none mr-1">edit</v-icon>
-          <span class="text-decoration-underline">Edit</span>
+          <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0">
@@ -110,6 +111,9 @@ export default class TeamMemberTable extends Vue {
     if (grantedPermissionsArr.length > 0) {
       return grantedPermissionsArr.map((item) => item.label);
     } else return ["No Access"];
+  }
+  private handleClicked(name: string) {
+    this.$router.push({ name: "addteammembers" });
   }
 }
 </script>
