@@ -1,5 +1,5 @@
 <template>
-  <summary-card :title="portfolio.name" @edit="onEdit()">
+  <summary-card :title="portfolio.name" editPlace="addportfolio">
     <template slot="summary-description">
       <p class="body-lg width-80 word-break-normal">
         {{ portfolio.description }}
@@ -31,7 +31,7 @@ import SummaryCard from "./SummaryCard.vue";
 
 @Component({})
 export default class PortfolioSummaryCard extends SummaryCard {
-  @Prop({ default: null, required: true })
+  @Prop({ required: true })
   private portfolio!: Portfolio;
 
   private dataItems: Record<string, unknown>[] = new Array<

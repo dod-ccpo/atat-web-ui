@@ -7,7 +7,7 @@
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
-          @click="handleClicked(name)"
+          @click="handleClicked('addteammembers')"
           :ripple="false"
         >
           <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>

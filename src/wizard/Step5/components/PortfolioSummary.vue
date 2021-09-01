@@ -54,7 +54,7 @@ export default class PortfolioSummary extends Vue {
   public portfolio!: Portfolio;
   public taskOrders!: TaskOrders;
   public invalidStepsExist(): boolean {
-    return false;
+    return true;
   }
 
   public getValidationResults(): ValidationSummaryItem[] {
@@ -87,12 +87,10 @@ export default class PortfolioSummary extends Vue {
     id = id || "11";
     return this.$store.getters.getPortfolioById(id);
   }
-  created() {
+  created(): void {
     const portfolioId = this.$route.params.id || "11";
     this.portfolio = this.getPorfolioById(portfolioId);
     this.taskOrders = this.$store.getters.getMockTaskOrders.details;
-    this.taskOrders = this.$store.getters.getMockTaskOrders.details;
-
   }
 }
 </script>

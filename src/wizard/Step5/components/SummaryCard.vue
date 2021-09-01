@@ -43,7 +43,7 @@ export default class SummaryCard extends VCard {
   private title!: string;
   @Prop({ default: "Description" })
   private description!: string;
-  @Prop({ default: [] })
+  @Prop()
   private items!: Array<Record<string, unknown>>;
   @Prop({ default: "Dialog Title" })
   private dialogTitle!: string;
@@ -68,6 +68,7 @@ export default class SummaryCard extends VCard {
   //     return true;
   //   }
   private handleClicked(editPlace: string) {
+    debugger;
     this.$router.push({ name: editPlace });
   }
   //   @Emit()

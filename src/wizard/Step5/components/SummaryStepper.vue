@@ -33,6 +33,7 @@
               <portfolio-summary-card
                 v-if="step.type === 'portfolio'"
                 :portfolio="portfolio"
+                editPlace="addportfolio"
               ></portfolio-summary-card>
               <funding-summary-card
                 v-if="step.type === 'funding'"
@@ -45,6 +46,7 @@
               <team-member-summary-card
                 v-if="step.type === 'teamMembers'"
                 :application-data="applicationData"
+                editPlace="addteammembers"
               ></team-member-summary-card>
             </v-stepper-content>
           </template>
@@ -61,7 +63,7 @@ import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
 import { SummaryStep, TaskOrders } from "types/Wizard";
 import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
-import { Portfolios } from "../../../../types/Portfolios";
+import { Application, Portfolio } from "../../../../types/Portfolios";
 import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
 @Component({
   components: {
@@ -72,10 +74,10 @@ import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/Appli
   },
 })
 export default class SummaryStepper extends Vue {
+  @Prop({ default: () => null })
+  private portfolio!: Portfolio;
   @Prop({ default: "TaskOrders" })
   private taskOrders!: TaskOrders;
-  @Prop({ default: "ApplicationData" })
-  private applicationData!: Portfolios;
   @PropSync("stepNumber", { default: 1 })
   private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
@@ -89,20 +91,20 @@ export default class SummaryStepper extends Vue {
   // keyboard navigation
   // enables user to tab to stepper label and click stepper
   public stepperClicked(stepper: string): void {
-    switch (stepper) {
-      case "step01":
-        this.$refs.step01.$el.click();
-        break;
-      case "step02":
-        this.$refs.step02.$el.click();
-        break;
-      case "step03":
-        this.$refs.step03.$el.click();
-        break;
-      case "step04":
-        this.$refs.step04.$el.click();
-        break;
-    }
+    // switch (stepper) {
+    //   case "step01":
+    //     this.$refs.step01.$el.click();
+    //     break;
+    //   case "step02":
+    //     this.$refs.step02.$el.click();
+    //     break;
+    //   case "step03":
+    //     this.$refs.step03.$el.click();
+    //     break;
+    //   case "step04":
+    //     this.$refs.step04.$el.click();
+    //     break;
+    // }
   }
   public stepperControl: SummaryStep[] = [
     {
@@ -141,5 +143,11 @@ export default class SummaryStepper extends Vue {
       type: "teamMembers",
     },
   ];
+
+  get applicationData(): Application | undefined {
+    return this.portfolio && this.portfolio.applications.length > 0
+      ? this.portfolio.applications[0]
+      : undefined;
+  }
 }
 </script>

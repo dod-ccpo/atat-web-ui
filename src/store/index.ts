@@ -56,10 +56,19 @@ wizardList.set(WizardStepNames.addteammembersStep(), {
 });
 
 wizardList.set(WizardStepNames.reviewandsubmitStep(), {
-  next: "",
+  next: WizardStepNames.postreviewStep(),
   previous: WizardStepNames.addteammembersStep(),
 });
 
+wizardList.set(WizardStepNames.postreviewStep(), {
+  next: WizardStepNames.submitStep(),
+  previous: WizardStepNames.reviewandsubmitStep(),
+});
+
+wizardList.set(WizardStepNames.submitStep(), {
+  next: "",
+  previous: WizardStepNames.postreviewStep(),
+});
 
 const step :WizardStep = {
   next: "",
@@ -99,6 +108,8 @@ export default new Vuex.Store({
     //provides wizard state handling for next and previous wizard buttons
     //eventually this may be moved to it's own module
     setWizardNavigation(state, action: string) {
+      debugger;
+
       let stepName: string | undefined = undefined;
 
       if (action === "next") {

@@ -96,7 +96,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in data" :key="item.clin_number">
+              <tr v-for="(item, index) in data" :key="index">
                 <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
                     <span class="table-item font-weight-bold">

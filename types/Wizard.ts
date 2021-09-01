@@ -212,5 +212,8 @@ export class WizardStepNames {
   public static addapplicationStep():string {return "addapplication";}
   public static addteammembersStep():string {return "addteammembers";}
   public static reviewandsubmitStep():string {return "reviewandsubmit";}
+  public static postreviewStep():string {return "postreview";}
+  public static submitStep():string {return "submit";}
+
 
 }
