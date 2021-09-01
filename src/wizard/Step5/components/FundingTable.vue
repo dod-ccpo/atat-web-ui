@@ -5,10 +5,10 @@
         <span class="h4 justify-center">Task Order #{{ name }}</span>
       </v-card-title>
       <v-card-subtitle class="d-flex justify-space-between">
-        <p class="h6 text-decoration-underline mt-2 primary--text">
-          #{{ name
-          }}<v-icon x-small color="primary" class="mb-1">launch</v-icon>
-        </p>
+        <v-btn class="pa-0 primary--text" text small :ripple="false">
+          <span class="link-body-md">{{ name }}</span
+          ><v-icon small class="ml-2 icon-20">launch</v-icon></v-btn
+        >
 
         <v-btn
           text

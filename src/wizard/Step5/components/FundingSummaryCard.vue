@@ -22,8 +22,5 @@ import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 export default class FundingSummaryCard extends Vue {
   @Prop({ default: null, required: true })
   private taskOrders!: TaskOrders;
-  created() {
-    console.log(this.taskOrders);
-  }
 }
 </script>
