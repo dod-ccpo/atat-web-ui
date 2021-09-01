@@ -139,9 +139,9 @@
         @include checkbox-default-focus-before;
         box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 6px $focus-blue!important;
     }
-    input:focus:not(:focus-visible) + label > i {
-        box-shadow: none !important;
-      }
+    // input:focus:not(:focus-visible) + label > i {
+    //     box-shadow: none !important;
+    //   }
  }
 
 ._v_radio-button-cards {

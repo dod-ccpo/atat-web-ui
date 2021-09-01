@@ -75,7 +75,6 @@
             />
 
             <label
-              :tabindex="index + 1"
               :for="'dod-component-' + index"
               class="d-flex align-center'"
               @keydown.space="check('dod-component-' + index)"
