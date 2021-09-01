@@ -13,14 +13,19 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails, VoidCallback } from "types/Wizard";
-import { Route } from "vue-router/types/router";
+import { TaskOrderDetails, WizardNavigation } from "types/Wizard";
+import { mapState } from "vuex";
 
 @Component({
   components: {
     CreateTaskOrderForm,
+  },
+  computed: {
+    ...mapState({
+      wizardNavigation: "wizardNavigation",
+    }),
   },
 })
 export default class Step_2 extends Vue {
@@ -50,6 +55,21 @@ export default class Step_2 extends Vue {
     ],
   };
 
+  // this store change will only be triggered by the wizard buttons next/previous
+  @Watch("wizardNavigation")
+  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
+    switch (navigation.action) {
+      case "next":
+        if (await this.validate()) {
+          this.$router.push({ name: navigation.step });
+        }
+        break;
+      case "previous":
+        this.$router.push({ name: navigation.step });
+        break;
+    }
+  }
+
   public async validate(): Promise<boolean> {
     let valid = false;
     valid = await this.$refs.createTaskOrderForm.validateForm();
@@ -74,35 +94,10 @@ export default class Step_2 extends Vue {
       this.taskOrderDetails.clins.splice(index, 1);
     }
   }
-  public async beforeRouteLeave(
-    to: Route,
-    from: Route,
-    next: VoidCallback
-  ): Promise<void> {
-    if (to.name === "addteammembers") {
-      next();
-      return;
-    } else if (to.name === "addportfolio") {
-      next();
-      return;
-    } else if (to.name === "reviewandsubmit") {
-      next();
-      return;
-    } else if (to.name === "portfolios") {
-      next();
-      return;
-    } else if (to.name === "createportfolio") {
-      next();
-      return;
-    } else if (from.name === "editfunding") {
-      next();
-      return;
-    }
-    // if (await this.validate()) {
-    //   next();
-    // }
-  }
-  mounted(): void {
+
+  public mounted(): void {
+    this.$store.dispatch("updateWizardStep", 2);
+
     if (this.$route.name === "editfunding") {
       this.taskOrderDetails = this.$store.getters.getTaskOrderByName(
         this.$route.params.id
