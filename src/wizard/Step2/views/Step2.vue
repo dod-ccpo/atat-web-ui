@@ -15,7 +15,11 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails, WizardNavigation } from "types/Wizard";
+import {
+  TaskOrderDetails,
+  WizardNavigation,
+  WizardStepNames,
+} from "../../../../types/Wizard";
 import { mapState } from "vuex";
 
 @Component({
@@ -55,21 +59,6 @@ export default class Step_2 extends Vue {
     ],
   };
 
-  // this store change will only be triggered by the wizard buttons next/previous
-  @Watch("wizardNavigation")
-  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-    switch (navigation.action) {
-      case "next":
-        if (await this.validate()) {
-          this.$router.push({ name: navigation.step });
-        }
-        break;
-      case "previous":
-        this.$router.push({ name: navigation.step });
-        break;
-    }
-  }
-
   public async validate(): Promise<boolean> {
     let valid = false;
     valid = await this.$refs.createTaskOrderForm.validateForm();
@@ -96,12 +85,29 @@ export default class Step_2 extends Vue {
   }
 
   public mounted(): void {
-    this.$store.dispatch("updateWizardStep", 2);
+    
+    this.$store.dispatch("updateWizardStep", WizardStepNames.addfundingStep());
 
     if (this.$route.name === "editfunding") {
       this.taskOrderDetails = this.$store.getters.getTaskOrderByName(
         this.$route.params.id
       );
+    }
+  }
+
+  // this store change will only be triggered by the wizard buttons next/previous
+  @Watch("wizardNavigation")
+  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
+    
+    switch (navigation.action) {
+      case "next":
+        if (await this.validate()) {
+          this.$router.push({ name: navigation.step });
+        }
+        break;
+      case "previous":
+        this.$router.push({ name: navigation.step });
+        break;
     }
   }
 }

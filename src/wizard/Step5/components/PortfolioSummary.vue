@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="my-9">
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <h2 class="h2">Let’s wrap up your Portfolio</h2>
@@ -28,8 +28,8 @@
         />
         <summary-stepper
           v-if="!invalidStepsExist()"
+          :portfolio="portfolio"
           :taskOrders="taskOrders"
-          :application-data="applicationData"
         ></summary-stepper>
       </v-col>
     </v-row>
@@ -41,8 +41,8 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
+import { Portfolio } from "types/Portfolios";
 import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
-import { Portfolios } from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -51,8 +51,8 @@ import { Portfolios } from "../../../../types/Portfolios";
   },
 })
 export default class PortfolioSummary extends Vue {
+  public portfolio!: Portfolio;
   public taskOrders!: TaskOrders;
-  public applicationData!: Portfolios;
   public invalidStepsExist(): boolean {
     return false;
   }
@@ -83,10 +83,14 @@ export default class PortfolioSummary extends Vue {
     ];
   }
 
-  created() {
+  public getPorfolioById(id?: string): Portfolio {
+    id = id || "11";
+    return this.$store.getters.getPortfolioById(id);
+  }
+  created(): void {
+    const portfolioId = this.$route.params.id || "11";
+    this.portfolio = this.getPorfolioById(portfolioId);
     this.taskOrders = this.$store.getters.getMockTaskOrders.details;
-    this.applicationData =
-      this.$store.getters.getPortfolioById("11").applications[0];
   }
 }
 </script>

@@ -173,6 +173,7 @@ export interface ATATSummaryCards {
   cards: ATATSummaryCardItem[];
 }
 
+
 /**
  * Model to represent Portfolio data
  *
@@ -194,4 +195,25 @@ export interface WizardNavigation {
      action: string;
      guid: string;
      step: string;
+     
+}
+
+export interface WizardStep {
+  next: string;
+  previous: string;
+}
+
+
+export class WizardStepNames {
+
+  public static addportolioStep():string { return "addportfolio"} ;
+  public static addfundingStep():string {return "addfunding";}
+  public static fundingsummaryStep():string { return "fundingsummary";}
+  public static addapplicationStep():string {return "addapplication";}
+  public static addteammembersStep():string {return "addteammembers";}
+  public static reviewandsubmitStep():string {return "reviewandsubmit";}
+  public static postreviewStep():string {return "postreview";}
+  public static submitStep():string {return "submit";}
+
+
 }

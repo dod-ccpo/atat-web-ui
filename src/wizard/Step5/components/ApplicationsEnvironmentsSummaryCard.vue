@@ -2,7 +2,7 @@
   <summary-card
     :title="applicationData.name"
     :items="applicationData.environments"
-    :editPlace="editPlace"
+    editPlace="addapplication"
   >
     <template slot="summary-description">
       <p class="body-lg width-80 word-break-normal">
@@ -49,6 +49,5 @@ import { Application } from "../../../../types/Portfolios";
 export default class ApplicationsEnvironmentsSummaryCard extends SummaryCard {
   @Prop({ default: {}, required: true })
   private applicationData!: Application;
-  public editPlace = "addapplication";
 }
 </script>

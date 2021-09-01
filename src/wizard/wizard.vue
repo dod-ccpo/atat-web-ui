@@ -47,6 +47,8 @@ export default class Wizard extends Vue {
   public getRoute(actions: string[]): void {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
+      debugger;
+
       switch (action) {
         case "next":
           // if (this.$route.name == "addportfolio") {
@@ -66,13 +68,15 @@ export default class Wizard extends Vue {
 
           break;
         case "summary":
+          // todo: move this router logic to the store
           if (this.$route.name === "addfunding") {
-            await this.$router.push({ name: "fundingsummary" });
+            // await this.$router.push({ name: "fundingsummary" });
+            this.$store.dispatch("wizardNext");
           } else if (this.$route.name === "editfunding") {
             await this.$router.push({ name: "fundingsummary" });
             this.stepNumber = 2;
           } else if (this.$route.name === "fundingsummary") {
-            await this.$router.push({ name: "addapplication" });
+            this.$store.dispatch("wizardNext");
             this.stepNumber = 3;
           }
           break;
@@ -170,7 +174,9 @@ export default class Wizard extends Vue {
         break;
     }
   }
-
+  public mounted(): void {
+    this.checkPath();
+  }
   @Watch("$route")
   onRouteChanged(): void {
     this.checkPath();

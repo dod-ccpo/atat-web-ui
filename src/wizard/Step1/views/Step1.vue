@@ -19,7 +19,11 @@ import { Component, Watch } from "vue-property-decorator";
 import { mapState } from "vuex";
 import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
-import { CreatePortfolioFormModel, WizardNavigation } from "types/Wizard";
+import {
+  CreatePortfolioFormModel,
+  WizardNavigation,
+  WizardStepNames,
+} from "../../../../types/Wizard";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -61,12 +65,13 @@ export default class Step_1 extends Vue {
 
   public mounted(): void {
     //updates the current wizard step in the store
-    this.$store.dispatch("updateWizardStep", 1);
+    this.$store.dispatch("updateWizardStep", WizardStepNames.addportolioStep());
   }
 
   // this store change will only be triggered by the wizard buttons next/previous
   @Watch("wizardNavigation")
   async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
+    
     switch (navigation.action) {
       case "next":
         if (await this.validate()) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="ml-4 d-flex align-start">
+  <div class="d-flex align-start">
     <v-card class="v-card ma-9 px-2 ml-0 body">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
@@ -43,7 +43,7 @@ export default class SummaryCard extends VCard {
   private title!: string;
   @Prop({ default: "Description" })
   private description!: string;
-  @Prop({ default: [] })
+  @Prop()
   private items!: Array<Record<string, unknown>>;
   @Prop({ default: "Dialog Title" })
   private dialogTitle!: string;
@@ -68,6 +68,7 @@ export default class SummaryCard extends VCard {
   //     return true;
   //   }
   private handleClicked(editPlace: string) {
+    debugger;
     this.$router.push({ name: editPlace });
   }
   //   @Emit()

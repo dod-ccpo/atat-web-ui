@@ -200,4 +200,4 @@ export const allPortfolios: Portfolios = {
       },
     ],
   },
-};
+}; // Noncompliant

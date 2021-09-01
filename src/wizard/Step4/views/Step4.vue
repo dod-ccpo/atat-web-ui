@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { WizardNavigation } from "types/Wizard";
+import { WizardNavigation, WizardStepNames } from "../../../../types/Wizard";
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { mapState } from "vuex";
@@ -17,7 +17,10 @@ import { mapState } from "vuex";
 })
 export default class Step_4 extends Vue {
   mounted(): void {
-    this.$store.dispatch("updateWizardStep", 4);
+    this.$store.dispatch(
+      "updateWizardStep",
+      WizardStepNames.addteammembersStep()
+    );
   }
 
   // this store change will only be triggered by the wizard buttons next/previous
