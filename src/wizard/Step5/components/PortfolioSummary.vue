@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="my-9">
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <h2 class="h2">Let’s wrap up your Portfolio</h2>
@@ -28,6 +28,7 @@
         />
         <summary-stepper
           v-if="!invalidStepsExist()"
+          :portfolio="portfolio"
           :taskOrders="taskOrders"
         ></summary-stepper>
       </v-col>
@@ -40,6 +41,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
+import { Portfolio } from "types/Portfolios";
 import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
 
 @Component({
@@ -49,6 +51,7 @@ import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
   },
 })
 export default class PortfolioSummary extends Vue {
+  public portfolio!: Portfolio;
   public taskOrders!: TaskOrders;
   public invalidStepsExist(): boolean {
     return false;
@@ -66,10 +69,27 @@ export default class PortfolioSummary extends Vue {
         description: "Ensures you have Task Orders to fund your Portfolio",
         name: "addfunding",
       },
+      {
+        title: "Applications and Environments",
+        description: "Ensures your cloud workspaces are correct",
+        name: "addapplication",
+      },
+      {
+        title: "Team Members",
+        description:
+          "Ensures your team can access their workspaces within the cloud console",
+        name: "addteammembers",
+      },
     ];
   }
 
-  public created(): void {
+  public getPorfolioById(id?: string): Portfolio {
+    id = id || "11";
+    return this.$store.getters.getPortfolioById(id);
+  }
+  created(): void {
+    const portfolioId = this.$route.params.id || "11";
+    this.portfolio = this.getPorfolioById(portfolioId);
     this.taskOrders = this.$store.getters.getMockTaskOrders.details;
   }
 }

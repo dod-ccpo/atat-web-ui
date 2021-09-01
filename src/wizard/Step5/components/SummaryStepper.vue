@@ -32,14 +32,22 @@
             <v-stepper-content :step="index + 1" :key="'step_' + index">
               <portfolio-summary-card
                 v-if="step.type === 'portfolio'"
-                :title="step.data.title"
-                :description="step.data.description"
-                :items="step.data.items"
+                :portfolio="portfolio"
+                editPlace="addportfolio"
               ></portfolio-summary-card>
               <funding-summary-card
                 v-if="step.type === 'funding'"
                 :task-orders="taskOrders"
               ></funding-summary-card>
+              <applications-environments-summary-card
+                v-if="step.type === 'apllicationEnvironments'"
+                :application-data="applicationData"
+              ></applications-environments-summary-card>
+              <team-member-summary-card
+                v-if="step.type === 'teamMembers'"
+                :application-data="applicationData"
+                editPlace="addteammembers"
+              ></team-member-summary-card>
             </v-stepper-content>
           </template>
         </v-stepper>
@@ -54,14 +62,20 @@ import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
 import { SummaryStep, TaskOrders } from "types/Wizard";
-
+import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
+import { Application, Portfolio } from "../../../../types/Portfolios";
+import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
 @Component({
   components: {
     PortfolioSummaryCard,
     FundingSummaryCard,
+    TeamMemberSummaryCard,
+    ApplicationsEnvironmentsSummaryCard,
   },
 })
 export default class SummaryStepper extends Vue {
+  @Prop({ default: () => null })
+  private portfolio!: Portfolio;
   @Prop({ default: "TaskOrders" })
   private taskOrders!: TaskOrders;
   @PropSync("stepNumber", { default: 1 })
@@ -77,20 +91,20 @@ export default class SummaryStepper extends Vue {
   // keyboard navigation
   // enables user to tab to stepper label and click stepper
   public stepperClicked(stepper: string): void {
-    switch (stepper) {
-      case "step01":
-        this.$refs.step01.$el.click();
-        break;
-      case "step02":
-        this.$refs.step02.$el.click();
-        break;
-      case "step03":
-        this.$refs.step03.$el.click();
-        break;
-      case "step04":
-        this.$refs.step04.$el.click();
-        break;
-    }
+    // switch (stepper) {
+    //   case "step01":
+    //     this.$refs.step01.$el.click();
+    //     break;
+    //   case "step02":
+    //     this.$refs.step02.$el.click();
+    //     break;
+    //   case "step03":
+    //     this.$refs.step03.$el.click();
+    //     break;
+    //   case "step04":
+    //     this.$refs.step04.$el.click();
+    //     break;
+    // }
   }
   public stepperControl: SummaryStep[] = [
     {
@@ -121,11 +135,19 @@ export default class SummaryStepper extends Vue {
     {
       step: 3,
       title: "Applications and Environments",
+      type: "apllicationEnvironments",
     },
     {
       step: 4,
       title: "Team Members",
+      type: "teamMembers",
     },
   ];
+
+  get applicationData(): Application | undefined {
+    return this.portfolio && this.portfolio.applications.length > 0
+      ? this.portfolio.applications[0]
+      : undefined;
+  }
 }
 </script>
