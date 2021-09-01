@@ -132,20 +132,17 @@
     opacity: 1 !important;
 }
 
-.v-input--selection-controls{
-    &.v-input--is-focused .v-input--selection-controls__ripple{
-        @include checkbox-default-focus;
-        &:before {
-            @include checkbox-default-focus-before;
-        }
+
+.atat-checkbox-list{
+    input:focus + label > i{
+        border-radius: 3px;
+        @include checkbox-default-focus-before;
+        box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 6px $focus-blue!important;
     }
-    .v-input--selection-controls__ripple{
-        @include checkbox-default-focus;
-        &:before {
-           background-color: transparent !important;
-        }
-    }
-}
+    input:focus:not(:focus-visible) + label > i {
+        box-shadow: none !important;
+      }
+ }
 
 ._v_radio-button-cards {
     .v-card {

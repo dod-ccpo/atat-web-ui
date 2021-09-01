@@ -66,9 +66,9 @@ describe("Testing Button Navigation Bar", () => {
     });
   });
 
-  it("button navigation bar initialized", () => {
-    const mountedButtons = wrapper.findAll("[type=button]").length;
+  it("button navigation bar initialized", async () => {
     const expectedButtons = propsData.NavButtonPanels[0].buttons.length;
+    const mountedButtons = await wrapper.vm.findAll("[type=button]").length;
     expect(mountedButtons === expectedButtons);
   });
 
