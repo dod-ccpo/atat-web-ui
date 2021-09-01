@@ -1,12 +1,12 @@
 <template>
   <summary-card :title="portfolio.name" editPlace="addportfolio">
-    <template slot="summary-description">
+    <template v-slot:summary-description>
       <p class="body-lg width-80 word-break-normal">
         {{ portfolio.description }}
       </p>
     </template>
 
-    <template slot="summary-body">
+    <template v-slot:summary-body>
       <div
         class="body-lg d-flex justify-start black--text grouped-items"
         v-for="(item, idx) in dataItems"
