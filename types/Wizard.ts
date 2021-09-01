@@ -173,6 +173,11 @@ export interface ATATSummaryCards {
   cards: ATATSummaryCardItem[];
 }
 
+export interface CustomErrorMessage {
+  key: number;
+  message: string;
+  description?: string;
+}
 
 /**
  * Model to represent Portfolio data

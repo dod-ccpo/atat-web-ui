@@ -23,6 +23,12 @@ $total: 900;
 .no-text-decoration{
     text-decoration: none;
 }
+
+//removes most unwanted effect of gray ripple when 
+//clicking stepper steps and datepicker buttons
+.v-ripple__container{
+    display: none !important;
+}
 $biggest-border-width: 10;
 @for $i from 0 through $biggest-border-width {
     .border-#{$i} { border-width: $i*1px !important };
