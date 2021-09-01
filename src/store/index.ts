@@ -108,11 +108,10 @@ export default new Vuex.Store({
     },
     deleteTaskOrderByName: (state) => (id: string) => {
       const values = Object.values(state.taskOrders.details);
-      const updatedArray =  values.filter(
+      const updatedArray = values.filter(
         (taskorder) => taskorder.task_order_number !== id
       );
       return updatedArray;
-      
     },
   },
 });

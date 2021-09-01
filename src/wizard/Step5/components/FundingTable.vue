@@ -7,7 +7,9 @@
       <v-card-subtitle class="d-flex justify-space-between">
         <p class="h6 text-decoration-underline mt-2 primary--text">
           #{{ name
-          }}<v-icon x-small color="primary" class="mb-1">launch</v-icon>
+          }}<v-icon x-small color="primary no-text-decoration" class="mb-1"
+            >launch</v-icon
+          >
         </p>
 
         <v-btn
