@@ -1,5 +1,5 @@
 <template>
-  <summary-card :title="title" :items="items">
+  <summary-card :title="title" :items="items" :editPlace="editPlace">
     <template slot="summary-description">
       <p class="body-lg width-80 word-break-normal">
         {{ description }}
@@ -28,5 +28,7 @@ import Component from "vue-class-component";
 import SummaryCard from "./SummaryCard.vue";
 
 @Component({})
-export default class PortfolioSummaryCard extends SummaryCard {}
+export default class PortfolioSummaryCard extends SummaryCard {
+  public editPlace = "addportfolio";
+}
 </script>

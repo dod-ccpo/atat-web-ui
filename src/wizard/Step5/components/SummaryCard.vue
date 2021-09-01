@@ -57,7 +57,7 @@ export default class SummaryCard extends VCard {
   private hasDialog!: boolean;
   @Prop({ default: "450" })
   private dialogWidth!: string;
-  @Prop({ default: "" })
+  @Prop({ default: "#" })
   public editPlace!: string;
   private showDialogWhenClicked = false;
   // these stubbed in events will have to emit back to the parent
