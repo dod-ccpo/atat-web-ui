@@ -1,5 +1,5 @@
 <template>
-  <summary-card :title="portfolio.name">
+  <summary-card :title="portfolio.name" @edit="onEdit()">
     <template slot="summary-description">
       <p class="body-lg width-80 word-break-normal">
         {{ portfolio.description }}
@@ -49,6 +49,14 @@ export default class PortfolioSummaryCard extends SummaryCard {
         prefix: "Deploy to",
         value: this.portfolio.csp_provisioning_status,
       });
+    });
+  }
+
+  public onEdit(): void {
+    debugger;
+    this.$router.push({
+      name: "addportfolio",
+      params: { id: `${this.portfolio.id}` },
     });
   }
 }
