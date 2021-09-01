@@ -38,9 +38,13 @@
                 v-if="step.type === 'funding'"
                 :task-orders="taskOrders"
               ></funding-summary-card>
+              <applications-environments-summary-card
+                v-if="step.type === 'apllicationEnvironments'"
+                :application-data="applicationData"
+              ></applications-environments-summary-card>
               <team-member-summary-card
-                v-if="step.type === 'team'"
-                :application="portfolio.applications[0]"
+                v-if="step.type === 'teamMembers'"
+                :application-data="applicationData"
               ></team-member-summary-card>
             </v-stepper-content>
           </template>
@@ -55,22 +59,23 @@ import Vue from "vue";
 import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
-import TeamMemberSummaryCard from "./TeamMemberSummaryCard.vue";
 import { SummaryStep, TaskOrders } from "types/Wizard";
-import { Portfolio } from "types/Portfolios";
-
+import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
+import { Portfolios } from "../../../../types/Portfolios";
+import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
 @Component({
   components: {
     PortfolioSummaryCard,
     FundingSummaryCard,
     TeamMemberSummaryCard,
+    ApplicationsEnvironmentsSummaryCard,
   },
 })
 export default class SummaryStepper extends Vue {
-  @Prop()
-  private portfolio!: Portfolio;
   @Prop({ default: "TaskOrders" })
   private taskOrders!: TaskOrders;
+  @Prop({ default: "ApplicationData" })
+  private applicationData!: Portfolios;
   @PropSync("stepNumber", { default: 1 })
   private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
@@ -128,11 +133,12 @@ export default class SummaryStepper extends Vue {
     {
       step: 3,
       title: "Applications and Environments",
+      type: "apllicationEnvironments",
     },
     {
       step: 4,
       title: "Team Members",
-      type: "team",
+      type: "teamMembers",
     },
   ];
 }

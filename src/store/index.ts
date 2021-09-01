@@ -26,7 +26,7 @@ function generateGuid(): string {
   });
 }
 
-const wizardList: Map<string, WizardStep | undefined> = 
+const wizardList: Map<string, WizardStep | undefined> =
 new Map<string, WizardStep | undefined>();
 
 wizardList.set(WizardStepNames.addportolioStep(), {
@@ -85,14 +85,14 @@ export default new Vuex.Store({
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
     setWizardStep(state, step: string) {
-      
+
       const foundStep = wizardList.get(step);
       if (foundStep != undefined) {
         state.currentStep = {... foundStep}
       }
       else{
         throw new Error(`unable to navigate to step ${step}`);
-        
+
       }
 
     },
@@ -206,7 +206,8 @@ export default new Vuex.Store({
       const portfoliobyId = values.filter((portfolio) => portfolio.id === id);
       if (portfoliobyId.length > 0) {
         return portfoliobyId[0];
-
+      } else {
+        return {};
       }
     },
     getMockTaskOrders(state) {

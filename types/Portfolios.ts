@@ -22,7 +22,7 @@ export interface Environment {
   name: string;
   funding_source: string[];
 }
-// Aplication Members: 
+// Aplication Members:
 export interface ApplicationMember {
   id: string;
   email: string;
