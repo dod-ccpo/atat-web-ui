@@ -32,14 +32,16 @@
             <v-stepper-content :step="index + 1" :key="'step_' + index">
               <portfolio-summary-card
                 v-if="step.type === 'portfolio'"
-                :title="step.data.title"
-                :description="step.data.description"
-                :items="step.data.items"
+                :portfolio="portfolio"
               ></portfolio-summary-card>
               <funding-summary-card
                 v-if="step.type === 'funding'"
                 :task-orders="taskOrders"
               ></funding-summary-card>
+              <team-member-summary-card
+                v-if="step.type === 'team'"
+                :application="portfolio.applications[0]"
+              ></team-member-summary-card>
             </v-stepper-content>
           </template>
         </v-stepper>
@@ -53,16 +55,20 @@ import Vue from "vue";
 import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
+import TeamMemberSummaryCard from "./TeamMemberSummaryCard.vue";
 import { SummaryStep, TaskOrders } from "types/Wizard";
-import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
+import { Portfolio } from "types/Portfolios";
 
 @Component({
   components: {
     PortfolioSummaryCard,
     FundingSummaryCard,
+    TeamMemberSummaryCard,
   },
 })
 export default class SummaryStepper extends Vue {
+  @Prop()
+  private portfolio!: Portfolio;
   @Prop({ default: "TaskOrders" })
   private taskOrders!: TaskOrders;
   @PropSync("stepNumber", { default: 1 })
@@ -126,6 +132,7 @@ export default class SummaryStepper extends Vue {
     {
       step: 4,
       title: "Team Members",
+      type: "team",
     },
   ];
 }

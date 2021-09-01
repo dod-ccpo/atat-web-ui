@@ -9,7 +9,7 @@
     <template slot="summary-body">
       <div
         class="body-lg d-flex justify-start black--text grouped-items"
-        v-for="(item, idx) in items"
+        v-for="(item, idx) in dataItems"
         :key="idx"
       >
         <div class="mx-3">
@@ -34,18 +34,18 @@ export default class PortfolioSummaryCard extends SummaryCard {
   @Prop({ default: null, required: true })
   private portfolio!: Portfolio;
 
-  private items: Record<string, unknown>[] = new Array<
+  private dataItems: Record<string, unknown>[] = new Array<
     Record<string, unknown>
   >();
 
   public created(): void {
     this.$nextTick(() => {
-      this.items.push({
+      this.dataItems.push({
         prefix: "Funded by",
         value: this.portfolio.dod_component.join(","),
       });
 
-      this.items.push({
+      this.dataItems.push({
         prefix: "Deploy to",
         value: this.portfolio.csp_provisioning_status,
       });

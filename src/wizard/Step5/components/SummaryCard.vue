@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-start">
-    <v-card class="v-card ma-9 px-2 ml-0 body">
+    <v-card class="v-card ma-9 px-2 ml-0 body" elevation="4">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
           <h4 class="h4">{{ title }}</h4>
@@ -38,8 +38,6 @@ export default class SummaryCard extends VCard {
   private title!: string;
   @Prop({ default: "Description" })
   private description!: string;
-  @Prop({ default: [] })
-  private items!: Array<Record<string, unknown>>;
   @Prop({ default: "Dialog Title" })
   private dialogTitle!: string;
   @Prop({ default: "Dialog Message" })

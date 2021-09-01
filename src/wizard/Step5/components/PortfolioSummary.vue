@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="my-9">
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <h2 class="h2">Let’s wrap up your Portfolio</h2>
@@ -77,6 +77,9 @@ export default class PortfolioSummary extends Vue {
     return this.$store.getters.getPortfolioById(id);
   }
   created() {
+    const portfolioId = this.$route.params.id || "11";
+    this.portfolio = this.getPorfolioById(portfolioId);
+    this.taskOrders = this.$store.getters.getMockTaskOrders.details;
     this.taskOrders = this.$store.getters.getMockTaskOrders.details;
   }
 }

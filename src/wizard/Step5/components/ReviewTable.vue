@@ -1,16 +1,17 @@
 <template>
   <div class="review-table">
-    <v-card class="mt-4" elevation="2" max-width="100%">
+    <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
       <v-card-title class="d-flex justify-space-between">
-        <span class="h4">{{ name }}</span>
+        <span class="h4">{{ application.name }}</span>
         <v-btn
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
           :ripple="false"
+          @click="$emit('edit')"
         >
-          <v-icon x-small class="text-decoration-none mr-1">edit</v-icon>
-          <span class="text-decoration-underline">Edit</span>
+          <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0">
@@ -52,7 +53,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in getData" :key="item.id">
+              <tr v-for="item in getMembers" :key="item.id">
                 <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
                     <span class="table-item font-weight-bold">
@@ -91,6 +92,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import {
+  Application,
   ApplicationMember,
   ApplicationMemberPermissions,
 } from "types/Portfolios";
@@ -98,11 +100,13 @@ import {
 @Component({})
 export default class ReviewTable extends Vue {
   @Prop({ default: true }) private sorting!: boolean;
-  @Prop({ default: [] }) private data!: ApplicationMember[];
-  @Prop({ default: "" }) private name!: string;
+  @Prop({ default: [] }) private application!: Application;
 
-  get getData(): ApplicationMember[] {
-    return this.data;
+  get getMembers(): ApplicationMember[] {
+    const empty: ApplicationMember[] = [];
+    return this.application && this.application.members
+      ? this.application.members
+      : empty;
   }
 
   private grantedPermissions(
