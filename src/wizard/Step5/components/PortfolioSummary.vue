@@ -54,7 +54,7 @@ export default class PortfolioSummary extends Vue {
   public portfolio!: Portfolio;
   public taskOrders!: TaskOrders;
   public invalidStepsExist(): boolean {
-    return true;
+    return false;
   }
 
   public getValidationResults(): ValidationSummaryItem[] {

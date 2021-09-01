@@ -101,14 +101,11 @@ import { mapState } from "vuex";
     }),
   },
 })
-export class Submit extends Vue {
+export default class Submit extends Vue {
   public drawer = false;
 
   mounted(): void {
-    this.$store.dispatch(
-      "updateWizardStep",
-      WizardStepNames.reviewandsubmitStep()
-    );
+    this.$store.dispatch("updateWizardStep", WizardStepNames.submitStep());
   }
 
   // this store change will only be triggered by the wizard buttons next/previous
