@@ -40,6 +40,10 @@
                 v-if="step.type === 'funding'"
                 :task-orders="taskOrders"
               ></funding-summary-card>
+              <applications-environments-summary-card
+                v-if="step.type === 'apllicationEnvironments'"
+                :application-data="applicationData"
+              ></applications-environments-summary-card>
               <team-member-summary-card
                 v-if="step.type === 'teamMembers'"
                 :application-data="applicationData"
@@ -131,6 +135,7 @@ export default class SummaryStepper extends Vue {
     {
       step: 3,
       title: "Applications and Environments",
+      type: "apllicationEnvironments",
     },
     {
       step: 4,

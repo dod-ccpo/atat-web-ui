@@ -4,7 +4,12 @@
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
           <h4 class="h4">{{ title }}</h4>
-          <v-btn class="py-0 px-2 primary--text" text small :ripple="false"
+          <v-btn
+            class="py-0 px-2 primary--text"
+            text
+            small
+            @click="handleClicked(editPlace)"
+            :ripple="false"
             ><v-icon small class="icon-12 mr-2">edit</v-icon>
             <span class="link-body-md">Edit</span></v-btn
           >
@@ -52,6 +57,8 @@ export default class SummaryCard extends VCard {
   private hasDialog!: boolean;
   @Prop({ default: "450" })
   private dialogWidth!: string;
+  @Prop({ default: "" })
+  public editPlace!: string;
   private showDialogWhenClicked = false;
   // these stubbed in events will have to emit back to the parent
   // might be easier to emit these directly from @click event like this.
@@ -60,10 +67,9 @@ export default class SummaryCard extends VCard {
   //   private titleClick(card: ATATSummaryCardItem) {
   //     return true;
   //   }
-  //   @Emit()
-  //   private leftButtonClicked(card: ATATSummaryCardItem) {
-  //     return true;
-  //   }
+  private handleClicked(editPlace: string) {
+    this.$router.push({ name: editPlace });
+  }
   //   @Emit()
   //   private rightButtonClicked(card: ATATSummaryCardItem) {
   //     this.showDialogWhenClicked = true;

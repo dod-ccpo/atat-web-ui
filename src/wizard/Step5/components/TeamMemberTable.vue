@@ -113,7 +113,7 @@ export default class TeamMemberTable extends Vue {
     } else return ["No Access"];
   }
   private handleClicked(name: string) {
-    this.$router.push({ name: "addteammembers" });
+    this.$router.push({ name: name });
   }
 }
 </script>
