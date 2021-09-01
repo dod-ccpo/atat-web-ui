@@ -32,38 +32,27 @@
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
 import { VCard } from "vuetify/lib";
-
 @Component({})
 export default class SummaryCard extends VCard {
   @Prop({ default: "Title" })
   private title!: string;
-
   @Prop({ default: "Description" })
   private description!: string;
-
-  //   @Prop({ default: [] })
-  //   private items!: Array<Record<string, unknown>>;
-
+  @Prop({ default: [] })
+  private items!: Array<Record<string, unknown>>;
   @Prop({ default: "Dialog Title" })
   private dialogTitle!: string;
-
   @Prop({ default: "Dialog Message" })
   private dialogMessage!: string;
-
   @Prop({ default: "OK" })
   private okText!: string;
-
   @Prop({ default: "Cancel" })
   private cancelText!: string;
-
   @Prop({ default: true })
   private hasDialog!: boolean;
-
   @Prop({ default: "450" })
   private dialogWidth!: string;
-
   private showDialogWhenClicked = false;
-
   // these stubbed in events will have to emit back to the parent
   // might be easier to emit these directly from @click event like this.
   // @click="$emit('update:value', $event.target.value)"
@@ -71,12 +60,10 @@ export default class SummaryCard extends VCard {
   //   private titleClick(card: ATATSummaryCardItem) {
   //     return true;
   //   }
-
   //   @Emit()
   //   private leftButtonClicked(card: ATATSummaryCardItem) {
   //     return true;
   //   }
-
   //   @Emit()
   //   private rightButtonClicked(card: ATATSummaryCardItem) {
   //     this.showDialogWhenClicked = true;

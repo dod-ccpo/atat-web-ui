@@ -32,12 +32,14 @@
             <v-stepper-content :step="index + 1" :key="'step_' + index">
               <portfolio-summary-card
                 v-if="step.type === 'portfolio'"
-                :portfolio="portfolio"
+                :title="step.data.title"
+                :description="step.data.description"
+                :items="step.data.items"
               ></portfolio-summary-card>
-              <team-member-summary-card
-                :application="application"
-                v-if="step.type === 'teamMembers'"
-              />
+              <funding-summary-card
+                v-if="step.type === 'funding'"
+                :task-orders="taskOrders"
+              ></funding-summary-card>
             </v-stepper-content>
           </template>
         </v-stepper>
@@ -47,30 +49,24 @@
 </template>
 
 <script lang="ts">
-import { Application, ApplicationMember, Portfolio } from "types/Portfolios";
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
-import { SummaryStep } from "types/Wizard";
-import TeamMemberSummaryCard from "./TeamMemberSummaryCard.vue";
-
-// interface SummaryStep {
-//   step: number;
-//   title: string;
-//   type?: string;
-//   data?: Record<string, unknown>;
-// }
+import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
+import { SummaryStep, TaskOrders } from "types/Wizard";
+import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
 @Component({
   components: {
     PortfolioSummaryCard,
-    TeamMemberSummaryCard,
+    FundingSummaryCard,
   },
 })
 export default class SummaryStepper extends Vue {
-  @PropSync("stepNumber", { default: 1 }) private _stepNumber!: number;
-  @Prop({ default: "Portfolio" })
-  private portfolio!: Portfolio;
+  @Prop({ default: "TaskOrders" })
+  private taskOrders!: TaskOrders;
+  @PropSync("stepNumber", { default: 1 })
+  private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
   $refs!: {
     step01: Vue & { $el: HTMLElement };
@@ -97,7 +93,6 @@ export default class SummaryStepper extends Vue {
         break;
     }
   }
-
   public stepperControl: SummaryStep[] = [
     {
       step: 1,
@@ -122,6 +117,7 @@ export default class SummaryStepper extends Vue {
     {
       step: 2,
       title: "Funding Details",
+      type: "funding",
     },
     {
       step: 3,
@@ -130,12 +126,7 @@ export default class SummaryStepper extends Vue {
     {
       step: 4,
       title: "Team Members",
-      type: "teamMembers",
     },
   ];
-
-  get application(): Application | undefined {
-    return this.portfolio.applications[0];
-  }
 }
 </script>

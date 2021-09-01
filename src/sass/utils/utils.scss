@@ -9,26 +9,6 @@ $total: 20;
     .font-size-#{$i*1} { font-size: ($i * 1rem) !important};
 }
 
-// generates border classes
-// border-0 thru border-10 
-// border-t-0 thru border-t-10 (border-top)
-// border-b-0 thru border-b-10 (border-bottom)
-// border-l-0 thru border-l-10 (border-left)
-// border-r-0 thru border-r-10 (border-right)
-$biggest-border-width: 10;
-@for $i from 0 through $biggest-border-width {
-  .border-#{$i} { border-width: $i*1px !important };
-  .border-t-#{$i} { border-top-width: $i*1px !important}; 
-  .border-b-#{$i} {border-bottom-width: $i*1px !important ;}
-  .border-l-#{$i} {border-left-width: $i*1px !important ;}
-  .border-r-#{$i} {border-right-width: $i*1px !important ;}
-}
-
-.border-solid {
-
-    border: solid;
-}
-
 $total: 900;
 @for $i from 400 through $total{
     .font-weight-#{$i} { font-weight: ($i) !important};
@@ -42,4 +22,17 @@ $total: 900;
 
 .no-text-decoration{
     text-decoration: none;
+}
+$biggest-border-width: 10;
+@for $i from 0 through $biggest-border-width {
+    .border-#{$i} { border-width: $i*1px !important };
+    .border-t-#{$i} { border-top-width: $i*1px !important};
+    .border-b-#{$i} {border-bottom-width: $i*1px !important ;}
+    .border-l-#{$i} {border-left-width: $i*1px !important ;}
+    .border-r-#{$i} {border-right-width: $i*1px !important ;}
+}
+
+.border-solid {
+
+    border: solid;
 }

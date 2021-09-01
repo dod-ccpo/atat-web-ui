@@ -29,6 +29,7 @@
         <summary-stepper
           v-if="!invalidStepsExist()"
           :portfolio="portfolio"
+          :taskOrders="taskOrders"
         ></summary-stepper>
       </v-col>
     </v-row>
@@ -40,8 +41,8 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
-import { ValidationSummaryItem } from "types/Wizard";
 import { Portfolio } from "types/Portfolios";
+import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
 
 @Component({
   components: {
@@ -51,12 +52,7 @@ import { Portfolio } from "types/Portfolios";
 })
 export default class PortfolioSummary extends Vue {
   public portfolio!: Portfolio;
-
-  public created(): void {
-    const portfolioId = this.$route.params.id || "11";
-    this.portfolio = this.getPorfolioById(portfolioId);
-  }
-
+  public taskOrders!: TaskOrders;
   public invalidStepsExist(): boolean {
     return false;
   }
@@ -66,12 +62,12 @@ export default class PortfolioSummary extends Vue {
       {
         title: "Portfolio Details (or Portfolio Settings)",
         description: "Ensures your Portfolio is set up correctly",
-        name: "createPortfolio",
+        name: "addportfolio",
       },
       {
         title: "Funding Details",
         description: "Ensures you have Task Orders to fund your Portfolio",
-        name: "",
+        name: "addfunding",
       },
     ];
   }
@@ -79,6 +75,9 @@ export default class PortfolioSummary extends Vue {
   public getPorfolioById(id?: string): Portfolio {
     id = id || "11";
     return this.$store.getters.getPortfolioById(id);
+  }
+  created() {
+    this.taskOrders = this.$store.getters.getMockTaskOrders.details;
   }
 }
 </script>

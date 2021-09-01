@@ -21,7 +21,6 @@ export interface NavigationButtons {
 
 export interface Step {
   id?: number;
-  name?: string;
   step: number;
   description: string;
   primary?: boolean;
@@ -184,12 +183,10 @@ export interface ATATSummaryCards {
  * @member {string} name Validation name of the Portfolio item component
  */
 export interface ValidationSummaryItem {
-
-    title?: string;
-    description?: string;
-    name: string;
+  title?: string;
+  description?: string;
+  name: string;
 }
-
 export interface VoidCallback {
   (callback: void): void;
 }

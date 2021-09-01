@@ -52,7 +52,6 @@
             id="dod-components-errors"
             role="alert"
           >
-            
             {{ isDodComponentsValid }}
           </div>
 
@@ -76,7 +75,6 @@
             />
 
             <label
-              :tabindex="index + 1"
               :for="'dod-component-' + index"
               class="d-flex align-center'"
               @keydown.space="check('dod-component-' + index)"
@@ -148,7 +146,7 @@ export default class CreatePortfolioForm
   }
   public rules = {};
   public async validateForm(): Promise<boolean> {
-    let validated = false;  
+    let validated = false;
     this.rules = {
       portfolioName: [
         (v: string) => !!v || "Name is required",
