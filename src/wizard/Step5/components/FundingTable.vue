@@ -1,6 +1,6 @@
 <template>
   <div class="review-table">
-    <v-card class="mt-4" elevation="4" max-width="100%">
+    <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4" >
       <v-card-title class="d-flex justify-space-between">
         <span class="h4 justify-center">Task Order #{{ name }}</span>
       </v-card-title>
@@ -17,8 +17,8 @@
           :ripple="false"
           @click="handleClicked(name)"
         >
-          <v-icon x-small class="text-decoration-none mr-1">edit</v-icon>
-          <span class="text-decoration-underline">Edit</span>
+          <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-subtitle>
       <v-card-text class="pa-0">
