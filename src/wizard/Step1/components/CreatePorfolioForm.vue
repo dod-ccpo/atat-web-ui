@@ -52,10 +52,11 @@
             id="dod-components-errors"
             role="alert"
           >
+            
             {{ isDodComponentsValid }}
           </div>
 
-          <div
+          <fieldset
             id="dod-component"
             v-for="(dod, index) in dodComponents"
             :key="index"
@@ -90,7 +91,7 @@
                 {{ dod }}
               </div>
             </label>
-          </div>
+          </fieldset>
         </v-col>
       </v-row>
     </v-container>
@@ -147,7 +148,7 @@ export default class CreatePortfolioForm
   }
   public rules = {};
   public async validateForm(): Promise<boolean> {
-    let validated = false;
+    let validated = false;  
     this.rules = {
       portfolioName: [
         (v: string) => !!v || "Name is required",
