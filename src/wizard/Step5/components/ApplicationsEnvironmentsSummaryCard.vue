@@ -6,7 +6,7 @@
   >
     <template slot="summary-description">
       <p class="body-lg width-80 word-break-normal">
-        unclassified application to help track internal tasks
+        Unclassified application to help track internal tasks
       </p>
     </template>
 
