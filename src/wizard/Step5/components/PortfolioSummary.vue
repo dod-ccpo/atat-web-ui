@@ -29,6 +29,7 @@
         <summary-stepper
           v-if="!invalidStepsExist()"
           :taskOrders="taskOrders"
+          :application-data="applicationData"
         ></summary-stepper>
       </v-col>
     </v-row>
@@ -41,6 +42,7 @@ import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
 import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
+import { Portfolios } from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -50,6 +52,7 @@ import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
 })
 export default class PortfolioSummary extends Vue {
   public taskOrders!: TaskOrders;
+  public applicationData!: Portfolios;
   public invalidStepsExist(): boolean {
     return false;
   }
@@ -71,6 +74,8 @@ export default class PortfolioSummary extends Vue {
 
   created() {
     this.taskOrders = this.$store.getters.getMockTaskOrders.details;
+    this.applicationData =
+      this.$store.getters.getPortfolioById("11").applications[0];
   }
 }
 </script>
