@@ -11,7 +11,6 @@
         :nudge-top="40"
         top
       >
-        <!-- 11 -->
         <template v-slot:activator="{ on, attrs }">
           <div class="d-flex align-start width-70 datepicker-text-box">
             <v-text-field
@@ -25,9 +24,11 @@
               v-on="on"
               hide-details
               placeholder="YYYY-DD-MM"
-              :value="_textBoxValue"
+              v-model="_date"
+              :value="_date"
               :rules="_rules"
-              @blur="getErrorMessages"
+              @focus="menu !== false"
+              @blur="blurTextField"
               @update:error="getErrorMessages"
             ></v-text-field>
             <v-btn icon :ripple="false" class="ml-2">
@@ -45,12 +46,14 @@
             :min="min"
             :max="max"
             v-model="_dateRange"
+            :show-current="false"
             @input="menu = false"
             class="mr-5 mt-4"
             range
             no-title
             id="firstMonthDatePicker"
             scrollable
+            tabindex="0"
             @click:date="getSelectedDate"
             :reactive="true"
             :picker-date.sync="firstMonth"
@@ -63,8 +66,9 @@
             :show-current="false"
             v-model="_dateRange"
             class="ml-5 mt-4"
-            range
             @input="menu = false"
+            range
+            tabindex="0"
             no-title
             :reactive="true"
             @click:date="getSelectedDate"
@@ -169,6 +173,12 @@ export default class ATATDatePicker extends Vue {
       }
     );
     return customErrorMessages;
+  }
+
+  private blurTextField(): void {
+    this.getSelectedDate(this._date);
+    this.getErrorMessages;
+    setTimeout(() => (this.menu = false), 2000);
   }
 
   @Watch("firstMonth")

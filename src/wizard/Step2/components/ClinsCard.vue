@@ -335,6 +335,13 @@ export default class ClinsCard extends Vue {
     this.setDateRange();
   }
 
+  private setDateRange(): void {
+    if (moment(this._pop_start_date).isBefore(this._pop_end_date)) {
+      this.dateRange[0] = this._pop_start_date;
+      this.dateRange[1] = this._pop_end_date;
+    }
+  }
+
   private clinHelpText =
     "This is the full amount of money requested\n" +
     "in a task order. It does not have to be spent\n" +
@@ -371,7 +378,7 @@ export default class ClinsCard extends Vue {
     if (progress) {
       progress.style.width = width + "%";
     }
-    this.obligatedPrecent = width;
+    this.obligatedPercent = width.toString();
   }
 
   public rules = {};
@@ -427,7 +434,6 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
-  
   get obligatedFundRules(): any[] {
     const validationRules = [];
     validationRules.push(
@@ -446,56 +452,67 @@ export default class ClinsCard extends Vue {
 
   get popStartRules(): any[] {
     const validationRules = [];
-    validationRules.push(
-      (v: string) =>
-        v !== "" ||
-        "Please enter the start date for your CLIN's period of performance"
-    );
-    validationRules.push(
-      (v: string) =>
-        Date.parse(v) > 0 ||
-        "Please enter a start date using the format 'YYYY-MM-DD'"
-    );
-    validationRules.push(
-      (v: string) =>
-        v !== "" ||
-        Date.parse(v) < Date.parse(this._pop_end_date) ||
-        "The PoP end date must be after the start date"
-    );
-    validationRules.push(
-      (v: string) =>
-        v === "" ||
-        Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
-        "The start date must be before or on " + this.JWCCContractEndDate
-    );
+    if (this._pop_start_date !== "") {
+      validationRules.push(
+        (v: string) =>
+          /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(v) ||
+          "Invalid Date"
+      );
+
+      validationRules.push(
+        (v: string) =>
+          v !== "" ||
+          "Please enter the start date for your CLIN's period of performance"
+      );
+      validationRules.push(
+        (v: string) =>
+          Date.parse(v) > 0 ||
+          "Please enter a start date using the format 'YYYY-MM-DD'"
+      );
+      validationRules.push(
+        (v: string) =>
+          Date.parse(v) < Date.parse(this._pop_end_date) ||
+          "The PoP start date must be before the end date"
+      );
+      validationRules.push(
+        (v: string) =>
+          v !== "" ||
+          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+          "The start date must be before or on " + this.JWCCContractEndDate
+      );
+    }
     return validationRules;
   }
 
   get popEndRules(): any[] {
     const validationRules = [];
-    validationRules.push(
-      (v: string) =>
-        v !== "" ||
-        "Please enter the end date for your CLIN's period of performance"
-    );
-    validationRules.push(
-      (v: string) =>
-        v !== "" ||
-        Date.parse(v) > 0 ||
-        "Please enter an end date using the format 'YYYY-MM-DD'"
-    );
-    validationRules.push(
-      (v: string) =>
-        v !== "" ||
-        Date.parse(v) > Date.parse(this._pop_start_date) ||
-        "The PoP start date must be before the end date"
-    );
-    validationRules.push(
-      (v: string) =>
-        v === "" ||
-        Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
-        "The end date must be before or on " + this.JWCCContractEndDate
-    );
+    if (this._pop_end_date !== "") {
+      validationRules.push(
+        (v: string) =>
+          !!v ||
+          "Please enter the end date for your CLIN's period of performance"
+      );
+       validationRules.push(
+        (v: string) =>
+          /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(v) ||
+          "Invalid Date"
+      );
+      validationRules.push(
+        (v: string) =>
+          Date.parse(v) > 0 ||
+          "Please enter an end date using the format 'YYYY-MM-DD'"
+      );
+      validationRules.push(
+        (v: string) =>
+          Date.parse(v) > Date.parse(this._pop_start_date) ||
+          "The PoP end date must be before the start date"
+      );
+      validationRules.push(
+        (v: string) =>
+          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+          "The end date must be before or on " + this.JWCCContractEndDate
+      );
+    }
     return validationRules;
   }
 
@@ -521,34 +538,12 @@ export default class ClinsCard extends Vue {
     this.Form.validate();
   }
 
-  // get getValidationRules(): boolean {
-  //   this.rules = {
-  //     clinNumberRules: [
-  //       (v: number) => !isNaN(v) || "Please enter your 4-digit CLIN Number",
-  //       (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters",
-  //     ],
-  //     correspondingIDIQRule: [
-  //       (v: string) => v !== "" || "Please select an IDIQ CLIN type",
-  //     ],
-  //   };
-  //   return true;
-  // }
-
   public async validateForm(): Promise<boolean> {
     let validated = false;
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
     return validated;
-  }
-
-  private setDateRange(): void {
-    if (moment(this.dateRange[0]).isBefore(this.dateRange[1])) {
-      this.dateRange[0] = this._pop_start_date;
-      this.dateRange[1] = this._pop_end_date;
-    } else {
-      this.dateRange = ["", ""];
-    }
   }
 
   private updated(): void {

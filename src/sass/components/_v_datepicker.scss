@@ -60,6 +60,7 @@
               }
             }
           }
+         
           tbody{
             tr{
               td{
@@ -71,6 +72,16 @@
                   width: 100% !important;
                   height: 100% !important;
                   padding: 4px 2px !important;
+                  &:focus,
+                  &:focus::before{
+                    border-radius: 0px !important;
+                    background-color: $base_lighter !important;
+                    opacity: initial !important;
+                    box-shadow: none !important;
+                    border-color: $primary_vivid !important;
+                    border-width: 2px !important;
+                    border-style: solid !important;
+                  }
                 }
                 button.v-date-picker-table__current{
                   border: $base-darkest 1px solid !important;
