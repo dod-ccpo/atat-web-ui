@@ -1,14 +1,18 @@
 <template>
-  <div>Step 5</div>
+  <portfolio-summary />
 </template>
 
 <script lang="ts">
 import { WizardNavigation } from "types/Wizard";
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
+import PortfolioSummary from "../components/PortfolioSummary.vue";
 import { mapState } from "vuex";
 
 @Component({
+  components: {
+    PortfolioSummary,
+  },
   computed: {
     ...mapState({
       wizardNavigation: "wizardNavigation",
