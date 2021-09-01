@@ -52,6 +52,7 @@
             id="dod-components-errors"
             role="alert"
           >
+            
             {{ isDodComponentsValid }}
           </div>
 
@@ -147,7 +148,7 @@ export default class CreatePortfolioForm
   }
   public rules = {};
   public async validateForm(): Promise<boolean> {
-    let validated = false;
+    let validated = false;  
     this.rules = {
       portfolioName: [
         (v: string) => !!v || "Name is required",
