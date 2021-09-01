@@ -29,3 +29,16 @@ $total: 900;
 .v-ripple__container{
     display: none !important;
 }
+$biggest-border-width: 10;
+@for $i from 0 through $biggest-border-width {
+    .border-#{$i} { border-width: $i*1px !important };
+    .border-t-#{$i} { border-top-width: $i*1px !important};
+    .border-b-#{$i} {border-bottom-width: $i*1px !important ;}
+    .border-l-#{$i} {border-left-width: $i*1px !important ;}
+    .border-r-#{$i} {border-right-width: $i*1px !important ;}
+}
+
+.border-solid {
+
+    border: solid;
+}

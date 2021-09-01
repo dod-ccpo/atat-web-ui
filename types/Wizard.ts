@@ -21,7 +21,6 @@ export interface NavigationButtons {
 
 export interface Step {
   id?: number;
-  name?: string;
   step: number;
   description: string;
   primary?: boolean;
@@ -108,6 +107,13 @@ export interface Stepper {
   Steps: Step[];
 }
 
+export interface SummaryStep {
+  step: number;
+  title: string;
+  type?: string;
+  data?: Record<string, unknown>;
+}
+
 /**
  * Model to represent Portfolio data
  *
@@ -173,6 +179,25 @@ export interface CustomErrorMessage {
   description?: string;
 }
 
+/**
+ * Model to represent Portfolio data
+ *
+ * @interface ValidationSummaryItem
+ * @member {string} title Validation title for the Portfolio item that needs review
+ * @member {string} description Validation description for the Portfolio item that needs review
+ * @member {string} name Validation name of the Portfolio item component
+ */
+export interface ValidationSummaryItem {
+  title?: string;
+  description?: string;
+  name: string;
+}
 export interface VoidCallback {
   (callback: void): void;
+}
+
+export interface WizardNavigation {
+     action: string;
+     guid: string;
+     step: string;
 }

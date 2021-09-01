@@ -22,6 +22,7 @@
   
   $error: #E21C3D !default;
   $error-darker: #b50909 !default;
+  $error-dark: #b50909 !default;
 
   $focus-blue: #2491FF !default;
 
@@ -100,6 +101,9 @@
   .text--base-lighter{color: #dfe1e2 !important};
   .text--base-lightest{color: #f0f0f0 !important};
 
+  .text-base-error {color: $error !important};
+  .text-base-error-darker { color:$error-darker !important};
+
   .border-base-darkest{border-color: #1b1b1b !important};
   .border-base-darker{border-color: #3d4551 !important};
   .border-base-dark{border-color: #565c65 !important};
@@ -107,4 +111,6 @@
   .border-base-light{border-color: #a9aeb1 !important};
   .border-base-lighter{border-color: #dfe1e2 !important};
   .border-base-lightest{border-color: #f0f0f0 !important};
+
+  .border-accent-cool { border-color:  $accent-cool !important};
 }

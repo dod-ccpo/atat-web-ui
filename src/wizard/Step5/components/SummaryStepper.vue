@@ -1,0 +1,132 @@
+<template>
+  <v-container fluid>
+    <v-row>
+      <v-col cols="12">
+        <v-stepper
+          :flat="true"
+          class="summary-stepper width-100"
+          v-model="_stepNumber"
+          vertical
+          non-linear
+        >
+          <template v-for="(step, index) in stepperControl">
+            <v-stepper-step
+              editable
+              :id="'step_0' + (index + 1)"
+              :step="index + 1"
+              :key="'stepper_' + index"
+              :error-icon="'  '"
+              :edit-icon="'  '"
+              :complete-icon="'  '"
+              :ref="'step' + index + 1"
+            >
+              <a
+                href="##"
+                class="h3 step-description black--text no-text-decoration"
+                @click="stepperClicked('step0' + (index + 1))"
+              >
+                {{ step.title }}
+              </a>
+              <v-divider :key="'divider_' + index"></v-divider>
+            </v-stepper-step>
+            <v-stepper-content :step="index + 1" :key="'step_' + index">
+              <portfolio-summary-card
+                v-if="step.type === 'portfolio'"
+                :title="step.data.title"
+                :description="step.data.description"
+                :items="step.data.items"
+              ></portfolio-summary-card>
+              <funding-summary-card
+                v-if="step.type === 'funding'"
+                :task-orders="taskOrders"
+              ></funding-summary-card>
+            </v-stepper-content>
+          </template>
+        </v-stepper>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Component, PropSync, Prop } from "vue-property-decorator";
+import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
+import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
+import { SummaryStep, TaskOrders } from "types/Wizard";
+import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
+
+@Component({
+  components: {
+    PortfolioSummaryCard,
+    FundingSummaryCard,
+  },
+})
+export default class SummaryStepper extends Vue {
+  @Prop({ default: "TaskOrders" })
+  private taskOrders!: TaskOrders;
+  @PropSync("stepNumber", { default: 1 })
+  private _stepNumber!: number;
+  private currentStepNumber = this._stepNumber;
+  $refs!: {
+    step01: Vue & { $el: HTMLElement };
+    step02: Vue & { $el: HTMLElement };
+    step03: Vue & { $el: HTMLElement };
+    step04: Vue & { $el: HTMLElement };
+  };
+
+  // keyboard navigation
+  // enables user to tab to stepper label and click stepper
+  public stepperClicked(stepper: string): void {
+    switch (stepper) {
+      case "step01":
+        this.$refs.step01.$el.click();
+        break;
+      case "step02":
+        this.$refs.step02.$el.click();
+        break;
+      case "step03":
+        this.$refs.step03.$el.click();
+        break;
+      case "step04":
+        this.$refs.step04.$el.click();
+        break;
+    }
+  }
+  public stepperControl: SummaryStep[] = [
+    {
+      step: 1,
+      title: "Portfolio Details",
+      type: "portfolio",
+      data: {
+        title: "Defense Logistics Agency",
+        description:
+          "This portfolio will be used to build, test and manage the native applications for the defense logistics agency.",
+        items: [
+          {
+            prefix: "Funded by",
+            value: "Air Force, Marine Corps",
+          },
+          {
+            prefix: "Deploy to",
+            value: "CSP 1",
+          },
+        ],
+      },
+    },
+    {
+      step: 2,
+      title: "Funding Details",
+      type: "funding",
+    },
+    {
+      step: 3,
+      title: "Applications and Environments",
+    },
+    {
+      step: 4,
+      title: "Team Members",
+    },
+  ];
+}
+</script>

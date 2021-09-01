@@ -1,0 +1,12 @@
+@import "../utils/colors.scss";
+.atat-checkbox-list{
+        border: none !important;
+    &.default{
+        label{
+            width: auto;
+            .checked-icon{
+                color: $primary;
+            }
+        }
+    }
+}

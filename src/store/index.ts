@@ -4,7 +4,6 @@ import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
-import { textSpanContainsTextSpan } from "typescript";
 
 Vue.use(Vuex);
 
@@ -17,6 +16,22 @@ const vuexLocalStorage = new VuexPersist({
   // filter: mutation => (true)
 });
 
+const wizardStepNames: string[] = [
+  "addportfolio",
+  "addfunding",
+  "addapplication",
+  "addteammembers",
+  "reviewandsubmit",
+];
+
+function generateGuid(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
@@ -24,6 +39,8 @@ export default new Vuex.Store({
     isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
+    currentWizardStep: 0,
+    wizardNavigation: {},
     selectedCSP: "CSP 1",
   },
   mutations: {
@@ -33,6 +50,22 @@ export default new Vuex.Store({
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
+
+    setWizardStep(state, stepNumber: number) {
+      state.currentWizardStep = stepNumber;
+    },
+    //provides wizard state handling for next and previous wizard buttons
+    //eventually this may be moved to it's own module
+    setWizardNavigation(state, stepNumber: number) {
+      state.wizardNavigation = {
+        action: stepNumber > state.currentWizardStep ? "next" : "previous",
+        guid: generateGuid(), // generate a guid in order to trigger state change in the store
+        step:
+          stepNumber > state.currentWizardStep
+            ? wizardStepNames[state.currentWizardStep]
+            : wizardStepNames[state.currentWizardStep - 2],
+      };
+    },
   },
   actions: {
     login({ commit }) {
@@ -41,6 +74,20 @@ export default new Vuex.Store({
     logout({ commit }) {
       commit("changeLoginStatus", false);
       window.sessionStorage.clear();
+    },
+
+    wizardNext({ commit }) {
+      if (this.state.currentWizardStep < 5) {
+        commit("setWizardNavigation", this.state.currentWizardStep + 1);
+      }
+    },
+    wizardPrevious({ commit }) {
+      if (this.state.currentWizardStep > 1) {
+        commit("setWizardNavigation", this.state.currentWizardStep - 1);
+      }
+    },
+    updateWizardStep({ commit }, currentStep: number) {
+      commit("setWizardStep", currentStep);
     },
     authorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", true);

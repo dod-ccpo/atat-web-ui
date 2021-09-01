@@ -123,6 +123,20 @@
         line-height: 2rem !important;
     }
 
+    //todo change this on the component to 
+    // .body
+    .table-item{
+        font-size: 1.5rem;
+        line-height: 2.4rem;
+        font-style: normal;
+        font-weight: normal;
+        color: $base_darkest;
+    }
+
+.text-decoration-none {
+    text-decoration: none !important;
+}
+
     $sizes: 16, 18, 20, 24, 28, 32, 200;
     @each $size in $sizes{
         .icon-#{$size}{
@@ -131,3 +145,6 @@
             width: #{$size}px !important;
         }
     }
+.word-break-normal{
+    word-break: normal !important;
+}
