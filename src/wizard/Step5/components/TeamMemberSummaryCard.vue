@@ -16,7 +16,7 @@ import { Application } from "../../../../types/Portfolios";
   },
 })
 export default class TeamMemberSummaryCard extends SummaryCard {
-  @Prop({ default: null, required: true })
+  @Prop({ default: {}, required: true })
   private applicationData!: Application;
 }
 </script>

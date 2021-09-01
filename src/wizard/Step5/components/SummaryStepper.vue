@@ -60,11 +60,13 @@ import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue
 import { SummaryStep, TaskOrders } from "types/Wizard";
 import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
 import { Portfolios } from "../../../../types/Portfolios";
+import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
 @Component({
   components: {
     PortfolioSummaryCard,
     FundingSummaryCard,
     TeamMemberSummaryCard,
+    ApplicationsEnvironmentsSummaryCard,
   },
 })
 export default class SummaryStepper extends Vue {
