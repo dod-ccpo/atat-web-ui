@@ -40,7 +40,6 @@ export default class Step_1 extends Vue {
     cloudServiceProviderForm: CloudServiceProvider;
   };
 
-
   private model: CreatePortfolioFormModel = {
     name: "",
     description: "",
@@ -79,34 +78,5 @@ export default class Step_1 extends Vue {
         break;
     }
   }
-
-  // public async beforeRouteLeave(
-  //   to: Route,
-  //   from: Route,
-  //   next: VoidCallback
-  // ): Promise<void> {
-  //   if (to.name === "addapplication") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "applicationsummary") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "addteammembers") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "reviewandsubmit") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "portfolios") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "createportfolio") {
-  //     next();
-  //     return;
-  //   }
-  //   // if (await this.validate()) {
-  //   //   next();
-  //   // }
-  // }
 }
 </script>

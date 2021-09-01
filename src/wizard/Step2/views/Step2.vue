@@ -94,34 +94,7 @@ export default class Step_2 extends Vue {
       this.taskOrderDetails.clins.splice(index, 1);
     }
   }
-  // public async beforeRouteLeave(
-  //   to: Route,
-  //   from: Route,
-  //   next: VoidCallback
-  // ): Promise<void> {
-  //   if (to.name === "addteammembers") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "addportfolio") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "reviewandsubmit") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "portfolios") {
-  //     next();
-  //     return;
-  //   } else if (to.name === "createportfolio") {
-  //     next();
-  //     return;
-  //   } else if (from.name === "editfunding") {
-  //     next();
-  //     return;
-  //   }
-  //   // if (await this.validate()) {
-  //   //   next();
-  //   // }
-  // }
+
   public mounted(): void {
     this.$store.dispatch("updateWizardStep", 2);
 
