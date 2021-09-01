@@ -69,7 +69,7 @@ export default class PortfolioSummary extends Vue {
     ];
   }
 
-  created() {
+  public created(): void {
     this.taskOrders = this.$store.getters.getMockTaskOrders.details;
   }
 }

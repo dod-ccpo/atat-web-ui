@@ -54,7 +54,6 @@ import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
 import { SummaryStep, TaskOrders } from "types/Wizard";
-import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
 @Component({
   components: {
