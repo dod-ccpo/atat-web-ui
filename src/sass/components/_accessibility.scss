@@ -133,11 +133,18 @@
     opacity: 1 !important;
 }
 
-.atat-checkbox-list{
-   input:focus + label > i {
-       border-radius: 3px;
-       box-shadow: 0px 0px 0px 1px #fff, 0px 0px 0px 4px $focus-blue!important;
-        @include checkbox-default-focus-before;
+.v-input--selection-controls{
+    &.v-input--is-focused .v-input--selection-controls__ripple{
+        @include checkbox-default-focus;
+        &:before {
+            @include checkbox-default-focus-before;
+        }
+    }
+    .v-input--selection-controls__ripple{
+        @include checkbox-default-focus;
+        &:before {
+           background-color: transparent !important;
+        }
     }
 }
 

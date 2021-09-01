@@ -193,3 +193,9 @@ export interface ValidationSummaryItem {
 export interface VoidCallback {
   (callback: void): void;
 }
+
+export interface WizardNavigation {
+     action: string;
+     guid: string;
+     step: string;
+}
