@@ -121,7 +121,7 @@
                       class="mb-3"
                       id="clin-number"
                       label="CLIN Number"
-                      :rules="clinNumberValidationRules"
+                      :rules="clinNumberRules"
                       :value.sync="_clin_number"
                     />
                     <atat-select
@@ -130,7 +130,7 @@
                       placeholder="- Select -"
                       :items="idiq_clin_items"
                       :selectedValue.sync="_idiq_clin"
-                      :rules="rules.correspondingIDIQRule"
+                      :rules="correspondingIDIQRules"
                     >
                     </atat-select>
                   </v-col>
@@ -227,7 +227,7 @@
                           <atat-date-picker
                             id="startDate"
                             label="Start Date"
-                            :rules="rules.popStart"
+                            :rules="popStartRules"
                             :errormessages.sync="datePickerErrorMessages"
                             title="What is the PoP Start Date?"
                             :daterange.sync="dateRange"
@@ -243,7 +243,7 @@
                             id="endDate"
                             label="End Date"
                             :errormessages.sync="datePickerErrorMessages"
-                            :rules="rules.popEnd"
+                            :rules="popEndRules"
                             :daterange.sync="dateRange"
                             :date.sync="_pop_end_date"
                             title="What is the PoP End Date?"
@@ -394,22 +394,7 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  get obligatedFundRules(): any[] {
-    const validationRules = [];
-    validationRules.push(
-      (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
-    );
-    validationRules.push(
-      (v: string) => /^\d+$/.test(v) || "Please enter a valid number"
-    );
-    validationRules.push(
-      (v: number) =>
-        v <= this._total_clin_value ||
-        "Obligated Funds cannot exceed total CLIN Values"
-    );
-    return validationRules;
-  }
-  get clinNumberValidationRules(): any[] {
+  get clinNumberRules(): any[] {
     const validationRules = [];
     validationRules.push(
       (v: string) => v !== "" || "Please enter your 4-digit CLIN Number"
@@ -433,72 +418,118 @@ export default class ClinsCard extends Vue {
     );
     validationRules.push(
       (v: number) =>
-        v >= this._obligated_funds ||
+        v >= parseInt(this._obligated_funds.toString()) ||
         "Obligated Funds cannot exceed total CLIN Values"
     );
     return validationRules;
   }
 
+  
+  get obligatedFundRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
+    );
+    validationRules.push(
+      (v: string) => /^\d+$/.test(v) || "Please enter a valid number"
+    );
+    validationRules.push(
+      (v: number) =>
+        v <= parseInt(this._total_clin_value.toString()) ||
+        "Obligated Funds cannot exceed total CLIN Values"
+    );
+    return validationRules;
+  }
+
+  get popStartRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: string) =>
+        v !== "" ||
+        "Please enter the start date for your CLIN's period of performance"
+    );
+    validationRules.push(
+      (v: string) =>
+        Date.parse(v) > 0 ||
+        "Please enter a start date using the format 'YYYY-MM-DD'"
+    );
+    validationRules.push(
+      (v: string) =>
+        v !== "" ||
+        Date.parse(v) < Date.parse(this._pop_end_date) ||
+        "The PoP end date must be after the start date"
+    );
+    validationRules.push(
+      (v: string) =>
+        v === "" ||
+        Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+        "The start date must be before or on " + this.JWCCContractEndDate
+    );
+    return validationRules;
+  }
+
+  get popEndRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: string) =>
+        v !== "" ||
+        "Please enter the end date for your CLIN's period of performance"
+    );
+    validationRules.push(
+      (v: string) =>
+        v !== "" ||
+        Date.parse(v) > 0 ||
+        "Please enter an end date using the format 'YYYY-MM-DD'"
+    );
+    validationRules.push(
+      (v: string) =>
+        v !== "" ||
+        Date.parse(v) > Date.parse(this._pop_start_date) ||
+        "The PoP start date must be before the end date"
+    );
+    validationRules.push(
+      (v: string) =>
+        v === "" ||
+        Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+        "The end date must be before or on " + this.JWCCContractEndDate
+    );
+    return validationRules;
+  }
+
+  get correspondingIDIQRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: string) => v !== "" || "Please select an IDIQ CLIN type"
+    );
+    return validationRules;
+  }
+
   @Watch("_obligated_funds")
-  validateObligatedFunds(): void {
-    this.$refs.fundFields;
+  @Watch("_total_clin_value")
+  validateFundsFields(): void {
     this.FundFields.validate();
   }
+
   @Watch("_clin_number")
-  validateClinNumber(): void {
+  @Watch("_pop_start_date")
+  @Watch("_pop_end_date")
+  @Watch("_idiq_clin")
+  validateFormFields(): void {
     this.Form.validate();
   }
-  @Watch("_total_clin_value")
-  validateTotalClinr(): void {
-    this.FundFields.validate();
-  }
 
-  get getValidationRules(): boolean {
-    this.rules = {
-      clinNumberRules: [
-        (v: number) => !isNaN(v) || "Please enter your 4-digit CLIN Number",
-        (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters",
-      ],
-      correspondingIDIQRule: [
-        (v: string) => v !== "" || "Please select an IDIQ CLIN type",
-      ],
-
-      popStart: [
-        (v: string) =>
-          v !== "" ||
-          "Please enter the start date for your CLIN's period of performance",
-        (v: string) =>
-          Date.parse(v) > 0 ||
-          "Please enter a start date using the format 'YYYY-MM-DD'",
-        (v: string) =>
-          v !== "" ||
-          Date.parse(v) < Date.parse(this._pop_end_date) ||
-          "The PoP end date must be after the start date",
-        (v: string) =>
-          v === "" ||
-          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
-          "The start date must be before or on " + this.JWCCContractEndDate,
-      ],
-      popEnd: [
-        (v: string) =>
-          v !== "" ||
-          "Please enter the end date for your CLIN's period of performance",
-        (v: string) =>
-          v !== "" ||
-          Date.parse(v) > 0 ||
-          "Please enter an end date using the format 'YYYY-MM-DD'",
-        (v: string) =>
-          v !== "" ||
-          Date.parse(v) > Date.parse(this._pop_start_date) ||
-          "The PoP start date must be before the end date",
-        (v: string) =>
-          v === "" ||
-          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
-          "The end date must be before or on " + this.JWCCContractEndDate,
-      ],
-    };
-    return true;
-  }
+  // get getValidationRules(): boolean {
+  //   this.rules = {
+  //     clinNumberRules: [
+  //       (v: number) => !isNaN(v) || "Please enter your 4-digit CLIN Number",
+  //       (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters",
+  //     ],
+  //     correspondingIDIQRule: [
+  //       (v: string) => v !== "" || "Please select an IDIQ CLIN type",
+  //     ],
+  //   };
+  //   return true;
+  // }
 
   public async validateForm(): Promise<boolean> {
     let validated = false;
