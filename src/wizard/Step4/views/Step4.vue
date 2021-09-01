@@ -23,7 +23,6 @@ export default class Step_4 extends Vue {
   // this store change will only be triggered by the wizard buttons next/previous
   @Watch("wizardNavigation")
   async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-
     switch (navigation.action) {
       case "next":
         // todo: add validation
