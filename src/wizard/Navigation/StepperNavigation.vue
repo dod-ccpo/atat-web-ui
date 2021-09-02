@@ -114,9 +114,7 @@ export default class StepperNavigation extends Vue {
   }
 
   public isStepComplete(stepNumber: number): boolean {
-    const isStepValid =
-      this.$store.state.erroredSteps.indexOf(stepNumber + 1) === -1;
-    return isStepValid ? true : false;
+    return this.$store.state.erroredSteps.indexOf(stepNumber + 1) === -1;
   }
 }
 </script>
