@@ -492,7 +492,7 @@ export default class ClinsCard extends Vue {
           !!v ||
           "Please enter the end date for your CLIN's period of performance"
       );
-       validationRules.push(
+      validationRules.push(
         (v: string) =>
           /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(v) ||
           "Invalid Date"
