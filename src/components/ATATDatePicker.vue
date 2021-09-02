@@ -131,7 +131,7 @@ export default class ATATDatePicker extends Vue {
   //   oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
   //   console.log("secondMOnth" + newVal + ":" + oldVal);
   //   console.log(this.firstMonth);
-  //   
+  //
   //   if (moment().month(this.secondMonth).isSame(moment().month(oldVal))){
   //     this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
   //   }
@@ -161,7 +161,7 @@ export default class ATATDatePicker extends Vue {
 
   //   console.log(this.firstMonth);
   //   console.log(this.secondMonth);
-  //   // 
+  //   //
   //   console.log(firstMonthComp);
   //   console.log(secondMonthComp);
   // }

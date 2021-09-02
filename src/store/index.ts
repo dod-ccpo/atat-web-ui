@@ -17,7 +17,6 @@ const vuexLocalStorage = new VuexPersist({
   // filter: mutation => (true)
 });
 
-
 function generateGuid(): string {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0,
@@ -26,8 +25,10 @@ function generateGuid(): string {
   });
 }
 
-const wizardList: Map<string, WizardStep | undefined> =
-new Map<string, WizardStep | undefined>();
+const wizardList: Map<string, WizardStep | undefined> = new Map<
+  string,
+  WizardStep | undefined
+>();
 
 wizardList.set(WizardStepNames.addportolioStep(), {
   next: WizardStepNames.addfundingStep(),
@@ -43,7 +44,6 @@ wizardList.set(WizardStepNames.fundingsummaryStep(), {
   next: WizardStepNames.addapplicationStep(),
   previous: WizardStepNames.addfundingStep(),
 });
-
 
 wizardList.set(WizardStepNames.addapplicationStep(), {
   next: WizardStepNames.addteammembersStep(),
@@ -70,9 +70,9 @@ wizardList.set(WizardStepNames.submitStep(), {
   previous: WizardStepNames.postreviewStep(),
 });
 
-const step :WizardStep = {
+const step: WizardStep = {
   next: "",
-  previous:""
+  previous: "",
 };
 
 export default new Vuex.Store({
@@ -94,16 +94,12 @@ export default new Vuex.Store({
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
     setWizardStep(state, step: string) {
-
       const foundStep = wizardList.get(step);
       if (foundStep != undefined) {
-        state.currentStep = {... foundStep}
-      }
-      else{
+        state.currentStep = { ...foundStep };
+      } else {
         throw new Error(`unable to navigate to step ${step}`);
-
       }
-
     },
     //provides wizard state handling for next and previous wizard buttons
     //eventually this may be moved to it's own module
@@ -114,12 +110,12 @@ export default new Vuex.Store({
 
       if (action === "next") {
         if (state.currentStep.next != "") {
-          stepName = state.currentStep.next
+          stepName = state.currentStep.next;
         }
       }
 
       if (action === "previous") {
-        if (state.currentStep.previous !="") {
+        if (state.currentStep.previous != "") {
           stepName = state.currentStep.previous;
         }
       }
