@@ -188,6 +188,7 @@ export interface CustomErrorMessage {
  * @member {string} name Validation name of the Portfolio item component
  */
 export interface ValidationSummaryItem {
+  id: number;
   title?: string;
   description?: string;
   name: string;

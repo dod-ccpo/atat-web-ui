@@ -54,33 +54,37 @@ export default class PortfolioSummary extends Vue {
   public portfolio!: Portfolio;
   public taskOrders!: TaskOrders;
   public invalidStepsExist(): boolean {
-    return false;
+    return this.$store.state.erroredSteps.length > 0;
   }
 
   public getValidationResults(): ValidationSummaryItem[] {
     return [
       {
+        id: 1,
         title: "Portfolio Details (or Portfolio Settings)",
         description: "Ensures your Portfolio is set up correctly",
         name: "addportfolio",
       },
       {
+        id: 2,
         title: "Funding Details",
         description: "Ensures you have Task Orders to fund your Portfolio",
         name: "addfunding",
       },
       {
+        id: 3,
         title: "Applications and Environments",
         description: "Ensures your cloud workspaces are correct",
         name: "addapplication",
       },
       {
+        id: 4,
         title: "Team Members",
         description:
           "Ensures your team can access their workspaces within the cloud console",
         name: "addteammembers",
       },
-    ];
+    ].filter((item) => this.$store.state.erroredSteps.indexOf(item.id) > -1);
   }
 
   public getPorfolioById(id?: string): Portfolio {
