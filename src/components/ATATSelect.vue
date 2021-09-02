@@ -16,14 +16,14 @@
         :rules="rules"
         outlined
         dense
-        :success="_selectedValue !== '' && rules && rules.length > 0"
+        :success="success"
         :append-outer-icon="appendedOuterIcon"
         v-model="_selectedValue"
         :height="42"
         :rounded="rounded"
         hide-details="auto"
         :value.sync="_selectedValue"
-        @change="(v) => $emit('change', v)"
+        @change="onChange"
         :placeholder="placeholder"
       >
         <template v-slot:selection="{ item }">
@@ -51,11 +51,11 @@
 </template>
 
 <script lang="ts">
-import { VSelect } from "vuetify/lib";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import Vue from "vue";
 
 @Component({})
-export default class ATATSelect extends VSelect {
+export default class ATATSelect extends Vue {
   @PropSync("selectedValue") private _selectedValue!: unknown;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
@@ -63,6 +63,7 @@ export default class ATATSelect extends VSelect {
     default: () => ["Foo", "Bar", "Fizz Tony", "Buzz"],
   })
   private items!: string[];
+  @Prop() private rules: any;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
@@ -82,6 +83,7 @@ export default class ATATSelect extends VSelect {
   private appendedOuterIcon = "";
   private isFieldValid = false;
   private selected = "";
+  private success = false;
 
   private getStatusIcon() {
     this.$nextTick(() => {
@@ -93,10 +95,14 @@ export default class ATATSelect extends VSelect {
         this.isFieldValid = this.$props["rules"].every(
           (rule: (a: unknown) => string | boolean) => rule(v) === true
         );
-
+        this.success = this.isFieldValid ? true : false;
         this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
       }
     });
+  }
+
+  private onChange(val: string): void {
+    this.selected = val;
   }
 
   private updated() {

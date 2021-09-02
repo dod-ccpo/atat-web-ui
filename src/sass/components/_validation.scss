@@ -117,6 +117,23 @@ div.success--text{
     }
 }
 
+.datepicker-text-box{
+    .v-text-field__details{
+       
+        .error--text{
+            position: absolute;
+            width: 600px;
+            .v-messages__wrapper{
+            //    position: absolute; 
+            //    width:600px;
+            //    height:100px;
+                .v-messages__message{
+                     
+                }
+            }
+        }
+    }
+}
 .atat-checkbox-list{
     &.error-item{
         label, i{

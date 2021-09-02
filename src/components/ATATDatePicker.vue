@@ -4,58 +4,80 @@
       <v-menu
         v-model="menu"
         :close-on-content-click="true"
-        :nudge-right="40"
-        transition="scale-transition"
-        class="two-date-pickers"
-        offset-y
-        min-width="auto"
+        :position-x="0"
+        :position-y="0"
+        origin="top left"
+        :nudge-left="nudgeleft"
+        :nudge-top="40"
+        top
       >
         <template v-slot:activator="{ on, attrs }">
-          <label
-            :id="id + '_text_field_label'"
-            class="form-field-label font-weight-bold my-1"
-            :for="id + '_text_field'"
-          >
-            {{ label }}
-            <span v-show="optional">Optional</span>
-          </label>
-          <v-text-field
-            outlined
-            dense
-            append-outer-icon="calendar_today"
-            :success="isFieldValid"
-            :error="isFieldValid"
-            :height="42"
-            v-model="_date"
-            readonly
-            v-bind="attrs"
-            v-on="on"
-            :value="getDate"
-          />
+          <div class="d-flex align-start width-70 datepicker-text-box">
+            <v-text-field
+              :ref="id"
+              outlined
+              dense
+              :success="isFieldValid"
+              :error="isFieldValid"
+              :height="42"
+              v-bind="attrs"
+              v-on="on"
+              hide-details
+              placeholder="YYYY-DD-MM"
+              v-model="_date"
+              :value="_date"
+              :rules="_rules"
+              @focus="menu !== false"
+              @blur="blurTextField"
+              @update:error="getErrorMessages"
+            ></v-text-field>
+            <v-btn icon :ripple="false" class="ml-2">
+              <v-icon v-bind="attrs" v-on="on" class="icon-32 black--text"
+                >calendar_today</v-icon
+              >
+            </v-btn>
+          </div>
         </template>
-        <v-date-picker
-          ref="firstMonth"
-          :min="minDate"
-          :max="maxDate"
-          v-model="_date"
-          @input="menu = false"
-          no-title
-          scrollable
-          :reactive="true"
-          :picker-date.sync="firstMonth"
-        />
-        <v-date-picker
-          ref="secondMonth"
-          :min="minDate"
-          :max="maxDate"
-          :show-current="false"
-          v-model="_date"
-          @input="menu = false"
-          no-title
-          :reactive="true"
-          scrollable
-          :picker-date.sync="secondMonth"
-        />
+        <div class="two-date-pickers pa-6">
+          <div class="h4 pb-7">{{ title }}</div>
+          <hr />
+          <v-date-picker
+            ref="firstMonth"
+            :min="min"
+            :max="max"
+            v-model="_dateRange"
+            :show-current="false"
+            @input="menu = false"
+            class="mr-5 mt-4"
+            range
+            no-title
+            id="firstMonthDatePicker"
+            scrollable
+            tabindex="0"
+            @click:date="getSelectedDate"
+            :reactive="true"
+            :picker-date.sync="firstMonth"
+            transition="false"
+          />
+          <v-date-picker
+            ref="secondMonth"
+            :min="min"
+            :max="max"
+            :show-current="false"
+            v-model="_dateRange"
+            class="ml-5 mt-4"
+            @input="menu = false"
+            range
+            tabindex="0"
+            no-title
+            :reactive="true"
+            @click:date="getSelectedDate"
+            id="secondMonthDatePicker"
+            scrollable
+            :picker-date.sync="secondMonth"
+            transition="false"
+          />
+        </div>
       </v-menu>
     </v-col>
   </v-row>
@@ -65,8 +87,15 @@
 import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { CustomErrorMessage } from "types/Wizard";
+
 @Component({})
 export default class ATATDatePicker extends Vue {
+  $refs!: {
+    startDate: Vue & { errorBucket: string[] };
+    endDate: Vue & { errorBucket: string[] };
+  };
+
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: "color" }) private color!: string;
@@ -75,10 +104,20 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
   @PropSync("date") private _date!: string;
+  @PropSync("daterange") private _dateRange!: string[];
+  @Prop({ default: "title" }) private title!: string;
+  @Prop() private nudgeleft!: string;
+  @PropSync("textboxvalue") private _textBoxValue!: string;
+  @PropSync("rules") private _rules!: any[];
+  @PropSync("errormessages") private _errorMessages!: (
+    | CustomErrorMessage
+    | undefined
+  )[];
+  @Prop({ default: "2020-10-01" }) private min!: string;
+  @Prop({ default: "2021-10-01" }) private max!: string;
 
   private menu = false;
-  private minDate = "2020-09-01";
-  private maxDate = "2022-10-31";
+  private dateRange: string[] = ["", ""];
 
   private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
@@ -90,81 +129,87 @@ export default class ATATDatePicker extends Vue {
     return this._date;
   }
 
-  private firstMonthComp: any = this.$refs["firstMonth"];
-  private secondMonthComp: any = this.$refs["secondMonth"];
+  private isDatePickerAdvancing = false;
+
+  get isDateRangeValid(): boolean {
+    return this.dateRange.every((d) => d !== "");
+  }
+
+  public getSelectedDate(selectedDate: string): void {
+    this._date = selectedDate;
+  }
+
+  public getErrorMessages(): void {
+    let newMessages: (CustomErrorMessage | undefined)[] = [];
+    let oldMessages: (CustomErrorMessage | undefined)[] = [];
+    let errorBucket = this.$refs.startDate
+      ? this.$refs.startDate.errorBucket
+      : this.$refs.endDate.errorBucket;
+    let errorMessagesToKeep: string = this.$refs.startDate ? "end" : "start";
+    let newMessageDescription: string = this.$refs.startDate ? "start" : "end";
+
+    newMessages = this.convertToCustomErrorMessage(
+      errorBucket,
+      newMessageDescription
+    );
+    oldMessages = this._errorMessages.filter(
+      (em) => em?.description === errorMessagesToKeep
+    );
+    this._errorMessages = [];
+    this._errorMessages = [...newMessages, ...oldMessages];
+  }
+
+  private convertToCustomErrorMessage(
+    errorMessages: string[],
+    origin: string
+  ): CustomErrorMessage[] {
+    let customErrorMessages: CustomErrorMessage[] = errorMessages.map(
+      (em, idx) => {
+        return {
+          key: idx,
+          message: em,
+          description: origin,
+        };
+      }
+    );
+    return customErrorMessages;
+  }
+
+  private blurTextField(): void {
+    this.getSelectedDate(this._date);
+    this.getErrorMessages;
+    setTimeout(() => (this.menu = false), 2000);
+  }
 
   @Watch("firstMonth")
   protected getFirstMonth(newVal: string, oldVal: string): void {
     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-
-    console.log("FirstMonth> new Val" + newVal);
-    console.log("FirstMonth> old Val" + oldVal);
-
-    this.firstMonth = moment(newVal).format("YYYY-MM-DD");
     if (newVal !== oldVal) {
-      this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
+      this.isDatePickerAdvancing = newVal > oldVal;
+      if (!this.isDatePickerAdvancing) {
+        this.firstMonth = moment(newVal).format("YYYY-MM-DD");
+        if (newVal !== oldVal) {
+          this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
+        }
+      }
     }
-    console.log(this.firstMonth);
-    console.log(this.secondMonth);
   }
 
-  // @Watch("secondMonth")
-  //   protected getSecondMonth (newVal: string, oldVal: string): void {
-  //     newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-  //     oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-
-  //     console.log("secondMonth> new Val" + newVal );
-  //     console.log("SecondMonth> old Val" + oldVal );
-
-  //       this.secondMonth = moment(newVal).format("YYYY-MM-DD");
-  //     if (oldVal !== this.secondMonth){
-  //       this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-  //     }
-  //     console.log(this.firstMonth);
-  //     console.log(this.secondMonth);
-  //   }
-
-  // @Watch("secondMonth")
-  // protected getSecondMonth (newVal: string, oldVal: string): void {
-  //   newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-  //   oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-  //   console.log("secondMOnth" + newVal + ":" + oldVal);
-  //   console.log(this.firstMonth);
-  //
-  //   if (moment().month(this.secondMonth).isSame(moment().month(oldVal))){
-  //     this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-  //   }
-  //   // firstMonthComp.$props["picker-date"] = this.firstMonth;
-  // }
-
-  // @Watch("selectedDate")
-  // protected(newVal: string, oldVal: string): void {
-  //   newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-  //   oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
-
-  //   let firstMonthComp: any = this.$refs["firstMonth"];
-  //   let secondMonthComp: any = this.$refs["secondMonth"];
-
-  //   if (newVal < oldVal) {
-  //     this.firstMonth = moment(newVal).format("YYYY-MM-DD");
-  //     this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
-
-  //     // this.selectedDate = moment(new Date()).format("YYYY-MM-DD");
-  //   } else if (newVal > oldVal) {
-  //     this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-  //     this.secondMonth = moment(newVal).format("YYYY-MM-DD");
-
-  //   }
-  //   firstMonthComp.$props["picker-date"] = this.firstMonth;
-  //   secondMonthComp.$props["picker-date"] = this.secondMonth;
-
-  //   console.log(this.firstMonth);
-  //   console.log(this.secondMonth);
-  //   //
-  //   console.log(firstMonthComp);
-  //   console.log(secondMonthComp);
-  // }
+  @Watch("secondMonth")
+  protected getSecondMonth(newVal: string, oldVal: string): void {
+    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
+    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
+    if (newVal !== oldVal) {
+      this.isDatePickerAdvancing = newVal > oldVal;
+      if (this.isDatePickerAdvancing) {
+        this.secondMonth = moment(newVal).format("YYYY-MM-DD");
+        if (oldVal !== this.secondMonth) {
+          this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
+        }
+      }
+    }
+  }
 
   private getStatusIcon() {
     // if the rules property isn't set we won't display an icon
@@ -180,5 +225,3 @@ export default class ATATDatePicker extends Vue {
   }
 }
 </script>
-
-<style scoped></style>
