@@ -23,7 +23,7 @@ import {
   CreatePortfolioFormModel,
   WizardNavigation,
   WizardStepNames,
-} from "../../../../types/Wizard";
+} from "../../../../../types/Wizard";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);

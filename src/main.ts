@@ -28,8 +28,8 @@ import StyledFields from "./components/StyledFields.vue";
 import USAGovBanner from "./components/USAGovBanner.vue";
 
 // wizard
-import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfolio.vue";
-import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
+import ViewPortfolio from "./views/wizard/Step_0/components/ViewPortfolio/ViewPortfolio.vue";
+import CreatePortfolio from "./views/wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
 Vue.component('atat-date-picker',ATATDatePicker)
 Vue.component('atat-button-card', ATATButtonCard);
 Vue.component('atat-file-upload', ATATFileUpload);

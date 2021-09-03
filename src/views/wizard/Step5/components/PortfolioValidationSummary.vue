@@ -37,7 +37,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { ValidationSummaryItem } from "../../../../types/Wizard";
+import { ValidationSummaryItem } from "../../../../../types/Wizard";
 
 @Component({})
 export default class PortfolioValidationSummary extends Vue {

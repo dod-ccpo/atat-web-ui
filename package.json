@@ -13,7 +13,7 @@
     "lint": "vue-cli-service lint",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
-    "test-file:watch": "jest --watch --no-cache src/wizard/Navigation/ButtonNavigation.spec.ts "
+    "test-file:watch": "jest --watch --no-cache src/views/wizard/Navigation/ButtonNavigation.spec.ts "
   },
   "dependencies": {
     "@wdio/cli": "^7.7.4",

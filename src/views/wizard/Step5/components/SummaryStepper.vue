@@ -60,11 +60,11 @@
 import Vue from "vue";
 import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
-import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
+import FundingSummaryCard from "@/views/wizard/Step5/components/FundingSummaryCard.vue";
 import { SummaryStep, TaskOrders } from "types/Wizard";
-import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
-import { Application, Portfolio } from "../../../../types/Portfolios";
-import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
+import TeamMemberSummaryCard from "@/views/wizard/Step5/components/TeamMemberSummaryCard.vue";
+import { Application, Portfolio } from "../../../../../types/Portfolios";
+import ApplicationsEnvironmentsSummaryCard from "@/views/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
 @Component({
   components: {
     PortfolioSummaryCard,

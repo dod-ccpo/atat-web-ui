@@ -14,12 +14,12 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
-import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
+import CreateTaskOrderForm from "@/views/wizard/Step2/components/CreateTaskOrderForm.vue";
 import {
   TaskOrderDetails,
   WizardNavigation,
   WizardStepNames,
-} from "../../../../types/Wizard";
+} from "../../../../../types/Wizard";
 import { mapState } from "vuex";
 
 @Component({

@@ -26,7 +26,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Emit, Prop } from "vue-property-decorator";
-import { NavButtonPanel, NavigationButtons } from "../../../types/Wizard";
+import { NavButtonPanel, NavigationButtons } from "../../../../types/Wizard";
 
 @Component({})
 export default class ButtonNavigation extends Vue {

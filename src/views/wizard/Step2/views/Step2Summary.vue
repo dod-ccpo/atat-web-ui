@@ -106,7 +106,7 @@ import {
   TaskOrders,
   WizardNavigation,
   WizardStepNames,
-} from "../../../../types/Wizard";
+} from "../../../../../types/Wizard";
 import { Component, Watch } from "vue-property-decorator";
 import { mapState } from "vuex";
 

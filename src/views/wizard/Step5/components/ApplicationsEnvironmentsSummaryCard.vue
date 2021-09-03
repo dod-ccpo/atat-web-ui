@@ -52,7 +52,7 @@
 import Component from "vue-class-component";
 import SummaryCard from "./SummaryCard.vue";
 import { Prop } from "vue-property-decorator";
-import { Application } from "../../../../types/Portfolios";
+import { Application } from "../../../../../types/Portfolios";
 
 @Component({})
 export default class ApplicationsEnvironmentsSummaryCard extends SummaryCard {

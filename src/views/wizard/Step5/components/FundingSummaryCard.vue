@@ -12,9 +12,9 @@
 <script lang="ts">
 import Component from "vue-class-component";
 import Vue from "vue";
-import { TaskOrders } from "../../../../types/Wizard";
+import { TaskOrders } from "../../../../../types/Wizard";
 import { Prop } from "vue-property-decorator";
-import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
+import FundingTable from "@/views/wizard/Step5/components/FundingTable.vue";
 
 @Component({
   components: { FundingTable },

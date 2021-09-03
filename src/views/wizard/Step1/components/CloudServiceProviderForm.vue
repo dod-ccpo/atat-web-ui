@@ -26,7 +26,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
-import { ButtonCardItem, ValidatableForm } from "../../../../types/Wizard";
+import { ButtonCardItem, ValidatableForm } from "../../../../../types/Wizard";
 
 @Component({})
 export default class CloudServiceProviderForm

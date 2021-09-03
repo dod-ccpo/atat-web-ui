@@ -1,9 +1,9 @@
 <template>
-  <div>Step 3 View</div>
+  <div>Step 4 View</div>
 </template>
 
 <script lang="ts">
-import { WizardNavigation, WizardStepNames } from "../../../../types/Wizard";
+import { WizardNavigation, WizardStepNames } from "../../../../../types/Wizard";
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { mapState } from "vuex";
@@ -15,11 +15,11 @@ import { mapState } from "vuex";
     }),
   },
 })
-export default class Step_3 extends Vue {
+export default class Step_4 extends Vue {
   mounted(): void {
     this.$store.dispatch(
       "updateWizardStep",
-      WizardStepNames.addapplicationStep()
+      WizardStepNames.addteammembersStep()
     );
   }
 

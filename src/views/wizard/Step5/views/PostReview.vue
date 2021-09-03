@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { WizardNavigation, WizardStepNames } from "../../../../types/Wizard";
+import { WizardNavigation, WizardStepNames } from "../../../../../types/Wizard";
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { mapState } from "vuex";

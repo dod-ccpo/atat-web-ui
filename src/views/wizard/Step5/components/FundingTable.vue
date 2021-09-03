@@ -138,7 +138,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { TaskOrderDetails } from "../../../../types/Wizard";
+import { TaskOrderDetails } from "../../../../../types/Wizard";
 
 @Component({})
 export default class FundingTable extends Vue {
