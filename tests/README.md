@@ -40,25 +40,8 @@ Create a `.env` file in the project's root directory and use the following Envir
 |'BROWSERSTACK_BUILD'       | The build name to use in BrowserStack                                           |
 |'BROWSERSTACK_USERNAME'    | Your username to use when interacting with BrowserAutomate                      |
 |'BROWSERSTACK_ACCESS_KEY'  | The API key that is available in BrowserStack                                   |
+|'BROWSERSTACK_PROJECT'     | The Project name to use in BrowserStack                                         |
 
-
-
-### unix, linux, and MacOS: 
-```
- export BROWSERSTACK_USERNAME=<YOUR USERNAME>
- export BROWSERSTACK_ACCESS_KEY=<YOUR ACCESS KEY>
- export BROWSERSTACK_BUILD=<BUILD NAME> 
- export BROWSERSTACK_PROJECT=<PROJECT NAME> 
-```
-
-### Windows  
-
-```
-$Env:BROWSERSTACK_USERNAME=<YOUR USERNAME>
-$Env:BROWSERSTACK_ACCESS_KEY=<YOUR ACCESS KEY>
-$Env:BROWSERSTACK_BUILD=<BUILD NAME> 
-$Env:BROWSERSTACK_PROJECT=<PROJECT NAME> 
-```
 
 then you can run: 
 
