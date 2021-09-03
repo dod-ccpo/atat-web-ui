@@ -18,7 +18,7 @@
                 :step="index + 1"
                 :key="'stepper_' + index"
                 :complete="isStepComplete(index)"
-                :rules="[() => index + 1 !== 4]"
+                :rules="getValidationRules(index)"
                 @click="clickedAction(index + 1, this)"
                 :error-icon="'  '"
                 :edit-icon="'  '"
@@ -87,6 +87,14 @@ export default class StepperNavigation extends Vue {
       },
     ],
   };
+  private getValidationRules(idx: number) {
+    const rules: any = [];
+    const isStepValid = this.$store.state.erroredSteps.indexOf(idx + 1) === -1;
+    if (!isStepValid) {
+      rules.push(() => isStepValid);
+    }
+    return rules;
+  }
 
   @Emit()
   public clickedAction(stepSelected: number): number {
@@ -106,7 +114,7 @@ export default class StepperNavigation extends Vue {
   }
 
   public isStepComplete(stepNumber: number): boolean {
-    return this.getStepNumber > stepNumber + 1;
+    return this.$store.state.erroredSteps.indexOf(stepNumber + 1) === -1;
   }
 }
 </script>

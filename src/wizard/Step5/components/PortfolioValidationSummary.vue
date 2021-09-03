@@ -17,7 +17,7 @@
                   <p class="body-lg font-weight-bold mb-2">Needs Review</p>
                 </div>
                 <v-btn
-                  @click="onReviewPortfolioItem(item.name)"
+                  @click="onReviewPortfolioItem(item.name, item.id)"
                   class="primary theme--light mb-2"
                   >Review</v-btn
                 >
@@ -44,8 +44,9 @@ export default class PortfolioValidationSummary extends Vue {
   @Prop({ default: new Array<ValidationSummaryItem>() })
   items!: ValidationSummaryItem[];
 
-  public onReviewPortfolioItem(componentName: string): void {
+  public onReviewPortfolioItem(componentName: string, item: number): void {
     //todo: route to component item for review
+    this.$store.dispatch("validateStep", item);
     console.log(componentName);
     this.$router.push({ name: componentName });
   }

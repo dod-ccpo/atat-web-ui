@@ -119,6 +119,14 @@ const routes: Array<RouteConfig> = [
           ),
       },
       {
+        path: "showvalidationsummary",
+        name: "showvalidationsummary",
+        component: () =>
+          import(
+            /* webpackChunkName: "style" */ "../wizard/Step5/views/Step5.vue"
+          ),
+      },
+      {
         path: "postreview",
         name: "postreview",
         component: () =>

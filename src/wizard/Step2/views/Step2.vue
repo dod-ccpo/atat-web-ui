@@ -85,7 +85,6 @@ export default class Step_2 extends Vue {
   }
 
   public mounted(): void {
-    
     this.$store.dispatch("updateWizardStep", WizardStepNames.addfundingStep());
 
     if (this.$route.name === "editfunding") {
@@ -98,7 +97,6 @@ export default class Step_2 extends Vue {
   // this store change will only be triggered by the wizard buttons next/previous
   @Watch("wizardNavigation")
   async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-    
     switch (navigation.action) {
       case "next":
         if (await this.validate()) {
