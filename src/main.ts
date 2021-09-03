@@ -16,6 +16,9 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle.js'
 
+// import awsconfig from './aws-exports';
+// Amplify.configure(awsconfig);
+
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATHeaderNav from "./components/ATATHeaderNav.vue";
