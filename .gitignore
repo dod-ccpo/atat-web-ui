@@ -5,16 +5,20 @@ node_modules
 
 /tests/e2e/logs/
 /coverage/
+/tests/e2e/reports/**
+/tests_output/**
 
 # local env files
 .env.local
 .env.*.local
+.env
 
 # Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+selenium-server.log*
 
 # Editor directories and files
 .idea
