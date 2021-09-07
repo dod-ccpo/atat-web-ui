@@ -1,18 +1,17 @@
 import { Route, RouteConfigSingleView } from "vue-router/types/router";
 
-
 /**
- * 
+ *
  * @param {wizardStep} RouteConfigSingleView the route configuration
- * @param {previous}  string name of the previous route of the previous step 
- * @param {next}  string  name of the next wizard route (route after this route) 
- * @returns 
+ * @param {previous}  string name of the previous route of the previous step
+ * @param {next}  string  name of the next wizard route (route after this route)
+ * @returns
  */
 function CreateWizardRoute(
   wizardStep: RouteConfigSingleView,
   previous?: string,
   next?: string
-): RouteConfigSingleView { 
+): RouteConfigSingleView {
   //adding metadata unique to wizard route
   wizardStep.meta = {
     isWizard: true,

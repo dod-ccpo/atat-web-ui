@@ -135,7 +135,6 @@ export default class Step2Summary extends Vue {
     }
   }
 
-
   get getMockTaskOrders(): boolean {
     this.taskOrders = this.$store.getters.getMockTaskOrders;
     this.transformData();
