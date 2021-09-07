@@ -4,7 +4,6 @@ import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
-import { WizardStep, WizardStepNames } from "../../types/Wizard";
 
 Vue.use(Vuex);
 
@@ -25,56 +24,6 @@ function generateGuid(): string {
   });
 }
 
-const wizardList: Map<string, WizardStep | undefined> = new Map<
-  string,
-  WizardStep | undefined
->();
-
-wizardList.set(WizardStepNames.addportolioStep(), {
-  next: WizardStepNames.addfundingStep(),
-  previous: "",
-});
-
-wizardList.set(WizardStepNames.addfundingStep(), {
-  next: WizardStepNames.fundingsummaryStep(),
-  previous: WizardStepNames.addportolioStep(),
-});
-
-wizardList.set(WizardStepNames.fundingsummaryStep(), {
-  next: WizardStepNames.addapplicationStep(),
-  previous: WizardStepNames.addfundingStep(),
-});
-
-wizardList.set(WizardStepNames.addapplicationStep(), {
-  next: WizardStepNames.addteammembersStep(),
-  previous: WizardStepNames.fundingsummaryStep(),
-});
-
-wizardList.set(WizardStepNames.addteammembersStep(), {
-  next: WizardStepNames.reviewandsubmitStep(),
-  previous: WizardStepNames.addapplicationStep(),
-});
-
-wizardList.set(WizardStepNames.reviewandsubmitStep(), {
-  next: WizardStepNames.postreviewStep(),
-  previous: WizardStepNames.addteammembersStep(),
-});
-
-wizardList.set(WizardStepNames.postreviewStep(), {
-  next: WizardStepNames.submitStep(),
-  previous: WizardStepNames.reviewandsubmitStep(),
-});
-
-wizardList.set(WizardStepNames.submitStep(), {
-  next: "",
-  previous: WizardStepNames.postreviewStep(),
-});
-
-const step: WizardStep = {
-  next: "",
-  previous: "",
-};
-
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
@@ -82,10 +31,9 @@ export default new Vuex.Store({
     isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
-    currentStep: step,
     wizardNavigation: {},
     selectedCSP: "CSP 1",
-    erroredSteps: [1,2,3, 4],
+    erroredSteps: [1, 2, 3, 4],
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -94,41 +42,8 @@ export default new Vuex.Store({
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
-    setStepValidated(state, step: number){
-      state.erroredSteps = state.erroredSteps.filter((es)=> es !== step);
-    },
-    setWizardStep(state, step: string) {
-      const foundStep = wizardList.get(step);
-      if (foundStep != undefined) {
-        state.currentStep = { ...foundStep };
-      } else {
-        throw new Error(`unable to navigate to step ${step}`);
-      }
-    },
-    //provides wizard state handling for next and previous wizard buttons
-    //eventually this may be moved to it's own module
-    setWizardNavigation(state, action: string) {
-      let stepName: string | undefined = undefined;
-
-      if (action === "next") {
-        if (state.currentStep.next != "") {
-          stepName = state.currentStep.next;
-        }
-      }
-
-      if (action === "previous") {
-        if (state.currentStep.previous != "") {
-          stepName = state.currentStep.previous;
-        }
-      }
-
-      if (stepName) {
-        state.wizardNavigation = {
-          action: action,
-          guid: generateGuid(), // generate a guid in order to trigger state change in the store
-          step: stepName,
-        };
-      }
+    setStepValidated(state, step: number) {
+      state.erroredSteps = state.erroredSteps.filter((es) => es !== step);
     },
   },
   actions: {
@@ -139,17 +54,8 @@ export default new Vuex.Store({
       commit("changeLoginStatus", false);
       window.sessionStorage.clear();
     },
-    validateStep({commit}, step: number ){ 
+    validateStep({ commit }, step: number) {
       commit("setStepValidated", step);
-    }, 
-    wizardNext({ commit }) {
-      commit("setWizardNavigation", "next");
-    },
-    wizardPrevious({ commit }) {
-      commit("setWizardNavigation", "previous");
-    },
-    updateWizardStep({ commit }, stepName: string) {
-      commit("setWizardStep", stepName);
     },
     authorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", true);

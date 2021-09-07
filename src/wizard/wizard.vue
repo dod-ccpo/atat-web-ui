@@ -21,6 +21,9 @@ import Step2Summary from "./Step2/views/Step2Summary.vue";
 import Step3 from "./Step3/views/Step3.vue";
 import Step4 from "./Step4/views/Step4.vue";
 import Step5 from "./Step5/views/Step5.vue";
+import { Route } from "vue-router";
+
+Component.registerHooks(["beforeRouteEnter"]);
 
 @Component({
   components: {
@@ -37,6 +40,8 @@ import Step5 from "./Step5/views/Step5.vue";
 export default class Wizard extends Vue {
   private stepNumber = 1;
   private route = "";
+  private currentRoute!: Route;
+
   $refs!: {
     stepOne: Step1;
     stepTwo: Step2;
@@ -44,28 +49,34 @@ export default class Wizard extends Vue {
     stepThree: Step3;
   };
 
-  public getRoute(actions: string[]): void {
+  private resolveActions(currentRoute: Route, actions: string[]) {
+    debugger;
+
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
       debugger;
 
+      const nextRoute =
+        currentRoute.meta && currentRoute.meta.isWizard
+          ? currentRoute.meta.next
+          : undefined;
+      const previousRoute =
+        currentRoute.meta && currentRoute.meta.isWizard
+          ? currentRoute.meta.previous
+          : undefined;
+
       switch (action) {
         case "next":
-          // if (this.$route.name == "addportfolio") {
-          //   await this.$router.push({ name: "addfunding" });
-          //   this.stepNumber = 2;
-          // } else if (this.$route.name == "addfunding") {
-          //   await this.$router.push({ name: "addapplication" });
-          //   this.stepNumber = 3;
-          // } else if (this.$route.name == "addapplication") {
-          //   await this.$router.push({ name: "addteammembers" });
-          //   this.stepNumber = 4;
-          // } else if (this.$route.name == "addteammembers") {
-          //   await this.$router.push({ name: "reviewandsubmit" });
-          //   this.stepNumber = 5;
-          // }
-          this.$store.dispatch("wizardNext");
-
+          if (nextRoute) {
+            this.$router.push({
+              name: nextRoute,
+              params: {
+                source: "wizard-next",
+              },
+            });
+          } else {
+            throw new Error("unable to resolve wizard route");
+          }
           break;
         case "summary":
           // todo: move this router logic to the store
@@ -81,28 +92,11 @@ export default class Wizard extends Vue {
           }
           break;
         case "previous":
-          // if (this.$route.name == "addportfolio") {
-          //   return;
-          // } else if (this.$route.name == "addfunding") {
-          //   await this.$router.push({ name: "addportfolio" });
-          //   this.stepNumber = 1;
-          // } else if (this.$route.name == "fundingsummary") {
-          //   await this.$router.push({ name: "addfunding" });
-          //   this.stepNumber = 2;
-          // } else if (this.$route.name == "addapplication") {
-          //   await this.$router.push({ name: "fundingsummary" });
-          //   this.stepNumber = 2;
-          // } else if (this.$route.name == "editfunding") {
-          //   await this.$router.push({ name: "fundingsummary" });
-          //   this.stepNumber = 2;
-          // } else if (this.$route.name == "addteammembers") {
-          //   await this.$router.push({ name: "addapplication" });
-          //   this.stepNumber = 3;
-          // } else if (this.$route.name == "reviewandsubmit") {
-          //   await this.$router.push({ name: "addteammembers" });
-          //   this.stepNumber = 4;
-          // }
-          this.$store.dispatch("wizardPrevious");
+          if (previousRoute) {
+            this.$router.push({ name: previousRoute });
+          } else {
+            throw new Error("unable to resolve wizard route");
+          }
           break;
         case "cancel":
           await this.$router.push({ name: "portfolios" });
@@ -115,7 +109,11 @@ export default class Wizard extends Vue {
       }
     }, this);
   }
+  public getRoute(actions: string[]): void {
+    this.resolveActions(this.currentRoute, actions);
+  }
   public getStep(currStepNumber: number): void {
+    debugger;
     // avoids redundant navigation
     if (currStepNumber === this.stepNumber) return;
 
@@ -142,6 +140,10 @@ export default class Wizard extends Vue {
     this.stepNumber = currStepNumber;
   }
   public checkPath(): void {
+    if (this.$route.meta && this.$route.meta.isWizard) {
+      this.currentRoute = this.$route;
+    }
+
     switch (this.$route.name) {
       case "addportfolio":
         this.stepNumber = 1;
@@ -179,6 +181,10 @@ export default class Wizard extends Vue {
   }
   @Watch("$route")
   onRouteChanged(): void {
+    debugger;
+    if (this.$route.meta && this.$route.meta.isWizard) {
+      this.currentRoute = this.$route;
+    }
     this.checkPath();
   }
 }
