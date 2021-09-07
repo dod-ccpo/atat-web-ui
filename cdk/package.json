@@ -6,7 +6,7 @@
         "cdk": "cdk"
     },
     "devDependencies": {
-        "@types/node": "^10.17.0",
+        "@types/node": "^16.7.13",
         "@typescript-eslint/eslint-plugin": "^4.28.1",
         "@typescript-eslint/parser": "^4.28.1",
         "eslint": "^7.30.0",
