@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@wdio/cli": "^7.7.4",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "core-js": "^3.6.5",
     "css-vars-ponyfill": "^2.4.5",
     "eslint-plugin-wdio": "^7.4.2",
