@@ -99,32 +99,13 @@
 </template>
 
 <script lang="ts">
-import { WizardNavigation, WizardStepNames } from "../../../../types/Wizard";
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
-import { mapState } from "vuex";
+import { Component } from "vue-property-decorator";
 
-@Component({
-  computed: {
-    ...mapState({
-      wizardNavigation: "wizardNavigation",
-    }),
-  },
-})
+@Component({})
 export default class PostReview extends Vue {
   public isYesButtonClicked = false;
   public isNoButtonClicked = false;
-
-  mounted(): void {
-    this.$store.dispatch("updateWizardStep", WizardStepNames.postreviewStep());
-  }
-
-  // this store change will only be triggered by the wizard buttons next/previous
-  @Watch("wizardNavigation")
-  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-    debugger;
-    this.$router.push({ name: navigation.step });
-  }
 
   public authorizeUser(authorized: boolean): void {
     authorized

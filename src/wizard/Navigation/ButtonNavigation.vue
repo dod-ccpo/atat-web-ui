@@ -86,7 +86,7 @@ export default class ButtonNavigation extends Vue {
             text: "Next",
             color: "primary",
             id: "next",
-            action: ["summary"],
+            action: ["next"],
           },
         ],
       },

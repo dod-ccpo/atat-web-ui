@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import Vuex from 'vuex'
+import Vuex from "vuex";
 import stepperNav from "@/wizard/Navigation/StepperNavigation.vue";
 import { createLocalVue, mount } from "@vue/test-utils";
 
@@ -42,9 +42,9 @@ describe("Testing Stepper Navigation", () => {
   beforeEach(() => {
     vuetify = new Vuetify();
     state = {
-      erroredSteps: [3,4]
-    }
-    store = new Vuex.Store({ state })
+      erroredSteps: [3, 4],
+    };
+    store = new Vuex.Store({ state });
 
     wrapper = mount(stepperNav, {
       store,
@@ -81,7 +81,7 @@ describe("Testing Stepper Navigation", () => {
   });
 
   it("get isStepComplete function()", async () => {
-    let isStepComplete = wrapper.vm.isStepComplete(3)
+    const isStepComplete = wrapper.vm.isStepComplete(3);
     expect(isStepComplete).toBe(false);
   });
 

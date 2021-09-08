@@ -104,27 +104,14 @@ import {
   ATATSummaryCardItem,
   ATATSummaryCards,
   TaskOrders,
-  WizardNavigation,
-  WizardStepNames,
 } from "../../../../types/Wizard";
 import { Component, Watch } from "vue-property-decorator";
-import { mapState } from "vuex";
 
-@Component({
-  computed: {
-    ...mapState({
-      wizardNavigation: "wizardNavigation",
-    }),
-  },
-})
+@Component({})
 export default class Step2Summary extends Vue {
   private showPopText = false;
   private showAdditionalFundingText = false;
   private async mounted(): Promise<void> {
-    this.$store.dispatch(
-      "updateWizardStep",
-      WizardStepNames.fundingsummaryStep()
-    );
     await this.getMockTaskOrders;
   }
 
@@ -145,18 +132,6 @@ export default class Step2Summary extends Vue {
       );
       this.transformData();
       this.itemToDelete = "";
-    }
-  }
-
-  // this store change will only be triggered by the wizard buttons next/previous
-  @Watch("wizardNavigation")
-  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-    switch (navigation.action) {
-      case "next":
-        break;
-      case "previous":
-        this.$router.push({ name: navigation.step });
-        break;
     }
   }
 

@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 export interface NavButton {
   id: string;
   text: string;
@@ -210,16 +212,7 @@ export interface WizardStep {
 }
 
 
-export class WizardStepNames {
-
-  public static addportolioStep():string { return "addportfolio"} ;
-  public static addfundingStep():string {return "addfunding";}
-  public static fundingsummaryStep():string { return "fundingsummary";}
-  public static addapplicationStep():string {return "addapplication";}
-  public static addteammembersStep():string {return "addteammembers";}
-  public static reviewandsubmitStep():string {return "reviewandsubmit";}
-  public static postreviewStep():string {return "postreview";}
-  public static submitStep():string {return "submit";}
-
-
+export abstract class Validatable extends Vue{
+   
+    abstract validate:()=> Promise<boolean>;
 }
