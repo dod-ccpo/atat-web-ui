@@ -5,21 +5,14 @@
 </template>
 
 <script lang="ts">
-import { WizardNavigation, WizardStepNames } from "../../../../types/Wizard";
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
-import { mapState } from "vuex";
+import { Component } from "vue-property-decorator";
 import { Application } from "types/Portfolios";
 import CreateApplicationForm from "../components/CreateApplicationForm.vue";
 
 @Component({
   components: {
     CreateApplicationForm,
-  },
-  computed: {
-    ...mapState({
-      wizardNavigation: "wizardNavigation",
-    }),
   },
 })
 export default class Step_3 extends Vue {
@@ -50,31 +43,6 @@ export default class Step_3 extends Vue {
       },
     ],
   };
-
-  mounted(): void {
-    this.$store.dispatch(
-      "updateWizardStep",
-      WizardStepNames.addapplicationStep()
-    );
-  }
-
-  // this store change will only be triggered by the wizard buttons next/previous
-  @Watch("wizardNavigation")
-  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-    switch (navigation.action) {
-      case "next":
-        // todo: add validation
-        // if (await this.validate()) {
-        //   this.$router.push({ name: navigation.step });
-        // }
-
-        this.$router.push({ name: navigation.step });
-        break;
-      case "previous":
-        this.$router.push({ name: navigation.step });
-        break;
-    }
-  }
 }
 </script>
 
