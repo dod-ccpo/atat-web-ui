@@ -22,8 +22,6 @@ import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
 import { CreatePortfolioFormModel } from "../../../../types/Wizard";
 
-// // Register the router hooks with their names
-// Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   components: {
     CreatePortfolioForm,
@@ -44,7 +42,6 @@ export default class Step_1 extends Vue {
     csp: [],
   };
   public async validate(): Promise<boolean> {
-    debugger;
     const createPortofolioValidation =
       this.$refs.createPortfolioForm.validateForm();
     const cloudServiceProviderValidation =
@@ -57,19 +54,5 @@ export default class Step_1 extends Vue {
     return valid;
   }
 
-  // // this store change will only be triggered by the wizard buttons next/previous
-  // @Watch("wizardNavigation")
-  // async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-  //   switch (navigation.action) {
-  //     case "next":
-  //       if (await this.validate()) {
-  //         this.$router.push({ name: navigation.step });
-  //       }
-  //       break;
-  //     case "previous":
-  //       this.$router.push({ name: navigation.step });
-  //       break;
-  //   }
-  // }
 }
 </script>
