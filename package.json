@@ -13,7 +13,7 @@
     "lint": "vue-cli-service lint",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
-    "test-file:watch": "jest --watch --no-cache src/wizard/Navigation/ButtonNavigation.spec.ts ",
+    "test-file:watch": "jest --watch --no-cache src/wizard/Step1/views/Step1.spec.ts ",
     "test:browserstack:edge": "vue-cli-service test:browserstack -c tests/e2e/browserstack_config/nightwatch.conf.js -e edge dist/tests/e2e/page_tests/test.js",
     "test:browserstack:ie11": "vue-cli-service test:browserstack -c tests/e2e/browserstack_config/nightwatch.conf.js -e ie11 dist/tests/e2e/page_tests/test.js",
     "test:browserstack:chrome": "vue-cli-service test:browserstack -c tests/e2e/browserstack_config/nightwatch.conf.js -e chrome dist/tests/e2e/page_tests/test.js",
