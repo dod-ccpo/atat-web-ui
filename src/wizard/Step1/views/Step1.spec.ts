@@ -49,9 +49,8 @@ describe("Testing Step1 Component", () => {
     expect(wrapper.vm.$refs.cloudServiceProviderForm).toBeDefined();
   });
 
-  it('test validate() ', async () => {
+  it("test validate() ", async () => {
     const validated = await wrapper.vm.validate();
     expect(validated).toBe(true);
   });
-
 });
