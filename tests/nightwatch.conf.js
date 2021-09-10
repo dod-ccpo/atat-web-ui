@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+require("dotenv").config();
 
 let cd = require("chromedriver").path;
 
 module.exports = {
-  src_folders: [],
+  src_folders: ["dist/tests/e2e/page_tests/"],
+  page_objects_path: "dist/tests/e2e/page_objects/",
 
   test_settings: {
     default: {
-      launch_url: "${VUE_DEV_SERVER_URL}",
+      launch_url: process.env.VUE_DEV_SERVER_URL,
       globals: {
         waitForConditionTimeout: 5000,
       },
