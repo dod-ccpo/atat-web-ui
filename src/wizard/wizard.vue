@@ -50,11 +50,8 @@ export default class Wizard extends Vue {
   };
 
   private resolveActions(currentRoute: Route, actions: string[]) {
-    debugger;
-
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-      debugger;
 
       const nextRoute =
         currentRoute.meta && currentRoute.meta.isWizard
@@ -113,7 +110,6 @@ export default class Wizard extends Vue {
     this.resolveActions(this.currentRoute, actions);
   }
   public getStep(currStepNumber: number): void {
-    debugger;
     // avoids redundant navigation
     if (currStepNumber === this.stepNumber) return;
 
@@ -142,38 +138,7 @@ export default class Wizard extends Vue {
   public checkPath(): void {
     if (this.$route.meta && this.$route.meta.isWizard) {
       this.currentRoute = this.$route;
-    }
-
-    switch (this.$route.name) {
-      case "addportfolio":
-        this.stepNumber = 1;
-        break;
-      case "addfunding":
-        this.stepNumber = 2;
-        break;
-      case "editfunding":
-        this.stepNumber = 2;
-        break;
-      case "fundingsummary":
-        this.stepNumber = 2;
-        break;
-      case "addapplication":
-        this.stepNumber = 3;
-        break;
-      case "addteammembers":
-        this.stepNumber = 4;
-        break;
-      case "reviewandsubmit":
-        this.stepNumber = 5;
-        break;
-      case "postreview":
-        this.stepNumber = 5;
-        break;
-      case "submit":
-        this.stepNumber = 5;
-        break;
-      default:
-        break;
+      this.stepNumber = this.$route.meta.step;
     }
   }
   public mounted(): void {
@@ -181,7 +146,6 @@ export default class Wizard extends Vue {
   }
   @Watch("$route")
   onRouteChanged(): void {
-    debugger;
     if (this.$route.meta && this.$route.meta.isWizard) {
       this.currentRoute = this.$route;
     }

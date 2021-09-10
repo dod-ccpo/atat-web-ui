@@ -28,7 +28,9 @@
             :ripple="false"
             @click="addNewEnvironment()"
           >
-            <v-icon color="primary" class="mr-2 ml-n5" role="presentation">control_point</v-icon>
+            <v-icon color="primary" class="mr-2 ml-n5" role="presentation"
+              >control_point</v-icon
+            >
             Add another environment
           </v-btn>
         </fieldset>
