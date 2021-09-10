@@ -26,44 +26,19 @@ export default class Step_3 extends Vue {
     createApplicationForm: CreateApplicationForm;
   };
 
+  private defaultEnvironmentNames = [
+    "Development",
+    "Testing",
+    "Staging",
+    "Production",
+  ];
+
   private applicationDetails: CreateApplicationModel = {
     id: "",
     name: "",
     description: "",
-    environments: [
-      {
-        id: generateUid(),
-        name: "Development",
-        updated: Date.now(),
-        error: false,
-        errorMessages: [],
-        isDirty: false,
-      },
-      {
-        id: generateUid(),
-        name: "Testing",
-        updated: Date.now(),
-        error: false,
-        errorMessages: [],
-        isDirty: false,
-      },
-      {
-        id: generateUid(),
-        name: "Staging",
-        updated: Date.now(),
-        error: false,
-        errorMessages: [],
-        isDirty: false,
-      },
-      {
-        id: generateUid(),
-        name: "Production",
-        updated: Date.now(),
-        error: false,
-        errorMessages: [],
-        isDirty: false,
-      },
-    ],
+    // eslint-disable-next-line prettier/prettier
+    environments: []
   };
 
   private onAddEnvironment(): void {
@@ -94,6 +69,20 @@ export default class Step_3 extends Vue {
     valid = await this.$refs.createApplicationForm.validateForm();
 
     return valid;
+  }
+
+  public created(): void {
+    // set up default environments
+    this.defaultEnvironmentNames.forEach((name) => {
+      this.applicationDetails.environments.push({
+        id: generateUid(),
+        name: name,
+        updated: Date.now(),
+        error: false,
+        errorMessages: [],
+        isDirty: false,
+      });
+    });
   }
 }
 </script>
