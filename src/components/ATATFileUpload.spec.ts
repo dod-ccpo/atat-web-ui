@@ -41,6 +41,7 @@ describe("Testing ATATFileUpload Component", () => {
         "v-list-item",
         "v-list-item-content",
         "v-list-item-title",
+        "fileInput",
       ],
     });
   });
@@ -94,5 +95,38 @@ describe("Testing ATATFileUpload Component", () => {
       errorMessageFromParent: "New Error Message",
     });
     expect(wrapper.vm.errorMessages.length).toBe(2);
+  });
+
+  it("method > openFileDialog ", async () => {
+    const openFileDialogButton = await wrapper.find("#open-file-dialog");
+    openFileDialogButton.trigger("click");
+
+    expect(wrapper.find({ ref: "fileInput" }).exists()).toBe(true);
+  });
+
+  it("method > addUploadedFile", async () => {
+    const event = {
+      target: {
+        files: [
+          {
+            name: "pdfFile.pdf",
+            lastModified: 1623265616555,
+            lastModifiedDate: new Date(),
+            size: 4567893,
+            type: "application/pdf",
+          },
+        ],
+      },
+    };
+    const addUploadedFileSpy = jest.spyOn(wrapper.vm, "addUploadedFile");
+    // https://zaengle.com/blog/mocking-file-upload-in-vue-with-jest
+    const fileInput = await wrapper.find("#file-input-button");
+    fileInput.trigger("change");
+    await wrapper.vm.addUploadedFile(event, event.target.files);
+    expect(addUploadedFileSpy).toHaveBeenCalledWith(event, event.target.files);
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    expect(true);
   });
 });
