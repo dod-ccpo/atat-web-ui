@@ -1,11 +1,19 @@
-import { EnhancedPageObject, EnhancedSectionInstance, NightwatchAPI, NightwatchAssertion, NightwatchBrowser, NightwatchTests } from "nightwatch";
-
+import {
+  EnhancedPageObject,
+  EnhancedSectionInstance,
+  NightwatchAPI,
+  NightwatchAssertion,
+  NightwatchBrowser,
+  NightwatchTests,
+} from "nightwatch";
 
 const headerSection = {
-  selector: 'header',
-  commands: [{
-    //  //add commands specific to the section here
-  }],
+  selector: "header",
+  commands: [
+    {
+      //  //add commands specific to the section here
+    },
+  ],
   elements: {
     classificationBanner: {
       name: "classificationBanner",
@@ -22,16 +30,21 @@ const headerSection = {
       locateStrategy: "css selector",
       selector: "span.USWDC-official-banner__link_msg",
     },
-  }
+  },
 };
-interface HeaderSection extends EnhancedSectionInstance<typeof headerSection.commands[0], typeof headerSection.elements, {}> { }
+type HeaderSection = EnhancedSectionInstance<
+  typeof headerSection.commands[0],
+  typeof headerSection.elements,
+  Record<string, unknown>
+>;
 const mainSection = {
-  selector: 'main',
-  commands: [{
-    ////add commands specific to the section here
-  }],
+  selector: "main",
+  commands: [
+    {
+      ////add commands specific to the section here
+    },
+  ],
   elements: {
-
     atatImage: {
       name: "atatImage",
       locateStrategy: "css selector",
@@ -54,53 +67,71 @@ const mainSection = {
     signInBtn: {
       selector: "#login_button",
     },
-  }
+  },
 };
-interface MainSection extends EnhancedSectionInstance<typeof mainSection.commands, typeof mainSection.elements, {}> { }
-
+type MainSection = EnhancedSectionInstance<
+  typeof mainSection.commands,
+  typeof mainSection.elements,
+  Record<string, unknown>
+>;
 
 /*
-* Didn't create any objects for the footer
-*/
+ * Didn't create any objects for the footer
+ */
 const footerSection = {
-  selector: 'footer',
-  commands: [{
-    //add commands specific to the section here
-  }],
-  elements: {
-
-  }
+  selector: "footer",
+  commands: [
+    {
+      //add commands specific to the section here
+    },
+  ],
+  elements: {},
 };
-
-interface FooterSection extends EnhancedSectionInstance<typeof footerSection.commands[0], typeof footerSection.elements, {}> { }
+type FooterSection = EnhancedSectionInstance<
+  typeof footerSection.commands[0],
+  typeof footerSection.elements,
+  Record<string, unknown>
+>;
+/* type FooterSection = EnhancedSectionInstance<
+  typeof footerSection.commands[0],
+  typeof footerSection.elements,
+  Record<string, unknown>
+>;*/
 
 const appSection = {
-  selector: '#app',
-  commands: [{
-
-  }],
+  selector: "#app",
+  commands: [{}],
   elements: {
     classificationBanner: {
-      selector: '.classification-banner'
-    }
+      selector: ".classification-banner",
+    },
   },
   sections: {
     //header: headerSection,
     // main: mainSection,
     // footer: footerSection
-  }
+  },
 };
 
-interface AppSection extends EnhancedSectionInstance<typeof appSection.commands[0], typeof appSection.elements, { /*header: HeaderSection, main: MainSection, footer: FooterSection*/ }> { }
+type AppSection = EnhancedSectionInstance<
+  typeof appSection.commands[0],
+  typeof appSection.elements,
+  {
+    /*header: HeaderSection, main: MainSection, footer: FooterSection*/
+  }
+>;
 
 const atatHomePage = {
-  commands: [{
-    signin(this: ATATHomePage) {
-      this.api.pause(5000);
-      return this.click('@signInButton');
-
-    }
-  }],
+  commands: [
+    {
+      // using type ATATHomePage for "this" causes circular reference.
+      // need to resolve use of commands in future sprint
+      // signin(this: ATATHomePage) {
+      //   this.api.pause(5000);
+      //   return this.click("@signInButton");
+      // },
+    },
+  ],
   elements: {
     classificationBanner: {
       name: "classificationBanner",
@@ -139,23 +170,31 @@ const atatHomePage = {
     signInButton: {
       name: "atatImage",
       locateStrategy: "css selector",
-      selector: '#login_button'
-    }
-
+      selector: "#login_button",
+    },
   },
   sections: {
     header: headerSection,
     main: mainSection,
     footer: footerSection,
-    apps: appSection
-  }
+    apps: appSection,
+  },
 };
 
-interface ATATHomePage extends EnhancedPageObject<typeof atatHomePage.commands[0], typeof atatHomePage.elements, { header: HeaderSection, main: MainSection, footer: FooterSection, apps: AppSection }> { }
+type ATATHomePage = EnhancedPageObject<
+  typeof atatHomePage.commands[0],
+  typeof atatHomePage.elements,
+  {
+    header: HeaderSection;
+    main: MainSection;
+    footer: FooterSection;
+    apps: AppSection;
+  }
+>;
 
-declare module 'nightwatch' {
+declare module "nightwatch" {
   interface NightwatchCustomPageObjects {
     atatHome(): ATATHomePage;
   }
 }
-export default atatHomePage
+export default atatHomePage;
