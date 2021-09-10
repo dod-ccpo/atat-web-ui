@@ -53,6 +53,5 @@ export default class Step_1 extends Vue {
     ]).then((values) => (valid = values.every((value) => value)));
     return valid;
   }
-
 }
 </script>

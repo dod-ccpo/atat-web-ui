@@ -14,8 +14,6 @@ export default class ValidatableWizardStep extends Validatable {
     from: Route,
     next: (n: void) => void
   ) {
-    debugger;
-
     const isWizardRoute = to.meta && to.meta.isWizard;
     const isWizardNext = to.params && to.params.source === "wizard-next";
 
