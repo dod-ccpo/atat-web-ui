@@ -22,8 +22,6 @@ import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
 import { CreatePortfolioFormModel } from "../../../../types/Wizard";
 
-// // Register the router hooks with their names
-// Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   components: {
     CreatePortfolioForm,
