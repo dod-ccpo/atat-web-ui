@@ -46,16 +46,6 @@ div.error--text{
     div.v-messages__message{
         @extend .form-field-label-error;
     }
-
-    &.manual--validation {
-
-        .v-input__append-outer{
-            margin-bottom: 15px !important;
-            position: absolute;
-            right: -70px;
-        }
-    
-    }
 }
 
 div.success--text{

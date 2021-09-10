@@ -143,6 +143,8 @@
             font-size: #{$size}px !important;
             height: #{$size}px !important;
             width: #{$size}px !important;
+            min-height: #{$size}px !important;
+            min-width: #{$size}px !important;
         }
     }
 .word-break-normal{

@@ -50,13 +50,13 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="7">
+        <v-col cols="9">
           <fieldset class="border-0">
             <legend class="body-lg">Environment Name</legend>
             <div
               v-for="env in _application.environments"
               :key="env.id"
-              class="mb-4 border-0 w-100"
+              class="mb-4 border-0 w-100 d-flex align-end"
             >
               <atat-text-field
                 :value.sync="env.name"
@@ -64,26 +64,14 @@
                 label=""
                 :id="env.id"
                 :error="env.error"
-                :errorMessages="env.errorMessages"
+                :rules="env.errorMessages"
                 :success="env.isDirty && !env.error"
                 @change="onEnvironmentChanged(env.id)"
                 manualValidation="true"
+                :showDeleteIcon="true"
+                class="width-80"
+                @deleteTextBox="deleteEnvironment"
               >
-                <template v-slot:append-outer>
-                  <v-icon v-if="env.error" class="text-base-error mr-2"
-                    >error</v-icon
-                  >
-                  <v-icon
-                    v-if="!env.error && env.isDirty"
-                    class="test-base-success mr-2"
-                    >check_circle</v-icon
-                  >
-                  <v-icon
-                    class="pointer"
-                    @click="$emit('removeEnvironment', env.id)"
-                    >delete</v-icon
-                  >
-                </template>
               </atat-text-field>
             </div>
 
@@ -121,31 +109,42 @@ export default class CreateApplicationForm extends Vue {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
 
+  public deleteEnvironment(id: string): void {
+    this.$emit("removeEnvironment", id);
+  }
+
   public validateEnvironment(env: CreateEnvironmentModel): void {
-    let error = false;
+    let isValid = false;
     let errorMessages = [];
 
-    if (this._application.environments.length == 1 && env.name === "") {
-      error = true;
-      errorMessages.push("Please enter at least one environment.");
-    }
+    // if (this._application.environments.length == 1 && env.name === "") {
+    //   error = true;
+    //   errorMessages.push(
+    //     () =>
+    //       (this._application.environments.length == 1 && env.name === "") ||
+    //       "Please enter at least one environment."
+    //   );
+    // }
 
-    if (env.name.length < 4) {
-      error = true;
-      errorMessages.push("Please enter between 4 and 100 characters.");
-    }
+    // isValid = this._application.environments.length == 1 && env.name === "";
 
-    const duplicateNames = this._application.environments
-      .filter((en) => en.name.toLowerCase() === env.name.toLowerCase())
-      .sort((a, b) => (a.updated > b.updated ? 1 : -1));
 
-    if (duplicateNames.length > 1 && duplicateNames[0].updated != env.updated) {
-      error = true;
-      errorMessages.push("Please enter a unique environment name.");
-    }
+    isValid = env.name.length >= 4 && env.name.length <= 100;
+    errorMessages.push(
+      () => isValid || "Please enter between 4 and 100 characters"
+    );
 
-    env.error = error;
-    env.errorMessages = errorMessages;
+    // const duplicateNames = this._application.environments
+    //   .filter((en) => en.name.toLowerCase() === env.name.toLowerCase())
+    //   .sort((a, b) => (a.updated > b.updated ? 1 : -1));
+
+    // if (duplicateNames.length > 1 && duplicateNames[0].updated != env.updated) {
+    //   error = true;
+    //   errorMessages.push("Please enter a unique environment name.");
+    // }
+
+    env.error = !isValid;
+    env.errorMessages = isValid ? [] : errorMessages;
   }
 
   public async onEnvironmentChanged(id: string): Promise<void> {

@@ -26,29 +26,45 @@
       </v-tooltip>
     </v-flex>
     <v-flex>
-      <v-text-field
-        :rules="rules"
-        :id="id + '_text_field'"
-        outlined
-        dense
-        :success="successValue"
-        :prefix="prefix"
-        :error="error"
-        :error-messages="errorMessages"
-        :height="42"
-        :append-outer-icon="appendedOuterIcon"
-        :rounded="rounded"
-        :value="value"
-        hide-details="auto"
-        @keyup="$emit('update:value', $event.target.value)"
-        @change="$emit('change')"
-        :validate-on-blur="false"
-        :class="{ 'manual--validation': manualValidation }"
-      >
-        <template v-slot:append-outer>
-          <slot name="append-outer"></slot>
-        </template>
-      </v-text-field>
+      <div class="d-flex">
+        <div class="width-60">
+          <v-text-field
+            :rules="rules"
+            :id="id + '_text_field'"
+            outlined
+            dense
+            :success="isSuccess"
+            :prefix="prefix"
+            :error="isErrored"
+            :error-messages="errorMessages"
+            :height="42"
+            :rounded="rounded"
+            :value="value"
+            hide-details="auto"
+            @keyup="$emit('update:value', $event.target.value)"
+            @change="$emit('change')"
+            :validate-on-blur="true"
+            :class="{ 'manual--validation': manualValidation }"
+          >
+          </v-text-field>
+        </div>
+        <div class="width-40 d-flex align-end mb-4">
+          <v-btn
+            v-if="showDeleteIcon"
+            plain
+            class="pointer icon-24 pa-1 ml-2"
+            @click="$emit('deleteTextBox', id)"
+          >
+            <v-icon>delete </v-icon>
+          </v-btn>
+          <v-icon v-if="isErrored" color="error" class="icon-24 pa-1 pl-4"
+            >error</v-icon
+          >
+          <v-icon v-if="isSuccess" color="success" class="icon-24 pa-1 pl-4"
+            >check_circle</v-icon
+          >
+        </div>
+      </div>
     </v-flex>
   </div>
 </template>
@@ -74,6 +90,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private prefix!: string;
   @Prop({ default: false }) private manualValidation!: boolean;
+  @Prop({ default: false }) private showDeleteIcon!: boolean;
 
   //data
   private rounded = false;
@@ -92,6 +109,14 @@ export default class ATATTextField extends VTextField {
 
       this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
     }
+  }
+
+  get isSuccess(): boolean {
+    return this.$data["valid"] === true;
+  }
+
+  get isErrored(): boolean {
+    return this.$data["valid"] === false;
   }
 
   get successValue(): boolean {
