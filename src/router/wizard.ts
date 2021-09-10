@@ -95,7 +95,7 @@ const wizard: RouteConfigSingleView = {
     CreateWizardRoute(addapplication, fundingsummary.name, addteammembers.name),
     CreateWizardRoute(
       addteammembers,
-      fundingsummary.name,
+      addapplication.name,
       reviewandsubmit.name
     ),
     CreateWizardRoute(reviewandsubmit, addteammembers.name, postreview.name),
