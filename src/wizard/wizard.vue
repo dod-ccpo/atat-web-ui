@@ -50,11 +50,8 @@ export default class Wizard extends Vue {
   };
 
   private resolveActions(currentRoute: Route, actions: string[]) {
-    debugger;
-
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-      debugger;
 
       const nextRoute =
         currentRoute.meta && currentRoute.meta.isWizard
@@ -113,7 +110,6 @@ export default class Wizard extends Vue {
     this.resolveActions(this.currentRoute, actions);
   }
   public getStep(currStepNumber: number): void {
-    debugger;
     // avoids redundant navigation
     if (currStepNumber === this.stepNumber) return;
 
@@ -181,7 +177,6 @@ export default class Wizard extends Vue {
   }
   @Watch("$route")
   onRouteChanged(): void {
-    debugger;
     if (this.$route.meta && this.$route.meta.isWizard) {
       this.currentRoute = this.$route;
     }

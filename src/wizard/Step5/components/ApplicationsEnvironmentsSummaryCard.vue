@@ -60,7 +60,6 @@ export default class ApplicationsEnvironmentsSummaryCard extends SummaryCard {
   private applicationData!: Application;
 
   public onEdit(): void {
-    debugger;
     this.$router.push({
       name: "addapplication",
     });

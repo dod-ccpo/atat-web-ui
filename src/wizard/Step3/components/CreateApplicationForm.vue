@@ -53,19 +53,6 @@
         <v-col cols="7">
           <fieldset class="border-0">
             <legend class="body-lg">Environment Name</legend>
-
-            <!-- <div
-              v-if="
-                _application.environments.length === 1 &&
-                _application.environments[0].name === ''
-              "
-              class="mb-2 atat-error-message pt-2"
-              id="dod-components-errors"
-              role="alert"
-            >
-              Please enter at least one environment
-            </div> -->
-
             <div
               v-for="env in _application.environments"
               :key="env.id"
@@ -163,8 +150,6 @@ export default class CreateApplicationForm extends Vue {
   }
 
   public async onEnvironmentChanged(id: string): Promise<void> {
-    debugger;
-
     if (id) {
       const env = this._application.environments.find((env) => env.id === id);
 

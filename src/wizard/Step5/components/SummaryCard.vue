@@ -68,7 +68,6 @@ export default class SummaryCard extends VCard {
   //     return true;
   //   }
   private handleClicked(editPlace: string) {
-    debugger;
     this.$router.push({ name: editPlace });
   }
   //   @Emit()
