@@ -106,7 +106,6 @@
 </template>
 
 <script lang="ts">
-import { Application } from "types/Portfolios";
 import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
@@ -151,7 +150,7 @@ export default class CreateApplicationForm extends Vue {
 
   public async onEnvironmentChanged(id: string): Promise<void> {
     if (id) {
-      const env = this._application.environments.find((env) => env.id === id);
+      const env = this._application.environments.find((en) => en.id === id);
 
       if (env) {
         env.updated = Date.now();

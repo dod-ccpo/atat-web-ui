@@ -40,13 +40,6 @@ div.error--text{
         @extend .v-input__append-outer-icon-holder
     }
     
-    .v-input__append-outer{
-    
-        margin-bottom: 15px !important;
-        position: absolute;
-        right: -40px;
-    }
-
     label.v-label{
         animation: none !important;
     }

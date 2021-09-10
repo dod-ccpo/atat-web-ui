@@ -10,7 +10,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-// import { Application } from "types/Portfolios";
 import CreateApplicationForm from "../components/CreateApplicationForm.vue";
 import { generateUid } from "@/helpers";
 import { CreateApplicationModel } from "types/Wizard";
