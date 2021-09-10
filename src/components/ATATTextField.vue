@@ -31,17 +31,23 @@
         :id="id + '_text_field'"
         outlined
         dense
-        :success="isFieldValid"
+        :success="successValue"
         :prefix="prefix"
-        :error="hasError"
+        :error="error"
+        :error-messages="errorMessages"
         :height="42"
         :append-outer-icon="appendedOuterIcon"
         :rounded="rounded"
         :value="value"
         hide-details="auto"
         @keyup="$emit('update:value', $event.target.value)"
+        @change="$emit('change')"
         :validate-on-blur="false"
+        :class="{ 'manual--validation': manualValidation }"
       >
+        <template v-slot:append-outer>
+          <slot name="append-outer"></slot>
+        </template>
       </v-text-field>
     </v-flex>
   </div>
@@ -63,8 +69,11 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private error!: boolean;
+  @Prop({ default: false }) private success!: boolean;
+  @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private prefix!: string;
+  @Prop({ default: false }) private manualValidation!: boolean;
 
   //data
   private rounded = false;
@@ -83,6 +92,10 @@ export default class ATATTextField extends VTextField {
 
       this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
     }
+  }
+
+  get successValue(): boolean {
+    return this.manualValidation ? this.success : this.isFieldValid;
   }
 
   private updated() {

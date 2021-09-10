@@ -35,9 +35,16 @@
 }
 
 div.error--text{
+    
     .v-input__append-outer{
-        top: 35px !important;
         @extend .v-input__append-outer-icon-holder
+    }
+    
+    .v-input__append-outer{
+    
+        margin-bottom: 15px !important;
+        position: absolute;
+        right: -40px;
     }
 
     label.v-label{
@@ -46,12 +53,31 @@ div.error--text{
     div.v-messages__message{
         @extend .form-field-label-error;
     }
+
+    &.manual--validation {
+
+        .v-input__append-outer{
+            margin-bottom: 15px !important;
+            position: absolute;
+            right: -70px;
+        }
+    
+    }
 }
 
 div.success--text{
     .v-input__append-outer{
         top: 0px !important;
         @extend .v-input__append-outer-icon-holder
+    }
+
+    &.manual--validation {
+
+        .v-input__append-outer{
+            margin-bottom: 15px !important;
+            position: absolute;
+            right: -70px;
+        }
     }
 }
  

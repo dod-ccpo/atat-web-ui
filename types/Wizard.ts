@@ -216,3 +216,20 @@ export abstract class Validatable extends Vue{
    
     abstract validate:()=> Promise<boolean>;
 }
+
+export interface CreateEnvironmentModel {
+
+  id: string;
+  name: string;
+  updated: number;
+  error: boolean;
+  errorMessages: string[];
+  isDirty: boolean;
+}
+
+export interface CreateApplicationModel {
+  id: string;
+  name: string;
+  description: string;
+  environments: CreateEnvironmentModel[];
+}
