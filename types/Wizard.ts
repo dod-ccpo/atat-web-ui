@@ -217,10 +217,6 @@ export abstract class Validatable extends Vue {
 export interface CreateEnvironmentModel {
   id: string;
   name: string;
-  updated: number;
-  error: boolean;
-  errorMessages: any[];
-  isDirty: boolean;
 }
 
 export interface CreateApplicationModel {

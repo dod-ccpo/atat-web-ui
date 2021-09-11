@@ -63,14 +63,11 @@
                 :key="`env_${env.id}`"
                 label=""
                 :id="env.id"
-                :error="env.error"
-                :rules="env.errorMessages"
-                :success="env.isDirty && !env.error"
-                @change="onEnvironmentChanged(env.id)"
-                manualValidation="true"
+                :rules="rules.environments"
                 :showDeleteIcon="true"
                 class="width-80"
-                @deleteTextBox="deleteEnvironment"
+                @deleteItem="deleteEnvironment"
+                :isDeleteDisabled="_application.environments.length === 1"
               >
               </atat-text-field>
             </div>
@@ -103,7 +100,34 @@ export default class CreateApplicationForm extends Vue {
   @PropSync("application") _application!: CreateApplicationModel;
   private applicationNameHelpText = "example help text";
   private applicationDetailsHelpText = "example help text";
-  private rules = {};
+
+  get rules(): unknown {
+    return {
+      applicationName: [
+        (v: string) => !!v || "Please enter your Application name.",
+        (v: string) =>
+          (v.trim().length <= 100 && v.trim().length >= 4) ||
+          "Please enter between 4 and 100 characters.",
+      ],
+      environments: [
+        (v: string) =>
+          (v.trim().length <= 100 && v.trim().length >= 4) ||
+          "Please enter between 4 and 100 characters.",
+        (v: string) =>
+          (this._application.environments.length > 0 && v !== "") ||
+          "Please enter at least one environment.",
+        (v: string) => {
+          const duplicateNames = this._application.environments.filter(
+            (en) => en.name.toLowerCase() === v.toLowerCase()
+          );
+          return (
+            duplicateNames.length <= 1 ||
+            "Please enter a unique environment name"
+          );
+        },
+      ],
+    };
+  }
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -113,83 +137,12 @@ export default class CreateApplicationForm extends Vue {
     this.$emit("removeEnvironment", id);
   }
 
-  public validateEnvironment(env: CreateEnvironmentModel): void {
-    let isValid = false;
-    let errorMessages = [];
-
-    // if (this._application.environments.length == 1 && env.name === "") {
-    //   error = true;
-    //   errorMessages.push(
-    //     () =>
-    //       (this._application.environments.length == 1 && env.name === "") ||
-    //       "Please enter at least one environment."
-    //   );
-    // }
-
-    // isValid = this._application.environments.length == 1 && env.name === "";
-
-
-    isValid = env.name.length >= 4 && env.name.length <= 100;
-    errorMessages.push(
-      () => isValid || "Please enter between 4 and 100 characters"
-    );
-
-    // const duplicateNames = this._application.environments
-    //   .filter((en) => en.name.toLowerCase() === env.name.toLowerCase())
-    //   .sort((a, b) => (a.updated > b.updated ? 1 : -1));
-
-    // if (duplicateNames.length > 1 && duplicateNames[0].updated != env.updated) {
-    //   error = true;
-    //   errorMessages.push("Please enter a unique environment name.");
-    // }
-
-    env.error = !isValid;
-    env.errorMessages = isValid ? [] : errorMessages;
-  }
-
-  public async onEnvironmentChanged(id: string): Promise<void> {
-    if (id) {
-      const env = this._application.environments.find((en) => en.id === id);
-
-      if (env) {
-        env.updated = Date.now();
-        env.isDirty = true;
-        this.validateEnvironment(env);
-      }
-    }
-  }
-
-  private validateEnvironments() {
-    this._application.environments.forEach((env) =>
-      this.validateEnvironment(env)
-    );
-    return this._application.environments.every((env) => env.error === false);
-  }
-
-  public validationRules(): unknown[] {
-    const validationRules: unknown[] = [];
-    validationRules.push(
-      (v: string) => !!v || "Please enter your Application name."
-    );
-
-    validationRules.push(
-      (v: string) =>
-        (v.length < 100 && v.length >= 4) ||
-        "Please enter between 4 and 100 characters."
-    );
-
-    return validationRules;
-  }
-
   public async validateForm(): Promise<boolean> {
     let validated = false;
-    this.rules = {
-      applicationName: this.validationRules(),
-    };
+
     await this.$nextTick(() => {
       const formValidated = this.Form.validate();
-      const environmentsValidated = this.validateEnvironments();
-      validated = formValidated && environmentsValidated;
+      validated = formValidated;
     });
     return validated;
   }

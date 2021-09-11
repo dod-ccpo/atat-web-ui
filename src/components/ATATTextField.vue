@@ -39,12 +39,10 @@
             :error-messages="errorMessages"
             :height="42"
             :rounded="rounded"
-            :value="value"
+            :value.sync="_value"
             hide-details="auto"
-            @keyup="$emit('update:value', $event.target.value)"
+            @input="inputActions"
             @change="$emit('change')"
-            :validate-on-blur="true"
-            :class="{ 'manual--validation': manualValidation }"
           >
           </v-text-field>
         </div>
@@ -52,8 +50,9 @@
           <v-btn
             v-if="showDeleteIcon"
             plain
+            :disabled="isDeleteDisabled"
             class="pointer icon-24 pa-1 ml-2"
-            @click="$emit('deleteTextBox', id)"
+            @click="$emit('deleteItem', id)"
           >
             <v-icon>delete </v-icon>
           </v-btn>
@@ -71,11 +70,10 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextField extends VTextField {
-  private isFieldValid = false;
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -83,48 +81,44 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
-  @Prop({ default: "" }) private value!: string;
+  @PropSync("value", { default: "" }) private _value!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private success!: boolean;
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private prefix!: string;
-  @Prop({ default: false }) private manualValidation!: boolean;
   @Prop({ default: false }) private showDeleteIcon!: boolean;
+  @Prop({ default: false }) private isDeleteDisabled!: boolean;
 
   //data
   private rounded = false;
-  private appendedOuterIcon = "";
+  private isFieldValid = false;
+  private isFieldDirty = false;
 
-  private getStatusIcon() {
+  get isSuccess(): boolean {
+    return this.isFieldDirty === true && this.isFieldValid === true;
+  }
+
+  get isErrored(): boolean {
+    return this.isFieldDirty === true && this.isFieldValid === false;
+  }
+
+  private inputActions(v: string) {
+    this._value = v;
+    this.isFieldDirty = true;
+    this.validateField(v);
+  }
+
+  private validateField(v: string) {
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
     // we evalute the rules to determine what icon to display
     if (this.$props["rules"].length > 0) {
-      let value = this.value;
-
+      let value = v;
       this.isFieldValid = this.$props["rules"].every(
         (rule: (a: unknown) => string | boolean) => rule(value) === true
       );
-
-      this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
     }
-  }
-
-  get isSuccess(): boolean {
-    return this.$data["valid"] === true;
-  }
-
-  get isErrored(): boolean {
-    return this.$data["valid"] === false;
-  }
-
-  get successValue(): boolean {
-    return this.manualValidation ? this.success : this.isFieldValid;
-  }
-
-  private updated() {
-    this.getStatusIcon();
   }
 }
 </script>

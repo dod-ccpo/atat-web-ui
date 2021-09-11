@@ -45,10 +45,6 @@ export default class Step_3 extends Vue {
     this.applicationDetails.environments.push({
       id: generateUid(),
       name: "",
-      updated: Date.now(),
-      error: false,
-      errorMessages: [],
-      isDirty: false,
     });
   }
 
@@ -77,10 +73,6 @@ export default class Step_3 extends Vue {
       this.applicationDetails.environments.push({
         id: generateUid(),
         name: name,
-        updated: Date.now(),
-        error: false,
-        errorMessages: [],
-        isDirty: false,
       });
     });
   }
