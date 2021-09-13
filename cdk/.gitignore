@@ -1,2 +1,6 @@
 cdk.out/
 *.js
+
+# Ensure that this package-lock.json file is checked in properly regardless
+# of any settings at a more global level in the repository.
+!package-lock.json
