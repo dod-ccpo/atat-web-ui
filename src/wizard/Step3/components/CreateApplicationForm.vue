@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
+import { CreateApplicationModel } from "types/Wizard";
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 
