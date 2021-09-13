@@ -41,7 +41,9 @@
             :rounded="rounded"
             :value.sync="_value"
             hide-details="auto"
+            :validate-on-blur="true"
             @input="inputActions"
+            @blur="validateField()"
             @change="$emit('change')"
           >
           </v-text-field>
@@ -105,16 +107,17 @@ export default class ATATTextField extends VTextField {
 
   private inputActions(v: string) {
     this._value = v;
-    this.isFieldDirty = true;
-    this.validateField(v);
   }
 
-  private validateField(v: string) {
+  private validateField() {
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
     // we evalute the rules to determine what icon to display
+    debugger;
+    this.isFieldDirty = true;
+
     if (this.$props["rules"].length > 0) {
-      let value = v;
+      let value = this._value;
       this.isFieldValid = this.$props["rules"].every(
         (rule: (a: unknown) => string | boolean) => rule(value) === true
       );

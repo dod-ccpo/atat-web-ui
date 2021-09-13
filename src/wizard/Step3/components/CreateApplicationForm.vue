@@ -2,31 +2,33 @@
   <v-form ref="form" lazy-validation>
     <v-container fluid class="my-6">
       <v-row>
-        <v-col cols="10">
+        <v-col cols="8">
           <h2 class="h2">Let’s create your new application</h2>
           <p class="my-3">
             In this section, we’ll set up your cloud workspaces within
-            <strong>&#60;CSP selected in Step 1&#62;</strong>. If you have more
-            than one application, we will walk through them one at a time.
-            Select <strong>Next</strong> to view your applications summary.
+            <strong>{{ this.$store.state.selectedCSP }}</strong
+            >. If you have more than one application, we will walk through them
+            one at a time. Select <strong>Next</strong> to view your
+            applications summary.
           </p>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="8">
           <atat-text-field
             id="application-name"
             label="Application Name"
             :rules="rules.applicationName"
             :value.sync="_application.name"
             :helpText="applicationNameHelpText"
+            class="width-100"
           />
 
           <atat-text-area
             optional="true"
             id="application-details"
             label="Application Details"
-            class="mt-16"
+            class="mt-16 width-60"
             :value.sync="_application.details"
             :helpText="applicationDetailsHelpText"
           />
@@ -41,16 +43,16 @@
         <v-col cols="10">
           <h2 class="h2">Add Environments</h2>
           <p class="my-3">
-            Each Application can have multiple environments for the various
+            Each application can have multiple environments for the various
             stages of its life cycle. Production, Staging, Testing, and
             Development environments are included by default. However, you can
             add, edit, and delete environments based on the needs of your
-            Application.
+            application.
           </p>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="9">
+        <v-col cols="8">
           <fieldset class="border-0">
             <legend class="body-lg">Environment Name</legend>
             <div
@@ -65,7 +67,7 @@
                 :id="env.id"
                 :rules="rules.environments"
                 :showDeleteIcon="true"
-                class="width-80"
+                class="width-100"
                 @deleteItem="deleteEnvironment"
                 :isDeleteDisabled="_application.environments.length === 1"
               >
@@ -98,8 +100,10 @@ import { Component, PropSync } from "vue-property-decorator";
 @Component({})
 export default class CreateApplicationForm extends Vue {
   @PropSync("application") _application!: CreateApplicationModel;
-  private applicationNameHelpText = "example help text";
-  private applicationDetailsHelpText = "example help text";
+  private applicationNameHelpText = `This name will be displayed within the cloud provider’s console. It should be intuitive
+   and easily recognizable for all of your team members.`;
+  private applicationDetailsHelpText = `Add a brief one to two sentence description of your application. 
+  Consider using the “Description of Work” from your task order.`;
 
   get rules(): unknown {
     return {
