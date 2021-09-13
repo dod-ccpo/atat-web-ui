@@ -386,6 +386,15 @@ export default class ATATFileUpload extends Vue {
       this.errorMessages.push("Please upload your Task Order Document");
     }
     /**
+     * validates the maxFileSize
+     */
+    if (file.size > this.maxFileSize * 1048576) {
+      //1 Megabytes = 1048576 Bytes
+      this.errorMessages.push(
+        "File size cannot exceed " + this.maxFileSize + "MB"
+      );
+    }
+    /**
      *  validates the first 8 characters of the PDF binary file data to ensure it
      *  matches tis regexp RegExp("%PDF-1.[0-7]"). All pdf files binary data when
      *  converted to a string will start with RegExp("%PDF-1.[0-7]");
@@ -398,15 +407,6 @@ export default class ATATFileUpload extends Vue {
         this.errorMessages.push("File is not a valid PDF");
         this.uploadedFile.splice(0, 1);
       }
-    }
-    /**
-     * validates the maxFileSize
-     */
-    if (file.size > this.maxFileSize * 1048576) {
-      //1 Megabytes = 1048576 Bytes
-      this.errorMessages.push(
-        "File size cannot exceed " + this.maxFileSize + "MB"
-      );
     }
 
     return this.errorMessages.length > 0;
