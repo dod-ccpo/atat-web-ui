@@ -189,7 +189,7 @@ export default class CreateTaskOrderForm extends Vue {
   public async validateForm(): Promise<boolean> {
     let validated: boolean[] = [];
     this.signedTaskOrderErrorMessage = "";
-    
+
     if (this._task_order_file.name === "") {
       this.fileUploadRequiredErrorMessage =
         "Please upload your Task Order document";
