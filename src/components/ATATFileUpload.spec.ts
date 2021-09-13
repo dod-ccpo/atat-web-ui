@@ -82,7 +82,6 @@ describe("Testing ATATFileUpload Component", () => {
       isFileUploadedSucessfully: true,
     });
     expect(wrapper.vm.showBorderState).toBe("success-file-upload-border");
-    // wrapper.vm.isFileUploaded === false;
     await wrapper.setData({
       isFileUploadedSucessfully: false,
       isProgressBarVisible: true,
@@ -107,88 +106,38 @@ describe("Testing ATATFileUpload Component", () => {
     expect(wrapper.find({ ref: "fileInput" }).exists()).toBe(true);
   });
 
-  it("addUploadedFile() - valid file", async () => {
-    const eventWithValidFile = {
-      target: {
-        files: [
-          {
-            name: "pdfFile.pdf",
-            lastModified: 1623265616555,
-            lastModifiedDate: new Date(),
-            size: 4567893,
-            type: "application/pdf",
-          },
-        ],
-      },
-    };
-    const fileReaderSpyValidFile = jest
-      .spyOn(FileReader.prototype, "readAsText")
-      .mockImplementation(() => {
-        true;
-      });
-
-    const addUploadedFileSpyValidFile = jest.spyOn(
-      wrapper.vm,
-      "addUploadedFile"
-    );
-
-    const fileInput = wrapper.find("#file-input-button");
-    fileInput.trigger("change");
-    wrapper.vm.addUploadedFile(
-      eventWithValidFile,
-      eventWithValidFile.target.files
-    );
-    expect(fileReaderSpyValidFile).toHaveBeenCalledWith(
-      eventWithValidFile.target.files[0]
-    );
-
-    expect(addUploadedFileSpyValidFile).toHaveBeenCalledWith(
-      eventWithValidFile,
-      eventWithValidFile.target.files
-    );
-    console.log(wrapper.vm.$data.errorMessages);
-  });
-
-  it("addUploadedFile() - invalid file", async () => {
-    const eventWithInvalidFile = {
-      target: {
-        files: [
-          {
-            name: "pdfFile.pdf",
-            lastModified: 1623265616555,
-            lastModifiedDate: new Date(),
-            size: 4567893,
-            type: "application/text",
-          },
-        ],
-      },
-    };
-
-    wrapper.setData({
-      errorMessages: ["Invalid pdf"],
+  it("addUploadedFile() - valid mocked file", async () => {
+    await wrapper.setProps({
+      maxFileSize: 20,
     });
-    const fileReaderSpyInvalidFile = jest
-      .spyOn(FileReader.prototype, "readAsText")
-      .mockImplementation(() => null);
+    const fileInput = wrapper.find("#file-input-button");
+    const invalidFile = new File(["%PDF-1.7"], "pdfFile.pdf", {
+      lastModified: 1623265616555,
+      type: "application/pdf",
+    });
+    fileInput.files = [invalidFile];
+    const event = fileInput.trigger("change");
+    await wrapper.vm.addUploadedFile(event, fileInput.files);
 
-    const addUploadedFileSpyInvalidFile = jest.spyOn(
-      wrapper.vm,
-      "addUploadedFile"
-    );
-    // https://zaengle.com/blog/mocking-file-upload-in-vue-with-jest
-    const fileInputInvalidFile = wrapper.find("#file-input-button");
-    fileInputInvalidFile.trigger("change");
-    wrapper.vm.addUploadedFile(
-      eventWithInvalidFile,
-      eventWithInvalidFile.target.files
-    );
-    expect(fileReaderSpyInvalidFile).toHaveBeenCalledWith(
-      eventWithInvalidFile.target.files[0]
-    );
-    expect(addUploadedFileSpyInvalidFile).toHaveBeenCalledWith(
-      eventWithInvalidFile,
-      eventWithInvalidFile.target.files
-    );
+    expect(await wrapper.vm.$data.errorMessages.length).toBe(0);
+  });
+  it("addUploadedFile() - invalid mocked file", async () => {
+    await wrapper.setProps({
+      maxFileSize: 20,
+    });
+    const fileInput = wrapper.find("#file-input-button");
+
+    const invalidFile = new File(["%PDF-1.7"], "", {
+      lastModified: 1623265616555,
+      type: "application/pdf",
+    });
+
+    console.log(invalidFile.size);
+    fileInput.files = [invalidFile];
+    const event = fileInput.trigger("change");
+    await wrapper.vm.addUploadedFile(event, fileInput.files);
+
+    expect(await wrapper.vm.$data.errorMessages.length).toBe(1);
   });
 
   it("validateFile() >> file.type !== 'application/pdf'", () => {
@@ -254,14 +203,12 @@ describe("Testing ATATFileUpload Component", () => {
       eventWithFileTooLarge,
       eventWithFileTooLarge.target.files
     );
-    // console.log(wrapper.vm.$props.maxFileSize);
-    // console.log(await wrapper.vm.$data.errorMessages);
+    console.log(await wrapper.vm.$data.errorMessages);
 
     const maxFileSize = wrapper.vm.$props.maxFileSize;
     expect(await wrapper.vm.$data.errorMessages).toContain(
       "File size cannot exceed " + maxFileSize + "MB"
     );
-
   });
 
   it("validateFile() >> isPDFInvalid", async () => {
@@ -276,29 +223,21 @@ describe("Testing ATATFileUpload Component", () => {
     );
   });
 
-  // it("fileUploadProgressEvent()", () => {
-  //   const progressEvent = {
-  //     loaded: 100,
-  //     total: 100,
-  //   };
-  //   wrapper.setData({
-  //     maxFileSize: 1000,
+
+  // it("drag and drop addUploadedFile() - valid mocked file", async () => {
+
+  //   const fileInput = wrapper.find("#file-input-button");
+  //   const dt = () => new DataTransfer() || new ClipboardEvent("").clipboardData;
+  //   const _dt = dt();
+  //   const invalidFile = new File(["%PDF-1.7"], "", {
+  //     lastModified: 1623265616555,
+  //     type: "application/pdf",
   //   });
-  //   wrapper.vm.fileUploadProgressEvent(progressEvent);
-  //   expect(true);
+  //   _dt.items.add(invalidFile);
+  //   fileInput.files = _dt.files;
+  //   fileInput.trigger("change");
+
+  //   // await wrapper.vm.addUploadedFile(invalidFile);
+  //   expect(await wrapper.vm.$data.errorMessages.length).toBe(0);
   // });
-
-  it("isPDFInvalid() >> validFile", async () => {
-    const validFile = new File(["%PDF-1.7"], "File.pdf", {
-      type: "application/pdf",
-    });
-    expect(await wrapper.vm.isPDFInvalid(validFile)).toBe(false);
-  });
-
-  it("isPDFInvalid() >> invalidFile", async () => {
-    const invalidFile = new File(["%PDF-1.junkversion"], "File.pdf", {
-      type: "application/pdf",
-    });
-    expect(await wrapper.vm.isPDFInvalid(invalidFile)).toBe(true);
-  });
 });
