@@ -3,6 +3,7 @@ import * as ssm from "@aws-cdk/aws-ssm";
 import * as cdk from "@aws-cdk/core";
 import "source-map-support/register";
 import { StaticSite } from "./static-website";
+import * as util from "./util";
 
 interface StaticSiteProps extends cdk.StackProps {
   environmentId: string;
@@ -20,7 +21,6 @@ class StaticSiteStack extends cdk.Stack {
     ).stringValue;
     const userPool = cognito.UserPool.fromUserPoolId(this, "UserPool", poolId);
     userPool.addClient("ApplicationUserPoolClient", {
-      // Validate these validities against any STIG requirements
       accessTokenValidity: cdk.Duration.minutes(60),
       refreshTokenValidity: cdk.Duration.days(1),
       oAuth: {
@@ -48,8 +48,15 @@ class StaticSiteStack extends cdk.Stack {
 }
 
 const app = new cdk.App();
-const environmentId = app.node.tryGetContext("EnvironmentId");
-const spaStack = new StaticSiteStack(app, environmentId + "StaticSpa", {
+const environmentParam = app.node.tryGetContext("EnvironmentId");
+if (!util.isString(environmentParam)) {
+  console.error("An EnvironmentId must be provided");
+  process.exit(1);
+}
+const environmentName = util.normalizeEnvironmentName(environmentParam);
+const environmentId = util.lowerCaseEnvironmentId(environmentParam);
+
+const spaStack = new StaticSiteStack(app, environmentName + "StaticSpa", {
   environmentId,
 });
 app.synth();
