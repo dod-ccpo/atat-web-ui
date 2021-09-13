@@ -14,7 +14,6 @@ describe("Testing Header Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    store;
     wrapper = mount(ATATHeader, {
       localVue,
       vuetify,

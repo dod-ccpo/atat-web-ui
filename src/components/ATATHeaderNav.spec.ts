@@ -15,7 +15,6 @@ describe("Testing HeaderNav Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    store;
     wrapper = mount(ATATHeaderNav, {
       router,
       localVue,
