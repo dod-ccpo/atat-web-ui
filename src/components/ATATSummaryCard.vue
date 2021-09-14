@@ -20,7 +20,10 @@
     >
       <v-card-title class="d-flex justify-space-between align-start pa-6 pb-5">
         <div>
-          <div class="type body" v-if="card.type">
+          <div
+            class="type body"
+            v-if="card.type && card.type !== 'APPLICATION'"
+          >
             {{ card.type }}
           </div>
           <div class="d-flex align-start">
@@ -30,6 +33,7 @@
               @click="leftButtonClicked(card)"
               small
               class="h3 link-button no-focus-shift pa-0"
+              :class="{ 'no-border': card.type === 'APPLICATION' }"
             >
               <div class="font-weight-bold">
                 <div>{{ card.title }}</div>
@@ -184,6 +188,7 @@ export default class ATATSummaryCard extends Vue {
         this.$router.push({ name: "editfunding", params: { id: `${id}` } });
         break;
       case "applicationsummary":
+        id = card.id;
         this.$router.push({
           name: "editapplication",
           params: { id: `${id}` },

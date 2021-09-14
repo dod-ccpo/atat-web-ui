@@ -83,6 +83,8 @@ export default class Step3Summary extends Vue {
           : [];
 
       const summarycardItem: ATATSummaryCardItem = {
+        type: "APPLICATION",
+        id: application.id,
         title: application.name,
         description: application.description || undefined,
         showChevronRight: true,

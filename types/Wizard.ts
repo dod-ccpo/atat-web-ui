@@ -151,6 +151,7 @@ export interface ValidatableForm {
 }
 
 export interface ATATSummaryCardItem {
+  id?: string;
   type?: string;
   title?: string;
   titleLink?: string;
