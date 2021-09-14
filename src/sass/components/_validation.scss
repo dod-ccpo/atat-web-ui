@@ -53,15 +53,6 @@ div.success--text{
         top: 0px !important;
         @extend .v-input__append-outer-icon-holder
     }
-
-    &.manual--validation {
-
-        .v-input__append-outer{
-            margin-bottom: 15px !important;
-            position: absolute;
-            right: -70px;
-        }
-    }
 }
  
 

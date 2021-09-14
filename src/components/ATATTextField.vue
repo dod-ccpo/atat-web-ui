@@ -113,7 +113,6 @@ export default class ATATTextField extends VTextField {
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
     // we evalute the rules to determine what icon to display
-    debugger;
     this.isFieldDirty = true;
 
     if (this.$props["rules"].length > 0) {
