@@ -44,5 +44,5 @@ export function lowerCaseEnvironmentId(id: string): string {
  * @returns true if the input is a non-empty string and false otherwise
  */
 export function isString(str: unknown): str is string {
-  return str && typeof str === "string";
+  return typeof str === "string" && !!str;
 }
