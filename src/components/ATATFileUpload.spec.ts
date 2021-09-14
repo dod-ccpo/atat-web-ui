@@ -144,7 +144,7 @@ describe("Testing ATATFileUpload Component", () => {
       .reply(200);
     await wrapper.vm.uploadFile({ taskOrderFile });
     expect(await wrapper.vm.uploadedFile[0].status).toEqual(
-      taskOrderFile.status,
+      taskOrderFile.status
     );
   });
   it("addUploadedFile() - valid mocked file", async () => {
@@ -298,5 +298,13 @@ describe("Testing ATATFileUpload Component", () => {
     expect(wrapper.vm.$data.isFileUploadedSucessfully).toBe(true);
   });
 
-  
+  it("onDrop", async () => {
+    const fileUpload = wrapper.find("#file_upload");
+    // fileUpload.drop(fileUpload, { dataTransfer: true });
+    // wrapper.vm.onDrop();
+    jest.spyOn(fileUpload, "ondrop");
+    fileUpload.drop();
+    wrapper.vm.onDrop({ dataTransfer: { files: [] } });
+    expect(wrapper.vm.onDrop()).toBeCalled();
+  });
 });
