@@ -167,6 +167,7 @@ import Vue from "vue";
 import { Component, Prop, Watch, PropSync } from "vue-property-decorator";
 import { UploadedFile } from "../../types/FormFields";
 import { TaskOrderFile } from "types/Wizard";
+import axios from "axios";
 
 @Component
 export default class ATATFileUpload extends Vue {
@@ -309,8 +310,7 @@ export default class ATATFileUpload extends Vue {
    * Progress event to EMULATE animation as well as status to meet requirements
    * @event: Progress Event
    */
-  private fileUploadProgressEvent(event: ProgressEvent) {
-    debugger;
+  private async fileUploadProgressEvent(event: ProgressEvent) {
     const progress = document.getElementById(
       "progressBar"
     ) as HTMLProgressElement;
@@ -332,7 +332,10 @@ export default class ATATFileUpload extends Vue {
             progress.style.width = width + "%";
           }
         }.bind(this);
-        let _showProgressAnimation = setInterval(showProgressAnimation, 30);
+        let _showProgressAnimation = await setInterval(
+          showProgressAnimation,
+          30
+        );
         // progress.style.width = percent + "%";
         // Math.round(percent) + "%";
       }
@@ -350,7 +353,7 @@ export default class ATATFileUpload extends Vue {
             counter++;
           }
         }.bind(this);
-        let _showUploadingMessages = setInterval(
+        let _showUploadingMessages = await setInterval(
           showUploadingMessages,
           3000,
           this.uploadingMessages
@@ -364,15 +367,19 @@ export default class ATATFileUpload extends Vue {
    * @taskorderFile: TaskOrderFile - to be uploaded to the API
    */
   private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
-    await this.$http.post("taskOrderFiles", taskOrderFile).then((response) => {
-      this.taskOrderFile = response.data;
-      this.uploadedFile = [this.taskOrderFile];
-      // todo add this._pdfFile = taskOrderFile when
-      // API is ready
-      this._pdfFile.name = taskOrderFile.name;
-    });
+    await axios
+      .post(
+        "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0/taskOrderFiles",
+        taskOrderFile
+      )
+      .then((response) => {
+        this.taskOrderFile = response.data;
+        this.uploadedFile = [this.taskOrderFile];
+        // todo add this._pdfFile = taskOrderFile when
+        // API is ready
+        this._pdfFile.name = taskOrderFile.name;
+      });
   }
-
   /**
    * validates file and returns a Promise<boolean> for valid/invalid file
    * @file: File Object from HTML File Input
