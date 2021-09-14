@@ -56,11 +56,20 @@
           <v-icon color="success"> check_circle </v-icon>
         </div>
       </v-card-title>
-      <v-card-subtitle class="body" v-if="card.description">
+      <v-card-subtitle
+        class="body"
+        v-if="card.description && card.description != ''"
+      >
         {{ card.description }}
       </v-card-subtitle>
 
       <v-card-text class="mx-0 px-6">
+        <h5
+          class="h5 text--base-darkest text-uppercase"
+          v-if="card.groupedItemsHeader != ''"
+        >
+          {{ card.groupedItemsHeader }}
+        </h5>
         <div
           class="body-lg d-flex justify-space-between black--text grouped-items"
           v-for="(item, idx) in card.items"
