@@ -32,8 +32,63 @@ export default new Vuex.Store({
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
     wizardNavigation: {},
-    selectedCSP: "CSP 1",
-    erroredSteps: [1, 2, 3, 4],
+    selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
+    erroredSteps: [2, 3, 4],
+    currentStepNumber: 1,
+    portfolioSteps: [
+      {
+        step: 1,
+        description: "Create Portfolio",
+        touched: false,
+        model: {
+          name: "",
+          description: "",
+          dod_components: [],
+          csp: ""
+        },
+      },
+      {
+        step: 2,
+        description: "Add Funding",
+        touched: false,
+        model: {
+          task_order_number: "",
+          task_order_file: {
+            description: "",
+            id: "",
+            created_at: "",
+            updated_at: "",
+            size: 0,
+            name: "",
+            status: "",
+          },
+          clins: []
+        },
+      },
+      {
+        step: 3,
+        description: "Add Application",
+        touched: false,
+        model: {
+          id: "",
+          name: "",
+          description: "",
+          environments: []
+        },
+      },
+      {
+        step: 4,
+        description: "Add Team Members",
+        touched: false,
+        model: {},
+      },
+      {
+        step: 5,
+        description: "Review and Submit",
+        touched: false,
+        model: {},
+      },
+    ]
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -44,6 +99,23 @@ export default new Vuex.Store({
     },
     setStepValidated(state, step: number) {
       state.erroredSteps = state.erroredSteps.filter((es) => es !== step);
+    },
+    doSetCurrentStepNumber(state, step: number) {
+      state.currentStepNumber = step;
+    },
+
+    doSaveStepModel(state, [model, stepNumber, valid]) {
+      const stepIndex = state.portfolioSteps.findIndex(x => x.step === stepNumber);
+      state.portfolioSteps[stepIndex].model = model;
+      state.portfolioSteps[stepIndex].touched = true;
+      
+      const erroredStepIndex = state.erroredSteps.indexOf(stepNumber);
+      console.log(erroredStepIndex, valid);
+      if (erroredStepIndex > -1 && valid) {
+        state.erroredSteps.splice(erroredStepIndex, 1);
+      } else if (erroredStepIndex === -1 && !valid) {
+        state.erroredSteps.push(stepNumber);
+      }
     },
   },
   actions: {
@@ -62,6 +134,12 @@ export default new Vuex.Store({
     },
     unauthorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", false);
+    },
+    setCurrentStepNumber({ commit }, step: number) { 
+      commit("doSetCurrentStepNumber", step);
+    },
+    saveStepModel({ commit }, [model, stepNumber, valid]) {
+      commit("doSaveStepModel", [model, stepNumber, valid]);
     },
   },
   modules: {},
@@ -148,5 +226,15 @@ export default new Vuex.Store({
       );
       return updatedArray;
     },
+
+    getStepModel: (state) => (stepNumber: number) => {
+      const step = state.portfolioSteps.find((o: { step: number; }) => o.step === stepNumber);
+      return step?.model;
+    },
+    
+    getStepTouched: (state) => (stepNumber: number) => {
+      const stepIndex = state.portfolioSteps.findIndex(x => x.step === stepNumber);
+      return state.portfolioSteps[stepIndex].touched;
+    }
   },
 });

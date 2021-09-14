@@ -29,18 +29,21 @@ import { CreatePortfolioFormModel } from "../../../../types/Wizard";
   },
   mixins: [ValidatableWizardStep],
 })
+
 export default class Step_1 extends Vue {
   $refs!: {
     createPortfolioForm: CreatePortfolioForm;
     cloudServiceProviderForm: CloudServiceProvider;
   };
 
-  private model: CreatePortfolioFormModel = {
-    name: "",
-    description: "",
-    dod_components: [],
-    csp: [],
-  };
+  // private model: CreatePortfolioFormModel = {
+  //   name: "",
+  //   description: "",
+  //   dod_components: [],
+  //   csp: [],
+  // };
+  private model: CreatePortfolioFormModel = this.$store.getters.getStepModel(1);
+
   public async validate(): Promise<boolean> {
     const createPortofolioValidation =
       this.$refs.createPortfolioForm.validateForm();
@@ -51,7 +54,17 @@ export default class Step_1 extends Vue {
       createPortofolioValidation,
       cloudServiceProviderValidation,
     ]).then((values) => (valid = values.every((value) => value)));
+    
+    this.$store.dispatch("saveStepModel", [this.model, 1, valid]);
+
     return valid;
+  }
+
+  public mounted(): void {
+    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(1);
+    if (stepHasBeenTouched) {
+      this.validate();
+    }
   }
 }
 </script>

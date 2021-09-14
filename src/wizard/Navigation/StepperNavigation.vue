@@ -63,30 +63,35 @@ import { Stepper } from "types/Wizard";
 export default class StepperNavigation extends Vue {
   @Prop({ default: 1 }) private stepNumber!: number;
   private currentStepNumber = this.stepNumber;
+
+  // public stepperControl: Stepper = {
+  //   Steps: [
+  //     {
+  //       step: 1,
+  //       description: "Create Portfolio",
+  //     },
+  //     {
+  //       step: 2,
+  //       description: "Add Funding",
+  //     },
+  //     {
+  //       step: 3,
+  //       description: "Add Application",
+  //     },
+  //     {
+  //       step: 4,
+  //       description: "Add Team Members",
+  //     },
+  //     {
+  //       step: 5,
+  //       description: "Review and Submit",
+  //     },
+  //   ],
+  // };
   public stepperControl: Stepper = {
-    Steps: [
-      {
-        step: 1,
-        description: "Create Portfolio",
-      },
-      {
-        step: 2,
-        description: "Add Funding",
-      },
-      {
-        step: 3,
-        description: "Add Application",
-      },
-      {
-        step: 4,
-        description: "Add Team Members",
-      },
-      {
-        step: 5,
-        description: "Review and Submit",
-      },
-    ],
+    Steps: this.$store.state.portfolioSteps,
   };
+
   private getValidationRules(idx: number) {
     const rules: any = [];
     const isStepValid = this.$store.state.erroredSteps.indexOf(idx + 1) === -1;
@@ -106,11 +111,13 @@ export default class StepperNavigation extends Vue {
   }
 
   get getStepNumber(): number {
+    this.$store.dispatch("setCurrentStepNumber", this.stepNumber);
     return this.stepNumber;
   }
 
   set getStepNumber(newValue: number) {
     this.currentStepNumber = newValue + 1;
+    this.$store.dispatch("setCurrentStepNumber", this.currentStepNumber);
   }
 
   public isStepComplete(stepNumber: number): boolean {
