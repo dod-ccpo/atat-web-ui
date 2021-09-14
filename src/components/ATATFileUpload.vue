@@ -66,7 +66,7 @@
                       />
                     </div>
                   </div>
-                  <div class="progress-view" v-else>
+                  <div class="progress-view" v-if="isProgressBarVisible">
                     <div class="width-100 d-flex align-center my-12 ml-3">
                       <div>
                         <v-icon size="60"> upload_file </v-icon>
@@ -268,7 +268,10 @@ export default class ATATFileUpload extends Vue {
    * @fileObj: HTML fileinput control Filelist, can be null
    */
 
-  private async addUploadedFile(event: Event, filesObj?: FileList) {
+  private async addUploadedFile(
+    event: Event,
+    filesObj?: FileList
+  ): Promise<void> {
     let files = filesObj || (this.$refs.fileInput as HTMLInputElement).files;
     if (files && files[0]) {
       let file = files[0];
@@ -295,7 +298,7 @@ export default class ATATFileUpload extends Vue {
    * kicks off the upload event to emulate the upload animation
    * @file;  fileObj from the HTML file upload control
    */
-  private async showProgress(file: File): Promise<void> {
+  private showProgress(file: File): void {
     const reader = new FileReader();
     this.isProgressBarVisible = true;
     reader.addEventListener("progress", this.fileUploadProgressEvent);
@@ -307,7 +310,10 @@ export default class ATATFileUpload extends Vue {
    * @event: Progress Event
    */
   private fileUploadProgressEvent(event: ProgressEvent) {
-    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+    debugger;
+    const progress = document.getElementById(
+      "progressBar"
+    ) as HTMLProgressElement;
     progress.style.width = "1%";
 
     if (event.loaded && event.total) {

@@ -42,7 +42,6 @@ describe("Testing ATATFileUpload Component", () => {
         "v-list-item-content",
         "v-list-item-title",
         "fileInput",
-        "progress-bar",
       ],
     });
 
@@ -101,9 +100,10 @@ describe("Testing ATATFileUpload Component", () => {
 
   it("method > openFileDialog ", async () => {
     const openFileDialogButton = await wrapper.find("#open-file-dialog");
-    openFileDialogButton.trigger("click");
-
-    expect(wrapper.find({ ref: "fileInput" }).exists()).toBe(true);
+    await openFileDialogButton.trigger("click");
+    await wrapper.vm.openFileDialog();
+    const fileInput = wrapper.find({ ref: "fileInput" });
+    expect(fileInput.exists()).toBe(true);
   });
 
   it("addUploadedFile() - valid mocked file", async () => {
@@ -111,11 +111,11 @@ describe("Testing ATATFileUpload Component", () => {
       maxFileSize: 20,
     });
     const fileInput = wrapper.find("#file-input-button");
-    const invalidFile = new File(["%PDF-1.7"], "pdfFile.pdf", {
+    const validFile = new File(["%PDF-1.7"], "pdfFile.pdf", {
       lastModified: 1623265616555,
       type: "application/pdf",
     });
-    fileInput.files = [invalidFile];
+    fileInput.files = [validFile];
     const event = fileInput.trigger("change");
     await wrapper.vm.addUploadedFile(event, fileInput.files);
 
@@ -223,21 +223,45 @@ describe("Testing ATATFileUpload Component", () => {
     );
   });
 
+  it("removeFile()", async () => {
+    await wrapper.setData({
+      uploadedFile: [{ name: "validpdf.pdf" }],
+    });
+    await wrapper.vm.removeFile("validpdf.pdf");
+    expect(wrapper.vm.uploadedFile.length).toBe(0);
+  });
+  it("fileUploadProgressEvent()", async () => {
+    await wrapper.setProps({
+      maxFileSize: 20,
+    });
 
-  // it("drag and drop addUploadedFile() - valid mocked file", async () => {
+    const progressEvent = new ProgressEvent("progress", {
+      lengthComputable: true,
+      loaded: 100,
+      total: 100,
+    });
+    debugger;
+    const fileInput = wrapper.find("#file-input-button");
+    const progressBar = document.createElement("div");
+    progressBar.id = "progressBar";
 
-  //   const fileInput = wrapper.find("#file-input-button");
-  //   const dt = () => new DataTransfer() || new ClipboardEvent("").clipboardData;
-  //   const _dt = dt();
-  //   const invalidFile = new File(["%PDF-1.7"], "", {
-  //     lastModified: 1623265616555,
-  //     type: "application/pdf",
-  //   });
-  //   _dt.items.add(invalidFile);
-  //   fileInput.files = _dt.files;
-  //   fileInput.trigger("change");
+    const spy = jest.spyOn(document, "getElementById");
+    spy.mockReturnValue(progressBar);
+    const validFile = new File(["%PDF-1.7"], "pdfFile.pdf", {
+      lastModified: 1623265616555,
+      type: "application/pdf",
+    });
+    fileInput.files = [validFile];
+    const event = fileInput.trigger("change");
+    await wrapper.vm.addUploadedFile(event, fileInput.files);
+    await wrapper.vm.showProgress(fileInput.files[0]);
+    await wrapper.setData({
+      isProgressBarVisible: true,
+    });
+    // let progressBar = "<div ref='progress-bar' id='progress-bar'></div>";
+    // const progressBar = await wrapper.find({ ref: "progress-bar" });
 
-  //   // await wrapper.vm.addUploadedFile(invalidFile);
-  //   expect(await wrapper.vm.$data.errorMessages.length).toBe(0);
-  // });
+    await wrapper.vm.fileUploadProgressEvent(progressEvent);
+    expect(true);
+  });
 });
