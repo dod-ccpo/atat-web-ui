@@ -56,7 +56,7 @@ if (!util.isString(environmentParam)) {
 const environmentName = util.normalizeEnvironmentName(environmentParam);
 const environmentId = util.lowerCaseEnvironmentId(environmentParam);
 
-const spaStack = new StaticSiteStack(app, environmentName + "StaticSpa", {
+new StaticSiteStack(app, environmentName + "StaticSpa", {
   environmentId,
 });
 app.synth();

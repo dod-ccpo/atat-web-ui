@@ -35,11 +35,11 @@
 }
 
 div.error--text{
+    
     .v-input__append-outer{
-        top: 35px !important;
         @extend .v-input__append-outer-icon-holder
     }
-
+    
     label.v-label{
         animation: none !important;
     }

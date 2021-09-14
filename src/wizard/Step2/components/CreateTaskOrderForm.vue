@@ -156,7 +156,6 @@ export default class CreateTaskOrderForm extends Vue {
   private helpText = `If your Contracting Officer used:
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
-  private rules = {};
 
   @PropSync("task_order_number") _task_order_number!: string;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
@@ -164,6 +163,19 @@ export default class CreateTaskOrderForm extends Vue {
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
+  }
+
+  get rules(): unknown {
+    return {
+      task_order_number: [
+        (v: string) =>
+          /^\d+$/.test(v) ||
+          "Please enter your Task Order Number (Must Be Numbers)",
+        (v: string) =>
+          (v.length >= 13 && v.length <= 17) ||
+          "Task Order Numbers must be between 13 and 17 digits",
+      ],
+    };
   }
 
   public isTaskOrderSigned(signed: boolean): void {
@@ -177,16 +189,6 @@ export default class CreateTaskOrderForm extends Vue {
   public async validateForm(): Promise<boolean> {
     let validated: boolean[] = [];
     this.signedTaskOrderErrorMessage = "";
-    this.rules = {
-      task_order_number: [
-        (v: string) =>
-          /^\d+$/.test(v) ||
-          "Please enter your Task Order Number (Must Be Numbers)",
-        (v: string) =>
-          (v.length >= 13 && v.length <= 17) ||
-          "Task Order Numbers must be between 13 and 17 digits",
-      ],
-    };
 
     if (this._task_order_file.name === "") {
       this.fileUploadRequiredErrorMessage =

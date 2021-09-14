@@ -40,5 +40,10 @@ $biggest-border-width: 10;
 
 .border-solid {
 
-    border: solid;
+    border: solid !important;
+}
+
+.pointer {
+
+    cursor: pointer !important;
 }
