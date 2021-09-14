@@ -7,8 +7,23 @@
         :for="id + '_text_field'"
       >
         {{ label }}
-        <span class="ml-2 optional" v-show="optional">Optional</span>
+        <span class="mx-2 optional" v-show="optional">Optional</span>
       </label>
+      <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            class="ma-0 pa-0 link-button no-border"
+            icon
+            x-small
+            v-on="on"
+            :ripple="false"
+            ><v-icon class="ma-0 pa-0 mb-2" small color="primary"
+              >help_outline
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ helpText }}</span>
+      </v-tooltip>
     </v-flex>
     <v-flex>
       <v-textarea
@@ -46,6 +61,7 @@ export default class ATATTextArea extends VTextarea {
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
+  @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: false }) private optional!: boolean;
 
   //data

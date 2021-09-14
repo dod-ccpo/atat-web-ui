@@ -32,9 +32,9 @@
       elevation="0"
       outlined
     >
-      <v-radio 
-        :value="item.value" 
-        :ripple="false" 
+      <v-radio
+        :value="item.value"
+        :ripple="false"
         @focus="focused_value = item.value"
         @blur="focused_value = ''"
       >
@@ -64,7 +64,7 @@ import { ButtonCardItem } from "../../types/Wizard";
 
 @Component({})
 export default class ATATButtonCard extends Vue {
-  private focused_value = '';
+  private focused_value = "";
 
   @Prop({ default: new Array<ButtonCardItem>(), required: true })
   private items!: Array<ButtonCardItem>;

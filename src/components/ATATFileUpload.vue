@@ -138,7 +138,7 @@
                     outlined
                     :ripple="false"
                     id="remove_file"
-                    class="error-button no-border"
+                    class="error-button"
                     @click.stop="removeFile(item.name)"
                   >
                     Remove
