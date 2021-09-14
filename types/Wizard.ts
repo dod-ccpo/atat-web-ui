@@ -200,10 +200,9 @@ export interface VoidCallback {
 }
 
 export interface WizardNavigation {
-     action: string;
-     guid: string;
-     step: string;
-     
+  action: string;
+  guid: string;
+  step: string;
 }
 
 export interface WizardStep {
@@ -211,8 +210,18 @@ export interface WizardStep {
   previous: string;
 }
 
+export abstract class Validatable extends Vue {
+  abstract validate: () => Promise<boolean>;
+}
 
-export abstract class Validatable extends Vue{
-   
-    abstract validate:()=> Promise<boolean>;
+export interface CreateEnvironmentModel {
+  id: string;
+  name: string;
+}
+
+export interface CreateApplicationModel {
+  id: string;
+  name: string;
+  description: string;
+  environments: CreateEnvironmentModel[];
 }
