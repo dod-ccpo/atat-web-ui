@@ -30,9 +30,9 @@ describe("Testing CreatePortfolioForm Component", () => {
       vuetify,
       stubs: ["atat-text-field", "atat-text-area"],
       propsData: {
-        name: "test",
+        name: "",
         description: "testDescription",
-        dod_components: ["air force", "army"],
+        dod_components: undefined,
       },
     });
   });
@@ -40,11 +40,17 @@ describe("Testing CreatePortfolioForm Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
+
+  it("renders dod_components", async () => {
+    wrapper.setProps({
+      dod_components: ["air force", "army"],
+    });
+    wrapper.setData({ rules: { test: ["2"] } });
+    expect(wrapper.vm.dod_components).toBeDefined();
+  });
+
   it("test validateForm() ", async () => {
     const validated = await wrapper.vm.validateForm();
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
     expect(validated).toBe(true);
   });
 });

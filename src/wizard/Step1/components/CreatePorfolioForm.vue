@@ -139,11 +139,6 @@ export default class CreatePortfolioForm
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
-  public mounted(): void {
-    this.$http.post("portfolioDrafts?offset=0&limit=20").then((response) => {
-      console.log(response);
-    });
-  }
   public rules = {};
   public async validateForm(): Promise<boolean> {
     let validated = false;
