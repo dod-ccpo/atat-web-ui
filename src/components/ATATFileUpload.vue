@@ -377,6 +377,7 @@ export default class ATATFileUpload extends Vue {
         this.uploadedFile = [this.taskOrderFile];
         // todo add this._pdfFile = taskOrderFile when
         // API is ready
+        // console.log(this);
         this._pdfFile.name = taskOrderFile.name;
       });
   }

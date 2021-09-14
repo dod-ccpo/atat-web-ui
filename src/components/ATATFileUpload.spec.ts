@@ -5,14 +5,19 @@ import { createLocalVue, mount } from "@vue/test-utils";
 import fileUpload from "@/components/ATATFileUpload.vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
+import MockAdapter from "axios-mock-adapter";
 
 Vue.use(Vuetify);
 Vue.use(VueAxios, axios);
 
+const BASE_URL =
+  "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0";
+
 describe("Testing ATATFileUpload Component", () => {
+  const mock = new MockAdapter(axios.create());
   const localVue = createLocalVue();
   localVue.use(Vuex);
-  // localVue.use(VueAxios, axios);
+  localVue.use(VueAxios, axios);
   let vuetify: any;
   let wrapper: any;
   let store: any;
@@ -44,7 +49,14 @@ describe("Testing ATATFileUpload Component", () => {
         "fileInput",
       ],
     });
+    const progressBar = document.createElement("div");
+    progressBar.id = "progressBar";
+    const spy = jest.spyOn(document, "getElementById");
+    spy.mockReturnValue(progressBar);
+    jest.useFakeTimers();
+  });
 
+  afterEach(() => {
     jest.restoreAllMocks();
   });
 
@@ -106,6 +118,35 @@ describe("Testing ATATFileUpload Component", () => {
     expect(fileInput.exists()).toBe(true);
   });
 
+  it("uploadFile() >> success", async () => {
+    const taskOrderFile = {
+      id: "asdfsdfsdfs",
+      created_at: "2021-09-14T18:40:14.425Z",
+      updated_at: "2021-09-14T18:40:14.425Z",
+      size: 400,
+      name: "pdfFile.pdf",
+      status: "pending",
+    };
+
+    wrapper.setProps({
+      pdfFile: {
+        name: "pdfFile.pdf",
+      },
+    });
+    mock
+      .onPost(
+        "/taskOrderFiles",
+        { taskOrderFile },
+        expect.objectContaining({
+          name: "pdfFile.pdf",
+        })
+      )
+      .reply(200);
+    await wrapper.vm.uploadFile({ taskOrderFile });
+    expect(await wrapper.vm.uploadedFile[0].status).toEqual(
+      taskOrderFile.status,
+    );
+  });
   it("addUploadedFile() - valid mocked file", async () => {
     await wrapper.setProps({
       maxFileSize: 20,
@@ -132,7 +173,6 @@ describe("Testing ATATFileUpload Component", () => {
       type: "application/pdf",
     });
 
-    console.log(invalidFile.size);
     fileInput.files = [invalidFile];
     const event = fileInput.trigger("change");
     await wrapper.vm.addUploadedFile(event, fileInput.files);
@@ -203,7 +243,6 @@ describe("Testing ATATFileUpload Component", () => {
       eventWithFileTooLarge,
       eventWithFileTooLarge.target.files
     );
-    console.log(await wrapper.vm.$data.errorMessages);
 
     const maxFileSize = wrapper.vm.$props.maxFileSize;
     expect(await wrapper.vm.$data.errorMessages).toContain(
@@ -218,6 +257,7 @@ describe("Testing ATATFileUpload Component", () => {
     });
 
     await wrapper.vm.validateFile(invalidFile);
+    jest.advanceTimersByTime(40000);
     expect(await wrapper.vm.$data.errorMessages).toContain(
       "File is not a valid PDF"
     );
@@ -237,16 +277,10 @@ describe("Testing ATATFileUpload Component", () => {
 
     const progressEvent = new ProgressEvent("progress", {
       lengthComputable: true,
-      loaded: 100,
+      loaded: 1,
       total: 100,
     });
-    debugger;
     const fileInput = wrapper.find("#file-input-button");
-    const progressBar = document.createElement("div");
-    progressBar.id = "progressBar";
-
-    const spy = jest.spyOn(document, "getElementById");
-    spy.mockReturnValue(progressBar);
     const validFile = new File(["%PDF-1.7"], "pdfFile.pdf", {
       lastModified: 1623265616555,
       type: "application/pdf",
@@ -258,10 +292,11 @@ describe("Testing ATATFileUpload Component", () => {
     await wrapper.setData({
       isProgressBarVisible: true,
     });
-    // let progressBar = "<div ref='progress-bar' id='progress-bar'></div>";
-    // const progressBar = await wrapper.find({ ref: "progress-bar" });
-
+    jest.advanceTimersByTime(40000);
     await wrapper.vm.fileUploadProgressEvent(progressEvent);
-    expect(true);
+    jest.advanceTimersByTime(30000);
+    expect(wrapper.vm.$data.isFileUploadedSucessfully).toBe(true);
   });
+
+  
 });
