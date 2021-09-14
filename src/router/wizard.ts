@@ -71,6 +71,16 @@ const applicationsummary: RouteConfigSingleView = {
     ),
 };
 
+const editapplication: RouteConfigSingleView = {
+
+  path: "editapplication/:id",
+  name: "editapplication",
+  component: () =>
+    import(
+      /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
+    ),
+}
+
 const addteammembers: RouteConfigSingleView = {
   path: "addteammembers",
   name: "addteammembers",
@@ -122,6 +132,11 @@ const wizard: RouteConfigSingleView = {
       addapplication.name,
       addteammembers.name,
       3
+    ),
+    CreateWizardRoute(
+      editapplication,
+      applicationsummary.name,
+      applicationsummary.name,
     ),
     CreateWizardRoute(
       addteammembers,
