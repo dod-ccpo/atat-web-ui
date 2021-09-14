@@ -17,7 +17,7 @@
       v-on:keydown.enter="selected_value = item.value"
       v-on:keydown.space="selected_value = item.value"
       :ripple="false"
-      tabindex="0"
+      tabindex="-1"
       :class="{
         'radio-wrapper': true,
         'px-2': true,
@@ -27,11 +27,17 @@
         'd-flex': true,
         'flex-column': true,
         active: selected_value === item.value,
+        focus: focused_value === item.value,
       }"
       elevation="0"
       outlined
     >
-      <v-radio :value="item.value" :tabindex="index" :ripple="false">
+      <v-radio 
+        :value="item.value" 
+        :ripple="false" 
+        @focus="focused_value = item.value"
+        @blur="focused_value = ''"
+      >
         <template v-slot:label>
           <div
             class="body-lg font-weight-bold text--base-darkest text-uppercase"
@@ -58,6 +64,8 @@ import { ButtonCardItem } from "../../types/Wizard";
 
 @Component({})
 export default class ATATButtonCard extends Vue {
+  private focused_value = '';
+
   @Prop({ default: new Array<ButtonCardItem>(), required: true })
   private items!: Array<ButtonCardItem>;
 

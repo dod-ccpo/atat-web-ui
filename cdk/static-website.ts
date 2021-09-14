@@ -4,6 +4,9 @@ import * as cdk from "@aws-cdk/core";
 import { Construct, Stack } from "@aws-cdk/core";
 
 export class StaticSite extends Construct {
+  public readonly websiteBucket: s3.IBucket;
+  public readonly deploymentUser: iam.IUser;
+
   constructor(parent: Stack, name: string) {
     super(parent, name);
 
@@ -14,12 +17,14 @@ export class StaticSite extends Construct {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
       autoDeleteObjects: false,
     });
+    this.websiteBucket = siteBucket;
     new cdk.CfnOutput(this, "BucketName", { value: siteBucket.bucketName });
     new cdk.CfnOutput(this, "WebsiteUrl", {
       value: siteBucket.bucketWebsiteUrl,
     });
 
     const deploymentUser = new iam.User(this, "DeploymentUser");
+    this.deploymentUser = deploymentUser;
     new cdk.CfnOutput(this, "DeploymentUserName", {
       value: deploymentUser.userName,
     });
