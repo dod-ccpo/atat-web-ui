@@ -36,6 +36,7 @@
             message="Only PDF files with a max file size of 20 MB"
             :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
             :maxFileSize="20"
+            :stepNumber="2"
           />
         </v-col>
       </v-row>

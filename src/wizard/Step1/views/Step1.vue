@@ -54,7 +54,7 @@ export default class Step_1 extends Vue {
       createPortofolioValidation,
       cloudServiceProviderValidation,
     ]).then((values) => (valid = values.every((value) => value)));
-    
+
     this.$store.dispatch("saveStepModel", [this.model, 1, valid]);
 
     return valid;

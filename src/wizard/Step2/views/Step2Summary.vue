@@ -8,7 +8,7 @@
           also <strong>edit</strong> or <strong>delete</strong> any of the Task
           Orders you already entered. When you are done, click
           <strong>Next</strong> and we will walk you through adding your
-          applications and environments
+          applications and environments.
         </p>
       </v-col>
     </v-row>

@@ -96,5 +96,15 @@ export default class PortfolioSummary extends Vue {
     this.portfolio = this.getPorfolioById(portfolioId);
     this.taskOrders = this.$store.getters.getMockTaskOrders.details;
   }
+  public mounted(): void {
+    const portfolioSteps = this.$store.state.portfolioSteps;
+
+    this.$store.state.portfolioSteps.forEach((step: any) => {
+      if (!step.touched && step.step != 5) {
+        this.$store.dispatch("setErroredStep", [step.step, true]);
+      }
+    });
+  
+  }
 }
 </script>

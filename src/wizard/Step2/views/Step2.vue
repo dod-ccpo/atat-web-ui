@@ -28,33 +28,13 @@ export default class Step_2 extends Vue {
   $refs!: {
     createTaskOrderForm: CreateTaskOrderForm;
   };
-  private taskOrderDetails: TaskOrderDetails = {
-    task_order_number: "",
-    task_order_file: {
-      description: "",
-      id: "",
-      created_at: "",
-      updated_at: "",
-      size: 0,
-      name: "",
-      status: "",
-    },
-    clins: [
-      {
-        clin_number: "0001",
-        idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
-        total_clin_value: 200000,
-        obligated_funds: 10000,
-        pop_start_date: "2021-09-01",
-        pop_end_date: "2022-09-01",
-      },
-    ],
-  };
+
+  private taskOrderDetails: TaskOrderDetails = this.$store.getters.getStepModel(2);
 
   public async validate(): Promise<boolean> {
     let valid = false;
     valid = await this.$refs.createTaskOrderForm.validateForm();
-
+    this.$store.dispatch("saveStepModel", [this.taskOrderDetails, 2, valid]);
     return valid;
   }
 
@@ -82,21 +62,25 @@ export default class Step_2 extends Vue {
         this.$route.params.id
       );
     }
+    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(2);
+    if (stepHasBeenTouched) {
+      this.validate();
+    }
   }
 
   // this store change will only be triggered by the wizard buttons next/previous
-  @Watch("wizardNavigation")
-  async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-    switch (navigation.action) {
-      case "next":
-        if (await this.validate()) {
-          this.$router.push({ name: navigation.step });
-        }
-        break;
-      case "previous":
-        this.$router.push({ name: navigation.step });
-        break;
-    }
-  }
+  // @Watch("wizardNavigation")
+  // async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
+  //   switch (navigation.action) {
+  //     case "next":
+  //       if (await this.validate()) {
+  //         this.$router.push({ name: navigation.step });
+  //       }
+  //       break;
+  //     case "previous":
+  //       this.$router.push({ name: navigation.step });
+  //       break;
+  //   }
+  // }
 }
 </script>

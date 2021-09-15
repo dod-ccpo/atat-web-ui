@@ -33,7 +33,7 @@ export default new Vuex.Store({
     taskOrders: mockTaskOrder,
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
-    erroredSteps: [2, 3, 4],
+    erroredSteps: [],
     currentStepNumber: 1,
     portfolioSteps: [
       {
@@ -62,7 +62,16 @@ export default new Vuex.Store({
             name: "",
             status: "",
           },
-          clins: []
+          clins: [
+            {
+              clin_number: "0001",
+              idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
+              total_clin_value: 200000,
+              obligated_funds: 10000,
+              pop_start_date: "2021-09-01",
+              pop_end_date: "2022-09-01",
+            },      
+          ]
         },
       },
       {
@@ -108,16 +117,26 @@ export default new Vuex.Store({
       const stepIndex = state.portfolioSteps.findIndex(x => x.step === stepNumber);
       state.portfolioSteps[stepIndex].model = model;
       state.portfolioSteps[stepIndex].touched = true;
-      
-      const erroredStepIndex = state.erroredSteps.indexOf(stepNumber);
-      console.log(erroredStepIndex, valid);
+
+      const es: string[] = state.erroredSteps;
+      const erroredStepIndex = es.indexOf(stepNumber);
       if (erroredStepIndex > -1 && valid) {
-        state.erroredSteps.splice(erroredStepIndex, 1);
+        es.splice(erroredStepIndex, 1);
       } else if (erroredStepIndex === -1 && !valid) {
-        state.erroredSteps.push(stepNumber);
+        es.push(stepNumber);
       }
     },
+
+    doSetErroredStep(state, [stepNumber, isErroredStep]) {
+      const es: string[] = state.erroredSteps;
+      if (isErroredStep) {
+        es.push(stepNumber);
+      } else {
+        es.splice(stepNumber, 1);
+      }
+    }
   },
+
   actions: {
     login({ commit }) {
       commit("changeLoginStatus", true);
@@ -141,6 +160,9 @@ export default new Vuex.Store({
     saveStepModel({ commit }, [model, stepNumber, valid]) {
       commit("doSaveStepModel", [model, stepNumber, valid]);
     },
+    setErroredStep({ commit }, [stepNumber, isErroredStep]) {
+      commit("doSetErroredStep", [stepNumber, isErroredStep]);
+    }
   },
   modules: {},
   getters: {
