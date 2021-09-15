@@ -32,6 +32,12 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-center mt-9">
+        <button
+          className="btn btn-primary m-1"
+          onClick="{() => Auth.federatedSignIn({customProvider: 'IdP'})}"
+        >
+          Single Sign On
+        </button>
         <v-alert
           outlined
           color="cyan"
@@ -56,12 +62,18 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Auth, Hub } from "aws-amplify";
+import Amplify, { Auth, Hub } from "aws-amplify";
 @Component({})
 export default class Home extends Vue {
   private async login() {
-    debugger;
-    await Auth.federatedSignIn({ customProvider: "IdP" });
+
+    let authenticatedUser = Auth.federatedSignIn({
+      customProvider: "IdP",
+    });
+    
+    // await Vue.nextTick();
+    console.log(authenticatedUser);
+    let tony = "";
     // this.$store.dispatch("login");
     // this.$router.push("/dashboard");
   }
@@ -69,17 +81,18 @@ export default class Home extends Vue {
   private mounted(): void {
     Hub.listen("auth", async ({ payload: { event, data } }) => {
       debugger;
+      // const user: any;
       // switch (event) {
-      //   case 'cognitoHostedUI':
-      //     let user = await this.getUser();
+      //   case "cognitoHostedUI":
+      //     user = await this.getUser();
       //     // workaround for FF bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1422334
       //     // eslint-disable-next-line
       //     // noinspection SillyAssignmentJS
       //     window.location.hash = window.location.hash;
-      //     this.setState({authState: 'signedIn', user: user});
+      //     this.setState({ authState: "signedIn", user: user });
       //     break;
-      //   case 'cognitoHostedUI_failure':
-      //     this.setState({authState: 'signedOut', user: null, error: data});
+      //   case "cognitoHostedUI_failure":
+      //     this.setState({ authState: "signedOut", user: null, error: data });
       //     break;
       //   default:
       //     break;
