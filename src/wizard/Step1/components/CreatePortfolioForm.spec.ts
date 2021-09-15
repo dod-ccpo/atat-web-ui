@@ -42,6 +42,23 @@ describe("Testing CreatePortfolioForm Component", () => {
     expect(wrapper.vm.$props.dod_components).toEqual(["air force", "army"]);
   });
 
+  it("renders dod_components with  rules", async () => {
+    await wrapper.setData({
+      rules: {
+        portfolioName: [
+          (v: string) => !!v || "Name is required",
+          (v: string) =>
+            (v.length >= 4 && v.length <= 100) ||
+            "Portfolio name must be between 4-100 characters.",
+        ],
+      },
+    });
+    await wrapper.setProps({
+      dod_components: ["air force", "army"],
+    });
+    expect(wrapper.vm.$props.dod_components).toEqual(["air force", "army"]);
+  });
+
   it("test validateForm() ", async () => {
     await wrapper.setData({
       _dod_components: ["army"],
@@ -64,6 +81,9 @@ describe("Testing CreatePortfolioForm Component", () => {
     // expect(await wrapper.vm.$data.rules.portfolioName[1]()).toBe(
     //   "Portfolio name must be between 4-100 characters."
     // );
+    expect(wrapper.vm.$data.isDodComponentsValid).toBe(
+      "Please select all of the DoD components that will fund your Portfolio"
+    )
     expect(validated).toBe(true);
   });
 });
