@@ -148,5 +148,19 @@ export default new Vuex.Store({
       );
       return updatedArray;
     },
+    getApplicationByID: (state) => (id: string) => {
+      const portfolio = state.portfolios[11];
+      const application = portfolio.applications.find(app=> app.id === id);
+
+      if(application){
+
+          return application;
+      }
+      else{
+
+         throw new Error(`unable to locate application with id  ${id}`);
+      }
+
+    }
   },
 });

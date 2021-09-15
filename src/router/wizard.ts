@@ -137,6 +137,7 @@ const wizard: RouteConfigSingleView = {
       editapplication,
       applicationsummary.name,
       applicationsummary.name,
+      3
     ),
     CreateWizardRoute(
       addteammembers,

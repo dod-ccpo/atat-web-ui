@@ -15,6 +15,7 @@
     <atat-summary-card
       :data="cardsData"
       :itemToDelete.sync="itemToDelete"
+      dialogWidth="420"
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
@@ -28,7 +29,7 @@
       <v-col cols="10">
         <expandable-link
           header="What if I need to add more applications after my portfolio is provisioned?"
-          content="some text"
+          content="In the future, team members with the appropriate permissions can add additional applications and/or environments directly within the cloud console.  We will set those permissions in the next step."
         ></expandable-link>
       </v-col>
     </v-row>

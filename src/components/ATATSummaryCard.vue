@@ -206,6 +206,11 @@ export default class ATATSummaryCard extends Vue {
       this.dialogTitle = `Delete Task Order ${card.title}`;
       this.dialogMessage = `This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved`;
     }
+
+    if (card.type === "APPLICATION") {
+      this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
+      this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
+    }
     this.showDialogWhenClicked = true;
   }
 }

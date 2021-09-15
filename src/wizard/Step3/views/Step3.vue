@@ -12,8 +12,9 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import CreateApplicationForm from "../components/CreateApplicationForm.vue";
 import { generateUid } from "@/helpers";
-import { CreateApplicationModel } from "types/Wizard";
+import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
+import { Application, Environment } from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -67,14 +68,41 @@ export default class Step_3 extends Vue {
     return valid;
   }
 
-  public created(): void {
-    // set up default environments
-    this.defaultEnvironmentNames.forEach((name) => {
-      this.applicationDetails.environments.push({
-        id: generateUid(),
-        name: name,
+  private mapEnvironmentToModel(env: Environment): CreateEnvironmentModel {
+    return {
+      name: env.name,
+      id: env.id,
+    };
+  }
+
+  public mounted(): void {
+    if (this.$route.name === "editapplication") {
+      const application = this.$store.getters.getApplicationByID(
+        this.$route.params.id
+      ) as Application;
+
+      if (application) {
+        let environments =
+          application.environments?.map<CreateEnvironmentModel>((env) =>
+            this.mapEnvironmentToModel(env)
+          ) || [];
+
+        this.applicationDetails = {
+          id: application.id,
+          name: application.name,
+          description: application.description,
+          environments: environments,
+        };
+      }
+    } else {
+      // set up default environments
+      this.defaultEnvironmentNames.forEach((name) => {
+        this.applicationDetails.environments.push({
+          id: generateUid(),
+          name: name,
+        });
       });
-    });
+    }
   }
 }
 </script>
