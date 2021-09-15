@@ -29,22 +29,41 @@ describe("Testing CreatePortfolioForm Component", () => {
   });
 
   it("renders dod_components", async () => {
-    wrapper.setProps({
-      dod_components: ["air force", "army"],
+    await wrapper.setProps({
+      name: "Dummy name",
     });
-    wrapper.setData({ rules: { portfolioName: ["2"] } });
-    expect(wrapper.vm.dod_components).toBeDefined();
+    expect(wrapper.vm.$props.name).toEqual("Dummy name");
   });
 
   it("renders dod_components with no rules", async () => {
-    wrapper.setProps({
+    await wrapper.setProps({
       dod_components: ["air force", "army"],
     });
-    expect(wrapper.vm.dod_components).toBeDefined();
+    expect(wrapper.vm.$props.dod_components).toEqual(["air force", "army"]);
   });
 
   it("test validateForm() ", async () => {
+    await wrapper.setData({
+      _dod_components: ["army"],
+    });
+    await wrapper.setData({
+      rules: {
+        portfolioName: [
+          (v: string) => !!v || "Name is required",
+          (v: string) =>
+            (v.length >= 4 && v.length <= 100) ||
+            "Portfolio name must be between 4-100 characters.",
+        ],
+      },
+    });
     const validated = await wrapper.vm.validateForm();
+    expect(await wrapper.vm.$data.rules.portfolioName.length).toBe(2);
+    expect(await wrapper.vm.$data.rules.portfolioName[0]()).toBe(
+      "Name is required"
+    );
+    // expect(await wrapper.vm.$data.rules.portfolioName[1]()).toBe(
+    //   "Portfolio name must be between 4-100 characters."
+    // );
     expect(validated).toBe(true);
   });
 });
