@@ -78,12 +78,16 @@ describe("Testing CreatePortfolioForm Component", () => {
     expect(await wrapper.vm.$data.rules.portfolioName[0]()).toBe(
       "Name is required"
     );
-    // expect(await wrapper.vm.$data.rules.portfolioName[1]()).toBe(
-    //   "Portfolio name must be between 4-100 characters."
-    // );
+    expect(await wrapper.vm.$data.rules.portfolioName[1](111)).toBe(
+      "Portfolio name must be between 4-100 characters."
+    );
+    expect(await wrapper.vm.$data.rules.portfolioName[0](1111)).toBe(true);
+    expect(await wrapper.vm.$data.rules.portfolioName[1]("fhdjsifgh")).toBe(
+      true
+    );
     expect(wrapper.vm.$data.isDodComponentsValid).toBe(
       "Please select all of the DoD components that will fund your Portfolio"
-    )
+    );
     expect(validated).toBe(true);
   });
 });
