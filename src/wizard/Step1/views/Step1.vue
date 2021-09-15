@@ -36,12 +36,6 @@ export default class Step_1 extends Vue {
     cloudServiceProviderForm: CloudServiceProvider;
   };
 
-  // private model: CreatePortfolioFormModel = {
-  //   name: "",
-  //   description: "",
-  //   dod_components: [],
-  //   csp: [],
-  // };
   private model: CreatePortfolioFormModel = this.$store.getters.getStepModel(1);
 
   public async validate(): Promise<boolean> {

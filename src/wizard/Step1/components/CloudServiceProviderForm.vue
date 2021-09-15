@@ -19,7 +19,6 @@
           :value.sync="_csp"
         />
       </v-form>
-          <!-- :value.sync="cloudServiceProvider" -->
     </div>
   </div>
 </template>
@@ -63,19 +62,11 @@ export default class CloudServiceProviderForm
     return !!value || "Please selected at least one Cloud Service Provider";
   }
 
-  // public cloudServiceProvider = "";
-
-  // @Watch("cloudServiceProvider")
-  // onCloudServiceProviderChange(): void {
-  //   this._csp = [this.cloudServiceProvider];
-  // }
-
   public async validateForm(): Promise<boolean> {
     let validated = false;
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
-    
     return validated;
   }
 }

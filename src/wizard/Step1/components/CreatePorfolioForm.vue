@@ -144,7 +144,6 @@ export default class CreatePortfolioForm
       console.log(response);
     });
   }
-  // public rules = {};
 
   get rules(): any {
     return {
@@ -163,19 +162,6 @@ export default class CreatePortfolioForm
 
   public async validateForm(): Promise<boolean> {
     let validated = false;
-    // this.rules = {
-    //   portfolioName: [
-    //     (v: string) => !!v || "Name is required",
-    //     (v: string) =>
-    //       (v.length >= 4 && v.length <= 100) ||
-    //       "Portfolio name must be between 4-100 characters.",
-    //   ],
-    //   dod_components: [
-    //     this._dod_components.length > 0 ||
-    //       "Please select all of the DoD components that will fund your Portfolio",
-    //   ],
-    // };
-
     this.isDodComponentsValid =
       this._dod_components.length > 0 ||
       "Please select all of the DoD components that will fund your Portfolio";

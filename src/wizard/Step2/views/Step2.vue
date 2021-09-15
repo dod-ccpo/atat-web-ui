@@ -68,19 +68,5 @@ export default class Step_2 extends Vue {
     }
   }
 
-  // this store change will only be triggered by the wizard buttons next/previous
-  // @Watch("wizardNavigation")
-  // async onNextStepChanged(navigation: WizardNavigation): Promise<void> {
-  //   switch (navigation.action) {
-  //     case "next":
-  //       if (await this.validate()) {
-  //         this.$router.push({ name: navigation.step });
-  //       }
-  //       break;
-  //     case "previous":
-  //       this.$router.push({ name: navigation.step });
-  //       break;
-  //   }
-  // }
 }
 </script>
