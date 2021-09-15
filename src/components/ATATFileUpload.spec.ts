@@ -110,6 +110,16 @@ describe("Testing ATATFileUpload Component", () => {
     expect(wrapper.vm.errorMessages.length).toBe(2);
   });
 
+  it("watch -> errorMessageFromParent >> else", async () => {
+    await wrapper.setData({
+      errorMessages: ["error message"],
+    });
+    await wrapper.setProps({
+      errorMessageFromParent: "error message",
+    });
+    expect(wrapper.vm.errorMessages.length).toBe(1);
+  });
+
   it("method > openFileDialog ", async () => {
     const openFileDialogButton = await wrapper.find("#open-file-dialog");
     await openFileDialogButton.trigger("click");
@@ -270,6 +280,15 @@ describe("Testing ATATFileUpload Component", () => {
     await wrapper.vm.removeFile("validpdf.pdf");
     expect(wrapper.vm.uploadedFile.length).toBe(0);
   });
+
+  it("removeFile() >> else ", async () => {
+    await wrapper.setData({
+      uploadedFile: [{ name: "dummyvalidpdf.pdf" }],
+    });
+    await wrapper.vm.removeFile("validpdf.pdf");
+    expect(wrapper.vm.uploadedFile.length).toBe(1);
+  });
+
   it("fileUploadProgressEvent()", async () => {
     await wrapper.setProps({
       maxFileSize: 20,
@@ -299,12 +318,48 @@ describe("Testing ATATFileUpload Component", () => {
   });
 
   it("onDrop", async () => {
+    await wrapper.setProps({
+      maxFileSize: 20,
+    });
+    const validFile01 = new File(["%PDF-1.7"], "pdfFile.pdf", {
+      lastModified: 1623265616555,
+      type: "application/pdf",
+    });
+    const validFile02 = new File(["%PDF-1.7"], "pdfFile.pdf", {
+      lastModified: 1623265616555,
+      type: "application/pdf",
+    });
+    await wrapper.setData({
+      uploadedFile: [validFile01, validFile02],
+    });
+
     const fileUpload = wrapper.find("#file_upload");
-    // fileUpload.drop(fileUpload, { dataTransfer: true });
-    // wrapper.vm.onDrop();
-    jest.spyOn(fileUpload, "ondrop");
-    fileUpload.drop();
-    wrapper.vm.onDrop({ dataTransfer: { files: [] } });
-    expect(wrapper.vm.onDrop()).toBeCalled();
+    fileUpload.files = [validFile01];
+    const event = fileUpload.trigger("drop");
+    event.dataTransfer = {
+      files: [validFile01],
+    };
+    await wrapper.vm.onDrop(event);
+    expect(wrapper.vm.$data.errorMessages.length).toBe(0);
+  });
+
+  it("onDrop >> else", async () => {
+    await wrapper.setProps({
+      maxFileSize: 20,
+    });
+    const validFile01 = new File(["%PDF-1.7"], "pdfFile.pdf", {
+      lastModified: 1623265616555,
+      type: "application/pdf",
+    });
+    await wrapper.setData({
+      uploadedFile: [],
+    });
+
+    const fileUpload = wrapper.find("#file_upload");
+    fileUpload.files = [validFile01];
+    const event = fileUpload.trigger("drop");
+
+    await wrapper.vm.onDrop(event);
+    expect(wrapper.vm.$data.errorMessages.length).toBe(0);
   });
 });
