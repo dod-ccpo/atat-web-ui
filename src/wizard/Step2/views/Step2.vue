@@ -7,6 +7,7 @@
       :clins.sync="taskOrderDetails.clins"
       @add="addClin"
       @delete="deleteClin"
+      :validate-on-load="touched"
     />
   </v-flex>
 </template>
@@ -30,6 +31,7 @@ export default class Step_2 extends Vue {
   };
 
   private taskOrderDetails: TaskOrderDetails = this.$store.getters.getStepModel(2);
+  private touched = false;
 
   public async validate(): Promise<boolean> {
     let valid = false;
@@ -62,8 +64,8 @@ export default class Step_2 extends Vue {
         this.$route.params.id
       );
     }
-    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(2);
-    if (stepHasBeenTouched) {
+    this.touched = this.$store.getters.getStepTouched(2);
+    if (this.touched) {
       this.validate();
     }
   }

@@ -22,6 +22,7 @@
             :rules="rules.task_order_number"
             :value.sync="_task_order_number"
             :helpText="helpText"
+            :validate-on-load="validateOnLoad"
           />
           <p class="mt-1">This number must be between 13 and 17 digits</p>
         </v-col>
@@ -141,7 +142,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import { CLIN, TaskOrderFile } from "types/Wizard";
 import ClinsCardList from "./ClinsCardList.vue";
 
@@ -161,6 +162,7 @@ export default class CreateTaskOrderForm extends Vue {
   @PropSync("task_order_number") _task_order_number!: string;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
   @PropSync("clins") _clins!: CLIN[];
+  @Prop({ default: false }) private validateOnLoad!: boolean;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -213,5 +215,6 @@ export default class CreateTaskOrderForm extends Vue {
 
     return validated.every((v) => v === true);
   }
+
 }
 </script>

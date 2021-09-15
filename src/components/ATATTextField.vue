@@ -42,6 +42,7 @@
             :value.sync="_value"
             hide-details="auto"
             :validate-on-blur="true"
+            :validate-on-load="validateOnLoad"
             @input="inputActions"
             @blur="validateField()"
             @change="$emit('change')"
@@ -91,6 +92,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "" }) private prefix!: string;
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
+  @Prop({ default: false }) private validateOnLoad!: boolean;
 
   //data
   private rounded = false;
@@ -122,5 +124,14 @@ export default class ATATTextField extends VTextField {
       );
     }
   }
+
+  public mounted(): void {
+    this.$nextTick(() => {
+      if (this.validateOnLoad) {
+        this.validateField();
+      }
+    });
+  }
+
 }
 </script>
