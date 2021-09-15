@@ -62,13 +62,17 @@ export default Amplify.configure({
     // clientMetadata: { myCustomKey: 'myCustomValue' },
 
     // OPTIONAL - Hosted UI configuration
-    // oauth: {
-    //   domain: 'ecommercetest.auth.us-east-1.amazoncognito.com',  //domain I added. reference: https://postimg.cc/TpMYrJWs
-    //   scope: ['phone', 'email', 'profile', 'openid', 'aws.cognito.signin.user.admin'],
-    //   redirectSignIn: 'http://localhost:3000/',
-    //   redirectSignOut: 'http://localhost:3000/',
-    //   responseType: 'code' // or 'token', note that REFRESH token will only be generated when the responseType is code
-    // }
+    oauth: {
+      domain: "atat-api-dev.auth-fips.us-gov-west-1.amazoncognito.com",
+      scope: ['phone', 'email', 'openid', 'profile'],
+      redirectSignIn: "https://devstaticspa-staticsitesitebucket1a888bc8-1c206xwjnrz7l.s3.us-gov-west-1.amazonaws.com/index.html",
+      redirectSignOut: "https://devstaticspa-staticsitesitebucket1a888bc8-1c206xwjnrz7l.s3.us-gov-west-1.amazonaws.com/index.html",
+      responseType: 'code',
+      options: {
+        // advanced security is not supported in GovCloud
+        AdvancedSecurityDataCollectionFlag: false
+      }
+    }
   },
 });
 // You can get the current config object
