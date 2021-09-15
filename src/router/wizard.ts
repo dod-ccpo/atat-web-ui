@@ -62,6 +62,22 @@ const addapplication: RouteConfigSingleView = {
     import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
 };
 
+const applicationsummary: RouteConfigSingleView = {
+  path: "applicationsummary",
+  name: "applicationsummary",
+  component: () =>
+    import(
+      /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3Summary.vue"
+    ),
+};
+
+const editapplication: RouteConfigSingleView = {
+  path: "editapplication/:id",
+  name: "editapplication",
+  component: () =>
+    import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
+};
+
 const addteammembers: RouteConfigSingleView = {
   path: "addteammembers",
   name: "addteammembers",
@@ -105,12 +121,24 @@ const wizard: RouteConfigSingleView = {
     CreateWizardRoute(
       addapplication,
       fundingsummary.name,
+      applicationsummary.name,
+      3
+    ),
+    CreateWizardRoute(
+      applicationsummary,
+      addapplication.name,
       addteammembers.name,
       3
     ),
     CreateWizardRoute(
+      editapplication,
+      applicationsummary.name,
+      applicationsummary.name,
+      3
+    ),
+    CreateWizardRoute(
       addteammembers,
-      fundingsummary.name,
+      applicationsummary.name,
       reviewandsubmit.name,
       4
     ),
