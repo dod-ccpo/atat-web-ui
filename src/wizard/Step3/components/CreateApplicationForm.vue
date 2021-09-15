@@ -15,6 +15,11 @@
       </v-row>
       <v-row>
         <v-col cols="8">
+          <h3 class="h3">Application Details</h3>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="8">
           <atat-text-field
             id="application-name"
             label="Application Name"
@@ -40,14 +45,15 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="10">
+        <v-col cols="8">
           <h2 class="h2">Add Environments</h2>
           <p class="my-3">
-            Each application can have multiple environments for the various
+            Your application can have multiple environments for the various
             stages of its life cycle. Production, Staging, Testing, and
             Development environments are included by default. However, you can
-            add, edit, and delete environments based on the needs of your
-            application.
+            <strong>add</strong>, <strong>edit</strong>, and
+            <strong>remove</strong>
+            environments based on the needs of your application.
           </p>
         </v-col>
       </v-row>
