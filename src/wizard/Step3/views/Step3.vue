@@ -12,8 +12,9 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import CreateApplicationForm from "../components/CreateApplicationForm.vue";
 import { generateUid } from "@/helpers";
-import { CreateApplicationModel } from "types/Wizard";
+import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
+import { Application, Environment } from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -33,7 +34,8 @@ export default class Step_3 extends Vue {
     "Production",
   ];
 
-  private applicationDetails: CreateApplicationModel = this.$store.getters.getStepModel(3);
+  private applicationDetails: CreateApplicationModel =
+    this.$store.getters.getStepModel(3);
 
   private onAddEnvironment(): void {
     this.applicationDetails.environments.push({
@@ -43,7 +45,10 @@ export default class Step_3 extends Vue {
   }
 
   private onRemoveEnvironment(id: string): void {
-    if (this.applicationDetails.environments.length === 1) return;
+    if (this.applicationDetails.environments.length === 1) {
+      this.applicationDetails.environments[0].name = "";
+      return;
+    }
 
     const envInd = this.applicationDetails.environments.findIndex(
       (env) => env.id === id
@@ -60,17 +65,11 @@ export default class Step_3 extends Vue {
     this.$store.dispatch("saveStepModel", [this.applicationDetails, 3, valid]);
     return valid;
   }
-
-  public created(): void {
-    // set up default environments
-    if (this.applicationDetails.environments.length === 0) {
-      this.defaultEnvironmentNames.forEach((name) => {
-        this.applicationDetails.environments.push({
-          id: generateUid(),
-          name: name,
-        });
-      });
-    }
+  private mapEnvironmentToModel(env: Environment): CreateEnvironmentModel {
+    return {
+      name: env.name,
+      id: env.id,
+    };
   }
 
   public mounted(): void {
@@ -78,9 +77,37 @@ export default class Step_3 extends Vue {
     if (stepHasBeenTouched) {
       this.validate();
     }
+
+    if (this.$route.name === "editapplication") {
+      const application = this.$store.getters.getApplicationByID(
+        this.$route.params.id
+      ) as Application;
+
+      if (application) {
+        let environments =
+          application.environments?.map<CreateEnvironmentModel>((env) =>
+            this.mapEnvironmentToModel(env)
+          ) || [];
+
+        this.applicationDetails = {
+          id: application.id,
+          name: application.name,
+          description: application.description,
+          environments: environments,
+        };
+      }
+    } else {
+      // set up default environments
+      if (this.applicationDetails.environments.length === 0) {
+        this.defaultEnvironmentNames.forEach((name) => {
+          this.applicationDetails.environments.push({
+            id: generateUid(),
+            name: name,
+          });
+        });
+      }
+    }
   }
-
-
 }
 </script>
 

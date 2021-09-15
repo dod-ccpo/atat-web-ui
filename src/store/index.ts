@@ -227,6 +227,11 @@ export default new Vuex.Store({
         return {};
       }
     },
+    deletePortfolioById: (state) => (id: string) => {
+      const values = Object.values(state.portfolios);
+      const portfolios = values.filter((portfolio) => portfolio.id === id);
+      return portfolios;
+    },
     getMockTaskOrders(state) {
       return state.taskOrders;
     },
@@ -257,6 +262,16 @@ export default new Vuex.Store({
     getStepTouched: (state) => (stepNumber: number) => {
       const stepIndex = state.portfolioSteps.findIndex(x => x.step === stepNumber);
       return state.portfolioSteps[stepIndex].touched;
-    }
+    },
+    getApplicationByID: (state) => (id: string) => {
+      const portfolio = state.portfolios[11];
+      const application = portfolio.applications.find((app) => app.id === id);
+
+      if (application) {
+        return application;
+      } else {
+        throw new Error(`unable to locate application with id  ${id}`);
+      }
+    },
   },
 });
