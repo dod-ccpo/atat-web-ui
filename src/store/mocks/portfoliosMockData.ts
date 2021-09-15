@@ -94,7 +94,7 @@ export const allPortfolios: Portfolios = {
       {
         id: "74",
         name: "Tracker Application",
-        description: "APPLICATION_DESCRIPTION",
+        description: "Unclassified application to track internal tasks",
         environments: [
           {
             id: "765d364f-d7f1-4f28-be8f-123d915b68bb",

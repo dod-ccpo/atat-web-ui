@@ -20,7 +20,10 @@
     >
       <v-card-title class="d-flex justify-space-between align-start pa-6 pb-5">
         <div>
-          <div class="type body" v-if="card.type">
+          <div
+            class="type body"
+            v-if="card.type && card.type !== 'APPLICATION'"
+          >
             {{ card.type }}
           </div>
           <div class="d-flex align-start">
@@ -30,6 +33,7 @@
               @click="leftButtonClicked(card)"
               small
               class="h3 link-button no-focus-shift pa-0"
+              :class="{ 'no-border': card.type === 'APPLICATION' }"
             >
               <div class="font-weight-bold">
                 <div>{{ card.title }}</div>
@@ -56,11 +60,20 @@
           <v-icon color="success"> check_circle </v-icon>
         </div>
       </v-card-title>
-      <v-card-subtitle class="body" v-if="card.description">
+      <v-card-subtitle
+        class="body"
+        v-if="card.description && card.description != ''"
+      >
         {{ card.description }}
       </v-card-subtitle>
 
       <v-card-text class="mx-0 px-6">
+        <h5
+          class="h5 text--base-darkest text-uppercase"
+          v-if="card.groupedItemsHeader != ''"
+        >
+          {{ card.groupedItemsHeader }}
+        </h5>
         <div
           class="body-lg d-flex justify-space-between black--text grouped-items"
           v-for="(item, idx) in card.items"
@@ -175,6 +188,7 @@ export default class ATATSummaryCard extends Vue {
         this.$router.push({ name: "editfunding", params: { id: `${id}` } });
         break;
       case "applicationsummary":
+        id = card.id;
         this.$router.push({
           name: "editapplication",
           params: { id: `${id}` },
@@ -191,6 +205,11 @@ export default class ATATSummaryCard extends Vue {
     if (card.type === "TASK ORDER") {
       this.dialogTitle = `Delete Task Order ${card.title}`;
       this.dialogMessage = `This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved`;
+    }
+
+    if (card.type === "APPLICATION") {
+      this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
+      this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
     }
     this.showDialogWhenClicked = true;
   }
