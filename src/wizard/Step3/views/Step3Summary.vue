@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
 import ExpandableLink from "../../components/ExpandableLink.vue";
 
@@ -64,14 +64,22 @@ export default class Step3Summary extends Vue {
   public async validate(): Promise<boolean> {
     return true;
   }
-
-  public getPorfolioById(id?: string): Portfolio {
+  @Watch("itemToDelete")
+  private deleteItem(newVal: string) {
+    if (newVal !== "") {
+      this.cardsData.cards = this.$store.getters.deletePortfolioById(
+        this.itemToDelete
+      );
+      this.itemToDelete = "";
+    }
+  }
+  public getPortfolioById(id?: string): Portfolio {
     id = id || "11";
     return this.$store.getters.getPortfolioById(id);
   }
 
   mounted(): void {
-    let portfolio = this.getPorfolioById();
+    let portfolio = this.getPortfolioById();
     let cardsData = this.cardsData;
     portfolio.applications.forEach((application) => {
       const environments: ATATSummaryCardGroupedItems[] =
