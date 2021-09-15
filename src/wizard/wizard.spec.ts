@@ -16,7 +16,7 @@ describe("Testing wizard Component", () => {
   localVue.use(VueRouter);
   const routes = [
     {
-      name: "portfolios",
+      name: "addfunding",
       path: "/",
       meta: {
         isWizard: true,
@@ -56,7 +56,7 @@ describe("Testing wizard Component", () => {
       },
     },
     {
-      name: "addfunding",
+      name: "portfolios",
       path: "/",
       meta: {
         isWizard: true,
@@ -143,12 +143,6 @@ describe("Testing wizard Component", () => {
     await wrapper.vm.resolveActions(
       {
         name: "addfunding",
-        meta: {
-          isWizard: true,
-          next: "next",
-          previous: "previous",
-          step: "step",
-        },
       },
       ["summary"]
     );
@@ -203,6 +197,11 @@ describe("Testing wizard Component", () => {
     await wrapper.vm.getStep(3);
     await wrapper.vm.getStep(4);
     await wrapper.vm.getStep(5);
+    expect(wrapper.vm.getStep).toBeDefined();
+  });
+  it("test get step with matching steps", async () => {
+    await wrapper.setData({ stepNumber: 1, currStepNumber: 1 });
+    await wrapper.vm.getStep(1);
     expect(wrapper.vm.getStep).toBeDefined();
   });
   it("test checkPath", async () => {
