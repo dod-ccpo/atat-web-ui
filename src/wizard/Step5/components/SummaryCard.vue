@@ -36,9 +36,10 @@
 
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
+import Vue from "vue";
 import { VCard } from "vuetify/lib";
 @Component({})
-export default class SummaryCard extends VCard {
+export default class SummaryCard extends Vue {
   @Prop({ default: "Title" })
   private title!: string;
   @Prop({ default: "Description" })
