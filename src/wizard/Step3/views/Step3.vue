@@ -50,7 +50,10 @@ export default class Step_3 extends Vue {
   }
 
   private onRemoveEnvironment(id: string): void {
-    if (this.applicationDetails.environments.length === 1) return;
+    if (this.applicationDetails.environments.length === 1) {
+      this.applicationDetails.environments[0].name = "";
+      return;
+    }
 
     const envInd = this.applicationDetails.environments.findIndex(
       (env) => env.id === id

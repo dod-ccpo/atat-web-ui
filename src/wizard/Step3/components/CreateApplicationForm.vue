@@ -75,7 +75,10 @@
                 :showDeleteIcon="true"
                 class="width-100"
                 @deleteItem="deleteEnvironment"
-                :isDeleteDisabled="_application.environments.length === 1"
+                :isDeleteDisabled="
+                  _application.environments.length === 1 &&
+                  _application.environments[0].name === ''
+                "
               >
               </atat-text-field>
             </div>
