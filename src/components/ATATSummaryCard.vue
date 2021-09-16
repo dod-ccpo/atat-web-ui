@@ -6,9 +6,7 @@
       class="v-card ma-9 ml-0 body"
     >
       <v-card-text class="pa-4 text-center">
-        <span class="body-lg text--base-dark"
-          >You currently don't have any {{ emptyCard }} saved</span
-        >
+        <span class="body-lg text--base-dark">{{ message }}</span>
       </v-card-text>
     </v-card>
     <v-card
@@ -147,9 +145,6 @@ import Vue from "vue";
 export default class ATATSummaryCard extends Vue {
   @Prop({ default: {}, required: false }) private data!: ATATSummaryCards;
 
-  @Prop({ default: "" })
-  private emptyCard!: string;
-
   @Prop({ default: "OK" })
   private okText!: string;
 
@@ -170,6 +165,7 @@ export default class ATATSummaryCard extends Vue {
   private dialogTitle = "";
   private showDialogWhenClicked = false;
   private cardSelected: ATATSummaryCardItem = {};
+  private message = "";
 
   @Watch("isItemDeleted")
   protected deleteItem(newVal: string): void {
@@ -203,11 +199,13 @@ export default class ATATSummaryCard extends Vue {
     this.isItemDeleted = false;
     this.cardSelected = card;
     if (card.type === "TASK ORDER") {
+      this.message = "You currently don't have any Task Orders saved";
       this.dialogTitle = `Delete Task Order ${card.title}`;
       this.dialogMessage = `This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved`;
     }
 
     if (card.type === "APPLICATION") {
+      this.message = "You currently don't have any Applications Created";
       this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
       this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
     }
