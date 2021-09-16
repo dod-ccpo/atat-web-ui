@@ -6,9 +6,7 @@
       class="v-card ma-9 ml-0 body"
     >
       <v-card-text class="pa-4 text-center">
-        <span class="body-lg text--base-dark"
-          >You currently don't have any {{ emptyCard }} saved</span
-        >
+        <span class="body-lg text--base-dark">{{ message }}</span>
       </v-card-text>
     </v-card>
     <v-row align="stretch">
@@ -24,7 +22,7 @@
             <div>
               <div
                 class="type body"
-                v-if="card.type && card.type == 'TASK ORDER'"
+                v-if="card.type && card.type === 'TASK ORDER'"
               >
                 {{ card.type }}
               </div>
@@ -51,8 +49,8 @@
                     no-text-decoration no-border
                     link-button
                     mx-n2
-                  "
-                  ><v-icon v-if="card.showChevronRight" x-large>
+                  ">
+                  <v-icon v-if="card.showChevronRight" x-large>
                     chevron_right
                   </v-icon>
                 </v-btn>
@@ -180,6 +178,7 @@ export default class ATATSummaryCard extends Vue {
   private dialogTitle = "";
   private showDialogWhenClicked = false;
   private cardSelected: ATATSummaryCardItem = {};
+  private message = "";
 
   @Watch("isItemDeleted")
   protected deleteItem(newVal: string): void {
@@ -213,11 +212,13 @@ export default class ATATSummaryCard extends Vue {
     this.isItemDeleted = false;
     this.cardSelected = card;
     if (card.type === "TASK ORDER") {
+      this.message = "You currently don't have any Task Orders saved";
       this.dialogTitle = `Delete Task Order ${card.title}`;
       this.dialogMessage = `This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved`;
     }
 
     if (card.type === "APPLICATION") {
+      this.message = "You currently don't have any Applications created";
       this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
       this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
     }
