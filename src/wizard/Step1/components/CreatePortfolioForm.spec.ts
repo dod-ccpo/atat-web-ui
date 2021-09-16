@@ -37,6 +37,7 @@ describe("Testing CreatePortfolioForm Component", () => {
 
   it("renders dod_components with no rules", async () => {
     await wrapper.setProps({
+      rules: {},
       dod_components: ["air force", "army"],
     });
     expect(wrapper.vm.$props.dod_components).toEqual(["air force", "army"]);
@@ -58,36 +59,21 @@ describe("Testing CreatePortfolioForm Component", () => {
     });
     expect(wrapper.vm.$props.dod_components).toEqual(["air force", "army"]);
   });
+  it("testing portfolioName rules return ", async () => {
+    await Vue.nextTick();
+    const rules = wrapper.vm.rules.portfolioName[0]();
+    const rules1 = wrapper.vm.rules.portfolioName[0]("hgfhfhfh");
+    const rules2 = wrapper.vm.rules.portfolioName[1]("11");
+    const rules3 = wrapper.vm.rules.portfolioName[1]("hgfhfhfh");
+
+    expect(rules).toBe("Name is required");
+    expect(rules2).toBe("Portfolio name must be between 4-100 characters.");
+    expect(rules1).toBe(true);
+    expect(rules3).toBe(true);
+  });
 
   it("test validateForm() ", async () => {
-    await wrapper.setData({
-      _dod_components: ["army"],
-    });
-    await wrapper.setData({
-      rules: {
-        portfolioName: [
-          (v: string) => !!v || "Name is required",
-          (v: string) =>
-            (v.length >= 4 && v.length <= 100) ||
-            "Portfolio name must be between 4-100 characters.",
-        ],
-      },
-    });
     const validated = await wrapper.vm.validateForm();
-    expect(await wrapper.vm.$data.rules.portfolioName.length).toBe(2);
-    expect(await wrapper.vm.$data.rules.portfolioName[0]()).toBe(
-      "Name is required"
-    );
-    expect(await wrapper.vm.$data.rules.portfolioName[1](111)).toBe(
-      "Portfolio name must be between 4-100 characters."
-    );
-    expect(await wrapper.vm.$data.rules.portfolioName[0](1111)).toBe(true);
-    expect(await wrapper.vm.$data.rules.portfolioName[1]("fhdjsifgh")).toBe(
-      true
-    );
-    expect(wrapper.vm.$data.isDodComponentsValid).toBe(
-      "Please select all of the DoD components that will fund your Portfolio"
-    );
-    expect(validated).toBe(true);
+    expect(validated).toBe(false);
   });
 });
