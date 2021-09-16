@@ -13,7 +13,6 @@
       </v-col>
     </v-row>
     <atat-summary-card
-      :emptyCard="cardType"
       :data="cardsData"
       :itemToDelete.sync="itemToDelete"
     ></atat-summary-card>
