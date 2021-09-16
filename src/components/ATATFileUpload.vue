@@ -66,7 +66,7 @@
                       />
                     </div>
                   </div>
-                  <div class="progress-view" v-else>
+                  <div class="progress-view" v-if="isProgressBarVisible">
                     <div class="width-100 d-flex align-center my-12 ml-3">
                       <div>
                         <v-icon size="60"> upload_file </v-icon>
@@ -167,6 +167,7 @@ import Vue from "vue";
 import { Component, Prop, Watch, PropSync } from "vue-property-decorator";
 import { UploadedFile } from "../../types/FormFields";
 import { TaskOrderFile } from "types/Wizard";
+import axios from "axios";
 
 @Component
 export default class ATATFileUpload extends Vue {
@@ -278,7 +279,10 @@ export default class ATATFileUpload extends Vue {
    * @fileObj: HTML fileinput control Filelist, can be null
    */
 
-  private async addUploadedFile(event: Event, filesObj?: FileList) {
+  private async addUploadedFile(
+    event: Event,
+    filesObj?: FileList
+  ): Promise<void> {
     let files = filesObj || (this.$refs.fileInput as HTMLInputElement).files;
     if (files && files[0]) {
       let file = files[0];
@@ -305,7 +309,7 @@ export default class ATATFileUpload extends Vue {
    * kicks off the upload event to emulate the upload animation
    * @file;  fileObj from the HTML file upload control
    */
-  private async showProgress(file: File): Promise<void> {
+  private showProgress(file: File): void {
     const reader = new FileReader();
     this.isProgressBarVisible = true;
     reader.addEventListener("progress", this.fileUploadProgressEvent);
@@ -316,8 +320,10 @@ export default class ATATFileUpload extends Vue {
    * Progress event to EMULATE animation as well as status to meet requirements
    * @event: Progress Event
    */
-  private fileUploadProgressEvent(event: ProgressEvent) {
-    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+  private async fileUploadProgressEvent(event: ProgressEvent) {
+    const progress = document.getElementById(
+      "progressBar"
+    ) as HTMLProgressElement;
     progress.style.width = "1%";
 
     if (event.loaded && event.total) {
@@ -336,7 +342,10 @@ export default class ATATFileUpload extends Vue {
             progress.style.width = width + "%";
           }
         }.bind(this);
-        let _showProgressAnimation = setInterval(showProgressAnimation, 30);
+        let _showProgressAnimation = await setInterval(
+          showProgressAnimation,
+          30
+        );
         // progress.style.width = percent + "%";
         // Math.round(percent) + "%";
       }
@@ -354,7 +363,7 @@ export default class ATATFileUpload extends Vue {
             counter++;
           }
         }.bind(this);
-        let _showUploadingMessages = setInterval(
+        let _showUploadingMessages = await setInterval(
           showUploadingMessages,
           3000,
           this.uploadingMessages
@@ -368,15 +377,20 @@ export default class ATATFileUpload extends Vue {
    * @taskorderFile: TaskOrderFile - to be uploaded to the API
    */
   private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
-    await this.$http.post("taskOrderFiles", taskOrderFile).then((response) => {
-      this.taskOrderFile = response.data;
-      this.uploadedFile = [this.taskOrderFile];
-      // todo add this._pdfFile = taskOrderFile when
-      // API is ready
-      this._pdfFile.name = taskOrderFile.name;
-    });
+    await axios
+      .post(
+        "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0/taskOrderFiles",
+        taskOrderFile
+      )
+      .then((response) => {
+        this.taskOrderFile = response.data;
+        this.uploadedFile = [this.taskOrderFile];
+        // todo add this._pdfFile = taskOrderFile when
+        // API is ready
+        // console.log(this);
+        this._pdfFile.name = taskOrderFile.name;
+      });
   }
-
   /**
    * validates file and returns a Promise<boolean> for valid/invalid file
    * @file: File Object from HTML File Input
@@ -396,6 +410,15 @@ export default class ATATFileUpload extends Vue {
       this.errorMessages.push("Please upload your Task Order Document");
     }
     /**
+     * validates the maxFileSize
+     */
+    if (file.size > this.maxFileSize * 1048576) {
+      //1 Megabytes = 1048576 Bytes
+      this.errorMessages.push(
+        "File size cannot exceed " + this.maxFileSize + "MB"
+      );
+    }
+    /**
      *  validates the first 8 characters of the PDF binary file data to ensure it
      *  matches tis regexp RegExp("%PDF-1.[0-7]"). All pdf files binary data when
      *  converted to a string will start with RegExp("%PDF-1.[0-7]");
@@ -408,15 +431,6 @@ export default class ATATFileUpload extends Vue {
         this.errorMessages.push("File is not a valid PDF");
         this.uploadedFile.splice(0, 1);
       }
-    }
-    /**
-     * validates the maxFileSize
-     */
-    if (file.size > this.maxFileSize * 1048576) {
-      //1 Megabytes = 1048576 Bytes
-      this.errorMessages.push(
-        "File size cannot exceed " + this.maxFileSize + "MB"
-      );
     }
 
     return this.errorMessages.length > 0;

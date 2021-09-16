@@ -37,7 +37,6 @@
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
 import Vue from "vue";
-
 @Component({})
 export default class SummaryCard extends Vue {
   @Prop({ default: "Title" })

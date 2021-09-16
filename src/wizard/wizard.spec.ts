@@ -85,6 +85,10 @@ describe("Testing wizard Component", () => {
     });
   });
 
+  it("renders successfully", async () => {
+    expect(wrapper.exists()).toBe(true);
+  });
+
   it("test resolveAction next", async () => {
     await wrapper.vm.resolveActions(
       {

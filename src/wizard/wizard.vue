@@ -6,7 +6,11 @@
       @clicked-action="getStep"
     />
     <router-view></router-view>
-    <ButtonNavigation @clicked-action="getRoute" :step-number="stepNumber" />
+    <ButtonNavigation
+      ref="buttonNavigation"
+      @clicked-action="getRoute"
+      :step-number="stepNumber"
+    />
   </v-container>
 </template>
 
@@ -47,6 +51,7 @@ export default class Wizard extends Vue {
     stepTwo: Step2;
     stepTwoSummary: Step2Summary;
     stepThree: Step3;
+    buttonNavigation: ButtonNavigation;
   };
 
   private resolveActions(currentRoute: Route, actions: string[]) {
