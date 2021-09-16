@@ -2,6 +2,7 @@
   <create-application-form
     ref="createApplicationForm"
     :application.sync="applicationDetails"
+    :validate-on-load="touched"
     @addEnvironment="onAddEnvironment"
     @removeEnvironment="onRemoveEnvironment"
   ></create-application-form>
@@ -27,6 +28,7 @@ export default class Step_3 extends Vue {
     createApplicationForm: CreateApplicationForm;
   };
 
+  private touched = false;
   private defaultEnvironmentNames = [
     "Development",
     "Testing",
@@ -73,8 +75,8 @@ export default class Step_3 extends Vue {
   }
 
   public mounted(): void {
-    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(3);
-    if (stepHasBeenTouched) {
+    this.touched = this.$store.getters.getStepTouched(3);
+    if (this.touched) {
       this.validate();
     }
 

@@ -5,6 +5,7 @@
       :name.sync="model.name"
       :description.sync="model.description"
       :dod_components.sync="model.dod_components"
+      :validate-on-load="touched"
     />
     <CloudServiceProvider
       class="pb-10"
@@ -34,7 +35,7 @@ export default class Step_1 extends Vue {
     createPortfolioForm: CreatePortfolioForm;
     cloudServiceProviderForm: CloudServiceProvider;
   };
-
+  private touched = false;
   private model: CreatePortfolioFormModel = this.$store.getters.getStepModel(1);
 
   public async validate(): Promise<boolean> {
@@ -54,8 +55,8 @@ export default class Step_1 extends Vue {
   }
 
   public mounted(): void {
-    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(1);
-    if (stepHasBeenTouched) {
+    this.touched = this.$store.getters.getStepTouched(1);
+    if (this.touched) {
       this.validate();
     }
   }
