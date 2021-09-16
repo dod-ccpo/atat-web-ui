@@ -43,6 +43,31 @@ describe("Testing Stepper Navigation", () => {
     vuetify = new Vuetify();
     state = {
       erroredSteps: [3, 4],
+      portfolioSteps: [
+        {
+          step: 1,
+          description: "Create Portfolio",
+          touched: false,
+          model: {
+            name: "",
+            description: "",
+            dod_components: [],
+            csp: "",
+          },
+        },
+        {
+          step: 2,
+          description: "Add Funding",
+          touched: false,
+          model: {
+            task_order_number: "",
+            task_order_file: {
+              name: "",
+            },
+            clins: [],
+          },
+        },
+      ],
     };
     store = new Vuex.Store({ state });
 
@@ -65,14 +90,11 @@ describe("Testing Stepper Navigation", () => {
   it("step-01 clicked", async () => {
     await wrapper.find("#step_01").trigger("click");
     expect(wrapper.vm.getStepNumber).toBe(1);
-    await wrapper.vm.$nextTick();
-    await wrapper.find("#step_02").trigger("click");
-    expect(wrapper.vm.currentStepNumber).toBe(3);
   });
 
   it("get getStepDescription function()", async () => {
-    await wrapper.setProps({ stepNumber: 2 });
-    expect(wrapper.vm.getStepDescription()).toBe("Add Funding");
+    await wrapper.setProps({ stepNumber: 1 });
+    expect(wrapper.vm.getStepDescription()).toBe("Create Portfolio");
   });
 
   it("get 'get getStepNumber' function()", async () => {
@@ -81,7 +103,7 @@ describe("Testing Stepper Navigation", () => {
   });
 
   it("get isStepComplete function()", async () => {
-    const isStepComplete = wrapper.vm.isStepComplete(3);
+    const isStepComplete = wrapper.vm.isStepComplete(1);
     expect(isStepComplete).toBe(false);
   });
 

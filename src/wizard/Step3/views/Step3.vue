@@ -2,6 +2,7 @@
   <create-application-form
     ref="createApplicationForm"
     :application.sync="applicationDetails"
+    :validate-on-load="touched"
     @addEnvironment="onAddEnvironment"
     @removeEnvironment="onRemoveEnvironment"
   ></create-application-form>
@@ -27,6 +28,7 @@ export default class Step_3 extends Vue {
     createApplicationForm: CreateApplicationForm;
   };
 
+  private touched = false;
   private defaultEnvironmentNames = [
     "Development",
     "Testing",
@@ -34,13 +36,8 @@ export default class Step_3 extends Vue {
     "Production",
   ];
 
-  private applicationDetails: CreateApplicationModel = {
-    id: "",
-    name: "",
-    description: "",
-    // eslint-disable-next-line prettier/prettier
-    environments: []
-  };
+  private applicationDetails: CreateApplicationModel =
+    this.$store.getters.getStepModel(3);
 
   private onAddEnvironment(): void {
     this.applicationDetails.environments.push({
@@ -67,10 +64,9 @@ export default class Step_3 extends Vue {
   public async validate(): Promise<boolean> {
     let valid = false;
     valid = await this.$refs.createApplicationForm.validateForm();
-
+    this.$store.dispatch("saveStepModel", [this.applicationDetails, 3, valid]);
     return valid;
   }
-
   private mapEnvironmentToModel(env: Environment): CreateEnvironmentModel {
     return {
       name: env.name,
@@ -79,6 +75,11 @@ export default class Step_3 extends Vue {
   }
 
   public mounted(): void {
+    this.touched = this.$store.getters.getStepTouched(3);
+    if (this.touched) {
+      this.validate();
+    }
+
     if (this.$route.name === "editapplication") {
       const application = this.$store.getters.getApplicationByID(
         this.$route.params.id
@@ -99,12 +100,14 @@ export default class Step_3 extends Vue {
       }
     } else {
       // set up default environments
-      this.defaultEnvironmentNames.forEach((name) => {
-        this.applicationDetails.environments.push({
-          id: generateUid(),
-          name: name,
+      if (this.applicationDetails.environments.length === 0) {
+        this.defaultEnvironmentNames.forEach((name) => {
+          this.applicationDetails.environments.push({
+            id: generateUid(),
+            name: name,
+          });
         });
-      });
+      }
     }
   }
 }
