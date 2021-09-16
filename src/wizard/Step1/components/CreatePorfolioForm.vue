@@ -13,6 +13,7 @@
             label="Portfolio Name"
             :rules="rules.portfolioName"
             :value.sync="portfolio_name"
+            :validate-on-load="validateOnLoad"
           />
 
           <p class="mb-11">
@@ -99,7 +100,7 @@
 <script lang="ts">
 import { ValidatableForm } from "types/Wizard";
 import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 @Component({})
 export default class CreatePortfolioForm
   extends Vue
@@ -131,6 +132,8 @@ export default class CreatePortfolioForm
     required: true,
   })
   _dod_components!: string[];
+  @Prop({ default: false }) private validateOnLoad!: boolean;
+
   @Watch("_dod_components")
   onDodComponentsChanged(): void {
     if (Object.keys(this.rules).length === 0) return;
@@ -144,10 +147,9 @@ export default class CreatePortfolioForm
       console.log(response);
     });
   }
-  public rules = {};
-  public async validateForm(): Promise<boolean> {
-    let validated = false;
-    this.rules = {
+
+  get rules(): any {
+    return {
       portfolioName: [
         (v: string) => !!v || "Name is required",
         (v: string) =>
@@ -159,13 +161,19 @@ export default class CreatePortfolioForm
           "Please select all of the DoD components that will fund your Portfolio",
       ],
     };
+  }
+
+  public async validateForm(): Promise<boolean> {
+    let validated = false;
     this.isDodComponentsValid =
       this._dod_components.length > 0 ||
       "Please select all of the DoD components that will fund your Portfolio";
+
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
-    return validated;
+
+    return validated && typeof this.isDodComponentsValid === "boolean";
   }
 }
 </script>

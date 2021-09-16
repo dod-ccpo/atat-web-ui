@@ -1,3 +1,5 @@
+import { TaskOrderDetails } from "./Wizard";
+
 export interface Portfolios {
   [key: string]: Portfolio;
 }
@@ -9,6 +11,7 @@ export interface Portfolio {
   dod_component: string[];
   portfolio_managers: string[];
   applications: Application[];
+  taskOrders?: TaskOrderDetails[];
 }
 export interface Application {
   id: string;

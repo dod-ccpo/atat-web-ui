@@ -83,7 +83,6 @@ export default class Wizard extends Vue {
         case "summary":
           // todo: move this router logic to the store
           if (this.$route.name === "addfunding") {
-            // await this.$router.push({ name: "fundingsummary" });
             this.$store.dispatch("wizardNext");
           } else if (this.$route.name === "editfunding") {
             await this.$router.push({ name: "fundingsummary" });

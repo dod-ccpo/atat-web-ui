@@ -25,10 +25,17 @@ describe("Testing ATATFileUpload Component", () => {
     updateWizardStep: jest.fn(),
   };
 
+  const getters: any = {
+    getStepTouched: () => (stepNumber: number) => {
+      return false;
+    },
+  };
+
   beforeEach(() => {
     vuetify = new Vuetify();
     store = new Vuex.Store({
       actions,
+      getters,
     });
     wrapper = mount(fileUpload, {
       store,
