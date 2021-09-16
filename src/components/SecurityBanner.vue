@@ -49,9 +49,6 @@ export default class SecurityBanner extends Vue {
   @Prop({ default: "Official Use Only" }) private classificationMsg =
     "Official Use Only";
 
-  get getClassificationColor(): string {
-    return this.classificationTypes[this.classificationType].color;
-  }
   get getClassificationText(): string {
     return this.classificationTypes[this.classificationType].text;
   }

@@ -35,6 +35,7 @@
                   @click="leftButtonClicked(card)"
                   small
                   class="h3 link-button no-focus-shift pa-0"
+                  :class="{ 'no-border': card.type === 'APPLICATION' }"
                 >
                   <div class="font-weight-bold">
                     <div>{{ card.title }}</div>
@@ -197,6 +198,7 @@ export default class ATATSummaryCard extends Vue {
         this.$router.push({ name: "editfunding", params: { id: `${id}` } });
         break;
       case "applicationsummary":
+        id = card.id;
         this.$router.push({
           name: "editapplication",
           params: { id: `${id}` },
@@ -213,6 +215,11 @@ export default class ATATSummaryCard extends Vue {
     if (card.type === "TASK ORDER") {
       this.dialogTitle = `Delete Task Order ${card.title}`;
       this.dialogMessage = `This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved`;
+    }
+
+    if (card.type === "APPLICATION") {
+      this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
+      this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
     }
     this.showDialogWhenClicked = true;
   }
