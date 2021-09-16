@@ -205,7 +205,7 @@ export default class ATATSummaryCard extends Vue {
     }
 
     if (card.type === "APPLICATION") {
-      this.message = "You currently don't have any Applications Created";
+      this.message = "You currently don't have any Applications created";
       this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
       this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
     }
