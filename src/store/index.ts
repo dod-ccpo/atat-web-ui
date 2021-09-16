@@ -44,7 +44,7 @@ export default new Vuex.Store({
           name: "",
           description: "",
           dod_components: [],
-          csp: ""
+          csp: "",
         },
       },
       {
@@ -70,8 +70,8 @@ export default new Vuex.Store({
               obligated_funds: 10000,
               pop_start_date: "2021-09-01",
               pop_end_date: "2022-09-01",
-            },      
-          ]
+            },
+          ],
         },
       },
       {
@@ -82,7 +82,7 @@ export default new Vuex.Store({
           id: "",
           name: "",
           description: "",
-          environments: []
+          environments: [],
         },
       },
       {
@@ -97,7 +97,7 @@ export default new Vuex.Store({
         touched: false,
         model: {},
       },
-    ]
+    ],
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -114,7 +114,9 @@ export default new Vuex.Store({
     },
 
     doSaveStepModel(state, [model, stepNumber, valid]) {
-      const stepIndex = state.portfolioSteps.findIndex(x => x.step === stepNumber);
+      const stepIndex = state.portfolioSteps.findIndex(
+        (x) => x.step === stepNumber
+      );
       state.portfolioSteps[stepIndex].model = model;
       state.portfolioSteps[stepIndex].touched = true;
 
@@ -134,7 +136,7 @@ export default new Vuex.Store({
       } else {
         es.splice(stepNumber, 1);
       }
-    }
+    },
   },
 
   actions: {
@@ -154,7 +156,7 @@ export default new Vuex.Store({
     unauthorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", false);
     },
-    setCurrentStepNumber({ commit }, step: number) { 
+    setCurrentStepNumber({ commit }, step: number) {
       commit("doSetCurrentStepNumber", step);
     },
     saveStepModel({ commit }, [model, stepNumber, valid]) {
@@ -162,7 +164,7 @@ export default new Vuex.Store({
     },
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
-    }
+    },
   },
   modules: {},
   getters: {
@@ -255,12 +257,16 @@ export default new Vuex.Store({
     },
 
     getStepModel: (state) => (stepNumber: number) => {
-      const step = state.portfolioSteps.find((o: { step: number; }) => o.step === stepNumber);
+      const step = state.portfolioSteps.find(
+        (o: { step: number }) => o.step === stepNumber
+      );
       return step?.model;
     },
-    
+
     getStepTouched: (state) => (stepNumber: number) => {
-      const stepIndex = state.portfolioSteps.findIndex(x => x.step === stepNumber);
+      const stepIndex = state.portfolioSteps.findIndex(
+        (x) => x.step === stepNumber
+      );
       return state.portfolioSteps[stepIndex].touched;
     },
     getApplicationByID: (state) => (id: string) => {

@@ -29,7 +29,6 @@ import { CreatePortfolioFormModel } from "../../../../types/Wizard";
   },
   mixins: [ValidatableWizardStep],
 })
-
 export default class Step_1 extends Vue {
   $refs!: {
     createPortfolioForm: CreatePortfolioForm;

@@ -157,7 +157,7 @@ export default class CreatePortfolioForm
         this._dod_components.length > 0 ||
           "Please select all of the DoD components that will fund your Portfolio",
       ],
-    }
+    };
   }
 
   public async validateForm(): Promise<boolean> {
@@ -169,8 +169,8 @@ export default class CreatePortfolioForm
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
-    
-    return validated && typeof this.isDodComponentsValid === 'boolean';
+
+    return validated && typeof this.isDodComponentsValid === "boolean";
   }
 }
 </script>

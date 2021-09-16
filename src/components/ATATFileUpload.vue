@@ -213,10 +213,12 @@ export default class ATATFileUpload extends Vue {
   }
 
   get isFileUploaded(): boolean {
-    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(this.stepNumber);
+    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(
+      this.stepNumber
+    );
     if (stepHasBeenTouched) {
       this.isFileUploadedSucessfully = this._pdfFile.name !== "";
-      this.uploadedFile = [{name: this._pdfFile.name}];
+      this.uploadedFile = [{ name: this._pdfFile.name }];
       return this.isFileUploadedSucessfully;
     } else {
       return this.uploadedFile.length > 0;

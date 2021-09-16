@@ -12,7 +12,6 @@ export default class Step_4 extends Vue {
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }
-
 </script>
 
 <style scoped></style>

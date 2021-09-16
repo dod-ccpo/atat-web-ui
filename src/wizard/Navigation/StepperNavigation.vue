@@ -97,13 +97,16 @@ export default class StepperNavigation extends Vue {
   }
 
   public isStepComplete(stepNumber: number): boolean {
-    const isErroredStep = this.$store.state.erroredSteps.indexOf(stepNumber + 1) != -1;
+    const isErroredStep =
+      this.$store.state.erroredSteps.indexOf(stepNumber + 1) != -1;
     const isTouched = this.isTouched(stepNumber);
     return !isErroredStep && isTouched;
   }
 
   public isTouched(stepNumber: number): boolean {
-    const stepIndex = this.$store.state.portfolioSteps.findIndex((x: any) => x.step === stepNumber + 1);
+    const stepIndex = this.$store.state.portfolioSteps.findIndex(
+      (x: any) => x.step === stepNumber + 1
+    );
     return this.$store.state.portfolioSteps[stepIndex].touched;
   }
 }

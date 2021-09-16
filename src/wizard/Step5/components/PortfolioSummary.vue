@@ -104,7 +104,6 @@ export default class PortfolioSummary extends Vue {
         this.$store.dispatch("setErroredStep", [step.step, true]);
       }
     });
-  
   }
 }
 </script>
