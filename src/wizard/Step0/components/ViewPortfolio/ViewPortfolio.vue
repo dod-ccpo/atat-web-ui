@@ -92,7 +92,6 @@ export default class ViewPortfolio extends Vue {
 
     const portfolioResponse = await this.$http.get(apiUrl, {
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
     });
@@ -103,13 +102,6 @@ export default class ViewPortfolio extends Vue {
       throw new Error(portfolioResponse.statusText);
     }
   }
-
-  // public async getPortfolios(): Promise<Portfolio[]> {
-  //   const portfoliosAll = this.$store.getters.getAllPortfolios;
-  //   const portfolios: Portfolio[] = [portfoliosAll["11"], portfoliosAll["10"]];
-
-  //   return portfolios;
-  // }
 
   private async mounted(): Promise<void> {
     this.portfolios = await (
