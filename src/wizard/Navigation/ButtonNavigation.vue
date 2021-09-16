@@ -70,7 +70,7 @@ export default class ButtonNavigation extends Vue {
         step: 2,
         buttons: [
           {
-            text: "Cancel",
+            text: "Save and Close",
             link: true,
             id: "cancel",
             action: ["cancel"],
@@ -94,7 +94,7 @@ export default class ButtonNavigation extends Vue {
         step: 2,
         buttons: [
           {
-            text: "Cancel",
+            text: "Save and Close",
             link: true,
             id: "cancel",
             action: ["cancel"],
@@ -118,7 +118,7 @@ export default class ButtonNavigation extends Vue {
         step: 3,
         buttons: [
           {
-            text: "Cancel",
+            text: "Save and Close",
             link: true,
             id: "cancel",
             action: ["cancel"],
@@ -142,7 +142,7 @@ export default class ButtonNavigation extends Vue {
         step: 4,
         buttons: [
           {
-            text: "Cancel",
+            text: "Save and Close",
             link: true,
             id: "cancel",
             action: ["cancel"],

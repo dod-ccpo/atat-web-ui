@@ -27,6 +27,7 @@
             :value.sync="_application.name"
             :helpText="applicationNameHelpText"
             class="width-100"
+            :validate-on-load="validateOnLoad"
           />
 
           <atat-text-area
@@ -75,7 +76,11 @@
                 :showDeleteIcon="true"
                 class="width-100"
                 @deleteItem="deleteEnvironment"
-                :isDeleteDisabled="_application.environments.length === 1"
+                :isDeleteDisabled="
+                  _application.environments.length === 1 &&
+                  _application.environments[0].name === ''
+                "
+                :validate-on-load="validateOnLoad"
               >
               </atat-text-field>
             </div>
@@ -101,15 +106,17 @@
 <script lang="ts">
 import { CreateApplicationModel } from "types/Wizard";
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({})
 export default class CreateApplicationForm extends Vue {
   @PropSync("application") _application!: CreateApplicationModel;
+  @Prop({ default: false }) private validateOnLoad!: boolean;
+
   private applicationNameHelpText = `This name will be displayed within the cloud provider’s console. It should be intuitive
-   and easily recognizable for all of your team members.`;
+    and easily recognizable for all of your team members.`;
   private applicationDetailsHelpText = `Add a brief one to two sentence description of your application. 
-  Consider using the “Description of Work” from your task order.`;
+    Consider using the “Description of Work” from your task order.`;
 
   get rules(): unknown {
     return {
