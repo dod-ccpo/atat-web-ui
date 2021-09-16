@@ -28,42 +28,18 @@ describe("Testing wizard Component", () => {
     {
       name: "next",
       path: "/",
-      meta: {
-        isWizard: true,
-        next: "next",
-        previous: "previous",
-        step: "step",
-      },
     },
     {
       name: "previous",
       path: "/",
-      meta: {
-        isWizard: true,
-        next: "next",
-        previous: "previous",
-        step: "step",
-      },
     },
     {
       name: "addportfolio",
       path: "/",
-      meta: {
-        isWizard: true,
-        next: "next",
-        previous: "previous",
-        step: "step",
-      },
     },
     {
       name: "portfolios",
       path: "/",
-      meta: {
-        isWizard: true,
-        next: "next",
-        previous: "previous",
-        step: "step",
-      },
     },
     {
       name: "addapplication",
