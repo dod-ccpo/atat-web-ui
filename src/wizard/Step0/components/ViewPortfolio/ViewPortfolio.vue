@@ -31,7 +31,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Portfolio, Portfolios } from "types/Portfolios";
+import { Portfolio } from "types/Portfolios";
 import PortfolioSummary from "./PortfolioSummary.vue";
 import { TaskOrderDetails, TaskOrderFile } from "types/Wizard";
 
@@ -44,12 +44,12 @@ export default class ViewPortfolio extends Vue {
   public portfolios: Portfolio[] = [];
 
   private mapPortfolio(item: any): Portfolio {
-    const mapTaskOrder = function (item: any): TaskOrderDetails {
-      if (item) {
+    const mapTaskOrder = (taskOrderItem: any): TaskOrderDetails => {
+      if (taskOrderItem) {
         const taskOrderFile: TaskOrderFile = {
-          id: item.id || "-1",
-          name: item.name || "",
-          description: item.description || "",
+          id: taskOrderItem.id || "-1",
+          name: taskOrderItem.name || "",
+          description: taskOrderItem.description || "",
           created_at: "",
           updated_at: "",
           size: 20000,
@@ -57,8 +57,8 @@ export default class ViewPortfolio extends Vue {
         };
 
         const taskOrder: TaskOrderDetails = {
-          task_order_number: item.task_order_number,
-          clins: item.clins,
+          task_order_number: taskOrderItem.task_order_number,
+          clins: taskOrderItem.clins,
           task_order_file: taskOrderFile,
         };
 
