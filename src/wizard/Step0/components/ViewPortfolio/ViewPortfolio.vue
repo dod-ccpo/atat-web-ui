@@ -21,80 +21,8 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="d-flex flex-row">
-        <v-card
-          width="40rem"
-          class="v-card ma-9 ml-0 body"
-          v-for="portfolio in portfolios"
-          :key="portfolio.id"
-        >
-          <div class="d-flex flex-nowrap align-center">
-            <v-card-title class="portfolio-name h3 font-weight-bold pb-0 col-10"
-              >{{ portfolio.name }} >
-            </v-card-title>
-            <div>
-              <v-chip
-                v-if="
-                  portfolio.csp_provisioning_status.toLowerCase() ===
-                  'in_progress'
-                "
-                class="body font-weight-bold pa-2 ml-5 mt-4 rounded-0"
-                label
-                color="success"
-              >
-                DRAFT
-              </v-chip>
-            </div>
-          </div>
-          <div>
-            <v-card-subtitle class="body pt-0">
-              {{ portfolio.description }}
-            </v-card-subtitle>
-          </div>
-          <div class="info-container mb-5">
-            <div class="d-flex portfolio-info pa-0 ml-5">
-              <v-card-text class="body pa-0 ml-3"
-                >Portfolio Managers</v-card-text
-              >
-              <v-card-text class="body col-1 pa-0 mr-2">{{
-                portfolio.portfolio_managers.length
-              }}</v-card-text>
-            </div>
-            <div class="d-flex portfolio-info pa-0 ml-5">
-              <v-card-text class="body pa-0 ml-3">Applications</v-card-text>
-              <v-card-text class="body col-1 pa-0 mr-2">{{
-                portfolio.applications.length
-              }}</v-card-text>
-            </div>
-            <div class="d-flex portfolio-info pa-0 ml-5">
-              <v-card-text class="body pa-0 ml-3">Environments</v-card-text>
-              <v-card-text class="body col-1 pa-0 mr-2">{{
-                portfolio.applications[0].environments.length
-              }}</v-card-text>
-            </div>
-            <div class="d-flex portfolio-info pa-0 ml-5">
-              <v-card-text class="body pa-0 ml-3">Task Orders</v-card-text>
-              <v-card-text class="body col-1 pa-0 mr-2">{{
-                portfolio.applications[0].environments[0].funding_source.length
-              }}</v-card-text>
-            </div>
-          </div>
-          <v-divider></v-divider>
-          <div class="mb-2">
-            <v-card-actions class="d-flex justify-space-between">
-              <v-btn x-small class="v-btn link-button mt-1 mx-1 h6"
-                >OPEN
-              </v-btn>
-              <v-btn
-                v-if="portfolio.csp_provisioning_status === 'in_progress'"
-                x-small
-                class="v-btn link-button mt-1 mx-1 h6"
-                href="#"
-                >DELETE
-              </v-btn>
-            </v-card-actions>
-          </div>
-        </v-card>
+      <v-col cols="6" v-if="portfolios">
+        <portfolio-summary :portfolios="portfolios"></portfolio-summary>
       </v-col>
     </v-row>
   </v-container>
@@ -103,11 +31,90 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Portfolios } from "types/Portfolios";
-@Component({})
+import { Portfolio, Portfolios } from "types/Portfolios";
+import PortfolioSummary from "./PortfolioSummary.vue";
+import { TaskOrderDetails, TaskOrderFile } from "types/Wizard";
+
+@Component({
+  components: {
+    PortfolioSummary,
+  },
+})
 export default class ViewPortfolio extends Vue {
-  get portfolios(): Portfolios {
-    return this.$store.getters.getAllPortfolios;
+  public portfolios: Portfolio[] = [];
+
+  private mapPortfolio(item: any): Portfolio {
+    const mapTaskOrder = function (item: any): TaskOrderDetails {
+      if (item) {
+        const taskOrderFile: TaskOrderFile = {
+          id: item.id || "-1",
+          name: item.name || "",
+          description: item.description || "",
+          created_at: "",
+          updated_at: "",
+          size: 20000,
+          status: "",
+        };
+
+        const taskOrder: TaskOrderDetails = {
+          task_order_number: item.task_order_number,
+          clins: item.clins,
+          task_order_file: taskOrderFile,
+        };
+
+        return taskOrder;
+      }
+
+      throw new Error("invalid item");
+    };
+
+    let portfolio: Portfolio = {
+      id: item.id,
+      description: item.portfolio_step ? item.portfolio_step.description : "",
+      name: item.portfolio_step ? item.portfolio_step.name : "",
+      dod_component: item.portfolio_step
+        ? item.portfolio_step.dod_components
+        : [],
+      csp_provisioning_status: item.status,
+      portfolio_managers: item.portfolio_step
+        ? item.portfolio_step.portfolio_managers
+        : [],
+      taskOrders: item.funding_step ? [mapTaskOrder(item.funding_step)] : [],
+      applications: [],
+    };
+
+    return portfolio;
+  }
+
+  public async getPortfolios(): Promise<Portfolio[]> {
+    const apiUrl =
+      "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/portfolioDrafts/";
+
+    const portfolioResponse = await this.$http.get(apiUrl, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (portfolioResponse.status === 200) {
+      return portfolioResponse.data.map((item: any) => this.mapPortfolio(item));
+    } else {
+      throw new Error(portfolioResponse.statusText);
+    }
+  }
+
+  // public async getPortfolios(): Promise<Portfolio[]> {
+  //   const portfoliosAll = this.$store.getters.getAllPortfolios;
+  //   const portfolios: Portfolio[] = [portfoliosAll["11"], portfoliosAll["10"]];
+
+  //   return portfolios;
+  // }
+
+  private async mounted(): Promise<void> {
+    this.portfolios = await (
+      await this.getPortfolios()
+    ).filter((portfolio) => portfolio.name != "");
   }
 }
 </script>

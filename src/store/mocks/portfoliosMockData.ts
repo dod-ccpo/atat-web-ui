@@ -1,4 +1,5 @@
 import { Portfolios, ApplicationMember } from "../../../types/Portfolios";
+import { mockTaskOrder } from "./taskOrderMockData";
 
 export const applicationMembersMock: ApplicationMember[] = [
   {
@@ -90,6 +91,7 @@ export const allPortfolios: Portfolios = {
     csp_provisioning_status: "complete",
     dod_component: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
+    taskOrders: mockTaskOrder.details,
     applications: [
       {
         id: "74",
@@ -129,6 +131,7 @@ export const allPortfolios: Portfolios = {
     csp_provisioning_status: "complete",
     dod_component: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
+    taskOrders: mockTaskOrder.details,
     applications: [
       {
         id: "74",
