@@ -42,8 +42,4 @@ describe("Testing CloudServiceProviderForm Component", () => {
     const validated = await wrapper.vm.validateForm();
     expect(validated).toBe(true);
   });
-  it("watches onCloudServiceProviderChange", async () => {
-    await wrapper.setData({ cloudServiceProvider: "tony" });
-    expect(wrapper.vm.cloudServiceProvider).toBe("tony");
-  });
 });
