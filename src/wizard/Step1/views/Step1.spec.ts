@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import Vuex from "vuex";
-import { createLocalVue, mount } from "@vue/test-utils";
+import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
 import stepOne from "@/wizard/Step1/views/Step1.vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
@@ -21,7 +21,7 @@ describe("Testing Step1 Component", () => {
   };
   const getters: any = {
     getStepTouched: () => (stepNumber: number) => {
-      return false;
+      return true;
     },
     getStepModel: () => (stepNumber: number) => {
       return {
@@ -57,12 +57,26 @@ describe("Testing Step1 Component", () => {
         dod_components: [],
         csp: "",
       },
+      touched: true,
     });
   });
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
+
+  // it("renders successfully and validates on mount", async () => {
+  //   store={
+  //     getters: {
+  //       getStepTouched: () => (stepNumber: number) => {
+  //         return false;
+  //       }
+  //     }
+  //   }
+  
+  //   shallowMount(stepOne, { store });
+  //   expect(await wrapper.exists()).toBe(true);
+  // });
 
   it("contains CreatePortfolioForm Component", () => {
     expect(wrapper.vm.$refs.createPortfolioForm).toBeDefined();
@@ -73,6 +87,9 @@ describe("Testing Step1 Component", () => {
   });
 
   it("test validate() ", async () => {
+    await wrapper.setData({
+      touched: false,
+    });
     const validated = await wrapper.vm.validate();
     expect(validated).toBe(false);
   });
