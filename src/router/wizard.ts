@@ -10,13 +10,15 @@ import { Route, RouteConfigSingleView } from "vue-router/types/router";
 function CreateWizardRoute(
   wizardStep: RouteConfigSingleView,
   previous?: string,
-  next?: string
+  next?: string,
+  step?: number
 ): RouteConfigSingleView {
   //adding metadata unique to wizard route
   wizardStep.meta = {
     isWizard: true,
     next: next,
     previous: previous,
+    step: step,
   };
 
   return wizardStep;
@@ -45,9 +47,33 @@ const fundingsummary: RouteConfigSingleView = {
     ),
 };
 
+const editfunding: RouteConfigSingleView = {
+  path: "editfunding/:id",
+  name: "editfunding",
+  props: true,
+  component: () =>
+    import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
+};
+
 const addapplication: RouteConfigSingleView = {
   path: "addapplication",
   name: "addapplication",
+  component: () =>
+    import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
+};
+
+const applicationsummary: RouteConfigSingleView = {
+  path: "applicationsummary",
+  name: "applicationsummary",
+  component: () =>
+    import(
+      /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3Summary.vue"
+    ),
+};
+
+const editapplication: RouteConfigSingleView = {
+  path: "editapplication/:id",
+  name: "editapplication",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
 };
@@ -89,45 +115,37 @@ const wizard: RouteConfigSingleView = {
     import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
   children: [
     //main routes
-    CreateWizardRoute(addportfolio, undefined, addfunding.name),
-    CreateWizardRoute(addfunding, addportfolio.name, fundingsummary.name),
-    CreateWizardRoute(fundingsummary, addfunding.name, addapplication.name),
-    CreateWizardRoute(addapplication, fundingsummary.name, addteammembers.name),
+    CreateWizardRoute(addportfolio, undefined, addfunding.name, 1),
+    CreateWizardRoute(addfunding, addportfolio.name, fundingsummary.name, 2),
+    CreateWizardRoute(fundingsummary, addfunding.name, addapplication.name, 2),
+    CreateWizardRoute(
+      addapplication,
+      fundingsummary.name,
+      applicationsummary.name,
+      3
+    ),
+    CreateWizardRoute(
+      applicationsummary,
+      addapplication.name,
+      addteammembers.name,
+      3
+    ),
+    CreateWizardRoute(
+      editapplication,
+      applicationsummary.name,
+      applicationsummary.name,
+      3
+    ),
     CreateWizardRoute(
       addteammembers,
-      fundingsummary.name,
-      reviewandsubmit.name
+      applicationsummary.name,
+      reviewandsubmit.name,
+      4
     ),
-    CreateWizardRoute(reviewandsubmit, addteammembers.name, postreview.name),
-    CreateWizardRoute(postreview, reviewandsubmit.name, submit.name),
-    CreateWizardRoute(submit, postreview.name),
-
-    {
-      path: "editfunding/:id",
-      name: "editfunding",
-      props: true,
-      component: () =>
-        import(
-          /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"
-        ),
-    },
-    // {
-    //   path: "applicationsummary",
-    //   name: "applicationsummary",
-    //   component: () =>
-    //     import(
-    //       /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
-    //     ),
-    // },
-    // {
-    //   path: "editapplication:id",
-    //   name: "editapplication",
-    //   component: () =>
-    //     import(
-    //       /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"
-    //     ),
-    // },
-
+    CreateWizardRoute(reviewandsubmit, addteammembers.name, postreview.name, 5),
+    CreateWizardRoute(postreview, reviewandsubmit.name, submit.name, 5),
+    CreateWizardRoute(submit, postreview.name, undefined, 5),
+    CreateWizardRoute(editfunding, undefined, reviewandsubmit.name, 2),
     {
       path: "showvalidationsummary",
       name: "showvalidationsummary",

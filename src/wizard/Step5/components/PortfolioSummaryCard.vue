@@ -70,7 +70,6 @@ export default class PortfolioSummaryCard extends Vue {
   }
 
   public onEdit(): void {
-    debugger;
     this.$router.push({
       name: "addportfolio",
       params: { id: `${this.portfolio.id}` },

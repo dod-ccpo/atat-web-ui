@@ -138,7 +138,7 @@
                     outlined
                     :ripple="false"
                     id="remove_file"
-                    class="error-button no-border"
+                    class="error-button"
                     @click.stop="removeFile(item.name)"
                   >
                     Remove
@@ -177,6 +177,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: false }) private multiple!: boolean;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: 0 }) private maxFileSize!: number; // in megabytes
+  @Prop({ default: 0 }) private stepNumber!: number;
   @PropSync("pdfFile") _pdfFile!: TaskOrderFile;
   @PropSync("errorMessageFromParent", {
     default: "Error Message from parent component validation",
@@ -212,7 +213,16 @@ export default class ATATFileUpload extends Vue {
   }
 
   get isFileUploaded(): boolean {
-    return this.uploadedFile.length > 0;
+    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(
+      this.stepNumber
+    );
+    if (stepHasBeenTouched) {
+      this.isFileUploadedSucessfully = this._pdfFile.name !== "";
+      this.uploadedFile = [{ name: this._pdfFile.name }];
+      return this.isFileUploadedSucessfully;
+    } else {
+      return this.uploadedFile.length > 0;
+    }
   }
 
   /**

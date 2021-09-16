@@ -1,4 +1,5 @@
 import { Portfolios, ApplicationMember } from "../../../types/Portfolios";
+import { mockTaskOrder } from "./taskOrderMockData";
 
 export const applicationMembersMock: ApplicationMember[] = [
   {
@@ -90,11 +91,12 @@ export const allPortfolios: Portfolios = {
     csp_provisioning_status: "complete",
     dod_component: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
+    taskOrders: mockTaskOrder.details,
     applications: [
       {
         id: "74",
         name: "Tracker Application",
-        description: "APPLICATION_DESCRIPTION",
+        description: "Unclassified application to track internal tasks",
         environments: [
           {
             id: "765d364f-d7f1-4f28-be8f-123d915b68bb",
@@ -129,6 +131,7 @@ export const allPortfolios: Portfolios = {
     csp_provisioning_status: "complete",
     dod_component: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
+    taskOrders: mockTaskOrder.details,
     applications: [
       {
         id: "74",

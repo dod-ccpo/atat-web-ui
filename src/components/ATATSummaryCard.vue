@@ -6,110 +6,128 @@
       class="v-card ma-9 ml-0 body"
     >
       <v-card-text class="pa-4 text-center">
-        <span class="body-lg text--base-dark"
-          >You currently don't have any {{ emptyCard }} saved</span
-        >
+        <span class="body-lg text--base-dark">{{ message }}</span>
       </v-card-text>
     </v-card>
-    <v-card
-      v-show="data.cards.length > 0"
-      width="40rem"
-      class="v-card ma-9 ml-0 body"
-      v-for="(card, index) in data.cards"
-      :key="index"
-    >
-      <v-card-title class="d-flex justify-space-between align-start pa-6 pb-5">
-        <div>
-          <div class="type body" v-if="card.type">
-            {{ card.type }}
-          </div>
-          <div class="d-flex align-start">
-            <v-btn
-              :id="'header_link_' + index"
-              :ripple="false"
-              @click="leftButtonClicked(card)"
-              small
-              class="h3 link-button no-focus-shift pa-0"
-            >
-              <div class="font-weight-bold">
-                <div>{{ card.title }}</div>
+    <v-row align="stretch">
+      <v-col cols="4" v-for="(card, index) in data.cards" :key="index">
+        <v-card
+          v-show="data.cards.length > 0"
+          :width="`${cardWidth}rem`"
+          class="v-card ma-9 ml-0 body"
+        >
+          <v-card-title
+            class="d-flex justify-space-between align-start pa-6 pb-5"
+          >
+            <div>
+              <div
+                class="type body"
+                v-if="card.type && card.type === 'TASK ORDER'"
+              >
+                {{ card.type }}
               </div>
-            </v-btn>
-            <v-btn
-              small
-              :ripple="false"
-              @click="leftButtonClicked(card)"
-              class="
-                no-focus-shift
-                pa-0
-                no-text-decoration no-border
-                link-button
-                mx-n2
-              "
-              ><v-icon v-if="card.showChevronRight" x-large>
-                chevron_right
-              </v-icon>
-            </v-btn>
-          </div>
-        </div>
-        <div>
-          <v-icon color="success"> check_circle </v-icon>
-        </div>
-      </v-card-title>
-      <v-card-subtitle class="body" v-if="card.description">
-        {{ card.description }}
-      </v-card-subtitle>
+              <div class="d-flex align-start">
+                <v-btn
+                  :id="'header_link_' + index"
+                  :ripple="false"
+                  @click="leftButtonClicked(card)"
+                  small
+                  class="h3 link-button no-focus-shift pa-0"
+                  :class="{ 'no-border': card.type === 'APPLICATION' }"
+                >
+                  <div class="font-weight-bold">
+                    <div>{{ card.title }}</div>
+                  </div>
+                </v-btn>
+                <v-btn
+                  small
+                  :ripple="false"
+                  @click="leftButtonClicked(card)"
+                  class="
+                    no-focus-shift
+                    pa-0
+                    no-text-decoration no-border
+                    link-button
+                    mx-n2
+                  ">
+                  <v-icon v-if="card.showChevronRight" x-large>
+                    chevron_right
+                  </v-icon>
+                </v-btn>
+              </div>
+            </div>
+            <div>
+              <v-icon color="success"> check_circle </v-icon>
+            </div>
+          </v-card-title>
+          <v-card-subtitle
+            class="body-lg black--text ml-2"
+            v-if="card.description"
+          >
+            {{ card.description }}
+          </v-card-subtitle>
 
-      <v-card-text class="mx-0 px-6">
-        <div
-          class="body-lg d-flex justify-space-between black--text grouped-items"
-          v-for="(item, idx) in card.items"
-          :key="idx"
-        >
-          <div class="ml-4">{{ item.title }}</div>
-          <div v-if="item.value">
-            <div>{{ item.prefix }}&nbsp;{{ item.value }}</div>
-          </div>
-        </div>
-      </v-card-text>
-      <v-divider></v-divider>
-      <v-card-actions class="d-flex justify-space-between pa-0">
-        <v-btn
-          class="
-            link-button
-            no-focus-shift
-            link-body-md
-            text-uppercase
-            my-4
-            mx-6
-            px-2
-            py-0
-          "
-          small
-          @click="leftButtonClicked(card)"
-          :id="card.leftButtonText + '_' + index"
-          :ripple="false"
-          >{{ card.leftButtonText }}</v-btn
-        >
-        <v-btn
-          class="
-            link-button
-            no-focus-shift
-            link-body-md
-            text-uppercase
-            my-4
-            mx-6
-            py-0
-            px-2
-          "
-          small
-          @click="rightButtonClicked(card)"
-          :ripple="false"
-          :id="card.rightButtonText + '_' + (index + 1)"
-          >{{ card.rightButtonText }}</v-btn
-        >
-      </v-card-actions>
-    </v-card>
+          <v-card-text
+            class="mx-0 px-6"
+            style="min-height: 125px; max-height: 125px"
+          >
+            <div
+              class="
+                body-lg
+                d-flex
+                justify-space-between
+                black--text
+                grouped-items
+              "
+              v-for="(item, idx) in card.items"
+              :key="idx"
+            >
+              <div class="ml-4">{{ item.title }}</div>
+              <div v-if="item.value">
+                <div>{{ item.prefix }}&nbsp;{{ item.value }}</div>
+              </div>
+            </div>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions class="d-flex justify-space-between pa-0">
+            <v-btn
+              class="
+                link-button
+                no-focus-shift
+                link-body-md
+                text-uppercase
+                my-4
+                mx-6
+                px-2
+                py-0
+              "
+              small
+              @click="leftButtonClicked(card)"
+              :id="card.leftButtonText + '_' + index"
+              :ripple="false"
+              >{{ card.leftButtonText }}</v-btn
+            >
+            <v-btn
+              class="
+                link-button
+                no-focus-shift
+                link-body-md
+                text-uppercase
+                my-4
+                mx-6
+                py-0
+                px-2
+              "
+              small
+              @click="rightButtonClicked(card)"
+              :ripple="false"
+              :id="card.rightButtonText + '_' + (index + 1)"
+              >{{ card.rightButtonText }}</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
     <atat-modal-delete
       v-show="hasDialog"
       :showDialogWhenClicked.sync="showDialogWhenClicked"
@@ -137,6 +155,9 @@ export default class ATATSummaryCard extends Vue {
   @Prop({ default: "" })
   private emptyCard!: string;
 
+  @Prop({ default: "40" })
+  private cardWidth!: string;
+
   @Prop({ default: "OK" })
   private okText!: string;
 
@@ -157,6 +178,7 @@ export default class ATATSummaryCard extends Vue {
   private dialogTitle = "";
   private showDialogWhenClicked = false;
   private cardSelected: ATATSummaryCardItem = {};
+  private message = "";
 
   @Watch("isItemDeleted")
   protected deleteItem(newVal: string): void {
@@ -175,6 +197,7 @@ export default class ATATSummaryCard extends Vue {
         this.$router.push({ name: "editfunding", params: { id: `${id}` } });
         break;
       case "applicationsummary":
+        id = card.id;
         this.$router.push({
           name: "editapplication",
           params: { id: `${id}` },
@@ -189,8 +212,15 @@ export default class ATATSummaryCard extends Vue {
     this.isItemDeleted = false;
     this.cardSelected = card;
     if (card.type === "TASK ORDER") {
+      this.message = "You currently don't have any Task Orders saved";
       this.dialogTitle = `Delete Task Order ${card.title}`;
       this.dialogMessage = `This Task Order will be permanently removed from your ATAT Portfolio. Any funding details you added will not be saved`;
+    }
+
+    if (card.type === "APPLICATION") {
+      this.message = "You currently don't have any Applications created";
+      this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
+      this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
     }
     this.showDialogWhenClicked = true;
   }

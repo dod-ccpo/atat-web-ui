@@ -36,9 +36,10 @@
 
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
-import { VCard } from "vuetify/lib";
+import Vue from "vue";
+
 @Component({})
-export default class SummaryCard extends VCard {
+export default class SummaryCard extends Vue {
   @Prop({ default: "Title" })
   private title!: string;
   @Prop({ default: "Description" })
@@ -68,7 +69,6 @@ export default class SummaryCard extends VCard {
   //     return true;
   //   }
   private handleClicked(editPlace: string) {
-    debugger;
     this.$router.push({ name: editPlace });
   }
   //   @Emit()

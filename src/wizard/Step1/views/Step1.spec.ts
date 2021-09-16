@@ -17,12 +17,27 @@ describe("Testing Step1 Component", () => {
   let store: any;
   const actions: any = {
     updateWizardStep: jest.fn(),
+    saveStepModel: jest.fn(),
+  };
+  const getters: any = {
+    getStepTouched: () => (stepNumber: number) => {
+      return false;
+    },
+    getStepModel: () => (stepNumber: number) => {
+      return {
+        name: "",
+        description: "",
+        dod_components: [],
+        csp: "",
+      };
+    },
   };
 
   beforeEach(() => {
     vuetify = new Vuetify();
     store = new Vuex.Store({
       actions,
+      getters,
     });
     wrapper = mount(stepOne, {
       store,
@@ -34,6 +49,14 @@ describe("Testing Step1 Component", () => {
         "atat-text-area",
         "atat-button-card",
       ],
+    });
+    wrapper.setData({
+      model: {
+        name: "",
+        description: "",
+        dod_components: [],
+        csp: "",
+      },
     });
   });
 
@@ -49,9 +72,8 @@ describe("Testing Step1 Component", () => {
     expect(wrapper.vm.$refs.cloudServiceProviderForm).toBeDefined();
   });
 
-  it('test validate() ', async () => {
+  it("test validate() ", async () => {
     const validated = await wrapper.vm.validate();
-    expect(validated).toBe(true);
+    expect(validated).toBe(false);
   });
-
 });
