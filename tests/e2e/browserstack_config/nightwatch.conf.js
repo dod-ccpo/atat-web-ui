@@ -11,7 +11,6 @@ const chromeArgs = [];
 
 if (startHeadless) {
   chromeArgs.push("headless");
-
 }
 
 const defaultSettings = {
@@ -81,7 +80,6 @@ function webdriverServerSettings() {
       port: 443,
       cli_args: {
         "webdriver.chrome.driver": chromedriver.path,
-
       },
     },
     test_settings: {
