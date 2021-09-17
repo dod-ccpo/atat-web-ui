@@ -19,6 +19,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 selenium-server.log*
+local.log*
 
 # Editor directories and files
 .idea
