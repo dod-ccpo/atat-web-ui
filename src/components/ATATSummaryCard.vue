@@ -49,7 +49,8 @@
                     no-text-decoration no-border
                     link-button
                     mx-n2
-                  ">
+                  "
+                >
                   <v-icon v-if="card.showChevronRight" x-large>
                     chevron_right
                   </v-icon>
@@ -139,13 +140,14 @@
       no-click-animation
       :okText="okText"
       :width="dialogWidth + 'px'"
+      v-on:delete="onDelete"
     />
   </div>
 </template>
 
 <script lang="ts">
 import { ATATSummaryCardItem, ATATSummaryCards } from "types/Wizard";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
@@ -206,6 +208,10 @@ export default class ATATSummaryCard extends Vue {
       default:
       // code block
     }
+
+    if (card.type === "PORTFOLIO") {
+      id = card.id;
+    }
   }
 
   private rightButtonClicked(card: ATATSummaryCardItem): void {
@@ -222,7 +228,18 @@ export default class ATATSummaryCard extends Vue {
       this.dialogTitle = `Delete '${card.title}' from your portfolio?`;
       this.dialogMessage = `This application will be permanently removed from your ATAT Portfolio. Any environment details you added will not be saved.`;
     }
+
+    if (card.type === "PORTFOLIO") {
+      this.message = "You're removing your portfolio";
+      this.dialogTitle = `Delete  '${card.title}' <br> from your portfolio drafts`;
+      this.dialogMessage = `This portfolio and any details you added will be permanently removed`;
+    }
     this.showDialogWhenClicked = true;
+  }
+
+  @Emit("delete")
+  private onDelete(): string {
+    return this.cardSelected.id || "";
   }
 }
 </script>

@@ -3,6 +3,8 @@
     emptyCard="Portfolio"
     cardWidth="120"
     :data="cardsData"
+    :itemToDelete.sync="itemToDelete"
+    v-on:delete="(id) => $emit('delete', id)"
   ></atat-summary-card>
 </template>
 
@@ -24,6 +26,8 @@ export default class PortfolioSummary extends Vue {
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
+
+  private itemToDelete = "";
 
   // maps from portfolio to summary grouped items
   private mapItems(portfolio: Portfolio): ATATSummaryCardGroupedItems[] {
@@ -63,12 +67,14 @@ export default class PortfolioSummary extends Vue {
   // maps portfolio data to summary card
   private mapToSummaryCard(portfolio: Portfolio): ATATSummaryCardItem {
     const cardItem: ATATSummaryCardItem = {
+      id: portfolio.id,
       type: "PORTFOLIO",
       title: portfolio.name,
       description: portfolio.description,
       showChevronRight: true,
       items: this.mapItems(portfolio),
       leftButtonText: "OPEN",
+      rightButtonText: "DELETE",
     };
 
     return cardItem;

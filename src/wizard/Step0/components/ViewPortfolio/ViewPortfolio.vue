@@ -22,7 +22,10 @@
     </v-row>
     <v-row>
       <v-col cols="6" v-if="portfolios">
-        <portfolio-summary :portfolios="portfolios"></portfolio-summary>
+        <portfolio-summary
+          :portfolios="portfolios"
+          v-on:delete="onDeletePortfolio"
+        ></portfolio-summary>
       </v-col>
     </v-row>
   </v-container>
@@ -34,6 +37,12 @@ import { Component } from "vue-property-decorator";
 import { Portfolio } from "types/Portfolios";
 import PortfolioSummary from "./PortfolioSummary.vue";
 import { TaskOrderDetails, TaskOrderFile } from "types/Wizard";
+
+const apiUrl =
+  "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/";
+const getDraftsUrl = (baseUrl: string) => `${baseUrl}/portfolioDrafts/`;
+const deleteDraftUrl = (baseUrl: string, portfolioId: string) =>
+  `${baseUrl}/portfolioDrafts/${portfolioId}`;
 
 @Component({
   components: {
@@ -86,11 +95,8 @@ export default class ViewPortfolio extends Vue {
     return portfolio;
   }
 
-  public async getPortfolios(): Promise<Portfolio[]> {
-    const apiUrl =
-      "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/portfolioDrafts/";
-
-    const portfolioResponse = await this.$http.get(apiUrl, {
+  private async getPortfolios(): Promise<Portfolio[]> {
+    const portfolioResponse = await this.$http.get(getDraftsUrl(apiUrl), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -103,10 +109,30 @@ export default class ViewPortfolio extends Vue {
     }
   }
 
+  private async deletePortfolio(id: string): Promise<void> {
+    const portfolioResponse = await this.$http.delete(
+      deleteDraftUrl(apiUrl, id)
+    );
+
+    if (portfolioResponse.status !== 204) {
+      throw Error(`error deleting portfolio with id:  ${id}`);
+    } else {
+      await this.loadPortfolios();
+    }
+  }
+
+  private async loadPortfolios() {
+    this.portfolios = await await this.getPortfolios();
+  }
+
   private async mounted(): Promise<void> {
-    this.portfolios = await (
-      await this.getPortfolios()
-    ).filter((portfolio) => portfolio.name != "");
+    await this.loadPortfolios();
+  }
+
+  private async onDeletePortfolio(id: string) {
+    if (id != "") {
+      await this.deletePortfolio(id);
+    }
   }
 }
 </script>
