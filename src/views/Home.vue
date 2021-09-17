@@ -32,12 +32,6 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-center mt-9">
-        <button
-          className="btn btn-primary m-1"
-          onClick="{() => Auth.federatedSignIn({customProvider: 'IdP'})}"
-        >
-          Single Sign On
-        </button>
         <v-alert
           outlined
           color="cyan"
@@ -66,16 +60,22 @@ import Amplify, { Auth, Hub } from "aws-amplify";
 @Component({})
 export default class Home extends Vue {
   private async login() {
-
     let authenticatedUser = Auth.federatedSignIn({
       customProvider: "IdP",
     });
-    
-    // await Vue.nextTick();
+
     console.log(authenticatedUser);
-    let tony = "";
-    // this.$store.dispatch("login");
-    // this.$router.push("/dashboard");
+
+    //todo something should be returned that says
+    // user has been if validated
+    // if (isUserisValidated){
+
+    this.$store.dispatch("login");
+    this.$router.push("/dashboard");
+    //}
+    // else {
+    // handle invalidUser
+    //}
   }
 
   private mounted(): void {
