@@ -28,6 +28,7 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
+    rightSideDrawer: false,
     isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
@@ -103,6 +104,9 @@ export default new Vuex.Store({
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
     },
+    changeRightSideDrawer(state, status: boolean) {
+      state.rightSideDrawer = status;
+    },
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
@@ -164,6 +168,12 @@ export default new Vuex.Store({
     },
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
+    },
+    openRightSideDrawer({ commit }) {
+      commit("changeRightSideDrawer", true);
+    },
+    closeRightSideDrawer({ commit }) {
+      commit("changeRightSideDrawer", false);
     },
   },
   modules: {},
