@@ -8,8 +8,12 @@ import vuetify from "./plugins/vuetify";
 import moment from "moment";
 import cssVars from "css-vars-ponyfill"; // needed to process css vars in IE11
 import axios from 'axios';
-import VueAxios from 'vue-axios'
+import VueAxios from 'vue-axios';
 
+// below 3 scripts for Vuetify in IE
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import '@webcomponents/webcomponentsjs/webcomponents-bundle.js'
 
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
