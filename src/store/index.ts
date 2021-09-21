@@ -120,7 +120,7 @@ export default new Vuex.Store({
       state.portfolioSteps[stepIndex].model = model;
       state.portfolioSteps[stepIndex].touched = true;
 
-      const es: string[] = state.erroredSteps;
+      const es: number[] = state.erroredSteps;
       const erroredStepIndex = es.indexOf(stepNumber);
       if (erroredStepIndex > -1 && valid) {
         es.splice(erroredStepIndex, 1);
@@ -130,7 +130,7 @@ export default new Vuex.Store({
     },
 
     doSetErroredStep(state, [stepNumber, isErroredStep]) {
-      const es: string[] = state.erroredSteps;
+      const es: number[] = state.erroredSteps;
       if (isErroredStep) {
         es.push(stepNumber);
       } else {
