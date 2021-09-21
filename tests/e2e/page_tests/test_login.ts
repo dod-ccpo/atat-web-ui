@@ -21,7 +21,7 @@ const signInPage = {
       .which.startsWith("A")
       .and.endsWith("TAT logo");
     home.expect.element("@atatText").text.to.contain("Access the ATAT Cloud");
-    home.expect.element("@atatlogo").to.be.visible;
+    home.assert.visible("@atatlogo");
     home.expect
       .element("@certSelectionText")
       .text.to.contain("Certificate Selection");
@@ -36,7 +36,7 @@ const signInPage = {
         home.assert.equal(result.value, certTextBody);
       }
     );
-    home.expect.element("@lastLoginFooter").to.be.visible;
+    home.assert.visible("@lastLoginFooter");
     home.getText(
       "@lastLoginFooter",
       function (result: { status: number; value: any }) {
