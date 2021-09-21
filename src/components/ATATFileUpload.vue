@@ -169,6 +169,18 @@ import { UploadedFile } from "../../types/FormFields";
 import { TaskOrderFile } from "types/Wizard";
 import axios from "axios";
 
+function emptyTaskOrderFile(): TaskOrderFile {
+  return {
+    description: "",
+    id: "",
+    created_at: "",
+    updated_at: "",
+    size: 0,
+    name: "",
+    status: "Pending",
+  };
+}
+
 @Component
 export default class ATATFileUpload extends Vue {
   //props and PropSyncs
@@ -179,7 +191,8 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: 0 }) private maxFileSize!: number; // in megabytes
   @Prop({ default: 0 }) private stepNumber!: number;
-  @PropSync("pdfFile") _pdfFile!: TaskOrderFile;
+  @PropSync("pdfFile", { default: emptyTaskOrderFile })
+  _pdfFile!: TaskOrderFile;
   @PropSync("errorMessageFromParent", {
     default: "Error Message from parent component validation",
   })
