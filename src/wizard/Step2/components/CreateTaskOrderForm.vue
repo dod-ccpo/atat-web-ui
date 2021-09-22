@@ -215,6 +215,5 @@ export default class CreateTaskOrderForm extends Vue {
 
     return validated.every((v) => v === true);
   }
-
 }
 </script>
