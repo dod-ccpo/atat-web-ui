@@ -505,7 +505,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(
         (v: string) =>
           Date.parse(v) > Date.parse(this._pop_start_date) ||
-          "The PoP end date must be before the start date"
+          "The PoP end date must be after the start date"
       );
       validationRules.push(
         (v: string) =>
