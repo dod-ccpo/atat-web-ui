@@ -99,6 +99,16 @@ export default new Vuex.Store({
         model: {},
       },
     ],
+    user: {
+      given_name: "Maria",
+      family_name: "Missionowner",
+      email: "maria.missionowner-civ@mail.mil",
+      phone_number: "(555)-555-5555",
+      service_branch: "U.S. Army",
+      citizenship: "United States",
+      dod_id: "1234567890",
+      designation: "Civilian",
+    },
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
@@ -289,5 +299,6 @@ export default new Vuex.Store({
         throw new Error(`unable to locate application with id  ${id}`);
       }
     },
+    getUser: (state) => state.user,
   },
 });

@@ -24,7 +24,12 @@
       top: .4rem;
       margin: 0 1rem 0 .5rem;
     }
-
+  .info_lighter {
+    border-width: 0px !important;
+    border-style: solid !important;
+    border-color: transparent !important;
+    background-color:  #E7f6F8 !important;
+  }
     .warning_lighter {
       border-color: var(--v-warning-base) !important;
       border-width: 0px !important;
