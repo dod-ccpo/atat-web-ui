@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <CreateTaskOrderForm
+    <create-task-order-form
       ref="createTaskOrderForm"
       :task_order_number.sync="taskOrderDetails.task_order_number"
       :task_order_file.sync="taskOrderDetails.task_order_file"
@@ -30,11 +30,13 @@ export default class Step_2 extends Vue {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  private taskOrderDetails: TaskOrderDetails = this.$store.getters.getStepModel(2);
+  private taskOrderDetails: TaskOrderDetails =
+    this.$store.getters.getStepModel(2);
   private touched = false;
 
   public async validate(): Promise<boolean> {
     let valid = false;
+    debugger;
     valid = await this.$refs.createTaskOrderForm.validateForm();
     this.$store.dispatch("saveStepModel", [this.taskOrderDetails, 2, valid]);
     return valid;
