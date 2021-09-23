@@ -193,11 +193,11 @@ export default class CreateTaskOrderForm extends Vue {
     let validated: boolean[] = [];
     this.signedTaskOrderErrorMessage = "";
 
-    if (this._task_order_file.name === "") {
+    if (this._task_order_file && this._task_order_file.name === "") {
       this.fileUploadRequiredErrorMessage =
         "Please upload your Task Order document";
     }
-    validated.push(this._task_order_file.name !== "");
+    validated.push(this._task_order_file && this._task_order_file.name !== "");
 
     if (this.signedTaskOrder === "") {
       this.signedTaskOrderErrorMessage =
@@ -206,9 +206,10 @@ export default class CreateTaskOrderForm extends Vue {
     validated.push(this.signedTaskOrder !== "");
 
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
-
-    validated.push(await clinsCards.validate());
-
+    debugger;
+    if (clinsCards && clinsCards.validate){    
+      validated.push(await clinsCards.validate());
+    }
     await this.$nextTick(() => {
       validated.push(this.Form.validate());
     });
