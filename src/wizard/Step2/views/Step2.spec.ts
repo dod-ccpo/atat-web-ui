@@ -91,7 +91,6 @@ describe("Testing Step1 Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
-  it("renders successfully", async () => {});
 
   // it("contains CreatePortfolioForm Component", () => {
   //   expect(wrapper.vm.$refs.createPortfolioForm).toBeDefined();
