@@ -4,6 +4,8 @@ import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
+import { Application, Portfolio, Portfolios } from "types/Portfolios";
+import PortfolioDraftsApi from "@/api/portfolios";
 
 Vue.use(Vuex);
 
@@ -16,12 +18,20 @@ const vuexLocalStorage = new VuexPersist({
   // filter: mutation => (true)
 });
 
+function generateGuid(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
     isUserAuthorizedToProvisionCloudResources: false,
-    portfolios: allPortfolios,
+    portfolios: [],
     taskOrders: mockTaskOrder,
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
@@ -112,7 +122,7 @@ export default new Vuex.Store({
       state.portfolioSteps[stepIndex].model = model;
       state.portfolioSteps[stepIndex].touched = true;
 
-      const es: string[] = state.erroredSteps;
+      const es: number[] = state.erroredSteps;
       const erroredStepIndex = es.indexOf(stepNumber);
       if (erroredStepIndex > -1 && valid) {
         es.splice(erroredStepIndex, 1);
@@ -122,12 +132,16 @@ export default new Vuex.Store({
     },
 
     doSetErroredStep(state, [stepNumber, isErroredStep]) {
-      const es: string[] = state.erroredSteps;
+      const es: number[] = state.erroredSteps;
       if (isErroredStep) {
         es.push(stepNumber);
       } else {
         es.splice(stepNumber, 1);
       }
+    },
+    updatePortfolios(state, portfolios: Portfolio[]) {
+      debugger;
+      Vue.set(state, "portfolios", [...portfolios]);
     },
   },
 
@@ -157,6 +171,28 @@ export default new Vuex.Store({
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
+    //todo
+    async loadPortfolios({ commit }) {
+      const apiClient = new PortfolioDraftsApi();
+      const portfolios = await apiClient.getAll();
+      commit("updatePortfolios", portfolios);
+    },
+    // updatePortfolio({commit}, portfolio: Portfolio){
+    //   //todo is
+    // },
+
+    // saveCurrentStep({commit}){
+
+    // },
+    // saveStep1({commit}){
+    // },
+
+    // createPortfolioDraft(){
+
+    //   //todo call api get draft ID
+    //   //update store step model ids with draft ID
+
+    // }
   },
   modules: {},
   getters: {
@@ -214,7 +250,9 @@ export default new Vuex.Store({
     },
     getPortfolioById: (state) => (id: string) => {
       const values = Object.values(state.portfolios);
-      const portfoliobyId = values.filter((portfolio) => portfolio.id === id);
+      const portfoliobyId = values.filter(
+        (portfolio: Portfolio) => portfolio.id === id
+      );
       if (portfoliobyId.length > 0) {
         return portfoliobyId[0];
       } else {
@@ -223,7 +261,9 @@ export default new Vuex.Store({
     },
     deletePortfolioById: (state) => (id: string) => {
       const values = Object.values(state.portfolios);
-      const portfolios = values.filter((portfolio) => portfolio.id === id);
+      const portfolios = values.filter(
+        (portfolio: Portfolio) => portfolio.id === id
+      );
       return portfolios;
     },
     getMockTaskOrders(state) {
@@ -262,8 +302,10 @@ export default new Vuex.Store({
       return state.portfolioSteps[stepIndex].touched;
     },
     getApplicationByID: (state) => (id: string) => {
-      const portfolio = state.portfolios[11];
-      const application = portfolio.applications.find((app) => app.id === id);
+      const portfolio = state.portfolios[11] as Portfolio;
+      const application = portfolio.applications.find(
+        (app: Application) => app.id === id
+      );
 
       if (application) {
         return application;

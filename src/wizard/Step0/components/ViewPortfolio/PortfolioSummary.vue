@@ -82,6 +82,10 @@ export default class PortfolioSummary extends Vue {
 
   @Watch("portfolios")
   onPortfoliosChanged() {
+
+    if(!this.portfolios)
+    return;
+    
     const cards = this.portfolios.map<ATATSummaryCardItem>((portfolio) =>
       this.mapToSummaryCard(portfolio)
     );

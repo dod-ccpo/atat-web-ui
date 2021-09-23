@@ -11,13 +11,25 @@ Component.registerHooks(["beforeRouteLeave"]);
  */
 export default class ValidatableWizardStep extends Validatable {
   validate!: () => Promise<boolean>;
+  //todo: stash in coming model from beforeRouteEnter
+  //private currentModel: any;
+  //async beforeRouteEnter() {
+
+  //todo grab model for current step from the store
+
+  //};
 
   public async beforeRouteLeave(
     to: Route,
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
+    //todo compare out going model to in coming model
+    // if changes then set touched to true
+    // if changes validate
+    // if valid save
     await this.validate();
+
     next();
   }
 }
