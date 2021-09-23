@@ -36,7 +36,6 @@ export default class Step_2 extends Vue {
 
   public async validate(): Promise<boolean> {
     let valid = false;
-    debugger;
     valid = await this.$refs.createTaskOrderForm.validateForm();
     this.$store.dispatch("saveStepModel", [this.taskOrderDetails, 2, valid]);
     return valid;

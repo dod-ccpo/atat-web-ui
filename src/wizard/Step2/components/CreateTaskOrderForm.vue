@@ -206,7 +206,7 @@ export default class CreateTaskOrderForm extends Vue {
     validated.push(this.signedTaskOrder !== "");
 
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
-    debugger;
+ 
     if (clinsCards && clinsCards.validate) {
       validated.push(await clinsCards.validate());
     }
