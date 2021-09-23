@@ -4,8 +4,9 @@
     elevation="0"
     width="100%"
     class="d-flex justify-end"
-    style="position: fixed; bottom: 40px; left: 0px"
   >
+    <!--    style="position: fixed; bottom: 40px; left: 0px"-->
+
     <v-btn
       v-for="button in pageButtonPanel.buttons"
       :ripple="false"

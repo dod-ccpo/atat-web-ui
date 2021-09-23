@@ -1,19 +1,18 @@
-
 export interface NavItem {
-    title: string;
-    url?: string;
-    action?: string;
-    cssClass?: string;
-    newWindow?: string | boolean; // = false | true
-    children?: NavItem[]; // = [];
-    order?: number;
-    attachment?: number;
-    parentIndex?: number;
-    uuid?: number;
-    id?: number;
-    icon?: string;
-    iconPlacement?: string;
-  }
+  title: string;
+  url?: string;
+  action?: string;
+  cssClass?: string;
+  newWindow?: string | boolean; // = false | true
+  children?: NavItem[]; // = [];
+  order?: number;
+  attachment?: number;
+  parentIndex?: number;
+  uuid?: number;
+  id?: number;
+  icon?: string;
+  iconPlacement?: string;
+}
 
 export interface Meta {
   key: string;
@@ -30,4 +29,3 @@ export interface Nav {
 export interface Navs {
   [key: string]: Nav;
 }
-  
