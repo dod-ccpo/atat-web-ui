@@ -27,10 +27,12 @@ describe("Testing Step2 Component", () => {
   const actions: any = {
     updateWizardStep: jest.fn(),
     saveStepModel: jest.fn(),
-
   };
 
   const getters: any = {
+    deleteTaskOrderByName: () => (id: string) => {
+      return [];
+    },
     getMockTaskOrders: () => {
       const mockTaskOrders: TaskOrders = {
         details: [
@@ -59,44 +61,16 @@ describe("Testing Step2 Component", () => {
       }
       return mockTaskOrders;
     }
-    // getStepTouched: () => (stepNumber: number) => {
-    //   return false;
-    // },
-    // getStepModel: () => (stepNumber: number) => {
-    //   return {
-    //     name: "",
-    //     description: "",
-    //     dod_components: [],
-    //     csp: "",
-    //   };
-    // },
-    // getTaskOrderByName: () => (id: string) => {
-    //   return [
-    //     {
-    //       task_order_number: "TaskOrder_0001",
-    //       clins: [
-    //         {
-    //           clin_number: "0001",
-    //           idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
-    //           total_clin_value: 200000,
-    //           obligated_funds: 10000,
-    //           pop_start_date: "2021-09-01",
-    //           pop_end_date: "2022-09-01",
-    //         },
-    //       ],
-    //     },
-    //   ];
-    // },
   };
 
-  const routes = [
-    {
-      name: "addfunding",
-      path: "/wizard/addfunding",
-    },
-  ];
+  // const routes = [
+  //   {
+  //     name: "addfundingX",
+  //     path: "/wizard/addfundingX",
+  //   },
+  // ];
 
-  const router = new VueRouter({ routes });
+  // const router = new VueRouter({ routes });
 
   beforeEach(() => {
 
@@ -109,35 +83,14 @@ describe("Testing Step2 Component", () => {
       store,
       localVue,
       vuetify,
-      router,
+      // router,
       stubs: [
         "atat-summary-card",
         "atat-button-card",
       ],
     });
     wrapper.setData({
-      // taskOrderDetails: {
-      //   task_order_number: "",
-      //   task_order_file: {
-      //     description: "",
-      //     id: "",
-      //     created_at: "",
-      //     updated_at: "",
-      //     size: 0,
-      //     name: "",
-      //     status: "",
-      //   },
-      //   clins: [
-      //     {
-      //       clin_number: "0001",
-      //       idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
-      //       total_clin_value: 200000,
-      //       obligated_funds: 10000,
-      //       pop_start_date: "2021-09-01",
-      //       pop_end_date: "2022-09-01",
-      //     },
-      //   ],
-      // },
+      task_order_number: "item_to_delete"
     });
   });
 
@@ -145,30 +98,11 @@ describe("Testing Step2 Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  // it("contains ATATSummaryCard Component", () => {
-  //   expect(wrapper.vm.$refs.createTaskOrderForm).toBeDefined();
-  // });
-
-  // it("adds a CLIN", async () => {
-  //   await Vue.nextTick();
-  //   await wrapper.vm.addClin();
-  //   const newClinNumber = wrapper.vm.taskOrderDetails.clins[1].clin_number
-  //   expect(newClinNumber).toBe('0002');
-  // });
-
-  // it("deletes a CLIN", async () => {
-  //   await Vue.nextTick();
-  //   await wrapper.vm.deleteClin(1);
-  //   let clinCount = wrapper.vm.taskOrderDetails.clins.length;
-  //   expect(clinCount).toBe(0);
-
-  //   await wrapper.vm.deleteClin(0);
-  //   clinCount = wrapper.vm.taskOrderDetails.clins.length;
-  //   expect(clinCount).toBe(0);
-  // });
-
-  // it("test validate() ", async () => {
-  //   const validated = await wrapper.vm.validate();
-  //   expect(validated).toBe(false);
-  // });
+  it("deletes an item", async () => {
+    await Vue.nextTick();
+    wrapper.vm.deleteItem("");
+    await Vue.nextTick();
+    wrapper.vm.deleteItem('item_to_delete');
+    expect(wrapper.exists()).toBe(true);
+  });
 });

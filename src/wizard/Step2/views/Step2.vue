@@ -60,15 +60,10 @@ export default class Step_2 extends Vue {
   }
 
   public mounted(): void {
-    debugger;
     if (this.$route.name === "editfunding") {
-      debugger;
       this.taskOrderDetails = this.$store.getters.getTaskOrderByName(
         this.$route.params.id
       );
-    } else {
-      debugger;
-      console.log('not editfunding route');
     }
     this.touched = this.$store.getters.getStepTouched(2);
     if (this.touched) {

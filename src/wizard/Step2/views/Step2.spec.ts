@@ -15,16 +15,30 @@ describe("Testing Step2 Component", () => {
   localVue.use(Vuex);
   localVue.use(VueAxios, axios);
   localVue.use(VueRouter);
-  const routes = [
-    {
-      name: "editfunding",
-      path: "/",
-    },
-  ];
+
   let vuetify: any;
   let wrapper: any;
   let store: any;
   let taskOrderDetails: TaskOrderDetails;
+
+  let router = new VueRouter();
+  let hasBeenTouched = false;
+
+  function getWrapperObj() {
+    return {
+      localVue,
+      store,
+      vuetify,
+      router,
+      stubs: [
+        "create-task-order-form",
+        "atat-text-field",
+        "atat-text-area",
+        "atat-button-card",
+        "atat-file-upload",
+      ],
+    }
+  }
 
   const actions: any = {
     updateWizardStep: jest.fn(),
@@ -33,7 +47,7 @@ describe("Testing Step2 Component", () => {
 
   const getters: any = {
     getStepTouched: () => (stepNumber: number) => {
-      return false;
+      return hasBeenTouched;
     },
     getStepModel: () => (stepNumber: number) => {
       return {
@@ -61,7 +75,6 @@ describe("Testing Step2 Component", () => {
       ];
     },
   };
-  const router = new VueRouter({ routes });
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -69,19 +82,7 @@ describe("Testing Step2 Component", () => {
       actions,
       getters,
     });
-    wrapper = mount(stepTwo, {
-      store,
-      localVue,
-      vuetify,
-      router,
-      stubs: [
-        "create-task-order-form",
-        "atat-text-field",
-        "atat-text-area",
-        "atat-button-card",
-        "atat-file-upload",
-      ],
-    });
+    wrapper = mount(stepTwo, getWrapperObj());
     wrapper.setData({
       taskOrderDetails: {
         task_order_number: "",
@@ -112,8 +113,20 @@ describe("Testing Step2 Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("contains CreateTaskOrderForm Component", () => {
+  it("contains CreateTaskOrderForm Component", async () => {
     expect(wrapper.vm.$refs.createTaskOrderForm).toBeDefined();
+  });
+
+  it ("tests route and touched on mount", async () => {
+    wrapper.destroy();
+    router.push({ name: 'editfunding', path: '/editfunding' });
+    wrapper = mount(stepTwo, getWrapperObj());
+    expect(wrapper.exists()).toBe(true);
+    wrapper.destroy();
+    hasBeenTouched = true;
+    router.push({ name: 'badroute', path: '/badroute' });
+    wrapper = mount(stepTwo, getWrapperObj());
+    expect(wrapper.exists()).toBe(true);
   });
 
   it("adds a CLIN", async () => {
