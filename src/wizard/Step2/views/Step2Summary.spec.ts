@@ -63,14 +63,14 @@ describe("Testing Step2 Component", () => {
     }
   };
 
-  // const routes = [
-  //   {
-  //     name: "addfundingX",
-  //     path: "/wizard/addfundingX",
-  //   },
-  // ];
+  const routes = [
+    {
+      name: "addfunding",
+      path: "/wizard/addfunding",
+    },
+  ];
 
-  // const router = new VueRouter({ routes });
+  const router = new VueRouter({ routes });
 
   beforeEach(() => {
 
@@ -83,7 +83,7 @@ describe("Testing Step2 Component", () => {
       store,
       localVue,
       vuetify,
-      // router,
+      router,
       stubs: [
         "atat-summary-card",
         "atat-button-card",
