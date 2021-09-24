@@ -26,8 +26,7 @@
     "test:edge:local": "vue-cli-service test:e2e --config tests/nightwatch.conf.js -e webdriver.edge -t dist/tests/e2e/page_tests/",
     "test:edge": "tsc && npm-run-all --parallel  start-edge-driver test:edge:local -r",
     "test:nightwatch": "vue-cli-service test:e2e --config tests/nightwatch.conf.js -e webdriver.chrome,webdriver.edge,selenium.ie -t dist/tests/e2e/page_tests/",
-    "test:ts": "tsc && npm-run-all --parallel start-chrome-driver start-edge-driver test:nightwatch -r",
-    "api": "npx openapi-generator generate -i https://raw.githubusercontent.com/dod-ccpo/atat-web-api/develop/atat_provisioning_wizard_api.yaml  --generator-name typescript-axios -o src/api --config api.json && cd src/api"
+    "test:ts": "tsc && npm-run-all --parallel start-chrome-driver start-edge-driver test:nightwatch -r"
   },
   "dependencies": {
     "@wdio/cli": "^7.7.4",
