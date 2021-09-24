@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { NightwatchBrowser } from "nightwatch";
 
 const url = process.env.VUE_DEV_SERVER_URL;
 
 const signInPage = {
-  "Verifying the ATAT Signin page 1": (browser: NightwatchBrowser) => {
+  "Verifying the ATAT Signin page 1": (browser: NightwatchBrowser): void => {
     const home = browser.page.atatHome();
 
     home.navigate(url).pause(10000);
@@ -48,7 +47,7 @@ const signInPage = {
     );
   },
 
-  "Clicking on the Signin Button 2": (browser: NightwatchBrowser) => {
+  "Clicking on the Signin Button 2": (browser: NightwatchBrowser): void => {
     const home = browser.page.atatHome();
     home.expect.element("@signInButton").to.be.present.before(2000);
     home.click("@signInButton");
@@ -56,7 +55,7 @@ const signInPage = {
 
   "Navigating to landing page which is DashBoard 3": (
     browser: NightwatchBrowser
-  ) => {
+  ): void => {
     const home = browser.page.atatHome();
     const dashboard = browser.page.dashBoard();
     dashboard.assert.urlContains("dashboard");
