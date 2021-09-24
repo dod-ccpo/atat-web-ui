@@ -31,7 +31,7 @@
   "dependencies": {
     "@wdio/cli": "^7.7.4",
     "@webcomponents/webcomponentsjs": "^2.6.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "core-js": "^3.17.3",
     "css-vars-ponyfill": "^2.4.5",
     "eslint-plugin-wdio": "^7.4.2",
