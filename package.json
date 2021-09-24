@@ -50,7 +50,6 @@
   },
   "devDependencies": {
     "@mdi/font": "^5.9.55",
-    "@openapitools/openapi-generator-cli": "^2.4.4",
     "@types/chromedriver": "^81.0.0",
     "@types/jest": "^24.0.19",
     "@types/mocha": "^8.0.1",
