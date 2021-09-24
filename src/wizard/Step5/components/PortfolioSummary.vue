@@ -91,7 +91,7 @@ export default class PortfolioSummary extends Vue {
     id = id || "11";
     return this.$store.getters.getPortfolioById(id);
   }
-  
+
   created(): void {
     const portfolioId = this.$route.params.id || "11";
     this.portfolio = this.getPorfolioById(portfolioId);
@@ -105,6 +105,5 @@ export default class PortfolioSummary extends Vue {
       }
     });
   }
-  
 }
 </script>
