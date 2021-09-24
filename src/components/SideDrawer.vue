@@ -89,7 +89,7 @@
                 href="https://idco.dmdc.osd.mil/idco/"
                 tabindex="0"
                 >ID Card Office Online (IDCO)</a
-              ><a class="text-decoration-none mt-n1 pa-1" tabindex="0"
+              ><a class="text-decoration-none mt-n1 pa-1 ml-n1" tabindex="0"
                 ><v-icon small class="mt-n2 icon-22">launch</v-icon></a
               >
               website and select the <strong>My Profile</strong> option (DS
