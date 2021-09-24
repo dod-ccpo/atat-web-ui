@@ -49,7 +49,8 @@
                     no-text-decoration no-border
                     link-button
                     mx-n2
-                  ">
+                  "
+                >
                   <v-icon v-if="card.showChevronRight" x-large>
                     chevron_right
                   </v-icon>

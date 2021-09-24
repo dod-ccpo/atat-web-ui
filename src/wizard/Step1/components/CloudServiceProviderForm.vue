@@ -17,6 +17,7 @@
           :items="items"
           :rules="[isSelected]"
           :value.sync="_csp"
+          id="csp"
         />
       </v-form>
     </div>

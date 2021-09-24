@@ -18,6 +18,7 @@
       v-on:keydown.space="selected_value = item.value"
       :ripple="false"
       tabindex="-1"
+      :id="id + '-button-card-' + (index + 1)"
       :class="{
         'radio-wrapper': true,
         'px-2': true,
@@ -37,6 +38,7 @@
         :ripple="false"
         @focus="focused_value = item.value"
         @blur="focused_value = ''"
+        :id="id + '-radio-button-' + (index + 1)"
       >
         <template v-slot:label>
           <div
@@ -71,6 +73,8 @@ export default class ATATButtonCard extends Vue {
 
   @Prop({ default: {}, required: false })
   private rules!: Array<unknown>;
+
+  @Prop({ default: "radio-button-cards" }) private id!: string;
 
   @PropSync("value", {
     default: () => "",
