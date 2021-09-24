@@ -4,15 +4,12 @@
     width=" 400"
     app
     clipped
-    mini-variant-width="20"
-    :mini-variant.sync="profile"
     permanent
     right
+    class=""
   >
     <div class="d-flex flex-row">
-      <v-subheader v-if="!profile" class="font-weight-bold text-h6"
-        >YOUR PROFILE</v-subheader
-      >
+      <v-subheader class="font-weight-bold text-h6">YOUR PROFILE</v-subheader>
       <div class="ml-auto d-flex align-center">
         <v-btn
           class="text--primary h6 pa-0 ma-0 ml-1"
@@ -22,7 +19,7 @@
           @click.stop="hide"
           :ripple="false"
         >
-          <v-icon small>close</v-icon>
+          <v-icon medium>close</v-icon>
         </v-btn>
       </div>
     </div>
@@ -59,7 +56,7 @@
       <v-row class="pt-0 d-flex">
         <v-col cols="12" class="ml-4 pb-0 body d-flex">
           <v-icon>phone</v-icon>
-          <p class="ml-2 mb-0 profile-drawer-text">
+          <p class="ml-2 mb-0">
             <span class="body-lg text--base-dark">Phone numbers</span>
           </p>
         </v-col>
@@ -78,22 +75,27 @@
         <v-alert
           outlined
           rounded
-          type="info"
           class="text-left info_lighter black-icon mt-3"
-          border="left"
         >
-          <div class="black--text body-lg ml-2">
-            To update the contact information associated with your CAC, please
-            visit the
-            <a
-              href="https://idco.dmdc.osd.mil/idco/"
-              class="link-body-md"
-              tabindex="0"
-              >ID Card Office Online (IDCO)</a
-            ><v-icon color="#005EA2" small>launch</v-icon> website and select
-            the <strong>My Profile</strong> option (DS Logon or CAC required).
-            It can take up to 48 hours for your information to be updated within
-            ATAT after you make changes.
+          <div class="d-flex">
+            <v-col cols="1" class="text-center pt-1">
+              <v-icon class="icon-20">info</v-icon>
+            </v-col>
+            <div class="black--text body-lg ml-2">
+              To update the contact information associated with your CAC, please
+              visit the
+              <a
+                class="ma-0 pa-0"
+                href="https://idco.dmdc.osd.mil/idco/"
+                tabindex="0"
+                >ID Card Office Online (IDCO) </a
+              ><a class="text-decoration-none ma-0 pa-0"
+                ><v-icon small>launch</v-icon></a
+              >
+              website and select the <strong>My Profile</strong> option (DS
+              Logon or CAC required). It can take up to 48 hours for your
+              information to be updated within ATAT after you make changes.
+            </div>
           </div>
         </v-alert>
       </v-row>
@@ -179,7 +181,6 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
 export default class SideDrawer extends Vue {
-  private profile = false;
   private contactInfoTip = false;
   private updateProfileTip = false;
 
@@ -188,10 +189,6 @@ export default class SideDrawer extends Vue {
   //method
   private hide(): Promise<boolean> {
     return this.$store.dispatch("closeSideDrawer");
-  }
-  mounted(): void {
-    console.log(this.$store.getters.getSideDrawer);
-    // this.show = this.$store.getters.getSideDrawer;
   }
 }
 </script>
