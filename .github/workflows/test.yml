@@ -8,6 +8,24 @@ on:
   pull_request:
 
 jobs:
+  assertPackageLockVersion:
+    name: Ensure package-lock lockfileVersion has not changed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Check package-lock.json
+        run: |
+          errors=0
+          for file in package-lock.json cdk/package-lock.json; do
+            if [ "$(cat $file | jq -r .lockfileVersion)" != "1" ]; then
+              echo "$file: lockfileVersion is invalid"
+              errors=$(( errors + 1 ))
+            else
+              echo "$file: lockfileVersion is okay"
+            fi
+          done
+          exit $errors
   lint:
     name: Lint the code base
     runs-on: ubuntu-20.04
