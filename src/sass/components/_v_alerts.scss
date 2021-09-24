@@ -28,7 +28,7 @@
     border-width: 0px !important;
     border-style: solid !important;
     border-color: transparent !important;
-    background-color:  #E7f6F8 !important;
+    background-color:  $info_lighter !important;
   }
     .warning_lighter {
       border-color: var(--v-warning-base) !important;
@@ -50,12 +50,6 @@
       color: $primary !important;
       .v-icon{
         color: $primary !important;
-      }
-      &:focus{
-        border-color: $primary_light !important;
-        border-width: 3px !important;
-        border-style: solid !important;
-        border-radius: 10px;
       }
     }
   }

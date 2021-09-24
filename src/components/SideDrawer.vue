@@ -85,12 +85,12 @@
               To update the contact information associated with your CAC, please
               visit the
               <a
-                class="ma-0 pa-0"
+                class="ma-0 pa-1"
                 href="https://idco.dmdc.osd.mil/idco/"
                 tabindex="0"
-                >ID Card Office Online (IDCO) </a
-              ><a class="text-decoration-none ma-0 pa-0"
-                ><v-icon small>launch</v-icon></a
+                >ID Card Office Online (IDCO)</a
+              ><a class="text-decoration-none mt-n1 pa-1" tabindex="0"
+                ><v-icon small class="mt-n2 icon-22">launch</v-icon></a
               >
               website and select the <strong>My Profile</strong> option (DS
               Logon or CAC required). It can take up to 48 hours for your
