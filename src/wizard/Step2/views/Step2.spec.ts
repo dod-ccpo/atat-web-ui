@@ -92,10 +92,12 @@ describe("Testing Step2 Component", () => {
     wrapper.destroy();
     router.push({ name: 'editfunding', path: '/editfunding' });
     wrapper = mount(stepTwo, getWrapperObj());
+    expect(wrapper.exists()).toBe(true);
     wrapper.destroy();
     hasBeenTouched = true;
     router.push({ name: 'badroute', path: '/badroute' });
     wrapper = mount(stepTwo, getWrapperObj());
+    expect(wrapper.exists()).toBe(true);
   });
 
   it("adds a CLIN", async () => {

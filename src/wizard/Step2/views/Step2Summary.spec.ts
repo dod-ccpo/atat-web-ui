@@ -87,5 +87,6 @@ describe("Testing Step2 Component", () => {
     wrapper.vm.deleteItem("");
     await Vue.nextTick();
     wrapper.vm.deleteItem('item_to_delete');
+    expect(wrapper.exists()).toBe(true);
   });
 });
