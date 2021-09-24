@@ -13,10 +13,10 @@
                 <template v-slot:default="{ open }">
                   <v-container>
                     <v-row>
-                      <v-col cols="1" class="h4 text--base-darkest">{{
+                      <v-col cols="1" class="h4 text--base-darkest" id="card_number">{{
                         card_number
                       }}</v-col>
-                      <v-col cols="11" class="h4 text--base-darkest">{{
+                      <v-col cols="11" class="h4 text--base-darkest" id="clin_number">{{
                         `CLIN ${clin_number}`
                       }}</v-col>
                     </v-row>
@@ -38,7 +38,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body">{{
+                              <v-col class="optional body" id="idiq_clin">{{
                                 _idiq_clin
                               }}</v-col>
                             </v-row>
@@ -57,7 +57,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body">{{
+                              <v-col class="optional body" id="total_clin_value">{{
                                 formatCurrency(total_clin_value)
                               }}</v-col>
                             </v-row>
@@ -77,7 +77,7 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body">{{
+                              <v-col class="optional body" id="obligated_funds">{{
                                 formatCurrency(_obligated_funds)
                               }}</v-col>
                             </v-row>
@@ -98,6 +98,7 @@
                             <v-row>
                               <v-col
                                 class="optional body"
+                                id="period_of_performance"
                                 v-if="_pop_start_date !== ''"
                               >
                                 {{
@@ -170,6 +171,7 @@
                       </div>
                       <div id="progressBarWrapper" class="width-100">
                         <div
+                          name="progresBar"
                           id="progressBar"
                           value="0"
                           max="100"
@@ -264,7 +266,7 @@
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on, attrs }">
               <v-btn icon>
-                <v-icon v-bind="attrs" v-on="on">delete</v-icon>
+                <v-icon v-bind="attrs" v-on="on">delete</v-icon> 
               </v-btn>
             </template>
             <v-card>
@@ -372,14 +374,14 @@ export default class ClinsCard extends Vue {
   private minDate = "2020-01-01";
   private maxDate = "2021-12-31";
 
-  public progressEvent(): void {
-    const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-    const width = (this._obligated_funds / this._total_clin_value) * 100;
-    if (progress) {
-      progress.style.width = width + "%";
-    }
-    this.obligatedPercent = width.toString();
-  }
+  // public progressEvent(): void {
+  //   const progress = this.$refs["progress-bar"] as HTMLProgressElement;
+  //   const width = (this._obligated_funds / this._total_clin_value) * 100;
+  //   if (progress) {
+  //     progress.style.width = width + "%";
+  //   }
+  //   this.obligatedPercent = width.toString();
+  // }
 
   public rules = {};
 
@@ -505,7 +507,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(
         (v: string) =>
           Date.parse(v) > Date.parse(this._pop_start_date) ||
-          "The PoP end date must be before the start date"
+          "The PoP end date must be after the start date"
       );
       validationRules.push(
         (v: string) =>
