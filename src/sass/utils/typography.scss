@@ -121,12 +121,6 @@
         color: $base_dark !important;
     }
 
-.profile-drawer-text{
-    font-size: 1.7rem !important;
-    font-weight: 400 !important;
-    line-height: 2.3rem !important;
-    color: $base_dark !important;
-}
 
     .datepicker-text{
         font-size: 1.6rem !important;
@@ -143,7 +137,9 @@
         font-weight: normal;
         color: $base_darkest;
     }
-
+    a {
+        color: $primary;
+    }
 .text-decoration-none {
     text-decoration: none !important;
 }

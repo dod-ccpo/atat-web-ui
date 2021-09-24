@@ -55,7 +55,9 @@ export default class ATATHeaderNav extends Vue {
     if (item.action && item.action.toLowerCase() === "logout") {
       this.logout();
     }
-
+    if (item.action && item.action.toLowerCase() === "profile") {
+      this.$store.dispatch("openSideDrawer");
+    }
     if (item.url) {
       this.$router.push(item.url);
     }

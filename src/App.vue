@@ -2,7 +2,7 @@
   <v-app>
     <SecurityBanner />
     <ATATSideBar v-if="loginStatus" />
-    <RightSideDrawer v-if="loginStatus" />
+    <SideDrawer v-if="loginStatus" />
     <ATATHeader />
     <v-main style="padding-top: 90px">
       <v-container fluid>
@@ -23,11 +23,11 @@ import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
-import RightSideDrawer from "@/components/RightSideDrawer.vue";
+import SideDrawer from "@/components/SideDrawer.vue";
 
 @Component({
   components: {
-    RightSideDrawer,
+    SideDrawer,
     ATATFooter,
     ATATHeader,
     ATATSideBar,

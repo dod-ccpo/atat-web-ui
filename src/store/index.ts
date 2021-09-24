@@ -28,7 +28,7 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
-    rightSideDrawer: false,
+    sideDrawer: true,
     isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
@@ -114,8 +114,8 @@ export default new Vuex.Store({
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
     },
-    changeRightSideDrawer(state, status: boolean) {
-      state.rightSideDrawer = status;
+    changeSideDrawer(state, status: boolean) {
+      state.sideDrawer = status;
     },
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
@@ -179,11 +179,11 @@ export default new Vuex.Store({
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
-    openRightSideDrawer({ commit }) {
-      commit("changeRightSideDrawer", true);
+    closeSideDrawer({ commit }) {
+      commit("changeSideDrawer", false);
     },
-    closeRightSideDrawer({ commit }) {
-      commit("changeRightSideDrawer", false);
+    openSideDrawer({ commit }) {
+      commit("changeSideDrawer", true);
     },
   },
   modules: {},
@@ -209,10 +209,10 @@ export default new Vuex.Store({
               id: 1,
               cssClass: "atat-header-nav__user-display-name",
               title: "Maria Missionowner",
-              url: "#",
               newWindow: false,
               icon: "person",
               iconPlacement: "left",
+              action: "profile",
             },
             {
               id: 2,
@@ -300,5 +300,6 @@ export default new Vuex.Store({
       }
     },
     getUser: (state) => state.user,
+    getSideDrawer: (state) => state.sideDrawer,
   },
 });

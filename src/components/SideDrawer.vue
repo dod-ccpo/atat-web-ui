@@ -1,27 +1,25 @@
 <template>
   <v-navigation-drawer
+    v-if="this.$store.state.sideDrawer === true"
     width=" 400"
     app
     clipped
-    mini-variant-width="20"
-    :mini-variant.sync="profile"
     permanent
     right
+    class="atat-side-drawer"
   >
     <div class="d-flex flex-row">
-      <v-subheader v-if="!profile" class="font-weight-bold text-h6"
-        >YOUR PROFILE</v-subheader
-      >
+      <v-subheader class="font-weight-bold text-h6">YOUR PROFILE</v-subheader>
       <div class="ml-auto d-flex align-center">
         <v-btn
           class="text--primary h6 pa-0 ma-0 ml-1"
           tabindex="3"
           plain
           x-small
-          @click.stop="profile = !profile"
+          @click.stop="hide"
           :ripple="false"
         >
-          <v-icon small>close</v-icon>
+          <v-icon medium>close</v-icon>
         </v-btn>
       </div>
     </div>
@@ -30,18 +28,24 @@
         <v-col cols="12" class="ml-4 pb-0 h3 font-weight-bold"
           >{{ user.given_name }} {{ user.family_name }}</v-col
         >
-        <v-col cols="12 " class="body-lg ml-4 py-0 profile-drawer-text">
-          {{ user.service_branch }} • {{ user.designation }}
+        <v-col cols="12 " class="body-lg ml-4 py-0">
+          <span class="body-lg text--base-dark">
+            {{ user.service_branch }} • {{ user.designation }}</span
+          >
         </v-col>
-        <v-col cols="12 body ml-4 pt-1 mb-5 profile-drawer-text">
-          DoD ID: {{ user.dod_id }}
+        <v-col cols="12 body ml-4 pt-1 mb-5">
+          <span class="body-lg text--base-dark">
+            DoD ID: {{ user.dod_id }}</span
+          >
         </v-col>
       </v-row>
       <v-divider></v-divider>
       <v-row class="pt-8">
         <v-col cols="12" class="ml-4 pb-0 body d-flex">
           <v-icon>email</v-icon>
-          <p class="ml-2 mb-0 profile-drawer-text">Email Address</p>
+          <p class="ml-2 mb-0">
+            <span class="body-lg text--base-dark">Email Address</span>
+          </p>
         </v-col>
         <v-col class="py-0"
           ><p class="ml-12 body link-body-sm">
@@ -52,7 +56,9 @@
       <v-row class="pt-0 d-flex">
         <v-col cols="12" class="ml-4 pb-0 body d-flex">
           <v-icon>phone</v-icon>
-          <p class="ml-2 mb-0 profile-drawer-text">Phone numbers</p>
+          <p class="ml-2 mb-0">
+            <span class="body-lg text--base-dark">Phone numbers</span>
+          </p>
         </v-col>
         <v-col cols="6" class="py-0 pr-0"
           ><p class="ml-12 body pa-0 ma-0">
@@ -69,19 +75,27 @@
         <v-alert
           outlined
           rounded
-          type="info"
           class="text-left info_lighter black-icon mt-3"
-          border="left"
         >
-          <div class="black--text body-lg ml-2">
-            To update the contact information associated with your CAC, please
-            visit the
-            <a href="https://idco.dmdc.osd.mil/idco/" class="link-body-md"
-              >ID Card Office Online (IDCO)</a
-            ><v-icon color="#005EA2" small>launch</v-icon> website and select
-            the <strong>My Profile</strong> option (DS Logon or CAC required).
-            It can take up to 48 hours for your information to be updated within
-            ATAT after you make changes.
+          <div class="d-flex">
+            <v-col cols="1" class="text-center pt-1">
+              <v-icon class="icon-20">info</v-icon>
+            </v-col>
+            <div class="black--text body-lg ml-2">
+              To update the contact information associated with your CAC, please
+              visit the
+              <a
+                class="ma-0 pa-0"
+                href="https://idco.dmdc.osd.mil/idco/"
+                tabindex="0"
+                >ID Card Office Online (IDCO) </a
+              ><a class="text-decoration-none ma-0 pa-0"
+                ><v-icon small>launch</v-icon></a
+              >
+              website and select the <strong>My Profile</strong> option (DS
+              Logon or CAC required). It can take up to 48 hours for your
+              information to be updated within ATAT after you make changes.
+            </div>
           </div>
         </v-alert>
       </v-row>
@@ -166,11 +180,15 @@ import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 @Component({})
-export default class RightSideDrawer extends Vue {
-  private profile = false;
+export default class SideDrawer extends Vue {
   private contactInfoTip = false;
   private updateProfileTip = false;
 
   private user = this.$store.getters.getUser;
+
+  //method
+  private hide(): Promise<boolean> {
+    return this.$store.dispatch("closeSideDrawer");
+  }
 }
 </script>

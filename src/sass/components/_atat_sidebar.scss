@@ -1,6 +1,7 @@
 @import "../utils/colors.scss";
 
 nav.v-navigation-drawer{
+
     a {
         color: inherit;
         width: 100% !important;
@@ -20,4 +21,5 @@ nav.v-navigation-drawer{
             }
         }
     }
+
 }

@@ -76,6 +76,8 @@ describe("Testing Step1 Component", () => {
         "atat-text-area",
         "atat-button-card",
         "atat-file-upload",
+        "clins-card",
+        "clins-card-list",
       ],
     });
     wrapper.setData({
@@ -92,15 +94,19 @@ describe("Testing Step1 Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  // it("contains CreatePortfolioForm Component", () => {
-  //   expect(wrapper.vm.$refs.createPortfolioForm).toBeDefined();
-  // });
-  //
-  // it("contains CloudServiceProviderForm Component", () => {
-  //   expect(wrapper.vm.$refs.cloudServiceProviderForm).toBeDefined();
-  // });
-  //
+  it("contains CreatePortfolioForm Component", async () => {
+    const createTaskOrderForm = await wrapper.findComponent({ ref: "createTaskOrderForm" });
+    expect(await createTaskOrderForm).toBeDefined();
+  });
+  
+  it("contains CloudServiceProviderForm Component", async () => {
+    const cloudServiceProviderForm = await wrapper.findComponent({ ref: "cloudServiceProviderForm" });
+    expect(await cloudServiceProviderForm).toBeDefined();
+  });
+  
   it("test validate() ", async () => {
+    const createTaskOrderForm = await wrapper.findComponent({ ref: "createTaskOrderForm" });
+    expect(createTaskOrderForm).toBeDefined();
     const validated = await wrapper.vm.validate();
     expect(validated).toBe(false);
   });
