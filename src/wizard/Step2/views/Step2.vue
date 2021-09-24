@@ -30,7 +30,9 @@ export default class Step_2 extends Vue {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  private taskOrderDetails: TaskOrderDetails = this.$store.getters.getStepModel(2);
+  private taskOrderDetails: TaskOrderDetails =
+    this.$store.getters.getStepModel(2);
+
   private touched = false;
 
   public async validate(): Promise<boolean> {

@@ -3,23 +3,17 @@ import Vuetify from "vuetify";
 import Vuex from "vuex";
 import { createLocalVue, mount } from "@vue/test-utils";
 import stepTwo from "@/wizard/Step2/views/Step2.vue";
-import axios from "axios";
-import VueAxios from "vue-axios";
 import VueRouter from "vue-router";
-import { TaskOrderDetails } from "../../../../types/Wizard";
 
+const localVue = createLocalVue();
 Vue.use(Vuetify);
+localVue.use(Vuex);
+localVue.use(VueRouter);
 
 describe("Testing Step2 Component", () => {
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
-  localVue.use(VueAxios, axios);
-  localVue.use(VueRouter);
-
   let vuetify: any;
   let wrapper: any;
   let store: any;
-  let taskOrderDetails: TaskOrderDetails;
 
   let router = new VueRouter();
   let hasBeenTouched = false;
@@ -58,21 +52,7 @@ describe("Testing Step2 Component", () => {
       };
     },
     getTaskOrderByName: () => (id: string) => {
-      return [
-        {
-          task_order_number: "TaskOrder_0001",
-          clins: [
-            {
-              clin_number: "0001",
-              idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
-              total_clin_value: 200000,
-              obligated_funds: 10000,
-              pop_start_date: "2021-09-01",
-              pop_end_date: "2022-09-01",
-            },
-          ],
-        },
-      ];
+      return [];
     },
   };
 
@@ -85,16 +65,7 @@ describe("Testing Step2 Component", () => {
     wrapper = mount(stepTwo, getWrapperObj());
     wrapper.setData({
       taskOrderDetails: {
-        task_order_number: "",
-        task_order_file: {
-          description: "",
-          id: "",
-          created_at: "",
-          updated_at: "",
-          size: 0,
-          name: "",
-          status: "",
-        },
+        task_order_number: "TaskOrder_0001",
         clins: [
           {
             clin_number: "0001",
@@ -121,12 +92,10 @@ describe("Testing Step2 Component", () => {
     wrapper.destroy();
     router.push({ name: 'editfunding', path: '/editfunding' });
     wrapper = mount(stepTwo, getWrapperObj());
-    expect(wrapper.exists()).toBe(true);
     wrapper.destroy();
     hasBeenTouched = true;
     router.push({ name: 'badroute', path: '/badroute' });
     wrapper = mount(stepTwo, getWrapperObj());
-    expect(wrapper.exists()).toBe(true);
   });
 
   it("adds a CLIN", async () => {
