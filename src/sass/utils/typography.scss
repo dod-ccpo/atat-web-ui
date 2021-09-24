@@ -133,9 +133,9 @@
         color: $base_darkest;
     }
 
-.text-decoration-none {
-    text-decoration: none !important;
-}
+    .text-decoration-none {
+        text-decoration: none !important;
+    }
 
     $sizes: 16, 18, 20, 24, 28, 32, 200;
     @each $size in $sizes{
