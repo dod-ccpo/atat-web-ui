@@ -16,3 +16,17 @@
   transition-duration: .10s
 }
 }
+.atat-side-drawer{
+  a {
+    color: $primary !important;
+    .v-icon{
+      color: $primary !important;
+    }
+    &:focus{
+      border-color: $primary_light !important;
+      border-width: 3px !important;
+      border-style: solid !important;
+      border-radius: 10px;
+    }
+  }
+}

@@ -6,7 +6,7 @@
     clipped
     permanent
     right
-    class=""
+    class="atat-side-drawer"
   >
     <div class="d-flex flex-row">
       <v-subheader class="font-weight-bold text-h6">YOUR PROFILE</v-subheader>
