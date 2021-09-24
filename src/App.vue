@@ -27,7 +27,7 @@ import SideDrawer from "@/components/SideDrawer.vue";
 
 @Component({
   components: {
-    RightSideDrawer: SideDrawer,
+    SideDrawer,
     ATATFooter,
     ATATHeader,
     ATATSideBar,

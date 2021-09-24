@@ -209,7 +209,6 @@ export default new Vuex.Store({
               id: 1,
               cssClass: "atat-header-nav__user-display-name",
               title: "Maria Missionowner",
-              url: "#",
               newWindow: false,
               icon: "person",
               iconPlacement: "left",
