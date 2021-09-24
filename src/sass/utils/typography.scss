@@ -140,9 +140,9 @@
     a {
         color: $primary;
     }
-.text-decoration-none {
-    text-decoration: none !important;
-}
+    .text-decoration-none {
+        text-decoration: none !important;
+    }
 
     $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
     @each $size in $sizes{
@@ -154,6 +154,7 @@
             min-width: #{$size}px !important;
         }
     }
-.word-break-normal{
-    word-break: normal !important;
-}
+    
+    .word-break-normal{
+        word-break: normal !important;
+    }
