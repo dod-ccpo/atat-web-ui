@@ -11,9 +11,17 @@
   width: 380px;
   z-index: 1000;
   box-shadow: inset 1px 0px 0px $base_lighter;
-
 .expand-transition-enter-active,
 .expand-transition-leave-active{
   transition-duration: .10s
 }
+}
+.atat-side-drawer{
+  a {
+    color: $primary !important;
+    .v-icon{
+      color: $primary !important;
+    }
+    
+  }
 }
