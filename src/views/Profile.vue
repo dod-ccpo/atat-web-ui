@@ -11,12 +11,12 @@
         </v-row>
         <v-row>
           <v-col>
-            <p class="mb-3">
+            <p class="mb-3 body-lg">
               We imported your basic personal and contact information from your
               CAC profile. This information will be used to notify you if there
               are any issues with your funding or cloud resources.
             </p>
-            <p>
+            <p class="body-lg">
               Please review and verify that the following details are accurate.
               When you are done, click <strong>Continue</strong> and we will get
               started with your portfolios.
@@ -64,7 +64,7 @@
                   >Basic Information</v-card-title
                 >
                 <v-card-text>
-                  <v-row align="center" class="mx-0">
+                  <v-row>
                     <v-col>
                       <p class="body">Name</p>
                     </v-col>
@@ -75,7 +75,7 @@
                     </v-col>
                   </v-row>
                   <v-divider class="mb-4"></v-divider>
-                  <v-row align="center" class="mx-0">
+                  <v-row>
                     <v-col>
                       <p class="body">Title</p>
                     </v-col>
@@ -86,7 +86,7 @@
                     </v-col>
                   </v-row>
                   <v-divider class="mb-4"></v-divider>
-                  <v-row align="center" class="mx-0">
+                  <v-row>
                     <v-col>
                       <p class="body">DoD ID</p>
                     </v-col>
@@ -97,7 +97,7 @@
                     </v-col>
                   </v-row>
                   <v-divider class="mb-4"></v-divider>
-                  <v-row align="center" class="mx-0">
+                  <v-row>
                     <v-col>
                       <p class="body">Service Branch or Agency</p>
                     </v-col>
@@ -108,7 +108,7 @@
                     </v-col>
                   </v-row>
                   <v-divider class="mb-4"></v-divider>
-                  <v-row align="center" class="mx-0">
+                  <v-row>
                     <v-col>
                       <p class="body">Persona Type</p>
                     </v-col>
@@ -125,7 +125,7 @@
                   >Contact Information</v-card-title
                 >
                 <v-card-text>
-                  <v-row align="center" class="mx-0">
+                  <v-row>
                     <v-col>
                       <p class="body">Email Address</p>
                     </v-col>
@@ -136,7 +136,7 @@
                     </v-col>
                   </v-row>
                   <v-divider class="mb-4"></v-divider>
-                  <v-row class="mx-0">
+                  <v-row>
                     <v-col>
                       <p class="body">Phone numbers</p>
                     </v-col>
