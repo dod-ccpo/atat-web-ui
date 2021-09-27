@@ -37,6 +37,7 @@
                     class="ma-0 pa-0 text-decoration-none"
                     href="https://idco.dmdc.osd.mil/idco/"
                     target="_blank"
+                    rel="noopener"
                     tabindex="0"
                   >
                     <span class="link-body-md font-weight-400"
@@ -170,7 +171,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { User } from "../../types/User";
 @Component({})
 export default class Profile extends Vue {
   private user = "";

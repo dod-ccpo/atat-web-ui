@@ -3,7 +3,6 @@ import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
 import wizard from "../router/wizard";
-import Profile from "../views/Profile.vue";
 
 Vue.use(VueRouter);
 
