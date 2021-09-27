@@ -8,25 +8,15 @@ const startHeadless = process.env.VUE_NIGHTWATCH_HEADLESS === "1";
 const concurrentMode = process.env.VUE_NIGHTWATCH_CONCURRENT === "1";
 const userOptions = JSON.parse(process.env.VUE_NIGHTWATCH_USER_OPTIONS || "{}");
 const chromeArgs = [];
-const geckoArgs = [];
-
-// user may have not installed geckodriver
-let geckodriver = {};
-try {
-  geckodriver = require("geckodriver");
-} catch (e) {
-  console.info("Not Firefox driver install");
-}
 
 if (startHeadless) {
   chromeArgs.push("headless");
-  geckoArgs.push("--headless");
 }
 
 const defaultSettings = {
   src_folders: ["dist/tests/e2e/page_tests"],
   output_folder: "tests/e2e/reports/browserstack",
-  page_objects_path: "tests/e2e/page_objects",
+  page_objects_path: "dist/tests/e2e/page_objects",
   custom_assertions_path: "tests/e2e/custom_assertions",
   custom_commands_path: "tests/e2e/custom_commands",
   test_workers: concurrentMode,
@@ -49,20 +39,14 @@ const defaultSettings = {
         },
       },
     },
-    firefox: {
+    edge: {
       desiredCapabilities: {
-        browserName: "firefox",
+        browserName: "MicrosoftEdge",
         resolution: "1920x1080",
-        alwaysMatch: {
-          acceptInsecureCerts: true,
-          "moz:firefoxOptions": {
-            args: geckoArgs,
-          },
-        },
+        browser_version: "latest",
       },
-      webdriver: {},
     },
-    ie11: {
+    ie: {
       desiredCapabilities: {
         browser: "internet explorer",
         version: "11",
@@ -96,7 +80,6 @@ function webdriverServerSettings() {
       port: 443,
       cli_args: {
         "webdriver.chrome.driver": chromedriver.path,
-        "webdriver.gecko.driver": geckodriver.path,
       },
     },
     test_settings: {
@@ -107,7 +90,7 @@ function webdriverServerSettings() {
           "browserstack.key":
             process.env.BROWSERSTACK_ACCESS_KEY || "BROWSERSTACK_ACCESS_KEY",
           build: process.env.BROWSERSTACK_BUILD || "default_build",
-          project: process.env.BROWSERSTACK_PROJECT || "default_project",
+          project: process.env.BROWSERSTACK_PROJECT || "atat-web-ui",
           "browserstack.debug": true,
           "browserstack.local": true,
         },
@@ -119,19 +102,31 @@ function webdriverServerSettings() {
           "browserstack.key":
             process.env.BROWSERSTACK_ACCESS_KEY || "BROWSERSTACK_ACCESS_KEY",
           build: process.env.BROWSERSTACK_BUILD || "default_build",
-          project: process.env.BROWSERSTACK_PROJECT || "default_project",
+          project: process.env.BROWSERSTACK_PROJECT || "atat-web-ui",
           "browserstack.debug": true,
           "browserstack.local": true,
         },
       },
-      ie11: {
+      edge: {
         desiredCapabilities: {
           "browserstack.user":
             process.env.BROWSERSTACK_USERNAME || "BROWSERSTACK_USERNAME",
           "browserstack.key":
             process.env.BROWSERSTACK_ACCESS_KEY || "BROWSERSTACK_ACCESS_KEY",
           build: process.env.BROWSERSTACK_BUILD || "default_build",
-          project: process.env.BROWSERSTACK_PROJECT || "default_project",
+          project: process.env.BROWSERSTACK_PROJECT || "atat-web-ui",
+          "browserstack.debug": true,
+          "browserstack.local": true,
+        },
+      },
+      ie: {
+        desiredCapabilities: {
+          "browserstack.user":
+            process.env.BROWSERSTACK_USERNAME || "BROWSERSTACK_USERNAME",
+          "browserstack.key":
+            process.env.BROWSERSTACK_ACCESS_KEY || "BROWSERSTACK_ACCESS_KEY",
+          build: process.env.BROWSERSTACK_BUILD || "default_build",
+          project: process.env.BROWSERSTACK_PROJECT || "atat-web-ui",
           "browserstack.debug": true,
         },
       },
