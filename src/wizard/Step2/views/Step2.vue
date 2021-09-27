@@ -58,7 +58,6 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
   }
 
   public stepMounted: () => Promise<void> = async () => {
-    debugger;
     if (this.$route.name === "editfunding") {
       this.model = this.$store.getters.getTaskOrderByName(
         this.$route.params.id

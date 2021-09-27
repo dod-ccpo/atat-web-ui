@@ -209,8 +209,6 @@ export default new Vuex.Store({
       { getters, commit },
       draftId: string
     ): Promise<void> {
-      debugger;
-      
       const draft = await portfolioDraftsApi.getDraft(draftId);
       let model: any = getters["getStepModel"](1);
 

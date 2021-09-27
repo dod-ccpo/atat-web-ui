@@ -41,8 +41,6 @@ export default class PortfolioDraftsApi {
   }
 
   public async savePortfolio(id: string, model: any): Promise<void> {
-    debugger;
-
     //build api draft model
     const data = {
       name: model.name,
@@ -58,7 +56,6 @@ export default class PortfolioDraftsApi {
   }
 
   public async getDraft(id: string): Promise<Portfolio> {
-    debugger;
     const response = await this.client.get(`${id}/portfolio`);
     if (response.status != 200) {
       throw Error(`error occured saving portfolio draft with id ${id}`);

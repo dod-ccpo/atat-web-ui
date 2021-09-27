@@ -34,8 +34,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   }
 
   public async mounted(): Promise<void> {
-    debugger;
-    
     if (this.$route.meta && this.$route.meta.isWizard) {
       this.incomingModel = this.$store.state.currentStepModel;
     }
