@@ -4,6 +4,7 @@
     cardWidth="120"
     :data="cardsData"
     :itemToDelete.sync="itemToDelete"
+    v-on:edit="(id) => $emit('edit', id)"
     v-on:delete="(id) => $emit('delete', id)"
   ></atat-summary-card>
 </template>
@@ -81,11 +82,9 @@ export default class PortfolioSummary extends Vue {
   }
 
   @Watch("portfolios")
-  onPortfoliosChanged() {
+  onPortfoliosChanged(): void {
+    if (!this.portfolios) return;
 
-    if(!this.portfolios)
-    return;
-    
     const cards = this.portfolios.map<ATATSummaryCardItem>((portfolio) =>
       this.mapToSummaryCard(portfolio)
     );

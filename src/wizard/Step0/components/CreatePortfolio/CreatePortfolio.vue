@@ -49,7 +49,7 @@
             class="primary"
             block
             :ripple="false"
-            to="/wizard"
+            @click="onCreatePortfolio"
           >
             Create a New Portfolio
           </v-btn>
@@ -64,7 +64,12 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class CreatePortfolio extends Vue {}
+export default class CreatePortfolio extends Vue {
+  async onCreatePortfolio(): Promise<void> {
+    await this.$store.dispatch("createPortfolioDraft");
+    this.$router.push({ name: "addportfolio" });
+  }
+}
 </script>
 
 <style scoped></style>

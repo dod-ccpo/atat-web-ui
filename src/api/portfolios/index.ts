@@ -5,6 +5,10 @@ import ApiClient from "../apiClient";
 export default class PortfolioDraftsApi {
   client: ApiClient = new ApiClient("portfolioDrafts");
 
+  /**
+   *
+   * @returns all portfolio drafts
+   */
   public async getAll(): Promise<Portfolio[]> {
     const response = await this.client.get();
 
@@ -13,6 +17,65 @@ export default class PortfolioDraftsApi {
     } else {
       throw new Error(response.statusText);
     }
+  }
+
+  /**
+   *
+   * @returns a new Portfolio Draft Id
+   */
+  public async createDraft(): Promise<string> {
+    const response = await this.client.post();
+    if (response.status === 201) {
+      //just returning the draft id here for the moment
+      return response.data.id;
+    } else {
+      throw new Error(response.statusText);
+    }
+  }
+
+  public async deleteDraft(id: string): Promise<void> {
+    const response = await this.client.delete(id);
+    if (response.status !== 204) {
+      throw Error(`error deleting portfolio with id:  ${id}`);
+    }
+  }
+
+  public async savePortfolio(id: string, model: any): Promise<void> {
+    debugger;
+
+    //build api draft model
+    const data = {
+      name: model.name,
+      description: model.description,
+      dod_components: model.dod_components,
+      portfolio_managers: model.portfolio_managers || [],
+    };
+
+    const response = await this.client.post(`${id}/portfolio`, data);
+    if (response.status != 201) {
+      throw Error(`error occured saving portfolio draft with id ${id}`);
+    }
+  }
+
+  public async getDraft(id: string): Promise<Portfolio> {
+    debugger;
+    const response = await this.client.get(`${id}/portfolio`);
+    if (response.status != 200) {
+      throw Error(`error occured saving portfolio draft with id ${id}`);
+    }
+
+    const data: any = response.data;
+    const portfolioDraft: Portfolio = {
+      id: id,
+      name: data.name,
+      description: data.description,
+      dod_component: data.dod_components,
+      portfolio_managers: data.portfolio_managers,
+      csp_provisioning_status: "",
+      applications: [],
+    };
+
+    return portfolioDraft;
   }
 
   private mapPortfolio(item: any): Portfolio {
@@ -43,7 +106,7 @@ export default class PortfolioDraftsApi {
     const portfolio: Portfolio = {
       id: item.id,
       description: item.portfolio_step ? item.portfolio_step.description : "",
-      name: item.portfolio_step ? item.portfolio_step.name : "",
+      name: item.portfolio_step ? item.portfolio_step.name : "Untitled",
       dod_component: item.portfolio_step
         ? item.portfolio_step.dod_components
         : [],

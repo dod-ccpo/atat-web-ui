@@ -2,12 +2,13 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
-import { allPortfolios } from "@/store/mocks/portfoliosMockData";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
-import { Application, Portfolio, Portfolios } from "types/Portfolios";
+import { Application, Portfolio } from "types/Portfolios";
 import PortfolioDraftsApi from "@/api/portfolios";
 
 Vue.use(Vuex);
+
+const portfolioDraftsApi = new PortfolioDraftsApi();
 
 const vuexLocalStorage = new VuexPersist({
   key: "vuex", // The key to store the state on in the storage provider.
@@ -17,14 +18,6 @@ const vuexLocalStorage = new VuexPersist({
   // Function that passes a mutation and lets you decide if it should update the state in localStorage.
   // filter: mutation => (true)
 });
-
-function generateGuid(): string {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
 
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
@@ -37,6 +30,8 @@ export default new Vuex.Store({
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
     currentStepNumber: 1,
+    currentPortfolioId: "",
+    currentStepModel: {},
     portfolioSteps: [
       {
         step: 1,
@@ -81,7 +76,6 @@ export default new Vuex.Store({
         description: "Add Application",
         touched: false,
         model: {
-          id: "",
           name: "",
           description: "",
           environments: [],
@@ -114,7 +108,9 @@ export default new Vuex.Store({
     doSetCurrentStepNumber(state, step: number) {
       state.currentStepNumber = step;
     },
-
+    doSetCurrentStepModel(state, model: any) {
+      state.currentStepModel = { ...model };
+    },
     doSaveStepModel(state, [model, stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
@@ -130,7 +126,6 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
-
     doSetErroredStep(state, [stepNumber, isErroredStep]) {
       const es: number[] = state.erroredSteps;
       if (isErroredStep) {
@@ -139,9 +134,23 @@ export default new Vuex.Store({
         es.splice(stepNumber, 1);
       }
     },
+    doSetSelectedCSP(state, selectedCSP){
+      state.selectedCSP = selectedCSP;
+    },
+    setPorfolioDraftId(state, id) {
+      state.currentPortfolioId = id;
+    },
     updatePortfolios(state, portfolios: Portfolio[]) {
-      debugger;
       Vue.set(state, "portfolios", [...portfolios]);
+    },
+    doDeletePortfolioDraft(state, draftId: string) {
+      const portfololioIndex = state.portfolios.findIndex(
+        (p: Portfolio) => p.id === draftId
+      );
+
+      if (portfololioIndex > -1) {
+        state.portfolios.splice(portfololioIndex, 1);
+      }
     },
   },
 
@@ -162,37 +171,58 @@ export default new Vuex.Store({
     unauthorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", false);
     },
-    setCurrentStepNumber({ commit }, step: number) {
+    setCurrentStepNumber({ getters, commit }, step: number) {
       commit("doSetCurrentStepNumber", step);
+      const stepModel = getters.getStepModel(step);
+      commit("doSetCurrentStepModel", stepModel);
     },
-    saveStepModel({ commit }, [model, stepNumber, valid]) {
+    setCurrentStepModel({ commit }, model) {
+      commit("doSetCurrentStepModel", model);
+    },
+    async saveStepModel({ commit }, [model, stepNumber, valid]) {
       commit("doSaveStepModel", [model, stepNumber, valid]);
+      switch (stepNumber as number) {
+        case 1:
+          await this.dispatch("saveStep1", model);
+      }
     },
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
-    //todo
     async loadPortfolios({ commit }) {
-      const apiClient = new PortfolioDraftsApi();
-      const portfolios = await apiClient.getAll();
+      const portfolios = await portfolioDraftsApi.getAll();
       commit("updatePortfolios", portfolios);
     },
-    // updatePortfolio({commit}, portfolio: Portfolio){
-    //   //todo is
-    // },
+    async saveStep1({ state, commit }, model: any) {
+      await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, model);
+      commit("doSetSelectedCSP", model.csp);
+    },
+    async createPortfolioDraft({ commit }): Promise<void> {
+      const portfolioDraftId = await portfolioDraftsApi.createDraft();
+      commit("setPorfolioDraftId", portfolioDraftId);
+    },
+    async deletePortfolioDraft({ commit }, draftId: string): Promise<void> {
+      await portfolioDraftsApi.deleteDraft(draftId);
+      commit("doDeletePortfolioDraft", draftId);
+    },
+    async loadPortfolioDraft(
+      { getters, commit },
+      draftId: string
+    ): Promise<void> {
+      debugger;
+      
+      const draft = await portfolioDraftsApi.getDraft(draftId);
+      let model: any = getters["getStepModel"](1);
 
-    // saveCurrentStep({commit}){
-
-    // },
-    // saveStep1({commit}){
-    // },
-
-    // createPortfolioDraft(){
-
-    //   //todo call api get draft ID
-    //   //update store step model ids with draft ID
-
-    // }
+      model = {
+        ...model,
+        name: draft.name,
+        description: draft.description,
+        dod_components: draft.dod_component,
+      };
+      commit("doSaveStepModel", [model, 1, true]);
+      commit("doSetCurrentPortfolioId", draftId);
+    }
   },
   modules: {},
   getters: {
@@ -294,7 +324,7 @@ export default new Vuex.Store({
       );
       return step?.model;
     },
-
+    getCurrentStepModel: (state) => state.currentStepModel,
     getStepTouched: (state) => (stepNumber: number) => {
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber

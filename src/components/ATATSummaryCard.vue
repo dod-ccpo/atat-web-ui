@@ -212,6 +212,9 @@ export default class ATATSummaryCard extends Vue {
     if (card.type === "PORTFOLIO") {
       id = card.id;
     }
+
+    //emit edit event
+    this.$emit("edit", id);
   }
 
   private rightButtonClicked(card: ATATSummaryCardItem): void {

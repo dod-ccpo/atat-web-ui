@@ -71,7 +71,7 @@
               :id="'dod-component-' + index"
               type="checkbox"
               v-model="_dod_components"
-              :value="dod"
+              :value="dod.value"
               style="width: 0px; height: 0px; position: absolute"
             />
 
@@ -80,14 +80,14 @@
               class="d-flex align-center'"
               @keydown.space="check('dod-component-' + index)"
             >
-              <v-icon class="checked-icon" v-if="isChecked(dod)"
+              <v-icon class="checked-icon" v-if="isChecked(dod.value)"
                 >check_box</v-icon
               >
               <v-icon class="checkbox-icon" v-else
                 >check_box_outline_blank</v-icon
               >
               <div class="ml-2">
-                {{ dod }}
+                {{ dod.name }}
               </div>
             </label>
           </fieldset>
@@ -108,21 +108,55 @@ export default class CreatePortfolioForm
 {
   private valid = true;
   private dodComponents = [
-    "Air Force",
-    "Army",
-    "Marine Corps",
-    "Navy",
-    "Space Force",
-    "Combatant Command (CCMD)",
-    "Joint Staff (JS)",
-    "Defense Agency and Field Activity (DAFA)",
-    "Office of the Secretary of Defense (OSD) /Principal Staff Assistants",
-    "National Security Agency (NSA)",
-    "Other",
+    {
+      name: "Air Force",
+      value: "air_force",
+    },
+    {
+      name: "Army",
+      value: "army",
+    },
+    {
+      name: "Marine Corps",
+      value: "marine_corps",
+    },
+    {
+      name: "Navy",
+      value: "navy",
+    },
+    {
+      name: "Space Force",
+      value: "space_force",
+    },
+    {
+      name: "Combatant Command (CCMD)",
+      value: "combatant_command",
+    },
+    {
+      name: "Joint Staff (JS)",
+      value: "joint_staff",
+    },
+    {
+      name: "Defense Agency and Field Activity (DAFA)",
+      value: "dafa",
+    },
+    {
+      name: "Office of the Secretary of Defense (OSD) /Principal Staff Assistants",
+      value: "osd_psas",
+    },
+    {
+      name: "National Security Agency (NSA)",
+      value: "nsa",
+    },
+    {
+      name: "Other",
+      value: "other",
+    },
   ];
   private isDodComponentsValid: boolean | string | undefined = false;
   private isChecked(dodComp: string) {
-    return this._dod_components.some((d) => d === dodComp);
+    let checked = this._dod_components.findIndex((d) => d === dodComp) > -1;
+    return checked;
   }
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
   @PropSync("description", { default: "", required: true })

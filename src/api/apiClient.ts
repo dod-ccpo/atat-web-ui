@@ -25,7 +25,7 @@ export default class ApiClient {
   }
 
   public get(url?: string, config?: AxiosRequestConfig): AxiosPromise {
-    url = url ? `${this.endpoint}\\${url}` : this.endpoint;
+    url = url ? `${this.endpoint}/${url}` : this.endpoint;
     return instance.get(url, config);
   }
 
@@ -34,12 +34,13 @@ export default class ApiClient {
     data?: unknown,
     config?: AxiosRequestConfig
   ): AxiosPromise {
-    url = url ? `${this.endpoint}\\${url}` : this.endpoint;
+    url = url ? `${this.endpoint}/${url}` : this.endpoint;
     return instance.post(url, data, config);
   }
 
   public delete(url?: string, config?: AxiosRequestConfig): AxiosPromise {
-    url = url ? `${this.endpoint}\\${url}` : this.endpoint;
-    return instance.post(`${this.endpoint}\${url}`, config);
+    debugger;
+    url = url ? `${this.endpoint}/${url}` : this.endpoint;
+    return instance.delete(url, config);
   }
 }
