@@ -210,6 +210,8 @@ export default new Vuex.Store({
       draftId: string
     ): Promise<void> {
       const draft = await portfolioDraftsApi.getDraft(draftId);
+
+      // update step 1 model
       let model: any = getters["getStepModel"](1);
 
       model = {
@@ -221,6 +223,7 @@ export default new Vuex.Store({
       commit("doSaveStepModel", [model, 1, true]);
       commit("doSetCurrentPortfolioId", draftId);
     }
+    //todo: will need to update the other models here as well
   },
   modules: {},
   getters: {

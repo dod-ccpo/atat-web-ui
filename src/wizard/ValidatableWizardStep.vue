@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Validatable } from "../../types/Wizard";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { Route } from "vue-router";
 
 // Register the router hooks with their names
