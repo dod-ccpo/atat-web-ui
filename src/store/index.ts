@@ -28,6 +28,7 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
+    sideDrawer: true,
     isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,
@@ -98,10 +99,24 @@ export default new Vuex.Store({
         model: {},
       },
     ],
+    user: {
+      title: "Ms.",
+      given_name: "Maria",
+      family_name: "Missionowner",
+      email: "maria.missionowner-civ@mail.mil",
+      phone_number: "(555)-555-5555",
+      service_branch: "U.S. Army",
+      citizenship: "United States",
+      dod_id: "1234567890",
+      designation: "Civilian",
+    },
   },
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
+    },
+    changeSideDrawer(state, status: boolean) {
+      state.sideDrawer = status;
     },
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
@@ -165,6 +180,12 @@ export default new Vuex.Store({
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
+    closeSideDrawer({ commit }) {
+      commit("changeSideDrawer", false);
+    },
+    openSideDrawer({ commit }) {
+      commit("changeSideDrawer", true);
+    },
   },
   modules: {},
   getters: {
@@ -189,10 +210,10 @@ export default new Vuex.Store({
               id: 1,
               cssClass: "atat-header-nav__user-display-name",
               title: "Maria Missionowner",
-              url: "#",
               newWindow: false,
               icon: "person",
               iconPlacement: "left",
+              action: "profile",
             },
             {
               id: 2,
@@ -279,5 +300,7 @@ export default new Vuex.Store({
         throw new Error(`unable to locate application with id  ${id}`);
       }
     },
+    getUser: (state) => state.user,
+    getSideDrawer: (state) => state.sideDrawer,
   },
 });

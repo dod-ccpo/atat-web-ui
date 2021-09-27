@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
 import wizard from "../router/wizard";
+import Profile from "../views/Profile.vue";
 
 Vue.use(VueRouter);
 
@@ -48,6 +49,12 @@ const routes: Array<RouteConfig> = [
       import(
         /* webpackChunkName: "style" */ "../wizard/Step0/components/CreatePortfolio/CreatePortfolio.vue"
       ),
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () =>
+      import(/* webpackChunkName: "style" */ "../views/Profile.vue"),
   },
 ];
 
