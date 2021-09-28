@@ -1,15 +1,11 @@
 <template>
   <v-container fluid class="dashboard-body body-lg wizard-step-1-view">
-    <v-row>
-      <v-col cols="6">
-        <h1 class="h1 step-1-title font-weight-bold">ATAT Cloud Services</h1>
-      </v-col>
-    </v-row>
-
     <br />
     <v-row>
       <v-col cols="6">
-        <h2 class="h2 step-1-subtitle">Create a Portfolio</h2>
+        <h2 class="h2 step-1-subtitle">
+          Hi {{ user.given_name }}, let’s create your first portfolio!
+        </h2>
       </v-col>
     </v-row>
     <br />
@@ -64,7 +60,13 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class CreatePortfolio extends Vue {}
+export default class CreatePortfolio extends Vue {
+  private user = "";
+
+  public mounted(): void {
+    this.user = this.$store.getters.getUser;
+  }
+}
 </script>
 
 <style scoped></style>

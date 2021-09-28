@@ -25,14 +25,16 @@
               <div class="d-flex align-center mb-2">
                 <v-alert
                   outlined
-                  rounded
                   color="cyan"
-                  type="info"
                   border="left"
+                  rounded
                   class="text-left info_lighter black-icon mt-3"
                 >
-                  <div class="d-flex">
-                    <div class="black--text body-lg ml-2">
+                  <div class="d-flex align-start">
+                    <div class="text-center pt-1 width-5">
+                      <v-icon class="icon-20">info</v-icon>
+                    </div>
+                    <div class="black--text body-lg ml-2 width-75">
                       To update the contact information associated with your
                       CAC, please visit the
                       <a
@@ -187,7 +189,7 @@ export default class Profile extends Vue {
   private user = "";
 
   public handleContinue(): void {
-    this.$router.push("/portfolios");
+    this.$router.push("/createportfolio");
     console.log("Continue clicked");
   }
   public handleBack(): void {
