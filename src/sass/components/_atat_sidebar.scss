@@ -1,23 +1,25 @@
 @import "../utils/colors.scss";
 
 nav.v-navigation-drawer{
-    a {
-        color: inherit;
-        width: 100% !important;
-        border-radius: 0px; 
-        background-color: transparent !important;
-        span{
+    .v-navigation-drawer__content{
+    overflow-y: inherit !important;
+    overflow-x: inherit !important;
+    width: 100% !important;
+    // height: 100% !important;
+        a {
+            color: inherit;
             width: 100% !important;
-            height: 100% !important;
-            font-weight: 900 !important;
-            text-align: left;
-            padding-left: 4px;
-            font-weight: normal !important;
-        }
-        &:focus{
+            border-radius: 0px; 
+            background-color: transparent !important;
             span{
-                font-weight: 700 !important;
+                width: 100% !important;
+                height: 100% !important;
+                font-weight: 900 !important;
+                text-align: left;
+                padding-left: 4px;
+                font-weight: normal !important;
             }
         }
     }
+
 }

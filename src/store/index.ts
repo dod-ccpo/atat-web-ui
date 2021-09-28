@@ -28,7 +28,7 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
-    sideDrawer: true,
+    sideDrawer: false,
     isUserAuthorizedToProvisionCloudResources: false,
     portfolios: allPortfolios,
     taskOrders: mockTaskOrder,

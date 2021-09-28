@@ -1,5 +1,9 @@
 <template>
   <v-container fluid>
+    <!--    :class="[-->
+    <!--      this.$store.state.sideDrawer === false || 'side-drawer-open',-->
+    <!--      'mb-16 d-flex flex-column',-->
+    <!--    ]"-->
     <Stepper
       :step-number="stepNumber"
       :current-step-number.sync="stepNumber"
@@ -157,3 +161,8 @@ export default class Wizard extends Vue {
   }
 }
 </script>
+<style>
+.side-drawer-open {
+  width: calc(100% - 400px) !important;
+}
+</style>

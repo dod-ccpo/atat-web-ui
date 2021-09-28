@@ -44,6 +44,11 @@
         font-weight: 400 !important;
         line-height: 3.3rem !important;
     }
+    .body-xl{
+        font-size: 1.9rem !important;
+        font-weight: 400 !important;
+        line-height: 2.8rem !important;
+    }
     .body-lg{
         font-size: 1.7rem !important;
         font-weight: 400 !important;
@@ -84,19 +89,22 @@
         font-weight: 400 !important;
         line-height: 2.8rem !important;
         text-decoration: underline !important;
+        color: $primary !important;
     }
     .link-body-md{
         font-size: 1.7rem !important;
         font-weight: 400 !important;
         line-height: 2.6rem !important;
         text-decoration: underline !important;
+        color: $primary !important;
+
     }
     .link-body-sm{
         font-size: 1.5rem !important;
         font-weight: 400 !important;
         line-height: 2.4rem !important;
         text-decoration: underline !important;
-        color: #005EA2 !important;
+        color: $primary !important;
     }
     .stepper-step-lg{
         font-size: 1.9rem !important;
@@ -118,6 +126,7 @@
         color: $base_dark !important;
     }
 
+
     .datepicker-text{
         font-size: 1.6rem !important;
         font-weight: 400 !important;
@@ -133,12 +142,14 @@
         font-weight: normal;
         color: $base_darkest;
     }
-
+    a {
+        color: $primary;
+    }
     .text-decoration-none {
         text-decoration: none !important;
     }
 
-    $sizes: 16, 18, 20, 24, 28, 32, 200;
+    $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
     @each $size in $sizes{
         .icon-#{$size}{
             font-size: #{$size}px !important;
@@ -148,6 +159,7 @@
             min-width: #{$size}px !important;
         }
     }
-.word-break-normal{
-    word-break: normal !important;
-}
+    
+    .word-break-normal{
+        word-break: normal !important;
+    }
