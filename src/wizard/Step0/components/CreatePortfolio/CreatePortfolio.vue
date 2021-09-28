@@ -68,5 +68,3 @@ export default class CreatePortfolio extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

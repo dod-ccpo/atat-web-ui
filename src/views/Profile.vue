@@ -208,15 +208,12 @@ export default class Profile extends Vue {
 
   public handleContinue(): void {
     this.$router.push("/createportfolio");
-    console.log("Continue clicked");
   }
   public handleBack(): void {
     this.$router.push("/dashboard");
-    console.log("back clicked");
   }
   public mounted(): void {
     this.user = this.$store.getters.getUser;
   }
 }
 </script>
-

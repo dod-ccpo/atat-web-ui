@@ -2,7 +2,7 @@
   <v-app>
     <SecurityBanner />
     <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
-    <SideDrawer  v-if="loginStatus" />
+    <SideDrawer v-if="loginStatus" />
     <ATATHeader />
     <v-main style="padding-top: 90px">
       <v-container fluid>
