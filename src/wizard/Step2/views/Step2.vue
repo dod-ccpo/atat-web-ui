@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <create-task-order-form
+    <CreateTaskOrderForm
       ref="createTaskOrderForm"
       :task_order_number.sync="model.task_order_number"
       :task_order_file.sync="model.task_order_file"
@@ -52,7 +52,8 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
 
   public deleteClin(itemNumber: number): void {
     const index = itemNumber - 1;
-    if (this.model.clins.length >= itemNumber) {
+    const clinLength = this.model.clins.length;
+    if (clinLength && clinLength >= itemNumber) {
       this.model.clins.splice(index, 1);
     }
   }

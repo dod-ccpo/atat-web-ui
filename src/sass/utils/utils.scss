@@ -47,3 +47,16 @@ $biggest-border-width: 10;
 
     cursor: pointer !important;
 }
+
+$states: 'auto' 'scroll' 'inherit' 'initial' 'overlay' 'hidden' 'revert' 'unset' 'visible';
+@each $state in $states{
+    .overflow-#{$state}{
+        overflow: #{$state} !important;
+    }
+    .overflow-x-#{$state}{
+        overflow-x: #{$state} !important;
+    }
+    .overflow-y-#{$state}{
+        overflow-y: #{$state} !important;
+    }
+}
