@@ -13,12 +13,11 @@ Vue.use(VueAxios, axios);
 const BASE_URL =
   "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0";
 
-  const mock = new MockAdapter(axios.create());
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
-  localVue.use(VueAxios, axios);
-  let wrapper: any;
-
+const mock = new MockAdapter(axios.create());
+const localVue = createLocalVue();
+localVue.use(Vuex);
+localVue.use(VueAxios, axios);
+let wrapper: any;
 
 function createWrapper() {
   const vuetify: any = new Vuetify();
@@ -34,7 +33,7 @@ function createWrapper() {
     actions,
     getters,
   });
-  
+
   return mount(fileUpload, {
     store,
     localVue,
@@ -56,10 +55,9 @@ function createWrapper() {
   });
 }
 describe("Testing ATATFileUpload Component", () => {
- 
   beforeEach(() => {
-   wrapper = createWrapper();
-   
+    wrapper = createWrapper();
+
     const progressBar = document.createElement("div");
     progressBar.id = "progressBar";
     const spy = jest.spyOn(document, "getElementById");

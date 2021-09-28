@@ -1,16 +1,17 @@
 @import "../utils/colors.scss";
 
 .atat-info-side-drawer{
-  position: absolute;
-  background-color: #fff;
-  right: 0px;
-  top: 15px;
-  min-height: calc(100% - 104px) !important;
-  height: calc(100% - 104px)  !important;
-  max-height: calc(100% - 104px)  !important;
-  width: 380px;
-  z-index: 1000;
-  box-shadow: inset 1px 0px 0px $base_lighter;
+  //will probably take this out in upcoming task
+  // position: absolute;
+  // background-color: #fff;
+  // right: 0px;
+  // top: 15px;
+  // min-height: calc(100% - 104px) !important;
+  // height: calc(100% - 104px)  !important;
+  // max-height: calc(100% - 104px)  !important;
+  // width: 380px;
+  // z-index: 1000;
+  // box-shadow: inset 1px 0px 0px $base_lighter;
 .expand-transition-enter-active,
 .expand-transition-leave-active{
   transition-duration: .10s

@@ -13,12 +13,18 @@
                 <template v-slot:default="{ open }">
                   <v-container>
                     <v-row>
-                      <v-col cols="1" class="h4 text--base-darkest" id="card_number">{{
-                        card_number
-                      }}</v-col>
-                      <v-col cols="11" class="h4 text--base-darkest" id="clin_number">{{
-                        `CLIN ${clin_number}`
-                      }}</v-col>
+                      <v-col
+                        cols="1"
+                        class="h4 text--base-darkest"
+                        id="card_number"
+                        >{{ card_number }}</v-col
+                      >
+                      <v-col
+                        cols="11"
+                        class="h4 text--base-darkest"
+                        id="clin_number"
+                        >{{ `CLIN ${clin_number}` }}</v-col
+                      >
                     </v-row>
                     <v-row v-if="!open && _idiq_clin !== ''">
                       <v-col cols="1"></v-col>
@@ -57,9 +63,11 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body" id="total_clin_value">{{
-                                formatCurrency(total_clin_value)
-                              }}</v-col>
+                              <v-col
+                                class="optional body"
+                                id="total_clin_value"
+                                >{{ formatCurrency(total_clin_value) }}</v-col
+                              >
                             </v-row>
                           </v-col>
 
@@ -77,9 +85,11 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body" id="obligated_funds">{{
-                                formatCurrency(_obligated_funds)
-                              }}</v-col>
+                              <v-col
+                                class="optional body"
+                                id="obligated_funds"
+                                >{{ formatCurrency(_obligated_funds) }}</v-col
+                              >
                             </v-row>
                           </v-col>
                           <!-- Period of Performance -->
@@ -266,7 +276,7 @@
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on, attrs }">
               <v-btn icon>
-                <v-icon v-bind="attrs" v-on="on">delete</v-icon> 
+                <v-icon v-bind="attrs" v-on="on">delete</v-icon>
               </v-btn>
             </template>
             <v-card>
