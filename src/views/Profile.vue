@@ -207,7 +207,7 @@ export default class Profile extends Vue {
   private user = "";
 
   public handleContinue(): void {
-    this.$router.push("/createPortfolio");
+    this.$router.push("/createportfolio");
     console.log("Continue clicked");
   }
   public handleBack(): void {
@@ -220,15 +220,3 @@ export default class Profile extends Vue {
 }
 </script>
 
-<style scoped>
-.remove-y-padding-from-cols .col {
-  padding-top: 0px !important;
-  padding-bottom: 0px !important;
-}
-
-.remove-y-margin-from-p p {
-  margin-top: 0px !important;
-  margin-bottom: 0px !important;
-}
-</style>
->
