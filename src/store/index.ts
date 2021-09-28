@@ -148,7 +148,7 @@ export default new Vuex.Store({
         es.splice(stepNumber, 1);
       }
     },
-    doSetSelectedCSP(state, selectedCSP){
+    doSetSelectedCSP(state, selectedCSP) {
       state.selectedCSP = selectedCSP;
     },
     setPorfolioDraftId(state, id) {

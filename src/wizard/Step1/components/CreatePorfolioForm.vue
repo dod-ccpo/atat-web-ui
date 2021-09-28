@@ -155,8 +155,7 @@ export default class CreatePortfolioForm
   ];
   private isDodComponentsValid: boolean | string | undefined = false;
   private isChecked(dodComp: string) {
-    let checked = this._dod_components.findIndex((d) => d === dodComp) > -1;
-    return checked;
+    return this._dod_components.findIndex((d) => d === dodComp) > -1;
   }
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
   @PropSync("description", { default: "", required: true })

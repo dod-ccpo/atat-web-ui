@@ -39,7 +39,6 @@ export default class ApiClient {
   }
 
   public delete(url?: string, config?: AxiosRequestConfig): AxiosPromise {
-    debugger;
     url = url ? `${this.endpoint}/${url}` : this.endpoint;
     return instance.delete(url, config);
   }

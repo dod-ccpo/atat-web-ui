@@ -19,20 +19,16 @@ export default class ValidatableWizardStep extends Validatable {
   //   from: Route,
   //   next: (n: void) => void
   // ): Promise<void> {
-  //   debugger;
   //   const incomingModel = this.$store.getters["getCurrentStepModel"];
   //   console.log(incomingModel);
   // }
-    
+
   public async beforeRouteLeave(
     to: Route,
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
-    
-    debugger;
 
-   
     //todo compare out going model to in coming model
     // if changes then set touched to true
     // if changes validate
