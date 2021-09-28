@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <create-task-order-form
+    <CreateTaskOrderForm
       ref="createTaskOrderForm"
       :task_order_number.sync="taskOrderDetails.task_order_number"
       :task_order_file.sync="taskOrderDetails.task_order_file"
@@ -32,6 +32,7 @@ export default class Step_2 extends Vue {
 
   private taskOrderDetails: TaskOrderDetails =
     this.$store.getters.getStepModel(2);
+
   private touched = false;
 
   public async validate(): Promise<boolean> {
@@ -54,7 +55,8 @@ export default class Step_2 extends Vue {
 
   public deleteClin(itemNumber: number): void {
     const index = itemNumber - 1;
-    if (this.taskOrderDetails.clins.length >= itemNumber) {
+    const clinLength = this.taskOrderDetails.clins.length;
+    if (clinLength && clinLength >= itemNumber) {
       this.taskOrderDetails.clins.splice(index, 1);
     }
   }

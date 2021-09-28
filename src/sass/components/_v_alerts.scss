@@ -24,7 +24,12 @@
       top: .4rem;
       margin: 0 1rem 0 .5rem;
     }
-
+  .info_lighter {
+    border-width: 0px !important;
+    border-style: solid !important;
+    border-color: transparent !important;
+    background-color:  $info_lighter !important;
+  }
     .warning_lighter {
       border-color: var(--v-warning-base) !important;
       border-width: 0px !important;
@@ -40,6 +45,12 @@
   &.black-icon{
     .v-icon{
       color: black !important;
+    }
+    a {
+      color: $primary !important;
+      .v-icon{
+        color: $primary !important;
+      }
     }
   }
 
