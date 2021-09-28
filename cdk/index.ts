@@ -1,7 +1,6 @@
 import * as cognito from "@aws-cdk/aws-cognito";
 import * as ssm from "@aws-cdk/aws-ssm";
 import * as cdk from "@aws-cdk/core";
-import "source-map-support/register";
 import { StaticSite } from "./static-website";
 import * as util from "./util";
 
@@ -19,8 +18,14 @@ class StaticSiteStack extends cdk.Stack {
       "UserPoolId",
       `/atat/${props.environmentId}/cognito/userpool/id`
     ).stringValue;
+    const idpNames = ssm.StringListParameter.fromStringListParameterName(
+      this,
+      "CognitoIdPNames",
+      `/atat/${props.environmentId}/cognito/idps`
+    ).stringListValue;
     const userPool = cognito.UserPool.fromUserPoolId(this, "UserPool", poolId);
     userPool.addClient("ApplicationUserPoolClient", {
+      supportedIdentityProviders: idpNames.map(cognito.UserPoolClientIdentityProvider.custom),
       accessTokenValidity: cdk.Duration.minutes(60),
       refreshTokenValidity: cdk.Duration.days(1),
       oAuth: {
