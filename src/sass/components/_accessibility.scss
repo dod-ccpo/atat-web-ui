@@ -46,6 +46,14 @@ a:not(.left-nav-menu-link){
     &:focus{
         border-radius: 6px !important; 
         border: $focus-blue 3px solid;
+        font-weight: inherit !important;
+    }
+}
+a.left-nav-menu-link{
+    &:focus{
+        span{
+            font-weight: 700 !important;
+        }
     }
 }
 
