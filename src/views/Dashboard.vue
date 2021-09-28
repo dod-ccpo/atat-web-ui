@@ -70,47 +70,26 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <hr class="hr border-base-lighter" />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <div class="h3 font-weight-bold mt-4 mb-7">Getting Started</div>
-        <p class="dashboard-content">
-          First, you will need to verify your contact information that was
-          imported from your Active Directory user profile. Our administrators
-          may use this information to contact you, in the event that there is an
-          issue with your cloud resources or funding.
-        </p>
-        <v-alert
-          :icon="false"
-          type="warning"
-          colored-border
-          class="warning_lighter black--text body-lg border"
+        <v-btn
+          @click="handleClick"
+          color="primary"
+          :ripple="false"
+          class="ml-auto"
         >
-          <div class="body-lg">
-            <h4 class="mt-1 mb-2 h4">Maria Missionowner</h4>
-            <v-row class="mb-2">
-              <v-col cols="6">
-                <div class="d-block">maria.missionowner-civ@mail.mil</div>
-                <div class="d-block">(555) 555-5555</div>
-              </v-col>
-              <v-col cols="6">
-                <div class="d-block">Service Branch: Army</div>
-                <div class="d-block">Citizenship: United States</div>
-              </v-col>
-            </v-row>
-            <v-btn color="primary" to="#"> Update Your Profile </v-btn>
-          </div>
-        </v-alert>
+          Get Started
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({})
-export default class Dashboard extends Vue {}
+export default class Dashboard extends Vue {
+  public handleClick(): void {
+    this.$router.push("/profile");
+  }
+}
 </script>
