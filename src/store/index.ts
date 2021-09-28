@@ -192,6 +192,12 @@ export default new Vuex.Store({
     getLoginStatus(state) {
       return state.loginStatus;
     },
+    getIsNavSideBarDisplayed: () => (routeName: string) => {
+      const routesWithNoNavSideBar = ["home", "dashboard", "profile"];
+      return routesWithNoNavSideBar.every(
+        (r) => r.toLowerCase() !== routeName.toLowerCase()
+      );
+    },
     getisUserAuthorizedToProvisionCloudResources(state) {
       return state.isUserAuthorizedToProvisionCloudResources;
     },

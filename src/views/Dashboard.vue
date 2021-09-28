@@ -90,7 +90,6 @@ import { Component } from "vue-property-decorator";
 export default class Dashboard extends Vue {
   public handleClick(): void {
     this.$router.push("/profile");
-    console.log("Continue clicked");
   }
 }
 </script>

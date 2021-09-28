@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <SecurityBanner />
-    <ATATSideBar v-if="loginStatus" />
-    <SideDrawer v-if="loginStatus" />
+    <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
+    <SideDrawer  v-if="loginStatus" />
     <ATATHeader />
     <v-main style="padding-top: 90px">
       <v-container fluid>
@@ -37,6 +37,10 @@ import SideDrawer from "@/components/SideDrawer.vue";
 export default class App extends Vue {
   get loginStatus(): boolean {
     return this.$store.getters.getLoginStatus;
+  }
+
+  get getIsNavSideBarDisplayed(): boolean {
+    return this.$store.getters.getIsNavSideBarDisplayed(this.$route.name);
   }
 }
 </script>
