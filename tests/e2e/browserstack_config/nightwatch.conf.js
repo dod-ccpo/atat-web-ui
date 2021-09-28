@@ -15,10 +15,9 @@ if (startHeadless) {
 
 const defaultSettings = {
   src_folders: ["dist/tests/e2e/page_tests"],
-  output_folder: "tests/e2e/reports/browserstack",
   page_objects_path: "dist/tests/e2e/page_objects",
-  custom_assertions_path: "tests/e2e/custom_assertions",
-  custom_commands_path: "tests/e2e/custom_commands",
+  //custom_assertions_path: "dist/tests/e2e/custom_assertions",
+  //custom_commands_path: "dist/tests/e2e/custom_commands",
   test_workers: concurrentMode,
 
   test_settings: {
