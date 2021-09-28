@@ -19,14 +19,14 @@
           <v-card-title
             class="d-flex justify-space-between align-start pa-6 pb-5"
           >
-            <div>
-              <div
-                class="type body"
-                v-if="card.type && card.type === 'TASK ORDER'"
-              >
-                {{ card.type }}
-              </div>
-              <div class="d-flex align-start">
+            <div
+              class="type body"
+              v-if="card.type && card.type === 'TASK ORDER'"
+            >
+              {{ card.type }}
+            </div>
+            <div class="width-90">
+              <div class="d-flex align-start overflow-hidden">
                 <v-btn
                   :id="'header_link_' + index"
                   :ripple="false"
@@ -36,7 +36,7 @@
                   :class="{ 'no-border': card.type === 'APPLICATION' }"
                 >
                   <div class="font-weight-bold">
-                    <div>{{ card.title }}</div>
+                    {{ truncateText(card.title, 23) }}
                   </div>
                 </v-btn>
                 <v-btn
@@ -57,7 +57,7 @@
                 </v-btn>
               </div>
             </div>
-            <div>
+            <div class="width-10">
               <v-icon color="success"> check_circle </v-icon>
             </div>
           </v-card-title>
@@ -191,6 +191,14 @@ export default class ATATSummaryCard extends Vue {
     }
   }
 
+  //todo add this as a global function....
+  private truncateText(word: string, limit: number): string {
+    if (word.length > limit) {
+      return word.substring(0, limit-1) + "...";
+    }
+    return word;
+  }
+
   private leftButtonClicked(card: ATATSummaryCardItem) {
     this.cardSelected = card;
     let id = card.title;
@@ -234,7 +242,7 @@ export default class ATATSummaryCard extends Vue {
 
     if (card.type === "PORTFOLIO") {
       this.message = "You're removing your portfolio";
-      this.dialogTitle = `Delete  '${card.title}' <br> from your portfolio drafts`;
+      this.dialogTitle = `Delete  '${card.title}' from your portfolio drafts`;
       this.dialogMessage = `This portfolio and any details you added will be permanently removed`;
     }
     this.showDialogWhenClicked = true;
