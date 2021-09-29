@@ -1,7 +1,7 @@
 import { NightwatchBrowser } from "nightwatch";
 const url = process.env.VUE_DEV_SERVER_URL;
 const myPortfolioPage = {
-  "Verifying the Signin Home Page": (browser: NightwatchBrowser): void => {
+  "Click On SigninButton": (browser: NightwatchBrowser): void => {
     const home = browser.page.atatHome();
 
     home.navigate(url).pause(10000);
@@ -19,6 +19,14 @@ const myPortfolioPage = {
     const dashboard = browser.page.dashBoard();
     dashboard.assert.urlContains("dashboard");
     dashboard.expect.element("@logoutTab").to.be.present.before(1000);
+    dashboard.scrollIntoView(browser);
+    dashboard.assert.visible("@getStartedBtn");
+    dashboard.click("@getStartedBtn");
+    dashboard.assert.urlContains("profile");
+    dashboard.assert.visible("@profileContinueBtn");
+    dashboard.scrollIntoView(browser);
+    dashboard.click("@profileContinueBtn");
+    dashboard.assert.urlContains("createportfolio");
     dashboard.expect.element("@menuText").text.to.equal("Menu");
     dashboard.expect.element("@dashboardTab").text.to.equal("Dashboard");
     dashboard.expect.element("@myPortfoliosTab").text.to.equal("My Portfolios");
@@ -37,6 +45,7 @@ const myPortfolioPage = {
     myport.expect
       .element("@createNewPortfolioBtn")
       .text.to.contain("Create a New Portfolio");
+    myport.waitForElementPresent("@firstCard", 2000);
     myport.assert.visible("@firstCard");
     myport.assert.visible("@createNewPortfolioBtn");
     myport.click("@createNewPortfolioBtn");

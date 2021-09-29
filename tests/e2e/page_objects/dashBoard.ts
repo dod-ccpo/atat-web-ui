@@ -1,14 +1,15 @@
-import {
-  EnhancedPageObject,
-  EnhancedSectionInstance,
-  NightwatchAPI,
-  NightwatchAssertion,
-  NightwatchBrowser,
-  NightwatchTests,
-} from "nightwatch";
+import { EnhancedPageObject, NightwatchBrowser } from "nightwatch";
 
 const dashBoardPage = {
-  commands: [{}],
+  commands: [
+    {
+      scrollIntoView: (browser: NightwatchBrowser): unknown => {
+        return browser.execute(
+          "window.scrollTo(0, document.body.scrollHeight);"
+        );
+      },
+    },
+  ],
   elements: {
     atatHeaderText: {
       selector: "h1.mb-5.h1.font-weight-bold",
@@ -32,7 +33,10 @@ const dashBoardPage = {
     menuText: {
       selector: "div.v-subheader.font-weight-bold.text-h6.theme--light",
     },
-
+    getStartedBtn: {
+      selector:
+        "button.ml-auto.v-btn.v-btn--is-elevated.v-btn--has-bg.theme--light.v-size--default.primary",
+    },
     dashboardTab: {
       selector: "a[href*='createportfolio']",
     },
@@ -40,10 +44,15 @@ const dashBoardPage = {
       selector: "a[href*='portfolios']",
     },
     reportsTab: {
-      selector: "a[href*='dashboard#']",
+      selector: "a[href*='createportfolio#']",
     },
     image: {
       selector: "img.mt-9",
+    },
+    profileContinueBtn: {
+      name: "profileContinueBtn",
+      locateStrategy: "xpath",
+      selector: "//span[contains(text(),'Continue')]",
     },
   },
   sections: {},
