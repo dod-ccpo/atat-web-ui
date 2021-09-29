@@ -88,7 +88,7 @@
         </v-row>
 
         <v-row>
-          <v-col cols="10">
+          <v-col cols="9">
             <v-btn
               @click="showPortfolioOwnerText = !showPortfolioOwnerText"
               text
@@ -120,7 +120,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="10">
+          <v-col cols="9">
             <v-btn
               @click="teamPortfolioAccessText = !teamPortfolioAccessText"
               text
@@ -150,7 +150,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="10">
+          <v-col cols="9">
             <v-btn
               @click="teamPermissionsText = !teamPermissionsText"
               text
@@ -195,7 +195,7 @@
           </v-col>
         </v-row>
         <v-row class="mb-16">
-          <v-col cols="10">
+          <v-col cols="9">
             <v-btn
               @click="teamExpectationText = !teamExpectationText"
               text
