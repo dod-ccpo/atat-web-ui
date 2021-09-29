@@ -13,7 +13,7 @@
             id="btn-create-new-portfolio"
             class="primary"
             :ripple="false"
-            to="/wizard"
+            @click="onCreatePortfolio"
           >
             Create a New Portfolio
           </v-btn>
@@ -21,8 +21,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-if="portfolios">
-        <portfolio-summary :portfolios="portfolios"></portfolio-summary>
+      <v-col cols="6" v-if="portfolios">
+        <portfolio-summary
+          :portfolios="portfolios"
+          v-on:delete="onDeletePortfolio"
+          v-on:edit="onEditPortfolio"
+        ></portfolio-summary>
       </v-col>
     </v-row>
   </v-container>
@@ -33,7 +37,6 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { Portfolio } from "types/Portfolios";
 import PortfolioSummary from "./PortfolioSummary.vue";
-import { TaskOrderDetails, TaskOrderFile } from "types/Wizard";
 
 @Component({
   components: {
@@ -41,72 +44,33 @@ import { TaskOrderDetails, TaskOrderFile } from "types/Wizard";
   },
 })
 export default class ViewPortfolio extends Vue {
-  public portfolios: Portfolio[] = [];
-
-  private mapPortfolio(item: any): Portfolio {
-    const mapTaskOrder = (taskOrderItem: any): TaskOrderDetails => {
-      if (taskOrderItem) {
-        const taskOrderFile: TaskOrderFile = {
-          id: taskOrderItem.id || "-1",
-          name: taskOrderItem.name || "",
-          description: taskOrderItem.description || "",
-          created_at: "",
-          updated_at: "",
-          size: 20000,
-          status: "",
-        };
-
-        const taskOrder: TaskOrderDetails = {
-          task_order_number: taskOrderItem.task_order_number,
-          clins: taskOrderItem.clins,
-          task_order_file: taskOrderFile,
-        };
-
-        return taskOrder;
-      }
-
-      throw new Error("invalid item");
-    };
-
-    let portfolio: Portfolio = {
-      id: item.id,
-      description: item.portfolio_step ? item.portfolio_step.description : "",
-      name: item.portfolio_step ? item.portfolio_step.name : "",
-      dod_component: item.portfolio_step
-        ? item.portfolio_step.dod_components
-        : [],
-      csp_provisioning_status: item.status,
-      portfolio_managers: item.portfolio_step
-        ? item.portfolio_step.portfolio_managers
-        : [],
-      taskOrders: item.funding_step ? [mapTaskOrder(item.funding_step)] : [],
-      applications: [],
-    };
-
-    return portfolio;
+  get portfolios(): Portfolio[] {
+    return this.$store.state.portfolios;
   }
-
-  public async getPortfolios(): Promise<Portfolio[]> {
-    const apiUrl =
-      "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/portfolioDrafts/";
-
-    const portfolioResponse = await this.$http.get(apiUrl, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (portfolioResponse.status === 200) {
-      return portfolioResponse.data.map((item: any) => this.mapPortfolio(item));
-    } else {
-      throw new Error(portfolioResponse.statusText);
-    }
+  private async loadPortfolios() {
+    // this.portfolios = await await this.getPortfolios();
+    await this.$store.dispatch("loadPortfolios");
   }
 
   private async mounted(): Promise<void> {
-    this.portfolios = await (
-      await this.getPortfolios()
-    ).filter((portfolio) => portfolio.name != "");
+    await this.loadPortfolios();
+  }
+
+  private async onDeletePortfolio(id: string) {
+    if (id != "") {
+      await this.$store.dispatch("deletePortfolioDraft", id);
+      await this.loadPortfolios();
+    }
+  }
+
+  private async onCreatePortfolio(): Promise<void> {
+    await this.$store.dispatch("createPortfolioDraft");
+    this.$router.push({ name: "addportfolio" });
+  }
+
+  private async onEditPortfolio(draftId: string): Promise<void> {
+    await this.$store.dispatch("loadPortfolioDraft", draftId);
+    this.$router.push({ name: "addportfolio" });
   }
 }
 </script>

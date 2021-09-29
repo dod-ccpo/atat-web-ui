@@ -81,30 +81,32 @@ export default class Step3Summary extends Vue {
   mounted(): void {
     let portfolio = this.getPortfolioById();
     let cardsData = this.cardsData;
-    portfolio.applications.forEach((application) => {
-      const environments: ATATSummaryCardGroupedItems[] =
-        application.environments != undefined
-          ? application.environments?.map<ATATSummaryCardGroupedItems>(
-              (env) => ({
-                title: env.name,
-              })
-            )
-          : [];
+    if (portfolio.applications) {
+      portfolio.applications.forEach((application) => {
+        const environments: ATATSummaryCardGroupedItems[] =
+          application.environments != undefined
+            ? application.environments?.map<ATATSummaryCardGroupedItems>(
+                (env) => ({
+                  title: env.name,
+                })
+              )
+            : [];
 
-      const summarycardItem: ATATSummaryCardItem = {
-        type: "APPLICATION",
-        id: application.id,
-        title: application.name,
-        description: application.description || undefined,
-        showChevronRight: true,
-        groupedItemsHeader: "Environments",
-        items: environments,
-        leftButtonText: "Edit",
-        rightButtonText: "Delete",
-      };
+        const summarycardItem: ATATSummaryCardItem = {
+          type: "APPLICATION",
+          id: application.id,
+          title: application.name,
+          description: application.description || undefined,
+          showChevronRight: true,
+          groupedItemsHeader: "Environments",
+          items: environments,
+          leftButtonText: "Edit",
+          rightButtonText: "Delete",
+        };
 
-      cardsData.cards.push(summarycardItem);
-    });
+        cardsData.cards.push(summarycardItem);
+      });
+    }
   }
 }
 </script>
