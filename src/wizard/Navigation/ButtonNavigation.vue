@@ -157,7 +157,7 @@ export default class ButtonNavigation extends Vue {
             action: ["previous"],
           },
           {
-            text: "Next: Review and Submit",
+            text: "Next",
             color: "primary",
             id: "review_and_submit",
             action: ["next"],
