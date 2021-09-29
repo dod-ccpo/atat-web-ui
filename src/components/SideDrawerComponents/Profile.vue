@@ -187,10 +187,10 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 @Component({})
 export default class Profile extends Vue {
+  @Prop({ default: "400" }) private drawerWidth!: string;
+
   private contactInfoTip = false;
   private updateProfileTip = false;
-
-  
 
   private user = this.$store.getters.getUser;
   get showScrollbar(): string {
@@ -199,23 +199,7 @@ export default class Profile extends Vue {
     return show ? "expandedSidebarDiv" : "";
   }
 
-  /**
-   * isSideDrawerOpen
-   *
-   * used to immediately focus on close button when
-   * navigating w/keyboard and sidedrawer opens
-   */
-
-  get isSideDrawerOpen(): boolean {
-    const isOpen = this.$store.state.sideDrawer;
-    this.$nextTick(() => {
-      const closeButton = document.getElementById("drawerCloser");
-      if (isOpen && closeButton) {
-        closeButton?.focus();
-      }
-    });
-    return isOpen;
-  }
+  
   //method
   private hide(): Promise<boolean> {
     return this.$store.dispatch("closeSideDrawer");

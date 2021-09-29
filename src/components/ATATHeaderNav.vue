@@ -4,7 +4,8 @@
       v-for="item in navData.items"
       :id="item.cssClass"
       :title="item.title"
-      @click="itemClicked(item)"
+      @click="itemClicked(item, $event)"
+      @keydown.native.enter="itemClicked(item)"
       :key="item.id"
       :ripple="false"
       tabindex="2"
@@ -51,16 +52,23 @@ export default class ATATHeaderNav extends Vue {
   }
 
   //Events
-  private itemClicked(item: NavItem): void {
+  private itemClicked(item: NavItem, event: Event): void {
+    const mouseEvent = event ? true : false;
+    //setfocus only if keyboardevent
+    const setFocus = !mouseEvent;
     if (item.action && item.action.toLowerCase() === "logout") {
       this.logout();
     }
     if (item.action && item.action.toLowerCase() === "profile") {
-      this.$store.dispatch("openSideDrawer");
+      this.$store.dispatch("openSideDrawer", [
+        item.action.toLowerCase(),
+        setFocus,
+      ]);
     }
     if (item.url) {
       this.$router.push(item.url);
     }
   }
+
 }
 </script>

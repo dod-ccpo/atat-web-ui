@@ -6,6 +6,7 @@
     clipped
     permanent
     right
+    tabindex="3"
     class="
       mb-16
       atat-side-drawer
@@ -19,13 +20,16 @@
       min-height-100
     "
   >
-    <Profile></Profile>
+    <Profile
+      v-if="sideDrawerType === 'profile'"
+      :drawerWidth="drawerWidth"
+    ></Profile>
   </v-navigation-drawer>
 </template>
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import Profile from "./SideDrawerComponents/Profile.vue";
 
 @Component({
@@ -34,35 +38,32 @@ import Profile from "./SideDrawerComponents/Profile.vue";
   },
 })
 export default class SideDrawer extends Vue {
-  private contactInfoTip = false;
-  private updateProfileTip = false;
-
   @Prop({ default: "400" }) private drawerWidth!: string;
 
-  private user = this.$store.getters.getUser;
-  get showScrollbar(): string {
-    const show =
-      window.innerHeight < 850 || this.updateProfileTip || this.contactInfoTip;
-    return show ? "expandedSidebarDiv" : "";
+  get sideDrawerType(): string {
+    return this.$store.state.sideDrawerType;
+  }
+
+  get isSideDrawerOpen(): boolean {
+    return this.$store.state.sideDrawer;
+  }
+
+  @Watch("$store.state.isSideDrawerFocused")
+  setFocus(newVal: boolean): void {
+    if (newVal) {
+      this.$nextTick(() => {
+        document.getElementById("drawerCloser")?.focus();
+      });
+    }
   }
 
   /**
-   * isSideDrawerOpen
+   * getFocus
    *
    * used to immediately focus on close button when
    * navigating w/keyboard and sidedrawer opens
    */
 
-  get isSideDrawerOpen(): boolean {
-    const isOpen = this.$store.state.sideDrawer;
-    this.$nextTick(() => {
-      const closeButton = document.getElementById("drawerCloser");
-      if (isOpen && closeButton) {
-        closeButton?.focus();
-      }
-    });
-    return isOpen;
-  }
   //method
   private hide(): Promise<boolean> {
     return this.$store.dispatch("closeSideDrawer");
