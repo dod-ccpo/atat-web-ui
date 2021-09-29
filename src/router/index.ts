@@ -1,14 +1,15 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
-import Dashboard from "../views/Dashboard.vue";
 import wizard from "../router/wizard";
+import Dashboard from "../views/Dashboard.vue";
+import Home from "../views/Home.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
     path: "/",
+    alias: ["/index.html"],
     name: "Home",
     component: Home,
   },
