@@ -33,10 +33,17 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
   private valid = true;
 
   public validate: () => Promise<boolean> = async () => {
-    let valid = false;
-    valid = await this.$refs.createTaskOrderForm.validateForm();
-    this.$store.dispatch("saveStepModel", [this.model, 2, valid]);
-    return valid;
+    this.valid = false;
+    this.valid = await this.$refs.createTaskOrderForm.validateForm();
+    return this.valid;
+  };
+
+  protected saveModel: () => Promise<void> = async () => {
+    await this.$store.dispatch("saveStepModel", [this.model, 2, this.valid]);
+  };
+
+  protected saveData: () => Promise<void> = async () => {
+    await this.$store.dispatch("saveStepData", 2);
   };
 
   public addClin(): void {

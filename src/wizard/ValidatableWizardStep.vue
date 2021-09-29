@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Validatable } from "../../types/Wizard";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { Route } from "vue-router";
 
 // Register the router hooks with their names
@@ -17,6 +17,11 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   };
   // must be implemented by inheriting class
   protected saveModel: () => Promise<void> = () => {
+    throw new Error("not implemented");
+  };
+
+  // must be implemented by inheriting class
+  protected saveData: () => Promise<void> = () => {
     throw new Error("not implemented");
   };
   protected stepMounted!: () => Promise<void>;
@@ -38,15 +43,28 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     this.stepMounted();
   }
 
+  @Watch("$store.state.validationStamp")
+  async onValidationTriggered(): Promise<void> {
+    if (this.hasChanges()) {
+      await this.saveModel();
+      await this.validate();
+    }
+  }
+
   public async beforeRouteLeave(
     to: Route,
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
     if (this.hasChanges()) {
-      const isValid = await this.validate();
-      if (isValid) {
-        await this.saveModel();
+      await this.saveModel();
+      try {
+        const isValid = await this.validate();
+        if (isValid) {
+          await this.saveData();
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
 
