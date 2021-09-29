@@ -194,7 +194,7 @@ export default class ATATSummaryCard extends Vue {
   //todo add this as a global function....
   private truncateText(word: string, limit: number): string {
     if (word.length > limit) {
-      return word.substring(0, limit-1) + "...";
+      return word.substring(0, limit - 1) + "...";
     }
     return word;
   }

@@ -44,7 +44,6 @@ import PortfolioSummary from "./PortfolioSummary.vue";
   },
 })
 export default class ViewPortfolio extends Vue {
-
   get portfolios(): Portfolio[] {
     return this.$store.state.portfolios;
   }

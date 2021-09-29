@@ -25,6 +25,7 @@ export default new Vuex.Store({
     loginStatus: false,
     sideDrawer: false,
     isUserAuthorizedToProvisionCloudResources: false,
+    isNavSideBarDisplayed: false,
     portfolios: [],
     taskOrders: mockTaskOrder,
     wizardNavigation: {},
@@ -96,6 +97,7 @@ export default new Vuex.Store({
       },
     ],
     user: {
+      title: "Ms.",
       given_name: "Maria",
       family_name: "Missionowner",
       email: "maria.missionowner-civ@mail.mil",
@@ -166,6 +168,14 @@ export default new Vuex.Store({
         state.portfolios.splice(portfololioIndex, 1);
       }
     },
+    setNavSideBarDisplayed(state, routeName: string) {
+      if (routeName) {
+        const routesWithNoNavSideBar = ["home", "dashboard", "profile"];
+        state.isNavSideBarDisplayed = routesWithNoNavSideBar.every(
+          (r) => r.toLowerCase() !== routeName.toLowerCase()
+        );
+      }
+    },
   },
 
   actions: {
@@ -178,6 +188,9 @@ export default new Vuex.Store({
     },
     validateStep({ commit }, step: number) {
       commit("setStepValidated", step);
+    },
+    displayNavSideBarDisplayed({ commit }, routeName: string) {
+      commit("setNavSideBarDisplayed", routeName);
     },
     authorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", true);
@@ -249,6 +262,9 @@ export default new Vuex.Store({
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;
+    },
+    getIsNavSideBarDisplayed(state) {
+      return state.isNavSideBarDisplayed;
     },
     getisUserAuthorizedToProvisionCloudResources(state) {
       return state.isUserAuthorizedToProvisionCloudResources;

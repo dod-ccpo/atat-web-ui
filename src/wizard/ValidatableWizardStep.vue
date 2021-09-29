@@ -11,16 +11,14 @@ Component.registerHooks(["beforeRouteLeave"]);
  *  validatable wizard step when the user leaves the step
  */
 export default class ValidatableWizardStep<TModel> extends Validatable {
-
   // must be implmented by inheriting class
   public validate: () => Promise<boolean> = () => {
     throw new Error("not implemented");
-  }
+  };
   // must be implemented by inheriting class
   protected saveModel: () => Promise<void> = () => {
     throw new Error("not implemented");
-
-  }
+  };
   protected stepMounted!: () => Promise<void>;
   private incomingModel!: TModel;
   protected model!: TModel;
@@ -38,7 +36,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
       this.incomingModel = this.$store.state.currentStepModel;
     }
     this.stepMounted();
-  } 
+  }
 
   public async beforeRouteLeave(
     to: Route,

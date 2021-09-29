@@ -37,7 +37,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
     valid = await this.$refs.createTaskOrderForm.validateForm();
     this.$store.dispatch("saveStepModel", [this.model, 2, valid]);
     return valid;
-  }
+  };
 
   public addClin(): void {
     this.model.clins.push({
@@ -68,6 +68,6 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
     if (this.touched) {
       this.validate();
     }
-  }
+  };
 }
 </script>

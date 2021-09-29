@@ -52,17 +52,17 @@ export default class Step_1 extends ValidatableWizardStep<CreatePortfolioFormMod
     ]).then((values) => (this.valid = values.every((value) => value)));
 
     return this.valid;
-  }
+  };
 
   protected saveModel: () => Promise<void> = async () => {
     await this.$store.dispatch("saveStepModel", [this.model, 1, this.valid]);
-  }
+  };
 
   public stepMounted: () => Promise<void> = async () => {
     this.touched = this.$store.getters.getStepTouched(1);
     if (this.touched) {
       this.validate();
     }
-  }
+  };
 }
 </script>

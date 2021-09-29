@@ -49,6 +49,12 @@ const routes: Array<RouteConfig> = [
         /* webpackChunkName: "style" */ "../wizard/Step0/components/CreatePortfolio/CreatePortfolio.vue"
       ),
   },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () =>
+      import(/* webpackChunkName: "style" */ "../views/Profile.vue"),
+  },
 ];
 
 const router = new VueRouter({
