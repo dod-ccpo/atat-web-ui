@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col class="pa-0 ma-0" cols="12">
+      <v-col class="pl-0" cols="12">
         <h2 v-if="!createdApplication" class="h2">
           Invite team members to your application
         </h2>
