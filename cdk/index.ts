@@ -29,9 +29,7 @@ class StaticSiteStack extends cdk.Stack {
       site.websiteBucket.virtualHostedUrlForObject("index.html"),
     ];
     for (const port of ["8080", "8081"]) {
-      for (const page of ["/", "/dashboard"]) {
-        siteUrls.push(`https://localhost:${port}${page}`);
-      }
+      siteUrls.push(`https://localhost:${port}/index.html`);
     }
     userPool.addClient("ApplicationUserPoolClient", {
       supportedIdentityProviders: idpNames.map(
