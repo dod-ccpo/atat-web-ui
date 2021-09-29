@@ -63,17 +63,13 @@ export default class Home extends Vue {
     let authenticatedUser = await Auth.federatedSignIn({
       customProvider: "IdP",
     });
-    sessionStorage.setItem(
-      "authenticatedUser",
-      JSON.stringify(authenticatedUser)
-    );
 
     //todo something should be returned that says
     // user has been if validated
     // if (isUserisValidated){
     // if (authenticatedUser) {
     this.$store.dispatch("login");
-    this.$router.push("/dashboard");
+    // this.$router.push("/dashboard");
     // }
     //}
     // else {
@@ -82,25 +78,22 @@ export default class Home extends Vue {
   }
 
   private mounted(): void {
-    // Hub.listen("auth", async ({ payload: { event, data } }) => {
-    //   debugger;
-    //   // const user: any;
-    //   // switch (event) {
-    //   //   case "cognitoHostedUI":
-    //   //     user = await this.getUser();
-    //   //     // workaround for FF bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1422334
-    //   //     // eslint-disable-next-line
-    //   //     // noinspection SillyAssignmentJS
-    //   //     window.location.hash = window.location.hash;
-    //   //     this.setState({ authState: "signedIn", user: user });
-    //   //     break;
-    //   //   case "cognitoHostedUI_failure":
-    //   //     this.setState({ authState: "signedOut", user: null, error: data });
-    //   //     break;
-    //   //   default:
-    //   //     break;
-    //   // }
-    // });
+    Hub.listen("auth", async ({ payload: { event, data } }) => {
+      let user: any;
+      switch (event) {
+        case "cognitoHostedUI":
+          user = await Auth.currentAuthenticatedUser();
+          sessionStorage.setItem("authenticatedUser", JSON.stringify(user));
+          sessionStorage.setItem("authState", "signedIn");
+          this.$router.push("/dashboard");
+          break;
+        case "cognitoHostedUI_failure":
+          //this.setState({ authState: "signedOut", user: null, error: data });
+          break;
+        default:
+          break;
+      }
+    });
   }
 }
 </script>

@@ -1,16 +1,16 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import VuexPersist from "vuex-persist";
-import { Navs } from "../../types/NavItem";
+import PortfolioDraftsApi from "@/api/portfolios";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
 import {
   Application,
   Portfolio,
   PortfolioDraft,
-  PortFolioDraftDTO,
+  PortFolioDraftDTO
 } from "types/Portfolios";
-import PortfolioDraftsApi from "@/api/portfolios";
 import { CLIN } from "types/Wizard";
+import Vue from "vue";
+import Vuex from "vuex";
+import VuexPersist from "vuex-persist";
+import { Navs } from "../../types/NavItem";
 
 Vue.use(Vuex);
 
@@ -532,6 +532,12 @@ export default new Vuex.Store({
       return state.isUserAuthorizedToProvisionCloudResources;
     },
     getNavBarItems(): Navs {
+      const userAttributes = JSON.parse(
+        window.sessionStorage.getItem("authenticatedUser") ?? "{}"
+      )?.signInUserSession?.idToken?.payload;
+      const userName = userAttributes
+        ? `${userAttributes.given_name} ${userAttributes.family_name}`
+        : "Maria Missionowner";
       return {
         logout: {
           id: "atat-nav__logout",
@@ -545,7 +551,7 @@ export default new Vuex.Store({
             {
               id: 1,
               cssClass: "atat-header-nav__user-display-name",
-              title: "Maria Missionowner",
+              title: userName,
               newWindow: false,
               icon: "person",
               iconPlacement: "left",
