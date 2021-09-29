@@ -288,7 +288,7 @@ export default class ATATFileUpload extends Vue {
 
     //temporary hack - Robert McCardell
     if (files != null) {
-       this.files = files;
+      this.files = files;
     }
 
     if (files && files[0]) {
@@ -384,16 +384,15 @@ export default class ATATFileUpload extends Vue {
    * @taskorderFile: TaskOrderFile - to be uploaded to the API
    */
   private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
-
     const formData = new FormData();
     formData.append(taskOrderFile.name, this.files[0]);
 
     await axios
       .post(
         "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/taskOrderFiles",
-         formData,
+        formData,
         {
-           headers: {
+          headers: {
             "Content-Type": "multipart/form-data",
           },
         }

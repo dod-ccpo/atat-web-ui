@@ -28,7 +28,6 @@ export default class ValidatableWizardStep extends Validatable {
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
-
     //todo compare out going model to in coming model
     // if changes then set touched to true
     // if changes validate

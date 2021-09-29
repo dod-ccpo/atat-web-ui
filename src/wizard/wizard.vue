@@ -151,7 +151,7 @@ export default class Wizard extends Vue {
     this.checkPath();
   }
   @Watch("$route")
-  onRouteChanged(): void {;
+  onRouteChanged(): void {
     if (this.$route.meta && this.$route.meta.isWizard) {
       this.currentRoute = this.$route;
     }

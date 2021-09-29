@@ -186,8 +186,8 @@ export default new Vuex.Store({
     },
     /**
      * commits set model to the store - does not make api call
-     * @param state 
-     * @param param1 
+     * @param state
+     * @param param1
      */
     doSaveStepModel(state, [model, stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
@@ -207,8 +207,8 @@ export default new Vuex.Store({
     },
     /**
      * Partially or fully initializes step model
-     * @param state 
-     * @param stepNumber 
+     * @param state
+     * @param stepNumber
      */
     doInitializeSteps(state, stepNumber?) {
       if (stepNumber == undefined) {
