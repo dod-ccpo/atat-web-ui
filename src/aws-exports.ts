@@ -64,15 +64,16 @@ export default Amplify.configure({
     // OPTIONAL - Hosted UI configuration
     oauth: {
       domain: "atat-api-dev.auth-fips.us-gov-west-1.amazoncognito.com",
-      scope: ['phone', 'email', 'openid', 'profile'],
-      redirectSignIn: "https://devstaticspa-staticsitesitebucket1a888bc8-1c206xwjnrz7l.s3.us-gov-west-1.amazonaws.com/index.html",
-      redirectSignOut: "https://devstaticspa-staticsitesitebucket1a888bc8-1c206xwjnrz7l.s3.us-gov-west-1.amazonaws.com/index.html",
-      responseType: 'code',
+      scope: ["phone", "email", "openid", "profile"],
+      redirectSignIn: window.location.href,
+      redirectSignOut:
+        "https://devstaticspa-staticsitesitebucket1a888bc8-1c206xwjnrz7l.s3.us-gov-west-1.amazonaws.com/index.html",
+      responseType: "code",
       options: {
         // advanced security is not supported in GovCloud
-        AdvancedSecurityDataCollectionFlag: false
-      }
-    }
+        AdvancedSecurityDataCollectionFlag: false,
+      },
+    },
   },
 });
 // You can get the current config object
