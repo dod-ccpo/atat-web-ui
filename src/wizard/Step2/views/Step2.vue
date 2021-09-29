@@ -2,9 +2,9 @@
   <v-flex>
     <CreateTaskOrderForm
       ref="createTaskOrderForm"
-      :task_order_number.sync="taskOrderDetails.task_order_number"
-      :task_order_file.sync="taskOrderDetails.task_order_file"
-      :clins.sync="taskOrderDetails.clins"
+      :task_order_number.sync="model.task_order_number"
+      :task_order_file.sync="model.task_order_file"
+      :clins.sync="model.clins"
       @add="addClin"
       @delete="deleteClin"
       :validate-on-load="touched"
@@ -13,38 +13,35 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails, WizardNavigation } from "../../../../types/Wizard";
-import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
+import { TaskOrderDetails } from "../../../../types/Wizard";
+import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 
 @Component({
   components: {
     CreateTaskOrderForm,
   },
-  mixins: [ValidatableWizardStep],
 })
-export default class Step_2 extends Vue {
+export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
   $refs!: {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  private taskOrderDetails: TaskOrderDetails =
-    this.$store.getters.getStepModel(2);
-
+  model: TaskOrderDetails = this.$store.getters.getStepModel(2);
   private touched = false;
+  private valid = true;
 
-  public async validate(): Promise<boolean> {
+  public validate: () => Promise<boolean> = async () => {
     let valid = false;
     valid = await this.$refs.createTaskOrderForm.validateForm();
-    this.$store.dispatch("saveStepModel", [this.taskOrderDetails, 2, valid]);
+    this.$store.dispatch("saveStepModel", [this.model, 2, valid]);
     return valid;
-  }
+  };
 
   public addClin(): void {
-    this.taskOrderDetails.clins.push({
-      clin_number: `000${this.taskOrderDetails.clins.length + 1}`,
+    this.model.clins.push({
+      clin_number: `000${this.model.clins.length + 1}`,
       idiq_clin: "",
       total_clin_value: 0,
       obligated_funds: 0,
@@ -55,15 +52,15 @@ export default class Step_2 extends Vue {
 
   public deleteClin(itemNumber: number): void {
     const index = itemNumber - 1;
-    const clinLength = this.taskOrderDetails.clins.length;
+    const clinLength = this.model.clins.length;
     if (clinLength && clinLength >= itemNumber) {
-      this.taskOrderDetails.clins.splice(index, 1);
+      this.model.clins.splice(index, 1);
     }
   }
 
-  public mounted(): void {
+  public stepMounted: () => Promise<void> = async () => {
     if (this.$route.name === "editfunding") {
-      this.taskOrderDetails = this.$store.getters.getTaskOrderByName(
+      this.model = this.$store.getters.getTaskOrderByName(
         this.$route.params.id
       );
     }
@@ -71,6 +68,6 @@ export default class Step_2 extends Vue {
     if (this.touched) {
       this.validate();
     }
-  }
+  };
 }
 </script>

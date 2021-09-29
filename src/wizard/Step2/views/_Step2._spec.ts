@@ -15,7 +15,7 @@ describe("Testing Step2 Component", () => {
   let wrapper: any;
   let store: any;
 
-  let router = new VueRouter();
+  const router = new VueRouter();
   let hasBeenTouched = false;
 
   function getWrapperObj() {
@@ -31,7 +31,7 @@ describe("Testing Step2 Component", () => {
         "atat-button-card",
         "atat-file-upload",
       ],
-    }
+    };
   }
 
   const actions: any = {
@@ -88,14 +88,14 @@ describe("Testing Step2 Component", () => {
     expect(wrapper.vm.$refs.createTaskOrderForm).toBeDefined();
   });
 
-  it ("tests route and touched on mount", async () => {
+  it("tests route and touched on mount", async () => {
     wrapper.destroy();
-    router.push({ name: 'editfunding', path: '/editfunding' });
+    router.push({ name: "editfunding", path: "/editfunding" });
     wrapper = mount(stepTwo, getWrapperObj());
     expect(wrapper.exists()).toBe(true);
     wrapper.destroy();
     hasBeenTouched = true;
-    router.push({ name: 'badroute', path: '/badroute' });
+    router.push({ name: "badroute", path: "/badroute" });
     wrapper = mount(stepTwo, getWrapperObj());
     expect(wrapper.exists()).toBe(true);
   });
@@ -103,8 +103,8 @@ describe("Testing Step2 Component", () => {
   it("adds a CLIN", async () => {
     await Vue.nextTick();
     await wrapper.vm.addClin();
-    const newClinNumber = wrapper.vm.taskOrderDetails.clins[1].clin_number
-    expect(newClinNumber).toBe('0002');
+    const newClinNumber = wrapper.vm.taskOrderDetails.clins[1].clin_number;
+    expect(newClinNumber).toBe("0002");
   });
 
   it("deletes a CLIN", async () => {

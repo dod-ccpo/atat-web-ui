@@ -18,12 +18,13 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import SideDrawer from "@/components/SideDrawer.vue";
+import { Route } from "vue-router";
 
 @Component({
   components: {
@@ -39,8 +40,13 @@ export default class App extends Vue {
     return this.$store.getters.getLoginStatus;
   }
 
+  @Watch("$route", { immediate: true, deep: true })
+  onUrlChange(newVal: Route): void {
+    this.$store.dispatch("displayNavSideBarDisplayed", newVal.name);
+  }
+  
   get getIsNavSideBarDisplayed(): boolean {
-    return this.$store.getters.getIsNavSideBarDisplayed(this.$route.name);
+    return this.$store.getters.getIsNavSideBarDisplayed;
   }
 }
 </script>
