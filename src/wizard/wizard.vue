@@ -84,18 +84,18 @@ export default class Wizard extends Vue {
             throw new Error("unable to resolve wizard route");
           }
           break;
-        case "summary":
-          // todo: move this router logic to the store
-          if (this.$route.name === "addfunding") {
-            this.$store.dispatch("wizardNext");
-          } else if (this.$route.name === "editfunding") {
-            await this.$router.push({ name: "fundingsummary" });
-            this.stepNumber = 2;
-          } else if (this.$route.name === "fundingsummary") {
-            this.$store.dispatch("wizardNext");
-            this.stepNumber = 3;
-          }
-          break;
+        // case "summary":
+        //   // todo: move this router logic to the store
+        //   if (this.$route.name === "addfunding") {
+        //     this.$store.dispatch("wizardNext");
+        //   } else if (this.$route.name === "editfunding") {
+        //     await this.$router.push({ name: "fundingsummary" });
+        //     this.stepNumber = 2;
+        //   } else if (this.$route.name === "fundingsummary") {
+        //     this.$store.dispatch("wizardNext");
+        //     this.stepNumber = 3;
+        //   }
+        //   break;
         case "previous":
           if (previousRoute) {
             this.$router.push({ name: previousRoute });
