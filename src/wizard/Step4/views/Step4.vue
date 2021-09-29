@@ -13,13 +13,13 @@
     <v-row>
       <v-col class="pa-0 ma-0" cols="9">
         <span v-if="!createdApplication">
-          <p>
+          <p class="body-lg text--base-darkest">
             In this section, you will be able to invite people from your
             application’s development team and assign permission levels, so they
             can contribute to your workspaces within the
             <span class="font-weight-bold">{{ csp }}</span> console.
           </p>
-          <p>
+          <p class="body-lg text--base-darkest">
             In order to invite team members, you must set up at least one
             application within your portfolio. Please
             <a
@@ -31,14 +31,10 @@
             to continue.
           </p>
         </span>
-        <p v-else>
-          In this section, we will invite people from your application’s
-          development team and assign their permissions within the cloud
-          console. These individuals will receive an invitation from
-          <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
-          is provisioned. When you are done, select
-          <span class="font-weight-bold">Next: Review and Submit</span> to
-          finalize your portfolio.
+        <p v-else class="body-lg text--base-darkest">
+          Invite your application team members and assign their permissions below. These individuals will receive an
+          invitation from <span class="font-weight-bold"> {{ csp }}</span> after your portfolio is provisioned. Select
+          <span class="font-weight-bold">Next</span> to add team members to your other applications.
           <a class="text-decoration-underline">Learn more about team member roles</a>
         </p>
       </v-col>
@@ -243,7 +239,7 @@ import { Component } from "vue-property-decorator";
 export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
-    "selected Cloud Service Provider’s";
+    "the selected Cloud Service Provider’s";
   private createdApplication = this.$store.state.portfolioSteps[2].model.name;
   private message = "You do not have any team members in this application yet.";
   private showPortfolioOwnerText = false;
