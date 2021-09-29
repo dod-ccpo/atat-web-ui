@@ -6,26 +6,31 @@
           Invite team members to your application
         </h2>
         <h2 v-else class="h2">
-          Let's add team members to {{ createdApplication }}
+          Let’s add team members to {{ createdApplication }}
         </h2>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pa-0 ma-0" cols="9">
-        <p v-if="!createdApplication">
-          In this section, you will be able to invite people from your
-          application’s development team and assign permission levels, so they
-          can contribute to your workspaces within the
-          <span class="font-weight-bold"> {{ csp }}</span> console.
-          <br />
-          <br />
-          In order to invite team members, you must set up at least one
-          application within your portfolio. Please
-          <a href="/wizard/addapplication" class="link-body-md font-weight-bold"
-            >add an application
-          </a>
-          to continue.
-        </p>
+        <span v-if="!createdApplication">
+          <p>
+            In this section, you will be able to invite people from your
+            application’s development team and assign permission levels, so they
+            can contribute to your workspaces within the
+            <span class="font-weight-bold">{{ csp }}</span> console.
+          </p>
+          <p>
+            In order to invite team members, you must set up at least one
+            application within your portfolio. Please
+            <a
+              href="/wizard/addapplication"
+              class="link-body-md font-weight-bold"
+              >
+              add an application
+            </a>
+            to continue.
+          </p>
+        </span>
         <p v-else>
           In this section, we will invite people from your application’s
           development team and assign their permissions within the cloud
@@ -34,9 +39,7 @@
           is provisioned. When you are done, select
           <span class="font-weight-bold">Next: Review and Submit</span> to
           finalize your portfolio.
-          <a class="text-decoration-underline"
-            >Learn more about team member roles</a
-          >
+          <a class="text-decoration-underline">Learn more about team member roles</a>
         </p>
       </v-col>
     </v-row>
@@ -50,14 +53,12 @@
                 placeholder="Search for member name and email"
                 dense
                 outlined
-                height="5"
                 single-line
                 hide-details
-              >
-              </v-text-field>
-              <v-btn class="input-search-bar" color="primary"
-                ><v-icon>search</v-icon></v-btn
-              >
+              />
+              <v-btn class="input-search-bar" color="primary">
+                <v-icon width="10px" class="mr-1">search</v-icon>
+              </v-btn>
             </v-col>
             <v-col class="d-flex flex-row-reverse">
               <v-btn
@@ -66,21 +67,24 @@
                 :ripple="false"
                 color="primary"
               >
-                <v-icon class="mr-2 ml-1" role="presentation"
-                  >control_point</v-icon
-                >Invite Team Member
+                <v-icon class="mr-2" role="presentation">control_point</v-icon>
+                Invite Team Member
               </v-btn>
             </v-col>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="9" class="pa-0 ma-0">
-            <v-card width="100rem" class="v-card ma-4 ml-3 body">
+            <v-card width="100%" height="10rem"  class=" ma-4 ml-3 body">
               <v-card-text class="text-center">
-                <span class="body-lg text--base-dark">{{ message }}</span>
+                <v-row class="d-flex justify-space-around pt-4">
+                  <v-col>
+                    <span class="body-lg text--base-dark">{{ message }}</span>
+                  </v-col>
+                </v-row>
               </v-card-text>
-            </v-card></v-col
-          >
+            </v-card>
+          </v-col>
         </v-row>
 
         <v-row>
@@ -168,13 +172,17 @@
                   <p class="body-lg text--base-darkest">
                     After provisioning, you will have the opportunity to invite
                     new people to ensure your application team can access their
-                    cloud resources.<br /><br />
+                    cloud resources.
+                  </p>
+                  <p class="body-lg text--base-darkest">
                     However, you will not be able to change roles and
                     permissions once the invitations are sent. People that you
                     assign as
-                    <span class="font-weight-bold">Administrators </span> are
+                    <span class="font-weight-bold">Administrators</span> are
                     responsible for making modifications to team members and
-                    roles directly in the cloud console.<br /><br />
+                    roles directly in the cloud console.
+                  </p>
+                  <p class="body-lg text--base-darkest">
                     Please note that ATAT is not a system of record. We will
                     keep a record of the team members that have been added to
                     the portfolio through ATAT, but any changes made in the
@@ -186,7 +194,7 @@
             </div>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row class="mb-16">
           <v-col cols="10">
             <v-btn
               @click="teamExpectationText = !teamExpectationText"
@@ -203,7 +211,7 @@
               </v-icon>
             </v-btn>
             <div v-show="teamExpectationText">
-              <v-card-text class="h6 pb-0">
+              <v-card-text class="h6 pb-0 mb-12">
                 <v-row>
                   <ul class="body-lg text--base-darkest">
                     <li>
@@ -235,10 +243,9 @@ import { Component } from "vue-property-decorator";
 export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
-    "selected Cloud Service Provider's";
+    "selected Cloud Service Provider’s";
   private createdApplication = this.$store.state.portfolioSteps[2].model.name;
-  private teamMembers = "";
-  private message = "You do not have any team members in this application yet";
+  private message = "You do not have any team members in this application yet.";
   private showPortfolioOwnerText = false;
   private teamPortfolioAccessText = false;
   private teamPermissionsText = false;
@@ -248,7 +255,6 @@ export default class Step_4 extends Vue {
   }
 
   public mounted(): void {
-    console.log(this.csp);
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }

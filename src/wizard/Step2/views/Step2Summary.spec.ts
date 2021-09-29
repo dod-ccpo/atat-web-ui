@@ -48,9 +48,9 @@ describe("Testing Step2 Component", () => {
               },
             ],
           },
-        ]
-      }
-    }
+        ],
+      };
+    },
   };
 
   const routes = [
@@ -75,7 +75,7 @@ describe("Testing Step2 Component", () => {
       router,
     });
     wrapper.setData({
-      task_order_number: "item_to_delete"
+      task_order_number: "item_to_delete",
     });
   });
 
@@ -86,7 +86,7 @@ describe("Testing Step2 Component", () => {
   it("deletes an item", async () => {
     wrapper.vm.deleteItem("");
     await Vue.nextTick();
-    wrapper.vm.deleteItem('item_to_delete');
+    wrapper.vm.deleteItem("item_to_delete");
     expect(wrapper.exists()).toBe(true);
   });
 });
