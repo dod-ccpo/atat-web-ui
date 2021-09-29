@@ -1,21 +1,6 @@
 <template>
-  <div>
+  <div style="display: grid">
     <div class="">
-      <div class="ml-auto d-flex align-center justify-space-between width-100">
-        <v-subheader class="font-weight-bold body">YOUR PROFILE</v-subheader>
-        <v-btn
-          class="text--primary h6 pa-0 ma-0 ml-1"
-          tabindex="3"
-          plain
-          x-small
-          @click.stop="hide"
-          ref="drawerCloserRef"
-          id="drawerCloser"
-          :ripple="false"
-        >
-          <v-icon medium>close</v-icon>
-        </v-btn>
-      </div>
       <v-row>
         <v-col cols="12" class="ml-4 pb-0 h3 font-weight-bold"
           >{{ user.given_name }} {{ user.family_name }}</v-col
@@ -199,7 +184,6 @@ export default class Profile extends Vue {
     return show ? "expandedSidebarDiv" : "";
   }
 
-  
   //method
   private hide(): Promise<boolean> {
     return this.$store.dispatch("closeSideDrawer");
@@ -210,7 +194,7 @@ export default class Profile extends Vue {
 <style scoped>
 .expandedSidebarDiv {
   overflow-y: auto !important;
-  height: calc(100% - 237px) !important;
+  height: calc(100% - 200px) !important; 
   overflow-x: hidden !important;
 }
 </style>

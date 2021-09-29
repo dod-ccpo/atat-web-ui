@@ -20,6 +20,33 @@
       min-height-100
     "
   >
+    <div
+      class="
+        ml-auto
+        d-flex
+        align-center
+        justify-space-between
+        width-100
+        py-4
+        pl-6
+      "
+    >
+      <div class="font-weight-bold body">{{ title.toUpperCase() }}</div>
+      <div class="pr-7">
+        <v-btn
+          class="text--base-darkest h6 pa-0 icon-24"
+          tabindex="3"
+          text
+          small
+          @click.stop="hide"
+          ref="drawerCloserRef"
+          id="drawerCloser"
+          :ripple="false"
+        >
+          <v-icon class="icon-20">close</v-icon>
+        </v-btn>
+      </div>
+    </div>
     <Profile
       v-if="sideDrawerType === 'profile'"
       :drawerWidth="drawerWidth"
@@ -39,21 +66,30 @@ import Profile from "./SideDrawerComponents/Profile.vue";
 })
 export default class SideDrawer extends Vue {
   @Prop({ default: "400" }) private drawerWidth!: string;
+  @Prop({ default: "Your Profile" }) private title!: string;
 
   get sideDrawerType(): string {
     return this.$store.state.sideDrawerType;
   }
 
   get isSideDrawerOpen(): boolean {
-    return this.$store.state.sideDrawer;
+    console.log(this.$store.state.sideDrawer);
+    const _isSideDrawerOpen = this.$store.state.sideDrawer;
+    // const _isSideDrawerFocused = this.$store.state.isSideDrawerFocused;
+    // if (_isSideDrawerOpen && _isSideDrawerFocused) {
+    //   this.$nextTick(() => {
+    //     document.getElementById("drawerCloser")?.focus();
+    //   });
+    // }
+    return _isSideDrawerOpen;
   }
 
   @Watch("$store.state.isSideDrawerFocused")
   setFocus(newVal: boolean): void {
-    if (newVal) {
-      this.$nextTick(() => {
+    if (newVal && this.isSideDrawerOpen) {
+      setTimeout(function () {
         document.getElementById("drawerCloser")?.focus();
-      });
+      }, 500);
     }
   }
 
@@ -70,11 +106,3 @@ export default class SideDrawer extends Vue {
   }
 }
 </script>
-
-<style scoped>
-.expandedSidebarDiv {
-  overflow-y: auto !important;
-  height: calc(100% - 237px) !important;
-  overflow-x: hidden !important;
-}
-</style>

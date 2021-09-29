@@ -69,6 +69,5 @@ export default class ATATHeaderNav extends Vue {
       this.$router.push(item.url);
     }
   }
-
 }
 </script>
