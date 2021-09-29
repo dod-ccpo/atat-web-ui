@@ -75,7 +75,7 @@
         </v-row>
         <v-row>
           <v-col cols="9" class="pa-0 ma-0">
-            <v-card width="100%" height="10rem"  class=" ma-4 ml-3 body">
+            <v-card rounded width="100%" height="10rem"  class=" ma-4 ml-3 body">
               <v-card-text class="text-center">
                 <v-row class="d-flex justify-space-around pt-4">
                   <v-col>
