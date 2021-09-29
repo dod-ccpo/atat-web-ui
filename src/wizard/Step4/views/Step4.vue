@@ -44,7 +44,7 @@
       </v-col>
     </v-row>
     <v-row v-if="createdApplication">
-      <v-col class="pa-0 ma-0">
+      <v-col class="ps-0  ma-0">
         <v-row>
           <v-col cols="9" class="d-flex pl-0">
             <v-col class="d-flex">
