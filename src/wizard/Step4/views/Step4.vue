@@ -55,7 +55,7 @@
                 hide-details
               >
               </v-text-field>
-              <v-btn class="input-search-bar" color="primary"
+              <v-btn height="40" class="input-search-bar" color="primary"
                 ><v-icon>search</v-icon></v-btn
               >
             </v-col>
