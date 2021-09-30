@@ -5,7 +5,6 @@
     width="100%"
     class="d-flex justify-end"
     style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
-
   >
 
     <v-btn

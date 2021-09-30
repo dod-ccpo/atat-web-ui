@@ -25,7 +25,7 @@
             <a
               href="/wizard/addapplication"
               class="link-body-md font-weight-bold"
-              >
+            >
               add an application
             </a>
             to continue.
