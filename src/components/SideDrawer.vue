@@ -1,87 +1,100 @@
 <template>
-  <v-navigation-drawer
-    v-if="isSideDrawerOpen"
-    :width="drawerWidth + 'px'"
-    app
-    clipped
-    permanent
-    right
-    tabindex="3"
-    class="
-      mb-16
-      atat-side-drawer
-      d-flex
-      flex-column
-      align-start
-      overflow-y-hidden
-      justify-space-between
-      max-height-100
-      height-100
-      min-height-100
-    "
-  >
-    <div
-      class="
-        ml-auto
-        d-flex
-        align-center
-        justify-space-between
-        width-100
-        py-4
-        pl-6
-      "
+  <v-slide-x-reverse-transition>
+    <v-navigation-drawer
+      v-if="isSideDrawerOpen"
+      :width="drawerWidth + 'px'"
+      app
+      clipped
+      permanent
+      right
+      tabindex="3"
+      :style="{
+        height: getHeight,
+        'max-height': getHeight,
+        'min-height': getHeight,
+      }"
     >
-      <div class="font-weight-bold body">{{ title.toUpperCase() }}</div>
-      <div class="pr-7">
-        <v-btn
-          class="text--base-darkest h6 pa-0 icon-24"
-          tabindex="3"
-          text
-          small
-          @click.stop="hide"
-          ref="drawerCloserRef"
-          id="drawerCloser"
-          :ripple="false"
-        >
-          <v-icon class="icon-20">close</v-icon>
-        </v-btn>
+      <div
+        class="
+          ml-auto
+          d-flex
+          align-center
+          justify-space-between
+          width-100
+          py-5
+          pl-6
+        "
+      >
+        <div class="font-weight-bold body">{{ getTitle }}</div>
+        <div class="pr-7">
+          <v-btn
+            class="text--base-darkest h6 pa-0 icon-24"
+            tabindex="3"
+            text
+            small
+            @click.stop="hide"
+            ref="drawerCloserRef"
+            id="drawerCloser"
+            :ripple="false"
+          >
+            <v-icon class="icon-20">close</v-icon>
+          </v-btn>
+        </div>
       </div>
-    </div>
-    <Profile
-      v-if="sideDrawerType === 'profile'"
-      :drawerWidth="drawerWidth"
-    ></Profile>
-  </v-navigation-drawer>
+      <ProfileDrawer
+        v-if="sideDrawerType === 'profile'"
+        :drawerWidth="drawerWidth"
+        :drawerHeight="getHeight"
+      ></ProfileDrawer>
+      <SubmitDrawer
+        v-if="sideDrawerType === 'submit'"
+        :drawerWidth="drawerWidth"
+        :drawerHeight="getHeight"
+      ></SubmitDrawer>
+    </v-navigation-drawer>
+  </v-slide-x-reverse-transition>
 </template>
 <script lang="ts">
 import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Profile from "./SideDrawerComponents/Profile.vue";
-
+import ProfileDrawer from "./SideDrawerComponents/ProfileDrawer.vue";
+import SubmitDrawer from "./SideDrawerComponents/SubmitDrawer.vue";
 @Component({
   components: {
-    Profile,
+    ProfileDrawer,
+    SubmitDrawer,
   },
 })
 export default class SideDrawer extends Vue {
   @Prop({ default: "400" }) private drawerWidth!: string;
-  @Prop({ default: "Your Profile" }) private title!: string;
 
   get sideDrawerType(): string {
     return this.$store.state.sideDrawerType;
   }
 
+  get getTitle(): string {
+    let title = "";
+    switch (this.sideDrawerType) {
+      case "profile":
+        title = "Your Profile";
+        break;
+      case "submit":
+        title = "Learn More";
+        break;
+      default:
+        break;
+    }
+    return title.toUpperCase();
+  }
+
+  get getHeight(): string {
+    const drawerHeight = window.innerHeight;
+    return drawerHeight + "px";
+  }
+
   get isSideDrawerOpen(): boolean {
-    console.log(this.$store.state.sideDrawer);
-    const _isSideDrawerOpen = this.$store.state.sideDrawer;
-    // const _isSideDrawerFocused = this.$store.state.isSideDrawerFocused;
-    // if (_isSideDrawerOpen && _isSideDrawerFocused) {
-    //   this.$nextTick(() => {
-    //     document.getElementById("drawerCloser")?.focus();
-    //   });
-    // }
-    return _isSideDrawerOpen;
+    return this.$store.state.sideDrawer;
   }
 
   @Watch("$store.state.isSideDrawerFocused")
@@ -92,14 +105,7 @@ export default class SideDrawer extends Vue {
       }, 500);
     }
   }
-
-  /**
-   * getFocus
-   *
-   * used to immediately focus on close button when
-   * navigating w/keyboard and sidedrawer opens
-   */
-
+  
   //method
   private hide(): Promise<boolean> {
     return this.$store.dispatch("closeSideDrawer");

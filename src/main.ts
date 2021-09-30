@@ -20,7 +20,8 @@ import ATATHeader from "./components/ATATHeader.vue";
 import ATATHeaderNav from "./components/ATATHeaderNav.vue";
 import ATATSelect from "./components/ATATSelect.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
-import Profile from "./components/SideDrawerComponents/Profile.vue"
+import ProfileDrawer from "./components/SideDrawerComponents/ProfileDrawer.vue"
+import SubmitDrawer from "./components/SideDrawerComponents/SubmitDrawer.vue"
 import ATATTextField from "./components/ATATTextField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
 import ATATButtonCard from "./components/ATATButtonCard.vue";

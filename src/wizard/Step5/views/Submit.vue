@@ -37,7 +37,8 @@
                 text
                 small
                 :ripple="false"
-                @click="drawer = !drawer"
+                @click="openSideDrawer($event)"
+                @keydown.native.enter="openSideDrawer($event)"
               >
                 <span class="link-body-md">Learn More</span>
               </v-btn>
@@ -59,7 +60,14 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 @Component({})
-export default class Submit extends Vue {}
+export default class Submit extends Vue {
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "submit",
+      event.type === "keydown",
+    ]);
+  }
+}
 </script>
 
 <style scoped></style>
