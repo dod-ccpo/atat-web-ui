@@ -1,5 +1,9 @@
 <template>
   <v-container fluid>
+    <!--    :class="[-->
+    <!--      this.$store.state.sideDrawer === false || 'side-drawer-open',-->
+    <!--      'mb-16 d-flex flex-column',-->
+    <!--    ]"-->
     <Stepper
       :step-number="stepNumber"
       :current-step-number.sync="stepNumber"
@@ -54,7 +58,10 @@ export default class Wizard extends Vue {
     buttonNavigation: ButtonNavigation;
   };
 
-  private resolveActions(currentRoute: Route, actions: string[]) {
+  private async resolveActions(
+    currentRoute: Route,
+    actions: string[]
+  ): Promise<void> {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
 
@@ -80,18 +87,6 @@ export default class Wizard extends Vue {
             throw new Error("unable to resolve wizard route");
           }
           break;
-        case "summary":
-          // todo: move this router logic to the store
-          if (this.$route.name === "addfunding") {
-            this.$store.dispatch("wizardNext");
-          } else if (this.$route.name === "editfunding") {
-            await this.$router.push({ name: "fundingsummary" });
-            this.stepNumber = 2;
-          } else if (this.$route.name === "fundingsummary") {
-            this.$store.dispatch("wizardNext");
-            this.stepNumber = 3;
-          }
-          break;
         case "previous":
           if (previousRoute) {
             this.$router.push({ name: previousRoute });
@@ -103,8 +98,15 @@ export default class Wizard extends Vue {
           await this.$router.push({ name: "portfolios" });
           break;
         case "save":
-          alert("Data has been validated and is to be saved");
-          await this.$router.push({ name: "portfolios" });
+          try {
+            const saved = await this.$store.dispatch("saveAllValidSteps");
+            if (saved) {
+              alert("Data has been validated and is saved");
+              await this.$router.push({ name: "portfolios" });
+            }
+          } catch (error) {
+            alert("An error occurred saving portfolio");
+          }
 
           break;
       }
@@ -157,3 +159,8 @@ export default class Wizard extends Vue {
   }
 }
 </script>
+<style>
+.side-drawer-open {
+  width: calc(100% - 400px) !important;
+}
+</style>

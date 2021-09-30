@@ -15,50 +15,58 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
+// import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
 
 import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
 import { CreatePortfolioFormModel } from "../../../../types/Wizard";
+import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 
 @Component({
   components: {
     CreatePortfolioForm,
     CloudServiceProvider,
   },
-  mixins: [ValidatableWizardStep],
+  // mixins: [ValidatableWizardStep],
 })
-export default class Step_1 extends Vue {
+export default class Step_1 extends ValidatableWizardStep<CreatePortfolioFormModel> {
   $refs!: {
     createPortfolioForm: CreatePortfolioForm;
     cloudServiceProviderForm: CloudServiceProvider;
   };
   private touched = false;
-  private model: CreatePortfolioFormModel = this.$store.getters.getStepModel(1);
+  private valid = true;
 
-  public async validate(): Promise<boolean> {
+  model: CreatePortfolioFormModel = this.$store.getters.getStepModel(1);
+
+  public validate: () => Promise<boolean> = async () => {
     const createPortofolioValidation =
       this.$refs.createPortfolioForm.validateForm();
     const cloudServiceProviderValidation =
       this.$refs.cloudServiceProviderForm.validateForm();
-    let valid = false;
+    this.valid = false;
     await Promise.all([
       createPortofolioValidation,
       cloudServiceProviderValidation,
-    ]).then((values) => (valid = values.every((value) => value)));
+    ]).then((values) => (this.valid = values.every((value) => value)));
 
-    this.$store.dispatch("saveStepModel", [this.model, 1, valid]);
+    return this.valid;
+  };
 
-    return valid;
-  }
+  protected saveModel: () => Promise<void> = async () => {
+    await this.$store.dispatch("saveStepModel", [this.model, 1, this.valid]);
+  };
 
-  public mounted(): void {
+  protected saveData: () => Promise<void> = async () => {
+    await this.$store.dispatch("saveStepData", 1);
+  };
+
+  public stepMounted: () => Promise<void> = async () => {
     this.touched = this.$store.getters.getStepTouched(1);
     if (this.touched) {
       this.validate();
     }
-  }
+  };
 }
 </script>

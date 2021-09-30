@@ -67,6 +67,7 @@ export interface TaskOrderDetails {
   task_order_number: string;
   task_order_file?: TaskOrderFile;
   clins: CLIN[];
+  csp?: string;
 }
 
 export interface TaskOrders {
@@ -211,8 +212,26 @@ export interface WizardStep {
   previous: string;
 }
 
+// export interface ValidatableStep {
+//   // saveModel: () => Promise<void>;
+//   // validate: () => Promise<boolean>;
+// }
+
+// export interface ValidatableStep {
+//   validate: (n: void) => Promise<boolean>;
+//   saveModel: (n: void) => Promise<void>;
+//   stepMounted: () => Promise<void>;
+// }
+export interface ValidatableStep<TModel> {
+  validate: () => Promise<boolean>;
+  saveModel: () => Promise<void>;
+  stepMounted: () => Promise<void>;
+  model: TModel;
+}
 export abstract class Validatable extends Vue {
-  abstract validate: () => Promise<boolean>;
+  public abstract validate: (n: void) => Promise<boolean>;
+  protected abstract saveModel: (n: void) => Promise<void>;
+  protected abstract stepMounted: () => Promise<void>;
 }
 
 export interface CreateEnvironmentModel {

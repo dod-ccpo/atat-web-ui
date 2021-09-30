@@ -148,11 +148,10 @@ describe("Testing Create ClinsCard Component", () => {
   // pop start rules
   it("pop start rules should not be null or empty", async () => {
     const clinRules = wrapper.vm.popEndRules;
-    wrapper.setProps({pop_start_date: ""});
+    wrapper.setProps({ pop_start_date: "" });
     expect(clinRules).not.toBeNull();
     expect(clinRules.length).toBe(5);
   });
-
 
   const firstPopStartRule = createTestDescription("1st pop start rule");
   const secondPopStartRule = createTestDescription("2nd pop start rule");
@@ -241,7 +240,7 @@ describe("Testing Create ClinsCard Component", () => {
   // pop end rules
   it("pop end rules should not be null or empty", async () => {
     const rules = wrapper.vm.popEndRules;
-    wrapper.setProps({pop_end_date: ""});
+    wrapper.setProps({ pop_end_date: "" });
     expect(rules).not.toBeNull();
     expect(rules.length).toBe(5);
   });
@@ -325,7 +324,6 @@ describe("Testing Create ClinsCard Component", () => {
     expect(rule).toBe(true);
   });
 
-  
   // Obligated Funds Rules
   it("Obligated Funds Rules is not null and has expected rules", async () => {
     await Vue.nextTick();
@@ -425,10 +423,9 @@ describe("Testing Create ClinsCard Component", () => {
     expect(clin_number.text()).toBe(`CLIN ${propsData.clin_number}`);
   });
 
-//   it("edit dialog exists", async () => {
-//     await wrapper.vm.$nextTick();
-//     const modals = wrapper.findAll("v-dialog");
-//     expect(modals.length).toBe(1);
-//   });
-
+  //   it("edit dialog exists", async () => {
+  //     await wrapper.vm.$nextTick();
+  //     const modals = wrapper.findAll("v-dialog");
+  //     expect(modals.length).toBe(1);
+  //   });
 });

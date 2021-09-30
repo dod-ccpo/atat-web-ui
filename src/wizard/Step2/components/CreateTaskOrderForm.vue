@@ -189,6 +189,10 @@ export default class CreateTaskOrderForm extends Vue {
     this.isNoButtonClicked = !signed;
   }
 
+  public YesButtonClicked(): boolean {
+    return this.isYesButtonClicked;
+  }
+
   public async validateForm(): Promise<boolean> {
     let validated: boolean[] = [];
     this.signedTaskOrderErrorMessage = "";
@@ -206,7 +210,7 @@ export default class CreateTaskOrderForm extends Vue {
     validated.push(this.signedTaskOrder !== "");
 
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
- 
+
     if (clinsCards && clinsCards.validate) {
       validated.push(await clinsCards.validate());
     }

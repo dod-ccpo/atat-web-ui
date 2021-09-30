@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <SecurityBanner />
-    <ATATSideBar v-if="loginStatus" />
+    <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
+    <SideDrawer v-if="loginStatus" />
     <ATATHeader />
     <v-main style="padding-top: 90px">
       <v-container fluid>
@@ -17,14 +18,17 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
+import SideDrawer from "@/components/SideDrawer.vue";
+import { Route } from "vue-router";
 
 @Component({
   components: {
+    SideDrawer,
     ATATFooter,
     ATATHeader,
     ATATSideBar,
@@ -34,6 +38,15 @@ import SecurityBanner from "./components/SecurityBanner.vue";
 export default class App extends Vue {
   get loginStatus(): boolean {
     return this.$store.getters.getLoginStatus;
+  }
+
+  @Watch("$route", { immediate: true, deep: true })
+  onUrlChange(newVal: Route): void {
+    this.$store.dispatch("displayNavSideBarDisplayed", newVal.name);
+  }
+
+  get getIsNavSideBarDisplayed(): boolean {
+    return this.$store.getters.getIsNavSideBarDisplayed;
   }
 }
 </script>

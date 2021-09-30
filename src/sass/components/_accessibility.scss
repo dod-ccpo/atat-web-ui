@@ -11,7 +11,7 @@
 
 // utils
 
-    //removes the lines that sometimes appear over and uncer a 
+    //removes the lines that sometimes appear over and under a
     //link during focus
     a:-webkit-any-link:focus-visible {
         outline-offset: 0px;
@@ -35,10 +35,26 @@
 //     }
 // }
 
-@mixin default-focus{
+@mixin default-focus {
     background-color: $primary !important;
     opacity: initial !important;
     box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
+}
+
+a:not(.left-nav-menu-link){
+    &:focus::before,
+    &:focus{
+        border-radius: 6px !important;
+        border: $focus-blue 3px solid;
+        font-weight: inherit !important;
+    }
+}
+a.left-nav-menu-link{
+    &:focus{
+        span{
+            font-weight: 700 !important;
+        }
+    }
 }
 
 .v-btn{
@@ -46,7 +62,7 @@
     &:focus{
         @include default-focus;
     }
-    
+
     &.primary_darken{
         &:focus,
         &:focus::before{
@@ -75,7 +91,7 @@
         &:focus,
         &:focus::before{
             width: 99% !important;
-            border-radius: 6px !important;   
+            border-radius: 6px !important;
         }
     }
 
@@ -86,7 +102,7 @@
     }
 
     &.left-nav-menu-link{
-        &:before, 
+        &:before,
         &:focus{
             box-shadow: none !important;
             border-left: solid 3px;
@@ -101,15 +117,16 @@
     }
 }
 
-.v-list-item--active, 
-.v-stepper__label{
-    a{
+.v-list-item--active,
+.v-stepper__label {
+    a {
         border-radius: 6px;
         padding: 0px 8px;
         &:focus,
-        &:focus::before, 
-       {
-            @include default-focus; 
+        &:focus::before,
+        {
+            @include default-focus;
+            border: none !important;
             background-color: transparent !important;
             outline: none !important;
         }
@@ -129,7 +146,7 @@
 @mixin checkbox-default-focus-before{
     @include default-focus;
     background: none !important;
-    background-color: transparent !important; 
+    background-color: transparent !important;
     transform: none !important;
     opacity: 1 !important;
 }
