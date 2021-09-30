@@ -8,7 +8,6 @@
       :temporary="showOverlay"
       permanent
       right
-      v-click-outside="hide"
       tabindex="3"
       :style="{
         height: getHeight,
@@ -96,7 +95,20 @@ export default class SideDrawer extends Vue {
   }
 
   get isSideDrawerOpen(): boolean {
-    return this.$store.state.sideDrawer;
+    const _isSideDrawerOpen = this.$store.state.sideDrawer;
+    setTimeout(() => {
+      if (_isSideDrawerOpen && this.showOverlay) {
+        document
+          .getElementsByClassName("v-overlay--active")[0]
+          ?.addEventListener("click", this.hide);
+      } else {
+        document
+          .getElementsByClassName("v-overlay--active")[0]
+          ?.removeEventListener("click", this.hide);
+      }
+    }, 0);
+
+    return _isSideDrawerOpen;
   }
 
   get showOverlay(): boolean {
