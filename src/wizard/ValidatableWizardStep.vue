@@ -40,7 +40,9 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     if (this.$route.meta && this.$route.meta.isWizard) {
       this.incomingModel = this.$store.state.currentStepModel;
     }
-    this.stepMounted();
+    if (this.stepMounted) {
+      await this.stepMounted();
+     }
   }
 
   @Watch("$store.state.validationStamp")
@@ -56,11 +58,13 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
+    debugger;
     if (this.hasChanges()) {
-      await this.saveModel();
       try {
         const isValid = await this.validate();
+        await this.saveModel();
         if (isValid) {
+          console.log(isValid);
           await this.saveData();
         }
       } catch (error) {
