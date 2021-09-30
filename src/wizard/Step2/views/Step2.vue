@@ -41,7 +41,6 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
   };
 
   public validate: () => Promise<boolean> = async () => {
-    debugger;
     this.valid = false;
     this.valid = await this.$refs.createTaskOrderForm.validateForm();
     return this.valid;
