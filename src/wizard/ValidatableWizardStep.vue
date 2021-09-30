@@ -66,7 +66,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
-    debugger;
     const isValid = await this.validate();
     await this.saveModel();
     if (this.hasChanges()) {
