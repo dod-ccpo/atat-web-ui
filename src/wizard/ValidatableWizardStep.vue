@@ -71,7 +71,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     if (this.hasChanges()) {
       try {
         if (isValid) {
-          console.log(isValid);
           await this.saveData();
         }
       } catch (error) {
