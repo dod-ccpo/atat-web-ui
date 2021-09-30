@@ -67,6 +67,7 @@ export interface TaskOrderDetails {
   task_order_number: string;
   task_order_file?: TaskOrderFile;
   clins: CLIN[];
+  csp?: string;
 }
 
 export interface TaskOrders {
