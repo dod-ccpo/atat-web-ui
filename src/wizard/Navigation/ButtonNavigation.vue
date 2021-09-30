@@ -6,6 +6,7 @@
     class="d-flex justify-end"
     style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
+
     <v-btn
       v-for="button in pageButtonPanel.buttons"
       :ripple="false"
@@ -164,7 +165,7 @@ export default class ButtonNavigation extends Vue {
             action: ["previous"],
           },
           {
-            text: "Next: Review and Submit",
+            text: "Next",
             color: "primary",
             id: "review_and_submit",
             action: ["next"],
