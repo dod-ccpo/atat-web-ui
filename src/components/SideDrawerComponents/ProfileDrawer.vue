@@ -1,24 +1,21 @@
 <template>
-  <div style="display: grid">
-    <div class="">
-      <v-row>
-        <v-col cols="12" class="ml-4 pb-0 h3 font-weight-bold"
-          >{{ user.given_name }} {{ user.family_name }}</v-col
+  <div :style="heightCSS">
+    <v-row>
+      <v-col cols="12" class="ml-4 pb-0 h3 font-weight-bold"
+        >{{ user.given_name }} {{ user.family_name }}</v-col
+      >
+      <v-col cols="12 " class="body-lg ml-4 py-0">
+        <span class="body-xl text--base-dark">
+          {{ user.service_branch }} • {{ user.designation }}</span
         >
-        <v-col cols="12 " class="body-lg ml-4 py-0">
-          <span class="body-xl text--base-dark">
-            {{ user.service_branch }} • {{ user.designation }}</span
-          >
-        </v-col>
-        <v-col cols="12 body ml-4 pt-1 mb-5">
-          <span class="body-lg text--base-dark">
-            DoD ID: {{ user.dod_id }}</span
-          >
-        </v-col>
-      </v-row>
-    </div>
+      </v-col>
+      <v-col cols="12 body ml-4 pt-1 mb-5">
+        <span class="body-lg text--base-dark"> DoD ID: {{ user.dod_id }}</span>
+      </v-col>
+    </v-row>
+
     <v-divider></v-divider>
-    <v-container :class="[showScrollbar, 'pa-0']">
+    <v-container :class="[showScrollbar, 'pa-0 pb-16']">
       <v-row class="pt-8 ma-0">
         <v-col cols="12" class="pl-6 pb-0 d-flex">
           <v-icon class="icon-16 my-1">email</v-icon>
@@ -173,9 +170,15 @@ import { Component, Prop } from "vue-property-decorator";
 @Component({})
 export default class Profile extends Vue {
   @Prop({ default: "400" }) private drawerWidth!: string;
-
+  @Prop({ default: "400" }) private drawerHeight!: string;
   private contactInfoTip = false;
   private updateProfileTip = false;
+
+  private heightCSS = {
+    height: this.drawerHeight,
+    "max-height": this.drawerHeight,
+    "min-height": this.drawerHeight,
+  };
 
   private user = this.$store.getters.getUser;
   get showScrollbar(): string {
@@ -194,7 +197,7 @@ export default class Profile extends Vue {
 <style scoped>
 .expandedSidebarDiv {
   overflow-y: auto !important;
-  height: calc(100% - 200px) !important; 
+  height: calc(100% - 237px) !important;
   overflow-x: hidden !important;
 }
 </style>
