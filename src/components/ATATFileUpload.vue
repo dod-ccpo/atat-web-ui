@@ -283,7 +283,6 @@ export default class ATATFileUpload extends Vue {
     event: Event,
     filesObj?: FileList
   ): Promise<void> {
-    debugger;
     let files = filesObj || (this.$refs.fileInput as HTMLInputElement).files;
     if (files && files[0]) {
       let file = files[0];
