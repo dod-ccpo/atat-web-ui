@@ -187,6 +187,7 @@ export default class ATATFileUpload extends Vue {
 
   //data
   private dragover = false;
+  private files!: FileList;
   private uploadedFile: UploadedFile[] = [];
   private errorMessages: string[] = [];
   private isProgressBarVisible = false;
@@ -283,8 +284,13 @@ export default class ATATFileUpload extends Vue {
     event: Event,
     filesObj?: FileList
   ): Promise<void> {
-    debugger;
     let files = filesObj || (this.$refs.fileInput as HTMLInputElement).files;
+
+    //temporary hack - Robert McCardell
+    if (files != null) {
+      this.files = files;
+    }
+
     if (files && files[0]) {
       let file = files[0];
       await this.validateFile(file);
@@ -378,10 +384,18 @@ export default class ATATFileUpload extends Vue {
    * @taskorderFile: TaskOrderFile - to be uploaded to the API
    */
   private async uploadFile(taskOrderFile: TaskOrderFile): Promise<void> {
+    const formData = new FormData();
+    formData.append(taskOrderFile.name, this.files[0]);
+
     await axios
       .post(
-        "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0/taskOrderFiles",
-        taskOrderFile
+        "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/taskOrderFiles",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       )
       .then((response) => {
         this.taskOrderFile = response.data;
@@ -389,7 +403,7 @@ export default class ATATFileUpload extends Vue {
         // todo add this._pdfFile = taskOrderFile when
         // API is ready
         // console.log(this);
-        this._pdfFile.name = taskOrderFile.name;
+        this._pdfFile = this.taskOrderFile;
       });
   }
   /**

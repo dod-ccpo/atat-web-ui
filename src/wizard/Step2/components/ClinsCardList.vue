@@ -44,6 +44,10 @@ export default class ClinsCardList extends Vue {
   public async validate(): Promise<boolean> {
     let valid = false;
     const clins = this.$refs.clinscard as Array<ClinsCard>;
+
+    if (!clins || clins.length === 0) {
+      return false;
+    }
     const allValid = clins.map((clin) => clin.validateForm());
 
     await Promise.all(allValid).then(

@@ -1,5 +1,6 @@
+import { AxiosError } from "axios";
 import { Portfolio } from "types/Portfolios";
-import { TaskOrderDetails, TaskOrderFile } from "types/Wizard";
+import { TaskOrderDetails, TaskOrderFile, TaskOrders } from "types/Wizard";
 import ApiClient from "../apiClient";
 
 export default class PortfolioDraftsApi {
@@ -50,14 +51,15 @@ export default class PortfolioDraftsApi {
     };
 
     const response = await this.client.post(`${id}/portfolio`, data);
-    if (response.status != 201) {
+    if (response.status !== 201) {
       throw Error(`error occured saving portfolio draft with id ${id}`);
     }
   }
 
   public async getDraft(id: string): Promise<Portfolio> {
+    //todo: handle scenario where no portfolio is returned (e.g. 404)
     const response = await this.client.get(`${id}/portfolio`);
-    if (response.status != 200) {
+    if (response.status !== 200) {
       throw Error(`error occured saving portfolio draft with id ${id}`);
     }
 
@@ -73,6 +75,49 @@ export default class PortfolioDraftsApi {
     };
 
     return portfolioDraft;
+  }
+
+  public async createFunding(id: string, model: any): Promise<void> {
+    const data = {
+      task_orders: model.task_orders,
+    };
+
+    const response = await this.client.post(`${id}/funding`, data);
+    if (response.status !== 201) {
+      throw Error(
+        `error occured saving funding details for portfolio draft with id ${id}`
+      );
+    }
+  }
+
+  public async getFunding(id: string): Promise<TaskOrders | null> {
+    try {
+      const response = await this.client.get(`${id}/funding`);
+      if (response.status === 404) {
+        console.log(response.status);
+        return null;
+      }
+
+      if (response.status !== 200) {
+        throw Error(" error occurred retrieving funding details");
+      }
+
+      const task_orders = response.data.task_orders;
+
+      return {
+        details: task_orders,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError) {
+        console.log(
+          `failed with msg: ${axiosError.message} status code: ${axiosError.code}`
+        );
+      }
+      console.log(`exception: ${error}`);
+    }
+    return null;
   }
 
   private mapPortfolio(item: any): Portfolio {
