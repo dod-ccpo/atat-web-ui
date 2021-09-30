@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-if="this.$store.state.sideDrawer === true"
+    v-if="isSideDrawerOpen"
     :width="drawerWidth + 'px'"
     app
     clipped
@@ -28,6 +28,8 @@
           plain
           x-small
           @click.stop="hide"
+          ref="drawerCloserRef"
+          id="drawerCloser"
           :ripple="false"
         >
           <v-icon medium>close</v-icon>
@@ -105,7 +107,7 @@
                   class="ma-0 pa-0 text-decoration-none"
                   href="https://idco.dmdc.osd.mil/idco/"
                   target="_blank"
-                  tabindex="0"
+                  tabindex="3"
                 >
                   <span class="link-body-md font-weight-400"
                     >ID Card Office Online (IDCO)</span
@@ -130,6 +132,7 @@
             x-small
             :ripple="false"
             class="pl-0 primary--text"
+            tabindex="3"
           >
             <span class="link-body-md">
               How will my contact information be used?
@@ -165,6 +168,7 @@
             x-small
             :ripple="false"
             class="pl-0 primary--text"
+            tabindex="3"
           >
             <span class="link-body-md">
               Why can’t I update my profile in ATAT?
@@ -214,6 +218,17 @@ export default class SideDrawer extends Vue {
     const show =
       window.innerHeight < 850 || this.updateProfileTip || this.contactInfoTip;
     return show ? "expandedSidebarDiv" : "";
+  }
+
+  get isSideDrawerOpen(): boolean {
+    const isOpen = this.$store.state.sideDrawer;
+    this.$nextTick(() => {
+      const closeButton = document.getElementById("drawerCloser");
+      if (isOpen && closeButton) {
+        closeButton?.focus();
+      }
+    });
+    return isOpen;
   }
   //method
   private hide(): Promise<boolean> {
