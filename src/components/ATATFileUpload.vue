@@ -389,7 +389,7 @@ export default class ATATFileUpload extends Vue {
 
     await axios
       .post(
-        "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/taskOrderFiles",
+        "https://gj78s0sep8.execute-api.us-gov-west-1.amazonaws.com/prod/taskOrderFiles",
         formData,
         {
           headers: {

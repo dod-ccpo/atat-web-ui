@@ -6,7 +6,7 @@ import axios, {
 } from "axios";
 
 const apiUrl =
-  "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/";
+  "https://gj78s0sep8.execute-api.us-gov-west-1.amazonaws.com/prod/";
 const instance = axios.create({
   baseURL: apiUrl,
   timeout: 15000,
