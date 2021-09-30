@@ -44,7 +44,7 @@ export default class App extends Vue {
   onUrlChange(newVal: Route): void {
     this.$store.dispatch("displayNavSideBarDisplayed", newVal.name);
   }
-  
+
   get getIsNavSideBarDisplayed(): boolean {
     return this.$store.getters.getIsNavSideBarDisplayed;
   }

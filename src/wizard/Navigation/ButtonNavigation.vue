@@ -2,7 +2,7 @@
   <v-toolbar
     ref="buttonNavigation"
     elevation="0"
-    width="100%"
+    :width="getbuttonNavBarWidth"
     class="d-flex justify-end"
     style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
@@ -46,6 +46,15 @@ export default class ButtonNavigation extends Vue {
     } else {
       return false;
     }
+  }
+
+  get getbuttonNavBarWidth(): string {
+    const _isSideDrawerOpened = this.$store.state.sideDrawer;
+    return (
+      (_isSideDrawerOpened
+        ? ((window.innerWidth - 400) / window.innerWidth) * 100
+        : 100) + "%"
+    );
   }
 
   public wizardNavButtons: NavigationButtons = {

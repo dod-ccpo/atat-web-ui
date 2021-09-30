@@ -24,6 +24,8 @@ export default new Vuex.Store({
   state: {
     loginStatus: false,
     sideDrawer: false,
+    sideDrawerType: "",
+    isSideDrawerFocused: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
     portfolios: [],
@@ -114,6 +116,12 @@ export default new Vuex.Store({
     },
     changeSideDrawer(state, status: boolean) {
       state.sideDrawer = status;
+    },
+    changeSideDrawerType(state, type: string) {
+      state.sideDrawerType = type;
+    },
+    changeFocusOnSideDrawer(state, setFocus: boolean) {
+      state.isSideDrawerFocused = setFocus;
     },
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
@@ -254,8 +262,10 @@ export default new Vuex.Store({
     closeSideDrawer({ commit }) {
       commit("changeSideDrawer", false);
     },
-    openSideDrawer({ commit }) {
+    openSideDrawer({ commit }, [drawerType, setFocusOnSideDrawer]) {
       commit("changeSideDrawer", true);
+      commit("changeSideDrawerType", drawerType);
+      commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
     },
   },
   modules: {},
