@@ -63,18 +63,6 @@ export default class Home extends Vue {
     let authenticatedUser = await Auth.federatedSignIn({
       customProvider: "IdP",
     });
-
-    //todo something should be returned that says
-    // user has been if validated
-    // if (isUserisValidated){
-    // if (authenticatedUser) {
-    this.$store.dispatch("login");
-    // this.$router.push("/dashboard");
-    // }
-    //}
-    // else {
-    // handle invalidUser
-    //}
   }
 
   private mounted(): void {
@@ -82,9 +70,8 @@ export default class Home extends Vue {
       let user: any;
       switch (event) {
         case "cognitoHostedUI":
-          user = await Auth.currentAuthenticatedUser();
-          sessionStorage.setItem("authenticatedUser", JSON.stringify(user));
-          sessionStorage.setItem("authState", "signedIn");
+          user = (await Auth.currentSession()).getIdToken().decodePayload();
+          this.$store.dispatch("login", user);
           this.$router.push("/dashboard");
           break;
         case "cognitoHostedUI_failure":

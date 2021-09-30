@@ -37,6 +37,7 @@ export default class ATATHeaderNav extends Vue {
   }
 
   get navData(): Nav {
+    console.log(this.loginStatus);
     return this.$store.getters.getNavBarItems[
       this.loginStatus ? "login" : "logout"
     ];
