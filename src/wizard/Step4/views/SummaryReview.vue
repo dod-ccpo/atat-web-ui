@@ -14,4 +14,3 @@ export default class SummaryReview extends Vue {
 }
 </script>
 
-<style scoped></style>
