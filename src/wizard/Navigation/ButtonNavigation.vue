@@ -6,7 +6,6 @@
     class="d-flex justify-end"
     style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
-
     <v-btn
       v-for="button in pageButtonPanel.buttons"
       :ripple="false"
@@ -49,11 +48,17 @@ export default class ButtonNavigation extends Vue {
   }
 
   get getbuttonNavBarWidth(): string {
+    const windowWidth = window.innerWidth;
+    const smBreakPoint = this.$vuetify.breakpoint.sm;
     const _isSideDrawerOpened = this.$store.state.sideDrawer;
+
+    if (_isSideDrawerOpened && smBreakPoint){
+      return "100%";
+    }
+
     return (
-      (_isSideDrawerOpened
-        ? ((window.innerWidth - 400) / window.innerWidth) * 100
-        : 100) + "%"
+      (_isSideDrawerOpened ? ((windowWidth - 400) / windowWidth) * 100 : 100) +
+      "%"
     );
   }
 
