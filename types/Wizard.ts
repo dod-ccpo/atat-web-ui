@@ -46,7 +46,7 @@ export interface CreateTaskOrderFormModel {
   task_order_number: string;
 }
 export interface TaskOrderFile {
-  description: string;
+  // description: string;
   id: string;
   created_at: string;
   updated_at: string;

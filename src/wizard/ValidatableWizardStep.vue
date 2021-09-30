@@ -82,11 +82,12 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
-    const nextRouteIsWizardRoute = to.meta && to.meta.isWizard;
+    debugger;
+    // const nextRouteIsWizardRoute = to.meta && to.meta.isWizard;
 
     // if the skip validation property is set or if the next
     // route we're heading to is not a wizard route we will skip validation
-    if (this.skipValidation || !nextRouteIsWizardRoute) {
+    if (this.skipValidation) {
       next();
     }
     const isValid = await this.validate();

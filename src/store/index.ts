@@ -335,6 +335,7 @@ export default new Vuex.Store({
      * saves step data to backend based on step number
      */
     async saveStepData({ state }, stepNumber) {
+      debugger;
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
@@ -361,7 +362,6 @@ export default new Vuex.Store({
     },
     async saveStep2({ state }, model: any) {
       // todo: this will be multiple task orders in the future
-
       const taskOrders = {
         task_orders: [
           {
@@ -425,16 +425,11 @@ export default new Vuex.Store({
       await portfolioDraftsApi.deleteDraft(draftId);
       commit("doDeletePortfolioDraft", draftId);
     },
-    async loadPortfolioDraft(
-      { getters, commit, state },
-      draftId: string
-    ): Promise<void> {
-      //initialize
+    async loadPortfolioDraft({ commit }, draftId: string): Promise<void> {
+      //initial step model data
       commit("doInitializeSteps");
 
-      console.log(state.portfolioSteps);
-
-      //validate portfolio draft id
+      //validate that portfolio draft id exists on the server
       const id = await portfolioDraftsApi.getDraft(draftId);
 
       if (id === null) {
@@ -442,38 +437,56 @@ export default new Vuex.Store({
       }
 
       commit("doSetCurrentPortfolioId", draftId);
+      await this.dispatch("loadStep1Data", draftId);
+      await this.dispatch("loadStep2Data", draftId);
+    },
 
-      // get draft
+    async loadStep1Data({ commit }, draftId: string): Promise<void> {
       const draft = await portfolioDraftsApi.getPortfolio(draftId);
-
       if (draft) {
-        // update step 1 model
-        let step1Model: any = getters["getStepModel"](1);
-
-        const step1StoreModel = {
-          ...step1Model,
+        const step1Model = {
           name: draft.name,
           description: draft.description,
           dod_components: draft.dod_component,
         };
 
         // update step 1 model
-        commit("doSaveStepModel", [step1StoreModel, 1, true]);
+        commit("doSaveStepModel", [step1Model, 1, true]);
       }
-
+    },
+    async loadStep2Data({ commit, getters }, draftId: string): Promise<void> {
       // get funding details
       const fundingDetails = await portfolioDraftsApi.getFunding(draftId);
 
       if (fundingDetails !== null) {
-        const step2Model: any = getters["getStepModel"](2);
-
         //todo: will update this later..
         //there's potentially multiple task orders
         const taskOrder = fundingDetails.details[0];
 
+        //todo: in the future this will need to be called for each task order
+
+        const taskOrderFileId = taskOrder.task_order_file?.id;
+        if (taskOrderFileId) {
+          // const taskOrderFile = await portfolioDraftsApi.getTaskOrderFile(
+          //   taskOrderFileId
+          // );
+          // if (taskOrderFile !== null) {
+          //   taskOrder.task_order_file = taskOrderFile;
+          // }
+
+          //stub out task order file data as endpoint isn't implemented
+          taskOrder.task_order_file = {
+            id: taskOrder.task_order_file?.id || "",
+            name: taskOrder.task_order_file?.name || "",
+            updated_at: "1979-12-08T04:43:33.976Z",
+            created_at: "1976-06-05T02:43:49.535Z",
+            size: 88312532.23745316,
+            status: "pending",
+          };
+        }
+
         //update step 2 model with data returned from api
         const step2StoreModel = {
-          ...step2Model,
           ...taskOrder,
         };
 
@@ -481,6 +494,8 @@ export default new Vuex.Store({
         const step1Model: any = getters["getStepModel"](1);
         step1Model.csp = csp;
         commit("doSaveStepModel", [step1Model, 1, true]);
+
+        // a little csp voodoo until we get csps in step 1 data
         commit("doSetSelectedCSP", csp);
         commit("doSaveStepModel", [step2StoreModel, 2, true]);
       }
