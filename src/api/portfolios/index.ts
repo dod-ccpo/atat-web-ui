@@ -34,6 +34,28 @@ export default class PortfolioDraftsApi {
     }
   }
 
+  public async getDraft(id: string): Promise<string | null> {
+    try {
+      const response = await this.client.get(`${id}`);
+      if (response.status !== 200) {
+        throw Error(`error occured saving portfolio draft with id ${id}`);
+      }
+      const data: any = response.data;
+      return data.id;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError) {
+        console.log(
+          `failed with msg: ${axiosError.message} status code: ${axiosError.code}`
+        );
+      }
+      console.log(`exception: ${error}`);
+    }
+
+    return null;
+  }
+
   public async deleteDraft(id: string): Promise<void> {
     const response = await this.client.delete(id);
     if (response.status !== 204) {
@@ -56,25 +78,38 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async getDraft(id: string): Promise<Portfolio> {
+  public async getPortfolio(id: string): Promise<Portfolio | null> {
     //todo: handle scenario where no portfolio is returned (e.g. 404)
-    const response = await this.client.get(`${id}/portfolio`);
-    if (response.status !== 200) {
-      throw Error(`error occured saving portfolio draft with id ${id}`);
+    try {
+      const response = await this.client.get(`${id}/portfolio`);
+      if (response.status !== 200) {
+        throw Error(`error occured saving portfolio draft with id ${id}`);
+      }
+
+      const data: any = response.data;
+      const portfolioDraft: Portfolio = {
+        id: id,
+        name: data.name,
+        description: data.description,
+        dod_component: data.dod_components,
+        portfolio_managers: data.portfolio_managers,
+        csp_provisioning_status: "",
+        applications: [],
+      };
+
+      return portfolioDraft;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError) {
+        console.log(
+          `failed with msg: ${axiosError.message} status code: ${axiosError.code}`
+        );
+      }
+      console.log(`exception: ${error}`);
     }
 
-    const data: any = response.data;
-    const portfolioDraft: Portfolio = {
-      id: id,
-      name: data.name,
-      description: data.description,
-      dod_component: data.dod_components,
-      portfolio_managers: data.portfolio_managers,
-      csp_provisioning_status: "",
-      applications: [],
-    };
-
-    return portfolioDraft;
+    return null;
   }
 
   public async createFunding(id: string, model: any): Promise<void> {
@@ -94,7 +129,6 @@ export default class PortfolioDraftsApi {
     try {
       const response = await this.client.get(`${id}/funding`);
       if (response.status === 404) {
-        console.log(response.status);
         return null;
       }
 

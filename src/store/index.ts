@@ -20,62 +20,69 @@ const vuexLocalStorage = new VuexPersist({
   // filter: mutation => (true)
 });
 
-const initialPortfolioStepsModel = [
-  {
-    step: 1,
-    description: "Create Portfolio",
-    touched: false,
-    valid: false,
+const createStepOneModel = () => {
+  return {
     model: {
       name: "",
       description: "",
       dod_components: [],
       csp: "",
     },
+  };
+};
+
+const createStepTwoModel = () => {
+  return {
+    task_order_number: "",
+    task_order_file: {
+      description: "",
+      id: "",
+      crated_at: "",
+      updated_at: "",
+      size: 0,
+      name: "",
+      status: "",
+    },
+    clins: [],
+  };
+};
+
+const createStepThreeModel = () => {
+  return {
+    name: "",
+    description: "",
+    environments: [],
+  };
+};
+
+const createStepFourModel = () => {
+  return {};
+};
+
+const createStepFiveModel = () => {
+  return {};
+};
+
+const stepsModelInitializer = [
+  {
+    step: 1,
+    model: createStepOneModel,
   },
   {
     step: 2,
-    description: "Add Funding",
-    touched: false,
-    valid: false,
-    model: {
-      task_order_number: "",
-      task_order_file: {
-        description: "",
-        id: "",
-        created_at: "",
-        updated_at: "",
-        size: 0,
-        name: "",
-        status: "",
-      },
-      clins: [],
-    },
+    model: createStepTwoModel,
   },
   {
     step: 3,
-    description: "Add Application",
-    touched: false,
-    valid: false,
-    model: {
-      name: "",
-      description: "",
-      environments: [],
-    },
+    model: createStepThreeModel,
   },
   {
     step: 4,
-    description: "Add Team Members",
-    touched: false,
-    valid: false,
-    model: {},
+    model: createStepFourModel,
   },
   {
     step: 5,
-    description: "Review and Submit",
-    touched: false,
-    valid: false,
-    model: {},
+    model: createStepFiveModel,
   },
 ];
 
@@ -213,24 +220,40 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
+    doUpdateStepModelValidity(state, [stepNumber, valid]) {
+      const stepIndex = state.portfolioSteps.findIndex(
+        (x) => x.step === stepNumber
+      );
+      state.portfolioSteps[stepIndex].valid = valid;
+      state.portfolioSteps[stepIndex].touched = true;
+
+      const es: number[] = state.erroredSteps;
+      const erroredStepIndex = es.indexOf(stepNumber);
+      if (erroredStepIndex > -1 && valid) {
+        es.splice(erroredStepIndex, 1);
+      } else if (erroredStepIndex === -1 && !valid) {
+        es.push(stepNumber);
+      }
+    },
     /**
      * Partially or fully initializes step model
      * @param state
      * @param stepNumber
      */
-    doInitializeSteps(state, stepNumber?) {
-      if (stepNumber == undefined) {
-        Vue.set(state, "portfolioSteps", [...initialPortfolioStepsModel]);
-      } else {
-        const stepIndex = state.portfolioSteps.findIndex(
-          (x) => x.step === stepNumber
-        );
+    doInitializeSteps(state) {
+      const initial = [...stepsModelInitializer];
 
-        if (stepIndex > -1) {
-          state.portfolioSteps[stepIndex] =
-            initialPortfolioStepsModel[stepIndex];
-        }
-      }
+      initial.forEach((step) => {
+        const stepIndex = state.portfolioSteps.findIndex(
+          (x) => x.step === step.step
+        );
+        state.portfolioSteps[stepIndex].model = step.model();
+        state.portfolioSteps[stepIndex].valid = true;
+        state.portfolioSteps[stepIndex].touched = false;
+      });
+
+      const es: number[] = state.erroredSteps;
+      es.splice(0, es.length);
     },
     doSetErroredStep(state, [stepNumber, isErroredStep]) {
       const es: number[] = state.erroredSteps;
@@ -303,6 +326,9 @@ export default new Vuex.Store({
     },
     async saveStepModel({ commit }, [model, stepNumber, valid]) {
       commit("doSaveStepModel", [model, stepNumber, valid]);
+    },
+    async updateStepModelValidity({ commit }, [stepNumber, valid]) {
+      commit("doUpdateStepModelValidity", [stepNumber, valid]);
     },
     /**
      *
@@ -377,9 +403,7 @@ export default new Vuex.Store({
       state.portfolioSteps.forEach((step) => {
         // only save models that have changes and are valid
         if (step.touched && step.valid) {
-          saveActions.push(
-            this.dispatch("saveStepModel", [step.model, step.step, step.valid])
-          );
+          saveActions.push(this.dispatch("saveStepData", step.step));
         }
       });
 
@@ -392,35 +416,50 @@ export default new Vuex.Store({
       return saved;
     },
     async createPortfolioDraft({ commit }): Promise<void> {
-      const portfolioDraftId = await portfolioDraftsApi.createDraft();
-      commit("doSetCurrentPortfolioId", portfolioDraftId);
       //initialize steps models
       commit("doInitializeSteps");
+      const portfolioDraftId = await portfolioDraftsApi.createDraft();
+      commit("doSetCurrentPortfolioId", portfolioDraftId);
     },
     async deletePortfolioDraft({ commit }, draftId: string): Promise<void> {
       await portfolioDraftsApi.deleteDraft(draftId);
       commit("doDeletePortfolioDraft", draftId);
     },
     async loadPortfolioDraft(
-      { getters, commit },
+      { getters, commit, state },
       draftId: string
     ): Promise<void> {
-      // get draft
-      const draft = await portfolioDraftsApi.getDraft(draftId);
+      //initialize
+      commit("doInitializeSteps");
 
-      // update step 1 model
-      let step1Model: any = getters["getStepModel"](1);
+      console.log(state.portfolioSteps);
 
-      const step1StoreModel = {
-        ...step1Model,
-        name: draft.name,
-        description: draft.description,
-        dod_components: draft.dod_component,
-      };
+      //validate portfolio draft id
+      const id = await portfolioDraftsApi.getDraft(draftId);
 
-      // update step 1 model
-      commit("doSaveStepModel", [step1StoreModel, 1, true]);
+      if (id === null) {
+        throw new Error(`unable to locate portfolio draft with ${id}`);
+      }
+
       commit("doSetCurrentPortfolioId", draftId);
+
+      // get draft
+      const draft = await portfolioDraftsApi.getPortfolio(draftId);
+
+      if (draft) {
+        // update step 1 model
+        let step1Model: any = getters["getStepModel"](1);
+
+        const step1StoreModel = {
+          ...step1Model,
+          name: draft.name,
+          description: draft.description,
+          dod_components: draft.dod_component,
+        };
+
+        // update step 1 model
+        commit("doSaveStepModel", [step1StoreModel, 1, true]);
+      }
 
       // get funding details
       const fundingDetails = await portfolioDraftsApi.getFunding(draftId);
@@ -444,8 +483,6 @@ export default new Vuex.Store({
         commit("doSaveStepModel", [step1Model, 1, true]);
         commit("doSetSelectedCSP", csp);
         commit("doSaveStepModel", [step2StoreModel, 2, true]);
-      } else {
-        commit("doInitializeSteps", 2);
       }
     },
     async triggerValidation({ commit }) {

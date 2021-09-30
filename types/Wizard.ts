@@ -40,6 +40,7 @@ export interface CreatePortfolioFormModel {
   name: string;
   description?: string;
   dod_components: string[];
+  csp: string;
 }
 export interface CreateTaskOrderFormModel {
   task_order_number: string;
@@ -130,7 +131,7 @@ export interface CreatePortfolioFormModel {
   name: string;
   description?: string;
   dod_components: string[];
-  csp: string[];
+  csp: string;
 }
 
 /**
@@ -230,8 +231,7 @@ export interface ValidatableStep<TModel> {
 }
 export abstract class Validatable extends Vue {
   public abstract validate: (n: void) => Promise<boolean>;
-  protected abstract saveModel: (n: void) => Promise<void>;
-  protected abstract stepMounted: () => Promise<void>;
+  //protected abstract saveModel: (n: void) => Promise<void>;
 }
 
 export interface CreateEnvironmentModel {

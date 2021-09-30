@@ -28,30 +28,24 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  model: TaskOrderDetails = this.$store.getters.getStepModel(2);
-  private touched = false;
-  private valid = true;
-
-  protected onHasChanges: () => boolean = () => {
-    if (!this.$refs.createTaskOrderForm.YesButtonClicked()) {
-      return true;
-    }
-
-    return false;
+  model: TaskOrderDetails = this.model || {
+    task_order_number: "",
+    task_order_file: {
+      description: "",
+      id: "",
+      created_at: "",
+      updated_at: "",
+      size: 0,
+      name: "",
+      status: "",
+    },
+    clins: [],
   };
 
   public validate: () => Promise<boolean> = async () => {
     this.valid = false;
     this.valid = await this.$refs.createTaskOrderForm.validateForm();
     return this.valid;
-  };
-
-  protected saveModel: () => Promise<void> = async () => {
-    await this.$store.dispatch("saveStepModel", [this.model, 2, this.valid]);
-  };
-
-  protected saveData: () => Promise<void> = async () => {
-    await this.$store.dispatch("saveStepData", 2);
   };
 
   public addClin(): void {
@@ -73,16 +67,12 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
     }
   }
 
-  public stepMounted: () => Promise<void> = async () => {
+  public async mounted(): Promise<void> {
     if (this.$route.name === "editfunding") {
       this.model = this.$store.getters.getTaskOrderByName(
         this.$route.params.id
       );
     }
-    this.touched = this.$store.getters.getStepTouched(2);
-    if (this.touched) {
-      this.validate();
-    }
-  };
+  }
 }
 </script>
