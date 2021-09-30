@@ -189,6 +189,10 @@ export default class CreateTaskOrderForm extends Vue {
     this.isNoButtonClicked = !signed;
   }
 
+  public YesButtonClicked(): boolean {
+    return this.isYesButtonClicked;
+  }
+
   public async validateForm(): Promise<boolean> {
     let validated: boolean[] = [];
     this.signedTaskOrderErrorMessage = "";

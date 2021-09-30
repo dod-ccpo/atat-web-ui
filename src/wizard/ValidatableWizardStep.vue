@@ -24,6 +24,9 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   protected saveData: () => Promise<void> = () => {
     throw new Error("not implemented");
   };
+
+  protected onHasChanges!: () => boolean;
+
   protected stepMounted!: () => Promise<void>;
   private incomingModel!: TModel;
   protected model!: TModel;
@@ -33,6 +36,11 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     const serializedIncoming = JSON.stringify(this.incomingModel);
     const serialiedOutgoing = JSON.stringify(this.model);
     theSame = serializedIncoming === serialiedOutgoing;
+
+    if (this.onHasChanges) {
+      return !theSame && this.onHasChanges();
+    }
+
     return !theSame;
   }
 
@@ -59,10 +67,10 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     next: (n: void) => void
   ): Promise<void> {
     debugger;
+    const isValid = await this.validate();
+    await this.saveModel();
     if (this.hasChanges()) {
       try {
-        const isValid = await this.validate();
-        await this.saveModel();
         if (isValid) {
           console.log(isValid);
           await this.saveData();

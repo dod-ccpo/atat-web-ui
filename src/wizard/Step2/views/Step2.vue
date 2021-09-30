@@ -32,7 +32,16 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
   private touched = false;
   private valid = true;
 
+  protected onHasChanges: () => boolean = () => {
+    if (!this.$refs.createTaskOrderForm.YesButtonClicked()) {
+      return true;
+    }
+
+    return false;
+  };
+
   public validate: () => Promise<boolean> = async () => {
+    debugger;
     this.valid = false;
     this.valid = await this.$refs.createTaskOrderForm.validateForm();
     return this.valid;
