@@ -1,7 +1,6 @@
 /* eslint-disable */
 const path = require("path");
 const deepmerge = require("deepmerge");
-const chromedriver = require("chromedriver");
 /* eslint-enable */
 
 const startHeadless = process.env.VUE_NIGHTWATCH_HEADLESS === "1";
@@ -14,7 +13,7 @@ if (startHeadless) {
 }
 
 const defaultSettings = {
-  src_folders: ["dist/tests/e2e/page_tests"],
+  src_folders: ["dist/tests/e2e/page_tests/"],
   page_objects_path: "dist/tests/e2e/page_objects",
   //custom_assertions_path: "dist/tests/e2e/custom_assertions",
   //custom_commands_path: "dist/tests/e2e/custom_commands",
@@ -77,9 +76,7 @@ function webdriverServerSettings() {
       start_process: false,
       host: "hub-cloud.browserstack.com",
       port: 443,
-      cli_args: {
-        "webdriver.chrome.driver": chromedriver.path,
-      },
+      cli_args: {},
     },
     test_settings: {
       default: {
