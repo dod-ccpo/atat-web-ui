@@ -193,7 +193,7 @@ export default class ATATFileUpload extends Vue {
   private isProgressBarVisible = false;
   private isFileUploadedSucessfully = false;
   private taskOrderFile: TaskOrderFile = {
-    description: "",
+    // description: "",
     id: "",
     created_at: "",
     updated_at: "",
@@ -298,7 +298,7 @@ export default class ATATFileUpload extends Vue {
         await this.showProgress(file);
         this.uploadedFile.push(file);
         this.taskOrderFile = {
-          description: file.name,
+          // description: file.name,
           id: "",
           created_at: "",
           updated_at: "",
@@ -389,22 +389,25 @@ export default class ATATFileUpload extends Vue {
 
     await axios
       .post(
-        "https://s63gzoj8bh.execute-api.us-gov-west-1.amazonaws.com/prod/taskOrderFiles",
+        "https://gj78s0sep8.execute-api.us-gov-west-1.amazonaws.com/prod/taskOrderFiles",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
-      )
-      .then((response) => {
+      ).then((response) => {
         this.taskOrderFile = response.data;
         this.uploadedFile = [this.taskOrderFile];
         // todo add this._pdfFile = taskOrderFile when
         // API is ready
         // console.log(this);
         this._pdfFile = this.taskOrderFile;
+      })
+      .catch((error) => {
+        console.log(error);
       });
+     
   }
   /**
    * validates file and returns a Promise<boolean> for valid/invalid file
@@ -480,7 +483,7 @@ export default class ATATFileUpload extends Vue {
       this.isProgressBarVisible = false;
       this._errorMessageFromParent = "";
       this._pdfFile = {
-        description: "",
+        // description: "",
         id: "",
         created_at: "",
         updated_at: "",

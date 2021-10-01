@@ -194,7 +194,7 @@ export default class Profile extends Vue {
 <style scoped>
 .expandedSidebarDiv {
   overflow-y: auto !important;
-  height: calc(100% - 200px) !important; 
+  height: calc(100% - 200px) !important;
   overflow-x: hidden !important;
 }
 </style>

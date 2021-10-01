@@ -189,7 +189,7 @@ export default class CreateTaskOrderForm extends Vue {
     this.isNoButtonClicked = !signed;
   }
 
-  public YesButtonClicked(): boolean {
+  public DidUserSignTaskOrder(): boolean {
     return this.isYesButtonClicked;
   }
 

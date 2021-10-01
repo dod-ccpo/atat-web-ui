@@ -29,6 +29,9 @@ const addportfolio: RouteConfigSingleView = {
   name: "addportfolio",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"),
+  props: {
+    step: 1,
+  },
 };
 
 const addfunding: RouteConfigSingleView = {
@@ -36,6 +39,9 @@ const addfunding: RouteConfigSingleView = {
   name: "addfunding",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
+  props: {
+    step: 2,
+  },
 };
 
 const fundingsummary: RouteConfigSingleView = {
