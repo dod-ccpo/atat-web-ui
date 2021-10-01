@@ -154,13 +154,49 @@ export default class PortfolioDraftsApi {
     return null;
   }
 
+  public async getTaskOrderFile(fileId: string): Promise<TaskOrderFile | null> {
+    try {
+      const response = await this.client.get(`taskOrderFiles/${fileId}`);
+      if (response.status === 404) {
+        return null;
+      }
+
+      if (response.status !== 200) {
+        throw Error(" error occurred retrieving funding details");
+      }
+
+      const data = response.data;
+
+      const taskOrderFile: TaskOrderFile = {
+        name: data.name,
+        updated_at: data.updated_at,
+        created_at: data.created_at,
+        id: data.id,
+        size: data.size,
+        status: data.status,
+      };
+
+      return taskOrderFile;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError) {
+        console.log(
+          `failed with msg: ${axiosError.message} status code: ${axiosError.code}`
+        );
+      }
+      console.log(`exception: ${error}`);
+    }
+    return null;
+  }
+
   private mapPortfolio(item: any): Portfolio {
     const mapTaskOrder = (taskOrderItem: any): TaskOrderDetails => {
       if (taskOrderItem) {
         const taskOrderFile: TaskOrderFile = {
           id: taskOrderItem.id || "-1",
           name: taskOrderItem.name || "",
-          description: taskOrderItem.description || "",
+          // description: taskOrderItem.description || "",
           created_at: "",
           updated_at: "",
           size: 20000,

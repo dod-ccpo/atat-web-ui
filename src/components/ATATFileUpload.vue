@@ -193,7 +193,7 @@ export default class ATATFileUpload extends Vue {
   private isProgressBarVisible = false;
   private isFileUploadedSucessfully = false;
   private taskOrderFile: TaskOrderFile = {
-    description: "",
+    // description: "",
     id: "",
     created_at: "",
     updated_at: "",
@@ -298,7 +298,7 @@ export default class ATATFileUpload extends Vue {
         await this.showProgress(file);
         this.uploadedFile.push(file);
         this.taskOrderFile = {
-          description: file.name,
+          // description: file.name,
           id: "",
           created_at: "",
           updated_at: "",
@@ -480,7 +480,7 @@ export default class ATATFileUpload extends Vue {
       this.isProgressBarVisible = false;
       this._errorMessageFromParent = "";
       this._pdfFile = {
-        description: "",
+        // description: "",
         id: "",
         created_at: "",
         updated_at: "",
