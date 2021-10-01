@@ -28,19 +28,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  model: TaskOrderDetails = this.model || {
-    task_order_number: "",
-    task_order_file: {
-      description: "",
-      id: "",
-      created_at: "",
-      updated_at: "",
-      size: 0,
-      name: "",
-      status: "",
-    },
-    clins: [],
-  };
+  model: TaskOrderDetails = this.$store.getters.getStepModel(2);
 
   public validate: () => Promise<boolean> = async () => {
     this.valid = false;

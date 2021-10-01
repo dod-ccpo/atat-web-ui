@@ -335,7 +335,6 @@ export default new Vuex.Store({
      * saves step data to backend based on step number
      */
     async saveStepData({ state }, stepNumber) {
-      debugger;
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
