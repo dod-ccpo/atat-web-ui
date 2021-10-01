@@ -32,15 +32,19 @@
           </p>
         </span>
         <p v-else class="body-lg text--base-darkest">
-          Invite your application team members and assign their permissions below. These individuals will receive an
-          invitation from <span class="font-weight-bold"> {{ csp }}</span> after your portfolio is provisioned. Select
-          <span class="font-weight-bold">Next</span> to add team members to your other applications.
-          <a class="text-decoration-underline">Learn more about team member roles</a>
+          Invite your application team members and assign their permissions
+          below. These individuals will receive an invitation from
+          <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
+          is provisioned. Select <span class="font-weight-bold">Next</span> to
+          add team members to your other applications.
+          <a class="text-decoration-underline"
+            >Learn more about team member roles</a
+          >
         </p>
       </v-col>
     </v-row>
     <v-row v-if="createdApplication">
-      <v-col class="ps-0  ma-0">
+      <v-col class="ps-0 ma-0">
         <v-row>
           <v-col cols="9" class="d-flex pl-0">
             <v-col class="d-flex">
@@ -71,7 +75,7 @@
         </v-row>
         <v-row>
           <v-col cols="9" class="pa-0 ma-0">
-            <v-card rounded width="100%" height="10rem"  class=" ma-4 ml-3 body">
+            <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
               <v-card-text class="text-center">
                 <v-row class="d-flex justify-space-around pt-4">
                   <v-col>

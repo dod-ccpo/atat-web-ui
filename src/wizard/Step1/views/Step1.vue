@@ -35,8 +35,6 @@ export default class Step_1 extends ValidatableWizardStep<CreatePortfolioFormMod
     createPortfolioForm: CreatePortfolioForm;
     cloudServiceProviderForm: CloudServiceProvider;
   };
-  private touched = false;
-  private valid = true;
 
   model: CreatePortfolioFormModel = this.$store.getters.getStepModel(1);
 
@@ -52,21 +50,6 @@ export default class Step_1 extends ValidatableWizardStep<CreatePortfolioFormMod
     ]).then((values) => (this.valid = values.every((value) => value)));
 
     return this.valid;
-  };
-
-  protected saveModel: () => Promise<void> = async () => {
-    await this.$store.dispatch("saveStepModel", [this.model, 1, this.valid]);
-  };
-
-  protected saveData: () => Promise<void> = async () => {
-    await this.$store.dispatch("saveStepData", 1);
-  };
-
-  public stepMounted: () => Promise<void> = async () => {
-    this.touched = this.$store.getters.getStepTouched(1);
-    if (this.touched) {
-      this.validate();
-    }
   };
 }
 </script>

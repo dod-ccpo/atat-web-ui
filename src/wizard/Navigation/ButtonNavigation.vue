@@ -52,7 +52,7 @@ export default class ButtonNavigation extends Vue {
     const smBreakPoint = this.$vuetify.breakpoint.sm;
     const _isSideDrawerOpened = this.$store.state.sideDrawer;
 
-    if (_isSideDrawerOpened && smBreakPoint){
+    if (_isSideDrawerOpened && smBreakPoint) {
       return "100%";
     }
 
