@@ -5,6 +5,7 @@
       :width="drawerWidth + 'px'"
       app
       clipped
+      :temporary="showOverlay"
       permanent
       right
       tabindex="3"
@@ -94,7 +95,24 @@ export default class SideDrawer extends Vue {
   }
 
   get isSideDrawerOpen(): boolean {
-    return this.$store.state.sideDrawer;
+    const _isSideDrawerOpen = this.$store.state.sideDrawer;
+    setTimeout(() => {
+      if (_isSideDrawerOpen && this.showOverlay) {
+        document
+          .getElementsByClassName("v-overlay--active")[0]
+          ?.addEventListener("click", this.hide);
+      } else {
+        document
+          .getElementsByClassName("v-overlay--active")[0]
+          ?.removeEventListener("click", this.hide);
+      }
+    }, 0);
+
+    return _isSideDrawerOpen;
+  }
+
+  get showOverlay(): boolean {
+    return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
   }
 
   @Watch("$store.state.isSideDrawerFocused")
@@ -105,7 +123,7 @@ export default class SideDrawer extends Vue {
       }, 500);
     }
   }
-  
+
   //method
   private hide(): Promise<boolean> {
     return this.$store.dispatch("closeSideDrawer");
