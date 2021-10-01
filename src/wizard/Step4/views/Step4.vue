@@ -3,16 +3,34 @@
   <v-container fluid>
     <v-row>
 
+    <v-dialog
+      v-model="dialogOpen"
+      persistent
+      max-width="632px"
+      height="750px"
+    >
+      <v-card>
 
-    <div id="widthFaker" ref="widthFaker"></div>
+        <v-card-title>
+          Add Members
+        </v-card-title>
 
-      <v-col class="pl-0" cols="12">
-        <!-- this goes in a modal -->
-        <div
-          id="EmailInputWrapper"
-          class="pa-2 email-wrapper"
-          @click="addEmail"
+        <v-card-text
+          class="body-lg text--base-darkest"
         >
+
+          <h2 class="mb-2">Add team members to Tracker Application</h2>
+          <p>
+            Team members can have different levels of access to your application
+            and environments. Invite multiple people with the same permissions at once.
+          </p>
+          <span id="EmailInputLabel">Email Addresses</span>
+          <div
+            id="EmailInputWrapper"
+            aria-labelledby="EmailInputLabel"
+            class="pa-2 email-wrapper"
+            @click="addEmail"
+          >
             <v-text-field
               v-for="email in emailList"
               :key="email.id"
@@ -26,9 +44,57 @@
               @blur="emailBlurred"
               @click:append="removeEmail"
             />
+          </div>
+          <span>
+            Must use a .mil email address. Separate multiple emails with commas
+          </span>
 
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="dialogOpen = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="dialogOpen = false"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+
+    <div id="widthFaker" ref="widthFaker"></div>
+<!--
+      <v-col class="pl-0" cols="12">
+        <div
+          id="EmailInputWrapper"
+          class="pa-2 email-wrapper"
+          @click="addEmail"
+        >
+          <v-text-field
+            v-for="email in emailList"
+            :key="email.id"
+            :id="'emailPill_' + email.id"
+            :ref="'e_' + email.id"
+            class="pill"
+            :data-email-id="email.id"
+            v-model="email.value"
+            append-icon="close"
+            @click="emailEdit"
+            @blur="emailBlurred"
+            @click:append="removeEmail"
+          />
         </div>
-      </v-col>
+      </v-col> -->
 
       <v-col class="pl-0" cols="12">
         <h2 v-if="!createdApplication" class="h2">
@@ -91,6 +157,7 @@
                 class="font-weight-bold align-center"
                 :ripple="false"
                 color="primary"
+                @click="openModal"
               >
                 <v-icon class="mr-2" role="presentation">control_point</v-icon>
                 Invite Team Member
@@ -268,6 +335,7 @@ import { Component } from "vue-property-decorator";
 @Component({})
 export default class Step_4 extends Vue {
 
+  private dialogOpen = false;
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -393,8 +461,6 @@ export default class Step_4 extends Vue {
   }
 
   public emailEdit(e: Event) {
-    let foo = this.$vnode.key;
-debugger;
     e.preventDefault();
     e.cancelBubble = true;
     const input = e.currentTarget as HTMLInputElement;
@@ -436,13 +502,33 @@ debugger;
     }
   }
 
+  public openModal() {
+    this.dialogOpen = true;
+    const self = this;
+    Vue.nextTick(function () {
+      self.emailList.forEach((email, index) => {
+        self.widthFaker.innerHTML = email.value;
+        const w = self.widthFaker.offsetWidth + "px";
+        const emailInput = document.querySelector("[data-email-id='" + email.id + "']")  as HTMLElement;
+        emailInput.style.width = w;
+      });
+    });
+  }
 
 }
 </script>
 
 <style lang="scss">
+
+  .v-card__title {
+    border-bottom: 1px solid #DFE1E2; // $base_lighter
+  }
+
+  .v-card__text {
+    padding: 24px 40px !important;
+  }
+
   div#widthFaker {
-    outline: 1px solid green;
     display: inline-block;
     font-size: 16px;
     position: absolute;
@@ -452,11 +538,11 @@ debugger;
 
   .email-wrapper {
     border:2px solid #005EA2;
-    height: 150px;
+    height: 118px;
     margin-bottom: 20px;
     width: 100%;
     max-width:550px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
   }
 
