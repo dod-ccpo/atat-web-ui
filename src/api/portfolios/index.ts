@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
-import { Portfolio } from "types/Portfolios";
-import { TaskOrderDetails, TaskOrderFile, TaskOrders } from "types/Wizard";
+import { Portfolio, PortfolioDraft } from "types/Portfolios";
+import { TaskOrderFile, TaskOrders } from "types/Wizard";
 import ApiClient from "../apiClient";
 
 export default class PortfolioDraftsApi {
@@ -10,11 +10,12 @@ export default class PortfolioDraftsApi {
    *
    * @returns all portfolio drafts
    */
-  public async getAll(): Promise<Portfolio[]> {
+  public async getAll(): Promise<PortfolioDraft[]> {
     const response = await this.client.get();
 
     if (response.status === 200) {
-      return response.data.map((item: any) => this.mapPortfolio(item));
+      const portfolioDrafts: PortfolioDraft[] = response.data;
+      return portfolioDrafts;
     } else {
       throw new Error(response.statusText);
     }
@@ -70,6 +71,7 @@ export default class PortfolioDraftsApi {
       description: model.description,
       dod_components: model.dod_components,
       portfolio_managers: model.portfolio_managers || [],
+      csp: model.csp,
     };
 
     const response = await this.client.post(`${id}/portfolio`, data);
@@ -87,10 +89,12 @@ export default class PortfolioDraftsApi {
       }
 
       const data: any = response.data;
+
       const portfolioDraft: Portfolio = {
         id: id,
         name: data.name,
         description: data.description,
+        csp: data.csp,
         dod_component: data.dod_components,
         portfolio_managers: data.portfolio_managers,
         csp_provisioning_status: "",
@@ -112,7 +116,7 @@ export default class PortfolioDraftsApi {
     return null;
   }
 
-  public async createFunding(id: string, model: any): Promise<void> {
+  public async saveFunding(id: string, model: any): Promise<void> {
     const data = {
       task_orders: model.task_orders,
     };
@@ -190,46 +194,47 @@ export default class PortfolioDraftsApi {
     return null;
   }
 
-  private mapPortfolio(item: any): Portfolio {
-    const mapTaskOrder = (taskOrderItem: any): TaskOrderDetails => {
-      if (taskOrderItem) {
-        const taskOrderFile: TaskOrderFile = {
-          id: taskOrderItem.id || "-1",
-          name: taskOrderItem.name || "",
-          // description: taskOrderItem.description || "",
-          created_at: "",
-          updated_at: "",
-          size: 20000,
-          status: "",
-        };
 
-        const taskOrder: TaskOrderDetails = {
-          task_order_number: taskOrderItem.task_order_number,
-          clins: taskOrderItem.clins,
-          task_order_file: taskOrderFile,
-        };
+  // private mapPortfolio(item: any): Portfolio {
+  //   const mapTaskOrder = (taskOrderItem: any): TaskOrderDetails => {
+  //     if (taskOrderItem) {
+  //       const taskOrderFile: TaskOrderFile = {
+  //         id: taskOrderItem.id || "-1",
+  //         name: taskOrderItem.name || "",
+  //         // description: taskOrderItem.description || "",
+  //         created_at: "",
+  //         updated_at: "",
+  //         size: 20000,
+  //         status: "",
+  //       };
 
-        return taskOrder;
-      }
+  //       const taskOrder: TaskOrderDetails = {
+  //         task_order_number: taskOrderItem.task_order_number,
+  //         clins: taskOrderItem.clins,
+  //         task_order_file: taskOrderFile,
+  //       };
 
-      throw new Error("invalid item");
-    };
+  //       return taskOrder;
+  //     }
 
-    const portfolio: Portfolio = {
-      id: item.id,
-      description: item.portfolio_step ? item.portfolio_step.description : "",
-      name: item.portfolio_step ? item.portfolio_step.name : "Untitled",
-      dod_component: item.portfolio_step
-        ? item.portfolio_step.dod_components
-        : [],
-      csp_provisioning_status: item.status,
-      portfolio_managers: item.portfolio_step
-        ? item.portfolio_step.portfolio_managers
-        : [],
-      taskOrders: item.funding_step ? [mapTaskOrder(item.funding_step)] : [],
-      applications: [],
-    };
+  //     throw new Error("invalid item");
+  //   };
 
-    return portfolio;
-  }
+  //   const portfolio: Portfolio = {
+  //     id: item.id,
+  //     description: item.portfolio_step ? item.portfolio_step.description : "",
+  //     name: item.portfolio_step ? item.portfolio_step.name : "Untitled",
+  //     dod_component: item.portfolio_step
+  //       ? item.portfolio_step.dod_components
+  //       : [],
+  //     csp_provisioning_status: item.status,
+  //     portfolio_managers: item.portfolio_step
+  //       ? item.portfolio_step.portfolio_managers
+  //       : [],
+  //     taskOrders: item.funding_step ? [mapTaskOrder(item.funding_step)] : [],
+  //     applications: [],
+  //   };
+
+  //   return portfolio;
+  // }
 }
