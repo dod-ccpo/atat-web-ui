@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { Portfolio, PortfolioDraft } from "types/Portfolios";
+import { Portfolio, PortfolioDraft, PortFolioDraftDTO } from "types/Portfolios";
 import { TaskOrderFile, TaskOrders } from "types/Wizard";
 import ApiClient from "../apiClient";
 
@@ -39,7 +39,7 @@ export default class PortfolioDraftsApi {
     try {
       const response = await this.client.get(`${id}`);
       if (response.status !== 200) {
-        throw Error(`error occured saving portfolio draft with id ${id}`);
+        throw Error(`error occured retrieving portfolio draft with id ${id}`);
       }
       const data: any = response.data;
       return data.id;
@@ -64,16 +64,10 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async savePortfolio(id: string, model: any): Promise<void> {
-    //build api draft model
-    const data = {
-      name: model.name,
-      description: model.description,
-      dod_components: model.dod_components,
-      portfolio_managers: model.portfolio_managers || [],
-      csp: model.csp,
-    };
-
+  public async savePortfolio(
+    id: string,
+    data: PortFolioDraftDTO
+  ): Promise<void> {
     const response = await this.client.post(`${id}/portfolio`, data);
     if (response.status !== 201) {
       throw Error(`error occured saving portfolio draft with id ${id}`);
@@ -95,7 +89,7 @@ export default class PortfolioDraftsApi {
         name: data.name,
         description: data.description,
         csp: data.csp,
-        dod_component: data.dod_components,
+        dod_components: data.dod_components,
         portfolio_managers: data.portfolio_managers,
         csp_provisioning_status: "",
         applications: [],
@@ -193,7 +187,6 @@ export default class PortfolioDraftsApi {
     }
     return null;
   }
-
 
   // private mapPortfolio(item: any): Portfolio {
   //   const mapTaskOrder = (taskOrderItem: any): TaskOrderDetails => {

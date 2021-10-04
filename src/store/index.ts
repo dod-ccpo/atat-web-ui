@@ -3,7 +3,12 @@ import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
-import { Application, Portfolio, PortfolioDraft } from "types/Portfolios";
+import {
+  Application,
+  Portfolio,
+  PortfolioDraft,
+  PortFolioDraftDTO,
+} from "types/Portfolios";
 import PortfolioDraftsApi from "@/api/portfolios";
 import { CLIN } from "types/Wizard";
 
@@ -357,7 +362,17 @@ export default new Vuex.Store({
       commit("updatePortfolioDrafts", portfolioDrafts);
     },
     async saveStep1({ state, commit }, model: any) {
-      await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, model);
+      // build data from step model
+      const data: PortFolioDraftDTO = {
+        id: state.currentPortfolioId,
+        name: model.name,
+        description: model.description,
+        csp: model.csp,
+        dod_components: model.dod_components,
+        portfolio_managers: [],
+      };
+
+      await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
       commit("doSetSelectedCSP", model.csp);
     },
     async saveStep2({ state }, model: any) {
@@ -382,7 +397,7 @@ export default new Vuex.Store({
         ],
       };
 
-      await portfolioDraftsApi.createFunding(
+      await portfolioDraftsApi.saveFunding(
         state.currentPortfolioId,
         taskOrders
       );
@@ -446,7 +461,7 @@ export default new Vuex.Store({
         const step1Model = {
           name: draft.name,
           description: draft.description,
-          dod_components: draft.dod_component,
+          dod_components: draft.dod_components,
           csp: draft.csp,
         };
 

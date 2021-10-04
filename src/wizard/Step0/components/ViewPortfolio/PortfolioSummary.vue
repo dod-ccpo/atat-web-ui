@@ -75,7 +75,7 @@ export default class PortfolioSummary extends Vue {
       id: portfolioDraft.id,
       type: "PORTFOLIO",
       title: portfolioDraft.name || "Untitled",
-      description: "",
+      description: portfolioDraft.description,
       showChevronRight: true,
       items: this.mapItems(portfolioDraft),
       leftButtonText: "OPEN",
@@ -87,7 +87,6 @@ export default class PortfolioSummary extends Vue {
 
   @Watch("portfolioDrafts")
   onPortfoliosChanged(): void {
-    ;
     if (!this.portfolioDrafts) return;
 
     const cards = this.portfolioDrafts.map<ATATSummaryCardItem>((draft) =>

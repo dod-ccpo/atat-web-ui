@@ -9,10 +9,19 @@ export interface Portfolio {
   description: string;
   csp: string;
   csp_provisioning_status: string;
-  dod_component: string[];
+  dod_components: string[];
   portfolio_managers: string[];
   applications: Application[];
   taskOrders?: TaskOrderDetails[];
+}
+
+export interface PortFolioDraftDTO {
+  id: string;
+  name: string;
+  description: string;
+  csp: string;
+  dod_components: string[];
+  portfolio_managers: string[];
 }
 
 export interface PortfolioDraft {
@@ -21,6 +30,7 @@ export interface PortfolioDraft {
   updated_at: string;
   status: string;
   name: string;
+  description: string;
   num_portfolio_managers: number;
   num_task_orders: number;
   num_applications: number;

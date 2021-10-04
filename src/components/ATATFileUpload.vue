@@ -396,7 +396,8 @@ export default class ATATFileUpload extends Vue {
             "Content-Type": "multipart/form-data",
           },
         }
-      ).then((response) => {
+      )
+      .then((response) => {
         this.taskOrderFile = response.data;
         this.uploadedFile = [this.taskOrderFile];
         // todo add this._pdfFile = taskOrderFile when
@@ -407,7 +408,6 @@ export default class ATATFileUpload extends Vue {
       .catch((error) => {
         console.log(error);
       });
-     
   }
   /**
    * validates file and returns a Promise<boolean> for valid/invalid file
