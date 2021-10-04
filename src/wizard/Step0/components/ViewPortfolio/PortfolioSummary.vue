@@ -89,6 +89,14 @@ export default class PortfolioSummary extends Vue {
   onPortfoliosChanged(): void {
     if (!this.portfolioDrafts) return;
 
+    this.updateSummaryCards();
+  }
+
+  mounted(): void {
+    this.updateSummaryCards();
+  }
+
+  private updateSummaryCards(): void {
     const cards = this.portfolioDrafts.map<ATATSummaryCardItem>((draft) =>
       this.mapToSummaryCard(draft)
     );
