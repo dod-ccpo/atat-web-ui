@@ -39,7 +39,7 @@ export default class PortfolioDraftsApi {
     try {
       const response = await this.client.get(`${id}`);
       if (response.status !== 200) {
-        throw Error(`error occured retrieving portfolio draft with id ${id}`);
+        throw Error(`error occurred retrieving portfolio draft with id ${id}`);
       }
       const data: any = response.data;
       return data.id;
@@ -70,7 +70,7 @@ export default class PortfolioDraftsApi {
   ): Promise<void> {
     const response = await this.client.post(`${id}/portfolio`, data);
     if (response.status !== 201) {
-      throw Error(`error occured saving portfolio draft with id ${id}`);
+      throw Error(`error occurred saving portfolio draft with id ${id}`);
     }
   }
 
@@ -79,7 +79,7 @@ export default class PortfolioDraftsApi {
     try {
       const response = await this.client.get(`${id}/portfolio`);
       if (response.status !== 200) {
-        throw Error(`error occured saving portfolio draft with id ${id}`);
+        throw Error(`error occurred saving portfolio draft with id ${id}`);
       }
 
       const data: any = response.data;
@@ -118,7 +118,7 @@ export default class PortfolioDraftsApi {
     const response = await this.client.post(`${id}/funding`, data);
     if (response.status !== 201) {
       throw Error(
-        `error occured saving funding details for portfolio draft with id ${id}`
+        `error occurred saving funding details for portfolio draft with id ${id}`
       );
     }
   }
