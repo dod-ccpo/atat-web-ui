@@ -3,120 +3,116 @@
   <v-container fluid>
     <v-row>
 
-    <v-dialog
-      v-model="dialogOpen"
-      persistent
-      max-width="632px"
-    >
-      <v-card>
-
-        <v-card-title>
-          <h2 class="mb-2">Add team members to Tracker Application</h2>
-        </v-card-title>
-
-        <v-card-text
-          class="body-lg text--base-darkest"
-        >
-
-          <p>
-            Team members can have different levels of access to your application
-            and environments. Invite multiple people with the same permissions at once.
-          </p>
-
-          <strong id="EmailInputLabel">Email Addresses</strong>
-          <div class="error--text" v-if="invalidEmailCount">
-            <div class="v-messages__message mr-2 d-inline-block">
-              {{ invalidEmailCount }} error<span v-if="invalidEmailCount > 1">s</span>
-            </div>
-            <a @click="removeInvalidEmails">Remove all emails with errors</a>
-          </div>
-          <div
-            id="EmailInputWrapper"
-            aria-labelledby="EmailInputLabel"
-            class="pa-2 email-wrapper"
-            :class="[ emailInputFocused ? 'focused' : '']"
-            @click="addEmail"
+      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
+      <v-dialog
+        v-model="dialogOpen"
+        persistent
+        max-width="632px"
+      >
+        <v-card>
+          <v-card-title>
+            <h2 class="mb-2">Add team members to Tracker Application</h2>
+          </v-card-title>
+          <v-card-text
+            class="body-lg text--base-darkest"
           >
-            <v-text-field
-              v-for="member in memberList"
-              :key="member.id"
-              class="pill"
-              :class="{ 'email-invalid': !member.isValid && member.isValid !== null }"
-              :data-member-id="member.id"
-              v-model="member.email"
-              append-icon="close"
-              @click="emailEdit"
-              @blur="emailBlurred"
-              @click:append="removeEmail"
-            />
+            <p>
+              Team members can have different levels of access to your application
+              and environments. Invite multiple people with the same permissions at once.
+            </p>
+
+            <strong id="EmailInputLabel">Email Addresses</strong>
+            <div class="error--text" v-if="invalidEmailCount">
+              <div class="v-messages__message mr-2 d-inline-block">
+                {{ invalidEmailCount }} error<span v-if="invalidEmailCount > 1">s</span>
+              </div>
+              <a tabindex="0" @click="removeInvalidEmails">Remove all emails with errors</a>
+            </div>
+            <div
+              id="EmailInputWrapper"
+              aria-labelledby="EmailInputLabel"
+              class="pa-2 email-wrapper mb-0"
+              :class="[ emailInputFocused ? 'focused' : '']"
+              @click="addEmail"
+            >
+              <v-text-field
+                v-for="member in memberList"
+                :key="member.id"
+                class="pill"
+                :class="{ 'email-invalid': !member.isValid && member.isValid !== null }"
+                :data-member-id="member.id"
+                v-model="member.email"
+                append-icon="close"
+                @click="emailEdit"
+                @blur="emailBlurred"
+                @click:append="removeEmail"
+              />
+            </div>
+            <div class="dupe-email-alert-wrapper">
+              <v-alert
+                v-if="duplicatedEmail"
+                class="dupe-email-alert"
+                color="#1b1b1b"
+                dark
+                icon="error"
+                dense
+              >
+                &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
+              </v-alert>
+
+            </div>
+            <span class="color-base">
+              Must use a .mil email address. Separate multiple emails with commas.
+            </span>
 
             <v-alert
-              v-if=duplicatedEmail
-              class="dupe-email-alert"
-              color="#1b1b1b"
-              dark
+              v-show="invalidEmailCount"
+              outlined
+              rounded
+              color="error"
+              border="left"
               icon="error"
-              dense
+              class="text-left error_lighter black-icon mt-3"
             >
-              &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
+              <p class="black--text body-lg">
+                <span v-if="invalidEmailCount === 1">
+                  The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
+                </span>
+                <span v-if="invalidEmailCount > 1">
+                  Multiple addresses were not recognized.
+                </span>
+                Please make sure that all addresses are properly formatted and .mil addresses.
+              </p>
             </v-alert>
 
-          </div>
-          <span class="color-base">
-            Must use a .mil email address. Separate multiple emails with commas.
-          </span>
-
-          <v-alert
-            v-show="invalidEmailCount"
-            outlined
-            rounded
-            color="error"
-            border="left"
-            icon="error"
-            class="text-left error_lighter black-icon mt-3"
-          >
-            <p class="black--text body-lg">
-              <span v-if="invalidEmailCount === 1">
-                The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
-              </span>
-              <span v-if="invalidEmailCount > 1">
-                Multiple addresses were not recognized.
-              </span>
-              Please make sure that all addresses are properly formatted and .mil addresses.
-            </p>
-          </v-alert>
-
-      </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            class="link-button"
-            @click="dialogOpen = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            class="px-5"
-            @click="dialogOpen = false"
-            :disabled="invalidEmailCount > 0 || validEmailCount === 0"
-          >
-            Add Team Members
-            <span
-              class="valid-email-count ml-2" 
-              v-if="validEmailCount"
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              class="link-button"
+              @click="dialogOpen = false"
             >
-              {{ validEmailCount }}
-            </span>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              class="px-5"
+              @click="dialogOpen = false"
+              :disabled="invalidEmailCount > 0 || validEmailCount === 0"
+            >
+              Add Team Members
+              <span
+                class="valid-email-count ml-2" 
+                v-if="validEmailCount"
+              >
+                {{ validEmailCount }}
+              </span>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
-
-
-    <div id="widthFaker" ref="widthFaker"></div>
 
       <v-col class="pl-0" cols="12">
         <h2 v-if="!createdApplication" class="h2">
@@ -379,18 +375,18 @@ export default class Step_4 extends Vue {
   private search = ""; //sync search
 
   private duplicatedEmail: string = "";
-  private memberList: { 
-    id: number, 
-    email: string, 
-    display_name: "", 
+  private memberList: {
+    id: number,
+    email: string,
+    display_name: "",
     access: "",
     isValid: boolean | null,
     isDuplicate: boolean,
   }[] = [];
   private validEmailList: string[] = [];
-  
-  get widthFaker() {
-    return this.$refs.widthFaker as HTMLElement;
+
+  get inputWidthFaker() {
+    return this.$refs.inputWidthFaker as HTMLElement;
   }
 
   get validEmailCount(): number {
@@ -406,7 +402,7 @@ export default class Step_4 extends Vue {
   }
 
   get invalidEmail(): string {
-    var invalidEmails = this.memberList.filter(obj => {
+    const invalidEmails = this.memberList.filter(obj => {
       return obj.isValid === false;
     });
     return invalidEmails.length ? invalidEmails[0].email : '';
@@ -420,11 +416,15 @@ export default class Step_4 extends Vue {
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 
-  public addEmail(e: Event): void {
+  public addEmail(e: Event, override: boolean | null): void {
+    const targetElement = e.target;
+    const targetId = targetElement ? (targetElement as HTMLDivElement).id : "";
     debugger;
     this.emailInputFocused = true;
     let len = this.memberList.length;
-    if (len === 0 || this.memberList[len - 1].email !== "") {
+    if ((targetId === "EmailInputWrapper" || override === true) && 
+      (len === 0 || this.memberList[len - 1].email !== "")) 
+    {
       const memberId = Date.now();
       this.memberList.push({
         id: memberId,
@@ -468,9 +468,8 @@ export default class Step_4 extends Vue {
   public addInputEventListeners(vm:any, input: HTMLInputElement) {
 
     input.addEventListener('input', () => {
-      //debugger;
-      this.widthFaker.innerHTML = input.value;
-      const w = this.widthFaker.offsetWidth + "px";
+      this.inputWidthFaker.innerHTML = input.value;
+      const w = this.inputWidthFaker.offsetWidth + "px";
       input.style.width = w;
 
       this.duplicatedEmail = this.validEmailList.indexOf(input.value) > -1 ? input.value : "";
@@ -478,13 +477,13 @@ export default class Step_4 extends Vue {
 
     input.addEventListener('keydown', (e) => {
       const keypressed:string = e.key;
-      const actionKeys:string[] = [" ", ",", ";", "Enter", "Tab",];
+      const actionKeys:string[] = [" ", ",", ";", "Enter",];
       if (actionKeys.indexOf(keypressed) > -1) {
         e.preventDefault();
         e.cancelBubble = true;
         input.blur();
         setTimeout(() => {
-          this.addEmail(new CustomEvent(""));
+          this.addEmail(new CustomEvent(""), true);
         }, 0);
       }
     });
@@ -503,6 +502,7 @@ export default class Step_4 extends Vue {
         const validListIndex = vm.validEmailList.indexOf(email);
         const isValid = vm.validateEmail(email);
         if (email && isValid && validListIndex === -1) {
+          vm.validEmailList.push(email);
           const memberId = timeStamp + i;
           vm.memberList.push({
             id: memberId, 
@@ -516,7 +516,6 @@ export default class Step_4 extends Vue {
       });
       input.blur();
     });
-
   }
 
   public emailEdit(e: Event) {
@@ -555,16 +554,15 @@ export default class Step_4 extends Vue {
         }
       }
 
-      this.widthFaker.innerHTML = emailAddressEntered;
-      const w = this.widthFaker.offsetWidth + "px";
+      this.inputWidthFaker.innerHTML = emailAddressEntered;
+      const w = this.inputWidthFaker.offsetWidth + "px";
       input.style.width = w;
 
-   } else {
+    } else {
       this.removeMemberFromList(memberId);
       this.setInputWidths();
     }
   }
-
 
   public openModal() {
     this.dialogOpen = true;
@@ -574,8 +572,8 @@ export default class Step_4 extends Vue {
   public setInputWidths() {
     const self = this;
     this.memberList.forEach(member => {
-      self.widthFaker.innerHTML = member.email;
-      const w = self.widthFaker.offsetWidth + "px";
+      self.inputWidthFaker.innerHTML = member.email;
+      const w = self.inputWidthFaker.offsetWidth + "px";
       const emailInput = document.querySelector("[data-member-id='" + member.id + "']")  as HTMLElement;
       emailInput.style.width = w;
     });
@@ -584,7 +582,7 @@ export default class Step_4 extends Vue {
   public validateEmail(email: string) {
     const isMilAddress = email.slice(-3) === "mil";
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return isMilAddress && emailRegex.test(email)
+    return isMilAddress && emailRegex.test(email);
   }
 
   public removeMemberFromList(memberId: number) {
@@ -592,7 +590,6 @@ export default class Step_4 extends Vue {
       return obj.id !== memberId;
     });
   }
-
 
 }
 </script>
@@ -628,7 +625,7 @@ export default class Step_4 extends Vue {
     top: 0;
   }
 
-  div#widthFaker {
+  div#inputWidthFaker {
     display: inline-block;
     font-size: 16px;
     position: absolute;
@@ -649,20 +646,21 @@ export default class Step_4 extends Vue {
       border-color: #005EA2; // $primary
       outline: 2px solid #005ea2; // $primary
     }
+  }
+
+  .dupe-email-alert-wrapper {
+    position: relative;
     .dupe-email-alert {
       position: absolute;
-      top: 90px;
+      top: -26px;
       left: 1px;
-      right: 1px;
+      right: 2px;
       padding: 0;
       border-bottom-right-radius: 0 !important;
       border-bottom-left-radius: 0 !important;
       font-size: 14px !important;
+      z-index: 10;
     }
-  }
-
-  .v-input__append-inner {
-    // margin-top: 0 !important;
   }
 
   .pill.v-text-field {
@@ -702,9 +700,7 @@ export default class Step_4 extends Vue {
 
     &.v-input--is-focused {
       background-color: transparent;
-      // background-color: rgb(231, 255, 192);
       .v-input__append-inner {
-        // display: none !important;
         opacity: 0;
       }
     }
