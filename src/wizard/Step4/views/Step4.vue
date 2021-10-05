@@ -87,8 +87,12 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="8" class="pa-0 ma-0">
-            <ATATTable :headers="headers" :items="members" />
+          <v-col cols="9" class="pa-0 ma-0">
+            <ATATTable
+              :headers="headers"
+              :items="members"
+              :dropdown-options="options"
+            />
           </v-col>
         </v-row>
 
@@ -275,10 +279,11 @@ export default class Step_4 extends Vue {
       workplace_access: "read_only",
     },
   ];
-  headers = [
+  private headers = [
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "workplace_access", sortable: false },
   ];
+  private options = ["Edit Info", "Change Role", "Remove team member"];
   private handleClick(): void {
     console.log("clicked");
   }

@@ -24,7 +24,17 @@
           {{ item.workplace_access }}
         </div>
 
-        <v-btn>•••</v-btn>
+        <v-menu transition="slide-y-transition" bottom right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on"> ••• </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item v-for="(item, i) in dropdownOptions" :key="i">
+              <v-list-item-title>{{ item }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
     </template>
   </v-data-table>
