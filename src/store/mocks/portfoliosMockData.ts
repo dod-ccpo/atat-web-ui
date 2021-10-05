@@ -89,7 +89,8 @@ export const allPortfolios: Portfolios = {
     description:
       "This Portfolio will be used to build,test and manage the native applications for the defense logistics agency",
     csp_provisioning_status: "complete",
-    dod_component: ["Air Force"],
+    csp: "azure",
+    dod_components: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
     taskOrders: mockTaskOrder.details,
     applications: [
@@ -129,7 +130,8 @@ export const allPortfolios: Portfolios = {
     description:
       "This Portfolio will be used to build,test and manage the native applications for the defense logistics agency",
     csp_provisioning_status: "complete",
-    dod_component: ["Air Force"],
+    csp: "aws",
+    dod_components: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
     taskOrders: mockTaskOrder.details,
     applications: [

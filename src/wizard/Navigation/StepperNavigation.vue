@@ -25,7 +25,10 @@
                 :complete-icon="'  '"
                 :class="[isTouched(index) ? 'visited' : '']"
               >
-                <a @click="clickedAction(index + 1, this)" class="step-description">
+                <a
+                  @click="clickedAction(index + 1, this)"
+                  class="step-description"
+                >
                   {{ step.description }}
                 </a>
                 <v-divider :key="'divider_' + index"></v-divider>
