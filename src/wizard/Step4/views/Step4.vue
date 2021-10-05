@@ -73,7 +73,7 @@
             </v-col>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="!members">
           <v-col cols="9" class="pa-0 ma-0">
             <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
               <v-card-text class="text-center">
@@ -84,6 +84,11 @@
                 </v-row>
               </v-card-text>
             </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="8" class="pa-0 ma-0">
+            <ATATTable :headers="headers" :items="members" />
           </v-col>
         </v-row>
 
@@ -238,8 +243,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import ATATTable from "@/components/ATATTable.vue";
 
-@Component({})
+@Component({
+  components: { ATATTable },
+})
 export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
@@ -250,6 +258,27 @@ export default class Step_4 extends Vue {
   private teamPortfolioAccessText = false;
   private teamPermissionsText = false;
   private teamExpectationText = false;
+  private members = [
+    {
+      display_name: "Darth Vader",
+      email: "iam@yourfather.com",
+      workplace_access: "administrator",
+    },
+    {
+      display_name: "Han Solo",
+      email: "frozen@carbonite.com",
+      workplace_access: "read_only",
+    },
+    {
+      display_name: "Luke Skywalker",
+      email: "lostmy@hand.com",
+      workplace_access: "read_only",
+    },
+  ];
+  headers = [
+    { text: "Name", value: "display_name", align: "start" },
+    { text: "Workplace Access ", value: "workplace_access", sortable: false },
+  ];
   private handleClick(): void {
     console.log("clicked");
   }
