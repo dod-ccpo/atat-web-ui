@@ -1,5 +1,11 @@
 import { AxiosError } from "axios";
-import { Portfolio, PortfolioDraft, PortFolioDraftDTO } from "types/Portfolios";
+import { NightwatchAssert } from "nightwatch";
+import {
+  ApplicationDTO,
+  Portfolio,
+  PortfolioDraft,
+  PortFolioDraftDTO,
+} from "types/Portfolios";
 import { TaskOrderFile, TaskOrders } from "types/Wizard";
 import ApiClient from "../apiClient";
 
@@ -185,6 +191,42 @@ export default class PortfolioDraftsApi {
       }
       console.log(`exception: ${error}`);
     }
+    return null;
+  }
+
+  public async saveApplication(id: string, data: any): Promise<void> {
+    const response = await this.client.post(`${id}/application`, data);
+    if (response.status !== 201) {
+      throw Error(
+        `error occurred saving application details for portfolio draft with id ${id}`
+      );
+    }
+  }
+
+  public async getApplications(id: string): Promise<ApplicationDTO[] | null> {
+    try {
+      const response = await this.client.get(`${id}/application`);
+
+      if (response.status !== 200) {
+        throw Error(
+          `error occurred retrieving applications for portfolio draft with id: ${id}`
+        );
+      }
+
+      const data = response.data as ApplicationDTO[];
+
+      return data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError) {
+        console.log(
+          `failed with msg: ${axiosError.message} status code: ${axiosError.code}`
+        );
+      }
+      console.log(`exception: ${error}`);
+    }
+
     return null;
   }
 }

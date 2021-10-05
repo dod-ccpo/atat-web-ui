@@ -67,3 +67,17 @@ export interface ApplicationMemberEnvironment {
   label: string;
   accessLevel: "Administrator" | "Contributor" | "No Access";
 }
+
+export interface ApplicationDTO {
+  environments: EnvironmentsDTO[];
+}
+export interface EnvironmentsDTO {
+  operators: OperatorDTO[];
+  name: string;
+}
+export interface OperatorDTO {
+  access: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+}

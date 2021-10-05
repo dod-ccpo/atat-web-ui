@@ -402,6 +402,9 @@ export default new Vuex.Store({
         taskOrders
       );
     },
+    async saveStep3({ state }, model: any) {
+      await portfolioDraftsApi.saveApplication(state.currentPortfolioId, model);
+    },
     /**
      * Saves all valid step models with changes
      * @param context
