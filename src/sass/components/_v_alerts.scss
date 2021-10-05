@@ -1,18 +1,18 @@
 @import "../utils/colors.scss";
 .v-alert{
   font-size: 1.06rem !important; //17 pixels
-  
+
     border-radius: 5px !important;
     box-shadow: none !important;
-    
+
     &.v-sheet--outlined{
-      border: none !important;  
+      border: none !important;
     }
-    
+
     .v-alert__border--left {
       border-width: initial;
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
+      // border-top-left-radius: 0px;
+      // border-bottom-left-radius: 0px;
       left: 0px;
     }
 

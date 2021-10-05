@@ -7,12 +7,10 @@
       v-model="dialogOpen"
       persistent
       max-width="632px"
-      height="750px"
     >
       <v-card>
 
         <v-card-title>
-          Add Members
         </v-card-title>
 
         <v-card-text
@@ -25,46 +23,80 @@
             and environments. Invite multiple people with the same permissions at once.
           </p>
           <span id="EmailInputLabel">Email Addresses</span>
+          <div class="error-text" v-if="invalidEmails.length">
+            <span class="v-messages__message">
+              {{ invalidEmails.length }} error<span v-if="invalidEmails.length > 1">s</span>
+            </span>
+            <a @click="removeInvalidEmails">Remove all emails with errors</a>
+          </div>
           <div
             id="EmailInputWrapper"
             aria-labelledby="EmailInputLabel"
             class="pa-2 email-wrapper"
+            :class="[ emailInputFocused ? 'focused' : '']"
             @click="addEmail"
           >
             <v-text-field
-              v-for="email in emailList"
-              :key="email.id"
-              :id="'emailPill_' + email.id"
-              :ref="'e_' + email.id"
+              v-for="member in memberList"
+              :key="member.id"
+              :id="'emailPill_' + member.id"
+              :ref="'e_' + member.id"
               class="pill"
-              :data-email-id="email.id"
-              v-model="email.value"
+              :data-member-id="member.id"
+              v-model="member.email"
               append-icon="close"
               @click="emailEdit"
               @blur="emailBlurred"
               @click:append="removeEmail"
             />
           </div>
-          <span>
-            Must use a .mil email address. Separate multiple emails with commas
+          <span class="color-base">
+            Must use a .mil email address. Separate multiple emails with commas.
           </span>
 
-        </v-card-text>
+          <v-alert
+            v-show="invalidEmails.length"
+            outlined
+            rounded
+            color="error"
+            border="left"
+            icon="error"
+            class="text-left error_lighter black-icon mt-3"
+          >
+            <p class="black--text body-lg">
+              <span v-if="invalidEmails.length === 1">
+                The address &ldquo;{{ invalidEmails[0].value }}&rdquo; was not recognized.
+              </span>
+              <span v-if="invalidEmails.length > 1">
+                Multiple addresses were not recognized.
+              </span>
+              Please make sure that all addresses are properly formatted.
+            </p>
+          </v-alert>
+
+      </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="blue darken-1"
             text
+            class="link-button"
             @click="dialogOpen = false"
           >
-            Close
+            Cancel
           </v-btn>
           <v-btn
-            color="blue darken-1"
-            text
+            color="primary"
+            class="px-5"
             @click="dialogOpen = false"
+            :disabled="invalidEmails.length || validEmails.length === 0"
           >
-            Save
+            Add Team Members
+            <span
+              class="valid-email-count ml-2" 
+              v-if="validEmails.length"
+            >
+              {{ validEmails.length }}
+            </span>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -73,28 +105,6 @@
 
 
     <div id="widthFaker" ref="widthFaker"></div>
-<!--
-      <v-col class="pl-0" cols="12">
-        <div
-          id="EmailInputWrapper"
-          class="pa-2 email-wrapper"
-          @click="addEmail"
-        >
-          <v-text-field
-            v-for="email in emailList"
-            :key="email.id"
-            :id="'emailPill_' + email.id"
-            :ref="'e_' + email.id"
-            class="pill"
-            :data-email-id="email.id"
-            v-model="email.value"
-            append-icon="close"
-            @click="emailEdit"
-            @blur="emailBlurred"
-            @click:append="removeEmail"
-          />
-        </div>
-      </v-col> -->
 
       <v-col class="pl-0" cols="12">
         <h2 v-if="!createdApplication" class="h2">
@@ -340,6 +350,7 @@ import { Component } from "vue-property-decorator";
 export default class Step_4 extends Vue {
 
   private dialogOpen = false;
+  private emailInputFocused = false;
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -357,12 +368,16 @@ export default class Step_4 extends Vue {
   private chips = [];
   private search = ""; //sync search
 
-  private emailList: { value: string, id: number }[] = [
-    { value: 'mail1@mail.mil', id: 1 },
-    { value: 'mail222@mail222.mil', id: 2 },
-    { value: 'me@my.mil', id: 3 },
-    { value: 'this.is.a.very.long.email@address.mil', id: 4 },
+  private memberList: { id: number, email: string, display_name: "", access: ""  }[] = [
+    // { id: 1, value: 'mail1@mail.mil', display_name: "", access: "" },
+    // { id: 2, value: 'mail222@mail222.mil', display_name: "", access: "" },
+    // { id: 3, value: 'me@my.mil', display_name: "", access: "" },
+    // { id: 4, value: 'this.is.a.very.long.email@address.mil', display_name: "", access: "" },
   ];
+
+  private invalidEmails:  {id: number, value: string }[] = [];
+  private validEmails:  {id: number, value: string }[] = [];
+  private hasValidEmail = false;
 
   get widthFaker() {
     return this.$refs.widthFaker as HTMLElement;
@@ -371,13 +386,26 @@ export default class Step_4 extends Vue {
   public async mounted(): Promise<void> {
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
 
+    // window.addEventListener("click", (e: Event) => {
+    //   debugger;
+    //   if (e.target && e.target.id !== "EmailInputWrapper") {
+    //     this.emailInputFocused = false;
+    //   }
+    // });
+    // window.addEventListener("focus", (e: Event) => {
+    //   debugger;
+    //   if (e.target && e.target.id.indexOf("emailPill") > -1) {
+    //     this.emailInputFocused = true;
+    //   }
+    // });
+    
     // set width of email inputs
     const self = this;
     await this.$nextTick(function () {
-      self.emailList.forEach((email, index) => {
-        self.widthFaker.innerHTML = email.value;
+      self.memberList.forEach((member, index) => {
+        self.widthFaker.innerHTML = member.email;
         const w = self.widthFaker.offsetWidth + "px";
-        const emailInput = document.querySelector("[data-email-id='" + email.id + "']")  as HTMLElement;
+        const emailInput = document.querySelector("[data-member-id='" + member.id + "']")  as HTMLElement;
         emailInput.style.width = w;
       });
     });
@@ -385,20 +413,44 @@ export default class Step_4 extends Vue {
   }
 
   public addEmail(e: Event): void {
-    let len = this.emailList.length;
-    if (len === 0 || this.emailList[len - 1].value !== "") {
-      const emailId = Date.now();
-      this.emailList.push({value: "", id: emailId });
+    debugger;
+    this.emailInputFocused = true;
+    let len = this.memberList.length;
+    if (len === 0 || this.memberList[len - 1].email !== "") {
+      const memberId = Date.now();
+      this.memberList.push({id: memberId, email: "", display_name: "", access: "" });
       const self = this;
       Vue.nextTick(function () {
-        let newInput = document.querySelector("[data-email-id='" + emailId + "']")  as HTMLInputElement;
+        let newInput = document.querySelector("[data-member-id='" + memberId + "']")  as HTMLInputElement;
         newInput.style.width = "40px"
         newInput?.focus();
-        newInput.addEventListener('input', () => {
-          self.widthFaker.innerHTML = newInput.value;
-          const w = self.widthFaker.offsetWidth + "px"
-          newInput.style.width = w;
-        });
+        self.addInputEventListeners(self, newInput);
+
+        // newInput.addEventListener('input', () => {
+        //   self.widthFaker.innerHTML = newInput.value;
+        //   const w = self.widthFaker.offsetWidth + "px"
+        //   newInput.style.width = w;
+        // });
+
+        // newInput.addEventListener('keydown', (e) => {
+        //   const keypressed:string = e.key;
+        //   const actionKeys:string[] = [
+        //     " ",
+        //     ",",
+        //     ";",
+        //     "Enter",
+        //     "Tab",
+        //   ];
+        //   if (actionKeys.indexOf(keypressed) > -1) {
+        //     e.preventDefault();
+        //     e.cancelBubble = true;
+        //     newInput.blur();
+        //     setTimeout(() => {
+        //       self.addEmail();
+        //     }, 0);
+        //   }
+        // });
+
 
       });
     }
@@ -413,7 +465,7 @@ export default class Step_4 extends Vue {
     const clipboardData = e.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData("Text");
     let emailAddresses = pastedData.split(", ");
-    this.emailList.push.apply(this.emailList, emailAddresses);
+    this.memberList.push.apply(this.memberList, emailAddresses);
     //debugger;
   }
 
@@ -436,71 +488,171 @@ export default class Step_4 extends Vue {
     };
 
   public removeEmail(e: Event) {
+    this.emailInputFocused = false;
     const thisButton = e.target as HTMLButtonElement;
     var closestElement = thisButton.closest('.v-input__slot') as HTMLElement;
     var thisInput = closestElement.querySelector('input[type=text]') as HTMLInputElement;
-    const emailId = thisInput.dataset.emailId;
+    const memberId = Number(thisInput.dataset.memberId);
     // already have this in emailBlurred if value is empty
     // make this DRY!
+    
     debugger;
-    if (emailId) {
-      const vTextFieldRef = "e_" + emailId;
-      const vTextField = this.$refs[vTextFieldRef];
+    const vTextFieldRef = "e_" + memberId;
+    const vTextField = this.$refs[vTextFieldRef];
 
-      const id: number  = parseInt(emailId);
-      this.emailList = this.emailList.filter(function( obj ) {
-        return obj.id !== id;
-      });
-      // need to reset input widths now...
-      // make this DRY - also in mounted
-      const self = this;
-      this.emailList.forEach((email, index) => {
-        self.widthFaker.innerHTML = email.value;
-        const w = self.widthFaker.offsetWidth + "px";
-        const emailInput = document.querySelector("[data-email-id='" + email.id + "']")  as HTMLElement;
-        emailInput.style.width = w;
-      });
+    this.memberList = this.memberList.filter(function( obj ) {
+      return obj.id !== memberId;
+    });
+
+    // make DRY - copied from emailBlurred()
+    const invalidIndex = this.invalidEmails.map(function(e) { return e.id; }).indexOf(memberId);
+    const validIndex = this.validEmails.map(function(e) { return e.id; }).indexOf(memberId);
+    if (invalidIndex > -1) {
+      this.invalidEmails.splice(invalidIndex, 1);
     }
+    if (validIndex > -1) {
+      this.validEmails.splice(invalidIndex, 1);
+    }
+
+    // need to reset input widths now...
+    // make this DRY - also in mounted
+    const self = this;
+    this.memberList.forEach((member, index) => {
+      self.widthFaker.innerHTML = member.email;
+      const w = self.widthFaker.offsetWidth + "px";
+      const emailInput = document.querySelector("[data-member-id='" + member.id + "']")  as HTMLElement;
+      emailInput.style.width = w;
+    });
 
   }
 
-  public emailEdit(e: Event) {
-    e.preventDefault();
-    e.cancelBubble = true;
-    const input = e.currentTarget as HTMLInputElement;
+  public addInputEventListeners(selfie:any, input: HTMLInputElement) {
     input.addEventListener('input', () => {
       this.widthFaker.innerHTML = input.value;
       const w = this.widthFaker.offsetWidth + "px"
       input.style.width = w;
     });
+
+    input.addEventListener('keydown', (e) => {
+      const keypressed:string = e.key;
+      const actionKeys:string[] = [" ", ",", ";", "Enter", "Tab",];
+      if (actionKeys.indexOf(keypressed) > -1) {
+        e.preventDefault();
+        e.cancelBubble = true;
+        input.blur();
+        setTimeout(() => {
+          this.addEmail(new CustomEvent(""));
+        }, 0);
+      }
+    });
+    
+
+    // add listener for paste
+    input.addEventListener("paste", function(e: Event) {
+      // cancel paste
+      e.preventDefault();
+
+      // get text representation of clipboard
+      let pastedText = (e.originalEvent || e).clipboardData.getData('text/plain');
+      // pastedText = pastedText.replace(/\s/g, "");
+      pastedText = pastedText.replace(/['"\s]/g, "");
+      pastedText = pastedText.replace(/;/g, ",");
+      
+      const pastedValuesArray:string[] = pastedText.split(",");
+      const self = this;
+      pastedValuesArray.forEach((email, i) => {
+        const memberId = Date.now() + i;
+        selfie.memberList.push({id: memberId, email: email, display_name: "", access: "" });
+      });
+      input.blur();
+    
+    });
+
+
+
+
+
+  }
+
+  public emailEdit(e: Event) {
+    //debugger;
+    e.preventDefault();
+    e.cancelBubble = true;
+    this.emailInputFocused = true;
+    const input = e.currentTarget as HTMLInputElement;
+    this.addInputEventListeners(input);
+
+    // input.addEventListener('input', (e) => {
+    //   debugger;
+    //   this.widthFaker.innerHTML = input.value;
+    //   const w = this.widthFaker.offsetWidth + "px"
+    //   input.style.width = w;
+    // });
+
   }
 
   public emailBlurred(e: Event) {
-    // debugger;
+    //debugger;
+    e.preventDefault();
+    e.cancelBubble = true;
+    this.emailInputFocused = false;
     const input = e.target as HTMLInputElement;
+    const memberId:number = Number(input.dataset.memberId);
+    const invalidIndex = this.invalidEmails.map(function(e) { return e.id; }).indexOf(memberId);
+    const validIndex = this.validEmails.map(function(e) { return e.id; }).indexOf(memberId);
+    let emailAddressEntered = input.value;
 
-    if (!input.value.length) {
-      const emailId = input.dataset.emailId;
-      if (emailId) {
-        const vTextFieldRef = "e_" + emailId;
-        const vTextField = this.$refs[vTextFieldRef];
+    if (!emailAddressEntered.length) {
+      const vTextFieldRef = "e_" + memberId;
+      const vTextField = this.$refs[vTextFieldRef];
 
-        const id: number  = parseInt(emailId);
-        this.emailList = this.emailList.filter(function( obj ) {
-          return obj.id !== id;
-        });
-        // need to reset input widths now...
-        // make this DRY - also in mounted
-        const self = this;
-        this.emailList.forEach((email, index) => {
-          self.widthFaker.innerHTML = email.value;
-          const w = self.widthFaker.offsetWidth + "px";
-          const emailInput = document.querySelector("[data-email-id='" + email.id + "']")  as HTMLElement;
-          emailInput.style.width = w;
-        });
-      }
+      this.memberList = this.memberList.filter(function( obj ) {
+        return obj.id !== memberId;
+      });
+      // need to reset input widths now...
+      // make this DRY - also in mounted
+      const self = this;
+      this.memberList.forEach(member => {
+        self.widthFaker.innerHTML = member.email;
+        const w = self.widthFaker.offsetWidth + "px";
+        const emailInput = document.querySelector("[data-member-id='" + member.id + "']")  as HTMLElement;
+        emailInput.style.width = w;
+      });
     } else {
-      this.widthFaker.innerHTML = input.value;
+      // todo: remove any wrapping double or single quotes
+      emailAddressEntered = emailAddressEntered.replace(/['"]/g, "");
+      const memberListIndex = this.memberList.map(function(e) { return e.id; }).indexOf(memberId);
+      this.memberList[memberListIndex].email = emailAddressEntered;
+      debugger;
+      // validate the email address
+      const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      var inputVuetifyWrapper = input.closest('.pill') as HTMLElement;
+      if (emailRegex.test(emailAddressEntered)) {
+
+      // todo: verify only entered once.
+
+        inputVuetifyWrapper.classList.remove("email-invalid");
+        console.log("email is VALID");
+        if (validIndex === -1) {
+          this.validEmails.push({ id: memberId, value: emailAddressEntered})
+        }
+        if (invalidIndex > -1) {
+          this.invalidEmails.splice(invalidIndex, 1);
+        }
+
+      } else {
+        // invalid email
+        inputVuetifyWrapper.classList.add("email-invalid");
+        if (invalidIndex === -1) {
+          this.invalidEmails.push({ id: memberId, value: emailAddressEntered });
+        }
+        if (validIndex > -1) {
+          this.validEmails.splice(validIndex, 1);
+        }
+      }
+
+      debugger;
+      this.widthFaker.innerHTML = emailAddressEntered;
       const w = this.widthFaker.offsetWidth + "px";
       input.style.width = w;
     }
@@ -510,10 +662,10 @@ export default class Step_4 extends Vue {
     this.dialogOpen = true;
     const self = this;
     Vue.nextTick(function () {
-      self.emailList.forEach((email, index) => {
-        self.widthFaker.innerHTML = email.value;
+      self.memberList.forEach((member, index) => {
+        self.widthFaker.innerHTML = member.email;
         const w = self.widthFaker.offsetWidth + "px";
-        const emailInput = document.querySelector("[data-email-id='" + email.id + "']")  as HTMLElement;
+        const emailInput = document.querySelector("[data-member-id='" + member.id + "']")  as HTMLElement;
         emailInput.style.width = w;
       });
     });
@@ -523,13 +675,31 @@ export default class Step_4 extends Vue {
 </script>
 
 <style lang="scss">
-
+  .v-btn.primary.theme--light span.valid-email-count {
+    background-color: white;
+    color: #005EA2; // $primary
+    border-radius: 20px;
+    padding: 0 7px;
+    &:hover, &:focus, &:active {
+      background-color: white !important;
+    }
+  }
   .v-card__title {
     border-bottom: 1px solid #DFE1E2; // $base_lighter
   }
 
   .v-card__text {
     padding: 24px 40px !important;
+  }
+
+  .v-card__actions {
+    background-color: #f0f0f0; // $base_lightest
+    padding: 16px 24px !important;
+  }
+
+  .v-alert .v-alert__icon.v-icon {
+    font-size: 20px;
+    top: 0;
   }
 
   div#widthFaker {
@@ -541,13 +711,17 @@ export default class Step_4 extends Vue {
   }
 
   .email-wrapper {
-    border:2px solid #005EA2;
+    border:1px solid #565C65; // $base_dark
     height: 118px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     width: 100%;
     max-width:550px;
     overflow-y: auto;
     overflow-x: hidden;
+    &.focused {
+      border-color: #005EA2; // $primary
+      outline: 2px solid #005ea2; // $primary
+    }
   }
 
   .v-input__append-inner {
@@ -557,7 +731,7 @@ export default class Step_4 extends Vue {
   .pill.v-text-field {
     display: inline-block;
     height: 32px;
-    border: 1px solid transparent;
+    border: 1px solid #D9E8F6;
     border-radius: 15px;
     background-color: #D9E8F6;
     padding: 0 4px 0 12px;
@@ -565,6 +739,22 @@ export default class Step_4 extends Vue {
     margin: 3px;
     position: relative;
     z-index: 2;
+    border: 1px solid transparent;
+    &.email-invalid {
+      background-color: #F8DFE2;
+      border-color: #e21c3d;
+      padding-left: 30px;
+      &:before {
+        font-family: 'Material Icons';
+        content: "error";
+        -webkit-font-feature-settings: 'liga';
+        color: #e21c3d;
+        position: absolute;
+        top: 4px;
+        left: 6px;
+        font-size: 20px;
+      }
+    }
 
     input {
       height: 32px;
@@ -574,8 +764,8 @@ export default class Step_4 extends Vue {
     }
 
     &.v-input--is-focused {
-      background-color: transparent;
-      // background-color: rgb(231, 255, 192);
+      // background-color: transparent;
+      background-color: rgb(231, 255, 192);
       .v-input__append-inner {
         // display: none !important;
         opacity: 0;
