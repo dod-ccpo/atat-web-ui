@@ -349,7 +349,11 @@ export default class Step_4 extends Vue {
   private handleClick(): void {
     console.log("clicked");
   }
-  private isDisabled(member): boolean {
+  private isDisabled(member: {
+    display_name: string;
+    email: string;
+    workplace_access: string;
+  }): boolean {
     if (member.workplace_access === "Administrator") {
       return true;
     }
