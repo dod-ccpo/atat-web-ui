@@ -19,7 +19,12 @@
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
-        <v-btn to="/wizard/addfunding" class="primary" :ripple="false">
+        <v-btn
+          to="/wizard/addfunding"
+          class="primary"
+          :ripple="false"
+          @click="onAddNewTaskOrder"
+        >
           <v-icon>control_point</v-icon>
           <div class="ml-2 font-weight-bold">Add a Task Order</div>
         </v-btn>
@@ -103,9 +108,9 @@ import Vue from "vue";
 import {
   ATATSummaryCardItem,
   ATATSummaryCards,
+  TaskOrderModel,
 } from "../../../../types/Wizard";
 import { Component } from "vue-property-decorator";
-import { EntityWrapper, TaskOrder } from "types/Portfolios";
 import { addfunding, editfunding } from "../../../router/wizard";
 
 @Component({})
@@ -121,7 +126,7 @@ export default class Step2Summary extends Vue {
     cards: [],
   };
 
-  get taskOrders(): EntityWrapper<TaskOrder>[] {
+  get taskOrders(): TaskOrderModel[] {
     return this.$store.state.taskOrderModels;
   }
 
@@ -132,6 +137,8 @@ export default class Step2Summary extends Vue {
       //route the user back to add funding step
       this.$router.push({ name: addfunding.name });
     }
+
+    this.transformData();
   }
 
   async onEditTaskOrder(id: string): Promise<void> {
@@ -144,27 +151,37 @@ export default class Step2Summary extends Vue {
     });
   }
 
+  async onAddNewTaskOrder(id: string): Promise<void> {
+    await this.$store.dispatch("addNewTaskOrder");
+    this.$router.push({
+      name: addfunding.name,
+      params: {
+        id: id,
+      },
+    });
+  }
+
   public transformData(): void {
     this.cardsData.cards = [];
-    this.taskOrders.forEach((entity) => {
-      let totalClinValue = entity.model.clins.reduce((prev, cur) => {
-        return prev + cur.total_clin_value;
+    this.taskOrders.forEach((taskOrder) => {
+      let totalClinValue = taskOrder.clins.reduce((prev, cur) => {
+        return Number(prev) + Number(cur.total_clin_value);
       }, 0);
 
-      let totalObligatedFunds = entity.model.clins.reduce((prev, cur) => {
-        return prev + cur.obligated_funds;
+      let totalObligatedFunds = taskOrder.clins.reduce((prev, cur) => {
+        return Number(prev) + Number(cur.obligated_funds);
       }, 0);
 
       let card: ATATSummaryCardItem = {
-        id: entity.id,
+        id: taskOrder.id,
         type: "TASK ORDER",
-        title: entity.model.task_order_number,
+        title: taskOrder.task_order_number,
         showChevronRight: true,
         items: [
           {
             title: "CLINS",
             prefix: "",
-            value: entity.model.clins.length,
+            value: taskOrder.clins.length,
           },
           {
             title: "Total Value",

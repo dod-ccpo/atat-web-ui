@@ -20,12 +20,13 @@ const step2RouteHandler: ATATRouteHandler =
       //foward the previous button from funding summary to
       //add portfolio (a.k.a step 1)
       //all other requests to add funding gets redirected to funding summary
-      if (
-        from.name === fundingsummary.name &&
-        to.params &&
-        to.params.source === "wizard-previous"
-      ) {
-        next({ name: addportfolio.name });
+      if (from.name === fundingsummary.name && to.params) {
+        if (to.params.source === "wizard-previous") {
+          next({ name: addportfolio.name });
+        }
+        if (to.params.id) {
+          next();
+        }
       } else {
         next({ name: fundingsummary.name });
       }

@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails } from "../../../../types/Wizard";
+import { TaskOrderModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 
 @Component({
@@ -23,12 +23,12 @@ import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
     CreateTaskOrderForm,
   },
 })
-export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
+export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   $refs!: {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  model: TaskOrderDetails = this.$store.getters.getStepModel(2);
+  model: TaskOrderModel = this.$store.getters.getStepModel(2);
 
   public validate: () => Promise<boolean> = async () => {
     this.valid = false;
@@ -56,9 +56,8 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
   }
 
   public async mounted(): Promise<void> {
-    if (this.$route.name === "editfunding") {
-      this.itemId = this.$route.params.id;
-    }
+    // if (this.$route.name === "editfunding") {
+    // }
   }
 }
 </script>

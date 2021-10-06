@@ -16,7 +16,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   //assign this property to skip validation
   @Prop({ default: false }) skipValidation!: boolean;
 
-  protected itemId = "";
   protected touched = false;
   protected valid = false;
 
@@ -33,7 +32,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     await this.$store.dispatch("saveStepData", this.step);
   }
 
-  private incomingModel!: TModel;
+  protected incomingModel!: TModel;
   protected model!: TModel;
 
   private hasChanges(): boolean {
@@ -49,18 +48,11 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     if (this.$route.meta && this.$route.meta.isWizard) {
       if (this.skipValidation) return;
 
-      this.incomingModel = this.$store.state.currentStepModel;
+      this.incomingModel = JSON.parse(JSON.stringify(this.model)) as TModel;
       this.touched = this.$store.getters.getStepTouched(this.step);
       if (this.touched) {
         this.validate();
       }
-    }
-  }
-
-  @Watch("$store.state.validationStamp")
-  async onValidationTriggered(): Promise<void> {
-    if (this.hasChanges()) {
-      await this.validate();
     }
   }
 
@@ -80,8 +72,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
-    // const nextRouteIsWizardRoute = to.meta && to.meta.isWizard;
-
     // if the skip validation property is set or if the next
     // route we're heading to is not a wizard route we will skip validation
     if (this.skipValidation) {

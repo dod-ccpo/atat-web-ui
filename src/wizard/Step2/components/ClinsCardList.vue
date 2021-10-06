@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { CLIN } from "types/Wizard";
+import { Clin } from "types/Portfolios";
 import Vue from "vue";
 import { Component, PropSync } from "vue-property-decorator";
 
@@ -39,7 +39,7 @@ import ClinsCard from "./ClinsCard.vue";
   },
 })
 export default class ClinsCardList extends Vue {
-  @PropSync("clins", { required: true }) _clins!: CLIN[];
+  @PropSync("clins", { required: true }) _clins!: Clin[];
 
   public async validate(): Promise<boolean> {
     let valid = false;

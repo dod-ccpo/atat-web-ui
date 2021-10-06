@@ -55,7 +55,7 @@ export interface TaskOrderFile {
   status: string;
 }
 
-export interface CLIN {
+export interface CLINModel {
   clin_number: string;
   idiq_clin: string;
   total_clin_value: number;
@@ -64,15 +64,11 @@ export interface CLIN {
   pop_end_date: string;
 }
 
-export interface TaskOrderDetails {
+export interface TaskOrderModel {
+  id: string; // local id
   task_order_number: string;
-  task_order_file?: TaskOrderFile;
-  clins: CLIN[];
-  csp?: string;
-}
-
-export interface TaskOrders {
-  details: TaskOrderDetails[];
+  task_order_file: TaskOrderFile;
+  clins: CLINModel[];
 }
 
 export interface NavButton {

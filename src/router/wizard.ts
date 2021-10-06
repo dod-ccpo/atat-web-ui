@@ -176,7 +176,7 @@ const wizard: RouteConfigSingleView = {
     ),
     CreateWizardRoute(postreview, reviewandsubmit.name, submit.name, 5),
     CreateWizardRoute(submit, postreview.name, undefined, 5),
-    CreateWizardRoute(editfunding, undefined, reviewandsubmit.name, 2),
+    CreateWizardRoute(editfunding, addportfolio.name, fundingsummary.name, 2),
     {
       path: "showvalidationsummary",
       name: "showvalidationsummary",

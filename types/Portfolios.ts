@@ -67,7 +67,7 @@ export interface ApplicationMemberEnvironment {
 export interface TaskOrder {
   task_order_number: string;
   task_order_file: TaskOrderFile;
-  clins: Clins[];
+  clins: Clin[];
 }
 export interface TaskOrderFile {
   id: string;
@@ -77,7 +77,7 @@ export interface TaskOrderFile {
   name: string;
   status: string;
 }
-export interface Clins {
+export interface Clin {
   clin_number: string;
   idiq_clin: string;
   total_clin_value: number;

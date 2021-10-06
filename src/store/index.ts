@@ -12,10 +12,10 @@ import {
   TaskOrder,
 } from "types/Portfolios";
 import PortfolioDraftsApi from "@/api/portfolios";
-import { CLIN } from "types/Wizard";
+import { TaskOrderModel } from "types/Wizard";
 import { allPortfolios } from "./mocks/portfoliosMockData";
 import { generateUid } from "@/helpers";
-import { mockTaskOrder } from "./mocks/taskOrderMockData";
+import { mockTaskOrders } from "./mocks/taskOrderMockData";
 
 Vue.use(Vuex);
 
@@ -97,49 +97,12 @@ const stepsModelInitializer = [
   },
 ];
 
-const upwrapEntities = <TModel>(
-  entities: EntityWrapper<TModel>[]
-): TModel[] => {
-  return entities.map((entity) => entity.model);
-};
-
 const getEntityIndex = <TModel>(
-  entities: EntityWrapper<TModel>[],
-  id: string
+  entities: TModel[],
+  predicate: (value: TModel, index: number, obj: TModel[]) => unknown,
+  thisArg?: any
 ): number => {
-  return entities.findIndex((entity) => entity.id == id);
-};
-
-const createTaskOrderEntity = (
-  model: any,
-  id: string
-): EntityWrapper<TaskOrder> => {
-  const taskOrder: EntityWrapper<TaskOrder> = {
-    id: id,
-    model: {
-      task_order_number: model.task_order_number,
-      clins: model.clins.map((clin: CLIN) => {
-        return {
-          ...clin,
-          // the api expects these values to be numbers not strings
-          total_clin_value: Number(clin.total_clin_value),
-          obligated_funds: Number(clin.obligated_funds),
-        };
-      }),
-      task_order_file: {
-        id: model.task_order_file.id,
-        name: model.task_order_file.name,
-        // we stub out the props below only to satisfy the typ
-        // these values won't be consumed by the api call
-        created_at: "",
-        updated_at: "",
-        size: 0,
-        status: "",
-      },
-    },
-  };
-
-  return taskOrder;
+  return entities.findIndex(predicate);
 };
 
 export default new Vuex.Store({
@@ -278,6 +241,25 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
+    /**
+     * commits set model to the store - does not make api call
+     * @param state
+     * @param param1
+     */
+    doInitializeStepModel(state, [model, stepNumber]) {
+      const stepIndex = state.portfolioSteps.findIndex(
+        (x) => x.step === stepNumber
+      );
+      state.portfolioSteps[stepIndex].model = model;
+      state.portfolioSteps[stepIndex].valid = true;
+      state.portfolioSteps[stepIndex].touched = false;
+
+      const es: number[] = state.erroredSteps;
+      const erroredStepIndex = es.indexOf(stepNumber);
+      if (erroredStepIndex > -1) {
+        es.splice(erroredStepIndex, 1);
+      }
+    },
     doUpdateStepModelValidity(state, [stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
@@ -350,21 +332,16 @@ export default new Vuex.Store({
         );
       }
     },
-    doTriggerValidation(state) {
-      state.validationStamp = {
-        timeStamp: Date.now(),
-      };
-    },
     setCurrentTaskOrders(state, taskOrders: TaskOrder[]) {
-      const wrappedTaskOrders = taskOrders.map((taskOrder) => {
-        const wrappedTaskOrder: EntityWrapper<TaskOrder> = {
+      const taskOrderModels = taskOrders.map((taskOrder) => {
+        const taskOrderModel: TaskOrderModel = {
           id: generateUid(),
-          model: taskOrder,
+          ...taskOrder,
         };
-        return wrappedTaskOrder;
+        return taskOrderModel;
       });
 
-      Vue.set(state, "taskOrderModels", wrappedTaskOrders);
+      Vue.set(state, "taskOrderModels", taskOrderModels);
     },
     doAddTaskOrder(state, model: any) {
       state.taskOrderModels.push(model as never);
@@ -464,18 +441,14 @@ export default new Vuex.Store({
       commit("doSetSelectedCSP", model.csp);
     },
     async saveStep2({ state }, model: any) {
-      debugger;
-      // todo: this will be multiple task orders in the future
-
-      const taskOrder =
-        model.id === ""
-          ? createTaskOrderEntity(model, generateUid())
-          : createTaskOrderEntity(model, model.id);
-
       if (model.id === "") {
-        this.dispatch("addTaskOrder", taskOrder);
+        model.id = generateUid();
+        this.dispatch("addTaskOrder", model);
       } else {
-        const taskOrderIndex = getEntityIndex(state.taskOrderModels, model.id);
+        const taskOrderIndex = getEntityIndex<TaskOrderModel>(
+          state.taskOrderModels,
+          (taskOrder) => taskOrder.id === model.id
+        );
 
         if (taskOrderIndex === -1) {
           throw new Error(
@@ -483,11 +456,23 @@ export default new Vuex.Store({
           );
         }
 
-        const taskOrder = createTaskOrderEntity(model, model.id);
-        this.dispatch("updateTaskOrder", [taskOrderIndex, taskOrder]);
+        this.dispatch("updateTaskOrder", [taskOrderIndex, model]);
       }
 
-      const task_orders = upwrapEntities<TaskOrder>(this.state.taskOrderModels);
+      const task_orders = state.taskOrderModels.map((model: TaskOrderModel) => {
+        const taskOrders: TaskOrder = {
+          ...model,
+          clins: model.clins.map((clin) => {
+            return {
+              ...clin,
+              total_clin_value: Number(clin.total_clin_value),
+              obligated_funds: Number(clin.obligated_funds),
+            };
+          }),
+        };
+
+        return taskOrders;
+      });
 
       const taskOrders = {
         task_orders: task_orders,
@@ -624,9 +609,28 @@ export default new Vuex.Store({
     async deleteTaskOrder({ commit, state }, id: string): Promise<void> {
       try {
         commit("doDeleteTaskOrder", id);
-        const taskOrders = upwrapEntities<TaskOrder>(
-          this.state.taskOrderModels
+
+        const task_orders = state.taskOrderModels.map(
+          (model: TaskOrderModel) => {
+            const taskOrders: TaskOrder = {
+              ...model,
+              clins: model.clins.map((clin) => {
+                return {
+                  ...clin,
+                  total_clin_value: Number(clin.total_clin_value),
+                  obligated_funds: Number(clin.obligated_funds),
+                };
+              }),
+            };
+
+            return taskOrders;
+          }
         );
+
+        const taskOrders = {
+          task_orders: task_orders,
+        };
+
         await portfolioDraftsApi.saveFunding(
           state.currentPortfolioId,
           taskOrders
@@ -636,16 +640,21 @@ export default new Vuex.Store({
       }
     },
     editTaskOrder({ commit, state }, id: string) {
-      const taskOrderIndex = getEntityIndex(state.taskOrderModels, id);
+      const taskOrderIndex = getEntityIndex(
+        state.taskOrderModels,
+        (taskOrder: TaskOrderModel) => taskOrder.id === id
+      );
 
       if (taskOrderIndex === -1) {
-        throw new Error("unable to find task order with id: " + id);
+        throw new Error("unable to location task order model with id :" + id);
       }
+      const taskOrder = state.taskOrderModels[taskOrderIndex];
 
-      const taskOrder: EntityWrapper<TaskOrder> =
-        state.taskOrderModels[taskOrderIndex];
-
-      commit("doSaveStepModel", [taskOrder.model, 2, true]);
+      commit("doSaveStepModel", [taskOrder, 2, true]);
+    },
+    addNewTaskOrder({ commit }) {
+      const model = { ...createStepTwoModel() };
+      commit("doInitializeStepModel", [model, 2]);
     },
   },
   modules: {},
@@ -724,27 +733,8 @@ export default new Vuex.Store({
       return portfolios;
     },
     getMockTaskOrders() {
-      return mockTaskOrder.details;
+      return mockTaskOrders;
     },
-    // getTaskOrderByName: (state) => (id: string) => {
-    //   const values = Object.values(state.taskOrders.details);
-    //   const taskOrderName = values.filter(
-    //     (taskorder) => taskorder.task_order_number === id
-    //   );
-    //   if (taskOrderName.length > 0) {
-    //     return taskOrderName[0];
-    //   } else {
-    //     return {};
-    //   }
-    // },
-    // deleteTaskOrderByName: (state) => (id: string) => {
-    //   const values = Object.values(state.taskOrders.details);
-    //   const updatedArray = values.filter(
-    //     (taskorder) => taskorder.task_order_number !== id
-    //   );
-    //   return updatedArray;
-    // },
-
     getStepModel: (state) => (stepNumber: number) => {
       const step = state.portfolioSteps.find(
         (o: { step: number }) => o.step === stepNumber
@@ -771,5 +761,6 @@ export default new Vuex.Store({
     },
     getUser: (state) => state.user,
     getSideDrawer: (state) => state.sideDrawer,
+    getTaskOrders: (state) => state.taskOrderModels,
   },
 });
