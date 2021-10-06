@@ -95,6 +95,9 @@ export default new Vuex.Store({
     isSideDrawerFocused: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
+    modalType: "",
+    isModalDisplayed: false,
+    isModalFocused: false,
     portfolios: [],
     taskOrders: mockTaskOrder,
     wizardNavigation: {},
@@ -177,6 +180,15 @@ export default new Vuex.Store({
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
+    },
+    changeIsModalDisplayed(state, status: boolean) {
+      state.isModalDisplayed = status;
+    },
+    changeModalType(state, type: string) {
+      state.modalType = type;
+    },
+    changeIsModalFocused(state, setFocus: boolean) {
+      state.isModalFocused = setFocus;
     },
     changeSideDrawer(state, status: boolean) {
       state.sideDrawer = status;
@@ -502,6 +514,14 @@ export default new Vuex.Store({
     async triggerValidation({ commit }) {
       commit("doTriggerValidation");
     },
+    openModal({ commit }, [modalType, setFocusOnModal]) {
+      commit("changeIsModalDisplayed", true);
+      commit("changeModalType", modalType);
+      commit("changeIsModalFocused", setFocusOnModal);
+    },
+    closeModal({ commit }) {
+      commit("changeIsModalDisplayed", false);
+    },
     closeSideDrawer({ commit }) {
       commit("changeSideDrawer", false);
     },
@@ -518,6 +538,9 @@ export default new Vuex.Store({
     },
     getIsNavSideBarDisplayed(state) {
       return state.isNavSideBarDisplayed;
+    },
+    getIsModalDisplayed(state) {
+      return state.isModalDisplayed;
     },
     getisUserAuthorizedToProvisionCloudResources(state) {
       return state.isUserAuthorizedToProvisionCloudResources;
