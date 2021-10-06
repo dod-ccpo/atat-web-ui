@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Portfolio } from "types/Portfolios";
+import { PortfolioDraft } from "types/Portfolios";
 import {
   ATATSummaryCardGroupedItems,
   ATATSummaryCardItem,
@@ -22,7 +22,7 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 @Component({})
 export default class PortfolioSummary extends Vue {
   @Prop()
-  portfolios!: Portfolio[];
+  portfolioDrafts!: PortfolioDraft[];
 
   private cardsData: ATATSummaryCards = {
     cards: [],
@@ -31,34 +31,36 @@ export default class PortfolioSummary extends Vue {
   private itemToDelete = "";
 
   // maps from portfolio to summary grouped items
-  private mapItems(portfolio: Portfolio): ATATSummaryCardGroupedItems[] {
+  private mapItems(
+    portfolioDraft: PortfolioDraft
+  ): ATATSummaryCardGroupedItems[] {
     const items: ATATSummaryCardGroupedItems[] = [];
 
-    if (portfolio.portfolio_managers.length > 0) {
+    if (portfolioDraft.num_portfolio_managers > 0) {
       items.push({
         title: "Portfolio Managers",
-        value: portfolio.portfolio_managers.length,
+        value: portfolioDraft.num_portfolio_managers,
       });
     }
 
-    if (portfolio.applications.length > 0) {
+    if (portfolioDraft.num_applications > 0) {
       items.push({
         title: "Applications",
-        value: portfolio.applications.length,
+        value: portfolioDraft.num_applications,
       });
 
-      if (portfolio.applications[0].environments) {
+      if (portfolioDraft.num_environments > 0) {
         items.push({
           title: "Environments",
-          value: portfolio.applications[0].environments.length,
+          value: portfolioDraft.num_environments,
         });
       }
     }
 
-    if (portfolio.taskOrders && portfolio.taskOrders.length > 0) {
+    if (portfolioDraft.num_task_orders > 0) {
       items.push({
         title: "Task Orders",
-        value: portfolio.taskOrders.length,
+        value: portfolioDraft.num_task_orders,
       });
     }
 
@@ -66,14 +68,16 @@ export default class PortfolioSummary extends Vue {
   }
 
   // maps portfolio data to summary card
-  private mapToSummaryCard(portfolio: Portfolio): ATATSummaryCardItem {
+  private mapToSummaryCard(
+    portfolioDraft: PortfolioDraft
+  ): ATATSummaryCardItem {
     const cardItem: ATATSummaryCardItem = {
-      id: portfolio.id,
+      id: portfolioDraft.id,
       type: "PORTFOLIO",
-      title: portfolio.name,
-      description: portfolio.description,
+      title: portfolioDraft.name || "Untitled",
+      description: portfolioDraft.description,
       showChevronRight: true,
-      items: this.mapItems(portfolio),
+      items: this.mapItems(portfolioDraft),
       leftButtonText: "OPEN",
       rightButtonText: "DELETE",
     };
@@ -81,12 +85,20 @@ export default class PortfolioSummary extends Vue {
     return cardItem;
   }
 
-  @Watch("portfolios")
+  @Watch("portfolioDrafts")
   onPortfoliosChanged(): void {
-    if (!this.portfolios) return;
+    if (!this.portfolioDrafts) return;
 
-    const cards = this.portfolios.map<ATATSummaryCardItem>((portfolio) =>
-      this.mapToSummaryCard(portfolio)
+    this.updateSummaryCards();
+  }
+
+  mounted(): void {
+    this.updateSummaryCards();
+  }
+
+  private updateSummaryCards(): void {
+    const cards = this.portfolioDrafts.map<ATATSummaryCardItem>((draft) =>
+      this.mapToSummaryCard(draft)
     );
 
     this.cardsData.cards = cards;

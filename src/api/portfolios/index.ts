@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
-import { Portfolio } from "types/Portfolios";
-import { TaskOrderDetails, TaskOrderFile, TaskOrders } from "types/Wizard";
+import { Portfolio, PortfolioDraft, PortFolioDraftDTO } from "types/Portfolios";
+import { TaskOrderFile, TaskOrders } from "types/Wizard";
 import ApiClient from "../apiClient";
 
 export default class PortfolioDraftsApi {
@@ -10,11 +10,12 @@ export default class PortfolioDraftsApi {
    *
    * @returns all portfolio drafts
    */
-  public async getAll(): Promise<Portfolio[]> {
+  public async getAll(): Promise<PortfolioDraft[]> {
     const response = await this.client.get();
 
     if (response.status === 200) {
-      return response.data.map((item: any) => this.mapPortfolio(item));
+      const portfolioDrafts: PortfolioDraft[] = response.data;
+      return portfolioDrafts;
     } else {
       throw new Error(response.statusText);
     }
@@ -38,7 +39,7 @@ export default class PortfolioDraftsApi {
     try {
       const response = await this.client.get(`${id}`);
       if (response.status !== 200) {
-        throw Error(`error occured saving portfolio draft with id ${id}`);
+        throw Error(`error occurred retrieving portfolio draft with id ${id}`);
       }
       const data: any = response.data;
       return data.id;
@@ -63,18 +64,13 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async savePortfolio(id: string, model: any): Promise<void> {
-    //build api draft model
-    const data = {
-      name: model.name,
-      description: model.description,
-      dod_components: model.dod_components,
-      portfolio_managers: model.portfolio_managers || [],
-    };
-
+  public async savePortfolio(
+    id: string,
+    data: PortFolioDraftDTO
+  ): Promise<void> {
     const response = await this.client.post(`${id}/portfolio`, data);
     if (response.status !== 201) {
-      throw Error(`error occured saving portfolio draft with id ${id}`);
+      throw Error(`error occurred saving portfolio draft with id ${id}`);
     }
   }
 
@@ -83,15 +79,17 @@ export default class PortfolioDraftsApi {
     try {
       const response = await this.client.get(`${id}/portfolio`);
       if (response.status !== 200) {
-        throw Error(`error occured saving portfolio draft with id ${id}`);
+        throw Error(`error occurred saving portfolio draft with id ${id}`);
       }
 
       const data: any = response.data;
+
       const portfolioDraft: Portfolio = {
         id: id,
         name: data.name,
         description: data.description,
-        dod_component: data.dod_components,
+        csp: data.csp,
+        dod_components: data.dod_components,
         portfolio_managers: data.portfolio_managers,
         csp_provisioning_status: "",
         applications: [],
@@ -112,7 +110,7 @@ export default class PortfolioDraftsApi {
     return null;
   }
 
-  public async createFunding(id: string, model: any): Promise<void> {
+  public async saveFunding(id: string, model: any): Promise<void> {
     const data = {
       task_orders: model.task_orders,
     };
@@ -120,7 +118,7 @@ export default class PortfolioDraftsApi {
     const response = await this.client.post(`${id}/funding`, data);
     if (response.status !== 201) {
       throw Error(
-        `error occured saving funding details for portfolio draft with id ${id}`
+        `error occurred saving funding details for portfolio draft with id ${id}`
       );
     }
   }
@@ -188,48 +186,5 @@ export default class PortfolioDraftsApi {
       console.log(`exception: ${error}`);
     }
     return null;
-  }
-
-  private mapPortfolio(item: any): Portfolio {
-    const mapTaskOrder = (taskOrderItem: any): TaskOrderDetails => {
-      if (taskOrderItem) {
-        const taskOrderFile: TaskOrderFile = {
-          id: taskOrderItem.id || "-1",
-          name: taskOrderItem.name || "",
-          // description: taskOrderItem.description || "",
-          created_at: "",
-          updated_at: "",
-          size: 20000,
-          status: "",
-        };
-
-        const taskOrder: TaskOrderDetails = {
-          task_order_number: taskOrderItem.task_order_number,
-          clins: taskOrderItem.clins,
-          task_order_file: taskOrderFile,
-        };
-
-        return taskOrder;
-      }
-
-      throw new Error("invalid item");
-    };
-
-    const portfolio: Portfolio = {
-      id: item.id,
-      description: item.portfolio_step ? item.portfolio_step.description : "",
-      name: item.portfolio_step ? item.portfolio_step.name : "Untitled",
-      dod_component: item.portfolio_step
-        ? item.portfolio_step.dod_components
-        : [],
-      csp_provisioning_status: item.status,
-      portfolio_managers: item.portfolio_step
-        ? item.portfolio_step.portfolio_managers
-        : [],
-      taskOrders: item.funding_step ? [mapTaskOrder(item.funding_step)] : [],
-      applications: [],
-    };
-
-    return portfolio;
   }
 }
