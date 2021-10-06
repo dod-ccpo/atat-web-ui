@@ -5,8 +5,9 @@ import {
   Portfolio,
   PortfolioDraft,
   PortFolioDraftDTO,
+  TaskOrder,
 } from "types/Portfolios";
-import { TaskOrderFile, TaskOrders } from "types/Wizard";
+import { TaskOrderFile } from "types/Wizard";
 import ApiClient from "../apiClient";
 
 export default class PortfolioDraftsApi {
@@ -97,8 +98,6 @@ export default class PortfolioDraftsApi {
         csp: data.csp,
         dod_components: data.dod_components,
         portfolio_managers: data.portfolio_managers,
-        csp_provisioning_status: "",
-        applications: [],
       };
 
       return portfolioDraft;
@@ -116,10 +115,7 @@ export default class PortfolioDraftsApi {
     return null;
   }
 
-  public async saveFunding(id: string, model: any): Promise<void> {
-    const data = {
-      task_orders: model.task_orders,
-    };
+  public async saveFunding(id: string, data: any): Promise<void> {
 
     const response = await this.client.post(`${id}/funding`, data);
     if (response.status !== 201) {
@@ -129,7 +125,7 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async getFunding(id: string): Promise<TaskOrders | null> {
+  public async getFunding(id: string): Promise<TaskOrder[] | null> {
     try {
       const response = await this.client.get(`${id}/funding`);
       if (response.status === 404) {
@@ -140,11 +136,7 @@ export default class PortfolioDraftsApi {
         throw Error(" error occurred retrieving funding details");
       }
 
-      const task_orders = response.data.task_orders;
-
-      return {
-        details: task_orders,
-      };
+      return response.data.task_orders;
     } catch (error) {
       const axiosError = error as AxiosError;
 

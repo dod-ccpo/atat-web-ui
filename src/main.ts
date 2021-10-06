@@ -9,6 +9,8 @@ import moment from "moment";
 import cssVars from "css-vars-ponyfill"; // needed to process css vars in IE11
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import RouterMiddleWare, { RouterMiddleWareOptions }  from "./router/routerMiddleWare";
+import step2RouteHandler from "./router/step2WizardHandler";
 
 // below 3 scripts for Vuetify in IE
 import 'core-js/stable';
@@ -36,6 +38,7 @@ import USAGovBanner from "./components/USAGovBanner.vue";
 // wizard
 import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfolio.vue";
 import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
+import { createSolutionBuilderWithWatch } from "typescript";
 Vue.component('atat-date-picker',ATATDatePicker)
 Vue.component('atat-button-card', ATATButtonCard);
 Vue.component('atat-file-upload', ATATFileUpload);
@@ -51,6 +54,12 @@ Vue.use(VueAxios, axios);
 
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
+
+Vue.use(RouterMiddleWare, {
+  store: store, 
+  router: router, 
+  handlers: [step2RouteHandler],
+});
 
 // needed to process css vars in IE11
 cssVars({

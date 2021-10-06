@@ -82,7 +82,7 @@ export const applicationMembersMock: ApplicationMember[] = [
   },
 ]; // Noncompliant
 
-export const allPortfolios: Portfolios = {
+export const allPortfolios = {
   "11": {
     id: "11",
     name: "Tracker Application",

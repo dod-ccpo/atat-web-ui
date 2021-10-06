@@ -202,10 +202,9 @@ export default class ATATSummaryCard extends Vue {
   private leftButtonClicked(card: ATATSummaryCardItem) {
     this.cardSelected = card;
     let id = card.title;
+
+    //leaving for now for application summary
     switch (this.$route.name) {
-      case "fundingsummary":
-        this.$router.push({ name: "editfunding", params: { id: `${id}` } });
-        break;
       case "applicationsummary":
         id = card.id;
         this.$router.push({
@@ -217,12 +216,8 @@ export default class ATATSummaryCard extends Vue {
       // code block
     }
 
-    if (card.type === "PORTFOLIO") {
-      id = card.id;
-    }
-
     //emit edit event
-    this.$emit("edit", id);
+    this.$emit("edit", card.id);
   }
 
   private rightButtonClicked(card: ATATSummaryCardItem): void {

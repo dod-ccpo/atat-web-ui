@@ -38,7 +38,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
 
   public addClin(): void {
     this.model.clins.push({
-      clin_number: `000${this.model.clins.length + 1}`,
+      clin_number: "000" + this.model.clins.length + 1,
       idiq_clin: "",
       total_clin_value: 0,
       obligated_funds: 0,
@@ -57,9 +57,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
 
   public async mounted(): Promise<void> {
     if (this.$route.name === "editfunding") {
-      this.model = this.$store.getters.getTaskOrderByName(
-        this.$route.params.id
-      );
+      this.itemId = this.$route.params.id;
     }
   }
 }

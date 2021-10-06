@@ -64,7 +64,7 @@ export default class PortfolioSummaryCard extends Vue {
 
       this.dataItems.push({
         prefix: "Deploy to",
-        value: this.portfolio.csp_provisioning_status,
+        value: this.portfolio.csp,
       });
     });
   }

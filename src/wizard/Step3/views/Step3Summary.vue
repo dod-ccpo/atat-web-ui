@@ -48,6 +48,7 @@ import {
   ATATSummaryCards,
 } from "../../../../types/Wizard";
 import { Portfolio } from "types/Portfolios";
+import { allPortfolios } from "../../../store/mocks/portfoliosMockData";
 
 @Component({
   mixins: [ValidatableWizardStep],
@@ -75,19 +76,21 @@ export default class Step3Summary extends Vue {
   }
   public getPortfolioById(id?: string): Portfolio {
     id = id || "11";
-    return this.$store.getters.getPortfolioById(id);
+    // return this.$store.getters.getPortfolioById(id);
+    const portfolio = allPortfolios["11"];
+    return portfolio;
   }
 
   mounted(): void {
-    let portfolio = this.getPortfolioById();
+    let portfolio = this.getPortfolioById() as any;
     let cardsData = this.cardsData;
     if (portfolio.applications) {
-      portfolio.applications.forEach((application) => {
+      portfolio.applications.forEach((application: { environments: any[]|undefined; id: any; name: any; description: any; }) => {
         const environments: ATATSummaryCardGroupedItems[] =
           application.environments != undefined
             ? application.environments?.map<ATATSummaryCardGroupedItems>(
                 (env) => ({
-                  title: env.name,
+                    title: env.name,
                 })
               )
             : [];

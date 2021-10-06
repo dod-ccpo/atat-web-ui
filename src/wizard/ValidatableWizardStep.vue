@@ -7,8 +7,8 @@ import { Route } from "vue-router";
 Component.registerHooks(["beforeRouteLeave", "beforeRouteEnter"]);
 @Component({})
 /**
- *  Provides functionality to automagically call the validation method of a
- *  validatable wizard step when the user leaves the step
+ *  Provides base functionality for validatable wizard steps
+ *  Automatically validates and saves before leaving the wizard step
  */
 export default class ValidatableWizardStep<TModel> extends Validatable {
   @Prop({ required: true }) step!: number;
@@ -16,6 +16,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   //assign this property to skip validation
   @Prop({ default: false }) skipValidation!: boolean;
 
+  protected itemId = "";
   protected touched = false;
   protected valid = false;
 
@@ -32,9 +33,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     await this.$store.dispatch("saveStepData", this.step);
   }
 
-  protected onHasChanges!: () => boolean;
-
-  protected stepMounted!: () => Promise<void>;
   private incomingModel!: TModel;
   protected model!: TModel;
 
@@ -69,7 +67,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   public async beforeRouteEnter(
     to: Route,
     from: Route,
-    next: (n: any) => void
+    next: (n: unknown) => void
   ): Promise<void> {
     next((vm: ValidatableWizardStep<TModel>) => {
       //loads model before route enter

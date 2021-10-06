@@ -14,7 +14,8 @@
     </v-row>
     <atat-summary-card
       :data="cardsData"
-      :itemToDelete.sync="itemToDelete"
+      v-on:delete="onDeleteTaskOrder"
+      v-on:edit="onEditTaskOrder"
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
@@ -102,64 +103,68 @@ import Vue from "vue";
 import {
   ATATSummaryCardItem,
   ATATSummaryCards,
-  TaskOrders,
 } from "../../../../types/Wizard";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
+import { EntityWrapper, TaskOrder } from "types/Portfolios";
+import { addfunding, editfunding } from "../../../router/wizard";
 
 @Component({})
 export default class Step2Summary extends Vue {
   private showPopText = false;
   private showAdditionalFundingText = false;
   private async mounted(): Promise<void> {
-    await this.getMockTaskOrders;
+    this.transformData();
   }
 
-  private itemToDelete = "";
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
-  private taskOrders: TaskOrders = {
-    details: [],
-  };
 
-  @Watch("itemToDelete")
-  private deleteItem(newVal: string) {
-    if (newVal !== "") {
-      this.taskOrders.details = this.$store.getters.deleteTaskOrderByName(
-        this.itemToDelete
-      );
-      this.transformData();
-      this.itemToDelete = "";
+  get taskOrders(): EntityWrapper<TaskOrder>[] {
+    return this.$store.state.taskOrderModels;
+  }
+
+  async onDeleteTaskOrder(id: string): Promise<void> {
+    await this.$store.dispatch("deleteTaskOrder", id);
+
+    if (this.taskOrders.length === 0) {
+      //route the user back to add funding step
+      this.$router.push({ name: addfunding.name });
     }
   }
 
-  get getMockTaskOrders(): boolean {
-    this.taskOrders = this.$store.getters.getMockTaskOrders;
-    this.transformData();
-    return true;
+  async onEditTaskOrder(id: string): Promise<void> {
+    this.$store.dispatch("editTaskOrder", id);
+    this.$router.push({
+      name: editfunding.name,
+      params: {
+        id: id,
+      },
+    });
   }
 
   public transformData(): void {
     this.cardsData.cards = [];
-    this.taskOrders.details.forEach((c) => {
-      let totalClinValue = c.clins.reduce((prev, cur) => {
+    this.taskOrders.forEach((entity) => {
+      let totalClinValue = entity.model.clins.reduce((prev, cur) => {
         return prev + cur.total_clin_value;
       }, 0);
 
-      let totalObligatedFunds = c.clins.reduce((prev, cur) => {
+      let totalObligatedFunds = entity.model.clins.reduce((prev, cur) => {
         return prev + cur.obligated_funds;
       }, 0);
 
       let card: ATATSummaryCardItem = {
+        id: entity.id,
         type: "TASK ORDER",
-        title: c.task_order_number,
+        title: entity.model.task_order_number,
         showChevronRight: true,
         items: [
           {
             title: "CLINS",
             prefix: "",
-            value: c.clins.length,
+            value: entity.model.clins.length,
           },
           {
             title: "Total Value",

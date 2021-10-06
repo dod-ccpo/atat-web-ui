@@ -1,5 +1,3 @@
-import { TaskOrderDetails } from "./Wizard";
-
 export interface Portfolios {
   [key: string]: Portfolio;
 }
@@ -8,11 +6,8 @@ export interface Portfolio {
   name: string;
   description: string;
   csp: string;
-  csp_provisioning_status: string;
   dod_components: string[];
   portfolio_managers: string[];
-  applications: Application[];
-  taskOrders?: TaskOrderDetails[];
 }
 
 export interface PortFolioDraftDTO {
@@ -68,6 +63,29 @@ export interface ApplicationMemberEnvironment {
   accessLevel: "Administrator" | "Contributor" | "No Access";
 }
 
+
+export interface TaskOrder {
+  task_order_number: string;
+  task_order_file: TaskOrderFile;
+  clins: Clins[];
+}
+export interface TaskOrderFile {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  size: number;
+  name: string;
+  status: string;
+}
+export interface Clins {
+  clin_number: string;
+  idiq_clin: string;
+  total_clin_value: number;
+  obligated_funds: number;
+  pop_start_date: string;
+  pop_end_date: string;
+}
+
 export interface ApplicationDTO {
   environments: EnvironmentsDTO[];
 }
@@ -80,4 +98,12 @@ export interface OperatorDTO {
   last_name: string;
   first_name: string;
   email: string;
+}
+
+/**
+ * Wraps up models into an entity that can be given a local identifier
+ */
+export interface EntityWrapper<TModel>{
+  id: string;
+  model: TModel;
 }
