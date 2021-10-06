@@ -121,8 +121,8 @@
                   <v-menu
                     class="table-menu"
                     transition="slide-y-transition"
-                    bottom
-                    right
+                    offset-y
+                    nudge-left="137"
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -139,7 +139,7 @@
                         v-for="(item, i) in options"
                         href="#"
                         :key="i"
-                        tabindex="0"
+                        tabindex="1"
                         class="body width-100 d-flex justify-start menu-item"
                         :ripple="false"
                       >

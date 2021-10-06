@@ -21,7 +21,7 @@
   }
 }
 .v-data-table-header {
-  background-color: #f0f0f0;
+  background-color: $base_lightest;
 
    th:not(:last-child){
      border-right: 1px solid;
@@ -60,7 +60,7 @@
 }
 .table-btn.v-btn.v-btn--disabled.v-btn--has-bg.theme--light{
   background-color: inherit !important;
-  color: #f0f0f0;
+  color: $base_lightest;
   height: 44px !important;
   width: 44px;
   min-width: 40px !important;
