@@ -118,24 +118,29 @@
                     {{ item.workplace_access }}
                   </div>
 
-                  <v-menu transition="slide-y-transition" bottom right>
+                  <v-menu
+                    class="table-menu"
+                    transition="slide-y-transition"
+                    bottom
+                    right
+                  >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         :disabled="isDisabled(item.workplace_access)"
-                        class="table-btn"
+                        class="table-btn table-menu-button pa-0"
                         v-bind="attrs"
                         v-on="on"
                       >
-                        •••
+                        <v-icon>more_horiz</v-icon>
                       </v-btn>
                     </template>
-                    <div class="d-flex flex-column">
+                    <div class="table-menu d-flex flex-column">
                       <v-btn
                         v-for="(item, i) in options"
                         href="#"
                         :key="i"
-                        tabindex="4"
-                        class="body width-100 d-flex justify-start"
+                        tabindex="0"
+                        class="body width-100 d-flex justify-start menu-item"
                         :ripple="false"
                       >
                         {{ item }}

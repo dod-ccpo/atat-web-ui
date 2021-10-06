@@ -1,3 +1,6 @@
+@import "../utils/colors.scss";
+@import "../utils/typography.scss";
+
 .review-table{
   .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper){
     background: transparent;
@@ -38,9 +41,20 @@
   height: 44px !important;
   width: 44px;
   min-width: 40px !important;
-
-  &:focus{
-    background-color:#E1F3F8;
+//change color names to match
+  a {
+    color: inherit;
+    width: 100% !important;
+    border-radius: 0px;
+    background-color: transparent !important;
+    span{
+      width: 100% !important;
+      height: 100% !important;
+      font-weight: 900 !important;
+      text-align: left;
+      padding-left: 4px;
+      font-weight: normal !important;
+    }
   }
 
 }
@@ -52,10 +66,16 @@
   min-width: 40px !important;
 }
 
-.v-menu__content.theme--light.menuable__content__active {
-  border: 0.1px solid darkgray;
-  a{
+.table-menu{
+  border: 1px solid darkgray;
+  a.menu-item{
     border-radius: 0px;
-    border: 0.1px solid darkgray;
+    border: 1px solid darkgray;
+    &:focus{
+      background-color: $primary-lighter !important;
+      border-radius: 0px !important;
+      border-color: $primary_darken !important;
+
+    }
   }
 }
