@@ -88,11 +88,74 @@
         </v-row>
         <v-row>
           <v-col cols="9" class="pa-0 ma-0">
-            <ATATTable
+            <v-data-table
+              class="review-table"
               :headers="headers"
               :items="members"
-              :dropdown-options="options"
-            />
+              hide-default-footer
+            >
+              <template v-slot:header.display_name="{ header }">
+                <div class="body font-weight-bold">
+                  {{ header.text }}
+                </div>
+              </template>
+              <template v-slot:header.workplace_access="{ header }">
+                <div class="body font-weight-bold">
+                  {{ header.text }}
+                </div>
+              </template>
+              <template class="hello" v-slot:item.display_name="{ item }">
+                <div class="body font-weight-bold pt-4">
+                  {{ item.display_name }}
+                </div>
+                <div class="body text--base-dark pb-4">
+                  {{ item.email }}
+                </div>
+              </template>
+              <template v-slot:item.workplace_access="{ item }">
+                <div class="d-flex justify-space-between">
+                  <div class="body text--base-dark pt-3">
+                    {{ item.workplace_access }}
+                  </div>
+
+                  <v-menu transition="slide-y-transition" bottom right>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        :disabled="isDisabled(item)"
+                        class="table-btn"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        •••
+                      </v-btn>
+                    </template>
+                    <div class="d-flex flex-column">
+                      <v-btn
+                        v-for="(item, i) in options"
+                        :key="i"
+                        tabindex="2"
+                        class="body width-100 d-flex justify-start"
+                        :ripple="false"
+                      >
+                        {{ item }}
+                      </v-btn>
+                    </div>
+
+                    <!--                    <v-list>-->
+                    <!--                      <v-list-item-->
+                    <!--                        role="button"-->
+                    <!--                        link-->
+                    <!--                      -->
+                    <!--                      >-->
+                    <!--                        <v-list-item-title class="body"-->
+                    <!--                          >{{ item }}-->
+                    <!--                        </v-list-item-title>-->
+                    <!--                      </v-list-item>-->
+                    <!--                    </v-list>-->
+                  </v-menu>
+                </div>
+              </template>
+            </v-data-table>
           </v-col>
         </v-row>
 
@@ -247,11 +310,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import ATATTable from "@/components/ATATTable.vue";
 
-@Component({
-  components: { ATATTable },
-})
+@Component({})
 export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
@@ -266,7 +326,7 @@ export default class Step_4 extends Vue {
     {
       display_name: "Darth Vader",
       email: "iam@yourfather.com",
-      workplace_access: "administrator",
+      workplace_access: "Administrator",
     },
     {
       display_name: "Han Solo",
@@ -284,8 +344,16 @@ export default class Step_4 extends Vue {
     { text: "Workplace Access ", value: "workplace_access", sortable: false },
   ];
   private options = ["Edit Info", "Change Role", "Remove team member"];
+
+  // methods
   private handleClick(): void {
     console.log("clicked");
+  }
+  private isDisabled(member): boolean {
+    if (member.workplace_access === "Administrator") {
+      return true;
+    }
+    return false;
   }
 
   public mounted(): void {

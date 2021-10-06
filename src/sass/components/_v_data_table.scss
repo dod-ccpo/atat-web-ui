@@ -16,6 +16,41 @@
   .v-card__subtitle, .v-card__text, .v-card__title {
     padding: 24px 24px 16px 24px;
   }
+}
+.v-data-table-header {
+  background-color: #f0f0f0;
+
+   th:not(:last-child){
+     border-right: 1px solid;
+
+     &.sortable {
+       display: flex;
+       justify-content: space-between ;
+       align-items: center;
+     }
+   }
+
+}
 
 
+.table-btn.v-btn.v-btn--is-elevated.v-btn--has-bg.theme--light{
+  background-color: inherit !important;
+  height: 44px !important;
+  width: 44px;
+  min-width: 40px !important;
+
+  &:hover{
+    background-color: #f0f0f0;
+  }
+  &:focus{
+    background-color:#E1F3F8 ;
+  }
+
+}
+.table-btn.v-btn.v-btn--disabled.v-btn--has-bg.theme--light{
+  background-color: inherit !important;
+  color: #f0f0f0;
+  height: 44px !important;
+  width: 44px;
+  min-width: 40px !important;
 }
