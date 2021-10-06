@@ -34,16 +34,13 @@
 
 
 .table-btn.v-btn.v-btn--is-elevated.v-btn--has-bg.theme--light{
-  background-color: inherit !important;
+  background-color: inherit;
   height: 44px !important;
   width: 44px;
   min-width: 40px !important;
 
-  &:hover{
-    background-color: #f0f0f0;
-  }
   &:focus{
-    background-color:#E1F3F8 ;
+    background-color:#E1F3F8;
   }
 
 }
@@ -53,4 +50,12 @@
   height: 44px !important;
   width: 44px;
   min-width: 40px !important;
+}
+
+.v-menu__content.theme--light.menuable__content__active {
+  border: 0.1px solid darkgray;
+  a{
+    border-radius: 0px;
+    border: 0.1px solid darkgray;
+  }
 }

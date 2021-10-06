@@ -121,7 +121,7 @@
                   <v-menu transition="slide-y-transition" bottom right>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        :disabled="isDisabled(item)"
+                        :disabled="isDisabled(item.workplace_access)"
                         class="table-btn"
                         v-bind="attrs"
                         v-on="on"
@@ -132,26 +132,15 @@
                     <div class="d-flex flex-column">
                       <v-btn
                         v-for="(item, i) in options"
+                        href="#"
                         :key="i"
-                        tabindex="2"
+                        tabindex="4"
                         class="body width-100 d-flex justify-start"
                         :ripple="false"
                       >
                         {{ item }}
                       </v-btn>
                     </div>
-
-                    <!--                    <v-list>-->
-                    <!--                      <v-list-item-->
-                    <!--                        role="button"-->
-                    <!--                        link-->
-                    <!--                      -->
-                    <!--                      >-->
-                    <!--                        <v-list-item-title class="body"-->
-                    <!--                          >{{ item }}-->
-                    <!--                        </v-list-item-title>-->
-                    <!--                      </v-list-item>-->
-                    <!--                    </v-list>-->
                   </v-menu>
                 </div>
               </template>
@@ -349,12 +338,8 @@ export default class Step_4 extends Vue {
   private handleClick(): void {
     console.log("clicked");
   }
-  private isDisabled(member: {
-    display_name: string;
-    email: string;
-    workplace_access: string;
-  }): boolean {
-    if (member.workplace_access === "Administrator") {
+  private isDisabled(workplace_access: string): boolean {
+    if (workplace_access === "Administrator") {
       return true;
     }
     return false;
