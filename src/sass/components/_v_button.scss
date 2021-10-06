@@ -76,6 +76,15 @@
       -ieVar-❗background--color: $primary!important;
       box-shadow: none !important;
     }
+    span.valid-entry-count {
+      background-color: white;
+      color: $primary;
+      border-radius: 20px;
+      padding: 0 7px;
+      &:hover, &:focus, &:active {
+        background-color: #fff !important;
+      }
+    }    
 
     &.v-btn--outlined{
       color: $primary !important;

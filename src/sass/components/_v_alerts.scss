@@ -11,8 +11,6 @@
 
     .v-alert__border--left {
       border-width: initial;
-      // border-top-left-radius: 0px;
-      // border-bottom-left-radius: 0px;
       left: 0px;
     }
 
@@ -20,8 +18,7 @@
       opacity: 1 !important;
     }
     .v-alert__icon.v-icon{
-      font-size: 4rem;
-      top: .4rem;
+      font-size: 2rem;
       margin: 0 1rem 0 .5rem;
     }
   .info_lighter {
