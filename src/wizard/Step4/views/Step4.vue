@@ -277,5 +277,11 @@ export default class Step_4 extends Vue {
       pillboxWrapper.focus();
     });
   }
+
+  public async mounted(): Promise<void> {
+    // temp until actually saving data to store
+    this.$store.dispatch("saveStepModel", [{}, 4, true]);
+  }
+
 }
 </script>

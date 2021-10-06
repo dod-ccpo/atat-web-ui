@@ -178,10 +178,6 @@ export default class AddMember extends Vue {
     return this.memberList.filter((obj) => obj.isDuplicate === true).length;
   }
 
-  public async mounted(): Promise<void> {
-    this.$store.dispatch("saveStepModel", [{}, 4, true]);
-  }
-
   public addEmail(e: Event, override: boolean | null): void {
     const targetElement = e.target;
     const targetId = targetElement ? (targetElement as HTMLDivElement).id : "";
