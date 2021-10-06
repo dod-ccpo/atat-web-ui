@@ -21,9 +21,9 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" v-if="portfolios">
+      <v-col cols="6" v-if="portfolios.length > 0">
         <portfolio-summary
-          :portfolios="portfolios"
+          :portfolioDrafts="portfolios"
           v-on:delete="onDeletePortfolio"
           v-on:edit="onEditPortfolio"
         ></portfolio-summary>
@@ -35,7 +35,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Portfolio } from "types/Portfolios";
+import { PortfolioDraft } from "types/Portfolios";
 import PortfolioSummary from "./PortfolioSummary.vue";
 
 @Component({
@@ -44,22 +44,22 @@ import PortfolioSummary from "./PortfolioSummary.vue";
   },
 })
 export default class ViewPortfolio extends Vue {
-  get portfolios(): Portfolio[] {
-    return this.$store.state.portfolios;
+  get portfolios(): PortfolioDraft[] {
+    return this.$store.state.portfolioDrafts;
   }
-  private async loadPortfolios() {
+  private async loadPortfolioDrafts() {
     // this.portfolios = await await this.getPortfolios();
-    await this.$store.dispatch("loadPortfolios");
+    await this.$store.dispatch("loadPortfolioDrafts");
   }
 
   private async mounted(): Promise<void> {
-    await this.loadPortfolios();
+    await this.loadPortfolioDrafts();
   }
 
   private async onDeletePortfolio(id: string) {
     if (id != "") {
       await this.$store.dispatch("deletePortfolioDraft", id);
-      await this.loadPortfolios();
+      await this.loadPortfolioDrafts();
     }
   }
 
