@@ -358,9 +358,13 @@ export default class AddMember extends Vue {
       );
     }
     // remove middle initial
-    if (names[1].length === 1) {
+    if (names.length > 1 && names[1].length === 1) {
       names.splice(1, 1);
     }
+
+    // EJY remove console log after functional testing complete
+    console.log("Name parsed from email: ", names.join(" "));
+
     return names.join(" ");
   }
 
