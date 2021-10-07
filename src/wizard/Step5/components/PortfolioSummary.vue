@@ -42,7 +42,7 @@ import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
 import { Portfolio } from "types/Portfolios";
-import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
+import { ValidationSummaryItem, TaskOrderModel } from "types/Wizard";
 
 @Component({
   components: {
@@ -52,7 +52,7 @@ import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
 })
 export default class PortfolioSummary extends Vue {
   public portfolio!: Portfolio;
-  public taskOrders!: TaskOrders;
+  public taskOrders!: TaskOrderModel[];
   public invalidStepsExist(): boolean {
     return this.$store.state.erroredSteps.length > 0;
   }

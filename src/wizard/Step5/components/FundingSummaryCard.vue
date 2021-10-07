@@ -12,7 +12,7 @@
 <script lang="ts">
 import Component from "vue-class-component";
 import Vue from "vue";
-import { TaskOrders } from "../../../../types/Wizard";
+import { TaskOrderModel } from "../../../../types/Wizard";
 import { Prop } from "vue-property-decorator";
 import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
@@ -21,6 +21,6 @@ import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 })
 export default class FundingSummaryCard extends Vue {
   @Prop({ default: null, required: true })
-  private taskOrders!: TaskOrders;
+  private taskOrders!: TaskOrderModel[];
 }
 </script>

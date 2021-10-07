@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
-import wizard from "../router/wizard";
+import { wizard } from "../router/wizard";
 
 Vue.use(VueRouter);
 
@@ -65,5 +65,4 @@ const router = new VueRouter({
     return { x: 0, y: 0 };
   },
 });
-
 export default router;

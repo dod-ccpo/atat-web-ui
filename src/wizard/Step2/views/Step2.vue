@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderDetails } from "../../../../types/Wizard";
+import { TaskOrderModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 
 @Component({
@@ -23,12 +23,12 @@ import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
     CreateTaskOrderForm,
   },
 })
-export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
+export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   $refs!: {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  model: TaskOrderDetails = this.$store.getters.getStepModel(2);
+  model: TaskOrderModel = this.$store.getters.getStepModel(2);
 
   public validate: () => Promise<boolean> = async () => {
     this.valid = false;
@@ -38,7 +38,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
 
   public addClin(): void {
     this.model.clins.push({
-      clin_number: `000${this.model.clins.length + 1}`,
+      clin_number: "000" + (this.model.clins.length + 1),
       idiq_clin: "",
       total_clin_value: 0,
       obligated_funds: 0,
@@ -52,14 +52,6 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderDetails> {
     const clinLength = this.model.clins.length;
     if (clinLength && clinLength >= itemNumber) {
       this.model.clins.splice(index, 1);
-    }
-  }
-
-  public async mounted(): Promise<void> {
-    if (this.$route.name === "editfunding") {
-      this.model = this.$store.getters.getTaskOrderByName(
-        this.$route.params.id
-      );
     }
   }
 }

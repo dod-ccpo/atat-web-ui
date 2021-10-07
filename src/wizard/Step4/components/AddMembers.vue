@@ -395,7 +395,8 @@ export default class AddMember extends Vue {
         this.memberList[memberListIndex].email = emailAddressEntered;
         if (isValid) {
           this.validEmailList.push(emailAddressEntered);
-          const displayName: string = this.parseNameFromEmail(emailAddressEntered);
+          const displayName: string =
+            this.parseNameFromEmail(emailAddressEntered);
           this.memberList[memberListIndex].display_name = displayName;
         }
       }
@@ -418,12 +419,19 @@ export default class AddMember extends Vue {
     let names = name.split(/[._\\-]+/);
     // capitalize and remove all non-alpha characters
     for (let i = 0; i < names.length; i++) {
-      names[i] = (names[i].charAt(0).toUpperCase() + names[i].slice(1)).replace(/[^A-Za-z]+/g, '');
+      names[i] = (names[i].charAt(0).toUpperCase() + names[i].slice(1)).replace(
+        /[^A-Za-z]+/g,
+        ""
+      );
     }
     // remove middle initial
-    if (names[1].length === 1) {
-      names.splice(1,1);
+    if (names.length > 1 && names[1].length === 1) {
+      names.splice(1, 1);
     }
+
+    // EJY remove console log after functional testing complete
+    console.log("Name parsed from email: ", names.join(" "));
+
     return names.join(" ");
   }
 

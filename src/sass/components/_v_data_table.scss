@@ -1,4 +1,11 @@
+@import "../utils/colors.scss";
+@import "../utils/typography.scss";
+
 .review-table{
+  // box-shadow: 1px 1px 3px $base_lightest;
+  box-shadow: 0px 2px 5px rgba(208, 219, 231, 0.5);
+
+  border-radius: 0px !important;
   .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper){
     background: transparent;
   }
@@ -16,6 +23,59 @@
   .v-card__subtitle, .v-card__text, .v-card__title {
     padding: 24px 24px 16px 24px;
   }
+  tbody,
+  tr {
+   border-left: solid #fff 0px;
+   border-right: solid #fff 0px;
+  }
+}
+.v-data-table-header {
+  background-color: $base_lightest;
 
+   th:not(:last-child){
+     border-right: 1px solid;
 
+     &.sortable {
+       display: flex;
+       justify-content: space-between ;
+       align-items: center;
+     }
+   }
+
+}
+
+td{
+  .v-btn{
+    &.table-row-menu-button{
+      background-color: transparent !important;
+      min-width: 32px !important;
+      height: 32px !important;
+      .v-btn__content{
+        flex: none;
+      }
+
+      &.v-btn--disabled[disabled='disabled']{
+        background-color: transparent !important;
+        color: $base_lightest;
+      }
+    }
+  }
+}
+
+.table-row-menu{
+  &:first-child{
+    border-top: 1px solid $base;
+  }
+  .v-list-item{
+    border: 1px solid $base;
+    border-top: 0px solid #fff;
+    min-width: 224px; 
+    &::before{
+      background-color: transparent;
+    }
+    &.v-list-item--highlighted,
+    &:hover,{
+      background-color: $accent-cool-lightest !important;
+    }
+  }
 }
