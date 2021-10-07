@@ -123,23 +123,25 @@
                     transition="slide-y-transition"
                     offset-y
                     nudge-left="137"
+                    tabindex="2"
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         :disabled="isDisabled(item.workplace_access)"
                         class="table-btn table-menu-button pa-0"
+                        tabindex="1"
                         v-bind="attrs"
                         v-on="on"
                       >
                         <v-icon>more_horiz</v-icon>
                       </v-btn>
                     </template>
-                    <div class="table-menu d-flex flex-column">
+                    <div class="table-menu d-flex flex-column" tabindex="2">
                       <v-btn
                         v-for="(item, i) in options"
                         href="#"
                         :key="i"
-                        tabindex="1"
+                        tabindex="2"
                         class="body width-100 d-flex justify-start menu-item"
                         :ripple="false"
                       >

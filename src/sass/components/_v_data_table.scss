@@ -2,6 +2,8 @@
 @import "../utils/typography.scss";
 
 .review-table{
+  box-shadow: 1px 1px 3px $base_lightest;
+  border-radius: 0px !important;
   .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper){
     background: transparent;
   }
@@ -53,7 +55,6 @@
       font-weight: 900 !important;
       text-align: left;
       padding-left: 4px;
-      font-weight: normal !important;
     }
   }
 
