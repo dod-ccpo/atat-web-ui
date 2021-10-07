@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
+import { Dialog } from "types/FormFields";
 import {
   Application,
   ApplicationModel,
@@ -14,6 +15,7 @@ import PortfolioDraftsApi from "@/api/portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { generateUid } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
+import { VEditDialog } from "vuetify/lib";
 
 Vue.use(Vuex);
 
@@ -183,6 +185,7 @@ export default new Vuex.Store({
     isSideDrawerFocused: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
+    dialog: {},
     portfolioDrafts: [],
     portfolios: [],
     taskOrderModels: [],
@@ -286,6 +289,9 @@ export default new Vuex.Store({
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
+    },
+    changeDialog(state, dialogProps: Dialog) {
+      state.dialog = dialogProps;
     },
     changeSideDrawer(state, status: boolean) {
       state.sideDrawer = status;
@@ -800,6 +806,19 @@ export default new Vuex.Store({
         //store the applications
         commit("setCurrentApplications", applications);
       }
+    },
+    openDialog(
+      { commit },
+      [dialogType, setFocusOnDialog, dialogWidth, dialogHeight]
+    ) {
+      const dialogProps: Dialog = {
+        isDisplayed: true,
+        type: dialogType,
+        setFocus: setFocusOnDialog,
+        width: dialogWidth,
+        height: dialogHeight,
+      };
+      commit("changeDialog", dialogProps);
     },
     closeSideDrawer({ commit }) {
       commit("changeSideDrawer", false);
