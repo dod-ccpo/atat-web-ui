@@ -12,13 +12,11 @@ describe('TestSuite to Verify the Assertions for all pages', function () {
         cy.clearCookies()
     });
     beforeEach(() => {
-
         signin.navigate()
-    })
+    });
     after(() => {
-
         dashboard.logout().click()
-    })
+    });
 
     it('Testcase:1:Assertions on ATAT Homepage', function () {
 
