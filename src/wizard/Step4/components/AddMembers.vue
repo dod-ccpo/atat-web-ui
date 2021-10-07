@@ -108,7 +108,7 @@
         :disabled="invalidEmailCount > 0 || validEmailCount === 0"
       >
         Add Team Members
-        <span class="valid-entry-count ml-2" v-if="invalidEmail === 0">
+        <span class="valid-entry-count ml-2" v-if="invalidEmailCount === 0">
           {{ validEmailCount }}
         </span>
       </v-btn>
@@ -364,6 +364,7 @@ export default class AddMember extends Vue {
   }
 
   public saveToStore() {
+    this._close = false;
     console.log("save member data to store...");
   }
 }
