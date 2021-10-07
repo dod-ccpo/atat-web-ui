@@ -3,7 +3,7 @@
         font-size: 4.4rem !important;
         font-weight: 700 !important;
         line-height: 5.7rem !important;
-    } 
+    }
     .h2{
         font-size: 3.4rem !important;
         font-weight: 700 !important;
@@ -120,12 +120,15 @@
     }
 
     .optional{
-        font-size: 1.5rem !important; 
+        font-size: 1.5rem !important;
         font-weight: 400 !important;
         line-height: 2.3rem !important;
         color: $base_dark !important;
     }
 
+    .color-base {
+        color: $base !important;
+    }
 
     .datepicker-text{
         font-size: 1.6rem !important;
@@ -133,7 +136,7 @@
         line-height: 2rem !important;
     }
 
-    //todo change this on the component to 
+    //todo change this on the component to
     // .body
     .table-item{
         font-size: 1.5rem;
@@ -159,7 +162,7 @@
             min-width: #{$size}px !important;
         }
     }
-    
+
     .word-break-normal{
         word-break: normal !important;
     }
