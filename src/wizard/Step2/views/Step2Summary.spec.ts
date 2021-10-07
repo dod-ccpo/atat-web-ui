@@ -83,10 +83,10 @@ describe("Testing Step2 Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("deletes an item", async () => {
-    wrapper.vm.deleteItem("");
-    await Vue.nextTick();
-    wrapper.vm.deleteItem("item_to_delete");
-    expect(wrapper.exists()).toBe(true);
-  });
+  // it("deletes an item", async () => {
+  //   wrapper.vm.deleteItem("");
+  //   await Vue.nextTick();
+  //   wrapper.vm.deleteItem("item_to_delete");
+  //   expect(wrapper.exists()).toBe(true);
+  // });
 });

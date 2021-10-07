@@ -1,5 +1,3 @@
-import { TaskOrderDetails } from "./Wizard";
-
 export interface Portfolios {
   [key: string]: Portfolio;
 }
@@ -8,11 +6,8 @@ export interface Portfolio {
   name: string;
   description: string;
   csp: string;
-  csp_provisioning_status: string;
   dod_components: string[];
   portfolio_managers: string[];
-  applications: Application[];
-  taskOrders?: TaskOrderDetails[];
 }
 
 export interface PortFolioDraftDTO {
@@ -37,19 +32,7 @@ export interface PortfolioDraft {
   num_environments: number;
 }
 
-export interface Application {
-  id: string;
-  name: string;
-  description: string;
-  environments?: Environment[];
-  members?: ApplicationMember[];
-}
-export interface Environment {
-  id: string;
-  name: string;
-  funding_source: string[];
-}
-// Aplication Members:
+//Application Members:
 export interface ApplicationMember {
   id: string;
   email: string;
@@ -66,4 +49,73 @@ export interface ApplicationMemberEnvironment {
   id: string;
   label: string;
   accessLevel: "Administrator" | "Contributor" | "No Access";
+}
+
+export interface TaskOrder {
+  task_order_number: string;
+  task_order_file: TaskOrderFile;
+  clins: Clin[];
+}
+export interface TaskOrderFile {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  size: number;
+  name: string;
+  status: string;
+}
+export interface Clin {
+  clin_number: string;
+  idiq_clin: string;
+  total_clin_value: number;
+  obligated_funds: number;
+  pop_start_date: string;
+  pop_end_date: string;
+}
+
+export interface ApplicationModel {
+  id: string;
+  name: string;
+  description: string;
+  environments: EnvironmentModel[];
+}
+
+export interface EnvironmentModel {
+  id: string;
+  name: string;
+  operators: OperatorModel[]
+}
+
+export interface OperatorModel {
+  id: string;
+  access: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+}
+
+export interface Application {
+  name: string;
+  description: string;
+  environments: Environment[];
+}
+
+export interface Environment {
+  operators: Operator[];
+  name: string;
+}
+
+export interface Operator {
+  access: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+}
+
+/**
+ * Wraps up models into an entity that can be given a local identifier
+ */
+export interface EntityWrapper<TModel> {
+  id: string;
+  model: TModel;
 }

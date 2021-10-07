@@ -138,11 +138,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { TaskOrderDetails } from "../../../../types/Wizard";
+import { TaskOrderModel } from "../../../../types/Wizard";
 
 @Component({})
 export default class FundingTable extends Vue {
-  @Prop({ default: {} }) private data!: TaskOrderDetails;
+  @Prop({ default: {} }) private data!: TaskOrderModel;
   @Prop({ default: "" }) private name!: string;
 
   private handleClicked(name: string) {

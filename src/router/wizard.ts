@@ -1,4 +1,4 @@
-import { Route, RouteConfigSingleView } from "vue-router/types/router";
+import { RouteConfigSingleView } from "vue-router/types/router";
 
 /**
  *
@@ -56,7 +56,9 @@ const fundingsummary: RouteConfigSingleView = {
 const editfunding: RouteConfigSingleView = {
   path: "editfunding/:id",
   name: "editfunding",
-  props: true,
+  props: {
+    step: 2,
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
 };
@@ -66,6 +68,9 @@ const addapplication: RouteConfigSingleView = {
   name: "addapplication",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
+  props: {
+    step: 3,
+  },
 };
 
 const applicationsummary: RouteConfigSingleView = {
@@ -82,6 +87,9 @@ const editapplication: RouteConfigSingleView = {
   name: "editapplication",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
+  props: {
+    step: 3,
+  },
 };
 
 const addteammembers: RouteConfigSingleView = {
@@ -171,7 +179,7 @@ const wizard: RouteConfigSingleView = {
     ),
     CreateWizardRoute(postreview, reviewandsubmit.name, submit.name, 5),
     CreateWizardRoute(submit, postreview.name, undefined, 5),
-    CreateWizardRoute(editfunding, undefined, reviewandsubmit.name, 2),
+    CreateWizardRoute(editfunding, addportfolio.name, fundingsummary.name, 2),
     {
       path: "showvalidationsummary",
       name: "showvalidationsummary",
@@ -183,4 +191,14 @@ const wizard: RouteConfigSingleView = {
   ],
 };
 
-export default wizard;
+export {
+  wizard,
+  addportfolio,
+  addfunding,
+  fundingsummary,
+  editfunding,
+  addapplication,
+  editapplication,
+  applicationsummary,
+  addteammembers,
+};

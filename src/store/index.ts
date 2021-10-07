@@ -2,18 +2,20 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
-import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
 import { Dialog } from "types/FormFields";
 import {
   Application,
+  ApplicationModel,
   Portfolio,
   PortfolioDraft,
   PortFolioDraftDTO,
+  TaskOrder,
 } from "types/Portfolios";
 import PortfolioDraftsApi from "@/api/portfolios";
-import { CLIN } from "types/Wizard";
+import { TaskOrderModel } from "types/Wizard";
+import { generateUid } from "@/helpers";
+import { mockTaskOrders } from "./mocks/taskOrderMockData";
 import { VEditDialog } from "vuetify/lib";
-
 
 Vue.use(Vuex);
 
@@ -41,6 +43,7 @@ const createStepOneModel = () => {
 
 const createStepTwoModel = () => {
   return {
+    id: "",
     task_order_number: "",
     task_order_file: {
       description: "",
@@ -57,9 +60,27 @@ const createStepTwoModel = () => {
 
 const createStepThreeModel = () => {
   return {
+    id: "",
     name: "",
     description: "",
-    environments: [],
+    environments: [
+      {
+        name: "Development",
+        id: generateUid(),
+      },
+      {
+        name: "Testing",
+        id: generateUid(),
+      },
+      {
+        name: "Staging",
+        id: generateUid(),
+      },
+      {
+        name: "Production",
+        id: generateUid(),
+      },
+    ],
   };
 };
 
@@ -94,6 +115,65 @@ const stepsModelInitializer = [
   },
 ];
 
+const getEntityIndex = <TModel>(
+  entities: TModel[],
+  predicate: (value: TModel, index: number, obj: TModel[]) => unknown,
+  thisArg?: any
+): number => {
+  return entities.findIndex(predicate);
+};
+
+const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
+  return taskOrderModels.map((model: TaskOrderModel) => {
+    //extract all properties except the id
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...baseModel } = model;
+
+    const taskOrders: TaskOrder = {
+      ...baseModel,
+      clins: model.clins.map((clin) => {
+        return {
+          ...clin,
+          total_clin_value: Number(clin.total_clin_value),
+          obligated_funds: Number(clin.obligated_funds),
+        };
+      }),
+    };
+
+    return taskOrders;
+  });
+};
+
+const mapApplications = (
+  applicationModels: ApplicationModel[]
+): Application[] => {
+  return applicationModels.map((model: ApplicationModel) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...baseModel } = model;
+
+    const application: Application = {
+      ...baseModel,
+      environments: model.environments.map((env) => {
+        return {
+          name: env.name,
+          operators: env.operators
+            ? env.operators.map((op) => {
+                return {
+                  access: op.access,
+                  last_name: op.last_name,
+                  first_name: op.first_name,
+                  email: op.email,
+                };
+              })
+            : [],
+        };
+      }),
+    };
+
+    return application;
+  });
+};
+
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
@@ -106,7 +186,8 @@ export default new Vuex.Store({
     dialog: {},
     portfolioDrafts: [],
     portfolios: [],
-    taskOrders: mockTaskOrder,
+    taskOrderModels: [],
+    applicationModels: [],
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
@@ -132,6 +213,7 @@ export default new Vuex.Store({
         touched: false,
         valid: false,
         model: {
+          index: 0, //local guid
           task_order_number: "",
           task_order_file: {
             description: "",
@@ -151,9 +233,27 @@ export default new Vuex.Store({
         touched: false,
         valid: false,
         model: {
+          id: "",
           name: "",
           description: "",
-          environments: [],
+          environments: [
+            {
+              name: "Development",
+              id: generateUid(),
+            },
+            {
+              name: "Testing",
+              id: generateUid(),
+            },
+            {
+              name: "Staging",
+              id: generateUid(),
+            },
+            {
+              name: "Production",
+              id: generateUid(),
+            },
+          ],
         },
       },
       {
@@ -233,6 +333,19 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
+    /**
+     * commits set model to the store - does not make api call
+     * @param state
+     * @param param1
+     */
+    doInitializeStepModel(state, [model, stepNumber]) {
+      const stepIndex = state.portfolioSteps.findIndex(
+        (x) => x.step === stepNumber
+      );
+      state.portfolioSteps[stepIndex].model = model;
+      state.portfolioSteps[stepIndex].valid = true;
+      state.portfolioSteps[stepIndex].touched = false;
+    },
     doUpdateStepModelValidity(state, [stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
@@ -264,6 +377,10 @@ export default new Vuex.Store({
         state.portfolioSteps[stepIndex].valid = true;
         state.portfolioSteps[stepIndex].touched = false;
       });
+
+      //clear out task order models
+      Vue.set(state, "taskOrderModels", []);
+      Vue.set(state, "applicationModels", []);
 
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
@@ -302,10 +419,78 @@ export default new Vuex.Store({
         );
       }
     },
-    doTriggerValidation(state) {
-      state.validationStamp = {
-        timeStamp: Date.now(),
-      };
+    setCurrentTaskOrders(state, taskOrders: TaskOrder[]) {
+      const taskOrderModels = taskOrders.map((taskOrder) => {
+        const taskOrderModel: TaskOrderModel = {
+          id: generateUid(),
+          ...taskOrder,
+        };
+        return taskOrderModel;
+      });
+
+      Vue.set(state, "taskOrderModels", taskOrderModels);
+    },
+    doAddTaskOrder(state, model: any) {
+      state.taskOrderModels.push(model as never);
+    },
+    doUpdateTaskOrder(state, [index, model]) {
+      Vue.set(state.taskOrderModels, index, model);
+    },
+    doDeleteTaskOrder(state, id: string) {
+      const index = getEntityIndex(
+        state.taskOrderModels,
+        (taskOrder: TaskOrderModel) => taskOrder.id === id
+      );
+
+      if (index > -1) {
+        state.taskOrderModels.splice(index, 1);
+      } else {
+        throw new Error("could not delete task order with id: " + id);
+      }
+    },
+    setCurrentApplications(state, applications: Application[]) {
+      const applicationModels = applications.map((application) => {
+        const applicationModel: ApplicationModel = {
+          ...application,
+          id: generateUid(),
+          environments: application.environments.map((environment) => {
+            return {
+              ...environment,
+              id: generateUid(),
+              operators: environment.operators
+                ? environment.operators.map((operator) => {
+                    return {
+                      ...operator,
+                      id: generateUid(),
+                    };
+                  })
+                : [],
+            };
+          }),
+        };
+
+        return applicationModel;
+      });
+
+      Vue.set(state, "applicationModels", applicationModels);
+    },
+    doAddApplication(state, model: any) {
+      state.applicationModels.push(model as never);
+    },
+    doUpdateApplication(state, [index, model]) {
+      Vue.set(state.applicationModels, index, model);
+    },
+    doDeleteApplication(state, id: string) {
+      const index = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) => application.id === id
+      );
+
+      if (index > -1) {
+        state.applicationModels.splice(index, 1);
+      } else {
+        throw new Error("could not delete application order with id: " + id);
+      }
     },
   },
 
@@ -343,6 +528,94 @@ export default new Vuex.Store({
     async updateStepModelValidity({ commit }, [stepNumber, valid]) {
       commit("doUpdateStepModelValidity", [stepNumber, valid]);
     },
+    async addTaskOrder({ commit }, model) {
+      commit("doAddTaskOrder", model);
+    },
+    async updateTaskOrder({ commit }, [index, model]) {
+      commit("doUpdateTaskOrder", [index, model]);
+    },
+    async deleteTaskOrder({ commit, state }, id: string): Promise<void> {
+      try {
+        commit("doDeleteTaskOrder", id);
+
+        const taskOrders = {
+          task_orders: mapTaskOrders(state.taskOrderModels),
+        };
+
+        await portfolioDraftsApi.saveFunding(
+          state.currentPortfolioId,
+          taskOrders
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    editTaskOrder({ commit, state }, id: string) {
+      const taskOrderIndex = getEntityIndex(
+        state.taskOrderModels,
+        (taskOrder: TaskOrderModel) => taskOrder.id === id
+      );
+
+      if (taskOrderIndex === -1) {
+        throw new Error("unable to location task order model with id :" + id);
+      }
+      const taskOrder = state.taskOrderModels[taskOrderIndex];
+
+      commit("doSaveStepModel", [taskOrder, 2, true]);
+    },
+    addNewTaskOrder({ commit }) {
+      const model = { ...createStepTwoModel() };
+      commit("doInitializeStepModel", [model, 2]);
+    },
+    async addApplication({ commit }, model) {
+      commit("doAddApplication", model);
+    },
+    async updateApplication({ commit }, [index, model]) {
+      commit("doUpdateApplication", [index, model]);
+    },
+    async deleteApplication({ commit, state }, id: string): Promise<void> {
+      try {
+        commit("doDeleteApplication", id);
+
+        const _applications = state.applicationModels.map(
+          (model: Application) => {
+            const application: Application = {
+              ...model,
+            };
+
+            return application;
+          }
+        );
+
+        const data = {
+          applications: _applications,
+        };
+
+        await portfolioDraftsApi.saveApplications(
+          state.currentPortfolioId,
+          data
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    editApplication({ commit, state }, id: string) {
+      const entityIndex = getEntityIndex(
+        state.applicationModels,
+        (entity: ApplicationModel) => entity.id === id
+      );
+
+      if (entityIndex === -1) {
+        throw new Error("unable to location task order model with id :" + id);
+      }
+      const applicationModel = state.applicationModels[entityIndex];
+
+      commit("doSaveStepModel", [applicationModel, 3, true]);
+    },
+    addNewApplication({ commit }) {
+      const model = { ...createStepThreeModel() };
+      commit("doInitializeStepModel", [model, 3]);
+    },
     /**
      *
      * saves step data to backend based on step number
@@ -358,6 +631,9 @@ export default new Vuex.Store({
           break;
         case 2:
           await this.dispatch("saveStep2", step.model);
+          break;
+        case 3:
+          await this.dispatch("saveStep3", step.model);
           break;
       }
     },
@@ -383,31 +659,58 @@ export default new Vuex.Store({
       commit("doSetSelectedCSP", model.csp);
     },
     async saveStep2({ state }, model: any) {
-      // todo: this will be multiple task orders in the future
+      if (model.id === "") {
+        model.id = generateUid();
+        this.dispatch("addTaskOrder", model);
+      } else {
+        const taskOrderIndex = getEntityIndex<TaskOrderModel>(
+          state.taskOrderModels,
+          (taskOrder) => taskOrder.id === model.id
+        );
+
+        if (taskOrderIndex === -1) {
+          throw new Error(
+            "unable to location task order model with id :" + model.id
+          );
+        }
+
+        this.dispatch("updateTaskOrder", [taskOrderIndex, model]);
+      }
+
       const taskOrders = {
-        task_orders: [
-          {
-            task_order_number: model.task_order_number,
-            clins: model.clins.map((clin: CLIN) => {
-              return {
-                ...clin,
-                // the api expects these values to be numbers not strings
-                total_clin_value: Number(clin.total_clin_value),
-                obligated_funds: Number(clin.obligated_funds),
-              };
-            }),
-            task_order_file: {
-              id: model.task_order_file.id,
-              name: model.task_order_file.name,
-            },
-          },
-        ],
+        task_orders: mapTaskOrders(state.taskOrderModels),
       };
 
       await portfolioDraftsApi.saveFunding(
         state.currentPortfolioId,
         taskOrders
       );
+    },
+    async saveStep3({ state }, model: any) {
+      if (model.id === "") {
+        model.id = generateUid();
+        this.dispatch("addApplication", model);
+      } else {
+        const appIndx = getEntityIndex<ApplicationModel>(
+          state.applicationModels,
+          (application) => application.id === model.id
+        );
+        if (appIndx === -1) {
+          throw new Error(
+            "unable to location task order model with id :" + model.id
+          );
+        }
+
+        this.dispatch("updateApplication", [appIndx, model]);
+      }
+
+      const applications = mapApplications(state.applicationModels);
+
+      const data = {
+        applications: applications,
+      };
+
+      await portfolioDraftsApi.saveApplications(state.currentPortfolioId, data);
     },
     /**
      * Saves all valid step models with changes
@@ -458,10 +761,14 @@ export default new Vuex.Store({
       }
 
       commit("doSetCurrentPortfolioId", draftId);
-      await this.dispatch("loadStep1Data", draftId);
-      await this.dispatch("loadStep2Data", draftId);
-    },
+      const loadActions = [
+        this.dispatch("loadStep1Data", draftId),
+        this.dispatch("loadStep2Data", draftId),
+        this.dispatch("loadStep3Data", draftId),
+      ];
 
+      await Promise.all(loadActions);
+    },
     async loadStep1Data({ commit }, draftId: string): Promise<void> {
       const draft = await portfolioDraftsApi.getPortfolio(draftId);
       if (draft) {
@@ -478,45 +785,19 @@ export default new Vuex.Store({
     },
     async loadStep2Data({ commit }, draftId: string): Promise<void> {
       // get funding details
-      const fundingDetails = await portfolioDraftsApi.getFunding(draftId);
+      const taskOrders = await portfolioDraftsApi.getFunding(draftId);
 
-      if (fundingDetails !== null) {
-        //todo: will update this later..
-        //there's potentially multiple task orders
-        const taskOrder = fundingDetails.details[0];
-
-        //todo: in the future this will need to be called for each task order
-
-        const taskOrderFileId = taskOrder.task_order_file?.id;
-        if (taskOrderFileId) {
-          // const taskOrderFile = await portfolioDraftsApi.getTaskOrderFile(
-          //   taskOrderFileId
-          // );
-          // if (taskOrderFile !== null) {
-          //   taskOrder.task_order_file = taskOrderFile;
-          // }
-
-          //stub out task order file data as endpoint isn't implemented
-          taskOrder.task_order_file = {
-            id: taskOrder.task_order_file?.id || "",
-            name: taskOrder.task_order_file?.name || "",
-            updated_at: "1979-12-08T04:43:33.976Z",
-            created_at: "1976-06-05T02:43:49.535Z",
-            size: 88312532.23745316,
-            status: "pending",
-          };
-        }
-
-        //update step 2 model with data returned from api
-        const step2StoreModel = {
-          ...taskOrder,
-        };
-
-        commit("doSaveStepModel", [step2StoreModel, 2, true]);
+      if (taskOrders !== null) {
+        //store the tasks orders
+        commit("setCurrentTaskOrders", taskOrders);
       }
     },
-    async triggerValidation({ commit }) {
-      commit("doTriggerValidation");
+    async loadStep3Data({ commit }, draftId: string): Promise<void> {
+      const applications = await portfolioDraftsApi.getApplications(draftId);
+      if (applications != null) {
+        //store the applications
+        commit("setCurrentApplications", applications);
+      }
     },
     openDialog(
       { commit },
@@ -615,28 +896,9 @@ export default new Vuex.Store({
       );
       return portfolios;
     },
-    getMockTaskOrders(state) {
-      return state.taskOrders;
+    getMockTaskOrders() {
+      return mockTaskOrders;
     },
-    getTaskOrderByName: (state) => (id: string) => {
-      const values = Object.values(state.taskOrders.details);
-      const taskOrderName = values.filter(
-        (taskorder) => taskorder.task_order_number === id
-      );
-      if (taskOrderName.length > 0) {
-        return taskOrderName[0];
-      } else {
-        return {};
-      }
-    },
-    deleteTaskOrderByName: (state) => (id: string) => {
-      const values = Object.values(state.taskOrders.details);
-      const updatedArray = values.filter(
-        (taskorder) => taskorder.task_order_number !== id
-      );
-      return updatedArray;
-    },
-
     getStepModel: (state) => (stepNumber: number) => {
       const step = state.portfolioSteps.find(
         (o: { step: number }) => o.step === stepNumber
@@ -650,19 +912,20 @@ export default new Vuex.Store({
       );
       return state.portfolioSteps[stepIndex].touched;
     },
-    getApplicationByID: (state) => (id: string) => {
-      const portfolio = state.portfolios[11] as Portfolio;
-      const application = portfolio.applications.find(
-        (app: Application) => app.id === id
-      );
+    // getApplicationByID: () => (id: string) => {
+    //   const application = allPortfolios[11].applications.find(
+    //     (app: Application) => app.id === id
+    //   );
 
-      if (application) {
-        return application;
-      } else {
-        throw new Error(`unable to locate application with id  ${id}`);
-      }
-    },
+    //   if (application) {
+    //     return application;
+    //   } else {
+    //     throw new Error(`unable to locate application with id  ${id}`);
+    //   }
+    // },
     getUser: (state) => state.user,
     getSideDrawer: (state) => state.sideDrawer,
+    getTaskOrders: (state) => state.taskOrderModels,
+    getApplications: (state) => state.applicationModels,
   },
 });

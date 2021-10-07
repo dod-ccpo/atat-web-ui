@@ -35,7 +35,7 @@
             id="application-details"
             label="Application Details"
             class="mt-16 width-60"
-            :value.sync="_application.details"
+            :value.sync="_application.description"
             :helpText="applicationDetailsHelpText"
           />
         </v-col>

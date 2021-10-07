@@ -61,10 +61,12 @@ import Vue from "vue";
 import { Component, PropSync, Prop } from "vue-property-decorator";
 import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
-import { SummaryStep, TaskOrders } from "types/Wizard";
+import { SummaryStep, TaskOrderModel } from "types/Wizard";
 import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
 import { Application, Portfolio } from "../../../../types/Portfolios";
 import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
+import { allPortfolios } from "../../../store/mocks/portfoliosMockData";
+
 @Component({
   components: {
     PortfolioSummaryCard,
@@ -77,7 +79,7 @@ export default class SummaryStepper extends Vue {
   @Prop({ default: () => null })
   private portfolio!: Portfolio;
   @Prop({ default: "TaskOrders" })
-  private taskOrders!: TaskOrders;
+  private taskOrders!: TaskOrderModel[];
   @PropSync("stepNumber", { default: 1 })
   private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
@@ -144,10 +146,11 @@ export default class SummaryStepper extends Vue {
     },
   ];
 
-  get applicationData(): Application | undefined {
-    return this.portfolio && this.portfolio.applications.length > 0
-      ? this.portfolio.applications[0]
-      : undefined;
+  get applicationData(): any {
+    // return this.portfolio && this.portfolio.applications.length > 0
+    //   ? this.portfolio.applications[0]
+    //   : undefined;
+    return allPortfolios[11].applications[0];
   }
 }
 </script>
