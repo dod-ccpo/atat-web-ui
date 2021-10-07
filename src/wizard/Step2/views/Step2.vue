@@ -54,10 +54,5 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
       this.model.clins.splice(index, 1);
     }
   }
-
-  public async mounted(): Promise<void> {
-    // if (this.$route.name === "editfunding") {
-    // }
-  }
 }
 </script>
