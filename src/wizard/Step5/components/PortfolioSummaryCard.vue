@@ -59,7 +59,7 @@ export default class PortfolioSummaryCard extends Vue {
     this.$nextTick(() => {
       this.dataItems.push({
         prefix: "Funded by",
-        value: this.portfolio.dod_component.join(","),
+        value: this.portfolio.dod_components.join(","),
       });
 
       this.dataItems.push({
