@@ -44,4 +44,4 @@ class DashBoardPage {
     }
 
 }
-export default DashBoardPage
+export default DashBoardPage;

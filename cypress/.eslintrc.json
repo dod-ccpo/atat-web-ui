@@ -1,5 +1,18 @@
 {
+    "globals": {
+        "cy": true
+    },
     "extends": [
         "plugin:cypress/recommended"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "*.js"
+            ],
+            "rules": {
+                "@typescript-eslint/explicit-module-boundary-types": 0
+            }
+        }
     ]
 }
