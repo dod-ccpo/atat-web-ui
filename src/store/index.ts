@@ -14,6 +14,7 @@ import PortfolioDraftsApi from "@/api/portfolios";
 import { CLIN } from "types/Wizard";
 import { VEditDialog } from "vuetify/lib";
 
+
 Vue.use(Vuex);
 
 const portfolioDraftsApi = new PortfolioDraftsApi();
