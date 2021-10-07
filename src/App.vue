@@ -10,6 +10,7 @@
       </v-container>
     </v-main>
     <ATATFooter />
+    <ATATDialog />
   </v-app>
 </template>
 
@@ -24,6 +25,7 @@ import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import SideDrawer from "@/components/SideDrawer.vue";
+import ATATDialog from "@/components/ATATDialog.vue";
 import { Route } from "vue-router";
 
 @Component({
@@ -32,6 +34,7 @@ import { Route } from "vue-router";
     ATATFooter,
     ATATHeader,
     ATATSideBar,
+    ATATDialog,
     SecurityBanner,
   },
 })

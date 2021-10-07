@@ -39,7 +39,7 @@ div#inputWidthFaker {
 .pill.v-text-field {
   display: inline-block;
   height: 32px;
-  border: 1px solid #D9E8F6;
+  border: 1px solid transparent;
   border-radius: 15px;
   background-color: #D9E8F6;
   padding: 0 4px 0 12px;
@@ -47,7 +47,6 @@ div#inputWidthFaker {
   margin: 3px;
   position: relative;
   z-index: 2;
-  border: 1px solid transparent;
   &.invalid-entry:not(.v-input--is-focused) {
     background-color: #F8DFE2;
     border-color: $error-darker;
