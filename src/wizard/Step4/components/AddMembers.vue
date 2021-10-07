@@ -99,7 +99,40 @@
           </p>
         </v-alert>
 
+        <v-divider class="my-8 width-40"></v-divider>
+
+        <h3>
+          Team Member Roles
+        </h3>
+        <p>
+          Choose what type of role people will have in your application.<br>
+          <v-btn class="link-button pa-0 height-auto">Learn more about roles</v-btn>
+        </p>
+
+        <v-checkbox
+          v-model="assignDifferentAccessLevels"
+          label="I want to assign different levels of access to each environment."
+        ></v-checkbox>
+
+        <v-radio-group v-model="accessLevelForAllEnvs">
+          <v-radio
+            v-for="accessLevel in accessLevelsForAllEnvsList"
+            :key="accessLevel.level_name"
+            :label="accessLevel.level_name"
+            :value="accessLevel.level_value"
+          ></v-radio>
+        </v-radio-group>
+
+        <v-select
+          :items="accessLevelList"
+          item-text="level_name"
+          item-value="level_value"
+          dense
+          filled
+        />
+
       </v-card-text>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
@@ -148,8 +181,48 @@ export default class AddMember extends Vue {
     isDuplicate: boolean,
   }[] = [];
   private validEmailList: string[] = [];
+  private assignDifferentAccessLevels: boolean = false;
+  private accessLevelForAllEnvs: string = "";
+
+  private accessLevelList: {
+    level_name: string,
+    level_value: string, // in case passing enums?
+    avl_for_all_envs: boolean,
+  }[] = [
+    {
+      level_name: "Administrator",
+      level_value: "administrator",
+      avl_for_all_envs: true,
+    },
+    {
+      level_name: "Contributor",
+      level_value: "contributor",
+      avl_for_all_envs: true,
+    },
+    {
+      level_name: "Billing read-only",
+      level_value: "readonly",
+      avl_for_all_envs: true,
+    },
+    {
+      level_name: "No access",
+      level_value: "none",
+      avl_for_all_envs: false,
+    },
+  ];
+
+  //   "Administrator",
+  //   "Contributor",
+  //   "Billing read-only",
+  //   "No access"
+  // ];
+
 
   @PropSync("dialogOpen") _dialog_open!: boolean;
+
+  get accessLevelsForAllEnvsList() {
+    return this.accessLevelList.filter((obj) => obj.avl_for_all_envs === true);
+  }
 
   get inputWidthFaker() {
     return this.$refs.inputWidthFaker as HTMLElement;
@@ -365,7 +438,7 @@ export default class AddMember extends Vue {
   }
 
   public validateEmail(email: string) {
-    const isMilAddress = email.slice(-3) === "mil";
+    const isMilAddress = email.slice(-3).toLowerCase() === "mil";
     const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
     return isMilAddress && emailRegex.test(email);
   }

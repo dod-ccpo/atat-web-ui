@@ -247,6 +247,8 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
+import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
+import { Application, Environment } from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -266,6 +268,16 @@ export default class Step_4 extends Vue {
   private teamExpectationText = false;
   private handleClick(): void {
     console.log("clicked");
+  }
+
+  private applicationDetails: CreateApplicationModel =
+    this.$store.getters.getStepModel(3);
+
+  private mapEnvironmentToModel(env: Environment): CreateEnvironmentModel {
+    return {
+      name: env.name,
+      id: env.id,
+    };
   }
 
   private dialogOpen = false;
