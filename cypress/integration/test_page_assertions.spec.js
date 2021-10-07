@@ -8,7 +8,7 @@ describe('TestSuite to Verify the Assertions for all pages', function () {
     const dashboard = new DashBoardPage()
     const profile = new ProfilePage()
 
-    before(function () {
+    before(() => {
         cy.clearCookies()
     });
     beforeEach(() => {
@@ -36,16 +36,10 @@ describe('TestSuite to Verify the Assertions for all pages', function () {
             .should('be.visible')
             .should('have.attr', 'alt', 'CCPO logo')
         signin.certSelectionTex().should('have.text', 'Certificate Selection')
-        const timestamp = new Date()
-        const month = new Date().toLocaleString('default', { month: 'long' });
-        const hours = new Date().getHours();
-        const minutes = new Date().getMinutes();
-        const time = hours + ":" + minutes;
-        var dd = timestamp.getDate();
-        if (dd < 10) { dd = '0' + dd }
-        const year = timestamp.getFullYear();
+        const options = { month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+        const dateTimeStr = new Date().toLocaleDateString("en-US", options) + ' -04:00';
         signin.lastLoginFooter()
-            .should('contain', 'Last login: ' + month + ' ' + dd + ', ' + year + ', ' + time + ' -04:00')
+            .should('contain', 'Last login: ' + dateTimeStr)
 
         signin.signInBtn().click()
         cy.url().should('include', '/dashboard')

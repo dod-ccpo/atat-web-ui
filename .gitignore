@@ -10,6 +10,7 @@ node_modules
 /results/**
 browserstack.json
 /cypress/videos/**
+/cypress/screenshots/**
 
 
 # local env files
