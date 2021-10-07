@@ -132,4 +132,8 @@
     width: 45px;
     min-width: 35px !important;
   }
+
+  &.v-btn--disabled[disabled='disabled']{
+    color: #fff !important;
+  }
 }
