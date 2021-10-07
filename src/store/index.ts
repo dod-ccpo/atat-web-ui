@@ -98,6 +98,7 @@ export default new Vuex.Store({
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
     dialog: {},
+    portfolioDrafts: [],
     portfolios: [],
     taskOrders: mockTaskOrder,
     wizardNavigation: {},
@@ -275,8 +276,8 @@ export default new Vuex.Store({
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
     },
-    updatePortfolios(state, portfolios: Portfolio[]) {
-      Vue.set(state, "portfolios", [...portfolios]);
+    updatePortfolioDrafts(state, portfolioDrafts: PortfolioDraft[]) {
+      Vue.set(state, "portfolioDrafts", [...portfolioDrafts]);
     },
     doDeletePortfolioDraft(state, draftId: string) {
       const portfololioIndex = state.portfolios.findIndex(
@@ -357,12 +358,22 @@ export default new Vuex.Store({
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
-    async loadPortfolios({ commit }) {
-      const portfolios = await portfolioDraftsApi.getAll();
-      commit("updatePortfolios", portfolios);
+    async loadPortfolioDrafts({ commit }) {
+      const portfolioDrafts = await portfolioDraftsApi.getAll();
+      commit("updatePortfolioDrafts", portfolioDrafts);
     },
     async saveStep1({ state, commit }, model: any) {
-      await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, model);
+      // build data from step model
+      const data: PortFolioDraftDTO = {
+        id: state.currentPortfolioId,
+        name: model.name,
+        description: model.description,
+        csp: model.csp,
+        dod_components: model.dod_components,
+        portfolio_managers: [],
+      };
+
+      await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
       commit("doSetSelectedCSP", model.csp);
     },
     async saveStep2({ state }, model: any) {
@@ -379,7 +390,6 @@ export default new Vuex.Store({
                 obligated_funds: Number(clin.obligated_funds),
               };
             }),
-            csp: state.selectedCSP,
             task_order_file: {
               id: model.task_order_file.id,
               name: model.task_order_file.name,
@@ -388,7 +398,7 @@ export default new Vuex.Store({
         ],
       };
 
-      await portfolioDraftsApi.createFunding(
+      await portfolioDraftsApi.saveFunding(
         state.currentPortfolioId,
         taskOrders
       );
@@ -452,14 +462,15 @@ export default new Vuex.Store({
         const step1Model = {
           name: draft.name,
           description: draft.description,
-          dod_components: draft.dod_component,
+          dod_components: draft.dod_components,
+          csp: draft.csp,
         };
 
         // update step 1 model
         commit("doSaveStepModel", [step1Model, 1, true]);
       }
     },
-    async loadStep2Data({ commit, getters }, draftId: string): Promise<void> {
+    async loadStep2Data({ commit }, draftId: string): Promise<void> {
       // get funding details
       const fundingDetails = await portfolioDraftsApi.getFunding(draftId);
 
@@ -495,13 +506,6 @@ export default new Vuex.Store({
           ...taskOrder,
         };
 
-        const csp = taskOrder.csp ? taskOrder.csp : this.state.selectedCSP;
-        const step1Model: any = getters["getStepModel"](1);
-        step1Model.csp = csp;
-        commit("doSaveStepModel", [step1Model, 1, true]);
-
-        // a little csp voodoo until we get csps in step 1 data
-        commit("doSetSelectedCSP", csp);
         commit("doSaveStepModel", [step2StoreModel, 2, true]);
       }
     },
