@@ -147,8 +147,6 @@ const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
 const mapApplications = (
   applicationModels: ApplicationModel[]
 ): Application[] => {
-  debugger;
-
   return applicationModels.map((model: ApplicationModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...baseModel } = model;
@@ -602,8 +600,6 @@ export default new Vuex.Store({
       }
     },
     editApplication({ commit, state }, id: string) {
-      debugger;
-
       const entityIndex = getEntityIndex(
         state.applicationModels,
         (entity: ApplicationModel) => entity.id === id
@@ -625,8 +621,6 @@ export default new Vuex.Store({
      * saves step data to backend based on step number
      */
     async saveStepData({ state }, stepNumber) {
-      debugger;
-
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
@@ -693,8 +687,6 @@ export default new Vuex.Store({
       );
     },
     async saveStep3({ state }, model: any) {
-      debugger;
-
       if (model.id === "") {
         model.id = generateUid();
         this.dispatch("addApplication", model);
@@ -717,7 +709,7 @@ export default new Vuex.Store({
       const data = {
         applications: applications,
       };
-      debugger;
+
       await portfolioDraftsApi.saveApplications(state.currentPortfolioId, data);
     },
     /**

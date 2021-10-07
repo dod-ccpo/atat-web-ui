@@ -74,7 +74,7 @@ export default class Step3Summary extends Vue {
   get cards(): ATATSummaryCardItem[] {
     const cardData = this.applications.map((application: ApplicationModel) => {
       const environments: ATATSummaryCardGroupedItems[] =
-        application.environments != undefined
+        application.environments
           ? application.environments?.map<ATATSummaryCardGroupedItems>(
               (env) => ({
                 title: env.name,
@@ -120,7 +120,6 @@ export default class Step3Summary extends Vue {
   }
 
   async onEdit(id: string): Promise<void> {
-    debugger;
     this.$store.dispatch("editApplication", id);
     this.$router.push({
       name: editapplication.name,
@@ -131,7 +130,6 @@ export default class Step3Summary extends Vue {
   }
 
   async onAddNew(id: string): Promise<void> {
-    debugger;
     await this.$store.dispatch("addNewApplication");
     this.$router.push({
       name: addapplication.name,

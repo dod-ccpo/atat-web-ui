@@ -32,20 +32,7 @@ export interface PortfolioDraft {
   num_environments: number;
 }
 
-// export interface Application {
-//   id: string;
-//   name: string;
-//   description: string;
-//   environments?: Environment[];
-//   members?: ApplicationMember[];
-// }
-
-// export interface Environment {
-//   id: string;
-//   name: string;
-//   funding_source: string[];
-// }
-// // Aplication Members:
+//Application Members:
 export interface ApplicationMember {
   id: string;
   email: string;

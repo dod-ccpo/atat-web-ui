@@ -174,7 +174,7 @@ export default class Wizard extends Vue {
       // here
       if (
         navigationFailure &&
-        navigationFailure.type == this.navigationRedirected
+        navigationFailure.type === this.navigationRedirected
       ) {
         return;
       } else {
