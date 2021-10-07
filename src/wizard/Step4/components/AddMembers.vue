@@ -128,8 +128,8 @@ export default class AddMember extends Vue {
   private memberList: {
     id: number;
     email: string;
-    display_name: "";
-    access: "";
+    display_name: string;
+    access: string;
     isValid: boolean | null;
     isDuplicate: boolean;
   }[] = [];
@@ -328,6 +328,9 @@ export default class AddMember extends Vue {
         this.memberList[memberListIndex].email = emailAddressEntered;
         if (isValid) {
           this.validEmailList.push(emailAddressEntered);
+          const displayName: string =
+            this.parseNameFromEmail(emailAddressEntered);
+          this.memberList[memberListIndex].display_name = displayName;
         }
       }
 
@@ -338,6 +341,31 @@ export default class AddMember extends Vue {
       this.removeMemberFromList(memberId);
       this.setInputWidths();
     }
+  }
+
+  public parseNameFromEmail(email: string) {
+    // get everthing before the @ symbol
+    let name = email.split("@")[0];
+    // remove identifier suffix
+    name = name.replace(/.civ|-civ|.mil|-mil|.ctr|-ctr|_adm/gi, "");
+    // split on . _ and -
+    let names = name.split(/[._\\-]+/);
+    // capitalize and remove all non-alpha characters
+    for (let i = 0; i < names.length; i++) {
+      names[i] = (names[i].charAt(0).toUpperCase() + names[i].slice(1)).replace(
+        /[^A-Za-z]+/g,
+        ""
+      );
+    }
+    // remove middle initial
+    if (names.length > 1 && names[1].length === 1) {
+      names.splice(1, 1);
+    }
+
+    // EJY remove console log after functional testing complete
+    console.log("Name parsed from email: ", names.join(" "));
+
+    return names.join(" ");
   }
 
   public setInputWidths() {
