@@ -4,8 +4,10 @@ import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { mockTaskOrder } from "@/store/mocks/taskOrderMockData";
 import { Application, Portfolio } from "types/Portfolios";
+import { Dialog } from "types/FormFields";
 import PortfolioDraftsApi from "@/api/portfolios";
 import { CLIN } from "types/Wizard";
+import { VEditDialog } from "vuetify/lib";
 
 Vue.use(Vuex);
 
@@ -95,9 +97,7 @@ export default new Vuex.Store({
     isSideDrawerFocused: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
-    modalType: "",
-    isModalDisplayed: false,
-    isModalFocused: false,
+    dialog: {},
     portfolios: [],
     taskOrders: mockTaskOrder,
     wizardNavigation: {},
@@ -181,14 +181,8 @@ export default new Vuex.Store({
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
     },
-    changeIsModalDisplayed(state, status: boolean) {
-      state.isModalDisplayed = status;
-    },
-    changeModalType(state, type: string) {
-      state.modalType = type;
-    },
-    changeIsModalFocused(state, setFocus: boolean) {
-      state.isModalFocused = setFocus;
+    changeDialog(state, dialogProps: Dialog) {
+      state.dialog = dialogProps;
     },
     changeSideDrawer(state, status: boolean) {
       state.sideDrawer = status;
@@ -514,13 +508,18 @@ export default new Vuex.Store({
     async triggerValidation({ commit }) {
       commit("doTriggerValidation");
     },
-    openModal({ commit }, [modalType, setFocusOnModal]) {
-      commit("changeIsModalDisplayed", true);
-      commit("changeModalType", modalType);
-      commit("changeIsModalFocused", setFocusOnModal);
-    },
-    closeModal({ commit }) {
-      commit("changeIsModalDisplayed", false);
+    openDialog(
+      { commit },
+      [dialogType, setFocusOnDialog, dialogWidth, dialogHeight]
+    ) {
+      const dialogProps: Dialog = {
+        isDisplayed: true,
+        type: dialogType,
+        setFocus: setFocusOnDialog,
+        width: dialogWidth,
+        height: dialogHeight,
+      };
+      commit("changeDialog", dialogProps);
     },
     closeSideDrawer({ commit }) {
       commit("changeSideDrawer", false);
@@ -538,9 +537,6 @@ export default new Vuex.Store({
     },
     getIsNavSideBarDisplayed(state) {
       return state.isNavSideBarDisplayed;
-    },
-    getIsModalDisplayed(state) {
-      return state.isModalDisplayed;
     },
     getisUserAuthorizedToProvisionCloudResources(state) {
       return state.isUserAuthorizedToProvisionCloudResources;

@@ -1,114 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-<<<<<<< HEAD
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-      <v-dialog v-model="dialogOpen" persistent max-width="632px">
-        <v-card>
-          <v-card-title>
-            <h2 class="mb-2">Add team members to Tracker Application</h2>
-          </v-card-title>
-          <v-card-text class="body-lg text--base-darkest">
-            <p>
-              Team members can have different levels of access to your
-              application and environments. Invite multiple people with the same
-              permissions at once.
-            </p>
-
-            <strong id="EmailInputLabel">Email Addresses</strong>
-            <div class="error--text" v-if="invalidEmailCount">
-              <div class="v-messages__message mr-2 d-inline-block">
-                {{ invalidEmailCount }} error<span v-if="invalidEmailCount > 1"
-                  >s</span
-                >
-              </div>
-              <a tabindex="0" @click="removeInvalidEmails"
-                >Remove all emails with errors</a
-              >
-            </div>
-            <div
-              id="EmailInputWrapper"
-              aria-labelledby="EmailInputLabel"
-              class="pa-2 email-wrapper mb-0"
-              :class="[emailInputFocused ? 'focused' : '']"
-              @click="addEmail"
-            >
-              <v-text-field
-                v-for="member in memberList"
-                :key="member.id"
-                class="pill"
-                :class="{
-                  'email-invalid': !member.isValid && member.isValid !== null,
-                }"
-                :data-member-id="member.id"
-                v-model="member.email"
-                append-icon="close"
-                @click="emailEdit"
-                @blur="emailBlurred"
-                @click:append="removeEmail"
-              />
-            </div>
-            <div class="dupe-email-alert-wrapper">
-              <v-alert
-                v-if="duplicatedEmail"
-                class="dupe-email-alert"
-                color="#1b1b1b"
-                dark
-                icon="error"
-                dense
-              >
-                &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
-              </v-alert>
-            </div>
-            <span class="color-base">
-              Must use a .mil email address. Separate multiple emails with
-              commas.
-            </span>
-
-            <v-alert
-              v-show="invalidEmailCount"
-              outlined
-              rounded
-              color="error"
-              border="left"
-              icon="error"
-              class="text-left error_lighter black-icon mt-3"
-            >
-              <p class="black--text body-lg">
-                <span v-if="invalidEmailCount === 1">
-                  The address &ldquo;{{ invalidEmail }}&rdquo; was not
-                  recognized.
-                </span>
-                <span v-if="invalidEmailCount > 1">
-                  Multiple addresses were not recognized.
-                </span>
-                Please make sure that all addresses are properly formatted and
-                .mil addresses.
-              </p>
-            </v-alert>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn text class="link-button" @click="dialogOpen = false">
-              Cancel
-            </v-btn>
-            <v-btn
-              color="primary"
-              class="px-5"
-              @click="dialogOpen = false"
-              :disabled="invalidEmailCount > 0 || validEmailCount === 0"
-            >
-              Add Team Members
-              <span class="valid-email-count ml-2" v-if="validEmailCount">
-                {{ validEmailCount }}
-              </span>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-=======
->>>>>>> 89b86503a148620beb5d1523183dd2748ca92f21
       <v-col class="pl-0" cols="12">
         <h2 v-if="!createdApplication" class="h2">
           Invite team members to your application
@@ -174,8 +67,8 @@
                 class="font-weight-bold align-center"
                 :ripple="false"
                 color="primary"
-                @keydown.native.enter="openModal($event)"
-                @click="openModal($event)"
+                @keydown.native.enter="openDialog($event)"
+                @click="openDialog($event)"
               >
                 <v-icon class="mr-2" role="presentation">control_point</v-icon>
                 Invite Team Member
@@ -342,11 +235,6 @@
         </v-row>
       </v-col>
     </v-row>
-
-    <add-members
-      :dialogOpen.sync="dialogOpen"
-    />
-
   </v-container>
 </template>
 
@@ -357,8 +245,8 @@ import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
 
 @Component({
   components: {
-    AddMembers
-  }
+    AddMembers,
+  },
 })
 export default class Step_4 extends Vue {
   private csp =
@@ -376,8 +264,14 @@ export default class Step_4 extends Vue {
 
   private dialogOpen = false;
 
-  public openModal(event: Event): void {
-    this.$store.dispatch("openModal", ["default", event.type === "keydown"]);
+  public openDialog(event: Event): void {
+    this.$store.dispatch("openDialog", [
+      "addMembers",
+      event.type === "keydown",
+      "632px",
+      "90",
+    ]);
+    // todo add this back in
     // this.dialogOpen = true;
     // this.$nextTick().then(() => {
     //   const pillboxWrapper = document.getElementById("PillboxWrapper") as HTMLDivElement;
