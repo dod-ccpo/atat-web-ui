@@ -1,0 +1,92 @@
+div#inputWidthFaker {
+  display: inline-block;
+  font-size: 16px;
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
+}
+
+.pillbox-wrapper {
+  border:1px solid $base_dark;
+  height: 118px;
+  margin-bottom: 5px;
+  width: 100%;
+  max-width:550px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  &.focused {
+    border-color: $primary;
+    outline: 2px solid $primary;
+  }
+}
+
+.dupe-entry-alert-wrapper {
+  position: relative;
+  .dupe-entry-alert {
+    position: absolute;
+    top: -26px;
+    left: 1px;
+    right: 2px;
+    padding: 0;
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    font-size: 14px !important;
+    z-index: 10;
+  }
+}
+
+.pill.v-text-field {
+  display: inline-block;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 15px;
+  background-color: #D9E8F6;
+  padding: 0 4px 0 12px;
+  line-height: 22px;
+  margin: 3px;
+  position: relative;
+  z-index: 2;
+  &.invalid-entry:not(.v-input--is-focused) {
+    background-color: #F8DFE2;
+    border-color: $error-darker;
+    padding-left: 30px;
+    &:before {
+      font-family: 'Material Icons';
+      content: "error";
+      -webkit-font-feature-settings: 'liga';
+      color: $error-darker;
+      position: absolute;
+      top: 4px;
+      left: 3px;
+      font-size: 24px;
+    }
+  }
+
+  input {
+    height: 29px;
+    padding: 0;
+  }
+
+  &.v-input--is-focused {
+    background-color: transparent;
+    .v-input__append-inner {
+      opacity: 0;
+    }
+  }
+  .v-input__slot {
+    &:before, &:after {
+      display: none;
+    }
+  }
+  .v-input__append-inner {
+    margin-top: 3px;
+    .v-icon {
+      font-size: 20px;
+      &:hover, &:focus, &:active {
+        color: black;
+      }
+    }
+  }
+
+}

@@ -1,6 +1,7 @@
 <template>
   <v-container fluid class="ml-3">
     <v-row>
+      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
         <h2 v-if="!createdApplication" class="h2">
           Invite team members to your application
@@ -66,6 +67,8 @@
                 class="font-weight-bold d-flex align-center px-5"
                 :ripple="false"
                 color="primary"
+                @keydown.native.enter="openDialog($event)"
+                @click="openDialog($event)"
               >
                 <div class="mr-1 mt-n2">
                 <v-icon class="icon-20" role="presentation"
@@ -309,8 +312,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
 
-@Component({})
+@Component({
+  components: {
+    AddMembers,
+  },
+})
 export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
@@ -348,6 +356,15 @@ export default class Step_4 extends Vue {
   private handleClick(): void {
     console.log("clicked");
   }
+
+  public openDialog(event: Event): void {
+    this.$store.dispatch("openDialog", [
+      "addMembers",
+      event.type === "keydown",
+      "632px",
+      "90",
+    ]);
+  }
   private isDisabled(workplace_access: string): boolean {
     if (workplace_access === "Administrator") {
       return true;
@@ -355,10 +372,9 @@ export default class Step_4 extends Vue {
     return false;
   }
 
-  public mounted(): void {
+  public async mounted(): Promise<void> {
+    // temp until actually saving data to store
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }
 </script>
-
-<style scoped></style>
