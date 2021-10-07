@@ -152,7 +152,13 @@ import Vue from "vue";
 
 @Component({})
 export default class ATATSummaryCard extends Vue {
-  @Prop({ default: {}, required: false }) private data!: ATATSummaryCards;
+  @Prop({
+    default: {
+      cards: [],
+    },
+    required: false,
+  })
+  private data!: ATATSummaryCards;
 
   @Prop({ default: "" })
   private emptyCard!: string;
@@ -201,21 +207,6 @@ export default class ATATSummaryCard extends Vue {
 
   private leftButtonClicked(card: ATATSummaryCardItem) {
     this.cardSelected = card;
-    let id = card.title;
-
-    //leaving for now for application summary
-    switch (this.$route.name) {
-      case "applicationsummary":
-        id = card.id;
-        this.$router.push({
-          name: "editapplication",
-          params: { id: `${id}` },
-        });
-        break;
-      default:
-      // code block
-    }
-
     //emit edit event
     this.$emit("edit", card.id);
   }

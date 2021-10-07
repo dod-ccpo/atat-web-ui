@@ -23,16 +23,16 @@ export const mockTaskOrders: TaskOrderModel[] = [
       },
     ],
     task_order_file: {
-      name:"mock file",
+      name: "mock file",
       id: "fileid",
       created_at: "",
-      updated_at:"",
-      size:0,
+      updated_at: "",
+      size: 0,
       status: "pending",
-    }
+    },
   },
   {
-    id:"task2",
+    id: "task2",
     task_order_number: "TaskOrder_0002",
     clins: [
       {
@@ -61,11 +61,12 @@ export const mockTaskOrders: TaskOrderModel[] = [
       },
     ],
     task_order_file: {
-      name:"mock file",
+      name: "mock file",
       id: "fileid2",
       created_at: "",
-      updated_at:"",
+      updated_at: "",
       size: 0,
       status: "pending",
-    }
-  }];
+    },
+  },
+];

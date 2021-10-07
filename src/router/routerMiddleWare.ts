@@ -1,4 +1,4 @@
-import _Vue from "vue"; 
+import _Vue from "vue";
 import VueRouter, {
   NavigationGuard,
   NavigationGuardNext,
@@ -21,7 +21,6 @@ function runMiddleware(
     return;
   }
 
-
   nextHandler(to, from, (nextArg) => {
     if (nextArg === undefined) {
       runMiddleware(handlersLeft, to, from, next);
@@ -35,7 +34,6 @@ function runMiddleware(
 export type ATATRouteHandler = (
   store?: Store<any>
 ) => (to: Route, from: Route, next: NavigationGuardNext<any>) => any;
-
 
 export class RouterMiddleWareOptions {
   router!: VueRouter;

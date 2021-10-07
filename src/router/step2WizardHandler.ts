@@ -17,14 +17,13 @@ const step2RouteHandler: ATATRouteHandler =
       store &&
       store.state.taskOrderModels.length > 0
     ) {
-      //foward the previous button from funding summary to
+      //forward the previous button from funding summary to
       //add portfolio (a.k.a step 1)
       //all other requests to add funding gets redirected to funding summary
       if (from.name === fundingsummary.name && to.params) {
         if (to.params.source === "wizard-previous") {
           next({ name: addportfolio.name });
-        }
-        if (to.params.id) {
+        } else {
           next();
         }
       } else {

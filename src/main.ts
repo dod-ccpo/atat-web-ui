@@ -10,7 +10,7 @@ import cssVars from "css-vars-ponyfill"; // needed to process css vars in IE11
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import RouterMiddleWare, { RouterMiddleWareOptions }  from "./router/routerMiddleWare";
-import step2RouteHandler from "./router/step2WizardHandler";
+import routeHandlers from "./router/routeHandlers";
 
 // below 3 scripts for Vuetify in IE
 import 'core-js/stable';
@@ -58,7 +58,7 @@ Vue.prototype.moment = moment;
 Vue.use(RouterMiddleWare, {
   store: store, 
   router: router, 
-  handlers: [step2RouteHandler],
+  handlers: routeHandlers,
 });
 
 // needed to process css vars in IE11

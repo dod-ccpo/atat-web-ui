@@ -87,6 +87,9 @@ const editapplication: RouteConfigSingleView = {
   name: "editapplication",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
+  props: {
+    step: 3,
+  },
 };
 
 const addteammembers: RouteConfigSingleView = {
@@ -188,4 +191,14 @@ const wizard: RouteConfigSingleView = {
   ],
 };
 
-export { wizard, addportfolio, addfunding, fundingsummary, editfunding };
+export {
+  wizard,
+  addportfolio,
+  addfunding,
+  fundingsummary,
+  editfunding,
+  addapplication,
+  editapplication,
+  applicationsummary,
+  addteammembers,
+};

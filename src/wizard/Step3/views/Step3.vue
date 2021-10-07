@@ -12,9 +12,9 @@
 import { Component } from "vue-property-decorator";
 import CreateApplicationForm from "../components/CreateApplicationForm.vue";
 import { generateUid } from "@/helpers";
-import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
+import { CreateApplicationModel } from "types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
-import { Application, Environment } from "../../../../types/Portfolios";
+import { Application } from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -59,49 +59,19 @@ export default class Step_3 extends ValidatableWizardStep<CreateApplicationModel
     this.valid = false;
     this.valid = await this.$refs.createApplicationForm.validateForm();
     return this.valid;
-  }
+  };
 
-  private mapEnvironmentToModel(env: Environment): CreateEnvironmentModel {
-    return {
-      name: env.name,
-      id: env.id,
-    };
-  }
+  // private mapEnvironmentToModel(env: Environment): CreateEnvironmentModel {
+  //   return {
+  //     name: env.name,
+  //     id: env.id,
+  //   };
+  // }
 
   public async mounted(): Promise<void> {
     this.touched = this.$store.getters.getStepTouched(3);
     if (this.touched) {
       this.validate();
-    }
-
-    if (this.$route.name === "editapplication") {
-      const application = this.$store.getters.getApplicationByID(
-        this.$route.params.id
-      ) as Application;
-
-      if (application) {
-        let environments =
-          application.environments?.map<CreateEnvironmentModel>((env) =>
-            this.mapEnvironmentToModel(env)
-          ) || [];
-
-        this.model = {
-          id: application.id,
-          name: application.name,
-          description: application.description,
-          environments: environments,
-        };
-      }
-    } else {
-      // set up default environments
-      if (this.model.environments.length === 0) {
-        this.defaultEnvironmentNames.forEach((name) => {
-          this.model.environments.push({
-            id: generateUid(),
-            name: name,
-          });
-        });
-      }
     }
   }
 }

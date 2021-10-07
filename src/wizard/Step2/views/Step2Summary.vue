@@ -19,12 +19,7 @@
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
-        <v-btn
-          to="/wizard/addfunding"
-          class="primary"
-          :ripple="false"
-          @click="onAddNewTaskOrder"
-        >
+        <v-btn class="primary" :ripple="false" @click="onAddNewTaskOrder">
           <v-icon>control_point</v-icon>
           <div class="ml-2 font-weight-bold">Add a Task Order</div>
         </v-btn>

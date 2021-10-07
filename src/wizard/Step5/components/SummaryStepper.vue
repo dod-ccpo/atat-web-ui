@@ -65,7 +65,7 @@ import { SummaryStep, TaskOrderModel } from "types/Wizard";
 import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
 import { Application, Portfolio } from "../../../../types/Portfolios";
 import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
-import {allPortfolios} from "../../../store/mocks/portfoliosMockData";
+import { allPortfolios } from "../../../store/mocks/portfoliosMockData";
 
 @Component({
   components: {
@@ -146,7 +146,7 @@ export default class SummaryStepper extends Vue {
     },
   ];
 
-  get applicationData(): Application | undefined {
+  get applicationData(): any {
     // return this.portfolio && this.portfolio.applications.length > 0
     //   ? this.portfolio.applications[0]
     //   : undefined;

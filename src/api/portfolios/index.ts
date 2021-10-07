@@ -1,9 +1,9 @@
 import { AxiosError } from "axios";
 import { NightwatchAssert } from "nightwatch";
 import {
-  ApplicationDTO,
+  Application,
   Portfolio,
-  PortfolioDraft,
+  PortfolioDraft as PortfolioModel,
   PortFolioDraftDTO,
   TaskOrder,
 } from "types/Portfolios";
@@ -17,11 +17,11 @@ export default class PortfolioDraftsApi {
    *
    * @returns all portfolio drafts
    */
-  public async getAll(): Promise<PortfolioDraft[]> {
+  public async getAll(): Promise<PortfolioModel[]> {
     const response = await this.client.get();
 
     if (response.status === 200) {
-      const portfolioDrafts: PortfolioDraft[] = response.data;
+      const portfolioDrafts: PortfolioModel[] = response.data;
       return portfolioDrafts;
     } else {
       throw new Error(response.statusText);
@@ -116,7 +116,6 @@ export default class PortfolioDraftsApi {
   }
 
   public async saveFunding(id: string, data: any): Promise<void> {
-
     const response = await this.client.post(`${id}/funding`, data);
     if (response.status !== 201) {
       throw Error(
@@ -124,7 +123,6 @@ export default class PortfolioDraftsApi {
       );
     }
   }
-
   public async getFunding(id: string): Promise<TaskOrder[] | null> {
     try {
       const response = await this.client.get(`${id}/funding`);
@@ -186,7 +184,7 @@ export default class PortfolioDraftsApi {
     return null;
   }
 
-  public async saveApplication(id: string, data: any): Promise<void> {
+  public async saveApplications(id: string, data: any): Promise<void> {
     const response = await this.client.post(`${id}/application`, data);
     if (response.status !== 201) {
       throw Error(
@@ -195,7 +193,7 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async getApplications(id: string): Promise<ApplicationDTO[] | null> {
+  public async getApplications(id: string): Promise<Application[] | null> {
     try {
       const response = await this.client.get(`${id}/application`);
 
@@ -205,9 +203,8 @@ export default class PortfolioDraftsApi {
         );
       }
 
-      const data = response.data as ApplicationDTO[];
-
-      return data;
+      const { applications } = response.data;
+      return applications;
     } catch (error) {
       const axiosError = error as AxiosError;
 

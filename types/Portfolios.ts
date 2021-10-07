@@ -32,19 +32,20 @@ export interface PortfolioDraft {
   num_environments: number;
 }
 
-export interface Application {
-  id: string;
-  name: string;
-  description: string;
-  environments?: Environment[];
-  members?: ApplicationMember[];
-}
-export interface Environment {
-  id: string;
-  name: string;
-  funding_source: string[];
-}
-// Aplication Members:
+// export interface Application {
+//   id: string;
+//   name: string;
+//   description: string;
+//   environments?: Environment[];
+//   members?: ApplicationMember[];
+// }
+
+// export interface Environment {
+//   id: string;
+//   name: string;
+//   funding_source: string[];
+// }
+// // Aplication Members:
 export interface ApplicationMember {
   id: string;
   email: string;
@@ -62,7 +63,6 @@ export interface ApplicationMemberEnvironment {
   label: string;
   accessLevel: "Administrator" | "Contributor" | "No Access";
 }
-
 
 export interface TaskOrder {
   task_order_number: string;
@@ -86,14 +86,39 @@ export interface Clin {
   pop_end_date: string;
 }
 
-export interface ApplicationDTO {
-  environments: EnvironmentsDTO[];
+export interface ApplicationModel {
+  id: string;
+  name: string;
+  description: string;
+  environments: EnvironmentModel[];
 }
-export interface EnvironmentsDTO {
-  operators: OperatorDTO[];
+
+export interface EnvironmentModel {
+  id: string;
+  name: string;
+  operators: OperatorModel[]
+}
+
+export interface OperatorModel {
+  id: string;
+  access: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+}
+
+export interface Application {
+  name: string;
+  description: string;
+  environments: Environment[];
+}
+
+export interface Environment {
+  operators: Operator[];
   name: string;
 }
-export interface OperatorDTO {
+
+export interface Operator {
   access: string;
   last_name: string;
   first_name: string;
@@ -103,7 +128,7 @@ export interface OperatorDTO {
 /**
  * Wraps up models into an entity that can be given a local identifier
  */
-export interface EntityWrapper<TModel>{
+export interface EntityWrapper<TModel> {
   id: string;
   model: TModel;
 }

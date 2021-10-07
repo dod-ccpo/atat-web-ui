@@ -14,12 +14,13 @@
     </v-row>
     <atat-summary-card
       :data="cardsData"
-      :itemToDelete.sync="itemToDelete"
+      v-on:edit="onEdit"
+      v-on:delete="onDelete"
       dialogWidth="420"
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
-        <v-btn to="/wizard/addapplication" class="primary" :ripple="false">
+        <v-btn class="primary" :ripple="false" @click="onAddNew">
           <v-icon>control_point</v-icon>
           <div class="ml-2 font-weight-bold">Add an Application</div>
         </v-btn>
@@ -38,7 +39,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
 import ExpandableLink from "../../components/ExpandableLink.vue";
 
@@ -47,8 +48,8 @@ import {
   ATATSummaryCardItem,
   ATATSummaryCards,
 } from "../../../../types/Wizard";
-import { Portfolio } from "types/Portfolios";
-import { allPortfolios } from "../../../store/mocks/portfoliosMockData";
+import { ApplicationModel } from "types/Portfolios";
+import { addapplication, editapplication } from "@/router/wizard";
 
 @Component({
   mixins: [ValidatableWizardStep],
@@ -65,51 +66,79 @@ export default class Step3Summary extends Vue {
   public async validate(): Promise<boolean> {
     return true;
   }
-  @Watch("itemToDelete")
-  private deleteItem(newVal: string) {
-    if (newVal !== "") {
-      this.cardsData.cards = this.$store.getters.deletePortfolioById(
-        this.itemToDelete
-      );
-      this.itemToDelete = "";
-    }
+
+  get applications(): ApplicationModel[] {
+    return this.$store.getters.getApplications;
   }
-  public getPortfolioById(id?: string): Portfolio {
-    id = id || "11";
-    // return this.$store.getters.getPortfolioById(id);
-    const portfolio = allPortfolios["11"];
-    return portfolio;
+
+  get cards(): ATATSummaryCardItem[] {
+    const cardData = this.applications.map((application: ApplicationModel) => {
+      const environments: ATATSummaryCardGroupedItems[] =
+        application.environments != undefined
+          ? application.environments?.map<ATATSummaryCardGroupedItems>(
+              (env) => ({
+                title: env.name,
+              })
+            )
+          : [];
+
+      const summarycardItem: ATATSummaryCardItem = {
+        type: "APPLICATION",
+        id: application.id,
+        title: application.name,
+        description: application.description || undefined,
+        showChevronRight: true,
+        groupedItemsHeader: "Environments",
+        items: environments,
+        leftButtonText: "Edit",
+        rightButtonText: "Delete",
+      };
+
+      return summarycardItem;
+    });
+
+    return cardData;
+  }
+
+  transformData(): void {
+    this.cardsData.cards = this.cards;
   }
 
   mounted(): void {
-    let portfolio = this.getPortfolioById() as any;
-    let cardsData = this.cardsData;
-    if (portfolio.applications) {
-      portfolio.applications.forEach((application: { environments: any[]|undefined; id: any; name: any; description: any; }) => {
-        const environments: ATATSummaryCardGroupedItems[] =
-          application.environments != undefined
-            ? application.environments?.map<ATATSummaryCardGroupedItems>(
-                (env) => ({
-                    title: env.name,
-                })
-              )
-            : [];
+    this.transformData();
+  }
 
-        const summarycardItem: ATATSummaryCardItem = {
-          type: "APPLICATION",
-          id: application.id,
-          title: application.name,
-          description: application.description || undefined,
-          showChevronRight: true,
-          groupedItemsHeader: "Environments",
-          items: environments,
-          leftButtonText: "Edit",
-          rightButtonText: "Delete",
-        };
+  async onDelete(id: string): Promise<void> {
+    await this.$store.dispatch("deleteApplication", id);
 
-        cardsData.cards.push(summarycardItem);
-      });
+    if (this.applications.length === 0) {
+      //route the user back to add funding step
+      this.$router.push({ name: addapplication.name });
     }
+
+    this.transformData();
+  }
+
+  async onEdit(id: string): Promise<void> {
+    debugger;
+    this.$store.dispatch("editApplication", id);
+    this.$router.push({
+      name: editapplication.name,
+      params: {
+        id: id,
+      },
+    });
+  }
+
+  async onAddNew(id: string): Promise<void> {
+    debugger;
+    await this.$store.dispatch("addNewApplication");
+    this.$router.push({
+      name: addapplication.name,
+      params: {
+        id: id,
+      },
+    });
   }
 }
 </script>
