@@ -258,11 +258,6 @@ export default class Step_4 extends Vue {
   private teamPortfolioAccessText = false;
   private teamPermissionsText = false;
   private teamExpectationText = false;
-  private handleClick(): void {
-    console.log("clicked");
-  }
-
-  private dialogOpen = false;
 
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
@@ -271,12 +266,6 @@ export default class Step_4 extends Vue {
       "632px",
       "90",
     ]);
-    // todo add this back in
-    // this.dialogOpen = true;
-    // this.$nextTick().then(() => {
-    //   const pillboxWrapper = document.getElementById("PillboxWrapper") as HTMLDivElement;
-    //   pillboxWrapper.focus();
-    // });
   }
 
   public async mounted(): Promise<void> {

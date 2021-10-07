@@ -14,7 +14,7 @@
       dialog.height +
       ' min-height-' +
       dialog.height
-  "
+    "
     attach
   >
     <add-members
@@ -49,9 +49,7 @@ export default class ATATDialog extends Vue {
   }
 
   /*
-   * if necessary,  to set focus on a custom element
-   * set a class of 'firstFocus' on the element that will receive
-   * custom focus first
+   * sets focus on element with 'firstFocus' class
    */
   @Watch("$store.state.dialog.isDisplayed")
   setFocus(newVal: boolean): void {

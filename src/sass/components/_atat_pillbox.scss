@@ -47,7 +47,6 @@ div#inputWidthFaker {
   margin: 3px;
   position: relative;
   z-index: 2;
-  border: 1px solid transparent;
   &.invalid-entry:not(.v-input--is-focused) {
     background-color: #F8DFE2;
     border-color: $error-darker;

@@ -1,16 +1,20 @@
 <template>
   <v-card class="extra-padding">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-    <v-card-title style="height:52px;">
-      <h2 class="mb-2">Add team members to Tracker Application</h2>
+    <v-card-title style="height: 52px">
+      <div class="mb-2 h3">Add team members to Tracker Application</div>
     </v-card-title>
-    <v-card-text class="body-lg text--base-darkest height-100">
+    <v-card-text class="body-lg text--base-darkest height-100 mt-2">
       <p>
         Team members can have different levels of access to your application and
         environments. Invite multiple people with the same permissions at once.
       </p>
 
-      <strong id="PillboxLabel">Email Addresses</strong>
+      <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
+        <span :class="[invalidEmailCount > 0 ? 'font-weight-700' : '']">
+          Email Addresses
+        </span>
+      </div>
 
       <div
         class="error--text mb-2"
@@ -36,7 +40,7 @@
         id="PillboxWrapper"
         aria-labelledby="PillboxLabel"
         aria-describedby="PillboxInstructions"
-        class="pa-2 pillbox-wrapper mb-0"
+        class="pa-2 pillbox-wrapper mb-0 firstFocus"
         tabindex="0"
         :class="[pillboxFocused ? 'focused' : '']"
         @click="addEmail"
@@ -69,9 +73,9 @@
           &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
         </v-alert>
       </div>
-      <span class="color-base" id="PillboxInstructions">
+      <div class="color-base mt-2" id="PillboxInstructions">
         Must use a .mil email address. Separate multiple emails with commas.
-      </span>
+      </div>
 
       <v-alert
         v-show="invalidEmailCount"
@@ -80,9 +84,9 @@
         color="error"
         border="left"
         icon="error"
-        class="text-left error_lighter black-icon mt-3"
+        class="text-left error_lighter black-icon mt-6"
       >
-        <p class="black--text body-lg">
+        <p class="black--text body-lg ma-0">
           <span v-if="invalidEmailCount === 1">
             The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
           </span>
@@ -94,11 +98,9 @@
         </p>
       </v-alert>
     </v-card-text>
-    <v-card-actions style="height: 73px;">
+    <v-card-actions style="height: 73px">
       <v-spacer></v-spacer>
-      <v-btn text class="link-button" @click="_close = false">
-        Cancel
-      </v-btn>
+      <v-btn text class="link-button" @click="_close = false"> Cancel </v-btn>
       <v-btn
         color="primary"
         class="px-5"
@@ -106,7 +108,7 @@
         :disabled="invalidEmailCount > 0 || validEmailCount === 0"
       >
         Add Team Members
-        <span class="valid-entry-count ml-2" v-if="validEmailCount">
+        <span class="valid-entry-count ml-2" v-if="invalidEmail === 0">
           {{ validEmailCount }}
         </span>
       </v-btn>
@@ -116,7 +118,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, PropSync } from "vue-property-decorator";
 
 @Component({})
 export default class AddMember extends Vue {
