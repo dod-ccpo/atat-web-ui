@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="ml-3">
     <v-row>
       <v-col class="pl-0" cols="12">
         <h2 v-if="!createdApplication" class="h2">
@@ -11,7 +11,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="pa-0 ma-0" cols="9">
+      <v-col class="pa-0 ma-0" cols="10">
         <span v-if="!createdApplication">
           <p class="body-lg text--base-darkest">
             In this section, you will be able to invite people from your
@@ -46,7 +46,7 @@
     <v-row v-if="createdApplication">
       <v-col class="ps-0 ma-0">
         <v-row>
-          <v-col cols="9" class="d-flex pl-0">
+          <v-col cols="12" class="d-flex pl-0 pr-0">
             <v-col class="d-flex">
               <v-text-field
                 class="search-bar"
@@ -63,18 +63,22 @@
             <v-col class="d-flex flex-row-reverse">
               <v-btn
                 role="button"
-                class="font-weight-bold align-center"
+                class="font-weight-bold d-flex align-center px-5"
                 :ripple="false"
                 color="primary"
               >
-                <v-icon class="mr-2" role="presentation">control_point</v-icon>
-                Invite Team Member
+                <div class="mr-1 mt-n2">
+                <v-icon class="icon-20" role="presentation"
+                  >control_point</v-icon
+                >
+                </div>
+                <div class="body font-weight-bold">Invite Team Member</div>
               </v-btn>
             </v-col>
           </v-col>
         </v-row>
         <v-row v-if="!members">
-          <v-col cols="9" class="pa-0 ma-0">
+          <v-col cols="12" class="pa-0 ma-0">
             <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
               <v-card-text class="text-center">
                 <v-row class="d-flex justify-space-around pt-4">
@@ -87,7 +91,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="9" class="pa-0 ma-0">
+          <v-col cols="12" class="ma-0">
             <v-data-table
               class="review-table"
               :headers="headers"
@@ -95,20 +99,20 @@
               hide-default-footer
             >
               <template v-slot:header.display_name="{ header }">
-                <div class="body font-weight-bold">
+                <div class="label font-weight-bold text--base-dark">
                   {{ header.text }}
                 </div>
               </template>
               <template v-slot:header.workplace_access="{ header }">
-                <div class="body font-weight-bold">
+                <div class="label font-weight-bold text--base-dark">
                   {{ header.text }}
                 </div>
               </template>
               <template class="hello" v-slot:item.display_name="{ item }">
-                <div class="body font-weight-bold pt-4">
+                <div class="body font-weight-bold pt-6">
                   {{ item.display_name }}
                 </div>
-                <div class="body text--base-dark pb-4">
+                <div class="body text--base-dark pb-6">
                   {{ item.email }}
                 </div>
               </template>
@@ -122,32 +126,31 @@
                     class="table-menu"
                     transition="slide-y-transition"
                     offset-y
-                    nudge-left="137"
+                    nudge-left="190"
                     tabindex="2"
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         :disabled="isDisabled(item.workplace_access)"
-                        class="table-btn table-menu-button pa-0"
+                        class="table-row-menu-button pa-0 "
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
                       >
-                        <v-icon>more_horiz</v-icon>
+                        <v-icon class="icon-18 width-auto">more_horiz</v-icon>
                       </v-btn>
                     </template>
-                    <div class="table-menu d-flex flex-column" tabindex="2">
-                      <v-btn
+                    <v-list class="table-row-menu pa-0">
+                      <v-list-item
+                        tabindex="1"
                         v-for="(item, i) in options"
-                        href="#"
                         :key="i"
-                        tabindex="2"
-                        class="body width-100 d-flex justify-start menu-item"
-                        :ripple="false"
                       >
-                        {{ item }}
-                      </v-btn>
-                    </div>
+                        <v-list-item-title class="body-lg py-2">{{
+                          item
+                        }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
                   </v-menu>
                 </div>
               </template>
@@ -155,8 +158,8 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col cols="9">
+        <v-row class="pt-7">
+          <v-col cols="9" class="py-0">
             <v-btn
               @click="showPortfolioOwnerText = !showPortfolioOwnerText"
               text
@@ -187,8 +190,8 @@
             </div>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="9">
+        <v-row class="pt-5">
+          <v-col cols="9" class="py-0">
             <v-btn
               @click="teamPortfolioAccessText = !teamPortfolioAccessText"
               text
@@ -217,8 +220,8 @@
             </div>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="9">
+        <v-row class="pt-5">
+          <v-col cols="9" class="py-0">
             <v-btn
               @click="teamPermissionsText = !teamPermissionsText"
               text
@@ -262,8 +265,8 @@
             </div>
           </v-col>
         </v-row>
-        <v-row class="mb-16">
-          <v-col cols="9">
+        <v-row class="mb-16 pt-5">
+          <v-col cols="9" class="py-0">
             <v-btn
               @click="teamExpectationText = !teamExpectationText"
               text

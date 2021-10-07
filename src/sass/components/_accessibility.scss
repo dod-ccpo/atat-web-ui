@@ -115,18 +115,18 @@ a.left-nav-menu-link{
             }
         }
     }
-    &.table-menu-button{
+    &.table-row-menu-button{
         &:before,
         &:focus{
             box-shadow: none !important;
             border: solid 1px;
             border-color: $primary !important;
-            background-color: $primary-lighter !important;
+            background-color: $accent-cool-lightest !important;
             color: $primary !important;
             font-weight: 700 !important;
         }
     }
-}
+}   
 
 .v-list-item--active,
 .v-stepper__label {
