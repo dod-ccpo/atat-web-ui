@@ -14,7 +14,6 @@ import CreateApplicationForm from "../components/CreateApplicationForm.vue";
 import { generateUid } from "@/helpers";
 import { CreateApplicationModel } from "types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
-import { Application } from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -60,13 +59,6 @@ export default class Step_3 extends ValidatableWizardStep<CreateApplicationModel
     this.valid = await this.$refs.createApplicationForm.validateForm();
     return this.valid;
   };
-
-  // private mapEnvironmentToModel(env: Environment): CreateEnvironmentModel {
-  //   return {
-  //     name: env.name,
-  //     id: env.id,
-  //   };
-  // }
 
   public async mounted(): Promise<void> {
     this.touched = this.$store.getters.getStepTouched(3);
