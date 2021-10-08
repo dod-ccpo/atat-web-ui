@@ -21,7 +21,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" class="ma-0 pa-0">
+      <v-col cols="12" class="ma-0 pa-0 mt-4">
         <v-data-table
           class="review-table"
           :headers="headers"
@@ -44,21 +44,26 @@
             </div>
           </template>
           <template class="hello" v-slot:item.name="{ item }">
-            <a class="body font-weight-bold py-3 primary-text">
-              {{ item.data.name }}
-            </a>
+            <div>
+              <v-icon class="table-subdirectory-icon" v-if="!item.portfolio"
+                >subdirectory_arrow_right</v-icon
+              >
+              <a class="body font-weight-bold py-3 primary-text">
+                {{ item.name }}
+              </a>
+            </div>
           </template>
           <template v-slot:item.description="{ item }">
             <div class="d-flex justify-space-between">
               <div class="body text--base-dark py-3">
-                {{ item.data.description }}
+                {{ item.description }}
               </div>
             </div>
           </template>
           <template v-slot:item.operators="{ item }">
             <div class="d-flex justify-space-between">
               <div class="body text--base-dark pt-3">
-                {{ item.data.operators }}
+                {{ item.operators }}
               </div>
 
               <v-menu
@@ -81,7 +86,7 @@
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
                     tabindex="1"
-                    v-for="(item, i) in options"
+                    v-for="(item, i) in isPortfolio(item)"
                     :key="i"
                   >
                     <v-list-item-title class="body-lg py-2">{{
@@ -111,24 +116,34 @@ export default class SummaryReview extends Vue {
   private applicationData: any = [];
 
   tranformData(applications: any): void {
+    this.applicationData.push({
+      name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
+      description: this.$store.state.portfolioSteps[0].model.description,
+      operators: 0,
+      portfolio: true,
+    });
     for (let i = 0; i < applications.length; i++) {
-      let obj: any = { data: {} };
-      obj.data.name = applications[i].name;
-      obj.data.description = applications[i].description;
+      let obj: any = {};
+      obj.name = applications[i].name;
+      obj.description = applications[i].description;
       let numArr = applications[i].environments.map(
         (env: any) => env?.operators?.length
       );
-      obj.data.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
+      obj.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
       this.applicationData.push(obj);
     }
   }
-
+  private isPortfolio(item: any): boolean {
+    if (item.portfolio) {
+      return ["View root administrators", "Add root administrators"];
+    }
+    return ["View team members", "Add team members"];
+  }
   private headers = [
-    { text: "Applications", value: "name", align: "start" },
+    { text: "Workspaces", value: "name", align: "start" },
     { text: "Description ", value: "description", sortable: false },
     { text: "Team Members ", value: "operators", sortable: false },
   ];
-  private options = ["View team members", "Add team members"];
 
   public async mounted(): Promise<void> {
     this.tranformData(this.applications);

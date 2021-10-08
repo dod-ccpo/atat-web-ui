@@ -61,7 +61,9 @@ td{
     }
   }
 }
-
+.v-icon.table-subdirectory-icon{
+  color: $base_light;
+}
 .table-row-menu{
   &:first-child{
     border-top: 1px solid $base;
