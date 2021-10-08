@@ -71,9 +71,9 @@
                 @click="openDialog($event)"
               >
                 <div class="mr-1 mt-n2">
-                <v-icon class="icon-20" role="presentation"
-                  >control_point</v-icon
-                >
+                  <v-icon class="icon-20" role="presentation"
+                    >control_point</v-icon
+                  >
                 </div>
                 <div class="body font-weight-bold">Invite Team Member</div>
               </v-btn>
@@ -135,7 +135,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         :disabled="isDisabled(item.workplace_access)"
-                        class="table-row-menu-button pa-0 "
+                        class="table-row-menu-button pa-0"
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
