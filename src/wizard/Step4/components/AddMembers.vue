@@ -2,9 +2,9 @@
   <v-card class="extra-padding">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <v-card-title style="height: 52px">
-      <div class="mb-2 h3">Add team members to Tracker Application</div>
+      <h3 class="mb-2 h3">Add team members to {{ currentApplication.name }}</h3>
     </v-card-title>
-    <v-card-text class="body-lg text--base-darkest height-100 mt-2">
+    <v-card-text class="body-lg text--base-darkest mt-2">
       <p>
         Team members can have different levels of access to your application and
         environments. Invite multiple people with the same permissions at once.
@@ -109,26 +109,43 @@
       </p>
 
       <v-checkbox
-        v-model="assignDifferentAccessLevels"
+        v-model="assignDifferentRolesForEnvs"
         label="I want to assign different levels of access to each environment."
       ></v-checkbox>
 
-      <v-radio-group v-model="accessLevelForAllEnvs">
-        <v-radio
-          v-for="accessLevel in accessLevelsForAllEnvsList"
-          :key="accessLevel.level_name"
-          :label="accessLevel.level_name"
-          :value="accessLevel.level_value"
-        ></v-radio>
-      </v-radio-group>
+      <div v-show="!assignDifferentRolesForEnvs">
+        <v-radio-group v-model="roleForAllEnvs">
+          <v-radio
+            v-for="role in rolesForAllEnvsList"
+            :key="role.role_name"
+            :label="role.role_name"
+            :value="role.role_value"
+          ></v-radio>
+        </v-radio-group>
+      </div>
 
-      <v-select
-        :items="accessLevelList"
-        item-text="level_name"
-        item-value="level_value"
-        dense
-        filled
-      />
+      <v-container v-show="assignDifferentRolesForEnvs">
+        <v-row
+          v-for="(env, index) in environments_roles"
+          :key="env.env_id"
+          class="d-flex"
+        >
+          <v-col>
+            {{ env.env_name }}
+          </v-col>
+          <v-col>
+            <v-select
+              v-model="environments_roles[index].role_value"
+              :items="rolesList"
+              item-text="role_name"
+              item-value="role_value"
+              dense
+              filled
+            />
+          </v-col>
+        </v-row>
+
+      </v-container>
 
     </v-card-text>
 
@@ -142,7 +159,7 @@
         :disabled="invalidEmailCount > 0 || validEmailCount === 0"
       >
         Add Team Members
-        <span class="valid-entry-count ml-2" v-if="invalidEmailCount === 0">
+        <span class="valid-entry-count ml-2" v-if="validEmailCount > 0">
           {{ validEmailCount }}
         </span>
       </v-btn>
@@ -152,12 +169,15 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
+import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
+import { ApplicationModel } from "types/Portfolios";
 
 @Component({})
 export default class AddMember extends Vue {
-  private pillboxFocused = false;
 
+  // data
+  private pillboxFocused = false;
   private duplicatedEmail = "";
   private memberList: {
     id: number;
@@ -168,40 +188,70 @@ export default class AddMember extends Vue {
     isDuplicate: boolean;
   }[] = [];
   private validEmailList: string[] = [];
-  private assignDifferentAccessLevels: boolean = false;
-  private accessLevelForAllEnvs: string = "";
 
-  private accessLevelList: {
-    level_name: string;
-    level_value: string;
+  private rolesList: {
+    role_name: string;
+    role_value: string;
     avl_for_all_envs: boolean;
   }[] = [
     {
-      level_name: "Administrator",
-      level_value: "administrator",
+      role_name: "Administrator",
+      role_value: "administrator",
       avl_for_all_envs: true,
     },
     {
-      level_name: "Contributor",
-      level_value: "contributor",
+      role_name: "Contributor",
+      role_value: "contributor",
       avl_for_all_envs: true,
     },
     {
-      level_name: "Billing read-only",
-      level_value: "read_only",
+      role_name: "Billing read-only",
+      role_value: "read_only",
       avl_for_all_envs: true,
     },
     {
-      level_name: "No access",
-      level_value: "no_access",
+      role_name: "No access",
+      role_value: "no_access",
       avl_for_all_envs: false,
     },
   ];
 
+  private assignDifferentRolesForEnvs: boolean = false;
+  private roleForAllEnvs = this.rolesList[0].role_value;
+  private environments_roles: {
+    env_id: string;
+    env_name: string;
+    role_value: string;
+  }[] = [];
+
+  // props
   @PropSync("close") _close!: boolean;
 
-  get accessLevelsForAllEnvsList() {
-    return this.accessLevelList.filter((obj) => obj.avl_for_all_envs === true);
+  // computed
+  get currentApplication(): ApplicationModel {
+    return this.$store.getters.getCurrentApplication;
+  }
+
+  get rolesForAllEnvsList() {
+    return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
+  }
+
+
+  public async mounted(): Promise<void> {
+    // temp until actually saving data to store
+    this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
+  }
+
+  private setEnvironmentRoleDropdowns(role: string) {
+    const curApp: ApplicationModel = this.currentApplication;
+    this.environments_roles = [];
+    curApp.environments.forEach((env: any) => {
+      this.environments_roles.push({
+        env_id: env.id,
+        env_name: env.name,
+        role_value: role,
+      });
+    });
   }
 
   get inputWidthFaker(): HTMLElement {
@@ -229,6 +279,21 @@ export default class AddMember extends Vue {
 
   get duplicateEmailCount(): number {
     return this.memberList.filter((obj) => obj.isDuplicate === true).length;
+  }
+
+
+  @Watch("assignDifferentRolesForEnvs")
+  protected setEnvRoles(newVal: boolean, oldVal: boolean): void {
+    if (newVal === true) {
+      this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
+    } else {
+      this.roleForAllEnvs = this.rolesList[0].role_value;
+    }
+  }
+
+  @Watch("roleForAllEnvs")
+  protected setAllEnvsRoles(newVal: string) {
+    this.setEnvironmentRoleDropdowns(newVal);
   }
 
   public addEmail(e: Event, override: boolean | null): void {

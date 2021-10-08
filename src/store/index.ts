@@ -191,6 +191,7 @@ export default new Vuex.Store({
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
+    currentApplicationId: "2191437477-2820145163-168686896-1617696770",
     currentStepNumber: 1,
     currentPortfolioId: "",
     currentStepModel: {},
@@ -912,20 +913,22 @@ export default new Vuex.Store({
       );
       return state.portfolioSteps[stepIndex].touched;
     },
-    // getApplicationByID: () => (id: string) => {
-    //   const application = allPortfolios[11].applications.find(
-    //     (app: Application) => app.id === id
-    //   );
-
-    //   if (application) {
-    //     return application;
-    //   } else {
-    //     throw new Error(`unable to locate application with id  ${id}`);
-    //   }
-    // },
     getUser: (state) => state.user,
     getSideDrawer: (state) => state.sideDrawer,
     getTaskOrders: (state) => state.taskOrderModels,
     getApplications: (state) => state.applicationModels,
+    getCurrentApplicationId: (state) => state.currentApplicationId,
+    getCurrentApplication: (state) => {
+      // const applicationIndex = getEntityIndex(
+      //   state.applicationModels,
+      //   (application: ApplicationModel) => 
+      //     application.id === state.currentApplicationId);
+      // debugger;
+      // return state.applicationModels[applicationIndex];
+
+      // EJY temp until table wired up with state.currentApplication
+      return state.applicationModels[0]; 
+    }
+
   },
 });
