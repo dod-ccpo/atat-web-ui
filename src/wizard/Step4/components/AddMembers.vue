@@ -172,6 +172,7 @@ import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
 import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
 import { ApplicationModel } from "types/Portfolios";
+import { generateUid } from "@/helpers";
 
 @Component({})
 export default class AddMember extends Vue {
@@ -180,7 +181,7 @@ export default class AddMember extends Vue {
   private pillboxFocused = false;
   private duplicatedEmail = "";
   private memberList: {
-    id: number;
+    id: string;
     email: string;
     display_name: string;
     access: string;
@@ -236,7 +237,6 @@ export default class AddMember extends Vue {
     return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
   }
 
-
   public async mounted(): Promise<void> {
     // temp until actually saving data to store
     this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
@@ -281,7 +281,6 @@ export default class AddMember extends Vue {
     return this.memberList.filter((obj) => obj.isDuplicate === true).length;
   }
 
-
   @Watch("assignDifferentRolesForEnvs")
   protected setEnvRoles(newVal: boolean, oldVal: boolean): void {
     if (newVal === true) {
@@ -305,7 +304,7 @@ export default class AddMember extends Vue {
       (targetId === "PillboxWrapper" || override === true) &&
       (len === 0 || this.memberList[len - 1].email !== "")
     ) {
-      const memberId = Date.now();
+      const memberId = generateUid();
       this.memberList.push({
         id: memberId,
         email: "",
@@ -336,7 +335,7 @@ export default class AddMember extends Vue {
     if (i > -1) {
       this.validEmailList.splice(i, 1);
     }
-    const memberId = Number(input.dataset.memberId);
+    const memberId = input.dataset.memberId as string;
     this.removeMemberFromList(memberId);
     this.setInputWidths();
   }
@@ -371,7 +370,7 @@ export default class AddMember extends Vue {
         // for 508 compliance...
         // if shift-tabbing out of first pill input, and have invalid emails,
         // tab to the "Remove all emails with errors" link
-        const memberId = Number(input.dataset.memberId);
+        const memberId = input.dataset.memberId as string;
         const memberListIndex = this.memberList
           .map(function (e) {
             return e.id;
@@ -402,13 +401,12 @@ export default class AddMember extends Vue {
 
       const pastedValuesArray: string[] = pastedText.split(",");
       let uniqueValues = [...new Set(pastedValuesArray)];
-      const timeStamp = Date.now();
       uniqueValues.forEach((email, i) => {
         const validListIndex = vm.validEmailList.indexOf(email);
         const isValid = vm.validateEmail(email);
         if (email && isValid && validListIndex === -1) {
           vm.validEmailList.push(email);
-          const memberId = timeStamp + i;
+          const memberId = generateUid();
           vm.memberList.push({
             id: memberId,
             email: email,
@@ -440,7 +438,7 @@ export default class AddMember extends Vue {
     e.cancelBubble = true;
     this.pillboxFocused = false;
     const input = e.target as HTMLInputElement;
-    const memberId = Number(input.dataset.memberId);
+    const memberId = input.dataset.memberId as string;
     let emailAddressEntered = input.value;
     emailAddressEntered = emailAddressEntered.replace(/['"]/g, "");
 
@@ -517,15 +515,53 @@ export default class AddMember extends Vue {
     return isMilAddress && emailRegex.test(email);
   }
 
-  public removeMemberFromList(memberId: number) {
+  public removeMemberFromList(memberId: string) {
     this.memberList = this.memberList.filter(function (obj) {
       return obj.id !== memberId;
     });
   }
 
   public saveToStore() {
+    let environments: {
+      id: string;
+      name: string;
+      operators: {
+        id: string;
+        display_name: string;
+        email: string;
+        access: string;
+      }[];
+    }[] = [];
+
+    this.environments_roles.forEach(env => {
+      if (env.role_value !== "no_access") {
+        let operators: any = [];
+        this.memberList.forEach(member => {
+          let operator: any = {
+            id: member.id,
+            display_name: member.display_name,
+            email: member.email,
+            access: env.role_value
+          }
+          operators.push(operator);
+        });
+
+        const thisEnv: any = {
+          id: env.env_id,
+          name: env.env_name,
+          operators: operators
+        }
+
+        environments.push(thisEnv);
+      }
+    }, this);
+
+    const curApp: ApplicationModel = this.currentApplication;
+    this.$store.dispatch("updateApplicationEnvironments", [curApp.id, environments]);
+    this.memberList = [];
+
     this._close = false;
-    console.log("save member data to store...");
+
   }
 }
 </script>

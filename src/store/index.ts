@@ -493,6 +493,14 @@ export default new Vuex.Store({
         throw new Error("could not delete application order with id: " + id);
       }
     },
+    doUpdateApplicationEnvironments(state, [appId, environments]) {
+      const index = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) => application.id === appId
+      );
+      let appModel: ApplicationModel = state.applicationModels[index];
+      appModel.environments = environments;
+    }
   },
 
   actions: {
@@ -821,6 +829,9 @@ export default new Vuex.Store({
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
     },
+    updateApplicationEnvironments({commit}, [appId, environments]) {
+      commit("doUpdateApplicationEnvironments", [appId, environments]);
+    },
   },
   modules: {},
   getters: {
@@ -923,7 +934,6 @@ export default new Vuex.Store({
       //   state.applicationModels,
       //   (application: ApplicationModel) => 
       //     application.id === state.currentApplicationId);
-      // debugger;
       // return state.applicationModels[applicationIndex];
 
       // EJY temp until table wired up with state.currentApplication
