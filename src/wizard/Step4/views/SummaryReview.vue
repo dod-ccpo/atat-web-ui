@@ -21,7 +21,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" class="ma-0">
+      <v-col cols="12" class="ma-0 pa-0">
         <v-data-table
           class="review-table"
           :headers="headers"
@@ -108,17 +108,17 @@ export default class SummaryReview extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
-  private applicationData = [];
+  private applicationData: any = [];
 
-  tranformData(applications): void {
+  tranformData(applications: any): void {
     for (let i = 0; i < applications.length; i++) {
-      let obj = { id: i, data: {} };
+      let obj: any = { data: {} };
       obj.data.name = applications[i].name;
       obj.data.description = applications[i].description;
       let numArr = applications[i].environments.map(
-        (env) => env?.operators?.length
+        (env: any) => env?.operators?.length
       );
-      obj.data.operators = numArr.reduce((a, b) => a + b) || 0;
+      obj.data.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
       this.applicationData.push(obj);
     }
   }
