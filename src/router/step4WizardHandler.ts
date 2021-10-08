@@ -2,7 +2,6 @@ import { NavigationGuardNext, Route } from "vue-router";
 import { Store } from "vuex";
 import { ATATRouteHandler } from "./routerMiddleWare";
 import {
-  fundingsummary,
   addteammembers,
   teammembersummary,
   applicationsummary,

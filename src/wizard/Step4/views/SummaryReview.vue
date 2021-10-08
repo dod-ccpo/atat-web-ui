@@ -48,7 +48,10 @@
               <v-icon class="table-subdirectory-icon" v-if="!item.portfolio"
                 >subdirectory_arrow_right</v-icon
               >
-              <a class="body font-weight-bold py-3 primary-text">
+              <a
+                @click="handleClick(item)"
+                class="body font-weight-bold py-3 primary-text"
+              >
                 {{ item.name }}
               </a>
             </div>
@@ -114,26 +117,32 @@ export default class SummaryReview extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private applicationData: any = [];
+  private handleClick(item: any): void {
+    if (item.portfolio) {
+      return;
+    }
+    this.$store.dispatch("setCurrentApplicationId", item.id);
+    console.log(item);
+  }
 
-  tranformData(applications: any): void {
+  private tranformData(applications: any): void {
     this.applicationData.push({
       name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
       description: this.$store.state.portfolioSteps[0].model.description,
       operators: 0,
       portfolio: true,
     });
-    for (let i = 0; i < applications.length; i++) {
+    for (let value of applications) {
       let obj: any = {};
-      obj.name = applications[i].name;
-      obj.description = applications[i].description;
-      let numArr = applications[i].environments.map(
-        (env: any) => env?.operators?.length
-      );
+      obj.id = value.id;
+      obj.name = value.name;
+      obj.description = value.description;
+      let numArr = value.environments.map((env: any) => env?.operators?.length);
       obj.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
       this.applicationData.push(obj);
     }
   }
-  private isPortfolio(item: any): boolean {
+  private isPortfolio(item: any): string[] {
     if (item.portfolio) {
       return ["View root administrators", "Add root administrators"];
     }

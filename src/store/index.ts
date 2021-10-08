@@ -193,6 +193,7 @@ export default new Vuex.Store({
     erroredSteps: [],
     currentStepNumber: 1,
     currentPortfolioId: "",
+    currentApplicationId: "",
     currentStepModel: {},
     portfolioSteps: [
       {
@@ -399,6 +400,9 @@ export default new Vuex.Store({
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
     },
+    doSetApplicationId(state, id) {
+      state.currentApplicationId = id;
+    },
     updatePortfolioDrafts(state, portfolioDrafts: PortfolioDraft[]) {
       Vue.set(state, "portfolioDrafts", [...portfolioDrafts]);
     },
@@ -504,6 +508,9 @@ export default new Vuex.Store({
     },
     validateStep({ commit }, step: number) {
       commit("setStepValidated", step);
+    },
+    setCurrentApplicationId({ commit }, applicationId) {
+      commit("doSetApplicationId", applicationId);
     },
     displayNavSideBarDisplayed({ commit }, routeName: string) {
       commit("setNavSideBarDisplayed", routeName);
