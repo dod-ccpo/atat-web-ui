@@ -1,5 +1,5 @@
 import { Portfolios, ApplicationMember } from "../../../types/Portfolios";
-import { mockTaskOrder } from "./taskOrderMockData";
+import { mockTaskOrders } from "./taskOrderMockData";
 
 export const applicationMembersMock: ApplicationMember[] = [
   {
@@ -82,7 +82,7 @@ export const applicationMembersMock: ApplicationMember[] = [
   },
 ]; // Noncompliant
 
-export const allPortfolios: Portfolios = {
+export const allPortfolios = {
   "11": {
     id: "11",
     name: "Tracker Application",
@@ -92,7 +92,7 @@ export const allPortfolios: Portfolios = {
     csp: "azure",
     dod_components: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
-    taskOrders: mockTaskOrder.details,
+    taskOrders: mockTaskOrders,
     applications: [
       {
         id: "74",
@@ -133,7 +133,7 @@ export const allPortfolios: Portfolios = {
     csp: "aws",
     dod_components: ["Air Force"],
     portfolio_managers: ["joe.manager@example.com"],
-    taskOrders: mockTaskOrder.details,
+    taskOrders: mockTaskOrders,
     applications: [
       {
         id: "74",

@@ -143,8 +143,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
-import { CLIN, TaskOrderFile } from "types/Wizard";
+import { TaskOrderFile } from "types/Wizard";
 import ClinsCardList from "./ClinsCardList.vue";
+import { Clin } from "types/Portfolios";
 
 @Component({
   components: { ClinsCardList },
@@ -159,9 +160,9 @@ export default class CreateTaskOrderForm extends Vue {
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
 
-  @PropSync("task_order_number") _task_order_number!: string;
+  @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
-  @PropSync("clins") _clins!: CLIN[];
+  @PropSync("clins") _clins!: Clin[];
   @Prop({ default: false }) private validateOnLoad!: boolean;
 
   get Form(): Vue & { validate: () => boolean } {

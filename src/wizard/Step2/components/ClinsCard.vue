@@ -400,7 +400,7 @@ export default class ClinsCard extends Vue {
   }
 
   public formatDate(value: string): string {
-    return moment(new Date(value)).format("MMMM DD, YYYY");
+    return moment(new Date(`${value} 00:00:00`)).format("MMMM DD, YYYY");
   }
 
   public JWCCContractEndDate = "2022-09-14";

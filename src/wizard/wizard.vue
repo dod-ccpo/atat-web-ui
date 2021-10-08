@@ -29,10 +29,9 @@ import Step2Summary from "./Step2/views/Step2Summary.vue";
 import Step3 from "./Step3/views/Step3.vue";
 import Step4 from "./Step4/views/Step4.vue";
 import Step5 from "./Step5/views/Step5.vue";
-import { Route } from "vue-router";
+import { NavigationFailure, Route } from "vue-router";
 
 Component.registerHooks(["beforeRouteEnter"]);
-
 @Component({
   components: {
     Stepper,
@@ -49,6 +48,7 @@ export default class Wizard extends Vue {
   private stepNumber = 1;
   private route = "";
   private currentRoute!: Route;
+  private navigationRedirected = 2;
 
   $refs!: {
     stepOne: Step1;
@@ -77,7 +77,7 @@ export default class Wizard extends Vue {
       switch (action) {
         case "next":
           if (nextRoute) {
-            this.$router.push({
+            this.routerPush({
               name: nextRoute,
               params: {
                 source: "wizard-next",
@@ -89,20 +89,25 @@ export default class Wizard extends Vue {
           break;
         case "previous":
           if (previousRoute) {
-            this.$router.push({ name: previousRoute });
+            this.routerPush({
+              name: previousRoute,
+              params: {
+                source: "wizard-previous",
+              },
+            });
           } else {
             throw new Error("unable to resolve wizard route");
           }
           break;
         case "cancel":
-          await this.$router.push({ name: "portfolios" });
+          await this.routerPush({ name: "portfolios" });
           break;
         case "save":
           try {
             const saved = await this.$store.dispatch("saveAllValidSteps");
             if (saved) {
               alert("Data has been validated and is saved");
-              await this.$router.push({ name: "portfolios" });
+              await this.routerPush({ name: "portfolios" });
             }
           } catch (error) {
             alert("An error occurred saving portfolio");
@@ -138,7 +143,7 @@ export default class Wizard extends Vue {
       default:
         break;
     }
-    this.$router.push({ name: `${this.route}` });
+    this.routerPush({ name: `${this.route}` });
     this.stepNumber = currStepNumber;
   }
   public checkPath(): void {
@@ -156,6 +161,26 @@ export default class Wizard extends Vue {
       this.currentRoute = this.$route;
     }
     this.checkPath();
+  }
+
+  //centeralizing wizard calls to router push
+  //in order to catch Navigation failure errors
+  //that result from intentional redirects
+  private routerPush(option: any) {
+    this.$router.push(option).catch((e) => {
+      const navigationFailure = e as NavigationFailure;
+
+      //we will swallow navigation redirect failures caught
+      // here
+      if (
+        navigationFailure &&
+        navigationFailure.type === this.navigationRedirected
+      ) {
+        return;
+      } else {
+        Promise.reject(e);
+      }
+    });
   }
 }
 </script>
