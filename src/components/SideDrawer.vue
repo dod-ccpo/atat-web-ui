@@ -3,6 +3,7 @@
     <v-navigation-drawer
       v-if="isSideDrawerOpen"
       :width="drawerWidth + 'px'"
+      id="right-side-drawer"
       app
       clipped
       :temporary="showOverlay"
@@ -52,6 +53,13 @@
         :drawerWidth="drawerWidth"
         :drawerHeight="getHeight"
       ></SubmitDrawer>
+      <TeamMemberRolesDrawer
+        v-if="sideDrawerType === 'teammemberroles'"
+        :drawerWidth="drawerWidth"
+        :drawerHeight="getHeight"
+        :showScrollbar.sync="showScrollbar"
+        class="scrollable-content"
+      ></TeamMemberRolesDrawer>
     </v-navigation-drawer>
   </v-slide-x-reverse-transition>
 </template>
@@ -61,14 +69,20 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import ProfileDrawer from "./SideDrawerComponents/ProfileDrawer.vue";
 import SubmitDrawer from "./SideDrawerComponents/SubmitDrawer.vue";
+import TeamMemberRolesDrawer from "./SideDrawerComponents/TeamMemberRolesDrawer.vue";
+
+// document.getElementById("right-side-drawer").o;
+
 @Component({
   components: {
     ProfileDrawer,
     SubmitDrawer,
+    TeamMemberRolesDrawer,
   },
 })
 export default class SideDrawer extends Vue {
   @Prop({ default: "400" }) private drawerWidth!: string;
+  private showScrollbar = false;
 
   get sideDrawerType(): string {
     return this.$store.state.sideDrawerType;
@@ -81,6 +95,7 @@ export default class SideDrawer extends Vue {
         title = "Your Profile";
         break;
       case "submit":
+      case "teammemberroles":
         title = "Learn More";
         break;
       default:
@@ -90,8 +105,9 @@ export default class SideDrawer extends Vue {
   }
 
   get getHeight(): string {
-    const drawerHeight = window.innerHeight;
-    return drawerHeight + "px";
+    // const drawerHeight = window.innerHeight;
+    // return drawerHeight + "px";
+    return '100vh';
   }
 
   get isSideDrawerOpen(): boolean {
@@ -115,6 +131,10 @@ export default class SideDrawer extends Vue {
     return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
   }
 
+  get getScrollbar(): string {
+    return this.showScrollbar ? "expandedSidebarDiv" : "";
+  }
+
   @Watch("$store.state.isSideDrawerFocused")
   setFocus(newVal: boolean): void {
     if (newVal && this.isSideDrawerOpen) {
@@ -124,9 +144,23 @@ export default class SideDrawer extends Vue {
     }
   }
 
+
+  //todo get rid of this..
   //method
   private hide(): Promise<boolean> {
     return this.$store.dispatch("closeSideDrawer");
   }
 }
 </script>
+
+<style>
+.expandedSidebarDiv {
+  overflow-y: auto !important;
+  height: calc(100% - 237px) !important;
+  overflow-x: hidden !important;
+}
+.scrollable-content {
+  flex-grow: 1;  
+  overflow: auto;
+}
+</style>

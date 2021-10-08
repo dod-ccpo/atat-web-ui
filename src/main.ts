@@ -24,6 +24,7 @@ import ATATSelect from "./components/ATATSelect.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import ProfileDrawer from "./components/SideDrawerComponents/ProfileDrawer.vue"
 import SubmitDrawer from "./components/SideDrawerComponents/SubmitDrawer.vue"
+import TeamMemberRolesDrawer from "./components/SideDrawerComponents/TeamMemberRolesDrawer.vue"
 import ATATTextField from "./components/ATATTextField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
 import ATATButtonCard from "./components/ATATButtonCard.vue";
