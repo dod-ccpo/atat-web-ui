@@ -160,8 +160,7 @@ const mapApplications = (
             ? env.operators.map((op) => {
                 return {
                   access: op.access,
-                  last_name: op.last_name,
-                  first_name: op.first_name,
+                  display_name: op.display_name,
                   email: op.email,
                 };
               })
@@ -456,6 +455,13 @@ export default new Vuex.Store({
         const applicationModel: ApplicationModel = {
           ...application,
           id: generateUid(),
+          operators: application.operators
+            ? application.operators.map((operator) => {
+            return {
+              ...operator,
+              id: generateUid(),
+            }
+          }) : [], // EJY check this is correct
           environments: application.environments.map((environment) => {
             return {
               ...environment,
@@ -495,14 +501,25 @@ export default new Vuex.Store({
         throw new Error("could not delete application order with id: " + id);
       }
     },
-    doUpdateApplicationEnvironments(state, [appId, environments]) {
+    doUpdateEnvironmentOperators(state, [appId, environments]) {
       const index = getEntityIndex(
         state.applicationModels,
         (application: ApplicationModel) => application.id === appId
       );
       let appModel: ApplicationModel = state.applicationModels[index];
+      // EJY don't just replace, extend
       appModel.environments = environments;
+    },
+    doUpdateApplicationOperators(state, [appId, operators]) {
+      const index = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) => application.id === appId
+      );
+      let appModel: ApplicationModel = state.applicationModels[index];
+      // EJY don't just replace, extend
+      appModel.operators = operators;
     }
+
   },
 
   actions: {
@@ -831,8 +848,11 @@ export default new Vuex.Store({
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
     },
-    updateApplicationEnvironments({commit}, [appId, environments]) {
-      commit("doUpdateApplicationEnvironments", [appId, environments]);
+    updateEnvironmentOperators({commit}, [appId, environments]) {
+      commit("doUpdateEnvironmentOperators", [appId, environments]);
+    },
+    updateApplicationOperators({commit}, [appId, operators]) {
+      commit("doUpdateApplicationEnvironments", [appId, operators]);
     },
   },
   modules: {},

@@ -557,8 +557,10 @@ export default class AddMember extends Vue {
           environments.push(thisEnv);
         }
       }, this);
+      debugger;
       this.$store.dispatch("updateEnvironmentOperators", [curApp.id, environments]);
     } else {
+      debugger;
       const operators = this.getOperators(this.roleForAllEnvs);
       this.$store.dispatch("updateApplicationOperators", [curApp.id, operators]);
     }
@@ -568,7 +570,7 @@ export default class AddMember extends Vue {
 
     // const modalContent = document.getElementById('MemberModalContent') as HTMLDivElement;
     // modalContent.scrollTop = 0;
-    document.getElementsByClassName('v-dialog--active')[0].scrollTop = 0;
+    document.getElementsByClassName('v-dialog--active' )[0].scrollTop = 0;
     this.$el.scrollTop = 0
     
     this._close = false;
