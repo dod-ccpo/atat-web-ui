@@ -78,7 +78,7 @@ export interface ApplicationModel {
   name: string;
   description: string;
   environments: EnvironmentModel[];
-  operators: OperatorModel[]
+  operators: OperatorModel[];
 }
 
 export interface EnvironmentModel {

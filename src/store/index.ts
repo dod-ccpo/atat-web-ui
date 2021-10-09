@@ -6,6 +6,7 @@ import { Dialog } from "types/FormFields";
 import {
   Application,
   ApplicationModel,
+  EnvironmentModel,
   Portfolio,
   PortfolioDraft,
   PortFolioDraftDTO,
@@ -150,9 +151,9 @@ const mapApplications = (
   return applicationModels.map((model: ApplicationModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...baseModel } = model;
-
     const application: Application = {
       ...baseModel,
+      operators: [],
       environments: model.environments.map((env) => {
         return {
           name: env.name,
@@ -191,7 +192,7 @@ export default new Vuex.Store({
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
-    currentApplicationId: "2191437477-2820145163-168686896-1617696770",
+    currentApplicationId: "3914471103-1542698509-147762268-4125133547",
     currentStepNumber: 1,
     currentPortfolioId: "",
     currentStepModel: {},
@@ -455,7 +456,7 @@ export default new Vuex.Store({
         const applicationModel: ApplicationModel = {
           ...application,
           id: generateUid(),
-          operators: application.operators
+          operators: application.operators 
             ? application.operators.map((operator) => {
             return {
               ...operator,
@@ -507,8 +508,18 @@ export default new Vuex.Store({
         (application: ApplicationModel) => application.id === appId
       );
       let appModel: ApplicationModel = state.applicationModels[index];
-      // EJY don't just replace, extend
-      appModel.environments = environments;
+      environments.forEach((env: EnvironmentModel) => {
+        const envId = env.id;
+        const index = getEntityIndex(
+          appModel.environments,
+          (environment: EnvironmentModel) => environment.id === envId
+        );
+        if (appModel.environments[index].hasOwnProperty("operators")) {
+          appModel.environments[index].operators.push(...env.operators);
+        } else {
+          appModel.environments[index].operators = env.operators;
+        }
+      });
     },
     doUpdateApplicationOperators(state, [appId, operators]) {
       const index = getEntityIndex(
@@ -516,8 +527,11 @@ export default new Vuex.Store({
         (application: ApplicationModel) => application.id === appId
       );
       let appModel: ApplicationModel = state.applicationModels[index];
-      // EJY don't just replace, extend
-      appModel.operators = operators;
+      if (appModel.hasOwnProperty("operators")) {
+        appModel.operators.push(...operators);
+      } else {
+        appModel.operators = operators;
+      }
     }
 
   },
@@ -852,7 +866,7 @@ export default new Vuex.Store({
       commit("doUpdateEnvironmentOperators", [appId, environments]);
     },
     updateApplicationOperators({commit}, [appId, operators]) {
-      commit("doUpdateApplicationEnvironments", [appId, operators]);
+      commit("doUpdateApplicationOperators", [appId, operators]);
     },
   },
   modules: {},

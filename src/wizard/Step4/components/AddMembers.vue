@@ -557,10 +557,8 @@ export default class AddMember extends Vue {
           environments.push(thisEnv);
         }
       }, this);
-      debugger;
       this.$store.dispatch("updateEnvironmentOperators", [curApp.id, environments]);
     } else {
-      debugger;
       const operators = this.getOperators(this.roleForAllEnvs);
       this.$store.dispatch("updateApplicationOperators", [curApp.id, operators]);
     }
