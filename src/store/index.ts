@@ -153,7 +153,13 @@ const mapApplications = (
     const { id, ...baseModel } = model;
     const application: Application = {
       ...baseModel,
-      operators: [],
+      operators: model.operators ? model.operators.map((op) => {
+        return {
+          access: op.access,
+          display_name: op.display_name,
+          email: op.email,
+        }
+      }) : [],
       environments: model.environments.map((env) => {
         return {
           name: env.name,
