@@ -566,8 +566,6 @@ export default class AddMember extends Vue {
     this.memberList = [];
     this.assignDifferentRolesForEnvs = false;
 
-    // const modalContent = document.getElementById('MemberModalContent') as HTMLDivElement;
-    // modalContent.scrollTop = 0;
     document.getElementsByClassName('v-dialog--active')[0].scrollTop = 0;
     this.$el.scrollTop = 0
     
