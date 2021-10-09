@@ -188,6 +188,7 @@ export default new Vuex.Store({
     portfolios: [],
     taskOrderModels: [],
     applicationModels: [],
+    portfolioOperators: [],
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
@@ -237,6 +238,7 @@ export default new Vuex.Store({
           id: "",
           name: "",
           description: "",
+          operators: [],
           environments: [
             {
               name: "Development",

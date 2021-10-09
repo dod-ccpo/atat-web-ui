@@ -1,5 +1,5 @@
 <template>
-  <v-card class="extra-padding">
+  <v-card id="MemberModalContent" class="extra-padding">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <v-card-title style="height: 52px">
       <h3 class="mb-2 h3">Add team members to {{ currentApplication.name }}</h3>
@@ -128,19 +128,24 @@
         <v-row
           v-for="(env, index) in environments_roles"
           :key="env.env_id"
-          class="d-flex"
+          class="d-flex border-base-lighter border-t-1"
+          style="border-top: solid"
         >
           <v-col>
-            {{ env.env_name }}
+            <strong class="font-size-19">
+              {{ env.env_name }}
+            </strong>
           </v-col>
           <v-col>
             <v-select
+              class="foobar"
               v-model="environments_roles[index].role_value"
               :items="rolesList"
               item-text="role_name"
               item-value="role_value"
               dense
               filled
+              :ripple="false"
             />
           </v-col>
         </v-row>
@@ -171,7 +176,7 @@
 import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
 import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
-import { ApplicationModel } from "types/Portfolios";
+import { ApplicationModel, OperatorModel, EnvironmentModel } from "types/Portfolios";
 import { generateUid } from "@/helpers";
 
 @Component({})
@@ -521,47 +526,52 @@ export default class AddMember extends Vue {
     });
   }
 
-  public saveToStore() {
-    let environments: {
-      id: string;
-      name: string;
-      operators: {
-        id: string;
-        display_name: string;
-        email: string;
-        access: string;
-      }[];
-    }[] = [];
-
-    this.environments_roles.forEach(env => {
-      if (env.role_value !== "no_access") {
-        let operators: any = [];
-        this.memberList.forEach(member => {
-          let operator: any = {
-            id: member.id,
-            display_name: member.display_name,
-            email: member.email,
-            access: env.role_value
-          }
-          operators.push(operator);
-        });
-
-        const thisEnv: any = {
-          id: env.env_id,
-          name: env.env_name,
-          operators: operators
-        }
-        // EJY test new laptop push
-        environments.push(thisEnv);
+  public getOperators(role: string) {
+    let operators: OperatorModel[] = [];
+    this.memberList.forEach(member => {
+      let operator: any = {
+        id: member.id,
+        display_name: member.display_name,
+        email: member.email,
+        access: role
       }
-    }, this);
+      operators.push(operator);
+    });
+    return operators;
+  }
 
+  public saveToStore() {
+    let operators: OperatorModel[] = [];
+    let environments:EnvironmentModel[] = [];
     const curApp: ApplicationModel = this.currentApplication;
-    this.$store.dispatch("updateApplicationEnvironments", [curApp.id, environments]);
+
+    if (this.assignDifferentRolesForEnvs) {
+      this.environments_roles.forEach(env => {
+        if (env.role_value !== "no_access") {
+          const operators = this.getOperators(env.role_value);
+          const thisEnv: any = {
+            id: env.env_id,
+            name: env.env_name,
+            operators: operators
+          }
+          environments.push(thisEnv);
+        }
+      }, this);
+      this.$store.dispatch("updateEnvironmentOperators", [curApp.id, environments]);
+    } else {
+      const operators = this.getOperators(this.roleForAllEnvs);
+      this.$store.dispatch("updateApplicationOperators", [curApp.id, operators]);
+    }
+
     this.memberList = [];
+    this.assignDifferentRolesForEnvs = false;
 
+    // const modalContent = document.getElementById('MemberModalContent') as HTMLDivElement;
+    // modalContent.scrollTop = 0;
+    document.getElementsByClassName('v-dialog--active')[0].scrollTop = 0;
+    this.$el.scrollTop = 0
+    
     this._close = false;
-
   }
 }
 </script>

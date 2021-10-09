@@ -1,15 +1,57 @@
 @import "../utils/colors.scss";
 
-
-.v-menu__content{
-
-    border-radius: 0 !important;
-    // top: 1830px !important;
-  }
+.v-menu__content {
+  border-radius: 0 !important;
+}
 
 .atat-select {
+  color: $base_darkest !important;
+}
 
-      color: $base_darkest !important;
+.theme--light.v-text-field--filled {
+  > .v-input__control {
+    > .v-input__slot {
+      border: 1px solid $base_dark;
+      background-color: white;
+      &:hover, &:focus, &:active {
+        background-color: $accent-cool-lightest !important;
+        border: 1px solid $primary;
+        outline: 1px solid $primary;
+      }
+    } 
+  } 
+}
 
-    
+.v-select--is-menu-active {
+  > .v-input__control {
+    > .v-input__slot {
+      border: 1px solid $primary;
+      outline: 1px solid $primary;
+      background-color: white !important;
+    }
+  }
+}
+
+.v-menu__content {
+  border: 1px solid $base;
+  margin-top: 40px;
+
+  .v-list-item--active {
+    background-color: $accent-cool-lightest;
+  }
+
+  .v-list.v-select-list {
+    padding: 0;
+    border: 1x solid red !important;
+    .v-list-item {
+      border-bottom: 1px solid $base;
+    }
+    .v-list-item__content {
+      padding: 0 !important;
+      .v-list-item__title {
+        font-size: 17px;
+        line-height: inherit;
+      }
+    }
+  }
 }

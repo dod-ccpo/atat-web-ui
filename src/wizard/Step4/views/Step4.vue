@@ -378,7 +378,6 @@ export default class Step_4 extends Vue {
   //   pillboxWrapper.focus();
 
   public openDialog(event: Event): void {
-    // EJY TODO dispatch necessary ids to store for content being edited...
     this.$store.dispatch("openDialog", [
       "addMembers",
       event.type === "keydown",
