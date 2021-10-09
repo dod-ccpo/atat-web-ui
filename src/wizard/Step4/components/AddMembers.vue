@@ -551,7 +551,7 @@ export default class AddMember extends Vue {
           name: env.env_name,
           operators: operators
         }
-
+        // EJY test new laptop push
         environments.push(thisEnv);
       }
     }, this);
