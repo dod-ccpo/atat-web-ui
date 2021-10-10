@@ -49,7 +49,7 @@
                 >subdirectory_arrow_right</v-icon
               >
               <a
-                @click="handleClick(item)"
+                @click="handleNameClick(item)"
                 class="body font-weight-bold py-3 primary-text"
               >
                 {{ item.name }}
@@ -91,6 +91,7 @@
                     tabindex="1"
                     v-for="(item, i) in isPortfolio(item)"
                     :key="i"
+                    @click="handleMenuClick(item)"
                   >
                     <v-list-item-title class="body-lg py-2">{{
                       item
@@ -109,6 +110,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { editmembers } from "@/router/wizard";
 
 @Component({})
 export default class SummaryReview extends Vue {
@@ -117,19 +119,61 @@ export default class SummaryReview extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private applicationData: any = [];
-  private handleClick(item: any): void {
+  private handleNameClick(item: any): void {
     if (item.portfolio) {
+      this.$router.push({
+        name: editmembers.name,
+        params: {
+          type: "portfolio",
+          id: this.$store.state.currentPortfolioId,
+        },
+      });
       return;
     }
     this.$store.dispatch("setCurrentApplicationId", item.id);
-    console.log(item);
+    this.$router.push({
+      name: editmembers.name,
+      params: {
+        type: "application",
+        id: this.$store.state.currentApplicationId,
+      },
+    });
   }
+  private handleMenuClick(item: any): void {
+    switch (item) {
+      case "View root administrators":
+        console.log(item);
+        this.$router.push({
+          name: editmembers.name,
+          params: {
+            type: "portfolio",
+            id: this.$store.state.currentPortfolioId,
+          },
+        });
+        break;
+      case "View team members":
+        this.$router.push({
+          name: editmembers.name,
+          params: {
+            type: "application",
+            id: this.$store.state.currentApplicationId,
+          },
+        });
+        break;
+      default:
+        this.openDialog(event);
+    }
+  }
+  private currentPortfolio =
+    this.$store.getters.getPortfolioById(
+      this.$store.state.currentPortfolioId
+    ) || "Untitled";
 
   private tranformData(applications: any): void {
     this.applicationData.push({
       name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
       description: this.$store.state.portfolioSteps[0].model.description,
-      operators: 0,
+      operators: this.$store.state.portfolioOperators.length || 0,
       portfolio: true,
     });
     for (let value of applications) {
@@ -153,7 +197,14 @@ export default class SummaryReview extends Vue {
     { text: "Description ", value: "description", sortable: false },
     { text: "Team Members ", value: "operators", sortable: false },
   ];
-
+  public openDialog(event: Event): void {
+    this.$store.dispatch("openDialog", [
+      "addMembers",
+      event.type === "keydown",
+      "632px",
+      "90",
+    ]);
+  }
   public async mounted(): Promise<void> {
     this.tranformData(this.applications);
   }

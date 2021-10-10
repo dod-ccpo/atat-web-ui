@@ -98,6 +98,12 @@ const addteammembers: RouteConfigSingleView = {
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"),
 };
+const editmembers: RouteConfigSingleView = {
+  path: "editmembers/:type/:id",
+  name: "editmembers",
+  component: () =>
+    import(/* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"),
+};
 
 const teammembersummary: RouteConfigSingleView = {
   path: "teammembersummary",
@@ -166,6 +172,12 @@ const wizard: RouteConfigSingleView = {
       4
     ),
     CreateWizardRoute(
+      editmembers,
+      applicationsummary.name,
+      teammembersummary.name,
+      4
+    ),
+    CreateWizardRoute(
       teammembersummary,
       addteammembers.name,
       reviewandsubmit.name,
@@ -201,5 +213,6 @@ export {
   editapplication,
   applicationsummary,
   addteammembers,
+  editmembers,
   teammembersummary,
 };
