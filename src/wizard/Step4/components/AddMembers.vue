@@ -1,7 +1,7 @@
 <template>
   <v-card id="MemberModalContent" class="extra-padding">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-    <v-card-title style="height: 52px">
+    <v-card-title>
       <h3 class="mb-2 h3">Add team members to {{ currentApplication.name }}</h3>
     </v-card-title>
     <v-card-text class="body-lg text--base-darkest mt-2">
@@ -111,6 +111,8 @@
       <v-checkbox
         v-model="assignDifferentRolesForEnvs"
         label="I want to assign different levels of access to each environment."
+        class="border-base-lighter border-b-1"
+        style="border-bottom-style: solid"
       ></v-checkbox>
 
       <div v-show="!assignDifferentRolesForEnvs">
@@ -128,17 +130,17 @@
         <v-row
           v-for="(env, index) in environments_roles"
           :key="env.env_id"
-          class="d-flex border-base-lighter border-t-1"
-          style="border-top: solid"
+          class="d-flex border-base-lighter border-b-1 py-1"
+          style="border-bottom-style: solid"
         >
-          <v-col>
+          <v-col class="d-flex align-center">
             <strong class="font-size-19">
               {{ env.env_name }}
             </strong>
           </v-col>
           <v-col>
             <v-select
-              class="foobar"
+              class="no-details"
               v-model="environments_roles[index].role_value"
               :items="rolesList"
               item-text="role_name"
@@ -154,7 +156,7 @@
 
     </v-card-text>
 
-    <v-card-actions style="height: 73px">
+    <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn text class="link-button" @click="_close = false"> Cancel </v-btn>
       <v-btn

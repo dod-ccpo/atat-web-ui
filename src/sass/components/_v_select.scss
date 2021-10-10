@@ -1,5 +1,3 @@
-@import "../utils/colors.scss";
-
 .v-menu__content {
   border-radius: 0 !important;
 }
@@ -7,12 +5,20 @@
 .atat-select {
   color: $base_darkest !important;
 }
+.v-input__slot {
+  &:after {
+    display: none;
+  }
+}
 
-.theme--light.v-text-field--filled {
+.v-select.theme--light.v-text-field--filled {
   > .v-input__control {
     > .v-input__slot {
       border: 1px solid $base_dark;
       background-color: white;
+      font-weight: bold;
+      font-size: 17px;
+      margin-bottom: 0;
       &:hover, &:focus, &:active {
         background-color: $accent-cool-lightest !important;
         border: 1px solid $primary;
@@ -37,7 +43,13 @@
   margin-top: 40px;
 
   .v-list-item--active {
-    background-color: $accent-cool-lightest;
+    background-color: white;
+    &:before {
+      background-color: transparent !important;
+    }
+    .v-list-item__title {
+      color: $base_darkest;
+    }
   }
 
   .v-list.v-select-list {
@@ -45,6 +57,17 @@
     border: 1x solid red !important;
     .v-list-item {
       border-bottom: 1px solid $base;
+      &:hover, &:focus, &:active {
+        &:before {
+          background-color: transparent !important;
+          opacity: 0;
+        }  
+        font-weight: bold;
+        background-color: $accent-cool-lightest;
+        .v-list-item__title {
+          font-weight: bold;
+        }
+      }
     }
     .v-list-item__content {
       padding: 0 !important;
@@ -52,6 +75,14 @@
         font-size: 17px;
         line-height: inherit;
       }
+    }
+  }
+}
+
+.v-input.no-details {
+  .v-input__control {
+    .v-text-field__details {
+      display: none;
     }
   }
 }

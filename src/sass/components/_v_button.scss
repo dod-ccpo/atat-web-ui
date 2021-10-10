@@ -76,15 +76,6 @@
       -ieVar-❗background--color: $primary!important;
       box-shadow: none !important;
     }
-    span.valid-entry-count {
-      background-color: white;
-      color: $primary;
-      border-radius: 20px;
-      padding: 0 7px;
-      &:hover, &:focus, &:active {
-        background-color: #fff !important;
-      }
-    }    
 
     &.v-btn--outlined{
       color: $primary !important;
@@ -133,7 +124,23 @@
     min-width: 35px !important;
   }
 
-  &.v-btn--disabled[disabled='disabled']{
+  span.valid-entry-count {
+    background-color: white;
+    color: $primary;
+    border-radius: 20px;
+    padding: 0 7px;
+    &:hover, &:focus, &:active {
+      background-color: #fff !important;
+    }
+  }    
+
+  &.v-btn--disabled.v-btn--has-bg.theme--light{
     color: #fff !important;
+    background-color: #C9C9C9 !important;
+    span.valid-entry-count {
+      background-color: white;
+      color: $base_light;
+    
+    }
   }
 }
