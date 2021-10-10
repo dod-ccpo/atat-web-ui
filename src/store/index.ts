@@ -198,7 +198,7 @@ export default new Vuex.Store({
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
-    currentApplicationId: "3914471103-1542698509-147762268-4125133547",
+    currentApplicationId: "2134410376-852811418-2580849115-1872217995",
     currentStepNumber: 1,
     currentPortfolioId: "",
     currentStepModel: {},

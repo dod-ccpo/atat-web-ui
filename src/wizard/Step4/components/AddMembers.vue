@@ -78,7 +78,7 @@
       </div>
 
       <v-alert
-        v-show="invalidEmailCount"
+        v-show="invalidEmailCount || existingEmailEntryCount"
         outlined
         rounded
         color="error"
@@ -87,13 +87,19 @@
         class="text-left error_lighter black-icon mt-6"
       >
         <p class="black--text body-lg ma-0">
-          <span v-if="invalidEmailCount === 1">
-            The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
+          <span v-show="!existingEmailEntryCount">
+            <span v-show="invalidEmailCount === 1">
+              The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
+            </span>
+            <span v-show="invalidEmailCount > 1">
+              Multiple addresses were not recognized.
+            </span>
           </span>
-          <span v-if="invalidEmailCount > 1">
-            Multiple addresses were not recognized.
+          <span v-show="existingEmailEntryCount">
+            The following email<span v-if="existingEmailEntryCount > 1">s are</span><span v-else> is</span> already in use for this application: 
+            <strong>{{ existingEmailEntries }}</strong>.<br />
           </span>
-          Please make sure that all addresses are properly formatted and .mil
+          Please make sure that all addresses are <span v-show="existingEmailEntryCount">unique, </span> properly formatted and .mil
           addresses.
         </p>
       </v-alert>
@@ -193,7 +199,7 @@ export default class AddMember extends Vue {
     display_name: string;
     access: string;
     isValid: boolean | null;
-    isDuplicate: boolean;
+    isExisting: boolean;
   }[] = [];
   private validEmailList: string[] = [];
 
@@ -244,6 +250,24 @@ export default class AddMember extends Vue {
     return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
   }
 
+  get existingMemberEmails() {
+    let existingEmails:string[] = [];
+    const app = this.currentApplication;
+    if (app.hasOwnProperty("operators") && app.operators.length) {
+      app.operators.forEach((op) => {
+        existingEmails.push(op.email.toLowerCase());
+      });
+    }
+    app.environments.forEach((env) => {
+      if (env.hasOwnProperty("operators") && env.operators.length) {
+        env.operators.forEach((op) => {
+          existingEmails.push(op.email.toLowerCase());
+        });
+      }
+    });
+    return existingEmails;
+  }
+
   public async mounted(): Promise<void> {
     // temp until actually saving data to store
     this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
@@ -284,8 +308,13 @@ export default class AddMember extends Vue {
     return invalidEmails.length ? invalidEmails[0].email : "";
   }
 
-  get duplicateEmailCount(): number {
-    return this.memberList.filter((obj) => obj.isDuplicate === true).length;
+  get existingEmailEntryCount(): number {
+    return this.memberList.filter((obj) => obj.isExisting === true).length;
+  }
+
+  get existingEmailEntries(): string {
+    const existingEmailList = this.memberList.filter((obj) => obj.isExisting).map((obj) => obj.email);
+    return existingEmailList.join(", ");
   }
 
   @Watch("assignDifferentRolesForEnvs")
@@ -318,7 +347,7 @@ export default class AddMember extends Vue {
         display_name: "",
         access: "",
         isValid: null,
-        isDuplicate: false,
+        isExisting: false,
       });
       this.$nextTick().then(() => {
         let newInput = document.querySelector(
@@ -338,7 +367,7 @@ export default class AddMember extends Vue {
     const input = closestElement.querySelector(
       "input[type=text]"
     ) as HTMLInputElement;
-    const i = this.validEmailList.indexOf(input.value);
+    const i = this.validEmailList.indexOf(input.value.toLowerCase());
     if (i > -1) {
       this.validEmailList.splice(i, 1);
     }
@@ -360,7 +389,7 @@ export default class AddMember extends Vue {
       input.style.width = w;
 
       this.duplicatedEmail =
-        this.validEmailList.indexOf(input.value) > -1 ? input.value : "";
+        this.validEmailList.indexOf(input.value.toLowerCase()) > -1 ? input.value.toLowerCase() : "";
     });
 
     input.addEventListener("keydown", (e) => {
@@ -409,21 +438,22 @@ export default class AddMember extends Vue {
       const pastedValuesArray: string[] = pastedText.split(",");
       let uniqueValues = [...new Set(pastedValuesArray)];
       uniqueValues.forEach((email, i) => {
-        const validListIndex = vm.validEmailList.indexOf(email);
+        const isExistingEmail = vm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
+        const notAlreadyEntered = vm.validEmailList.indexOf(email.toLowerCase()) === -1;
         const isValid = vm.validateEmail(email);
-        if (email && isValid && validListIndex === -1) {
-          vm.validEmailList.push(email);
+        if (email && isValid && notAlreadyEntered) {
+          vm.validEmailList.push(email.toLowerCase());
           const memberId = generateUid();
           vm.memberList.push({
             id: memberId,
             email: email,
             display_name: "",
             access: "",
-            isValid: isValid,
-            isDuplicate: false, // address this when comparing to existing members
+            isValid: isValid && !isExistingEmail,
+            isExisting: isExistingEmail, 
           });
         }
-      });
+      }, this);
       input.blur();
     });
   }
@@ -432,7 +462,7 @@ export default class AddMember extends Vue {
     e.preventDefault();
     e.cancelBubble = true;
     const input = e.currentTarget as HTMLInputElement;
-    const i = this.validEmailList.indexOf(input.value);
+    const i = this.validEmailList.indexOf(input.value.toLowerCase());
     if (i > -1) {
       this.validEmailList.splice(i, 1);
     }
@@ -458,16 +488,20 @@ export default class AddMember extends Vue {
       const isValid = this.validateEmail(emailAddressEntered);
       this.memberList[memberListIndex].isValid = isValid;
 
-      if (emailAddressEntered === this.duplicatedEmail) {
+      if (emailAddressEntered.toLowerCase() === this.duplicatedEmail) {
         this.memberList.splice(memberListIndex, 1);
         this.duplicatedEmail = "";
       } else {
         this.memberList[memberListIndex].email = emailAddressEntered;
-        if (isValid) {
-          this.validEmailList.push(emailAddressEntered);
+        const isExistingEmail = this.existingMemberEmails.indexOf(emailAddressEntered.toLowerCase()) > -1;
+        if (!isExistingEmail && isValid) {
+          this.validEmailList.push(emailAddressEntered.toLowerCase());
           const displayName: string =
             this.parseNameFromEmail(emailAddressEntered);
           this.memberList[memberListIndex].display_name = displayName;
+        } else if (isExistingEmail) {
+          this.memberList[memberListIndex].isExisting = true;
+          this.memberList[memberListIndex].isValid = false;
         }
       }
 
