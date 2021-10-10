@@ -91,7 +91,7 @@
                     tabindex="1"
                     v-for="(item, i) in isPortfolio(item)"
                     :key="i"
-                    @click="handleMenuClick(item)"
+                    @click="handleMenuClick(item, $event)"
                   >
                     <v-list-item-title class="body-lg py-2">{{
                       item
@@ -139,7 +139,7 @@ export default class SummaryReview extends Vue {
       },
     });
   }
-  private handleMenuClick(item: any): void {
+  private handleMenuClick(item: any, event: Event): void {
     switch (item) {
       case "View root administrators":
         console.log(item);
@@ -161,7 +161,7 @@ export default class SummaryReview extends Vue {
         });
         break;
       default:
-      // this.openDialog(event);
+        this.openDialog(event);
     }
   }
   private currentPortfolio =

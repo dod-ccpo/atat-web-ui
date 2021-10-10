@@ -55,7 +55,7 @@ export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
-  private createdApplication = this.$store.state.portfolioSteps[2].model.name;
+  private createdApplication = this.$store.state.applicationModels;
   private editType = this.$route.params.type;
   // methods
 
