@@ -7,6 +7,7 @@ export interface Portfolio {
   description: string;
   csp: string;
   dod_components: string[];
+  portfolio_managers: string[];
 }
 
 export interface PortFolioDraftDTO {
@@ -15,6 +16,7 @@ export interface PortFolioDraftDTO {
   description: string;
   csp: string;
   dod_components: string[];
+  portfolio_managers: string[];
 }
 
 export interface PortfolioDraft {

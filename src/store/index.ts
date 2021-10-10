@@ -663,6 +663,7 @@ export default new Vuex.Store({
         description: model.description,
         csp: model.csp,
         dod_components: model.dod_components,
+        portfolio_managers: []
       };
 
       await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);

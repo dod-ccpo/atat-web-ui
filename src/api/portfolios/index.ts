@@ -97,6 +97,7 @@ export default class PortfolioDraftsApi {
         description: data.description,
         csp: data.csp,
         dod_components: data.dod_components,
+        portfolio_managers: []
       };
 
       return portfolioDraft;
