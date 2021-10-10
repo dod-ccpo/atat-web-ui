@@ -16,7 +16,6 @@ const formatDate = (value: string) => {
   return moment(new Date(`${value} 00:00:00`)).format("MMMM DD, YYYY");
 };
 
-
 describe("Testing Create ClinsCard Component", () => {
   const localVue = createLocalVue();
   let vuetify: any;
