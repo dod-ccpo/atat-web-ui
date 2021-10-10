@@ -7,7 +7,6 @@ export interface Portfolio {
   description: string;
   csp: string;
   dod_components: string[];
-  portfolio_managers: string[];
 }
 
 export interface PortFolioDraftDTO {
@@ -16,7 +15,6 @@ export interface PortFolioDraftDTO {
   description: string;
   csp: string;
   dod_components: string[];
-  portfolio_managers: string[];
 }
 
 export interface PortfolioDraft {
@@ -89,8 +87,7 @@ export interface EnvironmentModel {
 export interface OperatorModel {
   id: string;
   access: string;
-  last_name: string;
-  first_name: string;
+  display_name: string;
   email: string;
 }
 
@@ -107,8 +104,7 @@ export interface Environment {
 
 export interface Operator {
   access: string;
-  last_name: string;
-  first_name: string;
+  display_name: string;
   email: string;
 }
 
