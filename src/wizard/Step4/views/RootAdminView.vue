@@ -4,7 +4,7 @@
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
         <h2 class="h2">
-          Let’s add root administrators to {{ currentPortfolio }}
+          Let’s add root administrators to {{ currentPortfolio.name }}
         </h2>
       </v-col>
     </v-row>
@@ -176,7 +176,7 @@ export default class RootAdminView extends Vue {
   }
   public async mounted(): Promise<void> {
     // temp until actually saving data to store
-    console.log(this.rootMembersCount);
+    console.log(this.currentPortfolio.name);
   }
 }
 </script>

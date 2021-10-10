@@ -887,7 +887,7 @@ export default new Vuex.Store({
       return state.portfolios;
     },
     getPortfolioById: (state) => (id: string) => {
-      const values = Object.values(state.portfolios);
+      const values = Object.values(state.portfolioDrafts);
       const portfoliobyId = values.filter(
         (portfolio: Portfolio) => portfolio.id === id
       );
