@@ -290,7 +290,6 @@ import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class TeamView extends Vue {
-  @Prop({ default: [] }) private application!: string;
   private membersData: any = [];
 
   private csp =

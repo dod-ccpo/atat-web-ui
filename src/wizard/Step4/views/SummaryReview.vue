@@ -161,7 +161,7 @@ export default class SummaryReview extends Vue {
         });
         break;
       default:
-        this.openDialog(event);
+      // this.openDialog(event);
     }
   }
   private currentPortfolio =
