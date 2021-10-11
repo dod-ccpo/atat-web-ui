@@ -49,7 +49,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
       if (this.skipValidation) return;
 
       this.incomingModel = JSON.parse(JSON.stringify(this.model)) as TModel;
-      this.touched = this.$store.getters.getStepTouched(this.step);
+      this.touched = await this.$store.dispatch("isStepTouched", this.step);
       if (this.touched) {
         this.validate();
       }
@@ -79,7 +79,8 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     }
     const isValid = await this.validate();
     await this.updateModelState(isValid);
-    if (this.hasChanges()) {
+    const isChanged = this.hasChanges();
+    if (isChanged) {
       try {
         if (isValid) {
           await this.saveData();
