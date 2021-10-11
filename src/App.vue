@@ -11,6 +11,7 @@
     </v-main>
     <ATATFooter />
     <ATATDialog />
+    <ATATToast />
   </v-app>
 </template>
 
@@ -20,22 +21,24 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
+import ATATDialog from "@/components/ATATDialog.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
+import ATATToast from "@/components/ATATToast.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import SideDrawer from "@/components/SideDrawer.vue";
-import ATATDialog from "@/components/ATATDialog.vue";
 import { Route } from "vue-router";
 
 @Component({
   components: {
-    SideDrawer,
+    ATATDialog,
     ATATFooter,
     ATATHeader,
     ATATSideBar,
-    ATATDialog,
+    ATATToast,
     SecurityBanner,
+    SideDrawer,
   },
 })
 export default class App extends Vue {

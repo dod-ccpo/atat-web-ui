@@ -1,0 +1,30 @@
+.v-snack {
+    .v-snack__wrapper {
+        min-width: unset;
+    }
+
+    .v-snack__content {
+        font-size: 17px;
+        padding: 20px 20px 20px 50px;
+        &:before {
+            content: "";
+            font-family: "Material Icons";
+            -webkit-font-feature-settings: 'liga';
+            font-size: 25px;
+            position: absolute;
+            left: 20px;
+        }
+    }
+}
+
+.toast-success {
+    .v-snack__wrapper {
+        background-color: $success-lighter;
+        border-left: 6px solid $success !important;
+    }
+    .v-snack__content {
+        &:before {
+            content: "check_circle_outline";
+        }
+    }
+}

@@ -8,12 +8,9 @@
     transition="fade-transition"
     origin="center center"
     :content-class="
-      'height-' +
-      dialog.height +
-      ' max-height-' +
-      dialog.height +
-      ' min-height-' +
-      dialog.height
+      'height-' + dialog.height +
+      ' max-height-' + dialog.height +
+      ' min-height-' + dialog.height
     "
     attach
   >
@@ -21,13 +18,14 @@
       v-if="dialog.type === 'addMembers'"
       :class="getInnerContentClasses"
       :close.sync="dialog.isDisplayed"
+      @membersAdded="onMembersAdded"
     />
   </v-dialog>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Dialog } from "types/FormFields";
+import { Dialog } from "types/Global";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import AddMembers from "../wizard/Step4/components/AddMembers.vue";
 
@@ -42,7 +40,6 @@ export default class ATATDialog extends Vue {
   get dialog(): Dialog {
     return this.$store.state.dialog;
   }
-  private isModalClosed = true;
 
   get getInnerContentClasses(): string {
     return "height-100 d-flex flex-column justify-space-between";
@@ -62,5 +59,12 @@ export default class ATATDialog extends Vue {
       }, 500);
     }
   }
+
+  public onMembersAdded(memberCount: number) {
+    const plural = memberCount > 1 ? "s" : "";
+    const message = memberCount + " team  member" + plural + " added";
+    this.$store.dispatch("toast", [message, "toast-success"]);
+  }
+
 }
 </script>

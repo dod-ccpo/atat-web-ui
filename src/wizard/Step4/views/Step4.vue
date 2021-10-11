@@ -332,8 +332,6 @@ export default class Step_4 extends Vue {
     return this.$store.getters.getCurrentApplication;
   }
 
-  // private applicationName: string = this.currentApplication[0].name;
-  // private applicationName = "Foobar";
   private applicationName = this.$store.state.applicationModels[0].name;
   
   private message = "You do not have any team members in this application yet.";
@@ -385,6 +383,7 @@ export default class Step_4 extends Vue {
       "90",
     ]);
   }
+
   private isDisabled(workplace_access: string): boolean {
     if (workplace_access === "Administrator") {
       return true;
@@ -393,7 +392,7 @@ export default class Step_4 extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    // temp until actually saving data to store
+    // EJY need to rethink validating this step. Saving to store with each modal
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }

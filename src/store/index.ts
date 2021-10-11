@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
-import { Dialog } from "types/FormFields";
+import { Dialog, Toast } from "types/Global";
 import {
   Application,
   ApplicationModel,
@@ -179,7 +179,17 @@ const mapApplications = (
     return application;
   });
 };
+/*
+█████████████████████████████████████████
 
+███████ ████████  █████  ████████ ███████ 
+██         ██    ██   ██    ██    ██      
+███████    ██    ███████    ██    █████   
+     ██    ██    ██   ██    ██    ██      
+███████    ██    ██   ██    ██    ███████ 
+
+█████████████████████████████████████████
+*/
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
@@ -292,7 +302,23 @@ export default new Vuex.Store({
       designation: "Civilian",
     },
     validationStamp: {},
+    toast: {
+      isDisplayed: false,
+      message: "",
+      contentClass: "",
+    }
   },
+  /*
+  ███████████████████████████████████████████████████████████████████████████
+
+  ███    ███ ██    ██ ████████  █████  ████████ ██  ██████  ███    ██ ███████ 
+  ████  ████ ██    ██    ██    ██   ██    ██    ██ ██    ██ ████   ██ ██      
+  ██ ████ ██ ██    ██    ██    ███████    ██    ██ ██    ██ ██ ██  ██ ███████ 
+  ██  ██  ██ ██    ██    ██    ██   ██    ██    ██ ██    ██ ██  ██ ██      ██ 
+  ██      ██  ██████     ██    ██   ██    ██    ██  ██████  ██   ████ ███████ 
+
+  ███████████████████████████████████████████████████████████████████████████
+  */
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
@@ -538,10 +564,23 @@ export default new Vuex.Store({
       } else {
         appModel.operators = operators;
       }
+    },
+    doToast(state, props) {
+      state.toast = props;
     }
 
   },
+  /*
+  ██████████████████████████████████████████████████████
 
+   █████   ██████ ████████ ██  ██████  ███    ██ ███████ 
+  ██   ██ ██         ██    ██ ██    ██ ████   ██ ██      
+  ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
+  ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
+  ██   ██  ██████    ██    ██  ██████  ██   ████ ███████ 
+
+  ██████████████████████████████████████████████████████
+  */
   actions: {
     login({ commit }) {
       commit("changeLoginStatus", true);
@@ -874,8 +913,27 @@ export default new Vuex.Store({
     updateApplicationOperators({commit}, [appId, operators]) {
       commit("doUpdateApplicationOperators", [appId, operators]);
     },
+    toast({commit}, [message, contentClass]) {
+      const toastProps: Toast = {
+        isDisplayed: true, 
+        message: message, 
+        contentClass: contentClass,
+      }
+      commit("doToast", toastProps);
+    },
   },
   modules: {},
+  /*
+  ██████████████████████████████████████████████████████████
+
+   ██████  ███████ ████████ ████████ ███████ ██████  ███████ 
+  ██       ██         ██       ██    ██      ██   ██ ██      
+  ██   ███ █████      ██       ██    █████   ██████  ███████ 
+  ██    ██ ██         ██       ██    ██      ██   ██      ██ 
+   ██████  ███████    ██       ██    ███████ ██   ██ ███████ 
+
+  ██████████████████████████████████████████████████████████
+  */
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;

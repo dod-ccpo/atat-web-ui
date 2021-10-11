@@ -269,7 +269,6 @@ export default class AddMember extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    // temp until actually saving data to store
     this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
   }
 
@@ -598,8 +597,10 @@ export default class AddMember extends Vue {
       const operators = this.getOperators(this.roleForAllEnvs);
       this.$store.dispatch("updateApplicationOperators", [curApp.id, operators]);
     }
-
+    
+    this.$emit('membersAdded', this.validEmailCount);
     this.memberList = [];
+    this.validEmailList = [];
     this.assignDifferentRolesForEnvs = false;
 
     document.getElementsByClassName('v-dialog--active')[0].scrollTop = 0;
