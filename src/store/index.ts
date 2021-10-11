@@ -458,6 +458,7 @@ export default new Vuex.Store({
         const applicationModel: ApplicationModel = {
           ...application,
           id: generateUid(),
+          operators: application.operators,
           environments: application.environments.map((environment) => {
             return {
               ...environment,
@@ -935,5 +936,13 @@ export default new Vuex.Store({
     getSideDrawer: (state) => state.sideDrawer,
     getTaskOrders: (state) => state.taskOrderModels,
     getApplications: (state) => state.applicationModels,
+    getCurrentApplication: (state) => {
+      const applicationIndex = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) =>
+          application.id === state.currentApplicationId
+      );
+      return state.applicationModels[applicationIndex];
+    },
   },
 });

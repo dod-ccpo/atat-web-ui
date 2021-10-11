@@ -4,7 +4,7 @@
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
         <h2 class="h2">
-          Let’s add team members to {{ currentApplication[0].name }}
+          Let’s add team members to {{ currentApplication.name }}
         </h2>
       </v-col>
     </v-row>
@@ -58,7 +58,7 @@
             </v-col>
           </v-col>
         </v-row>
-        <v-row v-if="!membersData">
+        <v-row v-if="membersData.length === 0">
           <v-col cols="12" class="pa-0 ma-0">
             <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
               <v-card-text class="text-center">
@@ -71,7 +71,7 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="membersData.length > 0">
           <v-col cols="12" class="ma-0">
             <v-data-table
               class="review-table"
@@ -84,7 +84,7 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template v-slot:header.workplace_access="{ header }">
+              <template v-slot:header.workspace_roles="{ header }">
                 <div class="label font-weight-bold text--base-dark">
                   {{ header.text }}
                 </div>
@@ -97,10 +97,12 @@
                   {{ item.email }}
                 </div>
               </template>
-              <template v-slot:item.workplace_access="{ item }">
+              <template v-slot:item.workspace_roles="{ item }">
                 <div class="d-flex justify-space-between">
-                  <div class="body text--base-dark pt-3">
-                    {{ item.workplace_access }}
+                  <div class="d-flex flex-column body text--base-dark pt-3">
+                    <div v-for="value in item.workspace_roles" :key="value">
+                      {{ value }}
+                    </div>
                   </div>
 
                   <v-menu
@@ -145,13 +147,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { ApplicationModel } from "../../../../types/Portfolios";
 
 @Component({})
 export default class TeamView extends Vue {
   private membersData: any = [];
-  public currentApplication = this.$store.state.applicationModels.filter(
-    (app: any) => app.id == this.$store.state.currentApplicationId
-  );
 
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
@@ -161,21 +161,87 @@ export default class TeamView extends Vue {
 
   private headers = [
     { text: "Name", value: "display_name", align: "start" },
-    { text: "Workplace Access ", value: "workplace_access", sortable: false },
+    { text: "Workplace Access ", value: "workspace_roles", sortable: false },
   ];
   private options = ["Edit Info", "Change Role", "Remove team member"];
+  private applicationMembers: {
+    id: string;
+    display_name: string;
+    email: string;
+    workspace_roles: string;
+  }[] = [];
+  private setMemberTableData() {
+    if (this.$store.state.portfolioOperators) {
+      const rootAdmins = this.$store.state.portfolioOperators;
+      rootAdmins.forEach((op: any) => {
+        const opObj = {
+          id: op.id,
+          display_name: op.display_name || op.first_name + " " + op.last_name,
+          email: op.email,
+          workspace_roles: "Root Administrator",
+        };
+        this.applicationMembers.push(opObj);
+      });
+    }
+    if (this.currentApplication.operators) {
+      const applicationOperators = this.currentApplication.operators;
+      applicationOperators.forEach((op: any) => {
+        const opObj = {
+          id: op.id,
+          display_name: op.display_name || op.first_name + " " + op.last_name,
+          email: op.email,
+          workspace_roles: op.access, // get nice name, not enum
+        };
+        this.applicationMembers.push(opObj);
+      });
+    }
+    if (this.currentApplication.environments) {
+      const applicationEnvironments = this.currentApplication.environments;
+      applicationEnvironments.forEach((env: any) => {
+        const envOperators = env.operators;
+        envOperators.forEach((op: any) => {
+          const i = this.applicationMembers.findIndex(
+            (o) => o.email === op.email
+          );
+          debugger;
+          const workspace_roles =
+            i > -1
+              ? env.name +
+                ": " +
+                op.access +
+                "  " +
+                this.applicationMembers[i].workspace_roles
+              : env.name + ": " + op.access;
+          if (i > -1) {
+            this.applicationMembers[i].workspace_roles = workspace_roles;
+          } else {
+            const opObj = {
+              id: op.id,
+              display_name:
+                op.display_name || op.first_name + " " + op.last_name,
+              email: op.email,
+              workspace_roles: workspace_roles,
+            };
+            this.applicationMembers.push(opObj);
+          }
+        });
+      });
+    }
+  }
 
-  // private tranformData(application: any): void {
-  //   for (let value of application) {
-  //     let obj: any = {};
-  //     obj.id = value.id;
-  //     obj.display_name = value.name;
-  //     obj.description = value.description;
-  //     let numArr = value.environments.map((env: any) => env?.operators?.length);
-  //     obj.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
-  //     this.membersData.push(obj);
-  //   }
-  // }
+  private tranformData(): void {
+    for (let value of this.applicationMembers) {
+      let workspaceArr = value.workspace_roles.split("  ");
+      const opObj = {
+        id: value.id,
+        display_name: value.display_name,
+        email: value.email,
+        workspace_roles: workspaceArr,
+      };
+      this.membersData.push(opObj);
+      console.log(this.membersData);
+    }
+  }
 
   private isDisabled(workplace_access: string): boolean {
     if (workplace_access === "Administrator") {
@@ -183,9 +249,13 @@ export default class TeamView extends Vue {
     }
     return false;
   }
+  get currentApplication(): ApplicationModel {
+    return this.$store.getters.getCurrentApplication;
+  }
 
   public async mounted(): Promise<void> {
-    console.log(this.currentApplication);
+    this.setMemberTableData();
+    this.tranformData();
   }
 }
 </script>

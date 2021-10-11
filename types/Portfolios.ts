@@ -77,13 +77,14 @@ export interface ApplicationModel {
   id: string;
   name: string;
   description: string;
+  operators: OperatorModel[];
   environments: EnvironmentModel[];
 }
 
 export interface EnvironmentModel {
   id: string;
   name: string;
-  operators: OperatorModel[]
+  operators: OperatorModel[];
 }
 
 export interface OperatorModel {
@@ -97,6 +98,7 @@ export interface OperatorModel {
 export interface Application {
   name: string;
   description: string;
+  operators: OperatorModel[];
   environments: Environment[];
 }
 
