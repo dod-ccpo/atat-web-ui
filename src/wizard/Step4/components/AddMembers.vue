@@ -622,10 +622,7 @@ export default class AddMember extends Vue {
     this.memberList = [];
     this.validEmailList = [];
     this.assignDifferentRolesForEnvs = false;
-
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
-    this.$el.scrollTop = 0;
-
     this._close = false;
   }
 }
