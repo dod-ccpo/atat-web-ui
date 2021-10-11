@@ -166,7 +166,7 @@
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn text class="link-button" @click="_close = false"> Cancel </v-btn>
+      <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
       <v-btn
         color="primary"
         class="px-5"
@@ -257,13 +257,13 @@ export default class AddMember extends Vue {
 
   get existingMemberEmails() {
     let existingEmails: string[] = [];
-    const app = this.currentApplication;
+    const app: ApplicationModel = this.currentApplication;
     if (app.hasOwnProperty("operators") && app.operators.length) {
       app.operators.forEach((op) => {
         existingEmails.push(op.email.toLowerCase());
       });
     }
-    app.environments.forEach((env) => {
+    app.environments.forEach((env: EnvironmentModel) => {
       if (env.hasOwnProperty("operators") && env.operators.length) {
         env.operators.forEach((op) => {
           existingEmails.push(op.email.toLowerCase());
@@ -619,11 +619,16 @@ export default class AddMember extends Vue {
     }
 
     this.$emit("membersAdded", this.validEmailCount);
+    this.closeModal();
+  }
+
+  public closeModal() {
     this.memberList = [];
     this.validEmailList = [];
     this.assignDifferentRolesForEnvs = false;
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
     this._close = false;
   }
+
 }
 </script>

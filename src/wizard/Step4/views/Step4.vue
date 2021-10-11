@@ -366,9 +366,6 @@ export default class Step_4 extends Vue {
     console.log("clicked");
   }
 
-  private applicationDetails: CreateApplicationModel =
-    this.$store.getters.getStepModel(3);
-
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
       "addMembers",
