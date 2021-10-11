@@ -258,13 +258,20 @@ export default class AddMember extends Vue {
   get existingMemberEmails() {
     let existingEmails: string[] = [];
     const app: ApplicationModel = this.currentApplication;
-    if (app.hasOwnProperty("operators") && app.operators.length) {
+
+    if (
+      Object.prototype.hasOwnProperty.call(app, "operators") &&
+      app.operators.length
+    ) {
       app.operators.forEach((op) => {
         existingEmails.push(op.email.toLowerCase());
       });
     }
     app.environments.forEach((env: EnvironmentModel) => {
-      if (env.hasOwnProperty("operators") && env.operators.length) {
+      if (
+        Object.prototype.hasOwnProperty.call(env, "operators") &&
+        env.operators.length
+      ) {
         env.operators.forEach((op) => {
           existingEmails.push(op.email.toLowerCase());
         });
@@ -629,6 +636,5 @@ export default class AddMember extends Vue {
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
     this._close = false;
   }
-
 }
 </script>
