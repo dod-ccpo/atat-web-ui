@@ -16,7 +16,6 @@ import PortfolioDraftsApi from "@/api/portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { generateUid } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
-import { VEditDialog } from "vuetify/lib";
 
 Vue.use(Vuex);
 
@@ -181,6 +180,14 @@ const mapApplications = (
     return application;
   });
 };
+const StepModelIndices: Record<number, number> = {
+  1: 0,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4,
+};
+
 /*
 █████████████████████████████████████████
 
@@ -192,6 +199,7 @@ const mapApplications = (
 
 █████████████████████████████████████████
 */
+
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
@@ -358,9 +366,10 @@ export default new Vuex.Store({
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
-      state.portfolioSteps[stepIndex].model = model;
-      state.portfolioSteps[stepIndex].valid = valid;
-      state.portfolioSteps[stepIndex].touched = true;
+
+      Vue.set(state.portfolioSteps[stepIndex], "model", model);
+      Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
+      Vue.set(state.portfolioSteps[stepIndex], "touched", true);
 
       const es: number[] = state.erroredSteps;
       const erroredStepIndex = es.indexOf(stepNumber);
@@ -379,16 +388,18 @@ export default new Vuex.Store({
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
-      state.portfolioSteps[stepIndex].model = model;
-      state.portfolioSteps[stepIndex].valid = true;
-      state.portfolioSteps[stepIndex].touched = false;
+
+      Vue.set(state.portfolioSteps[stepIndex], "model", model);
+      Vue.set(state.portfolioSteps[stepIndex], "valid", true);
+      Vue.set(state.portfolioSteps[stepIndex], "touched", false);
     },
     doUpdateStepModelValidity(state, [stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
-      state.portfolioSteps[stepIndex].valid = valid;
-      state.portfolioSteps[stepIndex].touched = true;
+
+      Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
+      Vue.set(state.portfolioSteps[stepIndex], "touched", true);
 
       const es: number[] = state.erroredSteps;
       const erroredStepIndex = es.indexOf(stepNumber);
@@ -410,9 +421,10 @@ export default new Vuex.Store({
         const stepIndex = state.portfolioSteps.findIndex(
           (x) => x.step === step.step
         );
-        state.portfolioSteps[stepIndex].model = step.model();
-        state.portfolioSteps[stepIndex].valid = true;
-        state.portfolioSteps[stepIndex].touched = false;
+
+        Vue.set(state.portfolioSteps[stepIndex], "model", step.model());
+        Vue.set(state.portfolioSteps[stepIndex], "valid", true);
+        Vue.set(state.portfolioSteps[stepIndex], "touched", false);
       });
 
       //clear out task order models
@@ -627,6 +639,7 @@ export default new Vuex.Store({
     async deleteTaskOrder({ commit, state }, id: string): Promise<void> {
       try {
         commit("doDeleteTaskOrder", id);
+        commit("doInitializeStepModel", [createStepTwoModel(), 2]);
 
         const taskOrders = {
           task_orders: mapTaskOrders(state.taskOrderModels),
@@ -666,7 +679,7 @@ export default new Vuex.Store({
     async deleteApplication({ commit, state }, id: string): Promise<void> {
       try {
         commit("doDeleteApplication", id);
-
+        commit("doInitializeStepModel", [createStepThreeModel(), 3]);
         const _applications = state.applicationModels.map(
           (model: Application) => {
             const application: Application = {
@@ -924,6 +937,10 @@ export default new Vuex.Store({
       };
       commit("doToast", toastProps);
     },
+    isStepTouched({ state }, stepNumber: number) {
+      const index = StepModelIndices[stepNumber];
+      return state.portfolioSteps[index].touched;
+    },
   },
   modules: {},
   /*
@@ -1042,5 +1059,6 @@ export default new Vuex.Store({
       // EJY temp until table wired up with state.currentApplication
       return state.applicationModels[0];
     },
+    getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
   },
 });
