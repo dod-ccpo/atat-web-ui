@@ -41,6 +41,7 @@ import { Portfolio } from "types/Portfolios";
 import Component from "vue-class-component";
 import { Prop, Vue } from "vue-property-decorator";
 import SummaryCard from "./SummaryCard.vue";
+import dodComponents from "../../../data/dodComponents";
 
 @Component({
   components: {
@@ -57,9 +58,16 @@ export default class PortfolioSummaryCard extends Vue {
 
   public created(): void {
     this.$nextTick(() => {
+      const selectedDodComponents = this.portfolio.dod_components
+        .map((comp) => {
+          const component = dodComponents.find((c) => c.value === comp);
+          return component?.name;
+        })
+        .join(", ");
+
       this.dataItems.push({
         prefix: "Funded by",
-        value: this.portfolio.dod_components.join(","),
+        value: selectedDodComponents,
       });
 
       this.dataItems.push({
