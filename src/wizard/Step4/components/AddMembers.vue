@@ -498,6 +498,7 @@ export default class AddMember extends Vue {
           const displayName: string =
             this.parseNameFromEmail(emailAddressEntered);
           this.memberList[memberListIndex].display_name = displayName;
+          this.memberList[memberListIndex].isExisting = false;
         } else if (isExistingEmail) {
           this.memberList[memberListIndex].isExisting = true;
           this.memberList[memberListIndex].isValid = false;
