@@ -597,7 +597,7 @@ export default class AddMember extends Vue {
     if (this.assignDifferentRolesForEnvs) {
       this.environments_roles.forEach((env) => {
         if (env.role_value !== "no_access") {
-          const operators = this.getOperators(env.role_value);
+          operators = this.getOperators(env.role_value);
           const thisEnv: any = {
             id: env.env_id,
             name: env.env_name,
@@ -611,7 +611,7 @@ export default class AddMember extends Vue {
         environments,
       ]);
     } else {
-      const operators = this.getOperators(this.roleForAllEnvs);
+      operators = this.getOperators(this.roleForAllEnvs);
       this.$store.dispatch("updateApplicationOperators", [
         curApp.id,
         operators,
