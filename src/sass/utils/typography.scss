@@ -1,168 +1,177 @@
 @import "colors";
-    .h1{
-        font-size: 4.4rem !important;
-        font-weight: 700 !important;
-        line-height: 5.7rem !important;
+.h1{
+    font-size: 4.4rem !important;
+    font-weight: 700 !important;
+    line-height: 5.7rem !important;
+}
+.h2{
+    font-size: 3.4rem !important;
+    font-weight: 700 !important;
+    line-height: 4.4rem !important;
+}
+.h3{
+    font-size: 2.4rem !important;
+    font-weight: 700 !important;
+    line-height: 3.1rem !important;
+}
+.h4{
+    font-size: 1.9rem !important;
+    font-weight: 700 !important;
+    line-height: 2.5rem !important;
+}
+.h5{
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    line-height: 2rem !important;
     }
-    .h2{
-        font-size: 3.4rem !important;
-        font-weight: 700 !important;
-        line-height: 4.4rem !important;
-    }
-    .h3{
-        font-size: 2.4rem !important;
-        font-weight: 700 !important;
-        line-height: 3.1rem !important;
-    }
-    .h4{
-        font-size: 1.9rem !important;
-        font-weight: 700 !important;
-        line-height: 2.5rem !important;
-    }
-    .h5{
-        font-size: 1.5rem !important;
-        font-weight: 700 !important;
-        line-height: 2rem !important;
-        }
-    .h6{
-        font-size: 1.3rem !important;
-        font-weight: 400 !important;
-        line-height: 1.7rem !important;
-    }
-    .display-1{
-        font-size: 5.2rem !important;
-        font-weight: 600 !important;
-        line-height: 6.2rem !important;
-    }
-    .display-2{
-        font-size: 4.4rem !important;
-        font-weight: 300 !important;
-        line-height: 5.7rem !important;
-    }
-    .lead-paragraph{
-        font-size: 2.2rem !important;
-        font-weight: 400 !important;
-        line-height: 3.3rem !important;
-    }
-    .body-xl{
-        font-size: 1.9rem !important;
-        font-weight: 400 !important;
-        line-height: 2.8rem !important;
-    }
-    .body-lg{
-        font-size: 1.7rem !important;
-        font-weight: 400 !important;
-        line-height: 2.6rem !important;
-    }
-    .body{
-        font-size: 1.5rem !important;
-        font-weight: 400 !important;
-        line-height: 2.4rem !important;
-    }
-    .label{
-        font-size: 1.2rem !important;
-        font-weight: 400 !important;
-        line-height: 1.6rem !important;
-    }
-    .micro{
-        font-size: 1rem !important;
-        font-weight: 400 !important;
-        line-height: 1.1rem !important;
-    }
-    .form-field-label{
-        color: $base-darkest !important;
-        font-size: 1.7rem !important;
-        font-weight: 400 !important;
-        line-height: 2.6rem !important;
-    }
-    .form-field-label-error{
-        @extend .form-field-label;
-        font-weight: 700 !important;
-        color: $error-darker !important;
-    }
-    .form-field-label-success{
-        @extend .form-field-label;
-        color: $success;
-    }
-    .link-body-lg{
-        font-size: 1.9rem !important;
-        font-weight: 400 !important;
-        line-height: 2.8rem !important;
-        text-decoration: underline !important;
-        color: $primary !important;
-    }
-    .link-body-md{
-        font-size: 1.7rem !important;
-        font-weight: 400 !important;
-        line-height: 2.6rem !important;
-        text-decoration: underline !important;
-        color: $primary !important;
+.h6{
+    font-size: 1.3rem !important;
+    font-weight: 400 !important;
+    line-height: 1.7rem !important;
+}
+.display-1{
+    font-size: 5.2rem !important;
+    font-weight: 600 !important;
+    line-height: 6.2rem !important;
+}
+.display-2{
+    font-size: 4.4rem !important;
+    font-weight: 300 !important;
+    line-height: 5.7rem !important;
+}
+.lead-paragraph{
+    font-size: 2.2rem !important;
+    font-weight: 400 !important;
+    line-height: 3.3rem !important;
+}
+.body-xl{
+    font-size: 1.9rem !important;
+    font-weight: 400 !important;
+    line-height: 2.8rem !important;
+}
+.body-lg{
+    font-size: 1.7rem !important;
+    font-weight: 400 !important;
+    line-height: 2.6rem !important;
+}
+.body{
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    line-height: 2.4rem !important;
+}
+.label{
+    font-size: 1.2rem !important;
+    font-weight: 400 !important;
+    line-height: 1.6rem !important;
+}
+.micro{
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.1rem !important;
+}
+.form-field-label{
+    color: $base-darkest !important;
+    font-size: 1.7rem !important;
+    font-weight: 400 !important;
+    line-height: 2.6rem !important;
+}
+.form-field-label-error{
+    @extend .form-field-label;
+    font-weight: 700 !important;
+    color: $error-darker !important;
+}
+.form-field-label-success{
+    @extend .form-field-label;
+    color: $success;
+}
+.link-body-lg{
+    font-size: 1.9rem !important;
+    font-weight: 400 !important;
+    line-height: 2.8rem !important;
+    text-decoration: underline !important;
+    color: $primary !important;
+}
+.link-body-md{
+    font-size: 1.7rem !important;
+    font-weight: 400 !important;
+    line-height: 2.6rem !important;
+    text-decoration: underline !important;
+    color: $primary !important;
 
-    }
-    .link-body-sm{
-        font-size: 1.5rem !important;
-        font-weight: 400 !important;
-        line-height: 2.4rem !important;
-        text-decoration: underline !important;
-        color: $primary !important;
-    }
-    .stepper-step-lg{
-        font-size: 1.9rem !important;
-        font-weight: 700 !important;
-        line-height: 2.5rem !important;
-    }
+}
+.link-body-sm{
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    line-height: 2.4rem !important;
+    text-decoration: underline !important;
+    color: $primary !important;
+}
+.stepper-step-lg{
+    font-size: 1.9rem !important;
+    font-weight: 700 !important;
+    line-height: 2.5rem !important;
+}
 
-    .hr{
-        border-color: var(--v-hr_color-base) !important;
-        -ieVar-❗border-color: var(--v-hr_color-base) !important;
-        border-width: 1px !important;
-        border-style: solid !important;
-    }
+.hr{
+    border-color: var(--v-hr_color-base) !important;
+    -ieVar-❗border-color: var(--v-hr_color-base) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+}
 
-    .optional{
-        font-size: 1.5rem !important;
-        font-weight: 400 !important;
-        line-height: 2.3rem !important;
-        color: $base_dark !important;
-    }
+.optional{
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    line-height: 2.3rem !important;
+    color: $base_dark !important;
+}
 
-    .color-base {
-        color: $base !important;
-    }
+.color-base {
+    color: $base !important;
+}
 
-    .datepicker-text{
-        font-size: 1.6rem !important;
-        font-weight: 400 !important;
-        line-height: 2rem !important;
-    }
+.datepicker-text{
+    font-size: 1.6rem !important;
+    font-weight: 400 !important;
+    line-height: 2rem !important;
+}
 
-    //todo change this on the component to
-    // .body
-    .table-item{
-        font-size: 1.5rem;
-        line-height: 2.4rem;
-        font-style: normal;
-        font-weight: normal;
-        color: $base_darkest;
-    }
-    a {
-        color: $primary;
-    }
-    .text-decoration-none {
-        text-decoration: none !important;
-    }
+//todo change this on the component to
+// .body
+.table-item{
+    font-size: 1.5rem;
+    line-height: 2.4rem;
+    font-style: normal;
+    font-weight: normal;
+    color: $base_darkest;
+}
+a {
+    color: $primary;
+}
+.text-decoration-none {
+    text-decoration: none !important;
+}
 
-    $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
-    @each $size in $sizes{
-        .icon-#{$size}{
-            font-size: #{$size}px !important;
-            height: #{$size}px !important;
-            width: #{$size}px !important;
-            min-height: #{$size}px !important;
-            min-width: #{$size}px !important;
-        }
+$sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
+@each $size in $sizes{
+    .icon-#{$size}{
+        font-size: #{$size}px !important;
+        height: #{$size}px !important;
+        width: #{$size}px !important;
+        min-height: #{$size}px !important;
+        min-width: #{$size}px !important;
     }
+}
 
-    .word-break-normal{
-        word-break: normal !important;
+$fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
+@each $size in $fontSizes{
+    .font-size-#{$size}{
+        font-size: #{$size}px !important;
     }
+}
+
+.word-break-normal{
+    word-break: normal !important;
+}
+
+

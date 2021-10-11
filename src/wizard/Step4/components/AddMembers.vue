@@ -1,10 +1,10 @@
 <template>
   <v-card class="extra-padding">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-    <v-card-title style="height: 52px">
-      <div class="mb-2 h3">Add team members to Tracker Application</div>
+    <v-card-title>
+      <h3 class="mb-2 h3">Add team members to {{ currentApplication.name }}</h3>
     </v-card-title>
-    <v-card-text class="body-lg text--base-darkest height-100 mt-2">
+    <v-card-text class="body-lg text--base-darkest mt-2">
       <p>
         Team members can have different levels of access to your application and
         environments. Invite multiple people with the same permissions at once.
@@ -78,7 +78,7 @@
       </div>
 
       <v-alert
-        v-show="invalidEmailCount"
+        v-show="invalidEmailCount || existingEmailEntryCount"
         outlined
         rounded
         color="error"
@@ -87,20 +87,86 @@
         class="text-left error_lighter black-icon mt-6"
       >
         <p class="black--text body-lg ma-0">
-          <span v-if="invalidEmailCount === 1">
-            The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
+          <span v-show="!existingEmailEntryCount">
+            <span v-show="invalidEmailCount === 1">
+              The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
+            </span>
+            <span v-show="invalidEmailCount > 1">
+              Multiple addresses were not recognized.
+            </span>
           </span>
-          <span v-if="invalidEmailCount > 1">
-            Multiple addresses were not recognized.
+          <span v-show="existingEmailEntryCount">
+            The following email<span v-if="existingEmailEntryCount > 1"
+              >s are</span
+            ><span v-else> is</span> already in use for this application:
+            <strong>{{ existingEmailEntries }}</strong
+            >.<br />
           </span>
-          Please make sure that all addresses are properly formatted and .mil
-          addresses.
+          Please make sure that all addresses are
+          <span v-show="existingEmailEntryCount">unique, </span> properly
+          formatted and .mil addresses.
         </p>
       </v-alert>
+
+      <v-divider class="my-8 width-40"></v-divider>
+
+      <h3>Team Member Roles</h3>
+      <p>
+        Choose what type of role people will have in your application.<br />
+        <v-btn class="link-button pa-0 height-auto"
+          >Learn more about roles</v-btn
+        >
+      </p>
+
+      <v-checkbox
+        v-model="assignDifferentRolesForEnvs"
+        label="I want to assign different levels of access to each environment."
+        class="border-base-lighter border-b-1"
+        style="border-bottom-style: solid"
+      ></v-checkbox>
+
+      <div v-show="!assignDifferentRolesForEnvs">
+        <v-radio-group v-model="roleForAllEnvs">
+          <v-radio
+            v-for="role in rolesForAllEnvsList"
+            :key="role.role_name"
+            :label="role.role_name"
+            :value="role.role_value"
+          ></v-radio>
+        </v-radio-group>
+      </div>
+
+      <v-container v-show="assignDifferentRolesForEnvs">
+        <v-row
+          v-for="(env, index) in environments_roles"
+          :key="env.env_id"
+          class="d-flex border-base-lighter border-b-1 py-1"
+          style="border-bottom-style: solid"
+        >
+          <v-col class="d-flex align-center">
+            <strong class="font-size-19">
+              {{ env.env_name }}
+            </strong>
+          </v-col>
+          <v-col>
+            <v-select
+              class="no-details"
+              v-model="environments_roles[index].role_value"
+              :items="rolesList"
+              item-text="role_name"
+              item-value="role_value"
+              dense
+              filled
+              :ripple="false"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card-text>
-    <v-card-actions style="height: 73px">
+
+    <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn text class="link-button" @click="_close = false"> Cancel </v-btn>
+      <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
       <v-btn
         color="primary"
         class="px-5"
@@ -108,7 +174,7 @@
         :disabled="invalidEmailCount > 0 || validEmailCount === 0"
       >
         Add Team Members
-        <span class="valid-entry-count ml-2" v-if="invalidEmailCount === 0">
+        <span class="valid-entry-count ml-2" v-if="validEmailCount > 0">
           {{ validEmailCount }}
         </span>
       </v-btn>
@@ -118,24 +184,116 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
+import {
+  ApplicationModel,
+  OperatorModel,
+  EnvironmentModel,
+} from "types/Portfolios";
+import { generateUid } from "@/helpers";
 
 @Component({})
 export default class AddMember extends Vue {
+  // data
   private pillboxFocused = false;
-
   private duplicatedEmail = "";
   private memberList: {
-    id: number;
+    id: string;
     email: string;
     display_name: string;
     access: string;
     isValid: boolean | null;
-    isDuplicate: boolean;
+    isExisting: boolean;
   }[] = [];
   private validEmailList: string[] = [];
 
+  private rolesList: {
+    role_name: string;
+    role_value: string;
+    avl_for_all_envs: boolean;
+  }[] = [
+    {
+      role_name: "Administrator",
+      role_value: "administrator",
+      avl_for_all_envs: true,
+    },
+    {
+      role_name: "Contributor",
+      role_value: "contributor",
+      avl_for_all_envs: true,
+    },
+    {
+      role_name: "Billing read-only",
+      role_value: "read_only",
+      avl_for_all_envs: true,
+    },
+    {
+      role_name: "No access",
+      role_value: "no_access",
+      avl_for_all_envs: false,
+    },
+  ];
+
+  private assignDifferentRolesForEnvs = false;
+  private roleForAllEnvs = this.rolesList[0].role_value;
+  private environments_roles: {
+    env_id: string;
+    env_name: string;
+    role_value: string;
+  }[] = [];
+
+  // props
   @PropSync("close") _close!: boolean;
+
+  // computed
+  get currentApplication(): ApplicationModel {
+    return this.$store.getters.getCurrentApplication;
+  }
+
+  get rolesForAllEnvsList(): unknown {
+    return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
+  }
+
+  get existingMemberEmails(): string[] {
+    let existingEmails: string[] = [];
+    const app: ApplicationModel = this.currentApplication;
+
+    if (
+      Object.prototype.hasOwnProperty.call(app, "operators") &&
+      app.operators.length
+    ) {
+      app.operators.forEach((op) => {
+        existingEmails.push(op.email.toLowerCase());
+      });
+    }
+    app.environments.forEach((env: EnvironmentModel) => {
+      if (
+        Object.prototype.hasOwnProperty.call(env, "operators") &&
+        env.operators.length
+      ) {
+        env.operators.forEach((op) => {
+          existingEmails.push(op.email.toLowerCase());
+        });
+      }
+    });
+    return existingEmails;
+  }
+
+  public async mounted(): Promise<void> {
+    this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
+  }
+
+  private setEnvironmentRoleDropdowns(role: string) {
+    const curApp: ApplicationModel = this.currentApplication;
+    this.environments_roles = [];
+    curApp.environments.forEach((env: EnvironmentModel) => {
+      this.environments_roles.push({
+        env_id: env.id,
+        env_name: env.name,
+        role_value: role,
+      });
+    });
+  }
 
   get inputWidthFaker(): HTMLElement {
     return this.$refs.inputWidthFaker as HTMLElement;
@@ -160,8 +318,29 @@ export default class AddMember extends Vue {
     return invalidEmails.length ? invalidEmails[0].email : "";
   }
 
-  get duplicateEmailCount(): number {
-    return this.memberList.filter((obj) => obj.isDuplicate === true).length;
+  get existingEmailEntryCount(): number {
+    return this.memberList.filter((obj) => obj.isExisting === true).length;
+  }
+
+  get existingEmailEntries(): string {
+    const existingEmailList = this.memberList
+      .filter((obj) => obj.isExisting)
+      .map((obj) => obj.email);
+    return existingEmailList.join(", ");
+  }
+
+  @Watch("assignDifferentRolesForEnvs")
+  protected setEnvRoles(newVal: boolean): void {
+    if (newVal === true) {
+      this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
+    } else {
+      this.roleForAllEnvs = this.rolesList[0].role_value;
+    }
+  }
+
+  @Watch("roleForAllEnvs")
+  protected setAllEnvsRoles(newVal: string): void {
+    this.setEnvironmentRoleDropdowns(newVal);
   }
 
   public addEmail(e: Event, override: boolean | null): void {
@@ -173,14 +352,14 @@ export default class AddMember extends Vue {
       (targetId === "PillboxWrapper" || override === true) &&
       (len === 0 || this.memberList[len - 1].email !== "")
     ) {
-      const memberId = Date.now();
+      const memberId = generateUid();
       this.memberList.push({
         id: memberId,
         email: "",
         display_name: "",
         access: "",
         isValid: null,
-        isDuplicate: false,
+        isExisting: false,
       });
       this.$nextTick().then(() => {
         let newInput = document.querySelector(
@@ -193,36 +372,38 @@ export default class AddMember extends Vue {
     }
   }
 
-  public removeEmail(e: Event) {
+  public removeEmail(e: Event): void {
     this.pillboxFocused = false;
     const thisButton = e.target as HTMLButtonElement;
     const closestElement = thisButton.closest(".v-input__slot") as HTMLElement;
     const input = closestElement.querySelector(
       "input[type=text]"
     ) as HTMLInputElement;
-    const i = this.validEmailList.indexOf(input.value);
+    const i = this.validEmailList.indexOf(input.value.toLowerCase());
     if (i > -1) {
       this.validEmailList.splice(i, 1);
     }
-    const memberId = Number(input.dataset.memberId);
+    const memberId = input.dataset.memberId as string;
     this.removeMemberFromList(memberId);
     this.setInputWidths();
   }
 
-  public removeInvalidEmails() {
+  public removeInvalidEmails(): void {
     this.memberList = this.memberList.filter((obj) => {
       return obj.isValid === true;
     });
   }
 
-  public addInputEventListeners(vm: any, input: HTMLInputElement) {
+  public addInputEventListeners(vm: unknown, input: HTMLInputElement): void {
     input.addEventListener("input", () => {
       this.inputWidthFaker.innerHTML = input.value;
       const w = this.inputWidthFaker.offsetWidth + "px";
       input.style.width = w;
 
       this.duplicatedEmail =
-        this.validEmailList.indexOf(input.value) > -1 ? input.value : "";
+        this.validEmailList.indexOf(input.value.toLowerCase()) > -1
+          ? input.value.toLowerCase()
+          : "";
     });
 
     input.addEventListener("keydown", (e) => {
@@ -239,7 +420,7 @@ export default class AddMember extends Vue {
         // for 508 compliance...
         // if shift-tabbing out of first pill input, and have invalid emails,
         // tab to the "Remove all emails with errors" link
-        const memberId = Number(input.dataset.memberId);
+        const memberId = input.dataset.memberId as string;
         const memberListIndex = this.memberList
           .map(function (e) {
             return e.id;
@@ -270,20 +451,23 @@ export default class AddMember extends Vue {
 
       const pastedValuesArray: string[] = pastedText.split(",");
       let uniqueValues = [...new Set(pastedValuesArray)];
-      const timeStamp = Date.now();
-      uniqueValues.forEach((email, i) => {
-        const validListIndex = vm.validEmailList.indexOf(email);
-        const isValid = vm.validateEmail(email);
-        if (email && isValid && validListIndex === -1) {
-          vm.validEmailList.push(email);
-          const memberId = timeStamp + i;
-          vm.memberList.push({
+      const thisVm: any = vm;
+      uniqueValues.forEach((email) => {
+        const isExistingEmail =
+          thisVm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
+        const notAlreadyEntered =
+          thisVm.validEmailList.indexOf(email.toLowerCase()) === -1;
+        const isValid = thisVm.validateEmail(email);
+        if (email && isValid && notAlreadyEntered) {
+          thisVm.validEmailList.push(email.toLowerCase());
+          const memberId = generateUid();
+          thisVm.memberList.push({
             id: memberId,
             email: email,
             display_name: "",
             access: "",
-            isValid: isValid,
-            isDuplicate: false, // address this when comparing to existing members
+            isValid: isValid && !isExistingEmail,
+            isExisting: isExistingEmail,
           });
         }
       });
@@ -291,11 +475,11 @@ export default class AddMember extends Vue {
     });
   }
 
-  public emailEdit(e: Event) {
+  public emailEdit(e: Event): void {
     e.preventDefault();
     e.cancelBubble = true;
     const input = e.currentTarget as HTMLInputElement;
-    const i = this.validEmailList.indexOf(input.value);
+    const i = this.validEmailList.indexOf(input.value.toLowerCase());
     if (i > -1) {
       this.validEmailList.splice(i, 1);
     }
@@ -303,12 +487,12 @@ export default class AddMember extends Vue {
     this.addInputEventListeners(this, input);
   }
 
-  public emailBlurred(e: Event) {
+  public emailBlurred(e: Event): void {
     e.preventDefault();
     e.cancelBubble = true;
     this.pillboxFocused = false;
     const input = e.target as HTMLInputElement;
-    const memberId = Number(input.dataset.memberId);
+    const memberId = input.dataset.memberId as string;
     let emailAddressEntered = input.value;
     emailAddressEntered = emailAddressEntered.replace(/['"]/g, "");
 
@@ -321,16 +505,23 @@ export default class AddMember extends Vue {
       const isValid = this.validateEmail(emailAddressEntered);
       this.memberList[memberListIndex].isValid = isValid;
 
-      if (emailAddressEntered === this.duplicatedEmail) {
+      if (emailAddressEntered.toLowerCase() === this.duplicatedEmail) {
         this.memberList.splice(memberListIndex, 1);
         this.duplicatedEmail = "";
       } else {
         this.memberList[memberListIndex].email = emailAddressEntered;
-        if (isValid) {
-          this.validEmailList.push(emailAddressEntered);
+        const isExistingEmail =
+          this.existingMemberEmails.indexOf(emailAddressEntered.toLowerCase()) >
+          -1;
+        if (!isExistingEmail && isValid) {
+          this.validEmailList.push(emailAddressEntered.toLowerCase());
           const displayName: string =
             this.parseNameFromEmail(emailAddressEntered);
           this.memberList[memberListIndex].display_name = displayName;
+          this.memberList[memberListIndex].isExisting = false;
+        } else if (isExistingEmail) {
+          this.memberList[memberListIndex].isExisting = true;
+          this.memberList[memberListIndex].isValid = false;
         }
       }
 
@@ -343,7 +534,7 @@ export default class AddMember extends Vue {
     }
   }
 
-  public parseNameFromEmail(email: string) {
+  public parseNameFromEmail(email: string): string {
     // get everthing before the @ symbol
     let name = email.split("@")[0];
     // remove identifier suffix
@@ -368,7 +559,7 @@ export default class AddMember extends Vue {
     return names.join(" ");
   }
 
-  public setInputWidths() {
+  public setInputWidths(): void {
     this.memberList.forEach((member) => {
       this.inputWidthFaker.innerHTML = member.email;
       const w = this.inputWidthFaker.offsetWidth + "px";
@@ -379,21 +570,71 @@ export default class AddMember extends Vue {
     }, this);
   }
 
-  public validateEmail(email: string) {
-    const isMilAddress = email.slice(-3) === "mil";
+  public validateEmail(email: string): boolean {
+    const isMilAddress = email.slice(-3).toLowerCase() === "mil";
     const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
     return isMilAddress && emailRegex.test(email);
   }
 
-  public removeMemberFromList(memberId: number) {
+  public removeMemberFromList(memberId: string): void {
     this.memberList = this.memberList.filter(function (obj) {
       return obj.id !== memberId;
     });
   }
 
-  public saveToStore() {
+  public getOperators(role: string): OperatorModel[] {
+    let operators: OperatorModel[] = [];
+    this.memberList.forEach((member) => {
+      let operator: OperatorModel = {
+        id: member.id,
+        display_name: member.display_name,
+        email: member.email,
+        access: role,
+      };
+      operators.push(operator);
+    });
+    return operators;
+  }
+
+  public saveToStore(): void {
+    let operators: OperatorModel[] = [];
+    let environments: EnvironmentModel[] = [];
+    const curApp: ApplicationModel = this.currentApplication;
+
+    if (this.assignDifferentRolesForEnvs) {
+      this.environments_roles.forEach((env) => {
+        if (env.role_value !== "no_access") {
+          operators = this.getOperators(env.role_value);
+          const thisEnv: EnvironmentModel = {
+            id: env.env_id,
+            name: env.env_name,
+            operators: operators,
+          };
+          environments.push(thisEnv);
+        }
+      }, this);
+      this.$store.dispatch("updateEnvironmentOperators", [
+        curApp.id,
+        environments,
+      ]);
+    } else {
+      operators = this.getOperators(this.roleForAllEnvs);
+      this.$store.dispatch("updateApplicationOperators", [
+        curApp.id,
+        operators,
+      ]);
+    }
+
+    this.$emit("membersAdded", this.validEmailCount);
+    this.closeModal();
+  }
+
+  public closeModal(): void {
+    this.memberList = [];
+    this.validEmailList = [];
+    this.assignDifferentRolesForEnvs = false;
+    document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
     this._close = false;
-    console.log("save member data to store...");
   }
 }
 </script>

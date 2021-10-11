@@ -5,11 +5,3 @@ export interface UploadedFile {
 export interface ValidationRule {
   [key: string]: any;
 }
-
-export interface Dialog {
-  isDisplayed: boolean;
-  type: string;
-  setFocus: boolean;
-  width: string;
-  height: string;
-}

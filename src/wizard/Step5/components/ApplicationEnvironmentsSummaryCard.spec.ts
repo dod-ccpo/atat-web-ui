@@ -7,7 +7,6 @@ import VueRouter from "vue-router";
 
 Vue.use(Vuetify);
 
-
 describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
   const localVue = createLocalVue();
   localVue.use(VueRouter);
