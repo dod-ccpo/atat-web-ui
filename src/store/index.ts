@@ -153,13 +153,15 @@ const mapApplications = (
     const { id, ...baseModel } = model;
     const application: Application = {
       ...baseModel,
-      operators: model.operators ? model.operators.map((op) => {
-        return {
-          access: op.access,
-          display_name: op.display_name,
-          email: op.email,
-        }
-      }) : [],
+      operators: model.operators
+        ? model.operators.map((op) => {
+            return {
+              access: op.access,
+              display_name: op.display_name,
+              email: op.email,
+            };
+          })
+        : [],
       environments: model.environments.map((env) => {
         return {
           name: env.name,
@@ -306,7 +308,7 @@ export default new Vuex.Store({
       isDisplayed: false,
       message: "",
       contentClass: "",
-    }
+    },
   },
   /*
   ███████████████████████████████████████████████████████████████████████████
@@ -488,13 +490,14 @@ export default new Vuex.Store({
         const applicationModel: ApplicationModel = {
           ...application,
           id: generateUid(),
-          operators: application.operators 
+          operators: application.operators
             ? application.operators.map((operator) => {
-            return {
-              ...operator,
-              id: generateUid(),
-            }
-          }) : [],
+                return {
+                  ...operator,
+                  id: generateUid(),
+                };
+              })
+            : [],
           environments: application.environments.map((environment) => {
             return {
               ...environment,
@@ -539,7 +542,7 @@ export default new Vuex.Store({
         state.applicationModels,
         (application: ApplicationModel) => application.id === appId
       );
-      let appModel: ApplicationModel = state.applicationModels[index];
+      const appModel: ApplicationModel = state.applicationModels[index];
       environments.forEach((env: EnvironmentModel) => {
         const envId = env.id;
         const index = getEntityIndex(
@@ -558,7 +561,7 @@ export default new Vuex.Store({
         state.applicationModels,
         (application: ApplicationModel) => application.id === appId
       );
-      let appModel: ApplicationModel = state.applicationModels[index];
+      const appModel: ApplicationModel = state.applicationModels[index];
       if (appModel.hasOwnProperty("operators")) {
         appModel.operators.push(...operators);
       } else {
@@ -567,8 +570,7 @@ export default new Vuex.Store({
     },
     doToast(state, props) {
       state.toast = props;
-    }
-
+    },
   },
   /*
   ██████████████████████████████████████████████████████
@@ -907,18 +909,18 @@ export default new Vuex.Store({
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
     },
-    updateEnvironmentOperators({commit}, [appId, environments]) {
+    updateEnvironmentOperators({ commit }, [appId, environments]) {
       commit("doUpdateEnvironmentOperators", [appId, environments]);
     },
-    updateApplicationOperators({commit}, [appId, operators]) {
+    updateApplicationOperators({ commit }, [appId, operators]) {
       commit("doUpdateApplicationOperators", [appId, operators]);
     },
-    toast({commit}, [message, contentClass]) {
+    toast({ commit }, [message, contentClass]) {
       const toastProps: Toast = {
-        isDisplayed: true, 
-        message: message, 
+        isDisplayed: true,
+        message: message,
         contentClass: contentClass,
-      }
+      };
       commit("doToast", toastProps);
     },
   },
@@ -1032,13 +1034,12 @@ export default new Vuex.Store({
     getCurrentApplication: (state) => {
       // const applicationIndex = getEntityIndex(
       //   state.applicationModels,
-      //   (application: ApplicationModel) => 
+      //   (application: ApplicationModel) =>
       //     application.id === state.currentApplicationId);
       // return state.applicationModels[applicationIndex];
 
       // EJY temp until table wired up with state.currentApplication
-      return state.applicationModels[0]; 
-    }
-
+      return state.applicationModels[0];
+    },
   },
 });

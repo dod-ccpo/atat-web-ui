@@ -71,9 +71,9 @@
                 @click="openDialog($event)"
               >
                 <div class="mr-1 mt-n2">
-                <v-icon class="icon-20" role="presentation"
-                  >control_point</v-icon
-                >
+                  <v-icon class="icon-20" role="presentation"
+                    >control_point</v-icon
+                  >
                 </div>
                 <div class="body font-weight-bold">Invite Team Member</div>
               </v-btn>
@@ -135,7 +135,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         :disabled="isDisabled(item.workplace_access)"
-                        class="table-row-menu-button pa-0 "
+                        class="table-row-menu-button pa-0"
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
@@ -327,13 +327,12 @@ export default class Step_4 extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
 
-
   get currentApplication(): ApplicationModel[] {
     return this.$store.getters.getCurrentApplication;
   }
 
   private applicationName = this.$store.state.applicationModels[0].name;
-  
+
   private message = "You do not have any team members in this application yet.";
   private showPortfolioOwnerText = false;
   private teamPortfolioAccessText = false;

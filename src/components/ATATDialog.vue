@@ -8,9 +8,12 @@
     transition="fade-transition"
     origin="center center"
     :content-class="
-      'height-' + dialog.height +
-      ' max-height-' + dialog.height +
-      ' min-height-' + dialog.height
+      'height-' +
+      dialog.height +
+      ' max-height-' +
+      dialog.height +
+      ' min-height-' +
+      dialog.height
     "
     attach
   >
@@ -65,6 +68,5 @@ export default class ATATDialog extends Vue {
     const message = memberCount + " team  member" + plural + " added";
     this.$store.dispatch("toast", [message, "toast-success"]);
   }
-
 }
 </script>

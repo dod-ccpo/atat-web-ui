@@ -96,22 +96,26 @@
             </span>
           </span>
           <span v-show="existingEmailEntryCount">
-            The following email<span v-if="existingEmailEntryCount > 1">s are</span><span v-else> is</span> already in use for this application: 
-            <strong>{{ existingEmailEntries }}</strong>.<br />
+            The following email<span v-if="existingEmailEntryCount > 1"
+              >s are</span
+            ><span v-else> is</span> already in use for this application:
+            <strong>{{ existingEmailEntries }}</strong
+            >.<br />
           </span>
-          Please make sure that all addresses are <span v-show="existingEmailEntryCount">unique, </span> properly formatted and .mil
-          addresses.
+          Please make sure that all addresses are
+          <span v-show="existingEmailEntryCount">unique, </span> properly
+          formatted and .mil addresses.
         </p>
       </v-alert>
 
       <v-divider class="my-8 width-40"></v-divider>
 
-      <h3>
-        Team Member Roles
-      </h3>
+      <h3>Team Member Roles</h3>
       <p>
-        Choose what type of role people will have in your application.<br>
-        <v-btn class="link-button pa-0 height-auto">Learn more about roles</v-btn>
+        Choose what type of role people will have in your application.<br />
+        <v-btn class="link-button pa-0 height-auto"
+          >Learn more about roles</v-btn
+        >
       </p>
 
       <v-checkbox
@@ -157,9 +161,7 @@
             />
           </v-col>
         </v-row>
-
       </v-container>
-
     </v-card-text>
 
     <v-card-actions>
@@ -184,12 +186,15 @@
 import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
 import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
-import { ApplicationModel, OperatorModel, EnvironmentModel } from "types/Portfolios";
+import {
+  ApplicationModel,
+  OperatorModel,
+  EnvironmentModel,
+} from "types/Portfolios";
 import { generateUid } from "@/helpers";
 
 @Component({})
 export default class AddMember extends Vue {
-
   // data
   private pillboxFocused = false;
   private duplicatedEmail = "";
@@ -230,7 +235,7 @@ export default class AddMember extends Vue {
     },
   ];
 
-  private assignDifferentRolesForEnvs: boolean = false;
+  private assignDifferentRolesForEnvs = false;
   private roleForAllEnvs = this.rolesList[0].role_value;
   private environments_roles: {
     env_id: string;
@@ -251,7 +256,7 @@ export default class AddMember extends Vue {
   }
 
   get existingMemberEmails() {
-    let existingEmails:string[] = [];
+    let existingEmails: string[] = [];
     const app = this.currentApplication;
     if (app.hasOwnProperty("operators") && app.operators.length) {
       app.operators.forEach((op) => {
@@ -312,7 +317,9 @@ export default class AddMember extends Vue {
   }
 
   get existingEmailEntries(): string {
-    const existingEmailList = this.memberList.filter((obj) => obj.isExisting).map((obj) => obj.email);
+    const existingEmailList = this.memberList
+      .filter((obj) => obj.isExisting)
+      .map((obj) => obj.email);
     return existingEmailList.join(", ");
   }
 
@@ -388,7 +395,9 @@ export default class AddMember extends Vue {
       input.style.width = w;
 
       this.duplicatedEmail =
-        this.validEmailList.indexOf(input.value.toLowerCase()) > -1 ? input.value.toLowerCase() : "";
+        this.validEmailList.indexOf(input.value.toLowerCase()) > -1
+          ? input.value.toLowerCase()
+          : "";
     });
 
     input.addEventListener("keydown", (e) => {
@@ -437,8 +446,10 @@ export default class AddMember extends Vue {
       const pastedValuesArray: string[] = pastedText.split(",");
       let uniqueValues = [...new Set(pastedValuesArray)];
       uniqueValues.forEach((email, i) => {
-        const isExistingEmail = vm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
-        const notAlreadyEntered = vm.validEmailList.indexOf(email.toLowerCase()) === -1;
+        const isExistingEmail =
+          vm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
+        const notAlreadyEntered =
+          vm.validEmailList.indexOf(email.toLowerCase()) === -1;
         const isValid = vm.validateEmail(email);
         if (email && isValid && notAlreadyEntered) {
           vm.validEmailList.push(email.toLowerCase());
@@ -449,7 +460,7 @@ export default class AddMember extends Vue {
             display_name: "",
             access: "",
             isValid: isValid && !isExistingEmail,
-            isExisting: isExistingEmail, 
+            isExisting: isExistingEmail,
           });
         }
       }, this);
@@ -492,7 +503,9 @@ export default class AddMember extends Vue {
         this.duplicatedEmail = "";
       } else {
         this.memberList[memberListIndex].email = emailAddressEntered;
-        const isExistingEmail = this.existingMemberEmails.indexOf(emailAddressEntered.toLowerCase()) > -1;
+        const isExistingEmail =
+          this.existingMemberEmails.indexOf(emailAddressEntered.toLowerCase()) >
+          -1;
         if (!isExistingEmail && isValid) {
           this.validEmailList.push(emailAddressEntered.toLowerCase());
           const displayName: string =
@@ -564,13 +577,13 @@ export default class AddMember extends Vue {
 
   public getOperators(role: string) {
     let operators: OperatorModel[] = [];
-    this.memberList.forEach(member => {
+    this.memberList.forEach((member) => {
       let operator: any = {
         id: member.id,
         display_name: member.display_name,
         email: member.email,
-        access: role
-      }
+        access: role,
+      };
       operators.push(operator);
     });
     return operators;
@@ -578,35 +591,41 @@ export default class AddMember extends Vue {
 
   public saveToStore() {
     let operators: OperatorModel[] = [];
-    let environments:EnvironmentModel[] = [];
+    let environments: EnvironmentModel[] = [];
     const curApp: ApplicationModel = this.currentApplication;
 
     if (this.assignDifferentRolesForEnvs) {
-      this.environments_roles.forEach(env => {
+      this.environments_roles.forEach((env) => {
         if (env.role_value !== "no_access") {
           const operators = this.getOperators(env.role_value);
           const thisEnv: any = {
             id: env.env_id,
             name: env.env_name,
-            operators: operators
-          }
+            operators: operators,
+          };
           environments.push(thisEnv);
         }
       }, this);
-      this.$store.dispatch("updateEnvironmentOperators", [curApp.id, environments]);
+      this.$store.dispatch("updateEnvironmentOperators", [
+        curApp.id,
+        environments,
+      ]);
     } else {
       const operators = this.getOperators(this.roleForAllEnvs);
-      this.$store.dispatch("updateApplicationOperators", [curApp.id, operators]);
+      this.$store.dispatch("updateApplicationOperators", [
+        curApp.id,
+        operators,
+      ]);
     }
 
-    this.$emit('membersAdded', this.validEmailCount);
+    this.$emit("membersAdded", this.validEmailCount);
     this.memberList = [];
     this.validEmailList = [];
     this.assignDifferentRolesForEnvs = false;
 
-    document.getElementsByClassName('v-dialog--active')[0].scrollTop = 0;
-    this.$el.scrollTop = 0
-    
+    document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
+    this.$el.scrollTop = 0;
+
     this._close = false;
   }
 }
