@@ -1,5 +1,5 @@
 <template>
-  <v-card id="MemberModalContent" class="extra-padding">
+  <v-card class="extra-padding">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <v-card-title>
       <h3 class="mb-2 h3">Add team members to {{ currentApplication.name }}</h3>
@@ -597,7 +597,7 @@ export default class AddMember extends Vue {
       const operators = this.getOperators(this.roleForAllEnvs);
       this.$store.dispatch("updateApplicationOperators", [curApp.id, operators]);
     }
-    
+
     this.$emit('membersAdded', this.validEmailCount);
     this.memberList = [];
     this.validEmailList = [];

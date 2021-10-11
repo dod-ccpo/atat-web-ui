@@ -494,7 +494,7 @@ export default new Vuex.Store({
               ...operator,
               id: generateUid(),
             }
-          }) : [], // EJY check this is correct
+          }) : [],
           environments: application.environments.map((environment) => {
             return {
               ...environment,

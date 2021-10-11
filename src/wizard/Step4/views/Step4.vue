@@ -367,13 +367,8 @@ export default class Step_4 extends Vue {
     console.log("clicked");
   }
 
-
   private applicationDetails: CreateApplicationModel =
     this.$store.getters.getStepModel(3);
-
-  // this.$nextTick().then(() => {
-  //   const pillboxWrapper = document.getElementById("PillboxWrapper") as HTMLDivElement;
-  //   pillboxWrapper.focus();
 
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
@@ -392,7 +387,7 @@ export default class Step_4 extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    // EJY need to rethink validating this step. Saving to store with each modal
+    // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }

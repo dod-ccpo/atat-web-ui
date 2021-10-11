@@ -5,5 +5,3 @@ export interface UploadedFile {
 export interface ValidationRule {
   [key: string]: any;
 }
-
-
