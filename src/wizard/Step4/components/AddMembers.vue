@@ -470,7 +470,7 @@ export default class AddMember extends Vue {
             isExisting: isExistingEmail,
           });
         }
-      }, this);
+      });
       input.blur();
     });
   }
