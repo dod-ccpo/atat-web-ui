@@ -549,10 +549,11 @@ export default new Vuex.Store({
           appModel.environments,
           (environment: EnvironmentModel) => environment.id === envId
         );
-        if (appModel.environments[index].hasOwnProperty("operators")) {
-          appModel.environments[index].operators.push(...env.operators);
+        const envModel: EnvironmentModel = appModel.environments[index];
+        if (Object.prototype.hasOwnProperty.call(envModel, "operators")) {
+          envModel.operators.push(...env.operators);
         } else {
-          appModel.environments[index].operators = env.operators;
+          envModel.operators = env.operators;
         }
       });
     },
@@ -562,7 +563,7 @@ export default new Vuex.Store({
         (application: ApplicationModel) => application.id === appId
       );
       const appModel: ApplicationModel = state.applicationModels[index];
-      if (appModel.hasOwnProperty("operators")) {
+      if (Object.prototype.hasOwnProperty.call(appModel, "operators")) {
         appModel.operators.push(...operators);
       } else {
         appModel.operators = operators;

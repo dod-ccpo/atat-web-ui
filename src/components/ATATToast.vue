@@ -15,7 +15,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Toast } from "types/Global";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 @Component({})
 export default class ATATToast extends Vue {

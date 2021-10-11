@@ -185,7 +185,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, PropSync, Watch } from "vue-property-decorator";
-import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
 import {
   ApplicationModel,
   OperatorModel,
@@ -251,11 +250,11 @@ export default class AddMember extends Vue {
     return this.$store.getters.getCurrentApplication;
   }
 
-  get rolesForAllEnvsList() {
+  get rolesForAllEnvsList(): unknown {
     return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
   }
 
-  get existingMemberEmails() {
+  get existingMemberEmails(): string[] {
     let existingEmails: string[] = [];
     const app: ApplicationModel = this.currentApplication;
 
@@ -287,7 +286,7 @@ export default class AddMember extends Vue {
   private setEnvironmentRoleDropdowns(role: string) {
     const curApp: ApplicationModel = this.currentApplication;
     this.environments_roles = [];
-    curApp.environments.forEach((env: any) => {
+    curApp.environments.forEach((env: EnvironmentModel) => {
       this.environments_roles.push({
         env_id: env.id,
         env_name: env.name,
@@ -331,7 +330,7 @@ export default class AddMember extends Vue {
   }
 
   @Watch("assignDifferentRolesForEnvs")
-  protected setEnvRoles(newVal: boolean, oldVal: boolean): void {
+  protected setEnvRoles(newVal: boolean): void {
     if (newVal === true) {
       this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
     } else {
@@ -340,7 +339,7 @@ export default class AddMember extends Vue {
   }
 
   @Watch("roleForAllEnvs")
-  protected setAllEnvsRoles(newVal: string) {
+  protected setAllEnvsRoles(newVal: string): void {
     this.setEnvironmentRoleDropdowns(newVal);
   }
 
@@ -373,7 +372,7 @@ export default class AddMember extends Vue {
     }
   }
 
-  public removeEmail(e: Event) {
+  public removeEmail(e: Event): void {
     this.pillboxFocused = false;
     const thisButton = e.target as HTMLButtonElement;
     const closestElement = thisButton.closest(".v-input__slot") as HTMLElement;
@@ -389,13 +388,13 @@ export default class AddMember extends Vue {
     this.setInputWidths();
   }
 
-  public removeInvalidEmails() {
+  public removeInvalidEmails(): void {
     this.memberList = this.memberList.filter((obj) => {
       return obj.isValid === true;
     });
   }
 
-  public addInputEventListeners(vm: any, input: HTMLInputElement) {
+  public addInputEventListeners(vm: unknown, input: HTMLInputElement): void {
     input.addEventListener("input", () => {
       this.inputWidthFaker.innerHTML = input.value;
       const w = this.inputWidthFaker.offsetWidth + "px";
@@ -452,16 +451,17 @@ export default class AddMember extends Vue {
 
       const pastedValuesArray: string[] = pastedText.split(",");
       let uniqueValues = [...new Set(pastedValuesArray)];
-      uniqueValues.forEach((email, i) => {
+      const thisVm: any = vm;
+      uniqueValues.forEach((email) => {
         const isExistingEmail =
-          vm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
+          thisVm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
         const notAlreadyEntered =
-          vm.validEmailList.indexOf(email.toLowerCase()) === -1;
-        const isValid = vm.validateEmail(email);
+          thisVm.validEmailList.indexOf(email.toLowerCase()) === -1;
+        const isValid = thisVm.validateEmail(email);
         if (email && isValid && notAlreadyEntered) {
-          vm.validEmailList.push(email.toLowerCase());
+          thisVm.validEmailList.push(email.toLowerCase());
           const memberId = generateUid();
-          vm.memberList.push({
+          thisVm.memberList.push({
             id: memberId,
             email: email,
             display_name: "",
@@ -475,7 +475,7 @@ export default class AddMember extends Vue {
     });
   }
 
-  public emailEdit(e: Event) {
+  public emailEdit(e: Event): void {
     e.preventDefault();
     e.cancelBubble = true;
     const input = e.currentTarget as HTMLInputElement;
@@ -487,7 +487,7 @@ export default class AddMember extends Vue {
     this.addInputEventListeners(this, input);
   }
 
-  public emailBlurred(e: Event) {
+  public emailBlurred(e: Event): void {
     e.preventDefault();
     e.cancelBubble = true;
     this.pillboxFocused = false;
@@ -534,7 +534,7 @@ export default class AddMember extends Vue {
     }
   }
 
-  public parseNameFromEmail(email: string) {
+  public parseNameFromEmail(email: string): string {
     // get everthing before the @ symbol
     let name = email.split("@")[0];
     // remove identifier suffix
@@ -559,7 +559,7 @@ export default class AddMember extends Vue {
     return names.join(" ");
   }
 
-  public setInputWidths() {
+  public setInputWidths(): void {
     this.memberList.forEach((member) => {
       this.inputWidthFaker.innerHTML = member.email;
       const w = this.inputWidthFaker.offsetWidth + "px";
@@ -570,22 +570,22 @@ export default class AddMember extends Vue {
     }, this);
   }
 
-  public validateEmail(email: string) {
+  public validateEmail(email: string): boolean {
     const isMilAddress = email.slice(-3).toLowerCase() === "mil";
     const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
     return isMilAddress && emailRegex.test(email);
   }
 
-  public removeMemberFromList(memberId: string) {
+  public removeMemberFromList(memberId: string): void {
     this.memberList = this.memberList.filter(function (obj) {
       return obj.id !== memberId;
     });
   }
 
-  public getOperators(role: string) {
+  public getOperators(role: string): OperatorModel[] {
     let operators: OperatorModel[] = [];
     this.memberList.forEach((member) => {
-      let operator: any = {
+      let operator: OperatorModel = {
         id: member.id,
         display_name: member.display_name,
         email: member.email,
@@ -596,7 +596,7 @@ export default class AddMember extends Vue {
     return operators;
   }
 
-  public saveToStore() {
+  public saveToStore(): void {
     let operators: OperatorModel[] = [];
     let environments: EnvironmentModel[] = [];
     const curApp: ApplicationModel = this.currentApplication;
@@ -605,7 +605,7 @@ export default class AddMember extends Vue {
       this.environments_roles.forEach((env) => {
         if (env.role_value !== "no_access") {
           operators = this.getOperators(env.role_value);
-          const thisEnv: any = {
+          const thisEnv: EnvironmentModel = {
             id: env.env_id,
             name: env.env_name,
             operators: operators,
@@ -629,7 +629,7 @@ export default class AddMember extends Vue {
     this.closeModal();
   }
 
-  public closeModal() {
+  public closeModal(): void {
     this.memberList = [];
     this.validEmailList = [];
     this.assignDifferentRolesForEnvs = false;
