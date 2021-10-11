@@ -107,7 +107,7 @@ export default class SideDrawer extends Vue {
   get getHeight(): string {
     // const drawerHeight = window.innerHeight;
     // return drawerHeight + "px";
-    return '100vh';
+    return "100vh";
   }
 
   get isSideDrawerOpen(): boolean {
@@ -144,7 +144,6 @@ export default class SideDrawer extends Vue {
     }
   }
 
-
   //todo get rid of this..
   //method
   private hide(): Promise<boolean> {
@@ -160,7 +159,7 @@ export default class SideDrawer extends Vue {
   overflow-x: hidden !important;
 }
 .scrollable-content {
-  flex-grow: 1;  
+  flex-grow: 1;
   overflow: auto;
 }
 </style>
