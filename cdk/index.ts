@@ -24,20 +24,25 @@ class StaticSiteStack extends cdk.Stack {
       `/atat/${props.environmentId}/cognito/idps`
     ).stringListValue;
     const userPool = cognito.UserPool.fromUserPoolId(this, "UserPool", poolId);
+    // TODO: Only include localhost in pre-staging environments.
+    const siteUrls = [
+      site.websiteBucket.virtualHostedUrlForObject("index.html"),
+    ];
+    for (const port of ["8080", "8081"]) {
+      siteUrls.push(`https://localhost:${port}/index.html`);
+    }
     userPool.addClient("ApplicationUserPoolClient", {
-      supportedIdentityProviders: idpNames.map(cognito.UserPoolClientIdentityProvider.custom),
+      supportedIdentityProviders: idpNames.map(
+        cognito.UserPoolClientIdentityProvider.custom
+      ),
       accessTokenValidity: cdk.Duration.minutes(60),
       refreshTokenValidity: cdk.Duration.days(1),
       oAuth: {
         flows: {
           authorizationCodeGrant: true,
         },
-        callbackUrls: [
-          site.websiteBucket.virtualHostedUrlForObject("index.html"),
-        ],
-        logoutUrls: [
-          site.websiteBucket.virtualHostedUrlForObject("index.html"),
-        ],
+        callbackUrls: siteUrls,
+        logoutUrls: siteUrls,
         scopes: [
           cognito.OAuthScope.PHONE,
           cognito.OAuthScope.EMAIL,

@@ -203,12 +203,19 @@ export default class Step_4 extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private createdApplication = this.$store.state.applicationModels;
-  private editType = this.$route.params.type;
+  private editType = this.$route.params.type || "noEdit";
   private showPortfolioOwnerText = false;
   private teamPortfolioAccessText = false;
   private teamPermissionsText = false;
   private teamExpectationText = false;
   // methods
+
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "teammemberroles",
+      event.type === "keydown",
+    ]);
+  }
 
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
