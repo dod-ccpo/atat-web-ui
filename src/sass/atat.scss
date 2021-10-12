@@ -31,8 +31,3 @@ body,html{
 .v-main{
     @extend .body;
 }
-
-.v-navigation-drawer{
-    top: 95px !important;
-    max-height: calc(100% - 135px) !important;
-}

@@ -1,67 +1,63 @@
 <template>
-  <div :style="heightCSS">
-    <v-row>
-      <v-col cols="12" class="ml-4 pb-0 h3 font-weight-bold"
-        >{{ user.given_name }} {{ user.family_name }}</v-col
-      >
-      <v-col cols="12 " class="body-lg ml-4 py-0">
-        <span class="body-xl text--base-dark">
-          {{ user.service_branch }} • {{ user.designation }}</span
-        >
-      </v-col>
-      <v-col cols="12 body ml-4 pt-1 mb-5">
-        <span class="body-lg text--base-dark"> DoD ID: {{ user.dod_id }}</span>
-      </v-col>
-    </v-row>
+  <div>
+    <div class="mx-6">
+      <div class="h3">{{ user.given_name }} {{ user.family_name }}</div>
+      <div class="text--base-dark body-xl">
+        <div>
+          {{ user.service_branch }}&nbsp;&nbsp;•&nbsp;&nbsp;{{
+            user.designation
+          }}
+          <br />
+          DoD ID: {{ user.dod_id }}
+        </div>
+      </div>
+    </div>
 
-    <v-divider></v-divider>
-    <v-container :class="[showScrollbar, 'pa-0 pb-16']">
-      <v-row class="pt-8 ma-0">
-        <v-col cols="12" class="pl-6 pb-0 d-flex">
-          <v-icon class="icon-16 my-1">email</v-icon>
-          <p class="pl-5 mb-0">
-            <span class="body-lg text--base-dark">Email Address</span>
-          </p>
-        </v-col>
-        <v-col class="pl-15 py-0"
-          ><p class="body-lg">
-            {{ user.email }}
-          </p></v-col
-        >
-      </v-row>
-      <v-row class="pt-0 ma-0">
-        <v-col cols="12" class="pl-6 pb-0 d-flex">
-          <v-icon class="icon-16 my-1">phone</v-icon>
-          <p class="pl-5 mb-0">
-            <span class="body-lg text--base-dark">Phone numbers</span>
-          </p>
-        </v-col>
-        <v-col cols="6" class="pl-15 py-0 pr-0 text--base-darkest"
-          ><p class="body-lg pa-0 ma-0">
-            {{ user.phone_number }}
-          </p></v-col
-        ><v-col cols="6" class="py-0 my-0 pl-0 text--base-darkest"
-          ><p class="body-lg py-0 my-0 ml-0">Office (Primary)</p></v-col
-        >
-        <v-col cols="6" class="pt-1 pr-0 pl-15 text--base-darkest"
-          ><p class="body-lg">(123)-456-7890</p></v-col
-        ><v-col cols="6" class="pt-1 pl-0 body-lg">Mobile</v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
+    <v-divider class="mt-6"></v-divider>
+    <div
+      class="
+        px-6
+        pb-16
+        body-lg
+        overflow-y-auto overflow-x-hidden
+        text--base-darkest
+      "
+      :style="{ height: scrollableDivHeight + 'px !important' }"
+    >
+      <div class="pt-8 d-flex align-start">
+        <v-icon class="icon-20">email</v-icon>
+        <div class="pl-4">
+          <span class="text--base-dark d-block">Email Address</span>
+          <span class="d-block">{{ user.email }}</span>
+        </div>
+      </div>
+      <div class="pt-8 pb-15 d-flex align-start">
+        <v-icon class="icon-20">phone</v-icon>
+        <div class="pl-4 text--base-darkest">
+          <span class="text--base-dark d-block">Phone numbers</span>
+          <div class="d-flex align-center mb-2">
+            <span class="pr-6">{{ user.phone_number }}</span>
+            <span>Office (Primary)</span>
+          </div>
+          <div class="d-flex align-center">
+            <span class="pr-6">(123) 456-7890</span>
+            <span>Mobile</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mx-n6 mb-6">
+        <div>
           <v-alert
             outlined
             rounded
-            class="text-left info_lighter black-icon mt-3"
+            class="text-left info_lighter black-icon pa-0"
           >
-            <div
-              class="d-flex align-start"
-              :style="'width:' + drawerWidth + 'px; !important;'"
-            >
-              <div class="text-center pt-1 width-10">
+            <div class="px-6 py-4 d-flex align-start">
+              <div class="text-center pt-1">
                 <v-icon class="icon-20">info</v-icon>
               </div>
-              <div class="black--text body-lg ml-2 width-75">
+              <div class="black--text body-lg ml-4">
                 To update the contact information associated with your CAC,
                 please visit the
                 <a
@@ -83,10 +79,10 @@
               </div>
             </div>
           </v-alert>
-        </v-col>
-      </v-row>
-      <v-row class="ma-0">
-        <v-col class="ml-6 pl-0" cols="10">
+        </div>
+      </div>
+      <div class="ma-0 mb-5">
+        <div class="pl-0">
           <v-btn
             @click="contactInfoTip = !contactInfoTip"
             text
@@ -102,27 +98,19 @@
               {{ contactInfoTip ? "expand_less" : "expand_more" }}
             </v-icon>
           </v-btn>
-          <div v-show="contactInfoTip">
-            <v-card-text class="h6 pb-0">
-              <v-row align="center" class="mb-1">
-                <p class="body-lg mt-3 text--base-darkest mb-0">
-                  We will send email notifications to let you know when your
-                  funding or period of performance is close to expiring. This
-                  will allow you to add additional task orders and keep your
-                  portfolios active.
-                </p>
-                <p class="body-lg mt-2 text--base-darkest mb-0">
-                  Our administrators may also use this information to contact
-                  you, in the event that there are issues with your cloud
-                  resources or funding.
-                </p>
-              </v-row>
-            </v-card-text>
+          <div v-show="contactInfoTip" class="mt-2">
+            We will send email notifications to let you know when your funding
+            or period of performance is close to expiring. This will allow you
+            to add additional task orders and keep your portfolios active.
+            <br /><br />
+            Our administrators may also use this information to contact you, in
+            the event that there are issues with your cloud resources or
+            funding.
           </div>
-        </v-col>
-      </v-row>
-      <v-row class="ma-0 mb-3">
-        <v-col class="ml-6 pl-0" cols="10">
+        </div>
+      </div>
+      <div class="ma-0">
+        <div class="pl-0" cols="10">
           <v-btn
             @click="updateProfileTip = !updateProfileTip"
             text
@@ -138,29 +126,21 @@
               {{ updateProfileTip ? "expand_less" : "expand_more" }}
             </v-icon>
           </v-btn>
-          <div v-show="updateProfileTip">
-            <v-card-text class="h6 pb-0">
-              <v-row class="mb-1">
-                <p class="body-lg mt-3 text--base-darkest mb-0">
-                  ATAT uses Global Directory for CAC authentication. GD is an
-                  enterprise identity solution that provides a trusted single
-                  source of truth for digital authentication for every DoD
-                  employee.
-                </p>
-                <p class="body-lg mt-2 text--base-darkest mb-0">
-                  When you update your contact information on the
-                  <a href="https://idco.dmdc.osd.mil/idco/" class="link-body-md"
-                    >ID Card Office Online (IDCO) website</a
-                  >, it is automatically updated anywhere you use your CAC,
-                  saving you the time and hassle of updating your information on
-                  multiple DoD websites.
-                </p>
-              </v-row>
-            </v-card-text>
+          <div v-show="updateProfileTip" class="mt-2">
+            ATAT uses Global Directory for CAC authentication. GD is an
+            enterprise identity solution that provides a trusted single source
+            of truth for digital authentication for every DoD employee.
+            <br /><br />
+            When you update your contact information on the
+            <a href="https://idco.dmdc.osd.mil/idco/" class="link-body-md"
+              >ID Card Office Online (IDCO) website</a
+            >, it is automatically updated anywhere you use your CAC, saving you
+            the time and hassle of updating your information on multiple DoD
+            websites.
           </div>
-        </v-col>
-      </v-row>
-    </v-container>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -169,27 +149,10 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 @Component({})
 export default class Profile extends Vue {
-  @Prop({ default: "400" }) private drawerWidth!: string;
-  @Prop({ default: "400" }) private drawerHeight!: string;
+  @Prop() private scrollableDivHeight!: number;
   private contactInfoTip = false;
   private updateProfileTip = false;
-
-  private heightCSS = {
-    height: this.drawerHeight,
-    "max-height": this.drawerHeight,
-    "min-height": this.drawerHeight,
-  };
-
   private user = this.$store.getters.getUser;
-  get showScrollbar(): string {
-    const show =
-      window.innerHeight < 850 || this.updateProfileTip || this.contactInfoTip;
-    return show ? "expandedSidebarDiv" : "";
-  }
-
-  //method
-  private hide(): Promise<boolean> {
-    return this.$store.dispatch("closeSideDrawer");
-  }
 }
+
 </script>

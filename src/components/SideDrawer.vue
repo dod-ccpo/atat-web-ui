@@ -1,67 +1,62 @@
 <template>
-  <v-slide-x-reverse-transition>
-    <v-navigation-drawer
-      v-if="isSideDrawerOpen"
-      :width="drawerWidth + 'px'"
-      id="right-side-drawer"
-      app
-      clipped
-      :temporary="showOverlay"
-      permanent
-      right
-      tabindex="3"
-      :style="{
-        height: getHeight,
-        'max-height': getHeight,
-        'min-height': getHeight,
-      }"
+  <v-navigation-drawer
+    v-if="isSideDrawerOpen"
+    transition="slide-x-reverse-transition"
+    :width="drawerWidth + 'px'"
+    id="right-side-drawer"
+    app
+    clipped
+    :temporary="showOverlay"
+    permanent
+    right
+    tabindex="3"
+    :style="{
+      height: getHeight,
+      'max-height': getHeight,
+      'min-height': getHeight,
+    }"
+  >
+    <div
+      class="
+        ml-auto
+        d-flex
+        align-center
+        justify-space-between
+        width-100
+        py-5
+        pl-6
+      "
     >
-      <div
-        class="
-          ml-auto
-          d-flex
-          align-center
-          justify-space-between
-          width-100
-          py-5
-          pl-6
-        "
-      >
-        <div class="font-weight-bold body">{{ getTitle }}</div>
-        <div class="pr-7">
-          <v-btn
-            class="text--base-darkest h6 pa-0 icon-24"
-            tabindex="3"
-            text
-            small
-            @click.stop="hide"
-            ref="drawerCloserRef"
-            id="drawerCloser"
-            :ripple="false"
-          >
-            <v-icon class="icon-20">close</v-icon>
-          </v-btn>
-        </div>
+      <div class="font-weight-bold body">{{ setTitle }}</div>
+      <div class="pr-7">
+        <v-btn
+          class="text--base-darkest h6 pa-0 icon-24"
+          tabindex="3"
+          text
+          small
+          @click.stop="close"
+          ref="drawerCloserRef"
+          id="drawerCloser"
+          :ripple="false"
+        >
+          <v-icon class="icon-20">close</v-icon>
+        </v-btn>
       </div>
+    </div>
+    <div class="pb-10">
       <ProfileDrawer
         v-if="sideDrawerType === 'profile'"
-        :drawerWidth="drawerWidth"
-        :drawerHeight="getHeight"
+        :scrollableDivHeight="setScrollableDivHeight(95)"
       ></ProfileDrawer>
-      <SubmitDrawer
-        v-if="sideDrawerType === 'submit'"
-        :drawerWidth="drawerWidth"
-        :drawerHeight="getHeight"
-      ></SubmitDrawer>
+      <SubmitDrawer v-if="sideDrawerType === 'submit'"></SubmitDrawer>
       <TeamMemberRolesDrawer
         v-if="sideDrawerType === 'teammemberroles'"
-        :drawerWidth="drawerWidth"
-        :drawerHeight="getHeight"
-        :showScrollbar.sync="showScrollbar"
-        class="scrollable-content"
+        :scrollableDivHeight="setScrollableDivHeight()"
+        class="overflow-y-auto"
+         tabindex="3"
       ></TeamMemberRolesDrawer>
-    </v-navigation-drawer>
-  </v-slide-x-reverse-transition>
+    </div>
+  </v-navigation-drawer>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -70,8 +65,6 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import ProfileDrawer from "./SideDrawerComponents/ProfileDrawer.vue";
 import SubmitDrawer from "./SideDrawerComponents/SubmitDrawer.vue";
 import TeamMemberRolesDrawer from "./SideDrawerComponents/TeamMemberRolesDrawer.vue";
-
-// document.getElementById("right-side-drawer").o;
 
 @Component({
   components: {
@@ -82,13 +75,25 @@ import TeamMemberRolesDrawer from "./SideDrawerComponents/TeamMemberRolesDrawer.
 })
 export default class SideDrawer extends Vue {
   @Prop({ default: "400" }) private drawerWidth!: string;
-  private showScrollbar = false;
+  private clientHeight =
+    document.getElementById("right-side-drawer")?.clientHeight;
+  private offsetHeight =
+    document.getElementById("right-side-drawer")?.offsetHeight;
+  private appNavBarHeight = 112;
+  private drawerHeaderHeight = 64;
+  private drawerBottomMargin = 117;
 
+  /*
+   * returns SideDrawer type
+   */
   get sideDrawerType(): string {
     return this.$store.state.sideDrawerType;
   }
 
-  get getTitle(): string {
+  /*
+   * sets Title of SideDrawer
+   */
+  get setTitle(): string {
     let title = "";
     switch (this.sideDrawerType) {
       case "profile":
@@ -104,37 +109,46 @@ export default class SideDrawer extends Vue {
     return title.toUpperCase();
   }
 
+  /*
+   * returns height of window.innerHeight in pixels
+   */
   get getHeight(): string {
-    // const drawerHeight = window.innerHeight;
-    // return drawerHeight + "px";
-    return "100vh";
+    return window.innerHeight + "px";
   }
 
+  /*
+   * > adds click event listener to overlay if Displayed
+   * > return isSideDrawerOpen
+   */
   get isSideDrawerOpen(): boolean {
     const _isSideDrawerOpen = this.$store.state.sideDrawer;
     setTimeout(() => {
       if (_isSideDrawerOpen && this.showOverlay) {
         document
           .getElementsByClassName("v-overlay--active")[0]
-          ?.addEventListener("click", this.hide);
+          ?.addEventListener("click", this.close);
       } else {
         document
           .getElementsByClassName("v-overlay--active")[0]
-          ?.removeEventListener("click", this.hide);
+          ?.removeEventListener("click", this.close);
       }
     }, 0);
 
     return _isSideDrawerOpen;
   }
 
+  /*
+   * showOverlay
+   * returns boolean to show overlay when
+   * breakpoint is either sm or xs
+   */
   get showOverlay(): boolean {
     return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
   }
 
-  get getScrollbar(): string {
-    return this.showScrollbar ? "expandedSidebarDiv" : "";
-  }
-
+  /* a watcher used to set focus on the close button if
+   * keyboard event is used to open the side drawer.
+   */
   @Watch("$store.state.isSideDrawerFocused")
   setFocus(newVal: boolean): void {
     if (newVal && this.isSideDrawerOpen) {
@@ -144,22 +158,22 @@ export default class SideDrawer extends Vue {
     }
   }
 
-  //todo get rid of this..
-  //method
-  private hide(): Promise<boolean> {
-    return this.$store.dispatch("closeSideDrawer");
+  /*
+   * subtracts nonScrollableHeight & drawerHeight & appNavBarHeight
+   * window.innerHeight to determine scrollableDiv within drawer
+   */
+  private setScrollableDivHeight(nonScrollableHeight: number): number {
+    nonScrollableHeight = nonScrollableHeight || 0;
+    const scrollableDivHeight =
+      window.innerHeight -
+      nonScrollableHeight -
+      this.drawerHeaderHeight -
+      this.appNavBarHeight;
+    return scrollableDivHeight;
+  }
+  // close drawer event
+  private close(): void {
+    this.$store.state.sideDrawer = false;
   }
 }
 </script>
-
-<style>
-.expandedSidebarDiv {
-  overflow-y: auto !important;
-  height: calc(100% - 237px) !important;
-  overflow-x: hidden !important;
-}
-.scrollable-content {
-  flex-grow: 1;
-  overflow: auto;
-}
-</style>
