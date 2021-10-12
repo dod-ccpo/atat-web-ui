@@ -7,6 +7,7 @@ import {
   Application,
   ApplicationModel,
   EnvironmentModel,
+  OperatorModel,
   Portfolio,
   PortfolioDraft,
   PortFolioDraftDTO,
@@ -588,6 +589,12 @@ export default new Vuex.Store({
         appModel.operators = operators;
       }
     },
+
+    doUpdateRootAdministrators(state, operators: OperatorModel[]) {
+      const rootAdmins: OperatorModel[] = state.portfolioOperators;
+      rootAdmins.push(...operators);
+    },
+
     doToast(state, props) {
       state.toast = props;
     },
@@ -947,6 +954,9 @@ export default new Vuex.Store({
     },
     updateApplicationOperators({ commit }, [appId, operators]) {
       commit("doUpdateApplicationOperators", [appId, operators]);
+    },
+    updateRootAdministrators({ commit }, operators: OperatorModel[]) {
+      commit("doUpdateRootAdministrators", operators);
     },
     toast({ commit }, [message, contentClass]) {
       const toastProps: Toast = {

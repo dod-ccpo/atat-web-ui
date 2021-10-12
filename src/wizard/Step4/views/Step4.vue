@@ -67,28 +67,34 @@
                 class="font-weight-bold d-flex align-center px-5"
                 :ripple="false"
                 color="primary"
-                @keydown.native.enter="
-                  openDialog(
-                    $event,
-                    'edit member',
-                    '1607044841-3498645719-1186860079-3467156946'
-                  )
-                "
-                @click="
-                  openDialog(
-                    $event,
-                    'edit member',
-                    '1607044841-3498645719-1186860079-3467156946'
-                  )
-                "
+                @keydown.native.enter="openDialog($event, 'add members')"
+                @click="openDialog($event, 'add members')"
               >
                 <div class="mr-1 mt-n2">
                   <v-icon class="icon-20" role="presentation"
                     >control_point</v-icon
                   >
                 </div>
-                <div class="body font-weight-bold">Invite Team Member</div>
+                <div class="body font-weight-bold">Invite Team Members</div>
               </v-btn>
+
+          <v-btn
+            @keydown.native.enter="openDialog($event, 'add root admins')"
+            @click="openDialog($event, 'add root admins')"
+          >Add RAs</v-btn>
+          <v-btn
+            @keydown.native.enter="openDialog($event, 'edit root admin', 'rootster.adminster@mail.mil')"
+            @click="openDialog($event, 'edit root admin', 'rootster.adminster@mail.mil')"
+          >Edit an RA</v-btn>
+          <v-btn
+            @keydown.native.enter="openDialog($event, 'edit member', 'bart.bartson@mail.mil')"
+            @click="openDialog($event, 'edit member', 'bart.bartson@mail.mil')"
+          >edit bart</v-btn>
+          <v-btn
+            @keydown.native.enter="openDialog($event, 'edit member', 'adam.adamson@mail.mil')"
+            @click="openDialog($event, 'edit member', 'adam.adamson@mail.mil')"
+          >edit adam</v-btn>
+
             </v-col>
           </v-col>
         </v-row>
@@ -379,43 +385,43 @@ export default class Step_4 extends Vue {
     console.log("clicked");
   }
 
-  public openDialog(event: Event, action: string, memberId: string): void {
+  public openDialog(event: Event, action: string, memberEmail: string): void {
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;
-      memberId: string | null;
+      memberEmail: string | null;
     } = {
       isRootAdmin: false,
       isEditSingle: false,
-      memberId: null,
+      memberEmail: null,
     };
     switch (action) {
       case "add root admins":
         memberProps = {
           isRootAdmin: true,
           isEditSingle: false,
-          memberId: null,
-        };
-        break;
-      case "add members":
-        memberProps = {
-          isRootAdmin: false,
-          isEditSingle: false,
-          memberId: null,
+          memberEmail: null,
         };
         break;
       case "edit root admin":
         memberProps = {
           isRootAdmin: true,
           isEditSingle: true,
-          memberId: memberId,
+          memberEmail: memberEmail,
+        };
+        break;
+      case "add members":
+        memberProps = {
+          isRootAdmin: false,
+          isEditSingle: false,
+          memberEmail: null,
         };
         break;
       case "edit member":
         memberProps = {
           isRootAdmin: false,
           isEditSingle: true,
-          memberId: memberId,
+          memberEmail: memberEmail,
         };
         break;
       default:

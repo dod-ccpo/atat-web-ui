@@ -22,8 +22,8 @@
       :class="getInnerContentClasses"
       :close.sync="dialog.isDisplayed"
       :dialogProps="dialogProps"
-      @membersAdded="onMembersAdded(memberType)"
-      @memberEdited="onMemberEdited"
+      @membersAdded="onMembersAdded"
+      @memberEdited="onMemberEdited(memberType)"
     />
   </v-dialog>
 </template>

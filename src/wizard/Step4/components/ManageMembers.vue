@@ -1,213 +1,258 @@
 <template>
   <v-card class="extra-padding">
-    <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-    <v-card-title>
-      <h3 class="mb-2 h3">
-        <span v-if="!isEditSingle">
-          Add team members to {{ currentApplication.name }}
-        </span>
-        <span v-if="isEditSingle">
-          Update { member.display_name }'s information
-        </span>
-      
-      </h3>
-    </v-card-title>
-    <v-card-text class="body-lg text--base-darkest mt-2">
-      <!--#################################################-->
-      <!-- EDIT SINGLE MEMBER NAME AND EMAIL -->
-      <!--#################################################-->
-
-      <div v-if="isEditSingle">
-        <p>
-          After your portfolio is provisioned, the email address will be sent to
-          {{ selectedCSP }} and { member.display_name } will receive an
-          invitation to access the cloud console.
-        </p>
-        <atat-text-field
-          value="Walter White"
-          label="Display Name"
-          :helpText="displayNameHelpText"
-        />
-        <atat-text-field value="walter.white-ctr@mail.mil" label="Email" />
-      </div>
-
-      <!--#################################################-->
-      <!-- ADD MULTIPLE EMAILS -->
-      <!--#################################################-->
-
-      <div v-if="!isEditSingle">
-        <p>
-          Team members can have different levels of access to your application
-          and environments. Invite multiple people with the same permissions at
-          once.
-        </p>
-
-        <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
-          <span :class="[invalidEmailCount > 0 ? 'font-weight-700' : '']">
-            Email Addresses
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
+      <v-card-title>
+        <h3 class="mb-2 h3">
+          <span v-if="!isEditSingle">
+            Add
+            <span v-if="isRootAdmin">root administrators</span>
+            <span v-else>team members</span>
+            to
+            {{ currentApplication.name }}
           </span>
+          <span v-if="isEditSingle">
+            Update
+            {{ memberToEdit.length ? memberToEdit[0].display_name : "Member" }}’s
+            information
+          </span>
+        </h3>
+      </v-card-title>
+      <v-card-text class="body-lg text--base-darkest mt-2">
+
+        <!--#################################################-->
+        <!-- EDIT SINGLE MEMBER NAME AND EMAIL -->
+        <!--#################################################-->
+
+        <div v-show="isEditSingle">
+          <p>
+            After your portfolio is provisioned, the email address will be sent to
+            {{ selectedCSP ? selectedCSP : "your selected CSP" }} and
+            {{
+              memberToEdit.length ? memberToEdit[0].display_name : "the member"
+            }}
+            receive an invitation to access the cloud console.
+          </p>
+
+          <!-- :value="memberToEdit.length ? memberToEdit[0].display_name : ''" -->
+          <atat-text-field
+            v-model="memberToEdit[0].display_name"
+            label="Display Name"
+            :helpText="displayNameHelpText"
+            :rules="rules.display_name"
+          />
+
+          <!-- :value="memberToEdit.length ? memberToEdit[0].email : ''" -->
+          <atat-text-field
+            v-model="memberToEdit[0].email"
+            label="Email Address"
+            :rules="rules.email"
+            aria-describedby="EmailInputInstructions"
+            class="mt-6"
+          />
+          <div class="color-base mt-2" id="EmailInputInstructions">
+            Must use a .mil email address.
+          </div>
         </div>
 
-        <div
-          class="error--text mb-2"
-          :class="{ 'd-flex': invalidEmailCount }"
-          v-show="invalidEmailCount"
-        >
-          <div class="v-messages__message mr-2 d-inline-block">
-            {{ invalidEmailCount }} error<span v-if="invalidEmailCount > 1"
-              >s</span
-            >.
+        <!--#################################################-->
+        <!-- ADD MULTIPLE EMAILS -->
+        <!--#################################################-->
+
+        <div v-if="!isEditSingle">
+          <p v-if="isRootAdmin">
+            Team members added to this workspace will be granted the top-level
+            <strong>root administrator</strong> role within your cloud console.
+            These people will have full access to all of your applications.
+            <a href="#">Learn more about root administrators</a>
+          </p>
+          <p v-else>
+            Team members can have different levels of access to your application
+            and environments. Invite multiple people with the same permissions at
+            once.
+          </p>
+
+          <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
+            <span :class="[invalidEmailCount > 0 ? 'font-weight-700' : '']">
+              Email Addresses
+            </span>
           </div>
 
-          <v-btn
-            id="RemoveAllInvalidEntriesLink"
-            class="link-button pa-0"
-            @click="removeInvalidEmails"
-            style="height: 26px"
+          <div
+            class="error--text mb-2"
+            :class="{ 'd-flex': invalidEmailCount }"
+            v-show="invalidEmailCount"
           >
-            Remove all emails with errors
-          </v-btn>
-        </div>
-        <div
-          id="PillboxWrapper"
-          aria-labelledby="PillboxLabel"
-          aria-describedby="PillboxInstructions"
-          class="pa-2 pillbox-wrapper mb-0 firstFocus"
-          tabindex="0"
-          :class="[pillboxFocused ? 'focused' : '']"
-          @click="addEmail"
-          @focus="addEmail"
-        >
-          <v-text-field
-            v-for="member in memberList"
-            :key="member.id"
-            class="pill"
-            :class="{
-              'invalid-entry': !member.isValid && member.isValid !== null,
-            }"
-            :data-member-id="member.id"
-            v-model="member.email"
-            append-icon="close"
-            @click="emailEdit"
-            @blur="emailBlurred"
-            @click:append="removeEmail"
-          />
-        </div>
-        <div class="dupe-entry-alert-wrapper">
+            <div class="v-messages__message mr-2 d-inline-block">
+              {{ invalidEmailCount }} error<span v-if="invalidEmailCount > 1"
+                >s</span
+              >.
+            </div>
+
+            <v-btn
+              id="RemoveAllInvalidEntriesLink"
+              class="link-button pa-0"
+              @click="removeInvalidEmails"
+              style="height: 26px"
+            >
+              Remove all emails with errors
+            </v-btn>
+          </div>
+          <div
+            id="PillboxWrapper"
+            aria-labelledby="PillboxLabel"
+            aria-describedby="PillboxInstructions"
+            class="pa-2 pillbox-wrapper mb-0 firstFocus"
+            tabindex="0"
+            :class="[pillboxFocused ? 'focused' : '']"
+            @click="addEmail"
+            @focus="addEmail"
+          >
+            <v-text-field
+              v-for="member in memberList"
+              :key="member.id"
+              class="pill"
+              :class="{
+                'invalid-entry': !member.isValid && member.isValid !== null,
+              }"
+              :data-member-id="member.id"
+              v-model="member.email"
+              append-icon="close"
+              @click="emailEdit"
+              @blur="emailBlurred"
+              @click:append="removeEmail"
+            />
+          </div>
+          <div class="dupe-entry-alert-wrapper">
+            <v-alert
+              v-if="duplicatedEmail"
+              class="dupe-entry-alert"
+              color="#1b1b1b"
+              dark
+              icon="error"
+              dense
+            >
+              &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
+            </v-alert>
+          </div>
+          <div class="color-base mt-2" id="PillboxInstructions">
+            Must use a .mil email address. Separate multiple emails with commas.
+          </div>
+
           <v-alert
-            v-if="duplicatedEmail"
-            class="dupe-entry-alert"
-            color="#1b1b1b"
-            dark
+            v-show="invalidEmailCount"
+            outlined
+            rounded
+            color="error"
+            border="left"
             icon="error"
-            dense
+            class="text-left error_lighter black-icon mt-6"
           >
-            &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
+            <p class="black--text body-lg ma-0">
+              <span v-show="invalidEmailCount === 1">
+                The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
+              </span>
+              <span v-show="invalidEmailCount > 1">
+                Multiple addresses were not recognized.
+              </span>
+              Please make sure that all addresses are properly formatted and .mil
+              addresses.
+            </p>
           </v-alert>
         </div>
-        <div class="color-base mt-2" id="PillboxInstructions">
-          Must use a .mil email address. Separate multiple emails with commas.
-        </div>
 
-        <v-alert
-          v-show="invalidEmailCount"
-          outlined
-          rounded
-          color="error"
-          border="left"
-          icon="error"
-          class="text-left error_lighter black-icon mt-6"
-        >
-          <p class="black--text body-lg ma-0">
-            <span v-show="invalidEmailCount === 1">
-              The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
+        <!--#################################################-->
+        <!-- MEMBER ACCESS ADD/EDIT -->
+        <!--#################################################-->
+
+        <div v-if="!isRootAdmin">
+          <v-divider class="my-8 width-40"></v-divider>
+
+          <h3>
+            <span v-if="isEditSingle">
+              Change
+              {{
+                memberToEdit.length ? memberToEdit[0].display_name : "Member"
+              }}’s Role
             </span>
-            <span v-show="invalidEmailCount > 1">
-              Multiple addresses were not recognized.
-            </span>
-            Please make sure that all addresses are properly formatted and .mil
-            addresses.
+            <span v-if="!isEditSingle">Team Member Roles</span>
+          </h3>
+          <p>
+            Choose what type of role people will have in
+            <span v-if="isEditSingle">{{ currentApplication.name }}.</span>
+            <span v-else>your application.</span>
+            <br />
+            <v-btn class="link-button pa-0 height-auto">
+              Learn more about roles
+            </v-btn>
           </p>
-        </v-alert>
-      </div>
 
-      <!--#################################################-->
-      <!-- MEMBER ACCESS ADD/EDIT -->
-      <!--#################################################-->
-
-      <div v-if="!isRootAdmin">
-        <v-divider class="my-8 width-40"></v-divider>
-
-        <h3>Team Member Roles</h3>
-        <p>
-          Choose what type of role people will have in your application.<br />
-          <v-btn class="link-button pa-0 height-auto"
-            >Learn more about roles</v-btn
-          >
-        </p>
-
-        <v-checkbox
-          v-model="assignDifferentRolesForEnvs"
-          label="I want to assign different levels of access to each environment."
-          class="border-base-lighter border-b-1"
-          style="border-bottom-style: solid"
-        ></v-checkbox>
-
-        <div v-show="!assignDifferentRolesForEnvs">
-          <v-radio-group v-model="roleForAllEnvs">
-            <v-radio
-              v-for="role in rolesForAllEnvsList"
-              :key="role.role_name"
-              :label="role.role_name"
-              :value="role.role_value"
-            ></v-radio>
-          </v-radio-group>
-        </div>
-
-        <v-container v-show="assignDifferentRolesForEnvs">
-          <v-row
-            v-for="(env, index) in environments_roles"
-            :key="env.env_id"
-            class="d-flex border-base-lighter border-b-1 py-1"
+          <v-checkbox
+            v-model="assignDifferentRolesForEnvs"
+            label="I want to assign different levels of access to each environment."
+            class="border-base-lighter border-b-1"
             style="border-bottom-style: solid"
-          >
-            <v-col class="d-flex align-center">
-              <strong class="font-size-19">
-                {{ env.env_name }}
-              </strong>
-            </v-col>
-            <v-col>
-              <v-select
-                class="no-details"
-                v-model="environments_roles[index].role_value"
-                :items="rolesList"
-                item-text="role_name"
-                item-value="role_value"
-                dense
-                filled
-                :ripple="false"
-              />
-            </v-col>
-          </v-row>
-        </v-container>
-      </div>
-    </v-card-text>
+          ></v-checkbox>
 
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
-      <v-btn
-        color="primary"
-        class="px-5"
-        @click="saveToStore"
-        :disabled="invalidEmailCount > 0 || validEmailCount === 0"
-      >
-        Add Team Members
-        <span class="valid-entry-count ml-2" v-if="validEmailCount > 0">
-          {{ validEmailCount }}
-        </span>
-      </v-btn>
-    </v-card-actions>
+          <div v-show="!assignDifferentRolesForEnvs">
+            <v-radio-group v-model="roleForAllEnvs">
+              <v-radio
+                v-for="role in rolesForAllEnvsList"
+                :key="role.role_name"
+                :label="role.role_name"
+                :value="role.role_value"
+              ></v-radio>
+            </v-radio-group>
+          </div>
+
+          <v-container v-show="assignDifferentRolesForEnvs">
+            <v-row
+              v-for="(env, index) in environments_roles"
+              :key="env.env_id"
+              class="d-flex border-base-lighter border-b-1 py-1"
+              style="border-bottom-style: solid"
+            >
+              <v-col class="d-flex align-center">
+                <strong class="font-size-19">
+                  {{ env.env_name }}
+                </strong>
+              </v-col>
+              <v-col>
+                <v-select
+                  class="no-details"
+                  v-model="environments_roles[index].role_value"
+                  :items="rolesList"
+                  item-text="role_name"
+                  item-value="role_value"
+                  dense
+                  filled
+                  :ripple="false"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </div>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
+        <v-btn
+          color="primary"
+          class="px-5"
+          @click="saveToStore"
+          :disabled="!valid"
+        >
+          {{ buttonText }}
+          <span
+            class="valid-entry-count ml-2"
+            v-if="!isEditSingle && validEmailCount > 0"
+          >
+            {{ validEmailCount }}
+          </span>
+        </v-btn>
+      </v-card-actions>
+    </v-form>
   </v-card>
 </template>
 
@@ -220,8 +265,10 @@ import {
   EnvironmentModel,
 } from "types/Portfolios";
 import { generateUid } from "@/helpers";
+// import { ValidatableForm } from "types/Wizard";
 
 @Component({})
+// export default class ManageMember extends Vue implements ValidatableForm {
 export default class ManageMember extends Vue {
   /*
 ██████   █████  ████████  █████
@@ -279,6 +326,8 @@ export default class ManageMember extends Vue {
   private displayNameHelpText = `This could be your team member's
   full name or a nickname. It will be used to refer to this individual
   within ATAT.`;
+  private emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
+  private valid = true;
 
   /*
 ██████  ██████   ██████  ██████  ███████
@@ -288,9 +337,6 @@ export default class ManageMember extends Vue {
 ██      ██   ██  ██████  ██      ███████
 */
   @PropSync("close") _close!: boolean;
-  // @Prop() private isRootAdmin!: boolean;
-  // @Prop() private isEditSingle!: boolean;
-  // @Prop() private memberId: string | null;
   @Prop() private dialogProps!: any;
 
   /*
@@ -300,6 +346,29 @@ export default class ManageMember extends Vue {
 ██      ██    ██ ██  ██  ██ ██      ██    ██    ██    ██      ██   ██
  ██████  ██████  ██      ██ ██       ██████     ██    ███████ ██████
 */
+
+  get rules(): any {
+    return {
+      display_name: [
+        (v: string) =>
+          v.length < 100 || "Display name cannot exceed 100 characters",
+        (v: string) => v.length !== 0 || "Please enter your team member’s name",
+      ],
+      email: [
+        (v: string) =>
+          v.length !== 0 || "Please enter your team member’s email address",
+        (v: string) =>
+          v.indexOf("@") > -1 ||
+          "Please include an ‘@’ symbol in the email address",
+        (v: string) =>
+          v.slice(-3).toLowerCase() === "mil" ||
+          "Please use a standard domain format, like ‘@yourdomain.mil’",
+        (v: string) =>
+          this.emailRegex.test(v) ||
+          "Please make sure that the address is properly formatted",
+      ],
+    };
+  }
 
   get isRootAdmin(): boolean | null {
     if (
@@ -321,15 +390,40 @@ export default class ManageMember extends Vue {
     return null;
   }
 
-  get memberToEdit(): OperatorModel | null {
+  get memberToEdit(): OperatorModel {
     if (
       this.isEditSingle &&
       this.dialogProps &&
-      Object.prototype.hasOwnProperty.call(this.dialogProps, "memberId")
+      Object.prototype.hasOwnProperty.call(this.dialogProps, "memberEmail")
     ) {
-      return this.getMemberToEdit(this.dialogProps.memberId);
+      let member = this.getMemberToEdit(this.dialogProps.memberEmail);
+      if (member) {
+        return member;
+      }
     }
-    return null;
+    return {
+      display_name: "",
+      email: "",
+      id: "",
+      access: "",
+    };
+  }
+
+  // get Form(): Vue & { validate: () => boolean } {
+  //   return this.$refs.form as Vue & { validate: () => boolean };
+  // }
+
+  // get submitDisabled(): Promise<boolean> {
+  //   if (!this.isEditSingle) {
+  //     return this.isAddMembersValid();
+  //   } else {
+  //     // need to validate editing a single member
+  //     return this.validateForm();
+  //   }
+  // }
+
+  get buttonText(): string {
+    return this.isEditSingle ? "Update" : "Add Team Members";
   }
 
   get selectedCSP(): string {
@@ -436,20 +530,81 @@ export default class ManageMember extends Vue {
     this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
   }
 
-  public getMemberToEdit(memberId: string): OperatorModel | null {
+  public async isAddMembersValid(): Promise<boolean> {
+    return this.invalidEmailCount > 0 || this.validEmailCount === 0;
+  }
+
+  // public async validateForm(): Promise<boolean> {
+  //   let validated = false;
+  //   await this.$nextTick(() => {
+  //     const formToValidate = this.Form;
+  //     validated = formToValidate.validate();
+  //   });
+  //   return validated;
+  // }
+
+  public getMemberToEdit(memberEmail: string): OperatorModel | null {
+    debugger;
     const rootAdmins: OperatorModel[] =
       this.$store.getters.getPortfolioOperators;
-
-    let foundMember: any = rootAdmins.filter((obj) => obj.id === memberId);
-    if (foundMember) {
-      return foundMember;
+    let foundMember: OperatorModel[] | any;
+    if (this.isRootAdmin) {
+      foundMember = rootAdmins.filter((obj) => obj.email === memberEmail);
+      if (foundMember) {
+        return foundMember;
+      }
+      return null;
     }
-    const app: ApplicationModel = this.currentApplication;
-    const applicationOperators: OperatorModel[] = app.operators;
-    foundMember = applicationOperators.filter((obj) => obj.id === memberId);
-    debugger;
-    if (foundMember) {
-      return foundMember;
+    // check for user in application operators
+    const app: ApplicationModel | null = this.currentApplication;
+    if (app) {
+      const appOperators: OperatorModel[] | null = app ? app.operators : null;
+      if (appOperators && appOperators.length) {
+        foundMember = appOperators.filter((obj) => obj.email === memberEmail);
+        debugger;
+        if (foundMember.length) {
+          // since is application level, set access for all environments
+          this.assignDifferentRolesForEnvs = false;
+          this.roleForAllEnvs = foundMember[0].access;
+          return foundMember;
+        }
+      }
+
+      // check for member in environment operators
+      this.assignDifferentRolesForEnvs = true;
+      const envs: EnvironmentModel[] | null = app.environments;
+      if (envs) {
+        let foundEnvOp: any[] = [];
+        envs.forEach((env) => {
+          const envOperators: any[] | null = env.operators;
+          if (envOperators && envOperators.length) {
+             foundEnvOp = Object.assign(
+              [],
+              envOperators.filter((op) => op.email === memberEmail)
+            );
+            if (foundEnvOp.length) {
+              foundEnvOp[0].env_id = env.id;
+              foundEnvOp[0].env_name = env.name;
+              foundMember.push(foundEnvOp[0]);
+            }
+          }
+        });
+        if (foundMember.length) {
+          this.environments_roles.forEach((env: any) => {
+            let foundMemberInEnv = foundMember.filter(
+              (member: any) => member.env_id === env.env_id
+            );
+            if (foundMemberInEnv.length) {
+              env.role_value = foundMemberInEnv[0].access;
+            } else {
+              env.role_value = "no_access";
+            }
+          });
+          debugger;
+
+          return foundMember;
+        }
+      }
     }
     return null;
   }
@@ -694,8 +849,7 @@ export default class ManageMember extends Vue {
 
   public validateEmail(email: string): boolean {
     const isMilAddress = email.slice(-3).toLowerCase() === "mil";
-    const emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
-    return isMilAddress && emailRegex.test(email);
+    return isMilAddress && this.emailRegex.test(email);
   }
 
   public removeMemberFromList(memberId: string): void {
@@ -704,7 +858,7 @@ export default class ManageMember extends Vue {
     });
   }
 
-  public getOperators(role: string): OperatorModel[] {
+  public setOperators(role: string): OperatorModel[] {
     let operators: OperatorModel[] = [];
     this.memberList.forEach((member) => {
       let operator: OperatorModel = {
@@ -719,35 +873,46 @@ export default class ManageMember extends Vue {
   }
 
   public saveToStore(): void {
-    let operators: OperatorModel[] = [];
-    let environments: EnvironmentModel[] = [];
-    const curApp: ApplicationModel = this.currentApplication;
+    if (!this.isEditSingle) {
+      let operators: OperatorModel[] = [];
+      let environments: EnvironmentModel[] = [];
+      const curApp: ApplicationModel = this.currentApplication;
 
-    if (this.assignDifferentRolesForEnvs) {
-      this.environments_roles.forEach((env) => {
-        if (env.role_value !== "no_access") {
-          operators = this.getOperators(env.role_value);
-          const thisEnv: EnvironmentModel = {
-            id: env.env_id,
-            name: env.env_name,
-            operators: operators,
-          };
-          environments.push(thisEnv);
+      if (this.assignDifferentRolesForEnvs) {
+        this.environments_roles.forEach((env) => {
+          if (env.role_value !== "no_access") {
+            operators = this.setOperators(env.role_value);
+            const thisEnv: EnvironmentModel = {
+              id: env.env_id,
+              name: env.env_name,
+              operators: operators,
+            };
+            environments.push(thisEnv);
+          }
+        }, this);
+        this.$store.dispatch("updateEnvironmentOperators", [
+          curApp.id,
+          environments,
+        ]);
+      } else {
+        if (this.isRootAdmin) {
+          operators = this.setOperators("portfolio_administrator");
+          this.$store.dispatch("updateRootAdministrators", operators);
+        } else {
+          operators = this.setOperators(this.roleForAllEnvs);
+          this.$store.dispatch("updateApplicationOperators", [
+            curApp.id,
+            operators,
+          ]);
         }
-      }, this);
-      this.$store.dispatch("updateEnvironmentOperators", [
-        curApp.id,
-        environments,
-      ]);
-    } else {
-      operators = this.getOperators(this.roleForAllEnvs);
-      this.$store.dispatch("updateApplicationOperators", [
-        curApp.id,
-        operators,
-      ]);
+      }
+
+      this.$emit("membersAdded", this.validEmailCount);
+
+    } else if (this.isEditSingle) {
+      // TODO UPDATE EXISTING MEMBER INFO
     }
 
-    this.$emit("membersAdded", this.validEmailCount);
     this.closeModal();
   }
 
