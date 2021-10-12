@@ -34,8 +34,16 @@
                 outlined
                 single-line
                 hide-details
+                clearable
+                @click:clear="searchTable('')"
+                @keydown.native.enter="searchTable(search)"
+                @blur="searchTable(search)"
               />
-              <v-btn class="input-search-bar" color="primary">
+              <v-btn
+                class="input-search-bar"
+                color="primary"
+                @click="searchTable(search)"
+              >
                 <v-icon width="10px" class="mr-1">search</v-icon>
               </v-btn>
             </v-col>
@@ -85,7 +93,7 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template v-slot:header.workplace_access="{ header }">
+              <template v-slot:header.workplace_roles="{ header }">
                 <div class="label font-weight-bold text--base-dark">
                   {{ header.text }}
                 </div>
@@ -98,10 +106,10 @@
                   {{ item.email }}
                 </div>
               </template>
-              <template v-slot:item.workplace_access="{ item }">
+              <template v-slot:item.workspace_roles="{ item }">
                 <div class="d-flex justify-space-between">
                   <div class="body text--base-dark pt-3">
-                    {{ item.workplace_access }}
+                    {{ item.workspace_roles }}
                   </div>
 
                   <v-menu
@@ -148,6 +156,9 @@ import { Component } from "vue-property-decorator";
 
 @Component({})
 export default class RootAdminView extends Vue {
+  private filteredData: any = [];
+  private isFiltered = false;
+  private search = "";
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -165,6 +176,19 @@ export default class RootAdminView extends Vue {
     { text: "Workplace Access ", value: "access", sortable: false },
   ];
   private options = ["Edit Info", "Remove team member"];
+  private searchTable(value: string) {
+    if (!value) {
+      this.isFiltered = false;
+    } else {
+      this.isFiltered = true;
+      this.filteredData = this.rootMembers.filter((data: any) => {
+        return (
+          data.display_name.toLowerCase().includes(value) ||
+          data.email.toLowerCase().includes(value)
+        );
+      });
+    }
+  }
 
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [

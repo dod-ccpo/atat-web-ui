@@ -28,14 +28,23 @@
           <v-col cols="12" class="d-flex pl-0 pr-0">
             <v-col class="d-flex">
               <v-text-field
+                v-model="search"
                 class="search-bar"
                 placeholder="Search for member name and email"
                 dense
                 outlined
                 single-line
                 hide-details
+                clearable
+                @click:clear="searchTable('')"
+                @keydown.native.enter="searchTable(search)"
+                @blur="searchTable(search)"
               />
-              <v-btn class="input-search-bar" color="primary">
+              <v-btn
+                class="input-search-bar"
+                color="primary"
+                @click="searchTable(search)"
+              >
                 <v-icon width="10px" class="mr-1">search</v-icon>
               </v-btn>
             </v-col>
@@ -76,7 +85,7 @@
             <v-data-table
               class="review-table"
               :headers="headers"
-              :items="membersData"
+              :items="isFiltered ? filteredData : membersData"
               hide-default-footer
             >
               <template v-slot:header.display_name="{ header }">
@@ -90,16 +99,18 @@
                 </div>
               </template>
               <template class="hello" v-slot:item.display_name="{ item }">
-                <div class="body font-weight-bold pt-6">
-                  {{ item.display_name }}
-                </div>
-                <div class="body text--base-dark pb-6">
-                  {{ item.email }}
+                <div class="pt-6 pb-6">
+                  <div class="body font-weight-bold">
+                    {{ item.display_name }}
+                  </div>
+                  <div class="body text--base-dark">
+                    {{ item.email }}
+                  </div>
                 </div>
               </template>
               <template v-slot:item.workspace_roles="{ item }">
-                <div class="d-flex justify-space-between">
-                  <div class="d-flex flex-column body text--base-dark pt-3">
+                <div class="d-flex justify-space-between pb-6 pt-6">
+                  <div class="d-flex flex-column body text--base-dark">
                     <div v-for="value in item.workspace_roles" :key="value">
                       {{ value }}
                     </div>
@@ -114,8 +125,8 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        :disabled="isDisabled(item.workplace_access)"
-                        class="table-row-menu-button pa-0"
+                        :disabled="isDisabled(item.workplace_roles)"
+                        class="table-row-menu-button"
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
@@ -152,7 +163,9 @@ import { ApplicationModel } from "../../../../types/Portfolios";
 @Component({})
 export default class TeamView extends Vue {
   private membersData: any = [];
-
+  private filteredData: any = [];
+  private isFiltered = false;
+  private search = "";
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -190,7 +203,7 @@ export default class TeamView extends Vue {
           id: op.id,
           display_name: op.display_name || op.first_name + " " + op.last_name,
           email: op.email,
-          workspace_roles: op.access, // get nice name, not enum
+          workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
         };
         this.applicationMembers.push(opObj);
       });
@@ -203,15 +216,14 @@ export default class TeamView extends Vue {
           const i = this.applicationMembers.findIndex(
             (o) => o.email === op.email
           );
-          debugger;
           const workspace_roles =
             i > -1
               ? env.name +
                 ": " +
-                op.access +
+                this.roleTranslation(op.access) +
                 "  " +
                 this.applicationMembers[i].workspace_roles
-              : env.name + ": " + op.access;
+              : env.name + ": " + this.roleTranslation(op.access);
           if (i > -1) {
             this.applicationMembers[i].workspace_roles = workspace_roles;
           } else {
@@ -239,16 +251,53 @@ export default class TeamView extends Vue {
         workspace_roles: workspaceArr,
       };
       this.membersData.push(opObj);
-      console.log(this.membersData);
     }
   }
 
   private isDisabled(workplace_access: string): boolean {
-    if (workplace_access === "Administrator") {
+    if (workplace_access === "Root Administrator") {
       return true;
     }
     return false;
   }
+
+  private searchTable(value: string) {
+    if (!value) {
+      this.isFiltered = false;
+    } else {
+      this.isFiltered = true;
+      this.filteredData = this.membersData.filter((data: any) => {
+        return (
+          data.display_name.toLowerCase().includes(value) ||
+          data.email.toLowerCase().includes(value)
+        );
+      });
+    }
+  }
+
+  private roleTranslation(role: string): string {
+    switch (role) {
+      case "portfolio_administrator":
+        return "Root administrator";
+      case "administrator":
+        return "Administrator";
+      case "contributor":
+        return "Contributer";
+      case "read_only":
+        return "Billing read-only";
+      default:
+        return "Unauthorized";
+    }
+  }
+  public openDialog(event: Event): void {
+    this.$store.dispatch("openDialog", [
+      "addMembers",
+      event.type === "keydown",
+      "632px",
+      "90",
+    ]);
+  }
+
   get currentApplication(): ApplicationModel {
     return this.$store.getters.getCurrentApplication;
   }
