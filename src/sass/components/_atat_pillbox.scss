@@ -39,18 +39,28 @@ div#inputWidthFaker {
 .pill.v-text-field {
   display: inline-block;
   height: 32px;
-  border: 1px solid transparent;
+  border: 1px solid $primary_lighter;
   border-radius: 15px;
-  background-color: #D9E8F6;
+  background-color: $primary_lighter;
   padding: 0 4px 0 12px;
   line-height: 22px;
   margin: 3px;
   position: relative;
   z-index: 2;
+  border: 1px solid transparent;
+  &:not(.v-input--is-focused) {
+    &:hover, &:focus, &:active {
+      border-color: $primary;
+    }
+  }
+
   &.invalid-entry:not(.v-input--is-focused) {
-    background-color: #F8DFE2;
-    border-color: $error-darker;
+    background-color: $secondary-lighter;
+    border-color: transparent;
     padding-left: 30px;
+    &:hover, &:focus, &:active {
+      border-color: $error-darker;
+    }
     &:before {
       font-family: 'Material Icons';
       content: "error";
@@ -83,10 +93,19 @@ div#inputWidthFaker {
     margin-top: 3px;
     .v-icon {
       font-size: 20px;
+      transform-style: preserve-3d;
       &:hover, &:focus, &:active {
         color: black;
+        &:after {
+          opacity: 1;
+          color: white;
+          transform: translateZ(-1px);
+          transition: none !important;
+        } 
       }
     }
   }
-
+  .v-icon.v-icon::after {
+    transition: none !important;
+  }
 }

@@ -97,8 +97,8 @@ export interface OperatorModel {
 export interface Application {
   name: string;
   description: string;
-  operators: OperatorModel[];
   environments: Environment[];
+  operators: Operator[];
 }
 
 export interface Environment {
