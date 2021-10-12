@@ -2,10 +2,11 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
-import { Dialog } from "types/FormFields";
+import { Dialog, Toast } from "types/Global";
 import {
   Application,
   ApplicationModel,
+  EnvironmentModel,
   Portfolio,
   PortfolioDraft,
   PortFolioDraftDTO,
@@ -149,9 +150,18 @@ const mapApplications = (
   return applicationModels.map((model: ApplicationModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...baseModel } = model;
-
     const application: Application = {
       ...baseModel,
+      operators: model.operators
+        ? model.operators.map((op) => {
+            return {
+              id: op.id,
+              access: op.access,
+              display_name: op.display_name,
+              email: op.email,
+            };
+          })
+        : [],
       environments: model.environments.map((env) => {
         return {
           name: env.name,
@@ -171,7 +181,6 @@ const mapApplications = (
     return application;
   });
 };
-
 const StepModelIndices: Record<number, number> = {
   1: 0,
   2: 1,
@@ -179,6 +188,18 @@ const StepModelIndices: Record<number, number> = {
   4: 3,
   5: 4,
 };
+
+/*
+█████████████████████████████████████████
+
+███████ ████████  █████  ████████ ███████
+██         ██    ██   ██    ██    ██
+███████    ██    ███████    ██    █████
+     ██    ██    ██   ██    ██    ██
+███████    ██    ██   ██    ██    ███████
+
+█████████████████████████████████████████
+*/
 
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
@@ -244,6 +265,7 @@ export default new Vuex.Store({
           id: "",
           name: "",
           description: "",
+          operators: [],
           environments: [
             {
               name: "Development",
@@ -291,7 +313,23 @@ export default new Vuex.Store({
       designation: "Civilian",
     },
     validationStamp: {},
+    toast: {
+      isDisplayed: false,
+      message: "",
+      contentClass: "",
+    },
   },
+  /*
+  ███████████████████████████████████████████████████████████████████████████
+
+  ███    ███ ██    ██ ████████  █████  ████████ ██  ██████  ███    ██ ███████
+  ████  ████ ██    ██    ██    ██   ██    ██    ██ ██    ██ ████   ██ ██
+  ██ ████ ██ ██    ██    ██    ███████    ██    ██ ██    ██ ██ ██  ██ ███████
+  ██  ██  ██ ██    ██    ██    ██   ██    ██    ██ ██    ██ ██  ██ ██      ██
+  ██      ██  ██████     ██    ██   ██    ██    ██  ██████  ██   ████ ███████
+
+  ███████████████████████████████████████████████████████████████████████████
+  */
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
@@ -468,7 +506,14 @@ export default new Vuex.Store({
         const applicationModel: ApplicationModel = {
           ...application,
           id: generateUid(),
-          operators: application.operators,
+          operators: application.operators
+            ? application.operators.map((operator) => {
+                return {
+                  ...operator,
+                  id: generateUid(),
+                };
+              })
+            : [],
           environments: application.environments.map((environment) => {
             return {
               ...environment,
@@ -508,8 +553,53 @@ export default new Vuex.Store({
         throw new Error("could not delete application order with id: " + id);
       }
     },
+    doUpdateEnvironmentOperators(state, [appId, environments]) {
+      const index = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) => application.id === appId
+      );
+      const appModel: ApplicationModel = state.applicationModels[index];
+      environments.forEach((env: EnvironmentModel) => {
+        const envId = env.id;
+        const index = getEntityIndex(
+          appModel.environments,
+          (environment: EnvironmentModel) => environment.id === envId
+        );
+        const envModel: EnvironmentModel = appModel.environments[index];
+        if (Object.prototype.hasOwnProperty.call(envModel, "operators")) {
+          envModel.operators.push(...env.operators);
+        } else {
+          envModel.operators = env.operators;
+        }
+      });
+    },
+    doUpdateApplicationOperators(state, [appId, operators]) {
+      const index = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) => application.id === appId
+      );
+      const appModel: ApplicationModel = state.applicationModels[index];
+      if (Object.prototype.hasOwnProperty.call(appModel, "operators")) {
+        appModel.operators.push(...operators);
+      } else {
+        appModel.operators = operators;
+      }
+    },
+    doToast(state, props) {
+      state.toast = props;
+    },
   },
+  /*
+  ██████████████████████████████████████████████████████
 
+   █████   ██████ ████████ ██  ██████  ███    ██ ███████
+  ██   ██ ██         ██    ██ ██    ██ ████   ██ ██
+  ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████
+  ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
+  ██   ██  ██████    ██    ██  ██████  ██   ████ ███████
+
+  ██████████████████████████████████████████████████████
+  */
   actions: {
     login({ commit }) {
       commit("changeLoginStatus", true);
@@ -672,7 +762,7 @@ export default new Vuex.Store({
         description: model.description,
         csp: model.csp,
         dod_components: model.dod_components,
-        portfolio_managers: []
+        portfolio_managers: [],
       };
 
       await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
@@ -840,12 +930,37 @@ export default new Vuex.Store({
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
     },
+    updateEnvironmentOperators({ commit }, [appId, environments]) {
+      commit("doUpdateEnvironmentOperators", [appId, environments]);
+    },
+    updateApplicationOperators({ commit }, [appId, operators]) {
+      commit("doUpdateApplicationOperators", [appId, operators]);
+    },
+    toast({ commit }, [message, contentClass]) {
+      const toastProps: Toast = {
+        isDisplayed: true,
+        message: message,
+        contentClass: contentClass,
+      };
+      commit("doToast", toastProps);
+    },
     isStepTouched({ state }, stepNumber: number) {
       const index = StepModelIndices[stepNumber];
       return state.portfolioSteps[index].touched;
     },
   },
   modules: {},
+  /*
+  ██████████████████████████████████████████████████████████
+
+   ██████  ███████ ████████ ████████ ███████ ██████  ███████
+  ██       ██         ██       ██    ██      ██   ██ ██
+  ██   ███ █████      ██       ██    █████   ██████  ███████
+  ██    ██ ██         ██       ██    ██      ██   ██      ██
+   ██████  ███████    ██       ██    ███████ ██   ██ ███████
+
+  ██████████████████████████████████████████████████████████
+  */
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;

@@ -15,7 +15,7 @@
 
   &.extra-padding {
     .v-card__title {
-      padding: 24px 40px 0 !important;
+      padding: 45px 40px 0 !important;
       h2 {
         font-size: 24px;
       }
@@ -26,7 +26,6 @@
     }
   
     .v-card__actions {
-      background-color: $base_lightest;
       padding: 16px 24px !important;
     } 
   }
