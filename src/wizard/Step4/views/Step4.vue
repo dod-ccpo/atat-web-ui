@@ -3,17 +3,17 @@
     <v-row>
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
-        <h2 v-if="!createdApplication" class="h2">
+        <h2 v-if="!applicationName" class="h2">
           Invite team members to your application
         </h2>
         <h2 v-else class="h2">
-          Let’s add team members to {{ createdApplication }}
+          Let’s add team members to {{ applicationName }}
         </h2>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pa-0 ma-0" cols="10">
-        <span v-if="!createdApplication">
+        <span v-if="!applicationName">
           <p class="body-lg text--base-darkest">
             In this section, you will be able to invite people from your
             application’s development team and assign permission levels, so they
@@ -38,13 +38,20 @@
           <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
           is provisioned. Select <span class="font-weight-bold">Next</span> to
           add team members to your other applications.
-          <a class="text-decoration-underline"
-            >Learn more about team member roles</a
+          <v-btn
+            class="primary--text py-0 px-2 mt-n2"
+            text
+            small
+            :ripple="false"
+            @click="openSideDrawer($event)"
+            @keydown.native.enter="openSideDrawer($event)"
           >
+            <span class="link-body-md">Learn more about team member roles</span>
+          </v-btn>
         </p>
       </v-col>
     </v-row>
-    <v-row v-if="createdApplication">
+    <v-row v-if="applicationName">
       <v-col class="ps-0 ma-0">
         <v-row>
           <v-col cols="12" class="d-flex pl-0 pr-0">
@@ -71,9 +78,9 @@
                 @click="openDialog($event)"
               >
                 <div class="mr-1 mt-n2">
-                <v-icon class="icon-20" role="presentation"
-                  >control_point</v-icon
-                >
+                  <v-icon class="icon-20" role="presentation"
+                    >control_point</v-icon
+                  >
                 </div>
                 <div class="body font-weight-bold">Invite Team Member</div>
               </v-btn>
@@ -135,7 +142,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         :disabled="isDisabled(item.workplace_access)"
-                        class="table-row-menu-button pa-0 "
+                        class="table-row-menu-button pa-0"
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
@@ -313,6 +320,9 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
+import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
+import { Application, Environment } from "../../../../types/Portfolios";
+import { ApplicationModel } from "types/Portfolios";
 
 @Component({
   components: {
@@ -323,7 +333,13 @@ export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
-  private createdApplication = this.$store.state.portfolioSteps[2].model.name;
+
+  get currentApplication(): ApplicationModel[] {
+    return this.$store.getters.getCurrentApplication;
+  }
+
+  private applicationName = this.$store.state.applicationModels[0].name;
+
   private message = "You do not have any team members in this application yet.";
   private showPortfolioOwnerText = false;
   private teamPortfolioAccessText = false;
@@ -357,6 +373,13 @@ export default class Step_4 extends Vue {
     console.log("clicked");
   }
 
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "teammemberroles",
+      event.type === "keydown",
+    ]);
+  }
+
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
       "addMembers",
@@ -365,6 +388,7 @@ export default class Step_4 extends Vue {
       "90",
     ]);
   }
+
   private isDisabled(workplace_access: string): boolean {
     if (workplace_access === "Administrator") {
       return true;
@@ -373,7 +397,7 @@ export default class Step_4 extends Vue {
   }
 
   public async mounted(): Promise<void> {
-    // temp until actually saving data to store
+    // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }

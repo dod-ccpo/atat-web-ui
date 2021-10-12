@@ -78,6 +78,7 @@ export interface ApplicationModel {
   name: string;
   description: string;
   environments: EnvironmentModel[];
+  operators: OperatorModel[];
 }
 
 export interface EnvironmentModel {
@@ -89,8 +90,7 @@ export interface EnvironmentModel {
 export interface OperatorModel {
   id: string;
   access: string;
-  last_name: string;
-  first_name: string;
+  display_name: string;
   email: string;
 }
 
@@ -98,6 +98,7 @@ export interface Application {
   name: string;
   description: string;
   environments: Environment[];
+  operators: Operator[];
 }
 
 export interface Environment {
@@ -107,8 +108,7 @@ export interface Environment {
 
 export interface Operator {
   access: string;
-  last_name: string;
-  first_name: string;
+  display_name: string;
   email: string;
 }
 

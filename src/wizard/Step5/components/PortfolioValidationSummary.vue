@@ -17,7 +17,7 @@
                   <p class="body-lg font-weight-bold mb-2">Needs Review</p>
                 </div>
                 <v-btn
-                  @click="onReviewPortfolioItem(item.name, item.id)"
+                  @click="onReviewPortfolioItem(item)"
                   class="primary theme--light mb-2"
                   >Review</v-btn
                 >
@@ -47,6 +47,17 @@ export default class PortfolioValidationSummary extends Vue {
   public onReviewPortfolioItem(componentName: string, item: number): void {
     //todo: route to component item for review
     this.$store.dispatch("validateStep", item);
+
+    //todo: this is a temporary fix until we get the rest of the summary functionality
+    //in place Robert McCardell
+
+    if (item === 2 && this.$store.state.taskOrderModels.length > 0) {
+      this.$store.dispatch("updateStepModelValidity", [2, true]);
+    }
+
+    if (item === 3 && this.$store.state.applicationModels.length > 0) {
+      this.$store.dispatch("updateStepModelValidity", [3, true]);
+    }
     this.$router.push({ name: componentName });
   }
 }

@@ -21,21 +21,23 @@ import '@webcomponents/webcomponentsjs/webcomponents-bundle.js'
 import awsconfig from "./aws-exports";
 Amplify.configure(awsconfig);
 
+import ATATButtonCard from "./components/ATATButtonCard.vue";
+import ATATDatePicker from "./components/ATATDatePicker.vue";
+import ATATDialog from "./components/ATATDialog.vue"
+import ATATFileUpload from "./components/ATATFileUpload.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATHeaderNav from "./components/ATATHeaderNav.vue";
+import ATATModalDelete from "./components/ATATModalDelete.vue";
 import ATATSelect from "./components/ATATSelect.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import ProfileDrawer from "./components/SideDrawerComponents/ProfileDrawer.vue"
 import SubmitDrawer from "./components/SideDrawerComponents/SubmitDrawer.vue"
+import TeamMemberRolesDrawer from "./components/SideDrawerComponents/TeamMemberRolesDrawer.vue"
 import ATATTextField from "./components/ATATTextField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
-import ATATButtonCard from "./components/ATATButtonCard.vue";
-import ATATDatePicker from "./components/ATATDatePicker.vue";
-import ATATFileUpload from "./components/ATATFileUpload.vue";
 import ATATSummaryCard from "./components/ATATSummaryCard.vue";
-import ATATModalDelete from "./components/ATATModalDelete.vue";
-import ATATDialog from "./components/ATATDialog.vue"
+import ATATToast from "./components/ATATToast.vue"
 import SecurityBanner from "./components/SecurityBanner.vue";
 import StyledFields from "./components/StyledFields.vue";
 import USAGovBanner from "./components/USAGovBanner.vue";
@@ -44,15 +46,16 @@ import USAGovBanner from "./components/USAGovBanner.vue";
 import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfolio.vue";
 import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
 import { createSolutionBuilderWithWatch } from "typescript";
-Vue.component('atat-date-picker',ATATDatePicker)
 Vue.component('atat-button-card', ATATButtonCard);
+Vue.component('atat-date-picker',ATATDatePicker)
+Vue.component('atat-dialog', ATATDialog);
 Vue.component('atat-file-upload', ATATFileUpload);
-Vue.component('atat-text-area', ATATTextArea);
-Vue.component('atat-text-field', ATATTextField);
+Vue.component('atat-modal-delete', ATATModalDelete);
 Vue.component('atat-select', ATATSelect)
 Vue.component('atat-summary-card', ATATSummaryCard)
-Vue.component('atat-modal-delete', ATATModalDelete);
-Vue.component('atat-dialog', ATATDialog);
+Vue.component('atat-text-area', ATATTextArea);
+Vue.component('atat-text-field', ATATTextField);
+Vue.component('atat-toast', ATATToast);
 
 //axios
 axios.defaults.baseURL = "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0"

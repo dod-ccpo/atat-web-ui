@@ -1,0 +1,24 @@
+@import "../utils/colors.scss";
+#right-side-drawer{
+  top: 95px !important;
+  .v-navigation-drawer__content{
+    // max-height: 100%;
+    overflow-y: hidden !important;
+    overflow-x:  hidden !important;
+    .atat-info-side-drawer{
+      .expand-transition-enter-active,
+      .expand-transition-leave-active{
+        transition-duration: .10s
+      }
+    }
+    .atat-side-drawer{
+      a {
+        color: $primary !important;
+        .v-icon{
+          color: $primary !important;
+        }
+        
+      }
+    }
+  }
+}

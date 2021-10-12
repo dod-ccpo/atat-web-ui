@@ -1,4 +1,5 @@
 import Vue from "vue";
+import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
 import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
@@ -9,6 +10,16 @@ Vue.use(Vuetify);
 describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
   const localVue = createLocalVue();
   localVue.use(VueRouter);
+  localVue.use(Vuex);
+
+  const store = new Vuex.Store({
+    actions: {
+      editApplication: (n: any) => {
+        console.log("edit Application called");
+      },
+    },
+  });
+
   const routes = [
     {
       name: "addapplication",
@@ -25,6 +36,7 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
       localVue,
       vuetify,
       router,
+      store,
       propsData: {
         applicationData: {
           name: "Tracker",

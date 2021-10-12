@@ -92,3 +92,10 @@ jobs:
         with:
           name: atat-web-ui
           path: dist
+      - name: Trigger SonarCloud
+        # This step will fail for external collaborators
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

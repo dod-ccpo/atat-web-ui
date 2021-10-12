@@ -1,10 +1,11 @@
 <template>
   <div>
     <funding-table
-      v-for="orders in taskOrders"
-      :key="orders.task_order_number"
-      :name="orders.task_order_number"
-      :data="orders.clins"
+      v-for="order in taskOrders"
+      :key="order.task_order_number"
+      :name="order.task_order_number"
+      :data="order.clins"
+      :id="order.id"
     ></funding-table>
   </div>
 </template>

@@ -12,7 +12,19 @@
         </p>
       </v-col>
     </v-row>
+    <v-row v-if="cardsData.cards.length === 0" class="pt-8">
+      <v-col cols="10">
+        <v-card>
+          <v-card-text>
+            <p class="body-lg text-center text--base-darkest">
+              You currently do not have any applications.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
     <atat-summary-card
+      v-if="cardsData.cards.length > 0"
       :data="cardsData"
       v-on:edit="onEdit"
       v-on:delete="onDelete"
@@ -51,6 +63,8 @@ import {
 import { ApplicationModel } from "types/Portfolios";
 import { addapplication, editapplication } from "@/router/wizard";
 
+// Register the router hooks with their names
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   mixins: [ValidatableWizardStep],
   components: {
@@ -137,6 +151,14 @@ export default class Step3Summary extends Vue {
         id: id,
       },
     });
+  }
+
+  async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    next();
   }
 }
 </script>

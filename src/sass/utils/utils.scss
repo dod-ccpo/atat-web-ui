@@ -15,7 +15,6 @@ $total: 900;
     $i: $i + 100;
 } 
 
-
 .no-border{
     border: none !important;
 }
@@ -39,12 +38,10 @@ $biggest-border-width: 10;
 }
 
 .border-solid {
-
     border: solid !important;
 }
 
 .pointer {
-
     cursor: pointer !important;
 }
 
@@ -61,17 +58,29 @@ $states: 'auto' 'scroll' 'inherit' 'initial' 'overlay' 'hidden' 'revert' 'unset'
     }
 }
 
+$positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
+@each $position in $positions{
+    .position-#{$position}{
+        position: #{$position} !important;
+    }
+}
+
+
 //padding and margin modifications
-    .remove-y-padding-from-cols  {
-        .col{
-            padding-top: 0px !important;
-            padding-bottom: 0px !important;
-        }
+.remove-y-padding-from-cols  {
+    .col{
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
     }
-  
-    .remove-y-margin-from-p {
-       p {
-            margin-top: 0px !important;
-            margin-bottom: 0px !important;
-        }
+}
+
+.remove-y-margin-from-p {
+    p {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
     }
+}
+
+.height-auto {
+    height: auto !important;
+}

@@ -12,7 +12,19 @@
         </p>
       </v-col>
     </v-row>
+    <v-row v-if="cardsData.cards.length === 0" class="pt-8">
+      <v-col cols="10">
+        <v-card>
+          <v-card-text>
+            <p class="body-lg text-center text--base-darkest">
+              You currently do not have any task orders saved.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
     <atat-summary-card
+      v-if="cardsData.cards.length > 0"
       :data="cardsData"
       v-on:delete="onDeleteTaskOrder"
       v-on:edit="onEditTaskOrder"
@@ -108,6 +120,8 @@ import {
 import { Component } from "vue-property-decorator";
 import { addfunding, editfunding } from "../../../router/wizard";
 
+// Register the router hooks with their names
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
 export default class Step2Summary extends Vue {
   private showPopText = false;
@@ -130,7 +144,13 @@ export default class Step2Summary extends Vue {
 
     if (this.taskOrders.length === 0) {
       //route the user back to add funding step
-      this.$router.push({ name: addfunding.name });
+      await this.$store.dispatch("addNewTaskOrder");
+      this.$router.push({
+        name: addfunding.name,
+        params: {
+          id: "",
+        },
+      });
     }
 
     this.transformData();
@@ -194,6 +214,14 @@ export default class Step2Summary extends Vue {
       };
       this.cardsData.cards.push(card);
     }, this);
+  }
+
+  public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    next();
   }
 }
 </script>
