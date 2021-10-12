@@ -301,15 +301,15 @@ export default new Vuex.Store({
       },
     ],
     user: {
-      title: "Ms.",
-      given_name: "Maria",
-      family_name: "Missionowner",
-      email: "maria.missionowner-civ@mail.mil",
-      phone_number: "(555)-555-5555",
-      service_branch: "U.S. Army",
-      citizenship: "United States",
-      dod_id: "1234567890",
-      designation: "Civilian",
+      title: "",
+      given_name: "",
+      family_name: "",
+      email: "",
+      phone_number: "",
+      service_branch: "",
+      citizenship: "",
+      dod_id: "",
+      designation: "",
     },
     validationStamp: {},
     toast: {
@@ -332,6 +332,24 @@ export default new Vuex.Store({
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
+    },
+    changeUser(state, user: any) {
+      // These attributes will come across directly and cleanly from the
+      // u[stream identity provider and Cognito
+      state.user.given_name = user?.given_name ?? "";
+      state.user.family_name = user?.family_name ?? "";
+      state.user.email = user?.email ?? "Not Provided";
+      // This field will have to be a custom Cognito attribute and so
+      // the source object may have a different format.
+      state.user.dod_id = user?.["custom:dod_id"] ?? "1234567890";
+      state.user.citizenship = user?.["custom:citizenship"] ?? "United States";
+      state.user.designation = user?.["custom:designation"] ?? "Civilian";
+      // This field may not be available from our identity provider
+      state.user.phone_number = user?.phone ?? "(555) 555-5555";
+      // There is not currently a known way to get this information from
+      // the identity provider.
+      state.user.service_branch = "U.S. Army";
+      state.user.title = "Ms.";
     },
     changeDialog(state, dialogProps: Dialog) {
       state.dialog = dialogProps;
@@ -597,11 +615,13 @@ export default new Vuex.Store({
   ██████████████████████████████████████████████████████
   */
   actions: {
-    login({ commit }) {
+    login({ commit }, user) {
       commit("changeLoginStatus", true);
+      commit("changeUser", user);
     },
     logout({ commit }) {
       commit("changeLoginStatus", false);
+      commit("changeUser", null);
       window.sessionStorage.clear();
     },
     validateStep({ commit }, step: number) {
@@ -966,7 +986,7 @@ export default new Vuex.Store({
     getisUserAuthorizedToProvisionCloudResources(state) {
       return state.isUserAuthorizedToProvisionCloudResources;
     },
-    getNavBarItems(): Navs {
+    getNavBarItems(state): Navs {
       return {
         logout: {
           id: "atat-nav__logout",
@@ -980,7 +1000,7 @@ export default new Vuex.Store({
             {
               id: 1,
               cssClass: "atat-header-nav__user-display-name",
-              title: "Maria Missionowner",
+              title: state.user.given_name + " " + state.user.family_name,
               newWindow: false,
               icon: "person",
               iconPlacement: "left",
