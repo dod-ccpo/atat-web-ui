@@ -1,11 +1,13 @@
-# Setting up Cypress 
+# Setting up Cypress
 
-[Optional]Install Cypress:
-```
-$ npm install cypress --save-dev
+[Optional]Install Cypress globally:
 
-To Open Cypress window 
 ```
+$ `npm i -g cypress@^8.5.0`
+
+To Open Cypress window
+```
+
 node ./node_modules/cypress/bin/cypress open
 or
 npx cypress open
@@ -13,20 +15,24 @@ npx cypress open
 # Setting up Cypress with Browserstack
 
 Install Browserstack node package:
+
 ```
 npm install -g browserstack-cypress-cli
 ```
 
-# To run Cypress tests using Cypress command line AKA CYpress CLI
+# To run Cypress tests using Cypress command line AKA Cypress CLI
+
 ```
 npm run test:cypress
 ```
+
 # To execute your Cypress Tests on Browserstack
+
 ```
 npm run e2e
 
 Setting Environment Variables
-Create a `.env` file in the project's root directory and use the following Environment Variables: 
+Create a `.env` file in the project's root directory and use the following Environment Variables:
 
 
 | Environment Variable Name | Description                                                                     |
@@ -38,3 +44,4 @@ Create a `.env` file in the project's root directory and use the following Envir
 
 
 
+```

@@ -56,7 +56,6 @@ describe("TestSuite to Verify the Assertions for all pages", function () {
     dashboard.supportTab().should("exist");
     dashboard.logout().should("exist");
     dashboard.welcomeText().should("contain.text", "ATAT Cloud Services");
-    cy.scrollTo("bottom");
     dashboard.getStarted().should("exist").click();
   });
 
@@ -70,7 +69,6 @@ describe("TestSuite to Verify the Assertions for all pages", function () {
       .textUnderLinkOne()
       .should("contain.text", "We will send email notifications");
     dashboard.linkTwo().click();
-    cy.scrollTo("bottom");
     dashboard
       .textUnderLinkTwo()
       .should(
