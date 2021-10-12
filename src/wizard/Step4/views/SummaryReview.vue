@@ -65,7 +65,7 @@
           </template>
           <template v-slot:item.operators="{ item }">
             <div class="d-flex justify-space-between">
-              <div class="body text--base-dark pt-3">
+              <div class="body text--base-dark pt-1">
                 {{ item.operators }}
               </div>
 
