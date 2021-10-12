@@ -110,7 +110,103 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { editmembers } from "@/router/wizard";
 
 @Component({})
-export default class SummaryReview extends Vue {}
+export default class SummaryReview extends Vue {
+  public applications = this.$store.state.applicationModels;
+  private csp =
+    this.$store.state.portfolioSteps[0].model.csp ||
+    "the selected Cloud Service Provider’s";
+  private applicationData: any = [];
+  private handleNameClick(item: any): void {
+    if (item.portfolio) {
+      this.$router.push({
+        name: editmembers.name,
+        params: {
+          type: "portfolio",
+          id: this.$store.state.currentPortfolioId,
+        },
+      });
+      return;
+    }
+    this.$store.dispatch("setCurrentApplicationId", item.id);
+    this.$router.push({
+      name: editmembers.name,
+      params: {
+        type: "application",
+        id: this.$store.state.currentApplicationId,
+      },
+    });
+  }
+  private handleMenuClick(item: any, event: Event): void {
+    switch (item) {
+      case "View root administrators":
+        console.log(item);
+        this.$router.push({
+          name: editmembers.name,
+          params: {
+            type: "portfolio",
+            id: this.$store.state.currentPortfolioId,
+          },
+        });
+        break;
+      case "View team members":
+        this.$router.push({
+          name: editmembers.name,
+          params: {
+            type: "application",
+            id: this.$store.state.currentApplicationId,
+          },
+        });
+        break;
+      default:
+        this.openDialog(event);
+    }
+  }
+  private currentPortfolio =
+    this.$store.getters.getPortfolioById(
+      this.$store.state.currentPortfolioId
+    ) || "Untitled";
+
+  private tranformData(applications: any): void {
+    this.applicationData.push({
+      name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
+      description: this.$store.state.portfolioSteps[0].model.description,
+      operators: this.$store.state.portfolioOperators.length || 0,
+      portfolio: true,
+    });
+    for (let value of applications) {
+      let obj: any = {};
+      obj.id = value.id;
+      obj.name = value.name;
+      obj.description = value.description;
+      let numArr = value.environments.map((env: any) => env?.operators?.length);
+      obj.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
+      this.applicationData.push(obj);
+    }
+  }
+  private isPortfolio(item: any): string[] {
+    if (item.portfolio) {
+      return ["View root administrators", "Add root administrators"];
+    }
+    return ["View team members", "Add team members"];
+  }
+  private headers = [
+    { text: "Workspaces", value: "name", align: "start" },
+    { text: "Description ", value: "description", sortable: false },
+    { text: "Team Members ", value: "operators", sortable: false },
+  ];
+  public openDialog(event: Event): void {
+    this.$store.dispatch("openDialog", [
+      "addMembers",
+      event.type === "keydown",
+      "632px",
+      "90",
+    ]);
+  }
+  public async mounted(): Promise<void> {
+    this.tranformData(this.applications);
+  }
+}
 </script>

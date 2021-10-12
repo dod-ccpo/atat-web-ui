@@ -23,68 +23,15 @@
                 href="/wizard/addapplication"
                 class="link-body-md font-weight-bold"
               >
-                <div class="mr-1 mt-n2">
-                  <v-icon class="icon-20" role="presentation"
-                    >control_point</v-icon
-                  >
-                </div>
-                <div class="body font-weight-bold">Invite Team Member</div>
-                </a>
-              </p>
-
-              </span>
-            </v-col>
-        </v-row>
-        <v-row v-if="!members">
-          <v-col cols="12" class="pa-0 ma-0">
-            <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
-              <v-card-text class="text-center">
-                <v-row class="d-flex justify-space-around pt-4">
-                  <v-col>
-                    <span class="body-lg text--base-dark">{{ message }}</span>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" class="ma-0">
-            <v-data-table
-              class="review-table"
-              :headers="headers"
-              :items="members"
-              hide-default-footer
-            >
-              <template v-slot:header.display_name="{ header }">
-                <div class="label font-weight-bold text--base-dark">
-                  {{ header.text }}
-                </div>
-              </template>
-              <template v-slot:header.workplace_access="{ header }">
-                <div class="label font-weight-bold text--base-dark">
-                  {{ header.text }}
-                </div>
-              </template>
-              <template class="hello" v-slot:item.display_name="{ item }">
-                <div class="body font-weight-bold pt-6">
-                  {{ item.display_name }}
-                </div>
-                <div class="body text--base-dark pb-6">
-                  {{ item.email }}
-                </div>
-              </template>
-              <template v-slot:item.workplace_access="{ item }">
-                <div class="d-flex justify-space-between">
-                  <div class="body text--base-dark pt-3">
-                    {{ item.workplace_access }}
-                  </div>
-                   </div>
-              </template>
-          </v-data-table>
+                add an application
+              </a>
+              to continue.
+            </p>
+          </span>
         </v-col>
-      </v-row>  
+      </v-row>
     </div>
+
     <RootAdminView v-if="editType === 'portfolio'" />
     <TeamView v-if="editType === 'application'" />
     <v-row v-if="createdApplication.length > 0">
@@ -241,13 +188,14 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
-import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
-import { Application, Environment } from "../../../../types/Portfolios";
-import { ApplicationModel } from "types/Portfolios";
+import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
+import TeamView from "@/wizard/Step4/views/TeamView.vue";
 
 @Component({
   components: {
     AddMembers,
+    RootAdminView,
+    TeamView,
   },
 })
 export default class Step_4 extends Vue {
@@ -261,9 +209,6 @@ export default class Step_4 extends Vue {
   private teamPermissionsText = false;
   private teamExpectationText = false;
   // methods
-  private handleClick(): void {
-    console.log("clicked");
-  }
 
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
@@ -274,15 +219,8 @@ export default class Step_4 extends Vue {
     ]);
   }
 
-  private isDisabled(workplace_access: string): boolean {
-    if (workplace_access === "Administrator") {
-      return true;
-    }
-    return false;
-  }
-
   public async mounted(): Promise<void> {
-    // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
+    // temp until actually saving data to store
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }
