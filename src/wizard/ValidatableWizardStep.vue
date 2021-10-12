@@ -1,14 +1,14 @@
 <script lang="ts">
 import { Validatable } from "../../types/Wizard";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { Route } from "vue-router";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave", "beforeRouteEnter"]);
 @Component({})
 /**
- *  Provides functionality to automagically call the validation method of a
- *  validatable wizard step when the user leaves the step
+ *  Provides base functionality for validatable wizard steps
+ *  Automatically validates and saves before leaving the wizard step
  */
 export default class ValidatableWizardStep<TModel> extends Validatable {
   @Prop({ required: true }) step!: number;
@@ -32,10 +32,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     await this.$store.dispatch("saveStepData", this.step);
   }
 
-  protected onHasChanges!: () => boolean;
-
-  protected stepMounted!: () => Promise<void>;
-  private incomingModel!: TModel;
+  protected incomingModel!: TModel;
   protected model!: TModel;
 
   private hasChanges(): boolean {
@@ -51,25 +48,18 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     if (this.$route.meta && this.$route.meta.isWizard) {
       if (this.skipValidation) return;
 
-      this.incomingModel = this.$store.state.currentStepModel;
-      this.touched = this.$store.getters.getStepTouched(this.step);
+      this.incomingModel = JSON.parse(JSON.stringify(this.model)) as TModel;
+      this.touched = await this.$store.dispatch("isStepTouched", this.step);
       if (this.touched) {
         this.validate();
       }
     }
   }
 
-  @Watch("$store.state.validationStamp")
-  async onValidationTriggered(): Promise<void> {
-    if (this.hasChanges()) {
-      await this.validate();
-    }
-  }
-
   public async beforeRouteEnter(
     to: Route,
     from: Route,
-    next: (n: any) => void
+    next: (n: unknown) => void
   ): Promise<void> {
     next((vm: ValidatableWizardStep<TModel>) => {
       //loads model before route enter
@@ -82,8 +72,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     from: Route,
     next: (n: void) => void
   ): Promise<void> {
-    // const nextRouteIsWizardRoute = to.meta && to.meta.isWizard;
-
     // if the skip validation property is set or if the next
     // route we're heading to is not a wizard route we will skip validation
     if (this.skipValidation) {
@@ -91,7 +79,8 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     }
     const isValid = await this.validate();
     await this.updateModelState(isValid);
-    if (this.hasChanges()) {
+    const isChanged = this.hasChanges();
+    if (isChanged) {
       try {
         if (isValid) {
           await this.saveData();

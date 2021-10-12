@@ -1,10 +1,10 @@
 <template>
   <div class="review-table">
     <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
-      <v-card-title class="d-flex justify-space-between">
+      <v-card-title class="d-flex justify-space-between" @click="onEdit">
         <span class="h4 justify-center">Task Order #{{ name }}</span>
       </v-card-title>
-      <v-card-subtitle class="d-flex justify-space-between">
+      <v-card-subtitle class="d-flex justify-space-between" @click="onEdit">
         <v-btn class="pa-0 primary--text" text small :ripple="false">
           <span class="link-body-md">{{ name }}</span
           ><v-icon small class="ml-2 icon-20">launch</v-icon></v-btn
@@ -15,7 +15,7 @@
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
           :ripple="false"
-          @click="handleClicked(name)"
+          @click="onEdit()"
         >
           <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>
           <span class="text-decoration-underline body-lg">Edit</span>
@@ -138,15 +138,17 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { TaskOrderDetails } from "../../../../types/Wizard";
+import { TaskOrderModel } from "../../../../types/Wizard";
 
 @Component({})
 export default class FundingTable extends Vue {
-  @Prop({ default: {} }) private data!: TaskOrderDetails;
+  @Prop({ default: {} }) private data!: TaskOrderModel;
   @Prop({ default: "" }) private name!: string;
+  @Prop({ default: "" }) private id!: string;
 
-  private handleClicked(name: string) {
-    this.$router.push({ name: "editfunding", params: { id: `${name}` } });
+  private onEdit() {
+    this.$store.dispatch("editTaskOrder", this.id);
+    this.$router.push({ name: "editfunding", params: { id: `${this.id}` } });
   }
   public formatCurrency(value: number): string {
     return this.formatter.format(value);

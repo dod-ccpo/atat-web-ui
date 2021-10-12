@@ -152,7 +152,12 @@ import Vue from "vue";
 
 @Component({})
 export default class ATATSummaryCard extends Vue {
-  @Prop({ default: {}, required: false })
+  @Prop({
+    default: {
+      cards: [],
+    },
+    required: false,
+  })
   private data!: ATATSummaryCards;
 
   @Prop({ default: "" })
@@ -202,28 +207,8 @@ export default class ATATSummaryCard extends Vue {
 
   private leftButtonClicked(card: ATATSummaryCardItem) {
     this.cardSelected = card;
-    let id = card.title;
-    switch (this.$route.name) {
-      case "fundingsummary":
-        this.$router.push({ name: "editfunding", params: { id: `${id}` } });
-        break;
-      case "applicationsummary":
-        id = card.id;
-        this.$router.push({
-          name: "editapplication",
-          params: { id: `${id}` },
-        });
-        break;
-      default:
-      // code block
-    }
-
-    if (card.type === "PORTFOLIO") {
-      id = card.id;
-    }
-
     //emit edit event
-    this.$emit("edit", id);
+    this.$emit("edit", card.id);
   }
 
   private rightButtonClicked(card: ATATSummaryCardItem): void {

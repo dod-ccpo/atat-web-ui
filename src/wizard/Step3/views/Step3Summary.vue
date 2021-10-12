@@ -12,14 +12,27 @@
         </p>
       </v-col>
     </v-row>
+    <v-row v-if="cardsData.cards.length === 0" class="pt-8">
+      <v-col cols="10">
+        <v-card>
+          <v-card-text>
+            <p class="body-lg text-center text--base-darkest">
+              You currently do not have any applications.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
     <atat-summary-card
+      v-if="cardsData.cards.length > 0"
       :data="cardsData"
-      :itemToDelete.sync="itemToDelete"
+      v-on:edit="onEdit"
+      v-on:delete="onDelete"
       dialogWidth="420"
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
-        <v-btn to="/wizard/addapplication" class="primary" :ripple="false">
+        <v-btn class="primary" :ripple="false" @click="onAddNew">
           <v-icon>control_point</v-icon>
           <div class="ml-2 font-weight-bold">Add an Application</div>
         </v-btn>
@@ -38,7 +51,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
 import ExpandableLink from "../../components/ExpandableLink.vue";
 
@@ -47,8 +60,11 @@ import {
   ATATSummaryCardItem,
   ATATSummaryCards,
 } from "../../../../types/Wizard";
-import { Portfolio } from "types/Portfolios";
+import { ApplicationModel } from "types/Portfolios";
+import { addapplication, editapplication } from "@/router/wizard";
 
+// Register the router hooks with their names
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   mixins: [ValidatableWizardStep],
   components: {
@@ -64,49 +80,85 @@ export default class Step3Summary extends Vue {
   public async validate(): Promise<boolean> {
     return true;
   }
-  @Watch("itemToDelete")
-  private deleteItem(newVal: string) {
-    if (newVal !== "") {
-      this.cardsData.cards = this.$store.getters.deletePortfolioById(
-        this.itemToDelete
-      );
-      this.itemToDelete = "";
-    }
+
+  get applications(): ApplicationModel[] {
+    return this.$store.getters.getApplications;
   }
-  public getPortfolioById(id?: string): Portfolio {
-    id = id || "11";
-    return this.$store.getters.getPortfolioById(id);
+
+  get cards(): ATATSummaryCardItem[] {
+    const cardData = this.applications.map((application: ApplicationModel) => {
+      const environments: ATATSummaryCardGroupedItems[] =
+        application.environments
+          ? application.environments?.map<ATATSummaryCardGroupedItems>(
+              (env) => ({
+                title: env.name,
+              })
+            )
+          : [];
+
+      const summarycardItem: ATATSummaryCardItem = {
+        type: "APPLICATION",
+        id: application.id,
+        title: application.name,
+        description: application.description || undefined,
+        showChevronRight: true,
+        groupedItemsHeader: "Environments",
+        items: environments,
+        leftButtonText: "Edit",
+        rightButtonText: "Delete",
+      };
+
+      return summarycardItem;
+    });
+
+    return cardData;
+  }
+
+  transformData(): void {
+    this.cardsData.cards = this.cards;
   }
 
   mounted(): void {
-    let portfolio = this.getPortfolioById();
-    let cardsData = this.cardsData;
-    if (portfolio.applications) {
-      portfolio.applications.forEach((application) => {
-        const environments: ATATSummaryCardGroupedItems[] =
-          application.environments != undefined
-            ? application.environments?.map<ATATSummaryCardGroupedItems>(
-                (env) => ({
-                  title: env.name,
-                })
-              )
-            : [];
+    this.transformData();
+  }
 
-        const summarycardItem: ATATSummaryCardItem = {
-          type: "APPLICATION",
-          id: application.id,
-          title: application.name,
-          description: application.description || undefined,
-          showChevronRight: true,
-          groupedItemsHeader: "Environments",
-          items: environments,
-          leftButtonText: "Edit",
-          rightButtonText: "Delete",
-        };
+  async onDelete(id: string): Promise<void> {
+    await this.$store.dispatch("deleteApplication", id);
 
-        cardsData.cards.push(summarycardItem);
-      });
+    if (this.applications.length === 0) {
+      //route the user back to add funding step
+      this.$router.push({ name: addapplication.name });
     }
+
+    this.transformData();
+  }
+
+  async onEdit(id: string): Promise<void> {
+    this.$store.dispatch("editApplication", id);
+    this.$router.push({
+      name: editapplication.name,
+      params: {
+        id: id,
+      },
+    });
+  }
+
+  async onAddNew(id: string): Promise<void> {
+    await this.$store.dispatch("addNewApplication");
+    this.$router.push({
+      name: addapplication.name,
+      params: {
+        id: id,
+      },
+    });
+  }
+
+  async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    next();
   }
 }
 </script>

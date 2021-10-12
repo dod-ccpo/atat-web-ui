@@ -1,6 +1,13 @@
 import { AxiosError } from "axios";
-import { Portfolio, PortfolioDraft, PortFolioDraftDTO } from "types/Portfolios";
-import { TaskOrderFile, TaskOrders } from "types/Wizard";
+import { NightwatchAssert } from "nightwatch";
+import {
+  Application,
+  Portfolio,
+  PortfolioDraft as PortfolioModel,
+  PortFolioDraftDTO,
+  TaskOrder,
+} from "types/Portfolios";
+import { TaskOrderFile } from "types/Wizard";
 import ApiClient from "../apiClient";
 
 export default class PortfolioDraftsApi {
@@ -10,11 +17,11 @@ export default class PortfolioDraftsApi {
    *
    * @returns all portfolio drafts
    */
-  public async getAll(): Promise<PortfolioDraft[]> {
+  public async getAll(): Promise<PortfolioModel[]> {
     const response = await this.client.get();
 
     if (response.status === 200) {
-      const portfolioDrafts: PortfolioDraft[] = response.data;
+      const portfolioDrafts: PortfolioModel[] = response.data;
       return portfolioDrafts;
     } else {
       throw new Error(response.statusText);
@@ -90,9 +97,7 @@ export default class PortfolioDraftsApi {
         description: data.description,
         csp: data.csp,
         dod_components: data.dod_components,
-        portfolio_managers: data.portfolio_managers,
-        csp_provisioning_status: "",
-        applications: [],
+        portfolio_managers: [],
       };
 
       return portfolioDraft;
@@ -110,11 +115,7 @@ export default class PortfolioDraftsApi {
     return null;
   }
 
-  public async saveFunding(id: string, model: any): Promise<void> {
-    const data = {
-      task_orders: model.task_orders,
-    };
-
+  public async saveFunding(id: string, data: any): Promise<void> {
     const response = await this.client.post(`${id}/funding`, data);
     if (response.status !== 201) {
       throw Error(
@@ -122,8 +123,7 @@ export default class PortfolioDraftsApi {
       );
     }
   }
-
-  public async getFunding(id: string): Promise<TaskOrders | null> {
+  public async getFunding(id: string): Promise<TaskOrder[] | null> {
     try {
       const response = await this.client.get(`${id}/funding`);
       if (response.status === 404) {
@@ -134,11 +134,7 @@ export default class PortfolioDraftsApi {
         throw Error(" error occurred retrieving funding details");
       }
 
-      const task_orders = response.data.task_orders;
-
-      return {
-        details: task_orders,
-      };
+      return response.data.task_orders;
     } catch (error) {
       const axiosError = error as AxiosError;
 
@@ -185,6 +181,41 @@ export default class PortfolioDraftsApi {
       }
       console.log(`exception: ${error}`);
     }
+    return null;
+  }
+
+  public async saveApplications(id: string, data: any): Promise<void> {
+    const response = await this.client.post(`${id}/application`, data);
+    if (response.status !== 201) {
+      throw Error(
+        `error occurred saving application details for portfolio draft with id ${id}`
+      );
+    }
+  }
+
+  public async getApplications(id: string): Promise<Application[] | null> {
+    try {
+      const response = await this.client.get(`${id}/application`);
+
+      if (response.status !== 200) {
+        throw Error(
+          `error occurred retrieving applications for portfolio draft with id: ${id}`
+        );
+      }
+
+      const { applications } = response.data;
+      return applications;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError) {
+        console.log(
+          `failed with msg: ${axiosError.message} status code: ${axiosError.code}`
+        );
+      }
+      console.log(`exception: ${error}`);
+    }
+
     return null;
   }
 }

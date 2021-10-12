@@ -12,13 +12,26 @@
         </p>
       </v-col>
     </v-row>
+    <v-row v-if="cardsData.cards.length === 0" class="pt-8">
+      <v-col cols="10">
+        <v-card>
+          <v-card-text>
+            <p class="body-lg text-center text--base-darkest">
+              You currently do not have any task orders saved.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
     <atat-summary-card
+      v-if="cardsData.cards.length > 0"
       :data="cardsData"
-      :itemToDelete.sync="itemToDelete"
+      v-on:delete="onDeleteTaskOrder"
+      v-on:edit="onEditTaskOrder"
     ></atat-summary-card>
     <v-row>
       <v-col cols="10">
-        <v-btn to="/wizard/addfunding" class="primary" :ripple="false">
+        <v-btn class="primary" :ripple="false" @click="onAddNewTaskOrder">
           <v-icon>control_point</v-icon>
           <div class="ml-2 font-weight-bold">Add a Task Order</div>
         </v-btn>
@@ -102,64 +115,88 @@ import Vue from "vue";
 import {
   ATATSummaryCardItem,
   ATATSummaryCards,
-  TaskOrders,
+  TaskOrderModel,
 } from "../../../../types/Wizard";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
+import { addfunding, editfunding } from "../../../router/wizard";
 
+// Register the router hooks with their names
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
 export default class Step2Summary extends Vue {
   private showPopText = false;
   private showAdditionalFundingText = false;
   private async mounted(): Promise<void> {
-    await this.getMockTaskOrders;
+    this.transformData();
   }
 
-  private itemToDelete = "";
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
-  private taskOrders: TaskOrders = {
-    details: [],
-  };
 
-  @Watch("itemToDelete")
-  private deleteItem(newVal: string) {
-    if (newVal !== "") {
-      this.taskOrders.details = this.$store.getters.deleteTaskOrderByName(
-        this.itemToDelete
-      );
-      this.transformData();
-      this.itemToDelete = "";
-    }
+  get taskOrders(): TaskOrderModel[] {
+    return this.$store.state.taskOrderModels;
   }
 
-  get getMockTaskOrders(): boolean {
-    this.taskOrders = this.$store.getters.getMockTaskOrders;
+  async onDeleteTaskOrder(id: string): Promise<void> {
+    await this.$store.dispatch("deleteTaskOrder", id);
+
+    if (this.taskOrders.length === 0) {
+      //route the user back to add funding step
+      await this.$store.dispatch("addNewTaskOrder");
+      this.$router.push({
+        name: addfunding.name,
+        params: {
+          id: "",
+        },
+      });
+    }
+
     this.transformData();
-    return true;
+  }
+
+  async onEditTaskOrder(id: string): Promise<void> {
+    this.$store.dispatch("editTaskOrder", id);
+    this.$router.push({
+      name: editfunding.name,
+      params: {
+        id: id,
+      },
+    });
+  }
+
+  async onAddNewTaskOrder(id: string): Promise<void> {
+    await this.$store.dispatch("addNewTaskOrder");
+    this.$router.push({
+      name: addfunding.name,
+      params: {
+        id: id,
+      },
+    });
   }
 
   public transformData(): void {
     this.cardsData.cards = [];
-    this.taskOrders.details.forEach((c) => {
-      let totalClinValue = c.clins.reduce((prev, cur) => {
-        return prev + cur.total_clin_value;
+    this.taskOrders.forEach((taskOrder) => {
+      let totalClinValue = taskOrder.clins.reduce((prev, cur) => {
+        return Number(prev) + Number(cur.total_clin_value);
       }, 0);
 
-      let totalObligatedFunds = c.clins.reduce((prev, cur) => {
-        return prev + cur.obligated_funds;
+      let totalObligatedFunds = taskOrder.clins.reduce((prev, cur) => {
+        return Number(prev) + Number(cur.obligated_funds);
       }, 0);
 
       let card: ATATSummaryCardItem = {
+        id: taskOrder.id,
         type: "TASK ORDER",
-        title: c.task_order_number,
+        title: taskOrder.task_order_number,
         showChevronRight: true,
         items: [
           {
             title: "CLINS",
             prefix: "",
-            value: c.clins.length,
+            value: taskOrder.clins.length,
           },
           {
             title: "Total Value",
@@ -177,6 +214,14 @@ export default class Step2Summary extends Vue {
       };
       this.cardsData.cards.push(card);
     }, this);
+  }
+
+  public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    next();
   }
 }
 </script>

@@ -1,9 +1,7 @@
-
 export interface UploadedFile {
-  name: string;  
+  name: string;
 }
 
-export interface ValidationRule{
+export interface ValidationRule {
   [key: string]: any;
 }
-

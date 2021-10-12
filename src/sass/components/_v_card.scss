@@ -13,19 +13,40 @@
     border-left: solid 4px $accent-cool;
   }
 
+  &.extra-padding {
+    .v-card__title {
+      padding: 45px 40px 0 !important;
+      h2 {
+        font-size: 24px;
+      }
+    }
+  
+    .v-card__text {
+      padding: 0 40px 24px !important;
+    }
+  
+    .v-card__actions {
+      padding: 16px 24px !important;
+    } 
+  }
 }
+
+.v-card__text, .v-card__title {
+  letter-spacing: -0.02rem !important;
+}
+
 .portfolio-banner {
-  background-color: #f0f0f0;
+  background-color: $base_lightest;
 }
 .portfolio-name {
-  color: #005ea2;
+  color: $primary;
 }
 .portfolio-info {
-  border-left: solid 4px #73b3e7;
+  border-left: solid 4px $primary_light;
 }
 .draft {
   color: #ffffff;
-  background-color: #00a91c;
+  background-color: $success;
   border-radius: 2px;
   font-weight: bold;
   text-transform: uppercase;

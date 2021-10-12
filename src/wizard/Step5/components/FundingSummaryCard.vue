@@ -1,10 +1,11 @@
 <template>
   <div>
     <funding-table
-      v-for="orders in taskOrders"
-      :key="orders.task_order_number"
-      :name="orders.task_order_number"
-      :data="orders.clins"
+      v-for="order in taskOrders"
+      :key="order.task_order_number"
+      :name="order.task_order_number"
+      :data="order.clins"
+      :id="order.id"
     ></funding-table>
   </div>
 </template>
@@ -12,7 +13,7 @@
 <script lang="ts">
 import Component from "vue-class-component";
 import Vue from "vue";
-import { TaskOrders } from "../../../../types/Wizard";
+import { TaskOrderModel } from "../../../../types/Wizard";
 import { Prop } from "vue-property-decorator";
 import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
@@ -21,6 +22,6 @@ import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 })
 export default class FundingSummaryCard extends Vue {
   @Prop({ default: null, required: true })
-  private taskOrders!: TaskOrders;
+  private taskOrders!: TaskOrderModel[];
 }
 </script>

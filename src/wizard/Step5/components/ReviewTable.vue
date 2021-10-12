@@ -91,22 +91,19 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import {
-  Application,
-  ApplicationMember,
-  ApplicationMemberPermissions,
-} from "types/Portfolios";
+import { Application, ApplicationMemberPermissions } from "types/Portfolios";
+
+import { allPortfolios } from "../../../store/mocks/portfoliosMockData";
 
 @Component({})
 export default class ReviewTable extends Vue {
   @Prop({ default: true }) private sorting!: boolean;
   @Prop({ default: [] }) private application!: Application;
 
-  get getMembers(): ApplicationMember[] {
-    const empty: ApplicationMember[] = [];
-    return this.application && this.application.members
-      ? this.application.members
-      : empty;
+  get getMembers() {
+    // const empty: ApplicationMember[] = [];
+    const application = allPortfolios["11"].applications[0];
+    return application.members;
   }
 
   private grantedPermissions(

@@ -30,6 +30,7 @@
           v-if="!invalidStepsExist()"
           :portfolio="portfolio"
           :taskOrders="taskOrders"
+          :applications="applications"
         ></summary-stepper>
       </v-col>
     </v-row>
@@ -41,8 +42,8 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
-import { Portfolio } from "types/Portfolios";
-import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
+import { ApplicationModel, PortFolioDraftDTO } from "types/Portfolios";
+import { ValidationSummaryItem, TaskOrderModel } from "types/Wizard";
 
 @Component({
   components: {
@@ -51,8 +52,9 @@ import { ValidationSummaryItem, TaskOrders } from "types/Wizard";
   },
 })
 export default class PortfolioSummary extends Vue {
-  public portfolio!: Portfolio;
-  public taskOrders!: TaskOrders;
+  public portfolio!: PortFolioDraftDTO;
+  public taskOrders!: TaskOrderModel[];
+  public applications!: ApplicationModel[];
   public invalidStepsExist(): boolean {
     return this.$store.state.erroredSteps.length > 0;
   }
@@ -87,20 +89,15 @@ export default class PortfolioSummary extends Vue {
     ].filter((item) => this.$store.state.erroredSteps.indexOf(item.id) > -1);
   }
 
-  public getPorfolioById(id?: string): Portfolio {
-    id = id || "11";
-    return this.$store.getters.getPortfolioById(id);
-  }
-
   created(): void {
-    const portfolioId = this.$route.params.id || "11";
-    this.portfolio = this.getPorfolioById(portfolioId);
-    this.taskOrders = this.$store.getters.getMockTaskOrders.details;
+    this.portfolio = this.$store.getters.getPortfolio;
+    this.taskOrders = this.$store.getters.getTaskOrders;
+    this.applications = this.$store.getters.getApplications;
   }
 
   public mounted(): void {
     this.$store.state.portfolioSteps.forEach((step: any) => {
-      if (!step.touched && step.step != 5) {
+      if (!step.valid && step.step != 5) {
         this.$store.dispatch("setErroredStep", [step.step, true]);
       }
     });
