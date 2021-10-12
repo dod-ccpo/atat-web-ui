@@ -40,12 +40,12 @@
                 :task-orders="taskOrders"
               ></funding-summary-card>
               <applications-environments-summary-card
-                v-if="step.type === 'apllicationEnvironments'"
-                :application-data="applicationData"
+                v-if="step.type === 'applicationEnvironments'"
+                :application-data="applications"
               ></applications-environments-summary-card>
               <team-member-summary-card
                 v-if="step.type === 'teamMembers'"
-                :application-data="applicationData"
+                :application-data="applications"
                 editPlace="addteammembers"
               ></team-member-summary-card>
             </v-stepper-content>
@@ -63,9 +63,8 @@ import PortfolioSummaryCard from "./PortfolioSummaryCard.vue";
 import FundingSummaryCard from "@/wizard/Step5/components/FundingSummaryCard.vue";
 import { SummaryStep, TaskOrderModel } from "types/Wizard";
 import TeamMemberSummaryCard from "@/wizard/Step5/components/TeamMemberSummaryCard.vue";
-import { Application, Portfolio } from "../../../../types/Portfolios";
+import { ApplicationModel, Portfolio } from "../../../../types/Portfolios";
 import ApplicationsEnvironmentsSummaryCard from "@/wizard/Step5/components/ApplicationsEnvironmentsSummaryCard.vue";
-import { allPortfolios } from "../../../store/mocks/portfoliosMockData";
 
 @Component({
   components: {
@@ -80,6 +79,8 @@ export default class SummaryStepper extends Vue {
   private portfolio!: Portfolio;
   @Prop({ default: "TaskOrders" })
   private taskOrders!: TaskOrderModel[];
+  @Prop({ default: "Applications" })
+  private applications!: ApplicationModel[];
   @PropSync("stepNumber", { default: 1 })
   private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
@@ -137,7 +138,7 @@ export default class SummaryStepper extends Vue {
     {
       step: 3,
       title: "Applications and Environments",
-      type: "apllicationEnvironments",
+      type: "applicationEnvironments",
     },
     {
       step: 4,
@@ -145,12 +146,5 @@ export default class SummaryStepper extends Vue {
       type: "teamMembers",
     },
   ];
-
-  get applicationData(): any {
-    // return this.portfolio && this.portfolio.applications.length > 0
-    //   ? this.portfolio.applications[0]
-    //   : undefined;
-    return allPortfolios[11].applications[0];
-  }
 }
 </script>

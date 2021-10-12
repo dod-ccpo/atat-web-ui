@@ -3,7 +3,9 @@
     <v-row>
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
-        <h2 class="h2">Let’s add team members to {{ currentApplication }}</h2>
+        <h2 class="h2">
+          Let’s add team members to {{ currentApplication.name }}
+        </h2>
       </v-col>
     </v-row>
     <v-row>
@@ -26,14 +28,23 @@
           <v-col cols="12" class="d-flex pl-0 pr-0">
             <v-col class="d-flex">
               <v-text-field
+                v-model="search"
                 class="search-bar"
                 placeholder="Search for member name and email"
                 dense
                 outlined
                 single-line
                 hide-details
+                clearable
+                @click:clear="searchTable('')"
+                @keydown.native.enter="searchTable(search)"
+                @blur="searchTable(search)"
               />
-              <v-btn class="input-search-bar" color="primary">
+              <v-btn
+                class="input-search-bar"
+                color="primary"
+                @click="searchTable(search)"
+              >
                 <v-icon width="10px" class="mr-1">search</v-icon>
               </v-btn>
             </v-col>
@@ -56,7 +67,7 @@
             </v-col>
           </v-col>
         </v-row>
-        <v-row v-if="!membersData">
+        <v-row v-if="membersData.length === 0">
           <v-col cols="12" class="pa-0 ma-0">
             <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
               <v-card-text class="text-center">
@@ -69,12 +80,12 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="membersData.length > 0">
           <v-col cols="12" class="ma-0">
             <v-data-table
               class="review-table"
               :headers="headers"
-              :items="membersData"
+              :items="isFiltered ? filteredData : membersData"
               hide-default-footer
             >
               <template v-slot:header.display_name="{ header }">
@@ -82,23 +93,27 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template v-slot:header.workplace_access="{ header }">
+              <template v-slot:header.workspace_roles="{ header }">
                 <div class="label font-weight-bold text--base-dark">
                   {{ header.text }}
                 </div>
               </template>
               <template class="hello" v-slot:item.display_name="{ item }">
-                <div class="body font-weight-bold pt-6">
-                  {{ item.display_name }}
-                </div>
-                <div class="body text--base-dark pb-6">
-                  {{ item.email }}
+                <div class="pt-6 pb-6">
+                  <div class="body font-weight-bold">
+                    {{ item.display_name }}
+                  </div>
+                  <div class="body text--base-dark">
+                    {{ item.email }}
+                  </div>
                 </div>
               </template>
-              <template v-slot:item.workplace_access="{ item }">
-                <div class="d-flex justify-space-between">
-                  <div class="body text--base-dark pt-3">
-                    {{ item.workplace_access }}
+              <template v-slot:item.workspace_roles="{ item }">
+                <div class="d-flex justify-space-between pb-6 pt-6">
+                  <div class="d-flex flex-column body text--base-dark">
+                    <div v-for="value in item.workspace_roles" :key="value">
+                      {{ value }}
+                    </div>
                   </div>
 
                   <v-menu
@@ -110,8 +125,8 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        :disabled="isDisabled(item.workplace_access)"
-                        class="table-row-menu-button pa-0"
+                        :disabled="isDisabled(item.workplace_roles)"
+                        class="table-row-menu-button"
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
@@ -136,162 +151,21 @@
             </v-data-table>
           </v-col>
         </v-row>
-
-        <v-row class="pt-7">
-          <v-col cols="9" class="py-0">
-            <v-btn
-              @click="showPortfolioOwnerText = !showPortfolioOwnerText"
-              text
-              x-small
-              :ripple="false"
-              class="pl-0 primary--text"
-            >
-              <span class="link-body-md">
-                As the portfolio owner, will I have access to this application
-                within the cloud console?
-              </span>
-              <v-icon>
-                {{ showPortfolioOwnerText ? "expand_less" : "expand_more" }}
-              </v-icon>
-            </v-btn>
-            <div v-show="showPortfolioOwnerText">
-              <v-card-text class="h6 pb-0 ps-3">
-                <v-row>
-                  <p class="body-lg text--base-darkest">
-                    Portfolio owners are not automatically granted access to the
-                    cloud console. You will be able to track your team’s cloud
-                    spend and other funding details in ATAT. If you need to
-                    login to the cloud console, be sure to add yourself as a
-                    team member and assign permissions in this step.
-                  </p>
-                </v-row>
-              </v-card-text>
-            </div>
-          </v-col>
-        </v-row>
-        <v-row class="pt-5">
-          <v-col cols="9" class="py-0">
-            <v-btn
-              @click="teamPortfolioAccessText = !teamPortfolioAccessText"
-              text
-              x-small
-              :ripple="false"
-              class="pl-0 primary--text"
-            >
-              <span class="link-body-md">
-                Will my team members have access to this portfolio within ATAT?
-              </span>
-              <v-icon>
-                {{ teamPortfolioAccessText ? "expand_less" : "expand_more" }}
-              </v-icon>
-            </v-btn>
-            <div v-show="teamPortfolioAccessText">
-              <v-card-text class="h6 pb-0 ps-3">
-                <v-row>
-                  <p class="body-lg text--base-darkest">
-                    No. These team members will only have access to the cloud
-                    provider’s console. After your portfolio is provisioned, you
-                    will have an opportunity to add people as portfolio managers
-                    and assign user roles for access within ATAT.
-                  </p>
-                </v-row>
-              </v-card-text>
-            </div>
-          </v-col>
-        </v-row>
-        <v-row class="pt-5">
-          <v-col cols="9" class="py-0">
-            <v-btn
-              @click="teamPermissionsText = !teamPermissionsText"
-              text
-              x-small
-              :ripple="false"
-              class="pl-0 primary--text"
-            >
-              <span class="link-body-md">
-                Can I add team members or modify permissions after my portfolio
-                is provisioned?
-              </span>
-              <v-icon>
-                {{ teamPermissionsText ? "expand_less" : "expand_more" }}
-              </v-icon>
-            </v-btn>
-            <div v-show="teamPermissionsText">
-              <v-card-text class="h6 pb-0 ps-3">
-                <v-row>
-                  <p class="body-lg text--base-darkest">
-                    After provisioning, you will have the opportunity to invite
-                    new people to ensure your application team can access their
-                    cloud resources.
-                  </p>
-                  <p class="body-lg text--base-darkest">
-                    However, you will not be able to change roles and
-                    permissions once the invitations are sent. People that you
-                    assign as
-                    <span class="font-weight-bold">Administrators</span> are
-                    responsible for making modifications to team members and
-                    roles directly in the cloud console.
-                  </p>
-                  <p class="body-lg text--base-darkest">
-                    Please note that ATAT is not a system of record. We will
-                    keep a record of the team members that have been added to
-                    the portfolio through ATAT, but any changes made in the
-                    cloud console after provisioning will not be reflected
-                    within ATAT.
-                  </p>
-                </v-row>
-              </v-card-text>
-            </div>
-          </v-col>
-        </v-row>
-        <v-row class="mb-16 pt-5">
-          <v-col cols="9" class="py-0">
-            <v-btn
-              @click="teamExpectationText = !teamExpectationText"
-              text
-              x-small
-              :ripple="false"
-              class="pl-0 primary--text"
-            >
-              <span class="link-body-md">
-                What can my team members expect?
-              </span>
-              <v-icon>
-                {{ teamExpectationText ? "expand_less" : "expand_more" }}
-              </v-icon>
-            </v-btn>
-            <div v-show="teamExpectationText">
-              <v-card-text class="h6 pb-0 mb-12">
-                <v-row>
-                  <ul class="body-lg text--base-darkest">
-                    <li>
-                      After your portfolio is provisioned, each team member will
-                      receive an invitation from the cloud service provider.
-                      People will only have access to environments in the cloud
-                      console that you granted them access to.
-                    </li>
-                    <li class="text-base-error">
-                      Invitations expire after XX days. If this happens, you can
-                      resend the invitation within ATAT?
-                    </li>
-                  </ul>
-                </v-row>
-              </v-card-text>
-            </div>
-          </v-col>
-        </v-row>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
+import { ApplicationModel } from "../../../../types/Portfolios";
 
 @Component({})
 export default class TeamView extends Vue {
   private membersData: any = [];
-
+  private filteredData: any = [];
+  private isFiltered = false;
+  private search = "";
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -300,27 +174,137 @@ export default class TeamView extends Vue {
 
   private headers = [
     { text: "Name", value: "display_name", align: "start" },
-    { text: "Workplace Access ", value: "workplace_access", sortable: false },
+    { text: "Workplace Access ", value: "workspace_roles", sortable: false },
   ];
   private options = ["Edit Info", "Change Role", "Remove team member"];
+  private applicationMembers: {
+    id: string;
+    display_name: string;
+    email: string;
+    workspace_roles: string;
+  }[] = [];
+  private setMemberTableData() {
+    if (this.$store.state.portfolioOperators) {
+      const rootAdmins = this.$store.state.portfolioOperators;
+      rootAdmins.forEach((op: any) => {
+        const opObj = {
+          id: op.id,
+          display_name: op.display_name || op.first_name + " " + op.last_name,
+          email: op.email,
+          workspace_roles: "Root Administrator",
+        };
+        this.applicationMembers.push(opObj);
+      });
+    }
+    if (this.currentApplication.operators) {
+      const applicationOperators = this.currentApplication.operators;
+      applicationOperators.forEach((op: any) => {
+        const opObj = {
+          id: op.id,
+          display_name: op.display_name || op.first_name + " " + op.last_name,
+          email: op.email,
+          workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
+        };
+        this.applicationMembers.push(opObj);
+      });
+    }
+    if (this.currentApplication.environments) {
+      const applicationEnvironments = this.currentApplication.environments;
+      applicationEnvironments.forEach((env: any) => {
+        const envOperators = env.operators;
+        envOperators.forEach((op: any) => {
+          const i = this.applicationMembers.findIndex(
+            (o) => o.email === op.email
+          );
+          const workspace_roles =
+            i > -1
+              ? env.name +
+                ": " +
+                this.roleTranslation(op.access) +
+                "  " +
+                this.applicationMembers[i].workspace_roles
+              : env.name + ": " + this.roleTranslation(op.access);
+          if (i > -1) {
+            this.applicationMembers[i].workspace_roles = workspace_roles;
+          } else {
+            const opObj = {
+              id: op.id,
+              display_name:
+                op.display_name || op.first_name + " " + op.last_name,
+              email: op.email,
+              workspace_roles: workspace_roles,
+            };
+            this.applicationMembers.push(opObj);
+          }
+        });
+      });
+    }
+  }
 
-  // private tranformData(application: any): void {
-  //   for (let value of application) {
-  //     let obj: any = {};
-  //     obj.id = value.id;
-  //     obj.display_name = value.name;
-  //     obj.description = value.description;
-  //     let numArr = value.environments.map((env: any) => env?.operators?.length);
-  //     obj.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
-  //     this.membersData.push(obj);
-  //   }
-  // }
+  private tranformData(): void {
+    for (let value of this.applicationMembers) {
+      let workspaceArr = value.workspace_roles.split("  ");
+      const opObj = {
+        id: value.id,
+        display_name: value.display_name,
+        email: value.email,
+        workspace_roles: workspaceArr,
+      };
+      this.membersData.push(opObj);
+    }
+  }
 
   private isDisabled(workplace_access: string): boolean {
-    if (workplace_access === "Administrator") {
+    if (workplace_access === "Root Administrator") {
       return true;
     }
     return false;
+  }
+
+  private searchTable(value: string) {
+    if (!value) {
+      this.isFiltered = false;
+    } else {
+      this.isFiltered = true;
+      this.filteredData = this.membersData.filter((data: any) => {
+        return (
+          data.display_name.toLowerCase().includes(value) ||
+          data.email.toLowerCase().includes(value)
+        );
+      });
+    }
+  }
+
+  private roleTranslation(role: string): string {
+    switch (role) {
+      case "portfolio_administrator":
+        return "Root administrator";
+      case "administrator":
+        return "Administrator";
+      case "contributor":
+        return "Contributer";
+      case "read_only":
+        return "Billing read-only";
+      default:
+        return "Unauthorized";
+    }
+  }
+  public openDialog(event: Event): void {
+    this.$store.dispatch("openDialog", [
+      "addMembers",
+      event.type === "keydown",
+      "632px",
+      "90",
+    ]);
+  }
+
+  get currentApplication(): ApplicationModel {
+    return this.$store.getters.getCurrentApplication;
+  }
+
+  public async mounted(): Promise<void> {
+    this.setMemberTableData();
+    this.tranformData();
   }
 }
 </script>
