@@ -67,8 +67,20 @@
                 class="font-weight-bold d-flex align-center px-5"
                 :ripple="false"
                 color="primary"
-                @keydown.native.enter="openDialog($event)"
-                @click="openDialog($event)"
+                @keydown.native.enter="
+                  openDialog(
+                    $event,
+                    'edit member',
+                    '1607044841-3498645719-1186860079-3467156946'
+                  )
+                "
+                @click="
+                  openDialog(
+                    $event,
+                    'edit member',
+                    '1607044841-3498645719-1186860079-3467156946'
+                  )
+                "
               >
                 <div class="mr-1 mt-n2">
                   <v-icon class="icon-20" role="presentation"
@@ -312,14 +324,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
+import ManageMembers from "@/wizard/Step4/components/ManageMembers.vue";
 import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
 import { Application, Environment } from "../../../../types/Portfolios";
-import { ApplicationModel } from "types/Portfolios";
+import { ApplicationModel, OperatorModel } from "types/Portfolios";
+import { OperationCanceledException } from "typescript";
 
 @Component({
   components: {
-    AddMembers,
+    ManageMembers,
   },
 })
 export default class Step_4 extends Vue {
@@ -366,12 +379,55 @@ export default class Step_4 extends Vue {
     console.log("clicked");
   }
 
-  public openDialog(event: Event): void {
+  public openDialog(event: Event, action: string, memberId: string): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberId: string | null;
+    } = {
+      isRootAdmin: false,
+      isEditSingle: false,
+      memberId: null,
+    };
+    switch (action) {
+      case "add root admins":
+        memberProps = {
+          isRootAdmin: true,
+          isEditSingle: false,
+          memberId: null,
+        };
+        break;
+      case "add members":
+        memberProps = {
+          isRootAdmin: false,
+          isEditSingle: false,
+          memberId: null,
+        };
+        break;
+      case "edit root admin":
+        memberProps = {
+          isRootAdmin: true,
+          isEditSingle: true,
+          memberId: memberId,
+        };
+        break;
+      case "edit member":
+        memberProps = {
+          isRootAdmin: false,
+          isEditSingle: true,
+          memberId: memberId,
+        };
+        break;
+      default:
+        break;
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
 

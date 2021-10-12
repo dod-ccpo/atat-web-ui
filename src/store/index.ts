@@ -209,7 +209,14 @@ export default new Vuex.Store({
     isSideDrawerFocused: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
-    dialog: {},
+    dialog: {
+      isDisplayed: false,
+      type: "",
+      setFocus: false,
+      width: "",
+      height: "",
+      props: null,
+    },
     portfolioDrafts: [],
     portfolios: [],
     taskOrderModels: [],
@@ -904,7 +911,7 @@ export default new Vuex.Store({
     },
     openDialog(
       { commit },
-      [dialogType, setFocusOnDialog, dialogWidth, dialogHeight]
+      [dialogType, setFocusOnDialog, dialogWidth, dialogHeight, props]
     ) {
       const dialogProps: Dialog = {
         isDisplayed: true,
@@ -912,6 +919,18 @@ export default new Vuex.Store({
         setFocus: setFocusOnDialog,
         width: dialogWidth,
         height: dialogHeight,
+        props: props,
+      };
+      commit("changeDialog", dialogProps);
+    },
+    initDialog({ commit }) {
+      const dialogProps: Dialog = {
+        isDisplayed: false,
+        type: "",
+        setFocus: false,
+        width: "",
+        height: "",
+        props: null,
       };
       commit("changeDialog", dialogProps);
     },
@@ -1060,5 +1079,7 @@ export default new Vuex.Store({
       return state.applicationModels[0];
     },
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
+    getSelectedCSP: (state) => state.selectedCSP,
+    getPortfolioOperators: (state) => state.portfolioOperators,
   },
 });

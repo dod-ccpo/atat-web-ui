@@ -2,166 +2,195 @@
   <v-card class="extra-padding">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <v-card-title>
-      <h3 class="mb-2 h3">Add team members to {{ currentApplication.name }}</h3>
+      <h3 class="mb-2 h3">
+        <span v-if="!isEditSingle">
+          Add team members to {{ currentApplication.name }}
+        </span>
+        <span v-if="isEditSingle">
+          Update { member.display_name }'s information
+        </span>
+      
+      </h3>
     </v-card-title>
     <v-card-text class="body-lg text--base-darkest mt-2">
-      <p>
-        Team members can have different levels of access to your application and
-        environments. Invite multiple people with the same permissions at once.
-      </p>
+      <!--#################################################-->
+      <!-- EDIT SINGLE MEMBER NAME AND EMAIL -->
+      <!--#################################################-->
 
-      <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
-        <span :class="[invalidEmailCount > 0 ? 'font-weight-700' : '']">
-          Email Addresses
-        </span>
+      <div v-if="isEditSingle">
+        <p>
+          After your portfolio is provisioned, the email address will be sent to
+          {{ selectedCSP }} and { member.display_name } will receive an
+          invitation to access the cloud console.
+        </p>
+        <atat-text-field
+          value="Walter White"
+          label="Display Name"
+          :helpText="displayNameHelpText"
+        />
+        <atat-text-field value="walter.white-ctr@mail.mil" label="Email" />
       </div>
 
-      <div
-        class="error--text mb-2"
-        :class="{ 'd-flex': invalidEmailCount }"
-        v-show="invalidEmailCount"
-      >
-        <div class="v-messages__message mr-2 d-inline-block">
-          {{ invalidEmailCount }} error<span v-if="invalidEmailCount > 1"
-            >s</span
-          >.
+      <!--#################################################-->
+      <!-- ADD MULTIPLE EMAILS -->
+      <!--#################################################-->
+
+      <div v-if="!isEditSingle">
+        <p>
+          Team members can have different levels of access to your application
+          and environments. Invite multiple people with the same permissions at
+          once.
+        </p>
+
+        <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
+          <span :class="[invalidEmailCount > 0 ? 'font-weight-700' : '']">
+            Email Addresses
+          </span>
         </div>
 
-        <v-btn
-          id="RemoveAllInvalidEntriesLink"
-          class="link-button pa-0"
-          @click="removeInvalidEmails"
-          style="height: 26px"
+        <div
+          class="error--text mb-2"
+          :class="{ 'd-flex': invalidEmailCount }"
+          v-show="invalidEmailCount"
         >
-          Remove all emails with errors
-        </v-btn>
-      </div>
-      <div
-        id="PillboxWrapper"
-        aria-labelledby="PillboxLabel"
-        aria-describedby="PillboxInstructions"
-        class="pa-2 pillbox-wrapper mb-0 firstFocus"
-        tabindex="0"
-        :class="[pillboxFocused ? 'focused' : '']"
-        @click="addEmail"
-        @focus="addEmail"
-      >
-        <v-text-field
-          v-for="member in memberList"
-          :key="member.id"
-          class="pill"
-          :class="{
-            'invalid-entry': !member.isValid && member.isValid !== null,
-          }"
-          :data-member-id="member.id"
-          v-model="member.email"
-          append-icon="close"
-          @click="emailEdit"
-          @blur="emailBlurred"
-          @click:append="removeEmail"
-        />
-      </div>
-      <div class="dupe-entry-alert-wrapper">
-        <v-alert
-          v-if="duplicatedEmail"
-          class="dupe-entry-alert"
-          color="#1b1b1b"
-          dark
-          icon="error"
-          dense
-        >
-          &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
-        </v-alert>
-      </div>
-      <div class="color-base mt-2" id="PillboxInstructions">
-        Must use a .mil email address. Separate multiple emails with commas.
-      </div>
+          <div class="v-messages__message mr-2 d-inline-block">
+            {{ invalidEmailCount }} error<span v-if="invalidEmailCount > 1"
+              >s</span
+            >.
+          </div>
 
-      <v-alert
-        v-show="invalidEmailCount || existingEmailEntryCount"
-        outlined
-        rounded
-        color="error"
-        border="left"
-        icon="error"
-        class="text-left error_lighter black-icon mt-6"
-      >
-        <p class="black--text body-lg ma-0">
-          <span v-show="!existingEmailEntryCount">
+          <v-btn
+            id="RemoveAllInvalidEntriesLink"
+            class="link-button pa-0"
+            @click="removeInvalidEmails"
+            style="height: 26px"
+          >
+            Remove all emails with errors
+          </v-btn>
+        </div>
+        <div
+          id="PillboxWrapper"
+          aria-labelledby="PillboxLabel"
+          aria-describedby="PillboxInstructions"
+          class="pa-2 pillbox-wrapper mb-0 firstFocus"
+          tabindex="0"
+          :class="[pillboxFocused ? 'focused' : '']"
+          @click="addEmail"
+          @focus="addEmail"
+        >
+          <v-text-field
+            v-for="member in memberList"
+            :key="member.id"
+            class="pill"
+            :class="{
+              'invalid-entry': !member.isValid && member.isValid !== null,
+            }"
+            :data-member-id="member.id"
+            v-model="member.email"
+            append-icon="close"
+            @click="emailEdit"
+            @blur="emailBlurred"
+            @click:append="removeEmail"
+          />
+        </div>
+        <div class="dupe-entry-alert-wrapper">
+          <v-alert
+            v-if="duplicatedEmail"
+            class="dupe-entry-alert"
+            color="#1b1b1b"
+            dark
+            icon="error"
+            dense
+          >
+            &ldquo;{{ duplicatedEmail }}&rdquo; has already been entered.
+          </v-alert>
+        </div>
+        <div class="color-base mt-2" id="PillboxInstructions">
+          Must use a .mil email address. Separate multiple emails with commas.
+        </div>
+
+        <v-alert
+          v-show="invalidEmailCount"
+          outlined
+          rounded
+          color="error"
+          border="left"
+          icon="error"
+          class="text-left error_lighter black-icon mt-6"
+        >
+          <p class="black--text body-lg ma-0">
             <span v-show="invalidEmailCount === 1">
               The address &ldquo;{{ invalidEmail }}&rdquo; was not recognized.
             </span>
             <span v-show="invalidEmailCount > 1">
               Multiple addresses were not recognized.
             </span>
-          </span>
-          <span v-show="existingEmailEntryCount">
-            The following email<span v-if="existingEmailEntryCount > 1"
-              >s are</span
-            ><span v-else> is</span> already in use for this application:
-            <strong>{{ existingEmailEntries }}</strong
-            >.<br />
-          </span>
-          Please make sure that all addresses are
-          <span v-show="existingEmailEntryCount">unique, </span> properly
-          formatted and .mil addresses.
-        </p>
-      </v-alert>
-
-      <v-divider class="my-8 width-40"></v-divider>
-
-      <h3>Team Member Roles</h3>
-      <p>
-        Choose what type of role people will have in your application.<br />
-        <v-btn class="link-button pa-0 height-auto"
-          >Learn more about roles</v-btn
-        >
-      </p>
-
-      <v-checkbox
-        v-model="assignDifferentRolesForEnvs"
-        label="I want to assign different levels of access to each environment."
-        class="border-base-lighter border-b-1"
-        style="border-bottom-style: solid"
-      ></v-checkbox>
-
-      <div v-show="!assignDifferentRolesForEnvs">
-        <v-radio-group v-model="roleForAllEnvs">
-          <v-radio
-            v-for="role in rolesForAllEnvsList"
-            :key="role.role_name"
-            :label="role.role_name"
-            :value="role.role_value"
-          ></v-radio>
-        </v-radio-group>
+            Please make sure that all addresses are properly formatted and .mil
+            addresses.
+          </p>
+        </v-alert>
       </div>
 
-      <v-container v-show="assignDifferentRolesForEnvs">
-        <v-row
-          v-for="(env, index) in environments_roles"
-          :key="env.env_id"
-          class="d-flex border-base-lighter border-b-1 py-1"
+      <!--#################################################-->
+      <!-- MEMBER ACCESS ADD/EDIT -->
+      <!--#################################################-->
+
+      <div v-if="!isRootAdmin">
+        <v-divider class="my-8 width-40"></v-divider>
+
+        <h3>Team Member Roles</h3>
+        <p>
+          Choose what type of role people will have in your application.<br />
+          <v-btn class="link-button pa-0 height-auto"
+            >Learn more about roles</v-btn
+          >
+        </p>
+
+        <v-checkbox
+          v-model="assignDifferentRolesForEnvs"
+          label="I want to assign different levels of access to each environment."
+          class="border-base-lighter border-b-1"
           style="border-bottom-style: solid"
-        >
-          <v-col class="d-flex align-center">
-            <strong class="font-size-19">
-              {{ env.env_name }}
-            </strong>
-          </v-col>
-          <v-col>
-            <v-select
-              class="no-details"
-              v-model="environments_roles[index].role_value"
-              :items="rolesList"
-              item-text="role_name"
-              item-value="role_value"
-              dense
-              filled
-              :ripple="false"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
+        ></v-checkbox>
+
+        <div v-show="!assignDifferentRolesForEnvs">
+          <v-radio-group v-model="roleForAllEnvs">
+            <v-radio
+              v-for="role in rolesForAllEnvsList"
+              :key="role.role_name"
+              :label="role.role_name"
+              :value="role.role_value"
+            ></v-radio>
+          </v-radio-group>
+        </div>
+
+        <v-container v-show="assignDifferentRolesForEnvs">
+          <v-row
+            v-for="(env, index) in environments_roles"
+            :key="env.env_id"
+            class="d-flex border-base-lighter border-b-1 py-1"
+            style="border-bottom-style: solid"
+          >
+            <v-col class="d-flex align-center">
+              <strong class="font-size-19">
+                {{ env.env_name }}
+              </strong>
+            </v-col>
+            <v-col>
+              <v-select
+                class="no-details"
+                v-model="environments_roles[index].role_value"
+                :items="rolesList"
+                item-text="role_name"
+                item-value="role_value"
+                dense
+                filled
+                :ripple="false"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
     </v-card-text>
 
     <v-card-actions>
@@ -184,7 +213,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import {
   ApplicationModel,
   OperatorModel,
@@ -193,8 +222,14 @@ import {
 import { generateUid } from "@/helpers";
 
 @Component({})
-export default class AddMember extends Vue {
-  // data
+export default class ManageMember extends Vue {
+  /*
+██████   █████  ████████  █████
+██   ██ ██   ██    ██    ██   ██
+██   ██ ███████    ██    ███████
+██   ██ ██   ██    ██    ██   ██
+██████  ██   ██    ██    ██   ██
+*/
   private pillboxFocused = false;
   private duplicatedEmail = "";
   private memberList: {
@@ -241,11 +276,66 @@ export default class AddMember extends Vue {
     env_name: string;
     role_value: string;
   }[] = [];
+  private displayNameHelpText = `This could be your team member's
+  full name or a nickname. It will be used to refer to this individual
+  within ATAT.`;
 
-  // props
+  /*
+██████  ██████   ██████  ██████  ███████
+██   ██ ██   ██ ██    ██ ██   ██ ██
+██████  ██████  ██    ██ ██████  ███████
+██      ██   ██ ██    ██ ██           ██
+██      ██   ██  ██████  ██      ███████
+*/
   @PropSync("close") _close!: boolean;
+  // @Prop() private isRootAdmin!: boolean;
+  // @Prop() private isEditSingle!: boolean;
+  // @Prop() private memberId: string | null;
+  @Prop() private dialogProps!: any;
 
-  // computed
+  /*
+ ██████  ██████  ███    ███ ██████  ██    ██ ████████ ███████ ██████
+██      ██    ██ ████  ████ ██   ██ ██    ██    ██    ██      ██   ██
+██      ██    ██ ██ ████ ██ ██████  ██    ██    ██    █████   ██   ██
+██      ██    ██ ██  ██  ██ ██      ██    ██    ██    ██      ██   ██
+ ██████  ██████  ██      ██ ██       ██████     ██    ███████ ██████
+*/
+
+  get isRootAdmin(): boolean | null {
+    if (
+      this.dialogProps &&
+      Object.prototype.hasOwnProperty.call(this.dialogProps, "isRootAdmin")
+    ) {
+      return this.dialogProps.isRootAdmin;
+    }
+    return null;
+  }
+
+  get isEditSingle(): boolean | null {
+    if (
+      this.dialogProps &&
+      Object.prototype.hasOwnProperty.call(this.dialogProps, "isEditSingle")
+    ) {
+      return this.dialogProps.isEditSingle;
+    }
+    return null;
+  }
+
+  get memberToEdit(): OperatorModel | null {
+    if (
+      this.isEditSingle &&
+      this.dialogProps &&
+      Object.prototype.hasOwnProperty.call(this.dialogProps, "memberId")
+    ) {
+      return this.getMemberToEdit(this.dialogProps.memberId);
+    }
+    return null;
+  }
+
+  get selectedCSP(): string {
+    return this.$store.getters.getSelectedCSP;
+  }
+
   get currentApplication(): ApplicationModel {
     return this.$store.getters.getCurrentApplication;
   }
@@ -277,22 +367,6 @@ export default class AddMember extends Vue {
       }
     });
     return existingEmails;
-  }
-
-  public async mounted(): Promise<void> {
-    this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
-  }
-
-  private setEnvironmentRoleDropdowns(role: string) {
-    const curApp: ApplicationModel = this.currentApplication;
-    this.environments_roles = [];
-    curApp.environments.forEach((env: EnvironmentModel) => {
-      this.environments_roles.push({
-        env_id: env.id,
-        env_name: env.name,
-        role_value: role,
-      });
-    });
   }
 
   get inputWidthFaker(): HTMLElement {
@@ -329,6 +403,13 @@ export default class AddMember extends Vue {
     return existingEmailList.join(", ");
   }
 
+  /*
+██     ██  █████  ████████  ██████ ██   ██ ███████ ██████  ███████
+██     ██ ██   ██    ██    ██      ██   ██ ██      ██   ██ ██
+██  █  ██ ███████    ██    ██      ███████ █████   ██████  ███████
+██ ███ ██ ██   ██    ██    ██      ██   ██ ██      ██   ██      ██
+ ███ ███  ██   ██    ██     ██████ ██   ██ ███████ ██   ██ ███████
+*/
   @Watch("assignDifferentRolesForEnvs")
   protected setEnvRoles(newVal: boolean): void {
     if (newVal === true) {
@@ -341,6 +422,48 @@ export default class AddMember extends Vue {
   @Watch("roleForAllEnvs")
   protected setAllEnvsRoles(newVal: string): void {
     this.setEnvironmentRoleDropdowns(newVal);
+  }
+
+  /*
+███    ███ ███████ ████████ ██   ██  ██████  ██████  ███████
+████  ████ ██         ██    ██   ██ ██    ██ ██   ██ ██
+██ ████ ██ █████      ██    ███████ ██    ██ ██   ██ ███████
+██  ██  ██ ██         ██    ██   ██ ██    ██ ██   ██      ██
+██      ██ ███████    ██    ██   ██  ██████  ██████  ███████
+*/
+
+  public async mounted(): Promise<void> {
+    this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
+  }
+
+  public getMemberToEdit(memberId: string): OperatorModel | null {
+    const rootAdmins: OperatorModel[] =
+      this.$store.getters.getPortfolioOperators;
+
+    let foundMember: any = rootAdmins.filter((obj) => obj.id === memberId);
+    if (foundMember) {
+      return foundMember;
+    }
+    const app: ApplicationModel = this.currentApplication;
+    const applicationOperators: OperatorModel[] = app.operators;
+    foundMember = applicationOperators.filter((obj) => obj.id === memberId);
+    debugger;
+    if (foundMember) {
+      return foundMember;
+    }
+    return null;
+  }
+
+  private setEnvironmentRoleDropdowns(role: string) {
+    const curApp: ApplicationModel = this.currentApplication;
+    this.environments_roles = [];
+    curApp.environments.forEach((env: EnvironmentModel) => {
+      this.environments_roles.push({
+        env_id: env.id,
+        env_name: env.name,
+        role_value: role,
+      });
+    });
   }
 
   public addEmail(e: Event, override: boolean | null): void {
@@ -466,7 +589,7 @@ export default class AddMember extends Vue {
             email: email,
             display_name: "",
             access: "",
-            isValid: isValid && !isExistingEmail,
+            isValid: isValid,
             isExisting: isExistingEmail,
           });
         }
@@ -521,7 +644,6 @@ export default class AddMember extends Vue {
           this.memberList[memberListIndex].isExisting = false;
         } else if (isExistingEmail) {
           this.memberList[memberListIndex].isExisting = true;
-          this.memberList[memberListIndex].isValid = false;
         }
       }
 
