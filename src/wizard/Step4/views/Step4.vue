@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div v-if="createdApplication.length === 0">
+    <div v-if="editType === 'noEdit'">
       <v-row>
         <div id="inputWidthFaker" ref="inputWidthFaker"></div>
         <v-col class="pl-0" cols="12">
@@ -34,7 +34,7 @@
 
     <RootAdminView v-if="editType === 'portfolio'" />
     <TeamView v-if="editType === 'application'" />
-    <v-row v-if="createdApplication.length > 0">
+    <v-row v-if="editType !== 'noEdit'">
       <v-col>
         <v-row class="pt-7">
           <v-col cols="9" class="py-0">
