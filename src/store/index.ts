@@ -210,6 +210,7 @@ export default new Vuex.Store({
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
     dialog: {},
+    isProgressBarDisplayed: false,
     portfolioDrafts: [],
     portfolios: [],
     taskOrderModels: [],
@@ -347,6 +348,9 @@ export default new Vuex.Store({
     },
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
+    },
+    changeIsProgressBarDisplayed(state, status: boolean) {
+      state.isProgressBarDisplayed = status;
     },
     setStepValidated(state, step: number) {
       state.erroredSteps = state.erroredSteps.filter((es) => es !== step);
@@ -615,6 +619,9 @@ export default new Vuex.Store({
     },
     unauthorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", false);
+    },
+    setIsProgressBarDisplayed({ commit }, status: boolean) {
+      commit("changeIsProgressBarDisplayed", status);
     },
     setCurrentStepNumber({ getters, commit }, step: number) {
       commit("doSetCurrentStepNumber", step);

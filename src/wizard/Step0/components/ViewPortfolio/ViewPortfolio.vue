@@ -69,8 +69,14 @@ export default class ViewPortfolio extends Vue {
   }
 
   private async onEditPortfolio(draftId: string): Promise<void> {
+    debugger;
+    this.$store.dispatch("setIsProgressBarDisplayed", true);
     await this.$store.dispatch("loadPortfolioDraft", draftId);
+    await this.$store.dispatch("setIsProgressBarDisplayed", false);
+    debugger;
     this.$router.push({ name: "addportfolio" });
+    
+    
   }
 }
 </script>

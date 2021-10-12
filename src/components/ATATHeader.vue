@@ -17,6 +17,15 @@
           />
         </div>
         <ATATHeaderNav />
+        <v-progress-linear
+          class="mt-12"
+          :active="$store.state.setIsProgressBarDisplayed"
+          :indeterminate="true"
+          fixed
+          height="10"
+          color="bg-primary-vivid"
+          background-opacity="0"
+        ></v-progress-linear>
       </div>
     </template>
   </v-app-bar>
