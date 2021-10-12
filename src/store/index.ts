@@ -893,6 +893,7 @@ export default new Vuex.Store({
       if (taskOrders !== null) {
         //store the tasks orders
         commit("setCurrentTaskOrders", taskOrders);
+        commit("doSaveStepModel", [createStepTwoModel(), 2, true]);
       }
     },
     async loadStep3Data({ commit }, draftId: string): Promise<void> {
@@ -900,6 +901,7 @@ export default new Vuex.Store({
       if (applications != null) {
         //store the applications
         commit("setCurrentApplications", applications);
+        commit("doSaveStepModel", [createStepThreeModel(), 3, true]);
       }
     },
     openDialog(
