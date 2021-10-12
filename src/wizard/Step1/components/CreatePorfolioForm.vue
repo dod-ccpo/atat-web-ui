@@ -101,58 +101,16 @@
 import { ValidatableForm } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import dodComponents from "../../../data/dodComponents";
+
 @Component({})
 export default class CreatePortfolioForm
   extends Vue
   implements ValidatableForm
 {
   private valid = true;
-  private dodComponents = [
-    {
-      name: "Air Force",
-      value: "air_force",
-    },
-    {
-      name: "Army",
-      value: "army",
-    },
-    {
-      name: "Marine Corps",
-      value: "marine_corps",
-    },
-    {
-      name: "Navy",
-      value: "navy",
-    },
-    {
-      name: "Space Force",
-      value: "space_force",
-    },
-    {
-      name: "Combatant Command (CCMD)",
-      value: "combatant_command",
-    },
-    {
-      name: "Joint Staff (JS)",
-      value: "joint_staff",
-    },
-    {
-      name: "Defense Agency and Field Activity (DAFA)",
-      value: "dafa",
-    },
-    {
-      name: "Office of the Secretary of Defense (OSD) /Principal Staff Assistants",
-      value: "osd_psas",
-    },
-    {
-      name: "National Security Agency (NSA)",
-      value: "nsa",
-    },
-    {
-      name: "Other",
-      value: "other",
-    },
-  ];
+  private dodComponents = dodComponents;
+
   private isDodComponentsValid: boolean | string | undefined = false;
   private isChecked(dodComp: string) {
     return this._dod_components.findIndex((d) => d === dodComp) > -1;

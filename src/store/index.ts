@@ -2,10 +2,11 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
-import { Dialog } from "types/FormFields";
+import { Dialog, Toast } from "types/Global";
 import {
   Application,
   ApplicationModel,
+  EnvironmentModel,
   Portfolio,
   PortfolioDraft,
   PortFolioDraftDTO,
@@ -15,7 +16,6 @@ import PortfolioDraftsApi from "@/api/portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { generateUid } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
-import { VEditDialog } from "vuetify/lib";
 
 Vue.use(Vuex);
 
@@ -150,9 +150,17 @@ const mapApplications = (
   return applicationModels.map((model: ApplicationModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...baseModel } = model;
-
     const application: Application = {
       ...baseModel,
+      operators: model.operators
+        ? model.operators.map((op) => {
+            return {
+              access: op.access,
+              display_name: op.display_name,
+              email: op.email,
+            };
+          })
+        : [],
       environments: model.environments.map((env) => {
         return {
           name: env.name,
@@ -160,8 +168,7 @@ const mapApplications = (
             ? env.operators.map((op) => {
                 return {
                   access: op.access,
-                  last_name: op.last_name,
-                  first_name: op.first_name,
+                  display_name: op.display_name,
                   email: op.email,
                 };
               })
@@ -173,6 +180,25 @@ const mapApplications = (
     return application;
   });
 };
+const StepModelIndices: Record<number, number> = {
+  1: 0,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4,
+};
+
+/*
+█████████████████████████████████████████
+
+███████ ████████  █████  ████████ ███████ 
+██         ██    ██   ██    ██    ██      
+███████    ██    ███████    ██    █████   
+     ██    ██    ██   ██    ██    ██      
+███████    ██    ██   ██    ██    ███████ 
+
+█████████████████████████████████████████
+*/
 
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
@@ -188,9 +214,11 @@ export default new Vuex.Store({
     portfolios: [],
     taskOrderModels: [],
     applicationModels: [],
+    portfolioOperators: [],
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
+    currentApplicationId: "2134410376-852811418-2580849115-1872217995",
     currentStepNumber: 1,
     currentPortfolioId: "",
     currentStepModel: {},
@@ -236,6 +264,7 @@ export default new Vuex.Store({
           id: "",
           name: "",
           description: "",
+          operators: [],
           environments: [
             {
               name: "Development",
@@ -283,7 +312,23 @@ export default new Vuex.Store({
       designation: "Civilian",
     },
     validationStamp: {},
+    toast: {
+      isDisplayed: false,
+      message: "",
+      contentClass: "",
+    },
   },
+  /*
+  ███████████████████████████████████████████████████████████████████████████
+
+  ███    ███ ██    ██ ████████  █████  ████████ ██  ██████  ███    ██ ███████ 
+  ████  ████ ██    ██    ██    ██   ██    ██    ██ ██    ██ ████   ██ ██      
+  ██ ████ ██ ██    ██    ██    ███████    ██    ██ ██    ██ ██ ██  ██ ███████ 
+  ██  ██  ██ ██    ██    ██    ██   ██    ██    ██ ██    ██ ██  ██ ██      ██ 
+  ██      ██  ██████     ██    ██   ██    ██    ██  ██████  ██   ████ ███████ 
+
+  ███████████████████████████████████████████████████████████████████████████
+  */
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
@@ -321,9 +366,10 @@ export default new Vuex.Store({
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
-      state.portfolioSteps[stepIndex].model = model;
-      state.portfolioSteps[stepIndex].valid = valid;
-      state.portfolioSteps[stepIndex].touched = true;
+
+      Vue.set(state.portfolioSteps[stepIndex], "model", model);
+      Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
+      Vue.set(state.portfolioSteps[stepIndex], "touched", true);
 
       const es: number[] = state.erroredSteps;
       const erroredStepIndex = es.indexOf(stepNumber);
@@ -342,16 +388,18 @@ export default new Vuex.Store({
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
-      state.portfolioSteps[stepIndex].model = model;
-      state.portfolioSteps[stepIndex].valid = true;
-      state.portfolioSteps[stepIndex].touched = false;
+
+      Vue.set(state.portfolioSteps[stepIndex], "model", model);
+      Vue.set(state.portfolioSteps[stepIndex], "valid", true);
+      Vue.set(state.portfolioSteps[stepIndex], "touched", false);
     },
     doUpdateStepModelValidity(state, [stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
-      state.portfolioSteps[stepIndex].valid = valid;
-      state.portfolioSteps[stepIndex].touched = true;
+
+      Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
+      Vue.set(state.portfolioSteps[stepIndex], "touched", true);
 
       const es: number[] = state.erroredSteps;
       const erroredStepIndex = es.indexOf(stepNumber);
@@ -373,9 +421,10 @@ export default new Vuex.Store({
         const stepIndex = state.portfolioSteps.findIndex(
           (x) => x.step === step.step
         );
-        state.portfolioSteps[stepIndex].model = step.model();
-        state.portfolioSteps[stepIndex].valid = true;
-        state.portfolioSteps[stepIndex].touched = false;
+
+        Vue.set(state.portfolioSteps[stepIndex], "model", step.model());
+        Vue.set(state.portfolioSteps[stepIndex], "valid", true);
+        Vue.set(state.portfolioSteps[stepIndex], "touched", false);
       });
 
       //clear out task order models
@@ -453,6 +502,14 @@ export default new Vuex.Store({
         const applicationModel: ApplicationModel = {
           ...application,
           id: generateUid(),
+          operators: application.operators
+            ? application.operators.map((operator) => {
+                return {
+                  ...operator,
+                  id: generateUid(),
+                };
+              })
+            : [],
           environments: application.environments.map((environment) => {
             return {
               ...environment,
@@ -492,8 +549,53 @@ export default new Vuex.Store({
         throw new Error("could not delete application order with id: " + id);
       }
     },
+    doUpdateEnvironmentOperators(state, [appId, environments]) {
+      const index = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) => application.id === appId
+      );
+      const appModel: ApplicationModel = state.applicationModels[index];
+      environments.forEach((env: EnvironmentModel) => {
+        const envId = env.id;
+        const index = getEntityIndex(
+          appModel.environments,
+          (environment: EnvironmentModel) => environment.id === envId
+        );
+        const envModel: EnvironmentModel = appModel.environments[index];
+        if (Object.prototype.hasOwnProperty.call(envModel, "operators")) {
+          envModel.operators.push(...env.operators);
+        } else {
+          envModel.operators = env.operators;
+        }
+      });
+    },
+    doUpdateApplicationOperators(state, [appId, operators]) {
+      const index = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) => application.id === appId
+      );
+      const appModel: ApplicationModel = state.applicationModels[index];
+      if (Object.prototype.hasOwnProperty.call(appModel, "operators")) {
+        appModel.operators.push(...operators);
+      } else {
+        appModel.operators = operators;
+      }
+    },
+    doToast(state, props) {
+      state.toast = props;
+    },
   },
+  /*
+  ██████████████████████████████████████████████████████
 
+   █████   ██████ ████████ ██  ██████  ███    ██ ███████ 
+  ██   ██ ██         ██    ██ ██    ██ ████   ██ ██      
+  ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
+  ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
+  ██   ██  ██████    ██    ██  ██████  ██   ████ ███████ 
+
+  ██████████████████████████████████████████████████████
+  */
   actions: {
     login({ commit }) {
       commit("changeLoginStatus", true);
@@ -537,6 +639,7 @@ export default new Vuex.Store({
     async deleteTaskOrder({ commit, state }, id: string): Promise<void> {
       try {
         commit("doDeleteTaskOrder", id);
+        commit("doInitializeStepModel", [createStepTwoModel(), 2]);
 
         const taskOrders = {
           task_orders: mapTaskOrders(state.taskOrderModels),
@@ -576,7 +679,7 @@ export default new Vuex.Store({
     async deleteApplication({ commit, state }, id: string): Promise<void> {
       try {
         commit("doDeleteApplication", id);
-
+        commit("doInitializeStepModel", [createStepThreeModel(), 3]);
         const _applications = state.applicationModels.map(
           (model: Application) => {
             const application: Application = {
@@ -820,8 +923,37 @@ export default new Vuex.Store({
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
     },
+    updateEnvironmentOperators({ commit }, [appId, environments]) {
+      commit("doUpdateEnvironmentOperators", [appId, environments]);
+    },
+    updateApplicationOperators({ commit }, [appId, operators]) {
+      commit("doUpdateApplicationOperators", [appId, operators]);
+    },
+    toast({ commit }, [message, contentClass]) {
+      const toastProps: Toast = {
+        isDisplayed: true,
+        message: message,
+        contentClass: contentClass,
+      };
+      commit("doToast", toastProps);
+    },
+    isStepTouched({ state }, stepNumber: number) {
+      const index = StepModelIndices[stepNumber];
+      return state.portfolioSteps[index].touched;
+    },
   },
   modules: {},
+  /*
+  ██████████████████████████████████████████████████████████
+
+   ██████  ███████ ████████ ████████ ███████ ██████  ███████ 
+  ██       ██         ██       ██    ██      ██   ██ ██      
+  ██   ███ █████      ██       ██    █████   ██████  ███████ 
+  ██    ██ ██         ██       ██    ██      ██   ██      ██ 
+   ██████  ███████    ██       ██    ███████ ██   ██ ███████ 
+
+  ██████████████████████████████████████████████████████████
+  */
   getters: {
     getLoginStatus(state) {
       return state.loginStatus;
@@ -912,20 +1044,21 @@ export default new Vuex.Store({
       );
       return state.portfolioSteps[stepIndex].touched;
     },
-    // getApplicationByID: () => (id: string) => {
-    //   const application = allPortfolios[11].applications.find(
-    //     (app: Application) => app.id === id
-    //   );
-
-    //   if (application) {
-    //     return application;
-    //   } else {
-    //     throw new Error(`unable to locate application with id  ${id}`);
-    //   }
-    // },
     getUser: (state) => state.user,
     getSideDrawer: (state) => state.sideDrawer,
     getTaskOrders: (state) => state.taskOrderModels,
     getApplications: (state) => state.applicationModels,
+    getCurrentApplicationId: (state) => state.currentApplicationId,
+    getCurrentApplication: (state) => {
+      // const applicationIndex = getEntityIndex(
+      //   state.applicationModels,
+      //   (application: ApplicationModel) =>
+      //     application.id === state.currentApplicationId);
+      // return state.applicationModels[applicationIndex];
+
+      // EJY temp until table wired up with state.currentApplication
+      return state.applicationModels[0];
+    },
+    getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
   },
 });
