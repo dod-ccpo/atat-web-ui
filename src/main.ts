@@ -2,6 +2,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import "./registerServiceWorker";
+import {Amplify, Auth, Hub} from 'aws-amplify';
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
@@ -16,6 +17,9 @@ import routeHandlers from "./router/routeHandlers";
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle.js'
+
+import awsconfig from "./aws-exports";
+Amplify.configure(awsconfig);
 
 import ATATButtonCard from "./components/ATATButtonCard.vue";
 import ATATDatePicker from "./components/ATATDatePicker.vue";
