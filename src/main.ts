@@ -27,13 +27,14 @@ import ATATHeaderNav from "./components/ATATHeaderNav.vue";
 import ATATModalDelete from "./components/ATATModalDelete.vue";
 import ATATSelect from "./components/ATATSelect.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
-import ATATSummaryCard from "./components/ATATSummaryCard.vue";
-import ATATTextArea from "./components/ATATTextArea.vue";
-import ATATTextField from "./components/ATATTextField.vue";
-import ATATToast from "./components/ATATToast.vue"
 import ProfileDrawer from "./components/SideDrawerComponents/ProfileDrawer.vue"
-import SecurityBanner from "./components/SecurityBanner.vue";
 import SubmitDrawer from "./components/SideDrawerComponents/SubmitDrawer.vue"
+import TeamMemberRolesDrawer from "./components/SideDrawerComponents/TeamMemberRolesDrawer.vue"
+import ATATTextField from "./components/ATATTextField.vue";
+import ATATTextArea from "./components/ATATTextArea.vue";
+import ATATSummaryCard from "./components/ATATSummaryCard.vue";
+import ATATToast from "./components/ATATToast.vue"
+import SecurityBanner from "./components/SecurityBanner.vue";
 import StyledFields from "./components/StyledFields.vue";
 import USAGovBanner from "./components/USAGovBanner.vue";
 

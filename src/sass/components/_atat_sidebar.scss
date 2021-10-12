@@ -1,11 +1,12 @@
 @import "../utils/colors.scss";
 
-nav.v-navigation-drawer{
+nav.v-navigation-drawer:not(#right-side-drawer){
+    top: 95px !important;
+    max-height: calc(100% - 135px) !important;
     .v-navigation-drawer__content{
     overflow-y: inherit !important;
     overflow-x: inherit !important;
     width: 100% !important;
-    // height: 100% !important;
         a {
             color: inherit;
             width: 100% !important;
