@@ -11,6 +11,7 @@
           :ripple="false"
           @click="cancelItem"
           id="dialog_cancel"
+          name="cancelDialog"
           >{{ cancelText }}
         </v-btn>
         <v-btn
@@ -31,9 +32,10 @@
 <script lang="ts">
 import { Component, PropSync, Prop } from "vue-property-decorator";
 import { VDialog } from "vuetify/lib";
+import Vue from "vue";
 
 @Component({})
-export default class ATATModalDelete extends VDialog {
+export default class ATATModalDelete extends Vue {
   @Prop() private message!: string;
   @Prop() private title!: string;
   @Prop() private id!: string;

@@ -48,10 +48,11 @@
 
 <script lang="ts">
 import { VTextarea } from "vuetify/lib";
+import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
-export default class ATATTextArea extends VTextarea {
+export default class ATATTextArea extends Vue {
   private isFieldValid = false;
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;

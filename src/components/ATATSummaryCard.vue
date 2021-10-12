@@ -152,7 +152,8 @@ import Vue from "vue";
 
 @Component({})
 export default class ATATSummaryCard extends Vue {
-  @Prop({ default: {}, required: false }) private data!: ATATSummaryCards;
+  @Prop({ default: {}, required: false })
+  private data!: ATATSummaryCards;
 
   @Prop({ default: "" })
   private emptyCard!: string;
