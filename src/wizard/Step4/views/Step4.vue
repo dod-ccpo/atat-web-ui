@@ -253,7 +253,7 @@ export default class Step_4 extends Vue {
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-    if (this.hasChanges()){
+    if (this.hasChanges()) {
       debugger;
       await this.$store.dispatch("saveStepData", 3);
     }

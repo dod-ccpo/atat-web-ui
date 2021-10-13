@@ -370,16 +370,16 @@ export default class TeamView extends Vue {
       });
     }
     const itemToRemoveFromMembersData = this.membersData.findIndex(
-      (m: any ) => m.email === this.member.email
+      (m: any) => m.email === this.member.email
     );
     this.membersData.splice(itemToRemoveFromMembersData, 1);
 
     //in case the user is removing from filtered data
-    if (this.filteredData.length>0){
+    if (this.filteredData.length > 0) {
       const itemToRemoveFromFilteredData = this.filteredData.findIndex(
-        (m: any ) => m.email === this.member.email
+        (m: any) => m.email === this.member.email
       );
-      this.filteredData.splice(itemToRemoveFromFilteredData , 1);
+      this.filteredData.splice(itemToRemoveFromFilteredData, 1);
     }
   }
 
