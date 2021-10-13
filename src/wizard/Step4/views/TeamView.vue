@@ -184,7 +184,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit } from "vue-property-decorator";
+import { Component, Emit, Watch } from "vue-property-decorator";
 import { ApplicationModel } from "../../../../types/Portfolios";
 
 @Component({})
@@ -346,6 +346,15 @@ export default class TeamView extends Vue {
       "",
       memberProps,
     ]);
+  }
+  @Watch("$store.state.dialog.isDisplayed")
+  setFocus(newVal: boolean): void {
+    if (!newVal) {
+      this.applicationMembers = [];
+      this.membersData = [];
+      this.setMemberTableData();
+      this.tranformData();
+    }
   }
   //Dialog stuff
   private okText = "Remove Team Member";
