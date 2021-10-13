@@ -143,11 +143,6 @@
                   </v-menu>
                 </div>
               </template>
-              <template v-slot:no-data>
-                <div class="label font-weight-bold text--base-dark">
-                  Sorry no one here
-                </div>
-              </template>
             </v-data-table>
           </v-col>
         </v-row>
