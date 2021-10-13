@@ -58,11 +58,11 @@ export interface TaskOrder {
 }
 export interface TaskOrderFile {
   id: string;
-  created_at: string;
-  updated_at: string;
-  size: number;
+  // created_at: string;
+  // updated_at: string;
+  // size: number;
   name: string;
-  status: string;
+  // status: string;
 }
 export interface Clin {
   clin_number: string;
@@ -77,14 +77,14 @@ export interface ApplicationModel {
   id: string;
   name: string;
   description: string;
-  environments: EnvironmentModel[];
   operators: OperatorModel[];
+  environments: EnvironmentModel[];
 }
 
 export interface EnvironmentModel {
   id: string;
   name: string;
-  operators: OperatorModel[]
+  operators: OperatorModel[];
 }
 
 export interface OperatorModel {

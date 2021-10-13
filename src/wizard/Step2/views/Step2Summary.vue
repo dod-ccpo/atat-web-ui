@@ -1,5 +1,5 @@
 <template>
-  <v-flex>
+  <v-flex class="pl-3">
     <v-row>
       <v-col cols="10">
         <h2 class="h2">Your Task Order Summary</h2>

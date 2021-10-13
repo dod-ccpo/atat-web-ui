@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pb-10">
+  <v-flex class="pl-3 pb-10">
     <v-row>
       <v-col cols="10">
         <h2 class="h2">Your Applications Summary</h2>
@@ -46,7 +46,7 @@
         ></expandable-link>
       </v-col>
     </v-row>
-  </v-container>
+  </v-flex>
 </template>
 
 <script lang="ts">
