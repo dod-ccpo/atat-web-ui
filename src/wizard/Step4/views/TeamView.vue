@@ -16,9 +16,16 @@
           <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
           is provisioned. Select <span class="font-weight-bold">Next</span> to
           add team members to your other applications.
-          <a class="text-decoration-underline"
-            >Learn more about team member roles</a
+          <v-btn
+            class="primary--text py-0 px-2 mt-n2"
+            text
+            small
+            :ripple="false"
+            @click="openSideDrawer($event)"
+            @keydown.native.enter="openSideDrawer($event)"
           >
+            <span class="link-body-md">Learn more about team member roles</span>
+          </v-btn>
         </p>
       </v-col>
     </v-row>
@@ -62,7 +69,7 @@
                     >control_point</v-icon
                   >
                 </div>
-                <div class="body font-weight-bold">Invite Team Member</div>
+                <div class="body font-weight-bold">Invite Team Members</div>
               </v-btn>
             </v-col>
           </v-col>
@@ -147,7 +154,7 @@
                         :key="i"
                       >
                         <v-list-item-title
-                          @click="tableOptionClick(item)"
+                          @click="tableOptionClick(item, $event)"
                           class="body-lg py-2"
                           >{{ item }}</v-list-item-title
                         >
@@ -196,7 +203,7 @@ export default class TeamView extends Vue {
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "workspace_roles", sortable: false },
   ];
-  private options = ["Edit Info", "Change Role", "Remove team member"];
+  private options = ["Edit info and roles", "Remove team member"];
   private applicationMembers: {
     id: string;
     display_name: string;
@@ -311,11 +318,33 @@ export default class TeamView extends Vue {
   }
 
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: false,
+      isEditSingle: false,
+      memberEmail: "",
+    };
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (
+      currentTarget &&
+      currentTarget.innerText.toLowerCase() === "edit info and roles"
+    ) {
+      memberProps = {
+        isRootAdmin: false,
+        isEditSingle: true,
+        memberEmail: this.member.email,
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
   //Dialog stuff
@@ -333,18 +362,17 @@ export default class TeamView extends Vue {
   private showDialogWhenClicked = false;
   private member: any;
 
-  private tableOptionClick(item: any): void {
-    if (item === "Remove team member") {
+  private tableOptionClick(item: any, event: Event): void {
+    if (item.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
+    } else if (item.toLowerCase() === "edit info and roles") {
+      this.openDialog(event);
     }
-    this.showDialogWhenClicked = true;
   }
 
   private setMember(item: any) {
-    console.log(this.member);
     this.member = item;
-    console.log(this.member);
   }
 
   private deleteMemberFromApplication() {
@@ -385,6 +413,13 @@ export default class TeamView extends Vue {
 
   get currentApplication(): ApplicationModel {
     return this.$store.getters.getCurrentApplication;
+  }
+
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "teammemberroles",
+      event.type === "keydown",
+    ]);
   }
 
   public async mounted(): Promise<void> {

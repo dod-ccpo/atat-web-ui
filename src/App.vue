@@ -10,7 +10,7 @@
       </v-container>
     </v-main>
     <ATATFooter />
-    <ATATDialog />
+    <ATATDialog v-show="isDialogDisplayed" />
     <ATATToast />
   </v-app>
 </template>
@@ -42,6 +42,8 @@ import { Route } from "vue-router";
   },
 })
 export default class App extends Vue {
+  private isDialogDisplayed = false;
+
   get loginStatus(): boolean {
     return this.$store.getters.getLoginStatus;
   }
@@ -53,6 +55,15 @@ export default class App extends Vue {
 
   get getIsNavSideBarDisplayed(): boolean {
     return this.$store.getters.getIsNavSideBarDisplayed;
+  }
+
+  @Watch("$store.state.dialog.isDisplayed")
+  onDialogDisplayedChange(newVal: boolean): void {
+    this.isDialogDisplayed = newVal;
+  }
+
+  public mounted(): void {
+    this.$store.dispatch("initDialog");
   }
 }
 </script>
