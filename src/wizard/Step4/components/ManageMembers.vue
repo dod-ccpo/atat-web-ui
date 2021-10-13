@@ -917,7 +917,6 @@ export default class ManageMember extends Vue {
 
       this.$emit("membersAdded", this.validEmailCount);
     } else if (this.isEditSingle) {
-      // TODO UPDATE EXISTING MEMBER INFO
       if (this.isRootAdmin) {
         // update portfolioOperators name and email
         const rootAdmins: OperatorModel[] =
