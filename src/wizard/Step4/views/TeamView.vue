@@ -177,7 +177,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit, Prop } from "vue-property-decorator";
+import { Component, Emit } from "vue-property-decorator";
 import { ApplicationModel } from "../../../../types/Portfolios";
 
 @Component({})
@@ -321,7 +321,7 @@ export default class TeamView extends Vue {
   //Dialog stuff
   private okText = "Remove Team Member";
   private cardWidth = "40";
-  private cancelText = "cancel";
+  private cancelText = "Cancel";
   private hasDialog = true;
   private dialogWidth = "450";
   @Emit("delete")
@@ -334,11 +334,9 @@ export default class TeamView extends Vue {
   private member: any;
 
   private tableOptionClick(item: any): void {
-    console.log(item);
-    if (item == "Remove team member") {
-      this.message = "You currently don't have any Task Orders saved";
+    if (item === "Remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
-      this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team. This individual will no longer have access to the application in the cloud console.`;
+      this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
     }
     this.showDialogWhenClicked = true;
   }
@@ -350,7 +348,6 @@ export default class TeamView extends Vue {
   }
 
   private deleteMemberFromApplication() {
-    debugger;
     if (this.currentApplication.operators) {
       const applicationOperators = this.currentApplication.operators;
       let memberindx = applicationOperators.findIndex(
@@ -371,6 +368,18 @@ export default class TeamView extends Vue {
           envOperators.splice(memberindx, 1);
         }
       });
+    }
+    const itemToRemoveFromMembersData = this.membersData.findIndex(
+      (m: any ) => m.email === this.member.email
+    );
+    this.membersData.splice(itemToRemoveFromMembersData, 1);
+
+    //in case the user is removing from filtered data
+    if (this.filteredData.length>0){
+      const itemToRemoveFromFilteredData = this.filteredData.findIndex(
+        (m: any ) => m.email === this.member.email
+      );
+      this.filteredData.splice(itemToRemoveFromFilteredData , 1);
     }
   }
 
