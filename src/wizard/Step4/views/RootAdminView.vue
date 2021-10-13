@@ -125,6 +125,7 @@
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
+                        @click="setMember(item)"
                       >
                         <v-icon class="icon-18 width-auto">more_horiz</v-icon>
                       </v-btn>
@@ -135,9 +136,11 @@
                         v-for="(item, i) in options"
                         :key="i"
                       >
-                        <v-list-item-title class="body-lg py-2">{{
-                          item
-                        }}</v-list-item-title>
+                        <v-list-item-title
+                          @click="tableOptionClick(item)"
+                          class="body-lg py-2"
+                          >{{ item }}</v-list-item-title
+                        >
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -148,11 +151,23 @@
         </v-row>
       </v-col>
     </v-row>
+    <atat-modal-delete
+      v-show="hasDialog"
+      :showDialogWhenClicked.sync="showDialogWhenClicked"
+      :title="dialogTitle"
+      :message="dialogMessage"
+      :cancelText="cancelText"
+      persistent
+      no-click-animation
+      :okText="okText"
+      :width="dialogWidth + 'px'"
+      v-on:delete="onDelete"
+    />
   </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Emit, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class RootAdminView extends Vue {
@@ -198,6 +213,52 @@ export default class RootAdminView extends Vue {
       "90",
     ]);
   }
+
+  //Dialog stuff
+  private okText = "Remove Team Member";
+  private cardWidth = "40";
+  private cancelText = "cancel";
+  private hasDialog = true;
+  private dialogWidth = "450";
+  @Emit("delete")
+  private onDelete(): void {
+    this.deleteMemberFromApplication();
+  }
+  private dialogMessage = "";
+  private dialogTitle = "";
+  private showDialogWhenClicked = false;
+  private member: any;
+
+  private tableOptionClick(item: any): void {
+    console.log(item);
+    if (item == "Remove team member") {
+      this.message = "You currently don't have any Task Orders saved";
+      this.dialogTitle = `Remove ${this.member.display_name}`;
+      this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.currentPortfolio.name}. This individual will no longer have access to any of your applications in the cloud console.`;
+      this.okText = "Remove Team Member";
+    }
+    this.showDialogWhenClicked = true;
+  }
+
+  private setMember(item: any) {
+    console.log(this.member);
+    this.member = item;
+    console.log(this.member);
+  }
+
+  private deleteMemberFromApplication() {
+    debugger;
+    if (this.rootMembers) {
+      const operators = this.rootMembers;
+      let memberindx = operators.findIndex(
+        (item: any) => item.email === this.member.email
+      );
+      if (memberindx > -1) {
+        operators.splice(memberindx, 1);
+      }
+    }
+  }
+
   public async mounted(): Promise<void> {
     // temp until actually saving data to store
   }
