@@ -13,8 +13,7 @@
           </span>
           <span v-if="isEditSingle">
             Update
-            {{ memberToEdit.length ? memberToEdit[0].display_name : "Member" }}’s
-            information
+            {{ memberToEditName ? memberToEditName : "Member" }}’s information
           </span>
         </h3>
       </v-card-title>
@@ -28,23 +27,19 @@
           <p>
             After your portfolio is provisioned, the email address will be sent to
             {{ selectedCSP ? selectedCSP : "your selected CSP" }} and
-            {{
-              memberToEdit.length ? memberToEdit[0].display_name : "the member"
-            }}
+            {{ memberToEditName ? memberToEditName : "the member" }}
             receive an invitation to access the cloud console.
           </p>
 
-            <!-- v-model="memberToEdit[0].display_name" -->
           <atat-text-field
-            :value="memberToEdit.length ? memberToEdit[0].display_name : ''"
+            :value.sync="memberToEditName"
             label="Display Name"
             :helpText="displayNameHelpText"
             :rules="rules.display_name"
           />
 
-            <!-- v-model="memberToEdit[0].email" -->
           <atat-text-field
-            :value="memberToEdit.length ? memberToEdit[0].email : ''"
+            :value.sync="memberToEditEmail"
             label="Email Address"
             :rules="rules.email"
             aria-describedby="EmailInputInstructions"
@@ -155,8 +150,8 @@
               <span v-show="invalidEmailCount > 1">
                 Multiple addresses were not recognized.
               </span>
-              Please make sure that all addresses are properly formatted and .mil
-              addresses.
+              Please make sure that all addresses are properly formatted and 
+              .mil addresses.
             </p>
           </v-alert>
         </div>
@@ -171,9 +166,7 @@
           <h3>
             <span v-if="isEditSingle">
               Change
-              {{
-                memberToEdit.length ? memberToEdit[0].display_name : "Member"
-              }}’s Role
+              {{ memberToEditName ? memberToEditName : "Member" }}’s Role
             </span>
             <span v-if="!isEditSingle">Team Member Roles</span>
           </h3>
@@ -314,7 +307,7 @@ export default class ManageMember extends Vue {
     },
   ];
 
-  private assignDifferentRolesForEnvs = false;
+  private assignDifferentRolesForEnvs = true;
   private roleForAllEnvs = this.rolesList[0].role_value;
   private environments_roles: {
     env_id: string;
@@ -326,7 +319,11 @@ export default class ManageMember extends Vue {
   within ATAT.`;
   private emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
   private valid = true;
-  private validFoo = this.addMembersFormIsValid();
+  private memberToEditName = "";
+  private memberToEditEmail = "";
+  private memberToEditLoaded = false;
+  private isRootAdmin = false;
+  private isEditSingle = false;
 
   /*
 ██████  ██████   ██████  ██████  ███████
@@ -366,45 +363,6 @@ export default class ManageMember extends Vue {
           this.emailRegex.test(v) ||
           "Please make sure that the address is properly formatted",
       ],
-    };
-  }
-
-  get isRootAdmin(): boolean | null {
-    if (
-      this.dialogProps &&
-      Object.prototype.hasOwnProperty.call(this.dialogProps, "isRootAdmin")
-    ) {
-      return this.dialogProps.isRootAdmin;
-    }
-    return null;
-  }
-
-  get isEditSingle(): boolean | null {
-    if (
-      this.dialogProps &&
-      Object.prototype.hasOwnProperty.call(this.dialogProps, "isEditSingle")
-    ) {
-      return this.dialogProps.isEditSingle;
-    }
-    return null;
-  }
-
-  get memberToEdit(): OperatorModel {
-    if (
-      this.isEditSingle &&
-      this.dialogProps &&
-      Object.prototype.hasOwnProperty.call(this.dialogProps, "memberEmail")
-    ) {
-      let member = this.getMemberToEdit(this.dialogProps.memberEmail);
-      if (member) {
-        return member;
-      }
-    }
-    return {
-      display_name: "",
-      email: "",
-      id: "",
-      access: "",
     };
   }
 
@@ -508,16 +466,32 @@ export default class ManageMember extends Vue {
 */
   @Watch("assignDifferentRolesForEnvs")
   protected setEnvRoles(newVal: boolean): void {
-    if (newVal === true) {
-      this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
-    } else {
-      this.roleForAllEnvs = this.rolesList[0].role_value;
+    debugger;
+    // if (newVal === false) {
+    //   this.roleForAllEnvs = this.rolesList[0].role_value;
+    //   this.initEnvRoleDropdowns(this.roleForAllEnvs);
+    // }
+    if (!this.memberToEditLoaded) {
+      if (newVal === true) {
+        this.initEnvRoleDropdowns(this.roleForAllEnvs);
+      } else {
+        this.roleForAllEnvs = this.rolesList[0].role_value;
+      }
     }
   }
 
   @Watch("roleForAllEnvs")
   protected setAllEnvsRoles(newVal: string): void {
-    this.setEnvironmentRoleDropdowns(newVal);
+    debugger;
+    if (this.memberToEditLoaded) {
+      this.initEnvRoleDropdowns(newVal);
+    }
+  }
+
+  @Watch("dialogProps")
+  protected setProps(newVal: unknown): void {
+    debugger;
+    this.initMemberModal(newVal);
   }
 
   /*
@@ -529,80 +503,112 @@ export default class ManageMember extends Vue {
 */
 
   public async mounted(): Promise<void> {
-    this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
-  }
-
-  public addMembersFormIsValid(): boolean {
-    return this.invalidEmailCount > 0 || this.validEmailCount === 0;
-  }
-
-  public getMemberToEdit(memberEmail: string): OperatorModel | null {
+    // this.initEnvRoleDropdowns(this.roleForAllEnvs);
     debugger;
-    const rootAdmins: OperatorModel[] =
-      this.$store.getters.getPortfolioOperators;
+    this.initMemberModal(this.dialogProps);
+  }
+
+  public initMemberModal(props: any): void {
+    this.assignDifferentRolesForEnvs = true;
+    this.roleForAllEnvs = this.rolesList[0].role_value;
+    this.initEnvRoleDropdowns(this.roleForAllEnvs);
+
+    debugger;
+
+    if (props && Object.prototype.hasOwnProperty.call(props, "isRootAdmin")) {
+      this.isRootAdmin = props.isRootAdmin;
+    }
+    if (props && Object.prototype.hasOwnProperty.call(props, "isEditSingle")) {
+      this.isEditSingle = props.isEditSingle;
+    }
+
+    if (this.isEditSingle) {
+      // editing a single member
+      if (props && Object.prototype.hasOwnProperty.call(props, "memberEmail")) {
+        debugger;
+        this.memberToEditLoaded = false;
+        this.setTheMemberToEdit(props.memberEmail);
+      }
+    } else if (!this.isRootAdmin) {
+      this.assignDifferentRolesForEnvs = false;
+      this.roleForAllEnvs = this.rolesList[0].role_value;
+    }
+  }
+
+  private setTheMemberToEdit(memberEmail: string): void {
     let foundMember: OperatorModel[] | any;
     if (this.isRootAdmin) {
+      const rootAdmins: OperatorModel[] =
+        this.$store.getters.getPortfolioOperators;
+
       foundMember = rootAdmins.filter((obj) => obj.email === memberEmail);
       if (foundMember) {
-        return foundMember;
-      }
-      return null;
-    }
-    // check for user in application operators
-    const app: ApplicationModel | null = this.currentApplication;
-    if (app) {
-      const appOperators: OperatorModel[] | null = app ? app.operators : null;
-      if (appOperators && appOperators.length) {
-        foundMember = appOperators.filter((obj) => obj.email === memberEmail);
         debugger;
-        if (foundMember.length) {
-          // since is application level, set access for all environments
-          this.assignDifferentRolesForEnvs = false;
-          this.roleForAllEnvs = foundMember[0].access;
-          return foundMember;
-        }
+        this.memberToEditName = foundMember[0].display_name;
+        this.memberToEditEmail = foundMember[0].email;
       }
-
-      // check for member in environment operators
-      this.assignDifferentRolesForEnvs = true;
-      const envs: EnvironmentModel[] | null = app.environments;
-      if (envs) {
-        let foundEnvOp: any[] = [];
-        envs.forEach((env) => {
-          const envOperators: any[] | null = env.operators;
-          if (envOperators && envOperators.length) {
-             foundEnvOp = Object.assign(
-              [],
-              envOperators.filter((op) => op.email === memberEmail)
-            );
-            if (foundEnvOp.length) {
-              foundEnvOp[0].env_id = env.id;
-              foundEnvOp[0].env_name = env.name;
-              foundMember.push(foundEnvOp[0]);
-            }
+      return;
+    } else {
+      const app: ApplicationModel | null = this.currentApplication;
+      if (app) {
+        const appOperators: OperatorModel[] | null = app ? app.operators : null;
+        if (appOperators && appOperators.length) {
+          foundMember = appOperators.filter((obj) => obj.email === memberEmail);
+          debugger;
+          if (foundMember.length) {
+            // since is application level, set access for all environments
+            this.memberToEditLoaded = true;
+            this.assignDifferentRolesForEnvs = false;
+            // EJY here
+            this.roleForAllEnvs = foundMember[0].access;
+            this.memberToEditName = foundMember[0].display_name;
+            this.memberToEditEmail = foundMember[0].email;
+            return;
           }
-        });
-        if (foundMember.length) {
-          this.environments_roles.forEach((env: any) => {
-            let foundMemberInEnv = foundMember.filter(
-              (member: any) => member.env_id === env.env_id
-            );
-            if (foundMemberInEnv.length) {
-              env.role_value = foundMemberInEnv[0].access;
-            } else {
-              env.role_value = "no_access";
+        }
+
+        // check for member in environment operators
+        const envs: EnvironmentModel[] | null = app.environments;
+        if (envs) {
+          let foundEnvOp: any[] = [];
+          envs.forEach((env) => {
+            const envOperators: any[] | null = env.operators;
+            if (envOperators && envOperators.length) {
+              foundEnvOp = Object.assign(
+                [],
+                envOperators.filter((op) => op.email === memberEmail)
+              );
+              debugger;
+              if (foundEnvOp.length) {
+                foundEnvOp[0].env_id = env.id;
+                foundEnvOp[0].env_name = env.name;
+                foundMember.push(foundEnvOp[0]);
+              }
             }
           });
-          debugger;
-
-          return foundMember;
+          if (foundMember.length) {
+            this.memberToEditName = foundMember[0].display_name;
+            this.memberToEditEmail = foundMember[0].email;
+            debugger;
+            this.environments_roles.forEach((env: any) => {
+              let foundMemberInEnv = foundMember.filter(
+                (member: any) => member.env_id === env.env_id
+              );
+              if (foundMemberInEnv.length) {
+                env.role_value = foundMemberInEnv[0].access;
+              } else {
+                env.role_value = "no_access";
+              }
+            });
+          }
         }
       }
     }
-    return null;
+    this.memberToEditLoaded = true;
   }
 
-  private setEnvironmentRoleDropdowns(role: string) {
+  private initEnvRoleDropdowns(role: string) {
+    debugger;
     const curApp: ApplicationModel = this.currentApplication;
     this.environments_roles = [];
     curApp.environments.forEach((env: EnvironmentModel) => {
@@ -612,6 +618,10 @@ export default class ManageMember extends Vue {
         role_value: role,
       });
     });
+  }
+
+  public addMembersFormIsValid(): boolean {
+    return this.invalidEmailCount > 0 || this.validEmailCount === 0;
   }
 
   public addEmail(e: Event, override: boolean | null): void {
