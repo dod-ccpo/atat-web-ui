@@ -186,18 +186,20 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
+import ManageMembers from "@/wizard/Step4/components/ManageMembers.vue";
 import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
 import TeamView from "@/wizard/Step4/views/TeamView.vue";
+import { ApplicationModel } from "../../../../types/Portfolios";
 
 @Component({
   components: {
-    AddMembers,
+    ManageMembers,
     RootAdminView,
     TeamView,
   },
 })
 export default class Step_4 extends Vue {
+  private incomingModel!: ApplicationModel;
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -209,23 +211,87 @@ export default class Step_4 extends Vue {
   private teamExpectationText = false;
   // methods
 
-  private openSideDrawer(event: Event): void {
-    this.$store.dispatch("openSideDrawer", [
-      "teammemberroles",
-      event.type === "keydown",
-    ]);
-  }
+  public openDialog(event: Event, action: string, memberEmail: string): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: false,
+      isEditSingle: false,
+      memberEmail: null,
+    };
+    switch (action) {
+      case "add root admins":
+        memberProps = {
+          isRootAdmin: true,
+          isEditSingle: false,
+          memberEmail: null,
+        };
+        break;
+      case "edit root admin":
+        memberProps = {
+          isRootAdmin: true,
+          isEditSingle: true,
+          memberEmail: memberEmail,
+        };
+        break;
+      case "add members":
+        memberProps = {
+          isRootAdmin: false,
+          isEditSingle: false,
+          memberEmail: null,
+        };
+        break;
+      case "edit member":
+        memberProps = {
+          isRootAdmin: false,
+          isEditSingle: true,
+          memberEmail: memberEmail,
+        };
+        break;
+      default:
+        break;
+    }
 
-  public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
 
   public async mounted(): Promise<void> {
+    this.incomingModel = JSON.parse(
+      JSON.stringify(this.$store.getters.getCurrentApplication)
+    ) as ApplicationModel;
+    // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
+    // this.$store.dispatch("saveStepModel", [{}, 4, true]);
+  }
+
+  private hasChanges(): boolean {
+    let theSame = true;
+    const serializedIncoming = JSON.stringify(this.incomingModel);
+    const serialiedOutgoing = JSON.stringify(
+      this.$store.getters.getCurrentApplication
+    );
+    theSame = serializedIncoming === serialiedOutgoing;
+
+    return !theSame;
+  }
+
+  public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    if (this.hasChanges()) {
+      await this.$store.dispatch("saveStepData", 3);
+    }
+
+    next();
     // temp until actually saving data to store
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }

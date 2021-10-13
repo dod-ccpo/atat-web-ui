@@ -93,7 +93,7 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template v-slot:header.workplace_roles="{ header }">
+              <template v-slot:header.access="{ header }">
                 <div class="label font-weight-bold text--base-dark">
                   {{ header.text }}
                 </div>
@@ -106,10 +106,10 @@
                   {{ item.email }}
                 </div>
               </template>
-              <template v-slot:item.workspace_roles="{ item }">
+              <template v-slot:item.access="{ item }">
                 <div class="d-flex justify-space-between">
                   <div class="body text--base-dark pt-3">
-                    {{ item.workspace_roles }}
+                    {{ roleTranslation(item.access) }}
                   </div>
 
                   <v-menu
@@ -137,10 +137,11 @@
                         :key="i"
                       >
                         <v-list-item-title
-                          @click="tableOptionClick(item)"
+                          @click="tableOptionClick(item, $event)"
                           class="body-lg py-2"
-                          >{{ item }}</v-list-item-title
                         >
+                          {{ item }}
+                        </v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -167,7 +168,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit, Prop } from "vue-property-decorator";
+import { Component, Emit, Watch } from "vue-property-decorator";
 
 @Component({})
 export default class RootAdminView extends Vue {
@@ -181,8 +182,13 @@ export default class RootAdminView extends Vue {
     this.$store.getters.getPortfolioById(
       this.$store.state.currentPortfolioId
     ) || "Untitled";
-  private rootMembers: any = this.$store.state.portfolioOperators;
+  private rootMembers: any = this.$store.getters.getPortfolioOperators;
   private rootMembersCount = this.rootMembers.length;
+  private member: any;
+
+  private setMember(item: any) {
+    this.member = item;
+  }
 
   private message =
     "You do not have any root administrators in this portfolio yet.";
@@ -190,7 +196,7 @@ export default class RootAdminView extends Vue {
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "access", sortable: false },
   ];
-  private options = ["Edit Info", "Remove team member"];
+  private options = ["Edit info", "Remove team member"];
   private searchTable(value: string) {
     if (!value) {
       this.isFiltered = false;
@@ -198,20 +204,55 @@ export default class RootAdminView extends Vue {
       this.isFiltered = true;
       this.filteredData = this.rootMembers.filter((data: any) => {
         return (
-          data.display_name.toLowerCase().includes(value) ||
-          data.email.toLowerCase().includes(value)
+          data.display_name.toLowerCase().includes(value.toLowerCase()) ||
+          data.email.toLowerCase().includes(value.toLowerCase())
         );
       });
     }
   }
 
+  private roleTranslation(role: string): string {
+    switch (role) {
+      case "portfolio_administrator":
+        return "Root administrator";
+      default:
+        return "Unauthorized";
+    }
+  }
+
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: true,
+      isEditSingle: false,
+      memberEmail: null,
+    };
+
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (currentTarget && currentTarget.innerText === "Edit info") {
+      memberProps = {
+        isRootAdmin: true,
+        isEditSingle: true,
+        memberEmail: this.member.email,
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
+  }
+  @Watch("$store.state.dialog.isDisplayed")
+  setFocus(newVal: boolean): void {
+    if (!newVal) {
+      this.rootMembers;
+    }
   }
 
   //Dialog stuff
@@ -222,12 +263,11 @@ export default class RootAdminView extends Vue {
   private dialogWidth = "450";
   @Emit("delete")
   private onDelete(): void {
-    this.deleteMemberFromApplication();
+    this.deleteRootMember();
   }
   private dialogMessage = "";
   private dialogTitle = "";
   private showDialogWhenClicked = false;
-  private member: any;
 
   private tableOptionClick(item: any): void {
     console.log(item);
@@ -239,14 +279,7 @@ export default class RootAdminView extends Vue {
     this.showDialogWhenClicked = true;
   }
 
-  private setMember(item: any) {
-    console.log(this.member);
-    this.member = item;
-    console.log(this.member);
-  }
-
-  private deleteMemberFromApplication() {
-    debugger;
+  private deleteRootMember() {
     if (this.rootMembers) {
       const operators = this.rootMembers;
       let memberindx = operators.findIndex(
@@ -259,6 +292,7 @@ export default class RootAdminView extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    console.log(this.currentPortfolio);
     // temp until actually saving data to store
   }
 }

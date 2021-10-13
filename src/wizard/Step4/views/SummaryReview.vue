@@ -30,6 +30,7 @@
           hide-default-footer
           dense
           :sort-by="['name']"
+          :custom-sort="sortApplications"
         >
           <template v-slot:header.name="{ header }">
             <div
@@ -102,6 +103,7 @@
                     tabindex="1"
                     v-bind="attrs"
                     v-on="on"
+                    @click="setApplication(item)"
                   >
                     <v-icon class="icon-18 width-auto">more_horiz</v-icon>
                   </v-btn>
@@ -135,10 +137,34 @@ import { editmembers } from "@/router/wizard";
 @Component({})
 export default class SummaryReview extends Vue {
   public applications = this.$store.state.applicationModels;
+  private currentApplication: any;
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private applicationData: any = [];
+
+  private sortAsc = true;
+  private sortApplications(items: any[], index: number) {
+    this.sortAsc = !this.sortAsc;
+    if (!this.sortAsc) {
+      return items.sort((a, b) => {
+        if (a.id !== undefined && b.id !== undefined) {
+          return a.name > b.name ? 1 : -1;
+        } else {
+          return 0;
+        }
+      });
+    } else {
+      return items.sort((a, b) => {
+        if (a.id !== undefined && b.id !== undefined) {
+          return a.name < b.name ? 1 : -1;
+        } else {
+          return 0;
+        }
+      });
+    }
+  }
+
   private handleNameClick(item: any): void {
     if (item.portfolio) {
       if (item.name === "Untitled") {
@@ -188,10 +214,6 @@ export default class SummaryReview extends Vue {
         this.openDialog(event);
     }
   }
-  private currentPortfolio =
-    this.$store.getters.getPortfolioById(
-      this.$store.state.currentPortfolioId
-    ) || "Untitled";
 
   private tranformData(applications: any): void {
     this.applicationData.push({
@@ -210,6 +232,10 @@ export default class SummaryReview extends Vue {
       this.applicationData.push(obj);
     }
   }
+  private setApplication(item: any) {
+    this.currentApplication = item;
+    this.$store.dispatch("setCurrentApplicationId", this.currentApplication.id);
+  }
   private isPortfolio(item: any): string[] {
     if (item.portfolio) {
       return ["View root administrators", "Add root administrators"];
@@ -223,27 +249,50 @@ export default class SummaryReview extends Vue {
       value: "name",
       align: "start",
       sortable: true,
-      width: "40%"
+      width: "40%",
     },
     {
       text: "Description ",
       value: "description",
       sortable: false,
-      width: "40%"
+      width: "40%",
     },
     {
       text: "Team Members ",
       value: "operators",
       sortable: false,
-      width: "20%"
+      width: "20%",
     },
   ];
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: false,
+      isEditSingle: false,
+      memberEmail: null,
+    };
+    let currentTarget = event.currentTarget as HTMLElement;
+    if (
+      currentTarget &&
+      currentTarget.innerText &&
+      currentTarget.innerText === "Add root administrators"
+    ) {
+      memberProps = {
+        isRootAdmin: true,
+        isEditSingle: false,
+        memberEmail: "",
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
   public async mounted(): Promise<void> {

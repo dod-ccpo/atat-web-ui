@@ -58,11 +58,11 @@ export interface TaskOrder {
 }
 export interface TaskOrderFile {
   id: string;
-  created_at: string;
-  updated_at: string;
-  size: number;
+  // created_at: string;
+  // updated_at: string;
+  // size: number;
   name: string;
-  status: string;
+  // status: string;
 }
 export interface Clin {
   clin_number: string;

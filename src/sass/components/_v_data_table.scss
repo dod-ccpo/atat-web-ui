@@ -21,6 +21,13 @@
         border-right: solid #fff 0px;
         border-bottom: solid #fff 0px;
       }
+
+      tr.v-data-table__empty-wrapper td{ 
+        font-size: 16px !important;
+        color: $base_darkest;
+        padding-top: 24px;
+        padding-bottom: 24px;
+      }
     }
   }
 }

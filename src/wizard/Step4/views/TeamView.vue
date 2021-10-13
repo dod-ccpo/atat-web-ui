@@ -16,9 +16,16 @@
           <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
           is provisioned. Select <span class="font-weight-bold">Next</span> to
           add team members to your other applications.
-          <a class="text-decoration-underline"
-            >Learn more about team member roles</a
+          <v-btn
+            class="primary--text py-0 px-2 mt-n2"
+            text
+            small
+            :ripple="false"
+            @click="openSideDrawer($event)"
+            @keydown.native.enter="openSideDrawer($event)"
           >
+            <span class="link-body-md">Learn more about team member roles</span>
+          </v-btn>
         </p>
       </v-col>
     </v-row>
@@ -62,7 +69,7 @@
                     >control_point</v-icon
                   >
                 </div>
-                <div class="body font-weight-bold">Invite Team Member</div>
+                <div class="body font-weight-bold">Invite Team Members</div>
               </v-btn>
             </v-col>
           </v-col>
@@ -135,6 +142,7 @@
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
+                        @click="setMember(item)"
                       >
                         <v-icon class="icon-18 width-auto">more_horiz</v-icon>
                       </v-btn>
@@ -145,9 +153,11 @@
                         v-for="(item, i) in options"
                         :key="i"
                       >
-                        <v-list-item-title class="body-lg py-2">{{
-                          item
-                        }}</v-list-item-title>
+                        <v-list-item-title
+                          @click="tableOptionClick(item, $event)"
+                          class="body-lg py-2"
+                          >{{ item }}</v-list-item-title
+                        >
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -158,11 +168,23 @@
         </v-row>
       </v-col>
     </v-row>
+    <atat-modal-delete
+      v-show="hasDialog"
+      :showDialogWhenClicked.sync="showDialogWhenClicked"
+      :title="dialogTitle"
+      :message="dialogMessage"
+      :cancelText="cancelText"
+      persistent
+      no-click-animation
+      :okText="okText"
+      :width="dialogWidth + 'px'"
+      v-on:delete="onDelete"
+    />
   </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Emit, Watch } from "vue-property-decorator";
 import { ApplicationModel } from "../../../../types/Portfolios";
 
 @Component({})
@@ -178,10 +200,10 @@ export default class TeamView extends Vue {
   private message = "You do not have any team members in this application yet.";
 
   private headers = [
-    { text: "Name", value: "display_name", align: "start"},
+    { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "workspace_roles", sortable: false },
   ];
-  private options = ["Edit Info", "Change Role", "Remove team member"];
+  private options = ["Edit info and roles", "Remove team member"];
   private applicationMembers: {
     id: string;
     display_name: string;
@@ -273,8 +295,8 @@ export default class TeamView extends Vue {
       this.isFiltered = true;
       this.filteredData = this.membersData.filter((data: any) => {
         return (
-          data.display_name.toLowerCase().includes(value) ||
-          data.email.toLowerCase().includes(value)
+          data.display_name.toLowerCase().includes(value.toLowerCase()) ||
+          data.email.toLowerCase().includes(value.toLowerCase())
         );
       });
     }
@@ -294,17 +316,120 @@ export default class TeamView extends Vue {
         return "Unauthorized";
     }
   }
+
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: false,
+      isEditSingle: false,
+      memberEmail: "",
+    };
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (
+      currentTarget &&
+      currentTarget.innerText.toLowerCase() === "edit info and roles"
+    ) {
+      memberProps = {
+        isRootAdmin: false,
+        isEditSingle: true,
+        memberEmail: this.member.email,
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
+  }
+  @Watch("$store.state.dialog.isDisplayed")
+  setFocus(newVal: boolean): void {
+    if (!newVal) {
+      this.applicationMembers = [];
+      this.membersData = [];
+      this.setMemberTableData();
+      this.tranformData();
+    }
+  }
+  //Dialog stuff
+  private okText = "Remove Team Member";
+  private cardWidth = "40";
+  private cancelText = "Cancel";
+  private hasDialog = true;
+  private dialogWidth = "450";
+  @Emit("delete")
+  private onDelete(): void {
+    this.deleteMemberFromApplication();
+  }
+  private dialogMessage = "";
+  private dialogTitle = "";
+  private showDialogWhenClicked = false;
+  private member: any;
+
+  private tableOptionClick(item: any, event: Event): void {
+    if (item.toLowerCase() === "remove team member") {
+      this.dialogTitle = `Remove ${this.member.display_name}`;
+      this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
+      this.showDialogWhenClicked = true;
+    } else if (item.toLowerCase() === "edit info and roles") {
+      this.openDialog(event);
+    }
+  }
+
+  private setMember(item: any) {
+    this.member = item;
+  }
+
+  private deleteMemberFromApplication() {
+    if (this.currentApplication.operators) {
+      const applicationOperators = this.currentApplication.operators;
+      let memberindx = applicationOperators.findIndex(
+        (item) => item.email === this.member.email
+      );
+      if (memberindx > -1) {
+        applicationOperators.splice(memberindx, 1);
+      }
+    }
+    if (this.currentApplication.environments) {
+      const applicationEnvironments = this.currentApplication.environments;
+      applicationEnvironments.forEach((env: any) => {
+        const envOperators = env.operators;
+        let memberindx = envOperators.findIndex(
+          (item: any) => item.email === this.member.email
+        );
+        if (memberindx > -1) {
+          envOperators.splice(memberindx, 1);
+        }
+      });
+    }
+    const itemToRemoveFromMembersData = this.membersData.findIndex(
+      (m: any) => m.email === this.member.email
+    );
+    this.membersData.splice(itemToRemoveFromMembersData, 1);
+
+    //in case the user is removing from filtered data
+    if (this.filteredData.length > 0) {
+      const itemToRemoveFromFilteredData = this.filteredData.findIndex(
+        (m: any) => m.email === this.member.email
+      );
+      this.filteredData.splice(itemToRemoveFromFilteredData, 1);
+    }
   }
 
   get currentApplication(): ApplicationModel {
     return this.$store.getters.getCurrentApplication;
+  }
+
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "teammemberroles",
+      event.type === "keydown",
+    ]);
   }
 
   public async mounted(): Promise<void> {
