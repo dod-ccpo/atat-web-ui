@@ -236,7 +236,7 @@ export default class Step_4 extends Vue {
     // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
     // this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
- 
+
   private hasChanges(): boolean {
     let theSame = true;
     const serializedIncoming = JSON.stringify(this.incomingModel);
