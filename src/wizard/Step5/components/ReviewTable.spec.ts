@@ -13,29 +13,29 @@ describe("Testing ReviewTable Component", () => {
   let vuetify: any;
   let wrapper: any;
 
-  let applicationMembersMock: ApplicationMember = {
-        id: "john.smith@mail.mil",
-            email: "john.smith@mail.mil",
-            name: "John Smith",
-            permissions: [
-              {
-                id: "manage_environments",
-                label: "Manage Environments",
-                is_granted: true,
-              },
-            ],
-            environments_settings: [
-              {
-                id: "development",
-                label: "Development",
-                accessLevel: "Administrator",
-              },
-              {
-                id: "testing",
-                label: "Testing",
-                accessLevel: "Administrator",
-              },
-            ]
+  const applicationMembersMock: ApplicationMember = {
+    id: "john.smith@mail.mil",
+    email: "john.smith@mail.mil",
+    name: "John Smith",
+    permissions: [
+      {
+        id: "manage_environments",
+        label: "Manage Environments",
+        is_granted: true,
+      },
+    ],
+    environments_settings: [
+      {
+        id: "development",
+        label: "Development",
+        accessLevel: "Administrator",
+      },
+      {
+        id: "testing",
+        label: "Testing",
+        accessLevel: "Administrator",
+      },
+    ],
   };
 
   beforeEach(() => {
@@ -45,13 +45,13 @@ describe("Testing ReviewTable Component", () => {
       localVue,
       vuetify,
       propsData: {
-              application: {
-                name: "Tracker",
-                description: "",
-                dod_components: [],
-                csp: "",
-                members: applicationMembersMock,
-              },
+        application: {
+          name: "Tracker",
+          description: "",
+          dod_components: [],
+          csp: "",
+          members: applicationMembersMock,
+        },
       },
     });
   });
@@ -60,8 +60,9 @@ describe("Testing ReviewTable Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('grantedPermissions success', async () => {
-     expect(wrapper.vm.grantedPermissions(applicationMembersMock.permissions)).toEqual(["Manage Environments"]);
+  it("grantedPermissions success", async () => {
+    expect(
+      wrapper.vm.grantedPermissions(applicationMembersMock.permissions)
+    ).toEqual(["Manage Environments"]);
   });
-
 });

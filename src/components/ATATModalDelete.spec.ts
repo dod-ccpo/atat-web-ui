@@ -26,22 +26,18 @@ describe("Testing ATATModalDelete Component", () => {
   });
 
   it("method > cancel dialog ", async () => {
-      await wrapper.setProps({showDialogWhenClicked: true});
-      const cancelDialog = await wrapper.find("#dialog_cancel");
-      expect(cancelDialog.exists()).toBe(true);
-      await cancelDialog.trigger("click");
-      await wrapper.vm.cancelItem();
-    });
-
-  it("method > delete dialog ", async () => {
-      await wrapper.setProps({showDialogWhenClicked: true});
-      const cancelDialog = await wrapper.find("#dialog_ok");
-      expect(cancelDialog.exists()).toBe(true);
-      await cancelDialog.trigger("click");
-      await wrapper.vm.deleteItem();
+    await wrapper.setProps({ showDialogWhenClicked: true });
+    const cancelDialog = await wrapper.find("#dialog_cancel");
+    expect(cancelDialog.exists()).toBe(true);
+    await cancelDialog.trigger("click");
+    await wrapper.vm.cancelItem();
   });
 
+  it("method > delete dialog ", async () => {
+    await wrapper.setProps({ showDialogWhenClicked: true });
+    const cancelDialog = await wrapper.find("#dialog_ok");
+    expect(cancelDialog.exists()).toBe(true);
+    await cancelDialog.trigger("click");
+    await wrapper.vm.deleteItem();
+  });
 });
-
-
-

@@ -120,7 +120,7 @@ export default class ATATTextField extends VTextField {
 
     if (this.$props["rules"].length > 0) {
       let value = this._value;
-          this.isFieldValid = this.$props["rules"].every(
+      this.isFieldValid = this.$props["rules"].every(
         (rule: (a: unknown) => string | boolean) => rule(value) === true
       );
     }

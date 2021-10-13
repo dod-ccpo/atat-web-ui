@@ -11,12 +11,12 @@ describe("Testing ATATTextArea Component", () => {
   let wrapper: any;
 
   beforeEach(() => {
-      vuetify = new Vuetify();
-      wrapper = mount(ATATTextArea, {
-        localVue,
-        vuetify,
-      });
+    vuetify = new Vuetify();
+    wrapper = mount(ATATTextArea, {
+      localVue,
+      vuetify,
     });
+  });
 
   it("renders successfully", async () => {
     await expect(wrapper.exists()).toBe(true);

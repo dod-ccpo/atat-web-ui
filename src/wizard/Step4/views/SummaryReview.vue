@@ -133,9 +133,17 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { editmembers } from "@/router/wizard";
+import {
+  ApplicationDataModel,
+  ApplicationModel,
+  OperatorModel,
+} from "types/Portfolios";
 
+// Register the router hooks with their names
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
 export default class SummaryReview extends Vue {
+  private incomingModel!: ApplicationDataModel;
   public applications = this.$store.state.applicationModels;
   private currentApplication: any;
   private csp =
@@ -297,6 +305,43 @@ export default class SummaryReview extends Vue {
   }
   public async mounted(): Promise<void> {
     this.tranformData(this.applications);
+    this.incomingModel = JSON.parse(
+      JSON.stringify({
+        operators: this.$store.state.portfolioOperators as OperatorModel[],
+        applications: this.$store.state.applicationModels as ApplicationModel[],
+      })
+    );
+  }
+
+  private hasChanges(): boolean {
+    let theSame = true;
+    const serializedIncoming = JSON.stringify(this.incomingModel);
+    const serialiedOutgoing = JSON.stringify({
+      operators: this.$store.state.portfolioOperators as OperatorModel[],
+      applications: this.$store.state.applicationModels as ApplicationModel[],
+    });
+
+    theSame = serializedIncoming === serialiedOutgoing;
+
+    return !theSame;
+  }
+
+  public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    debugger;
+
+    if (this.hasChanges()) {
+      try {
+        await this.$store.dispatch("saveStepData", 4);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    next();
   }
 }
 </script>

@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
-import VueRouter from 'vue-router'
+import VueRouter from "vue-router";
 import PortfolioSummaryCard from "@/wizard/Step5/components/PortfolioSummaryCard.vue";
 
 Vue.use(Vuetify);
@@ -13,7 +13,6 @@ describe("Testing PortfolioSummaryCard Component", () => {
   let vuetify: any;
   let wrapper: any;
 
-
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(PortfolioSummaryCard, {
@@ -22,14 +21,13 @@ describe("Testing PortfolioSummaryCard Component", () => {
       vuetify,
       propsData: {
         portfolio: {
-            name: "Tracker",
-            description: "Test",
-            dod_components: [],
-            csp: "CSP1",
+          name: "Tracker",
+          description: "Test",
+          dod_components: [],
+          csp: "CSP1",
         },
         dataItems: [],
       },
-
     });
   });
 
@@ -37,12 +35,10 @@ describe("Testing PortfolioSummaryCard Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('Edit button click success', async () => {
-      const editButton = wrapper.find('button');
-      expect(editButton.exists()).toBe(true);
-      await editButton.trigger("click");
-      await wrapper.vm.onEdit();
+  it("Edit button click success", async () => {
+    const editButton = wrapper.find("button");
+    expect(editButton.exists()).toBe(true);
+    await editButton.trigger("click");
+    await wrapper.vm.onEdit();
   });
-
-
 });

@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import Vuex from "vuex";
-import VueRouter from 'vue-router'
+import VueRouter from "vue-router";
 import { createLocalVue, mount } from "@vue/test-utils";
 import FundingTable from "@/wizard/Step5/components/FundingTable.vue";
 
@@ -24,9 +24,9 @@ describe("Testing FundingTable Component", () => {
     },
   };
   const store = new Vuex.Store({
-      actions,
-      getters,
-    });
+    actions,
+    getters,
+  });
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -48,15 +48,14 @@ describe("Testing FundingTable Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('Edit button click success', async () => {
-    const editButton = wrapper.find('button');
+  it("Edit button click success", async () => {
+    const editButton = wrapper.find("button");
     expect(editButton.exists()).toBe(true);
     await editButton.trigger("click");
     await wrapper.vm.onEdit();
   });
 
-  it('formatCurrency success', async () => {
-      expect(wrapper.vm.formatCurrency(20000)).toBe("$20,000.00");
+  it("formatCurrency success", async () => {
+    expect(wrapper.vm.formatCurrency(20000)).toBe("$20,000.00");
   });
-
 });
