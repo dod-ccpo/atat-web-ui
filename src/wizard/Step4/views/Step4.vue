@@ -189,6 +189,8 @@ import { Component } from "vue-property-decorator";
 import ManageMembers from "@/wizard/Step4/components/ManageMembers.vue";
 import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
 import TeamView from "@/wizard/Step4/views/TeamView.vue";
+import { ApplicationModel } from "../../../../types/Portfolios";
+
 @Component({
   components: {
     ManageMembers,
@@ -292,8 +294,7 @@ export default class Step_4 extends Vue {
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-    if (this.hasChanges()){
-      debugger;
+    if (this.hasChanges()) {
       await this.$store.dispatch("saveStepData", 3);
     }
 

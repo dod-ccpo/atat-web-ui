@@ -147,7 +147,7 @@
                         :key="i"
                       >
                         <v-list-item-title
-                          @click="tableOptionClick(item)"
+                          @click="tableOptionClick(item, $event)"
                           class="body-lg py-2"
                           >{{ item }}</v-list-item-title
                         >
@@ -317,15 +317,18 @@ export default class TeamView extends Vue {
       memberEmail: string | null;
     } = {
       isRootAdmin: false,
-      isEditSingle: false,
-      memberEmail: null,
+      isEditSingle: true,
+      memberEmail: this.member.email,
     };
     const currentTarget = event.currentTarget as HTMLElement;
-    if (currentTarget && currentTarget.innerText === "Edit info") {
+    if (
+      currentTarget &&
+      currentTarget.innerText.toLowerCase() === "edit info"
+    ) {
       memberProps = {
         isRootAdmin: false,
         isEditSingle: true,
-        memberEmail: "",
+        memberEmail: this.member.email,
       };
     }
 
@@ -352,12 +355,13 @@ export default class TeamView extends Vue {
   private showDialogWhenClicked = false;
   private member: any;
 
-  private tableOptionClick(item: any): void {
-    if (item === "Remove team member") {
+  private tableOptionClick(item: any, event: Event): void {
+    if (item.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
+    } else if (item.toLowerCase() === "edit info") {
+      this.openDialog(event);
     }
-    this.showDialogWhenClicked = true;
   }
 
   private setMember(item: any) {
@@ -389,16 +393,16 @@ export default class TeamView extends Vue {
       });
     }
     const itemToRemoveFromMembersData = this.membersData.findIndex(
-      (m: any ) => m.email === this.member.email
+      (m: any) => m.email === this.member.email
     );
     this.membersData.splice(itemToRemoveFromMembersData, 1);
 
     //in case the user is removing from filtered data
-    if (this.filteredData.length>0){
+    if (this.filteredData.length > 0) {
       const itemToRemoveFromFilteredData = this.filteredData.findIndex(
-        (m: any ) => m.email === this.member.email
+        (m: any) => m.email === this.member.email
       );
-      this.filteredData.splice(itemToRemoveFromFilteredData , 1);
+      this.filteredData.splice(itemToRemoveFromFilteredData, 1);
     }
   }
 

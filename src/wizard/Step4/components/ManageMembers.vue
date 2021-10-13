@@ -466,7 +466,6 @@ export default class ManageMember extends Vue {
 */
   @Watch("assignDifferentRolesForEnvs")
   protected setEnvRoles(newVal: boolean): void {
-    debugger;
     // if (newVal === false) {
     //   this.roleForAllEnvs = this.rolesList[0].role_value;
     //   this.initEnvRoleDropdowns(this.roleForAllEnvs);
@@ -482,7 +481,6 @@ export default class ManageMember extends Vue {
 
   @Watch("roleForAllEnvs")
   protected setAllEnvsRoles(newVal: string): void {
-    debugger;
     if (this.memberToEditLoaded) {
       this.initEnvRoleDropdowns(newVal);
     }
@@ -490,7 +488,6 @@ export default class ManageMember extends Vue {
 
   @Watch("dialogProps")
   protected setProps(newVal: unknown): void {
-    debugger;
     this.initMemberModal(newVal);
   }
 
@@ -504,7 +501,6 @@ export default class ManageMember extends Vue {
 
   public async mounted(): Promise<void> {
     // this.initEnvRoleDropdowns(this.roleForAllEnvs);
-    debugger;
     this.initMemberModal(this.dialogProps);
   }
 
@@ -512,8 +508,6 @@ export default class ManageMember extends Vue {
     this.assignDifferentRolesForEnvs = true;
     this.roleForAllEnvs = this.rolesList[0].role_value;
     this.initEnvRoleDropdowns(this.roleForAllEnvs);
-
-    debugger;
 
     if (props && Object.prototype.hasOwnProperty.call(props, "isRootAdmin")) {
       this.isRootAdmin = props.isRootAdmin;
@@ -525,13 +519,14 @@ export default class ManageMember extends Vue {
     if (this.isEditSingle) {
       // editing a single member
       if (props && Object.prototype.hasOwnProperty.call(props, "memberEmail")) {
-        debugger;
         this.memberToEditLoaded = false;
         this.setTheMemberToEdit(props.memberEmail);
       }
     } else if (!this.isRootAdmin) {
       this.assignDifferentRolesForEnvs = false;
       this.roleForAllEnvs = this.rolesList[0].role_value;
+    } else if (this.isRootAdmin) {
+      this.assignDifferentRolesForEnvs = false;
     }
   }
 
@@ -543,7 +538,6 @@ export default class ManageMember extends Vue {
 
       foundMember = rootAdmins.filter((obj) => obj.email === memberEmail);
       if (foundMember) {
-        debugger;
         this.memberToEditName = foundMember[0].display_name;
         this.memberToEditEmail = foundMember[0].email;
       }
@@ -554,7 +548,6 @@ export default class ManageMember extends Vue {
         const appOperators: OperatorModel[] | null = app ? app.operators : null;
         if (appOperators && appOperators.length) {
           foundMember = appOperators.filter((obj) => obj.email === memberEmail);
-          debugger;
           if (foundMember.length) {
             // since is application level, set access for all environments
             this.memberToEditLoaded = true;
@@ -578,7 +571,6 @@ export default class ManageMember extends Vue {
                 [],
                 envOperators.filter((op) => op.email === memberEmail)
               );
-              debugger;
               if (foundEnvOp.length) {
                 foundEnvOp[0].env_id = env.id;
                 foundEnvOp[0].env_name = env.name;
@@ -589,7 +581,6 @@ export default class ManageMember extends Vue {
           if (foundMember.length) {
             this.memberToEditName = foundMember[0].display_name;
             this.memberToEditEmail = foundMember[0].email;
-            debugger;
             this.environments_roles.forEach((env: any) => {
               let foundMemberInEnv = foundMember.filter(
                 (member: any) => member.env_id === env.env_id
@@ -608,7 +599,6 @@ export default class ManageMember extends Vue {
   }
 
   private initEnvRoleDropdowns(role: string) {
-    debugger;
     const curApp: ApplicationModel = this.currentApplication;
     this.environments_roles = [];
     curApp.environments.forEach((env: EnvironmentModel) => {
@@ -880,7 +870,6 @@ export default class ManageMember extends Vue {
       let operators: OperatorModel[] = [];
       let environments: EnvironmentModel[] = [];
       const curApp: ApplicationModel = this.currentApplication;
-
       if (this.assignDifferentRolesForEnvs) {
         this.environments_roles.forEach((env) => {
           if (env.role_value !== "no_access") {
