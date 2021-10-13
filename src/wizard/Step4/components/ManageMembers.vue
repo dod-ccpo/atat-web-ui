@@ -735,12 +735,13 @@ export default class ManageMember extends Vue {
           thisVm.validEmailList.indexOf(email.toLowerCase()) === -1;
         const isValid = thisVm.validateEmail(email);
         if (email && isValid && notAlreadyEntered) {
+          const displayName: string = thisVm.parseNameFromEmail(email);
           thisVm.validEmailList.push(email.toLowerCase());
           const memberId = generateUid();
           thisVm.memberList.push({
             id: memberId,
             email: email,
-            display_name: "",
+            display_name: displayName,
             access: "",
             isValid: isValid,
             isExisting: isExistingEmail,
