@@ -17,11 +17,13 @@
     "
     attach
   >
-    <add-members
-      v-if="dialog.type === 'addMembers'"
+    <manage-members
+      v-if="dialog.type === 'manageMembers'"
       :class="getInnerContentClasses"
       :close.sync="dialog.isDisplayed"
+      :dialogProps="dialogProps"
       @membersAdded="onMembersAdded"
+      @memberEdited="onMemberEdited(memberType)"
     />
   </v-dialog>
 </template>
@@ -30,11 +32,11 @@
 import Vue from "vue";
 import { Dialog } from "types/Global";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import AddMembers from "../wizard/Step4/components/AddMembers.vue";
+import ManageMembers from "../wizard/Step4/components/ManageMembers.vue";
 
 @Component({
   components: {
-    AddMembers,
+    ManageMembers,
   },
 })
 export default class ATATDialog extends Vue {
@@ -42,6 +44,10 @@ export default class ATATDialog extends Vue {
 
   get dialog(): Dialog {
     return this.$store.state.dialog;
+  }
+
+  get dialogProps(): any | null {
+    return this.dialog.props;
   }
 
   get getInnerContentClasses(): string {
@@ -63,10 +69,17 @@ export default class ATATDialog extends Vue {
     }
   }
 
-  public onMembersAdded(memberCount: number) {
+  public onMembersAdded(memberCount: number): void {
     const plural = memberCount > 1 ? "s" : "";
     const message = memberCount + " team  member" + plural + " added";
     this.$store.dispatch("toast", [message, "toast-success"]);
+  }
+
+  public onMemberEdited(memberType: string): void {
+    this.$store.dispatch("toast", [
+      memberType + "info updated",
+      "toast-success",
+    ]);
   }
 }
 </script>
