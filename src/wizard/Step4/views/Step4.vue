@@ -1,184 +1,40 @@
 <template>
-  <v-container fluid class="ml-3">
-    <v-row>
-      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-      <v-col class="pl-0" cols="12">
-        <h2 v-if="!applicationName" class="h2">
-          Invite team members to your application
-        </h2>
-        <h2 v-else class="h2">
-          Let’s add team members to {{ applicationName }}
-        </h2>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="pa-0 ma-0" cols="10">
-        <span v-if="!applicationName">
-          <p class="body-lg text--base-darkest">
-            In this section, you will be able to invite people from your
-            application’s development team and assign permission levels, so they
-            can contribute to your workspaces within the
-            <span class="font-weight-bold">{{ csp }}</span> console.
-          </p>
-          <p class="body-lg text--base-darkest">
-            In order to invite team members, you must set up at least one
-            application within your portfolio. Please
-            <a
-              href="/wizard/addapplication"
-              class="link-body-md font-weight-bold"
-            >
-              add an application
-            </a>
-            to continue.
-          </p>
-        </span>
-        <p v-else class="body-lg text--base-darkest">
-          Invite your application team members and assign their permissions
-          below. These individuals will receive an invitation from
-          <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
-          is provisioned. Select <span class="font-weight-bold">Next</span> to
-          add team members to your other applications.
-          <a class="text-decoration-underline"
-            >Learn more about team member roles</a
-          >
-        </p>
-      </v-col>
-    </v-row>
-    <v-row v-if="applicationName">
-      <v-col class="ps-0 ma-0">
-        <v-row>
-          <v-col cols="12" class="d-flex pl-0 pr-0">
-            <v-col class="d-flex">
-              <v-text-field
-                class="search-bar"
-                placeholder="Search for member name and email"
-                dense
-                outlined
-                single-line
-                hide-details
-              />
-              <v-btn class="input-search-bar" color="primary">
-                <v-icon width="10px" class="mr-1">search</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col class="d-flex flex-row-reverse">
-              <v-btn
-                role="button"
-                class="font-weight-bold d-flex align-center px-5"
-                :ripple="false"
-                color="primary"
-                @keydown.native.enter="openDialog($event, 'add members')"
-                @click="openDialog($event, 'add members')"
+  <v-container fluid>
+    <div v-if="editType === 'noEdit'">
+      <v-row>
+        <div id="inputWidthFaker" ref="inputWidthFaker"></div>
+        <v-col class="pl-0" cols="12">
+          <h2 class="h2">Invite team members to your application</h2>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="pa-0 ma-0" cols="10">
+          <span>
+            <p class="body-lg text--base-darkest">
+              In this section, you will be able to invite people from your
+              application’s development team and assign permission levels, so
+              they can contribute to your workspaces within the
+              <span class="font-weight-bold">{{ csp }}</span> console.
+            </p>
+            <p class="body-lg text--base-darkest">
+              In order to invite team members, you must set up at least one
+              application within your portfolio. Please
+              <a
+                href="/wizard/addapplication"
+                class="link-body-md font-weight-bold"
               >
-                <div class="mr-1 mt-n2">
-                  <v-icon class="icon-20" role="presentation"
-                    >control_point</v-icon
-                  >
-                </div>
-                <div class="body font-weight-bold">Invite Team Members</div>
-              </v-btn>
-
-          <!-- <v-btn
-            @keydown.native.enter="openDialog($event, 'add root admins')"
-            @click="openDialog($event, 'add root admins')"
-          >Add RAs</v-btn>
-          <v-btn
-            @keydown.native.enter="openDialog($event, 'edit root admin', 'rootster.adminster@mail.mil')"
-            @click="openDialog($event, 'edit root admin', 'rootster.adminster@mail.mil')"
-          >Edit an RA</v-btn>
-          <v-btn
-            @keydown.native.enter="openDialog($event, 'edit member', 'bart.bartson@mail.mil')"
-            @click="openDialog($event, 'edit member', 'bart.bartson@mail.mil')"
-          >edit bart</v-btn>
-          <v-btn
-            @keydown.native.enter="openDialog($event, 'edit member', 'adam.adamson@mail.mil')"
-            @click="openDialog($event, 'edit member', 'adam.adamson@mail.mil')"
-          >edit adam</v-btn>
- -->
-            </v-col>
-          </v-col>
-        </v-row>
-        <v-row v-if="!members">
-          <v-col cols="12" class="pa-0 ma-0">
-            <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
-              <v-card-text class="text-center">
-                <v-row class="d-flex justify-space-around pt-4">
-                  <v-col>
-                    <span class="body-lg text--base-dark">{{ message }}</span>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" class="ma-0">
-            <v-data-table
-              class="review-table"
-              :headers="headers"
-              :items="members"
-              hide-default-footer
-            >
-              <template v-slot:header.display_name="{ header }">
-                <div class="label font-weight-bold text--base-dark">
-                  {{ header.text }}
-                </div>
-              </template>
-              <template v-slot:header.workplace_access="{ header }">
-                <div class="label font-weight-bold text--base-dark">
-                  {{ header.text }}
-                </div>
-              </template>
-              <template class="hello" v-slot:item.display_name="{ item }">
-                <div class="body font-weight-bold pt-6">
-                  {{ item.display_name }}
-                </div>
-                <div class="body text--base-dark pb-6">
-                  {{ item.email }}
-                </div>
-              </template>
-              <template v-slot:item.workplace_access="{ item }">
-                <div class="d-flex justify-space-between">
-                  <div class="body text--base-dark pt-3">
-                    {{ item.workplace_access }}
-                  </div>
-
-                  <v-menu
-                    class="table-menu"
-                    transition="slide-y-transition"
-                    offset-y
-                    nudge-left="190"
-                    tabindex="2"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        :disabled="isDisabled(item.workplace_access)"
-                        class="table-row-menu-button pa-0"
-                        tabindex="1"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-icon class="icon-18 width-auto">more_horiz</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list class="table-row-menu pa-0">
-                      <v-list-item
-                        tabindex="1"
-                        v-for="(item, i) in options"
-                        :key="i"
-                      >
-                        <v-list-item-title class="body-lg py-2">{{
-                          item
-                        }}</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </div>
-              </template>
-            </v-data-table>
-          </v-col>
-        </v-row>
-
+                add an application
+              </a>
+              to continue.
+            </p>
+          </span>
+        </v-col>
+      </v-row>
+    </div>
+    <RootAdminView v-if="editType === 'portfolio'" />
+    <TeamView v-if="editType === 'application'" />
+    <v-row v-if="editType !== 'noEdit'">
+      <v-col>
         <v-row class="pt-7">
           <v-col cols="9" class="py-0">
             <v-btn
@@ -331,58 +187,33 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ManageMembers from "@/wizard/Step4/components/ManageMembers.vue";
-import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
-import { Application, Environment } from "../../../../types/Portfolios";
-import { ApplicationModel, OperatorModel } from "types/Portfolios";
-import { OperationCanceledException } from "typescript";
+import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
+import TeamView from "@/wizard/Step4/views/TeamView.vue";
 
 @Component({
   components: {
     ManageMembers,
+    RootAdminView,
+    TeamView,
   },
 })
 export default class Step_4 extends Vue {
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
-
-  get currentApplication(): ApplicationModel[] {
-    return this.$store.getters.getCurrentApplication;
-  }
-
-  private applicationName = this.$store.state.applicationModels[0].name;
-
-  private message = "You do not have any team members in this application yet.";
+  private createdApplication = this.$store.state.applicationModels;
+  private editType = this.$route.params.type || "noEdit";
   private showPortfolioOwnerText = false;
   private teamPortfolioAccessText = false;
   private teamPermissionsText = false;
   private teamExpectationText = false;
-  private members = [
-    {
-      display_name: "Darth Vader",
-      email: "iam@yourfather.com",
-      workplace_access: "Administrator",
-    },
-    {
-      display_name: "Han Solo",
-      email: "frozen@carbonite.com",
-      workplace_access: "read_only",
-    },
-    {
-      display_name: "Luke Skywalker",
-      email: "lostmy@hand.com",
-      workplace_access: "read_only",
-    },
-  ];
-  private headers = [
-    { text: "Name", value: "display_name", align: "start" },
-    { text: "Workplace Access ", value: "workplace_access", sortable: false },
-  ];
-  private options = ["Edit Info", "Change Role", "Remove team member"];
-
   // methods
-  private handleClick(): void {
-    console.log("clicked");
+
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "teammemberroles",
+      event.type === "keydown",
+    ]);
   }
 
   public openDialog(event: Event, action: string, memberEmail: string): void {
@@ -437,15 +268,8 @@ export default class Step_4 extends Vue {
     ]);
   }
 
-  private isDisabled(workplace_access: string): boolean {
-    if (workplace_access === "Administrator") {
-      return true;
-    }
-    return false;
-  }
-
   public async mounted(): Promise<void> {
-    // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
+    // temp until actually saving data to store
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
 }
