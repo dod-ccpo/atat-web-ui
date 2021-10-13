@@ -1,10 +1,8 @@
 import { AxiosError } from "axios";
-import { NightwatchAssert } from "nightwatch";
 import {
   Application,
   Portfolio,
   PortfolioDraft as PortfolioModel,
-  PortFolioDraftDTO,
   TaskOrder,
 } from "types/Portfolios";
 import { TaskOrderFile } from "types/Wizard";
@@ -71,10 +69,7 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async savePortfolio(
-    id: string,
-    data: PortFolioDraftDTO
-  ): Promise<void> {
+  public async savePortfolio(id: string, data: unknown): Promise<void> {
     const response = await this.client.post(`${id}/portfolio`, data);
     if (response.status !== 201) {
       throw Error(`error occurred saving portfolio draft with id ${id}`);
