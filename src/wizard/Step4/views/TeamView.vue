@@ -319,16 +319,11 @@ export default class TeamView extends Vue {
     ]);
   }
   //Dialog stuff
-  @Prop({ default: "OK" })
-  private okText!: string;
-  @Prop({ default: "40" })
-  private cardWidth!: string;
-  @Prop({ default: "Cancel" })
-  private cancelText!: string;
-  @Prop({ default: true })
-  private hasDialog!: boolean;
-  @Prop({ default: "450" })
-  private dialogWidth!: string;
+  private okText = "Remove Team Member";
+  private cardWidth = "40";
+  private cancelText = "cancel";
+  private hasDialog = true;
+  private dialogWidth = "450";
   @Emit("delete")
   private onDelete(): void {
     this.deleteMemberFromApplication();
@@ -344,7 +339,6 @@ export default class TeamView extends Vue {
       this.message = "You currently don't have any Task Orders saved";
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team. This individual will no longer have access to the application in the cloud console.`;
-      this.okText = "Remove Team Member";
     }
     this.showDialogWhenClicked = true;
   }
