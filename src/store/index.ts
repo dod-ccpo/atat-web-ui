@@ -960,7 +960,7 @@ export default new Vuex.Store({
     },
     validateOperators(context, applicationModel: ApplicationModel): boolean {
       //todo : fill out this funcationlity
-      // const hasAtleastOneRootAdmin = applicationModel.operators && 
+      // const hasAtleastOneRootAdmin = applicationModel.operators &&
       // applicationModel.operators.find((operator: OperatorModel) => operator.access === "administrator") !==  undefined;
 
       // if(applicationModel.operators || )

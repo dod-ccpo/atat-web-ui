@@ -9,7 +9,7 @@
             <span v-if="isRootAdmin">root administrators</span>
             <span v-else>team members</span>
             to
-            {{ currentApplication.name }}
+            {{ isRootAdmin ? portfolio.name : currentApplication.name }}
           </span>
           <span v-if="isEditSingle">
             Update
@@ -256,6 +256,7 @@ import {
   ApplicationModel,
   OperatorModel,
   EnvironmentModel,
+  Portfolio,
 } from "types/Portfolios";
 import { generateUid } from "@/helpers";
 
@@ -394,6 +395,10 @@ export default class ManageMember extends Vue {
     return this.$store.getters.getCurrentApplication;
   }
 
+  get portfolio(): Portfolio {
+    return this.$store.getters.getPortfolio;
+  }
+
   get rolesForAllEnvsList(): unknown {
     return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
   }
@@ -505,16 +510,16 @@ export default class ManageMember extends Vue {
   }
 
   public initMemberModal(props: any): void {
-    this.assignDifferentRolesForEnvs = true;
-    this.roleForAllEnvs = this.rolesList[0].role_value;
-    this.initEnvRoleDropdowns(this.roleForAllEnvs);
-
     if (props && Object.prototype.hasOwnProperty.call(props, "isRootAdmin")) {
       this.isRootAdmin = props.isRootAdmin;
     }
     if (props && Object.prototype.hasOwnProperty.call(props, "isEditSingle")) {
       this.isEditSingle = props.isEditSingle;
     }
+
+    this.assignDifferentRolesForEnvs = true;
+    this.roleForAllEnvs = this.rolesList[0].role_value;
+    this.initEnvRoleDropdowns(this.roleForAllEnvs);
 
     if (this.isEditSingle) {
       // editing a single member

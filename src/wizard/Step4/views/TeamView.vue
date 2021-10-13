@@ -317,8 +317,8 @@ export default class TeamView extends Vue {
       memberEmail: string | null;
     } = {
       isRootAdmin: false,
-      isEditSingle: true,
-      memberEmail: this.member.email,
+      isEditSingle: false,
+      memberEmail: "",
     };
     const currentTarget = event.currentTarget as HTMLElement;
     if (
