@@ -17,7 +17,7 @@ module.exports = {
     "@vue/prettier/@typescript-eslint",
     "plugin:cypress/recommended",
   ],
-   parserOptions: {
+  parserOptions: {
     ecmaVersion: "es2020",
   },
   ignorePatterns: ["**/*.min.js"],

@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
 import {
   Application,
+  ApplicationData,
   Portfolio,
   PortfolioDraft as PortfolioModel,
   TaskOrder,
@@ -188,7 +189,7 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async getApplications(id: string): Promise<Application[] | null> {
+  public async getApplications(id: string): Promise<ApplicationData | null> {
     try {
       const response = await this.client.get(`${id}/application`);
 
@@ -198,8 +199,12 @@ export default class PortfolioDraftsApi {
         );
       }
 
-      const { applications } = response.data;
-      return applications;
+      const applicationData: ApplicationData = {
+        applications: response.data.applications || [],
+        operators: response.data.operators || [],
+      };
+
+      return applicationData;
     } catch (error) {
       const axiosError = error as AxiosError;
 
