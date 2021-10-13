@@ -34,17 +34,17 @@
             receive an invitation to access the cloud console.
           </p>
 
-          <!-- :value="memberToEdit.length ? memberToEdit[0].display_name : ''" -->
+            <!-- v-model="memberToEdit[0].display_name" -->
           <atat-text-field
-            v-model="memberToEdit[0].display_name"
+            :value="memberToEdit.length ? memberToEdit[0].display_name : ''"
             label="Display Name"
             :helpText="displayNameHelpText"
             :rules="rules.display_name"
           />
 
-          <!-- :value="memberToEdit.length ? memberToEdit[0].email : ''" -->
+            <!-- v-model="memberToEdit[0].email" -->
           <atat-text-field
-            v-model="memberToEdit[0].email"
+            :value="memberToEdit.length ? memberToEdit[0].email : ''"
             label="Email Address"
             :rules="rules.email"
             aria-describedby="EmailInputInstructions"
@@ -241,7 +241,7 @@
           color="primary"
           class="px-5"
           @click="saveToStore"
-          :disabled="!valid"
+          :disabled="submitDisabled"
         >
           {{ buttonText }}
           <span
@@ -265,10 +265,8 @@ import {
   EnvironmentModel,
 } from "types/Portfolios";
 import { generateUid } from "@/helpers";
-// import { ValidatableForm } from "types/Wizard";
 
 @Component({})
-// export default class ManageMember extends Vue implements ValidatableForm {
 export default class ManageMember extends Vue {
   /*
 ██████   █████  ████████  █████
@@ -328,6 +326,7 @@ export default class ManageMember extends Vue {
   within ATAT.`;
   private emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
   private valid = true;
+  private validFoo = this.addMembersFormIsValid();
 
   /*
 ██████  ██████   ██████  ██████  ███████
@@ -409,18 +408,21 @@ export default class ManageMember extends Vue {
     };
   }
 
-  // get Form(): Vue & { validate: () => boolean } {
-  //   return this.$refs.form as Vue & { validate: () => boolean };
-  // }
+  get addMembersFormInvalid(): boolean {
+    if (!this.isEditSingle) {
+      return this.invalidEmailCount > 0 || this.validEmailCount === 0;
+    } else {
+      return false;
+    }
+  }
 
-  // get submitDisabled(): Promise<boolean> {
-  //   if (!this.isEditSingle) {
-  //     return this.isAddMembersValid();
-  //   } else {
-  //     // need to validate editing a single member
-  //     return this.validateForm();
-  //   }
-  // }
+  get submitDisabled(): boolean {
+    if (this.isEditSingle) {
+      return !this.valid;
+    } else {
+      return this.invalidEmailCount > 0 || this.validEmailCount === 0;
+    }
+  }
 
   get buttonText(): string {
     return this.isEditSingle ? "Update" : "Add Team Members";
@@ -530,18 +532,9 @@ export default class ManageMember extends Vue {
     this.setEnvironmentRoleDropdowns(this.roleForAllEnvs);
   }
 
-  public async isAddMembersValid(): Promise<boolean> {
+  public addMembersFormIsValid(): boolean {
     return this.invalidEmailCount > 0 || this.validEmailCount === 0;
   }
-
-  // public async validateForm(): Promise<boolean> {
-  //   let validated = false;
-  //   await this.$nextTick(() => {
-  //     const formToValidate = this.Form;
-  //     validated = formToValidate.validate();
-  //   });
-  //   return validated;
-  // }
 
   public getMemberToEdit(memberEmail: string): OperatorModel | null {
     debugger;
