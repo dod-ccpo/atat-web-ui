@@ -184,7 +184,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Emit } from "vue-property-decorator";
+import { Component, Emit, Watch } from "vue-property-decorator";
 import { ApplicationModel } from "../../../../types/Portfolios";
 
 @Component({})
@@ -325,6 +325,15 @@ export default class TeamView extends Vue {
       "90",
     ]);
   }
+  @Watch("$store.state.dialog.isDisplayed")
+  setFocus(newVal: boolean): void {
+    if (!newVal) {
+      this.applicationMembers = [];
+      this.membersData = [];
+      this.setMemberTableData();
+      this.tranformData();
+    }
+  }
   //Dialog stuff
   private okText = "Remove Team Member";
   private cardWidth = "40";
@@ -377,16 +386,16 @@ export default class TeamView extends Vue {
       });
     }
     const itemToRemoveFromMembersData = this.membersData.findIndex(
-      (m: any ) => m.email === this.member.email
+      (m: any) => m.email === this.member.email
     );
     this.membersData.splice(itemToRemoveFromMembersData, 1);
 
     //in case the user is removing from filtered data
-    if (this.filteredData.length>0){
+    if (this.filteredData.length > 0) {
       const itemToRemoveFromFilteredData = this.filteredData.findIndex(
-        (m: any ) => m.email === this.member.email
+        (m: any) => m.email === this.member.email
       );
-      this.filteredData.splice(itemToRemoveFromFilteredData , 1);
+      this.filteredData.splice(itemToRemoveFromFilteredData, 1);
     }
   }
 
@@ -394,7 +403,7 @@ export default class TeamView extends Vue {
     return this.$store.getters.getCurrentApplication;
   }
 
-    private openSideDrawer(event: Event): void {
+  private openSideDrawer(event: Event): void {
     this.$store.dispatch("openSideDrawer", [
       "teammemberroles",
       event.type === "keydown",
