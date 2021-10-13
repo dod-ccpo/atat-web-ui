@@ -32,6 +32,7 @@
           </p>
 
           <atat-text-field
+            id="editDisplayName"
             :value.sync="memberToEditName"
             label="Display Name"
             :helpText="displayNameHelpText"
@@ -39,6 +40,7 @@
           />
 
           <atat-text-field
+            id="editEmail"
             :value.sync="memberToEditEmail"
             label="Email Address"
             :rules="rules.email"

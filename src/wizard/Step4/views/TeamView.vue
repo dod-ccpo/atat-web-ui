@@ -365,9 +365,7 @@ export default class TeamView extends Vue {
   }
 
   private setMember(item: any) {
-    console.log(this.member);
     this.member = item;
-    console.log(this.member);
   }
 
   private deleteMemberFromApplication() {
