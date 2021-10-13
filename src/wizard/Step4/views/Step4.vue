@@ -78,7 +78,7 @@
                 <div class="body font-weight-bold">Invite Team Members</div>
               </v-btn>
 
-          <v-btn
+          <!-- <v-btn
             @keydown.native.enter="openDialog($event, 'add root admins')"
             @click="openDialog($event, 'add root admins')"
           >Add RAs</v-btn>
@@ -94,7 +94,7 @@
             @keydown.native.enter="openDialog($event, 'edit member', 'adam.adamson@mail.mil')"
             @click="openDialog($event, 'edit member', 'adam.adamson@mail.mil')"
           >edit adam</v-btn>
-
+ -->
             </v-col>
           </v-col>
         </v-row>
