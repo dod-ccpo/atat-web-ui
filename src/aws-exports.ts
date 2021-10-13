@@ -3,9 +3,9 @@ import { Amplify } from "aws-amplify";
 /**
  * NOTE TO DEVS: Modify these values to test in other environments.
  */
-const USER_POOL_ID = "us-gov-west-1_0lfLVq0Kh";
-const USER_POOL_CLIENT_ID = "7t6ecl3cmes30gj6nsjvce5rc1";
-const ENVIRONMENT_ID = "at6532";
+const USER_POOL_ID = "us-gov-west-1_bmGhvyw5q";
+const USER_POOL_CLIENT_ID = "7vuvs1b4mltqu09tfuu7hcbil1";
+const ENVIRONMENT_ID = "dev";
 /* END MODIFICATIONS */
 
 const REGION = USER_POOL_ID.split("_")[0];
