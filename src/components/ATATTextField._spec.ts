@@ -20,6 +20,7 @@ describe("Testing ATATTextField Component", () => {
       vuetify,
     });
   });
+  
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });

@@ -18,6 +18,7 @@ describe("Testing ATATTextArea Component", () => {
       });
     });
 
+    
   it("renders successfully", async () => {
     await expect(wrapper.exists()).toBe(true);
   });

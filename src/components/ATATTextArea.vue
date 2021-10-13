@@ -65,6 +65,7 @@ export default class ATATTextArea extends VTextarea {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: false }) private optional!: boolean;
 
+
   //data
   private rounded = false;
   private appendedOuterIcon = "";
