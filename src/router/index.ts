@@ -9,6 +9,7 @@ Vue.use(VueRouter);
 const routes: Array<RouteConfig> = [
   {
     path: "/",
+    alias: ["/index.html"],
     name: "Home",
     component: Home,
   },

@@ -7,15 +7,16 @@ import {
   Application,
   ApplicationModel,
   EnvironmentModel,
+  OperatorModel,
   Portfolio,
   PortfolioDraft,
-  PortFolioDraftDTO,
   TaskOrder,
 } from "types/Portfolios";
 import PortfolioDraftsApi from "@/api/portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { generateUid } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
+import moment from "moment";
 
 Vue.use(Vuex);
 
@@ -131,11 +132,17 @@ const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
 
     const taskOrders: TaskOrder = {
       ...baseModel,
+      task_order_file: {
+        id: model.task_order_file.id,
+        name: model.task_order_file.name,
+      },
       clins: model.clins.map((clin) => {
         return {
           ...clin,
           total_clin_value: Number(clin.total_clin_value),
           obligated_funds: Number(clin.obligated_funds),
+          pop_start_date: moment(clin.pop_start_date).format("YYYY-MM-DD"),
+          pop_end_date: moment(clin.pop_end_date).format("YYYY-MM-DD"),
         };
       }),
     };
@@ -155,6 +162,7 @@ const mapApplications = (
       operators: model.operators
         ? model.operators.map((op) => {
             return {
+              id: op.id,
               access: op.access,
               display_name: op.display_name,
               email: op.email,
@@ -191,11 +199,11 @@ const StepModelIndices: Record<number, number> = {
 /*
 █████████████████████████████████████████
 
-███████ ████████  █████  ████████ ███████ 
-██         ██    ██   ██    ██    ██      
-███████    ██    ███████    ██    █████   
-     ██    ██    ██   ██    ██    ██      
-███████    ██    ██   ██    ██    ███████ 
+███████ ████████  █████  ████████ ███████
+██         ██    ██   ██    ██    ██
+███████    ██    ███████    ██    █████
+     ██    ██    ██   ██    ██    ██
+███████    ██    ██   ██    ██    ███████
 
 █████████████████████████████████████████
 */
@@ -209,7 +217,14 @@ export default new Vuex.Store({
     isSideDrawerFocused: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
-    dialog: {},
+    dialog: {
+      isDisplayed: false,
+      type: "",
+      setFocus: false,
+      width: "",
+      height: "",
+      props: null,
+    },
     portfolioDrafts: [],
     portfolios: [],
     taskOrderModels: [],
@@ -218,9 +233,9 @@ export default new Vuex.Store({
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
-    currentApplicationId: "2134410376-852811418-2580849115-1872217995",
     currentStepNumber: 1,
     currentPortfolioId: "",
+    currentApplicationId: "",
     currentStepModel: {},
     portfolioSteps: [
       {
@@ -301,15 +316,15 @@ export default new Vuex.Store({
       },
     ],
     user: {
-      title: "Ms.",
-      given_name: "Maria",
-      family_name: "Missionowner",
-      email: "maria.missionowner-civ@mail.mil",
-      phone_number: "(555)-555-5555",
-      service_branch: "U.S. Army",
-      citizenship: "United States",
-      dod_id: "1234567890",
-      designation: "Civilian",
+      title: "",
+      given_name: "",
+      family_name: "",
+      email: "",
+      phone_number: "",
+      service_branch: "",
+      citizenship: "",
+      dod_id: "",
+      designation: "",
     },
     validationStamp: {},
     toast: {
@@ -321,17 +336,35 @@ export default new Vuex.Store({
   /*
   ███████████████████████████████████████████████████████████████████████████
 
-  ███    ███ ██    ██ ████████  █████  ████████ ██  ██████  ███    ██ ███████ 
-  ████  ████ ██    ██    ██    ██   ██    ██    ██ ██    ██ ████   ██ ██      
-  ██ ████ ██ ██    ██    ██    ███████    ██    ██ ██    ██ ██ ██  ██ ███████ 
-  ██  ██  ██ ██    ██    ██    ██   ██    ██    ██ ██    ██ ██  ██ ██      ██ 
-  ██      ██  ██████     ██    ██   ██    ██    ██  ██████  ██   ████ ███████ 
+  ███    ███ ██    ██ ████████  █████  ████████ ██  ██████  ███    ██ ███████
+  ████  ████ ██    ██    ██    ██   ██    ██    ██ ██    ██ ████   ██ ██
+  ██ ████ ██ ██    ██    ██    ███████    ██    ██ ██    ██ ██ ██  ██ ███████
+  ██  ██  ██ ██    ██    ██    ██   ██    ██    ██ ██    ██ ██  ██ ██      ██
+  ██      ██  ██████     ██    ██   ██    ██    ██  ██████  ██   ████ ███████
 
   ███████████████████████████████████████████████████████████████████████████
   */
   mutations: {
     changeLoginStatus(state, status: boolean) {
       state.loginStatus = status;
+    },
+    changeUser(state, user: any) {
+      // These attributes will come across directly and cleanly from the
+      // u[stream identity provider and Cognito
+      state.user.given_name = user?.given_name ?? "";
+      state.user.family_name = user?.family_name ?? "";
+      state.user.email = user?.email ?? "Not Provided";
+      // This field will have to be a custom Cognito attribute and so
+      // the source object may have a different format.
+      state.user.dod_id = user?.["custom:dod_id"] ?? "1234567890";
+      state.user.citizenship = user?.["custom:citizenship"] ?? "United States";
+      state.user.designation = user?.["custom:designation"] ?? "Civilian";
+      // This field may not be available from our identity provider
+      state.user.phone_number = user?.phone ?? "(555) 555-5555";
+      // There is not currently a known way to get this information from
+      // the identity provider.
+      state.user.service_branch = "U.S. Army";
+      state.user.title = "Ms.";
     },
     changeDialog(state, dialogProps: Dialog) {
       state.dialog = dialogProps;
@@ -448,6 +481,9 @@ export default new Vuex.Store({
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
     },
+    doSetApplicationId(state, id) {
+      state.currentApplicationId = id;
+    },
     updatePortfolioDrafts(state, portfolioDrafts: PortfolioDraft[]) {
       Vue.set(state, "portfolioDrafts", [...portfolioDrafts]);
     },
@@ -473,6 +509,14 @@ export default new Vuex.Store({
         const taskOrderModel: TaskOrderModel = {
           id: generateUid(),
           ...taskOrder,
+          task_order_file: {
+            id: taskOrder.task_order_file.id,
+            name: taskOrder.task_order_file.name,
+            created_at: "",
+            updated_at: "",
+            size: 0,
+            status: "",
+          },
         };
         return taskOrderModel;
       });
@@ -581,6 +625,12 @@ export default new Vuex.Store({
         appModel.operators = operators;
       }
     },
+
+    doUpdateRootAdministrators(state, operators: OperatorModel[]) {
+      const rootAdmins: OperatorModel[] = state.portfolioOperators;
+      rootAdmins.push(...operators);
+    },
+
     doToast(state, props) {
       state.toast = props;
     },
@@ -588,24 +638,29 @@ export default new Vuex.Store({
   /*
   ██████████████████████████████████████████████████████
 
-   █████   ██████ ████████ ██  ██████  ███    ██ ███████ 
-  ██   ██ ██         ██    ██ ██    ██ ████   ██ ██      
-  ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
-  ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
-  ██   ██  ██████    ██    ██  ██████  ██   ████ ███████ 
+   █████   ██████ ████████ ██  ██████  ███    ██ ███████
+  ██   ██ ██         ██    ██ ██    ██ ████   ██ ██
+  ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████
+  ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
+  ██   ██  ██████    ██    ██  ██████  ██   ████ ███████
 
   ██████████████████████████████████████████████████████
   */
   actions: {
-    login({ commit }) {
+    login({ commit }, user) {
       commit("changeLoginStatus", true);
+      commit("changeUser", user);
     },
     logout({ commit }) {
       commit("changeLoginStatus", false);
+      commit("changeUser", null);
       window.sessionStorage.clear();
     },
     validateStep({ commit }, step: number) {
       commit("setStepValidated", step);
+    },
+    setCurrentApplicationId({ commit }, applicationId) {
+      commit("doSetApplicationId", applicationId);
     },
     displayNavSideBarDisplayed({ commit }, routeName: string) {
       commit("setNavSideBarDisplayed", routeName);
@@ -749,8 +804,7 @@ export default new Vuex.Store({
     },
     async saveStep1({ state, commit }, model: any) {
       // build data from step model
-      const data: PortFolioDraftDTO = {
-        id: state.currentPortfolioId,
+      const data = {
         name: model.name,
         description: model.description,
         csp: model.csp,
@@ -893,6 +947,7 @@ export default new Vuex.Store({
       if (taskOrders !== null) {
         //store the tasks orders
         commit("setCurrentTaskOrders", taskOrders);
+        commit("doSaveStepModel", [createStepTwoModel(), 2, true]);
       }
     },
     async loadStep3Data({ commit }, draftId: string): Promise<void> {
@@ -900,11 +955,24 @@ export default new Vuex.Store({
       if (applications != null) {
         //store the applications
         commit("setCurrentApplications", applications);
+        commit("doSaveStepModel", [createStepThreeModel(), 3, true]);
       }
+    },
+    validateOperators(context, applicationModel: ApplicationModel): boolean {
+      //todo : fill out this funcationlity
+      // const hasAtleastOneRootAdmin = applicationModel.operators &&
+      // applicationModel.operators.find((operator: OperatorModel) => operator.access === "administrator") !==  undefined;
+
+      // if(applicationModel.operators || )
+
+      //temporary fix to allow the placeholders
+      console.log(context);
+      console.log(applicationModel);
+      return false;
     },
     openDialog(
       { commit },
-      [dialogType, setFocusOnDialog, dialogWidth, dialogHeight]
+      [dialogType, setFocusOnDialog, dialogWidth, dialogHeight, props]
     ) {
       const dialogProps: Dialog = {
         isDisplayed: true,
@@ -912,6 +980,18 @@ export default new Vuex.Store({
         setFocus: setFocusOnDialog,
         width: dialogWidth,
         height: dialogHeight,
+        props: props,
+      };
+      commit("changeDialog", dialogProps);
+    },
+    initDialog({ commit }) {
+      const dialogProps: Dialog = {
+        isDisplayed: false,
+        type: "",
+        setFocus: false,
+        width: "",
+        height: "",
+        props: null,
       };
       commit("changeDialog", dialogProps);
     },
@@ -928,6 +1008,9 @@ export default new Vuex.Store({
     },
     updateApplicationOperators({ commit }, [appId, operators]) {
       commit("doUpdateApplicationOperators", [appId, operators]);
+    },
+    updateRootAdministrators({ commit }, operators: OperatorModel[]) {
+      commit("doUpdateRootAdministrators", operators);
     },
     toast({ commit }, [message, contentClass]) {
       const toastProps: Toast = {
@@ -946,11 +1029,11 @@ export default new Vuex.Store({
   /*
   ██████████████████████████████████████████████████████████
 
-   ██████  ███████ ████████ ████████ ███████ ██████  ███████ 
-  ██       ██         ██       ██    ██      ██   ██ ██      
-  ██   ███ █████      ██       ██    █████   ██████  ███████ 
-  ██    ██ ██         ██       ██    ██      ██   ██      ██ 
-   ██████  ███████    ██       ██    ███████ ██   ██ ███████ 
+   ██████  ███████ ████████ ████████ ███████ ██████  ███████
+  ██       ██         ██       ██    ██      ██   ██ ██
+  ██   ███ █████      ██       ██    █████   ██████  ███████
+  ██    ██ ██         ██       ██    ██      ██   ██      ██
+   ██████  ███████    ██       ██    ███████ ██   ██ ███████
 
   ██████████████████████████████████████████████████████████
   */
@@ -964,7 +1047,7 @@ export default new Vuex.Store({
     getisUserAuthorizedToProvisionCloudResources(state) {
       return state.isUserAuthorizedToProvisionCloudResources;
     },
-    getNavBarItems(): Navs {
+    getNavBarItems(state): Navs {
       return {
         logout: {
           id: "atat-nav__logout",
@@ -978,7 +1061,7 @@ export default new Vuex.Store({
             {
               id: 1,
               cssClass: "atat-header-nav__user-display-name",
-              title: "Maria Missionowner",
+              title: state.user.given_name + " " + state.user.family_name,
               newWindow: false,
               icon: "person",
               iconPlacement: "left",
@@ -1011,7 +1094,7 @@ export default new Vuex.Store({
       return state.portfolios;
     },
     getPortfolioById: (state) => (id: string) => {
-      const values = Object.values(state.portfolios);
+      const values = Object.values(state.portfolioDrafts);
       const portfoliobyId = values.filter(
         (portfolio: Portfolio) => portfolio.id === id
       );
@@ -1048,17 +1131,16 @@ export default new Vuex.Store({
     getSideDrawer: (state) => state.sideDrawer,
     getTaskOrders: (state) => state.taskOrderModels,
     getApplications: (state) => state.applicationModels,
-    getCurrentApplicationId: (state) => state.currentApplicationId,
-    getCurrentApplication: (state) => {
-      // const applicationIndex = getEntityIndex(
-      //   state.applicationModels,
-      //   (application: ApplicationModel) =>
-      //     application.id === state.currentApplicationId);
-      // return state.applicationModels[applicationIndex];
-
-      // EJY temp until table wired up with state.currentApplication
-      return state.applicationModels[0];
-    },
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
+    getCurrentApplication: (state) => {
+      const applicationIndex = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) =>
+          application.id === state.currentApplicationId
+      );
+      return state.applicationModels[applicationIndex];
+    },
+    getSelectedCSP: (state) => state.selectedCSP,
+    getPortfolioOperators: (state) => state.portfolioOperators,
   },
 });

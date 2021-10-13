@@ -3,10 +3,15 @@ node_modules
 /dist
 /coverage
 
-/tests/e2e/logs/
+# Cypress 
+/log/**
+/log
 /coverage/
-/tests/e2e/reports/**
-/tests_output/**
+/results/**
+browserstack.json
+/cypress/videos/**
+/cypress/screenshots/**
+
 
 # local env files
 .env.local
