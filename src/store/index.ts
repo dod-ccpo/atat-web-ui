@@ -650,10 +650,6 @@ export default new Vuex.Store({
       appOperators[opIndex].email = email;
       // TODO - check if was originally application-level operator, 
       // but then changed to env-level operator
-      // const itemToRemoveFromMembersData = this.membersData.findIndex(
-      //   (m: any) => m.email === this.member.email
-      // );
-
     },
   },
   /*

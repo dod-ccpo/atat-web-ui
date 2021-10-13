@@ -841,10 +841,6 @@ export default class ManageMember extends Vue {
     if (names.length > 1 && names[1].length === 1) {
       names.splice(1, 1);
     }
-
-    // EJY remove console log after functional testing complete
-    console.log("Name parsed from email: ", names.join(" "));
-
     return names.join(" ");
   }
 
