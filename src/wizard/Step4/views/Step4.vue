@@ -189,7 +189,6 @@ import { Component } from "vue-property-decorator";
 import ManageMembers from "@/wizard/Step4/components/ManageMembers.vue";
 import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
 import TeamView from "@/wizard/Step4/views/TeamView.vue";
-
 @Component({
   components: {
     ManageMembers,
@@ -198,6 +197,7 @@ import TeamView from "@/wizard/Step4/views/TeamView.vue";
   },
 })
 export default class Step_4 extends Vue {
+  private incomingModel!: ApplicationModel;
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -269,6 +269,35 @@ export default class Step_4 extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    this.incomingModel = JSON.parse(
+      JSON.stringify(this.$store.getters.getCurrentApplication)
+    ) as ApplicationModel;
+    // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
+    // this.$store.dispatch("saveStepModel", [{}, 4, true]);
+  }
+
+  private hasChanges(): boolean {
+    let theSame = true;
+    const serializedIncoming = JSON.stringify(this.incomingModel);
+    const serialiedOutgoing = JSON.stringify(
+      this.$store.getters.getCurrentApplication
+    );
+    theSame = serializedIncoming === serialiedOutgoing;
+
+    return !theSame;
+  }
+
+  public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    if (this.hasChanges()){
+      debugger;
+      await this.$store.dispatch("saveStepData", 3);
+    }
+
+    next();
     // temp until actually saving data to store
     this.$store.dispatch("saveStepModel", [{}, 4, true]);
   }
