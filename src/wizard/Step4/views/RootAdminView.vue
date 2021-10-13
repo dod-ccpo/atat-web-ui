@@ -235,7 +235,6 @@ export default class RootAdminView extends Vue {
       this.message = "You currently don't have any Task Orders saved";
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.currentPortfolio.name}. This individual will no longer have access to any of your applications in the cloud console.`;
-      this.okText = "Remove Team Member";
     }
     this.showDialogWhenClicked = true;
   }
