@@ -130,7 +130,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        :disabled="isDisabled(item.workplace_roles)"
+                        :disabled="isDisabled(item.workspace_roles)"
                         class="table-row-menu-button"
                         tabindex="1"
                         v-bind="attrs"
@@ -196,7 +196,7 @@ export default class TeamView extends Vue {
           id: op.id,
           display_name: op.display_name || op.first_name + " " + op.last_name,
           email: op.email,
-          workspace_roles: "Root Administrator",
+          workspace_roles: "Root administrator",
         };
         this.applicationMembers.push(opObj);
       });
@@ -260,7 +260,7 @@ export default class TeamView extends Vue {
   }
 
   private isDisabled(workplace_access: string): boolean {
-    if (workplace_access === "Root Administrator") {
+    if (workplace_access.includes("Root administrator")) {
       return true;
     }
     return false;

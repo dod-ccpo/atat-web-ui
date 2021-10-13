@@ -141,6 +141,10 @@ export default class SummaryReview extends Vue {
   private applicationData: any = [];
   private handleNameClick(item: any): void {
     if (item.portfolio) {
+      if (item.name === "Untitled") {
+        return;
+      }
+
       this.$router.push({
         name: editmembers.name,
         params: {

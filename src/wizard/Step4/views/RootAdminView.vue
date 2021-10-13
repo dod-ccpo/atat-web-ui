@@ -200,7 +200,6 @@ export default class RootAdminView extends Vue {
   }
   public async mounted(): Promise<void> {
     // temp until actually saving data to store
-    console.log(this.currentPortfolio.name);
   }
 }
 </script>

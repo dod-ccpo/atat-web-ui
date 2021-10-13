@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div v-if="createdApplication.length === 0">
+    <div v-if="editType === 'noEdit'">
       <v-row>
         <div id="inputWidthFaker" ref="inputWidthFaker"></div>
         <v-col class="pl-0" cols="12">
@@ -33,7 +33,7 @@
     </div>
     <RootAdminView v-if="editType === 'portfolio'" />
     <TeamView v-if="editType === 'application'" />
-    <v-row v-if="createdApplication.length > 0">
+    <v-row v-if="editType !== 'noEdit'">
       <v-col>
         <v-row class="pt-7">
           <v-col cols="9" class="py-0">
@@ -202,12 +202,19 @@ export default class Step_4 extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private createdApplication = this.$store.state.applicationModels;
-  private editType = this.$route.params.type;
+  private editType = this.$route.params.type || "noEdit";
   private showPortfolioOwnerText = false;
   private teamPortfolioAccessText = false;
   private teamPermissionsText = false;
   private teamExpectationText = false;
   // methods
+
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "teammemberroles",
+      event.type === "keydown",
+    ]);
+  }
 
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
