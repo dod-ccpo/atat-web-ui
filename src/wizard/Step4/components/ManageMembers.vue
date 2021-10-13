@@ -28,7 +28,7 @@
             to
             {{ selectedCSP ? selectedCSP : "your selected CSP" }} and
             {{ memberToEditName ? memberToEditName : "the member" }}
-            receive an invitation to access the cloud console.
+            will receive an invitation to access the cloud console.
           </p>
 
           <atat-text-field
@@ -165,13 +165,12 @@
 
           <h3>
             <span v-if="isEditSingle">
-              Change
-              {{ memberToEditName ? memberToEditName : "Member" }}’s Role
+              Change Role
             </span>
             <span v-if="!isEditSingle">Team Member Roles</span>
           </h3>
           <p>
-            Choose what type of role people will have in
+            Choose what type of role {{ isEditSingle ? "this individual" : "people" }} will have in
             <span v-if="isEditSingle">{{ currentApplication.name }}.</span>
             <span v-else>your application.</span>
             <br />

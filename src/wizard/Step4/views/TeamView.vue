@@ -196,7 +196,7 @@ export default class TeamView extends Vue {
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "workspace_roles", sortable: false },
   ];
-  private options = ["Edit Info", "Change Role", "Remove team member"];
+  private options = ["Edit info and roles", "Remove team member"];
   private applicationMembers: {
     id: string;
     display_name: string;
@@ -323,7 +323,7 @@ export default class TeamView extends Vue {
     const currentTarget = event.currentTarget as HTMLElement;
     if (
       currentTarget &&
-      currentTarget.innerText.toLowerCase() === "edit info"
+      currentTarget.innerText.toLowerCase() === "edit info and roles"
     ) {
       memberProps = {
         isRootAdmin: false,
@@ -359,7 +359,7 @@ export default class TeamView extends Vue {
     if (item.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
-    } else if (item.toLowerCase() === "edit info") {
+    } else if (item.toLowerCase() === "edit info and roles") {
       this.openDialog(event);
     }
   }
