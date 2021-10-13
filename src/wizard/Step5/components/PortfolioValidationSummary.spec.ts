@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import Vuex from "vuex";
-import VueRouter from 'vue-router';
+import VueRouter from "vue-router";
 import store from "../../../store/index";
 import { createLocalVue, mount } from "@vue/test-utils";
 import PortfolioValidationSummary from "@/wizard/Step5/components/PortfolioValidationSummary.vue";
@@ -15,7 +15,7 @@ describe("Testing PortfolioValidationSummary Component", () => {
   const router = new VueRouter();
   let vuetify: any;
   let wrapper: any;
-  let item = {
+  const item = {
     id: "75",
     title: "Portfolio Validation Summary",
     description: "Portfolio Validation Summary",
@@ -31,11 +31,11 @@ describe("Testing PortfolioValidationSummary Component", () => {
       vuetify,
       propsData: {
         items: {
-                   id: "75",
-                   title: "Portfolio Validation Summary",
-                   description: "Portfolio Validation Summary",
-                   name: "Portfolio Validation Summary",
-                 },
+          id: "75",
+          title: "Portfolio Validation Summary",
+          description: "Portfolio Validation Summary",
+          name: "Portfolio Validation Summary",
+        },
       },
     });
   });
@@ -44,13 +44,10 @@ describe("Testing PortfolioValidationSummary Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('Review button click success', async () => {
-      const editButton = wrapper.find('button');
-      expect(editButton.exists()).toBe(true);
-      await editButton.trigger("click");
-      await wrapper.vm.onReviewPortfolioItem(item);
+  it("Review button click success", async () => {
+    const editButton = wrapper.find("button");
+    expect(editButton.exists()).toBe(true);
+    await editButton.trigger("click");
+    await wrapper.vm.onReviewPortfolioItem(item);
   });
-
-
-
 });

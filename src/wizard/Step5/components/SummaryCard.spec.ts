@@ -13,14 +13,12 @@ describe("Testing SummaryCard Component", () => {
   let vuetify: any;
   let wrapper: any;
 
-
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(SummaryCard, {
       router,
       localVue,
       vuetify,
-
     });
   });
 
@@ -28,11 +26,10 @@ describe("Testing SummaryCard Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('edit button click success', async () => {
-    const editButton = wrapper.find('button');
+  it("edit button click success", async () => {
+    const editButton = wrapper.find("button");
     expect(editButton.exists()).toBe(true);
     await editButton.trigger("click");
     await wrapper.vm.handleClicked("Test");
   });
-
 });
