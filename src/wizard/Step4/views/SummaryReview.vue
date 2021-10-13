@@ -30,6 +30,7 @@
           hide-default-footer
           dense
           :sort-by="['name']"
+          :custom-sort="sortApplications"
         >
           <template v-slot:header.name="{ header }">
             <div
@@ -141,6 +142,29 @@ export default class SummaryReview extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private applicationData: any = [];
+
+  private sortAsc = true;
+  private sortApplications(items: any[], index: number) {
+    this.sortAsc = !this.sortAsc;
+    if (!this.sortAsc) {
+      return items.sort((a, b) => {
+        if (a.id !== undefined && b.id !== undefined) {
+          return a.name > b.name ? 1 : -1;
+        } else {
+          return 0;
+        }
+      });
+    } else {
+      return items.sort((a, b) => {
+        if (a.id !== undefined && b.id !== undefined) {
+          return a.name < b.name ? 1 : -1;
+        } else {
+          return 0;
+        }
+      });
+    }
+  }
+
   private handleNameClick(item: any): void {
     if (item.portfolio) {
       if (item.name === "Untitled") {
