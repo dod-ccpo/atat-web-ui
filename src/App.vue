@@ -12,6 +12,13 @@
     <ATATFooter />
     <ATATDialog />
     <ATATToast />
+    <v-overlay
+      v-if="$store.state.isProgressBarDisplayed"
+      :value="overlay"
+      color="#ffffff"
+      :opacity="0.2"
+    >
+    </v-overlay>
   </v-app>
 </template>
 
