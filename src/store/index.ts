@@ -640,7 +640,10 @@ export default new Vuex.Store({
       portfolioOperators[index].display_name = display_name;
       portfolioOperators[index].email = email;
     },
-    doUpdateApplicationOperatorInfo(state, [applicationId, display_name, email, originalEmail]) {
+    doUpdateApplicationOperatorInfo(
+      state,
+      [applicationId, display_name, email, originalEmail]
+    ) {
       const apps: ApplicationModel[] = state.applicationModels;
       const appIndex = apps.map((a) => a.id).indexOf(applicationId);
       const app: ApplicationModel = apps[appIndex];
@@ -648,8 +651,6 @@ export default new Vuex.Store({
       const opIndex = appOperators.map((o) => o.email).indexOf(originalEmail);
       appOperators[opIndex].display_name = display_name;
       appOperators[opIndex].email = email;
-      // TODO - check if was originally application-level operator, 
-      // but then changed to env-level operator
     },
   },
   /*
@@ -1055,7 +1056,6 @@ export default new Vuex.Store({
         originalEmail,
       ]);
     },
-
   },
   modules: {},
   /*

@@ -940,15 +940,7 @@ export default class ManageMember extends Vue {
           this.memberToEditEmail,
           this.memberToEditEmailOriginal,
         ]);
-      } else {
-        // is operator at environment level
-
-        
       }
-      if (!this.isRootAdmin) {
-        // update roles of members
-      }
-      debugger;
     }
 
     this.closeModal();

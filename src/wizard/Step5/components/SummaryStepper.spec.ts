@@ -31,4 +31,3 @@ describe("Testing SummaryStepper Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 });
-
