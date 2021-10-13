@@ -146,6 +146,7 @@
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
+                        @click="setMember(item)"
                       >
                         <v-icon class="icon-18 width-auto">more_horiz</v-icon>
                       </v-btn>
@@ -156,9 +157,11 @@
                         v-for="(item, i) in options"
                         :key="i"
                       >
-                        <v-list-item-title class="body-lg py-2">{{
-                          item
-                        }}</v-list-item-title>
+                        <v-list-item-title
+                          @click="removeMember(item)"
+                          class="body-lg py-2"
+                          >{{ item }}</v-list-item-title
+                        >
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -312,15 +315,31 @@
           </v-col>
         </v-row>
       </v-col>
+      <atat-modal-delete
+        v-show="hasDialog"
+        :showDialogWhenClicked.sync="showDialogWhenClicked"
+        :title="dialogTitle"
+        :message="dialogMessage"
+        :cancelText="cancelText"
+        persistent
+        no-click-animation
+        :okText="okText"
+        :width="dialogWidth + 'px'"
+        v-on:delete="onDelete"
+      />
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Emit, Prop } from "vue-property-decorator";
 import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
-import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
+import {
+  ATATSummaryCardItem,
+  CreateApplicationModel,
+  CreateEnvironmentModel,
+} from "types/Wizard";
 import { Application, Environment } from "../../../../types/Portfolios";
 import { ApplicationModel } from "types/Portfolios";
 
@@ -337,7 +356,45 @@ export default class Step_4 extends Vue {
   get currentApplication(): ApplicationModel[] {
     return this.$store.getters.getCurrentApplication;
   }
+  //Dialog stuff
+  @Prop({ default: "OK" })
+  private okText!: string;
+  @Prop({ default: "40" })
+  private cardWidth!: string;
+  @Prop({ default: "Cancel" })
+  private cancelText!: string;
+  @Prop({ default: true })
+  private hasDialog!: boolean;
+  @Prop({ default: "450" })
+  private dialogWidth!: string;
+  @Emit("delete")
+  private onDelete(): string {
+    return this.cardSelected.id || "sorry";
+  }
+  private dialogMessage = "";
+  private dialogTitle = "";
+  private showDialogWhenClicked = false;
+  private member: any;
 
+  private removeMember(item: any): void {
+    console.log(item);
+    if (item == "Remove team member") {
+      this.message = "You currently don't have any Task Orders saved";
+      this.dialogTitle = `Remove ${this.member.display_name}`;
+      this.dialogMessage = `${this.member.display_name} will be removed from your ${this.applicationName} team. This individual will no longer have access to the application in the cloud console.`;
+      this.okText = "Remove Team Member";
+    }
+
+    this.showDialogWhenClicked = true;
+  }
+
+  private setMember(item: any) {
+    console.log(this.member);
+    this.member = item;
+    console.log(this.member);
+  }
+
+  /////
   private applicationName = this.$store.state.applicationModels[0].name;
 
   private message = "You do not have any team members in this application yet.";
