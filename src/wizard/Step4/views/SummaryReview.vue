@@ -102,6 +102,7 @@
                     tabindex="1"
                     v-bind="attrs"
                     v-on="on"
+                    @click="setApplication(item)"
                   >
                     <v-icon class="icon-18 width-auto">more_horiz</v-icon>
                   </v-btn>
@@ -135,6 +136,7 @@ import { editmembers } from "@/router/wizard";
 @Component({})
 export default class SummaryReview extends Vue {
   public applications = this.$store.state.applicationModels;
+  private currentApplication: any;
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -188,10 +190,6 @@ export default class SummaryReview extends Vue {
         this.openDialog(event);
     }
   }
-  private currentPortfolio =
-    this.$store.getters.getPortfolioById(
-      this.$store.state.currentPortfolioId
-    ) || "Untitled";
 
   private tranformData(applications: any): void {
     this.applicationData.push({
@@ -209,6 +207,10 @@ export default class SummaryReview extends Vue {
       obj.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
       this.applicationData.push(obj);
     }
+  }
+  private setApplication(item: any) {
+    this.currentApplication = item;
+    this.$store.dispatch("setCurrentApplicationId", this.currentApplication.id);
   }
   private isPortfolio(item: any): string[] {
     if (item.portfolio) {

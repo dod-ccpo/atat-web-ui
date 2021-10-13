@@ -166,13 +166,12 @@
           <v-divider class="my-8 width-40"></v-divider>
 
           <h3>
-            <span v-if="isEditSingle">
-              Change Role
-            </span>
+            <span v-if="isEditSingle"> Change Role </span>
             <span v-if="!isEditSingle">Team Member Roles</span>
           </h3>
           <p>
-            Choose what type of role {{ isEditSingle ? "this individual" : "people" }} will have in
+            Choose what type of role
+            {{ isEditSingle ? "this individual" : "people" }} will have in
             <span v-if="isEditSingle">{{ currentApplication.name }}.</span>
             <span v-else>your application.</span>
             <br />
