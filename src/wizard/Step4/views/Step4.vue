@@ -212,14 +212,6 @@ export default class Step_4 extends Vue {
   private teamPermissionsText = false;
   private teamExpectationText = false;
   // methods
-
-  private openSideDrawer(event: Event): void {
-    this.$store.dispatch("openSideDrawer", [
-      "teammemberroles",
-      event.type === "keydown",
-    ]);
-  }
-
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
       "addMembers",
