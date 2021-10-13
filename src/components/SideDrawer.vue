@@ -53,7 +53,7 @@
         v-if="sideDrawerType === 'teammemberroles'"
         :scrollableDivHeight="setScrollableDivHeight()"
         class="overflow-y-auto"
-         tabindex="3"
+        tabindex="3"
       ></TeamMemberRolesDrawer>
     </div>
   </v-navigation-drawer>

@@ -62,7 +62,7 @@
                     >control_point</v-icon
                   >
                 </div>
-                <div class="body font-weight-bold">Invite Team Member</div>
+                <div class="body font-weight-bold">Invite Team Members</div>
               </v-btn>
             </v-col>
           </v-col>
@@ -178,7 +178,7 @@ export default class TeamView extends Vue {
   private message = "You do not have any team members in this application yet.";
 
   private headers = [
-    { text: "Name", value: "display_name", align: "start"},
+    { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "workspace_roles", sortable: false },
   ];
   private options = ["Edit Info", "Change Role", "Remove team member"];
@@ -295,11 +295,30 @@ export default class TeamView extends Vue {
     }
   }
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: false,
+      isEditSingle: false,
+      memberEmail: null,
+    };
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (currentTarget && currentTarget.innerText === "Edit info") {
+      memberProps = {
+        isRootAdmin: false,
+        isEditSingle: true,
+        memberEmail: "",
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
 

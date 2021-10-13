@@ -223,27 +223,50 @@ export default class SummaryReview extends Vue {
       value: "name",
       align: "start",
       sortable: true,
-      width: "40%"
+      width: "40%",
     },
     {
       text: "Description ",
       value: "description",
       sortable: false,
-      width: "40%"
+      width: "40%",
     },
     {
       text: "Team Members ",
       value: "operators",
       sortable: false,
-      width: "20%"
+      width: "20%",
     },
   ];
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: false,
+      isEditSingle: false,
+      memberEmail: null,
+    };
+    let currentTarget = event.currentTarget as HTMLElement;
+    if (
+      currentTarget &&
+      currentTarget.innerText &&
+      currentTarget.innerText === "Add root administrators"
+    ) {
+      memberProps = {
+        isRootAdmin: true,
+        isEditSingle: false,
+        memberEmail: "",
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
   public async mounted(): Promise<void> {

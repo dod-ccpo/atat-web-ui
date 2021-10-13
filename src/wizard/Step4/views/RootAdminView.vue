@@ -191,11 +191,30 @@ export default class RootAdminView extends Vue {
   }
 
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: true,
+      isEditSingle: false,
+      memberEmail: null,
+    };
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (currentTarget && currentTarget.innerText === "Edit info") {
+      memberProps = {
+        isRootAdmin: true,
+        isEditSingle: true,
+        memberEmail: "",
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
   public async mounted(): Promise<void> {

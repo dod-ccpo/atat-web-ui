@@ -18,14 +18,14 @@
         </h3>
       </v-card-title>
       <v-card-text class="body-lg text--base-darkest mt-2">
-
         <!--#################################################-->
         <!-- EDIT SINGLE MEMBER NAME AND EMAIL -->
         <!--#################################################-->
 
         <div v-show="isEditSingle">
           <p>
-            After your portfolio is provisioned, the email address will be sent to
+            After your portfolio is provisioned, the email address will be sent
+            to
             {{ selectedCSP ? selectedCSP : "your selected CSP" }} and
             {{ memberToEditName ? memberToEditName : "the member" }}
             receive an invitation to access the cloud console.
@@ -63,8 +63,8 @@
           </p>
           <p v-else>
             Team members can have different levels of access to your application
-            and environments. Invite multiple people with the same permissions at
-            once.
+            and environments. Invite multiple people with the same permissions
+            at once.
           </p>
 
           <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
@@ -150,7 +150,7 @@
               <span v-show="invalidEmailCount > 1">
                 Multiple addresses were not recognized.
               </span>
-              Please make sure that all addresses are properly formatted and 
+              Please make sure that all addresses are properly formatted and
               .mil addresses.
             </p>
           </v-alert>
@@ -911,7 +911,6 @@ export default class ManageMember extends Vue {
       }
 
       this.$emit("membersAdded", this.validEmailCount);
-
     } else if (this.isEditSingle) {
       // TODO UPDATE EXISTING MEMBER INFO
     }
