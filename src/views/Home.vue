@@ -16,16 +16,18 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-center mb-9">
-        <v-btn
-          large
-          color="primary"
-          class="text-capitalize"
-          :ripple="false"
-          @click="login()"
-          id="login_button"
-        >
-          Sign in
-        </v-btn>
+        <form @submit.prevent="login">
+          <v-btn
+            type="submit"
+            large
+            color="primary"
+            class="text-capitalize"
+            :ripple="false"
+            id="login_button"
+          >
+            Sign in
+          </v-btn>
+        </form>
       </v-col>
     </v-row>
     <v-row>
@@ -54,11 +56,31 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import Amplify, { Auth, Hub } from "aws-amplify";
 @Component({})
 export default class Home extends Vue {
-  private login(): void {
-    this.$store.dispatch("login");
-    this.$router.push("/dashboard");
+  private async login() {
+    let authenticatedUser = await Auth.federatedSignIn({
+      customProvider: "IdP",
+    });
+  }
+
+  private mounted(): void {
+    Hub.listen("auth", async ({ payload: { event, data } }) => {
+      let user: any;
+      switch (event) {
+        case "cognitoHostedUI":
+          user = (await Auth.currentSession()).getIdToken().decodePayload();
+          this.$store.dispatch("login", user);
+          this.$router.push("/dashboard");
+          break;
+        case "cognitoHostedUI_failure":
+          //this.setState({ authState: "signedOut", user: null, error: data });
+          break;
+        default:
+          break;
+      }
+    });
   }
 }
 </script>
