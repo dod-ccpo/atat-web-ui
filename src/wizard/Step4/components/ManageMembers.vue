@@ -13,7 +13,9 @@
           </span>
           <span v-if="isEditSingle">
             Update
-            {{ memberToEditName ? memberToEditName : "Member" }}’s information
+            {{
+              memberToEditNameOriginal ? memberToEditNameOriginal : "Member"
+            }}’s information
           </span>
         </h3>
       </v-card-title>
@@ -27,7 +29,9 @@
             After your portfolio is provisioned, the email address will be sent
             to
             {{ selectedCSP ? selectedCSP : "your selected CSP" }} and
-            {{ memberToEditName ? memberToEditName : "the member" }}
+            {{
+              memberToEditNameOriginal ? memberToEditNameOriginal : "the member"
+            }}
             will receive an invitation to access the cloud console.
           </p>
 
@@ -166,13 +170,12 @@
           <v-divider class="my-8 width-40"></v-divider>
 
           <h3>
-            <span v-if="isEditSingle">
-              Change Role
-            </span>
+            <span v-if="isEditSingle"> Change Role </span>
             <span v-if="!isEditSingle">Team Member Roles</span>
           </h3>
           <p>
-            Choose what type of role {{ isEditSingle ? "this individual" : "people" }} will have in
+            Choose what type of role
+            {{ isEditSingle ? "this individual" : "people" }} will have in
             <span v-if="isEditSingle">{{ currentApplication.name }}.</span>
             <span v-else>your application.</span>
             <br />
@@ -323,6 +326,9 @@ export default class ManageMember extends Vue {
   private valid = true;
   private memberToEditName = "";
   private memberToEditEmail = "";
+  private memberToEditNameOriginal = "";
+  private memberToEditEmailOriginal = "";
+
   private memberToEditLoaded = false;
   private isRootAdmin = false;
   private isEditSingle = false;
@@ -544,8 +550,11 @@ export default class ManageMember extends Vue {
 
       foundMember = rootAdmins.filter((obj) => obj.email === memberEmail);
       if (foundMember) {
+        // EJY - TODO - DRY this
         this.memberToEditName = foundMember[0].display_name;
+        this.memberToEditNameOriginal = foundMember[0].display_name;
         this.memberToEditEmail = foundMember[0].email;
+        this.memberToEditEmailOriginal = foundMember[0].email;
       }
       return;
     } else {
@@ -561,7 +570,9 @@ export default class ManageMember extends Vue {
             // EJY here
             this.roleForAllEnvs = foundMember[0].access;
             this.memberToEditName = foundMember[0].display_name;
+            this.memberToEditNameOriginal = foundMember[0].display_name;
             this.memberToEditEmail = foundMember[0].email;
+            this.memberToEditEmailOriginal = foundMember[0].email;
             return;
           }
         }
@@ -586,7 +597,9 @@ export default class ManageMember extends Vue {
           });
           if (foundMember.length) {
             this.memberToEditName = foundMember[0].display_name;
+            this.memberToEditNameOriginal = foundMember[0].display_name;
             this.memberToEditEmail = foundMember[0].email;
+            this.memberToEditEmailOriginal = foundMember[0].email;
             this.environments_roles.forEach((env: any) => {
               let foundMemberInEnv = foundMember.filter(
                 (member: any) => member.env_id === env.env_id
@@ -908,6 +921,37 @@ export default class ManageMember extends Vue {
       this.$emit("membersAdded", this.validEmailCount);
     } else if (this.isEditSingle) {
       // TODO UPDATE EXISTING MEMBER INFO
+      if (this.isRootAdmin) {
+        // update portfolioOperators name and email
+        const rootAdmins: OperatorModel[] =
+          this.$store.getters.getPortfolioOperators;
+        const opIndex = rootAdmins
+          .map((e) => e.email)
+          .indexOf(this.memberToEditEmailOriginal);
+        this.$store.dispatch("updateRootAdminInfo", [
+          opIndex,
+          this.memberToEditName,
+          this.memberToEditEmail,
+        ]);
+        debugger;
+      } else if (!this.assignDifferentRolesForEnvs) {
+        // application-level operator
+        const appId = this.currentApplication.id;
+        this.$store.dispatch("updateApplicationOperatorInfo", [
+          appId,
+          this.memberToEditName,
+          this.memberToEditEmail,
+          this.memberToEditEmailOriginal,
+        ]);
+      } else {
+        // is operator at environment level
+
+        
+      }
+      if (!this.isRootAdmin) {
+        // update roles of members
+      }
+      debugger;
     }
 
     this.closeModal();

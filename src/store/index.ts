@@ -634,6 +634,27 @@ export default new Vuex.Store({
     doToast(state, props) {
       state.toast = props;
     },
+
+    doUpdateRootAdminInfo(state, [index, display_name, email]) {
+      const portfolioOperators: OperatorModel[] = state.portfolioOperators;
+      portfolioOperators[index].display_name = display_name;
+      portfolioOperators[index].email = email;
+    },
+    doUpdateApplicationOperatorInfo(state, [applicationId, display_name, email, originalEmail]) {
+      const apps: ApplicationModel[] = state.applicationModels;
+      const appIndex = apps.map((a) => a.id).indexOf(applicationId);
+      const app: ApplicationModel = apps[appIndex];
+      const appOperators: OperatorModel[] = app.operators;
+      const opIndex = appOperators.map((o) => o.email).indexOf(originalEmail);
+      appOperators[opIndex].display_name = display_name;
+      appOperators[opIndex].email = email;
+      // TODO - check if was originally application-level operator, 
+      // but then changed to env-level operator
+      // const itemToRemoveFromMembersData = this.membersData.findIndex(
+      //   (m: any) => m.email === this.member.email
+      // );
+
+    },
   },
   /*
   ██████████████████████████████████████████████████████
@@ -1024,6 +1045,21 @@ export default new Vuex.Store({
       const index = StepModelIndices[stepNumber];
       return state.portfolioSteps[index].touched;
     },
+    updateRootAdminInfo({ commit }, [index, display_name, email]) {
+      commit("doUpdateRootAdminInfo", [index, display_name, email]);
+    },
+    updateApplicationOperatorInfo(
+      { commit },
+      [applicationId, display_name, email, originalEmail]
+    ) {
+      commit("doUpdateApplicationOperatorInfo", [
+        applicationId,
+        display_name,
+        email,
+        originalEmail,
+      ]);
+    },
+
   },
   modules: {},
   /*
