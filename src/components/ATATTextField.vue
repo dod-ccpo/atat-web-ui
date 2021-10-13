@@ -74,9 +74,10 @@
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import Vue from "vue";
 
 @Component({})
-export default class ATATTextField extends VTextField {
+export default class ATATTextField extends Vue {
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -114,12 +115,12 @@ export default class ATATTextField extends VTextField {
   private validateField() {
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
-    // we evalute the rules to determine what icon to display
+    // we evalute t5mnnnnnnnnnnnnnneq```````````````````````he rules to determine what icon to display
     this.isFieldDirty = true;
 
     if (this.$props["rules"].length > 0) {
       let value = this._value;
-      this.isFieldValid = this.$props["rules"].every(
+          this.isFieldValid = this.$props["rules"].every(
         (rule: (a: unknown) => string | boolean) => rule(value) === true
       );
     }
