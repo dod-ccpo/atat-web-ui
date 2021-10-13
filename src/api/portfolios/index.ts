@@ -71,10 +71,7 @@ export default class PortfolioDraftsApi {
     }
   }
 
-  public async savePortfolio(
-    id: string,
-    data: PortFolioDraftDTO
-  ): Promise<void> {
+  public async savePortfolio(id: string, data: unknown): Promise<void> {
     const response = await this.client.post(`${id}/portfolio`, data);
     if (response.status !== 201) {
       throw Error(`error occurred saving portfolio draft with id ${id}`);

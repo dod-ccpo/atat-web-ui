@@ -9,13 +9,13 @@ import {
   EnvironmentModel,
   Portfolio,
   PortfolioDraft,
-  PortFolioDraftDTO,
   TaskOrder,
 } from "types/Portfolios";
 import PortfolioDraftsApi from "@/api/portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { generateUid } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
+import moment from "moment";
 
 Vue.use(Vuex);
 
@@ -131,11 +131,17 @@ const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
 
     const taskOrders: TaskOrder = {
       ...baseModel,
+      task_order_file: {
+        id: model.task_order_file.id,
+        name: model.task_order_file.name,
+      },
       clins: model.clins.map((clin) => {
         return {
           ...clin,
           total_clin_value: Number(clin.total_clin_value),
           obligated_funds: Number(clin.obligated_funds),
+          pop_start_date: moment(clin.pop_start_date).format("YYYY-MM-DD"),
+          pop_end_date: moment(clin.pop_end_date).format("YYYY-MM-DD"),
         };
       }),
     };
@@ -491,6 +497,14 @@ export default new Vuex.Store({
         const taskOrderModel: TaskOrderModel = {
           id: generateUid(),
           ...taskOrder,
+          task_order_file: {
+            id: taskOrder.task_order_file.id,
+            name: taskOrder.task_order_file.name,
+            created_at: "",
+            updated_at: "",
+            size: 0,
+            status: "",
+          },
         };
         return taskOrderModel;
       });
@@ -769,8 +783,7 @@ export default new Vuex.Store({
     },
     async saveStep1({ state, commit }, model: any) {
       // build data from step model
-      const data: PortFolioDraftDTO = {
-        id: state.currentPortfolioId,
+      const data = {
         name: model.name,
         description: model.description,
         csp: model.csp,
@@ -923,6 +936,18 @@ export default new Vuex.Store({
         commit("setCurrentApplications", applications);
         commit("doSaveStepModel", [createStepThreeModel(), 3, true]);
       }
+    },
+    validateOperators(context, applicationModel: ApplicationModel): boolean {
+      //todo : fill out this funcationlity
+      // const hasAtleastOneRootAdmin = applicationModel.operators && 
+      // applicationModel.operators.find((operator: OperatorModel) => operator.access === "administrator") !==  undefined;
+
+      // if(applicationModel.operators || )
+
+      //temporary fix to allow the placeholders
+      console.log(context);
+      console.log(applicationModel);
+      return false;
     },
     openDialog(
       { commit },

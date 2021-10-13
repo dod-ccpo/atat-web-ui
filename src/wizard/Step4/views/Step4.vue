@@ -320,16 +320,17 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import AddMembers from "@/wizard/Step4/components/AddMembers.vue";
-import { CreateApplicationModel, CreateEnvironmentModel } from "types/Wizard";
-import { Application, Environment } from "../../../../types/Portfolios";
 import { ApplicationModel } from "types/Portfolios";
+import dashBoardPage from "tests/e2e/page_objects/dashBoard";
 
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   components: {
     AddMembers,
   },
 })
 export default class Step_4 extends Vue {
+  private incomingModel!: ApplicationModel;
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
@@ -397,8 +398,33 @@ export default class Step_4 extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    this.incomingModel = JSON.parse(
+      JSON.stringify(this.currentApplication)
+    ) as ApplicationModel;
     // EJY need to rethink validating this step. Saving to store with each modal "Add Team Members" button click
-    this.$store.dispatch("saveStepModel", [{}, 4, true]);
+    // this.$store.dispatch("saveStepModel", [{}, 4, true]);
+  }
+
+  private hasChanges(): boolean {
+    let theSame = true;
+    const serializedIncoming = JSON.stringify(this.incomingModel);
+    const serialiedOutgoing = JSON.stringify(this.currentApplication);
+    theSame = serializedIncoming === serialiedOutgoing;
+
+    return !theSame;
+  }
+
+  public async beforeRouteLeave(
+    to: any,
+    from: any,
+    next: (n: void) => void
+  ): Promise<void> {
+    if (this.hasChanges()){
+      debugger;
+      await this.$store.dispatch("saveStepData", 3);
+    }
+
+    next();
   }
 }
 </script>
