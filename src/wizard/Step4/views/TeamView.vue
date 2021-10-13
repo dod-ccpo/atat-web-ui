@@ -87,9 +87,14 @@
               :headers="headers"
               :items="isFiltered ? filteredData : membersData"
               hide-default-footer
+              dense
+              :sort-by="['name']"
             >
               <template v-slot:header.display_name="{ header }">
-                <div class="label font-weight-bold text--base-dark">
+                <div
+                  class="label font-weight-bold text--base-dark mr-5"
+                  tabindex="3"
+                >
                   {{ header.text }}
                 </div>
               </template>
@@ -98,7 +103,7 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template class="hello" v-slot:item.display_name="{ item }">
+              <template v-slot:item.display_name="{ item }">
                 <div class="pt-6 pb-6">
                   <div class="body font-weight-bold">
                     {{ item.display_name }}
@@ -173,7 +178,7 @@ export default class TeamView extends Vue {
   private message = "You do not have any team members in this application yet.";
 
   private headers = [
-    { text: "Name", value: "display_name", align: "start" },
+    { text: "Name", value: "display_name", align: "start"},
     { text: "Workplace Access ", value: "workspace_roles", sortable: false },
   ];
   private options = ["Edit Info", "Change Role", "Remove team member"];

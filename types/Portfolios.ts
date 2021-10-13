@@ -98,6 +98,7 @@ export interface Application {
   name: string;
   description: string;
   environments: Environment[];
+  operators: Operator[];
 }
 
 export interface Environment {

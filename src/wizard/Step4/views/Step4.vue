@@ -31,7 +31,6 @@
         </v-col>
       </v-row>
     </div>
-
     <RootAdminView v-if="editType === 'portfolio'" />
     <TeamView v-if="editType === 'application'" />
     <v-row v-if="createdApplication.length > 0">

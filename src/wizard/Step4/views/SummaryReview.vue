@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="ml-3">
+  <v-container fluid class="ml-3 mr-16 mb-16">
     <v-row>
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
@@ -7,7 +7,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="pa-0 ma-0" cols="10">
+      <v-col class="pa-0 ma-0" cols="9">
         <p class="body-lg text--base-darkest">
           In this section, we will invite people to join your application teams,
           giving them access to your workspaces within the
@@ -21,15 +21,21 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" class="ma-0 pa-0 mt-4">
+      <v-col class="ma-0 pa-0 mt-4">
         <v-data-table
-          class="review-table"
+          class="review-table overflow-x-hidden overflow-y-hidden"
+          style="width: 900px"
           :headers="headers"
           :items="applicationData"
           hide-default-footer
+          dense
+          :sort-by="['name']"
         >
           <template v-slot:header.name="{ header }">
-            <div class="label font-weight-bold text--base-dark">
+            <div
+              class="label font-weight-bold text--base-dark mr-5"
+              tabindex="3"
+            >
               {{ header.text }}
             </div>
           </template>
@@ -43,29 +49,43 @@
               {{ header.text }}
             </div>
           </template>
-          <template class="hello" v-slot:item.name="{ item }">
-            <div>
-              <v-icon class="table-subdirectory-icon" v-if="!item.portfolio"
+          <template v-slot:item.name="{ item }">
+            <div class="d-flex align-center">
+              <v-icon
+                class="table-subdirectory-icon text--base-light mr-3"
+                v-if="!item.portfolio"
                 >subdirectory_arrow_right</v-icon
               >
               <a
                 @click="handleNameClick(item)"
-                class="body font-weight-bold py-3 primary-text"
+                class="
+                  body
+                  font-weight-bold
+                  py-3
+                  primary-text
+                  text-no-wrap text-truncate
+                "
               >
-                {{ item.name }}
+                <div class="d-flex align-center justify-between">
+                  <div class="overflow-hidden" style="height: 24px">
+                    {{ item.name }}
+                  </div>
+                  <div v-if="item.name.length > 25">...</div>
+                </div>
               </a>
             </div>
           </template>
           <template v-slot:item.description="{ item }">
-            <div class="d-flex justify-space-between">
-              <div class="body text--base-dark py-3">
+            <div class="d-flex align-center body text--base-darkest">
+              <div class="overflow-hidden text-no-wrap" style="height: 24px">
                 {{ item.description }}
               </div>
+              <div v-if="item.description.length > 50">...</div>
             </div>
           </template>
           <template v-slot:item.operators="{ item }">
             <div class="d-flex justify-space-between">
-              <div class="body text--base-dark pt-1">
+              <div class="body text--base-darkest pt-1">
                 {{ item.operators }}
               </div>
 
@@ -192,10 +212,27 @@ export default class SummaryReview extends Vue {
     }
     return ["View team members", "Add team members"];
   }
+
   private headers = [
-    { text: "Workspaces", value: "name", align: "start" },
-    { text: "Description ", value: "description", sortable: false },
-    { text: "Team Members ", value: "operators", sortable: false },
+    {
+      text: "Workspaces",
+      value: "name",
+      align: "start",
+      sortable: true,
+      width: "40%"
+    },
+    {
+      text: "Description ",
+      value: "description",
+      sortable: false,
+      width: "40%"
+    },
+    {
+      text: "Team Members ",
+      value: "operators",
+      sortable: false,
+      width: "20%"
+    },
   ];
   public openDialog(event: Event): void {
     this.$store.dispatch("openDialog", [
