@@ -223,19 +223,19 @@ export default class SummaryReview extends Vue {
       value: "name",
       align: "start",
       sortable: true,
-      width: "40%"
+      width: "40%",
     },
     {
       text: "Description ",
       value: "description",
       sortable: false,
-      width: "40%"
+      width: "40%",
     },
     {
       text: "Team Members ",
       value: "operators",
       sortable: false,
-      width: "20%"
+      width: "20%",
     },
   ];
   public openDialog(event: Event): void {
