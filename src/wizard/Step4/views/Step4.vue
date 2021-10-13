@@ -38,9 +38,16 @@
           <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
           is provisioned. Select <span class="font-weight-bold">Next</span> to
           add team members to your other applications.
-          <a class="text-decoration-underline"
-            >Learn more about team member roles</a
+          <v-btn
+            class="primary--text py-0 px-2 mt-n2"
+            text
+            small
+            :ripple="false"
+            @click="openSideDrawer($event)"
+            @keydown.native.enter="openSideDrawer($event)"
           >
+            <span class="link-body-md">Learn more about team member roles</span>
+          </v-btn>
         </p>
       </v-col>
     </v-row>
@@ -364,6 +371,13 @@ export default class Step_4 extends Vue {
   // methods
   private handleClick(): void {
     console.log("clicked");
+  }
+
+  private openSideDrawer(event: Event): void {
+    this.$store.dispatch("openSideDrawer", [
+      "teammemberroles",
+      event.type === "keydown",
+    ]);
   }
 
   public openDialog(event: Event): void {

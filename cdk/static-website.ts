@@ -22,6 +22,9 @@ export class StaticSite extends Construct {
     new cdk.CfnOutput(this, "WebsiteUrl", {
       value: siteBucket.bucketWebsiteUrl,
     });
+    new cdk.CfnOutput(this, "IndexHttpsUrl", {
+      value: siteBucket.virtualHostedUrlForObject("index.html"),
+    });
 
     const deploymentUser = new iam.User(this, "DeploymentUser");
     this.deploymentUser = deploymentUser;
