@@ -154,5 +154,4 @@ export default class Profile extends Vue {
   private updateProfileTip = false;
   private user = this.$store.getters.getUser;
 }
-
 </script>

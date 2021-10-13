@@ -161,6 +161,7 @@ const mapApplications = (
       operators: model.operators
         ? model.operators.map((op) => {
             return {
+              id: op.id,
               access: op.access,
               display_name: op.display_name,
               email: op.email,
@@ -197,11 +198,11 @@ const StepModelIndices: Record<number, number> = {
 /*
 █████████████████████████████████████████
 
-███████ ████████  █████  ████████ ███████ 
-██         ██    ██   ██    ██    ██      
-███████    ██    ███████    ██    █████   
-     ██    ██    ██   ██    ██    ██      
-███████    ██    ██   ██    ██    ███████ 
+███████ ████████  █████  ████████ ███████
+██         ██    ██   ██    ██    ██
+███████    ██    ███████    ██    █████
+     ██    ██    ██   ██    ██    ██
+███████    ██    ██   ██    ██    ███████
 
 █████████████████████████████████████████
 */
@@ -224,9 +225,9 @@ export default new Vuex.Store({
     wizardNavigation: {},
     selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
-    currentApplicationId: "2134410376-852811418-2580849115-1872217995",
     currentStepNumber: 1,
     currentPortfolioId: "",
+    currentApplicationId: "",
     currentStepModel: {},
     portfolioSteps: [
       {
@@ -327,11 +328,11 @@ export default new Vuex.Store({
   /*
   ███████████████████████████████████████████████████████████████████████████
 
-  ███    ███ ██    ██ ████████  █████  ████████ ██  ██████  ███    ██ ███████ 
-  ████  ████ ██    ██    ██    ██   ██    ██    ██ ██    ██ ████   ██ ██      
-  ██ ████ ██ ██    ██    ██    ███████    ██    ██ ██    ██ ██ ██  ██ ███████ 
-  ██  ██  ██ ██    ██    ██    ██   ██    ██    ██ ██    ██ ██  ██ ██      ██ 
-  ██      ██  ██████     ██    ██   ██    ██    ██  ██████  ██   ████ ███████ 
+  ███    ███ ██    ██ ████████  █████  ████████ ██  ██████  ███    ██ ███████
+  ████  ████ ██    ██    ██    ██   ██    ██    ██ ██    ██ ████   ██ ██
+  ██ ████ ██ ██    ██    ██    ███████    ██    ██ ██    ██ ██ ██  ██ ███████
+  ██  ██  ██ ██    ██    ██    ██   ██    ██    ██ ██    ██ ██  ██ ██      ██
+  ██      ██  ██████     ██    ██   ██    ██    ██  ██████  ██   ████ ███████
 
   ███████████████████████████████████████████████████████████████████████████
   */
@@ -471,6 +472,9 @@ export default new Vuex.Store({
     },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
+    },
+    doSetApplicationId(state, id) {
+      state.currentApplicationId = id;
     },
     updatePortfolioDrafts(state, portfolioDrafts: PortfolioDraft[]) {
       Vue.set(state, "portfolioDrafts", [...portfolioDrafts]);
@@ -620,11 +624,11 @@ export default new Vuex.Store({
   /*
   ██████████████████████████████████████████████████████
 
-   █████   ██████ ████████ ██  ██████  ███    ██ ███████ 
-  ██   ██ ██         ██    ██ ██    ██ ████   ██ ██      
-  ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████ 
-  ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██ 
-  ██   ██  ██████    ██    ██  ██████  ██   ████ ███████ 
+   █████   ██████ ████████ ██  ██████  ███    ██ ███████
+  ██   ██ ██         ██    ██ ██    ██ ████   ██ ██
+  ███████ ██         ██    ██ ██    ██ ██ ██  ██ ███████
+  ██   ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
+  ██   ██  ██████    ██    ██  ██████  ██   ████ ███████
 
   ██████████████████████████████████████████████████████
   */
@@ -640,6 +644,9 @@ export default new Vuex.Store({
     },
     validateStep({ commit }, step: number) {
       commit("setStepValidated", step);
+    },
+    setCurrentApplicationId({ commit }, applicationId) {
+      commit("doSetApplicationId", applicationId);
     },
     displayNavSideBarDisplayed({ commit }, routeName: string) {
       commit("setNavSideBarDisplayed", routeName);
@@ -993,11 +1000,11 @@ export default new Vuex.Store({
   /*
   ██████████████████████████████████████████████████████████
 
-   ██████  ███████ ████████ ████████ ███████ ██████  ███████ 
-  ██       ██         ██       ██    ██      ██   ██ ██      
-  ██   ███ █████      ██       ██    █████   ██████  ███████ 
-  ██    ██ ██         ██       ██    ██      ██   ██      ██ 
-   ██████  ███████    ██       ██    ███████ ██   ██ ███████ 
+   ██████  ███████ ████████ ████████ ███████ ██████  ███████
+  ██       ██         ██       ██    ██      ██   ██ ██
+  ██   ███ █████      ██       ██    █████   ██████  ███████
+  ██    ██ ██         ██       ██    ██      ██   ██      ██
+   ██████  ███████    ██       ██    ███████ ██   ██ ███████
 
   ██████████████████████████████████████████████████████████
   */
@@ -1058,7 +1065,7 @@ export default new Vuex.Store({
       return state.portfolios;
     },
     getPortfolioById: (state) => (id: string) => {
-      const values = Object.values(state.portfolios);
+      const values = Object.values(state.portfolioDrafts);
       const portfoliobyId = values.filter(
         (portfolio: Portfolio) => portfolio.id === id
       );
@@ -1095,17 +1102,14 @@ export default new Vuex.Store({
     getSideDrawer: (state) => state.sideDrawer,
     getTaskOrders: (state) => state.taskOrderModels,
     getApplications: (state) => state.applicationModels,
-    getCurrentApplicationId: (state) => state.currentApplicationId,
-    getCurrentApplication: (state) => {
-      // const applicationIndex = getEntityIndex(
-      //   state.applicationModels,
-      //   (application: ApplicationModel) =>
-      //     application.id === state.currentApplicationId);
-      // return state.applicationModels[applicationIndex];
-
-      // EJY temp until table wired up with state.currentApplication
-      return state.applicationModels[0];
-    },
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
+    getCurrentApplication: (state) => {
+      const applicationIndex = getEntityIndex(
+        state.applicationModels,
+        (application: ApplicationModel) =>
+          application.id === state.currentApplicationId
+      );
+      return state.applicationModels[applicationIndex];
+    },
   },
 });
