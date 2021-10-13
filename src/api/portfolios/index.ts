@@ -1,10 +1,8 @@
 import { AxiosError } from "axios";
-import { NightwatchAssert } from "nightwatch";
 import {
   Application,
   Portfolio,
   PortfolioDraft as PortfolioModel,
-  PortFolioDraftDTO,
   TaskOrder,
 } from "types/Portfolios";
 import { TaskOrderFile } from "types/Wizard";
