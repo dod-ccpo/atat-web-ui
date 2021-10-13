@@ -7,6 +7,7 @@ import {
   Application,
   ApplicationModel,
   EnvironmentModel,
+  Operator,
   OperatorModel,
   Portfolio,
   PortfolioDraft,
@@ -162,7 +163,6 @@ const mapApplications = (
       operators: model.operators
         ? model.operators.map((op) => {
             return {
-              id: op.id,
               access: op.access,
               display_name: op.display_name,
               email: op.email,
@@ -188,6 +188,20 @@ const mapApplications = (
     return application;
   });
 };
+
+const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
+  return operatorsModels.map((operatorModel: OperatorModel) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...baseModel } = operatorModel;
+
+    const operator: Operator = {
+      ...baseModel,
+    };
+
+    return operator;
+  });
+};
+
 const StepModelIndices: Record<number, number> = {
   1: 0,
   2: 1,
@@ -631,6 +645,9 @@ export default new Vuex.Store({
       rootAdmins.push(...operators);
     },
 
+    doInitializeRootAdministrators(state) {
+      Vue.set(state, "portfolioOperators", []);
+    },
     doToast(state, props) {
       state.toast = props;
     },
@@ -811,6 +828,9 @@ export default new Vuex.Store({
         case 3:
           await this.dispatch("saveStep3", step.model);
           break;
+        case 4:
+          await this.dispatch("saveStep4");
+          break;
       }
     },
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
@@ -880,8 +900,21 @@ export default new Vuex.Store({
       }
 
       const applications = mapApplications(state.applicationModels);
+      const operators = mapOperators(state.portfolioOperators);
 
       const data = {
+        operators: operators,
+        applications: applications,
+      };
+
+      await portfolioDraftsApi.saveApplications(state.currentPortfolioId, data);
+    },
+    async saveStep4({ state }) {
+      const applications = mapApplications(state.applicationModels);
+      const operators = mapOperators(state.portfolioOperators);
+
+      const data = {
+        operators: operators,
         applications: applications,
       };
 
@@ -969,10 +1002,24 @@ export default new Vuex.Store({
       }
     },
     async loadStep3Data({ commit }, draftId: string): Promise<void> {
-      const applications = await portfolioDraftsApi.getApplications(draftId);
-      if (applications != null) {
+      const applicationData = await portfolioDraftsApi.getApplications(draftId);
+      if (applicationData != null) {
         //store the applications
-        commit("setCurrentApplications", applications);
+        commit("setCurrentApplications", applicationData.applications);
+        commit("doInitializeRootAdministrators");
+
+        const operators = applicationData.operators.map(
+          (operator: Operator) => {
+            const operatorModels: OperatorModel = {
+              ...operator,
+              id: generateUid(),
+            };
+
+            return operator;
+          }
+        );
+
+        commit("doUpdateRootAdministrators", operators);
         commit("doSaveStepModel", [createStepThreeModel(), 3, true]);
       }
     },

@@ -73,6 +73,8 @@ export interface Clin {
   pop_end_date: string;
 }
 
+
+
 export interface ApplicationModel {
   id: string;
   name: string;
@@ -92,6 +94,16 @@ export interface OperatorModel {
   access: string;
   display_name: string;
   email: string;
+}
+
+export interface ApplicationDataModel {
+  operators: OperatorModel[];
+  applications: ApplicationModel[];
+}
+
+export interface ApplicationData {
+  operators: Operator[];
+  applications: Application[];
 }
 
 export interface Application {
