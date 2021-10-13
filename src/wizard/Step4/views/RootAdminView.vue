@@ -93,7 +93,7 @@
                   {{ header.text }}
                 </div>
               </template>
-              <template v-slot:header.workplace_roles="{ header }">
+              <template v-slot:header.access="{ header }">
                 <div class="label font-weight-bold text--base-dark">
                   {{ header.text }}
                 </div>
@@ -106,10 +106,10 @@
                   {{ item.email }}
                 </div>
               </template>
-              <template v-slot:item.workspace_roles="{ item }">
+              <template v-slot:item.access="{ item }">
                 <div class="d-flex justify-space-between">
                   <div class="body text--base-dark pt-3">
-                    {{ item.workspace_roles }}
+                    {{ roleTranslation(item.access) }}
                   </div>
 
                   <v-menu
@@ -125,6 +125,7 @@
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
+                        @click="setMember(item)"
                       >
                         <v-icon class="icon-18 width-auto">more_horiz</v-icon>
                       </v-btn>
@@ -135,9 +136,12 @@
                         v-for="(item, i) in options"
                         :key="i"
                       >
-                        <v-list-item-title class="body-lg py-2">{{
-                          item
-                        }}</v-list-item-title>
+                        <v-list-item-title
+                          @click="tableOptionClick(item, $event)"
+                          class="body-lg py-2"
+                        >
+                          {{ item }}
+                        </v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -168,6 +172,11 @@ export default class RootAdminView extends Vue {
     ) || "Untitled";
   private rootMembers: any = this.$store.state.portfolioOperators;
   private rootMembersCount = this.rootMembers.length;
+  private member: any;
+
+  private setMember(item: any) {
+    this.member = item;
+  }
 
   private message =
     "You do not have any root administrators in this portfolio yet.";
@@ -175,7 +184,7 @@ export default class RootAdminView extends Vue {
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "access", sortable: false },
   ];
-  private options = ["Edit Info", "Remove team member"];
+  private options = ["Edit info", "Remove team member"];
   private searchTable(value: string) {
     if (!value) {
       this.isFiltered = false;
@@ -190,12 +199,50 @@ export default class RootAdminView extends Vue {
     }
   }
 
+  private tableOptionClick(item: any, event: Event): void {
+    if (item.toLowerCase() === "remove team member") {
+      // this.dialogTitle = `Remove ${this.member.display_name}`;
+      // this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
+    } else if (item.toLowerCase() === "edit info") {
+      this.openDialog(event);
+    }
+  }
+
+  private roleTranslation(role: string): string {
+    switch (role) {
+      case "portfolio_administrator":
+        return "Root administrator";
+      default:
+        return "Unauthorized";
+    }
+  }
+
   public openDialog(event: Event): void {
+    let memberProps: {
+      isRootAdmin: boolean;
+      isEditSingle: boolean;
+      memberEmail: string | null;
+    } = {
+      isRootAdmin: true,
+      isEditSingle: false,
+      memberEmail: null,
+    };
+
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (currentTarget && currentTarget.innerText === "Edit info") {
+      memberProps = {
+        isRootAdmin: true,
+        isEditSingle: true,
+        memberEmail: this.member.email,
+      };
+    }
+
     this.$store.dispatch("openDialog", [
-      "addMembers",
+      "manageMembers",
       event.type === "keydown",
       "632px",
-      "90",
+      "",
+      memberProps,
     ]);
   }
   public async mounted(): Promise<void> {

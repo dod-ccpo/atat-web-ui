@@ -40,7 +40,7 @@
 
 .v-menu__content {
   border: 1px solid $base;
-  margin-top: 40px;
+  // margin-top: 40px; // EJY need on select dropdowns in member modal
 
   .v-list-item--active {
     background-color: white;
