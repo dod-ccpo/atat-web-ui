@@ -52,7 +52,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
-export default class ATATTextArea extends Vue {
+export default class ATATTextArea extends VTextarea {
   private isFieldValid = false;
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;

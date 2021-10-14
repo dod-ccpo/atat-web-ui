@@ -156,16 +156,20 @@ export default class SummaryReview extends Vue {
     this.sortAsc = !this.sortAsc;
     if (!this.sortAsc) {
       return items.sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
         if (a.id !== undefined && b.id !== undefined) {
-          return a.name > b.name ? 1 : -1;
+          return nameA > nameB ? 1 : -1;
         } else {
           return 0;
         }
       });
     } else {
       return items.sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
         if (a.id !== undefined && b.id !== undefined) {
-          return a.name < b.name ? 1 : -1;
+          return nameA < nameB ? 1 : -1;
         } else {
           return 0;
         }
@@ -331,7 +335,6 @@ export default class SummaryReview extends Vue {
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-
     if (this.hasChanges()) {
       try {
         await this.$store.dispatch("saveStepData", 4);
