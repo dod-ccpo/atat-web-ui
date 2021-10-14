@@ -77,7 +77,7 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
-export default class ATATTextField extends Vue {
+export default class ATATTextField extends VTextField {
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -115,7 +115,7 @@ export default class ATATTextField extends Vue {
   private validateField() {
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
-    // we evalute t5mnnnnnnnnnnnnnneq```````````````````````he rules to determine what icon to display
+    // we evalute the rules to determine what icon to display
     this.isFieldDirty = true;
 
     if (this.$props["rules"].length > 0) {
