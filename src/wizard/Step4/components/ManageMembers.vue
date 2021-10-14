@@ -543,7 +543,7 @@ export default class ManageMember extends Vue {
   }
 
   private setTheMemberToEdit(memberEmail: string): void {
-    let foundMember: OperatorModel[] | any;
+    let foundMember: OperatorModel[] = [];
     if (this.isRootAdmin) {
       const rootAdmins: OperatorModel[] =
         this.$store.getters.getPortfolioOperators;
@@ -939,6 +939,10 @@ export default class ManageMember extends Vue {
           this.memberToEditEmail,
           this.memberToEditEmailOriginal,
         ]);
+      } else {
+        // env-level operators
+        let foo = "bar";
+        debugger;
       }
     }
 
