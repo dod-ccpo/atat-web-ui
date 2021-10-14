@@ -743,8 +743,11 @@ export default class ManageMember extends Vue {
       let uniqueValues = [...new Set(pastedValuesArray)];
       const thisVm: any = vm;
       uniqueValues.forEach((email) => {
-        const isExistingEmail =
-          thisVm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
+        // EJY TODO - deeper existing validation on root admin emails
+        const isExistingEmail = thisVm.isRootAdmin
+          ? false
+          : thisVm.existingMemberEmails.indexOf(email.toLowerCase()) > -1;
+        // EJY end TODO
         const notAlreadyEntered =
           thisVm.validEmailList.indexOf(email.toLowerCase()) === -1;
         const isValid = thisVm.validateEmail(email);
@@ -801,9 +804,13 @@ export default class ManageMember extends Vue {
         this.duplicatedEmail = "";
       } else {
         this.memberList[memberListIndex].email = emailAddressEntered;
-        const isExistingEmail =
-          this.existingMemberEmails.indexOf(emailAddressEntered.toLowerCase()) >
-          -1;
+        // EJY TODO - deeper existing validation on root admin emails
+        let isExistingEmail = this.isRootAdmin
+          ? false
+          : this.existingMemberEmails.indexOf(
+              emailAddressEntered.toLowerCase()
+            ) > -1;
+        // EJY end TODO
         if (!isExistingEmail && isValid) {
           this.validEmailList.push(emailAddressEntered.toLowerCase());
           const displayName: string =
@@ -886,7 +893,7 @@ export default class ManageMember extends Vue {
       let operators: OperatorModel[] = [];
       let environments: EnvironmentModel[] = [];
       const curApp: ApplicationModel = this.currentApplication;
-      if (this.assignDifferentRolesForEnvs) {
+      if (this.assignDifferentRolesForEnvs && !this.isRootAdmin) {
         this.environments_roles.forEach((env) => {
           if (env.role_value !== "no_access") {
             operators = this.setOperators(env.role_value);
