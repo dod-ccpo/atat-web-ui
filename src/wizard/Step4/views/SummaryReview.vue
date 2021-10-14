@@ -206,7 +206,6 @@ export default class SummaryReview extends Vue {
   private handleMenuClick(item: any, event: Event): void {
     switch (item) {
       case "View root administrators":
-        console.log(item);
         this.$router.push({
           name: editmembers.name,
           params: {
@@ -229,20 +228,35 @@ export default class SummaryReview extends Vue {
     }
   }
 
-  private tranformData(applications: any): void {
+  private transformData(applications: any): void {
+    const portfolioOperatorsCount =  this.$store.state.portfolioOperators.length || 0;
     this.applicationData.push({
       name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
       description: this.$store.state.portfolioSteps[0].model.description,
-      operators: this.$store.state.portfolioOperators.length || 0,
+      operators: portfolioOperatorsCount,
       portfolio: true,
     });
-    for (let value of applications) {
+    for (let app of applications) {
       let obj: any = {};
-      obj.id = value.id;
-      obj.name = value.name;
-      obj.description = value.description;
-      let numArr = value.environments.map((env: any) => env?.operators?.length);
-      obj.operators = numArr.reduce((a: any, b: any) => a + b) || 0;
+      obj.operators = app.operators.length + portfolioOperatorsCount;
+      obj.id = app.id;
+      obj.name = app.name;
+      obj.description = app.description;
+
+      const envOperators = app.environments.flatMap(
+        (env: any) => env.operators
+      );
+
+      if (envOperators.length > 0) {
+        const operatorTemp: any[]= [];
+        obj.operators += envOperators.filter((op: any) => {
+          if (!operatorTemp.includes(op.email)) {
+            operatorTemp.push(op.email);
+            return op;
+          }
+        }).length;
+      }
+
       this.applicationData.push(obj);
     }
   }
@@ -310,7 +324,7 @@ export default class SummaryReview extends Vue {
     ]);
   }
   public async mounted(): Promise<void> {
-    this.tranformData(this.applications);
+    this.transformData(this.applications);
     this.incomingModel = JSON.parse(
       JSON.stringify({
         operators: this.$store.state.portfolioOperators as OperatorModel[],
