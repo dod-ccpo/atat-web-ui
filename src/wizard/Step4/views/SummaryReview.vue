@@ -229,7 +229,8 @@ export default class SummaryReview extends Vue {
   }
 
   private transformData(applications: any): void {
-    const portfolioOperatorsCount =  this.$store.state.portfolioOperators.length || 0;
+    const portfolioOperatorsCount =
+      this.$store.state.portfolioOperators.length || 0;
     this.applicationData.push({
       name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
       description: this.$store.state.portfolioSteps[0].model.description,
@@ -237,18 +238,19 @@ export default class SummaryReview extends Vue {
       portfolio: true,
     });
     for (let app of applications) {
+      const operatorsCount =
+        app.operators && app.operators.length ? app.operators.length : 0;
       let obj: any = {};
-      obj.operators = app.operators.length + portfolioOperatorsCount;
+      obj.operators = operatorsCount + portfolioOperatorsCount;
       obj.id = app.id;
       obj.name = app.name;
       obj.description = app.description;
 
-      const envOperators = app.environments.flatMap(
-        (env: any) => env.operators
+      const envOperators = app.environments.filter(
+        (env: any) => env.operators !== undefined
       );
-
       if (envOperators.length > 0) {
-        const operatorTemp: any[]= [];
+        const operatorTemp: any[] = [];
         obj.operators += envOperators.filter((op: any) => {
           if (!operatorTemp.includes(op.email)) {
             operatorTemp.push(op.email);

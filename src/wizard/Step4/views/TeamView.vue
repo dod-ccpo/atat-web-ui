@@ -242,8 +242,8 @@ export default class TeamView extends Vue {
     if (this.currentApplication.environments) {
       const applicationEnvironments = this.currentApplication.environments;
       applicationEnvironments.forEach((env: any) => {
-        const envOperators = env.operators || [];
-        if (envOperators && envOperators.length) {
+        const envOperators = env.operators;
+        if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
             const i = this.applicationMembers.findIndex(
               (o) => o.email === op.email
