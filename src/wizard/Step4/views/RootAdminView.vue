@@ -28,6 +28,7 @@
           <v-col cols="12" class="d-flex pl-0 pr-0">
             <v-col class="d-flex">
               <v-text-field
+                v-model="search"
                 class="search-bar"
                 placeholder="Search for member name and email"
                 dense
@@ -85,7 +86,7 @@
               v-if="rootMembersCount >= 1"
               class="review-table"
               :headers="headers"
-              :items="rootMembers"
+              :items="isFiltered ? filteredData : rootMembers"
               hide-default-footer
             >
               <template v-slot:header.display_name="{ header }">
@@ -269,14 +270,16 @@ export default class RootAdminView extends Vue {
   private dialogTitle = "";
   private showDialogWhenClicked = false;
 
-  private tableOptionClick(item: any): void {
+  private tableOptionClick(item: any, event: Event): void {
     console.log(item);
     if (item == "Remove team member") {
       this.message = "You currently don't have any Task Orders saved";
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.currentPortfolio.name}. This individual will no longer have access to any of your applications in the cloud console.`;
+      this.showDialogWhenClicked = true;
+    } else if (item.toLowerCase() === "edit info") {
+      this.openDialog(event);
     }
-    this.showDialogWhenClicked = true;
   }
 
   private deleteRootMember() {

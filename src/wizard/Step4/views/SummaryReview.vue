@@ -331,7 +331,6 @@ export default class SummaryReview extends Vue {
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-    debugger;
 
     if (this.hasChanges()) {
       try {
