@@ -28,6 +28,7 @@
           <v-col cols="12" class="d-flex pl-0 pr-0">
             <v-col class="d-flex">
               <v-text-field
+                v-model="search"
                 class="search-bar"
                 placeholder="Search for member name and email"
                 dense
@@ -85,7 +86,7 @@
               v-if="rootMembersCount >= 1"
               class="review-table"
               :headers="headers"
-              :items="rootMembers"
+              :items="isFiltered ? filteredData : rootMembers"
               hide-default-footer
             >
               <template v-slot:header.display_name="{ header }">
@@ -152,11 +153,23 @@
         </v-row>
       </v-col>
     </v-row>
+    <atat-modal-delete
+      v-show="hasDialog"
+      :showDialogWhenClicked.sync="showDialogWhenClicked"
+      :title="dialogTitle"
+      :message="dialogMessage"
+      :cancelText="cancelText"
+      persistent
+      no-click-animation
+      :okText="okText"
+      :width="dialogWidth + 'px'"
+      v-on:delete="onDelete"
+    />
   </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Emit, Watch } from "vue-property-decorator";
 
 @Component({})
 export default class RootAdminView extends Vue {
@@ -170,7 +183,7 @@ export default class RootAdminView extends Vue {
     this.$store.getters.getPortfolioById(
       this.$store.state.currentPortfolioId
     ) || "Untitled";
-  private rootMembers: any = this.$store.state.portfolioOperators;
+  private rootMembers: any = this.$store.getters.getPortfolioOperators;
   private rootMembersCount = this.rootMembers.length;
   private member: any;
 
@@ -192,19 +205,10 @@ export default class RootAdminView extends Vue {
       this.isFiltered = true;
       this.filteredData = this.rootMembers.filter((data: any) => {
         return (
-          data.display_name.toLowerCase().includes(value) ||
-          data.email.toLowerCase().includes(value)
+          data.display_name.toLowerCase().includes(value.toLowerCase()) ||
+          data.email.toLowerCase().includes(value.toLowerCase())
         );
       });
-    }
-  }
-
-  private tableOptionClick(item: any, event: Event): void {
-    if (item.toLowerCase() === "remove team member") {
-      // this.dialogTitle = `Remove ${this.member.display_name}`;
-      // this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
-    } else if (item.toLowerCase() === "edit info") {
-      this.openDialog(event);
     }
   }
 
@@ -245,8 +249,48 @@ export default class RootAdminView extends Vue {
       memberProps,
     ]);
   }
-  public async mounted(): Promise<void> {
-    // temp until actually saving data to store
+  @Watch("$store.state.dialog.isDisplayed")
+  setFocus(newVal: boolean): void {
+    if (!newVal) {
+      this.rootMembers;
+    }
+  }
+
+  //Dialog stuff
+  private okText = "Remove Team Member";
+  private cardWidth = "40";
+  private cancelText = "cancel";
+  private hasDialog = true;
+  private dialogWidth = "450";
+  @Emit("delete")
+  private onDelete(): void {
+    this.deleteRootMember();
+  }
+  private dialogMessage = "";
+  private dialogTitle = "";
+  private showDialogWhenClicked = false;
+
+  private tableOptionClick(item: any, event: Event): void {
+    if (item == "Remove team member") {
+      this.message = "You currently don't have any Task Orders saved";
+      this.dialogTitle = `Remove ${this.member.display_name}`;
+      this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.currentPortfolio.name}. This individual will no longer have access to any of your applications in the cloud console.`;
+      this.showDialogWhenClicked = true;
+    } else if (item.toLowerCase() === "edit info") {
+      this.openDialog(event);
+    }
+  }
+
+  private deleteRootMember() {
+    if (this.rootMembers) {
+      const operators = this.rootMembers;
+      let memberindx = operators.findIndex(
+        (item: any) => item.email === this.member.email
+      );
+      if (memberindx > -1) {
+        operators.splice(memberindx, 1);
+      }
+    }
   }
 }
 </script>

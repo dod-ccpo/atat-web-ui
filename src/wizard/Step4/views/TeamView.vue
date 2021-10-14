@@ -375,6 +375,7 @@ export default class TeamView extends Vue {
     if (item.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
+      this.showDialogWhenClicked = true;
     } else if (item.toLowerCase() === "edit info and roles") {
       this.openDialog(event);
     }
