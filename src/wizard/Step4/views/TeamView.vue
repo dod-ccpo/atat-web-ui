@@ -238,32 +238,34 @@ export default class TeamView extends Vue {
     if (this.currentApplication.environments) {
       const applicationEnvironments = this.currentApplication.environments;
       applicationEnvironments.forEach((env: any) => {
-        const envOperators = env.operators;
-        envOperators.forEach((op: any) => {
-          const i = this.applicationMembers.findIndex(
-            (o) => o.email === op.email
-          );
-          const workspace_roles =
-            i > -1
-              ? env.name +
-                ": " +
-                this.roleTranslation(op.access) +
-                "  " +
-                this.applicationMembers[i].workspace_roles
-              : env.name + ": " + this.roleTranslation(op.access);
-          if (i > -1) {
-            this.applicationMembers[i].workspace_roles = workspace_roles;
-          } else {
-            const opObj = {
-              id: op.id,
-              display_name:
-                op.display_name || op.first_name + " " + op.last_name,
-              email: op.email,
-              workspace_roles: workspace_roles,
-            };
-            this.applicationMembers.push(opObj);
-          }
-        });
+        if (env.operators) {
+          const envOperators = env.operators;
+          envOperators.forEach((op: any) => {
+            const i = this.applicationMembers.findIndex(
+              (o) => o.email === op.email
+            );
+            const workspace_roles =
+              i > -1
+                ? env.name +
+                  ": " +
+                  this.roleTranslation(op.access) +
+                  "  " +
+                  this.applicationMembers[i].workspace_roles
+                : env.name + ": " + this.roleTranslation(op.access);
+            if (i > -1) {
+              this.applicationMembers[i].workspace_roles = workspace_roles;
+            } else {
+              const opObj = {
+                id: op.id,
+                display_name:
+                  op.display_name || op.first_name + " " + op.last_name,
+                email: op.email,
+                workspace_roles: workspace_roles,
+              };
+              this.applicationMembers.push(opObj);
+            }
+          });
+        }
       });
     }
   }
