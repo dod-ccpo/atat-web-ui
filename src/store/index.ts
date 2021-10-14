@@ -665,7 +665,7 @@ export default new Vuex.Store({
       const apps: ApplicationModel[] = state.applicationModels;
       const appIndex = apps.map((a) => a.id).indexOf(applicationId);
       const app: ApplicationModel = apps[appIndex];
-      const appOperators: OperatorModel[] = app.operators;
+      const appOperators: OperatorModel[] = app.operators || [];
       const opIndex = appOperators.map((o) => o.email).indexOf(originalEmail);
       if (opIndex > -1) {
         // if existing, update info
@@ -685,7 +685,7 @@ export default new Vuex.Store({
       // remove member from environment-level access if any
       const envs: EnvironmentModel[] = app.environments;
       envs.forEach((env) => {
-        const ops: OperatorModel[] = env.operators;
+        const ops: OperatorModel[] = env.operators || [];
         const newOps = ops.filter((o) => {
           o.email !== originalEmail;
         });
@@ -699,19 +699,21 @@ export default new Vuex.Store({
       const apps: ApplicationModel[] = state.applicationModels;
       const appIndex = apps.map((a) => a.id).indexOf(applicationId);
       const app: ApplicationModel = apps[appIndex];
-      const appOperators: OperatorModel[] = app.operators;
+      const appOperators: OperatorModel[] = app.operators || [];
       // remove from application operators if member was previously app operator
-      const appOpIndex = appOperators.findIndex(
-        (a) => a.email === originalEmail
-      );
-      if (appOpIndex > -1) {
-        appOperators.splice(appOpIndex, 1);
+      if (appOperators.length) {
+        const appOpIndex = appOperators.findIndex(
+          (a) => a.email === originalEmail
+        );
+        if (appOpIndex > -1) {
+          appOperators.splice(appOpIndex, 1);
+        }
       }
       // assign new environment access
-      const envs: EnvironmentModel[] = app.environments;
+      const envs: EnvironmentModel[] = app.environments || [];
       if (envs.length) {
         envs.forEach((envInModel) => {
-          const ops: OperatorModel[] = envInModel.operators;
+          const ops: OperatorModel[] = envInModel.operators || [];
           const opIndex = ops.findIndex((o) => o.email === originalEmail);
           // find env id in updatedEnvs
           const updatedEnvIndex = updatedEnvs.findIndex(
