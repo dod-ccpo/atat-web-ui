@@ -81,7 +81,9 @@
               <div class="overflow-hidden text-no-wrap" style="height: 24px">
                 {{ item.description }}
               </div>
-              <div v-if="item.description.length > 50">...</div>
+              <div v-if="item.description && item.description.length > 50">
+                ...
+              </div>
             </div>
           </template>
           <template v-slot:item.operators="{ item }">
