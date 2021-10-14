@@ -271,7 +271,6 @@ export default class RootAdminView extends Vue {
   private showDialogWhenClicked = false;
 
   private tableOptionClick(item: any, event: Event): void {
-    console.log(item);
     if (item == "Remove team member") {
       this.message = "You currently don't have any Task Orders saved";
       this.dialogTitle = `Remove ${this.member.display_name}`;
