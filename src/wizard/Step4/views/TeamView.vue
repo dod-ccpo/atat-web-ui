@@ -138,7 +138,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
                         :disabled="isDisabled(item.workspace_roles)"
-                        class="table-row-menu-button"
+                        class="table-row-menu-button pa-0"
                         tabindex="1"
                         v-bind="attrs"
                         v-on="on"
@@ -212,58 +212,64 @@ export default class TeamView extends Vue {
   }[] = [];
   private setMemberTableData() {
     if (this.$store.state.portfolioOperators) {
-      const rootAdmins = this.$store.state.portfolioOperators;
-      rootAdmins.forEach((op: any) => {
-        const opObj = {
-          id: op.id,
-          display_name: op.display_name || op.first_name + " " + op.last_name,
-          email: op.email,
-          workspace_roles: "Root administrator",
-        };
-        this.applicationMembers.push(opObj);
-      });
+      const rootAdmins = this.$store.state.portfolioOperators || [];
+      if (rootAdmins && rootAdmins.length) {
+        rootAdmins.forEach((op: any) => {
+          const opObj = {
+            id: op.id,
+            display_name: op.display_name || op.first_name + " " + op.last_name,
+            email: op.email,
+            workspace_roles: "Root administrator",
+          };
+          this.applicationMembers.push(opObj);
+        });
+      }
     }
     if (this.currentApplication.operators) {
-      const applicationOperators = this.currentApplication.operators;
-      applicationOperators.forEach((op: any) => {
-        const opObj = {
-          id: op.id,
-          display_name: op.display_name || op.first_name + " " + op.last_name,
-          email: op.email,
-          workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
-        };
-        this.applicationMembers.push(opObj);
-      });
+      const applicationOperators = this.currentApplication.operators || [];
+      if (applicationOperators && applicationOperators.length) {
+        applicationOperators.forEach((op: any) => {
+          const opObj = {
+            id: op.id,
+            display_name: op.display_name || op.first_name + " " + op.last_name,
+            email: op.email,
+            workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
+          };
+          this.applicationMembers.push(opObj);
+        });
+      }
     }
     if (this.currentApplication.environments) {
       const applicationEnvironments = this.currentApplication.environments;
       applicationEnvironments.forEach((env: any) => {
-        const envOperators = env.operators;
-        envOperators.forEach((op: any) => {
-          const i = this.applicationMembers.findIndex(
-            (o) => o.email === op.email
-          );
-          const workspace_roles =
-            i > -1
-              ? env.name +
-                ": " +
-                this.roleTranslation(op.access) +
-                "  " +
-                this.applicationMembers[i].workspace_roles
-              : env.name + ": " + this.roleTranslation(op.access);
-          if (i > -1) {
-            this.applicationMembers[i].workspace_roles = workspace_roles;
-          } else {
-            const opObj = {
-              id: op.id,
-              display_name:
-                op.display_name || op.first_name + " " + op.last_name,
-              email: op.email,
-              workspace_roles: workspace_roles,
-            };
-            this.applicationMembers.push(opObj);
-          }
-        });
+        const envOperators = env.operators || [];
+        if (envOperators && envOperators.length) {
+          envOperators.forEach((op: any) => {
+            const i = this.applicationMembers.findIndex(
+              (o) => o.email === op.email
+            );
+            const workspace_roles =
+              i > -1
+                ? env.name +
+                  ": " +
+                  this.roleTranslation(op.access) +
+                  "  " +
+                  this.applicationMembers[i].workspace_roles
+                : env.name + ": " + this.roleTranslation(op.access);
+            if (i > -1) {
+              this.applicationMembers[i].workspace_roles = workspace_roles;
+            } else {
+              const opObj = {
+                id: op.id,
+                display_name:
+                  op.display_name || op.first_name + " " + op.last_name,
+                email: op.email,
+                workspace_roles: workspace_roles,
+              };
+              this.applicationMembers.push(opObj);
+            }
+          });
+        }
       });
     }
   }
@@ -387,7 +393,7 @@ export default class TeamView extends Vue {
 
   private deleteMemberFromApplication() {
     if (this.currentApplication.operators) {
-      const applicationOperators = this.currentApplication.operators;
+      const applicationOperators = this.currentApplication.operators || [];
       let memberindx = applicationOperators.findIndex(
         (item) => item.email === this.member.email
       );
@@ -398,7 +404,7 @@ export default class TeamView extends Vue {
     if (this.currentApplication.environments) {
       const applicationEnvironments = this.currentApplication.environments;
       applicationEnvironments.forEach((env: any) => {
-        const envOperators = env.operators;
+        const envOperators = env.operators || [];
         let memberindx = envOperators.findIndex(
           (item: any) => item.email === this.member.email
         );
