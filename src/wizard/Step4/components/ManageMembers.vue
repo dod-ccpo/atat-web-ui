@@ -543,7 +543,7 @@ export default class ManageMember extends Vue {
   }
 
   private setTheMemberToEdit(memberEmail: string): void {
-    let foundMember: OperatorModel[] | any;
+    let foundMember: OperatorModel[] = [];
     if (this.isRootAdmin) {
       const rootAdmins: OperatorModel[] =
         this.$store.getters.getPortfolioOperators;
@@ -930,15 +930,27 @@ export default class ManageMember extends Vue {
           this.memberToEditEmail,
         ]);
         debugger;
-      } else if (!this.assignDifferentRolesForEnvs) {
-        // application-level operator
+      } else {
         const appId = this.currentApplication.id;
-        this.$store.dispatch("updateApplicationOperatorInfo", [
-          appId,
-          this.memberToEditName,
-          this.memberToEditEmail,
-          this.memberToEditEmailOriginal,
-        ]);
+        if (!this.assignDifferentRolesForEnvs) {
+          // application-level operator
+          this.$store.dispatch("updateApplicationOperatorInfo", [
+            appId,
+            this.roleForAllEnvs,
+            this.memberToEditName,
+            this.memberToEditEmail,
+            this.memberToEditEmailOriginal,
+          ]);
+        } else {
+          // env-level operators
+          this.$store.dispatch("updateEnvironmentOperatorInfo", [
+            appId,
+            this.memberToEditName,
+            this.memberToEditEmail,
+            this.memberToEditEmailOriginal,
+            this.environments_roles,
+          ]);
+        }
       }
     }
 

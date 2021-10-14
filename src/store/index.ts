@@ -660,15 +660,87 @@ export default new Vuex.Store({
     },
     doUpdateApplicationOperatorInfo(
       state,
-      [applicationId, display_name, email, originalEmail]
+      [applicationId, access, display_name, email, originalEmail]
     ) {
       const apps: ApplicationModel[] = state.applicationModels;
       const appIndex = apps.map((a) => a.id).indexOf(applicationId);
       const app: ApplicationModel = apps[appIndex];
       const appOperators: OperatorModel[] = app.operators;
       const opIndex = appOperators.map((o) => o.email).indexOf(originalEmail);
-      appOperators[opIndex].display_name = display_name;
-      appOperators[opIndex].email = email;
+      if (opIndex > -1) {
+        // if existing, update info
+        appOperators[opIndex].display_name = display_name;
+        appOperators[opIndex].email = email;
+        appOperators[opIndex].email = access;
+      } else {
+        // if new, push into array
+        const newOp: OperatorModel = {
+          display_name: display_name,
+          email: email,
+          access: access,
+          id: generateUid(),
+        };
+        appOperators.push(newOp);
+      }
+      // remove member from environment-level access if any
+      const envs: EnvironmentModel[] = app.environments;
+      envs.forEach((env) => {
+        const ops: OperatorModel[] = env.operators;
+        const newOps = ops.filter((o) => {
+          o.email !== originalEmail;
+        });
+        ops.splice(0, ops.length, ...newOps);
+      });
+    },
+    doUpdateEnvironmentOperatorInfo(
+      state,
+      [applicationId, display_name, email, originalEmail, updatedEnvs]
+    ) {
+      const apps: ApplicationModel[] = state.applicationModels;
+      const appIndex = apps.map((a) => a.id).indexOf(applicationId);
+      const app: ApplicationModel = apps[appIndex];
+      const appOperators: OperatorModel[] = app.operators;
+      // remove from application operators if member was previously app operator
+      const appOpIndex = appOperators.findIndex(
+        (a) => a.email === originalEmail
+      );
+      if (appOpIndex > -1) {
+        appOperators.splice(appOpIndex, 1);
+      }
+      // assign new environment access
+      const envs: EnvironmentModel[] = app.environments;
+      if (envs.length) {
+        envs.forEach((envInModel) => {
+          const ops: OperatorModel[] = envInModel.operators;
+          const opIndex = ops.findIndex((o) => o.email === originalEmail);
+          // find env id in updatedEnvs
+          const updatedEnvIndex = updatedEnvs.findIndex(
+            (u: any) => u.env_id === envInModel.id
+          );
+          const updatedInfo = updatedEnvs[updatedEnvIndex];
+          if (opIndex > -1) {
+            if (updatedInfo.role_value === "no_access") {
+              // remove if found in operators for this env
+              const newOps = ops.filter((o) => o.email !== originalEmail);
+              ops.splice(0, ops.length, ...newOps);
+            } else {
+              // update env operator info
+              ops[opIndex].display_name = display_name;
+              ops[opIndex].email = email;
+              ops[opIndex].access = updatedInfo.role_value;
+            }
+          } else {
+            // add member to this environment operators
+            const newOp = {
+              display_name: display_name,
+              email: email,
+              access: updatedInfo.role_value,
+              id: generateUid(),
+            };
+            ops.push(newOp);
+          }
+        });
+      }
     },
   },
   /*
@@ -1095,13 +1167,26 @@ export default new Vuex.Store({
     },
     updateApplicationOperatorInfo(
       { commit },
-      [applicationId, display_name, email, originalEmail]
+      [applicationId, access, display_name, email, originalEmail]
     ) {
       commit("doUpdateApplicationOperatorInfo", [
+        applicationId,
+        access,
+        display_name,
+        email,
+        originalEmail,
+      ]);
+    },
+    updateEnvironmentOperatorInfo(
+      { commit },
+      [applicationId, display_name, email, originalEmail, envs]
+    ) {
+      commit("doUpdateEnvironmentOperatorInfo", [
         applicationId,
         display_name,
         email,
         originalEmail,
+        envs,
       ]);
     },
   },
