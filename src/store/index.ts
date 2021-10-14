@@ -700,7 +700,9 @@ export default new Vuex.Store({
       const app: ApplicationModel = apps[appIndex];
       const appOperators: OperatorModel[] = app.operators;
       // remove from application operators if member was previously app operator
-      const appOpIndex = appOperators.findIndex((a) => a.email === originalEmail);
+      const appOpIndex = appOperators.findIndex(
+        (a) => a.email === originalEmail
+      );
       if (appOpIndex > -1) {
         appOperators.splice(appOpIndex, 1);
       }
