@@ -71,7 +71,7 @@
                   <div class="overflow-hidden" style="height: 24px">
                     {{ item.name }}
                   </div>
-                  <div v-if="item.name.length > 25">...</div>
+                  <div v-if="item.name && item.name.length > 25">...</div>
                 </div>
               </a>
             </div>
