@@ -9,7 +9,7 @@
             <span v-if="isRootAdmin">root administrators</span>
             <span v-else>team members</span>
             to
-            {{ isRootAdmin ? portfolio.name : currentApplication.name }}
+            {{ isRootAdmin ? portfolio.name : currentApplicationName }}
           </span>
           <span v-if="isEditSingle">
             Update
@@ -176,7 +176,7 @@
           <p>
             Choose what type of role
             {{ isEditSingle ? "this individual" : "people" }} will have in
-            <span v-if="isEditSingle">{{ currentApplication.name }}.</span>
+            <span v-if="isEditSingle">{{ currentApplicationName }}.</span>
             <span v-else>your application.</span>
             <br />
             <v-btn class="link-button pa-0 height-auto">
@@ -402,6 +402,13 @@ export default class ManageMember extends Vue {
     return this.$store.getters.getCurrentApplication;
   }
 
+  get currentApplicationName(): string {
+    if (!this.isRootAdmin && this.currentApplication) {
+      return this.currentApplication.name;
+    }
+    return "current application";
+  }
+
   get portfolio(): Portfolio {
     return this.$store.getters.getPortfolio;
   }
@@ -482,7 +489,7 @@ export default class ManageMember extends Vue {
     //   this.roleForAllEnvs = this.rolesList[0].role_value;
     //   this.initEnvRoleDropdowns(this.roleForAllEnvs);
     // }
-    if (!this.memberToEditLoaded) {
+    if (!this.memberToEditLoaded && !this.isRootAdmin) {
       if (newVal === true) {
         this.initEnvRoleDropdowns(this.roleForAllEnvs);
       } else {
@@ -493,7 +500,7 @@ export default class ManageMember extends Vue {
 
   @Watch("roleForAllEnvs")
   protected setAllEnvsRoles(newVal: string): void {
-    if (this.memberToEditLoaded) {
+    if (this.memberToEditLoaded && !this.isRootAdmin) {
       this.initEnvRoleDropdowns(newVal);
     }
   }
@@ -523,10 +530,11 @@ export default class ManageMember extends Vue {
     if (props && Object.prototype.hasOwnProperty.call(props, "isEditSingle")) {
       this.isEditSingle = props.isEditSingle;
     }
-
-    this.assignDifferentRolesForEnvs = true;
-    this.roleForAllEnvs = this.rolesList[0].role_value;
-    this.initEnvRoleDropdowns(this.roleForAllEnvs);
+    if (!this.isRootAdmin) {
+      this.assignDifferentRolesForEnvs = true;
+      this.roleForAllEnvs = this.rolesList[0].role_value;
+      this.initEnvRoleDropdowns(this.roleForAllEnvs);
+    }
 
     if (this.isEditSingle) {
       // editing a single member
@@ -618,15 +626,17 @@ export default class ManageMember extends Vue {
   }
 
   private initEnvRoleDropdowns(role: string) {
-    const curApp: ApplicationModel = this.currentApplication;
-    this.environments_roles = [];
-    curApp.environments.forEach((env: EnvironmentModel) => {
-      this.environments_roles.push({
-        env_id: env.id,
-        env_name: env.name,
-        role_value: role,
+    if (!this.isRootAdmin) {
+      const curApp: ApplicationModel = this.currentApplication;
+      this.environments_roles = [];
+      curApp.environments.forEach((env: EnvironmentModel) => {
+        this.environments_roles.push({
+          env_id: env.id,
+          env_name: env.name,
+          role_value: role,
+        });
       });
-    });
+    }
   }
 
   public addMembersFormIsValid(): boolean {
@@ -936,7 +946,6 @@ export default class ManageMember extends Vue {
           this.memberToEditName,
           this.memberToEditEmail,
         ]);
-        debugger;
       } else {
         const appId = this.currentApplication.id;
         if (!this.assignDifferentRolesForEnvs) {

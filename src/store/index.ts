@@ -671,7 +671,7 @@ export default new Vuex.Store({
         // if existing, update info
         appOperators[opIndex].display_name = display_name;
         appOperators[opIndex].email = email;
-        appOperators[opIndex].email = access;
+        appOperators[opIndex].access = access;
       } else {
         // if new, push into array
         const newOp: OperatorModel = {
