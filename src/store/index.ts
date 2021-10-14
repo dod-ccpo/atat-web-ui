@@ -477,6 +477,7 @@ export default new Vuex.Store({
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
       Vue.set(state, "applicationModels", []);
+      Vue.set(state, "portfolioOperators", []);
 
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
