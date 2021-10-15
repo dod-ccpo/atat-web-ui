@@ -39,14 +39,14 @@ export default class CloudServiceProviderForm
 
   public items = new Array<ButtonCardItem>(
     {
-      label: "Aws",
-      value: "aws",
-      content: "AWS CSP",
+      label: "CSP A",
+      value: "CSP A",
+      content: "CSP A",
     },
     {
-      label: "Azure",
-      value: "azure",
-      content: "Azure CSP",
+      label: "CSP B",
+      value: "CSP B",
+      content: "CSP B",
     }
   );
 
