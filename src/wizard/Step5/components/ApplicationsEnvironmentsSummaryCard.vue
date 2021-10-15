@@ -17,7 +17,7 @@
               >
             </div>
             <p class="body-lg width-80 word-break-normal">
-              Unclassified application to help track internal tasks
+              {{ application.description }}
             </p>
           </v-card-title>
           <v-card-text class="body-lg text--base-darkest">
