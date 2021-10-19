@@ -16,7 +16,8 @@
           from <span class="font-weight-bold"> {{ csp }}</span> after your
           portfolio is provisioned. Select
           <span class="font-weight-bold">Next</span> to add team members to your
-          other applications. <v-btn
+          other applications.
+          <v-btn
             class="primary--text py-0 px-2 mt-n2"
             text
             small

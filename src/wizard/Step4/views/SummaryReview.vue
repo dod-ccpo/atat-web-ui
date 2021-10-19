@@ -133,7 +133,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { editmembers } from "@/router/wizard";
 import {
   ApplicationDataModel,
@@ -152,31 +152,19 @@ export default class SummaryReview extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private applicationData: any = [];
-
   private sortAsc = true;
   private sortApplications(items: any[], index: number) {
     this.sortAsc = !this.sortAsc;
-    if (!this.sortAsc) {
-      return items.sort((a, b) => {
-        const nameA = a.name.toLowerCase();
-        const nameB = b.name.toLowerCase();
-        if (a.id !== undefined && b.id !== undefined) {
-          return nameA > nameB ? 1 : -1;
-        } else {
-          return 0;
-        }
-      });
-    } else {
-      return items.sort((a, b) => {
-        const nameA = a.name.toLowerCase();
-        const nameB = b.name.toLowerCase();
-        if (a.id !== undefined && b.id !== undefined) {
-          return nameA < nameB ? 1 : -1;
-        } else {
-          return 0;
-        }
-      });
-    }
+    let sortSwitch: number = this.sortAsc ? 1 : -1;
+    return items.sort((a, b) => {
+      if (a.id !== undefined && b.id !== undefined) {
+        return a.name.toLowerCase() > b.name.toLowerCase()
+          ? sortSwitch
+          : sortSwitch * -1;
+      } else {
+        return 0;
+      }
+    });
   }
 
   private handleNameClick(item: any): void {
@@ -228,40 +216,81 @@ export default class SummaryReview extends Vue {
     }
   }
 
+  @Watch("$store.state.portfolioOperators")
+  rootAdminsUpdated(): void {
+    this.transformData(this.applications);
+  }
+  @Watch("$store.state.applicationModels", { deep: true })
+  membersUpdated(): void {
+    this.transformData(this.applications);
+  }
+
   private transformData(applications: any): void {
     const portfolioOperatorsCount =
       this.$store.state.portfolioOperators.length || 0;
-    this.applicationData.push({
-      name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
-      description: this.$store.state.portfolioSteps[0].model.description,
-      operators: portfolioOperatorsCount,
-      portfolio: true,
-    });
+
+    const portfolioObjIndex = this.applicationData.findIndex(
+      (p: any) => p.isPortfolio === true
+    );
+
+    if (portfolioObjIndex > -1) {
+      this.applicationData[portfolioObjIndex].operators =
+        portfolioOperatorsCount;
+    } else {
+      this.applicationData.push({
+        isPortfolio: true,
+        name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
+        description: this.$store.state.portfolioSteps[0].model.description,
+        operators: portfolioOperatorsCount,
+        portfolio: true,
+      });
+    }
+
     for (let app of applications) {
-      const operatorsCount =
+      const appOperatorsCount =
         app.operators && app.operators.length ? app.operators.length : 0;
-      let obj: any = {};
-      obj.operators = operatorsCount + portfolioOperatorsCount;
-      obj.id = app.id;
-      obj.name = app.name;
-      obj.description = app.description;
 
-      const envOperators = app.environments.filter(
-        (env: any) => env.operators !== undefined
+      const envOperatorCount = this.getEnvOperatorCount(app);
+      const totalOperatorsCount =
+        portfolioOperatorsCount + appOperatorsCount + envOperatorCount;
+
+      const appObjIndex = this.applicationData.findIndex(
+        (a: any) => a.id === app.id
       );
-      if (envOperators.length > 0) {
-        const operatorTemp: any[] = [];
-        obj.operators += envOperators.filter((op: any) => {
-          if (!operatorTemp.includes(op.email)) {
-            operatorTemp.push(op.email);
-            return op;
-          }
-        }).length;
-      }
 
-      this.applicationData.push(obj);
+      if (appObjIndex > -1) {
+        this.applicationData[appObjIndex].operators = totalOperatorsCount;
+      } else {
+        let obj: any = {
+          isPortfolio: false,
+          operators: totalOperatorsCount,
+          id: app.id,
+          name: app.name,
+          description: app.description,
+        };
+
+        this.applicationData.push(obj);
+      }
     }
   }
+
+  private getEnvOperatorCount(app: ApplicationModel) {
+    let envOperatorCount = 0;
+    const envOperators = app.environments.filter(
+      (env: any) => env.operators !== undefined
+    );
+    if (envOperators.length > 0) {
+      const operatorTemp: any[] = [];
+      envOperatorCount += envOperators.filter((op: any) => {
+        if (!operatorTemp.includes(op.email)) {
+          operatorTemp.push(op.email);
+          return op;
+        }
+      }).length;
+    }
+    return envOperatorCount;
+  }
+
   private setApplication(item: any) {
     this.currentApplication = item;
     this.$store.dispatch("setCurrentApplicationId", this.currentApplication.id);
