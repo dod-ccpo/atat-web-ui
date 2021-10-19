@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="px-0">
     <!--    :class="[-->
     <!--      this.$store.state.sideDrawer === false || 'side-drawer-open',-->
     <!--      'mb-16 d-flex flex-column',-->
