@@ -5,7 +5,7 @@
     <SideDrawer v-if="loginStatus" />
     <ATATHeader />
     <v-main style="padding-top: 90px">
-      <v-container fluid class="px-0 pt-0">
+      <v-container fluid class="pr-0 pt-0">
         <router-view> </router-view>
       </v-container>
     </v-main>

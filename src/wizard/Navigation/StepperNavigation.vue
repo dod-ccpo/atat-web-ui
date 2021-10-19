@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="px-0 mb-10 ms-0 pt-0">
+  <v-container fluid class="px-0 ms-0 pt-0">
     <v-row>
       <v-col cols="12" class="py-0">
         <v-stepper
@@ -53,7 +53,6 @@
         >
       </v-col>
     </v-row>
-    <v-divider class="mt-7"></v-divider>
   </v-container>
 </template>
 

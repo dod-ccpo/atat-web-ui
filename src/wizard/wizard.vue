@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="px-0">
+  <v-container fluid class="pr-0">
     <!--    :class="[-->
     <!--      this.$store.state.sideDrawer === false || 'side-drawer-open',-->
     <!--      'mb-16 d-flex flex-column',-->
@@ -9,6 +9,7 @@
       :current-step-number.sync="stepNumber"
       @clicked-action="getStep"
     />
+    <hr class="ml-n16 mb-10" />
     <router-view></router-view>
     <ButtonNavigation
       ref="buttonNavigation"
