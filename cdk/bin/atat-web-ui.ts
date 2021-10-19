@@ -1,8 +1,8 @@
 import * as cognito from "@aws-cdk/aws-cognito";
 import * as ssm from "@aws-cdk/aws-ssm";
 import * as cdk from "@aws-cdk/core";
-import { StaticSite } from "./static-website";
-import * as util from "./util";
+import { StaticSite } from "../lib/static-website";
+import * as util from "../lib/util";
 
 interface StaticSiteProps extends cdk.StackProps {
   environmentId: string;

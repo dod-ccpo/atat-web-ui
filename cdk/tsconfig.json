@@ -7,19 +7,19 @@
         ],
         "strict": true,
         "noImplicitAny": true,
-        "strictNullChecks": true,
         "noImplicitThis": true,
-        "alwaysStrict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": false,
+        "noFallthroughCasesInSwitch": true,
         "inlineSourceMap": true,
         "inlineSources": true,
         "experimentalDecorators": true,
-        "strictPropertyInitialization": false
+        "outDir": "build"
     },
-    "include": [
-        "./*.ts"
+    "exclude": [
+        "cdk.out",
+        "build",
+        "node_modules"
     ]
 }
