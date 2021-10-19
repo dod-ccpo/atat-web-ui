@@ -15,7 +15,7 @@
         "inlineSourceMap": true,
         "inlineSources": true,
         "experimentalDecorators": true,
-        "outDir": "build"
+        "outDir": "build",
     },
     "exclude": [
         "cdk.out",
