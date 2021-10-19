@@ -245,7 +245,6 @@ export default new Vuex.Store({
     applicationModels: [],
     portfolioOperators: [],
     wizardNavigation: {},
-    selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
     erroredSteps: [],
     currentStepNumber: 1,
     currentPortfolioId: "",
@@ -489,9 +488,6 @@ export default new Vuex.Store({
       } else {
         es.splice(stepNumber, 1);
       }
-    },
-    doSetSelectedCSP(state, selectedCSP) {
-      state.selectedCSP = selectedCSP;
     },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
@@ -926,7 +922,6 @@ export default new Vuex.Store({
       };
 
       await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
-      commit("doSetSelectedCSP", model.csp);
     },
     async saveStep2({ state }, model: any) {
       if (model.id === "") {
@@ -1307,7 +1302,6 @@ export default new Vuex.Store({
       );
       return state.applicationModels[applicationIndex];
     },
-    getSelectedCSP: (state) => state.selectedCSP,
     getPortfolioOperators: (state) => state.portfolioOperators,
   },
 });
