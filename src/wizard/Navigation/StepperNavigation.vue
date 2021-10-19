@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="px-0 ms-0 pt-0">
-    <v-row>
+  <v-container fluid class="px-0 py-0 ms-0">
+    <v-row class="my-0">
       <v-col cols="12" class="py-0">
         <v-stepper
           :flat="true"
@@ -10,7 +10,7 @@
           v-model="getStepNumber"
           non-linear
         >
-          <v-stepper-header class="pb-2 px-2">
+          <v-stepper-header class="pb-0 px-2">
             <template v-for="(step, index) in stepperControl.Steps">
               <v-stepper-step
                 editable
@@ -38,8 +38,8 @@
         </v-stepper>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" class="step-of-pages-control pl-5">
+    <v-row class="my-0">
+      <v-col cols="12" class="step-of-pages-control pl-5 py-6">
         <span
           class="v-stepper__step__step step bg-primary-darken white--text mx-0"
         >
