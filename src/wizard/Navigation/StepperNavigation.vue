@@ -39,7 +39,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" class="step-of-pages-control">
+      <v-col cols="12" class="step-of-pages-control pl-5">
         <span
           class="v-stepper__step__step step bg-primary-darken white--text mx-0"
         >
