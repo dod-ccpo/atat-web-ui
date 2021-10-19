@@ -275,20 +275,14 @@ export default class SummaryReview extends Vue {
   }
 
   private getEnvOperatorCount(app: ApplicationModel) {
-    let envOperatorCount = 0;
-    const envOperators = app.environments.filter(
-      (env: any) => env.operators !== undefined
-    );
-    if (envOperators.length > 0) {
-      const operatorTemp: any[] = [];
-      envOperatorCount += envOperators.filter((op: any) => {
-        if (!operatorTemp.includes(op.email)) {
-          operatorTemp.push(op.email);
-          return op;
-        }
-      }).length;
-    }
-    return envOperatorCount;
+    let envOperatorEmails: any[] = [];
+    app.environments.forEach((env) => {
+      if (env.operators && env.operators.length) {
+        env.operators.forEach((op) => envOperatorEmails.push(op.email));
+      }
+    });
+    const distinctEmails = [...new Set(envOperatorEmails)];
+    return distinctEmails.length;
   }
 
   private setApplication(item: any) {
