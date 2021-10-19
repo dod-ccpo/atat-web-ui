@@ -240,7 +240,7 @@ export default class SummaryReview extends Vue {
       this.applicationData.push({
         isPortfolio: true,
         name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
-        description: this.$store.state.portfolioSteps[0].model.description,
+        description: "Root administrators can access all applications",
         operators: portfolioOperatorsCount,
         portfolio: true,
       });
