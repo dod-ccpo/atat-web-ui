@@ -23,3 +23,14 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add("fillCreatePortfolioform", (pName) => {
+  cy.get("div.v-stepper.wizard-stepper").contains(
+    "1 Create Portfolio 2 Add Funding 3 Add Application 4 Add Team Members 5 Review and Submit"
+  );
+  cy.get("#portfolio-name_text_field").type(pName);
+  cy.get("#portfolio-description_text_field")
+    .type("Portfolio description goes here")
+    .should("have.value", "Portfolio description goes here");
+  cy.get("#dod-component label").first().click();
+  cy.get("#csp-button-card-1").contains("CSP A").click();
+});
