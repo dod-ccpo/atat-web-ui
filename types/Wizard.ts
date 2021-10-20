@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { OperatorModel } from "./Portfolios";
 
 export interface NavButton {
   id: string;
@@ -233,6 +234,7 @@ export abstract class Validatable extends Vue {
 export interface CreateEnvironmentModel {
   id: string;
   name: string;
+  operators: OperatorModel[];
 }
 
 export interface CreateApplicationModel {
@@ -240,4 +242,5 @@ export interface CreateApplicationModel {
   name: string;
   description: string;
   environments: CreateEnvironmentModel[];
+  operators: OperatorModel[];
 }
