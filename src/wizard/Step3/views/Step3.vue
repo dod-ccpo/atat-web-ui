@@ -25,19 +25,13 @@ export default class Step_3 extends ValidatableWizardStep<CreateApplicationModel
     createApplicationForm: CreateApplicationForm;
   };
 
-  private defaultEnvironmentNames = [
-    "Development",
-    "Testing",
-    "Staging",
-    "Production",
-  ];
-
   model: CreateApplicationModel = this.$store.getters.getStepModel(3);
 
   private onAddEnvironment(): void {
     this.model.environments.push({
       id: generateUid(),
       name: "",
+      operators: [],
     });
   }
 

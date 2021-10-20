@@ -65,22 +65,27 @@ const createStepThreeModel = () => {
     id: "",
     name: "",
     description: "",
+    operators: [],
     environments: [
       {
         name: "Development",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Testing",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Staging",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Production",
         id: generateUid(),
+        operators: [],
       },
     ],
   };
@@ -245,7 +250,7 @@ export default new Vuex.Store({
     applicationModels: [],
     portfolioOperators: [],
     wizardNavigation: {},
-    selectedCSP: "CSP 1", // can get this from portfolioSteps step 1 model.csp
+    selectedCSP: "CSP 1",
     erroredSteps: [],
     currentStepNumber: 1,
     currentPortfolioId: "",
@@ -298,18 +303,22 @@ export default new Vuex.Store({
             {
               name: "Development",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Testing",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Staging",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Production",
               id: generateUid(),
+              operators: [],
             },
           ],
         },
