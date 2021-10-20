@@ -9,7 +9,7 @@
       :current-step-number.sync="stepNumber"
       @clicked-action="getStep"
     />
-    <hr class="ml-n10 mb-10" />
+    <v-divider class="wizard-divider" />
     <router-view></router-view>
     <ButtonNavigation
       ref="buttonNavigation"
