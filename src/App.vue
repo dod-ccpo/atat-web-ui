@@ -45,6 +45,8 @@ export default class App extends Vue {
   private isDialogDisplayed = false;
 
   get loginStatus(): boolean {
+    //todo: remove `|| window.location.protocol === "http:"` as it a temp fix
+    //to help QA login without 'https' and for the side bar to appear.
     return (
       this.$store.getters.getLoginStatus || window.location.protocol === "http:"
     );
