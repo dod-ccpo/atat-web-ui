@@ -41,14 +41,14 @@
     </div>
     <div class="step-of-pages-control py-6 width-100">
       <span
-        class="v-stepper__step__step step bg-primary-darken white--text mx-0"
+        class="v-stepper__step__step step bg-primary-darken white--text ml-n1 mr-0"
       >
         {{ this.stepNumber }}
       </span>
-      <span class="span-of-pages body-xl mx-0">
+      <span class="span-of-pages font-size-24">
         of {{ stepperControl.Steps.length }}</span
       >
-      <span class="span-of-pages step-description mx-3">
+      <span class="span-of-pages step-description ml-2">
         {{ getStepDescription() }}</span
       >
     </div>

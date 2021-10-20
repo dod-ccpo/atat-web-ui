@@ -5,6 +5,11 @@
 .atat-select {
   color: $base_darkest !important;
 }
+
+.v-input__control {
+  background-color: white;
+}
+
 .v-input__slot {
   &:after {
     display: none;
@@ -13,6 +18,7 @@
 
 .v-select.theme--light.v-text-field--filled {
   > .v-input__control {
+    background-color: white !important;
     > .v-input__slot {
       border: 1px solid $base_dark;
       background-color: white;
@@ -30,6 +36,7 @@
 
 .v-select--is-menu-active {
   > .v-input__control {
+    background-color: white !important;
     > .v-input__slot {
       border: 1px solid $primary;
       outline: 1px solid $primary;
