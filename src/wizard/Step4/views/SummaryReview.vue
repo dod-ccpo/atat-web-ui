@@ -230,13 +230,11 @@ export default class SummaryReview extends Vue {
     const portfolioOperatorsCount =
       this.$store.state.portfolioOperators.length || 0;
 
-    const portfolioObjIndex = this.applicationData.findIndex(
+    const pIndex = this.applicationData.findIndex(
       (p: any) => p.portfolio === true
     );
-
-    if (portfolioObjIndex > -1) {
-      this.applicationData[portfolioObjIndex].operatorCount =
-        portfolioOperatorsCount;
+    if (pIndex > -1) {
+      this.applicationData[pIndex].operatorCount = portfolioOperatorsCount;
     } else {
       this.applicationData.push({
         name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
@@ -249,27 +247,23 @@ export default class SummaryReview extends Vue {
     for (let app of applications) {
       const appOperatorsCount =
         app.operators && app.operators.length ? app.operators.length : 0;
-
       const envOperatorCount = this.getEnvOperatorCount(app);
-      const totalOperatorsCount =
+      const totalAppOperatorsCount =
         portfolioOperatorsCount + appOperatorsCount + envOperatorCount;
 
-      const appObjIndex = this.applicationData.findIndex(
+      const aIndex = this.applicationData.findIndex(
         (a: any) => a.id === app.id
       );
-
-      if (appObjIndex > -1) {
-        this.applicationData[appObjIndex].operatorCount = totalOperatorsCount;
+      if (aIndex > -1) {
+        this.applicationData[aIndex].operatorCount = totalAppOperatorsCount;
       } else {
-        let obj: any = {
+        this.applicationData.push({
           id: app.id,
           name: app.name,
-          operatorCount: totalOperatorsCount,
+          operatorCount: totalAppOperatorsCount,
           description: app.description,
           portfolio: false,
-        };
-
-        this.applicationData.push(obj);
+        });
       }
     }
   }
