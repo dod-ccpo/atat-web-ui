@@ -4,7 +4,7 @@
       :step-number="stepNumber"
       :current-step-number.sync="stepNumber"
       @clicked-action="getStep"
-      class="mx-14"
+      class="px-14 bg-white"
     />
     <router-view class="wizard-content height-100"></router-view>
     <ButtonNavigation
