@@ -43,7 +43,9 @@ export class StaticSiteStack extends cdk.Stack {
     const siteUrls = [proxy.api.urlForPath()];
     // TODO: Only include localhost in pre-staging environments.
     for (const port of ["8080", "8081"]) {
-      siteUrls.push(`https://localhost:${port}/index.html`);
+      siteUrls.push(
+        `https://localhost:${port}/${proxy.api.deploymentStage.stageName}/`
+      );
     }
     this.userPoolClient = userPool.addClient("ApplicationUserPoolClient", {
       supportedIdentityProviders: idpNames.map(
