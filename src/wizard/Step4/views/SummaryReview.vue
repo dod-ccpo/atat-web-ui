@@ -31,6 +31,7 @@
           dense
           :sort-by="['name']"
           :custom-sort="sortApplications"
+          :items-per-page="-1"
         >
           <template v-slot:header.name="{ header }">
             <div
@@ -89,7 +90,7 @@
           <template v-slot:item.operators="{ item }">
             <div class="d-flex justify-space-between">
               <div class="body text--base-darkest pt-1">
-                {{ item.operators }}
+                {{ item.operatorCount }}
               </div>
 
               <v-menu
@@ -230,18 +231,17 @@ export default class SummaryReview extends Vue {
       this.$store.state.portfolioOperators.length || 0;
 
     const portfolioObjIndex = this.applicationData.findIndex(
-      (p: any) => p.isPortfolio === true
+      (p: any) => p.portfolio === true
     );
 
     if (portfolioObjIndex > -1) {
-      this.applicationData[portfolioObjIndex].operators =
+      this.applicationData[portfolioObjIndex].operatorCount =
         portfolioOperatorsCount;
     } else {
       this.applicationData.push({
-        isPortfolio: true,
         name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
         description: "Root administrators can access all applications",
-        operators: portfolioOperatorsCount,
+        operatorCount: portfolioOperatorsCount,
         portfolio: true,
       });
     }
@@ -259,14 +259,14 @@ export default class SummaryReview extends Vue {
       );
 
       if (appObjIndex > -1) {
-        this.applicationData[appObjIndex].operators = totalOperatorsCount;
+        this.applicationData[appObjIndex].operatorCount = totalOperatorsCount;
       } else {
         let obj: any = {
-          isPortfolio: false,
-          operators: totalOperatorsCount,
           id: app.id,
           name: app.name,
+          operatorCount: totalOperatorsCount,
           description: app.description,
+          portfolio: false,
         };
 
         this.applicationData.push(obj);
