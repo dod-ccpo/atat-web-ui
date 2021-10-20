@@ -4,10 +4,8 @@
     <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
     <SideDrawer v-if="loginStatus" />
     <ATATHeader />
-    <v-main style="padding-top: 90px">
-      <v-container fluid class="pr-0 pt-0">
-        <router-view> </router-view>
-      </v-container>
+    <v-main style="padding-top: 100px">
+      <router-view> </router-view>
     </v-main>
     <ATATFooter />
     <ATATDialog v-show="isDialogDisplayed" />
@@ -45,11 +43,7 @@ export default class App extends Vue {
   private isDialogDisplayed = false;
 
   get loginStatus(): boolean {
-    //todo: remove `|| window.location.protocol === "http:"` as it a temp fix
-    //to help QA login without 'https' and for the side bar to appear.
-    return (
-      this.$store.getters.getLoginStatus || window.location.protocol === "http:"
-    );
+    return this.$store.getters.getLoginStatus;
   }
 
   @Watch("$route", { immediate: true, deep: true })

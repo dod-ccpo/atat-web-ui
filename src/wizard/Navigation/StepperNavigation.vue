@@ -1,59 +1,58 @@
 <template>
-  <v-container fluid class="px-0 py-0 ms-0">
-    <v-row class="my-0">
-      <v-col cols="12" class="py-0">
-        <v-stepper
-          :flat="true"
-          width="100%"
-          alt-labels
-          class="wizard-stepper"
-          v-model="getStepNumber"
-          non-linear
-        >
-          <v-stepper-header class="pb-0 px-2">
-            <template v-for="(step, index) in stepperControl.Steps">
-              <v-stepper-step
-                editable
-                :id="'step_0' + (index + 1)"
-                :step="index + 1"
-                :key="'stepper_' + index"
-                :complete="isStepComplete(index)"
-                :rules="getValidationRules(index)"
+  <div>
+    <div>
+      <v-stepper
+        :flat="true"
+        width="100%"
+        alt-labels
+        class="wizard-stepper"
+        v-model="getStepNumber"
+        non-linear
+      >
+        <v-stepper-header class="pa-0">
+          <template v-for="(step, index) in stepperControl.Steps">
+            <v-stepper-step
+              editable
+              :id="'step_0' + (index + 1)"
+              :step="index + 1"
+              :key="'stepper_' + index"
+              :complete="isStepComplete(index)"
+              :rules="getValidationRules(index)"
+              @click="clickedAction(index + 1, this)"
+              :error-icon="'  '"
+              :edit-icon="'  '"
+              :complete-icon="'  '"
+              :class="[
+                isTouched(index) ? 'visited' : '',
+                index === 0 ? 'ml-n1' : '',
+              ]"
+            >
+              <a
                 @click="clickedAction(index + 1, this)"
-                :error-icon="'  '"
-                :edit-icon="'  '"
-                :complete-icon="'  '"
-                :class="[isTouched(index) ? 'visited' : '']"
+                class="step-description px-1"
               >
-                <a
-                  @click="clickedAction(index + 1, this)"
-                  class="step-description"
-                >
-                  {{ step.description }}
-                </a>
-                <v-divider :key="'divider_' + index"></v-divider>
-              </v-stepper-step>
-            </template>
-          </v-stepper-header>
-        </v-stepper>
-      </v-col>
-    </v-row>
-    <v-row class="my-0">
-      <v-col cols="12" class="step-of-pages-control pl-5 py-6">
-        <span
-          class="v-stepper__step__step step bg-primary-darken white--text mx-0"
-        >
-          {{ this.stepNumber }}
-        </span>
-        <span class="span-of-pages body-xl mx-0">
-          of {{ stepperControl.Steps.length }}</span
-        >
-        <span class="span-of-pages step-description mx-1">
-          {{ getStepDescription() }}</span
-        >
-      </v-col>
-    </v-row>
-  </v-container>
+                {{ step.description }}
+              </a>
+              <v-divider :key="'divider_' + index"></v-divider>
+            </v-stepper-step>
+          </template>
+        </v-stepper-header>
+      </v-stepper>
+    </div>
+    <div class="step-of-pages-control py-6 width-100">
+      <span
+        class="v-stepper__step__step step bg-primary-darken white--text mx-0"
+      >
+        {{ this.stepNumber }}
+      </span>
+      <span class="span-of-pages body-xl mx-0">
+        of {{ stepperControl.Steps.length }}</span
+      >
+      <span class="span-of-pages step-description mx-3">
+        {{ getStepDescription() }}</span
+      >
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
