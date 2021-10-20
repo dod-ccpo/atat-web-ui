@@ -8,7 +8,7 @@ import * as lambdaTypes from "aws-lambda";
 // The names of our asset directories
 const ASSET_DIR_REGEX = /^\/(?:css|fonts|img|js)\//i;
 // All routes are words (and usually camelCase)
-const LOOKS_LIKE_ROUTE = /^\/[a-z]*\/?/i;
+const LOOKS_LIKE_ROUTE = /^\/[a-z]*\/?$/i;
 
 /**
  * Map a URL path to an S3 path

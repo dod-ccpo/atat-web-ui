@@ -9,7 +9,7 @@ const ENVIRONMENT_ID = "dev";
 /* END MODIFICATIONS */
 
 const REGION = USER_POOL_ID.split("_")[0];
-const REDIRECT_URL = `${window.location.origin}/index.html`;
+const REDIRECT_URL = `${window.location.origin}${process.env.BASE_URL}`;
 
 export default Amplify.configure({
   Auth: {
