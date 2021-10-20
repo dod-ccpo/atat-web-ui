@@ -1,5 +1,5 @@
 <template>
-  <div class="height-100">
+  <div>
     <Stepper
       :step-number="stepNumber"
       :current-step-number.sync="stepNumber"
