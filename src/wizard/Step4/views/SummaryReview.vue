@@ -274,17 +274,6 @@ export default class SummaryReview extends Vue {
     }
   }
 
-  private getEnvOperatorCount(app: ApplicationModel) {
-    let envOperatorEmails: any[] = [];
-    app.environments.forEach((env) => {
-      if (env.operators && env.operators.length) {
-        env.operators.forEach((op) => envOperatorEmails.push(op.email));
-      }
-    });
-    const distinctEmails = [...new Set(envOperatorEmails)];
-    return distinctEmails.length;
-  }
-
   private setApplication(item: any) {
     this.currentApplication = item;
     this.$store.dispatch("setCurrentApplicationId", this.currentApplication.id);
