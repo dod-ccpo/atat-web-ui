@@ -139,6 +139,7 @@ import { editmembers } from "@/router/wizard";
 import {
   ApplicationDataModel,
   ApplicationModel,
+  EnvironmentModel,
   OperatorModel,
 } from "types/Portfolios";
 
@@ -245,22 +246,27 @@ export default class SummaryReview extends Vue {
     }
 
     for (let app of applications) {
-      const appOperatorsCount =
-        app.operators && app.operators.length ? app.operators.length : 0;
-      const envOperatorCount = this.getEnvOperatorCount(app);
-      const totalAppOperatorsCount =
-        portfolioOperatorsCount + appOperatorsCount + envOperatorCount;
+      const opEmails: string[] = [];
+      const appOps = app.operators || [];
+      appOps.forEach((op: OperatorModel) => opEmails.push(op.email));
+      app.environments.forEach((env: EnvironmentModel) => {
+        const envOps = env.operators || [];
+        envOps.forEach((op: OperatorModel) => opEmails.push(op.email));
+      });
+      const distinctOpEmails = [...new Set(opEmails)];
+      const totalOperatorsCount =
+        portfolioOperatorsCount + distinctOpEmails.length;
 
       const aIndex = this.applicationData.findIndex(
         (a: any) => a.id === app.id
       );
       if (aIndex > -1) {
-        this.applicationData[aIndex].operatorCount = totalAppOperatorsCount;
+        this.applicationData[aIndex].operatorCount = totalOperatorsCount;
       } else {
         this.applicationData.push({
           id: app.id,
           name: app.name,
-          operatorCount: totalAppOperatorsCount,
+          operatorCount: totalOperatorsCount,
           description: app.description,
           portfolio: false,
         });
