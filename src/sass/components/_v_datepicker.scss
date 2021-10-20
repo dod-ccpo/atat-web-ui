@@ -2,6 +2,15 @@
 @import "../utils/typography.scss";
 @import "../utils/utils.scss";
 
+#clin-datepicker-text-boxes{
+  .menuable__content__active{
+    height: 400px;
+    min-height: 400px;
+    min-width: 700px;
+    max-width: 700px;
+  }
+}
+
 .two-date-pickers{
   background-color: $base_lightest;
 

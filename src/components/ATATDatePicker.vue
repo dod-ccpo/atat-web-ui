@@ -1,84 +1,123 @@
 <template>
   <v-row>
+    <!-- :position-x="menuCoordinates.x"
+        :position-y="menuCoordinates.y" -->
     <v-col>
       <v-menu
         v-model="menu"
-        :close-on-content-click="true"
-        :position-x="0"
-        :position-y="0"
+        id="CLIN-datepicker-menu"
+        attach="#clin-datepicker-text-boxes"
         origin="top left"
-        :nudge-left="nudgeleft"
-        :nudge-top="40"
-        top
+        :nudge-left="-10"
+        :nudge-top="387"
+        absolute
+        :close-on-click="false"
+        :close-on-content-click="false"
+        :value="menu"
       >
-        <template v-slot:activator="{ on, attrs }">
-          <div class="d-flex align-start width-70 datepicker-text-box">
-            <v-text-field
-              :ref="id"
-              outlined
-              dense
-              :success="isFieldValid"
-              :error="isFieldValid"
-              :height="42"
-              v-bind="attrs"
-              v-on="on"
-              hide-details
-              placeholder="YYYY-DD-MM"
-              v-model="_date"
-              :value="_date"
-              :rules="_rules"
-              @focus="menu !== false"
-              @blur="blurTextField"
-              @update:error="getErrorMessages"
-            ></v-text-field>
-            <v-btn icon :ripple="false" class="ml-2">
-              <v-icon v-bind="attrs" v-on="on" class="icon-32 black--text"
-                >calendar_today</v-icon
-              >
-            </v-btn>
+        <div class="two-date-pickers pa-6 height-100">
+          <div class="width-100 h4 pb-7">
+            {{ title }}
+            <hr />
           </div>
-        </template>
-        <div class="two-date-pickers pa-6">
-          <div class="h4 pb-7">{{ title }}</div>
-          <hr />
-          <v-date-picker
-            ref="firstMonth"
-            :min="min"
-            :max="max"
-            v-model="_dateRange"
-            :show-current="false"
-            @input="menu = false"
-            class="mr-5 mt-4"
-            range
-            no-title
-            id="firstMonthDatePicker"
-            scrollable
-            tabindex="0"
-            @click:date="getSelectedDate"
-            :reactive="true"
-            :picker-date.sync="firstMonth"
-            transition="false"
-          />
-          <v-date-picker
-            ref="secondMonth"
-            :min="min"
-            :max="max"
-            :show-current="false"
-            v-model="_dateRange"
-            class="ml-5 mt-4"
-            @input="menu = false"
-            range
-            tabindex="0"
-            no-title
-            :reactive="true"
-            @click:date="getSelectedDate"
-            id="secondMonthDatePicker"
-            scrollable
-            :picker-date.sync="secondMonth"
-            transition="false"
-          />
+          <div class="d-flex align-center justify-space-around">
+            <div class="width-50">
+              <v-date-picker
+                ref="firstMonth"
+                :min="min"
+                :max="max"
+                v-model="_dateRange"
+                :show-current="false"
+                class="mr-5 mt-4"
+                range
+                no-title
+                id="firstMonthDatePicker"
+                scrollable
+                tabindex="0"
+                @click:date="getSelectedDate"
+                :picker-date.sync="firstMonth"
+                transition="false"
+              />
+            </div>
+            <div class="width-50">
+              <v-date-picker
+                ref="secondMonth"
+                :min="min"
+                :max="max"
+                :show-current="false"
+                v-model="_dateRange"
+                class="ml-5 mt-4"
+                range
+                tabindex="0"
+                no-title
+                @click:date="getSelectedDate"
+                id="secondMonthDatePicker"
+                scrollable
+                :picker-date.sync="secondMonth"
+                transition="false"
+              />
+            </div>
+          </div>
         </div>
       </v-menu>
+      <div
+        class="d-flex align-start width-100 datepicker-text-box"
+        id="clin-datepicker-text-boxes"
+      >
+        <!-- todo give id a more meaningful name -->
+        <v-text-field
+          :ref="id"
+          outlined
+          dense
+          :success="isFieldValid"
+          :error="isFieldValid"
+          :height="42"
+          v-bind="attrs"
+          v-on="on"
+          hide-details
+          placeholder="YYYY-DD-MM"
+          v-model="_date"
+          :value="_date"
+          :rules="_rules"
+          @focus="focusMenu"
+          @mouseup="menu === true"
+          @blur="blurTextField"
+          @update:error="getErrorMessages"
+          @update:return-value="menu === true"
+        ></v-text-field>
+        <v-btn icon :ripple="false" class="ml-2">
+          <v-icon v-bind="attrs" v-on="on" class="icon-32 black--text"
+            >calendar_today</v-icon
+          >
+        </v-btn>
+
+        <v-text-field
+          :ref="id"
+          outlined
+          dense
+          :success="isFieldValid"
+          :error="isFieldValid"
+          :height="42"
+          v-bind="attrs"
+          v-on="on"
+          hide-details
+          placeholder="YYYY-DD-MM"
+          v-model="_date"
+          :value="_date"
+          :rules="_rules"
+          @focus="menu === true"
+          @mouseup="menu === true"
+          @blur="blurTextField"
+          @update:error="getErrorMessages"
+          @update:return-value="menu === true"
+          @input="menu === true"
+        ></v-text-field>
+        <v-btn icon :ripple="false" class="ml-2">
+          <v-icon v-bind="attrs" v-on="on" class="icon-32 black--text"
+            >calendar_today</v-icon
+          >
+        </v-btn>
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -125,11 +164,23 @@ export default class ATATDatePicker extends Vue {
     .format("YYYY-MM-DD");
   private isFieldValid = false;
 
+  private focusMenu(event: Event): boolean {
+    this.menu = true;
+    // const clickedTextBox = event.currentTarget as HTMLInputElement;
+    // this.menuCoordinates.x = clickedTextBox.offsetTop;
+    // this.menuCoordinates.y = clickedTextBox.offsetLeft;
+    return this.menu;
+  }
+
   get getDate(): string {
     return this._date;
   }
 
   private isDatePickerAdvancing = false;
+  private menuCoordinates = {
+    x: 0,
+    y: 0,
+  };
 
   get isDateRangeValid(): boolean {
     return this.dateRange.every((d) => d !== "");
@@ -178,7 +229,8 @@ export default class ATATDatePicker extends Vue {
   private blurTextField(): void {
     this.getSelectedDate(this._date);
     this.getErrorMessages;
-    setTimeout(() => (this.menu = false), 2000);
+    this.menu === true;
+    // setTimeout(() => (this.menu = false), 2000);
   }
 
   @Watch("firstMonth")

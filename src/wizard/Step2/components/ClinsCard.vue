@@ -234,8 +234,11 @@
                           </div>
                         </v-col>
                       </v-row>
-                      <v-row class="d-flex align-center">
-                        <v-col cols="6">
+                      <v-row
+                        class="d-flex align-center"
+                        style="position: relative"
+                      >
+                        <v-col cols="12">
                           <atat-date-picker
                             id="startDate"
                             label="Start Date"
@@ -250,7 +253,7 @@
                             :max="maxDate"
                           />
                         </v-col>
-                        <v-col cols="6">
+                        <!-- <v-col cols="6">
                           <atat-date-picker
                             id="endDate"
                             label="End Date"
@@ -264,12 +267,13 @@
                             :min="minDate"
                             :max="maxDate"
                           />
-                        </v-col>
+                        </v-col> -->
                       </v-row>
                     </div>
                   </v-col>
-                </v-row> </v-expansion-panel-content
-            ></v-expansion-panel>
+                </v-row>
+              </v-expansion-panel-content></v-expansion-panel
+            >
           </v-expansion-panels>
         </v-col>
         <v-col>
