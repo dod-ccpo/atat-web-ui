@@ -46,7 +46,7 @@
         .v-date-picker-header__value{
           button{
             @extend .font-weight-700;
-            // pointer-events: none;
+            pointer-events: none;
             color: $base_darkest;
             &:hover{
               color: $base_darkest;
@@ -75,23 +75,46 @@
               td{
                 width: 44px !important;
                 height: 40px !important;
-                button.v-btn--active{
+                button{
+                  &.v-btn--active{
                   background-color: $primary_lighter !important;
                   border-radius: 0px !important;
                   width: 100% !important;
                   height: 100% !important;
                   padding: 4px 2px !important;
-                  &:focus,
-                  &:focus::before{
-                    border-radius: 0px !important;
-                    background-color: $base_lighter !important;
-                    opacity: initial !important;
-                    box-shadow: none !important;
-                    border-color: $primary_vivid !important;
-                    border-width: 2px !important;
-                    border-style: solid !important;
+                  // &:focus,
+                  // &:focus::before{
+                  //   border-radius: 0px !important;
+                  //   background-color: $base_lighter !important;
+                  //   opacity: initial !important;
+                  //   box-shadow: none !important;
+                  //   border-color: $primary_vivid !important;
+                  //   border-width: 2px !important;
+                  //   border-style: solid !important;
+                  // }
+                    &.date-picker-start-date{
+                      opacity: none !important;
+                      background-color: $primary_vivid !important;
+                      box-shadow: none !important;
+                      border-radius:  8px 0px 0px 8px !important;
+                      div{
+                        color: #fff;
+                      }
+                    }
+                    &.date-picker-end-date{
+                      opacity: none !important;
+                      background-color: $primary_vivid !important;
+                      box-shadow: none !important;
+                      border-radius:  0px 8px 8px 0px !important;
+                      div{
+                        color: #fff;
+                      }
+                    }
                   }
+                
                 }
+                
+
                 button.v-date-picker-table__current{
                   border: $base-darkest 1px solid !important;
                   color: $base_darkest !important;

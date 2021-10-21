@@ -15,7 +15,7 @@
       >
         <div class="two-date-pickers pa-6 height-100">
           <div class="width-100 h4 pb-7">
-            {{ title }}
+            {{ _title }}
             <hr />
           </div>
           <div class="d-flex align-center justify-space-between">
@@ -25,14 +25,14 @@
                 :min="min"
                 :max="max"
                 v-model="dateRange"
-                :show-current="false"
+                :show-current="true"
                 class="mr-5 mt-4 datepicker-element"
                 range
                 no-title
                 id="firstMonthDatePicker"
                 scrollable
                 tabindex="0"
-                @click:date="setStartDate"
+                @click:date="setDate"
                 :picker-date.sync="firstMonth"
                 transition="false"
               />
@@ -42,13 +42,13 @@
                 ref="secondMonth"
                 :min="min"
                 :max="max"
-                :show-current="false"
+                :show-current="true"
                 v-model="dateRange"
                 class="ml-5 mt-4 datepicker-element"
                 range
                 tabindex="0"
                 no-title
-                @click:date="setEndDate"
+                @click:date="setDate"
                 id="secondMonthDatePicker"
                 scrollable
                 :picker-date.sync="secondMonth"
@@ -138,7 +138,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: false }) private optional!: boolean;
   @PropSync("date") private _date!: string;
   @PropSync("daterange") private _dateRange!: string[];
-  @Prop({ default: "title" }) private title!: string;
+  @PropSync("title") private _title!: string;
   @Prop() private nudgeleft!: string;
   @PropSync("textboxvalue") private _textBoxValue!: string;
   @PropSync("rules") private _rules!: any[];
@@ -161,6 +161,8 @@ export default class ATATDatePicker extends Vue {
   private isEndTextBoxFocused = false;
   private startDate = "";
   private endDate = "";
+  private startDatePickerButton: any;
+  private endDatePickerButton: any;
 
   private setFocus(event: Event): void {
     const focusedElement = event.target as HTMLElement;
@@ -168,16 +170,59 @@ export default class ATATDatePicker extends Vue {
       focusedElement.closest(".start-date") !== null;
     this.isStartTextBoxFocused = isElementStartTextBox;
     this.isEndTextBoxFocused = !isElementStartTextBox;
-    this.title =
+    this._title =
       "What is the PoP " + (isElementStartTextBox ? "Start" : "End") + " Date?";
   }
 
   private toggleMenu(event: Event): void {
     //todo make more descriptive to accommodate multiple clins datepickers
+    //todo OCT not showing all rows....
+    // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
+    // menu to remain open if any components within this component are clicked and
+    // closed if user clicks elsewhere
     const element = event.target as HTMLElement;
     const isDatePickerElement =
       element.closest("#clin-datepicker-text-boxes") !== null;
     this.menu = isDatePickerElement ? true : false;
+    if (!this.menu) {
+      this.isStartTextBoxFocused = false;
+      this.isEndTextBoxFocused = false;
+    }
+
+    // accommodates for datepicker date being selected
+    const datePickerButtonElement =
+      element.closest(".v-date-picker-table") !== null;
+    if (datePickerButtonElement) {
+      if (this.isStartTextBoxFocused) {
+        this.startDatePickerButton = element.parentElement as HTMLButtonElement;
+        this.styleDatePickerButton(this.startDatePickerButton, true);
+      } else if (this.isEndTextBoxFocused) {
+        this.endDatePickerButton = element.parentElement as HTMLButtonElement;
+        this.styleDatePickerButton(this.endDatePickerButton, false);
+      }
+    }
+  }
+
+  private styleDatePickerButton(
+    button: HTMLButtonElement,
+    isStartButton: boolean
+  ): void {
+    // restore already selected start/end datepicker buttons to default state
+    const classToRemove = isStartButton
+      ? "date-picker-start-date"
+      : "date-picker-end-date";
+    const elementsWithOutdatedClass = document.getElementsByClassName(classToRemove);
+    if (elementsWithOutdatedClass.length > 0){
+      Array.from(elementsWithOutdatedClass).forEach((el) => {
+        el.classList.remove(classToRemove);
+      });
+    }
+
+    //add necessary class
+    const classToAdd = isStartButton
+      ? "date-picker-start-date"
+      : "date-picker-end-date";
+    button.classList.add(classToAdd);
   }
 
   get getDate(): string {
@@ -187,12 +232,16 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
   //todo remove click where the years show up...
 
-  // get isDateRangeValid(): boolean {
-  //   return this.dateRange.every((d) => d !== "");
-  // }
-
   public getSelectedDate(selectedDate: string): void {
     this._date = selectedDate;
+  }
+
+  public setDate(selectedDate: string): void {
+    if (this.isStartTextBoxFocused) {
+      this.setStartDate(selectedDate);
+    } else {
+      this.setEndDate(selectedDate);
+    }
   }
 
   public setStartDate(selectedDate: string): void {

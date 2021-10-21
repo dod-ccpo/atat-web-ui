@@ -244,7 +244,7 @@
                             label="Start Date"
                             :rules="popStartRules"
                             :errormessages.sync="datePickerErrorMessages"
-                            title="What is the PoP Start Date?"
+                            :title.sync="datepickerTitle"
                             :daterange.sync="dateRange"
                             :date.sync="_pop_start_date"
                             :textboxvalue="_pop_start_date"
@@ -253,21 +253,6 @@
                             :max="maxDate"
                           />
                         </v-col>
-                        <!-- <v-col cols="6">
-                          <atat-date-picker
-                            id="endDate"
-                            label="End Date"
-                            :errormessages.sync="datePickerErrorMessages"
-                            :rules="popEndRules"
-                            :daterange.sync="dateRange"
-                            :date.sync="_pop_end_date"
-                            title="What is the PoP End Date?"
-                            :textboxvalue="_pop_end_date"
-                            :nudgeleft="356"
-                            :min="minDate"
-                            :max="maxDate"
-                          />
-                        </v-col> -->
                       </v-row>
                     </div>
                   </v-col>
@@ -332,6 +317,8 @@ export default class ClinsCard extends Vue {
   @PropSync("obligated_funds") _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
+
+  private datepickerTitle = "What is the PoP Start Date?";
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
