@@ -1,5 +1,6 @@
 cdk.out/
-*.js
+build/
+coverage/
 
 # Ensure that this package-lock.json file is checked in properly regardless
 # of any settings at a more global level in the repository.
