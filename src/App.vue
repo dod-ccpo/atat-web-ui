@@ -10,7 +10,7 @@
       </v-container>
     </v-main>
     <ATATFooter />
-    <ATATDialog v-show="isDialogDisplayed" />
+    <ATATDialog scrollable v-show="isDialogDisplayed" />
     <ATATToast />
   </v-app>
 </template>

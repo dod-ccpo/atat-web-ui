@@ -1,25 +1,26 @@
 <template>
   <v-card class="extra-padding">
-    <v-form ref="form" v-model="valid" lazy-validation>
-      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-      <v-card-title>
-        <h3 class="mb-2 h3">
-          <span v-if="!isEditSingle">
-            Add
-            <span v-if="isRootAdmin">root administrators</span>
-            <span v-else>team members</span>
-            to
-            {{ isRootAdmin ? portfolio.name : currentApplicationName }}
-          </span>
-          <span v-if="isEditSingle">
-            Update
-            {{
-              memberToEditNameOriginal ? memberToEditNameOriginal : "Member"
-            }}’s information
-          </span>
-        </h3>
-      </v-card-title>
-      <v-card-text class="body-lg text--base-darkest mt-2">
+    <v-card-title>
+      <h3 class="mb-2 h3">
+        <span v-if="!isEditSingle">
+          Add
+          <span v-if="isRootAdmin">root administrators</span>
+          <span v-else>team members</span>
+          to
+          {{ isRootAdmin ? portfolio.name : currentApplicationName }}
+        </span>
+        <span v-if="isEditSingle">
+          Update
+          {{ memberToEditNameOriginal ? memberToEditNameOriginal : "Member" }}’s
+          information
+        </span>
+      </h3>
+    </v-card-title>
+    <v-card-text class="body-lg text--base-darkest mt-2">
+
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <div id="inputWidthFaker" ref="inputWidthFaker"></div>
+
         <!--#################################################-->
         <!-- EDIT SINGLE MEMBER NAME AND EMAIL -->
         <!--#################################################-->
@@ -229,27 +230,28 @@
             </v-row>
           </v-container>
         </div>
-      </v-card-text>
+      </v-form>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
-        <v-btn
-          color="primary"
-          class="px-5"
-          @click="saveToStore"
-          :disabled="submitDisabled"
+    </v-card-text>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
+      <v-btn
+        color="primary"
+        class="px-5"
+        @click="saveToStore"
+        :disabled="submitDisabled"
+      >
+        {{ buttonText }}
+        <span
+          class="valid-entry-count ml-2"
+          v-if="!isEditSingle && validEmailCount > 0"
         >
-          {{ buttonText }}
-          <span
-            class="valid-entry-count ml-2"
-            v-if="!isEditSingle && validEmailCount > 0"
-          >
-            {{ validEmailCount }}
-          </span>
-        </v-btn>
-      </v-card-actions>
-    </v-form>
+          {{ validEmailCount }}
+        </span>
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 

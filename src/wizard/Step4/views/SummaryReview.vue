@@ -129,6 +129,72 @@
         </v-data-table>
       </v-col>
     </v-row>
+
+    <v-dialog
+      @keydown.esc="hide"
+      persistent
+      scrollable
+      width="632px"
+      v-model="mkay"
+      transition="fade-transition"
+      origin="center center"
+      :content-class="
+        'height-' +
+        dialog.height +
+        ' max-height-' +
+        dialog.height +
+        ' min-height-' +
+        dialog.height
+      "
+      attach
+      >
+      <manage-members
+        :class="getInnerContentClasses"
+        :close.sync="dialog.isDisplayed"
+        :dialogProps="dialogProps"
+        @membersAdded="onMembersAdded"
+        @memberEdited="onMemberEdited(memberType)"
+      />
+    </v-dialog>
+    <div class="pa-10">
+      <button @click="mkay = !mkay">click me</button>
+    </div>
+
+    <v-dialog v-model="dialog" persistent attach scrollable max-width="300px">
+      <v-card>
+        <v-card-title>Select Country</v-card-title>
+        <v-card-text>
+          <v-radio-group v-model="dialog" column>
+            <v-radio label="Bahamas, The" value="bahamas"></v-radio>
+            <v-radio label="Bahrain" value="bahrain"></v-radio>
+            <v-radio label="Bangladesh" value="bangladesh"></v-radio>
+            <v-radio label="Barbados" value="barbados"></v-radio>
+            <v-radio label="Belarus" value="belarus"></v-radio>
+            <v-radio label="Belgium" value="belgium"></v-radio>
+            <v-radio label="Belize" value="belize"></v-radio>
+            <v-radio label="Benin" value="benin"></v-radio>
+            <v-radio label="Bhutan" value="bhutan"></v-radio>
+            <v-radio label="Bolivia" value="bolivia"></v-radio>
+            <v-radio label="Bosnia and Herzegovina" value="bosnia"></v-radio>
+            <v-radio label="Botswana" value="botswana"></v-radio>
+            <v-radio label="Brazil" value="brazil"></v-radio>
+            <v-radio label="Brunei" value="brunei"></v-radio>
+            <v-radio label="Bulgaria" value="bulgaria"></v-radio>
+            <v-radio label="Burkina Faso" value="burkina"></v-radio>
+            <v-radio label="Burma" value="burma"></v-radio>
+            <v-radio label="Burundi" value="burundi"></v-radio>
+          </v-radio-group>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="dialog = false">
+            Close
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="dialog = false">
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -143,10 +209,19 @@ import {
   OperatorModel,
 } from "types/Portfolios";
 
+import ManageMembers from "../components/ManageMembers.vue";
+
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
-@Component({})
+@Component({
+  components: {
+    ManageMembers,
+  },
+})
 export default class SummaryReview extends Vue {
+  private dialog = false;
+  private mkay = false;
+
   private incomingModel!: ApplicationDataModel;
   public applications = this.$store.state.applicationModels;
   private currentApplication: any;
