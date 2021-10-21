@@ -65,6 +65,7 @@
                   href="https://idco.dmdc.osd.mil/idco/"
                   target="_blank"
                   tabindex="3"
+                  rel="noopener"
                 >
                   <span class="link-body-md font-weight-400"
                     >ID Card Office Online (IDCO)</span
