@@ -193,9 +193,7 @@ export default class TeamView extends Vue {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private csp =
-    this.$store.state.portfolioSteps[0].model.csp ||
-    "the selected Cloud Service Provider’s";
+  private csp = this.$store.getters.getPortfolio.csp;
 
   private message = "You do not have any team members in this application yet.";
 
