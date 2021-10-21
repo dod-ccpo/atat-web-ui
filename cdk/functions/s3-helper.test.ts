@@ -36,18 +36,21 @@ describe("Check S3 Path mapping", () => {
     "should return index.html for route: %s",
     async (route) => {
       expect(mapToS3Path(route)).toEqual("index.html");
+      expect(mapToS3Path(route.slice(1))).toEqual("index.html");
     }
   );
   it.each(assetPaths)(
     "should return the same path, without a slash, for asset: %s",
     async (path) => {
       expect(mapToS3Path(path)).toEqual(path.slice(1));
+      expect(mapToS3Path(path.slice(1))).toEqual(path.slice(1));
     }
   );
   it.each(encodedPaths)(
     "should decode URI-encoded path: $path",
     async ({ path, expected }) => {
       expect(mapToS3Path(path)).toEqual(expected);
+      expect(mapToS3Path(path.slice(1))).toEqual(expected);
     }
   );
 });
