@@ -96,6 +96,7 @@
               hide-default-footer
               dense
               :sort-by="['name']"
+              :items-per-page="-1"
             >
               <template v-slot:header.display_name="{ header }">
                 <div

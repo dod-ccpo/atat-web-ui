@@ -65,22 +65,27 @@ const createStepThreeModel = () => {
     id: "",
     name: "",
     description: "",
+    operators: [],
     environments: [
       {
         name: "Development",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Testing",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Staging",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Production",
         id: generateUid(),
+        operators: [],
       },
     ],
   };
@@ -297,18 +302,22 @@ export default new Vuex.Store({
             {
               name: "Development",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Testing",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Staging",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Production",
               id: generateUid(),
+              operators: [],
             },
           ],
         },
