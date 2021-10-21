@@ -1,4 +1,4 @@
-const normalizationRejectionRegex = /[\W_-]/g;
+const normalizationRejectionRegex = /[\W_]/g;
 
 /**
  * Normalizes environment names.
