@@ -146,7 +146,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "2021-10-01" }) private max!: string;
 
   private menu = false;
-  private dateRange: string[] = ["", ""];
+  // private dateRange: string[] = ["", ""];
 
   private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
@@ -193,12 +193,16 @@ export default class ATATDatePicker extends Vue {
 
   public setStartDate(selectedDate: string): void {
     this.startDate = selectedDate;
-    this.dateRange[0] = this.startDate;
   }
 
   public setEndDate(selectedDate: string): void {
     this.endDate = selectedDate;
+  }
+
+  get dateRange(): string[]{
+    this.dateRange[0] = this.startDate;
     this.dateRange[1] = this.endDate;
+    return this.dateRange;
   }
 
 
