@@ -7,6 +7,13 @@
       :dod_components.sync="model.dod_components"
       :validate-on-load="touched"
     />
+    <div class="py-10">
+      <v-row>
+        <v-col cols="4">
+          <v-divider></v-divider>
+        </v-col>
+      </v-row>
+    </div>
     <CloudServiceProvider
       class="pb-10"
       ref="cloudServiceProviderForm"

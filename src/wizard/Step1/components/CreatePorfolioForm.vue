@@ -1,46 +1,47 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="my-9">
+    <v-container fluid>
       <v-row>
-        <v-col cols="12">
-          <h2 class="h2">Portfolio Details</h2>
+        <v-col cols="12" class="pb-8">
+          <h2 class="h2">Let’s start with some details about your portfolio</h2>
+          <p class="pt-4 mb-0">
+            Your portfolio is a collection of your funding sources and
+            applications within a single cloud service provider. If you would
+            like to create a multi-cloud application with environments deployed
+            to different CSPs, you will need to create a portfolio for each CSP.
+            When you are done, click <strong>Next</strong> and we will walk you
+            through adding your funding sources.
+          </p>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="6">
+      <v-row class="mt-0 pt-0">
+        <v-col cols="6" class="pt-0">
           <atat-text-field
             id="portfolio-name"
             label="Portfolio Name"
+            :helpText="portfolioDetailsDescription"
             :rules="rules.portfolioName"
             :value.sync="portfolio_name"
             :validate-on-load="validateOnLoad"
+            class="pb-9"
           />
 
-          <p class="mb-11">
-            Naming can be difficult. Choose a name that is descriptive enough
-            for users to identify the Portfolio. You may consider naming based
-            on your organization. (Must be between 4 - 100 characters)
-          </p>
           <atat-text-area
             optional="true"
             id="portfolio-description"
             label="Portfolio Description"
+            :helpText="portfolioDescriptionText"
             :value.sync="portfolio_description"
+            class="pt-9 pb-0"
           />
-          <p>
-            Add a brief one to two sentence description of your Portfolio.
-            Consider this your statement of work.
-          </p>
-          <div>
+          <div class="py-10">
             <v-row>
               <v-col cols="4">
-                <v-divider class="mt-7"></v-divider>
+                <v-divider></v-divider>
               </v-col>
             </v-row>
           </div>
-          <div class="h5 font-weight-bold mt-6">
-            Select DoD component(s) funding your Portfolio
-          </div>
+          <div class="h3 font-weight-bold pb-2">DoD component</div>
           <p>
             Select the DoD component(s) that will fund all applications within
             this portfolio. Multiple DoD organizations can fund the same
@@ -49,10 +50,13 @@
 
           <div
             v-if="typeof isDodComponentsValid === 'string'"
-            class="mb-2 atat-error-message"
+            class="mb-2 atat-error-message body"
             id="dod-components-errors"
             role="alert"
           >
+            <v-icon class="icon-16 pr-2 pb-1 text-base-error-darker"
+              >error</v-icon
+            >
             {{ isDodComponentsValid }}
           </div>
 
@@ -110,7 +114,11 @@ export default class CreatePortfolioForm
 {
   private valid = true;
   private dodComponents = dodComponents;
-
+  private portfolioDetailsDescription = `Naming can be difficult. Choose a name that is descriptive enough
+            for users to identify the Portfolio. You may consider naming based
+            on your organization. (Must be between 4 - 100 characters)`;
+  private portfolioDescriptionText = `Add a brief one to two sentence description of your Portfolio.
+            Consider this your statement of work.`;
   private isDodComponentsValid: boolean | string | undefined = false;
   private isChecked(dodComp: string) {
     return this._dod_components.findIndex((d) => d === dodComp) > -1;

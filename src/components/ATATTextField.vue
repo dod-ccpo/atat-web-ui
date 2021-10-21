@@ -59,7 +59,9 @@
           >
             <v-icon>delete </v-icon>
           </v-btn>
-          <v-icon v-if="isErrored" color="error" class="icon-24 pa-1 pl-4"
+          <v-icon
+            v-if="isErrored"
+            class="icon-16 pa-1 pl-4 text-base-error-darker"
             >error</v-icon
           >
           <v-icon v-if="isSuccess" color="success" class="icon-24 pa-1 pl-4"
