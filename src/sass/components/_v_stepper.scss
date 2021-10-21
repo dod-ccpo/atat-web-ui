@@ -4,6 +4,7 @@
   @extend .stepper-step-lg;
   height: 48px !important;
   width: 48px !important;
+  margin-bottom: 4px !important;
   border: #fff 4px solid !important;
 }
 
@@ -13,7 +14,7 @@
       box-shadow: none !important;
 
       hr{
-        margin: -64px 47px;
+        margin: -58px 47px;
         border-width: 4px;
         width: 100%;
         border-color: $base_lighter !important;
