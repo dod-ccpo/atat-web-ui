@@ -15,7 +15,7 @@
         </v-col>
       </v-row>
       <v-row class="mt-0 pt-0">
-        <v-col cols="6" class="pt-0">
+        <v-col cols="6" class="py-0">
           <atat-text-field
             id="portfolio-name"
             label="Portfolio Name"
@@ -69,6 +69,7 @@
                 ? 'error-item'
                 : 'default',
               ' my-3 atat-checkbox-list',
+              'text--base-darkest',
             ]"
           >
             <input

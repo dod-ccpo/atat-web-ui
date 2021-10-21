@@ -9,6 +9,7 @@
         align-items: flex-end !important;
         .v-input__control{
             flex-direction: column-reverse !important;
+            background-color:$gray_cool_1 !important;
             fieldset{
                 border: 3px solid $error-darker !important;
             }
@@ -63,7 +64,8 @@ div.success--text{
     }
     &.validation-above{
         .v-input__control{
-            flex-direction: column-reverse !important; 
+            flex-direction: column-reverse !important;
+            background-color:$gray_cool_1 !important;
             .v-input__slot{
                 margin-bottom: 0px; 
                 i.error--text,
@@ -82,11 +84,15 @@ div.success--text{
     }
 }
 ._v_radio-button-cards {
-
+    .v-input__control {
+        flex-direction: column-reverse !important;
+        background-color: $gray_cool_1 !important;
+    }
     &.error--text{
         align-items: flex-end !important;
         .v-input__control{
             flex-direction: column-reverse !important;
+            background-color:$gray_cool_1 !important;
             fieldset{
                 border: 3px solid $error-darker !important;
             }

@@ -1,13 +1,14 @@
 @import "../utils/colors.scss";
 
 ._v_radio-button-cards {
-
+background-color: $gray_cool_1 !important;
     .v-card {
         border-radius: 4px;
         max-width: 278px !important;
         min-height: 128px !important;
         cursor: pointer;
-        background-color: #dfe1e2 ;
+        border-color: $base_light;
+        background-color: $base_lightest ;
       }
 
       .active {
@@ -20,7 +21,7 @@
         color: black;
         border-color: black;
         border-radius: 50%;
-        background-color: white;
+        background-color: $base_lightest;
       }
 
 }
