@@ -24,12 +24,13 @@
                 ref="firstMonth"
                 :min="min"
                 :max="max"
-                v-model="dateRange"
+                v-model="getDateRange"
                 :show-current="true"
                 class="mr-5 mt-4 datepicker-element"
                 range
                 no-title
                 id="firstMonthDatePicker"
+                :allowed-dates="allowedDates"
                 scrollable
                 tabindex="0"
                 @click:date="setDate"
@@ -43,7 +44,7 @@
                 :min="min"
                 :max="max"
                 :show-current="true"
-                v-model="dateRange"
+                v-model="getDateRange"
                 class="ml-5 mt-4 datepicker-element"
                 range
                 tabindex="0"
@@ -60,6 +61,7 @@
       </v-menu>
       <div class="d-flex align-start width-100" id="clin-datepicker-text-boxes">
         <!-- todo give id a more meaningful name -->
+
         <v-text-field
           ref="startDate"
           outlined
@@ -68,10 +70,10 @@
           :error="isFieldValid"
           :height="42"
           hide-details
-          placeholder="YYYY-DD-MM"
+          placeholder="YYYY-MM-DD"
           v-model="startDate"
           :value="startDate"
-          :rules="_rules"
+          :rules="_startDateRules"
           @focus="setFocus"
           @blur="blurTextField"
           @update:error="getErrorMessages"
@@ -94,11 +96,11 @@
           :error="isFieldValid"
           :height="42"
           hide-details
-          placeholder="YYYY-DD-MM"
+          placeholder="YYYY-MM-DD"
           v-model="endDate"
           :value="endDate"
-          :rules="_rules"
           @focus="setFocus"
+          :rules="_endDateRules"
           @blur="blurTextField"
           @update:error="getErrorMessages"
           :class="[
@@ -137,11 +139,14 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
   @PropSync("date") private _date!: string;
-  @PropSync("daterange") private _dateRange!: string[];
+  @PropSync("daterange", { default: ["", ""] }) private dateRange!: string[];
   @PropSync("title") private _title!: string;
   @Prop() private nudgeleft!: string;
-  @PropSync("textboxvalue") private _textBoxValue!: string;
-  @PropSync("rules") private _rules!: any[];
+  @Prop() private allowedDates!: string[];
+  @PropSync("pop_start_date", { default: "" }) private startDate!: string;
+  @PropSync("pop_end_date", { default: "" }) private endDate!: string;
+  @PropSync("startDateRules") private _startDateRules!: any[];
+  @PropSync("endDateRules") private _endDateRules!: any[];
   @PropSync("errormessages") private _errorMessages!: (
     | CustomErrorMessage
     | undefined
@@ -150,8 +155,6 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "2021-10-01" }) private max!: string;
 
   private menu = false;
-  private dateRange: string[] = ["", ""];
-
   private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
@@ -159,8 +162,6 @@ export default class ATATDatePicker extends Vue {
   private isFieldValid = false;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
-  private startDate = "";
-  private endDate = "";
   private startDatePickerButton: any;
   private endDatePickerButton: any;
 
@@ -191,34 +192,41 @@ export default class ATATDatePicker extends Vue {
     }
 
     // accommodates for datepicker date being selected
+
     const datePickerButtonElement =
       element.closest(".v-date-picker-table") !== null;
     if (datePickerButtonElement) {
       if (this.isStartTextBoxFocused) {
         this.startDatePickerButton = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(this.startDatePickerButton, true);
-        this.setDatePickerHoverButtons(true);
       } else if (this.isEndTextBoxFocused) {
         this.endDatePickerButton = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(this.endDatePickerButton, false);
-        this.setDatePickerHoverButtons(false);
       }
     }
+    Vue.nextTick(() => {
+      this.setDatePickerHoverButtons;
+    });
   }
 
-  private setDatePickerHoverButtons(isStart: boolean): void {
+  get setDatePickerHoverButtons(): void {
     // restores datepicker table to default classes
-    const datepickerTables = document.getElementsByClassName(
-      "v-date-picker-table"
-    );
-    Array.from(datepickerTables).forEach((table) => {
-      table.classList.remove("hover-start", "hover-end");
-    });
+    if (this.menu) {
+      const datepickerTables = document.getElementsByClassName(
+        "v-date-picker-table"
+      );
+      Array.from(datepickerTables).forEach((table) => {
+        table.classList.remove("hover-start", "hover-end");
+      });
 
-    const classToAdd = isStart ? "hover-start" : "hover-end";
-    Array.from(datepickerTables).forEach((table) => {
-      table.classList.add(classToAdd);
-    });
+      const classToAdd = this.isStartTextBoxFocused
+        ? "hover-start"
+        : "hover-end";
+      Array.from(datepickerTables).forEach((table) => {
+        table.classList.add(classToAdd);
+      });
+    }
+    return undefined;
   }
 
   private styleDatePickerButton(
@@ -249,7 +257,6 @@ export default class ATATDatePicker extends Vue {
   }
 
   private isDatePickerAdvancing = false;
-  //todo remove click where the years show up...
 
   public getSelectedDate(selectedDate: string): void {
     this._date = selectedDate;
@@ -295,8 +302,8 @@ export default class ATATDatePicker extends Vue {
 
   private clearDates(isStart: boolean): void {
     this.dateRange = ["", ""];
-    this.startDate = isStart ? this.startDate : "";
-    this.endDate = isStart ? "" : this.endDate;
+    // this.startDate = isStart ? this.startDate : "";
+    // this.endDate = isStart ? "" : this.endDate;
   }
 
   private isDateRangeValid(tempDate: string, isStartDate: boolean): boolean {
@@ -310,12 +317,17 @@ export default class ATATDatePicker extends Vue {
     return false;
   }
 
+  // applies daterange when menu is opened
   get getDateRange(): string[] {
     if (moment(this.startDate).isBefore(moment(this.endDate))) {
       this.dateRange[0] = this.startDate;
       this.dateRange[1] = this.endDate;
     }
     return this.dateRange;
+  }
+
+  set getDateRange(value: string[]) {
+    this.dateRange = value;
   }
 
   public getErrorMessages(): void {

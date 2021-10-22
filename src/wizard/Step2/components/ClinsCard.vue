@@ -239,15 +239,17 @@
                         style="position: relative"
                       >
                         <v-col cols="12">
+                          <!-- todo: more meaningful id -->
                           <atat-date-picker
-                            id="startDate"
-                            label="Start Date"
-                            :rules="popStartRules"
+                            id="clin"
                             :errormessages.sync="datePickerErrorMessages"
                             :title.sync="datepickerTitle"
                             :daterange.sync="dateRange"
-                            :date.sync="_pop_start_date"
-                            :textboxvalue="_pop_start_date"
+                            :pop_start_date.sync="_pop_start_date"
+                            :pop_end_date.sync="_pop_end_date"
+                            :startDateRules.sync="popStartRules"
+                            :endDateRules.sync="popEndRules"
+                            :allowedDates="allowedDates"
                             :nudgeleft="1"
                             :min="minDate"
                             :max="maxDate"
@@ -318,7 +320,16 @@ export default class ClinsCard extends Vue {
   @PropSync("pop_end_date") _pop_end_date!: string;
 
   private datepickerTitle = "What is the PoP Start Date?";
-
+  get isValidStartDate(): boolean {
+    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+      this._pop_start_date
+    );
+  }
+  get isValidEndDate(): boolean {
+    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+      this._pop_end_date
+    );
+  }
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
@@ -371,7 +382,7 @@ export default class ClinsCard extends Vue {
 
   private dialog = false;
   private progress: HTMLProgressElement | undefined;
-  private minDate = "2020-01-01";
+  private minDate = "2021-01-01";
   private maxDate = "2021-12-31";
 
   // public progressEvent(): void {
@@ -384,6 +395,10 @@ export default class ClinsCard extends Vue {
   // }
 
   public rules = {};
+
+  public allowedDates(val: string): boolean {
+    return val >= new Date(this._pop_start_date).toISOString().substr(0, 10);
+  }
 
   public formatCurrency(value: number): string {
     return this.formatter.format(value);
@@ -452,37 +467,38 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
+  //todo make popendrules look just like popstartrules
   get popStartRules(): any[] {
     const validationRules = [];
+    // console.log(this._pop_start_date);
     if (this._pop_start_date !== "") {
       validationRules.push(
-        (v: string) =>
-          /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(v) ||
-          "Invalid Date"
+        () =>
+          this.isValidStartDate ||
+          "Please enter a start date using the format 'YYYY-MM-DD'"
       );
-
+      if (this.isValidStartDate && this.isValidEndDate) {
+        validationRules.push(
+          (v: string) =>
+            Date.parse(v) < Date.parse(this._pop_end_date) ||
+            "The period of performance start date must be before the end date"
+        );
+      }
+      if (this.isValidStartDate) {
+        validationRules.push(
+          () =>
+            moment(this._pop_start_date).isBefore(this.JWCCContractEndDate) ||
+            "The start date must be before or on " + this.JWCCContractEndDate
+        );
+      }
+    } else {
       validationRules.push(
         (v: string) =>
           v !== "" ||
           "Please enter the start date for your CLIN's period of performance"
       );
-      validationRules.push(
-        (v: string) =>
-          Date.parse(v) > 0 ||
-          "Please enter a start date using the format 'YYYY-MM-DD'"
-      );
-      validationRules.push(
-        (v: string) =>
-          Date.parse(v) < Date.parse(this._pop_end_date) ||
-          "The PoP start date must be before the end date"
-      );
-      validationRules.push(
-        (v: string) =>
-          v !== "" ||
-          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
-          "The start date must be before or on " + this.JWCCContractEndDate
-      );
     }
+
     return validationRules;
   }
 
@@ -509,11 +525,13 @@ export default class ClinsCard extends Vue {
           Date.parse(v) > Date.parse(this._pop_start_date) ||
           "The PoP end date must be after the start date"
       );
-      validationRules.push(
-        (v: string) =>
-          Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
-          "The end date must be before or on " + this.JWCCContractEndDate
-      );
+      if (this._pop_start_date !== "") {
+        validationRules.push(
+          (v: string) =>
+            Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+            "The end date must be before or on " + this.JWCCContractEndDate
+        );
+      }
     }
     return validationRules;
   }
