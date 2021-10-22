@@ -7,7 +7,7 @@
     "test": "jest --config=jest.config.js"
   },
   "devDependencies": {
-    "@types/node": "^16.9.0",
+    "@types/node": "^16.11.3",
     "@types/aws-lambda": "^8.10.84",
     "@types/jest": "27.0.2",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
