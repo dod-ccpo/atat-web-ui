@@ -10,11 +10,10 @@
       <v-col class="pa-0 ma-0" cols="9">
         <p class="body-lg text--base-darkest">
           In this section, we will invite people to join your application teams,
-          giving them access to your workspaces within the
-          <span class="font-weight-bold"> {{ csp }}</span> console. Select each
-          application below to manage your team members. Please add at least one
-          person to each application to ensure your team can access your
-          provisioned cloud resources. When you are done, select
+          giving them access to your workspaces within the {{ csp }} console.
+          Select each application below to manage your team members. Please add
+          at least one person to each application to ensure your team can access
+          your provisioned cloud resources. When you are done, select
           <span class="font-weight-bold">Next: Review and Submit</span> to
           finalize your portfolio.
         </p>
@@ -31,6 +30,7 @@
           dense
           :sort-by="['name']"
           :custom-sort="sortApplications"
+          :items-per-page="-1"
         >
           <template v-slot:header.name="{ header }">
             <div
@@ -89,7 +89,7 @@
           <template v-slot:item.operators="{ item }">
             <div class="d-flex justify-space-between">
               <div class="body text--base-darkest pt-1">
-                {{ item.operators }}
+                {{ item.operatorCount }}
               </div>
 
               <v-menu
@@ -133,11 +133,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { editmembers } from "@/router/wizard";
 import {
   ApplicationDataModel,
   ApplicationModel,
+  EnvironmentModel,
   OperatorModel,
 } from "types/Portfolios";
 
@@ -152,39 +153,23 @@ export default class SummaryReview extends Vue {
     this.$store.state.portfolioSteps[0].model.csp ||
     "the selected Cloud Service Provider’s";
   private applicationData: any = [];
-
   private sortAsc = true;
   private sortApplications(items: any[], index: number) {
     this.sortAsc = !this.sortAsc;
-    if (!this.sortAsc) {
-      return items.sort((a, b) => {
-        const nameA = a.name.toLowerCase();
-        const nameB = b.name.toLowerCase();
-        if (a.id !== undefined && b.id !== undefined) {
-          return nameA > nameB ? 1 : -1;
-        } else {
-          return 0;
-        }
-      });
-    } else {
-      return items.sort((a, b) => {
-        const nameA = a.name.toLowerCase();
-        const nameB = b.name.toLowerCase();
-        if (a.id !== undefined && b.id !== undefined) {
-          return nameA < nameB ? 1 : -1;
-        } else {
-          return 0;
-        }
-      });
-    }
+    let sortSwitch: number = this.sortAsc ? 1 : -1;
+    return items.sort((a, b) => {
+      if (a.id !== undefined && b.id !== undefined) {
+        return a.name.toLowerCase() > b.name.toLowerCase()
+          ? sortSwitch
+          : sortSwitch * -1;
+      } else {
+        return 0;
+      }
+    });
   }
 
   private handleNameClick(item: any): void {
     if (item.portfolio) {
-      if (item.name === "Untitled") {
-        return;
-      }
-
       this.$router.push({
         name: editmembers.name,
         params: {
@@ -228,40 +213,62 @@ export default class SummaryReview extends Vue {
     }
   }
 
+  @Watch("$store.state.portfolioOperators")
+  rootAdminsUpdated(): void {
+    this.transformData(this.applications);
+  }
+  @Watch("$store.state.applicationModels", { deep: true })
+  membersUpdated(): void {
+    this.transformData(this.applications);
+  }
+
   private transformData(applications: any): void {
     const portfolioOperatorsCount =
       this.$store.state.portfolioOperators.length || 0;
-    this.applicationData.push({
-      name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
-      description: this.$store.state.portfolioSteps[0].model.description,
-      operators: portfolioOperatorsCount,
-      portfolio: true,
-    });
+
+    const pIndex = this.applicationData.findIndex(
+      (p: any) => p.portfolio === true
+    );
+    if (pIndex > -1) {
+      this.applicationData[pIndex].operatorCount = portfolioOperatorsCount;
+    } else {
+      this.applicationData.push({
+        name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
+        description: "Root administrators can access all applications",
+        operatorCount: portfolioOperatorsCount,
+        portfolio: true,
+      });
+    }
+
     for (let app of applications) {
-      const operatorsCount =
-        app.operators && app.operators.length ? app.operators.length : 0;
-      let obj: any = {};
-      obj.operators = operatorsCount + portfolioOperatorsCount;
-      obj.id = app.id;
-      obj.name = app.name;
-      obj.description = app.description;
+      const opEmails: string[] = [];
+      const appOps = app.operators || [];
+      appOps.forEach((op: OperatorModel) => opEmails.push(op.email));
+      app.environments.forEach((env: EnvironmentModel) => {
+        const envOps = env.operators || [];
+        envOps.forEach((op: OperatorModel) => opEmails.push(op.email));
+      });
+      const distinctOpEmails = [...new Set(opEmails)];
+      const totalOperatorsCount =
+        portfolioOperatorsCount + distinctOpEmails.length;
 
-      const envOperators = app.environments.filter(
-        (env: any) => env.operators !== undefined
+      const aIndex = this.applicationData.findIndex(
+        (a: any) => a.id === app.id
       );
-      if (envOperators.length > 0) {
-        const operatorTemp: any[] = [];
-        obj.operators += envOperators.filter((op: any) => {
-          if (!operatorTemp.includes(op.email)) {
-            operatorTemp.push(op.email);
-            return op;
-          }
-        }).length;
+      if (aIndex > -1) {
+        this.applicationData[aIndex].operatorCount = totalOperatorsCount;
+      } else {
+        this.applicationData.push({
+          id: app.id,
+          name: app.name,
+          operatorCount: totalOperatorsCount,
+          description: app.description,
+          portfolio: false,
+        });
       }
-
-      this.applicationData.push(obj);
     }
   }
+
   private setApplication(item: any) {
     this.currentApplication = item;
     this.$store.dispatch("setCurrentApplicationId", this.currentApplication.id);

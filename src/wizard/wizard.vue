@@ -1,21 +1,18 @@
 <template>
-  <v-container fluid>
-    <!--    :class="[-->
-    <!--      this.$store.state.sideDrawer === false || 'side-drawer-open',-->
-    <!--      'mb-16 d-flex flex-column',-->
-    <!--    ]"-->
+  <div>
     <Stepper
       :step-number="stepNumber"
       :current-step-number.sync="stepNumber"
       @clicked-action="getStep"
+      class="px-14 bg-white"
     />
-    <router-view></router-view>
+    <router-view class="wizard-content height-100"></router-view>
     <ButtonNavigation
       ref="buttonNavigation"
       @clicked-action="getRoute"
       :step-number="stepNumber"
     />
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">

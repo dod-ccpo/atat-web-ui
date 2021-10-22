@@ -4,17 +4,26 @@
   @extend .stepper-step-lg;
   height: 48px !important;
   width: 48px !important;
+  margin-bottom: 4px !important;
   border: #fff 4px solid !important;
 }
 
 .v-stepper{
   &.wizard-stepper{
-    padding-left: 10px;
     .v-stepper__header{
       box-shadow: none !important;
+
+      hr{
+        margin: -58px 47px;
+        border-width: 4px;
+        width: 100%;
+        border-color: $base_lighter !important;
+        background-color: $base_lighter;
+      }
+
       .v-stepper__step{
         align-items: start;
-        padding: 30px 0px;
+        padding: 24px 0px;
         display: inline-block !important;
         width: 20% !important;
         flex-basis: 20% !important;
@@ -45,8 +54,9 @@
         &.v-stepper__step--inactive,
         &.v-stepper__step--editable{
           .v-stepper__step__step{
-            border: $base_lighter 4px solid !important;
+            border: #fff 4px solid !important;
             background-color: #fff !important;
+            box-shadow: inset 0px 0px 0px 4px $base_lighter;
             color: $primary_darken !important;
           }
 
@@ -60,6 +70,8 @@
           .v-stepper__step__step{
             border: #fff 4px solid !important;
             background-color: $primary !important;
+            box-shadow: inset 0px 0px 0px 4px $primary;
+
             color: #fff !important;
           }
           .v-stepper__label{
@@ -69,7 +81,8 @@
               font-weight: 700 !important;
             }
             hr{
-              border-color: $primary;
+              border-color: $primary !important;
+              background-color: $primary;
             }
           }
         }
@@ -78,6 +91,8 @@
         {
           .v-stepper__step__step{
             background-color: $error-darker !important;
+            box-shadow: inset 0px 0px 0px 4px $error-darker;
+
             border: #fff 4px solid !important;
             .v-icon{
               font-size: 2.5rem;
@@ -89,7 +104,8 @@
           }
           .v-stepper__label{
             hr{
-              border-color: $error-darker;
+              border-color: $error-darker !important;
+              background-color: $error-darker;
             }
           }
         }
@@ -99,8 +115,10 @@
           .v-stepper__step__step{
             background-color: $success !important;
             border: #fff 4px solid !important;
+            box-shadow: inset 0px 0px 0px 4px $success;
+
             .v-icon{
-              @extend .icon-24;
+              font-size: 34px;
               font-weight: bolder;
               color: #fff;
               &::before{
@@ -110,18 +128,14 @@
           }
           .v-stepper__label{
             hr{
-              border-color: $success;
+              border-color: $success !important;
+              background-color: $success;
             }
           }
         }
 
       }
 
-      hr{
-        margin: -63px 47px;
-        border-width: 4px;
-        width: 100%;
-      }
     }
   }
 }
@@ -133,11 +147,11 @@
   .span-of-pages{
     color: $primary !important;
     font-weight: normal !important;
-    @extend .h3;
 
     &.step-description{
-      color: $primary-darken !important;
+      color: $base_darkest !important;
       font-weight: 700 !important;
+      @extend .h3;
     }
   }
 }

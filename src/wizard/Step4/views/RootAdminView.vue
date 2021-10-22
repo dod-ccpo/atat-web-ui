@@ -4,7 +4,7 @@
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
         <h2 class="h2">
-          Let’s add root administrators to {{ currentPortfolio.name }}
+          Let’s add root administrators to {{ portfolioName }}
         </h2>
       </v-col>
     </v-row>
@@ -13,12 +13,11 @@
         <p class="body-lg text--base-darkest">
           Invite your root administrators below to grant them full access to all
           of your applications. These individuals will receive an invitation
-          from <span class="font-weight-bold"> {{ csp }}</span> after your
-          portfolio is provisioned. Select
+          from {{ csp }} after your portfolio is provisioned. Select
           <span class="font-weight-bold">Next</span> to add team members to your
           other applications.
           <v-btn
-            class="primary--text py-0 px-2 mt-n2"
+            class="primary--text pa-0 mt-n2"
             text
             small
             :ripple="false"
@@ -186,26 +185,29 @@ export default class RootAdminView extends Vue {
   private search = "";
   private csp =
     this.$store.state.portfolioSteps[0].model.csp ||
-    "the selected Cloud Service Provider’s";
-  private currentPortfolio =
-    this.$store.getters.getPortfolioById(
-      this.$store.state.currentPortfolioId
-    ) || "Untitled";
+    "the selected cloud service provider";
   private rootMembers: any = this.$store.getters.getPortfolioOperators;
-  private rootMembersCount = this.rootMembers.length;
   private member: any;
 
   private setMember(item: any) {
     this.member = item;
   }
 
-  private message =
-    "You do not have any root administrators in this portfolio yet.";
+  private message = "You do not have any team members in this workspace yet.";
   private headers = [
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "access", sortable: false },
   ];
   private options = ["Edit info", "Remove team member"];
+
+  get portfolioName(): string {
+    return this.$store.getters.getPortfolioName();
+  }
+
+  get rootMembersCount(): number {
+    return this.rootMembers.length;
+  }
+
   private searchTable(value: string) {
     if (!value) {
       this.isFiltered = false;
@@ -279,10 +281,9 @@ export default class RootAdminView extends Vue {
   private showDialogWhenClicked = false;
 
   private tableOptionClick(item: any, event: Event): void {
-    if (item == "Remove team member") {
-      this.message = "You currently don't have any Task Orders saved";
+    if (item.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
-      this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.currentPortfolio.name}. This individual will no longer have access to any of your applications in the cloud console.`;
+      this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
       this.showDialogWhenClicked = true;
     } else if (item.toLowerCase() === "edit info") {
       this.openDialog(event);

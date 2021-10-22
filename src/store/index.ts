@@ -65,22 +65,27 @@ const createStepThreeModel = () => {
     id: "",
     name: "",
     description: "",
+    operators: [],
     environments: [
       {
         name: "Development",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Testing",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Staging",
         id: generateUid(),
+        operators: [],
       },
       {
         name: "Production",
         id: generateUid(),
+        operators: [],
       },
     ],
   };
@@ -297,18 +302,22 @@ export default new Vuex.Store({
             {
               name: "Development",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Testing",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Staging",
               id: generateUid(),
+              operators: [],
             },
             {
               name: "Production",
               id: generateUid(),
+              operators: [],
             },
           ],
         },
@@ -1294,6 +1303,25 @@ export default new Vuex.Store({
     getTaskOrders: (state) => state.taskOrderModels,
     getApplications: (state) => state.applicationModels,
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
+    getPortfolioName: (state, getters) => (defaultResponse: string) => {
+      defaultResponse = defaultResponse || "this portfolio";
+      let pName = defaultResponse;
+      const portfolio = getters.getPortfolio;
+      if (portfolio) {
+        if (Object.prototype.hasOwnProperty.call(portfolio, "name")) {
+          pName = portfolio.name || pName;
+        }
+        if (
+          pName === defaultResponse &&
+          Object.prototype.hasOwnProperty.call(portfolio, "model")
+        ) {
+          if (Object.prototype.hasOwnProperty.call(portfolio, "name")) {
+            pName = portfolio.model.name || pName;
+          }
+        }
+      }
+      return pName;
+    },
     getCurrentApplication: (state) => {
       const applicationIndex = getEntityIndex(
         state.applicationModels,
