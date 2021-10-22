@@ -87,7 +87,12 @@ jobs:
         run: npm run test:unit
       - name: Run build
         run: npm run build
-      - name: Archive artifacts
+      - name: Archive coverage artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage
+      - name: Archive SPA Artifact
         uses: actions/upload-artifact@v2
         with:
           name: atat-web-ui
