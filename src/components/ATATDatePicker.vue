@@ -61,7 +61,7 @@
       <div class="d-flex align-start width-100" id="clin-datepicker-text-boxes">
         <!-- todo give id a more meaningful name -->
         <v-text-field
-          :ref="startDate + 'id'"
+          ref="startDate"
           outlined
           dense
           :success="isFieldValid"
@@ -87,7 +87,7 @@
         </v-btn>
 
         <v-text-field
-          :ref="endDate + 'id'"
+          ref="endDate"
           outlined
           dense
           :success="isFieldValid"
@@ -177,6 +177,7 @@ export default class ATATDatePicker extends Vue {
   private toggleMenu(event: Event): void {
     //todo make more descriptive to accommodate multiple clins datepickers
     //todo OCT not showing all rows....
+    //todo set getter name for this function...
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
@@ -196,11 +197,28 @@ export default class ATATDatePicker extends Vue {
       if (this.isStartTextBoxFocused) {
         this.startDatePickerButton = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(this.startDatePickerButton, true);
+        this.setDatePickerHoverButtons(true);
       } else if (this.isEndTextBoxFocused) {
         this.endDatePickerButton = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(this.endDatePickerButton, false);
+        this.setDatePickerHoverButtons(false);
       }
     }
+  }
+
+  private setDatePickerHoverButtons(isStart: boolean): void {
+    // restores datepicker table to default classes
+    const datepickerTables = document.getElementsByClassName(
+      "v-date-picker-table"
+    );
+    Array.from(datepickerTables).forEach((table) => {
+      table.classList.remove("hover-start", "hover-end");
+    });
+
+    const classToAdd = isStart ? "hover-start" : "hover-end";
+    Array.from(datepickerTables).forEach((table) => {
+      table.classList.add(classToAdd);
+    });
   }
 
   private styleDatePickerButton(
