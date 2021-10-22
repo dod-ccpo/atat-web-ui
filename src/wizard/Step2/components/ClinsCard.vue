@@ -256,9 +256,8 @@
                       </v-row>
                     </div>
                   </v-col>
-                </v-row>
-              </v-expansion-panel-content></v-expansion-panel
-            >
+                </v-row> </v-expansion-panel-content
+            ></v-expansion-panel>
           </v-expansion-panels>
         </v-col>
         <v-col>

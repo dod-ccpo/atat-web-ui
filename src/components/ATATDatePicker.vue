@@ -211,8 +211,9 @@ export default class ATATDatePicker extends Vue {
     const classToRemove = isStartButton
       ? "date-picker-start-date"
       : "date-picker-end-date";
-    const elementsWithOutdatedClass = document.getElementsByClassName(classToRemove);
-    if (elementsWithOutdatedClass.length > 0){
+    const elementsWithOutdatedClass =
+      document.getElementsByClassName(classToRemove);
+    if (elementsWithOutdatedClass.length > 0) {
       Array.from(elementsWithOutdatedClass).forEach((el) => {
         el.classList.remove(classToRemove);
       });
