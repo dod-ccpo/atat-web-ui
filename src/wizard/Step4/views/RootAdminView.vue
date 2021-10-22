@@ -183,9 +183,9 @@ export default class RootAdminView extends Vue {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private csp =
-    this.$store.state.portfolioSteps[0].model.csp ||
-    "the selected cloud service provider";
+  private currentPortfolio = this.$store.getters.getPortfolio;
+  private csp = this.currentPortfolio.csp;
+
   private rootMembers: any = this.$store.getters.getPortfolioOperators;
   private member: any;
 
