@@ -4,10 +4,8 @@
     <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
     <SideDrawer v-if="loginStatus" />
     <ATATHeader />
-    <v-main style="padding-top: 90px">
-      <v-container fluid>
-        <router-view> </router-view>
-      </v-container>
+    <v-main style="padding-top: 100px">
+      <router-view> </router-view>
     </v-main>
     <ATATFooter />
     <ATATDialog scrollable v-show="isDialogDisplayed" />

@@ -7,7 +7,7 @@
           <span v-if="isRootAdmin">root administrators</span>
           <span v-else>team members</span>
           to
-          {{ isRootAdmin ? portfolio.name : currentApplicationName }}
+          {{ isRootAdmin ? portfolioName : currentApplicationName }}
         </span>
         <span v-if="isEditSingle">
           Update
@@ -17,7 +17,6 @@
       </h3>
     </v-card-title>
     <v-card-text class="body-lg text--base-darkest mt-2">
-
       <v-form ref="form" v-model="valid" lazy-validation>
         <div id="inputWidthFaker" ref="inputWidthFaker"></div>
 
@@ -411,8 +410,8 @@ export default class ManageMember extends Vue {
     return "current application";
   }
 
-  get portfolio(): Portfolio {
-    return this.$store.getters.getPortfolio;
+  get portfolioName(): string {
+    return this.$store.getters.getPortfolioName();
   }
 
   get rolesForAllEnvsList(): unknown {

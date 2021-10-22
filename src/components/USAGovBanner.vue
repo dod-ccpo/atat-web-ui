@@ -61,7 +61,7 @@
             <div>
               <img
                 class="usa-banner__icon usa-media-block__img responsive mr-3"
-                src="/img/icons/icon-dot-gov.svg"
+                src="../../public/img/icon-dot-gov.svg"
                 role="img"
                 alt=""
                 width="40"
@@ -87,7 +87,7 @@
             <div>
               <img
                 class="usa-banner__icon usa-media-block__img responsive mr-3"
-                src="/img/icons/icon-https.svg"
+                src="../../public/img/icon-https.svg"
                 role="img"
                 alt=""
                 width="40"
