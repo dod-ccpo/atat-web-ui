@@ -92,6 +92,10 @@ jobs:
         with:
           name: atat-web-ui
           path: dist
+      - name: "[Workaround] Fix lcov.info paths"
+        # Make all paths in `lcov.info` relative instead of absolute
+        run: |
+          sed -i"" "s|SF:/home/runner/work/atat-web-ui/atat-web-ui/|SF:|" ./coverage/lcov.info 
       - name: Trigger SonarCloud
         # This step will fail for external collaborators
         if: ${{ github.actor != 'dependabot[bot]' }}
