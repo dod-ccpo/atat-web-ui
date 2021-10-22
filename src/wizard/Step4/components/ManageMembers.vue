@@ -9,7 +9,7 @@
             <span v-if="isRootAdmin">root administrators</span>
             <span v-else>team members</span>
             to
-            {{ isRootAdmin ? portfolio.name : currentApplicationName }}
+            {{ isRootAdmin ? portfolioName : currentApplicationName }}
           </span>
           <span v-if="isEditSingle">
             Update
@@ -409,8 +409,8 @@ export default class ManageMember extends Vue {
     return "current application";
   }
 
-  get portfolio(): Portfolio {
-    return this.$store.getters.getPortfolio;
+  get portfolioName(): string {
+    return this.$store.getters.getPortfolioName();
   }
 
   get rolesForAllEnvsList(): unknown {

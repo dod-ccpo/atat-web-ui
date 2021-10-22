@@ -1,8 +1,8 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="my-6">
+    <v-container fluid class="py-0">
       <v-row>
-        <v-col cols="8">
+        <v-col cols="8" class="py-0">
           <h2 class="h2">Let’s create your new application</h2>
           <p class="my-3">
             In this section, we’ll set up your cloud workspaces within
