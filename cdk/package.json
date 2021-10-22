@@ -32,6 +32,6 @@
     "@aws-cdk/aws-ssm": "1.127.0",
     "@aws-cdk/core": "1.127.0",
     "@aws-sdk/client-s3": "^3.37.0",
-    "aws-cdk": "1.127.0"
+    "aws-cdk": "1.129.0"
   }
 }
