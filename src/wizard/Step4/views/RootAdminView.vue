@@ -3,9 +3,7 @@
     <v-row>
       <div id="inputWidthFaker" ref="inputWidthFaker"></div>
       <v-col class="pl-0" cols="12">
-        <h2 class="h2">
-          Let’s add root administrators to {{ portfolioName }}
-        </h2>
+        <h2 class="h2">Let’s add root administrators to {{ portfolioName }}</h2>
       </v-col>
     </v-row>
     <v-row>
@@ -183,9 +181,9 @@ export default class RootAdminView extends Vue {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private csp =
-    this.$store.state.portfolioSteps[0].model.csp ||
-    "the selected cloud service provider";
+  private currentPortfolio = this.$store.getters.getPortfolio;
+  private csp = this.currentPortfolio.csp;
+
   private rootMembers: any = this.$store.getters.getPortfolioOperators;
   private member: any;
 

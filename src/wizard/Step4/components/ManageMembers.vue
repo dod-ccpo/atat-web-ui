@@ -395,7 +395,7 @@ export default class ManageMember extends Vue {
   }
 
   get selectedCSP(): string {
-    return this.$store.getters.getSelectedCSP;
+    return this.$store.getters.getPortfolio.csp;
   }
 
   get currentApplication(): ApplicationModel {

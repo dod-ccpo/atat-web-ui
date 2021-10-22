@@ -189,11 +189,6 @@ import { Component } from "vue-property-decorator";
 import ManageMembers from "@/wizard/Step4/components/ManageMembers.vue";
 import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
 import TeamView from "@/wizard/Step4/views/TeamView.vue";
-import {
-  ApplicationDataModel,
-  ApplicationModel,
-  OperatorModel,
-} from "../../../../types/Portfolios";
 
 @Component({
   components: {
@@ -203,9 +198,7 @@ import {
   },
 })
 export default class Step_4 extends Vue {
-  private csp =
-    this.$store.state.portfolioSteps[0].model.csp ||
-    "the selected Cloud Service Provider’s";
+  private csp = this.$store.getters.getPortfolio.csp;
   private createdApplication = this.$store.state.applicationModels;
   private editType = this.$route.params.type || "noEdit";
   private showPortfolioOwnerText = false;
