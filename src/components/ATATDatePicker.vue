@@ -11,51 +11,47 @@
         absolute
         :close-on-content-click="false"
         :close-on-click="!menu"
-        class="datepicker-element"
       >
-        <div class="two-date-pickers pa-6 height-100">
-          <div class="width-100 h4 pb-7">
+        <div class="two-date-pickers pa-6">
+          <div class="h4">
             {{ _title }}
-            <hr />
           </div>
-          <div class="d-flex align-center justify-space-between">
-            <div class="width-50">
-              <v-date-picker
-                ref="firstMonth"
-                :min="min"
-                :max="max"
-                v-model="getDateRange"
-                :show-current="true"
-                class="mr-5 mt-4 datepicker-element"
-                range
-                no-title
-                id="firstMonthDatePicker"
-                :allowed-dates="allowedDates"
-                scrollable
-                tabindex="0"
-                @click:date="setDate"
-                :picker-date.sync="firstMonth"
-                transition="false"
-              />
-            </div>
-            <div class="width-50">
-              <v-date-picker
-                ref="secondMonth"
-                :min="min"
-                :max="max"
-                :show-current="true"
-                v-model="getDateRange"
-                class="ml-5 mt-4 datepicker-element"
-                range
-                tabindex="0"
-                no-title
-                @click:date="setDate"
-                id="secondMonthDatePicker"
-                scrollable
-                :picker-date.sync="secondMonth"
-                transition="false"
-              />
-            </div>
+          <hr class="mt-6 mb-4" />
+          <div class="d-flex align-start">
+            <v-date-picker
+              ref="firstMonth"
+              :min="min"
+              :max="max"
+              v-model="getDateRange"
+              :show-current="true"
+              range
+              no-title
+              id="firstMonthDatePicker"
+              :allowed-dates="allowedDates"
+              scrollable
+              tabindex="0"
+              @click:date="setDate"
+              :picker-date.sync="firstMonth"
+              transition="false"
+              class="width-50"
+            />
+
+            <v-date-picker
+              ref="secondMonth"
+              :min="min"
+              :max="max"
+              :show-current="true"
+              v-model="getDateRange"
+              range
+              tabindex="0"
+              no-title
+              @click:date="setDate"
+              id="secondMonthDatePicker"
+              scrollable
+              :picker-date.sync="secondMonth"
+              transition="false"
+              class="width-50"
+            />
           </div>
         </div>
       </v-menu>

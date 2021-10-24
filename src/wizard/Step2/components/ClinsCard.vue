@@ -397,7 +397,10 @@ export default class ClinsCard extends Vue {
   public rules = {};
 
   public allowedDates(val: string): boolean {
-    return val >= new Date(this._pop_start_date).toISOString().substr(0, 10);
+    if (this._pop_start_date){
+      return val >= new Date(this._pop_start_date).toISOString().substr(0, 10);
+    }
+    return true;
   }
 
   public formatCurrency(value: number): string {
