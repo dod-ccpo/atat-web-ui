@@ -198,7 +198,6 @@ export default class CreateTaskOrderForm extends Vue {
   }
 
   public async validateForm(): Promise<boolean> {
-    debugger;
     let validated: boolean[] = [];
     this.signedTaskOrderErrorMessage = "";
 
@@ -240,7 +239,6 @@ export default class CreateTaskOrderForm extends Vue {
   }
 
   private async onRemoveFile(): Promise<void> {
-    debugger;
     this.signedTaskOrder = "";
     this._task_order_file.name = "";
     this._task_order_file.id = "";
