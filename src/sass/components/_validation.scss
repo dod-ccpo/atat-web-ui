@@ -165,7 +165,7 @@ div.success--text{
 
 .error-icon-label-left {
     .v-messages__message {
-        padding-left: 30px;
+        padding-left: 25px;
         position: relative;
         &:before {
             position: absolute;
@@ -173,8 +173,8 @@ div.success--text{
             content: "error";
             font-family: "Material Icons";
             -webkit-font-feature-settings: "liga";
-            color: #b50909;
-            position: absolute;
+            color: $error-dark;
+            font-weight: normal;
             font-size: 20px;
         }
     }
