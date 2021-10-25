@@ -17,7 +17,7 @@
             x-small
             v-on="on"
             :ripple="false"
-            ><v-icon class="ma-0 pa-0 mb-2" small color="primary"
+            ><v-icon class="ma-0 pa-0" small color="primary"
               >help_outline
             </v-icon>
           </v-btn>
