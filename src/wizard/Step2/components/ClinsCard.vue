@@ -196,66 +196,58 @@
                     <div class="h4 font-weight-bold mt-6">
                       Period of Performance (PoP)
                     </div>
-                    <div class="ma-0">
-                      <v-row class="d-flex align-center pt-3">
-                        <v-col cols="6">
-                          <label
-                            :id="'start_date_text_field_label'"
-                            class="form-field-label my-1 font-weight-bold"
-                            :for="'start_date_text_field'"
-                          >
-                            Start Date
-                          </label>
-                        </v-col>
-                        <v-col cols="6">
-                          <label
-                            :id="'end_date_text_field_label'"
-                            class="form-field-label my-1 font-weight-bold"
-                            :for="'end_date_text_field'"
-                          >
-                            End Date
-                          </label>
-                        </v-col>
-                      </v-row>
-                      <v-row
-                        v-if="datePickerErrorMessages.length > 0"
-                        class="mt-0"
+
+                    <div class="width-100 d-flex align-center">
+                      <label
+                        :id="'start_date_text_field_label'"
+                        class="form-field-label my-1 font-weight-bold"
+                        :for="'start_date_text_field'"
                       >
-                        <v-col ool="!2" class="py-0">
-                          <div
-                            v-for="(error, idx) in datePickerErrorMessages"
-                            :key="idx"
-                          >
-                            <div class="error--text">
-                              <div class="v-messages__message">
-                                {{ error.message }}
-                              </div>
-                            </div>
+                        Start Date
+                      </label>
+                      <label
+                        :id="'end_date_text_field_label'"
+                        class="form-field-label my-1 font-weight-bold"
+                        :for="'end_date_text_field'"
+                      >
+                        End Date
+                      </label>
+                    </div>
+                    <div
+                      v-show="datePickerErrorMessages.length > 0"
+                      class="mt-0"
+                    >
+                      <div
+                        v-for="(error, idx) in datePickerErrorMessages"
+                        :key="idx"
+                      >
+                        <div class="error--text">
+                          <div class="v-messages__message">
+                            {{ error.message }}
                           </div>
-                        </v-col>
-                      </v-row>
-                      <v-row
-                        class="d-flex align-center"
-                        style="position: relative"
-                      >
-                        <v-col cols="12">
-                          <!-- todo: more meaningful id -->
-                          <atat-date-picker
-                            id="clin"
-                            :errormessages.sync="datePickerErrorMessages"
-                            :title.sync="datepickerTitle"
-                            :daterange.sync="dateRange"
-                            :pop_start_date.sync="_pop_start_date"
-                            :pop_end_date.sync="_pop_end_date"
-                            :startDateRules.sync="popStartRules"
-                            :endDateRules.sync="popEndRules"
-                            :allowedDates="allowedDates"
-                            :nudgeleft="1"
-                            :min="minDate"
-                            :max="maxDate"
-                          />
-                        </v-col>
-                      </v-row>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-center mt-0"
+                      style="position: relative"
+                    >
+                      <v-form ref="dateFields">
+                        <atat-date-picker
+                          :id="'clin_' + card_number"
+                          :errormessages.sync="datePickerErrorMessages"
+                          :title.sync="datepickerTitle"
+                          :daterange.sync="dateRange"
+                          :pop_start_date.sync="_pop_start_date"
+                          :pop_end_date.sync="_pop_end_date"
+                          :startDateRules.sync="popStartRules"
+                          :endDateRules.sync="popEndRules"
+                          :allowedDates="allowedDates"
+                          :nudgeleft="1"
+                          :min="minDate"
+                          :max="maxDate"
+                        />
+                      </v-form>
                     </div>
                   </v-col>
                 </v-row> </v-expansion-panel-content
@@ -338,6 +330,10 @@ export default class ClinsCard extends Vue {
     return this.$refs.fundFields as Vue & { validate: () => boolean };
   }
 
+  get DateFields(): Vue & { validate: () => boolean } {
+    return this.$refs.dateFields as Vue & { validate: () => boolean };
+  }
+
   @Watch("_pop_start_date")
   protected setStartDate(): void {
     this.setDateRange();
@@ -397,7 +393,7 @@ export default class ClinsCard extends Vue {
   public rules = {};
 
   public allowedDates(val: string): boolean {
-    if (this._pop_start_date){
+    if (this._pop_start_date) {
       return val >= new Date(this._pop_start_date).toISOString().substr(0, 10);
     }
     return true;
@@ -470,10 +466,8 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
-  //todo make popendrules look just like popstartrules
   get popStartRules(): any[] {
     const validationRules = [];
-    // console.log(this._pop_start_date);
     if (this._pop_start_date !== "") {
       validationRules.push(
         () =>
@@ -483,7 +477,7 @@ export default class ClinsCard extends Vue {
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(
           (v: string) =>
-            Date.parse(v) < Date.parse(this._pop_end_date) ||
+            moment(v).isBefore(this._pop_end_date) ||
             "The period of performance start date must be before the end date"
         );
       }
@@ -501,7 +495,6 @@ export default class ClinsCard extends Vue {
           "Please enter the start date for your CLIN's period of performance"
       );
     }
-
     return validationRules;
   }
 
@@ -509,33 +502,32 @@ export default class ClinsCard extends Vue {
     const validationRules = [];
     if (this._pop_end_date !== "") {
       validationRules.push(
-        (v: string) =>
-          !!v ||
-          "Please enter the end date for your CLIN's period of performance"
-      );
-      validationRules.push(
-        (v: string) =>
-          /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(v) ||
-          "Invalid Date"
-      );
-      validationRules.push(
-        (v: string) =>
-          Date.parse(v) > 0 ||
+        () =>
+          this.isValidEndDate ||
           "Please enter an end date using the format 'YYYY-MM-DD'"
       );
-      validationRules.push(
-        (v: string) =>
-          Date.parse(v) > Date.parse(this._pop_start_date) ||
-          "The PoP end date must be after the start date"
-      );
-      if (this._pop_start_date !== "") {
+      if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(
           (v: string) =>
-            Date.parse(v) < Date.parse(this.JWCCContractEndDate) ||
+            moment(v).isAfter(this._pop_start_date) ||
+            "The period of performance end date must be before the start date"
+        );
+      }
+      if (this.isValidEndDate) {
+        validationRules.push(
+          () =>
+            moment(this._pop_end_date).isBefore(this.JWCCContractEndDate) ||
             "The end date must be before or on " + this.JWCCContractEndDate
         );
       }
+    } else {
+      validationRules.push(
+        (v: string) =>
+          v !== "" ||
+          "Please enter the end date for your CLIN's period of performance"
+      );
     }
+
     return validationRules;
   }
 
@@ -554,11 +546,15 @@ export default class ClinsCard extends Vue {
   }
 
   @Watch("_clin_number")
-  @Watch("_pop_start_date")
-  @Watch("_pop_end_date")
   @Watch("_idiq_clin")
   validateFormFields(): void {
     this.Form.validate();
+  }
+
+  @Watch("_pop_start_date")
+  @Watch("_pop_end_date")
+  validateDateFields(): void {
+    this.DateFields.validate();
   }
 
   public async validateForm(): Promise<boolean> {

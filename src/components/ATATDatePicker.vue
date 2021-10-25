@@ -1,13 +1,66 @@
 <template>
   <v-row>
     <v-col>
+      <div
+        class="d-flex justify-start width-100"
+        :id="getId('clin-datepicker-text-boxes')"
+      >
+        <!-- todo give id a more meaningful name -->
+
+        <v-text-field
+          ref="startDate"
+          outlined
+          dense
+          :id="getId('start-date-text-box')"
+          :success="isFieldValid"
+          :error="isFieldValid"
+          hide-details
+          placeholder="YYYY-MM-DD"
+          v-model="startDate"
+          :value="startDate"
+          :rules="_startDateRules"
+          @focus="setFocus"
+          @blur="blurTextField"
+          @update:error="getErrorMessages(true)"
+          :class="[
+            isStartTextBoxFocused ? 'focused' : '',
+            'datepicker-text-box start-date',
+          ]"
+        ></v-text-field>
+        <v-btn icon :ripple="false" :id="getId('start-date-text-box-button')">
+          <v-icon class="black--text date-picker-icon">calendar_today</v-icon>
+        </v-btn>
+        <v-text-field
+          ref="endDate"
+          outlined
+          dense
+          :id="getId('end-date-text-box')"
+          :success="isFieldValid"
+          :error="isFieldValid"
+          hide-details
+          placeholder="YYYY-MM-DD"
+          v-model="endDate"
+          :value="endDate"
+          @focus="setFocus"
+          :rules="_endDateRules"
+          @blur="blurTextField"
+          @update:error="getErrorMessages(false)"
+          :class="[
+            isEndTextBoxFocused ? 'focused' : '',
+            'datepicker-text-box end-date',
+          ]"
+        ></v-text-field>
+        <v-btn icon :ripple="false" :id="getId('end-date-text-box-button')">
+          <v-icon class="black--text date-picker-icon">calendar_today</v-icon>
+        </v-btn>
+      </div>
       <v-menu
         v-model="menu"
         id="CLIN-datepicker-menu"
-        attach="#clin-datepicker-text-boxes"
+        :attach="'#clin-datepicker-text-boxes-' + this.id"
         origin="top left"
         :nudge-left="-10"
-        :nudge-top="387"
+        :nudge-top="410"
         absolute
         :close-on-content-click="false"
         :close-on-click="!menu"
@@ -18,6 +71,7 @@
           </div>
           <hr class="mt-6 mb-4" />
           <div class="d-flex align-start">
+            <!-- todo add :allowed-dates="allowedDates" -->
             <v-date-picker
               ref="firstMonth"
               :min="min"
@@ -26,8 +80,7 @@
               :show-current="true"
               range
               no-title
-              id="firstMonthDatePicker"
-              :allowed-dates="allowedDates"
+              :id="getId('firstMonthDatePicker')"
               scrollable
               tabindex="0"
               @click:date="setDate"
@@ -46,7 +99,7 @@
               tabindex="0"
               no-title
               @click:date="setDate"
-              id="secondMonthDatePicker"
+              :id="getId('secondMonthDatePicker')"
               scrollable
               :picker-date.sync="secondMonth"
               transition="false"
@@ -55,61 +108,6 @@
           </div>
         </div>
       </v-menu>
-      <div class="d-flex align-start width-100" id="clin-datepicker-text-boxes">
-        <!-- todo give id a more meaningful name -->
-
-        <v-text-field
-          ref="startDate"
-          outlined
-          dense
-          :success="isFieldValid"
-          :error="isFieldValid"
-          :height="42"
-          hide-details
-          placeholder="YYYY-MM-DD"
-          v-model="startDate"
-          :value="startDate"
-          :rules="_startDateRules"
-          @focus="setFocus"
-          @blur="blurTextField"
-          @update:error="getErrorMessages"
-          :class="[
-            isStartTextBoxFocused ? 'focused' : '',
-            'datepicker-text-box start-date',
-          ]"
-        ></v-text-field>
-        <v-btn icon :ripple="false" class="ml-2">
-          <v-icon class="icon-32 black--text date-picker-icon"
-            >calendar_today</v-icon
-          >
-        </v-btn>
-
-        <v-text-field
-          ref="endDate"
-          outlined
-          dense
-          :success="isFieldValid"
-          :error="isFieldValid"
-          :height="42"
-          hide-details
-          placeholder="YYYY-MM-DD"
-          v-model="endDate"
-          :value="endDate"
-          @focus="setFocus"
-          :rules="_endDateRules"
-          @blur="blurTextField"
-          @update:error="getErrorMessages"
-          :class="[
-            isEndTextBoxFocused ? 'focused' : '',
-            'datepicker-text-box end-date',
-          ]"
-        ></v-text-field>
-        <v-btn icon :ripple="false" class="ml-2">
-          <v-icon class="icon-32 black--text date-picker-icon"
-            >calendar_today</v-icon
-          >
-        </v-btn>
-      </div>
     </v-col>
   </v-row>
 </template>
@@ -171,24 +169,31 @@ export default class ATATDatePicker extends Vue {
       "What is the PoP " + (isElementStartTextBox ? "Start" : "End") + " Date?";
   }
 
+  private getId(prependString: string): string {
+    return prependString + "-" + this.id;
+  }
+
   private toggleMenu(event: Event): void {
     //todo make more descriptive to accommodate multiple clins datepickers
     //todo OCT not showing all rows....
-    //todo set getter name for this function...
+    //todo set better name for this function...
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
     const element = event.target as HTMLElement;
-    const isDatePickerElement =
-      element.closest("#clin-datepicker-text-boxes") !== null;
-    this.menu = isDatePickerElement ? true : false;
-    if (!this.menu) {
+    this.menu =
+      element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
+    if (this.menu) {
+      // debugger;
+      // this.$nextTick(() => {
+      //   this.setStyleForStartDateAndEndDateButtons();
+      // });
+    } else {
       this.isStartTextBoxFocused = false;
       this.isEndTextBoxFocused = false;
     }
 
-    // accommodates for datepicker date being selected
-
+    // if datepicker was clicked
     const datePickerButtonElement =
       element.closest(".v-date-picker-table") !== null;
     if (datePickerButtonElement) {
@@ -326,15 +331,94 @@ export default class ATATDatePicker extends Vue {
     this.dateRange = value;
   }
 
-  public getErrorMessages(): void {
+  public setStyleForStartDateAndEndDateButtons(): void {
+    if (this.startDate !== "" || this.endDate !== "") {
+      // const activeDateRangeButtons = Array.from(
+      //   document.getElementsByClassName("v-date-picker-table")
+      // ).map((dp) => {
+      //   return dp.getElementsByClassName("v-btn--active");
+      // });
+
+      const datepicker = document.getElementById(
+        this.getId("firstMonthDatePicker")
+      ) as HTMLTableElement;
+      const activeDateRangeButtons =
+        datepicker.getElementsByClassName("v-btn--active");
+
+      if (activeDateRangeButtons.length > 0) {
+        // collect all necessary end date artifacts
+        debugger;
+        let startDateButton = activeDateRangeButtons[0] as HTMLButtonElement;
+        const selectedStartDateDiv = startDateButton
+          .children[0] as HTMLDivElement;
+        const selectedStartDate = selectedStartDateDiv.innerText;
+
+        // collect all necessary end date artifacts
+        // let endDateButton =
+        //   activeDateRangeButtons[activeDateRangeButtons.length - 1];
+        // const selectedEndDateDiv = endDateButton.children[0] as HTMLDivElement;
+        // const selectedEndDate = selectedEndDateDiv.innerText;
+
+        if (this.isDateDisplayedCurrently(selectedStartDate, true)) {
+          console.log(startDateButton);
+          startDateButton.classList.remove("date-picker-start-date");
+          startDateButton.classList.add("date-picker-start-date");
+        } //else if (this.isDateDisplayedCurrently(selectedEndDate, false)) {
+        //   console.log(endDateButton);
+        //   this.$nextTick(() => {
+        //     endDateButton.classList.remove("date-picker-end-date");
+        //     endDateButton.classList.add("date-picker-end-date");
+        //   });
+        // }
+      }
+    }
+  }
+
+  // when user dispalys menu with already set date range
+  // ensure selected start date and end date on datepicker
+  // is styled as styled as expected.
+  public isDateDisplayedCurrently(
+    selectedDate: string,
+    isStart: boolean
+  ): boolean {
+    const dateToCompare = isStart ? this.startDate : this.endDate;
+
+    // determines if day of selected date is currently displayed
+    const isSelectedDateDayDisplayed =
+      parseInt(selectedDate) === moment(dateToCompare).get("date");
+    //console.log("isStart:" + isStart);
+    // console.log(isSelectedDateDayDisplayed);
+    if (!isSelectedDateDayDisplayed) {
+      return false;
+    }
+
+    const dateToCompareMonth = moment(dateToCompare).get("month");
+    const leftDatePickerMonth = moment(this.firstMonth).get("month");
+    const rightDatePickerMonth = moment(this.secondMonth).get("month");
+    //determines if month of selected date is
+    //currently displayed in first datepicker
+    //console.log(dateToCompareMonth + ":" + leftDatePickerMonth);
+    if (dateToCompareMonth === leftDatePickerMonth) {
+      return true;
+    }
+
+    //determines if month of selected date is
+    //currently displayed in second datepicker
+    if (dateToCompareMonth === rightDatePickerMonth) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public getErrorMessages(isStart: boolean): void {
     let newMessages: (CustomErrorMessage | undefined)[] = [];
     let oldMessages: (CustomErrorMessage | undefined)[] = [];
-    let errorBucket = this.$refs.startDate
+    let errorBucket = isStart
       ? this.$refs.startDate.errorBucket
       : this.$refs.endDate.errorBucket;
     let errorMessagesToKeep: string = this.$refs.startDate ? "end" : "start";
     let newMessageDescription: string = this.$refs.startDate ? "start" : "end";
-
     newMessages = this.convertToCustomErrorMessage(
       errorBucket,
       newMessageDescription
