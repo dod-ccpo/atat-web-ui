@@ -1,5 +1,5 @@
 <template>
-  <div class="cloud-service-provider">
+  <div class="cloud-service-provider pl-3">
     <div class="d-flex flex-column">
       <div>
         <h3 class="h3 mb-2 font-weight-bold text--base-darkest">
@@ -17,6 +17,7 @@
           :items="items"
           :rules="[isSelected]"
           :value.sync="_csp"
+          :isValidated="isValidated"
           id="csp"
         />
       </v-form>
@@ -36,7 +37,7 @@ export default class CloudServiceProviderForm
 {
   @PropSync("csp", { default: "", required: true })
   _csp!: string[];
-
+  private isValidated = true;
   public items = new Array<ButtonCardItem>(
     {
       label: "CSP A",
@@ -55,15 +56,15 @@ export default class CloudServiceProviderForm
   }
 
   private isSelected(value: string): unknown {
-    return !!value || "Please selected at least one Cloud Service Provider";
+    return !!value || "Please select at least one cloud service provider";
   }
 
   public async validateForm(): Promise<boolean> {
-    let validated = false;
+    this.isValidated = false;
     await this.$nextTick(() => {
-      validated = this.Form.validate();
+      this.isValidated = this.Form.validate();
     });
-    return validated;
+    return this.isValidated;
   }
 }
 </script>

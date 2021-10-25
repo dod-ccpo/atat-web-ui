@@ -69,8 +69,10 @@
 
 
 
-//incoporate this into a mixin soon
+
+  //incoporate this into a mixin soon
 .theme--light.v-application{
+   color: $base_darkest !important;
   .bg-primary-lighter{ background-color: $primary_lighter !important };
   .bg-primary-light{ background-color: $primary_light !important };
   .bg-primary{ background-color: $primary !important };

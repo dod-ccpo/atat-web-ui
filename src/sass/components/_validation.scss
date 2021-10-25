@@ -9,37 +9,39 @@
         align-items: flex-end !important;
         .v-input__control{
             flex-direction: column-reverse !important;
+            background-color:transparent !important;
             fieldset{
-                border: 3px solid $error-darker !important;
+                border: 3px solid $error-dark !important;
             }
             .v-text-field__details{
                 padding-left: 0px !important;
             }
         }
     }
-   
 
     &.success--text{
         fieldset{
             border: 3px solid $success !important;
         }
     }
-}
 
+    .v-icon {
+        font-size: 20px;
+    }
+}
 
 .v-input__append-outer-icon-holder{
     margin-bottom: 15px !important;
     position: absolute;
     right: -30px;
-   
 }
 
 div.error--text{
-    
+
     .v-input__append-outer{
         @extend .v-input__append-outer-icon-holder
     }
-    
+
     label.v-label{
         animation: none !important;
     }
@@ -54,90 +56,83 @@ div.success--text{
         @extend .v-input__append-outer-icon-holder
     }
 }
- 
-
 
 .v-input{
     &.v-input--checkbox{
-        margin-left: 0px !important; 
+        margin-left: 0px !important;
     }
     &.validation-above{
         .v-input__control{
-            flex-direction: column-reverse !important; 
+            flex-direction: column-reverse !important;
+            background-color: transparent !important;
             .v-input__slot{
-                margin-bottom: 0px; 
+                margin-bottom: 0px;
+                background-color: #ffff !important;
                 i.error--text,
                 label.error--text{
-                  color: $error-darker !important;    
+                    color: $error-dark !important;
                 }
-            } 
+            }
         }
         .v-messages.error--text{
             margin-bottom: 20px;
             .v-messages__message{
-                color: $error-darker !important;
+                color: $error-dark !important;
             }
-            
         }
     }
 }
 ._v_radio-button-cards {
 
+    .v-input__control {
+        flex-direction: column-reverse !important;
+        background-color: transparent !important;
+    }
     &.error--text{
         align-items: flex-end !important;
         .v-input__control{
             flex-direction: column-reverse !important;
+            background-color:transparent !important;
             fieldset{
-                border: 3px solid $error-darker !important;
+                border: 3px solid $error-dark !important;
             }
             .v-text-field__details{
                 padding-left: 0px !important;
             }
         }
         .radio-wrapper {
-
-            border-color: $error-darker !important;
-
+            border-color: $error-dark !important;
             .v-label div,
             .card-content {
-
-                color: $error-darker !important;
+                color: $error-dark !important;
             }
         }
 
         .v-messages.error--text{
             margin-bottom: 20px;
             .v-messages__message{
-                color: $error-darker !important;
+                color: $error-dark !important;
             }
-            
         }
 
-       
+        .v-icon{
+            color: $error-dark !important;
+        }
     }
 }
 
 .datepicker-text-box{
     .v-text-field__details{
-       
         .error--text{
             position: absolute;
             width: 600px;
-            .v-messages__wrapper{
-            //    position: absolute; 
-            //    width:600px;
-            //    height:100px;
-                .v-messages__message{
-                     
-                }
-            }
         }
     }
 }
 .atat-checkbox-list{
     &.error-item{
         label, i{
-            color: $error-darker;
+            color: $error-dark;
             cursor: pointer;
         }
     }
@@ -145,4 +140,21 @@ div.success--text{
 
 .atat-error-message{
     @extend .form-field-label-error;
+}
+
+.error-icon-label-left {
+    .v-messages__message {
+        padding-left: 25px;
+        position: relative;
+        &:before {
+            position: absolute;
+            left: 0;
+            content: "error";
+            font-family: "Material Icons";
+            -webkit-font-feature-settings: "liga";
+            color: $error-dark;
+            font-weight: normal;
+            font-size: 20px;
+        }
+    }
 }
