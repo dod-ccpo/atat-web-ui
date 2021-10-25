@@ -11,7 +11,7 @@
             flex-direction: column-reverse !important;
             background-color:$gray_cool_1 !important;
             fieldset{
-                border: 3px solid $error-darker !important;
+                border: 3px solid $error-dark !important;
             }
             .v-text-field__details{
                 padding-left: 0px !important;
@@ -70,20 +70,21 @@ div.success--text{
                 margin-bottom: 0px; 
                 i.error--text,
                 label.error--text{
-                  color: $error-darker !important;    
+                  color: $error-dark !important;
                 }
             } 
         }
         .v-messages.error--text{
             margin-bottom: 20px;
             .v-messages__message{
-                color: $error-darker !important;
+                color: $error-dark !important;
             }
             
         }
     }
 }
 ._v_radio-button-cards {
+
     .v-input__control {
         flex-direction: column-reverse !important;
         background-color: $gray_cool_1 !important;
@@ -94,7 +95,7 @@ div.success--text{
             flex-direction: column-reverse !important;
             background-color:$gray_cool_1 !important;
             fieldset{
-                border: 3px solid $error-darker !important;
+                border: 3px solid $error-dark !important;
             }
             .v-text-field__details{
                 padding-left: 0px !important;
@@ -102,21 +103,25 @@ div.success--text{
         }
         .radio-wrapper {
 
-            border-color: $error-darker !important;
+            border-color: $error-dark !important;
 
             .v-label div,
             .card-content {
 
-                color: $error-darker !important;
+                color: $error-dark !important;
             }
         }
 
         .v-messages.error--text{
             margin-bottom: 20px;
             .v-messages__message{
-                color: $error-darker !important;
+                color: $error-dark !important;
             }
             
+        }
+
+        .v-icon{
+            color: $error-dark !important;
         }
 
        
@@ -143,7 +148,7 @@ div.success--text{
 .atat-checkbox-list{
     &.error-item{
         label, i{
-            color: $error-darker;
+            color: $error-dark;
             cursor: pointer;
         }
     }
