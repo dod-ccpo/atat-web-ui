@@ -18,12 +18,15 @@
             }
         }
     }
-   
 
     &.success--text{
         fieldset{
             border: 3px solid $success !important;
         }
+    }
+
+    .v-icon {
+        font-size: 20px;
     }
 }
 
@@ -32,15 +35,15 @@
     margin-bottom: 15px !important;
     position: absolute;
     right: -30px;
-   
+
 }
 
 div.error--text{
-    
+
     .v-input__append-outer{
         @extend .v-input__append-outer-icon-holder
     }
-    
+
     label.v-label{
         animation: none !important;
     }
@@ -55,12 +58,12 @@ div.success--text{
         @extend .v-input__append-outer-icon-holder
     }
 }
- 
+
 
 
 .v-input{
     &.v-input--checkbox{
-        margin-left: 0px !important; 
+        margin-left: 0px !important;
     }
     &.validation-above{
         .v-input__control{
@@ -74,14 +77,14 @@ div.success--text{
 
                     color: $error-dark !important;
                 }
-            } 
+            }
         }
         .v-messages.error--text{
             margin-bottom: 20px;
             .v-messages__message{
                 color: $error-dark !important;
             }
-            
+
         }
     }
 }
@@ -119,29 +122,29 @@ div.success--text{
             .v-messages__message{
                 color: $error-dark !important;
             }
-            
+
         }
 
         .v-icon{
             color: $error-dark !important;
         }
 
-       
+
     }
 }
 
 .datepicker-text-box{
     .v-text-field__details{
-       
+
         .error--text{
             position: absolute;
             width: 600px;
             .v-messages__wrapper{
-            //    position: absolute; 
+            //    position: absolute;
             //    width:600px;
             //    height:100px;
                 .v-messages__message{
-                     
+
                 }
             }
         }
