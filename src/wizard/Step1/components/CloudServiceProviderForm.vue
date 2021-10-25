@@ -56,7 +56,7 @@ export default class CloudServiceProviderForm
   }
 
   private isSelected(value: string): unknown {
-    return !!value || "Please selected at least one Cloud Service Provider";
+    return !!value || "Please select at least one cloud service provider";
   }
 
   public async validateForm(): Promise<boolean> {

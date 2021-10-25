@@ -159,3 +159,20 @@ div.success--text{
 .atat-error-message{
     @extend .form-field-label-error;
 }
+
+.error-icon-label-left {
+    .v-messages__message {
+        padding-left: 30px;
+        position: relative;
+        &:before {
+            position: absolute;
+            left: 0;
+            content: "error";
+            font-family: "Material Icons";
+            -webkit-font-feature-settings: "liga";
+            color: #b50909;
+            position: absolute;
+            font-size: 20px;
+        }
+    }
+}

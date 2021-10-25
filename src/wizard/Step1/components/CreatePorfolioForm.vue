@@ -54,14 +54,16 @@
 
           <div
             v-if="typeof isDodComponentsValid === 'string'"
-            class="mb-2 atat-error-message body"
+            class="
+              mb-2
+              atat-error-message
+              body
+              error--text error--text-darkest error-icon-label-left
+            "
             id="dod-components-errors"
             role="alert"
           >
-            <v-icon class="icon-16 pr-2 pb-1 text-base-error-darker"
-              >error</v-icon
-            >
-            {{ isDodComponentsValid }}
+            <div class="v-messages__message">{{ isDodComponentsValid }}</div>
           </div>
 
           <fieldset

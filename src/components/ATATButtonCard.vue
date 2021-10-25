@@ -1,16 +1,11 @@
 <template>
   <div class="d-flex">
-    <v-icon
-      v-if="isValidated === false && selected_value === ''"
-      class="icon-16 radio-button-icon text-base-error-darker"
-      >error</v-icon
-    >
     <v-radio-group
       row
       @change="(v) => $emit('change', v)"
       :rules="rules"
       v-model="selected_value"
-      class="_v_radio-button-cards"
+      class="_v_radio-button-cards error-icon-label-left"
       column
       :ripple="false"
       ref="radiogroup"
