@@ -223,9 +223,7 @@ export default class SummaryReview extends Vue {
   private incomingModel!: ApplicationDataModel;
   public applications = this.$store.state.applicationModels;
   private currentApplication: any;
-  private csp =
-    this.$store.state.portfolioSteps[0].model.csp ||
-    "the selected Cloud Service Provider’s";
+  private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
   private sortApplications(items: any[], index: number) {

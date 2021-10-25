@@ -5,6 +5,7 @@
       :task_order_number.sync="model.task_order_number"
       :task_order_file.sync="model.task_order_file"
       :clins.sync="model.clins"
+      :signed="model.signed"
       @add="addClin"
       @delete="deleteClin"
       :validate-on-load="touched"

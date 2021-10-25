@@ -346,7 +346,7 @@ export default class ManageMember extends Vue {
   private displayNameHelpText = `This could be your team member's
   full name or a nickname. It will be used to refer to this individual
   within ATAT.`;
-  private emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
+  private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   private valid = true;
   private memberToEditName = "";
   private memberToEditEmail = "";
@@ -419,7 +419,7 @@ export default class ManageMember extends Vue {
   }
 
   get selectedCSP(): string {
-    return this.$store.getters.getSelectedCSP;
+    return this.$store.getters.getPortfolio.csp;
   }
 
   get currentApplication(): ApplicationModel {
