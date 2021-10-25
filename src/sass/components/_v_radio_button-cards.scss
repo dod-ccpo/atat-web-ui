@@ -2,29 +2,29 @@
 
 ._v_radio-button-cards {
   background-color: transparent !important;
-    .v-card {
-        border-radius: 4px;
-        max-width: 278px !important;
-        min-height: 128px !important;
-        cursor: pointer;
-        border-color: $base_light;
-        background-color: $base_lightest ;
-      }
+  .v-card {
+    border-radius: 4px;
+    max-width: 278px !important;
+    min-height: 128px !important;
+    cursor: pointer;
+    border-color: $base_light;
+    background-color: $base_lightest ;
+  }
 
-      .active {
-        background-color: $primary_lighter !important;
-        border-color: $primary !important;
-     }
-      
-      // creates a white background and black border for unselected state of radio button
-     .v-radio .v-icon {
-        color: black;
-        border-color: black;
-        border-radius: 50%;
-        background-color: $base_lightest;
-      }
+  .active {
+    background-color: $primary_lighter !important;
+    border-color: $primary !important;
+  }
 
+  // creates a white background and black border for unselected state of radio button
+  .v-radio .v-icon {
+    color: black;
+    border-color: black;
+    border-radius: 50%;
+    background-color: $base_lightest;
+  }
 }
+
 .radio-button-icon {
   margin-top: 20px !important;
   padding-right: 8px !important;
