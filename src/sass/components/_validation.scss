@@ -150,7 +150,7 @@ div.success--text{
             position: absolute;
             left: 0;
             content: "error";
-            font-family: "Material Icons";
+            font-family: "Material Icons", 'sans-serif';
             -webkit-font-feature-settings: "liga";
             color: $error-dark;
             font-weight: normal;
