@@ -43,7 +43,6 @@
             hide-details="auto"
             :validate-on-blur="true"
             :validate-on-load="validateOnLoad"
-            :counter="counter"
             @input="inputActions"
             @blur="validateField()"
             @change="$emit('change')"
