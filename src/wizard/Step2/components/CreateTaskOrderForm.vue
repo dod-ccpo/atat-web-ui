@@ -38,6 +38,7 @@
             :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
             :maxFileSize="20"
             :stepNumber="2"
+            @removeFile="onRemoveFile"
           />
         </v-col>
       </v-row>
@@ -83,7 +84,7 @@
             No</v-btn
           >
           <v-alert
-            v-if="signedTaskOrder === 'No'"
+            v-if="signedTaskOrder === 'No' && !savedTaskOrderSigned"
             outlined
             rounded
             color="error"
@@ -159,11 +160,13 @@ export default class CreateTaskOrderForm extends Vue {
   private helpText = `If your Contracting Officer used:
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
+  private savedTaskOrderSigned = false;
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
   @PropSync("clins") _clins!: Clin[];
   @Prop({ default: false }) private validateOnLoad!: boolean;
+  @Prop({ default: false }) private signed!: boolean;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -208,6 +211,7 @@ export default class CreateTaskOrderForm extends Vue {
       this.signedTaskOrderErrorMessage =
         "Please select Yes or No below to verify your Task Order";
     }
+
     validated.push(this.signedTaskOrder !== "");
 
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
@@ -220,6 +224,28 @@ export default class CreateTaskOrderForm extends Vue {
     });
 
     return validated.every((v) => v === true);
+  }
+
+  private mounted(): void {
+    if (
+      this.signed &&
+      this._task_order_file &&
+      this._task_order_file.name &&
+      this._task_order_file.id
+    ) {
+      this.savedTaskOrderSigned = true;
+      this.isTaskOrderSigned(this.signed);
+    }
+  }
+
+  private async onRemoveFile(): Promise<void> {
+    this.signedTaskOrder = "";
+    this._task_order_file.name = "";
+    this._task_order_file.id = "";
+    this.isYesButtonClicked = false;
+    this.isNoButtonClicked = false;
+    this.savedTaskOrderSigned = false;
+    await this.validateForm();
   }
 }
 </script>

@@ -134,7 +134,7 @@ const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
   return taskOrderModels.map((model: TaskOrderModel) => {
     //extract all properties except the id
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...baseModel } = model;
+    const { id, signed, ...baseModel } = model;
 
     const taskOrders: TaskOrder = {
       ...baseModel,
@@ -537,6 +537,7 @@ export default new Vuex.Store({
             size: 0,
             status: "",
           },
+          signed: true, // that the task order is signed is implicitly true
         };
         return taskOrderModel;
       });
@@ -932,10 +933,14 @@ export default new Vuex.Store({
 
       await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
     },
-    async saveStep2({ state }, model: any) {
-      if (model.id === "") {
+    async saveStep2({ state }, model: TaskOrderModel) {
+      const isNew = model.id === "";
+      let modelIndex = -1;
+
+      if (isNew) {
         model.id = generateUid();
         this.dispatch("addTaskOrder", model);
+        modelIndex = this.state.taskOrderModels.length - 1;
       } else {
         const taskOrderIndex = getEntityIndex<TaskOrderModel>(
           state.taskOrderModels,
@@ -959,6 +964,12 @@ export default new Vuex.Store({
         state.currentPortfolioId,
         taskOrders
       );
+
+      //set the model signed value to true after saving to server
+      if (isNew) {
+        model.signed = true;
+        this.dispatch("updateTaskOrder", [modelIndex, model]);
+      }
     },
     async saveStep3({ state }, model: any) {
       if (model.id === "") {
