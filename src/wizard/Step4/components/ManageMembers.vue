@@ -1,5 +1,27 @@
 <template>
-  <v-card class="extra-padding">
+  <v-card class="extra-padding overflow-x-hidden">
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+      right
+      width="100%"
+    >
+      <div class="font-size-17 pa-5">
+    <p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec condimentum magna, sed blandit tellus. Nunc quis felis sagittis libero posuere mollis. Vivamus quis urna odio. Quisque accumsan nulla vitae nibh imperdiet, sit amet iaculis nulla consectetur. Nulla vulputate at nisi sed elementum. Proin tempus velit id quam congue venenatis. Nunc rhoncus, justo eu feugiat luctus, turpis elit aliquet felis, eu dictum metus nisi tempor purus. Curabitur ac posuere nulla. Etiam congue nisl vel leo scelerisque, vitae lobortis elit sodales. Donec condimentum lectus vitae sapien hendrerit, sit amet faucibus justo sodales. Morbi ac metus nunc. Quisque sit amet ornare ipsum, quis auctor sem. Proin fermentum velit erat, ut faucibus purus efficitur sed. Donec finibus lectus eu felis fermentum, sit amet ullamcorper urna euismod. Nulla efficitur iaculis arcu, non imperdiet est. Nullam tellus diam, laoreet sed suscipit pretium, porta in ipsum.
+</p>
+<p>
+Integer facilisis vitae erat et vehicula. Cras blandit hendrerit nunc in cursus. Etiam volutpat eleifend turpis, vitae commodo justo pretium a. Aenean ac eros diam. Quisque maximus erat diam, quis consequat elit faucibus eu. Vestibulum ac dapibus dolor. In dui tortor, cursus sed nunc ac, egestas posuere dui. Duis ullamcorper magna orci, non finibus ipsum consectetur luctus. Sed sagittis nunc vitae congue aliquet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+</p>
+<p>
+Proin tempor, mauris a imperdiet ultrices, est leo elementum felis, eget mattis felis est vitae ante. Pellentesque bibendum mi in erat feugiat tincidunt. Mauris ut erat nec mauris varius vehicula eu eu lacus. In in felis nibh. Aliquam aliquet lobortis nibh. Nam enim libero, semper quis vestibulum eget, mattis id ex. Aliquam risus mauris, faucibus sit amet placerat ac, convallis at lectus. Duis lacinia nisi vel mauris facilisis gravida. Integer egestas rhoncus dolor in auctor. Nulla facilisi. Integer vel leo eget ligula posuere bibendum in nec tellus. Nulla facilisi.
+</p>
+<p>
+Quisque vel interdum sapien. Pellentesque felis justo, hendrerit at dolor in, semper rhoncus magna. Sed vulputate luctus lectus non gravida. Quisque ac maximus risus, id fringilla tellus. Nulla molestie mattis lorem id egestas. Cras ut pretium enim, eget dignissim odio. Phasellus vulputate volutpat urna, a fermentum quam tincidunt et. Vestibulum malesuada suscipit augue, vitae aliquet sem sodales et. Fusce nec ullamcorper odio, at posuere turpis. Sed id sem in dolor scelerisque fermentum sit amet eu est. Aliquam vehicula tellus in urna semper eleifend. Sed eget rutrum ante.
+</p>
+      </div>
+    </v-navigation-drawer>
     <v-card-title>
       <h3 class="mb-2 h3">
         <span v-if="!isEditSingle">
@@ -274,6 +296,7 @@ export default class ManageMember extends Vue {
 ██   ██ ██   ██    ██    ██   ██
 ██████  ██   ██    ██    ██   ██
 */
+  private drawer = false;
   private pillboxFocused = false;
   private duplicatedEmail = "";
   private memberList: {
