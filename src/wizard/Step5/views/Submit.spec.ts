@@ -13,9 +13,19 @@ describe("Testing PostReview Component", () => {
   let wrapper: any;
   let store: any;
 
+  const getters: any = {
+    getPortfolio: () => {
+      return {
+        csp: "test CSP",
+      };
+    },
+  };
+
   beforeEach(() => {
     vuetify = new Vuetify();
-    store = new Vuex.Store({});
+    store = new Vuex.Store({
+      getters,
+    });
     wrapper = mount(Submit, {
       localVue,
       vuetify,

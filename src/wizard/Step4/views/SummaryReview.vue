@@ -10,11 +10,10 @@
       <v-col class="pa-0 ma-0" cols="9">
         <p class="body-lg text--base-darkest">
           In this section, we will invite people to join your application teams,
-          giving them access to your workspaces within the
-          <span class="font-weight-bold"> {{ csp }}</span> console. Select each
-          application below to manage your team members. Please add at least one
-          person to each application to ensure your team can access your
-          provisioned cloud resources. When you are done, select
+          giving them access to your workspaces within the {{ csp }} console.
+          Select each application below to manage your team members. Please add
+          at least one person to each application to ensure your team can access
+          your provisioned cloud resources. When you are done, select
           <span class="font-weight-bold">Next: Review and Submit</span> to
           finalize your portfolio.
         </p>
@@ -150,9 +149,7 @@ export default class SummaryReview extends Vue {
   private incomingModel!: ApplicationDataModel;
   public applications = this.$store.state.applicationModels;
   private currentApplication: any;
-  private csp =
-    this.$store.state.portfolioSteps[0].model.csp ||
-    "the selected Cloud Service Provider’s";
+  private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
   private sortApplications(items: any[], index: number) {
@@ -171,10 +168,6 @@ export default class SummaryReview extends Vue {
 
   private handleNameClick(item: any): void {
     if (item.portfolio) {
-      if (item.name === "Untitled") {
-        return;
-      }
-
       this.$router.push({
         name: editmembers.name,
         params: {

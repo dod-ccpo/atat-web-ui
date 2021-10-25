@@ -250,7 +250,6 @@ export default new Vuex.Store({
     applicationModels: [],
     portfolioOperators: [],
     wizardNavigation: {},
-    selectedCSP: "CSP 1",
     erroredSteps: [],
     currentStepNumber: 1,
     currentPortfolioId: "",
@@ -498,9 +497,6 @@ export default new Vuex.Store({
       } else {
         es.splice(stepNumber, 1);
       }
-    },
-    doSetSelectedCSP(state, selectedCSP) {
-      state.selectedCSP = selectedCSP;
     },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
@@ -936,7 +932,6 @@ export default new Vuex.Store({
       };
 
       await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
-      commit("doSetSelectedCSP", model.csp);
     },
     async saveStep2({ state }, model: TaskOrderModel) {
       const isNew = model.id === "";
@@ -1319,6 +1314,25 @@ export default new Vuex.Store({
     getTaskOrders: (state) => state.taskOrderModels,
     getApplications: (state) => state.applicationModels,
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
+    getPortfolioName: (state, getters) => (defaultResponse: string) => {
+      defaultResponse = defaultResponse || "this portfolio";
+      let pName = defaultResponse;
+      const portfolio = getters.getPortfolio;
+      if (portfolio) {
+        if (Object.prototype.hasOwnProperty.call(portfolio, "name")) {
+          pName = portfolio.name || pName;
+        }
+        if (
+          pName === defaultResponse &&
+          Object.prototype.hasOwnProperty.call(portfolio, "model")
+        ) {
+          if (Object.prototype.hasOwnProperty.call(portfolio, "name")) {
+            pName = portfolio.model.name || pName;
+          }
+        }
+      }
+      return pName;
+    },
     getCurrentApplication: (state) => {
       const applicationIndex = getEntityIndex(
         state.applicationModels,
@@ -1327,7 +1341,6 @@ export default new Vuex.Store({
       );
       return state.applicationModels[applicationIndex];
     },
-    getSelectedCSP: (state) => state.selectedCSP,
     getPortfolioOperators: (state) => state.portfolioOperators,
   },
 });
