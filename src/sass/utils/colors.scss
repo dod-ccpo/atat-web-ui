@@ -66,11 +66,14 @@
   $base_lightest: #f0f0f0 !default;
 
   $gray_cool_1: #FBFCFD !default;
+  //$gray_cool_1: #f0f0f0 !default;
 
 
 
-//incoporate this into a mixin soon
+
+  //incoporate this into a mixin soon
 .theme--light.v-application{
+   color: $base_darkest !important;
   .bg-primary-lighter{ background-color: $primary_lighter !important };
   .bg-primary-light{ background-color: $primary_light !important };
   .bg-primary{ background-color: $primary !important };

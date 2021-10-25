@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid>
+    <v-container fluid class="body-lg">
       <v-row>
         <v-col cols="12" class="pb-8">
           <h2 class="h2">Let’s start with some details about your portfolio</h2>
@@ -45,7 +45,7 @@
       </div>
       <v-row class="mt-0 pt-0">
         <v-col cols="6" class="py-0">
-          <div class="h3 font-weight-bold pb-2">DoD component</div>
+          <h3 class="h3 font-weight-bold pb-2">DoD Component</h3>
           <p>
             Select the DoD component(s) that will fund all applications within
             this portfolio. Multiple DoD organizations can fund the same

@@ -65,12 +65,14 @@ div.success--text{
     &.validation-above{
         .v-input__control{
             flex-direction: column-reverse !important;
-            background-color:$gray_cool_1 !important;
+            background-color: $gray_cool_1 !important;
             .v-input__slot{
-                margin-bottom: 0px; 
+                margin-bottom: 0px;
+                background-color: #ffff !important;
                 i.error--text,
                 label.error--text{
-                  color: $error-dark !important;
+
+                    color: $error-dark !important;
                 }
             } 
         }
@@ -87,13 +89,13 @@ div.success--text{
 
     .v-input__control {
         flex-direction: column-reverse !important;
-        background-color: $gray_cool_1 !important;
+        background-color: transparent !important;
     }
     &.error--text{
         align-items: flex-end !important;
         .v-input__control{
             flex-direction: column-reverse !important;
-            background-color:$gray_cool_1 !important;
+            background-color:transparent !important;
             fieldset{
                 border: 3px solid $error-dark !important;
             }
