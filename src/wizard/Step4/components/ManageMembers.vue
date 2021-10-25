@@ -322,7 +322,7 @@ export default class ManageMember extends Vue {
   private displayNameHelpText = `This could be your team member's
   full name or a nickname. It will be used to refer to this individual
   within ATAT.`;
-  private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  private emailRegex = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
   private valid = true;
   private memberToEditName = "";
   private memberToEditEmail = "";
