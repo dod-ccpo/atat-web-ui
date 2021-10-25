@@ -492,6 +492,8 @@ export default class ATATFileUpload extends Vue {
         status: "",
       };
     }
+
+    this.$emit("removeFile");
   }
 
   private onDrop(e: DragEvent) {

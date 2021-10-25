@@ -30,6 +30,7 @@ export const mockTaskOrders: TaskOrderModel[] = [
       size: 0,
       status: "pending",
     },
+    signed: true,
   },
   {
     id: "task2",
@@ -68,5 +69,6 @@ export const mockTaskOrders: TaskOrderModel[] = [
       size: 0,
       status: "pending",
     },
+    signed: true,
   },
 ];
