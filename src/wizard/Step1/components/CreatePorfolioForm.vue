@@ -32,15 +32,19 @@
             label="Portfolio Description"
             :helpText="portfolioDescriptionText"
             :value.sync="portfolio_description"
-            class="pt-9 pb-0"
+            class="pt-9 pb-3"
           />
-          <div class="py-10">
-            <v-row>
-              <v-col cols="4">
-                <v-divider></v-divider>
-              </v-col>
-            </v-row>
-          </div>
+        </v-col>
+      </v-row>
+      <div class="py-10">
+        <v-row>
+          <v-col cols="4">
+            <v-divider></v-divider>
+          </v-col>
+        </v-row>
+      </div>
+      <v-row class="mt-0 pt-0">
+        <v-col cols="6" class="py-0">
           <div class="h3 font-weight-bold pb-2">DoD component</div>
           <p>
             Select the DoD component(s) that will fund all applications within

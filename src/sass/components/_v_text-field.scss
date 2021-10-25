@@ -11,3 +11,9 @@
 .v-input.search-bar {
   border-radius: 6px 0px 0px 6px;
 }
+
+.v-text-field--outlined {
+  .v-input__append-outer {
+    margin-top: 6px;
+  }
+}

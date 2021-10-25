@@ -28,7 +28,7 @@
     <v-flex>
       <v-textarea
         auto-grow
-        rows="4"
+        rows="3"
         :id="id + '_text_field'"
         outlined
         :success="isFieldValid"

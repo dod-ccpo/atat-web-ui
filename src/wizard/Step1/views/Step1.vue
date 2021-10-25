@@ -7,9 +7,9 @@
       :dod_components.sync="model.dod_components"
       :validate-on-load="touched"
     />
-    <div class="py-10">
+    <div class="py-10 pl-3">
       <v-row>
-        <v-col cols="4">
+        <v-col col col-sm-8 col-md-6 cols="4">
           <v-divider></v-divider>
         </v-col>
       </v-row>

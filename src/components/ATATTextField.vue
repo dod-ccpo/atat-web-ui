@@ -27,7 +27,7 @@
     </v-flex>
     <v-flex>
       <div class="d-flex">
-        <div class="width-60">
+        <div class="width-100">
           <v-text-field
             :rules="rules"
             :id="id + '_text_field'"
@@ -43,28 +43,30 @@
             hide-details="auto"
             :validate-on-blur="true"
             :validate-on-load="validateOnLoad"
+            :counter="counter"
             @input="inputActions"
             @blur="validateField()"
             @change="$emit('change')"
           >
           </v-text-field>
         </div>
-        <div class="width-40 d-flex align-end mb-4">
+        <div class="validation-icon d-flex align-end mb-3">
           <v-btn
             v-if="showDeleteIcon"
             plain
             :disabled="isDeleteDisabled"
             class="pointer icon-24 pa-1 ml-2"
+            :class="[isErrored ? 'mb-1' : 'mb-0']"
             @click="$emit('deleteItem', id)"
           >
             <v-icon>delete </v-icon>
           </v-btn>
           <v-icon
             v-if="isErrored"
-            class="icon-16 pa-1 pl-4 text-base-error-darker"
+            class="icon-20 pa-1 pl-4 mb-1 text-base-error-darker"
             >error</v-icon
           >
-          <v-icon v-if="isSuccess" color="success" class="icon-24 pa-1 pl-4"
+          <v-icon v-if="isSuccess" color="success" class="icon-20 pa-1 pl-4"
             >check_circle</v-icon
           >
         </div>
