@@ -30,12 +30,10 @@
     }
 }
 
-
 .v-input__append-outer-icon-holder{
     margin-bottom: 15px !important;
     position: absolute;
     right: -30px;
-
 }
 
 div.error--text{
@@ -59,8 +57,6 @@ div.success--text{
     }
 }
 
-
-
 .v-input{
     &.v-input--checkbox{
         margin-left: 0px !important;
@@ -74,7 +70,6 @@ div.success--text{
                 background-color: #ffff !important;
                 i.error--text,
                 label.error--text{
-
                     color: $error-dark !important;
                 }
             }
@@ -84,7 +79,6 @@ div.success--text{
             .v-messages__message{
                 color: $error-dark !important;
             }
-
         }
     }
 }
@@ -107,12 +101,9 @@ div.success--text{
             }
         }
         .radio-wrapper {
-
             border-color: $error-dark !important;
-
             .v-label div,
             .card-content {
-
                 color: $error-dark !important;
             }
         }
@@ -122,31 +113,19 @@ div.success--text{
             .v-messages__message{
                 color: $error-dark !important;
             }
-
         }
 
         .v-icon{
             color: $error-dark !important;
         }
-
-
     }
 }
 
 .datepicker-text-box{
     .v-text-field__details{
-
         .error--text{
             position: absolute;
             width: 600px;
-            .v-messages__wrapper{
-            //    position: absolute;
-            //    width:600px;
-            //    height:100px;
-                .v-messages__message{
-
-                }
-            }
         }
     }
 }
