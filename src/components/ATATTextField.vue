@@ -49,7 +49,7 @@
           >
           </v-text-field>
         </div>
-        <div class="validation-icon d-flex align-end mb-3">
+        <div class="d-flex align-end mb-3">
           <v-btn
             v-if="showDeleteIcon"
             plain
