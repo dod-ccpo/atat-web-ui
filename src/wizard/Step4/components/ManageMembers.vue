@@ -1,25 +1,39 @@
 <template>
-  <v-card class="extra-padding">
-    <v-form ref="form" v-model="valid" lazy-validation>
-      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-      <v-card-title>
-        <h3 class="mb-2 h3">
-          <span v-if="!isEditSingle">
-            Add
-            <span v-if="isRootAdmin">root administrators</span>
-            <span v-else>team members</span>
-            to
-            {{ isRootAdmin ? portfolioName : currentApplicationName }}
-          </span>
-          <span v-if="isEditSingle">
-            Update
-            {{
-              memberToEditNameOriginal ? memberToEditNameOriginal : "Member"
-            }}’s information
-          </span>
-        </h3>
-      </v-card-title>
-      <v-card-text class="body-lg text--base-darkest mt-2">
+  <v-card class="extra-padding overflow-x-hidden">
+    <v-navigation-drawer
+      v-model="learnMoreDrawerIsOpen"
+      absolute
+      temporary
+      right
+      width="100%"
+    >
+      <learn-more
+        :learn-more-type="learnMoreType"
+        @close-learn-more-drawer="closeLearnMoreDrawer"
+        :bus="bus"
+      ></learn-more>
+    </v-navigation-drawer>
+
+    <v-card-title>
+      <h3 class="mb-2 h3">
+        <span v-if="!isEditSingle">
+          Add
+          <span v-if="isRootAdmin">root administrators</span>
+          <span v-else>team members</span>
+          to
+          {{ isRootAdmin ? portfolioName : currentApplicationName }}
+        </span>
+        <span v-if="isEditSingle">
+          Update
+          {{ memberToEditNameOriginal ? memberToEditNameOriginal : "Member" }}’s
+          information
+        </span>
+      </h3>
+    </v-card-title>
+    <v-card-text class="body-lg text--base-darkest mt-2">
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <div id="inputWidthFaker" ref="inputWidthFaker"></div>
+
         <!--#################################################-->
         <!-- EDIT SINGLE MEMBER NAME AND EMAIL -->
         <!--#################################################-->
@@ -65,7 +79,12 @@
             Team members added to this workspace will be granted the top-level
             <strong>root administrator</strong> role within your cloud console.
             These people will have full access to all of your applications.
-            <a href="#">Learn more about root administrators</a>
+            <v-btn
+              class="link-button pa-0 height-auto"
+              @click="openLearnMoreDrawer('root-admins')"
+            >
+              Learn more about root administrators
+            </v-btn>
           </p>
           <p v-else>
             Team members can have different levels of access to your application
@@ -179,7 +198,10 @@
             <span v-if="isEditSingle">{{ currentApplicationName }}.</span>
             <span v-else>your application.</span>
             <br />
-            <v-btn class="link-button pa-0 height-auto">
+            <v-btn
+              class="link-button pa-0 height-auto"
+              @click="openLearnMoreDrawer('member-roles')"
+            >
               Learn more about roles
             </v-btn>
           </p>
@@ -229,27 +251,27 @@
             </v-row>
           </v-container>
         </div>
-      </v-card-text>
+      </v-form>
+    </v-card-text>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
-        <v-btn
-          color="primary"
-          class="px-5"
-          @click="saveToStore"
-          :disabled="submitDisabled"
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text class="link-button" @click="closeModal"> Cancel </v-btn>
+      <v-btn
+        color="primary"
+        class="px-5"
+        @click="saveToStore"
+        :disabled="submitDisabled"
+      >
+        {{ buttonText }}
+        <span
+          class="valid-entry-count ml-2"
+          v-if="!isEditSingle && validEmailCount > 0"
         >
-          {{ buttonText }}
-          <span
-            class="valid-entry-count ml-2"
-            v-if="!isEditSingle && validEmailCount > 0"
-          >
-            {{ validEmailCount }}
-          </span>
-        </v-btn>
-      </v-card-actions>
-    </v-form>
+          {{ validEmailCount }}
+        </span>
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -263,8 +285,13 @@ import {
   Portfolio,
 } from "types/Portfolios";
 import { generateUid } from "@/helpers";
+import LearnMore from "@/wizard/Step4/components/LearnMore.vue";
 
-@Component({})
+@Component({
+  components: {
+    "learn-more": LearnMore,
+  },
+})
 export default class ManageMember extends Vue {
   /*
 ██████   █████  ████████  █████
@@ -273,6 +300,9 @@ export default class ManageMember extends Vue {
 ██   ██ ██   ██    ██    ██   ██
 ██████  ██   ██    ██    ██   ██
 */
+  private learnMoreDrawerIsOpen = false;
+  private bus = new Vue();
+  private learnMoreType = "";
   private pillboxFocused = false;
   private duplicatedEmail = "";
   private memberList: {
@@ -391,7 +421,11 @@ export default class ManageMember extends Vue {
   }
 
   get buttonText(): string {
-    return this.isEditSingle ? "Update" : "Add Team Members";
+    return this.isEditSingle
+      ? "Update"
+      : this.isRootAdmin
+      ? "Add Root Administrators"
+      : "Add Team Members";
   }
 
   get selectedCSP(): string {
@@ -979,6 +1013,16 @@ export default class ManageMember extends Vue {
     this.assignDifferentRolesForEnvs = false;
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
     this._close = false;
+  }
+
+  public openLearnMoreDrawer(type: string): void {
+    this.learnMoreDrawerIsOpen = true;
+    this.learnMoreType = type;
+    this.bus.$emit("openLearnMore");
+  }
+
+  public closeLearnMoreDrawer(): void {
+    this.learnMoreDrawerIsOpen = false;
   }
 }
 </script>
