@@ -50,6 +50,12 @@
             hide-details="auto"
             :validate-on-blur="true"
             :validate-on-load="validateOnLoad"
+            :class="[
+              isErrored ? 'invalid-icon' : '',
+              isSuccess ? 'valid-icon' : '',
+              isErrored || isSuccess ? 'show-validation-icon' : '',
+              showDeleteIcon ? 'additional-button' : '',
+            ]"
             @input="inputActions"
             @blur="validateField()"
             @change="$emit('change')"
@@ -67,14 +73,16 @@
           >
             <v-icon>delete </v-icon>
           </v-btn>
-          <v-icon
+
+          <!-- <v-icon
             v-if="isErrored"
             class="icon-20 pa-1 pl-4 mb-1 text-base-error-darker"
             >error</v-icon
           >
           <v-icon v-if="isSuccess" color="success" class="icon-20 pa-1 pl-4"
             >check_circle</v-icon
-          >
+          > -->
+
         </div>
       </div>
     </v-flex>
