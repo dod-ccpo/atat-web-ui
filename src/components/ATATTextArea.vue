@@ -10,7 +10,7 @@
         <span class="mx-2 optional" v-show="optional">Optional</span>
       </label>
       <v-tooltip
-        transition="scroll-y-reverse-transition"
+        transition="slide-y-reverse-transition"
         max-width="250px"
         color="rgba(0,0,0,1)"
         top

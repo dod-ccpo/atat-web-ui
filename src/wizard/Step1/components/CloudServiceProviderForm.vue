@@ -6,10 +6,11 @@
           Cloud Service Provider
         </h3>
         <p class="body-lg description">
-          Select the Cloud Service Provider where you want to deploy this
-          Portfolio. If you have a multi-cloud application with environments
-          deployed to different CSPs, you will need to create a Portfolio for
-          each CSP.
+          Select the cloud service provider where you want to deploy this
+          portfolio.<strong
+            >Your selection must match the CSP listed in your awarded task
+            order(s).</strong
+          >
         </p>
       </div>
       <v-form ref="form" lazy-validation>
