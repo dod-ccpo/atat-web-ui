@@ -17,4 +17,7 @@
 .v-btn.modal__slideout__button-close {
   height: 25px !important;
   width: 25px;
+  &:focus {
+    color: white !important;
+  }
 }
