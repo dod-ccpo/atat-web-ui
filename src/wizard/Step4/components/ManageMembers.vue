@@ -1,6 +1,12 @@
 <template>
   <v-card class="extra-padding overflow-x-hidden">
-    <v-navigation-drawer v-model="drawer" absolute temporary right width="100%">
+    <v-navigation-drawer
+      v-model="learnMoreDrawerIsOpen"
+      absolute
+      temporary
+      right
+      width="100%"
+    >
       <learn-more
         :learn-more-type="learnMoreType"
         @close-learn-more-drawer="closeLearnMoreDrawer"
@@ -294,7 +300,7 @@ export default class ManageMember extends Vue {
 ██   ██ ██   ██    ██    ██   ██
 ██████  ██   ██    ██    ██   ██
 */
-  private drawer = false;
+  private learnMoreDrawerIsOpen = false;
   private bus = new Vue();
   private learnMoreType = "";
   private pillboxFocused = false;
@@ -1010,13 +1016,13 @@ export default class ManageMember extends Vue {
   }
 
   public openLearnMoreDrawer(type: string): void {
-    this.drawer = true;
+    this.learnMoreDrawerIsOpen = true;
     this.learnMoreType = type;
     this.bus.$emit("openLearnMore");
   }
 
   public closeLearnMoreDrawer(): void {
-    this.drawer = false;
+    this.learnMoreDrawerIsOpen = false;
   }
 }
 </script>
