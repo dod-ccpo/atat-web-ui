@@ -3,19 +3,18 @@
     <v-container fluid class="my-9">
       <v-row>
         <v-col cols="10">
-          <h2 class="h2">Add a New Task Order</h2>
-          <p class="my-3">
-            In order to provision cloud resources, you must have an approved
-            Task Order that will fund your ATAT Portfolio during a specific and
-            fixed period of performance (PoP). You will be able to add
-            additional Task Orders to continue funding your Portfolio in the
-            future.
+          <h2 class="h2 text--base-darkest">Add a New Task Order</h2>
+          <p class="my-3 body-lg text--base-darkest">
+            You will find this information in your awarded task order that funds
+            your ATAT portfolio. If you have more than one task order, we will
+            walk through them one at a time. Select <strong>Next</strong> to
+            view funding sources.
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="6">
-          <h3 class="h3 mb-5">Task Order Details</h3>
+          <h3 class="h3 mb-5 text--base-darkest">Task Order Details</h3>
           <atat-text-field
             id="task-order-number"
             label="Task Order Number"
