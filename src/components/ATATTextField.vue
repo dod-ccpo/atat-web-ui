@@ -4,14 +4,14 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label my-1 mr-2"
-        :for="id + '_text_field'"
         :class="[isErrored ? 'font-weight-bold' : '']"
+        :for="id + '_text_field'"
       >
         {{ label }}
         <span v-show="optional">Optional</span>
       </label>
       <v-tooltip
-        transition="scroll-y-reverse-transition"
+        transition="slide-y-reverse-transition"
         max-width="250px"
         color="rgba(0,0,0,1)"
         top
@@ -84,6 +84,7 @@
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
 import { Component, Prop, PropSync } from "vue-property-decorator";
+
 import Vue from "vue";
 
 @Component({})
