@@ -3,7 +3,6 @@
   <v-dialog
     @keydown.esc="hide"
     persistent
-    scrollable
     :width="dialog.width"
     v-model="dialog.isDisplayed"
     transition="fade-transition"

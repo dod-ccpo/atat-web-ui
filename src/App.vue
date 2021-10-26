@@ -8,7 +8,7 @@
       <router-view> </router-view>
     </v-main>
     <ATATFooter />
-    <ATATDialog scrollable v-show="isDialogDisplayed" />
+    <ATATDialog v-show="isDialogDisplayed" />
     <ATATToast />
   </v-app>
 </template>
