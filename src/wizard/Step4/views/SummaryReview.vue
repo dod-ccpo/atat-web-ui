@@ -146,7 +146,7 @@
         dialog.height
       "
       attach
-      >
+    >
       <manage-members
         :close.sync="dialog.isDisplayed"
         :dialogProps="dialogProps"

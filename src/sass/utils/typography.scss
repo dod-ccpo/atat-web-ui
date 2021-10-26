@@ -178,4 +178,20 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
     word-break: normal !important;
 }
 
-
+.dl-bullets {
+    dt {
+        position: relative;
+        padding-left: 16px;
+        font-weight: 700;
+        &:before {
+            content: "•";
+            font-weight: 700;
+            position: absolute;
+            left: 0;
+        }
+    }
+    dd {
+        padding-left: 16px;
+        margin-bottom: 2.5rem;
+    }
+}
