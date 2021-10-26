@@ -1,14 +1,14 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="my-9">
+    <v-container fluid class="body-lg">
       <v-row>
         <v-col cols="10">
           <h2 class="h2">Add a New Task Order</h2>
           <p class="my-3">
             In order to provision cloud resources, you must have an approved
-            Task Order that will fund your ATAT Portfolio during a specific and
+            task order that will fund your ATAT portfolio during a specific and
             fixed period of performance (PoP). You will be able to add
-            additional Task Orders to continue funding your Portfolio in the
+            additional task orders to continue funding your portfolio in the
             future.
           </p>
         </v-col>
@@ -24,7 +24,9 @@
             :helpText="helpText"
             :validate-on-load="validateOnLoad"
           />
-          <p class="mt-1">This number must be between 13 and 17 digits</p>
+          <p class="mt-1 text--base">
+            This number must be between 13 and 17 digits
+          </p>
         </v-col>
       </v-row>
       <v-row>
@@ -33,7 +35,7 @@
             ref="pdfFileUpload"
             :multiple="false"
             :pdfFile.sync="_task_order_file"
-            label="Upload your approved Task Order"
+            label="Upload your approved task order"
             message="Only PDF files with a max file size of 20 MB"
             :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
             :maxFileSize="20"
@@ -45,14 +47,14 @@
       <v-row>
         <v-col cols="9">
           <h5 class="h5 font-weight-bold mt-6">
-            Is this Task Order
-            <u>signed by an appropriate, duly warranted Contracting Officer </u>
-            who has the authority to execute the Task Order on your Agency’s
+            Is this task order
+            <u>signed by an appropriate, duly warranted contracting officer </u>
+            who has the authority to execute the task order on your Agency’s
             behalf?
           </h5>
           <p class="mt-1">
-            By selecting yes, you certify that the Contracting Officer has
-            authorized you to upload the Task Order in accordance with your
+            By selecting yes, you certify that the contracting officer has
+            authorized you to upload the task order in accordance with your
             agency’s policy and procedures.
           </p>
           <v-row v-if="signedTaskOrderErrorMessage !== ''" class="mb-3">
@@ -94,13 +96,13 @@
             width="600"
           >
             <div class="black--text h3 ml-2">
-              You must have a signed Task Order to proceed
+              You must have a signed task order to proceed
             </div>
             <div class="black--text body-lg ml-2">
               You will not be able to provision cloud resources within ATAT
-              without an awarded Task Order that is signed by a duly warranted
-              Contracting Officer. Please contact your Contracting Officer for
-              questions regarding your Task Order status or to obtain
+              without an awarded task order that is signed by a duly warranted
+              contracting officer. Please contact your contracting officer for
+              questions regarding your task order status or to obtain
               authorization to spend government funds.
               <br />
               <br />
@@ -118,11 +120,11 @@
             </v-row>
             <v-row>
               <v-col cols="7">
-                <h3 class="h3 mb-2">Contract Line Items</h3>
+                <h3 class="h3 my-2">Contract Line Items</h3>
                 <p>
                   A CLIN is a line in your contract that lists the services and
                   products to be delivered with a price or ceiling which cannot
-                  be exceeded. Refer to your Task Order to locate your Contract
+                  be exceeded. Refer to your task order to locate your Contract
                   Line Item Numbers (CLINs).
                 </p>
               </v-col>
@@ -157,7 +159,7 @@ export default class CreateTaskOrderForm extends Vue {
   public isYesButtonClicked = false;
   public isNoButtonClicked = false;
   private fileUploadRequiredErrorMessage = "";
-  private helpText = `If your Contracting Officer used:
+  private helpText = `If your contracting officer used:
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private savedTaskOrderSigned = false;
@@ -203,13 +205,13 @@ export default class CreateTaskOrderForm extends Vue {
 
     if (this._task_order_file && this._task_order_file.name === "") {
       this.fileUploadRequiredErrorMessage =
-        "Please upload your Task Order document";
+        "Please upload your task order document";
     }
     validated.push(this._task_order_file && this._task_order_file.name !== "");
 
     if (this.signedTaskOrder === "") {
       this.signedTaskOrderErrorMessage =
-        "Please select Yes or No below to verify your Task Order";
+        "Please select Yes or No below to verify your task order";
     }
 
     validated.push(this.signedTaskOrder !== "");

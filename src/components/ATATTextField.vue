@@ -5,11 +5,18 @@
         :id="id + '_text_field_label'"
         class="form-field-label my-1 mr-2"
         :for="id + '_text_field'"
+        :class="[isErrored ? 'font-weight-bold' : '']"
       >
         {{ label }}
         <span v-show="optional">Optional</span>
       </label>
-      <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
+      <v-tooltip
+        transition="scroll-y-reverse-transition"
+        max-width="250px"
+        color="rgba(0,0,0,1)"
+        top
+        v-if="helpText"
+      >
         <template v-slot:activator="{ on }">
           <v-btn
             class="ma-0 pa-0 link-button no-border"
