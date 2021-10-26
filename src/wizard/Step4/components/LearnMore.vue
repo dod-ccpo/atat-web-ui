@@ -146,6 +146,7 @@ export default class LearnMoreMemberRoles extends Vue {
   public created(): void {
     this.bus.$on("openLearnMore", () => {
       setTimeout(() => {
+        // for 508 compliance, focus on heading when drawer opens
         document.getElementById("learnMoreHeading")?.focus();
       }, 100);
     });
