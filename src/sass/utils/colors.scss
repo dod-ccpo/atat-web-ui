@@ -19,7 +19,7 @@
   $success-lighter: #ecf3ec !default;
 
   $tertiary: #162E51 !default;
-  
+
   $error: #E21C3D !default;
   $error-darker: #b50909 !default;
   $error-dark: #b50909 !default;
@@ -69,8 +69,10 @@
 
 
 
-//incoporate this into a mixin soon
+
+  //incoporate this into a mixin soon
 .theme--light.v-application{
+   color: $base_darkest !important;
   .bg-primary-lighter{ background-color: $primary_lighter !important };
   .bg-primary-light{ background-color: $primary_light !important };
   .bg-primary{ background-color: $primary !important };
@@ -116,4 +118,8 @@
   .border-base-lightest{border-color: #f0f0f0 !important};
 
   .border-accent-cool { border-color:  $accent-cool !important};
+}
+
+.bg-transparent {
+  background-color: transparent !important;
 }
