@@ -1223,7 +1223,8 @@ export default new Vuex.Store({
     getInvalidSteps(state) {
       const invalidSteps: number[] = [];
       state.portfolioSteps.forEach((step) => {
-        if (step.touched === false || step.valid === false) {
+        // EJY TODO - fix logic to be step.step < 5 after step 4 validation is working
+        if (step.step < 4 && (step.touched === false || step.valid === false)) {
           invalidSteps.push(step.step);
         }
       });
