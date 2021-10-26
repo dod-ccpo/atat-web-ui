@@ -13,7 +13,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="7">
           <h3 class="h3 mb-5 text--base-darkest">Task Order Details</h3>
           <atat-text-field
             id="task-order-number"
@@ -22,6 +22,7 @@
             :value.sync="_task_order_number"
             :helpText="helpText"
             :validate-on-load="validateOnLoad"
+            class="width-70"
           />
           <p class="mt-1">This number must be between 13 and 17 digits</p>
         </v-col>
