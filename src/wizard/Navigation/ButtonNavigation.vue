@@ -3,7 +3,7 @@
     ref="buttonNavigation"
     elevation="0"
     :width="getbuttonNavBarWidth"
-    class="d-flex justify-end"
+    class="d-flex justify-end wizard-button-nav"
     style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
     <v-btn
