@@ -9,7 +9,13 @@
         {{ label }}
         <span class="mx-2 optional" v-show="optional">Optional</span>
       </label>
-      <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
+      <v-tooltip
+        transition="scroll-y-reverse-transition"
+        max-width="250px"
+        color="rgba(0,0,0,1)"
+        top
+        v-if="helpText"
+      >
         <template v-slot:activator="{ on }">
           <v-btn
             class="ma-0 pa-0 link-button no-border"
