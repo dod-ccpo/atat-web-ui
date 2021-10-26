@@ -5,7 +5,7 @@
         <h3 class="h3 mb-2 font-weight-bold text--base-darkest">
           Cloud Service Provider
         </h3>
-        <p class="body-lg description">
+        <p class="body-lg description mb-0">
           Select the cloud service provider where you want to deploy this
           portfolio.<strong
             >Your selection must match the CSP listed in your awarded task
