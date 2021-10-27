@@ -3,7 +3,7 @@
     ref="buttonNavigation"
     elevation="0"
     :width="getbuttonNavBarWidth"
-    class="d-flex justify-end"
+    class="d-flex justify-end wizard-button-nav"
     style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
     <v-btn
@@ -38,13 +38,21 @@ export default class ButtonNavigation extends Vue {
   }
 
   public isDisabled(text: string): boolean {
-    if (text.toLowerCase() === "next" && this.$route.name === "postreview") {
+    if (
+      this.$store.state.currentStepNumber === 5 &&
+      this.$store.getters.getInvalidSteps.length &&
+      text.toLowerCase() === "next"
+    ) {
+      return true;
+    } else if (
+      text.toLowerCase() === "next" &&
+      this.$route.name === "postreview"
+    ) {
       return this.$store.getters.getisUserAuthorizedToProvisionCloudResources
         ? false
         : true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   get getbuttonNavBarWidth(): string {
