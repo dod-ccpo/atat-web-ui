@@ -59,6 +59,8 @@
             @input="inputActions"
             @blur="validateField()"
             @change="$emit('change')"
+            @keyup="$emit('keyup')"
+            @focus="$emit('focus')"
           >
           </v-text-field>
         </div>
@@ -81,7 +83,7 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
 
 import Vue from "vue";
 
@@ -133,6 +135,8 @@ export default class ATATTextField extends VTextField {
         (rule: (a: unknown) => string | boolean) => rule(value) === true
       );
     }
+
+    this.$emit("blur");
   }
 
   public mounted(): void {

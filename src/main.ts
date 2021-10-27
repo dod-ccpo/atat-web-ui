@@ -35,6 +35,7 @@ import ProfileDrawer from "./components/SideDrawerComponents/ProfileDrawer.vue"
 import SubmitDrawer from "./components/SideDrawerComponents/SubmitDrawer.vue"
 import TeamMemberRolesDrawer from "./components/SideDrawerComponents/TeamMemberRolesDrawer.vue"
 import ATATTextField from "./components/ATATTextField.vue";
+import ATATCurrencyField from "./components/ATATCurrencyField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
 import ATATSummaryCard from "./components/ATATSummaryCard.vue";
 import ATATToast from "./components/ATATToast.vue"
@@ -46,6 +47,7 @@ import USAGovBanner from "./components/USAGovBanner.vue";
 import ViewPortfolio from "./wizard/Step_0/components/ViewPortfolio/ViewPortfolio.vue";
 import CreatePortfolio from "./wizard/Step_0/components/CreatePortfolio/CreatePortfolio.vue";
 import { createSolutionBuilderWithWatch } from "typescript";
+import VuexPersistence from "vuex-persist";
 Vue.component('atat-button-card', ATATButtonCard);
 Vue.component('atat-date-picker',ATATDatePicker)
 Vue.component('atat-dialog', ATATDialog);
@@ -55,6 +57,7 @@ Vue.component('atat-select', ATATSelect)
 Vue.component('atat-summary-card', ATATSummaryCard)
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
+Vue.component('atat-currency-field', ATATCurrencyField);
 Vue.component('atat-toast', ATATToast);
 
 //axios

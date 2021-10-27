@@ -135,7 +135,7 @@
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content class="pl-14">
+              <v-expansion-panel-content class="pl-14 pb-10">
                 <v-row>
                   <v-col cols="11">
                     <atat-text-field
@@ -165,7 +165,7 @@
                 <v-row>
                   <v-col cols="11">
                     <v-form ref="fundFields">
-                      <atat-text-field
+                      <atat-currency-field
                         class="mb-3"
                         id="total-clin-value"
                         label="Total CLIN Value"
