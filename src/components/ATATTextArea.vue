@@ -23,7 +23,7 @@
             x-small
             v-on="on"
             :ripple="false"
-            ><v-icon class="ma-0 pa-0" small color="primary"
+            ><v-icon class="ma-0 pa-0 icon-20" small color="primary"
               >help_outline
             </v-icon>
           </v-btn>
