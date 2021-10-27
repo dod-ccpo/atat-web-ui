@@ -692,9 +692,7 @@ export default new Vuex.Store({
       const envs: EnvironmentModel[] = app.environments;
       envs.forEach((env) => {
         const ops: OperatorModel[] = env.operators || [];
-        const newOps = ops.filter((o) => {
-          o.email !== originalEmail;
-        });
+        const newOps = ops.filter((o) => o.email !== originalEmail);
         ops.splice(0, ops.length, ...newOps);
       });
     },
