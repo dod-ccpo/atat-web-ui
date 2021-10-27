@@ -121,10 +121,8 @@ export default class CreatePortfolioForm
 {
   private valid = true;
   private dodComponents = dodComponents;
-  private portfolioDetailsDescription = `Naming can be difficult. Choose a name that is descriptive enough
-            for users to identify the portfolio. You may consider naming based
-            on your organization. (Must be between 4 - 100 characters)`;
-  private portfolioDescriptionText = `Add a brief one to two sentence description of your portfolio.
+  private portfolioDetailsDescription = `Choose a name that is descriptive enough for users to identify the portfolio. Consider naming based on your organization.`;
+  private portfolioDescriptionText = `Add a brief one to two sentence description of your Portfolio.
             Consider this your statement of work.`;
   private isDodComponentsValid: boolean | string | undefined = false;
   private isChecked(dodComp: string) {
