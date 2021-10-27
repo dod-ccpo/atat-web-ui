@@ -1220,6 +1220,16 @@ export default new Vuex.Store({
   ██████████████████████████████████████████████████████████
   */
   getters: {
+    getInvalidSteps(state) {
+      const invalidSteps: number[] = [];
+      state.portfolioSteps.forEach((step) => {
+        // EJY TODO - fix logic to be step.step < 5 after step 4 validation is working
+        if (step.step < 4 && (step.touched === false || step.valid === false)) {
+          invalidSteps.push(step.step);
+        }
+      });
+      return invalidSteps;
+    },
     getLoginStatus(state) {
       return state.loginStatus;
     },

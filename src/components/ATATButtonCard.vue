@@ -5,7 +5,7 @@
       @change="(v) => $emit('change', v)"
       :rules="rules"
       v-model="selected_value"
-      class="_v_radio-button-cards error-icon-label-left"
+      class="_v_radio-button-cards error-icon-label-left mt-0"
       column
       :ripple="false"
       ref="radiogroup"

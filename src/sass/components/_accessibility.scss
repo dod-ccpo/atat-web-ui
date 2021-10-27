@@ -37,7 +37,6 @@
 
 @mixin default-focus {
     background-color: $primary !important;
-    color: white;
     opacity: initial !important;
     box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
 }
@@ -135,12 +134,21 @@ a.left-nav-menu-link{
         border-radius: 6px;
         padding: 0px 8px;
         &:focus,
-        &:focus::before,
+        &:focus::before
         {
             @include default-focus;
             border: none !important;
             background-color: transparent !important;
             outline: none !important;
+        }
+    }
+}
+.v-stepper__label {
+    a {
+        border: 3px solid transparent !important;
+        &:focus, &:active, &:hover {
+            box-shadow: none !important;
+            border: 3px solid $focus-blue !important;
         }
     }
 }

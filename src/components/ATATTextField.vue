@@ -4,12 +4,19 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label my-1 mr-2"
+        :class="[isErrored ? 'font-weight-bold' : '']"
         :for="id + '_text_field'"
       >
         {{ label }}
         <span v-show="optional">Optional</span>
       </label>
-      <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
+      <v-tooltip
+        transition="slide-y-reverse-transition"
+        max-width="250px"
+        color="rgba(0,0,0,1)"
+        top
+        v-if="helpText"
+      >
         <template v-slot:activator="{ on }">
           <v-btn
             class="ma-0 pa-0 link-button no-border"
@@ -43,6 +50,12 @@
             hide-details="auto"
             :validate-on-blur="true"
             :validate-on-load="validateOnLoad"
+            :class="[
+              isErrored ? 'invalid-icon' : '',
+              isSuccess ? 'valid-icon' : '',
+              isErrored || isSuccess ? 'show-validation-icon' : '',
+              showDeleteIcon ? 'additional-button' : '',
+            ]"
             @input="inputActions"
             @blur="validateField()"
             @change="$emit('change')"
@@ -60,14 +73,6 @@
           >
             <v-icon>delete </v-icon>
           </v-btn>
-          <v-icon
-            v-if="isErrored"
-            class="icon-20 pa-1 pl-4 mb-1 text-base-error-darker"
-            >error</v-icon
-          >
-          <v-icon v-if="isSuccess" color="success" class="icon-20 pa-1 pl-4"
-            >check_circle</v-icon
-          >
         </div>
       </div>
     </v-flex>
@@ -77,6 +82,7 @@
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
 import { Component, Prop, PropSync } from "vue-property-decorator";
+
 import Vue from "vue";
 
 @Component({})

@@ -78,7 +78,7 @@
           <p v-if="isRootAdmin">
             Team members added to this workspace will be granted the top-level
             <strong>root administrator</strong> role within your cloud console.
-            These people will have full access to all of your applications.
+            These people will have full access to all of your applications.<br />
             <v-btn
               class="link-button pa-0 height-auto"
               @click="openLearnMoreDrawer('root-admins')"

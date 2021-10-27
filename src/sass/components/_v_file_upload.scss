@@ -3,21 +3,42 @@
 @import "../utils/utils.scss";
 
 .primary-file-upload-border{
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23005EA2' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;   
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23005EA2' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
 }
 
 .error-file-upload-border{
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23B50909' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;   
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23B50909' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
 }
 
 .default-file-upload-border{
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%2371767A' stroke-width='2' stroke-dasharray='8, 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;  
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%2371767A' stroke-width='2' stroke-dasharray='8, 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
 }
 
 .success-file-upload-border{
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%2300A91C' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;  
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%2300A91C' stroke-width='4' stroke-dasharray='0' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
 }
 .atat-file-upload {
+    &.show-validation-icon {
+        position: relative;
+        &:after {
+            content: "";
+            font-family: "Material Icons";
+            -webkit-font-feature-settings: "liga";
+            position: absolute;
+            right: -28px;
+            top: 6px;
+            font-size: 20px;
+            font-weight: normal;
+        }
+    }
+    &.valid-icon:after {
+        content: "check_circle";
+        color: $success;
+    }
+    &.invalid-icon:after {
+        content: "error";
+        color: $error-dark;
+    }
 
     .v-card{
         background-color: transparent !important;
@@ -44,7 +65,7 @@
     &.suceess-file-upload-border{
         @extend .success-file-upload-border;
     }
-    
+
 }
 
 #progressBarWrapper {
@@ -52,7 +73,7 @@
     background-color: #ddd;
     height: 16px;
 }
-  
+
 #progressBar {
     width: 1%;
     margin: 0px;

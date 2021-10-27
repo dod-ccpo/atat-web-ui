@@ -22,7 +22,17 @@
         <div class="d-flex align-start">
           <v-sheet
             class="width-100"
-            :class="[showBorderState, 'atat-file-upload']"
+            :class="[
+              [showBorderState, 'atat-file-upload'],
+              [isFileUploadedSucessfully ? 'valid-icon' : ''],
+              [hasErrors ? 'invalid-icon' : ''],
+              [
+                isFileUploadedSucessfully || hasErrors
+                  ? 'show-validation-icon'
+                  : '',
+              ],
+            ]"
+            width="416"
             ref="fileUploadVSheet"
           >
             <v-card
@@ -80,13 +90,6 @@
                           >
                             {{ _pdfFile.name }}
                           </div>
-                          <v-icon
-                            v-show="isFileUploadedSucessfully"
-                            color="success"
-                            size="25"
-                          >
-                            check_circle</v-icon
-                          >
                         </div>
                         <div class="d-flex align-baseline">
                           <div id="progressBarWrapper">
@@ -108,7 +111,6 @@
               </v-card-text>
             </v-card>
           </v-sheet>
-          <v-icon color="error" class="ml-2" v-show="hasErrors"> error </v-icon>
         </div>
       </div>
       <v-virtual-scroll
