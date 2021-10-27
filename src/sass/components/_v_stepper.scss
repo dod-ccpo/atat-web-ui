@@ -9,12 +9,12 @@
 }
 
 .v-stepper{
-  &.wizard-stepper{
+  &.wizard-stepper {
     .v-stepper__header{
       box-shadow: none !important;
 
       hr{
-        margin: -63px 47px;
+        margin: -58px 47px;
         border-width: 4px;
         width: 100%;
         border-color: $base_lighter !important;
@@ -23,7 +23,7 @@
 
       .v-stepper__step{
         align-items: start;
-        padding: 24px 0px 32px;
+        padding: 24px 0px 36px;
         display: inline-block !important;
         width: 20% !important;
         flex-basis: 20% !important;

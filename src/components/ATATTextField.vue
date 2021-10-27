@@ -3,7 +3,7 @@
     <v-flex class="d-flex align-center">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label my-1 mr-2"
+        class="form-field-label mr-2"
         :class="[isErrored ? 'font-weight-bold' : '']"
         :for="id + '_text_field'"
       >
@@ -24,7 +24,7 @@
             x-small
             v-on="on"
             :ripple="false"
-            ><v-icon class="ma-0 pa-0" small color="primary"
+            ><v-icon class="icon-20 ma-0 pa-0" small color="primary"
               >help_outline
             </v-icon>
           </v-btn>
@@ -110,13 +110,14 @@ export default class ATATTextField extends VTextField {
   private rounded = false;
   private isFieldValid = false;
   private isFieldDirty = false;
+  private hasInitialValue = false;
 
   get isSuccess(): boolean {
     return this.isFieldDirty === true && this.isFieldValid === true;
   }
 
   get isErrored(): boolean {
-    return this.isFieldDirty === true && this.isFieldValid === false;
+    return (this.isFieldDirty || this.hasInitialValue) && !this.isFieldValid;
   }
 
   private inputActions(v: string) {
@@ -141,6 +142,7 @@ export default class ATATTextField extends VTextField {
 
   public mounted(): void {
     this.$nextTick(() => {
+      this.hasInitialValue = this._value.length > 0;
       if (this.validateOnLoad) {
         this.validateField();
       }

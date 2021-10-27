@@ -45,62 +45,67 @@
       </div>
       <v-row class="mt-0 pt-0">
         <v-col cols="6" class="py-0">
-          <h3 class="h3 font-weight-bold pb-2">DoD Component</h3>
-          <p>
-            Select the DoD component(s) that will fund all applications within
-            this portfolio. Multiple DoD organizations can fund the same
-            portfolio.
-          </p>
 
-          <div
-            v-if="typeof isDodComponentsValid === 'string'"
-            class="
-              mb-2
-              atat-error-message
-              body
-              error--text error--text-darkest error-icon-label-left
-            "
-            id="dod-components-errors"
-            role="alert"
-          >
-            <div class="v-messages__message">{{ isDodComponentsValid }}</div>
-          </div>
+          <fieldset id="dod-component" class="atat-checkbox-list">
+            <legend>
+              <h3 class="h3 font-weight-bold pb-2">DoD Component</h3>
+            </legend>
+            <p>
+              Select the DoD component(s) that will fund all applications within
+              this portfolio. Multiple DoD organizations can fund the same
+              portfolio.
+            </p>
 
-          <fieldset
-            id="dod-component"
-            v-for="(dod, index) in dodComponents"
-            :key="index"
-            :class="[
-              typeof isDodComponentsValid === 'string'
-                ? 'error-item'
-                : 'default',
-              ' my-3 atat-checkbox-list',
-              'text--base-darkest',
-            ]"
-          >
-            <input
-              :id="'dod-component-' + index"
-              type="checkbox"
-              v-model="_dod_components"
-              :value="dod.value"
-              style="width: 0px; height: 0px; position: absolute"
-            />
-
-            <label
-              :for="'dod-component-' + index"
-              class="d-flex align-center'"
-              @keydown.space="check('dod-component-' + index)"
+            <div
+              v-if="typeof isDodComponentsValid === 'string'"
+              class="
+                mb-2
+                atat-error-message
+                body
+                error--text error--text-darkest error-icon-label-left
+              "
+              id="dod-components-errors"
+              role="alert"
             >
-              <v-icon class="checked-icon" v-if="isChecked(dod.value)"
-                >check_box</v-icon
+              <div class="v-messages__message">{{ isDodComponentsValid }}</div>
+            </div>
+
+            <div
+              v-for="(dod, index) in dodComponents"
+              :key="index"
+              :class="[
+                typeof isDodComponentsValid === 'string'
+                  ? 'error-item'
+                  : 'default',
+                ' my-3 atat-checkbox-list',
+                'text--base-darkest',
+              ]"
+            >
+              <input
+                :id="'dod-component-' + index"
+                type="checkbox"
+                v-model="_dod_components"
+                :value="dod.value"
+                style="width: 0px; height: 0px; position: absolute"
+              />
+
+              <label
+                :for="'dod-component-' + index"
+                class="d-flex align-center'"
+                @keydown.space="check('dod-component-' + index)"
               >
-              <v-icon class="checkbox-icon" v-else
-                >check_box_outline_blank</v-icon
-              >
-              <div class="ml-2">
-                {{ dod.name }}
-              </div>
-            </label>
+                <v-icon class="checked-icon" v-if="isChecked(dod.value)"
+                  >check_box</v-icon
+                >
+                <v-icon class="checkbox-icon" v-else
+                  >check_box_outline_blank</v-icon
+                >
+                <div class="ml-2">
+                  {{ dod.name }}
+                </div>
+              </label>
+            </div>
+
           </fieldset>
         </v-col>
       </v-row>
@@ -121,10 +126,8 @@ export default class CreatePortfolioForm
 {
   private valid = true;
   private dodComponents = dodComponents;
-  private portfolioDetailsDescription = `Naming can be difficult. Choose a name that is descriptive enough
-            for users to identify the portfolio. You may consider naming based
-            on your organization. (Must be between 4 - 100 characters)`;
-  private portfolioDescriptionText = `Add a brief one to two sentence description of your portfolio.
+  private portfolioDetailsDescription = `Choose a name that is descriptive enough for users to identify the portfolio. Consider naming based on your organization.`;
+  private portfolioDescriptionText = `Add a brief one to two sentence description of your Portfolio.
             Consider this your statement of work.`;
   private isDodComponentsValid: boolean | string | undefined = false;
   private isChecked(dodComp: string) {
