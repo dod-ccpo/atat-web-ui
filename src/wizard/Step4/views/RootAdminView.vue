@@ -257,12 +257,6 @@ export default class RootAdminView extends Vue {
       memberProps,
     ]);
   }
-  @Watch("$store.state.dialog.isDisplayed")
-  setFocus(newVal: boolean): void {
-    if (!newVal) {
-      this.rootMembers;
-    }
-  }
 
   //Dialog stuff
   private okText = "Remove Team Member";
