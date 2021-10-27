@@ -50,8 +50,8 @@
               :error="isFieldValid"
               hide-details
               placeholder="MM/DD/YYYY"
-              v-model="startDate"
-              :value="startDate"
+              :v-model="moment(startDate).format('MM/DD/YYYY')"
+              :value="moment(startDate).format('MM/DD/YYYY')"
               :rules="_startDateRules"
               @focus="setFocus"
               @blur="blurTextField"
@@ -80,8 +80,8 @@
               :error="isFieldValid"
               hide-details
               placeholder="MM/DD/YYYY"
-              v-model="endDate"
-              :value="endDate"
+              :v-model="moment(endDate).format('MM/DD/YYYY')"
+              :value="moment(endDate).format('MM/DD/YYYY')"
               @focus="setFocus"
               :rules="_endDateRules"
               @blur="blurTextField"
@@ -189,14 +189,14 @@ export default class ATATDatePicker extends Vue {
     | CustomErrorMessage
     | undefined
   )[];
-  @Prop({ default: "10/01/2020" }) private min!: string;
-  @Prop({ default: "09/30/2021" }) private max!: string;
+  @Prop({ default: "2020-10-01" }) private min!: string;
+  @Prop({ default: "2021-10-01" }) private max!: string;
 
   private menu = false;
-  private firstMonth = moment(new Date()).format("MM/DD/YYYY");
+  private firstMonth = moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
-    .format("MM/DD/YYYY");
+    .format("YYYY-MM-DD");
   private isFieldValid = false;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
@@ -369,6 +369,7 @@ export default class ATATDatePicker extends Vue {
       this.clearDates(true);
       this.startDate = selectedDate;
     }
+    console.log("line372" + this.startDate);
   }
 
   public setEndDate(selectedDate: string): void {
@@ -379,14 +380,15 @@ export default class ATATDatePicker extends Vue {
       this.clearDates(false);
       this.endDate = selectedDate;
     }
+    console.log("line383" + this.endDate);
   }
 
   get setDateRange(): string[] {
     if (this.startDate !== "") {
-      this.dateRange[0] = this.startDate;
+      this.dateRange[0] = moment(this.startDate).format("YYYY-MM-DD");
     }
     if (this.endDate !== "") {
-      this.dateRange[1] = this.endDate;
+      this.dateRange[1] = moment(this.endDate).format("YYYY-MM-DD");
     }
     return this.dateRange;
   }
@@ -410,7 +412,6 @@ export default class ATATDatePicker extends Vue {
 
   // applies daterange when menu is opened
   get getDateRange(): string[] {
-    debugger;
     if (moment(this.startDate).isBefore(moment(this.endDate))) {
       this.dateRange[0] = this.startDate;
       this.dateRange[1] = this.endDate;
@@ -537,15 +538,14 @@ export default class ATATDatePicker extends Vue {
 
   @Watch("firstMonth")
   protected getFirstMonth(newVal: string, oldVal: string): void {
-    console.log(newVal)
-    newVal = newVal.length === 7 ? newVal + "/01" : newVal;
-    oldVal = oldVal.length === 7 ? oldVal + "/01" : oldVal;
+    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
+    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (!this.isDatePickerAdvancing) {
-        this.firstMonth = moment(newVal).format("MM/DD/YYYY");
+        this.firstMonth = moment(newVal).format("YYYY-MM-DD");
         if (newVal !== oldVal) {
-          this.secondMonth = moment(oldVal).format("MM/DD/YYYY");
+          this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
           this.calendarClicked = true;
         }
       }
@@ -554,15 +554,14 @@ export default class ATATDatePicker extends Vue {
 
   @Watch("secondMonth")
   protected getSecondMonth(newVal: string, oldVal: string): void {
-    console.log(newVal)
-    newVal = newVal.length === 7 ? newVal + "/01" : newVal;
-    oldVal = oldVal.length === 7 ? oldVal + "/01" : oldVal;
+    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
+    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (this.isDatePickerAdvancing) {
-        this.secondMonth = moment(newVal).format("MM/DD/YYYY");
+        this.secondMonth = moment(newVal).format("YYYY-MM-DD");
         if (oldVal !== this.secondMonth) {
-          this.firstMonth = moment(oldVal).format("MM/DD/YYYY");
+          this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
           this.calendarClicked = true;
         }
       }

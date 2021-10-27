@@ -281,12 +281,13 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   get isValidStartDate(): boolean {
-    return /^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$/.test(
+    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
       this._pop_start_date
     );
   }
+
   get isValidEndDate(): boolean {
-    return /^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$/.test(
+    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
       this._pop_end_date
     );
   }
@@ -346,8 +347,8 @@ export default class ClinsCard extends Vue {
 
   private dialog = false;
   private progress: HTMLProgressElement | undefined;
-  private minDate = "01/01/2021";
-  private maxDate = "12/31/2022";
+  private minDate = "2020-10-01";
+  private maxDate = "2022-09-30";
 
   // public progressEvent(): void {
   //   const progress = this.$refs["progress-bar"] as HTMLProgressElement;
