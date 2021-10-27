@@ -1,15 +1,21 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
-    <v-flex>
+    <v-flex class="d-flex align-center">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label my-1"
+        class="form-field-label mr-2"
         :for="id + '_text_field'"
       >
         {{ label }}
-        <span class="mx-2 optional" v-show="optional">Optional</span>
       </label>
-      <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
+      <span class="optional mr-2" v-show="optional">Optional</span>
+      <v-tooltip
+        transition="slide-y-reverse-transition"
+        max-width="250px"
+        color="rgba(0,0,0,1)"
+        top
+        v-if="helpText"
+      >
         <template v-slot:activator="{ on }">
           <v-btn
             class="ma-0 pa-0 link-button no-border"
@@ -17,7 +23,7 @@
             x-small
             v-on="on"
             :ripple="false"
-            ><v-icon class="ma-0 pa-0 mb-2" small color="primary"
+            ><v-icon class="icon-20 ma-0 pa-0" small color="primary"
               >help_outline
             </v-icon>
           </v-btn>

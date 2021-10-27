@@ -6,7 +6,7 @@
           <h2 class="h2">Let’s create your new application</h2>
           <p class="my-3">
             In this section, we’ll set up your cloud workspaces within
-            <strong>{{ this.$store.state.selectedCSP }}</strong
+            <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
             >. If you have more than one application, we will walk through them
             one at a time. Select <strong>Next</strong> to view your
             applications summary.

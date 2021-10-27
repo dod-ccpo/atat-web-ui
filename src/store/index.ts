@@ -134,7 +134,7 @@ const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
   return taskOrderModels.map((model: TaskOrderModel) => {
     //extract all properties except the id
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...baseModel } = model;
+    const { id, signed, ...baseModel } = model;
 
     const taskOrders: TaskOrder = {
       ...baseModel,
@@ -250,7 +250,6 @@ export default new Vuex.Store({
     applicationModels: [],
     portfolioOperators: [],
     wizardNavigation: {},
-    selectedCSP: "CSP 1",
     erroredSteps: [],
     currentStepNumber: 1,
     currentPortfolioId: "",
@@ -499,9 +498,6 @@ export default new Vuex.Store({
         es.splice(stepNumber, 1);
       }
     },
-    doSetSelectedCSP(state, selectedCSP) {
-      state.selectedCSP = selectedCSP;
-    },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
     },
@@ -541,6 +537,7 @@ export default new Vuex.Store({
             size: 0,
             status: "",
           },
+          signed: true, // that the task order is signed is implicitly true
         };
         return taskOrderModel;
       });
@@ -695,9 +692,7 @@ export default new Vuex.Store({
       const envs: EnvironmentModel[] = app.environments;
       envs.forEach((env) => {
         const ops: OperatorModel[] = env.operators || [];
-        const newOps = ops.filter((o) => {
-          o.email !== originalEmail;
-        });
+        const newOps = ops.filter((o) => o.email !== originalEmail);
         ops.splice(0, ops.length, ...newOps);
       });
     },
@@ -935,12 +930,15 @@ export default new Vuex.Store({
       };
 
       await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
-      commit("doSetSelectedCSP", model.csp);
     },
-    async saveStep2({ state }, model: any) {
-      if (model.id === "") {
+    async saveStep2({ state }, model: TaskOrderModel) {
+      const isNew = model.id === "";
+      let modelIndex = -1;
+
+      if (isNew) {
         model.id = generateUid();
         this.dispatch("addTaskOrder", model);
+        modelIndex = this.state.taskOrderModels.length - 1;
       } else {
         const taskOrderIndex = getEntityIndex<TaskOrderModel>(
           state.taskOrderModels,
@@ -964,6 +962,12 @@ export default new Vuex.Store({
         state.currentPortfolioId,
         taskOrders
       );
+
+      //set the model signed value to true after saving to server
+      if (isNew) {
+        model.signed = true;
+        this.dispatch("updateTaskOrder", [modelIndex, model]);
+      }
     },
     async saveStep3({ state }, model: any) {
       if (model.id === "") {
@@ -1214,6 +1218,16 @@ export default new Vuex.Store({
   ██████████████████████████████████████████████████████████
   */
   getters: {
+    getInvalidSteps(state) {
+      const invalidSteps: number[] = [];
+      state.portfolioSteps.forEach((step) => {
+        // EJY TODO - fix logic to be step.step < 5 after step 4 validation is working
+        if (step.step < 4 && (step.touched === false || step.valid === false)) {
+          invalidSteps.push(step.step);
+        }
+      });
+      return invalidSteps;
+    },
     getLoginStatus(state) {
       return state.loginStatus;
     },
@@ -1335,7 +1349,6 @@ export default new Vuex.Store({
       );
       return state.applicationModels[applicationIndex];
     },
-    getSelectedCSP: (state) => state.selectedCSP,
     getPortfolioOperators: (state) => state.portfolioOperators,
   },
 });

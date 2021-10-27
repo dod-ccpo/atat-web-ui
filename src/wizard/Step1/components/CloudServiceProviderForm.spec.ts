@@ -36,7 +36,7 @@ describe("Testing CloudServiceProviderForm Component", () => {
   });
   it("Has no value", async () => {
     const value = await wrapper.vm.isSelected();
-    expect(value).toBe("Please selected at least one Cloud Service Provider");
+    expect(value).toBe("Please select at least one cloud service provider");
   });
   it("test validate() ", async () => {
     const validated = await wrapper.vm.validateForm();

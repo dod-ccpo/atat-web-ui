@@ -3,13 +3,20 @@
     <v-flex class="d-flex align-center">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label my-1 mr-2"
+        class="form-field-label mr-2"
+        :class="[isErrored ? 'font-weight-bold' : '']"
         :for="id + '_text_field'"
       >
         {{ label }}
         <span v-show="optional">Optional</span>
       </label>
-      <v-tooltip max-width="250px" color="rgba(0,0,0,1)" top v-if="helpText">
+      <v-tooltip
+        transition="slide-y-reverse-transition"
+        max-width="250px"
+        color="rgba(0,0,0,1)"
+        top
+        v-if="helpText"
+      >
         <template v-slot:activator="{ on }">
           <v-btn
             class="ma-0 pa-0 link-button no-border"
@@ -17,7 +24,7 @@
             x-small
             v-on="on"
             :ripple="false"
-            ><v-icon class="ma-0 pa-0" small color="primary"
+            ><v-icon class="icon-20 ma-0 pa-0" small color="primary"
               >help_outline
             </v-icon>
           </v-btn>
@@ -27,7 +34,7 @@
     </v-flex>
     <v-flex>
       <div class="d-flex">
-        <div class="width-60">
+        <div class="width-100">
           <v-text-field
             :rules="rules"
             :id="id + '_text_field'"
@@ -43,28 +50,29 @@
             hide-details="auto"
             :validate-on-blur="true"
             :validate-on-load="validateOnLoad"
+            :class="[
+              isErrored ? 'invalid-icon' : '',
+              isSuccess ? 'valid-icon' : '',
+              isErrored || isSuccess ? 'show-validation-icon' : '',
+              showDeleteIcon ? 'additional-button' : '',
+            ]"
             @input="inputActions"
             @blur="validateField()"
             @change="$emit('change')"
           >
           </v-text-field>
         </div>
-        <div class="width-40 d-flex align-end mb-4">
+        <div class="d-flex align-end mb-3">
           <v-btn
             v-if="showDeleteIcon"
             plain
             :disabled="isDeleteDisabled"
             class="pointer icon-24 pa-1 ml-2"
+            :class="[isErrored ? 'mb-1' : 'mb-0']"
             @click="$emit('deleteItem', id)"
           >
             <v-icon>delete </v-icon>
           </v-btn>
-          <v-icon v-if="isErrored" color="error" class="icon-24 pa-1 pl-4"
-            >error</v-icon
-          >
-          <v-icon v-if="isSuccess" color="success" class="icon-24 pa-1 pl-4"
-            >check_circle</v-icon
-          >
         </div>
       </div>
     </v-flex>
@@ -74,6 +82,7 @@
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
 import { Component, Prop, PropSync } from "vue-property-decorator";
+
 import Vue from "vue";
 
 @Component({})
@@ -99,13 +108,14 @@ export default class ATATTextField extends VTextField {
   private rounded = false;
   private isFieldValid = false;
   private isFieldDirty = false;
+  private hasInitialValue = false;
 
   get isSuccess(): boolean {
     return this.isFieldDirty === true && this.isFieldValid === true;
   }
 
   get isErrored(): boolean {
-    return this.isFieldDirty === true && this.isFieldValid === false;
+    return (this.isFieldDirty || this.hasInitialValue) && !this.isFieldValid;
   }
 
   private inputActions(v: string) {
@@ -128,6 +138,7 @@ export default class ATATTextField extends VTextField {
 
   public mounted(): void {
     this.$nextTick(() => {
+      this.hasInitialValue = this._value.length > 0;
       if (this.validateOnLoad) {
         this.validateField();
       }

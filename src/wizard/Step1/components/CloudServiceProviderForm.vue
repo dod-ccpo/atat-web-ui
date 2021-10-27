@@ -1,15 +1,16 @@
 <template>
-  <div class="cloud-service-provider">
+  <div class="cloud-service-provider pl-3">
     <div class="d-flex flex-column">
       <div>
         <h3 class="h3 mb-2 font-weight-bold text--base-darkest">
           Cloud Service Provider
         </h3>
-        <p class="body-lg description">
-          Select the Cloud Service Provider where you want to deploy this
-          Portfolio. If you have a multi-cloud application with environments
-          deployed to different CSPs, you will need to create a Portfolio for
-          each CSP.
+        <p class="body-lg description mb-0">
+          Select the cloud service provider where you want to deploy this
+          portfolio.<strong
+            >Your selection must match the CSP listed in your awarded task
+            order(s).</strong
+          >
         </p>
       </div>
       <v-form ref="form" lazy-validation>
@@ -17,6 +18,7 @@
           :items="items"
           :rules="[isSelected]"
           :value.sync="_csp"
+          :isValidated="isValidated"
           id="csp"
         />
       </v-form>
@@ -36,7 +38,7 @@ export default class CloudServiceProviderForm
 {
   @PropSync("csp", { default: "", required: true })
   _csp!: string[];
-
+  private isValidated = true;
   public items = new Array<ButtonCardItem>(
     {
       label: "CSP A",
@@ -55,15 +57,15 @@ export default class CloudServiceProviderForm
   }
 
   private isSelected(value: string): unknown {
-    return !!value || "Please selected at least one Cloud Service Provider";
+    return !!value || "Please select at least one cloud service provider";
   }
 
   public async validateForm(): Promise<boolean> {
-    let validated = false;
+    this.isValidated = false;
     await this.$nextTick(() => {
-      validated = this.Form.validate();
+      this.isValidated = this.Form.validate();
     });
-    return validated;
+    return this.isValidated;
   }
 }
 </script>

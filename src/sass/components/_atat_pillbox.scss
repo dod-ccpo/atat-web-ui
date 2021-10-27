@@ -1,6 +1,7 @@
 div#inputWidthFaker {
   display: inline-block;
   font-size: 16px;
+  letter-spacing: 0;
   position: absolute;
   left: -10000px;
   top: -10000px;
@@ -39,7 +40,6 @@ div#inputWidthFaker {
 .pill.v-text-field {
   display: inline-block;
   height: 32px;
-  border: 1px solid $primary_lighter;
   border-radius: 15px;
   background-color: $primary_lighter;
   padding: 0 4px 0 12px;
@@ -89,6 +89,9 @@ div#inputWidthFaker {
       display: none;
     }
   }
+  .v-input__control {
+    background-color: transparent !important;
+  }
   .v-input__append-inner {
     margin-top: 3px;
     .v-icon {
@@ -101,7 +104,7 @@ div#inputWidthFaker {
           color: white;
           transform: translateZ(-1px);
           transition: none !important;
-        } 
+        }
       }
     }
   }

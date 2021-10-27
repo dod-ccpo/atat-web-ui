@@ -8,45 +8,36 @@
     overflow: hidden !important;
 }
 
-
+$focus-shadow-default: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
+$focus-shadow-tight: 0px 0px 0px 4px $focus-blue !important;
 // utils
 
-    //removes the lines that sometimes appear over and under a
-    //link during focus
-    a:-webkit-any-link:focus-visible {
-        outline-offset: 0px;
-    }
+//removes the lines that sometimes appear over and under a
+//link during focus
+a:-webkit-any-link:focus-visible {
+    outline-offset: 0px;
+}
 
-    :focus-visible {
-        outline: none !important;
-    }
-
-
-// components
-// .v-input{
-//     &.v-input--checkbox:focus{
-//         background-color: $base_lighter !important;
-//        .v-input--selection-controls__input{
-//        .v-icon{
-//             color: $primary !important;
-//        }
-//     }
-
-//     }
-// }
+:focus-visible {
+    outline: none !important;
+}
 
 @mixin default-focus {
     background-color: $primary !important;
     opacity: initial !important;
-    box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
+    box-shadow: $focus-shadow-default;
 }
 
-a:not(.left-nav-menu-link):not(.menu-item){
-    &:focus::before,
-    &:focus{
+a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
+    &:focus {
+        border: none;
+        box-shadow: none;
+    }
+    &:focus-visible::before,
+    &:focus-visible {
         border-radius: 6px !important;
-        border: $focus-blue 3px solid;
         font-weight: inherit !important;
+        box-shadow: $focus-shadow-tight;
     }
 }
 a.left-nav-menu-link{
@@ -61,6 +52,11 @@ a.left-nav-menu-link{
     &:focus::before,
     &:focus{
         @include default-focus;
+        box-shadow: none !important;
+    }
+    &:focus-visible,
+    &:focus-visible::before{
+        box-shadow: $focus-shadow-default;
     }
 
     &.primary_darken{
@@ -76,14 +72,27 @@ a.left-nav-menu-link{
     &.v-btn--plain,
     &.v-btn--icon,
     &.v-btn--text,
-    &.v-btn--outlined,
-    &.v-btn--text,
     &.left-nav-menu-link {
         &:focus,
-        &:focus::before{
+        &:focus::before {
+            background-color: transparent !important;
+            opacity: 1 !important;
+            box-shadow: none !important;
+        }
+        &:focus-visible,
+        &:focus-visible::before{
             background-color: transparent !important;
             opacity: 1 !important;
             box-shadow: 0px 0px 0px 4px transparent, 0px 0px 0px 4px $focus-blue !important;
+        }
+    }
+    &.v-btn--outlined {
+        &:focus, &:focus::before {
+            background-color: transparent !important;
+        }
+        &:focus-visible, &:focus-visible::before {
+            border: 1px solid $primary;
+            background-color: transparent !important;
         }
     }
 
@@ -126,20 +135,30 @@ a.left-nav-menu-link{
             font-weight: 700 !important;
         }
     }
-}   
+}
 
-.v-list-item--active,
-.v-stepper__label {
+.v-list-item--active {
     a {
         border-radius: 6px;
         padding: 0px 8px;
         &:focus,
-        &:focus::before,
+        &:focus::before
         {
             @include default-focus;
             border: none !important;
             background-color: transparent !important;
             outline: none !important;
+        }
+    }
+}
+.v-stepper__label {
+    a {
+        border-radius: 6px;
+        &:focus, &:active, &:hover {
+            box-shadow: none !important;
+        }
+        &:focus-visible {
+            box-shadow: $focus-shadow-tight;
         }
     }
 }
@@ -164,20 +183,17 @@ a.left-nav-menu-link{
 
 
 .atat-checkbox-list{
-    input:focus + label > i{
+    input:focus-visible + label > i{
         border-radius: 3px;
-        @include checkbox-default-focus-before;
-        box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 6px $focus-blue!important;
+        // @include checkbox-default-focus-before;
+        box-shadow: $focus-shadow-tight;
     }
-    // input:focus:not(:focus-visible) + label > i {
-    //     box-shadow: none !important;
-    //   }
  }
 
 ._v_radio-button-cards {
     .v-card {
         &.focus {
-            box-shadow: 0px 0px 0px 4px #fff, 0px 0px 0px 8px $focus-blue !important;
+            box-shadow: $focus-shadow-default;
         }
 
         &.active{

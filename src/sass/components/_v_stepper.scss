@@ -9,7 +9,7 @@
 }
 
 .v-stepper{
-  &.wizard-stepper{
+  &.wizard-stepper {
     .v-stepper__header{
       box-shadow: none !important;
 
@@ -23,7 +23,7 @@
 
       .v-stepper__step{
         align-items: start;
-        padding: 24px 0px;
+        padding: 24px 0px 36px;
         display: inline-block !important;
         width: 20% !important;
         flex-basis: 20% !important;

@@ -70,6 +70,7 @@ export interface TaskOrderModel {
   task_order_number: string;
   task_order_file: TaskOrderFile;
   clins: CLINModel[];
+  signed: boolean;
 }
 
 export interface NavButton {

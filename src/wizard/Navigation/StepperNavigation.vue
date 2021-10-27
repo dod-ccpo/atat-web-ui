@@ -21,12 +21,10 @@
             :error-icon="'  '"
             :edit-icon="'  '"
             :complete-icon="'  '"
-            :class="[
-              isTouched(index) ? 'visited' : '',
-              index === 0 ? 'ml-n1' : '',
-            ]"
+            :class="[isTouched(index) ? 'visited' : '']"
           >
             <a
+              tabindex="0"
               @click="clickedAction(index + 1, this)"
               class="step-description px-1"
             >
@@ -39,14 +37,7 @@
     </v-stepper>
     <div class="step-of-pages-control py-6 width-100">
       <span
-        class="
-          v-stepper__step__step
-          step
-          bg-primary-darken
-          white--text
-          ml-n1
-          mr-0
-        "
+        class="v-stepper__step__step step bg-primary-darken white--text mr-0"
       >
         {{ this.stepNumber }}
       </span>

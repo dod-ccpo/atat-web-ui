@@ -32,7 +32,7 @@
   }
 
   &.link-button{
-    background-color: transparent !important; 
+    background-color: transparent !important;
     span{
       color: $primary !important;
       text-decoration: underline;
@@ -55,7 +55,7 @@
         font-weight: 700 !important;
       }
     }
-  
+
   }
 
   &.btn-usa-gov-expand{
@@ -88,7 +88,7 @@
       }
     }
   }
-  
+
   &.primary_darken.theme--light{
     background-color: transparent !important;
     color: #fff !important;
@@ -132,7 +132,7 @@
     &:hover, &:focus, &:active {
       background-color: #fff !important;
     }
-  }    
+  }
 
   &.v-btn--disabled.v-btn--has-bg.theme--light{
     color: #fff !important;
