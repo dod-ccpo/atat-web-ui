@@ -34,3 +34,13 @@
     overflow-y: auto;
   }
 }
+
+.modal__title {
+  display: flex;
+  .modal__title__text {
+    order: 2;
+  }
+  .modal__slideout__button-close {
+    order: 1;
+  }
+}

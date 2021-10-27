@@ -1,6 +1,16 @@
 <template>
   <div id="learnMoreDrawer" class="modal__title--sticky">
-    <v-card-title class="modal__title--border-bottom">
+    <v-card-title class="modal__title modal__title--border-bottom">
+
+      <h2 class="modal__title__text" tabindex="-1" id="learnMoreHeading">
+        <span v-if="learnMoreType === 'member-roles'">
+          Understanding member roles
+        </span>
+        <span v-if="learnMoreType === 'root-admins'">
+          About root administrators
+        </span>
+      </h2>
+
       <v-btn
         id="closeModalButton"
         @click="closeLearnMoreDrawer()"
@@ -10,14 +20,6 @@
         <v-icon size="25">arrow_back</v-icon>
       </v-btn>
 
-      <h2 tabindex="-1" id="learnMoreHeading">
-        <span v-if="learnMoreType === 'member-roles'">
-          Understanding member roles
-        </span>
-        <span v-if="learnMoreType === 'root-admins'">
-          About root administrators
-        </span>
-      </h2>
     </v-card-title>
 
     <v-card-text

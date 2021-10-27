@@ -15,7 +15,7 @@
     </v-navigation-drawer>
 
     <v-card-title>
-      <h3 class="mb-2 h3">
+      <h3 id="modalHeading" class="mb-2 h3 firstFocus" tabindex="-1">
         <span v-if="!isEditSingle">
           Add
           <span v-if="isRootAdmin">root administrators</span>
@@ -79,7 +79,10 @@
             Team members added to this workspace will be granted the top-level
             <strong>root administrator</strong> role within your cloud console.
             These people will have full access to all of your applications.
-            <a role="button"
+            <a
+              role="button"
+              tabindex="0"
+              @keydown.enter="openLearnMoreDrawer('root-admins')"
               @click="openLearnMoreDrawer('root-admins')"
             >
               Learn more about root administrators
@@ -121,7 +124,7 @@
             id="PillboxWrapper"
             aria-labelledby="PillboxLabel"
             aria-describedby="PillboxInstructions"
-            class="pa-2 pillbox-wrapper mb-0 firstFocus"
+            class="pa-2 pillbox-wrapper mb-0"
             tabindex="0"
             :class="[pillboxFocused ? 'focused' : '']"
             @click="addEmail"
@@ -197,12 +200,14 @@
             <span v-if="isEditSingle">{{ currentApplicationName }}.</span>
             <span v-else>your application.</span>
             <br />
-            <v-btn
-              class="link-button pa-0 height-auto"
+            <a
+              role="button"
+              tabindex="0"
+              @keydown.enter="openLearnMoreDrawer('member-roles')"
               @click="openLearnMoreDrawer('member-roles')"
             >
               Learn more about roles
-            </v-btn>
+            </a>
           </p>
 
           <v-checkbox
@@ -1011,7 +1016,6 @@ export default class ManageMember extends Vue {
     this.validEmailList = [];
     this.assignDifferentRolesForEnvs = false;
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
-    debugger;
     this._close = false;
   }
 
