@@ -7,7 +7,7 @@
     max-width: 278px !important;
     min-height: 128px !important;
     cursor: pointer;
-    border-color: $base_light;
+    border-color: $base_lighter;
     background-color: $base_lightest ;
   }
 
@@ -18,7 +18,7 @@
 
   // creates a white background and black border for unselected state of radio button
   .v-radio .v-icon {
-    color: black;
+    color: $base-dark !important;
     border-color: black;
     border-radius: 50%;
     background-color: $base_lightest;

@@ -3,7 +3,7 @@
     <v-flex class="d-flex align-center">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label my-1 mr-2"
+        class="form-field-label mr-2"
         :class="[isErrored ? 'font-weight-bold' : '']"
         :for="id + '_text_field'"
       >
@@ -24,7 +24,7 @@
             x-small
             v-on="on"
             :ripple="false"
-            ><v-icon class="ma-0 pa-0 icon-20" small color="primary"
+            ><v-icon class="icon-20 ma-0 pa-0" small color="primary"
               >help_outline
             </v-icon>
           </v-btn>
