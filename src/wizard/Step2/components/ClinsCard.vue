@@ -475,7 +475,6 @@ export default class ClinsCard extends Vue {
     if (this._pop_end_date !== "") {
       validationRules.push((v: string) => {
         // this._pop_end_date = moment(v).format("YYYY-MM-DD");
-        console.log(v);
         return (
           this.isValidEndDate ||
           "Please enter an end date using the format 'YYYY-MM-DD'"

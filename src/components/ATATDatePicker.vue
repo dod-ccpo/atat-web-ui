@@ -273,7 +273,7 @@ export default class ATATDatePicker extends Vue {
       element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
     if (this.menu) {
       this.calendarClicked = true;
-     
+
       // debugger;
       // this.$nextTick(() => {
       //   this.setStyleForStartDateAndEndDateButtons();
@@ -308,7 +308,7 @@ export default class ATATDatePicker extends Vue {
     }
     Vue.nextTick(() => {
       this.calendarClicked = false;
-       this.setDatePickerHoverButtons();
+      this.setDatePickerHoverButtons();
       this.getErrorMessages(this.isStartTextBoxFocused);
     });
   }
@@ -367,7 +367,6 @@ export default class ATATDatePicker extends Vue {
   }
 
   public setDate(selectedDate: string): void {
-   
     if (this.isStartTextBoxFocused) {
       this.setStartDate(selectedDate);
     } else {
@@ -397,10 +396,10 @@ export default class ATATDatePicker extends Vue {
 
   get setDateRange(): string[] {
     // if (this.startDate !== "") {
-      this.dateRange[0] = this.startDate;
+    this.dateRange[0] = this.startDate;
     // }
     // if (this.endDate !== "") {
-      this.dateRange[1] = this.endDate;
+    this.dateRange[1] = this.endDate;
     // }
     return this.dateRange;
   }
