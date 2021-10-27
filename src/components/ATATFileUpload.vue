@@ -11,7 +11,7 @@
       </label>
     </v-flex>
     <v-flex class="my-2">
-      <div class="error--text mb-2" role="alert" v-show="hasErrors">
+      <div class="error--text mb-2 width-100" role="alert" v-show="hasErrors">
         <div class="v-messages__message">
           <span v-for="(msg, idx) in errorMessages" :key="idx" class="d-block">
             {{ msg }}
@@ -21,8 +21,8 @@
       <div v-show="!isFileUploaded || isProgressBarVisible">
         <div class="d-flex align-start">
           <v-sheet
+            class="width-100"
             :class="[showBorderState, 'atat-file-upload']"
-            width="416"
             ref="fileUploadVSheet"
           >
             <v-card
@@ -32,6 +32,7 @@
               @dragenter.prevent="dragover = true"
               @dragleave.prevent="dragover = false"
               elevation="0"
+              class="width-100"
             >
               <v-card-text>
                 <v-row dense>

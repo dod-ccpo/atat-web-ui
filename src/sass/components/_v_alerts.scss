@@ -51,6 +51,13 @@
     }
   }
 
+  &.border-thick {
+
+    .v-alert__border--left {
+      border-width: 4px;
+    }
+  }
+
 }
 
 

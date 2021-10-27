@@ -7,24 +7,34 @@
     >
       <v-row>
         <v-col cols="11" class="width-100 d-block">
-          <v-expansion-panels>
+          <v-expansion-panels v-model="openItem">
             <v-expansion-panel @click="calculateObligatedPercent">
-              <v-expansion-panel-header class="body-lg font-weight-bold">
+              <v-expansion-panel-header
+                class="body-lg font-weight-bold"
+                :hide-actions="true"
+              >
                 <template v-slot:default="{ open }">
                   <v-container>
                     <v-row>
                       <v-col
                         cols="1"
-                        class="h4 text--base-darkest"
+                        class="h4 text--base-darkest pr-5"
                         id="card_number"
                         >{{ card_number }}</v-col
                       >
                       <v-col
-                        cols="11"
-                        class="h4 text--base-darkest"
+                        cols="10"
+                        class="mr-auto h4 text--base-darkest"
                         id="clin_number"
                         >{{ `CLIN ${clin_number}` }}</v-col
                       >
+                      <v-col cols="1" class="pl-6">
+                        <v-icon
+                          class="text-right text--base-darkest"
+                          :class="{ 'icon-rotate': open }"
+                          >expand_more</v-icon
+                        >
+                      </v-col>
                     </v-row>
                     <v-row v-if="!open && _idiq_clin !== ''">
                       <v-col cols="1"></v-col>
@@ -125,11 +135,12 @@
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              <v-expansion-panel-content class="pl-14">
                 <v-row>
                   <v-col cols="11">
                     <atat-text-field
                       class="mb-3"
+                      name="clin-number"
                       id="clin-number"
                       label="CLIN Number"
                       :rules="clinNumberRules"
@@ -275,7 +286,7 @@
         <v-col>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon>
+              <v-btn icon class="pt-6">
                 <v-icon v-bind="attrs" v-on="on">delete</v-icon>
               </v-btn>
             </template>
@@ -317,6 +328,7 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
+import ATATTextField from "@/components/ATATTextField.vue";
 @Component({
   components: {},
 })
@@ -353,6 +365,8 @@ export default class ClinsCard extends Vue {
       this.dateRange[1] = this._pop_end_date;
     }
   }
+
+  private openItem = -1;
 
   private clinHelpText =
     "This is the full amount of money requested\n" +
@@ -550,12 +564,35 @@ export default class ClinsCard extends Vue {
     this.Form.validate();
   }
 
+  @Watch("openItem")
+  onOpenItemChanged(): void {
+    if (this.openItem == 0) {
+      setTimeout(() => {
+        this.$nextTick(() => {
+          // when the clins card is opened the first input (clins number)
+          // recieves the focus
+          const form = this.Form.$el as HTMLFormElement;
+          const clinNumberInput = form.elements.namedItem(
+            "clin-number_text_field"
+          ) as HTMLInputElement;
+          if (clinNumberInput) {
+            clinNumberInput.focus();
+          }
+        });
+      }, 500);
+    }
+  }
+
   public async validateForm(): Promise<boolean> {
     let validated = false;
     await this.$nextTick(() => {
       validated = this.Form.validate();
     });
     return validated;
+  }
+
+  public open(): void {
+    this.openItem = 0;
   }
 
   private updated(): void {

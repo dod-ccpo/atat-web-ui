@@ -38,6 +38,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   };
 
   public addClin(): void {
+
     this.model.clins.push({
       clin_number: "000" + (this.model.clins.length + 1),
       idiq_clin: "",
@@ -46,6 +47,8 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
       pop_start_date: "",
       pop_end_date: "",
     });
+
+    this.$refs.createTaskOrderForm.ExpandAddedClin();
   }
 
   public deleteClin(itemNumber: number): void {
