@@ -2,65 +2,109 @@
   <v-row>
     <v-col>
       <div
-        class="d-flex justify-start width-100"
+        class="clin-datepicker-control"
         :id="getId('clin-datepicker-text-boxes')"
       >
-        <!-- todo give id a more meaningful name -->
-
-        <v-text-field
-          ref="startDate"
-          outlined
-          dense
-          :id="getId('start-date-text-box')"
-          :success="isFieldValid"
-          :error="isFieldValid"
-          hide-details
-          placeholder="YYYY-MM-DD"
-          v-model="startDate"
-          :value="startDate"
-          :rules="_startDateRules"
-          @focus="setFocus"
-          @blur="blurTextField"
-          @update:error="getErrorMessages(true)"
-          :class="[
-            isStartTextBoxFocused ? 'focused' : '',
-            'datepicker-text-box start-date',
-          ]"
-        ></v-text-field>
-        <v-btn icon :ripple="false" :id="getId('start-date-text-box-button')">
-          <v-icon class="black--text date-picker-icon">calendar_today</v-icon>
-        </v-btn>
-        <v-text-field
-          ref="endDate"
-          outlined
-          dense
-          :id="getId('end-date-text-box')"
-          :success="isFieldValid"
-          :error="isFieldValid"
-          hide-details
-          placeholder="YYYY-MM-DD"
-          v-model="endDate"
-          :value="endDate"
-          @focus="setFocus"
-          :rules="_endDateRules"
-          @blur="blurTextField"
-          @update:error="getErrorMessages(false)"
-          :class="[
-            isEndTextBoxFocused ? 'focused' : '',
-            'datepicker-text-box end-date',
-          ]"
-        ></v-text-field>
-        <v-btn icon :ripple="false" :id="getId('end-date-text-box-button')">
-          <v-icon class="black--text date-picker-icon">calendar_today</v-icon>
-        </v-btn>
+        <div class="width-100 d-flex justify-start">
+          <label
+            id="start_date_text_field_label"
+            :class="[
+              _errorMessages.length > 0 ? 'font-weight-bold' : '',
+              'form-field-label',
+            ]"
+            :for="getId('start-date-text-box')"
+          >
+            Start Date
+          </label>
+          <label
+            id="end_date_text_field_label"
+            :class="[
+              _errorMessages.length > 0 ? 'font-weight-bold' : '',
+              'form-field-label',
+            ]"
+            :for="getId('end-date-text-box')"
+          >
+            End Date
+          </label>
+        </div>
+        <div v-show="_errorMessages.length > 0" class="mt-0 width-100">
+          <div v-for="(error, idx) in _errorMessages" :key="idx">
+            <div class="error--text">
+              <div class="v-messages__message">
+                {{ error.message }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="width-100 d-flex justify-start mt-2"
+          :id="getId('datepicker-text-boxes')"
+        >
+          <div class="textbox-button d-flex justify-start">
+            <v-text-field
+              ref="startDate"
+              outlined
+              dense
+              :id="getId('start-date-text-box')"
+              :success="isFieldValid"
+              :error="isFieldValid"
+              hide-details
+              placeholder="MM/DD/YYYY"
+              v-model="startDate"
+              :value="startDate"
+              :rules="_startDateRules"
+              @focus="setFocus"
+              @blur="blurTextField"
+              :class="[
+                isStartTextBoxFocused ? 'focused' : '',
+                'datepicker-text-box start-date',
+              ]"
+            ></v-text-field>
+            <v-btn
+              icon
+              :ripple="false"
+              :id="getId('start-date-text-box-button')"
+            >
+              <v-icon class="black--text date-picker-icon"
+                >calendar_today</v-icon
+              >
+            </v-btn>
+          </div>
+          <div class="textbox-button d-flex justify-start">
+            <v-text-field
+              ref="endDate"
+              outlined
+              dense
+              :id="getId('end-date-text-box')"
+              :success="isFieldValid"
+              :error="isFieldValid"
+              hide-details
+              placeholder="MM/DD/YYYY"
+              v-model="endDate"
+              :value="endDate"
+              @focus="setFocus"
+              :rules="_endDateRules"
+              @blur="blurTextField"
+              :class="[
+                isEndTextBoxFocused ? 'focused' : '',
+                'datepicker-text-box end-date',
+              ]"
+            ></v-text-field>
+            <v-btn icon :ripple="false" :id="getId('end-date-text-box-button')">
+              <v-icon class="black--text date-picker-icon"
+                >calendar_today</v-icon
+              >
+            </v-btn>
+          </div>
+        </div>
       </div>
       <v-menu
         v-model="menu"
         id="CLIN-datepicker-menu"
-        :attach="'#clin-datepicker-text-boxes-' + this.id"
+        :attach="'#datepicker-text-boxes-' + this.id"
         origin="top left"
-        :nudge-left="-10"
-        :nudge-top="410"
+        :nudge-left="2"
+        :nudge-top="menuTop"
         absolute
         :close-on-content-click="false"
         :close-on-click="!menu"
@@ -86,7 +130,7 @@
               @click:date="setDate"
               :picker-date.sync="firstMonth"
               transition="false"
-              class="width-50"
+              class="mr-5 first-month"
             />
 
             <v-date-picker
@@ -103,7 +147,7 @@
               scrollable
               :picker-date.sync="secondMonth"
               transition="false"
-              class="width-50"
+              class="ml-5 second-month"
             />
           </div>
         </div>
@@ -124,6 +168,7 @@ export default class ATATDatePicker extends Vue {
     startDate: Vue & { errorBucket: string[] };
     endDate: Vue & { errorBucket: string[] };
   };
+  //todo accommodate for 6 rows
 
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -132,7 +177,6 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
-  @PropSync("date") private _date!: string;
   @PropSync("daterange", { default: ["", ""] }) private dateRange!: string[];
   @PropSync("title") private _title!: string;
   @Prop() private nudgeleft!: string;
@@ -145,19 +189,21 @@ export default class ATATDatePicker extends Vue {
     | CustomErrorMessage
     | undefined
   )[];
-  @Prop({ default: "2020-10-01" }) private min!: string;
-  @Prop({ default: "2021-10-01" }) private max!: string;
+  @Prop({ default: "10/01/2020" }) private min!: string;
+  @Prop({ default: "09/30/2021" }) private max!: string;
 
   private menu = false;
-  private firstMonth = moment(new Date()).format("YYYY-MM-DD");
+  private firstMonth = moment(new Date()).format("MM/DD/YYYY");
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
-    .format("YYYY-MM-DD");
+    .format("MM/DD/YYYY");
   private isFieldValid = false;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
   private startDatePickerButton: any;
   private endDatePickerButton: any;
+  private menuTop = 375;
+  private calendarClicked = false;
 
   private setFocus(event: Event): void {
     const focusedElement = event.target as HTMLElement;
@@ -173,10 +219,41 @@ export default class ATATDatePicker extends Vue {
     return prependString + "-" + this.id;
   }
 
+  @Watch("calendarClicked")
+  protected getMenuTop(newVal: boolean): void {
+    if (newVal) {
+      if (this.menu || this.calendarClicked) {
+        setTimeout(() => {
+          this.adjustMenu(Array.from(document.getElementsByTagName("tbody")));
+        }, 500);
+        this.calendarClicked = false;
+      }
+    }
+  }
+
+  private adjustMenu(tableBodies: HTMLTableSectionElement[]) {
+    let hasSixRows = false;
+    tableBodies.forEach((tb) => {
+      let tableRows = tb.children;
+      if (tableRows.length === 6) {
+        if (tableRows[5].children[0].innerHTML !== "") {
+          hasSixRows = true;
+        } else {
+          let lastTableRow = tableRows[5] as HTMLTableRowElement;
+          lastTableRow.style.display = "none";
+        }
+      }
+    });
+    this.menuTop = hasSixRows ? 415 : 375;
+  }
+
   private toggleMenu(event: Event): void {
     //todo make more descriptive to accommodate multiple clins datepickers
-    //todo OCT not showing all rows....
+    //[x] OCT not showing all rows....
     //todo set better name for this function...
+    //todo add masked library
+    //[x] hide extra calendar navigation button that just reappeared
+    //todo change format to  MM/DD/YYYY
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
@@ -184,6 +261,7 @@ export default class ATATDatePicker extends Vue {
     this.menu =
       element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
     if (this.menu) {
+      this.calendarClicked = true;
       // debugger;
       // this.$nextTick(() => {
       //   this.setStyleForStartDateAndEndDateButtons();
@@ -200,13 +278,19 @@ export default class ATATDatePicker extends Vue {
       if (this.isStartTextBoxFocused) {
         this.startDatePickerButton = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(this.startDatePickerButton, true);
+        this.isStartTextBoxFocused = false;
+        this.isEndTextBoxFocused = true;
       } else if (this.isEndTextBoxFocused) {
         this.endDatePickerButton = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(this.endDatePickerButton, false);
+        this.isStartTextBoxFocused = this.startDate === "";
+        this.isEndTextBoxFocused = false;
       }
+      this.getErrorMessages(this.isStartTextBoxFocused);
     }
     Vue.nextTick(() => {
       this.setDatePickerHoverButtons;
+      this.calendarClicked = false;
     });
   }
 
@@ -226,6 +310,11 @@ export default class ATATDatePicker extends Vue {
       Array.from(datepickerTables).forEach((table) => {
         table.classList.add(classToAdd);
       });
+
+      // Vue.nextTick(() => {
+      //   this.isStartTextBoxFocused = !this.isStartTextBoxFocused;
+      //   this.isEndTextBoxFocused = !this.isEndTextBoxFocused;
+      // });
     }
     return undefined;
   }
@@ -253,14 +342,13 @@ export default class ATATDatePicker extends Vue {
     button.classList.add(classToAdd);
   }
 
-  get getDate(): string {
-    return this._date;
-  }
-
   private isDatePickerAdvancing = false;
 
-  public getSelectedDate(selectedDate: string): void {
-    this._date = selectedDate;
+  private blurTextField(): void {
+    const dateToBeSet = this.isStartTextBoxFocused
+      ? this.startDate
+      : this.endDate;
+    this.setDate(dateToBeSet);
   }
 
   public setDate(selectedDate: string): void {
@@ -269,6 +357,8 @@ export default class ATATDatePicker extends Vue {
     } else {
       this.setEndDate(selectedDate);
     }
+    // this.isStartTextBoxFocused = !this.isStartTextBoxFocused;
+    // this.isEndTextBoxFocused = !this.isEndTextBoxFocused;
   }
 
   public setStartDate(selectedDate: string): void {
@@ -320,6 +410,7 @@ export default class ATATDatePicker extends Vue {
 
   // applies daterange when menu is opened
   get getDateRange(): string[] {
+    debugger;
     if (moment(this.startDate).isBefore(moment(this.endDate))) {
       this.dateRange[0] = this.startDate;
       this.dateRange[1] = this.endDate;
@@ -347,7 +438,6 @@ export default class ATATDatePicker extends Vue {
 
       if (activeDateRangeButtons.length > 0) {
         // collect all necessary end date artifacts
-        debugger;
         let startDateButton = activeDateRangeButtons[0] as HTMLButtonElement;
         const selectedStartDateDiv = startDateButton
           .children[0] as HTMLDivElement;
@@ -360,7 +450,6 @@ export default class ATATDatePicker extends Vue {
         // const selectedEndDate = selectedEndDateDiv.innerText;
 
         if (this.isDateDisplayedCurrently(selectedStartDate, true)) {
-          console.log(startDateButton);
           startDateButton.classList.remove("date-picker-start-date");
           startDateButton.classList.add("date-picker-start-date");
         } //else if (this.isDateDisplayedCurrently(selectedEndDate, false)) {
@@ -446,22 +535,18 @@ export default class ATATDatePicker extends Vue {
     return customErrorMessages;
   }
 
-  private blurTextField(): void {
-    this.getSelectedDate(this._date);
-    this.getErrorMessages;
-    this.menu = true;
-  }
-
   @Watch("firstMonth")
   protected getFirstMonth(newVal: string, oldVal: string): void {
-    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
+    console.log(newVal)
+    newVal = newVal.length === 7 ? newVal + "/01" : newVal;
+    oldVal = oldVal.length === 7 ? oldVal + "/01" : oldVal;
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (!this.isDatePickerAdvancing) {
-        this.firstMonth = moment(newVal).format("YYYY-MM-DD");
+        this.firstMonth = moment(newVal).format("MM/DD/YYYY");
         if (newVal !== oldVal) {
-          this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
+          this.secondMonth = moment(oldVal).format("MM/DD/YYYY");
+          this.calendarClicked = true;
         }
       }
     }
@@ -469,29 +554,18 @@ export default class ATATDatePicker extends Vue {
 
   @Watch("secondMonth")
   protected getSecondMonth(newVal: string, oldVal: string): void {
-    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
+    console.log(newVal)
+    newVal = newVal.length === 7 ? newVal + "/01" : newVal;
+    oldVal = oldVal.length === 7 ? oldVal + "/01" : oldVal;
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (this.isDatePickerAdvancing) {
-        this.secondMonth = moment(newVal).format("YYYY-MM-DD");
+        this.secondMonth = moment(newVal).format("MM/DD/YYYY");
         if (oldVal !== this.secondMonth) {
-          this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
+          this.firstMonth = moment(oldVal).format("MM/DD/YYYY");
+          this.calendarClicked = true;
         }
       }
-    }
-  }
-
-  private getStatusIcon() {
-    // if the rules property isn't set we won't display an icon
-    // when the rules property is populated (i.e when the parent form is saved)
-    // we evalute the rules to determine what icon to display
-    if (this.$props["rules"].length > 0) {
-      let date = this._date;
-
-      this.isFieldValid = this.$props["rules"].every(
-        (rule: (a: string) => string | boolean) => rule(date) === true
-      );
     }
   }
 

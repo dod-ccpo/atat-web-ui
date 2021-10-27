@@ -2,7 +2,7 @@
 @import "../utils/typography.scss";
 @import "../utils/utils.scss";
 
-#clin-datepicker-text-boxes{
+.clin-datepicker-control{
   
   .menuable__content__active{
     width: 100%;
@@ -15,27 +15,31 @@
     border-style: none;
   }
 
-  .datepicker-text-box{
-    flex: inherit;
-    .v-input__slot{
-      width: 172px !important;
-      height: 42px !important;
-    } 
-  }
-  button.v-btn--icon.v-size--default{
-    
-    height: auto;
-    width: auto;
-    border-radius: 0px;
-    margin-left: 6px;
-    margin-right:38px; 
-    
-    .v-icon.date-picker-icon{
-      font-size: 26px !important;
-      width: 26px !important;
-      height: 29px !important;
+  .textbox-button,
+  label{
+      width: 244px;
+      .datepicker-text-box{
+        flex: inherit;
+        .v-input__slot{
+          width: 172px !important;
+          height: 42px !important;
+        } 
+      }
+      button.v-btn--icon.v-size--default{
+        height: auto;
+        width: auto;
+        border-radius: 0px;
+        margin-left: 6px;
+        .v-icon.date-picker-icon{
+          font-size: 26px !important;
+          width: 26px !important;
+          height: 29px !important;
+        }
+      }
     }
-  }
+
+  
+ 
 }
 
 .datepicker-table-cells{
@@ -50,7 +54,7 @@
 .two-date-pickers{
   background-color: $base_lightest;
   
-  #firstMonthDatePicker{
+  .first-month{
     margin-right: 40px; 
     .v-date-picker-header{
       padding: 0px;
@@ -66,7 +70,7 @@
       }
     }
   }
-  #secondMonthDatePicker{
+  .second-month{
     .v-date-picker-header{
       padding: 0px;
       button{

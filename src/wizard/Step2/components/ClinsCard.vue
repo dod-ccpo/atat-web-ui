@@ -193,40 +193,8 @@
                 </v-row>
                 <v-row>
                   <v-col cols="11">
-                    <div class="h4 font-weight-bold mt-6">
+                    <div class="h4 font-weight-bold mt-6 my-4">
                       Period of Performance (PoP)
-                    </div>
-
-                    <div class="width-100 d-flex align-center">
-                      <label
-                        :id="'start_date_text_field_label'"
-                        class="form-field-label my-1 font-weight-bold"
-                        :for="'start_date_text_field'"
-                      >
-                        Start Date
-                      </label>
-                      <label
-                        :id="'end_date_text_field_label'"
-                        class="form-field-label my-1 font-weight-bold"
-                        :for="'end_date_text_field'"
-                      >
-                        End Date
-                      </label>
-                    </div>
-                    <div
-                      v-show="datePickerErrorMessages.length > 0"
-                      class="mt-0"
-                    >
-                      <div
-                        v-for="(error, idx) in datePickerErrorMessages"
-                        :key="idx"
-                      >
-                        <div class="error--text">
-                          <div class="v-messages__message">
-                            {{ error.message }}
-                          </div>
-                        </div>
-                      </div>
                     </div>
                     <div
                       class="d-flex align-center mt-0"
@@ -313,12 +281,12 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   get isValidStartDate(): boolean {
-    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+    return /^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$/.test(
       this._pop_start_date
     );
   }
   get isValidEndDate(): boolean {
-    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+    return /^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$/.test(
       this._pop_end_date
     );
   }
@@ -378,8 +346,8 @@ export default class ClinsCard extends Vue {
 
   private dialog = false;
   private progress: HTMLProgressElement | undefined;
-  private minDate = "2021-01-01";
-  private maxDate = "2021-12-31";
+  private minDate = "01/01/2021";
+  private maxDate = "12/31/2022";
 
   // public progressEvent(): void {
   //   const progress = this.$refs["progress-bar"] as HTMLProgressElement;
@@ -407,7 +375,7 @@ export default class ClinsCard extends Vue {
     return moment(new Date(`${value} 00:00:00`)).format("MMMM DD, YYYY");
   }
 
-  public JWCCContractEndDate = "2022-09-14";
+  public JWCCContractEndDate = "09/14/2022";
 
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
@@ -472,7 +440,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(
         () =>
           this.isValidStartDate ||
-          "Please enter a start date using the format 'YYYY-MM-DD'"
+          "Please enter a start date using the format 'MM/DD/YYYY'"
       );
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(
@@ -485,7 +453,7 @@ export default class ClinsCard extends Vue {
         validationRules.push(
           () =>
             moment(this._pop_start_date).isBefore(this.JWCCContractEndDate) ||
-            "The start date must be before or on " + this.JWCCContractEndDate
+            "Start Date must be before or on " + this.JWCCContractEndDate
         );
       }
     } else {
@@ -504,7 +472,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(
         () =>
           this.isValidEndDate ||
-          "Please enter an end date using the format 'YYYY-MM-DD'"
+          "Please enter an end date using the format 'MM/DD/YYYY'"
       );
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(
