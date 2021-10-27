@@ -31,7 +31,7 @@
     "@aws-cdk/aws-secretsmanager": "1.129.0",
     "@aws-cdk/aws-ssm": "1.129.0",
     "@aws-cdk/core": "1.129.0",
-    "@aws-sdk/client-s3": "^3.37.0",
+    "@aws-sdk/client-s3": "^3.38.0",
     "@aws-sdk/client-ssm": "^3.38.0",
     "aws-cdk": "1.129.0"
   }
