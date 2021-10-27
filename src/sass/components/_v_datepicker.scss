@@ -3,7 +3,7 @@
 @import "../utils/utils.scss";
 
 .clin-datepicker-control{
-  
+
   .menuable__content__active{
     width: 705px;
     min-width: 705px;
@@ -22,7 +22,7 @@
         .v-input__slot{
           width: 172px !important;
           height: 42px !important;
-        } 
+        }
       }
       button.v-btn--icon.v-size--default{
         height: auto;
@@ -36,9 +36,6 @@
         }
       }
     }
-
-  
- 
 }
 
 .datepicker-table-cells{
@@ -52,11 +49,11 @@
 
 .two-date-pickers{
   background-color: $base_lightest;
-  
+
   .first-month{
     width: 100%;
     .v-picker__body{
-      padding-right: 20px; 
+      padding-right: 20px;
       .v-date-picker-header{
         padding: 0px;
         button{
@@ -79,14 +76,16 @@
         padding: 0px;
         button{
           height: 24px;
-        
+
         &.v-btn:nth-child(1){
             display: none;
           }
         }
         .v-date-picker-header__value{
           margin-left: 41px;
-          button{ padding: 0px;}
+          button{
+            padding: 0px;
+          }
         }
       }
     }
@@ -108,7 +107,6 @@
             font-size: 1.6rem !important;
             font-weight: 700 !important;
             button{
-              
               pointer-events: none;
               color: $base_darkest;
               &:hover{
@@ -165,7 +163,7 @@
         }
 
         padding: 0px !important;
-        
+
         table{
           border: none !important;
           border-spacing: 0px !important;
@@ -177,7 +175,7 @@
               }
             }
           }
-         
+
           tbody{
             tr{
               td{
@@ -195,15 +193,6 @@
                     background-color: $primary_lighter !important;
                     border-radius: 0px !important;
                     padding: 4px 2px !important;
-                    // &:focus,
-                    // &:focus::before{
-                    //   background-color: $base_lighter !important;
-                    //   opacity: initial !important;
-                    //   box-shadow: none !important;
-                    //   border-color: $primary_vivid !important;
-                    //   border-width: 2px !important;
-                    //   border-style: solid !important;
-                    // }
                     &.date-picker-start-date{
                       &:before{
                         box-shadow: none !important;
@@ -239,7 +228,7 @@
                     border-radius: 28px !important;
                   }
                 }
-                
+
                 button.v-btn.v-btn--flat.v-btn--disabled{
                   color: $base_light !important;
                 }

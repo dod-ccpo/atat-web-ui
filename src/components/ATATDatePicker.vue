@@ -49,7 +49,7 @@
               :success="isFieldValid"
               :error="isFieldValid"
               hide-details
-              placeholder="MM/DD/YYYY"
+              placeholder="YYYY-MM-DD"
               v-model="startDate"
               :value="startDate"
               :rules="_startDateRules"
@@ -70,7 +70,7 @@
               >
             </v-btn>
           </div>
-          <!-- moment(endDate).format('MM/DD/YYYY') -->
+
           <div class="textbox-button d-flex justify-start">
             <v-text-field
               ref="endDate"
@@ -80,7 +80,7 @@
               :success="isFieldValid"
               :error="isFieldValid"
               hide-details
-              placeholder="MM/DD/YYYY"
+              placeholder="YYYY-MM-DD"
               v-model="endDate"
               :value="endDate"
               @focus="setFocus"
@@ -273,11 +273,6 @@ export default class ATATDatePicker extends Vue {
       element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
     if (this.menu) {
       this.calendarClicked = true;
-
-      // debugger;
-      // this.$nextTick(() => {
-      //   this.setStyleForStartDateAndEndDateButtons();
-      // });
     } else {
       this.isStartTextBoxFocused = false;
       this.isEndTextBoxFocused = false;
@@ -395,19 +390,13 @@ export default class ATATDatePicker extends Vue {
   }
 
   get setDateRange(): string[] {
-    // if (this.startDate !== "") {
     this.dateRange[0] = this.startDate;
-    // }
-    // if (this.endDate !== "") {
     this.dateRange[1] = this.endDate;
-    // }
     return this.dateRange;
   }
 
   private clearDates(isStart: boolean): void {
     this.dateRange = ["", ""];
-    // this.startDate = isStart ? this.startDate : "";
-    // this.endDate = isStart ? "" : this.endDate;
   }
 
   private isDateRangeValid(tempDate: string, isStartDate: boolean): boolean {
@@ -436,11 +425,6 @@ export default class ATATDatePicker extends Vue {
 
   public setStyleForStartDateAndEndDateButtons(): void {
     if (this.startDate !== "" || this.endDate !== "") {
-      // const activeDateRangeButtons = Array.from(
-      //   document.getElementsByClassName("v-date-picker-table")
-      // ).map((dp) => {
-      //   return dp.getElementsByClassName("v-btn--active");
-      // });
 
       const datepicker = document.getElementById(
         this.getId("firstMonthDatePicker")
@@ -456,21 +440,11 @@ export default class ATATDatePicker extends Vue {
         const selectedStartDate = selectedStartDateDiv.innerText;
 
         // collect all necessary end date artifacts
-        // let endDateButton =
-        //   activeDateRangeButtons[activeDateRangeButtons.length - 1];
-        // const selectedEndDateDiv = endDateButton.children[0] as HTMLDivElement;
-        // const selectedEndDate = selectedEndDateDiv.innerText;
 
         if (this.isDateDisplayedCurrently(selectedStartDate, true)) {
           startDateButton.classList.remove("date-picker-start-date");
           startDateButton.classList.add("date-picker-start-date");
-        } //else if (this.isDateDisplayedCurrently(selectedEndDate, false)) {
-        //   console.log(endDateButton);
-        //   this.$nextTick(() => {
-        //     endDateButton.classList.remove("date-picker-end-date");
-        //     endDateButton.classList.add("date-picker-end-date");
-        //   });
-        // }
+        }
       }
     }
   }
@@ -487,8 +461,6 @@ export default class ATATDatePicker extends Vue {
     // determines if day of selected date is currently displayed
     const isSelectedDateDayDisplayed =
       parseInt(selectedDate) === moment(dateToCompare).get("date");
-    //console.log("isStart:" + isStart);
-    // console.log(isSelectedDateDayDisplayed);
     if (!isSelectedDateDayDisplayed) {
       return false;
     }
@@ -498,7 +470,6 @@ export default class ATATDatePicker extends Vue {
     const rightDatePickerMonth = moment(this.secondMonth).get("month");
     //determines if month of selected date is
     //currently displayed in first datepicker
-    //console.log(dateToCompareMonth + ":" + leftDatePickerMonth);
     if (dateToCompareMonth === leftDatePickerMonth) {
       return true;
     }

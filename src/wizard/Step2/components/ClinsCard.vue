@@ -439,7 +439,6 @@ export default class ClinsCard extends Vue {
     const validationRules = [];
     if (this._pop_start_date !== "") {
       validationRules.push((v: string) => {
-        // this._pop_start_date = moment(v).format("YYYY-MM-DD");
         return (
           this.isValidStartDate ||
           "Please enter a start date using the format 'YYYY-MM-DD'"
@@ -474,7 +473,6 @@ export default class ClinsCard extends Vue {
     const validationRules = [];
     if (this._pop_end_date !== "") {
       validationRules.push((v: string) => {
-        // this._pop_end_date = moment(v).format("YYYY-MM-DD");
         return (
           this.isValidEndDate ||
           "Please enter an end date using the format 'YYYY-MM-DD'"
