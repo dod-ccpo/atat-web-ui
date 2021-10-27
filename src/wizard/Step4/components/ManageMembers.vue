@@ -1,5 +1,5 @@
 <template>
-  <v-card class="extra-padding overflow-x-hidden">
+  <v-card id="manageMembersModal" class="extra-padding overflow-x-hidden">
     <v-navigation-drawer
       v-model="learnMoreDrawerIsOpen"
       absolute
@@ -78,13 +78,12 @@
           <p v-if="isRootAdmin">
             Team members added to this workspace will be granted the top-level
             <strong>root administrator</strong> role within your cloud console.
-            These people will have full access to all of your applications.<br />
-            <v-btn
-              class="link-button pa-0 height-auto"
+            These people will have full access to all of your applications.
+            <a role="button"
               @click="openLearnMoreDrawer('root-admins')"
             >
               Learn more about root administrators
-            </v-btn>
+            </a>
           </p>
           <p v-else>
             Team members can have different levels of access to your application
@@ -1012,6 +1011,7 @@ export default class ManageMember extends Vue {
     this.validEmailList = [];
     this.assignDifferentRolesForEnvs = false;
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
+    debugger;
     this._close = false;
   }
 
