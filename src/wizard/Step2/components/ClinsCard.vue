@@ -438,17 +438,20 @@ export default class ClinsCard extends Vue {
   get popStartRules(): any[] {
     const validationRules = [];
     if (this._pop_start_date !== "") {
-      validationRules.push(
-        () =>
+      validationRules.push((v: string) => {
+        this._pop_start_date = moment(v).format("YYYY-MM-DD");
+        return (
           this.isValidStartDate ||
           "Please enter a start date using the format 'MM/DD/YYYY'"
-      );
-      if (this.isValidStartDate && this.isValidEndDate) {
-        validationRules.push(
-          (v: string) =>
-            moment(v).isBefore(this._pop_end_date) ||
-            "The period of performance start date must be before the end date"
         );
+      });
+      if (this.isValidStartDate && this.isValidEndDate) {
+        validationRules.push((v: string) => {
+          return (
+            moment(v).isBefore(moment(this._pop_end_date)) ||
+            "The period of performance start date must be before the end date"
+          );
+        });
       }
       if (this.isValidStartDate) {
         validationRules.push(

@@ -5,11 +5,10 @@
 .clin-datepicker-control{
   
   .menuable__content__active{
-    width: 100%;
-    min-width: 100%;
-    max-width: 100%;
+    width: 705px;
+    min-width: 705px;
+    max-width: 705px;
     min-height: 100%;
-    overflow: hidden;
     border-radius: 8px !important;
     box-shadow: 0px 4px 10px rgba(223, 225, 226, 0.5);
     border-style: none;
@@ -55,34 +54,40 @@
   background-color: $base_lightest;
   
   .first-month{
-    margin-right: 40px; 
-    .v-date-picker-header{
-      padding: 0px;
-      button{
-        height: 24px;
-        &:nth-child(3){
-            display: none;
+    width: 100%;
+    .v-picker__body{
+      padding-right: 20px; 
+      .v-date-picker-header{
+        padding: 0px;
+        button{
+          height: 24px;
+          &:nth-child(3){
+              display: none;
+          }
         }
-      }
-      .v-date-picker-header__value{
-        margin-right: 41px;
-        button{ padding: 0px;}
+        .v-date-picker-header__value{
+          margin-right: 41px;
+          button{ padding: 0px;}
+        }
       }
     }
   }
   .second-month{
-    .v-date-picker-header{
-      padding: 0px;
-      button{
-        height: 24px;
-      
-       &.v-btn:nth-child(1){
-          display: none;
+    .v-picker__body{
+      padding-left: 20px;
+      .v-date-picker-header{
+        padding: 0px;
+        button{
+          height: 24px;
+        
+        &.v-btn:nth-child(1){
+            display: none;
+          }
         }
-      }
-      .v-date-picker-header__value{
-        margin-left: 41px;
-        button{ padding: 0px;}
+        .v-date-picker-header__value{
+          margin-left: 41px;
+          button{ padding: 0px;}
+        }
       }
     }
   }
@@ -94,7 +99,6 @@
   .v-picker{
     margin-top: 14px;
     width: 100%;
-    
     flex-direction: inherit;
     .v-picker__body{
       .v-date-picker-header{

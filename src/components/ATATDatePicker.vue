@@ -50,8 +50,8 @@
               :error="isFieldValid"
               hide-details
               placeholder="MM/DD/YYYY"
-              :v-model="moment(startDate).format('MM/DD/YYYY')"
-              :value="moment(startDate).format('MM/DD/YYYY')"
+              v-model="startDateFormatted"
+              :value="startDate"
               :rules="_startDateRules"
               @focus="setFocus"
               @blur="blurTextField"
@@ -70,6 +70,7 @@
               >
             </v-btn>
           </div>
+          <!-- moment(endDate).format('MM/DD/YYYY') -->
           <div class="textbox-button d-flex justify-start">
             <v-text-field
               ref="endDate"
@@ -80,8 +81,8 @@
               :error="isFieldValid"
               hide-details
               placeholder="MM/DD/YYYY"
-              :v-model="moment(endDate).format('MM/DD/YYYY')"
-              :value="moment(endDate).format('MM/DD/YYYY')"
+              v-model="endDateFormatted"
+              :value="endDate"
               @focus="setFocus"
               :rules="_endDateRules"
               @blur="blurTextField"
@@ -130,7 +131,7 @@
               @click:date="setDate"
               :picker-date.sync="firstMonth"
               transition="false"
-              class="mr-5 first-month"
+              class="first-month"
             />
 
             <v-date-picker
@@ -147,7 +148,7 @@
               scrollable
               :picker-date.sync="secondMonth"
               transition="false"
-              class="ml-5 second-month"
+              class="second-month"
             />
           </div>
         </div>
@@ -168,8 +169,6 @@ export default class ATATDatePicker extends Vue {
     startDate: Vue & { errorBucket: string[] };
     endDate: Vue & { errorBucket: string[] };
   };
-  //todo accommodate for 6 rows
-
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: "color" }) private color!: string;
@@ -204,15 +203,33 @@ export default class ATATDatePicker extends Vue {
   private endDatePickerButton: any;
   private menuTop = 375;
   private calendarClicked = false;
+  private startDateFormatted = this.formatDate(this.startDate);
+  private endDateFormatted = this.formatDate(this.endDate);
+
+  @Watch("startDate")
+  protected formatStartDate(): void {
+    this.startDateFormatted = this.formatDate(this.startDate);
+  }
+
+  @Watch("endDate")
+  protected formatEndDate(): void {
+    this.endDateFormatted = this.formatDate(this.endDate);
+  }
+
+  private formatDate(dateToBeFormatted: string): string {
+    return moment(dateToBeFormatted).format("MM/DD/YYYY");
+  }
 
   private setFocus(event: Event): void {
     const focusedElement = event.target as HTMLElement;
-    const isElementStartTextBox =
-      focusedElement.closest(".start-date") !== null;
-    this.isStartTextBoxFocused = isElementStartTextBox;
-    this.isEndTextBoxFocused = !isElementStartTextBox;
-    this._title =
-      "What is the PoP " + (isElementStartTextBox ? "Start" : "End") + " Date?";
+    this.focusElement(focusedElement);
+  }
+
+  private focusElement(textBox: HTMLElement): void {
+    const isStart = textBox.closest(".start-date") !== null;
+    this.isStartTextBoxFocused = isStart;
+    this.isEndTextBoxFocused = !isStart;
+    this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
   }
 
   private getId(prependString: string): string {
@@ -247,13 +264,7 @@ export default class ATATDatePicker extends Vue {
     this.menuTop = hasSixRows ? 415 : 375;
   }
 
-  private toggleMenu(event: Event): void {
-    //todo make more descriptive to accommodate multiple clins datepickers
-    //[x] OCT not showing all rows....
-    //todo set better name for this function...
-    //todo add masked library
-    //[x] hide extra calendar navigation button that just reappeared
-    //todo change format to  MM/DD/YYYY
+  private async datepickerControlClicked(event: Event): Promise<void> {
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
@@ -275,21 +286,28 @@ export default class ATATDatePicker extends Vue {
     const datePickerButtonElement =
       element.closest(".v-date-picker-table") !== null;
     if (datePickerButtonElement) {
+      const button = element.parentElement as HTMLButtonElement;
       if (this.isStartTextBoxFocused) {
-        this.startDatePickerButton = element.parentElement as HTMLButtonElement;
+        this.startDatePickerButton = button;
         this.styleDatePickerButton(this.startDatePickerButton, true);
-        this.isStartTextBoxFocused = false;
-        this.isEndTextBoxFocused = true;
+        (
+          document.querySelector(
+            "#" + this.getId("end-date-text-box")
+          ) as HTMLElement
+        ).click();
       } else if (this.isEndTextBoxFocused) {
-        this.endDatePickerButton = element.parentElement as HTMLButtonElement;
+        this.endDatePickerButton = button;
         this.styleDatePickerButton(this.endDatePickerButton, false);
-        this.isStartTextBoxFocused = this.startDate === "";
-        this.isEndTextBoxFocused = false;
+        (
+          document.querySelector(
+            "#" + this.getId("start-date-text-box")
+          ) as HTMLElement
+        ).click();
       }
       this.getErrorMessages(this.isStartTextBoxFocused);
+      this.setDatePickerHoverButtons;
     }
     Vue.nextTick(() => {
-      this.setDatePickerHoverButtons;
       this.calendarClicked = false;
     });
   }
@@ -307,14 +325,11 @@ export default class ATATDatePicker extends Vue {
       const classToAdd = this.isStartTextBoxFocused
         ? "hover-start"
         : "hover-end";
+      console.log(this.isStartTextBoxFocused);
+      console.log(classToAdd);
       Array.from(datepickerTables).forEach((table) => {
         table.classList.add(classToAdd);
       });
-
-      // Vue.nextTick(() => {
-      //   this.isStartTextBoxFocused = !this.isStartTextBoxFocused;
-      //   this.isEndTextBoxFocused = !this.isEndTextBoxFocused;
-      // });
     }
     return undefined;
   }
@@ -348,7 +363,9 @@ export default class ATATDatePicker extends Vue {
     const dateToBeSet = this.isStartTextBoxFocused
       ? this.startDate
       : this.endDate;
+
     this.setDate(dateToBeSet);
+    this.getErrorMessages(this.isStartTextBoxFocused);
   }
 
   public setDate(selectedDate: string): void {
@@ -369,7 +386,6 @@ export default class ATATDatePicker extends Vue {
       this.clearDates(true);
       this.startDate = selectedDate;
     }
-    console.log("line372" + this.startDate);
   }
 
   public setEndDate(selectedDate: string): void {
@@ -380,7 +396,6 @@ export default class ATATDatePicker extends Vue {
       this.clearDates(false);
       this.endDate = selectedDate;
     }
-    console.log("line383" + this.endDate);
   }
 
   get setDateRange(): string[] {
@@ -569,11 +584,11 @@ export default class ATATDatePicker extends Vue {
   }
 
   private mounted(): void {
-    document.addEventListener("click", this.toggleMenu);
+    document.addEventListener("click", this.datepickerControlClicked);
   }
 
   private destroyed(): void {
-    document.removeEventListener("click", this.toggleMenu);
+    document.removeEventListener("click", this.datepickerControlClicked);
   }
 }
 </script>
