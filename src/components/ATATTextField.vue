@@ -108,13 +108,14 @@ export default class ATATTextField extends VTextField {
   private rounded = false;
   private isFieldValid = false;
   private isFieldDirty = false;
+  private hasInitialValue = false;
 
   get isSuccess(): boolean {
     return this.isFieldDirty === true && this.isFieldValid === true;
   }
 
   get isErrored(): boolean {
-    return this.isFieldDirty === true && this.isFieldValid === false;
+    return (this.isFieldDirty || this.hasInitialValue) && !this.isFieldValid;
   }
 
   private inputActions(v: string) {
@@ -137,6 +138,7 @@ export default class ATATTextField extends VTextField {
 
   public mounted(): void {
     this.$nextTick(() => {
+      this.hasInitialValue = this._value.length > 0;
       if (this.validateOnLoad) {
         this.validateField();
       }
