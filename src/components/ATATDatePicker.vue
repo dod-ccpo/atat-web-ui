@@ -425,7 +425,6 @@ export default class ATATDatePicker extends Vue {
 
   public setStyleForStartDateAndEndDateButtons(): void {
     if (this.startDate !== "" || this.endDate !== "") {
-
       const datepicker = document.getElementById(
         this.getId("firstMonthDatePicker")
       ) as HTMLTableElement;

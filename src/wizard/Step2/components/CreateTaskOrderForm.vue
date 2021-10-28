@@ -1,10 +1,10 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="body-lg">
+    <v-container fluid class="body-lg pa-0">
       <v-row>
-        <v-col cols="10">
+        <v-col cols="10" class="py-0">
           <h2 class="h2 text--base-darkest">Add a New Task Order</h2>
-          <p class="my-3 body-lg text--base-darkest">
+          <p class="ma-0 mt-4 body-lg text--base-darkest">
             You will find this information in your awarded task order that funds
             your ATAT portfolio. If you have more than one task order, we will
             walk through them one at a time. Select <strong>Next</strong> to
@@ -13,8 +13,8 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6 col-xl-3">
-          <h3 class="h3 mb-5 text--base-darkest">Task Order Details</h3>
+        <v-col cols="6 col-xl-3 pt-8">
+          <h3 class="h3 mb-7 text--base-darkest">Task Order Details</h3>
           <div>
             <atat-text-field
               id="task-order-number"
@@ -24,7 +24,9 @@
               :helpText="helpText"
               :validate-on-load="validateOnLoad"
             />
-            <p class="mt-1">This number must be between 13 and 17 digits</p>
+            <p class="mt-2 mb-7 text--base">
+              This number must be between 13 and 17 digits
+            </p>
             <atat-file-upload
               ref="pdfFileUpload"
               :multiple="false"
@@ -41,13 +43,13 @@
       </v-row>
       <v-row>
         <v-col cols="9">
-          <h5 class="h5 font-weight-bold mt-6 body-xl">
+          <h5 class="h5 font-weight-bold mt-4 body-xl">
             Is this Task Order
             <u>signed by an appropriate, duly warranted Contracting Officer </u>
             who has the authority to execute the task order on your agency’s
             behalf?
           </h5>
-          <p class="mt-1">
+          <p class="mt-2">
             By selecting yes, you certify that the contracting officer has
             authorized you to upload the task order in accordance with your
             agency’s policy and procedures.
@@ -94,7 +96,7 @@
               You must have a signed task order to proceed
             </div>
             <div class="black--text body-lg ml-2 mr-2">
-              <p class="pb-6">
+              <p>
                 You will not be able to provision cloud resources within ATAT
                 without an awarded Task Order that is signed by a duly warranted
                 Contracting Officer. Please contact your Contracting Officer for
@@ -110,15 +112,15 @@
             </div>
           </v-alert>
           <div>
-            <v-row>
+            <v-row class="mt-0">
               <v-col cols="4">
-                <v-divider class="mt-7"></v-divider>
+                <v-divider class="mt-5 mb-2"></v-divider>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="7">
+              <v-col>
                 <h3 class="h3 my-2">Contract Line Items</h3>
-                <p>
+                <p class="mb-0">
                   A CLIN is a line in your contract that lists the services and
                   products to be delivered with a price or ceiling which cannot
                   be exceeded. Refer to your task order to locate your Contract
@@ -127,7 +129,7 @@
               </v-col>
             </v-row>
             <clins-card-list
-              class="my-9"
+              class="my-9 mt-7"
               ref="clinsCards"
               :clins="_clins"
               @add="$emit('add')"

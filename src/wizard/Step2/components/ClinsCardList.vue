@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid>
+  <div>
     <v-row v-for="(clin, index) in _clins" :key="index">
       <clins-card
-        style="width: 900px !important"
+        style="width: 830px !important"
         ref="clinscard"
         :card_number="index + 1"
         :clin_number.sync="clin.clin_number"
@@ -21,9 +21,9 @@
       @click="$emit('add')"
     >
       <v-icon color="primary" class="mr-2">control_point</v-icon>
-      Add another CLIN
+      <span>{{ addClinLabel }} </span>
     </v-btn>
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -40,6 +40,9 @@ import ClinsCard from "./ClinsCard.vue";
 })
 export default class ClinsCardList extends Vue {
   @PropSync("clins", { required: true }) _clins!: Clin[];
+  get addClinLabel(): string {
+    return this._clins.length > 0 ? "Add another CLIN" : "Add CLIN";
+  }
 
   public async validate(): Promise<boolean> {
     let valid = false;

@@ -1,7 +1,6 @@
 <template>
   <div id="learnMoreDrawer" class="modal__title--sticky">
     <v-card-title class="modal__title modal__title--border-bottom">
-
       <h2 class="modal__title__text" tabindex="-1" id="learnMoreHeading">
         <span v-if="learnMoreType === 'member-roles'">
           Understanding member roles
@@ -19,7 +18,6 @@
       >
         <v-icon size="25">arrow_back</v-icon>
       </v-btn>
-
     </v-card-title>
 
     <v-card-text
@@ -164,7 +162,9 @@ export default class LearnMoreMemberRoles extends Vue {
             "manageMembersModal"
           ) as HTMLDivElement;
           if (modalContent) {
-            const scrollEl = modalContent.closest(".v-navigation-drawer__content");
+            const scrollEl = modalContent.closest(
+              ".v-navigation-drawer__content"
+            );
             if (scrollEl) {
               scrollEl.scrollTop = 0;
             }
