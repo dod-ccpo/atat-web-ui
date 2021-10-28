@@ -1,113 +1,113 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="body-lg">
+    <v-row class="body-lg">
+      <v-col cols="12" class="pb-8">
+        <h2 class="h2">Let’s start with some details about your portfolio</h2>
+        <p class="pt-4 mb-0">
+          Your portfolio is a collection of your funding sources and
+          applications within a single cloud service provider. If you would like
+          like to create a multi-cloud application with environments deployed
+          different CSPs, you will need to create a portfolio for each CSP. When
+          you are done, click <strong>Next</strong> and we will walk you through
+          through adding your funding sources.
+        </p>
+      </v-col>
+    </v-row>
+    <v-row class="mt-0 pt-0">
+      <v-col cols="6" class="py-0">
+        <atat-text-field
+          id="portfolio-name"
+          label="Portfolio Name"
+          :helpText="portfolioDetailsDescription"
+          :rules="rules.portfolioName"
+          :value.sync="portfolio_name"
+          :validate-on-load="validateOnLoad"
+          class="pb-9"
+        />
+
+        <atat-text-area
+          optional="true"
+          id="portfolio-description"
+          label="Portfolio Description"
+          :helpText="portfolioDescriptionText"
+          :value.sync="portfolio_description"
+          class="pt-9 pb-3"
+        />
+      </v-col>
+    </v-row>
+    <div class="py-10">
       <v-row>
-        <v-col cols="12" class="pb-8">
-          <h2 class="h2">Let’s start with some details about your portfolio</h2>
-          <p class="pt-4 mb-0">
-            Your portfolio is a collection of your funding sources and
-            applications within a single cloud service provider. If you would
-            like to create a multi-cloud application with environments deployed
-            to different CSPs, you will need to create a portfolio for each CSP.
-            When you are done, click <strong>Next</strong> and we will walk you
-            through adding your funding sources.
+        <v-col cols="4">
+          <v-divider></v-divider>
+        </v-col>
+      </v-row>
+    </div>
+    <v-row class="mt-0 pt-0">
+      <v-col cols="6" class="py-0">
+
+        <fieldset id="dod-component" class="atat-checkbox-list">
+          <legend>
+            <h3 class="h3 font-weight-bold pb-2">DoD Component</h3>
+          </legend>
+          <p>
+            Select the DoD component(s) that will fund all applications within
+            this portfolio. Multiple DoD organizations can fund the same
+            portfolio.
           </p>
-        </v-col>
-      </v-row>
-      <v-row class="mt-0 pt-0">
-        <v-col cols="6" class="py-0">
-          <atat-text-field
-            id="portfolio-name"
-            label="Portfolio Name"
-            :helpText="portfolioDetailsDescription"
-            :rules="rules.portfolioName"
-            :value.sync="portfolio_name"
-            :validate-on-load="validateOnLoad"
-            class="pb-9"
-          />
 
-          <atat-text-area
-            optional="true"
-            id="portfolio-description"
-            label="Portfolio Description"
-            :helpText="portfolioDescriptionText"
-            :value.sync="portfolio_description"
-            class="pt-9 pb-3"
-          />
-        </v-col>
-      </v-row>
-      <div class="py-10">
-        <v-row>
-          <v-col cols="4">
-            <v-divider></v-divider>
-          </v-col>
-        </v-row>
-      </div>
-      <v-row class="mt-0 pt-0">
-        <v-col cols="6" class="py-0">
-          <fieldset id="dod-component" class="atat-checkbox-list">
-            <legend>
-              <h3 class="h3 font-weight-bold pb-2">DoD Component</h3>
-            </legend>
-            <p>
-              Select the DoD component(s) that will fund all applications within
-              this portfolio. Multiple DoD organizations can fund the same
-              portfolio.
-            </p>
+          <div
+            v-if="typeof isDodComponentsValid === 'string'"
+            class="
+              mb-2
+              atat-error-message
+              body
+              error--text error--text-darkest error-icon-label-left
+            "
+            id="dod-components-errors"
+            role="alert"
+          >
+            <div class="v-messages__message">{{ isDodComponentsValid }}</div>
+          </div>
 
-            <div
-              v-if="typeof isDodComponentsValid === 'string'"
-              class="
-                mb-2
-                atat-error-message
-                body
-                error--text error--text-darkest error-icon-label-left
-              "
-              id="dod-components-errors"
-              role="alert"
+          <div
+            v-for="(dod, index) in dodComponents"
+            :key="index"
+            :class="[
+              typeof isDodComponentsValid === 'string'
+                ? 'error-item'
+                : 'default',
+              ' my-3 atat-checkbox-list',
+              'text--base-darkest',
+            ]"
+          >
+            <input
+              :id="'dod-component-' + index"
+              type="checkbox"
+              v-model="_dod_components"
+              :value="dod.value"
+              style="width: 0px; height: 0px; position: absolute"
+            />
+
+            <label
+              :for="'dod-component-' + index"
+              class="d-flex align-center'"
+              @keydown.space="check('dod-component-' + index)"
             >
-              <div class="v-messages__message">{{ isDodComponentsValid }}</div>
-            </div>
-
-            <div
-              v-for="(dod, index) in dodComponents"
-              :key="index"
-              :class="[
-                typeof isDodComponentsValid === 'string'
-                  ? 'error-item'
-                  : 'default',
-                ' my-3 atat-checkbox-list',
-                'text--base-darkest',
-              ]"
-            >
-              <input
-                :id="'dod-component-' + index"
-                type="checkbox"
-                v-model="_dod_components"
-                :value="dod.value"
-                style="width: 0px; height: 0px; position: absolute"
-              />
-
-              <label
-                :for="'dod-component-' + index"
-                class="d-flex align-center'"
-                @keydown.space="check('dod-component-' + index)"
+              <v-icon class="checked-icon" v-if="isChecked(dod.value)"
+                >check_box</v-icon
               >
-                <v-icon class="checked-icon" v-if="isChecked(dod.value)"
-                  >check_box</v-icon
-                >
-                <v-icon class="checkbox-icon" v-else
-                  >check_box_outline_blank</v-icon
-                >
-                <div class="ml-2">
-                  {{ dod.name }}
-                </div>
-              </label>
-            </div>
-          </fieldset>
-        </v-col>
-      </v-row>
-    </v-container>
+              <v-icon class="checkbox-icon" v-else
+                >check_box_outline_blank</v-icon
+              >
+              <div class="ml-2">
+                {{ dod.name }}
+              </div>
+            </label>
+          </div>
+
+        </fieldset>
+      </v-col>
+    </v-row>
   </v-form>
 </template>
 

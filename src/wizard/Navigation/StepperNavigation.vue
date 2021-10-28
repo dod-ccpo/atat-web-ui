@@ -18,6 +18,7 @@
             :complete="isStepComplete(index)"
             :rules="getValidationRules(index)"
             @click="clickedAction(index + 1, this)"
+            @keydown.enter="clickedAction(index + 1, this)"
             :error-icon="'  '"
             :edit-icon="'  '"
             :complete-icon="'  '"
@@ -26,6 +27,7 @@
             <a
               tabindex="0"
               @click="clickedAction(index + 1, this)"
+              @keydown.enter="clickedAction(index + 1, this)"
               class="step-description px-1"
             >
               {{ step.description }}
