@@ -17,7 +17,7 @@
                   <p class="body-lg font-weight-bold mb-2">Needs Review</p>
                 </div>
                 <v-btn
-                  @click="onReviewPortfolioItem(item)"
+                  @click="onReviewPortfolioItem(item.name)"
                   class="primary theme--light mb-2"
                   >Review</v-btn
                 >
