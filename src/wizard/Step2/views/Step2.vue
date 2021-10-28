@@ -46,6 +46,8 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
       pop_start_date: "",
       pop_end_date: "",
     });
+
+    this.$refs.createTaskOrderForm.ExpandAddedClin();
   }
 
   public deleteClin(itemNumber: number): void {

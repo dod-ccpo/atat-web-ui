@@ -3,53 +3,48 @@
     <v-container fluid class="body-lg">
       <v-row>
         <v-col cols="10">
-          <h2 class="h2">Add a New Task Order</h2>
-          <p class="my-3">
-            In order to provision cloud resources, you must have an approved
-            task order that will fund your ATAT portfolio during a specific and
-            fixed period of performance (PoP). You will be able to add
-            additional task orders to continue funding your portfolio in the
-            future.
+          <h2 class="h2 text--base-darkest">Add a New Task Order</h2>
+          <p class="my-3 body-lg text--base-darkest">
+            You will find this information in your awarded task order that funds
+            your ATAT portfolio. If you have more than one task order, we will
+            walk through them one at a time. Select <strong>Next</strong> to
+            view funding sources.
           </p>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6">
-          <h3 class="h3 mb-5">Task Order Details</h3>
-          <atat-text-field
-            id="task-order-number"
-            label="Task Order Number"
-            :rules="rules.task_order_number"
-            :value.sync="_task_order_number"
-            :helpText="helpText"
-            :validate-on-load="validateOnLoad"
-          />
-          <p class="mt-1 text--base">
-            This number must be between 13 and 17 digits
-          </p>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="6">
-          <atat-file-upload
-            ref="pdfFileUpload"
-            :multiple="false"
-            :pdfFile.sync="_task_order_file"
-            label="Upload your approved task order"
-            message="Only PDF files with a max file size of 20 MB"
-            :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
-            :maxFileSize="20"
-            :stepNumber="2"
-            @removeFile="onRemoveFile"
-          />
+        <v-col cols="6 col-xl-3">
+          <h3 class="h3 mb-5 text--base-darkest">Task Order Details</h3>
+          <div>
+            <atat-text-field
+              id="task-order-number"
+              label="Task Order Number"
+              :rules="rules.task_order_number"
+              :value.sync="_task_order_number"
+              :helpText="helpText"
+              :validate-on-load="validateOnLoad"
+            />
+            <p class="mt-1">This number must be between 13 and 17 digits</p>
+            <atat-file-upload
+              ref="pdfFileUpload"
+              :multiple="false"
+              :pdfFile.sync="_task_order_file"
+              label="Upload your approved Task Order"
+              message="Only PDF files with a max file size of 20 MB"
+              :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
+              :maxFileSize="20"
+              :stepNumber="2"
+              @removeFile="onRemoveFile"
+            />
+          </div>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="9">
-          <h5 class="h5 font-weight-bold mt-6">
-            Is this task order
-            <u>signed by an appropriate, duly warranted contracting officer </u>
-            who has the authority to execute the task order on your Agency’s
+          <h5 class="h5 font-weight-bold mt-6 body-xl">
+            Is this Task Order
+            <u>signed by an appropriate, duly warranted Contracting Officer </u>
+            who has the authority to execute the task order on your agency’s
             behalf?
           </h5>
           <p class="mt-1">
@@ -91,25 +86,27 @@
             rounded
             color="error"
             type="info"
-            class="text-left error_lighter black-icon mt-3"
+            class="text-left error_lighter black-icon mt-3 border-thick pr-14"
             border="left"
             width="600"
           >
             <div class="black--text h3 ml-2">
               You must have a signed task order to proceed
             </div>
-            <div class="black--text body-lg ml-2">
-              You will not be able to provision cloud resources within ATAT
-              without an awarded task order that is signed by a duly warranted
-              contracting officer. Please contact your contracting officer for
-              questions regarding your task order status or to obtain
-              authorization to spend government funds.
-              <br />
-              <br />
-              You are subject to potential penalties that may include fines,
-              imprisonment, or both, under the U.S. law and regulations for any
-              false statement or misrepresentation in association with this Task
-              Order submission or on any accompanying documentation.
+            <div class="black--text body-lg ml-2 mr-2">
+              <p class="pb-6">
+                You will not be able to provision cloud resources within ATAT
+                without an awarded Task Order that is signed by a duly warranted
+                Contracting Officer. Please contact your Contracting Officer for
+                questions regarding your Task Order status or to obtain
+                authorization to spend government funds.
+              </p>
+              <p>
+                You are subject to potential penalties that may include fines,
+                imprisonment, or both, under the U.S. law and regulations for
+                any false statement or misrepresentation in association with
+                this Task Order submission or on any accompanying documentation.
+              </p>
             </div>
           </v-alert>
           <div>
@@ -226,6 +223,11 @@ export default class CreateTaskOrderForm extends Vue {
     });
 
     return validated.every((v) => v === true);
+  }
+
+  public ExpandAddedClin(): void {
+    const clinsCards = this.$refs.clinsCards as ClinsCardList;
+    clinsCards.ExpandAddedClin();
   }
 
   private mounted(): void {
