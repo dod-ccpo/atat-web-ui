@@ -174,7 +174,7 @@
                         :value.sync="_total_clin_value"
                         prefix="$"
                       />
-                      <atat-text-field
+                      <atat-currency-field
                         class="mb-5"
                         id="obligated-funds"
                         label="Obligated Funds"
@@ -448,15 +448,19 @@ export default class ClinsCard extends Vue {
   get totalClinRules(): any[] {
     const validationRules = [];
     validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
-    validationRules.push(
-      (v: string) =>
-        (v !== "" && /^\d+$/.test(v)) || "Please enter a valid number"
-    );
-    validationRules.push(
-      (v: number) =>
-        v >= parseInt(this._obligated_funds.toString()) ||
-        "Obligated Funds cannot exceed total CLIN Values"
-    );
+    validationRules.push((v: string) => {
+      const _value = parseFloat(v.replace(/,/g, ""));
+      return (
+        (v !== "" && /^\d+$/.test(_value.toString())) ||
+        "Please enter a valid number"
+      );
+    });
+    validationRules.push((v: number) => {
+      v = parseFloat(v.toString().replace(/,/g, ""));
+      let ob = parseFloat(this._obligated_funds.toString().replace(/,/g, ""));
+      return v >= ob || "Obligated Funds cannot exceed total CLIN Values";
+    });
+
     return validationRules;
   }
 
@@ -465,14 +469,20 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
     );
-    validationRules.push(
-      (v: string) => /^\d+$/.test(v) || "Please enter a valid number"
-    );
-    validationRules.push(
-      (v: number) =>
-        v <= parseInt(this._total_clin_value.toString()) ||
-        "Obligated Funds cannot exceed total CLIN Values"
-    );
+    validationRules.push((v: string) => {
+      const _value = parseFloat(v.replace(/,/g, ""));
+      return (
+        (v !== "" && /^\d+$/.test(_value.toString())) ||
+        "Please enter a valid number"
+      );
+    });
+    validationRules.push((v: number) => {
+      v = parseFloat(v.toString().replace(/,/g, ""));
+      let totalClin = parseFloat(
+        this._total_clin_value.toString().replace(/,/g, "")
+      );
+      return v < totalClin || "Obligated Funds cannot exceed total CLIN Values";
+    });
     return validationRules;
   }
 

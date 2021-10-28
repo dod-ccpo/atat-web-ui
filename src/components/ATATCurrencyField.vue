@@ -50,19 +50,44 @@ export default class ATATCurrencyField extends VTextField {
   });
 
   private onChange() {
-    
     //todo: fill out change
-
   }
 
   private onBlur() {
-     //todo: fill out blur
-  } 
+    this.updateNumberValue();
+    this.format();
+  }
 
- private onKeyUp(){
+  private onKeyUp() {
+    //todo: fill out onkey up
+  }
 
-   //todo: fill out onkey up
- }
+  format() {
+    if (this.numberValue === undefined) return;
+    let v = this.numberValue.toString();
+    v = Number(this.numberValue).toLocaleString(this.languageCode);
+    if (
+      v.length !== 1 &&
+      v.slice(v.indexOf(this.decimalSeperator) + 1).length === 1
+    )
+      v += "0";
+    this.model = this.formatter.format(this.numberValue).replace("$", "");
+  }
+
+  private updateNumberValue() {
+    let v = this.model.toString();
+    let parsed;
+    v = v.replace(this.thousandsSeparatorRegex, "");
+    if (this.decimalSeperator !== ".")
+      v = v.replace(this.decimalSeparatorRegex, this.thousandsSeperator);
+    const result = this.tryParseFloat(v);
+    if (!result) parsed = 0;
+    else parsed = result;
+    if (!this.allowNegative && result < 0) parsed = 0;
+    this.numberValue = Math.round(parsed * 100) / 100;
+     this.$emit('input', this.numberValue);
+  }
+
   private tryParseFloat(str: string, defaultValue?: number): number {
     var retValue = defaultValue || 0;
     let value = str.replace("$", "");
@@ -80,10 +105,16 @@ export default class ATATCurrencyField extends VTextField {
     return NaN;
   }
 
+  mounted(){
+    this.model = this._value;
+    this.updateNumberValue();
+    this.format();
+  }
+
   @Watch("value")
   onValueChanged() {
-    this.numberValue = this.tryParseFloat(this._value);
-    this.model = this.numberValue.toString();
+    this.model = this._value;
+    this.updateNumberValue();
   }
 }
 </script>
