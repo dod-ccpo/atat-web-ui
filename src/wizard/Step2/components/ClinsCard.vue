@@ -584,7 +584,8 @@ export default class ClinsCard extends Vue {
         });
       }, 500);
     }
-  }
+  } 
+  
   @Watch("_pop_start_date")
   @Watch("_pop_end_date")
   validateDateFields(): void {
