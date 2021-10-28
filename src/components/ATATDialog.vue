@@ -59,14 +59,16 @@ export default class ATATDialog extends Vue {
    */
   @Watch("$store.state.dialog.isDisplayed")
   setFocus(newVal: boolean): void {
-    const firstFocusedElement = document.getElementsByClassName(
-      "firstFocus"
-    )[0] as HTMLElement;
-    if (newVal && this.dialog.isDisplayed && firstFocusedElement) {
-      setTimeout(function () {
-        firstFocusedElement?.focus();
-      }, 500);
-    }
+    this.$nextTick(() => {
+      const firstFocusedElement = document.getElementsByClassName(
+        "firstFocus"
+      )[0] as HTMLElement;
+      if (newVal && this.dialog.isDisplayed && firstFocusedElement) {
+        setTimeout(function () {
+          firstFocusedElement?.focus();
+        }, 100);
+      }
+    });
   }
 
   public onMembersAdded(memberCount: number): void {

@@ -1,6 +1,15 @@
 <template>
-  <div>
-    <v-card-title class="modal__title--border-bottom">
+  <div id="learnMoreDrawer" class="modal__title--sticky">
+    <v-card-title class="modal__title modal__title--border-bottom">
+      <h2 class="modal__title__text" tabindex="-1" id="learnMoreHeading">
+        <span v-if="learnMoreType === 'member-roles'">
+          Understanding member roles
+        </span>
+        <span v-if="learnMoreType === 'root-admins'">
+          About root administrators
+        </span>
+      </h2>
+
       <v-btn
         id="closeModalButton"
         @click="closeLearnMoreDrawer()"
@@ -9,18 +18,13 @@
       >
         <v-icon size="25">arrow_back</v-icon>
       </v-btn>
-
-      <h2 tabindex="-1" id="learnMoreHeading">
-        <span v-if="learnMoreType === 'member-roles'">
-          Understanding member roles
-        </span>
-        <span v-if="learnMoreType === 'root-admins'">
-          About root administrators
-        </span>
-      </h2>
     </v-card-title>
 
-    <v-card-text v-if="learnMoreType === 'member-roles'" class="body-lg">
+    <v-card-text
+      id="modalContent"
+      v-if="learnMoreType === 'member-roles'"
+      class="body-lg"
+    >
       <p>
         Roles determine what people can see and do within the cloud provider’s
         console. There are administrative roles that are designed for people
@@ -92,7 +96,11 @@
       </p>
     </v-card-text>
 
-    <v-card-text v-if="learnMoreType === 'root-admins'" class="body-lg">
+    <v-card-text
+      id="modalContent"
+      v-if="learnMoreType === 'root-admins'"
+      class="body-lg"
+    >
       <p>
         <strong>Root administrators</strong> have the highest level of access to
         your resources within the cloud console. This role is designed for
@@ -148,6 +156,20 @@ export default class LearnMoreMemberRoles extends Vue {
       setTimeout(() => {
         // for 508 compliance, focus on heading when drawer opens
         document.getElementById("learnMoreHeading")?.focus();
+
+        this.$nextTick(() => {
+          const modalContent = document.getElementById(
+            "manageMembersModal"
+          ) as HTMLDivElement;
+          if (modalContent) {
+            const scrollEl = modalContent.closest(
+              ".v-navigation-drawer__content"
+            );
+            if (scrollEl) {
+              scrollEl.scrollTop = 0;
+            }
+          }
+        });
       }, 100);
     });
   }

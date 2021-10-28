@@ -21,3 +21,26 @@
     color: white !important;
   }
 }
+
+.modal__title--sticky {
+  .v-card__title {
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    z-index: 1;
+  }
+  .v-card__text {
+    padding-top: 126px !important;
+    overflow-y: auto;
+  }
+}
+
+.modal__title {
+  display: flex;
+  .modal__title__text {
+    order: 2;
+  }
+  .modal__slideout__button-close {
+    order: 1;
+  }
+}
