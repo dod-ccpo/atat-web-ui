@@ -10,7 +10,7 @@
           <v-expansion-panels v-model="openItem">
             <v-expansion-panel @click="calculateObligatedPercent">
               <v-expansion-panel-header
-                class="body-lg font-weight-bold"
+                class="body-lg font-weight-bold pt-2"
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">
@@ -18,7 +18,7 @@
                     <v-row>
                       <v-col
                         cols="1"
-                        class="h4 text--base-darkest pr-5"
+                        class="h4 text--base-darkest pr-2"
                         id="card_number"
                         >{{ card_number }}</v-col
                       >
@@ -186,7 +186,11 @@
                       />
                       <div v-show="obligatedPercent <= 100">
                         <span class="h4 font-weight-bold"
-                          >{{ obligatedPercent }}%</span
+                          >{{
+                            obligatedPercent.split(".")[1] === "00"
+                              ? obligatedPercent.split(".")[0]
+                              : obligatedPercent
+                          }}%</span
                         >
                         of your Total Funds are obligated
                       </div>
@@ -395,12 +399,19 @@ export default class ClinsCard extends Vue {
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
     const percent: number =
-      (this._obligated_funds / this._total_clin_value) * 100;
-    this.obligatedPercent =
-      percent >= 100 ? this.obligatedPercent : percent.toFixed(2);
+      (this.removeCurrencyFormat(this._obligated_funds) /
+        this.removeCurrencyFormat(this._total_clin_value)) *
+      100;
+    this.obligatedPercent = percent > 100 ? "0" : percent.toFixed(2);
     if (progress) {
       progress.style.width = this.obligatedPercent + "%";
     }
+  }
+
+  //todo apply removeCurrencyformat to variables in validation
+  //currency validation rules
+  public removeCurrencyFormat(formattedCurrency: number): number {
+    return parseFloat(formattedCurrency.toString().replace(/,/g, ""));
   }
 
   get clinNumberRules(): any[] {
@@ -461,7 +472,9 @@ export default class ClinsCard extends Vue {
       let totalClin = parseFloat(
         this._total_clin_value.toString().replace(/,/g, "")
       );
-      return v < totalClin || "Obligated Funds cannot exceed total CLIN Values";
+      return (
+        v <= totalClin || "Obligated Funds cannot exceed total CLIN Values"
+      );
     });
     return validationRules;
   }
@@ -571,7 +584,7 @@ export default class ClinsCard extends Vue {
         });
       }, 500);
     }
-  } 
+  }
   @Watch("_pop_start_date")
   @Watch("_pop_end_date")
   validateDateFields(): void {
