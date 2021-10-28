@@ -10,7 +10,7 @@
     </v-row>
     <br />
     <v-row>
-      <v-col cols="7" class="pa-0">
+      <v-col cols="7">
         <p class="p step-1 pb-6 mb-0">
           To get started with provisioning your cloud resources, you will need
           to set up a portfolio. We will walk you through adding your contract
@@ -25,7 +25,7 @@
           provisioning. You can even invite other portfolio Managers to help you
           out along the way!
         </p>
-        <p class="p step-1 pb-3">Let's get started!</p>
+        <p class="p step-1 mb-0">Let's get started!</p>
       </v-col>
     </v-row>
     <div class="py-10">
@@ -36,7 +36,7 @@
       </v-row>
     </div>
     <v-row class="ma-0">
-      <v-col cols="8" class="pl-0">
+      <v-col cols="8" class="pl-0 py-0">
         <div :icon="false" class="bg-base-lightest body-lg border px-13 py-5">
           <v-btn
             id="btn-create-new-portfolio"
