@@ -56,5 +56,26 @@ export default class ClinsCardList extends Vue {
 
     return valid;
   }
+
+  get clinLength(): number {
+    const clins = this.$refs.clinscard as Array<ClinsCard>;
+    return clins ? clins.length : 0;
+  }
+
+  public ExpandAddedClin(): void {
+    this.ExpandClin(this._clins.length);
+  }
+
+  public ExpandClin(index: number): void {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this._clins.length >= index) {
+          const clins = this.$refs.clinscard as Array<ClinsCard>;
+          const clin = clins[index - 1];
+          clin.open();
+        }
+      }, 500);
+    });
+  }
 }
 </script>

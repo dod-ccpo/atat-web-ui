@@ -7,24 +7,34 @@
     >
       <v-row>
         <v-col cols="11" class="width-100 d-block">
-          <v-expansion-panels>
+          <v-expansion-panels v-model="openItem">
             <v-expansion-panel @click="calculateObligatedPercent">
-              <v-expansion-panel-header class="body-lg font-weight-bold">
+              <v-expansion-panel-header
+                class="body-lg font-weight-bold"
+                :hide-actions="true"
+              >
                 <template v-slot:default="{ open }">
                   <v-container>
                     <v-row>
                       <v-col
                         cols="1"
-                        class="h4 text--base-darkest"
+                        class="h4 text--base-darkest pr-5"
                         id="card_number"
                         >{{ card_number }}</v-col
                       >
                       <v-col
-                        cols="11"
-                        class="h4 text--base-darkest"
+                        cols="10"
+                        class="mr-auto h4 text--base-darkest"
                         id="clin_number"
                         >{{ `CLIN ${clin_number}` }}</v-col
                       >
+                      <v-col cols="1" class="pl-6">
+                        <v-icon
+                          class="text-right text--base-darkest"
+                          :class="{ 'icon-rotate': open }"
+                          >expand_more</v-icon
+                        >
+                      </v-col>
                     </v-row>
                     <v-row v-if="!open && _idiq_clin !== ''">
                       <v-col cols="1"></v-col>
@@ -125,11 +135,12 @@
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              <v-expansion-panel-content class="pl-14 pb-10">
                 <v-row>
                   <v-col cols="11">
                     <atat-text-field
                       class="mb-3"
+                      name="clin-number"
                       id="clin-number"
                       label="CLIN Number"
                       :rules="clinNumberRules"
@@ -154,7 +165,7 @@
                 <v-row>
                   <v-col cols="11">
                     <v-form ref="fundFields">
-                      <atat-text-field
+                      <atat-currency-field
                         class="mb-3"
                         id="total-clin-value"
                         label="Total CLIN Value"
@@ -163,7 +174,7 @@
                         :value.sync="_total_clin_value"
                         prefix="$"
                       />
-                      <atat-text-field
+                      <atat-currency-field
                         class="mb-5"
                         id="obligated-funds"
                         label="Obligated Funds"
@@ -225,7 +236,7 @@
         <v-col>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon>
+              <v-btn icon class="pt-6">
                 <v-icon v-bind="attrs" v-on="on">delete</v-icon>
               </v-btn>
             </template>
@@ -267,6 +278,7 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
+import ATATTextField from "@/components/ATATTextField.vue";
 @Component({
   components: {},
 })
@@ -319,6 +331,8 @@ export default class ClinsCard extends Vue {
       this.dateRange[1] = this._pop_end_date;
     }
   }
+
+  private openItem = -1;
 
   private clinHelpText =
     "This is the full amount of money requested\n" +
@@ -404,18 +418,35 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
+  validateNumber(v: string): boolean | string {
+    const message = "Please enter a valid number";
+
+    v = v.toString();
+
+    if (!v) {
+      return message;
+    }
+
+    const numberValue = parseFloat(v.replace(/,/g, ""));
+    const isNumber = /^([0-9]+(\.?[0-9]?[0-9]?)?)/.test(numberValue.toString());
+
+    if (v !== "" && !isNumber) {
+      return message;
+    }
+
+    return true;
+  }
+
   get totalClinRules(): any[] {
     const validationRules = [];
     validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
-    validationRules.push(
-      (v: string) =>
-        (v !== "" && /^\d+$/.test(v)) || "Please enter a valid number"
-    );
-    validationRules.push(
-      (v: number) =>
-        v >= parseInt(this._obligated_funds.toString()) ||
-        "Obligated Funds cannot exceed total CLIN Values"
-    );
+    validationRules.push((v: string) => this.validateNumber(v));
+    validationRules.push((v: number) => {
+      v = parseFloat(v.toString().replace(/,/g, ""));
+      let ob = parseFloat(this._obligated_funds.toString().replace(/,/g, ""));
+      return v >= ob || "Obligated Funds cannot exceed total CLIN Values";
+    });
+
     return validationRules;
   }
 
@@ -424,14 +455,14 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
     );
-    validationRules.push(
-      (v: string) => /^\d+$/.test(v) || "Please enter a valid number"
-    );
-    validationRules.push(
-      (v: number) =>
-        v <= parseInt(this._total_clin_value.toString()) ||
-        "Obligated Funds cannot exceed total CLIN Values"
-    );
+    validationRules.push((v: string) => this.validateNumber(v));
+    validationRules.push((v: number) => {
+      v = parseFloat(v.toString().replace(/,/g, ""));
+      let totalClin = parseFloat(
+        this._total_clin_value.toString().replace(/,/g, "")
+      );
+      return v < totalClin || "Obligated Funds cannot exceed total CLIN Values";
+    });
     return validationRules;
   }
 
@@ -523,6 +554,25 @@ export default class ClinsCard extends Vue {
     this.Form.validate();
   }
 
+  @Watch("openItem")
+  onOpenItemChanged(): void {
+    if (this.openItem == 0) {
+      setTimeout(() => {
+        this.$nextTick(() => {
+          // when the clins card is opened the first input (clins number)
+          // recieves the focus
+          const form = this.Form.$el as HTMLFormElement;
+          const clinNumberInput = form.elements.namedItem(
+            "clin-number_text_field"
+          ) as HTMLInputElement;
+          if (clinNumberInput) {
+            clinNumberInput.focus();
+          }
+        });
+      }, 500);
+    }
+  } 
+  
   @Watch("_pop_start_date")
   @Watch("_pop_end_date")
   validateDateFields(): void {
@@ -535,6 +585,10 @@ export default class ClinsCard extends Vue {
       validated = this.Form.validate();
     });
     return validated;
+  }
+
+  public open(): void {
+    this.openItem = 0;
   }
 
   private updated(): void {

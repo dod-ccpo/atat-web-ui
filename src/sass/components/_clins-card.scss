@@ -1,0 +1,24 @@
+@import "../utils//colors.scss";
+
+
+.clins-card {
+
+    .v-expansion-panel {
+        border: 1px solid $base_lightest;
+           
+        .v-expansion-panel-header {
+
+             padding: 6px 4px 6px 4px !important;
+
+        }
+        
+      }
+
+      .v-expansion-panel::before {
+        box-shadow: none !important;
+     }
+
+     .icon-rotate {
+        transform: rotate(-180deg);
+     }
+}
