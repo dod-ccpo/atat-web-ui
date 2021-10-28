@@ -139,7 +139,7 @@ export default class ATATTextField extends VTextField {
   public mounted(): void {
     this.$nextTick(() => {
       this.hasInitialValue = this._value.length > 0;
-      if (this.validateOnLoad) {
+      if (this.validateOnLoad || this.hasInitialValue) {
         this.validateField();
       }
     });

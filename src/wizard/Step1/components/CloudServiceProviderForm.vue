@@ -1,5 +1,5 @@
 <template>
-  <div class="cloud-service-provider pl-3">
+  <div class="cloud-service-provider">
     <div class="d-flex flex-column">
       <div>
         <h3 class="h3 mb-2 font-weight-bold text--base-darkest">
