@@ -7,6 +7,7 @@ import * as s3 from "@aws-cdk/aws-s3";
 export interface ApiGatewayProxyProps {
   bucket: s3.IBucket;
   environmentId: string;
+  ssmPrefix: string;
 }
 
 export class ApiGatewayProxy extends cdk.Construct {
@@ -19,6 +20,8 @@ export class ApiGatewayProxy extends cdk.Construct {
       entry: "functions/proxy.ts",
       environment: {
         SPA_BUCKET_NAME: props.bucket.bucketName,
+        ENVIRONMENT_ID: props.environmentId,
+        SSM_PREFIX: props.ssmPrefix,
       },
     });
     props.bucket.grantRead(lambdaProxy);

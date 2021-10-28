@@ -14,16 +14,14 @@
           from {{ csp }} after your portfolio is provisioned. Select
           <span class="font-weight-bold">Next</span> to add team members to your
           other applications.
-          <v-btn
-            class="primary--text pa-0 mt-n2"
-            text
-            small
-            :ripple="false"
+          <a
+            role="button"
+            tabindex="0"
             @click="openSideDrawer($event)"
-            @keydown.native.enter="openSideDrawer($event)"
+            @keydown.enter="openSideDrawer($event)"
           >
-            <span class="link-body-md">Learn more about team member roles</span>
-          </v-btn>
+            Learn more about team member roles
+          </a>
         </p>
       </v-col>
     </v-row>

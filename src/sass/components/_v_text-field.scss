@@ -5,6 +5,12 @@
     border: 3px solid currentColor !important;
 }
 
+.focused{
+  &.v-text-field--outlined fieldset {
+    border: 3px solid $primary !important;
+  }
+}
+
 .v-text-field--outlined fieldset {
     border: 1px solid $base_dark !important;
  }

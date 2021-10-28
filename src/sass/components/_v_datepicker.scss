@@ -2,91 +2,233 @@
 @import "../utils/typography.scss";
 @import "../utils/utils.scss";
 
+.clin-datepicker-control{
+
+  .menuable__content__active{
+    width: 705px;
+    min-width: 705px;
+    max-width: 705px;
+    min-height: 100%;
+    border-radius: 8px !important;
+    box-shadow: 0px 4px 10px rgba(223, 225, 226, 0.5);
+    border-style: none;
+  }
+
+  .textbox-button,
+  label{
+      width: 244px;
+      .datepicker-text-box{
+        flex: inherit;
+        .v-input__slot{
+          width: 172px !important;
+          height: 42px !important;
+        }
+      }
+      button.v-btn--icon.v-size--default{
+        height: auto;
+        width: auto;
+        border-radius: 0px;
+        margin-left: 6px;
+        .v-icon.date-picker-icon{
+          font-size: 26px !important;
+          width: 26px !important;
+          height: 29px !important;
+        }
+      }
+    }
+}
+
+.datepicker-table-cells{
+  @extend .datepicker-text;
+  height: 40px !important;
+  width: 44px !important;
+  button{
+    @extend .datepicker-text;
+  }
+}
+
 .two-date-pickers{
   background-color: $base_lightest;
 
-  #firstMonthDatePicker{
-    .v-date-picker-header{
-      button:nth-child(3){
-        display: none;
-      }
-      .v-date-picker-header__value{
-        margin-right: 41px;
+  .first-month{
+    width: 100%;
+    .v-picker__body{
+      padding-right: 20px;
+      .v-date-picker-header{
+        padding: 0px;
+        button{
+          height: 24px;
+          &:nth-child(3){
+              display: none;
+          }
+        }
+        .v-date-picker-header__value{
+          margin-right: 41px;
+          button{ padding: 0px;}
+        }
       }
     }
   }
-  #secondMonthDatePicker{
-    .v-date-picker-header{
-      .v-btn:nth-child(1){
-        display: none;
-      }
-      .v-date-picker-header__value{
-        margin-left: 41px;
+  .second-month{
+    .v-picker__body{
+      padding-left: 20px;
+      .v-date-picker-header{
+        padding: 0px;
+        button{
+          height: 24px;
+
+        &.v-btn:nth-child(1){
+            display: none;
+          }
+        }
+        .v-date-picker-header__value{
+          margin-left: 41px;
+          button{
+            padding: 0px;
+          }
+        }
       }
     }
   }
 
   button{
-    @extend .datepicker-text;
     color: $base_darkest !important;
   }
 
   .v-picker{
+    margin-top: 14px;
+    width: 100%;
+    flex-direction: inherit;
     .v-picker__body{
       .v-date-picker-header{
+        margin-bottom: 14px;
         .v-date-picker-header__value{
-          button{
-            @extend .font-weight-700;
-            // pointer-events: none;
-            color: $base_darkest;
-            &:hover{
+          .accent--text{
+            font-size: 1.6rem !important;
+            font-weight: 700 !important;
+            button{
+              pointer-events: none;
               color: $base_darkest;
+              &:hover{
+                color: $base_darkest;
+              }
             }
           }
         }
       }
       .v-date-picker-table{
-        // height: 275px !important;
+        height: inherit;
+        &.hover-start{
+          table{
+            tbody{
+              tr{
+                td{
+                  button.v-btn:not(.v-date-picker-table__current){
+                    &:focus,
+                    &:focus::before,
+                    &:hover,
+                    &:hover::before{
+                      border-radius:  8px 0px 0px 8px !important;
+                      border: 4px solid $primary_vivid !important;
+                      box-sizing: border-box !important;
+                      box-shadow: none !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        &.hover-end{
+          table{
+            tbody{
+              tr{
+                td{
+                  button.v-btn:not(.v-date-picker-table__current){
+                    &:focus,
+                    &:focus::before,
+                    &:hover,
+                    &:hover::before{
+                      border-radius:  0px 8px 8px 0px !important;
+                      border: 4px solid $primary_vivid !important;
+                      box-sizing: border-box !important;
+                      box-shadow: none !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
         padding: 0px !important;
-        
+
         table{
           border: none !important;
           border-spacing: 0px !important;
           thead{
             tr{
               th{
-                @extend .datepicker-text;
+                @extend .datepicker-table-cells;
                 color: $base_darkest;
               }
             }
           }
-         
+
           tbody{
             tr{
               td{
-                width: 44px !important;
-                height: 40px !important;
-                button.v-btn--active{
-                  background-color: $primary_lighter !important;
-                  border-radius: 0px !important;
+                @extend .datepicker-table-cells;
+                button{
                   width: 100% !important;
                   height: 100% !important;
-                  padding: 4px 2px !important;
-                  &:focus,
-                  &:focus::before{
+                  &:before{
+                    opacity: 0 !important;
+                   }
+                  &.v-btn--rounded{
+                    border-radius: 6px !important;
+                  }
+                  &.v-btn--active{
+                    background-color: $primary_lighter !important;
                     border-radius: 0px !important;
-                    background-color: $base_lighter !important;
-                    opacity: initial !important;
-                    box-shadow: none !important;
-                    border-color: $primary_vivid !important;
-                    border-width: 2px !important;
-                    border-style: solid !important;
+                    padding: 4px 2px !important;
+                    &.date-picker-start-date{
+                      &:before{
+                        box-shadow: none !important;
+                        background-color: inherit !important;
+                      }
+                      opacity: none !important;
+                      background-color: $primary_vivid !important;
+                      box-shadow: none !important;
+                      border-radius:  8px 0px 0px 8px !important;
+                      div{
+                        color: #fff;
+                      }
+                    }
+                    &.date-picker-end-date,
+                    &.date-picker-end-date:focus{
+                      &:before{
+                        box-shadow: none !important;
+                        background-color: inherit !important;
+                      }
+                      opacity: none !important;
+                      background-color: $primary_vivid !important;
+                      box-shadow: none !important;
+                      border-radius:  0px 8px 8px 0px !important;
+                      div{
+                        color: #fff;
+                      }
+                    }
+                  }
+
+                  &.v-date-picker-table__current{
+                    border: $base-darkest 1px solid !important;
+                    color: $base_darkest !important;
+                    border-radius: 28px !important;
                   }
                 }
-                button.v-date-picker-table__current{
-                  border: $base-darkest 1px solid !important;
-                  color: $base_darkest !important;
-                }
+
                 button.v-btn.v-btn--flat.v-btn--disabled{
                   color: $base_light !important;
                 }

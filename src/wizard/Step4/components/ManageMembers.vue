@@ -1,5 +1,5 @@
 <template>
-  <v-card class="extra-padding overflow-x-hidden">
+  <v-card id="manageMembersModal" class="extra-padding overflow-x-hidden">
     <v-navigation-drawer
       v-model="learnMoreDrawerIsOpen"
       absolute
@@ -15,7 +15,7 @@
     </v-navigation-drawer>
 
     <v-card-title>
-      <h3 class="mb-2 h3">
+      <h3 id="modalHeading" class="mb-2 h3 firstFocus" tabindex="-1">
         <span v-if="!isEditSingle">
           Add
           <span v-if="isRootAdmin">root administrators</span>
@@ -78,13 +78,15 @@
           <p v-if="isRootAdmin">
             Team members added to this workspace will be granted the top-level
             <strong>root administrator</strong> role within your cloud console.
-            These people will have full access to all of your applications.<br />
-            <v-btn
-              class="link-button pa-0 height-auto"
+            These people will have full access to all of your applications.
+            <a
+              role="button"
+              tabindex="0"
+              @keydown.enter="openLearnMoreDrawer('root-admins')"
               @click="openLearnMoreDrawer('root-admins')"
             >
               Learn more about root administrators
-            </v-btn>
+            </a>
           </p>
           <p v-else>
             Team members can have different levels of access to your application
@@ -122,7 +124,7 @@
             id="PillboxWrapper"
             aria-labelledby="PillboxLabel"
             aria-describedby="PillboxInstructions"
-            class="pa-2 pillbox-wrapper mb-0 firstFocus"
+            class="pa-2 pillbox-wrapper mb-0"
             tabindex="0"
             :class="[pillboxFocused ? 'focused' : '']"
             @click="addEmail"
@@ -198,12 +200,14 @@
             <span v-if="isEditSingle">{{ currentApplicationName }}.</span>
             <span v-else>your application.</span>
             <br />
-            <v-btn
-              class="link-button pa-0 height-auto"
+            <a
+              role="button"
+              tabindex="0"
+              @keydown.enter="openLearnMoreDrawer('member-roles')"
               @click="openLearnMoreDrawer('member-roles')"
             >
               Learn more about roles
-            </v-btn>
+            </a>
           </p>
 
           <v-checkbox

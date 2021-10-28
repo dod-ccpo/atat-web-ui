@@ -3,6 +3,7 @@ import * as ssm from "@aws-cdk/aws-ssm";
 import * as cdk from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as apigw from "@aws-cdk/aws-apigateway";
+import * as iam from "@aws-cdk/aws-iam";
 import { StaticSite } from "../lib/static-website";
 import { ApiGatewayProxy } from "../lib/apigateway-proxy";
 
@@ -15,6 +16,7 @@ export class StaticSiteStack extends cdk.Stack {
   public readonly bucket: s3.IBucket;
   public readonly proxy: apigw.IRestApi;
   public readonly userPoolClient: cognito.IUserPoolClient;
+  public readonly ssmParameters: ssm.IParameter[] = [];
 
   constructor(parent: cdk.App, name: string, props: StaticSiteProps) {
     super(parent, name, props);
@@ -25,8 +27,25 @@ export class StaticSiteStack extends cdk.Stack {
     const proxy = new ApiGatewayProxy(this, "SiteProxy", {
       bucket: site.websiteBucket,
       environmentId: props.environmentId,
+      ssmPrefix,
     });
     this.proxy = proxy.api;
+    proxy.proxyFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        sid: "AllowSsmParameterRead",
+        actions: ["ssm:GetParameter*"],
+        resources: [
+          cdk.Arn.format(
+            {
+              service: "ssm",
+              resource: "parameter",
+              resourceName: `${ssmPrefix}/${props.environmentId}/*`,
+            },
+            this
+          ),
+        ],
+      })
+    );
 
     const poolId = ssm.StringParameter.fromStringParameterName(
       this,
@@ -70,5 +89,12 @@ export class StaticSiteStack extends cdk.Stack {
       generateSecret: false,
       userPoolClientName: `${props.applicationName} Web UI`,
     });
+    this.ssmParameters.push(
+      new ssm.StringParameter(this, "UserPoolClientId", {
+        stringValue: this.userPoolClient.userPoolClientId,
+        description: "Cognito User Pool Client ID",
+        parameterName: `/${ssmPrefix}/${props.environmentId}/cognito/userpool/client/id`,
+      })
+    );
   }
 }
