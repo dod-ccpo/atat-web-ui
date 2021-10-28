@@ -22,7 +22,7 @@ import { VTextField } from "vuetify/lib";
 
 @Component({})
 export default class ATATCurrencyField extends VTextField {
-  @PropSync("value", { default: "" }) private _value!: string;
+  @PropSync("value", { default: "" }) private model!: string;
   @Prop({ default: "" }) private prefix!: string;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
@@ -33,7 +33,6 @@ export default class ATATCurrencyField extends VTextField {
   @Prop({ default: "" }) private helpText!: string;
 
   allowNegative = false;
-  model = "";
   numberValue!: number;
   isMasked = true;
   hasFocus = false;
@@ -62,7 +61,7 @@ export default class ATATCurrencyField extends VTextField {
     //todo: fill out onkey up
   }
 
-  format() {
+  private format() {
     if (this.numberValue === undefined) return;
     let v = this.numberValue.toString();
     v = Number(this.numberValue).toLocaleString(this.languageCode);
@@ -105,15 +104,13 @@ export default class ATATCurrencyField extends VTextField {
     return NaN;
   }
 
-  mounted() {
-    this.model = this._value;
+  private mounted() {
     this.updateNumberValue();
     this.format();
   }
 
   @Watch("value")
-  onValueChanged() {
-    this.model = this._value;
+  protected onValueChanged() {
     this.updateNumberValue();
   }
 }

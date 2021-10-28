@@ -455,7 +455,7 @@ export default class ClinsCard extends Vue {
     }
 
     const numberValue = parseFloat(v.replace(/,/g, ""));
-    const isNumber = /^\d+$/.test(numberValue.toString());
+    const isNumber = /^([0-9]+(\.?[0-9]?[0-9]?)?)/.test(numberValue.toString());
 
     if (v !== "" && !isNumber) {
       return message;
