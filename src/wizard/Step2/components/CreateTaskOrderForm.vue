@@ -102,7 +102,8 @@
                 Contracting Officer. Please contact your Contracting Officer for
                 questions regarding your Task Order status or to obtain
                 authorization to spend government funds.
-                <br /><br />
+              </p>
+              <p>
                 You are subject to potential penalties that may include fines,
                 imprisonment, or both, under the U.S. law and regulations for
                 any false statement or misrepresentation in association with
