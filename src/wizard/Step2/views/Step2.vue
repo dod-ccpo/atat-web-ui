@@ -38,7 +38,6 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   };
 
   public addClin(): void {
-
     this.model.clins.push({
       clin_number: "000" + (this.model.clins.length + 1),
       idiq_clin: "",

@@ -85,7 +85,7 @@ export default class ATATCurrencyField extends VTextField {
     else parsed = result;
     if (!this.allowNegative && result < 0) parsed = 0;
     this.numberValue = Math.round(parsed * 100) / 100;
-     this.$emit('input', this.numberValue);
+    this.$emit("input", this.numberValue);
   }
 
   private tryParseFloat(str: string, defaultValue?: number): number {
@@ -105,7 +105,7 @@ export default class ATATCurrencyField extends VTextField {
     return NaN;
   }
 
-  mounted(){
+  mounted() {
     this.model = this._value;
     this.updateNumberValue();
     this.format();
