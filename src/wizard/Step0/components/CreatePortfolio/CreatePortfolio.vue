@@ -1,5 +1,5 @@
 <template>
-  <div class="main-content-wrapper body-lg copy-max-width">
+  <div class="main-content-wrapper body-lg content-max-width">
     <v-row>
       <v-col>
         <h1>Hi {{ user.given_name }}, let’s create your first portfolio!</h1>

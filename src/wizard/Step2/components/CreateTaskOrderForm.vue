@@ -2,7 +2,7 @@
   <v-form ref="form" lazy-validation>
     <v-container fluid class="body-lg">
       <v-row>
-        <v-col class="copy-max-width">
+        <v-col class="content-max-width">
           <h1>Add a New Task Order</h1>
           <p class="ma-0 mt-4 body-lg text--base-darkest">
             You will find this information in your awarded task order that funds
@@ -13,11 +13,15 @@
         </v-col>
       </v-row>
 
-      <section role="region" title="Task Order Details" class="copy-max-width">
+      <section
+        role="region"
+        title="Task Order Details"
+        class="content-max-width mt-5"
+      >
         <v-row>
           <v-col>
-            <h2>Task Order Details</h2>
-            <div class="width-50 mb-10">
+            <h2 class="mb-8 ">Task Order Details</h2>
+            <div class="input-max-width mb-10">
               <atat-text-field
                 id="task-order-number"
                 label="Task Order Number"
@@ -124,7 +128,7 @@
         <v-row>
           <v-col>
             <h2>Contract Line Items</h2>
-            <p class="mb-0">
+            <p class="mb-0 content-max-width">
               A CLIN is a line in your contract that lists the services and
               products to be delivered with a price or ceiling which cannot be
               exceeded. Refer to your task order to locate your Contract Line

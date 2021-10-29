@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation class="copy-max-width body-lg">
+  <v-form ref="form" lazy-validation class="content-max-width body-lg">
     <v-row>
       <v-col class="mb-4">
         <h1>Let’s start with some details about your portfolio</h1>
@@ -14,7 +14,7 @@
       </v-col>
     </v-row>
     <v-row class="mt-0 pt-0">
-      <v-col cols="6" class="py-0">
+      <v-col class="py-0 input-max-width">
         <atat-text-field
           id="portfolio-name"
           label="Portfolio Name"
@@ -39,7 +39,7 @@
     <atat-divider />
 
     <v-row class="mt-0 pt-0">
-      <v-col cols="6" class="py-0">
+      <v-col class="py-0 input-max-width">
 
         <fieldset id="dod-component" class="atat-checkbox-list">
           <legend>DoD Component</legend>

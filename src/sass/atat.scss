@@ -46,13 +46,31 @@ body,html{
     padding: 40px 54px !important;
 }
 
-.copy-max-width {
-    max-width: 740px;
+.content-max-width {
+    max-width: 740px !important;
 }
+
+.input-max-width {
+    max-width: 416px !important;
+    &.with-buttons-1 {
+        max-width: 446px !important;
+    }
+}
+
 
 fieldset {
     border: none;
     legend {
         @extend .h2;
+        margin-bottom: 2.8rem;
+    }
+}
+.v-input__slot fieldset {
+    // reset vuetify's hidden fieldset used for input border
+    border: inherit;
+    legend {
+        font-weight: normal !important;
+        font-size: initial !important;
+        line-height: 1 !important;
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="main-content-wrapper body-lg copy-max-width">
+  <v-container class="main-content-wrapper body-lg content-max-width">
     <v-row>
       <v-col>
         <v-row>

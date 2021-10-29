@@ -1,5 +1,5 @@
 <template>
-  <div class="body-lg copy-max-width">
+  <div class="body-lg content-max-width">
     <fieldset>
       <legend>Cloud Service Provider</legend>
       <p class="mb-1">

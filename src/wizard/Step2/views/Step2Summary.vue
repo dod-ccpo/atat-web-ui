@@ -1,7 +1,7 @@
 <template>
   <div class="body-lg">
     <v-row>
-      <v-col class="copy-max-width">
+      <v-col class="content-max-width">
         <h1>Your Task Order Summary</h1>
         <p v-show="cardsData.cards.length > 0" class="mb-8">
           If you have more task orders, <strong>add</strong> them below. You can
@@ -13,7 +13,7 @@
       </v-col>
     </v-row>
     <v-row v-if="cardsData.cards.length === 0" class="mb-8 mt-0">
-      <v-col class="copy-max-width">
+      <v-col class="content-max-width">
         <v-card class="pa-10">
           <v-card-text>
             <p class="body-lg text-center text--base-dark mb-0">
@@ -36,7 +36,7 @@
       <div class="ml-2">Add a Task Order</div>
     </v-btn>
 
-    <section title="Task Order FAQs" class="copy-max-width">
+    <section title="Task Order FAQs" class="content-max-width">
       <v-btn
         @click="showAdditionalFundingText = !showAdditionalFundingText"
         text
