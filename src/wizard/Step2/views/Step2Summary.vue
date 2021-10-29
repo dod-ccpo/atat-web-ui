@@ -1,113 +1,110 @@
 <template>
-  <v-flex class="pl-3">
+  <div class="body-lg">
     <v-row>
-      <v-col cols="10">
-        <h2 class="h2">Your Task Order Summary</h2>
-        <p class="my-3 body-lg" v-show="cardsData.cards.length > 0">
-          If you have more Task Orders, <strong>add</strong> them below. You can
-          also <strong>edit</strong> or <strong>delete</strong> any of the Task
-          Orders you already entered. When you are done, click
+      <v-col class="copy-max-width">
+        <h1>Your Task Order Summary</h1>
+        <p v-show="cardsData.cards.length > 0" class="mb-8">
+          If you have more task orders, <strong>add</strong> them below. You can
+          also <strong>edit</strong> or <strong>delete</strong> any of the task
+          orders you already entered. When you are done, click
           <strong>Next</strong> and we will walk you through adding your
           applications and environments.
         </p>
       </v-col>
     </v-row>
-    <v-row v-if="cardsData.cards.length === 0" class="pt-8">
-      <v-col cols="10">
-        <v-card>
+    <v-row v-if="cardsData.cards.length === 0" class="mb-8 mt-0">
+      <v-col class="copy-max-width">
+        <v-card class="pa-10">
           <v-card-text>
-            <p class="body-lg text-center text--base-darkest">
+            <p class="body-lg text-center text--base-dark mb-0">
               You currently do not have any task orders saved.
             </p>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+
     <atat-summary-card
       v-if="cardsData.cards.length > 0"
       :data="cardsData"
       v-on:delete="onDeleteTaskOrder"
       v-on:edit="onEditTaskOrder"
     ></atat-summary-card>
-    <v-row>
-      <v-col cols="10">
-        <v-btn class="primary" :ripple="false" @click="onAddNewTaskOrder">
-          <v-icon>control_point</v-icon>
-          <div class="ml-2 font-weight-bold">Add a Task Order</div>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="10">
-        <v-btn
-          @click="showAdditionalFundingText = !showAdditionalFundingText"
-          text
-          x-small
-          :ripple="false"
-          class="pl-0 primary--text"
-        >
-          <span class="link-body-md">
-            Can I add additional funding sources after my Portfolio is
-            provisioned?
-          </span>
-          <v-icon>
-            {{ showAdditionalFundingText ? "expand_less" : "expand_more" }}
-          </v-icon>
-        </v-btn>
-        <div v-show="showAdditionalFundingText">
-          <v-card-text class="h6 pb-0">
-            <v-row>
-              <p class="body-lg mt-3 text--base-darkest">
-                Yes. As the Portfolio Manager, you will be able add CLINs to
-                existing Task Orders or add a new Task Order in the future. This
-                will allow you to continue funding the Applications in this
-                Portfolio after the period of performance has expired or after
-                obligated funds have been exhausted.
-                <br />
-                <br />
-                You will have the opportunity to invite other Portfolio Managers
-                to help you manage funding for this Portfolio later.
-              </p>
-            </v-row>
-          </v-card-text>
-        </div>
-      </v-col>
-    </v-row>
-    <v-row style="height: 150px">
-      <v-col cols="10">
-        <v-btn
-          @click="showPopText = !showPopText"
-          text
-          x-small
-          :ripple="false"
-          class="pl-0 primary--text"
-        >
-          <span class="link-body-md">
-            What happens to my Portfolio if the period of performance or
-            obligated funds expire?
-          </span>
-          <v-icon>
-            {{ showPopText ? "expand_less" : "expand_more" }}
-          </v-icon>
-        </v-btn>
-        <div v-show="showPopText">
-          <v-card-text class="h6 pb-0">
-            <v-row align="center" class="mb-10">
-              <p class="body-lg mt-3 text--base-darkest">
-                If your Portfolio’s period of performance expires or if you run
-                out of obligated funds, your team members will not be able to
-                access your Applications within the CSP console.
-                <br />
-                <br />
-                We will notify you when your funding sources are in danger of
-                expiration, so that you have ample time to take action.
-              </p>
-            </v-row>
-          </v-card-text>
-        </div>
-      </v-col>
-    </v-row>
-  </v-flex>
+
+    <v-btn class="primary mb-10" :ripple="false" @click="onAddNewTaskOrder">
+      <v-icon aria-hidden="true">control_point</v-icon>
+      <div class="ml-2">Add a Task Order</div>
+    </v-btn>
+
+    <section title="Task Order FAQs" class="copy-max-width">
+      <v-btn
+        @click="showAdditionalFundingText = !showAdditionalFundingText"
+        text
+        x-small
+        :ripple="false"
+        class="pl-0 primary--text mb-5"
+        id="Q_AddlFunding"
+        aria-controls="A_AddlFunding"
+        :aria-expanded="showAdditionalFundingText + ''"
+      >
+        <span class="link-body-md">
+          Can I add additional funding sources after my Portfolio is
+          provisioned?
+        </span>
+        <v-icon>
+          {{ showAdditionalFundingText ? "expand_less" : "expand_more" }}
+        </v-icon>
+      </v-btn>
+      <div
+        v-show="showAdditionalFundingText"
+        id="A_AddlFunding"
+        aria-labelledby="Q_AddlFunding"
+      >
+        <p>
+          Yes. As the Portfolio Manager, you will be able add CLINs to existing
+          Task Orders or add a new Task Order in the future. This will allow you
+          to continue funding the Applications in this Portfolio after the
+          period of performance has expired or after obligated funds have been
+          exhausted.
+        </p>
+        <p>
+          You will have the opportunity to invite other Portfolio Managers to
+          help you manage funding for this Portfolio later.
+        </p>
+      </div>
+
+      <v-btn
+        @click="showPopText = !showPopText"
+        text
+        x-small
+        :ripple="false"
+        class="pl-0 primary--text mb-5"
+        id="Q_Expires"
+        aria-controls="A_Expires"
+        :aria-expanded="showPopText + ''"
+      >
+        <span class="link-body-md">
+          What happens to my Portfolio if the period of performance or obligated
+          funds expire?
+        </span>
+        <v-icon>
+          {{ showPopText ? "expand_less" : "expand_more" }}
+        </v-icon>
+      </v-btn>
+      <div v-show="showPopText" id="A_Expires" aria-labelledby="Q_Expires">
+        <p>
+          If your Portfolio’s period of performance expires or if you run out of
+          obligated funds, your team members will not be able to access your
+          Applications within the CSP console.
+        </p>
+        <p>
+          We will notify you when your funding sources are in danger of
+          expiration, so that you have ample time to take action.
+        </p>
+      </div>
+
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
