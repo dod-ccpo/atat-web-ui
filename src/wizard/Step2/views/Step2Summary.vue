@@ -1,40 +1,36 @@
 <template>
   <div class="body-lg">
-    <v-row>
-      <v-col class="content-max-width">
-        <h1>Your Task Order Summary</h1>
-        <p v-show="cardsData.cards.length > 0" class="mb-8">
-          If you have more task orders, <strong>add</strong> them below. You can
-          also <strong>edit</strong> or <strong>delete</strong> any of the task
-          orders you already entered. When you are done, click
-          <strong>Next</strong> and we will walk you through adding your
-          applications and environments.
-        </p>
-      </v-col>
-    </v-row>
-    <v-row v-if="cardsData.cards.length === 0" class="mb-8 mt-0">
-      <v-col class="content-max-width">
-        <v-card class="pa-10">
-          <v-card-text>
-            <p class="body-lg text-center text--base-dark mb-0">
-              You currently do not have any task orders saved.
-            </p>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    <div class="content-max-width">
+      <h1>Your Task Order Summary</h1>
+      <p v-if="cardsData.cards.length > 0" class="mb-8">
+        If you have more task orders, <strong>add</strong> them below. You can
+        also <strong>edit</strong> or <strong>delete</strong> any of the task
+        orders you already entered. When you are done, click
+        <strong>Next</strong> and we will walk you through adding your
+        applications and environments.
+      </p>
+      <v-card v-else class="pa-12 mb-8 mt-0">
+        <v-card-text class="pa-0">
+          <p class="body-lg text-center text--base-dark mb-0">
+            You currently do not have any task orders saved.
+          </p>
+        </v-card-text>
+      </v-card>
+    </div>
 
-    <atat-summary-card
-      v-if="cardsData.cards.length > 0"
-      :data="cardsData"
-      v-on:delete="onDeleteTaskOrder"
-      v-on:edit="onEditTaskOrder"
-    ></atat-summary-card>
+    <section title="Task Order Summary Cards" role="region">
+      <atat-summary-card
+        v-if="cardsData.cards.length > 0"
+        :data="cardsData"
+        v-on:delete="onDeleteTaskOrder"
+        v-on:edit="onEditTaskOrder"
+      ></atat-summary-card>
 
-    <v-btn class="primary mb-10" :ripple="false" @click="onAddNewTaskOrder">
-      <v-icon aria-hidden="true">control_point</v-icon>
-      <div class="ml-2">Add a Task Order</div>
-    </v-btn>
+      <v-btn class="primary mb-10" :ripple="false" @click="onAddNewTaskOrder">
+        <v-icon aria-hidden="true">control_point</v-icon>
+        <div class="ml-2">Add a Task Order</div>
+      </v-btn>
+    </section>
 
     <section title="Task Order FAQs" class="content-max-width">
       <v-btn

@@ -2,8 +2,8 @@
   <v-flex class="pb-10">
     <v-row>
       <v-col cols="10">
-        <h2 class="h2">Your Applications Summary</h2>
-        <p class="my-3 body-lg" v-show="cardsData.cards.length > 0">
+        <h1>Your Applications Summary</h1>
+        <p class="body-lg" v-show="cardsData.cards.length > 0">
           If you have more applications, <strong>add</strong> them below. You
           can also <strong>edit</strong> or <strong>delete</strong> any of the
           applications you have already entered. When you are done, click
