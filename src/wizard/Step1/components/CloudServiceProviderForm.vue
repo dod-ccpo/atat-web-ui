@@ -1,18 +1,14 @@
 <template>
-  <div class="cloud-service-provider">
-    <div class="d-flex flex-column">
-      <div>
-        <h3 class="h3 mb-2 font-weight-bold text--base-darkest">
-          Cloud Service Provider
-        </h3>
-        <p class="body-lg description mb-0">
-          Select the cloud service provider where you want to deploy this
-          portfolio.<strong
-            >Your selection must match the CSP listed in your awarded task
-            order(s).</strong
-          >
-        </p>
-      </div>
+  <div class="body-lg copy-max-width">
+    <fieldset>
+      <legend>Cloud Service Provider</legend>
+      <p class="mb-1">
+        Select the cloud service provider where you want to deploy this
+        portfolio.<strong
+          >Your selection must match the CSP listed in your awarded task
+          order(s).</strong
+        >
+      </p>
       <v-form ref="form" lazy-validation>
         <atat-button-card
           :items="items"
@@ -22,7 +18,7 @@
           id="csp"
         />
       </v-form>
-    </div>
+    </fieldset>
   </div>
 </template>
 

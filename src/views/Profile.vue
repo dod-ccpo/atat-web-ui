@@ -1,22 +1,16 @@
 <template>
-  <v-container>
+  <v-container class="main-content-wrapper body-lg copy-max-width">
     <v-row>
-      <v-col cols="9">
+      <v-col>
         <v-row>
-          <v-col class="pb-4">
-            <h2 class="mt-7 h2 font-weight-bold">
-              First, let’s verify your profile information
-            </h2>
-          </v-col>
-        </v-row>
-        <v-row class="mt-0">
           <v-col>
-            <p class="mb-4 body-lg">
+            <h1>First, let’s verify your profile information</h1>
+            <p>
               We imported your basic personal and contact information from your
               CAC profile. This information will be used to notify you if there
               are any issues with your funding or cloud resources.
             </p>
-            <p class="body-lg mb-0">
+            <p>
               Please review and verify that the following details are accurate.
               When you are done, click <strong>Continue</strong> and we will get
               started with your portfolios.
@@ -67,7 +61,7 @@
             </v-alert>
 
             <v-card rounded class="mb-6 border-base-lighter border-1" outlined>
-              <v-card-title class="h3 pl-8 pt-8 font-weight-bold"
+              <v-card-title class="h3 pl-8 pt-8"
                 >Basic Information</v-card-title
               >
               <v-card-text
@@ -134,7 +128,7 @@
               </v-card-text>
             </v-card>
             <v-card rounded class="mb-6 border-base-lighter border-1" outlined>
-              <v-card-title class="h3 pl-8 pt-8 font-weight-bold"
+              <v-card-title class="h3 pl-8 pt-8"
                 >Contact Information</v-card-title
               >
               <v-card-text
@@ -174,8 +168,8 @@
                 </v-row>
               </v-card-text>
             </v-card>
-            <v-row class="ma-0">
-              <v-col cols="12" class="d-flex ma-0 pt-10 px-0">
+            <v-row>
+              <v-col cols="12" class="d-flex">
                 <v-btn
                   @click="handleBack"
                   color="primary"

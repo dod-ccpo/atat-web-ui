@@ -42,4 +42,17 @@ body,html{
     }
 }
 
+.main-content-wrapper {
+    padding: 40px 54px !important;
+}
 
+.copy-max-width {
+    max-width: 740px;
+}
+
+fieldset {
+    border: none;
+    legend {
+        @extend .h2;
+    }
+}
