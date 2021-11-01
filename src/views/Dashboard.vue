@@ -1,15 +1,10 @@
 <template>
-  <v-container class="dashboard-body body-lg">
+  <v-container class="dashboard-body body-lg mt-10">
     <v-row>
-      <v-col cols="6">
-        <h1 class="mb-5 h1 font-weight-bold">ATAT Cloud Services</h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <h3 class="h3 mb-7">
+      <v-col cols="6" offset-lg="1">
+        <h1 class="mb-8">
           Welcome to the Account Tracking and Automation Tool, Maria!
-        </h3>
+        </h1>
         <div>
           <p>
             ATAT is your tool for provisioning new cloud resources across
@@ -69,7 +64,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="2">
+      <v-col offset-lg="1">
         <v-btn
           @click="handleClick"
           color="primary"

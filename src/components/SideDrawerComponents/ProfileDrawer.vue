@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mx-6">
-      <div class="h3">{{ user.given_name }} {{ user.family_name }}</div>
+      <div class="h2 mb-0">{{ user.given_name }} {{ user.family_name }}</div>
       <div class="text--base-dark body-xl">
         <div>
           {{ user.service_branch }}&nbsp;&nbsp;•&nbsp;&nbsp;{{

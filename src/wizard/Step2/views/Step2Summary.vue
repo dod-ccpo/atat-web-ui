@@ -33,30 +33,9 @@
     </section>
 
     <section title="Task Order FAQs" class="content-max-width">
-      <v-btn
-        @click="showAdditionalFundingText = !showAdditionalFundingText"
-        text
-        x-small
-        :ripple="false"
-        class="pl-0 primary--text mb-5"
-        id="Q_AddlFunding"
-        aria-controls="A_AddlFunding"
-        :aria-expanded="showAdditionalFundingText + ''"
-      >
-        <span class="link-body-md">
-          Can I add additional funding sources after my Portfolio is
-          provisioned?
-        </span>
-        <v-icon>
-          {{ showAdditionalFundingText ? "expand_less" : "expand_more" }}
-        </v-icon>
-      </v-btn>
-      <div
-        v-show="showAdditionalFundingText"
-        id="A_AddlFunding"
-        aria-labelledby="Q_AddlFunding"
-      >
-        <p>
+      <expandable-link
+        header="Can I add additional funding sources after my Portfolio is provisioned?"
+        content="<p>
           Yes. As the Portfolio Manager, you will be able add CLINs to existing
           Task Orders or add a new Task Order in the future. This will allow you
           to continue funding the Applications in this Portfolio after the
@@ -66,29 +45,13 @@
         <p>
           You will have the opportunity to invite other Portfolio Managers to
           help you manage funding for this Portfolio later.
-        </p>
-      </div>
+        </p>"
+      ></expandable-link>
 
-      <v-btn
-        @click="showPopText = !showPopText"
-        text
-        x-small
-        :ripple="false"
-        class="pl-0 primary--text mb-5"
-        id="Q_Expires"
-        aria-controls="A_Expires"
-        :aria-expanded="showPopText + ''"
-      >
-        <span class="link-body-md">
-          What happens to my Portfolio if the period of performance or obligated
-          funds expire?
-        </span>
-        <v-icon>
-          {{ showPopText ? "expand_less" : "expand_more" }}
-        </v-icon>
-      </v-btn>
-      <div v-show="showPopText" id="A_Expires" aria-labelledby="Q_Expires">
-        <p>
+      <expandable-link
+        header="What happens to my Portfolio if the period of performance or obligated
+          funds expire?"
+        content="<p>
           If your Portfolio’s period of performance expires or if you run out of
           obligated funds, your team members will not be able to access your
           Applications within the CSP console.
@@ -96,9 +59,8 @@
         <p>
           We will notify you when your funding sources are in danger of
           expiration, so that you have ample time to take action.
-        </p>
-      </div>
-
+        </p>"
+      ></expandable-link>
     </section>
   </div>
 </template>
@@ -112,13 +74,16 @@ import {
 } from "../../../../types/Wizard";
 import { Component } from "vue-property-decorator";
 import { addfunding, editfunding } from "../../../router/wizard";
+import ExpandableLink from "../../components/ExpandableLink.vue";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
-@Component({})
+@Component({
+  components: {
+    ExpandableLink,
+  },
+})
 export default class Step2Summary extends Vue {
-  private showPopText = false;
-  private showAdditionalFundingText = false;
   private async mounted(): Promise<void> {
     this.transformData();
   }

@@ -3,31 +3,25 @@
     <div v-if="editType === 'noEdit'">
       <v-row>
         <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-        <v-col class="pl-0" cols="12">
-          <h2 class="h2">Invite team members to your application</h2>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="pa-0 ma-0" cols="10">
-          <span>
-            <p class="body-lg text--base-darkest">
-              In this section, you will be able to invite people from your
-              application’s development team and assign permission levels, so
-              they can contribute to your workspaces within the
-              <span class="font-weight-bold">{{ csp }}</span> console.
-            </p>
-            <p class="body-lg text--base-darkest">
-              In order to invite team members, you must set up at least one
-              application within your portfolio. Please
-              <a
-                href="/wizard/addapplication"
-                class="link-body-md font-weight-bold"
-              >
-                add an application
-              </a>
-              to continue.
-            </p>
-          </span>
+        <v-col class="pl-0 content-max-width">
+          <h1>Invite team members to your application</h1>
+          <p class="body-lg text--base-darkest">
+            In this section, you will be able to invite people from your
+            application’s development team and assign permission levels, so
+            they can contribute to your workspaces within the
+            <span class="font-weight-bold">{{ csp }}</span> console.
+          </p>
+          <p class="body-lg text--base-darkest">
+            In order to invite team members, you must set up at least one
+            application within your portfolio. Please
+            <a
+              href="/wizard/addapplication"
+              class="link-body-md font-weight-bold"
+            >
+              add an application
+            </a>
+            to continue.
+          </p>
         </v-col>
       </v-row>
     </div>
@@ -53,7 +47,7 @@
               </v-icon>
             </v-btn>
             <div v-show="showPortfolioOwnerText">
-              <v-card-text class="h6 pb-0 ps-3">
+              <v-card-text class="h5 pb-0 ps-3">
                 <v-row>
                   <p class="body-lg text--base-darkest">
                     Portfolio owners are not automatically granted access to the
@@ -84,7 +78,7 @@
               </v-icon>
             </v-btn>
             <div v-show="teamPortfolioAccessText">
-              <v-card-text class="h6 pb-0 ps-3">
+              <v-card-text class="h5 pb-0 ps-3">
                 <v-row>
                   <p class="body-lg text--base-darkest">
                     No. These team members will only have access to the cloud
@@ -115,7 +109,7 @@
               </v-icon>
             </v-btn>
             <div v-show="teamPermissionsText">
-              <v-card-text class="h6 pb-0 ps-3">
+              <v-card-text class="h5 pb-0 ps-3">
                 <v-row>
                   <p class="body-lg text--base-darkest">
                     After provisioning, you will have the opportunity to invite
@@ -159,7 +153,7 @@
               </v-icon>
             </v-btn>
             <div v-show="teamExpectationText">
-              <v-card-text class="h6 pb-0 mb-12">
+              <v-card-text class="h5 pb-0 mb-12">
                 <v-row>
                   <ul class="body-lg text--base-darkest">
                     <li>

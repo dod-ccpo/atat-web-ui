@@ -2,7 +2,7 @@
   <div class="review-table">
     <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
       <v-card-title class="d-flex justify-space-between" @click="onEdit">
-        <span class="h4 justify-center">Task Order #{{ name }}</span>
+        <span class="h3 justify-center">Task Order #{{ name }}</span>
       </v-card-title>
       <v-card-subtitle class="d-flex justify-space-between" @click="onEdit">
         <v-btn class="pa-0 primary--text" text small :ripple="false">
@@ -13,11 +13,11 @@
         <v-btn
           text
           x-small
-          class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
+          class="v-btn text-decoration-none mt-1 mx-1 h5 primary--text"
           :ripple="false"
           @click="onEdit()"
         >
-          <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1">edit</v-icon>
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-subtitle>

@@ -18,13 +18,13 @@
                     <v-row>
                       <v-col
                         cols="1"
-                        class="h4 text--base-darkest pr-2"
+                        class="h3 text--base-darkest pr-2"
                         id="card_number"
                         >{{ card_number }}</v-col
                       >
                       <v-col
                         cols="10"
-                        class="mr-auto h4 text--base-darkest"
+                        class="mr-auto h3 text--base-darkest"
                         id="clin_number"
                         >{{ `CLIN ${clin_number}` }}</v-col
                       >
@@ -54,9 +54,12 @@
                               </v-col>
                             </v-row>
                             <v-row>
-                              <v-col class="optional body" id="idiq_clin">{{
-                                _idiq_clin
-                              }}</v-col>
+                              <v-col
+                                class="optional body text--base-darkest"
+                                id="idiq_clin"
+                              >
+                                {{ _idiq_clin }}
+                              </v-col>
                             </v-row>
                           </v-col>
                           <!-- Total Value -->
@@ -74,10 +77,11 @@
                             </v-row>
                             <v-row>
                               <v-col
-                                class="optional body"
+                                class="optional body text--base-darkest"
                                 id="total_clin_value"
-                                >{{ formatCurrency(total_clin_value) }}</v-col
                               >
+                                {{ formatCurrency(total_clin_value) }}
+                              </v-col>
                             </v-row>
                           </v-col>
 
@@ -96,10 +100,11 @@
                             </v-row>
                             <v-row>
                               <v-col
-                                class="optional body"
+                                class="optional body text--base-darkest"
                                 id="obligated_funds"
-                                >{{ formatCurrency(_obligated_funds) }}</v-col
                               >
+                                {{ formatCurrency(_obligated_funds) }}
+                              </v-col>
                             </v-row>
                           </v-col>
                           <!-- Period of Performance -->
@@ -117,7 +122,7 @@
                             </v-row>
                             <v-row>
                               <v-col
-                                class="optional body"
+                                class="optional body text--base-darkest"
                                 id="period_of_performance"
                                 v-if="_pop_start_date !== ''"
                               >
@@ -125,8 +130,8 @@
                                   `${formatDate(
                                     _pop_start_date
                                   )} - ${formatDate(_pop_end_date)}`
-                                }}</v-col
-                              >
+                                }}
+                              </v-col>
                             </v-row>
                           </v-col>
                         </v-row>
@@ -159,7 +164,7 @@
                 </v-row>
                 <v-row>
                   <v-col>
-                    <div class="h4 font-weight-bold my-3">CLIN Funding</div>
+                    <div class="h3 font-weight-bold my-3">CLIN Funding</div>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -185,7 +190,7 @@
                         prefix="$"
                       />
                       <div v-show="obligatedPercent <= 100">
-                        <span class="h4 font-weight-bold"
+                        <span class="h3 font-weight-bold"
                           >{{
                             obligatedPercent.split(".")[1] === "00"
                               ? obligatedPercent.split(".")[0]
@@ -208,7 +213,7 @@
                 </v-row>
                 <v-row>
                   <v-col cols="11">
-                    <div class="h4 font-weight-bold mt-6 my-4">
+                    <div class="h3 font-weight-bold mt-6 my-4">
                       Period of Performance (PoP)
                     </div>
                     <div
@@ -245,7 +250,7 @@
               </v-btn>
             </template>
             <v-card>
-              <v-card-title class="h3">
+              <v-card-title class="h2">
                 Remove CLIN {{ clin_number }}?
               </v-card-title>
               <v-card-text class="body-lg"
@@ -391,7 +396,7 @@ export default class ClinsCard extends Vue {
   }
 
   public formatDate(value: string): string {
-    return moment(new Date(`${value} 00:00:00`)).format("MMMM DD, YYYY");
+    return moment(new Date(`${value} 00:00:00`)).format("MMM DD, YYYY");
   }
 
   public JWCCContractEndDate = "09/14/2022";
@@ -584,8 +589,8 @@ export default class ClinsCard extends Vue {
         });
       }, 500);
     }
-  } 
-  
+  }
+
   @Watch("_pop_start_date")
   @Watch("_pop_end_date")
   validateDateFields(): void {

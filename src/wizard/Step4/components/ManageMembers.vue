@@ -15,7 +15,7 @@
     </v-navigation-drawer>
 
     <v-card-title>
-      <h3 id="modalHeading" class="mb-2 h3 firstFocus" tabindex="-1">
+      <h2 id="modalHeading" class="mb-2 firstFocus" tabindex="-1">
         <span v-if="!isEditSingle">
           Add
           <span v-if="isRootAdmin">root administrators</span>
@@ -28,7 +28,7 @@
           {{ memberToEditNameOriginal ? memberToEditNameOriginal : "Member" }}’s
           information
         </span>
-      </h3>
+      </h2>
     </v-card-title>
     <v-card-text class="body-lg text--base-darkest mt-2">
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -190,10 +190,10 @@
         <div v-if="!isRootAdmin">
           <v-divider class="my-8 width-40"></v-divider>
 
-          <h3>
+          <h2>
             <span v-if="isEditSingle"> Change Role </span>
             <span v-if="!isEditSingle">Team Member Roles</span>
-          </h3>
+          </h2>
           <p>
             Choose what type of role
             {{ isEditSingle ? "this individual" : "people" }} will have in
