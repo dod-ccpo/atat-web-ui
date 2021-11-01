@@ -121,13 +121,13 @@
                 transition="slide-y-transition"
                 offset-y
                 nudge-left="190"
-                tabindex="2"
+                tabindex="0"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     :disabled="isDisabled(item.workspace_roles)"
                     class="table-row-menu-button pa-0"
-                    tabindex="1"
+                    tabindex="0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
@@ -140,15 +140,14 @@
                 </template>
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
-                    tabindex="1"
+                    tabindex="0"
                     v-for="(item, i) in options"
                     :key="i"
+                    @click="tableOptionClick(item, $event)"
                   >
-                    <v-list-item-title
-                      @click="tableOptionClick(item, $event)"
-                      class="body-lg py-2"
-                      >{{ item }}</v-list-item-title
-                    >
+                    <v-list-item-title class="body-lg py-2">
+                      {{ item }}
+                    </v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>

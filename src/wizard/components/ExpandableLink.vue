@@ -12,9 +12,6 @@
       :aria-expanded="open + ''"
     >
       {{ header }}
-      <!-- <v-icon>
-        {{ open ? "expand_less" : "expand_more" }}
-      </v-icon> -->
     </a>
     <div v-show="open">
       <v-card-text class="pb-0">

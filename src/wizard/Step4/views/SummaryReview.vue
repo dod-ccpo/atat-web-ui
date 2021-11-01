@@ -26,10 +26,7 @@
       :items-per-page="-1"
     >
       <template v-slot:header.name="{ header }">
-        <div
-          class="label font-weight-bold text--base-dark mr-5"
-          tabindex="3"
-        >
+        <div class="label font-weight-bold text--base-dark mr-5" tabindex="0">
           {{ header.text }}
         </div>
       </template>
@@ -90,12 +87,12 @@
             transition="slide-y-transition"
             offset-y
             nudge-left="190"
-            tabindex="2"
+            tabindex="0"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 class="table-row-menu-button pa-0"
-                tabindex="1"
+                tabindex="0"
                 v-bind="attrs"
                 v-on="on"
                 @click="setApplication(item)"
@@ -105,14 +102,14 @@
             </template>
             <v-list class="table-row-menu pa-0">
               <v-list-item
-                tabindex="1"
+                tabindex="0"
                 v-for="(item, i) in isPortfolio(item)"
                 :key="i"
                 @click="handleMenuClick(item, $event)"
               >
-                <v-list-item-title class="body-lg py-2">{{
-                  item
-                }}</v-list-item-title>
+                <v-list-item-title class="body-lg py-2">
+                  {{ item }}
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>

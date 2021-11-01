@@ -112,12 +112,12 @@
                 transition="slide-y-transition"
                 offset-y
                 nudge-left="190"
-                tabindex="2"
+                tabindex="0"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="table-row-menu-button pa-0"
-                    tabindex="1"
+                    tabindex="0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
@@ -128,14 +128,12 @@
                 </template>
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
-                    tabindex="1"
+                    tabindex="0"
                     v-for="(item, i) in options"
                     :key="i"
+                    @click="tableOptionClick(item, $event)"
                   >
-                    <v-list-item-title
-                      @click="tableOptionClick(item, $event)"
-                      class="body-lg py-2"
-                    >
+                    <v-list-item-title class="body-lg py-2">
                       {{ item }}
                     </v-list-item-title>
                   </v-list-item>
@@ -248,7 +246,7 @@ export default class RootAdminView extends Vue {
   }
 
   //Dialog stuff
-  private okText = "Remove Team Member";
+  private okText = "Remove Root Administrator";
   private cardWidth = "40";
   private cancelText = "cancel";
   private hasDialog = true;
@@ -262,7 +260,8 @@ export default class RootAdminView extends Vue {
   private showDialogWhenClicked = false;
 
   private tableOptionClick(item: any, event: Event): void {
-    if (item.toLowerCase() === "remove team member") {
+
+  if (item.toLowerCase() === "remove root administrator") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
       this.showDialogWhenClicked = true;
