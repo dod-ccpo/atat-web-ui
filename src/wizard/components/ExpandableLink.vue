@@ -8,8 +8,9 @@
       :class="open ? 'open' : 'closed'"
       role="button"
       tabindex="0"
-      :aria-controls="ariaContentid"
+      :aria-controls="'content_' + ariaId"
       :aria-expanded="open + ''"
+      :id="'button_' + ariaId"
     >
       {{ header }}
     </a>
@@ -19,7 +20,7 @@
           <v-col class="content-max-width">
             <span
               class="body-lg"
-              :id="ariaContentid"
+              :id="'content_' + ariaId"
               :aria-hidden="!open + ''"
               v-html="content"
             ></span>
@@ -41,19 +42,9 @@ export default class ExpandableLink extends Vue {
   @Prop({ required: true }) header!: string;
   @Prop({ required: true }) content!: string;
 
-  get ariaButtonId(): string {
+  get ariaId(): string {
     return (
       "button_" +
-      this.header
-        .toLowerCase()
-        .substring(0, 30)
-        .replace(/[^A-Z0-9]+/gi, "_")
-    );
-  }
-
-  get ariaContentid(): string {
-    return (
-      "content_" +
       this.header
         .toLowerCase()
         .substring(0, 30)
