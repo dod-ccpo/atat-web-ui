@@ -6,9 +6,9 @@
       <p class="body-lg text--base-darkest">
         In this section, we will invite people to join your application teams,
         giving them access to your workspaces within the {{ csp }} console.
-        Select each application below to manage your team members. Please add
-        at least one person to each application to ensure your team can access
-        your provisioned cloud resources. When you are done, select
+        Select each application below to manage your team members. Please add at
+        least one person to each application to ensure your team can access your
+        provisioned cloud resources. When you are done, select
         <span class="font-weight-bold">Next: Review and Submit</span> to
         finalize your portfolio.
       </p>
