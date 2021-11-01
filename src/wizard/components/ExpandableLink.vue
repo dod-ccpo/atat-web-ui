@@ -1,22 +1,31 @@
 <template>
-  <div class="mb-5">
-    <v-btn
+  <div class="mb-5 body-lg">
+    <a
       @click="open = !open"
-      text
-      x-small
-      :ripple="false"
-      class="pl-0 primary--text"
+      @keydown.enter="open = !open"
+      @keydown.space="open = !open"
+      class="expandable-content-opener"
+      :class="open ? 'open' : 'closed'"
+      role="button"
+      tabindex="0"
+      :aria-controls="ariaContentid"
+      :aria-expanded="open + ''"
     >
-      <span class="link-body-md">{{ header }} </span>
-      <v-icon>
+      {{ header }}
+      <!-- <v-icon>
         {{ open ? "expand_less" : "expand_more" }}
-      </v-icon>
-    </v-btn>
+      </v-icon> -->
+    </a>
     <div v-show="open">
-      <v-card-text class="pb-0 w-60">
+      <v-card-text class="pb-0">
         <v-row class="mt-n5 ml-n7">
           <v-col class="content-max-width">
-            <span class="body-lg" v-html="content"></span>
+            <span
+              class="body-lg"
+              :id="ariaContentid"
+              :aria-hidden="!open + ''"
+              v-html="content"
+            ></span>
           </v-col>
         </v-row>
       </v-card-text>
@@ -34,5 +43,25 @@ export default class ExpandableLink extends Vue {
 
   @Prop({ required: true }) header!: string;
   @Prop({ required: true }) content!: string;
+
+  get ariaButtonId(): string {
+    return (
+      "button_" +
+      this.header
+        .toLowerCase()
+        .substring(0, 30)
+        .replace(/[^A-Z0-9]+/gi, "_")
+    );
+  }
+
+  get ariaContentid(): string {
+    return (
+      "content_" +
+      this.header
+        .toLowerCase()
+        .substring(0, 30)
+        .replace(/[^A-Z0-9]+/gi, "_")
+    );
+  }
 }
 </script>
