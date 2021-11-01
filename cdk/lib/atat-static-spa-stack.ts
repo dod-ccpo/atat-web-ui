@@ -23,6 +23,8 @@ export class StaticSiteStack extends cdk.Stack {
     const ssmPrefix = props.applicationName.toLowerCase();
     const site = new StaticSite(this, "StaticSite");
     this.bucket = site.websiteBucket;
+    // TODO: Remove this
+    this.workaroundToAllowDeveloperRoleToDeploy(site.deploymentPolicy);
 
     const proxy = new ApiGatewayProxy(this, "SiteProxy", {
       bucket: site.websiteBucket,
@@ -96,5 +98,28 @@ export class StaticSiteStack extends cdk.Stack {
         parameterName: `/${ssmPrefix}/${props.environmentId}/cognito/userpool/client/id`,
       })
     );
+  }
+
+  /**
+   * This allows developers to deploy the SPA when using the developer role
+   * instead of "being" the Deployment User.
+   *
+   * @param deploymentPolicy The policy that grants write the necessary deployment access
+   */
+  private workaroundToAllowDeveloperRoleToDeploy(
+    deploymentPolicy: iam.IManagedPolicy
+  ) {
+    // Ideally this would only work for sandbox environments but we don't have
+    // any way to identify those beyond a guess based on the name. When we add
+    // the ability for a full (including CDK) deployment to be done via the CI
+    // pipeline and potentially start deploying sandbox environments, we should
+    // consider removing this.
+    // TODO: This must not be kept in production-like environments.
+    const developerRole = iam.Role.fromRoleArn(
+      this,
+      "DeveloperRole",
+      cdk.Fn.importValue("AtatDeveloperRoleArn")
+    );
+    developerRole.addManagedPolicy(deploymentPolicy);
   }
 }

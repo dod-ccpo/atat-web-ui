@@ -6,6 +6,7 @@ import { Construct, Stack } from "@aws-cdk/core";
 export class StaticSite extends Construct {
   public readonly websiteBucket: s3.IBucket;
   public readonly deploymentUser: iam.IUser;
+  public readonly deploymentPolicy: iam.IManagedPolicy;
 
   constructor(parent: Stack, name: string) {
     super(parent, name);
@@ -19,14 +20,17 @@ export class StaticSite extends Construct {
     this.websiteBucket = siteBucket;
 
     const deploymentUser = new iam.User(this, "DeploymentUser");
+    const deploymentPolicy = new iam.ManagedPolicy(this, "SpaDeploymentPolicy");
+    deploymentUser.addManagedPolicy(deploymentPolicy);
+
     this.deploymentUser = deploymentUser;
-    deploymentUser.addToPolicy(
+    this.deploymentPolicy = deploymentPolicy;
+
+    deploymentPolicy.addStatements(
       new iam.PolicyStatement({
         resources: [siteBucket.bucketArn],
         actions: ["s3:ListBucket"],
-      })
-    );
-    deploymentUser.addToPolicy(
+      }),
       new iam.PolicyStatement({
         resources: [siteBucket.arnForObjects("*")],
         actions: ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
