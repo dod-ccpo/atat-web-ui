@@ -20,7 +20,6 @@
           :rules="rules.applicationName"
           :value.sync="_application.name"
           :helpText="applicationNameHelpText"
-          class="width-100"
           :validate-on-load="validateOnLoad"
         />
 

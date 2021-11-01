@@ -16,7 +16,7 @@
       <v-card-text class="pb-0 w-60">
         <v-row class="mt-n5 ml-n7">
           <v-col class="content-max-width">
-            <p class="body-lg text--base-darkest" v-html="content"></p>
+            <span class="body-lg" v-html="content"></span>
           </v-col>
         </v-row>
       </v-card-text>

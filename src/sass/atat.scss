@@ -57,10 +57,20 @@ body,html{
     }
 }
 
+
 fieldset:not([aria-hidden="true"]) {
     border: none;
     legend {
-        @extend .h2;
+        font-size: 2.4rem;
+        font-weight: 700;
         margin-bottom: 2.8rem;
+    }
+}
+.v-input__slot fieldset {
+    // reset vuetify's hidden fieldset used for input border
+    border: inherit;
+    legend {
+        font-weight: normal !important;
+        font-size: initial !important;
     }
 }

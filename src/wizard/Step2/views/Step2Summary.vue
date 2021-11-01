@@ -32,7 +32,7 @@
       </v-btn>
     </section>
 
-    <section title="Task Order FAQs" class="content-max-width">
+    <section title="Task Order FAQs" class="content-max-width" role="region">
       <expandable-link
         header="Can I add additional funding sources after my Portfolio is provisioned?"
         content="<p>
