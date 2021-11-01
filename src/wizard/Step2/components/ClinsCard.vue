@@ -225,7 +225,6 @@
                           :pop_end_date.sync="_pop_end_date"
                           :startDateRules.sync="popStartRules"
                           :endDateRules.sync="popEndRules"
-                          :allowedDates="allowedDates"
                           :nudgeleft="1"
                           :min="minDate"
                           :max="maxDate"
@@ -282,7 +281,6 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
-import ATATTextField from "@/components/ATATTextField.vue";
 @Component({
   components: {},
 })
@@ -296,6 +294,11 @@ export default class ClinsCard extends Vue {
   @PropSync("pop_end_date") _pop_end_date!: string;
 
   private datepickerTitle = "What is the PoP Start Date?";
+  private isDatePickerClicked = false;
+  get validateDatePicker(): boolean {
+    return this._pop_start_date !== "" || this._pop_end_date !== "";
+  }
+
   get isValidStartDate(): boolean {
     return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
       this._pop_start_date
@@ -367,24 +370,9 @@ export default class ClinsCard extends Vue {
   private progress: HTMLProgressElement | undefined;
   private minDate = "2020-10-01";
   private maxDate = "2022-09-30";
-
-  // public progressEvent(): void {
-  //   const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-  //   const width = (this._obligated_funds / this._total_clin_value) * 100;
-  //   if (progress) {
-  //     progress.style.width = width + "%";
-  //   }
-  //   this.obligatedPercent = width.toString();
-  // }
+  private validateFormWhenLeaving = false;
 
   public rules = {};
-
-  public allowedDates(val: string): boolean {
-    if (this._pop_start_date) {
-      return val >= new Date(this._pop_start_date).toISOString().substr(0, 10);
-    }
-    return true;
-  }
 
   public formatCurrency(value: number): string {
     return this.formatter.format(value);
@@ -394,7 +382,7 @@ export default class ClinsCard extends Vue {
     return moment(new Date(`${value} 00:00:00`)).format("MMMM DD, YYYY");
   }
 
-  public JWCCContractEndDate = "09/14/2022";
+  public JWCCContractEndDate = "2022-09-14";
 
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
@@ -482,7 +470,7 @@ export default class ClinsCard extends Vue {
   get popStartRules(): any[] {
     const validationRules = [];
     if (this._pop_start_date !== "") {
-      validationRules.push((v: string) => {
+      validationRules.push(() => {
         return (
           this.isValidStartDate ||
           "Please enter a start date using the format 'YYYY-MM-DD'"
@@ -504,19 +492,21 @@ export default class ClinsCard extends Vue {
         );
       }
     } else {
-      validationRules.push(
-        (v: string) =>
-          v !== "" ||
-          "Please enter the start date for your CLIN's period of performance"
-      );
+      if (this.validateFormWhenLeaving || !this.isDatePickerClicked) {
+        validationRules.push(
+          (v: string) =>
+            v !== "" ||
+            "Please enter the start date for your CLIN's period of performance"
+        );
+      }
     }
-    return validationRules;
+    return this.validateDatePicker ? validationRules : [];
   }
 
   get popEndRules(): any[] {
     const validationRules = [];
     if (this._pop_end_date !== "") {
-      validationRules.push((v: string) => {
+      validationRules.push(() => {
         return (
           this.isValidEndDate ||
           "Please enter an end date using the format 'YYYY-MM-DD'"
@@ -524,9 +514,9 @@ export default class ClinsCard extends Vue {
       });
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(
-          (v: string) =>
-            moment(v).isAfter(this._pop_start_date) ||
-            "The period of performance end date must be before the start date"
+          () =>
+            moment(this._pop_end_date).isAfter(this._pop_start_date) ||
+            "The period of performance end date must be after the start date"
         );
       }
       if (this.isValidEndDate) {
@@ -537,14 +527,15 @@ export default class ClinsCard extends Vue {
         );
       }
     } else {
-      validationRules.push(
-        (v: string) =>
-          v !== "" ||
-          "Please enter the end date for your CLIN's period of performance"
-      );
+      if (this.validateFormWhenLeaving || !this.isDatePickerClicked) {
+        validationRules.push(
+          (v: string) =>
+            v !== "" ||
+            "Please enter the end date for your CLIN's period of performance"
+        );
+      }
     }
-
-    return validationRules;
+    return this.validateDatePicker ? validationRules : [];
   }
 
   get correspondingIDIQRules(): any[] {
@@ -584,18 +575,20 @@ export default class ClinsCard extends Vue {
         });
       }, 500);
     }
-  } 
-  
-  @Watch("_pop_start_date")
-  @Watch("_pop_end_date")
-  validateDateFields(): void {
-    this.DateFields.validate();
   }
+
+  // @Watch("_pop_start_date")
+  // @Watch("_pop_end_date")
+  // validateDateFields(): void {
+  //   this.DateFields.validate();
+  // }
 
   public async validateForm(): Promise<boolean> {
     let validated = false;
+    this.validateFormWhenLeaving = true;
     await this.$nextTick(() => {
       validated = this.Form.validate();
+      this.validateFormWhenLeaving = false;
     });
     return validated;
   }
@@ -606,6 +599,26 @@ export default class ClinsCard extends Vue {
 
   private updated(): void {
     this.calculateObligatedPercent();
+  }
+
+  private async clinFormClicked(event: Event): Promise<void> {
+    const element = event.target as HTMLElement;
+    const clickedElement = document.getElementsByClassName(
+      "clin-datepicker-control"
+    )[0];
+    if (clickedElement) {
+      const clickedElementId = clickedElement.getAttribute("id") || "";
+      this.isDatePickerClicked =
+        element.closest("#" + clickedElementId) !== null;
+    }
+  }
+
+  private mounted(): void {
+    document.addEventListener("click", this.clinFormClicked);
+  }
+
+  private destroyed(): void {
+    document.removeEventListener("click", this.clinFormClicked);
   }
 }
 </script>

@@ -48,9 +48,9 @@
       <v-col cols="8">
         <h2 class="h2">Add Environments</h2>
         <p class="my-3">
-          Your application can have multiple environments for the various
-          stages of its life cycle. Production, Staging, Testing, and
-          Development environments are included by default. However, you can
+          Your application can have multiple environments for the various stages
+          of its life cycle. Production, Staging, Testing, and Development
+          environments are included by default. However, you can
           <strong>add</strong>, <strong>edit</strong>, and
           <strong>remove</strong>
           environments based on the needs of your application.

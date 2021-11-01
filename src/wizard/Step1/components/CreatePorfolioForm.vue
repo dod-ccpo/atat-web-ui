@@ -44,7 +44,6 @@
     </div>
     <v-row class="mt-0 pt-0">
       <v-col cols="6" class="py-0">
-
         <fieldset id="dod-component" class="atat-checkbox-list">
           <legend>
             <h3 class="h3 font-weight-bold pb-2">DoD Component</h3>
@@ -104,7 +103,6 @@
               </div>
             </label>
           </div>
-
         </fieldset>
       </v-col>
     </v-row>
