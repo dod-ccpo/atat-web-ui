@@ -43,13 +43,10 @@ export default class ExpandableLink extends Vue {
   @Prop({ required: true }) content!: string;
 
   get ariaId(): string {
-    return (
-      "button_" +
-      this.header
-        .toLowerCase()
-        .substring(0, 30)
-        .replace(/[^A-Z0-9]+/gi, "_")
-    );
+    return this.header
+      .toLowerCase()
+      .substring(0, 30)
+      .replace(/[^A-Z0-9]+/gi, "_");
   }
 }
 </script>
