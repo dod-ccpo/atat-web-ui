@@ -4,7 +4,7 @@
       <v-row>
         <div id="inputWidthFaker" ref="inputWidthFaker"></div>
         <v-col class="pl-0 content-max-width">
-          <h1>Invite team members to your application</h1>
+          <h1 tabindex="-1">Invite team members to your application</h1>
           <p class="body-lg text--base-darkest">
             In this section, you will be able to invite people from your
             application’s development team and assign permission levels, so

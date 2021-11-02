@@ -3,7 +3,7 @@
     <v-container fluid class="body-lg">
       <v-row>
         <v-col class="content-max-width">
-          <h1>Add a New Task Order</h1>
+          <h1 tabindex="-1">Add a New Task Order</h1>
           <p class="ma-0 mt-4 body-lg text--base-darkest">
             You will find this information in your awarded task order that funds
             your ATAT portfolio. If you have more than one task order, we will

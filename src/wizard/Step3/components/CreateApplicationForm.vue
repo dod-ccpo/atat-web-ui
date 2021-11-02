@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form" lazy-validation class="body-lg">
     <div class="content-max-width">
-      <h1>Let’s create your new application</h1>
+      <h1 tabindex="-1">Let’s create your new application</h1>
       <p>
         In this section, we’ll set up your cloud workspaces within
         <strong>{{ this.$store.getters.getPortfolio.csp }}</strong

@@ -1,6 +1,6 @@
 <template>
   <v-container class="mt-10">
-    <h1 class="text-center mb-10">Access the ATAT Cloud</h1>
+    <h1 tabindex="-1" class="text-center mb-10">Access the ATAT Cloud</h1>
     <v-row>
       <v-col class="d-flex justify-center py-2">
         <img

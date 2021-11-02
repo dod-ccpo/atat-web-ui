@@ -2,7 +2,9 @@
   <div class="body-lg">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
-      <h1>Let’s add root administrators to {{ portfolioName }}</h1>
+      <h1 tabindex="-1">
+        Let’s add root administrators to {{ portfolioName }}
+      </h1>
       <p>
         Invite your root administrators below to grant them full access to all
         of your applications. These individuals will receive an invitation

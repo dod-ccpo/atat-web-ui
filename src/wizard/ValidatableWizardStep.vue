@@ -56,14 +56,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     }
   }
 
-  public async updated(): Promise<void> {
-    // for 508 compliance in SPA, focus on first h1 of a new "page"
-    let h1 = document.getElementsByTagName("h1");
-    if (h1.length) {
-      h1[0].focus();
-    }
-  }
-
   public async beforeRouteEnter(
     to: Route,
     from: Route,

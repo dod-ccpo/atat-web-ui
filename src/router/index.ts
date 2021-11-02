@@ -94,4 +94,12 @@ router.beforeEach((to: Route, from: Route, next) => {
   next();
 });
 
+router.afterEach((to: Route, from: Route) => {
+  // debugger;
+  const h1 = document.getElementsByTagName("h1");
+  if (h1.length) {
+    h1[0].focus();
+  }
+});
+
 export default router;
