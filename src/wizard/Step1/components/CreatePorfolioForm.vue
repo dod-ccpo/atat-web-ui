@@ -2,7 +2,7 @@
   <v-form ref="form" lazy-validation>
     <v-row class="body-lg">
       <v-col cols="12" class="pb-8">
-        <h2 class="h2">Let’s start with some details about your portfolio</h2>
+        <h1 tabindex="-1">Let’s start with some details about your portfolio</h1>
         <p class="pt-4 mb-0">
           Your portfolio is a collection of your funding sources and
           applications within a single cloud service provider. If you would like

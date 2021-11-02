@@ -56,6 +56,15 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     }
   }
 
+  public async updated(): Promise<void> {
+    // for 508 compliance in SPA, focus on first h1 of a new "page"
+    debugger;
+    let h1 = document.getElementsByTagName("h1");
+    if (h1.length) {
+      h1[0].focus();
+    }
+  }
+
   public async beforeRouteEnter(
     to: Route,
     from: Route,
@@ -64,6 +73,10 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
     next((vm: ValidatableWizardStep<TModel>) => {
       //loads model before route enter
       vm.model = vm.$store.getters.getStepModel(vm.step);
+      if (vm.$route?.meta?.title) {
+        document.title = "ATAT | " + vm.$route.meta.title;
+      }
+      debugger;
     });
   }
 

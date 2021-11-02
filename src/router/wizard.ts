@@ -11,7 +11,8 @@ function CreateWizardRoute(
   wizardStep: RouteConfigSingleView,
   previous?: string,
   next?: string,
-  step?: number
+  step?: number,
+  title?: string
 ): RouteConfigSingleView {
   //adding metadata unique to wizard route
   wizardStep.meta = {
@@ -19,6 +20,7 @@ function CreateWizardRoute(
     next: next,
     previous: previous,
     step: step,
+    title: title,
   };
 
   return wizardStep;
@@ -27,6 +29,7 @@ function CreateWizardRoute(
 const addportfolio: RouteConfigSingleView = {
   path: "",
   name: "addportfolio",
+  title: "Add Portfolio",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"),
   props: {
@@ -37,6 +40,7 @@ const addportfolio: RouteConfigSingleView = {
 const addfunding: RouteConfigSingleView = {
   path: "addfunding",
   name: "addfunding",
+  title: "Add a New Task Order",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
   props: {
@@ -47,6 +51,7 @@ const addfunding: RouteConfigSingleView = {
 const fundingsummary: RouteConfigSingleView = {
   path: "fundingsummary",
   name: "fundingsummary",
+  title: "Your Task Order Summary",
   component: () =>
     import(
       /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2Summary.vue"
@@ -144,9 +149,9 @@ const wizard: RouteConfigSingleView = {
     import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
   children: [
     //main routes
-    CreateWizardRoute(addportfolio, undefined, addfunding.name, 1),
-    CreateWizardRoute(addfunding, addportfolio.name, fundingsummary.name, 2),
-    CreateWizardRoute(fundingsummary, addfunding.name, addapplication.name, 2),
+    CreateWizardRoute(addportfolio, undefined, addfunding.name, 1, addportfolio.title),
+    CreateWizardRoute(addfunding, addportfolio.name, fundingsummary.name, 2, addfunding.title),
+    CreateWizardRoute(fundingsummary, addfunding.name, addapplication.name, 2, fundingsummary.title),
     CreateWizardRoute(
       addapplication,
       fundingsummary.name,
