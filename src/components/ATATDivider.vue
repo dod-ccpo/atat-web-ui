@@ -1,18 +1,14 @@
 <template>
-  <v-divider />
+  <v-divider :style="{ width: width, margin: margin + ' 0' }" />
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
-export default class ATATDivider extends Vue {}
-</script>
-
-<style scoped>
-hr {
-  margin: 40px 0;
-  width: 200px;
+export default class ATATDivider extends Vue {
+  @Prop({ default: "40px" }) private margin!: string;
+  @Prop({ default: "200px" }) private width!: string;
 }
-</style>
+</script>

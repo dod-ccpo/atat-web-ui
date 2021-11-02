@@ -114,7 +114,8 @@
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span class="table-item d-flex flex-column">
-                    {{ item.pop_start_date }} - {{ item.pop_end_date }}
+                    {{ moment(item.pop_start_date).format("l") }} -
+                    {{ moment(item.pop_end_date).format("l") }}
                   </span>
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
@@ -150,8 +151,9 @@ export default class FundingTable extends Vue {
     this.$store.dispatch("editTaskOrder", this.id);
     this.$router.push({ name: "editfunding", params: { id: `${this.id}` } });
   }
-  public formatCurrency(value: number): string {
-    return this.formatter.format(value);
+  public formatCurrency(value: string): string {
+    const amount = Number(value.replace(",", ""));
+    return this.formatter.format(amount);
   }
   private formatter = new Intl.NumberFormat("en-US", {
     style: "currency",

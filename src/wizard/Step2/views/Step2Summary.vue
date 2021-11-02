@@ -73,8 +73,8 @@ import {
   TaskOrderModel,
 } from "../../../../types/Wizard";
 import { Component } from "vue-property-decorator";
-import { addfunding, editfunding } from "../../../router/wizard";
-import ExpandableLink from "../../components/ExpandableLink.vue";
+import { addfunding, editfunding } from "@/router/wizard";
+import ExpandableLink from "@/components/ExpandableLink.vue";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);

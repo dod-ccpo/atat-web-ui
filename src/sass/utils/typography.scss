@@ -158,6 +158,24 @@ p {
 }
 a {
     color: $primary;
+    .external-link {
+        position: relative;
+        padding-right: 24px;
+        display: inline-block;
+        white-space: nowrap;
+        text-decoration: underline;
+        &:after {
+            font-family: 'Material Icons';
+            content: "launch";
+            text-decoration: none !important;
+            -webkit-font-feature-settings: 'liga';
+            color: $primary;
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            font-size: 20px;
+        }
+    }
 }
 .text-decoration-none {
     text-decoration: none !important;

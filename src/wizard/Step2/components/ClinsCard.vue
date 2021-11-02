@@ -391,8 +391,9 @@ export default class ClinsCard extends Vue {
     return true;
   }
 
-  public formatCurrency(value: number): string {
-    return this.formatter.format(value);
+  public formatCurrency(value: string): string {
+    const amount = Number(value.replace(",", ""));
+    return this.formatter.format(amount);
   }
 
   public formatDate(value: string): string {

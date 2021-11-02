@@ -98,7 +98,7 @@ import { Component } from "vue-property-decorator";
 import ManageMembers from "@/wizard/Step4/components/ManageMembers.vue";
 import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
 import TeamView from "@/wizard/Step4/views/TeamView.vue";
-import ExpandableLink from "../../components/ExpandableLink.vue";
+import ExpandableLink from "@/components/ExpandableLink.vue";
 
 @Component({
   components: {

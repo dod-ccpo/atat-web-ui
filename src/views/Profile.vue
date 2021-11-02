@@ -37,24 +37,14 @@
                 To update the contact information associated with your CAC,
                 please visit the
                 <a
-                  class="ma-0 pa-1 text-decoration-none"
+                  class="ma-0 pa-1 external-link"
                   href="https://idco.dmdc.osd.mil/idco/"
                   target="_blank"
-                  rel="noopener"
-                  tabindex="0"
                 >
-                  <span class="link-body-md font-weight-400"
-                    >ID Card Office Online (IDCO)</span
-                  >
-                  <v-icon
-                    aria-hidden="true"
-                    small
-                    class="mt-n2 ml-1 icon-22 text-decoration-none"
-                  >
-                    launch
-                  </v-icon>
+                  ID Card Office Online (IDCO)
+                  <span class="external-link">website</span>
                 </a>
-                website and select the <strong>My Profile</strong> option (DS
+                and select the <strong>My Profile</strong> option (DS
                 Logon or CAC required). It can take up to 48 hours for your
                 information to be updated within ATAT after you make changes.
               </v-col>

@@ -45,7 +45,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
-import ExpandableLink from "../../components/ExpandableLink.vue";
+import ExpandableLink from "@/components/ExpandableLink.vue";
 
 import {
   ATATSummaryCardGroupedItems,
