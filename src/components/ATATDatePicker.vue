@@ -131,6 +131,7 @@
               tabindex="0"
               @click:date="setDate"
               :picker-date.sync="firstMonth"
+              value="firstMonth"
               transition="false"
               class="first-month"
             />
@@ -139,16 +140,17 @@
               ref="secondMonth"
               :min="min"
               :max="max"
-              :show-current="true"
               v-model="getDateRange"
+              :show-current="true"
               :allowed-dates="allowedDates"
               range
-              tabindex="0"
               no-title
-              @click:date="setDate"
               :id="getId('secondMonthDatePicker')"
               scrollable
+              tabindex="0"
+              @click:date="setDate"
               :picker-date.sync="secondMonth"
+              value="secondMonth"
               transition="false"
               class="second-month"
             />
@@ -193,10 +195,28 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "2021-10-01" }) private max!: string;
 
   private menu = false;
-  private firstMonth = moment(new Date()).format("YYYY-MM-DD");
-  private secondMonth = moment(this.firstMonth)
-    .add(1, "M")
-    .format("YYYY-MM-DD");
+  private firstMonth: string =
+    moment(this.startDate).format("YYYY-MM-DD") ||
+    moment(new Date()).format("YYYY-MM-DD");
+  private secondMonth = moment(this.startDate).add(1, "M").format("YYYY-MM-DD");
+  // get firstMonth(): string {
+  //   return (
+  //     moment(this.startDate).format("YYYY-MM-DD") ||
+  //     moment(new Date()).format("YYYY-MM-DD")
+  //   );
+  // }
+
+  // set firstMonth(value: string) {
+  //   this.firstMonth = value;
+  // }
+
+  // get secondMonth(): string {
+  //   return moment(this.firstMonth).add(1, "M").format("YYYY-MM-DD");
+  // }
+  // set secondMonth(value: string) {
+  //   this.secondMonth = value;
+  // }
+
   private isFieldValid = false;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
@@ -289,6 +309,13 @@ export default class ATATDatePicker extends Vue {
       element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
     if (this.menu) {
       this.calendarClicked = true;
+      if (this.isDateValid(this.startDate) && this.isDateValid(this.endDate)) {
+        //set the style for start and end date buttons when datepicker is clicked
+        this.setStyleForStartDateAndEndDateButtons(
+          moment(this.startDate).startOf("month").format("YYYY-MM-DD"),
+          moment(this.startDate).add(1, "M").endOf("month").format("YYYY-MM-DD")
+        );
+      }
     } else {
       this.isStartTextBoxFocused = false;
       this.isEndTextBoxFocused = false;
@@ -443,68 +470,39 @@ export default class ATATDatePicker extends Vue {
     firstDayLeftMonth: string,
     lastDayRightMonth: string
   ): void {
+    console.log(firstDayLeftMonth + " --- " + lastDayRightMonth);
     setTimeout(() => {
-      console.log("left " + firstDayLeftMonth);
-      console.log("right " + lastDayRightMonth);
-      const isStart = this.isStartTextBoxFocused;
       if (this.isDateValid(this.startDate) && this.isDateValid(this.endDate)) {
-        const isSelectedDateDisplayed = moment(
-          isStart ? this.startDate : this.endDate
-        ).isBetween(firstDayLeftMonth, lastDayRightMonth);
-        console.log(isSelectedDateDisplayed);
-
         const displayedDPs = document.getElementsByClassName(
           "two-date-pickers"
         )[0] as HTMLElement;
+        if (displayedDPs) {
+          const activeDatePickerButtons =
+            displayedDPs.getElementsByClassName("v-btn--active");
 
-        const activeDatePickerButtons =
-          displayedDPs.getElementsByClassName("v-btn--active");
-        console.log(activeDatePickerButtons.length);
-        let selectedDateButton = activeDatePickerButtons[
-          isStart ? 0 : activeDatePickerButtons.length - 1
-        ] as HTMLButtonElement;
-        // console.log(activeDateRangeButtons.leng
-
-        selectedDateButton.classList.add(
-          isStart ? "date-picker-start-date" : "date-picker-end-date"
-        );
-        console.log(selectedDateButton);
+          const isStartDateDisplayed = moment(this.startDate).isBetween(
+            firstDayLeftMonth,
+            lastDayRightMonth,
+            undefined,
+            "[]"
+          );
+          if (isStartDateDisplayed) {
+            activeDatePickerButtons[0].classList.add("date-picker-start-date");
+          }
+          const isEndDateDisplayed = moment(this.endDate).isBetween(
+            firstDayLeftMonth,
+            lastDayRightMonth,
+            undefined,
+            "[]"
+          );
+          if (isEndDateDisplayed) {
+            activeDatePickerButtons[
+              activeDatePickerButtons.length - 1
+            ].classList.add("date-picker-end-date");
+          }
+        }
       }
     }, 500);
-  }
-
-  // when user dispalys menu with already set date range
-  // ensure selected start date and end date on datepicker
-  // is styled as styled as expected.
-  public isDateDisplayedCurrently(
-    selectedDate: string,
-    isStart: boolean
-  ): boolean {
-    const dateToCompare = isStart ? this.startDate : this.endDate;
-
-    // determines if day of selected date is currently displayed
-    const isSelectedDateDayDisplayed =
-      parseInt(selectedDate) === moment(dateToCompare).get("date");
-    if (!isSelectedDateDayDisplayed) {
-      return false;
-    }
-
-    const dateToCompareMonth = moment(dateToCompare).get("month");
-    const leftDatePickerMonth = moment(this.firstMonth).get("month");
-    const rightDatePickerMonth = moment(this.secondMonth).get("month");
-    //determines if month of selected date is
-    //currently displayed in first datepicker
-    if (dateToCompareMonth === leftDatePickerMonth) {
-      return true;
-    }
-
-    //determines if month of selected date is
-    //currently displayed in second datepicker
-    if (dateToCompareMonth === rightDatePickerMonth) {
-      return true;
-    }
-
-    return false;
   }
 
   public getErrorMessages(isStart: boolean): void {
@@ -544,8 +542,9 @@ export default class ATATDatePicker extends Vue {
 
   @Watch("firstMonth")
   protected getFirstMonth(newVal: string, oldVal: string): void {
-    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
+    newVal = moment(newVal).startOf("month").format("YYYY-MM-DD");
+    oldVal = moment(newVal).add(1, "M").format("YYYY-MM-DD");
+    console.log("firstMonth: (new) " + newVal + " (old) " + oldVal);
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (!this.isDatePickerAdvancing) {
@@ -564,8 +563,8 @@ export default class ATATDatePicker extends Vue {
 
   @Watch("secondMonth")
   protected getSecondMonth(newVal: string, oldVal: string): void {
-    newVal = newVal.length === 7 ? newVal + "-01" : newVal;
-    oldVal = oldVal.length === 7 ? oldVal + "-01" : oldVal;
+    newVal = moment(newVal).startOf("month").format("YYYY-MM-DD");
+    oldVal = moment(newVal).subtract(1, "M").format("YYYY-MM-DD");
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (this.isDatePickerAdvancing) {
@@ -584,6 +583,14 @@ export default class ATATDatePicker extends Vue {
 
   private mounted(): void {
     document.addEventListener("click", this.datepickerControlClicked);
+    if (this.isDateValid(this.startDate)) {
+      this.firstMonth = moment(
+        this.isDateValid(this.startDate) ? this.startDate : new Date()
+      ).format("YYYY-MM-DD");
+      this.secondMonth = moment(this.startDate)
+        .add(1, "M")
+        .format("YYYY-MM-DD");
+    }
   }
 
   private destroyed(): void {
