@@ -32,28 +32,19 @@
                   :ripple="false"
                   @click="leftButtonClicked(card)"
                   small
-                  class="h2 link-button no-focus-shift pa-0"
+                  class="
+                    h2
+                    link-button
+                    no-focus-shift
+                    pa-0
+                    icon-after--chevron-right
+                  "
                   :class="{ 'no-border': card.type === 'APPLICATION' }"
+                  :aria-label="'Edit ' + card.type + ' ' + card.title"
                 >
                   <div class="font-weight-bold">
                     {{ truncateText(card.title, 23) }}
                   </div>
-                </v-btn>
-                <v-btn
-                  small
-                  :ripple="false"
-                  @click="leftButtonClicked(card)"
-                  class="
-                    no-focus-shift
-                    pa-0
-                    no-text-decoration no-border
-                    link-button
-                    mx-n2
-                  "
-                >
-                  <v-icon v-if="card.showChevronRight" x-large>
-                    chevron_right
-                  </v-icon>
                 </v-btn>
               </div>
             </div>
@@ -106,6 +97,7 @@
               @click="leftButtonClicked(card)"
               :id="card.leftButtonText + '_' + index"
               :ripple="false"
+              :aria-label="card.leftButtonText + ' ' + card.type"
               >{{ card.leftButtonText }}</v-btn
             >
             <v-btn
@@ -123,6 +115,7 @@
               @click="rightButtonClicked(card)"
               :ripple="false"
               :id="card.rightButtonText + '_' + (index + 1)"
+              :aria-label="card.rightButtonText + ' ' + card.type"
               >{{ card.rightButtonText }}</v-btn
             >
           </v-card-actions>

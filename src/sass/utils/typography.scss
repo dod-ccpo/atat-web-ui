@@ -220,3 +220,19 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
         margin-bottom: 2.5rem;
     }
 }
+
+.icon-after--chevron-right {
+    position: relative;
+    padding-right: 24px;
+    &:after {
+        position: absolute;
+        content: "chevron_right";
+        font-family: "Material Icons";
+        -webkit-font-feature-settings: "liga";
+        right: -28px;
+        font-size: 28px;
+        font-weight: normal;
+        box-shadow: none;
+        color: $primary;
+    }
+}

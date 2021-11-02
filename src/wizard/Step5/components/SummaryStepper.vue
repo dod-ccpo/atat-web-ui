@@ -22,8 +22,10 @@
             >
               <a
                 role="button"
+                tabindex="0"
                 class="h2 mb-0 step-description black--text no-text-decoration"
                 @click="stepperClicked('step0' + (index + 1))"
+                :aria-label="'Expand ' + step.title + ' summary'"
               >
                 {{ step.title }}
               </a>

@@ -49,12 +49,20 @@
           >
           <a
             @click="handleNameClick(item)"
+            @keydown.enter="handleNameClick(item)"
+            @keydown.space="handleNameClick(item)"
+            tabindex="0"
             class="
               body
               font-weight-bold
               py-3
               primary-text
               text-no-wrap text-truncate
+            "
+            :aria-label="
+              item.name +
+              ' - manage ' +
+              (item.portfolio ? 'root administrators' : 'team members')
             "
           >
             <div class="d-flex align-center justify-between">
@@ -96,6 +104,10 @@
                 v-bind="attrs"
                 v-on="on"
                 @click="setApplication(item)"
+                :aria-label="
+                  'View or Add ' +
+                  (item.portfolio ? 'root administrators' : 'team members')
+                "
               >
                 <v-icon class="icon-18 width-auto">more_horiz</v-icon>
               </v-btn>

@@ -52,6 +52,7 @@
           class="primary"
           :ripple="false"
           @click="authorizeUser(true)"
+          aria-label="Yes, I am authorized."
         >
           Yes
         </v-btn>
@@ -60,6 +61,7 @@
           class="primary"
           :ripple="false"
           @click="authorizeUser(false)"
+          aria-label="No, I am not authorized."
         >
           No
         </v-btn>

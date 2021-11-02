@@ -24,6 +24,7 @@
             x-small
             v-on="on"
             :ripple="false"
+            :aria-label="'Help for ' + label"
             ><v-icon class="icon-20 ma-0 pa-0" small color="primary"
               >help_outline
             </v-icon>
@@ -78,8 +79,9 @@
             class="pointer icon-24 pa-1 ml-2"
             :class="[isErrored ? 'mb-1' : 'mb-0']"
             @click="$emit('deleteItem', id)"
+            :aria-label="'Delete ' + _value"
           >
-            <v-icon>delete </v-icon>
+            <v-icon aria-hidden="true">delete </v-icon>
           </v-btn>
         </div>
       </div>
