@@ -45,7 +45,7 @@ import PortfolioSummary from "./PortfolioSummary.vue";
 })
 export default class ViewPortfolio extends Vue {
   get portfolios(): PortfolioDraft[] {
-    return this.$store.state.portfolioDrafts;
+    return this.$store.state.portfolioDrafts
   }
   private async loadPortfolioDrafts() {
     // this.portfolios = await await this.getPortfolios();

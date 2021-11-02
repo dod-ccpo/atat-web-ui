@@ -9,19 +9,18 @@ import {
   EnvironmentModel,
   Operator,
   OperatorModel,
-  Portfolio,
-  PortfolioDraft,
   TaskOrder,
 } from "types/Portfolios";
-import PortfolioDraftsApi from "@/api/portfolios";
+import { portfoliosApi } from "@/api";
 import { TaskOrderModel } from "types/Wizard";
 import { generateUid } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
 import moment from "moment";
 
-Vue.use(Vuex);
+import portfolios from "./modules/portfolios";
+import PortfoliosStoreState from "./modules/portfolios/PortfolioStoreState";
 
-const portfolioDraftsApi = new PortfolioDraftsApi();
+Vue.use(Vuex);
 
 const vuexLocalStorage = new VuexPersist({
   key: "vuex", // The key to store the state on in the storage provider.
@@ -227,7 +226,11 @@ const StepModelIndices: Record<number, number> = {
 █████████████████████████████████████████
 */
 
-export default new Vuex.Store({
+class ATATStore extends Vuex.Store<any> {
+   portfolios!: PortfoliosStoreState;
+}
+
+export default new ATATStore({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
@@ -244,8 +247,6 @@ export default new Vuex.Store({
       height: "",
       props: null,
     },
-    portfolioDrafts: [],
-    portfolios: [],
     taskOrderModels: [],
     applicationModels: [],
     portfolioOperators: [],
@@ -404,7 +405,7 @@ export default new Vuex.Store({
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
     setStepValidated(state, step: number) {
-      state.erroredSteps = state.erroredSteps.filter((es) => es !== step);
+      state.erroredSteps = state.erroredSteps.filter((es: number) => es !== step);
     },
     doSetCurrentStepNumber(state, step: number) {
       state.currentStepNumber = step;
@@ -419,7 +420,7 @@ export default new Vuex.Store({
      */
     doSaveStepModel(state, [model, stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
+        (x: { step: any }) => x.step === stepNumber
       );
 
       Vue.set(state.portfolioSteps[stepIndex], "model", model);
@@ -441,7 +442,7 @@ export default new Vuex.Store({
      */
     doInitializeStepModel(state, [model, stepNumber]) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
+        (x: { step: any; }) => x.step === stepNumber
       );
 
       Vue.set(state.portfolioSteps[stepIndex], "model", model);
@@ -450,7 +451,7 @@ export default new Vuex.Store({
     },
     doUpdateStepModelValidity(state, [stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
+        (x: { step: any; }) => x.step === stepNumber
       );
 
       Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
@@ -474,7 +475,7 @@ export default new Vuex.Store({
 
       initial.forEach((step) => {
         const stepIndex = state.portfolioSteps.findIndex(
-          (x) => x.step === step.step
+          (x: { step: number; }) => x.step === step.step
         );
 
         Vue.set(state.portfolioSteps[stepIndex], "model", step.model());
@@ -503,18 +504,6 @@ export default new Vuex.Store({
     },
     doSetApplicationId(state, id) {
       state.currentApplicationId = id;
-    },
-    updatePortfolioDrafts(state, portfolioDrafts: PortfolioDraft[]) {
-      Vue.set(state, "portfolioDrafts", [...portfolioDrafts]);
-    },
-    doDeletePortfolioDraft(state, draftId: string) {
-      const portfololioIndex = state.portfolios.findIndex(
-        (p: Portfolio) => p.id === draftId
-      );
-
-      if (portfololioIndex > -1) {
-        state.portfolios.splice(portfololioIndex, 1);
-      }
     },
     setNavSideBarDisplayed(state, routeName: string) {
       if (routeName) {
@@ -814,10 +803,7 @@ export default new Vuex.Store({
           task_orders: mapTaskOrders(state.taskOrderModels),
         };
 
-        await portfolioDraftsApi.saveFunding(
-          state.currentPortfolioId,
-          taskOrders
-        );
+        await portfoliosApi.saveFunding(state.currentPortfolioId, taskOrders);
       } catch (error) {
         console.log(error);
       }
@@ -863,10 +849,7 @@ export default new Vuex.Store({
           applications: _applications,
         };
 
-        await portfolioDraftsApi.saveApplications(
-          state.currentPortfolioId,
-          data
-        );
+        await portfoliosApi.saveApplications(state.currentPortfolioId, data);
       } catch (error) {
         console.log(error);
       }
@@ -894,7 +877,7 @@ export default new Vuex.Store({
      */
     async saveStepData({ state }, stepNumber) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
+        (x: { step: any; }) => x.step === stepNumber
       );
       const step = state.portfolioSteps[stepIndex];
       switch (stepNumber as number) {
@@ -915,10 +898,6 @@ export default new Vuex.Store({
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
-    async loadPortfolioDrafts({ commit }) {
-      const portfolioDrafts = await portfolioDraftsApi.getAll();
-      commit("updatePortfolioDrafts", portfolioDrafts);
-    },
     async saveStep1({ state, commit }, model: any) {
       // build data from step model
       const data = {
@@ -929,7 +908,7 @@ export default new Vuex.Store({
         portfolio_managers: [],
       };
 
-      await portfolioDraftsApi.savePortfolio(state.currentPortfolioId, data);
+      await portfoliosApi.savePortfolio(state.currentPortfolioId, data);
     },
     async saveStep2({ state }, model: TaskOrderModel) {
       const isNew = model.id === "";
@@ -958,10 +937,7 @@ export default new Vuex.Store({
         task_orders: mapTaskOrders(state.taskOrderModels),
       };
 
-      await portfolioDraftsApi.saveFunding(
-        state.currentPortfolioId,
-        taskOrders
-      );
+      await portfoliosApi.saveFunding(state.currentPortfolioId, taskOrders);
 
       //set the model signed value to true after saving to server
       if (isNew) {
@@ -995,7 +971,7 @@ export default new Vuex.Store({
         applications: applications,
       };
 
-      await portfolioDraftsApi.saveApplications(state.currentPortfolioId, data);
+      await portfoliosApi.saveApplications(state.currentPortfolioId, data);
     },
     async saveStep4({ state }) {
       const applications = mapApplications(state.applicationModels);
@@ -1006,7 +982,7 @@ export default new Vuex.Store({
         applications: applications,
       };
 
-      await portfolioDraftsApi.saveApplications(state.currentPortfolioId, data);
+      await portfoliosApi.saveApplications(state.currentPortfolioId, data);
     },
     /**
      * Saves all valid step models with changes
@@ -1020,7 +996,7 @@ export default new Vuex.Store({
       // an array of promises to hold each step save api call
       const saveActions: unknown[] = [];
       // iterate over portfolio steps model and push valid models to save actions
-      state.portfolioSteps.forEach((step) => {
+      state.portfolioSteps.forEach((step: { touched: any; valid: any; step: any; }) => {
         // only save models that have changes and are valid
         if (step.touched && step.valid) {
           saveActions.push(this.dispatch("saveStepData", step.step));
@@ -1038,11 +1014,11 @@ export default new Vuex.Store({
     async createPortfolioDraft({ commit }): Promise<void> {
       //initialize steps models
       commit("doInitializeSteps");
-      const portfolioDraftId = await portfolioDraftsApi.createDraft();
+      const portfolioDraftId = await portfoliosApi.createDraft();
       commit("doSetCurrentPortfolioId", portfolioDraftId);
     },
     async deletePortfolioDraft({ commit }, draftId: string): Promise<void> {
-      await portfolioDraftsApi.deleteDraft(draftId);
+      await portfoliosApi.deleteDraft(draftId);
       commit("doDeletePortfolioDraft", draftId);
     },
     async loadPortfolioDraft({ commit }, draftId: string): Promise<void> {
@@ -1050,7 +1026,7 @@ export default new Vuex.Store({
       commit("doInitializeSteps");
 
       //validate that portfolio draft id exists on the server
-      const id = await portfolioDraftsApi.getDraft(draftId);
+      const id = await portfoliosApi.getDraft(draftId);
 
       if (id === null) {
         throw new Error(`unable to locate portfolio draft with ${id}`);
@@ -1066,7 +1042,7 @@ export default new Vuex.Store({
       await Promise.all(loadActions);
     },
     async loadStep1Data({ commit }, draftId: string): Promise<void> {
-      const draft = await portfolioDraftsApi.getPortfolio(draftId);
+      const draft = await portfoliosApi.getPortfolio(draftId);
       if (draft) {
         const step1Model = {
           name: draft.name,
@@ -1081,7 +1057,7 @@ export default new Vuex.Store({
     },
     async loadStep2Data({ commit }, draftId: string): Promise<void> {
       // get funding details
-      const taskOrders = await portfolioDraftsApi.getFunding(draftId);
+      const taskOrders = await portfoliosApi.getFunding(draftId);
 
       if (taskOrders !== null) {
         //store the tasks orders
@@ -1090,7 +1066,7 @@ export default new Vuex.Store({
       }
     },
     async loadStep3Data({ commit }, draftId: string): Promise<void> {
-      const applicationData = await portfolioDraftsApi.getApplications(draftId);
+      const applicationData = await portfoliosApi.getApplications(draftId);
       if (applicationData != null) {
         //store the applications
         commit("setCurrentApplications", applicationData.applications);
@@ -1205,7 +1181,6 @@ export default new Vuex.Store({
       ]);
     },
   },
-  modules: {},
   /*
   ██████████████████████████████████████████████████████████
 
@@ -1220,7 +1195,7 @@ export default new Vuex.Store({
   getters: {
     getInvalidSteps(state) {
       const invalidSteps: number[] = [];
-      state.portfolioSteps.forEach((step) => {
+      state.portfolioSteps.forEach((step: { step: number; touched: boolean; valid: boolean; }) => {
         // EJY TODO - fix logic to be step.step < 5 after step 4 validation is working
         if (step.step < 4 && (step.touched === false || step.valid === false)) {
           invalidSteps.push(step.step);
@@ -1280,27 +1255,6 @@ export default new Vuex.Store({
         },
       };
     },
-    getAllPortfolios(state) {
-      return state.portfolios;
-    },
-    getPortfolioById: (state) => (id: string) => {
-      const values = Object.values(state.portfolioDrafts);
-      const portfoliobyId = values.filter(
-        (portfolio: Portfolio) => portfolio.id === id
-      );
-      if (portfoliobyId.length > 0) {
-        return portfoliobyId[0];
-      } else {
-        return {};
-      }
-    },
-    deletePortfolioById: (state) => (id: string) => {
-      const values = Object.values(state.portfolios);
-      const portfolios = values.filter(
-        (portfolio: Portfolio) => portfolio.id === id
-      );
-      return portfolios;
-    },
     getMockTaskOrders() {
       return mockTaskOrders;
     },
@@ -1313,7 +1267,7 @@ export default new Vuex.Store({
     getCurrentStepModel: (state) => state.currentStepModel,
     getStepTouched: (state) => (stepNumber: number) => {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
+        (x: { step: number; }) => x.step === stepNumber
       );
       return state.portfolioSteps[stepIndex].touched;
     },
@@ -1350,5 +1304,8 @@ export default new Vuex.Store({
       return state.applicationModels[applicationIndex];
     },
     getPortfolioOperators: (state) => state.portfolioOperators,
+  },
+  modules: {
+    portfolios,
   },
 });
