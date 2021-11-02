@@ -20,7 +20,7 @@
             width="10px"
           ></v-img>
           <v-btn
-            class="text--primary link-button h6 pa-0 ma-0 ml-1"
+            class="text--primary link-button h5 pa-0 ma-0 ml-1"
             @click.stop="show = !show"
             plain
             x-small
@@ -38,7 +38,7 @@
             width="10px"
           ></v-img>
           <v-btn
-            class="text--primary link-button h6 pa-0 ma-0 ml-1"
+            class="text--primary link-button h5 pa-0 ma-0 ml-1"
             tabindex="3"
             plain
             x-small

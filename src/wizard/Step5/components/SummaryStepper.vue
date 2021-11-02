@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-stepper
           :flat="true"
-          class="summary-stepper width-100"
+          class="summary-stepper width-100 bg-transparent"
           v-model="_stepNumber"
           vertical
           non-linear
@@ -21,8 +21,8 @@
               :ref="'step' + index + 1"
             >
               <a
-                href="##"
-                class="h3 step-description black--text no-text-decoration"
+                role="button"
+                class="h2 mb-0 step-description black--text no-text-decoration"
                 @click="stepperClicked('step0' + (index + 1))"
               >
                 {{ step.title }}

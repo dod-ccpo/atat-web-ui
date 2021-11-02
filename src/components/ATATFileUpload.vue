@@ -131,17 +131,19 @@
                       href="##"
                       class="text-truncate"
                       style="min-width: 200px; width: 300px; max-width: 300px"
-                      >{{ _pdfFile.name }}</a
-                    >
+                      >{{ _pdfFile.name }}
+                      <span
+                        aria-hidden="true"
+                        class="external-link text-decoration-none"
+                        >&nbsp;</span
+                      >
+                    </a>
                   </div>
-                  <v-btn class="link-button no-border mr-5">
-                    <v-icon>launch</v-icon>
-                  </v-btn>
                   <v-btn
                     outlined
                     :ripple="false"
                     id="remove_file"
-                    class="error-button"
+                    class="error-button ml-2"
                     @click.stop="removeFile(item.name)"
                   >
                     Remove

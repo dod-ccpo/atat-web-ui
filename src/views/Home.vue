@@ -1,8 +1,6 @@
 <template>
-  <v-container>
-    <div class="text-center mb-10 h1 font-weight-bold">
-      Access the ATAT Cloud
-    </div>
+  <v-container class="mt-10">
+    <h1 class="text-center mb-10">Access the ATAT Cloud</h1>
     <v-row>
       <v-col class="d-flex justify-center py-2">
         <img
@@ -40,7 +38,7 @@
           border="left"
           width="600"
         >
-          <div class="black--text h3">Certificate Selection</div>
+          <div class="black--text h2">Certificate Selection</div>
           <div class="black--text body-lg">
             When you are prompted to select a certificate, please select an
             <br />

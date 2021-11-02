@@ -2,10 +2,10 @@
   <v-container fluid class="width-80 ml-0 mb-10">
     <v-row>
       <v-col col="12">
-        <div class="h2">
+        <h1>
           Are you authorized to spend government funds to provision cloud
           resources for your organization?
-        </div>
+        </h1>
       </v-col>
     </v-row>
     <v-row>
@@ -80,7 +80,7 @@
               <div class="d-flex align-start">
                 <v-icon class="ml-5 mr-4 mt-1 icon-20">error</v-icon>
                 <div>
-                  <div class="h3 black--text">
+                  <div class="h2 black--text">
                     You must be authorized to submit this portfolio
                   </div>
                   <div class="body-lg black--text mt-1">

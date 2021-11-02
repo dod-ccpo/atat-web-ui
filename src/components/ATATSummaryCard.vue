@@ -14,7 +14,7 @@
         <v-card
           v-show="data.cards.length > 0"
           :width="`${cardWidth}rem`"
-          class="v-card ma-9 ml-0 body"
+          class="v-card mb-8 ml-0 body"
         >
           <v-card-title
             class="d-flex justify-space-between align-start pa-6 pb-5"
@@ -32,7 +32,7 @@
                   :ripple="false"
                   @click="leftButtonClicked(card)"
                   small
-                  class="h3 link-button no-focus-shift pa-0"
+                  class="h2 link-button no-focus-shift pa-0"
                   :class="{ 'no-border': card.type === 'APPLICATION' }"
                 >
                   <div class="font-weight-bold">

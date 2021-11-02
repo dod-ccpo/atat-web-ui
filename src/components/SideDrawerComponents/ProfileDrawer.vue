@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mx-6">
-      <div class="h3">{{ user.given_name }} {{ user.family_name }}</div>
+      <div class="h2 mb-0">{{ user.given_name }} {{ user.family_name }}</div>
       <div class="text--base-dark body-xl">
         <div>
           {{ user.service_branch }}&nbsp;&nbsp;•&nbsp;&nbsp;{{
@@ -60,21 +60,11 @@
               <div class="black--text body-lg ml-4">
                 To update the contact information associated with your CAC,
                 please visit the
-                <a
-                  class="ma-0 pa-0 text-decoration-none"
-                  href="https://idco.dmdc.osd.mil/idco/"
-                  target="_blank"
-                  tabindex="3"
-                  rel="noopener"
-                >
-                  <span class="link-body-md font-weight-400"
-                    >ID Card Office Online (IDCO)</span
-                  >
-                  <v-icon small class="mt-n2 ml-1 icon-22 text-decoration-none"
-                    >launch</v-icon
-                  >
+                <a href="https://idco.dmdc.osd.mil/idco/" target="_blank">
+                  ID Card Office Online (IDCO)
+                  <span class="external-link">website</span>
                 </a>
-                website and select the <strong>My Profile</strong> option (DS
+                and select the <strong>My Profile</strong> option (DS
                 Logon or CAC required). It can take up to 48 hours for your
                 information to be updated within ATAT after you make changes.
               </div>
@@ -82,73 +72,48 @@
           </v-alert>
         </div>
       </div>
-      <div class="ma-0 mb-5">
-        <div class="pl-0">
-          <v-btn
-            @click="contactInfoTip = !contactInfoTip"
-            text
-            x-small
-            :ripple="false"
-            class="pl-0 primary--text"
-            tabindex="3"
-          >
-            <span class="link-body-md">
-              How will my contact information be used?
-            </span>
-            <v-icon>
-              {{ contactInfoTip ? "expand_less" : "expand_more" }}
-            </v-icon>
-          </v-btn>
-          <div v-show="contactInfoTip" class="mt-2">
-            We will send email notifications to let you know when your funding
+
+      <expandable-link
+        header="How will my contact information be used?"
+        content="<p>We will send email notifications to let you know when your funding
             or period of performance is close to expiring. This will allow you
             to add additional task orders and keep your portfolios active.
-            <br /><br />
+          </p>
+          <p>
             Our administrators may also use this information to contact you, in
             the event that there are issues with your cloud resources or
             funding.
-          </div>
-        </div>
-      </div>
-      <div class="ma-0">
-        <div class="pl-0" cols="10">
-          <v-btn
-            @click="updateProfileTip = !updateProfileTip"
-            text
-            x-small
-            :ripple="false"
-            class="pl-0 primary--text"
-            tabindex="3"
-          >
-            <span class="link-body-md">
-              Why can’t I update my profile in ATAT?
-            </span>
-            <v-icon>
-              {{ updateProfileTip ? "expand_less" : "expand_more" }}
-            </v-icon>
-          </v-btn>
-          <div v-show="updateProfileTip" class="mt-2">
-            ATAT uses Global Directory for CAC authentication. GD is an
+          </p>"
+      />
+
+      <expandable-link
+        header="Why can’t I update my profile in ATAT?"
+        content="<p>ATAT uses Global Directory for CAC authentication. GD is an
             enterprise identity solution that provides a trusted single source
             of truth for digital authentication for every DoD employee.
-            <br /><br />
+          </p>
+          <p>
             When you update your contact information on the
-            <a href="https://idco.dmdc.osd.mil/idco/" class="link-body-md"
-              >ID Card Office Online (IDCO) website</a
-            >, it is automatically updated anywhere you use your CAC, saving you
-            the time and hassle of updating your information on multiple DoD
-            websites.
-          </div>
-        </div>
-      </div>
+            <a href='https://idco.dmdc.osd.mil/idco/' target='_blank'>ID Card Office
+            Online (IDCO) <span class='external-link'>website</span></a>, it is automatically updated anywhere you use
+            your CAC, saving you the time and hassle of updating your information on multiple DoD
+            websites."
+      />
+
     </div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-
 import { Component, Prop } from "vue-property-decorator";
-@Component({})
+import ExpandableLink from "@/components/ExpandableLink.vue";
+
+@Component({
+  components: {
+    ExpandableLink,
+  },
+})
+
 export default class Profile extends Vue {
   @Prop() private scrollableDivHeight!: number;
   private contactInfoTip = false;
