@@ -151,7 +151,7 @@
     &.step-description{
       color: $base_darkest !important;
       font-weight: 700 !important;
-      @extend .h3;
+      @extend .h2;
     }
   }
 }
@@ -190,7 +190,11 @@
     }
 
     .v-stepper__content {
-      border-left: 8px solid #D9E8F6 !important;
+      border-left: 8px solid $primary_lighter !important;
     }
   }
+}
+
+.v-application--is-ltr .v-stepper--vertical .v-stepper__content {
+  margin: -8px -36px -16px 40px !important;
 }

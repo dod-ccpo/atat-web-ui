@@ -1,9 +1,9 @@
 <template>
-  <v-form ref="form" lazy-validation>
-    <v-row class="body-lg">
-      <v-col cols="12" class="pb-8">
-        <h1 tabindex="-1">Let’s start with some details about your portfolio</h1>
-        <p class="pt-4 mb-0">
+  <v-form ref="form" lazy-validation class="content-max-width body-lg">
+    <v-row>
+      <v-col class="mb-4">
+        <h1>Let’s start with some details about your portfolio</h1>
+        <p>
           Your portfolio is a collection of your funding sources and
           applications within a single cloud service provider. If you would like
           like to create a multi-cloud application with environments deployed
@@ -14,7 +14,7 @@
       </v-col>
     </v-row>
     <v-row class="mt-0 pt-0">
-      <v-col cols="6" class="py-0">
+      <v-col class="py-0 input-max-width">
         <atat-text-field
           id="portfolio-name"
           label="Portfolio Name"
@@ -35,20 +35,14 @@
         />
       </v-col>
     </v-row>
-    <div class="py-10">
-      <v-row>
-        <v-col cols="4">
-          <v-divider></v-divider>
-        </v-col>
-      </v-row>
-    </div>
+
+    <atat-divider />
+
     <v-row class="mt-0 pt-0">
-      <v-col cols="6" class="py-0">
+      <v-col class="py-0 input-max-width">
 
         <fieldset id="dod-component" class="atat-checkbox-list">
-          <legend>
-            <h3 class="h3 font-weight-bold pb-2">DoD Component</h3>
-          </legend>
+          <legend>DoD Component</legend>
           <p>
             Select the DoD component(s) that will fund all applications within
             this portfolio. Multiple DoD organizations can fund the same
@@ -116,8 +110,14 @@ import { ValidatableForm } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import dodComponents from "../../../data/dodComponents";
+import ATATDivider from "@/components/ATATDivider.vue"
 
-@Component({})
+@Component({
+  components: {
+    "atat-divider": ATATDivider,
+  },
+})
+
 export default class CreatePortfolioForm
   extends Vue
   implements ValidatableForm

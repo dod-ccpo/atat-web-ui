@@ -111,7 +111,7 @@
         :close-on-click="!menu"
       >
         <div class="two-date-pickers pa-6">
-          <div class="h4">
+          <div class="h3">
             {{ _title }}
           </div>
           <hr class="mt-6 mb-4" />
