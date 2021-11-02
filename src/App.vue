@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <SecurityBanner />
     <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
     <SideDrawer v-if="loginStatus" />
     <ATATHeader />
@@ -24,7 +23,6 @@ import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import ATATToast from "@/components/ATATToast.vue";
-import SecurityBanner from "./components/SecurityBanner.vue";
 import SideDrawer from "@/components/SideDrawer.vue";
 import { Route } from "vue-router";
 
@@ -35,7 +33,6 @@ import { Route } from "vue-router";
     ATATHeader,
     ATATSideBar,
     ATATToast,
-    SecurityBanner,
     SideDrawer,
   },
 })

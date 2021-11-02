@@ -1,10 +1,6 @@
 <template>
   <v-footer class="atat-footer" app>
-    <v-container>
-      <v-row>
-        <v-col class="body text-right"> Last login: {{ getToday() }} </v-col>
-      </v-row>
-    </v-container>
+    <v-col class="body text-right"> Last login: {{ getToday() }} </v-col>
   </v-footer>
 </template>
 

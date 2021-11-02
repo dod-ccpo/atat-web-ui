@@ -5,4 +5,9 @@
 
 .wizard-button-nav {
   border-top: 1px solid $base-lighter !important;
+   
+  .v-btn:hover {
+
+      background-color: $primary_dark;
+  }
 }
