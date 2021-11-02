@@ -114,8 +114,8 @@
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span class="table-item d-flex flex-column">
-                    {{ moment(item.pop_start_date).format("l") }} -
-                    {{ moment(item.pop_end_date).format("l") }}
+                    {{ formatDate(item.pop_start_date) }} -
+                    {{ formatDate(item.pop_end_date) }}
                   </span>
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
@@ -139,6 +139,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
+import moment from "moment";
 import { TaskOrderModel } from "../../../../types/Wizard";
 
 @Component({})
@@ -151,8 +152,12 @@ export default class FundingTable extends Vue {
     this.$store.dispatch("editTaskOrder", this.id);
     this.$router.push({ name: "editfunding", params: { id: `${this.id}` } });
   }
-  public formatCurrency(value: string): string {
-    const amount = Number(value.replace(",", ""));
+  public formatDate(value: string): string {
+    return moment(value).format("l");
+  }
+  public formatCurrency(value: string | number): string {
+    const amount =
+      typeof value === "string" ? Number(value.replace(",", "")) : value;
     return this.formatter.format(amount);
   }
   private formatter = new Intl.NumberFormat("en-US", {
