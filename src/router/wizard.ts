@@ -103,7 +103,7 @@ const editapplication: RouteConfigSingleView = {
 const addteammembers: RouteConfigSingleView = {
   path: "addteammembers",
   name: "addteammembers",
-  title: "Add Root Admins and Team Members",
+  title: "Add Root Administrators and Team Members",
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"),
 };
