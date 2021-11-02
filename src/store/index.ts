@@ -1,3 +1,5 @@
+// https://codeburst.io/vuex-and-typescript-3427ba78cfa8
+
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
@@ -17,8 +19,7 @@ import { generateUid } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
 import moment from "moment";
 
-import portfolios from "./modules/portfolios";
-import PortfoliosStoreState from "./modules/portfolios/PortfolioStoreState";
+import portfolios from "./modules/portfolios/store";
 
 Vue.use(Vuex);
 
@@ -226,11 +227,8 @@ const StepModelIndices: Record<number, number> = {
 █████████████████████████████████████████
 */
 
-class ATATStore extends Vuex.Store<any> {
-   portfolios!: PortfoliosStoreState;
-}
 
-export default new ATATStore({
+export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
@@ -405,7 +403,7 @@ export default new ATATStore({
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
     setStepValidated(state, step: number) {
-      state.erroredSteps = state.erroredSteps.filter((es: number) => es !== step);
+      state.erroredSteps = state.erroredSteps.filter((es) => es !== step);
     },
     doSetCurrentStepNumber(state, step: number) {
       state.currentStepNumber = step;
@@ -420,7 +418,7 @@ export default new ATATStore({
      */
     doSaveStepModel(state, [model, stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x: { step: any }) => x.step === stepNumber
+        (x) => x.step === stepNumber
       );
 
       Vue.set(state.portfolioSteps[stepIndex], "model", model);
@@ -442,7 +440,7 @@ export default new ATATStore({
      */
     doInitializeStepModel(state, [model, stepNumber]) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x: { step: any; }) => x.step === stepNumber
+        (x) => x.step === stepNumber
       );
 
       Vue.set(state.portfolioSteps[stepIndex], "model", model);
@@ -451,7 +449,7 @@ export default new ATATStore({
     },
     doUpdateStepModelValidity(state, [stepNumber, valid]) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x: { step: any; }) => x.step === stepNumber
+        (x) => x.step === stepNumber
       );
 
       Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
@@ -475,7 +473,7 @@ export default new ATATStore({
 
       initial.forEach((step) => {
         const stepIndex = state.portfolioSteps.findIndex(
-          (x: { step: number; }) => x.step === step.step
+          (x) => x.step === step.step
         );
 
         Vue.set(state.portfolioSteps[stepIndex], "model", step.model());
@@ -877,7 +875,7 @@ export default new ATATStore({
      */
     async saveStepData({ state }, stepNumber) {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x: { step: any; }) => x.step === stepNumber
+        (x) => x.step === stepNumber
       );
       const step = state.portfolioSteps[stepIndex];
       switch (stepNumber as number) {
@@ -996,7 +994,7 @@ export default new ATATStore({
       // an array of promises to hold each step save api call
       const saveActions: unknown[] = [];
       // iterate over portfolio steps model and push valid models to save actions
-      state.portfolioSteps.forEach((step: { touched: any; valid: any; step: any; }) => {
+      state.portfolioSteps.forEach((step) => {
         // only save models that have changes and are valid
         if (step.touched && step.valid) {
           saveActions.push(this.dispatch("saveStepData", step.step));
@@ -1016,10 +1014,6 @@ export default new ATATStore({
       commit("doInitializeSteps");
       const portfolioDraftId = await portfoliosApi.createDraft();
       commit("doSetCurrentPortfolioId", portfolioDraftId);
-    },
-    async deletePortfolioDraft({ commit }, draftId: string): Promise<void> {
-      await portfoliosApi.deleteDraft(draftId);
-      commit("doDeletePortfolioDraft", draftId);
     },
     async loadPortfolioDraft({ commit }, draftId: string): Promise<void> {
       //initial step model data
@@ -1195,7 +1189,7 @@ export default new ATATStore({
   getters: {
     getInvalidSteps(state) {
       const invalidSteps: number[] = [];
-      state.portfolioSteps.forEach((step: { step: number; touched: boolean; valid: boolean; }) => {
+      state.portfolioSteps.forEach((step) => {
         // EJY TODO - fix logic to be step.step < 5 after step 4 validation is working
         if (step.step < 4 && (step.touched === false || step.valid === false)) {
           invalidSteps.push(step.step);
@@ -1267,7 +1261,7 @@ export default new ATATStore({
     getCurrentStepModel: (state) => state.currentStepModel,
     getStepTouched: (state) => (stepNumber: number) => {
       const stepIndex = state.portfolioSteps.findIndex(
-        (x: { step: number; }) => x.step === stepNumber
+        (x) => x.step === stepNumber
       );
       return state.portfolioSteps[stepIndex].touched;
     },

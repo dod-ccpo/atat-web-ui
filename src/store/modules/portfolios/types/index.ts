@@ -1,6 +1,6 @@
 import { Portfolio, PortfolioDraft } from "types/Portfolios";
 
-export default interface PortfoliosStoreState {
+export default interface PortfoliosState {
   portfolios: Portfolio[];
   portfolioDrafts: PortfolioDraft[];
 }
