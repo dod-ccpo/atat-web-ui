@@ -14,7 +14,7 @@
         You will need to have an approved task order to fund your project, prior
         to completing your portfolio submission. But don't worry, you can save a
         draft and come back to it at any time prior to provisioning. You can
-        even invite other portfolio Managers to help you out along the way!
+        even invite other portfolio managers to help you out along the way!
       </p>
       <p>Let’s get started!</p>
 
