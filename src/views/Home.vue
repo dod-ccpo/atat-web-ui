@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-10 body-lg" style="max-width: 620px">
+  <v-container class="py-10 px-0 body-lg" style="max-width: 620px">
     <h1 class="text-center mb-10">Access the ATAT Cloud</h1>
     <v-row>
       <v-col class="d-flex justify-center py-2">
