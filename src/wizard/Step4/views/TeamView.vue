@@ -6,8 +6,8 @@
       <p>
         Invite your application team members and assign their permissions
         below. These individuals will receive an invitation from
-        <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
-        is provisioned. Select <span class="font-weight-bold">Next</span> to
+        <strong>{{ csp }}</strong> after your portfolio
+        is provisioned. Select <strong>Next</strong> to
         add team members to your other applications.
         <a
           role="button"
@@ -34,11 +34,13 @@
           @click:clear="searchTable('')"
           @keydown.native.enter="searchTable(search)"
           @blur="searchTable(search)"
+          aria-label="Search"
         />
         <v-btn
           class="input-search-bar"
           color="primary"
           @click="searchTable(search)"
+          aria-label="Search"
         >
           <v-icon>search</v-icon>
         </v-btn>

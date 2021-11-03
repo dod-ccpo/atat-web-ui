@@ -33,11 +33,13 @@
           @click:clear="searchTable('')"
           @keydown.native.enter="searchTable(search)"
           @blur="searchTable(search)"
+          aria-label="Search"
         />
         <v-btn
           class="input-search-bar"
           color="primary"
           @click="searchTable(search)"
+          aria-label="Search"
         >
           <v-icon>search</v-icon>
         </v-btn>
