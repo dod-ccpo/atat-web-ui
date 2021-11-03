@@ -1,5 +1,9 @@
 <template>
-  <v-form ref="form" lazy-validation class="content-max-width body-lg">
+  <v-form
+    ref="form"
+    lazy-validation
+    class="main-content-wrapper body-lg content-max-width body-lg"
+  >
     <v-row>
       <v-col class="mb-4">
         <h1>Let’s start with some details about your portfolio</h1>
@@ -40,7 +44,6 @@
 
     <v-row class="mt-0 pt-0">
       <v-col class="py-0 input-max-width">
-
         <fieldset id="dod-component" class="atat-checkbox-list">
           <legend>DoD Component</legend>
           <p>
@@ -98,7 +101,6 @@
               </div>
             </label>
           </div>
-
         </fieldset>
       </v-col>
     </v-row>
@@ -110,14 +112,13 @@ import { ValidatableForm } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import dodComponents from "../../../data/dodComponents";
-import ATATDivider from "@/components/ATATDivider.vue"
+import ATATDivider from "@/components/ATATDivider.vue";
 
 @Component({
   components: {
     "atat-divider": ATATDivider,
   },
 })
-
 export default class CreatePortfolioForm
   extends Vue
   implements ValidatableForm

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mt-10">
+  <v-container class="main-content-wrapper body-lg content-max-width">
     <h1 class="text-center mb-10">Access the ATAT Cloud</h1>
     <v-row>
       <v-col class="d-flex justify-center py-2">
@@ -32,18 +32,35 @@
       <v-col class="d-flex justify-center mt-9">
         <v-alert
           outlined
+          rounded
           color="cyan"
           type="info"
-          class="text-left cyan info_lighter black-icon"
           border="left"
-          width="600"
+          :icon="false"
+          class="text-left info_lighter black-icon align-center"
         >
-          <div class="black--text h2">Certificate Selection</div>
-          <div class="black--text body-lg">
-            When you are prompted to select a certificate, please select an
-            <br />
-            Authentication (Identification) Certificate from the provided
-            choices.
+          <div>
+            <v-row>
+              <v-col cols="1" class="text-center px-0">
+                <v-icon
+                  class="ml-6 pr-6 pt-1 icon-24 text--base-darkest"
+                  aria-hidden="true"
+                >
+                  info
+                </v-icon>
+              </v-col>
+              <v-col cols="11" class="pl-0 body-lg black--text">
+                <div class="black--text h2 mb-2">Certificate Selection</div>
+                <p class="ma-0">
+                  When you are prompted to select a certificate, please select
+                  an
+                </p>
+                <p class="ma-0">
+                  Authentication (Identification) Certificate from the provided
+                  choices.
+                </p>
+              </v-col>
+            </v-row>
           </div>
         </v-alert>
       </v-col>
