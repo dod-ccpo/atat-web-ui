@@ -228,13 +228,19 @@ export default class ATATDatePicker extends Vue {
   private endDateFormatted = this.formatDate(this.endDate);
 
   @Watch("startDate")
-  protected formatStartDate(): void {
+  protected processStartDate(newVal: string, oldVal: string): void {
     this.startDateFormatted = this.formatDate(this.startDate);
+    if (this.formatDate(newVal) === this.formatDate(this.endDate)) {
+      this.startDate = oldVal;
+    }
   }
 
   @Watch("endDate")
-  protected formatEndDate(): void {
+  protected processEndDate(newVal: string, oldVal: string): void {
     this.endDateFormatted = this.formatDate(this.endDate);
+    if (this.formatDate(newVal) === this.formatDate(this.startDate)) {
+      this.endDate = oldVal;
+    }
   }
 
   private formatDate(dateToBeFormatted: string): string {
@@ -305,25 +311,34 @@ export default class ATATDatePicker extends Vue {
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
     const element = event.target as HTMLElement;
+    //if control (textboxes, icons, calendars, menu) was clicked
     this.menu =
       element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
-    if (this.menu) {
-      this.calendarClicked = true;
-      if (this.isDateValid(this.startDate) && this.isDateValid(this.endDate)) {
+
+    // if calendars were clicked
+    const datePickerButtonElement =
+      element.closest(".v-date-picker-table") !== null;
+      //modify this so it is picking up click from calendar advancing button
+    console.log("datePickerButtonElement > " + datePickerButtonElement)
+    if (this.menu && !datePickerButtonElement) {
+      if (
+        this.isDateValid(this.startDate) &&
+        this.isDateValid(this.endDate) &&
+        this.startDate !== this.endDate
+      ) {
         //set the style for start and end date buttons when datepicker is clicked
         this.setStyleForStartDateAndEndDateButtons(
           moment(this.startDate).startOf("month").format("YYYY-MM-DD"),
           moment(this.startDate).add(1, "M").endOf("month").format("YYYY-MM-DD")
         );
       }
+    } else if (this.menu) {
+      this.calendarClicked = true;
     } else {
       this.isStartTextBoxFocused = false;
       this.isEndTextBoxFocused = false;
     }
 
-    // if datepicker was clicked
-    const datePickerButtonElement =
-      element.closest(".v-date-picker-table") !== null;
     if (datePickerButtonElement) {
       const button = element.parentElement as HTMLButtonElement;
       if (this.isStartTextBoxFocused) {
@@ -470,7 +485,7 @@ export default class ATATDatePicker extends Vue {
     firstDayLeftMonth: string,
     lastDayRightMonth: string
   ): void {
-    console.log(firstDayLeftMonth + " --- " + lastDayRightMonth);
+    //console.log(firstDayLeftMonth + " --- " + lastDayRightMonth);
     setTimeout(() => {
       if (this.isDateValid(this.startDate) && this.isDateValid(this.endDate)) {
         const displayedDPs = document.getElementsByClassName(
@@ -486,6 +501,9 @@ export default class ATATDatePicker extends Vue {
             undefined,
             "[]"
           );
+          console.log("firstDayLeftMonth > " + firstDayLeftMonth);
+          console.log("lastDayRightMonth > " + lastDayRightMonth);
+          console.log("isStartDateDisplayed > " + isStartDateDisplayed);
           if (isStartDateDisplayed) {
             activeDatePickerButtons[0].classList.add("date-picker-start-date");
           }
@@ -495,6 +513,7 @@ export default class ATATDatePicker extends Vue {
             undefined,
             "[]"
           );
+          console.log("isEndDateDisplayed > " + isEndDateDisplayed);
           if (isEndDateDisplayed) {
             activeDatePickerButtons[
               activeDatePickerButtons.length - 1
@@ -544,7 +563,7 @@ export default class ATATDatePicker extends Vue {
   protected getFirstMonth(newVal: string, oldVal: string): void {
     newVal = moment(newVal).startOf("month").format("YYYY-MM-DD");
     oldVal = moment(newVal).add(1, "M").format("YYYY-MM-DD");
-    console.log("firstMonth: (new) " + newVal + " (old) " + oldVal);
+    // console.log("firstMonth: (new) " + newVal + " (old) " + oldVal);
     if (newVal !== oldVal) {
       this.isDatePickerAdvancing = newVal > oldVal;
       if (!this.isDatePickerAdvancing) {
