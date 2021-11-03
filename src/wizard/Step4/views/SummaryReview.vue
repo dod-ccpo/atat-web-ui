@@ -26,7 +26,7 @@
       :items-per-page="-1"
     >
       <template v-slot:header.name="{ header }">
-        <div class="label font-weight-bold text--base-dark mr-5" tabindex="0">
+        <div class="label font-weight-bold text--base-dark mr-5">
           {{ header.text }}
         </div>
       </template>
@@ -77,10 +77,7 @@
       <template v-slot:item.description="{ item }">
         <div class="d-flex align-center body text--base-darkest">
           <div class="overflow-hidden text-no-wrap" style="height: 24px">
-            {{ item.description }}
-          </div>
-          <div v-if="item.description && item.description.length > 50">
-            ...
+            {{ getDescription(item.description) }}
           </div>
         </div>
       </template>
@@ -95,12 +92,10 @@
             transition="slide-y-transition"
             offset-y
             nudge-left="190"
-            tabindex="0"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 class="table-row-menu-button pa-0"
-                tabindex="0"
                 v-bind="attrs"
                 v-on="on"
                 @click="setApplication(item)"
@@ -114,7 +109,6 @@
             </template>
             <v-list class="table-row-menu pa-0">
               <v-list-item
-                tabindex="0"
                 v-for="(item, i) in isPortfolio(item)"
                 :key="i"
                 @click="handleMenuClick(item, $event)"
@@ -209,6 +203,13 @@ export default class SummaryReview extends Vue {
       default:
         this.openDialog(event);
     }
+  }
+
+  private getDescription(text: string): string {
+    if (text && text.length) {
+      return text.length <= 50 ? text : text.substring(0, 50) + "...";
+    }
+    return "";
   }
 
   @Watch("$store.state.portfolioOperators")

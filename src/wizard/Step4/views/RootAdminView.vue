@@ -113,12 +113,10 @@
                 transition="slide-y-transition"
                 offset-y
                 nudge-left="190"
-                tabindex="0"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="table-row-menu-button pa-0"
-                    tabindex="0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
@@ -129,7 +127,6 @@
                 </template>
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
-                    tabindex="0"
                     v-for="(item, i) in options"
                     :key="i"
                     @click="tableOptionClick(item, $event)"

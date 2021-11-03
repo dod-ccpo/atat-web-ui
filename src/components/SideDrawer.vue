@@ -9,7 +9,6 @@
     :temporary="showOverlay"
     permanent
     right
-    tabindex="3"
     :style="{
       height: getHeight,
       'max-height': getHeight,
@@ -31,7 +30,6 @@
       <div class="pr-7">
         <v-btn
           class="text--base-darkest pa-0 icon-24"
-          tabindex="0"
           text
           small
           @click.stop="close"
@@ -54,7 +52,6 @@
         v-if="sideDrawerType === 'teammemberroles'"
         :scrollableDivHeight="setScrollableDivHeight()"
         class="overflow-y-auto"
-        tabindex="3"
       ></TeamMemberRolesDrawer>
     </div>
   </v-navigation-drawer>

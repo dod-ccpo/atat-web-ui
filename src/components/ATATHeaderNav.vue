@@ -7,7 +7,6 @@
       @keydown.native.enter="itemClicked(item)"
       :key="item.id"
       :ripple="false"
-      tabindex="2"
       class="px-2 mx-2 primary_darken"
       small
       text

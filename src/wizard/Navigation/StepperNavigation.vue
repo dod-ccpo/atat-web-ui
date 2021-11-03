@@ -8,7 +8,7 @@
       v-model="getStepNumber"
       non-linear
     >
-      <v-stepper-header class="pa-0">
+      <v-stepper-header class="pa-0" role="navigation">
         <template v-for="(step, index) in stepperControl.Steps">
           <v-stepper-step
             editable
@@ -19,7 +19,6 @@
             :rules="getValidationRules(index)"
             @click="clickedAction(index + 1, this)"
             @keydown.enter="clickedAction(index + 1, this)"
-            role="link"
             :error-icon="'  '"
             :edit-icon="'  '"
             :complete-icon="'  '"

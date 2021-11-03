@@ -24,7 +24,6 @@
             @click.stop="show = !show"
             plain
             x-small
-            tabindex="0"
             :ripple="false"
           >
             <span class="font-weight-bold"> Show </span>
@@ -39,7 +38,6 @@
           ></v-img>
           <v-btn
             class="text--primary link-button h5 pa-0 ma-0 ml-1"
-            tabindex="0"
             plain
             x-small
             @click.stop="show = !show"
@@ -56,11 +54,9 @@
           :key="i"
           :to="item.link"
           v-slot="{ href, navigate, isActive }"
-          tabindex="0"
         >
           <v-btn
             v-if="!show"
-            tabindex="0"
             class="body left-nav-menu-link d-flex justify-start"
             :active="isActive"
             :href="href"
