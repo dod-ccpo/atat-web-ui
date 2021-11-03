@@ -1,6 +1,5 @@
-import { Portfolio, PortfolioDraft } from "types/Portfolios";
+import { PortfolioDraft } from "types/Portfolios";
 
 export default interface PortfoliosState {
-  portfolios: Portfolio[];
   portfolioDrafts: PortfolioDraft[];
 }

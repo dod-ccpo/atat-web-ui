@@ -55,7 +55,7 @@ export default class ViewPortfolio extends Vue {
   deletePortfolioDraft!: (draftId: string) => Promise<void>;
 
   get portfolios(): PortfolioDraft[] {
-    return this.$store.state.portfolioDrafts;
+    return this.portfoliosState.portfolioDrafts;
   }
 
   private async mounted(): Promise<void> {

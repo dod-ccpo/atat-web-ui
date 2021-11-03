@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { Portfolio, PortfolioDraft } from "types/Portfolios";
+import { PortfolioDraft } from "types/Portfolios";
 import { MutationTree } from "vuex";
 import PortfoliosState from "./types";
 
@@ -10,17 +10,20 @@ const updatePortfolioDrafts = (
   Vue.set(state, "portfolioDrafts", [...portfolioDrafts]);
 };
 
-const deletePortfolioDraft = (state: PortfoliosState, draftId: string) => {
-  const portfololioIndex = state.portfolios.findIndex(
-    (p: Portfolio) => p.id === draftId
+const deletePortfolioDraft = (
+  state: PortfoliosState,
+  draftId: string
+): void => {
+  const portfololioIndex = state.portfolioDrafts.findIndex(
+    (p: PortfolioDraft) => p.id === draftId
   );
 
   if (portfololioIndex > -1) {
-    state.portfolios.splice(portfololioIndex, 1);
+    state.portfolioDrafts.splice(portfololioIndex, 1);
   }
 };
 
 export const mutations: MutationTree<PortfoliosState> = {
   updatePortfolioDrafts,
   deletePortfolioDraft,
-}
+};
