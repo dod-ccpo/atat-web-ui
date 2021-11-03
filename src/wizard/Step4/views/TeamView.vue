@@ -6,11 +6,11 @@
         Let’s add team members to {{ currentApplication.name }}
       </h1>
       <p>
-        Invite your application team members and assign their permissions
-        below. These individuals will receive an invitation from
-        <span class="font-weight-bold"> {{ csp }}</span> after your portfolio
-        is provisioned. Select <span class="font-weight-bold">Next</span> to
-        add team members to your other applications.
+        Invite your application team members and assign their permissions below.
+        These individuals will receive an invitation from
+        <span class="font-weight-bold"> {{ csp }}</span> after your portfolio is
+        provisioned. Select <span class="font-weight-bold">Next</span> to add
+        team members to your other applications.
         <a
           role="button"
           tabindex="0"

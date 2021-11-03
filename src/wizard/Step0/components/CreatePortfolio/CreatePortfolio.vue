@@ -1,7 +1,9 @@
 <template>
   <div class="main-content-wrapper body-lg">
     <div class="content-max-width">
-      <h1 tabindex="-1">Hi {{ user.given_name }}, let’s create your first portfolio!</h1>
+      <h1 tabindex="-1">
+        Hi {{ user.given_name }}, let’s create your first portfolio!
+      </h1>
       <p>
         To get started with provisioning your cloud resources, you will need to
         set up a portfolio. We will walk you through adding your contract
