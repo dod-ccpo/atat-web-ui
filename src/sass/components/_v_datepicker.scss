@@ -193,6 +193,11 @@
                     background-color: $primary_lighter !important;
                     border-radius: 0px !important;
                     padding: 4px 2px !important;
+                    &.v-date-picker-table__current{
+                      border: none;
+                      color: $base_darkest !important;
+                      border-radius: none !important;
+                    }
                     &.date-picker-start-date{
                       &:before{
                         box-shadow: none !important;
@@ -223,9 +228,19 @@
                   }
 
                   &.v-date-picker-table__current{
-                    border: $base-darkest 1px solid !important;
-                    color: $base_darkest !important;
-                    border-radius: 28px !important;
+                    // border: $base-darkest 1px solid !important;
+                    // color: $base_darkest !important;
+                    border-radius: 0px !important;
+                    border-color: transparent !important;
+                    &.accent--text{
+                      color: $base_darkest !important;
+                    }
+                    &::before{
+                      border: $base-darkest 1px solid !important;
+                      color: $base_darkest !important;
+                      border-radius: 28px !important;
+                      opacity: 1 !important;
+                    }
                   }
                 }
 
