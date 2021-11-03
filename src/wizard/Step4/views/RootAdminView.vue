@@ -39,14 +39,13 @@
           class="input-search-bar"
           color="primary"
           @click="searchTable(search)"
-          aria-label="Search"
+          aria-label="Search Root Administrators"
         >
-          <v-icon>search</v-icon>
+          <v-icon aria-hidden="true">search</v-icon>
         </v-btn>
       </v-col>
       <v-col class="d-flex flex-row-reverse">
         <v-btn
-          role="button"
           class="font-weight-bold d-flex align-center px-5"
           :ripple="false"
           color="primary"

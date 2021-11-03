@@ -24,6 +24,7 @@
             color="primary"
             :ripple="false"
             id="login_button"
+            role="link"
           >
             Sign in with CAC
           </v-btn>

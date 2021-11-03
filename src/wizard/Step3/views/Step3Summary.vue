@@ -26,7 +26,12 @@
         dialogWidth="420"
       ></atat-summary-card>
 
-      <v-btn class="primary mb-10" :ripple="false" @click="onAddNew">
+      <v-btn
+        class="primary mb-10"
+        :ripple="false"
+        @click="onAddNew"
+        role="link"
+      >
         <v-icon>control_point</v-icon>
         <div class="ml-2 font-weight-bold">Add an Application</div>
       </v-btn>

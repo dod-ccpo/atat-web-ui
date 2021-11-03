@@ -19,6 +19,7 @@
             :rules="getValidationRules(index)"
             @click="clickedAction(index + 1, this)"
             @keydown.enter="clickedAction(index + 1, this)"
+            role="link"
             :error-icon="'  '"
             :edit-icon="'  '"
             :complete-icon="'  '"

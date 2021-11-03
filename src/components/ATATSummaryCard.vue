@@ -41,6 +41,7 @@
                   "
                   :class="{ 'no-border': card.type === 'APPLICATION' }"
                   :aria-label="'Edit ' + card.type + ' ' + card.title"
+                  role="link"
                 >
                   <div class="font-weight-bold">
                     {{ truncateText(card.title, 23) }}
@@ -98,6 +99,7 @@
               :id="card.leftButtonText + '_' + index"
               :ripple="false"
               :aria-label="card.leftButtonText + ' ' + card.type"
+              role="link"
               >{{ card.leftButtonText }}</v-btn
             >
             <v-btn
@@ -116,6 +118,7 @@
               :ripple="false"
               :id="card.rightButtonText + '_' + (index + 1)"
               :aria-label="card.rightButtonText + ' ' + card.type"
+              role="button"
               >{{ card.rightButtonText }}</v-btn
             >
           </v-card-actions>

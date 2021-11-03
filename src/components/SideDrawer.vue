@@ -31,7 +31,7 @@
       <div class="pr-7">
         <v-btn
           class="text--base-darkest pa-0 icon-24"
-          tabindex="3"
+          tabindex="0"
           text
           small
           @click.stop="close"

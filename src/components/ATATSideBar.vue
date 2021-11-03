@@ -24,7 +24,7 @@
             @click.stop="show = !show"
             plain
             x-small
-            tabindex="3"
+            tabindex="0"
             :ripple="false"
           >
             <span class="font-weight-bold"> Show </span>
@@ -39,7 +39,7 @@
           ></v-img>
           <v-btn
             class="text--primary link-button h5 pa-0 ma-0 ml-1"
-            tabindex="3"
+            tabindex="0"
             plain
             x-small
             @click.stop="show = !show"
@@ -60,13 +60,14 @@
         >
           <v-btn
             v-if="!show"
-            tabindex="2"
+            tabindex="0"
             class="body left-nav-menu-link d-flex justify-start"
             :active="isActive"
             :href="href"
             :ripple="false"
             @click="navigate"
             :retain-focus-on-click="true"
+            role="link"
           >
             {{ item.text }}
           </v-btn>

@@ -1,25 +1,25 @@
 <template>
   <div class="review-table">
     <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
-      <v-card-title class="d-flex justify-space-between" @click="onEdit">
+      <v-card-title class="d-flex justify-space-between">
         <span class="h3 justify-center">Task Order #{{ name }}</span>
-      </v-card-title>
-      <v-card-subtitle class="d-flex justify-space-between" @click="onEdit">
-        <v-btn class="pa-0 primary--text" text small :ripple="false">
-          <span class="link-body-md">{{ name }}</span
-          ><v-icon small class="ml-2 icon-20">launch</v-icon></v-btn
-        >
-
         <v-btn
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 h5 primary--text"
           :ripple="false"
+          :aria-label="'Edit Task Order ' + name"
+          role="link"
           @click="onEdit()"
         >
           <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1">edit</v-icon>
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
+      </v-card-title>
+      <v-card-subtitle class="d-flex justify-space-between">
+        <span class="body-lg text--base font-size-15">
+          Uploaded file: {{ taskOrderFile.name }}
+        </span>
       </v-card-subtitle>
       <v-card-text class="pa-0">
         <v-simple-table class="pb-2">
@@ -140,13 +140,14 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import moment from "moment";
-import { TaskOrderModel } from "../../../../types/Wizard";
+import { TaskOrderModel, TaskOrderFile } from "../../../../types/Wizard";
 
 @Component({})
 export default class FundingTable extends Vue {
   @Prop({ default: {} }) private data!: TaskOrderModel;
   @Prop({ default: "" }) private name!: string;
   @Prop({ default: "" }) private id!: string;
+  @Prop({ default: {} }) private taskOrderFile!: TaskOrderFile;
 
   private onEdit() {
     this.$store.dispatch("editTaskOrder", this.id);
@@ -165,5 +166,8 @@ export default class FundingTable extends Vue {
     currency: "USD",
     minimumFractionDigits: 2,
   });
+  public viewTaskOrderFile(): void {
+    console.log("View task order PDF functionality not yet implemented");
+  }
 }
 </script>
