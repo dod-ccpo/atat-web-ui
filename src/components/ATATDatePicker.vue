@@ -311,6 +311,9 @@ export default class ATATDatePicker extends Vue {
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
     const element = event.target as HTMLElement;
+    console.log("element >");
+    console.log(element);
+
     //if control (textboxes, icons, calendars, menu) was clicked
     this.menu =
       element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
@@ -318,52 +321,65 @@ export default class ATATDatePicker extends Vue {
     // if calendars were clicked
     const datePickerButtonElement =
       element.closest(".v-date-picker-table") !== null;
-    //modify this so it is picking up click from calendar advancing button
     console.log("datePickerButtonElement > " + datePickerButtonElement);
-    if (this.menu && !datePickerButtonElement) {
+    //modify this so it is picking up click from calendar advancing button
+
+    this.calendarClicked = this.menu;
+    if (this.menu) {
       if (
         this.isDateValid(this.startDate) &&
         this.isDateValid(this.endDate) &&
         this.startDate !== this.endDate
       ) {
-        //set the style for start and end date buttons when datepicker is clicked
+        // set startDateToDisplay to
+        // first Month if the calendar(s) were clicked
+        // start date if datepicker was opened via textboxes,icons, etc;
+        const startDateToDisplay = datePickerButtonElement
+          ? this.firstMonth
+          : this.startDate;
         this.setStyleForStartDateAndEndDateButtons(
-          moment(this.startDate).startOf("month").format("YYYY-MM-DD"),
-          moment(this.startDate).add(1, "M").endOf("month").format("YYYY-MM-DD")
+          moment(startDateToDisplay).startOf("month").format("YYYY-MM-DD"),
+          moment(startDateToDisplay)
+            .add(1, "M")
+            .endOf("month")
+            .format("YYYY-MM-DD")
         );
       }
-    } else if (this.menu) {
-      this.calendarClicked = true;
     } else {
       this.isStartTextBoxFocused = false;
       this.isEndTextBoxFocused = false;
     }
 
     if (datePickerButtonElement) {
-      const button = element.parentElement as HTMLButtonElement;
-      if (this.isStartTextBoxFocused) {
-        this.startDatePickerButton = button;
-        this.styleDatePickerButton(this.startDatePickerButton, true);
-        (
-          document.querySelector(
-            "#" + this.getId("end-date-text-box")
-          ) as HTMLElement
-        ).click();
-      } else if (this.isEndTextBoxFocused) {
-        this.endDatePickerButton = button;
-        this.styleDatePickerButton(this.endDatePickerButton, false);
-        (
-          document.querySelector(
-            "#" + this.getId("start-date-text-box")
-          ) as HTMLElement
-        ).click();
-      }
+      this.toggleTextboxes(element);
     }
+    
     Vue.nextTick(() => {
       this.calendarClicked = false;
       this.setDatePickerHoverButtons();
       this.getErrorMessages(this.isStartTextBoxFocused);
     });
+  }
+
+  public toggleTextboxes(element: HTMLElement): void {
+    const button = element.parentElement as HTMLButtonElement;
+    if (this.isStartTextBoxFocused) {
+      this.startDatePickerButton = button;
+      this.styleDatePickerButton(this.startDatePickerButton, true);
+      (
+        document.querySelector(
+          "#" + this.getId("end-date-text-box")
+        ) as HTMLElement
+      ).click();
+    } else if (this.isEndTextBoxFocused) {
+      this.endDatePickerButton = button;
+      this.styleDatePickerButton(this.endDatePickerButton, false);
+      (
+        document.querySelector(
+          "#" + this.getId("start-date-text-box")
+        ) as HTMLElement
+      ).click();
+    }
   }
 
   private setDatePickerHoverButtons(): void {
@@ -513,7 +529,7 @@ export default class ATATDatePicker extends Vue {
             undefined,
             "[]"
           );
-          console.log("isEndDateDisplayed > " + isEndDateDisplayed);
+          // console.log("isEndDateDisplayed > " + isEndDateDisplayed);
           if (isEndDateDisplayed) {
             activeDatePickerButtons[
               activeDatePickerButtons.length - 1
