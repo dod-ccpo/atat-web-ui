@@ -64,9 +64,9 @@
                   ID Card Office Online (IDCO)
                   <span class="external-link">website</span>
                 </a>
-                and select the <strong>My Profile</strong> option (DS
-                Logon or CAC required). It can take up to 48 hours for your
-                information to be updated within ATAT after you make changes.
+                and select the <strong>My Profile</strong> option (DS Logon or
+                CAC required). It can take up to 48 hours for your information
+                to be updated within ATAT after you make changes.
               </div>
             </div>
           </v-alert>
@@ -99,7 +99,6 @@
             your CAC, saving you the time and hassle of updating your information on multiple DoD
             websites."
       />
-
     </div>
   </div>
 </template>
@@ -113,7 +112,6 @@ import ExpandableLink from "@/components/ExpandableLink.vue";
     ExpandableLink,
   },
 })
-
 export default class Profile extends Vue {
   @Prop() private scrollableDivHeight!: number;
   private contactInfoTip = false;

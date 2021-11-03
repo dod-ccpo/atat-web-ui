@@ -20,7 +20,7 @@
       >
         <v-row>
           <v-col>
-            <h2 class="mb-8 ">Task Order Details</h2>
+            <h2 class="mb-8">Task Order Details</h2>
             <div class="input-max-width mb-10">
               <atat-text-field
                 id="task-order-number"
@@ -144,7 +144,6 @@
           </v-col>
         </v-row>
       </section>
-
     </v-container>
   </v-form>
 </template>

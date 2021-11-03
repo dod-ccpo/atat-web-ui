@@ -318,8 +318,8 @@ export default class ATATDatePicker extends Vue {
     // if calendars were clicked
     const datePickerButtonElement =
       element.closest(".v-date-picker-table") !== null;
-      //modify this so it is picking up click from calendar advancing button
-    console.log("datePickerButtonElement > " + datePickerButtonElement)
+    //modify this so it is picking up click from calendar advancing button
+    console.log("datePickerButtonElement > " + datePickerButtonElement);
     if (this.menu && !datePickerButtonElement) {
       if (
         this.isDateValid(this.startDate) &&

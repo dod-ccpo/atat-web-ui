@@ -5,8 +5,8 @@
       <h1>Let’s add root administrators to {{ portfolioName }}</h1>
       <p>
         Invite your root administrators below to grant them full access to all
-        of your applications. These individuals will receive an invitation
-        from {{ csp }} after your portfolio is provisioned. Select
+        of your applications. These individuals will receive an invitation from
+        {{ csp }} after your portfolio is provisioned. Select
         <span class="font-weight-bold">Next</span> to add team members to your
         other applications.
         <a
@@ -260,8 +260,7 @@ export default class RootAdminView extends Vue {
   private showDialogWhenClicked = false;
 
   private tableOptionClick(item: any, event: Event): void {
-
-  if (item.toLowerCase() === "remove root administrator") {
+    if (item.toLowerCase() === "remove root administrator") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
       this.showDialogWhenClicked = true;
