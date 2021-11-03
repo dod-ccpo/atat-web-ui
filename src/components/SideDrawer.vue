@@ -30,7 +30,7 @@
       <div class="font-weight-bold body">{{ setTitle }}</div>
       <div class="pr-7">
         <v-btn
-          class="text--base-darkest h6 pa-0 icon-24"
+          class="text--base-darkest pa-0 icon-24"
           tabindex="3"
           text
           small
@@ -38,8 +38,9 @@
           ref="drawerCloserRef"
           id="drawerCloser"
           :ripple="false"
+          aria-label="Close panel"
         >
-          <v-icon class="icon-20">close</v-icon>
+          <v-icon aria-hidden="true" class="icon-20">close</v-icon>
         </v-btn>
       </div>
     </div>

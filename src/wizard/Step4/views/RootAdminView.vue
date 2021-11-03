@@ -1,161 +1,150 @@
 <template>
-  <v-container fluid>
+  <div class="body-lg">
+    <div id="inputWidthFaker" ref="inputWidthFaker"></div>
+    <div class="content-max-width">
+      <h1>Let’s add root administrators to {{ portfolioName }}</h1>
+      <p>
+        Invite your root administrators below to grant them full access to all
+        of your applications. These individuals will receive an invitation
+        from {{ csp }} after your portfolio is provisioned. Select
+        <span class="font-weight-bold">Next</span> to add team members to your
+        other applications.
+        <a
+          role="button"
+          tabindex="0"
+          @click="openSideDrawer($event)"
+          @keydown.enter="openSideDrawer($event)"
+        >
+          Learn more about team member roles
+        </a>
+      </p>
+    </div>
     <v-row>
-      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-      <v-col class="pl-0" cols="12">
-        <h2 class="h2">Let’s add root administrators to {{ portfolioName }}</h2>
+      <v-col class="d-flex">
+        <v-text-field
+          v-model="search"
+          class="search-bar"
+          placeholder="Search for member name and email"
+          dense
+          outlined
+          single-line
+          hide-details
+          clearable
+          @click:clear="searchTable('')"
+          @keydown.native.enter="searchTable(search)"
+          @blur="searchTable(search)"
+        />
+        <v-btn
+          class="input-search-bar"
+          color="primary"
+          @click="searchTable(search)"
+        >
+          <v-icon>search</v-icon>
+        </v-btn>
+      </v-col>
+      <v-col class="d-flex flex-row-reverse">
+        <v-btn
+          role="button"
+          class="font-weight-bold d-flex align-center px-5"
+          :ripple="false"
+          color="primary"
+          @keydown.native.enter="openDialog($event)"
+          @click="openDialog($event)"
+        >
+          <div class="mr-1 mt-n1">
+            <v-icon aria-hidden="true" class="icon-20" role="presentation">
+              control_point
+            </v-icon>
+          </div>
+          <div class="body font-weight-bold">Invite Team Member</div>
+        </v-btn>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="pa-0 ma-0" cols="10">
-        <p class="body-lg text--base-darkest">
-          Invite your root administrators below to grant them full access to all
-          of your applications. These individuals will receive an invitation
-          from {{ csp }} after your portfolio is provisioned. Select
-          <span class="font-weight-bold">Next</span> to add team members to your
-          other applications.
-          <a
-            role="button"
-            tabindex="0"
-            @click="openSideDrawer($event)"
-            @keydown.enter="openSideDrawer($event)"
-          >
-            Learn more about team member roles
-          </a>
-        </p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="ps-0 ma-0">
-        <v-row>
-          <v-col cols="12" class="d-flex pl-0 pr-0">
-            <v-col class="d-flex">
-              <v-text-field
-                v-model="search"
-                class="search-bar"
-                placeholder="Search for member name and email"
-                dense
-                outlined
-                single-line
-                hide-details
-                clearable
-                @click:clear="searchTable('')"
-                @keydown.native.enter="searchTable(search)"
-                @blur="searchTable(search)"
-              />
-              <v-btn
-                class="input-search-bar"
-                color="primary"
-                @click="searchTable(search)"
-              >
-                <v-icon width="10px" class="mr-1">search</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col class="d-flex flex-row-reverse">
-              <v-btn
-                role="button"
-                class="font-weight-bold d-flex align-center px-5"
-                :ripple="false"
-                color="primary"
-                @keydown.native.enter="openDialog($event)"
-                @click="openDialog($event)"
-              >
-                <div class="mr-1 mt-n2">
-                  <v-icon class="icon-20" role="presentation"
-                    >control_point</v-icon
-                  >
-                </div>
-                <div class="body font-weight-bold">Invite Team Member</div>
-              </v-btn>
-            </v-col>
-          </v-col>
-        </v-row>
-        <v-row v-if="rootMembersCount < 1">
-          <v-col cols="12" class="pa-0 ma-0">
-            <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
-              <v-card-text class="text-center">
-                <v-row class="d-flex justify-space-around pt-4">
-                  <v-col>
-                    <span class="body-lg text--base-dark">{{ message }}</span>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" class="ma-0">
-            <v-data-table
-              v-if="rootMembersCount >= 1"
-              class="review-table"
-              :headers="headers"
-              :items="isFiltered ? filteredData : rootMembers"
-              hide-default-footer
-            >
-              <template v-slot:header.display_name="{ header }">
-                <div class="label font-weight-bold text--base-dark">
-                  {{ header.text }}
-                </div>
-              </template>
-              <template v-slot:header.access="{ header }">
-                <div class="label font-weight-bold text--base-dark">
-                  {{ header.text }}
-                </div>
-              </template>
-              <template class="hello" v-slot:item.display_name="{ item }">
-                <div class="body font-weight-bold pt-6">
-                  {{ item.display_name }}
-                </div>
-                <div class="body text--base-dark pb-6">
-                  {{ item.email }}
-                </div>
-              </template>
-              <template v-slot:item.access="{ item }">
-                <div class="d-flex justify-space-between">
-                  <div class="body text--base-dark pt-3">
-                    {{ roleTranslation(item.access) }}
-                  </div>
 
-                  <v-menu
-                    class="table-menu"
-                    transition="slide-y-transition"
-                    offset-y
-                    nudge-left="190"
-                    tabindex="2"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        class="table-row-menu-button pa-0"
-                        tabindex="1"
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="setMember(item)"
-                      >
-                        <v-icon class="icon-18 width-auto">more_horiz</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list class="table-row-menu pa-0">
-                      <v-list-item
-                        tabindex="1"
-                        v-for="(item, i) in options"
-                        :key="i"
-                      >
-                        <v-list-item-title
-                          @click="tableOptionClick(item, $event)"
-                          class="body-lg py-2"
-                        >
-                          {{ item }}
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </div>
-              </template>
-            </v-data-table>
-          </v-col>
-        </v-row>
+    <v-row v-if="rootMembersCount < 1">
+      <v-col cols="12" class="pa-0 ma-0">
+        <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
+          <v-card-text class="text-center">
+            <v-row class="d-flex justify-space-around pt-4">
+              <v-col>
+                <span class="body-lg text--base-dark">{{ message }}</span>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" class="ma-0">
+        <v-data-table
+          v-if="rootMembersCount >= 1"
+          class="review-table"
+          :headers="headers"
+          :items="isFiltered ? filteredData : rootMembers"
+          hide-default-footer
+        >
+          <template v-slot:header.display_name="{ header }">
+            <div class="label font-weight-bold text--base-dark">
+              {{ header.text }}
+            </div>
+          </template>
+          <template v-slot:header.access="{ header }">
+            <div class="label font-weight-bold text--base-dark">
+              {{ header.text }}
+            </div>
+          </template>
+          <template class="hello" v-slot:item.display_name="{ item }">
+            <div class="body font-weight-bold pt-6">
+              {{ item.display_name }}
+            </div>
+            <div class="body text--base-dark pb-6">
+              {{ item.email }}
+            </div>
+          </template>
+          <template v-slot:item.access="{ item }">
+            <div class="d-flex justify-space-between">
+              <div class="body text--base-dark pt-3">
+                {{ roleTranslation(item.access) }}
+              </div>
+
+              <v-menu
+                class="table-menu"
+                transition="slide-y-transition"
+                offset-y
+                nudge-left="190"
+                tabindex="0"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="table-row-menu-button pa-0"
+                    tabindex="0"
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="setMember(item)"
+                    aria-label="Edit or remove root administrator"
+                  >
+                    <v-icon class="icon-18 width-auto">more_horiz</v-icon>
+                  </v-btn>
+                </template>
+                <v-list class="table-row-menu pa-0">
+                  <v-list-item
+                    tabindex="0"
+                    v-for="(item, i) in options"
+                    :key="i"
+                    @click="tableOptionClick(item, $event)"
+                  >
+                    <v-list-item-title class="body-lg py-2">
+                      {{ item }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </div>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+
     <atat-modal-delete
       v-show="hasDialog"
       :showDialogWhenClicked.sync="showDialogWhenClicked"
@@ -168,7 +157,7 @@
       :width="dialogWidth + 'px'"
       v-on:delete="onDelete"
     />
-  </v-container>
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -194,7 +183,7 @@ export default class RootAdminView extends Vue {
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "access", sortable: false },
   ];
-  private options = ["Edit info", "Remove team member"];
+  private options = ["Edit info", "Remove root administrator"];
 
   get portfolioName(): string {
     return this.$store.getters.getPortfolioName();
@@ -257,7 +246,7 @@ export default class RootAdminView extends Vue {
   }
 
   //Dialog stuff
-  private okText = "Remove Team Member";
+  private okText = "Remove Root Administrator";
   private cardWidth = "40";
   private cancelText = "cancel";
   private hasDialog = true;
@@ -271,7 +260,8 @@ export default class RootAdminView extends Vue {
   private showDialogWhenClicked = false;
 
   private tableOptionClick(item: any, event: Event): void {
-    if (item.toLowerCase() === "remove team member") {
+
+  if (item.toLowerCase() === "remove root administrator") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
       this.showDialogWhenClicked = true;

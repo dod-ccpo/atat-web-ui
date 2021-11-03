@@ -1,7 +1,7 @@
 <template>
   <div id="learnMoreDrawer" class="modal__title--sticky">
     <v-card-title class="modal__title modal__title--border-bottom">
-      <h2 class="modal__title__text" tabindex="-1" id="learnMoreHeading">
+      <h2 class="modal__title__text mb-0" tabindex="-1" id="learnMoreHeading">
         <span v-if="learnMoreType === 'member-roles'">
           Understanding member roles
         </span>

@@ -2,12 +2,12 @@
   <v-container fluid class="view-portfolio">
     <v-row>
       <v-col cols="12">
-        <h1 class="mb-3 h1 font-weight-bold">My Porfolios</h1>
+        <h1 class="mb-3">My Porfolios</h1>
       </v-col>
     </v-row>
     <v-row class="portfolio-banner">
       <v-col class="d-flex justify-space-between align-center">
-        <div class="h3">My Portfolios</div>
+        <div class="h2">My Portfolios</div>
         <div>
           <v-btn
             id="btn-create-new-portfolio"

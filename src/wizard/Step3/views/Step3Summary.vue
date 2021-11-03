@@ -1,59 +1,51 @@
 <template>
-  <v-flex class="pb-10">
-    <v-row>
-      <v-col cols="10">
-        <h2 class="h2">Your Applications Summary</h2>
-        <p class="my-3 body-lg" v-show="cardsData.cards.length > 0">
-          If you have more applications, <strong>add</strong> them below. You
-          can also <strong>edit</strong> or <strong>delete</strong> any of the
-          applications you have already entered. When you are done, click
-          <strong>Next</strong> and we will move on to adding team members and
-          assigning permissions within these applications.
-        </p>
-      </v-col>
-    </v-row>
-    <v-row v-if="cardsData.cards.length === 0" class="pt-8">
-      <v-col cols="10">
-        <v-card>
-          <v-card-text>
-            <p class="body-lg text-center text--base-darkest">
-              You currently do not have any applications.
-            </p>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-    <atat-summary-card
-      v-if="cardsData.cards.length > 0"
-      :data="cardsData"
-      v-on:edit="onEdit"
-      v-on:delete="onDelete"
-      dialogWidth="420"
-    ></atat-summary-card>
-    <v-row>
-      <v-col cols="10">
-        <v-btn class="primary" :ripple="false" @click="onAddNew">
-          <v-icon>control_point</v-icon>
-          <div class="ml-2 font-weight-bold">Add an Application</div>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="10">
-        <expandable-link
-          header="What if I need to add more applications after my portfolio is provisioned?"
-          content="In the future, team members with the appropriate permissions can add additional applications and/or environments directly within the cloud console.  We will set those permissions in the next step."
-        ></expandable-link>
-      </v-col>
-    </v-row>
-  </v-flex>
+  <div class="body-lg">
+    <div class="content-max-width">
+      <h1>Your Applications Summary</h1>
+      <p class="mb-8" v-if="cardsData.cards.length > 0">
+        If you have more applications, <strong>add</strong> them below. You
+        can also <strong>edit</strong> or <strong>delete</strong> any of the
+        applications you have already entered. When you are done, click
+        <strong>Next</strong> and we will move on to adding team members and
+        assigning permissions within these applications.
+      </p>
+      <v-card v-else class="pa-12 mb-8 mt-0">
+        <v-card-text class="pa-0">
+          <p class="body-lg text-center text--base-dark mb-0">
+            You currently do not have any applications.
+          </p>
+        </v-card-text>
+      </v-card>
+    </div>
+    <section title="Application Summary Cards" role="region">
+      <atat-summary-card
+        v-if="cardsData.cards.length > 0"
+        :data="cardsData"
+        v-on:edit="onEdit"
+        v-on:delete="onDelete"
+        dialogWidth="420"
+      ></atat-summary-card>
+
+      <v-btn class="primary mb-10" :ripple="false" @click="onAddNew">
+        <v-icon>control_point</v-icon>
+        <div class="ml-2 font-weight-bold">Add an Application</div>
+      </v-btn>
+    </section>
+
+    <section title="Application FAQs" class="content-max-width" role="region">
+      <expandable-link
+        header="What if I need to add more applications after my portfolio is provisioned?"
+        content="In the future, team members with the appropriate permissions can add additional applications and/or environments directly within the cloud console.  We will set those permissions in the next step."
+      ></expandable-link>
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
-import ExpandableLink from "../../components/ExpandableLink.vue";
+import ExpandableLink from "@/components/ExpandableLink.vue";
 
 import {
   ATATSummaryCardGroupedItems,

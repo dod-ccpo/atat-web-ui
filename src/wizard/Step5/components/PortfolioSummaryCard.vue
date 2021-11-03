@@ -3,14 +3,14 @@
     <v-card class="v-card ma-9 px-2 ml-0 body">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
-          <h4 class="h4">{{ portfolio.name }}</h4>
+          <h3>{{ portfolio.name }}</h3>
           <v-btn
             class="py-0 px-2 primary--text"
             text
             small
             @click="onEdit()"
             :ripple="false"
-            ><v-icon small class="icon-12 mr-2">edit</v-icon>
+            ><v-icon aria-hidden="true" small class="icon-12 mr-2">edit</v-icon>
             <span class="link-body-md">Edit</span></v-btn
           >
         </div>

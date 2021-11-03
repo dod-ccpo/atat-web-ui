@@ -2,9 +2,9 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h4 class="h4">
+        <h3>
           Portfolio Permissions Menu Component that is to appear in each row
-        </h4>
+        </h3>
       </v-col>
     </v-row>
     <v-row>
