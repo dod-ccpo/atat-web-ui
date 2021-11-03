@@ -8,11 +8,11 @@ const state: PortfoliosState = {
   portfolioDrafts: [],
 };
 
-const portfolilos: Module<PortfoliosState, RootState> = {
+const portfolios: Module<PortfoliosState, RootState> = {
   namespaced: true,
   state,
   actions,
   mutations,
 };
 
-export default portfolilos;
+export default portfolios;
