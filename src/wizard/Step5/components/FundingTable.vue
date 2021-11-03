@@ -166,8 +166,5 @@ export default class FundingTable extends Vue {
     currency: "USD",
     minimumFractionDigits: 2,
   });
-  public viewTaskOrderFile(): void {
-    console.log("View task order PDF functionality not yet implemented");
-  }
 }
 </script>
