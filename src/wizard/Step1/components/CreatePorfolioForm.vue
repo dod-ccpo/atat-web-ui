@@ -1,9 +1,5 @@
 <template>
-  <v-form
-    ref="form"
-    lazy-validation
-    class="main-content-wrapper body-lg content-max-width body-lg"
-  >
+  <v-form ref="form" lazy-validation class="body-lg content-max-width body-lg">
     <v-row>
       <v-col class="mb-4">
         <h1>Let’s start with some details about your portfolio</h1>

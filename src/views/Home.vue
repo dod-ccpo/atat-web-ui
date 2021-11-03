@@ -1,5 +1,5 @@
 <template>
-  <v-container class="main-content-wrapper body-lg content-max-width">
+  <v-container class="py-10 body-lg" style="max-width: 620px">
     <h1 class="text-center mb-10">Access the ATAT Cloud</h1>
     <v-row>
       <v-col class="d-flex justify-center py-2">
@@ -43,21 +43,18 @@
             <v-row>
               <v-col cols="1" class="text-center px-0">
                 <v-icon
-                  class="ml-6 pr-6 pt-1 icon-24 text--base-darkest"
+                  class="ml-7 pl-1 pr-6 pt-1 icon-24 text--base-darkest"
                   aria-hidden="true"
                 >
                   info
                 </v-icon>
               </v-col>
-              <v-col cols="11" class="pl-0 body-lg black--text">
+              <v-col cols="11" class="pl-1 body-lg black--text">
                 <div class="black--text h2 mb-2">Certificate Selection</div>
-                <p class="ma-0">
+                <p>
                   When you are prompted to select a certificate, please select
-                  an
-                </p>
-                <p class="ma-0">
-                  Authentication (Identification) Certificate from the provided
-                  choices.
+                  an Authentication (Identification) Certificate from the
+                  provided choices.
                 </p>
               </v-col>
             </v-row>
