@@ -13,7 +13,7 @@ const formatter = new Intl.NumberFormat("en-US", {
 });
 
 const formatDate = (value: string) => {
-  return moment(new Date(`${value} 00:00:00`)).format("MMMM DD, YYYY");
+  return moment(new Date(`${value} 00:00:00`)).format("MMM DD, YYYY");
 };
 
 describe("Testing Create ClinsCard Component", () => {

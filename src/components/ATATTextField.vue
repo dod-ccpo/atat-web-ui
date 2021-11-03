@@ -38,6 +38,7 @@
           <v-text-field
             :rules="rules"
             :id="id + '_text_field'"
+            :aria-describedby="id + '_input_hint'"
             outlined
             dense
             :success="isSuccess"
@@ -63,6 +64,11 @@
             @focus="$emit('focus')"
           >
           </v-text-field>
+
+          <p v-if="hint !== ''" class="input-hint" :id="id + '_input_hint'">
+            {{ hint }}
+          </p>
+
         </div>
         <div class="d-flex align-end mb-3">
           <v-btn
@@ -101,6 +107,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private success!: boolean;
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: "" }) private helpText!: string;
+  @Prop({ default: "" }) private hint!: string;
   @Prop({ default: "" }) private prefix!: string;
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
