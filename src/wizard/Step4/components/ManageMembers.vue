@@ -843,8 +843,12 @@ export default class ManageMember extends Vue {
         input.parentElement?.nextElementSibling?.getElementsByTagName(
           "button"
         )[0];
+
       if (removeButton) {
-        removeButton.ariaLabel = "Remove email address " + emailAddressEntered;
+        removeButton.setAttribute(
+          "aria-label",
+          "Remove email address " + emailAddressEntered
+        );
       }
 
       const memberListIndex = this.memberList
