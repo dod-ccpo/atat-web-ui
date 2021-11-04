@@ -64,6 +64,9 @@
     line-height: 1.7rem !important;
     color: $primary !important;
     position: relative;
+    .v-btn__content {
+      opacity: 1 !important;
+    }
     text-decoration: underline;
     &:after {
       content: "expand_more";

@@ -16,7 +16,7 @@
               width="16"
             />
           </div>
-          <div class="USWDC-official-banner__text mr-3">
+          <div class="USWDC-official-banner__text">
             An official website of the United States government
           </div>
           <v-btn
