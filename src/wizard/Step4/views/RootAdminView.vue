@@ -48,11 +48,12 @@
       </v-col>
       <v-col class="d-flex flex-row-reverse">
         <v-btn
+          id="inviteTeamMemberButton"
           class="font-weight-bold d-flex align-center px-5"
           :ripple="false"
           color="primary"
-          @keydown.native.enter="openDialog($event)"
-          @click="openDialog($event)"
+          @keydown.native.enter="openDialog($event, 'inviteTeamMemberButton')"
+          @click="openDialog($event, 'inviteTeamMemberButton')"
         >
           <div class="mr-1 mt-n1">
             <v-icon aria-hidden="true" class="icon-20" role="presentation">
@@ -216,7 +217,8 @@ export default class RootAdminView extends Vue {
     }
   }
 
-  public openDialog(event: Event): void {
+  public openDialog(event: Event, returnFocusId: string): void {
+    this.$store.state.returnFocusId = returnFocusId;
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;
@@ -264,8 +266,11 @@ export default class RootAdminView extends Vue {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
       this.showDialogWhenClicked = true;
+      // EJY if removing a member, return focus to "inviteTeamMemberButton"
     } else if (item.toLowerCase() === "edit info") {
-      this.openDialog(event);
+      // EJY if editing a member, return focus to the ... menu for the member
+      // pass as second param to openDialog()
+      this.openDialog(event, '');
     }
   }
 

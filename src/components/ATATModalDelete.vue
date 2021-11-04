@@ -52,12 +52,31 @@ export default class ATATModalDelete extends Vue {
   private cancelItem() {
     this._showDialog = false;
     this._isItemDeleted = false;
+    this.$nextTick(() => {
+      const openerId = this.$store.state.returnFocusId;
+      if (openerId !== "") {
+        document.getElementById(openerId)?.focus();
+        this.$store.state.returnFocusId = "";
+      } else {
+        const h1 = document.getElementsByTagName("h1");
+        if (h1.length) {
+          h1[0].focus();
+        }
+      }
+    });
   }
 
   private deleteItem() {
     this._showDialog = false;
     this._isItemDeleted = true;
     this.$emit("delete");
+    this.$nextTick(() => {
+      this.$store.state.returnFocusId = "";
+      const h1 = document.getElementsByTagName("h1");
+      if (h1.length) {
+        h1[0].focus();
+      }
+    });
   }
 }
 </script>
