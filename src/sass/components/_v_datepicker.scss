@@ -47,6 +47,34 @@
   }
 }
 
+%selected-start-date-picker-button{
+  &:before{
+    box-shadow: none !important;
+    background-color: inherit !important;
+  }
+  opacity: none !important;
+  background-color: $primary_vivid !important;
+  box-shadow: none !important;
+  border-radius:  8px 0px 0px 8px !important;
+  div{
+    color: #fff;
+  }
+}
+
+%selected-end-date-picker-button{
+  &:before{
+    box-shadow: none !important;
+    background-color: inherit !important;
+  }
+  opacity: none !important;
+  background-color: $primary_vivid !important;
+  box-shadow: none !important;
+  border-radius:  0px 8px 8px 0px !important;
+  div{
+    color: #fff;
+  }
+}
+
 .two-date-pickers{
   background-color: $base_lightest;
 
@@ -95,6 +123,8 @@
     color: $base_darkest !important;
   }
 
+
+
   .v-picker{
     margin-top: 14px;
     width: 100%;
@@ -133,7 +163,11 @@
                       box-sizing: border-box !important;
                       box-shadow: none !important;
                     }
+                    &.date-picker-start-date{
+                      @extend %selected-start-date-picker-button;
+                    }
                   }
+                  
                 }
               }
             }
@@ -154,6 +188,9 @@
                       border: 4px solid $primary_vivid !important;
                       box-sizing: border-box !important;
                       box-shadow: none !important;
+                    }
+                    &.date-picker-end-date{
+                      @extend %selected-end-date-picker-button;
                     }
                   }
                 }
@@ -199,31 +236,11 @@
                       border-radius: none !important;
                     }
                     &.date-picker-start-date{
-                      &:before{
-                        box-shadow: none !important;
-                        background-color: inherit !important;
-                      }
-                      opacity: none !important;
-                      background-color: $primary_vivid !important;
-                      box-shadow: none !important;
-                      border-radius:  8px 0px 0px 8px !important;
-                      div{
-                        color: #fff;
-                      }
+                     @extend %selected-start-date-picker-button;
                     }
                     &.date-picker-end-date,
                     &.date-picker-end-date:focus{
-                      &:before{
-                        box-shadow: none !important;
-                        background-color: inherit !important;
-                      }
-                      opacity: none !important;
-                      background-color: $primary_vivid !important;
-                      box-shadow: none !important;
-                      border-radius:  0px 8px 8px 0px !important;
-                      div{
-                        color: #fff;
-                      }
+                     @extend %selected-end-date-picker-button;
                     }
                   }
 
