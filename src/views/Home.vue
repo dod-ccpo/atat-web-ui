@@ -1,8 +1,7 @@
 <template>
   <v-container class="py-10 px-0 body-lg" style="max-width: 620px">
     <h1 class="text-center mb-10">
-      Access the Account Tracking and<br />
-      Automation Tool (ATAT)
+      Access the Account Tracking and<br />Automation Tool (ATAT)
     </h1>
     <v-row>
       <v-col class="d-flex justify-center py-2">
