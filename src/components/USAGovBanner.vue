@@ -39,9 +39,7 @@
         <v-row align="center" class="mb-3">
           <v-col
             cols="12"
-            md="6"
             sm="6"
-            xs="6"
             align-self="start"
             class="d-flex align-left pb-0 usa-banner__guidance"
           >
@@ -61,9 +59,7 @@
           </v-col>
           <v-col
             cols="12"
-            md="6"
             sm="6"
-            xs="6"
             align-self="start"
             class="d-flex align-left pb-0 usa-banner__guidance"
           >
