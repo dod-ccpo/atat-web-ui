@@ -27,6 +27,7 @@
           block
           :ripple="false"
           @click="onCreatePortfolio"
+          role="link"
         >
           Create a New Portfolio
         </v-btn>

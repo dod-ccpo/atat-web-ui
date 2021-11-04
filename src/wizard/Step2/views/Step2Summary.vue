@@ -26,7 +26,12 @@
         v-on:edit="onEditTaskOrder"
       ></atat-summary-card>
 
-      <v-btn class="primary mb-10" :ripple="false" @click="onAddNewTaskOrder">
+      <v-btn
+        class="primary mb-10"
+        :ripple="false"
+        @click="onAddNewTaskOrder"
+        role="link"
+      >
         <v-icon aria-hidden="true">control_point</v-icon>
         <div class="ml-2">Add a Task Order</div>
       </v-btn>

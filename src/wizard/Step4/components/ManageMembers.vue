@@ -18,8 +18,7 @@
       <h2 id="modalHeading" class="mb-2 firstFocus" tabindex="-1">
         <span v-if="!isEditSingle">
           Add
-          <span v-if="isRootAdmin">root administrators</span>
-          <span v-else>team members</span>
+          {{ isRootAdmin ? "root administrators" : "team members" }}
           to
           {{ isRootAdmin ? portfolioName : currentApplicationName }}
         </span>
@@ -143,6 +142,7 @@
               @click="emailEdit"
               @blur="emailBlurred"
               @click:append="removeEmail"
+              :aria-label="'Email address ' + member.email"
             />
           </div>
           <div class="dupe-entry-alert-wrapper">
@@ -839,6 +839,18 @@ export default class ManageMember extends Vue {
     emailAddressEntered = emailAddressEntered.replace(/['"]/g, "");
 
     if (emailAddressEntered.length) {
+      const removeButton =
+        input.parentElement?.nextElementSibling?.getElementsByTagName(
+          "button"
+        )[0];
+
+      if (removeButton) {
+        removeButton.setAttribute(
+          "aria-label",
+          "Remove email address " + emailAddressEntered
+        );
+      }
+
       const memberListIndex = this.memberList
         .map(function (e) {
           return e.id;

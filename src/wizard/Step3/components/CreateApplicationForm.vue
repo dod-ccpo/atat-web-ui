@@ -73,12 +73,11 @@
         </div>
 
         <v-btn
-          role="button"
           class="link-button font-weight-bold no-border mt-3 no-focus-shift"
           :ripple="false"
           @click="$emit('addEnvironment')"
         >
-          <v-icon color="primary" class="mr-2 ml-n5" role="presentation"
+          <v-icon color="primary" class="mr-2 ml-n5" aria-hidden="true"
             >control_point</v-icon
           >
           Add another environment

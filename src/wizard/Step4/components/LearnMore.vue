@@ -15,8 +15,9 @@
         @click="closeLearnMoreDrawer()"
         class="pa-0 mr-3 bg-transparent modal__slideout__button-close"
         min-width="25"
+        aria-label="Close Learn More Panel"
       >
-        <v-icon size="25">arrow_back</v-icon>
+        <v-icon aria-hidden="true" size="25">arrow_back</v-icon>
       </v-btn>
     </v-card-title>
 

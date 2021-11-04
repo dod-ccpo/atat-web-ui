@@ -70,6 +70,7 @@
           color="primary"
           :ripple="false"
           class="ml-auto"
+          role="link"
         >
           Get Started
         </v-btn>

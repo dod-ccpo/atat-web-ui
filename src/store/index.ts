@@ -1247,6 +1247,8 @@ export default new Vuex.Store({
               icon: "person",
               iconPlacement: "left",
               action: "profile",
+              ariaLabel: "User Profile Information",
+              ariaRole: "button",
             },
             {
               id: 2,
@@ -1256,6 +1258,8 @@ export default new Vuex.Store({
               newWindow: false,
               icon: "help_outline",
               iconPlacement: "left",
+              ariaLabel: "ATAT Support",
+              ariaRole: "link",
             },
             {
               id: 3,
@@ -1266,6 +1270,8 @@ export default new Vuex.Store({
               icon: "logout",
               iconPlacement: "right",
               action: "logout",
+              ariaLabel: "Log out of ATAT",
+              ariaRole: "link",
             },
           ],
         },

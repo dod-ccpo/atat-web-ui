@@ -9,7 +9,7 @@
         minheight: scrollableDivHeight + 'px !important',
       }"
     >
-      <div class="h2 mb-5 mt-4 text--base-darkest" tabindex="3">
+      <div class="h2 mb-5 mt-4 text--base-darkest">
         Understanding member roles within your cloud console
       </div>
       <span>
