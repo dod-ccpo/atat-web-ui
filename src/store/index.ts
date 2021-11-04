@@ -15,7 +15,7 @@ import {
 } from "types/Portfolios";
 import { portfoliosApi } from "@/api";
 import { TaskOrderModel } from "types/Wizard";
-import { generateUid } from "@/helpers";
+import { generateUid, getEntityIndex } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
 import moment from "moment";
 
@@ -122,13 +122,7 @@ const stepsModelInitializer = [
   },
 ];
 
-const getEntityIndex = <TModel>(
-  entities: TModel[],
-  predicate: (value: TModel, index: number, obj: TModel[]) => unknown,
-  thisArg?: any
-): number => {
-  return entities.findIndex(predicate);
-};
+
 
 const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
   return taskOrderModels.map((model: TaskOrderModel) => {
@@ -246,8 +240,6 @@ export default new Vuex.Store({
       props: null,
     },
     taskOrderModels: [],
-    applicationModels: [],
-    portfolioOperators: [],
     wizardNavigation: {},
     erroredSteps: [],
     currentStepNumber: 1,
@@ -500,9 +492,6 @@ export default new Vuex.Store({
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
     },
-    doSetApplicationId(state, id) {
-      state.currentApplicationId = id;
-    },
     setNavSideBarDisplayed(state, routeName: string) {
       if (routeName) {
         const routesWithNoNavSideBar = ["home", "dashboard", "profile"];
@@ -549,78 +538,6 @@ export default new Vuex.Store({
         throw new Error("could not delete task order with id: " + id);
       }
     },
-    setCurrentApplications(state, applications: Application[]) {
-      const applicationModels = applications.map((application) => {
-        const applicationModel: ApplicationModel = {
-          ...application,
-          id: generateUid(),
-          operators: application.operators
-            ? application.operators.map((operator) => {
-                return {
-                  ...operator,
-                  id: generateUid(),
-                };
-              })
-            : [],
-          environments: application.environments.map((environment) => {
-            return {
-              ...environment,
-              id: generateUid(),
-              operators: environment.operators
-                ? environment.operators.map((operator) => {
-                    return {
-                      ...operator,
-                      id: generateUid(),
-                    };
-                  })
-                : [],
-            };
-          }),
-        };
-
-        return applicationModel;
-      });
-
-      Vue.set(state, "applicationModels", applicationModels);
-    },
-    doAddApplication(state, model: any) {
-      state.applicationModels.push(model as never);
-    },
-    doUpdateApplication(state, [index, model]) {
-      Vue.set(state.applicationModels, index, model);
-    },
-    doDeleteApplication(state, id: string) {
-      const index = getEntityIndex(
-        state.applicationModels,
-        (application: ApplicationModel) => application.id === id
-      );
-
-      if (index > -1) {
-        state.applicationModels.splice(index, 1);
-      } else {
-        throw new Error("could not delete application order with id: " + id);
-      }
-    },
-    doUpdateEnvironmentOperators(state, [appId, environments]) {
-      const index = getEntityIndex(
-        state.applicationModels,
-        (application: ApplicationModel) => application.id === appId
-      );
-      const appModel: ApplicationModel = state.applicationModels[index];
-      environments.forEach((env: EnvironmentModel) => {
-        const envId = env.id;
-        const index = getEntityIndex(
-          appModel.environments,
-          (environment: EnvironmentModel) => environment.id === envId
-        );
-        const envModel: EnvironmentModel = appModel.environments[index];
-        if (Object.prototype.hasOwnProperty.call(envModel, "operators")) {
-          envModel.operators.push(...env.operators);
-        } else {
-          envModel.operators = env.operators;
-        }
-      });
-    },
     doUpdateApplicationOperators(state, [appId, operators]) {
       const index = getEntityIndex(
         state.applicationModels,
@@ -633,12 +550,10 @@ export default new Vuex.Store({
         appModel.operators = operators;
       }
     },
-
     doUpdateRootAdministrators(state, operators: OperatorModel[]) {
       const rootAdmins: OperatorModel[] = state.portfolioOperators;
       rootAdmins.push(...operators);
     },
-
     doInitializeRootAdministrators(state) {
       Vue.set(state, "portfolioOperators", []);
     },
@@ -760,9 +675,6 @@ export default new Vuex.Store({
     validateStep({ commit }, step: number) {
       commit("setStepValidated", step);
     },
-    setCurrentApplicationId({ commit }, applicationId) {
-      commit("doSetApplicationId", applicationId);
-    },
     displayNavSideBarDisplayed({ commit }, routeName: string) {
       commit("setNavSideBarDisplayed", routeName);
     },
@@ -825,32 +737,6 @@ export default new Vuex.Store({
     },
     async addApplication({ commit }, model) {
       commit("doAddApplication", model);
-    },
-    async updateApplication({ commit }, [index, model]) {
-      commit("doUpdateApplication", [index, model]);
-    },
-    async deleteApplication({ commit, state }, id: string): Promise<void> {
-      try {
-        commit("doDeleteApplication", id);
-        commit("doInitializeStepModel", [createStepThreeModel(), 3]);
-        const _applications = state.applicationModels.map(
-          (model: Application) => {
-            const application: Application = {
-              ...model,
-            };
-
-            return application;
-          }
-        );
-
-        const data = {
-          applications: _applications,
-        };
-
-        await portfoliosApi.saveApplications(state.currentPortfolioId, data);
-      } catch (error) {
-        console.log(error);
-      }
     },
     editApplication({ commit, state }, id: string) {
       const entityIndex = getEntityIndex(
@@ -946,6 +832,8 @@ export default new Vuex.Store({
     async saveStep3({ state }, model: any) {
       if (model.id === "") {
         model.id = generateUid();
+
+        //todo: come back and add a reference to applications module
         this.dispatch("addApplication", model);
       } else {
         const appIndx = getEntityIndex<ApplicationModel>(
@@ -958,9 +846,11 @@ export default new Vuex.Store({
           );
         }
 
+        //todo fix app module reference
         this.dispatch("updateApplication", [appIndx, model]);
       }
 
+      //todo come back and fix references to application module
       const applications = mapApplications(state.applicationModels);
       const operators = mapOperators(state.portfolioOperators);
 
@@ -1063,6 +953,8 @@ export default new Vuex.Store({
       const applicationData = await portfoliosApi.getApplications(draftId);
       if (applicationData != null) {
         //store the applications
+
+        //todo: fix this call to the applications module
         commit("setCurrentApplications", applicationData.applications);
         commit("doInitializeRootAdministrators");
 
@@ -1125,9 +1017,6 @@ export default new Vuex.Store({
       commit("changeSideDrawer", true);
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
-    },
-    updateEnvironmentOperators({ commit }, [appId, environments]) {
-      commit("doUpdateEnvironmentOperators", [appId, environments]);
     },
     updateApplicationOperators({ commit }, [appId, operators]) {
       commit("doUpdateApplicationOperators", [appId, operators]);
