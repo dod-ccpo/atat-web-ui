@@ -74,3 +74,19 @@ fieldset:not([aria-hidden="true"]) {
         font-size: initial !important;
     }
 }
+
+.usa-gov-head {
+    .usa-banner__guidance {
+        align-items: flex-start;
+        font-size: 16px;
+        line-height: normal;
+    }
+    .usa-banner__guidance-container {
+        max-width: 960px;
+    }
+    .btn-usa-gov-expand {
+        .v-icon:after {
+            text-decoration: none !important;
+        }
+    }
+}
