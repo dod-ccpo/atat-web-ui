@@ -24,7 +24,6 @@
               plain
               text
               x-small
-              tabindex="1"
               :ripple="false"
               class="p-0 btn-usa-gov-expand h5"
             >

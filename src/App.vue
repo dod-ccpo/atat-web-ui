@@ -1,12 +1,12 @@
 <template>
   <v-app>
     <SecurityBanner />
-    <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
-    <SideDrawer v-if="loginStatus" />
     <ATATHeader />
+    <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
     <v-main style="padding-top: 100px">
       <router-view> </router-view>
     </v-main>
+    <SideDrawer v-if="loginStatus" />
     <ATATFooter />
     <ATATDialog v-show="isDialogDisplayed" />
     <ATATToast />

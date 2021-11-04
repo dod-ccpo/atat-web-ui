@@ -6,11 +6,11 @@
         Let’s add team members to {{ currentApplication.name }}
       </h1>
       <p>
-        Invite your application team members and assign their permissions below.
-        These individuals will receive an invitation from
-        <span class="font-weight-bold"> {{ csp }}</span> after your portfolio is
-        provisioned. Select <span class="font-weight-bold">Next</span> to add
-        team members to your other applications.
+        Invite your application team members and assign their permissions
+        below. These individuals will receive an invitation from
+        <strong>{{ csp }}</strong> after your portfolio
+        is provisioned. Select <strong>Next</strong> to
+        add team members to your other applications.
         <a
           role="button"
           tabindex="0"
@@ -36,18 +36,19 @@
           @click:clear="searchTable('')"
           @keydown.native.enter="searchTable(search)"
           @blur="searchTable(search)"
+          aria-label="Search"
         />
         <v-btn
           class="input-search-bar"
           color="primary"
           @click="searchTable(search)"
+          aria-label="Search Members"
         >
           <v-icon>search</v-icon>
         </v-btn>
       </v-col>
       <v-col class="d-flex flex-row-reverse">
         <v-btn
-          role="button"
           class="font-weight-bold d-flex align-center px-5"
           :ripple="false"
           color="primary"
@@ -88,10 +89,7 @@
           :items-per-page="-1"
         >
           <template v-slot:header.display_name="{ header }">
-            <div
-              class="label font-weight-bold text--base-dark mr-5"
-              tabindex="3"
-            >
+            <div class="label font-weight-bold text--base-dark mr-5">
               {{ header.text }}
             </div>
           </template>
@@ -123,13 +121,11 @@
                 transition="slide-y-transition"
                 offset-y
                 nudge-left="190"
-                tabindex="0"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     :disabled="isDisabled(item.workspace_roles)"
                     class="table-row-menu-button pa-0"
-                    tabindex="0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
@@ -142,7 +138,6 @@
                 </template>
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
-                    tabindex="0"
                     v-for="(item, i) in options"
                     :key="i"
                     @click="tableOptionClick(item, $event)"

@@ -1,6 +1,8 @@
 <template>
   <v-container class="py-10 px-0 body-lg" style="max-width: 620px">
-    <h1 class="text-center mb-10">Access the ATAT Cloud</h1>
+    <h1 class="text-center mb-10">
+      Access the Account Tracking and<br />Automation Tool (ATAT)
+    </h1>
     <v-row>
       <v-col class="d-flex justify-center py-2">
         <img
@@ -19,11 +21,11 @@
             type="submit"
             large
             color="primary"
-            class="text-capitalize"
             :ripple="false"
             id="login_button"
+            role="link"
           >
-            Sign in
+            Sign in with CAC
           </v-btn>
         </form>
       </v-col>

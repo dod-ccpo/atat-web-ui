@@ -21,8 +21,11 @@
                 <v-btn
                   @click="onReviewPortfolioItem(item.name)"
                   class="primary theme--light mb-2"
-                  >Review</v-btn
+                  role="link"
+                  :aria-label="'Review ' + item.title"
                 >
+                  Review
+                </v-btn>
               </div>
             </div>
             <v-divider

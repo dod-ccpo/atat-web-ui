@@ -74,6 +74,7 @@
                 'ma-2 ml-0',
               ]"
               @click="isTaskOrderSigned(true)"
+              aria-label="Yes, this task order is signed by an appropriate contracting officer"
             >
               Yes
             </v-btn>
@@ -84,6 +85,7 @@
                 'ma-2',
               ]"
               @click="isTaskOrderSigned(false)"
+              aria-label="No, this task order is not signed by an appropriate contracting officer"
             >
               No
             </v-btn>
