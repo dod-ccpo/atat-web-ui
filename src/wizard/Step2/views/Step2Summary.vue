@@ -1,7 +1,7 @@
 <template>
   <div class="body-lg">
     <div class="content-max-width">
-      <h1>Your Task Order Summary</h1>
+      <h1 tabindex="-1">Your Task Order Summary</h1>
       <p v-if="cardsData.cards.length > 0" class="mb-8">
         If you have more task orders, <strong>add</strong> them below. You can
         also <strong>edit</strong> or <strong>delete</strong> any of the task

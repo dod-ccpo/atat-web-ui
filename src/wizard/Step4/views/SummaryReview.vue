@@ -2,7 +2,7 @@
   <div>
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
-      <h1>Let’s set up your application teams</h1>
+      <h1 tabindex="-1">Let’s set up your application teams</h1>
       <p class="body-lg text--base-darkest">
         In this section, we will invite people to join your application teams,
         giving them access to your workspaces within the {{ csp }} console.
@@ -71,9 +71,7 @@
           <div class="overflow-hidden text-no-wrap" style="height: 24px">
             {{ item.description }}
           </div>
-          <div v-if="item.description && item.description.length > 50">
-            ...
-          </div>
+          <div v-if="item.description && item.description.length > 50">...</div>
         </div>
       </template>
       <template v-slot:item.operators="{ item }">

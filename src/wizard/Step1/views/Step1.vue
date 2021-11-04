@@ -25,7 +25,7 @@ import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
 import { CreatePortfolioFormModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
-import ATATDivider from "@/components/ATATDivider.vue"
+import ATATDivider from "@/components/ATATDivider.vue";
 
 @Component({
   components: {
