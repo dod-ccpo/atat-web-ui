@@ -230,6 +230,8 @@
                           :pop_end_date.sync="_pop_end_date"
                           :startDateRules.sync="popStartRules"
                           :endDateRules.sync="popEndRules"
+                          :isDatePickerBlurred.sync="isDatepickerBlurred"
+                          :isTextBoxFocused.sync="isDatepickerTextBoxFocused"
                           :nudgeleft="1"
                           :min="minDate"
                           :max="maxDate"
@@ -300,6 +302,8 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
+  private isDatepickerBlurred = false;
+  private isDatepickerTextBoxFocused = false;
   get validateDatePicker(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
   }
@@ -506,7 +510,12 @@ export default class ClinsCard extends Vue {
         );
       }
     } else {
-      if (this.validateFormWhenLeaving || !this.isDatePickerClicked) {
+      if (
+        (this.validateFormWhenLeaving ||
+          !this.isDatePickerClicked ||
+          this.isDatepickerBlurred) &&
+        !this.isDatepickerTextBoxFocused
+      ) {
         validationRules.push(
           (v: string) =>
             v !== "" ||
@@ -541,7 +550,11 @@ export default class ClinsCard extends Vue {
         );
       }
     } else {
-      if (this.validateFormWhenLeaving || !this.isDatePickerClicked) {
+      if ((this.validateFormWhenLeaving ||
+          !this.isDatePickerClicked ||
+          this.isDatepickerBlurred) &&
+        !this.isDatepickerTextBoxFocused
+      ){
         validationRules.push(
           (v: string) =>
             v !== "" ||
@@ -591,11 +604,11 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  // @Watch("_pop_start_date")
-  // @Watch("_pop_end_date")
-  // validateDateFields(): void {
-  //   this.DateFields.validate();
-  // }
+  @Watch("_pop_start_date")
+  @Watch("_pop_end_date")
+  validateDateFields(): void {
+    this.DateFields.validate();
+  }
 
   public async validateForm(): Promise<boolean> {
     let validated = false;
@@ -629,10 +642,12 @@ export default class ClinsCard extends Vue {
 
   private mounted(): void {
     document.addEventListener("click", this.clinFormClicked);
+    document.addEventListener("blur", this.clinFormClicked);
   }
 
   private destroyed(): void {
     document.removeEventListener("click", this.clinFormClicked);
+    document.removeEventListener("blur", this.clinFormClicked);
   }
 }
 </script>
