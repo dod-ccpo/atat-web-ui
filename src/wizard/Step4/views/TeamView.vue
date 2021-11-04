@@ -2,7 +2,9 @@
   <div class="body-lg">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
-      <h1>Let’s add team members to {{ currentApplication.name }}</h1>
+      <h1 tabindex="-1">
+        Let’s add team members to {{ currentApplication.name }}
+      </h1>
       <p>
         Invite your application team members and assign their permissions
         below. These individuals will receive an invitation from

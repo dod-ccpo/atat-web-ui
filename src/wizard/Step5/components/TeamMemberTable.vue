@@ -12,7 +12,9 @@
           :ripple="false"
           aria-label="Edit team members"
         >
-          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+            >edit</v-icon
+          >
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>

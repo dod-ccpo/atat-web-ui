@@ -599,11 +599,11 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  @Watch("_pop_start_date")
-  @Watch("_pop_end_date")
-  validateDateFields(): void {
-    this.DateFields.validate();
-  }
+  // @Watch("_pop_start_date")
+  // @Watch("_pop_end_date")
+  // validateDateFields(): void {
+  //   this.DateFields.validate();
+  // }
 
   public async validateForm(): Promise<boolean> {
     let validated = false;

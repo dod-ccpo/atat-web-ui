@@ -69,7 +69,6 @@
           <p v-if="hint !== ''" class="input-hint" :id="id + '_input_hint'">
             {{ hint }}
           </p>
-
         </div>
         <div class="d-flex align-end mb-3">
           <v-btn

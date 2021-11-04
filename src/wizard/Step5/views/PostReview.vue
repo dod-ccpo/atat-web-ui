@@ -2,7 +2,7 @@
   <v-container fluid class="width-80 ml-0 mb-10">
     <v-row>
       <v-col col="12">
-        <h1>
+        <h1 tabindex="-1">
           Are you authorized to spend government funds to provision cloud
           resources for your organization?
         </h1>

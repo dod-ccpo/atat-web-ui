@@ -2,7 +2,7 @@
   <v-container class="main-content-wrapper body-lg content-max-width">
     <v-row>
       <v-col>
-        <h1>First, let’s verify your profile information</h1>
+        <h1 tabindex="-1">First, let’s verify your profile information</h1>
         <p>
           We imported your basic personal and contact information from your CAC
           profile. This information will be used to notify you if there are any
@@ -44,9 +44,9 @@
                   ID Card Office Online (IDCO)
                   <span class="external-link">website</span>
                 </a>
-                and select the <strong>My Profile</strong> option (DS
-                Logon or CAC required). It can take up to 48 hours for your
-                information to be updated within ATAT after you make changes.
+                and select the <strong>My Profile</strong> option (DS Logon or
+                CAC required). It can take up to 48 hours for your information
+                to be updated within ATAT after you make changes.
               </v-col>
             </v-row>
           </div>

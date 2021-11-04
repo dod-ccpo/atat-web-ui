@@ -66,6 +66,19 @@ export default class App extends Vue {
 
   public mounted(): void {
     this.$store.dispatch("initDialog");
+    this.focusH1();
+  }
+
+  public async updated(): Promise<void> {
+    this.focusH1();
+  }
+
+  public focusH1(): void {
+    // for 508 compliance in SPA, focus on first h1 of a new "page"
+    const h1 = document.getElementsByTagName("h1");
+    if (h1.length) {
+      h1[0].focus();
+    }
   }
 }
 </script>
