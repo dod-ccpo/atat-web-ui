@@ -172,13 +172,13 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import { Component, Emit, Watch } from "vue-property-decorator";
-import { ApplicationModel } from "../../../../types/Portfolios";
+import { mixins } from "vue-class-component";
+import ApplicationData from "@/mixins/ApplicationModuleData";
 
 @Component({})
-export default class TeamView extends Vue {
-  private membersData: any = [];
+export default class TeamView extends mixins(ApplicationData) {
+  private membersData: any = []
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
@@ -412,10 +412,6 @@ export default class TeamView extends Vue {
       );
       this.filteredData.splice(itemToRemoveFromFilteredData, 1);
     }
-  }
-
-  get currentApplication(): ApplicationModel {
-    return this.$store.getters.getCurrentApplication;
   }
 
   private openSideDrawer(event: Event): void {

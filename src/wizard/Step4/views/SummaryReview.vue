@@ -71,9 +71,7 @@
           <div class="overflow-hidden text-no-wrap" style="height: 24px">
             {{ item.description }}
           </div>
-          <div v-if="item.description && item.description.length > 50">
-            ...
-          </div>
+          <div v-if="item.description && item.description.length > 50">...</div>
         </div>
       </template>
       <template v-slot:item.operators="{ item }">
@@ -120,9 +118,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { editmembers } from "@/router/wizard";
+import { mixins } from "vue-class-component";
+import ApplicationModuleData from "@/mixins/ApplicationModuleData";
+
 import {
   ApplicationDataModel,
   ApplicationModel,
@@ -130,13 +130,19 @@ import {
   OperatorModel,
 } from "types/Portfolios";
 
+
+// const namespace = "applications";
+
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
 @Component({})
-export default class SummaryReview extends Vue {
+export default class SummaryReview extends mixins(ApplicationModuleData) {
   private incomingModel!: ApplicationDataModel;
-  public applications = this.$store.state.applicationModels;
-  private currentApplication: any;
+
+  public get applications(): ApplicationModel[] {
+    return this.applicationsState.applicationModels;
+  }
+
   private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
@@ -165,7 +171,8 @@ export default class SummaryReview extends Vue {
       });
       return;
     }
-    this.$store.dispatch("setCurrentApplicationId", item.id);
+    this.setCurrentApplicationId(item.id);
+
     this.$router.push({
       name: editmembers.name,
       params: {
@@ -209,8 +216,7 @@ export default class SummaryReview extends Vue {
   }
 
   private transformData(applications: any): void {
-    const portfolioOperatorsCount =
-      this.$store.state.portfolioOperators.length || 0;
+    const portfolioOperatorsCount = this.portfolioOperators.length || 0;
 
     const pIndex = this.applicationData.findIndex(
       (p: any) => p.portfolio === true
@@ -256,9 +262,10 @@ export default class SummaryReview extends Vue {
   }
 
   private setApplication(item: any) {
-    this.currentApplication = item;
-    this.$store.dispatch("setCurrentApplicationId", this.currentApplication.id);
+    const application = item as ApplicationModel;
+    this.setCurrentApplicationId(application.id);
   }
+
   private isPortfolio(item: any): string[] {
     if (item.portfolio) {
       return ["View root administrators", "Add root administrators"];
@@ -322,8 +329,8 @@ export default class SummaryReview extends Vue {
     this.transformData(this.applications);
     this.incomingModel = JSON.parse(
       JSON.stringify({
-        operators: this.$store.state.portfolioOperators as OperatorModel[],
-        applications: this.$store.state.applicationModels as ApplicationModel[],
+        operators: this.applicationsState.applicationModels,
+        applications: this.applicationsState.portfolioOperators,
       })
     );
   }
@@ -332,8 +339,8 @@ export default class SummaryReview extends Vue {
     let theSame = true;
     const serializedIncoming = JSON.stringify(this.incomingModel);
     const serialiedOutgoing = JSON.stringify({
-      operators: this.$store.state.portfolioOperators as OperatorModel[],
-      applications: this.$store.state.applicationModels as ApplicationModel[],
+      operators: this.applicationsState.applicationModels,
+      applications: this.applicationsState.portfolioOperators,
     });
 
     theSame = serializedIncoming === serialiedOutgoing;

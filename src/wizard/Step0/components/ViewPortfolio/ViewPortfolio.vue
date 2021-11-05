@@ -21,7 +21,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" v-if="portfolios.length > 0">
+      <v-col cols="6" v-if="portfolios && portfolios.length > 0">
         <portfolio-summary
           :portfolioDrafts="portfolios"
           v-on:delete="onDeletePortfolio"

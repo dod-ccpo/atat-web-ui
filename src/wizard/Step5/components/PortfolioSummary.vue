@@ -34,8 +34,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
+import ApplicationData from "@/mixins/ApplicationModuleData";
+
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
 import { ApplicationModel, PortFolioDraftDTO } from "types/Portfolios";
@@ -47,7 +49,7 @@ import { ValidationSummaryItem, TaskOrderModel } from "types/Wizard";
     PortfolioValidationSummary,
   },
 })
-export default class PortfolioSummary extends Vue {
+export default class PortfolioSummary extends mixins(ApplicationData) {
   public portfolio!: PortFolioDraftDTO;
   public taskOrders!: TaskOrderModel[];
   public applications!: ApplicationModel[];
@@ -88,7 +90,7 @@ export default class PortfolioSummary extends Vue {
   created(): void {
     this.portfolio = this.$store.getters.getPortfolio;
     this.taskOrders = this.$store.getters.getTaskOrders;
-    this.applications = this.$store.getters.getApplications;
+    this.applications = this.applicationsState.applicationModels;
   }
 
   public mounted(): void {

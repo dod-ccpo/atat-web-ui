@@ -282,12 +282,14 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
+import ApplicationData from "@/mixins/ApplicationModuleData";
 import {
   ApplicationModel,
   OperatorModel,
   EnvironmentModel,
-  Portfolio,
 } from "types/Portfolios";
+
 import { generateUid } from "@/helpers";
 import LearnMore from "@/wizard/Step4/components/LearnMore.vue";
 
@@ -296,7 +298,7 @@ import LearnMore from "@/wizard/Step4/components/LearnMore.vue";
     "learn-more": LearnMore,
   },
 })
-export default class ManageMember extends Vue {
+export default class ManageMember extends mixins(ApplicationData) {
   /*
 ██████   █████  ████████  █████
 ██   ██ ██   ██    ██    ██   ██
@@ -434,10 +436,6 @@ export default class ManageMember extends Vue {
 
   get selectedCSP(): string {
     return this.$store.getters.getPortfolio.csp;
-  }
-
-  get currentApplication(): ApplicationModel {
-    return this.$store.getters.getCurrentApplication;
   }
 
   get currentApplicationName(): string {
@@ -591,8 +589,7 @@ export default class ManageMember extends Vue {
   private setTheMemberToEdit(memberEmail: string): void {
     let foundMember: OperatorModel[] = [];
     if (this.isRootAdmin) {
-      const rootAdmins: OperatorModel[] =
-        this.$store.getters.getPortfolioOperators;
+      const rootAdmins: OperatorModel[] = this.portfolioOperators;
 
       foundMember = rootAdmins.filter((obj) => obj.email === memberEmail);
       if (foundMember) {
@@ -953,20 +950,22 @@ export default class ManageMember extends Vue {
             environments.push(thisEnv);
           }
         }, this);
-        this.$store.dispatch("updateEnvironmentOperators", [
-          curApp.id,
-          environments,
-        ]);
+
+        this.updateEnvironmentOperators({
+          appId: curApp.id,
+          environments: environments,
+        });
       } else {
         if (this.isRootAdmin) {
           operators = this.setOperators("portfolio_administrator");
-          this.$store.dispatch("updateRootAdministrators", operators);
+          this.updateRootAdministrators(operators);
         } else {
           operators = this.setOperators(this.roleForAllEnvs);
-          this.$store.dispatch("updateApplicationOperators", [
-            curApp.id,
-            operators,
-          ]);
+
+          this.updateApplicationOperators({
+            appId: curApp.id,
+            operators: operators,
+          });
         }
       }
 
@@ -974,16 +973,17 @@ export default class ManageMember extends Vue {
     } else if (this.isEditSingle) {
       if (this.isRootAdmin) {
         // update portfolioOperators name and email
-        const rootAdmins: OperatorModel[] =
-          this.$store.getters.getPortfolioOperators;
+        const rootAdmins: OperatorModel[] = this.portfolioOperators;
         const opIndex = rootAdmins
           .map((e) => e.email)
           .indexOf(this.memberToEditEmailOriginal);
-        this.$store.dispatch("updateRootAdminInfo", [
-          opIndex,
-          this.memberToEditName,
-          this.memberToEditEmail,
-        ]);
+
+        this.updateRootAdminInfo({
+          index: opIndex,
+          display_name: this.memberToEditName,
+          email: this.memberToEditEmail,
+        });
+
       } else {
         const appId = this.currentApplication.id;
         if (!this.assignDifferentRolesForEnvs) {
