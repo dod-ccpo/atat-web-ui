@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-start">
-    <v-card class="v-card ma-9 px-2 ml-0 body">
+    <v-card class="v-card px-2 ma-9 ml-0 body">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
           <h3>{{ title }}</h3>

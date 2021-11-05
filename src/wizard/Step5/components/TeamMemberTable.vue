@@ -1,8 +1,13 @@
 <template>
   <div class="review-table">
-    <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
+    <v-card
+      v-for="application in this.tableData"
+      :key="application.name"
+      class="ma-1 width-95 height-100 mb-10"
+      elevation="4"
+    >
       <v-card-title class="d-flex justify-space-between">
-        <span class="h3">{{ name }}</span>
+        <span class="h3">{{ application.name }}</span>
         <v-btn
           text
           x-small
@@ -10,7 +15,9 @@
           @click="handleClicked('addteammembers')"
           :ripple="false"
         >
-          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+            >edit</v-icon
+          >
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>
@@ -53,31 +60,61 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in data.members" :key="item.id">
+              <tr v-for="item in application.root" :key="item.id">
                 <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
                     <span class="table-item font-weight-bold">
-                      {{ item.name }}
+                      {{ item.display_name }}
                     </span>
                     <span class="table-item"> {{ item.email }} </span>
                   </div>
                 </td>
                 <td class="pa-4" style="vertical-align: top">
-                  <span
-                    class="table-item d-flex flex-column"
-                    v-for="permission in grantedPermissions(item.permissions)"
-                    :key="permission"
-                  >
-                    {{ permission }}
+                  <span class="table-item d-flex flex-column"> </span>
+                </td>
+                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
+                  <span class="table-item d-flex flex-column">
+                    {{ item.workspace_roles }}
                   </span>
+                </td>
+              </tr>
+              <tr v-for="item in application.appOp" :key="item.id">
+                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
+                  <div class="d-flex flex-column">
+                    <span class="table-item font-weight-bold">
+                      {{ item.display_name }}
+                    </span>
+                    <span class="table-item"> {{ item.email }} </span>
+                  </div>
+                </td>
+                <td class="pa-4" style="vertical-align: top">
+                  <span class="table-item d-flex flex-column"> </span>
+                </td>
+                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
+                  <span class="table-item d-flex flex-column">
+                    All : {{ item.workspace_roles }}
+                  </span>
+                </td>
+              </tr>
+              <tr v-for="item in application.envOps" :key="item.id">
+                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
+                  <div class="d-flex flex-column">
+                    <span class="table-item font-weight-bold">
+                      {{ item.display_name }}
+                    </span>
+                    <span class="table-item"> {{ item.email }} </span>
+                  </div>
+                </td>
+                <td class="pa-4" style="vertical-align: top">
+                  <span class="table-item d-flex flex-column"> </span>
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span
+                    v-for="access in tranformWorkSpace(item.workspace_roles)"
+                    :key="access"
                     class="table-item d-flex flex-column"
-                    v-for="setting in item.environments_settings"
-                    :key="setting.id"
                   >
-                    {{ setting.label }} : {{ setting.accessLevel }}
+                    {{ access }}
                   </span>
                 </td>
               </tr>
@@ -94,26 +131,122 @@ import { Component, Prop } from "vue-property-decorator";
 import {
   ApplicationMember,
   ApplicationMemberPermissions,
+  ApplicationModel,
 } from "types/Portfolios";
 
 @Component({})
 export default class TeamMemberTable extends Vue {
   @Prop({ default: true }) private sorting!: boolean;
-  @Prop({ default: [] }) private data!: ApplicationMember[];
+  @Prop({ default: [] }) private data!: ApplicationModel[];
   @Prop({ default: "" }) private name!: string;
 
-  private grantedPermissions(
-    permissions: ApplicationMemberPermissions[]
-  ): string[] {
-    // filter out not granted permisssions and is not permission have been grante return 'no access'
-    const grantedPermissionsArr = permissions.filter((item) => item.is_granted);
-
-    if (grantedPermissionsArr.length > 0) {
-      return grantedPermissionsArr.map((item) => item.label);
-    } else return ["No Access"];
-  }
   private handleClicked(name: string) {
     this.$router.push({ name: name });
+  }
+
+  private tableData: {
+    name: string;
+    root: any;
+    appOp: any;
+    envOps: any;
+  }[] = [];
+  private setMemberTableData(data: ApplicationModel[]) {
+    data.forEach((application) => {
+      const rootAdministrators: any = [];
+      const appOps: any = [];
+      const appEnvOps: any[] = [];
+      if (this.$store.state.portfolioOperators) {
+        const rootAdmins = this.$store.state.portfolioOperators || [];
+        if (rootAdmins && rootAdmins.length) {
+          rootAdmins.forEach((op: any) => {
+            const opObj = {
+              id: op.id,
+              display_name:
+                op.display_name || op.first_name + " " + op.last_name,
+              email: op.email,
+              workspace_roles: "Root administrator",
+            };
+            rootAdministrators.push(opObj);
+          });
+        }
+      }
+      if (application.operators) {
+        const applicationOperators = application.operators || [];
+        if (applicationOperators && applicationOperators.length) {
+          applicationOperators.forEach((op: any) => {
+            const opObj = {
+              id: op.id,
+              display_name:
+                op.display_name || op.first_name + " " + op.last_name,
+              email: op.email,
+              workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
+            };
+            appOps.push(opObj);
+          });
+        }
+      }
+      if (application.environments) {
+        const applicationEnvironments = application.environments;
+        applicationEnvironments.forEach((env: any) => {
+          const envOperators = env.operators;
+          if (envOperators && envOperators.length > 0) {
+            envOperators.forEach((op: any) => {
+              const i = appEnvOps.findIndex((o) => o.email === op.email);
+              const workspace_roles =
+                i > -1
+                  ? env.name +
+                    ": " +
+                    this.roleTranslation(op.access) +
+                    "  " +
+                    appEnvOps[i].workspace_roles
+                  : env.name + ": " + this.roleTranslation(op.access);
+              if (i > -1) {
+                appEnvOps[i].workspace_roles = workspace_roles;
+              } else {
+                const opObj = {
+                  id: op.id,
+                  display_name:
+                    op.display_name || op.first_name + " " + op.last_name,
+                  email: op.email,
+                  workspace_roles: workspace_roles,
+                };
+                appEnvOps.push(opObj);
+              }
+            });
+          }
+        });
+      }
+      const appObj = {
+        name: application.name,
+        root: rootAdministrators,
+        appOp: appOps,
+        envOps: appEnvOps,
+      };
+      this.tableData.push(appObj);
+    });
+  }
+  private tranformWorkSpace(data: string) {
+    let workspaceArr = data.split("  ");
+    return workspaceArr;
+  }
+  private roleTranslation(role: string): string {
+    switch (role) {
+      case "portfolio_administrator":
+        return "Root administrator";
+      case "administrator":
+        return "Administrator";
+      case "contributor":
+        return "Contributer";
+      case "read_only":
+        return "Billing read-only";
+      default:
+        return "Unauthorized";
+    }
+  }
+
+  mounted(): void {
+    this.setMemberTableData(this.data);
+    console.log(this.tableData);
   }
 }
 </script>

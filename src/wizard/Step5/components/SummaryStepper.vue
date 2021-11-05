@@ -29,7 +29,11 @@
               </a>
               <v-divider :key="'divider_' + index"></v-divider>
             </v-stepper-step>
-            <v-stepper-content :step="index + 1" :key="'step_' + index">
+            <v-stepper-content
+              :step="index + 1"
+              :key="'step_' + index"
+              class="pt-0"
+            >
               <portfolio-summary-card
                 v-if="step.type === 'portfolio'"
                 :portfolio="portfolio"

@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-start">
-    <v-card class="v-card ma-9 px-2 ml-0 body">
+    <v-card class="v-card ma-1 px-2 body width-100">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
           <h3>{{ portfolio.name }}</h3>
@@ -14,7 +14,7 @@
             <span class="link-body-md">Edit</span></v-btn
           >
         </div>
-        <p class="body-lg width-80 word-break-normal">
+        <p class="body-lg width-80 word-break-normal mb-0">
           {{ portfolio.description }}
         </p>
       </v-card-title>
@@ -24,10 +24,10 @@
           v-for="(item, idx) in dataItems"
           :key="idx"
         >
-          <div class="mx-3">
+          <div class="mx-3" style="width: 80px">
             <strong>{{ item.prefix }}</strong>
           </div>
-          <div class="">
+          <div class="pl-8">
             {{ item.value }}
           </div>
         </div>

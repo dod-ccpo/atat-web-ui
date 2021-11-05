@@ -1,15 +1,8 @@
 <template>
   <div class="review-table">
-    <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
+    <v-card class="ma-1 width-95 height-100 mb-10" elevation="4">
       <v-card-title class="d-flex justify-space-between" @click="onEdit">
         <span class="h3 justify-center">Task Order #{{ name }}</span>
-      </v-card-title>
-      <v-card-subtitle class="d-flex justify-space-between" @click="onEdit">
-        <v-btn class="pa-0 primary--text" text small :ripple="false">
-          <span class="link-body-md">{{ name }}</span
-          ><v-icon small class="ml-2 icon-20">launch</v-icon></v-btn
-        >
-
         <v-btn
           text
           x-small
@@ -17,9 +10,16 @@
           :ripple="false"
           @click="onEdit()"
         >
-          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+            >edit</v-icon
+          >
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
+      </v-card-title>
+      <v-card-subtitle class="d-flex justify-space-between">
+        <v-btn class="pa-0" text small :ripple="false">
+          <span class="body-lg text--base">{{ name }}.pdf</span></v-btn
+        >
       </v-card-subtitle>
       <v-card-text class="pa-0">
         <v-simple-table class="pb-2">
@@ -29,7 +29,7 @@
                 <th id="clin_number">
                   <span
                     class="
-                      pl-2
+                      pl-1
                       text-left text--base-dark
                       label
                       font-weight-black
@@ -99,7 +99,7 @@
               <tr v-for="(item, index) in data" :key="index">
                 <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
+                    <span class="table-item">
                       {{ item.clin_number }}
                     </span>
                   </div>
