@@ -67,7 +67,7 @@
               :id="getId('start-date-text-box-button')"
               aria-label="Open calendar to select Start Date"
             >
-              <v-icon class="black--text date-picker-icon"
+              <v-icon class="black--text date-picker-icon start-date-icon"
                 >calendar_today</v-icon
               >
             </v-btn>
@@ -102,7 +102,7 @@
               :id="getId('end-date-text-box-button')"
               aria-label="Open calendar to select End Date"
             >
-              <v-icon class="black--text date-picker-icon"
+              <v-icon class="black--text date-picker-icon end-date-icon"
                 >calendar_today</v-icon
               >
             </v-btn>
@@ -349,10 +349,12 @@ export default class ATATDatePicker extends Vue {
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
     const element = event.target as HTMLElement;
-
     //if control (textboxes, icons, calendars, menu) was clicked
     this.menu =
       element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
+
+    // if icon is clicked
+    const isIconClicked = element.classList.contains("date-picker-icon");
 
     if (this.menu) {
       //menu & calendar are opened
@@ -375,6 +377,13 @@ export default class ATATDatePicker extends Vue {
           .endOf("month")
           .format("YYYY-MM-DD")
       );
+
+      //if start date or end date icon was clicked
+      if (isIconClicked) {
+        const isStartIcon = element.classList.contains("start-date-icon");
+        this.isStartTextBoxFocused = isStartIcon;
+        this.isEndTextBoxFocused = !isStartIcon;
+      }
 
       // if calendars were clicked
       const isCalendarClicked =
