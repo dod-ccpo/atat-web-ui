@@ -12,13 +12,16 @@
                 small
                 @click="onEdit(application.id)"
                 :ripple="false"
-                ><v-icon aria-hidden="true" small class="icon-12 mr-2"
-                  >edit</v-icon
-                >
+                role="link"
+                :aria-label="'Edit application ' + application.name"
+                ><v-icon aria-hidden="true" small class="icon-12 mr-2">edit</v-icon>
                 <span class="link-body-md">Edit</span></v-btn
               >
             </div>
-            <p class="body-lg width-80 word-break-normal">
+            <p
+              v-if="application.description"
+              class="body-lg width-80 word-break-normal mb-0"
+            >
               {{ application.description }}
             </p>
           </v-card-title>

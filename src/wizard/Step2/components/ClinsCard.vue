@@ -246,8 +246,14 @@
         <v-col>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon class="pt-6">
-                <v-icon v-bind="attrs" v-on="on">delete</v-icon>
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                class="pt-6"
+                :aria-label="'Delete CLIN ' + clin_number"
+              >
+                <v-icon aria-hidden="true">delete</v-icon>
               </v-btn>
             </template>
             <v-card>
@@ -605,11 +611,11 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  @Watch("_pop_start_date")
-  @Watch("_pop_end_date")
-  validateDateFields(): void {
-    this.DateFields.validate();
-  }
+  // @Watch("_pop_start_date")
+  // @Watch("_pop_end_date")
+  // validateDateFields(): void {
+  //   this.DateFields.validate();
+  // }
 
   public async validateForm(): Promise<boolean> {
     let validated = false;

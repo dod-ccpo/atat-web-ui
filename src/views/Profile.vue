@@ -2,7 +2,7 @@
   <v-container class="main-content-wrapper body-lg content-max-width">
     <v-row>
       <v-col>
-        <h1>First, let’s verify your profile information</h1>
+        <h1 tabindex="-1">First, let’s verify your profile information</h1>
         <p>
           We imported your basic personal and contact information from your CAC
           profile. This information will be used to notify you if there are any
@@ -158,16 +158,24 @@
         </v-card>
         <v-row>
           <v-col cols="12" class="d-flex">
-            <v-btn @click="handleBack" color="primary" outlined :ripple="false"
-              >Back</v-btn
+            <v-btn
+              @click="handleBack"
+              color="primary"
+              outlined
+              :ripple="false"
+              role="link"
             >
+              Back
+            </v-btn>
             <v-btn
               @click="handleContinue"
               color="primary"
               :ripple="false"
               class="ml-auto"
-              >Continue</v-btn
+              role="link"
             >
+              Continue
+            </v-btn>
           </v-col>
         </v-row>
       </v-col>

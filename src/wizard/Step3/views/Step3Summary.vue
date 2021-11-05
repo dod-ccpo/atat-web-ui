@@ -1,7 +1,7 @@
 <template>
   <div class="body-lg">
     <div class="content-max-width">
-      <h1>Your Applications Summary</h1>
+      <h1 tabindex="-1">Your Applications Summary</h1>
       <p class="mb-8" v-if="cardsData.cards.length > 0">
         If you have more applications, <strong>add</strong> them below. You can
         also <strong>edit</strong> or <strong>delete</strong> any of the
@@ -26,7 +26,12 @@
         dialogWidth="420"
       ></atat-summary-card>
 
-      <v-btn class="primary mb-10" :ripple="false" @click="onAddNew">
+      <v-btn
+        class="primary mb-10"
+        :ripple="false"
+        @click="onAddNew"
+        role="link"
+      >
         <v-icon>control_point</v-icon>
         <div class="ml-2 font-weight-bold">Add an Application</div>
       </v-btn>

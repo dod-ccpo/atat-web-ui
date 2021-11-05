@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="content-max-width">
-      <h1>Your portfolio is complete! Ready to submit?</h1>
+      <h1 tabindex="-1">Your portfolio is complete! Ready to submit?</h1>
       <p class="body-lg">
         You can save this portfolio as a draft and return to make edits at any
         time. Once you are ready to submit your portfolio, click the

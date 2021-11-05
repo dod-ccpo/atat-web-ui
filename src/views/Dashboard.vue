@@ -2,7 +2,7 @@
   <v-container class="dashboard-body body-lg mt-10">
     <v-row>
       <v-col cols="6" offset-lg="1">
-        <h1 class="mb-8">
+        <h1 tabindex="-1" class="mb-8">
           Welcome to the Account Tracking and Automation Tool, Maria!
         </h1>
         <div>
@@ -70,6 +70,7 @@
           color="primary"
           :ripple="false"
           class="ml-auto"
+          role="link"
         >
           Get Started
         </v-btn>

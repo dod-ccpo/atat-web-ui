@@ -2,7 +2,9 @@
   <div class="body-lg">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
-      <h1>Let’s add root administrators to {{ portfolioName }}</h1>
+      <h1 tabindex="-1">
+        Let’s add root administrators to {{ portfolioName }}
+      </h1>
       <p>
         Invite your root administrators below to grant them full access to all
         of your applications. These individuals will receive an invitation from
@@ -33,18 +35,19 @@
           @click:clear="searchTable('')"
           @keydown.native.enter="searchTable(search)"
           @blur="searchTable(search)"
+          aria-label="Search"
         />
         <v-btn
           class="input-search-bar"
           color="primary"
           @click="searchTable(search)"
+          aria-label="Search Root Administrators"
         >
-          <v-icon>search</v-icon>
+          <v-icon aria-hidden="true">search</v-icon>
         </v-btn>
       </v-col>
       <v-col class="d-flex flex-row-reverse">
         <v-btn
-          role="button"
           class="font-weight-bold d-flex align-center px-5"
           :ripple="false"
           color="primary"
@@ -112,12 +115,10 @@
                 transition="slide-y-transition"
                 offset-y
                 nudge-left="190"
-                tabindex="0"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="table-row-menu-button pa-0"
-                    tabindex="0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
@@ -128,7 +129,6 @@
                 </template>
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
-                    tabindex="0"
                     v-for="(item, i) in options"
                     :key="i"
                     @click="tableOptionClick(item, $event)"

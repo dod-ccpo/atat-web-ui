@@ -65,6 +65,7 @@
               icon
               :ripple="false"
               :id="getId('start-date-text-box-button')"
+              aria-label="Open calendar to select Start Date"
             >
               <v-icon class="black--text date-picker-icon"
                 >calendar_today</v-icon
@@ -95,7 +96,12 @@
                 'datepicker-text-box end-date',
               ]"
             ></v-text-field>
-            <v-btn icon :ripple="false" :id="getId('end-date-text-box-button')">
+            <v-btn
+              icon
+              :ripple="false"
+              :id="getId('end-date-text-box-button')"
+              aria-label="Open calendar to select End Date"
+            >
               <v-icon class="black--text date-picker-icon"
                 >calendar_today</v-icon
               >

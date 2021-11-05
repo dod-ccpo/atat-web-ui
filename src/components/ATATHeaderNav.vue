@@ -3,15 +3,15 @@
     <v-btn
       v-for="item in navData.items"
       :id="item.cssClass"
-      :title="item.title"
       @click="itemClicked(item, $event)"
       @keydown.native.enter="itemClicked(item)"
       :key="item.id"
       :ripple="false"
-      tabindex="2"
       class="px-2 mx-2 primary_darken"
       small
       text
+      :aria-label="item.ariaLabel"
+      :role="item.ariaRole"
     >
       <v-icon v-show="item.iconPlacement === 'left'" left class="icon-20">
         {{ item.icon }}
