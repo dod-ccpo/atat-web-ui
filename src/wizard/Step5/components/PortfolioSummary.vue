@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row class="body-lg">
       <v-col class="content-max-width">
-        <h1>Let’s wrap up your Portfolio</h1>
+        <h1 tabindex="-1">Let’s wrap up your Portfolio</h1>
         <p class="body-lg" v-if="!invalidStepsExist()">
           In this last step, we will review the information that you provided to
           make sure everything is complete and accurate. Once you have verified

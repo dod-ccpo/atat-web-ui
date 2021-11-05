@@ -13,7 +13,7 @@
     </v-row>
     <v-row class="text-center">
       <v-col cols="12" class="mb-4">
-        <h1 class="h1 font-weight-bold mb-3">Hello World</h1>
+        <h1 tabindex="-1">Hello World</h1>
       </v-col>
     </v-row>
     <v-row class="text-center">

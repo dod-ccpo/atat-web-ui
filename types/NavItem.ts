@@ -12,6 +12,8 @@ export interface NavItem {
   id?: number;
   icon?: string;
   iconPlacement?: string;
+  ariaLabel?: string;
+  ariaRole?: string;
 }
 
 export interface Meta {

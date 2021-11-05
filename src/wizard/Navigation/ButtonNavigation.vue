@@ -17,6 +17,7 @@
       v-model="stepNumber"
       @click="clickedAction(button.action)"
       :class="[button.link ? 'link-button' : '', 'mr-5']"
+      role="link"
     >
       {{ button.text }}
     </v-btn>

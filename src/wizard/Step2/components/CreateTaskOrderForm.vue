@@ -3,7 +3,7 @@
     <v-container fluid class="body-lg">
       <v-row>
         <v-col class="content-max-width">
-          <h1>Add a New Task Order</h1>
+          <h1 tabindex="-1">Add a New Task Order</h1>
           <p class="ma-0 mt-4 body-lg text--base-darkest">
             You will find this information in your awarded task order that funds
             your ATAT portfolio. If you have more than one task order, we will
@@ -20,7 +20,7 @@
       >
         <v-row>
           <v-col>
-            <h2 class="mb-8 ">Task Order Details</h2>
+            <h2 class="mb-8">Task Order Details</h2>
             <div class="input-max-width mb-10">
               <atat-text-field
                 id="task-order-number"
@@ -74,6 +74,7 @@
                 'ma-2 ml-0',
               ]"
               @click="isTaskOrderSigned(true)"
+              aria-label="Yes, this task order is signed by an appropriate contracting officer"
             >
               Yes
             </v-btn>
@@ -84,6 +85,7 @@
                 'ma-2',
               ]"
               @click="isTaskOrderSigned(false)"
+              aria-label="No, this task order is not signed by an appropriate contracting officer"
             >
               No
             </v-btn>
@@ -144,7 +146,6 @@
           </v-col>
         </v-row>
       </section>
-
     </v-container>
   </v-form>
 </template>

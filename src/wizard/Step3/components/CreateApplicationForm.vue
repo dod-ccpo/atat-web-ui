@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form" lazy-validation class="body-lg">
     <div class="content-max-width">
-      <h1>Let’s create your new application</h1>
+      <h1 tabindex="-1">Let’s create your new application</h1>
       <p>
         In this section, we’ll set up your cloud workspaces within
         <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
@@ -73,12 +73,11 @@
         </div>
 
         <v-btn
-          role="button"
           class="link-button font-weight-bold no-border mt-3 no-focus-shift"
           :ripple="false"
           @click="$emit('addEnvironment')"
         >
-          <v-icon color="primary" class="mr-2 ml-n5" role="presentation"
+          <v-icon color="primary" class="mr-2 ml-n5" aria-hidden="true"
             >control_point</v-icon
           >
           Add another environment

@@ -137,8 +137,8 @@ const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
       clins: model.clins.map((clin) => {
         return {
           ...clin,
-          total_clin_value: Number(clin.total_clin_value),
-          obligated_funds: Number(clin.obligated_funds),
+          total_clin_value: parseNumber(clin.total_clin_value.toString()),
+          obligated_funds: parseNumber(clin.obligated_funds.toString()),
           pop_start_date: moment(clin.pop_start_date).format("YYYY-MM-DD"),
           pop_end_date: moment(clin.pop_end_date).format("YYYY-MM-DD"),
         };
@@ -205,6 +205,17 @@ const StepModelIndices: Record<number, number> = {
   3: 2,
   4: 3,
   5: 4,
+};
+
+const parseNumber = (value: string) => {
+  value = value.replace(",", "");
+  const num = parseFloat(value);
+
+  return num;
+};
+
+const stepModelHasData = (stepModel: any, initialModel: any) => {
+  return JSON.stringify(stepModel) !== JSON.stringify(initialModel);
 };
 
 /*
@@ -801,6 +812,18 @@ export default new Vuex.Store({
       state.portfolioSteps.forEach((step) => {
         // only save models that have changes and are valid
         if (step.touched && step.valid) {
+          if (
+            step.step === 2 &&
+            !stepModelHasData(step.model, createStepTwoModel())
+          )
+            return;
+
+          if (
+            step.step === 3 &&
+            !stepModelHasData(step.model, createStepThreeModel())
+          )
+            return;
+
           saveActions.push(this.dispatch("saveStepData", step.step));
         }
       });
@@ -1000,6 +1023,8 @@ export default new Vuex.Store({
               icon: "person",
               iconPlacement: "left",
               action: "profile",
+              ariaLabel: "User Profile Information",
+              ariaRole: "button",
             },
             {
               id: 2,
@@ -1009,6 +1034,8 @@ export default new Vuex.Store({
               newWindow: false,
               icon: "help_outline",
               iconPlacement: "left",
+              ariaLabel: "ATAT Support",
+              ariaRole: "link",
             },
             {
               id: 3,
@@ -1019,6 +1046,8 @@ export default new Vuex.Store({
               icon: "logout",
               iconPlacement: "right",
               action: "logout",
+              ariaLabel: "Log out of ATAT",
+              ariaRole: "link",
             },
           ],
         },

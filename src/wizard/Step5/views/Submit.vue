@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="content-max-width">
-      <h1>Your portfolio is complete! Ready to submit?</h1>
+      <h1 tabindex="-1">Your portfolio is complete! Ready to submit?</h1>
       <p class="body-lg">
         You can save this portfolio as a draft and return to make edits at any
         time. Once you are ready to submit your portfolio, click the
         <strong>Provision Cloud Resources</strong> button. We will send the
         information you provided to
-        <strong> {{ this.$store.getters.getPortfolio.csp }} </strong> and
-        begin the process of setting up your workspaces and team members.
+        <strong> {{ this.$store.getters.getPortfolio.csp }} </strong> and begin
+        the process of setting up your workspaces and team members.
       </p>
       <v-alert
         :icon="false"

@@ -230,7 +230,8 @@
                           :pop_end_date.sync="_pop_end_date"
                           :startDateRules.sync="popStartRules"
                           :endDateRules.sync="popEndRules"
-                          :allowedDates="allowedDates"
+                          :isDatePickerBlurred.sync="isDatepickerBlurred"
+                          :isTextBoxFocused.sync="isDatepickerTextBoxFocused"
                           :nudgeleft="1"
                           :min="minDate"
                           :max="maxDate"
@@ -245,8 +246,14 @@
         <v-col>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon class="pt-6">
-                <v-icon v-bind="attrs" v-on="on">delete</v-icon>
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                class="pt-6"
+                :aria-label="'Delete CLIN ' + clin_number"
+              >
+                <v-icon aria-hidden="true">delete</v-icon>
               </v-btn>
             </template>
             <v-card>
@@ -287,7 +294,6 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
-import ATATTextField from "@/components/ATATTextField.vue";
 @Component({
   components: {},
 })
@@ -301,6 +307,13 @@ export default class ClinsCard extends Vue {
   @PropSync("pop_end_date") _pop_end_date!: string;
 
   private datepickerTitle = "What is the PoP Start Date?";
+  private isDatePickerClicked = false;
+  private isDatepickerBlurred = false;
+  private isDatepickerTextBoxFocused = false;
+  get validateDatePicker(): boolean {
+    return this._pop_start_date !== "" || this._pop_end_date !== "";
+  }
+
   get isValidStartDate(): boolean {
     return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
       this._pop_start_date
@@ -372,15 +385,7 @@ export default class ClinsCard extends Vue {
   private progress: HTMLProgressElement | undefined;
   private minDate = "2020-10-01";
   private maxDate = "2022-09-30";
-
-  // public progressEvent(): void {
-  //   const progress = this.$refs["progress-bar"] as HTMLProgressElement;
-  //   const width = (this._obligated_funds / this._total_clin_value) * 100;
-  //   if (progress) {
-  //     progress.style.width = width + "%";
-  //   }
-  //   this.obligatedPercent = width.toString();
-  // }
+  private validateFormWhenLeaving = false;
 
   public rules = {};
 
@@ -401,7 +406,7 @@ export default class ClinsCard extends Vue {
     return moment(new Date(`${value} 00:00:00`)).format("MMM DD, YYYY");
   }
 
-  public JWCCContractEndDate = "09/14/2022";
+  public JWCCContractEndDate = "2022-09-14";
 
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
@@ -489,16 +494,16 @@ export default class ClinsCard extends Vue {
   get popStartRules(): any[] {
     const validationRules = [];
     if (this._pop_start_date !== "") {
-      validationRules.push((v: string) => {
+      validationRules.push(() => {
         return (
           this.isValidStartDate ||
           "Please enter a start date using the format 'YYYY-MM-DD'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
-        validationRules.push((v: string) => {
+        validationRules.push(() => {
           return (
-            moment(v).isBefore(moment(this._pop_end_date)) ||
+            moment(this._pop_start_date).isBefore(this._pop_end_date) ||
             "The period of performance start date must be before the end date"
           );
         });
@@ -511,19 +516,26 @@ export default class ClinsCard extends Vue {
         );
       }
     } else {
-      validationRules.push(
-        (v: string) =>
-          v !== "" ||
-          "Please enter the start date for your CLIN's period of performance"
-      );
+      if (
+        (this.validateFormWhenLeaving ||
+          !this.isDatePickerClicked ||
+          this.isDatepickerBlurred) &&
+        !this.isDatepickerTextBoxFocused
+      ) {
+        validationRules.push(
+          (v: string) =>
+            v !== "" ||
+            "Please enter the start date for your CLIN's period of performance"
+        );
+      }
     }
-    return validationRules;
+    return this.validateDatePicker ? validationRules : [];
   }
 
   get popEndRules(): any[] {
     const validationRules = [];
     if (this._pop_end_date !== "") {
-      validationRules.push((v: string) => {
+      validationRules.push(() => {
         return (
           this.isValidEndDate ||
           "Please enter an end date using the format 'YYYY-MM-DD'"
@@ -531,9 +543,9 @@ export default class ClinsCard extends Vue {
       });
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(
-          (v: string) =>
-            moment(v).isAfter(this._pop_start_date) ||
-            "The period of performance end date must be before the start date"
+          () =>
+            moment(this._pop_end_date).isAfter(this._pop_start_date) ||
+            "The period of performance end date must be after the start date"
         );
       }
       if (this.isValidEndDate) {
@@ -544,14 +556,20 @@ export default class ClinsCard extends Vue {
         );
       }
     } else {
-      validationRules.push(
-        (v: string) =>
-          v !== "" ||
-          "Please enter the end date for your CLIN's period of performance"
-      );
+      if (
+        (this.validateFormWhenLeaving ||
+          !this.isDatePickerClicked ||
+          this.isDatepickerBlurred) &&
+        !this.isDatepickerTextBoxFocused
+      ) {
+        validationRules.push(
+          (v: string) =>
+            v !== "" ||
+            "Please enter the end date for your CLIN's period of performance"
+        );
+      }
     }
-
-    return validationRules;
+    return this.validateDatePicker ? validationRules : [];
   }
 
   get correspondingIDIQRules(): any[] {
@@ -593,16 +611,18 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  @Watch("_pop_start_date")
-  @Watch("_pop_end_date")
-  validateDateFields(): void {
-    this.DateFields.validate();
-  }
+  // @Watch("_pop_start_date")
+  // @Watch("_pop_end_date")
+  // validateDateFields(): void {
+  //   this.DateFields.validate();
+  // }
 
   public async validateForm(): Promise<boolean> {
     let validated = false;
+    this.validateFormWhenLeaving = true;
     await this.$nextTick(() => {
       validated = this.Form.validate();
+      this.validateFormWhenLeaving = false;
     });
     return validated;
   }
@@ -613,6 +633,28 @@ export default class ClinsCard extends Vue {
 
   private updated(): void {
     this.calculateObligatedPercent();
+  }
+
+  private async clinFormClicked(event: Event): Promise<void> {
+    const clickedElement = event.target as HTMLElement;
+    const datepickerControl = document.getElementsByClassName(
+      "clin-datepicker-control"
+    )[0];
+    if (datepickerControl) {
+      const datepickerControlId = datepickerControl.getAttribute("id") || "";
+      this.isDatePickerClicked =
+        clickedElement.closest("#" + datepickerControlId) !== null;
+    }
+  }
+
+  private mounted(): void {
+    document.addEventListener("click", this.clinFormClicked);
+    document.addEventListener("blur", this.clinFormClicked);
+  }
+
+  private destroyed(): void {
+    document.removeEventListener("click", this.clinFormClicked);
+    document.removeEventListener("blur", this.clinFormClicked);
   }
 }
 </script>

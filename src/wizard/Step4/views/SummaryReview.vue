@@ -2,14 +2,14 @@
   <div>
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
-      <h1>Let’s set up your application teams</h1>
+      <h1 tabindex="-1">Let’s set up your application teams</h1>
       <p class="body-lg text--base-darkest">
         In this section, we will invite people to join your application teams,
         giving them access to your workspaces within the {{ csp }} console.
         Select each application below to manage your team members. Please add at
         least one person to each application to ensure your team can access your
         provisioned cloud resources. When you are done, select
-        <span class="font-weight-bold">Next: Review and Submit</span> to
+        <strong>Next: Review and Submit</strong> to
         finalize your portfolio.
       </p>
     </div>
@@ -26,7 +26,7 @@
       :items-per-page="-1"
     >
       <template v-slot:header.name="{ header }">
-        <div class="label font-weight-bold text--base-dark mr-5" tabindex="0">
+        <div class="label font-weight-bold text--base-dark mr-5">
           {{ header.text }}
         </div>
       </template>
@@ -49,12 +49,20 @@
           >
           <a
             @click="handleNameClick(item)"
+            @keydown.enter="handleNameClick(item)"
+            @keydown.space="handleNameClick(item)"
+            tabindex="0"
             class="
               body
               font-weight-bold
               py-3
               primary-text
               text-no-wrap text-truncate
+            "
+            :aria-label="
+              item.name +
+              ' - manage ' +
+              (item.portfolio ? 'root administrators' : 'team members')
             "
           >
             <div class="d-flex align-center justify-between">
@@ -69,9 +77,8 @@
       <template v-slot:item.description="{ item }">
         <div class="d-flex align-center body text--base-darkest">
           <div class="overflow-hidden text-no-wrap" style="height: 24px">
-            {{ item.description }}
+            {{ getDescription(item.description) }}
           </div>
-          <div v-if="item.description && item.description.length > 50">...</div>
         </div>
       </template>
       <template v-slot:item.operators="{ item }">
@@ -85,22 +92,23 @@
             transition="slide-y-transition"
             offset-y
             nudge-left="190"
-            tabindex="0"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 class="table-row-menu-button pa-0"
-                tabindex="0"
                 v-bind="attrs"
                 v-on="on"
                 @click="setApplication(item)"
+                :aria-label="
+                  'View or Add ' +
+                  (item.portfolio ? 'root administrators' : 'team members')
+                "
               >
                 <v-icon class="icon-18 width-auto">more_horiz</v-icon>
               </v-btn>
             </template>
             <v-list class="table-row-menu pa-0">
               <v-list-item
-                tabindex="0"
                 v-for="(item, i) in isPortfolio(item)"
                 :key="i"
                 @click="handleMenuClick(item, $event)"
@@ -204,6 +212,13 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       default:
         this.openDialog(event);
     }
+  }
+
+  private getDescription(text: string): string {
+    if (text && text.length) {
+      return text.length <= 50 ? text : text.substring(0, 50) + "...";
+    }
+    return "";
   }
 
   @Watch("operators")
