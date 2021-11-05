@@ -550,11 +550,12 @@ export default class ClinsCard extends Vue {
         );
       }
     } else {
-      if ((this.validateFormWhenLeaving ||
+      if (
+        (this.validateFormWhenLeaving ||
           !this.isDatePickerClicked ||
           this.isDatepickerBlurred) &&
         !this.isDatepickerTextBoxFocused
-      ){
+      ) {
         validationRules.push(
           (v: string) =>
             v !== "" ||
@@ -629,14 +630,14 @@ export default class ClinsCard extends Vue {
   }
 
   private async clinFormClicked(event: Event): Promise<void> {
-    const element = event.target as HTMLElement;
-    const clickedElement = document.getElementsByClassName(
+    const clickedElement = event.target as HTMLElement;
+    const datepickerControl = document.getElementsByClassName(
       "clin-datepicker-control"
     )[0];
-    if (clickedElement) {
-      const clickedElementId = clickedElement.getAttribute("id") || "";
+    if (datepickerControl) {
+      const datepickerControlId = datepickerControl.getAttribute("id") || "";
       this.isDatePickerClicked =
-        element.closest("#" + clickedElementId) !== null;
+        clickedElement.closest("#" + datepickerControlId) !== null;
     }
   }
 

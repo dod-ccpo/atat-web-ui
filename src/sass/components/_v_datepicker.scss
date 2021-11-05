@@ -156,8 +156,8 @@
                   button.v-btn:not(.v-date-picker-table__current){
                     &:focus,
                     &:focus::before,
-                    &:hover,
-                    &:hover::before{
+                    &:hover:not(.date-picker-end-date),
+                    &:hover:not(.date-picker-end-date)::before{
                       border-radius:  8px 0px 0px 8px !important;
                       border: 4px solid $primary_vivid !important;
                       box-sizing: border-box !important;
@@ -182,8 +182,8 @@
                   button.v-btn:not(.v-date-picker-table__current){
                     &:focus,
                     &:focus::before,
-                    &:hover,
-                    &:hover::before{
+                    &:hover:not(.date-picker-start-date),
+                    &:hover:not(.date-picker-start-date)::before{
                       border-radius:  0px 8px 8px 0px !important;
                       border: 4px solid $primary_vivid !important;
                       box-sizing: border-box !important;
