@@ -253,6 +253,7 @@ export default class ATATDatePicker extends Vue {
     this.isEndTextBoxFocused = !isStart;
     this._isTextBoxFocused = true;
     this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
+    this.menu = true;
   }
 
   /**
@@ -285,12 +286,17 @@ export default class ATATDatePicker extends Vue {
     return true;
   }
 
-  public clearTextBox(): void {
-    if (this.isStartTextBoxFocused) {
-      this.startDate = "";
+  public clearTextBox(event: PointerEvent): void {
+    const clearButtonClicked = event.target as HTMLButtonElement;
+    const isStartDateClearButton = clearButtonClicked.closest(".start-date");
+    if (isStartDateClearButton) {
+      this.isStartTextBoxFocused = true;
+      this.setStartDate("");
     } else {
-      this.endDate = "";
+      this.isEndTextBoxFocused = true;
+      this.setEndDate("");
     }
+    this.setDatePickerHoverButtons();
   }
 
   /**
@@ -325,6 +331,11 @@ export default class ATATDatePicker extends Vue {
       }
     });
     this.menuTop = hasSixRows ? 415 : 375;
+  }
+
+  private removeTextBoxFocus(): void {
+    this.isStartTextBoxFocused = false;
+    this.isEndTextBoxFocused = false;
   }
 
   private mounted(): void {
@@ -389,12 +400,19 @@ export default class ATATDatePicker extends Vue {
       const isCalendarClicked =
         element.closest(".v-date-picker-table") !== null;
       if (isCalendarClicked) {
-        this.toggleTextBoxes(element);
+        // if both textboxes have valid dates, close menu
+        const button = element.parentElement as HTMLButtonElement;
+        this.styleDatePickerButton(button, this.isStartTextBoxFocused);
+        if (!this.isDateRangeValid) {
+          this.toggleTextBoxes(this.isStartTextBoxFocused);
+        } else {
+          this.removeTextBoxFocus();
+        }
+        this.menu = !this.isDateRangeValid;
       }
     } else {
       //menu and calendar are closed
-      this.isStartTextBoxFocused = false;
-      this.isEndTextBoxFocused = false;
+      this.removeTextBoxFocus();
       this._isTextBoxFocused = false;
 
       // reset firstmonth so calendar will open to the start date
@@ -412,23 +430,11 @@ export default class ATATDatePicker extends Vue {
   /**
    * toggles textboxes as user selects start/end dates on calendar
    */
-  public toggleTextBoxes(element: HTMLElement): void {
-    const button = element.parentElement as HTMLButtonElement;
-    if (this.isStartTextBoxFocused) {
-      this.styleDatePickerButton(button, true);
-      (
-        document.querySelector(
-          "#" + this.getId("end-date-text-box")
-        ) as HTMLElement
-      ).click();
-    } else if (this.isEndTextBoxFocused) {
-      this.styleDatePickerButton(button, false);
-      (
-        document.querySelector(
-          "#" + this.getId("start-date-text-box")
-        ) as HTMLElement
-      ).click();
-    }
+  public toggleTextBoxes(isStart: boolean): void {
+    const textBoxId = isStart ? "end-date-text-box" : "start-date-text-box";
+    (
+      document.querySelector("#" + this.getId(textBoxId)) as HTMLInputElement
+    ).click();
   }
 
   /**
@@ -524,12 +530,10 @@ export default class ATATDatePicker extends Vue {
     // remove dateRange[1] if === ""
     if (this.dateRange[1] === "") {
       this.dateRange.splice(1, 1);
-      // this.endDate = "";
     }
     // remove dateRange[1] if === ""
     if (this.dateRange[0] === "") {
       this.dateRange.splice(0, 1);
-      // this.startDate = "";
     }
 
     /***** final result ****************
@@ -546,6 +550,13 @@ export default class ATATDatePicker extends Vue {
      * appropriate date(s) be highlighted on each datepicker calendar
      */
     return this.dateRange;
+  }
+
+  get isDateRangeValid(): boolean {
+    return (
+      this.dateRange.length === 2 &&
+      this.dateRange.every((d) => this.isDateValid(d))
+    );
   }
 
   /**

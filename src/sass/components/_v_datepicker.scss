@@ -163,8 +163,9 @@
                       box-sizing: border-box !important;
                       box-shadow: none !important;
                     }
-                    &.date-picker-start-date{
-                      @extend %selected-start-date-picker-button;
+                    &.date-picker-start-date
+                    &.accent{
+                      //@extend %selected-start-date-picker-button;
                     }
                   }
                   
@@ -189,8 +190,9 @@
                       box-sizing: border-box !important;
                       box-shadow: none !important;
                     }
-                    &.date-picker-end-date{
-                      @extend %selected-end-date-picker-button;
+                    &.date-picker-end-date
+                    &.accent{
+                      // @extend %selected-end-date-picker-button;
                     }
                   }
                 }
@@ -245,8 +247,6 @@
                   }
 
                   &.v-date-picker-table__current{
-                    // border: $base-darkest 1px solid !important;
-                    // color: $base_darkest !important;
                     border-radius: 0px !important;
                     border-color: transparent !important;
                     &.accent--text{
@@ -258,6 +258,10 @@
                       border-radius: 28px !important;
                       opacity: 1 !important;
                     }
+                  }
+
+                  .accent{
+                    background-color: red;
                   }
                 }
 

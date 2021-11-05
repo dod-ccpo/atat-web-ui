@@ -230,8 +230,8 @@
                           :pop_end_date.sync="_pop_end_date"
                           :startDateRules.sync="popStartRules"
                           :endDateRules.sync="popEndRules"
-                          :isDatePickerBlurred.sync="isDatepickerBlurred"
-                          :isTextBoxFocused.sync="isDatepickerTextBoxFocused"
+                          :isDatePickerBlurred.sync="isDatePickerBlurred"
+                          :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
                           :nudgeleft="1"
                           :min="minDate"
                           :max="maxDate"
@@ -308,8 +308,8 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
-  private isDatepickerBlurred = false;
-  private isDatepickerTextBoxFocused = false;
+  private isDatePickerBlurred = false;
+  private isDatePickerTextBoxFocused = false;
   get validateDatePicker(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
   }
@@ -519,8 +519,8 @@ export default class ClinsCard extends Vue {
       if (
         (this.validateFormWhenLeaving ||
           !this.isDatePickerClicked ||
-          this.isDatepickerBlurred) &&
-        !this.isDatepickerTextBoxFocused
+          this.isDatePickerBlurred) &&
+        !this.isDatePickerTextBoxFocused
       ) {
         validationRules.push(
           (v: string) =>
@@ -559,8 +559,8 @@ export default class ClinsCard extends Vue {
       if (
         (this.validateFormWhenLeaving ||
           !this.isDatePickerClicked ||
-          this.isDatepickerBlurred) &&
-        !this.isDatepickerTextBoxFocused
+          this.isDatePickerBlurred) &&
+        !this.isDatePickerTextBoxFocused
       ) {
         validationRules.push(
           (v: string) =>
