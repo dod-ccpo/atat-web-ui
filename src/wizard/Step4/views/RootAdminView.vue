@@ -119,13 +119,16 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                    :id="moreButtonId(item)"
                     class="table-row-menu-button pa-0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
-                    aria-label="Edit or remove root administrator"
+                    :aria-label="'Edit or remove ' + item.display_name"
                   >
-                    <v-icon class="icon-18 width-auto">more_horiz</v-icon>
+                    <v-icon aria-hidden="true" class="icon-18 width-auto">
+                      more_horiz
+                    </v-icon>
                   </v-btn>
                 </template>
                 <v-list class="table-row-menu pa-0">
@@ -219,6 +222,7 @@ export default class RootAdminView extends Vue {
 
   public openDialog(event: Event, returnFocusId: string): void {
     this.$store.state.returnFocusId = returnFocusId;
+    debugger;
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;
@@ -270,7 +274,8 @@ export default class RootAdminView extends Vue {
     } else if (item.toLowerCase() === "edit info") {
       // EJY if editing a member, return focus to the ... menu for the member
       // pass as second param to openDialog()
-      this.openDialog(event, '');
+      debugger;
+      this.openDialog(event, this.moreButtonId(this.member));
     }
   }
 
@@ -291,6 +296,15 @@ export default class RootAdminView extends Vue {
         operators.splice(memberindx, 1);
       }
     }
+  }
+  private moreButtonId(item: any): string {
+    debugger;
+    if (item && item.email) {
+      return (
+        "moreButton_" + item.email.toLowerCase().replace(/[^a-zA-Z0-9]/gi, "_")
+      );
+    }
+    return "";
   }
 }
 </script>
