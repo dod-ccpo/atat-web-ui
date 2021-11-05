@@ -92,7 +92,7 @@
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span class="table-item d-flex flex-column">
-                    All : {{ item.workspace_roles }}
+                    All: {{ item.workspace_roles }}
                   </span>
                 </td>
               </tr>
