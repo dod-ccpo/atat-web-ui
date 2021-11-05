@@ -315,13 +315,13 @@ export default class ClinsCard extends Vue {
   }
 
   get isValidStartDate(): boolean {
-    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+    return /((0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/[12]\d{3})$/.test(
       this._pop_start_date
     );
   }
 
   get isValidEndDate(): boolean {
-    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+    return /((0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/[12]\d{3})$/.test(
       this._pop_end_date
     );
   }
@@ -497,7 +497,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidStartDate ||
-          "Please enter a start date using the format 'YYYY-MM-DD'"
+          "Please enter a start date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -538,7 +538,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidEndDate ||
-          "Please enter an end date using the format 'YYYY-MM-DD'"
+          "Please enter an end date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {

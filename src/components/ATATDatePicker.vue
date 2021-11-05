@@ -47,8 +47,8 @@
               :success="isFieldValid"
               :error="isFieldValid"
               hide-details
-              placeholder="YYYY-MM-DD"
-              v-model="startDate"
+              placeholder="MM/DD/YYYY"
+              v-model="formatDateMMDDYYYY"
               :value="startDate"
               :rules="_startDateRules"
               @focus="setFocus"
@@ -82,8 +82,8 @@
               :success="isFieldValid"
               :error="isFieldValid"
               hide-details
-              placeholder="YYYY-MM-DD"
-              v-model="endDate"
+              placeholder="MM/DD/YYYY"
+              v-model="formatDateMMDDYYYY"
               :value="endDate"
               @focus="setFocus"
               :rules="_endDateRules"
@@ -245,7 +245,23 @@ export default class ATATDatePicker extends Vue {
     const formattedDate = moment(dateToBeFormatted).format("YYYY-MM-DD");
     return formattedDate.toLowerCase() !== "invalid date" ? formattedDate : "";
   }
+  get formatDateMMDDYYYY(): string {
+    debugger;
+    const dateToBeFormatted = this.isStartTextBoxFocused
+      ? this.startDate
+      : this.endDate;
+    const formattedDateMMDDYYYY =
+      moment(dateToBeFormatted).format("MM/DD/YYYY");
+      this.formatDate(this.startDate);
+      this.formatDate(this.endDate);
+    return formattedDateMMDDYYYY.toLowerCase() !== "invalid date"
+      ? formattedDateMMDDYYYY
+      : "";
+  }
 
+  /**
+   * todo add comments
+   */
   private setFocus(event: Event): void {
     const textBox = event.target as HTMLElement;
     const isStart = textBox.closest(".start-date") !== null;
