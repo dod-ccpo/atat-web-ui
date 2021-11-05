@@ -589,7 +589,7 @@ export default class ManageMember extends mixins(ApplicationData) {
   private setTheMemberToEdit(memberEmail: string): void {
     let foundMember: OperatorModel[] = [];
     if (this.isRootAdmin) {
-      const rootAdmins: OperatorModel[] = this.portfolioOperators;
+      const rootAdmins: OperatorModel[] = this.operators;
 
       foundMember = rootAdmins.filter((obj) => obj.email === memberEmail);
       if (foundMember) {
@@ -973,7 +973,7 @@ export default class ManageMember extends mixins(ApplicationData) {
     } else if (this.isEditSingle) {
       if (this.isRootAdmin) {
         // update portfolioOperators name and email
-        const rootAdmins: OperatorModel[] = this.portfolioOperators;
+        const rootAdmins: OperatorModel[] = this.operators;
         const opIndex = rootAdmins
           .map((e) => e.email)
           .indexOf(this.memberToEditEmailOriginal);
@@ -983,7 +983,6 @@ export default class ManageMember extends mixins(ApplicationData) {
           display_name: this.memberToEditName,
           email: this.memberToEditEmail,
         });
-
       } else {
         const appId = this.currentApplication.id;
         if (!this.assignDifferentRolesForEnvs) {
@@ -1007,6 +1006,8 @@ export default class ManageMember extends mixins(ApplicationData) {
         }
       }
     }
+
+    this.$store.dispatch("step4HasChanges", true);
 
     this.closeModal();
   }

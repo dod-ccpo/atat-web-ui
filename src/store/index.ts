@@ -315,6 +315,7 @@ export default new Vuex.Store({
         description: "Add Team Members",
         touched: false,
         valid: false,
+        hasChanges: false,
         model: {},
       },
       {
@@ -452,6 +453,13 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
+    doUpdateStepData(state, [stepNumber, data]){
+      const stepIndex = state.portfolioSteps.findIndex(
+        (x) => x.step === stepNumber
+      );
+      const step = state.portfolioSteps[stepIndex];
+      state.portfolioSteps[stepIndex] = { ...data, ...step };
+    },
     /**
      * Partially or fully initializes step model
      * @param state
@@ -472,8 +480,6 @@ export default new Vuex.Store({
 
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
-      Vue.set(state, "applicationModels", []);
-      Vue.set(state, "portfolioOperators", []);
 
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
@@ -753,6 +759,8 @@ export default new Vuex.Store({
       };
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+
+      this.dispatch("step4HasChanges", false);
     },
     async saveStep4({ state, rootGetters }) {
       const applicationModels = rootGetters[
@@ -772,6 +780,11 @@ export default new Vuex.Store({
       };
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+
+      this.dispatch("step4HasChanges", false);
+    },
+    step4HasChanges({ commit }, hasChanges: boolean): void {
+      commit("doUpdateStepData", [4, { hasChanges: hasChanges }]);
     },
     /**
      * Saves all valid step models with changes
@@ -803,6 +816,10 @@ export default new Vuex.Store({
     async createPortfolioDraft({ commit }): Promise<void> {
       //initialize steps models
       commit("doInitializeSteps");
+
+      //initilize applications module 
+      this.dispatch("applications/initialize");
+
       const portfolioDraftId = await portfoliosApi.createDraft();
       commit("doSetCurrentPortfolioId", portfolioDraftId);
     },
@@ -823,8 +840,8 @@ export default new Vuex.Store({
         this.dispatch("loadStep2Data", draftId),
         this.dispatch("loadStep3Data", draftId),
       ];
-
       await Promise.all(loadActions);
+      this.dispatch("step4HasChanges", false);
     },
     async loadStep1Data({ commit }, draftId: string): Promise<void> {
       const draft = await portfoliosApi.getPortfolio(draftId);
@@ -1053,6 +1070,12 @@ export default new Vuex.Store({
 
       return applicationModels && applicationModels.length > 0;
     },
+    stephasChanges: (state) => {
+      const step = state.portfolioSteps.find(
+        (o: { step: number }) => o.step === 4
+      );
+      return step?.hasChanges;
+    }
   },
   modules: {
     portfolios,

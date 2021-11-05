@@ -61,7 +61,6 @@ const addApplication = (
   state.applicationModels.push(model as never);
 };
 
-
 const updateApplication = (
   state: ApplicationsState,
   { index, model }: { index: number; model: ApplicationModel }
@@ -255,7 +254,13 @@ const initializeRootAdministrators = (state: ApplicationsState): void => {
   Vue.set(state, "portfolioOperators", []);
 };
 
+const initialize = (state: ApplicationsState): void => {
+  Vue.set(state, "applicationModels", []);
+  Vue.set(state, "portfolioOperators", []);
+};
+
 export const mutations: MutationTree<ApplicationsState> = {
+  initialize,
   setCurrentApplicationId,
   setCurrentApplications,
   addApplication,

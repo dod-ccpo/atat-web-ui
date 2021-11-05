@@ -52,7 +52,6 @@ import { ValidationSummaryItem, TaskOrderModel } from "types/Wizard";
 export default class PortfolioSummary extends mixins(ApplicationData) {
   public portfolio!: PortFolioDraftDTO;
   public taskOrders!: TaskOrderModel[];
-  public applications!: ApplicationModel[];
   public invalidStepsExist(): boolean {
     return this.$store.state.erroredSteps.length > 0;
   }
@@ -90,7 +89,6 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
   created(): void {
     this.portfolio = this.$store.getters.getPortfolio;
     this.taskOrders = this.$store.getters.getTaskOrders;
-    this.applications = this.applicationsState.applicationModels;
   }
 
   public mounted(): void {

@@ -198,8 +198,8 @@ export default class TeamView extends mixins(ApplicationData) {
     workspace_roles: string;
   }[] = [];
   private setMemberTableData() {
-    if (this.$store.state.portfolioOperators) {
-      const rootAdmins = this.$store.state.portfolioOperators || [];
+    if (this.operators) {
+      const rootAdmins = this.operators || [];
       if (rootAdmins && rootAdmins.length) {
         rootAdmins.forEach((op: any) => {
           const opObj = {

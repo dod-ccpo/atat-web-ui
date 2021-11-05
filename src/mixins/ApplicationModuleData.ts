@@ -58,6 +58,15 @@ export default class ApplicationModuleData extends Vue {
   @Getter("currentApplication", { namespace })
   currentApplication!: ApplicationModel;
 
-  @Getter("portfolioOperators", { namespace })
-  portfolioOperators!: OperatorModel[];
+  get applications(): ApplicationModel[] {
+    return this.applicationsState && this.applicationsState.applicationModels
+      ? this.applicationsState.applicationModels
+      : [];
+  }
+
+  get operators(): OperatorModel[] {
+    return this.applicationsState && this.applicationsState.portfolioOperators
+      ? this.applicationsState.portfolioOperators
+      : [];
+  }
 }
