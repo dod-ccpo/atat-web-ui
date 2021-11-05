@@ -9,8 +9,7 @@
         Select each application below to manage your team members. Please add at
         least one person to each application to ensure your team can access your
         provisioned cloud resources. When you are done, select
-        <strong>Next: Review and Submit</strong> to
-        finalize your portfolio.
+        <strong>Next: Review and Submit</strong> to finalize your portfolio.
       </p>
     </div>
 

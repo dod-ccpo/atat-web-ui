@@ -86,7 +86,7 @@ export default class SummaryStepper extends Vue {
   @PropSync("stepNumber", { default: 1 })
   private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
-  
+
   // keyboard navigation
   // enables user to tab to stepper label and press enter/space to click stepper
   public stepperClicked(stepperId: string): void {
