@@ -6,6 +6,7 @@
       :name="order.task_order_number"
       :data="order.clins"
       :id="order.id"
+      :task-order-file="order.task_order_file"
     ></funding-table>
   </div>
 </template>

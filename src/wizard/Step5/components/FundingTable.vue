@@ -8,6 +8,8 @@
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 h5 primary--text"
           :ripple="false"
+          :aria-label="'Edit Task Order ' + name"
+          role="link"
           @click="onEdit()"
         >
           <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
@@ -17,9 +19,9 @@
         </v-btn>
       </v-card-title>
       <v-card-subtitle class="d-flex justify-space-between">
-        <v-btn class="pa-0" text small :ripple="false">
-          <span class="body-lg text--base">{{ name }}.pdf</span></v-btn
-        >
+        <span class="body-lg text--base font-size-15">
+          Uploaded file: {{ taskOrderFile.name }}
+        </span>
       </v-card-subtitle>
       <v-card-text class="pa-0">
         <v-simple-table class="pb-2">
@@ -140,13 +142,14 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import moment from "moment";
-import { TaskOrderModel } from "../../../../types/Wizard";
+import { TaskOrderModel, TaskOrderFile } from "../../../../types/Wizard";
 
 @Component({})
 export default class FundingTable extends Vue {
   @Prop({ default: {} }) private data!: TaskOrderModel;
   @Prop({ default: "" }) private name!: string;
   @Prop({ default: "" }) private id!: string;
+  @Prop({ default: {} }) private taskOrderFile!: TaskOrderFile;
 
   private onEdit() {
     this.$store.dispatch("editTaskOrder", this.id);

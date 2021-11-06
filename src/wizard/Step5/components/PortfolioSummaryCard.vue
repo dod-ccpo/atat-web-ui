@@ -10,7 +10,9 @@
             small
             @click="onEdit()"
             :ripple="false"
-            ><v-icon aria-hidden="true" small class="icon-12 mr-2">edit</v-icon>
+            aria-label="Edit portfolio details"
+            role="link"
+            ><v-icon aria-hidden="true" small class="icon-12 mr-1">edit</v-icon>
             <span class="link-body-md">Edit</span></v-btn
           >
         </div>

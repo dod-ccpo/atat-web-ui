@@ -3,13 +3,14 @@
     <v-card class="v-card px-2 ma-9 ml-0 body">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
-          <h3>{{ title }}</h3>
+          <span class="h3">{{ title }}</span>
           <v-btn
             class="py-0 px-2 primary--text"
             text
             small
             @click="handleClicked(editPlace)"
             :ripple="false"
+            role="link"
             ><v-icon small class="icon-12 mr-2">edit</v-icon>
             <span class="link-body-md">Edit</span></v-btn
           >

@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h1>Invite Portfolio Managers Table Component</h1>
+        <h1 tabindex="-1">Invite Portfolio Managers Table Component</h1>
       </v-col>
     </v-row>
     <v-row>

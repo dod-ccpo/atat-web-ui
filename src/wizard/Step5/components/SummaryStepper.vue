@@ -12,18 +12,20 @@
           <template v-for="(step, index) in stepperControl">
             <v-stepper-step
               editable
-              :id="'step_0' + (index + 1)"
+              :id="'summary_step_0' + (index + 1)"
               :step="index + 1"
               :key="'stepper_' + index"
               :error-icon="'  '"
               :edit-icon="'  '"
               :complete-icon="'  '"
-              :ref="'step' + index + 1"
             >
               <a
+                tabindex="0"
                 role="button"
                 class="h2 mb-0 step-description black--text no-text-decoration"
-                @click="stepperClicked('step0' + (index + 1))"
+                @keypress.enter="stepperClicked('summary_step_0' + (index + 1))"
+                @keypress.space="stepperClicked('summary_step_0' + (index + 1))"
+                :aria-label="'Expand ' + step.title + ' summary'"
               >
                 {{ step.title }}
               </a>
@@ -89,51 +91,17 @@ export default class SummaryStepper extends Vue {
   @PropSync("stepNumber", { default: 1 })
   private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
-  $refs!: {
-    step01: Vue & { $el: HTMLElement };
-    step02: Vue & { $el: HTMLElement };
-    step03: Vue & { $el: HTMLElement };
-    step04: Vue & { $el: HTMLElement };
-  };
-
+  
   // keyboard navigation
-  // enables user to tab to stepper label and click stepper
-  public stepperClicked(stepper: string): void {
-    // switch (stepper) {
-    //   case "step01":
-    //     this.$refs.step01.$el.click();
-    //     break;
-    //   case "step02":
-    //     this.$refs.step02.$el.click();
-    //     break;
-    //   case "step03":
-    //     this.$refs.step03.$el.click();
-    //     break;
-    //   case "step04":
-    //     this.$refs.step04.$el.click();
-    //     break;
-    // }
+  // enables user to tab to stepper label and press enter/space to click stepper
+  public stepperClicked(stepperId: string): void {
+    document.getElementById(stepperId)?.click();
   }
   public stepperControl: SummaryStep[] = [
     {
       step: 1,
       title: "Portfolio Details",
       type: "portfolio",
-      data: {
-        title: "Defense Logistics Agency",
-        description:
-          "This portfolio will be used to build, test and manage the native applications for the defense logistics agency.",
-        items: [
-          {
-            prefix: "Funded by",
-            value: "Air Force, Marine Corps",
-          },
-          {
-            prefix: "Deploy to",
-            value: "CSP 1",
-          },
-        ],
-      },
     },
     {
       step: 2,
