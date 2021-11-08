@@ -1,7 +1,7 @@
 import PortfoliosState from "../modules/portfolios/types";
 
 interface RootState {
-  currentPortfolioId: string,
+  currentPortfolioId: string;
   loginStatus: boolean;
   sideDrawer: boolean;
   sideDrawerType: string;

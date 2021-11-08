@@ -21,6 +21,9 @@ import moment from "moment";
 import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 
+import { validateApplication, validOperator } from "@/validation/application";
+import { validateTaskOrder } from "@/validation/taskOrder";
+
 Vue.use(Vuex);
 
 const vuexLocalStorage = new VuexPersist({
@@ -464,7 +467,7 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
-    doUpdateStepData(state, [stepNumber, data]){
+    doUpdateStepData(state, [stepNumber, data]) {
       const stepIndex = state.portfolioSteps.findIndex(
         (x) => x.step === stepNumber
       );
@@ -744,21 +747,31 @@ export default new Vuex.Store({
         "applications/portfolioOperators"
       ] as OperatorModel[];
 
-      if (model.id === "") {
-        model.id = generateUid();
-        this.dispatch("applications/addApplication", model);
-      } else {
-        const appIndx = getEntityIndex<ApplicationModel>(
-          applicationModels,
-          (application) => application.id === model.id
-        );
-        if (appIndx === -1) {
-          throw new Error(
-            "unable to location task order model with id :" + model.id
-          );
-        }
+      const application = model as ApplicationModel;
 
-        this.dispatch("applications/updateApplication", { appIndx, model });
+      const validOperators =
+        portfolioOperators.length > 0
+          ? portfolioOperators.every((operator) => validOperator(operator))
+          : true;
+
+      // a very basic validation test before attempting to update and save
+      if (validateApplication(application) && validOperators) {
+        if (model.id === "") {
+          model.id = generateUid();
+          this.dispatch("applications/addApplication", model);
+        } else {
+          const appIndx = getEntityIndex<ApplicationModel>(
+            applicationModels,
+            (application) => application.id === model.id
+          );
+          if (appIndx === -1) {
+            throw new Error(
+              "unable to location application model with id :" + model.id
+            );
+          }
+
+          this.dispatch("applications/updateApplication", { appIndx, model });
+        }
       }
 
       const applications = mapApplications(applicationModels);
@@ -840,7 +853,7 @@ export default new Vuex.Store({
       //initialize steps models
       commit("doInitializeSteps");
 
-      //initilize applications module 
+      //initilize applications module
       this.dispatch("applications/initialize");
 
       const portfolioDraftId = await portfoliosApi.createDraft();
@@ -849,6 +862,8 @@ export default new Vuex.Store({
     async loadPortfolioDraft({ commit }, draftId: string): Promise<void> {
       //initial step model data
       commit("doInitializeSteps");
+
+      this.dispatch("applications/initialize");
 
       //validate that portfolio draft id exists on the server
       const id = await portfoliosApi.getDraft(draftId);
@@ -1104,7 +1119,7 @@ export default new Vuex.Store({
         (o: { step: number }) => o.step === 4
       );
       return step?.hasChanges;
-    }
+    },
   },
   modules: {
     portfolios,

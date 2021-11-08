@@ -6,11 +6,10 @@
         Let’s add team members to {{ currentApplication.name }}
       </h1>
       <p>
-        Invite your application team members and assign their permissions
-        below. These individuals will receive an invitation from
-        <strong>{{ csp }}</strong> after your portfolio
-        is provisioned. Select <strong>Next</strong> to
-        add team members to your other applications.
+        Invite your application team members and assign their permissions below.
+        These individuals will receive an invitation from
+        <strong>{{ csp }}</strong> after your portfolio is provisioned. Select
+        <strong>Next</strong> to add team members to your other applications.
         <a
           role="button"
           tabindex="0"
@@ -175,7 +174,7 @@ import ApplicationData from "@/mixins/ApplicationModuleData";
 
 @Component({})
 export default class TeamView extends mixins(ApplicationData) {
-  private membersData: any = []
+  private membersData: any = [];
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";

@@ -48,8 +48,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component} from "vue-property-decorator";
-import { mixins } from 'vue-class-component';
+import { Component } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
 import ExpandableLink from "@/components/ExpandableLink.vue";
 

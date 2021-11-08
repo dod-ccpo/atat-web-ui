@@ -96,32 +96,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
-          },
-          {
-            text: "Previous",
-            outlined: true,
-            id: "previous",
-            color: "primary",
-            action: ["previous"],
-          },
-          {
-            text: "Next",
-            color: "primary",
-            id: "next",
-            action: ["next"],
-          },
-        ],
-      },
-      {
-        step: 2,
-        buttons: [
-          {
-            text: "Save and Close",
-            link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -144,8 +120,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -168,8 +144,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",

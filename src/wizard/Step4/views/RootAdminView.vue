@@ -1,4 +1,4 @@
-  <template>
+<template>
   <div class="body-lg">
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
