@@ -2,12 +2,12 @@
   <v-dialog
     :max-width="width"
     v-model="_showDialog"
-    role="dialog"
+    role="alertdialog"
     aria-labelledby="modalDeleteTitle"
     aria-describedby="modalDeleteMessage"
   >
     <v-card>
-      <v-card-title class="h3 text-break" id="modalDeleteTitle">
+      <v-card-title class="h3 text-break" id="modalDeleteTitle" tabindex="-1">
         {{ title }}
       </v-card-title>
       <v-card-text class="body-lg black--text" id="modalDeleteMessage">
@@ -15,7 +15,7 @@
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn
-          class="link-button no-focus-shift"
+          class="link-button  no-focus-shift"
           :ripple="false"
           @click="cancelItem"
           id="dialog_cancel"
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Component, PropSync, Prop } from "vue-property-decorator";
+import { Component, PropSync, Prop, Watch } from "vue-property-decorator";
 import { VDialog } from "vuetify/lib";
 import Vue from "vue";
 
@@ -58,6 +58,17 @@ export default class ATATModalDelete extends Vue {
 
   @PropSync("showDialogWhenClicked")
   private _showDialog!: boolean;
+
+  @Watch("showDialogWhenClicked")
+  setFocus(newVal: boolean): void {
+    if (newVal) {
+      this.$nextTick(() => {
+        setTimeout(function () {
+          document.getElementById("modalDeleteTitle")?.focus();
+        }, 100);
+      });
+    }
+  }
 
   private cancelItem() {
     this._showDialog = false;

@@ -6,6 +6,7 @@
     :itemToDelete.sync="itemToDelete"
     v-on:edit="(id) => $emit('edit', id)"
     v-on:delete="(id) => $emit('delete', id)"
+    return-focus-element-id-ok="btn-create-new-portfolio"
   ></atat-summary-card>
 </template>
 
