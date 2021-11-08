@@ -61,7 +61,20 @@ export default class ATATDialog extends Vue {
   setFocus(newVal: boolean): void {
     debugger;
     if (!newVal) {
+      // when false, return focus to
       debugger;
+      this.$nextTick(() => {
+        const openerId = this.$store.state.returnFocusId;
+        if (openerId !== "") {
+          document.getElementById(openerId)?.focus();
+          this.$store.state.returnFocusId = "";
+        } else {
+          const h1 = document.getElementsByTagName("h1");
+          if (h1.length) {
+            h1[0].focus();
+          }
+        }
+      });
     }
     this.$nextTick(() => {
       const firstFocusedElement = document.getElementsByClassName(

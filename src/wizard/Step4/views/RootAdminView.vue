@@ -222,7 +222,6 @@ export default class RootAdminView extends Vue {
 
   public openDialog(event: Event, returnFocusId: string): void {
     this.$store.state.returnFocusId = returnFocusId;
-    debugger;
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;
@@ -254,7 +253,7 @@ export default class RootAdminView extends Vue {
   //Dialog stuff
   private okText = "Remove Root Administrator";
   private cardWidth = "40";
-  private cancelText = "cancel";
+  private cancelText = "Cancel";
   private hasDialog = true;
   private dialogWidth = "450";
   @Emit("delete")
@@ -269,12 +268,12 @@ export default class RootAdminView extends Vue {
     if (item.toLowerCase() === "remove root administrator") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
+      this.$store.state.returnFocusId = "inviteTeamMemberButton";
       this.showDialogWhenClicked = true;
       // EJY if removing a member, return focus to "inviteTeamMemberButton"
     } else if (item.toLowerCase() === "edit info") {
       // EJY if editing a member, return focus to the ... menu for the member
       // pass as second param to openDialog()
-      debugger;
       this.openDialog(event, this.moreButtonId(this.member));
     }
   }

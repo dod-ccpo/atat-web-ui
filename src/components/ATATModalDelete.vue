@@ -1,8 +1,16 @@
 <template>
-  <v-dialog :max-width="width" v-model="_showDialog">
+  <v-dialog
+    :max-width="width"
+    v-model="_showDialog"
+    role="dialog"
+    aria-labelledby="dialogTitle"
+    aria-describedby="dialogMessage"
+  >
     <v-card>
-      <v-card-title class="h3 text-break">{{ title }}</v-card-title>
-      <v-card-text class="body-lg black--text">
+      <v-card-title class="h3 text-break" id="dialogTitle">
+        {{ title }}
+      </v-card-title>
+      <v-card-text class="body-lg black--text" id="dialogMessage">
         {{ message }}
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -43,6 +51,8 @@ export default class ATATModalDelete extends Vue {
   @Prop({ default: "Cancel" }) private cancelText!: string;
   @Prop({ default: "OK" }) private okText!: string;
 
+// EJY pass props for cancel focus and OK focus
+
   @PropSync("isItemDeleted")
   private _isItemDeleted!: boolean;
 
@@ -52,6 +62,7 @@ export default class ATATModalDelete extends Vue {
   private cancelItem() {
     this._showDialog = false;
     this._isItemDeleted = false;
+    // ejy DRY this - move to mixin?
     this.$nextTick(() => {
       const openerId = this.$store.state.returnFocusId;
       if (openerId !== "") {
@@ -71,11 +82,23 @@ export default class ATATModalDelete extends Vue {
     this._isItemDeleted = true;
     this.$emit("delete");
     this.$nextTick(() => {
-      this.$store.state.returnFocusId = "";
-      const h1 = document.getElementsByTagName("h1");
-      if (h1.length) {
-        h1[0].focus();
+      // this works for member deletion, but not application/task order deletion.
+      // it fires before the app/TO is removed from the DOM, so it focuses
+      // for a moment on the "Delete" button on the cards before the card is removed.
+      // need better solution.
+      const openerId = this.$store.state.returnFocusId;
+      if (openerId !== "") {
+        const focusEl = document.getElementById(openerId);
+        if (focusEl) {
+          focusEl.focus();
+        } else {
+          const h1 = document.getElementsByTagName("h1");
+          if (h1.length) {
+            h1[0].focus();
+          }
+        }
       }
+      this.$store.state.returnFocusId = "";
     });
   }
 }
