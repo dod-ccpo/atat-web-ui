@@ -3,14 +3,14 @@
     :max-width="width"
     v-model="_showDialog"
     role="dialog"
-    aria-labelledby="dialogTitle"
-    aria-describedby="dialogMessage"
+    aria-labelledby="modalDeleteTitle"
+    aria-describedby="modalDeleteMessage"
   >
     <v-card>
-      <v-card-title class="h3 text-break" id="dialogTitle">
+      <v-card-title class="h3 text-break" id="modalDeleteTitle">
         {{ title }}
       </v-card-title>
-      <v-card-text class="body-lg black--text" id="dialogMessage">
+      <v-card-text class="body-lg black--text" id="modalDeleteMessage">
         {{ message }}
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -53,8 +53,6 @@ export default class ATATModalDelete extends Vue {
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
 
-// EJY pass props for cancel focus and OK focus
-
   @PropSync("isItemDeleted")
   private _isItemDeleted!: boolean;
 
@@ -64,15 +62,7 @@ export default class ATATModalDelete extends Vue {
   private cancelItem() {
     this._showDialog = false;
     this._isItemDeleted = false;
-    // ejy DRY this - move to mixin?
     this.returnFocus(this.focusOnCancel);
-    // this.$nextTick(() => {
-    //   if (this.focusOnCancel !== "") {
-    //     document.getElementById(this.focusOnCancel)?.focus();
-    //   } else {
-    //     this.focusOnH1();
-    //   }
-    // });
   }
 
   private deleteItem() {
@@ -80,16 +70,6 @@ export default class ATATModalDelete extends Vue {
     this._isItemDeleted = true;
     this.$emit("delete");
     this.returnFocus(this.focusOnOk);
-    // this.$nextTick(() => {
-    //   if (this.focusOnOk !== "") {
-    //     const focusEl = document.getElementById(this.focusOnOk);
-    //     if (focusEl) {
-    //       focusEl.focus();
-    //     } else {
-    //       this.focusOnH1();
-    //     }
-    //   }
-    // });
   }
   private returnFocus(elementId: string): void {
     this.$nextTick(() => {
@@ -106,11 +86,5 @@ export default class ATATModalDelete extends Vue {
       }
     });
   }
-  // private focusOnH1(): void {
-  //   const h1 = document.getElementsByTagName("h1");
-  //   if (h1.length) {
-  //     h1[0].focus();
-  //   }
-  // }
 }
 </script>

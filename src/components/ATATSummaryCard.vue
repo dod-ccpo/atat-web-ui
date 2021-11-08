@@ -123,7 +123,6 @@
               role="button"
               >{{ card.rightButtonText }}</v-btn
             >
-            <!-- :id="card.rightButtonText + '_' + (index + 1)" -->
           </v-card-actions>
         </v-card>
       </v-col>
