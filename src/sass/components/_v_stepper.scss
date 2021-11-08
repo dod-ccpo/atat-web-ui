@@ -157,8 +157,10 @@
 }
 
 .v-stepper{
-  &.summary-stepper{
-
+  &.summary-stepper.v-stepper--vertical{
+  .v-stepper__step{
+    padding: 20px 0 12px;
+  }
     .v-stepper__step__step{
 
       width: 38px !important;
@@ -196,5 +198,5 @@
 }
 
 .v-application--is-ltr .v-stepper--vertical .v-stepper__content {
-  margin: -8px -36px -16px 40px !important;
+  margin: -8px -36px -16px 16px !important;
 }

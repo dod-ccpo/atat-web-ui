@@ -16,7 +16,7 @@
         </p>
       </v-col>
     </v-row>
-    <v-row class="my-0" :class="[!invalidStepsExist() ? 'ml-n11' : '']">
+    <v-row class="my-0">
       <v-col>
         <portfolio-validation-summary
           v-if="invalidStepsExist()"
