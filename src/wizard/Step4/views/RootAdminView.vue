@@ -133,12 +133,18 @@
                 </template>
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
-                    v-for="(item, i) in options"
+                    v-for="(menuOptionText, i) in options"
                     :key="i"
-                    @click="tableOptionClick(item, $event)"
+                    @click="
+                      tableOptionClick(
+                        menuOptionText,
+                        $event,
+                        moreButtonId(item)
+                      )
+                    "
                   >
                     <v-list-item-title class="body-lg py-2">
-                      {{ item }}
+                      {{ menuOptionText }}
                     </v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -160,6 +166,9 @@
       :okText="okText"
       :width="dialogWidth + 'px'"
       v-on:delete="onDelete"
+      :focus-if-cancel="returnFocusElementIdRemoveMemberCancel"
+      :focus-if-ok="returnFocusElementIdRemoveMemberOk"
+
     />
   </div>
 </template>
@@ -221,24 +230,25 @@ export default class RootAdminView extends Vue {
   }
 
   public openDialog(event: Event, returnFocusId: string): void {
-    this.$store.state.returnFocusId = returnFocusId;
+    // this.$store.state.returnFocusId = returnFocusId;
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;
       memberEmail: string | null;
+      focusOnOk: string;
+      focusOnCancel: string;
     } = {
       isRootAdmin: true,
       isEditSingle: false,
       memberEmail: null,
+      focusOnOk: returnFocusId,
+      focusOnCancel: returnFocusId,
     };
 
     const currentTarget = event.currentTarget as HTMLElement;
     if (currentTarget && currentTarget.innerText === "Edit info") {
-      memberProps = {
-        isRootAdmin: true,
-        isEditSingle: true,
-        memberEmail: this.member.email,
-      };
+      memberProps.isEditSingle = true;
+      memberProps.memberEmail = this.member.email;
     }
 
     this.$store.dispatch("openDialog", [
@@ -263,18 +273,23 @@ export default class RootAdminView extends Vue {
   private dialogMessage = "";
   private dialogTitle = "";
   private showDialogWhenClicked = false;
+  private returnFocusElementIdRemoveMemberCancel = "";
+  private returnFocusElementIdRemoveMemberOk = "inviteTeamMemberButton";
 
-  private tableOptionClick(item: any, event: Event): void {
-    if (item.toLowerCase() === "remove root administrator") {
+  private tableOptionClick(
+    menuOptionText: any,
+    event: Event,
+    btnId: string
+  ): void {
+    if (menuOptionText.toLowerCase() === "remove root administrator") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
-      this.$store.state.returnFocusId = "inviteTeamMemberButton";
+      this.returnFocusElementIdRemoveMemberCancel = btnId;
       this.showDialogWhenClicked = true;
-      // EJY if removing a member, return focus to "inviteTeamMemberButton"
-    } else if (item.toLowerCase() === "edit info") {
+    } else if (menuOptionText.toLowerCase() === "edit info") {
       // EJY if editing a member, return focus to the ... menu for the member
       // pass as second param to openDialog()
-      this.openDialog(event, this.moreButtonId(this.member));
+      this.openDialog(event, btnId);
     }
   }
 
@@ -297,7 +312,6 @@ export default class RootAdminView extends Vue {
     }
   }
   private moreButtonId(item: any): string {
-    debugger;
     if (item && item.email) {
       return (
         "moreButton_" + item.email.toLowerCase().replace(/[^a-zA-Z0-9]/gi, "_")

@@ -24,6 +24,7 @@
         v-on:edit="onEdit"
         v-on:delete="onDelete"
         dialogWidth="420"
+        return-focus-element-id-ok="AddApplicationButton"
       ></atat-summary-card>
 
       <v-btn
@@ -31,6 +32,7 @@
         :ripple="false"
         @click="onAddNew"
         role="link"
+        id="AddApplicationButton"
       >
         <v-icon>control_point</v-icon>
         <div class="ml-2 font-weight-bold">Add an Application</div>

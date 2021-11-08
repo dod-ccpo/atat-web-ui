@@ -50,6 +50,8 @@ export default class ATATModalDelete extends Vue {
   @Prop({ default: "500px" }) private width!: string;
   @Prop({ default: "Cancel" }) private cancelText!: string;
   @Prop({ default: "OK" }) private okText!: string;
+  @Prop() private focusOnCancel!: string;
+  @Prop() private focusOnOk!: string;
 
 // EJY pass props for cancel focus and OK focus
 
@@ -64,9 +66,9 @@ export default class ATATModalDelete extends Vue {
     this._isItemDeleted = false;
     // ejy DRY this - move to mixin?
     this.$nextTick(() => {
-      const openerId = this.$store.state.returnFocusId;
-      if (openerId !== "") {
-        document.getElementById(openerId)?.focus();
+      // const openerId = this.$store.state.returnFocusId;
+      if (this.focusOnCancel !== "") {
+        document.getElementById(this.focusOnCancel)?.focus();
         this.$store.state.returnFocusId = "";
       } else {
         const h1 = document.getElementsByTagName("h1");
@@ -86,9 +88,9 @@ export default class ATATModalDelete extends Vue {
       // it fires before the app/TO is removed from the DOM, so it focuses
       // for a moment on the "Delete" button on the cards before the card is removed.
       // need better solution.
-      const openerId = this.$store.state.returnFocusId;
-      if (openerId !== "") {
-        const focusEl = document.getElementById(openerId);
+      // const openerId = this.$store.state.returnFocusId;
+      if (this.focusOnOk !== "") {
+        const focusEl = document.getElementById(this.focusOnOk);
         if (focusEl) {
           focusEl.focus();
         } else {
