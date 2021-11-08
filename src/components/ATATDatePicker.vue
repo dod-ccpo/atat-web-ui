@@ -48,8 +48,9 @@
               :error="isFieldValid"
               hide-details
               placeholder="MM/DD/YYYY"
-              v-model="formatDateMMDDYYYY"
-              :value="startDate"
+              v-model="startDate"
+              v-mask="'##/##/####'"
+              :value="formatStartDateMMDDYYYY"
               :rules="_startDateRules"
               @focus="setFocus"
               @blur="blurTextField"
@@ -83,8 +84,9 @@
               :error="isFieldValid"
               hide-details
               placeholder="MM/DD/YYYY"
-              v-model="formatDateMMDDYYYY"
-              :value="endDate"
+              v-mask="'##/##/####'"
+              v-model="endDate"
+              :value="formatEndDateMMDDYYYY"
               @focus="setFocus"
               :rules="_endDateRules"
               @blur="blurTextField"
@@ -245,18 +247,26 @@ export default class ATATDatePicker extends Vue {
     const formattedDate = moment(dateToBeFormatted).format("YYYY-MM-DD");
     return formattedDate.toLowerCase() !== "invalid date" ? formattedDate : "";
   }
-  get formatDateMMDDYYYY(): string {
-    debugger;
-    const dateToBeFormatted = this.isStartTextBoxFocused
-      ? this.startDate
-      : this.endDate;
-    const formattedDateMMDDYYYY =
-      moment(dateToBeFormatted).format("MM/DD/YYYY");
-      this.formatDate(this.startDate);
-      this.formatDate(this.endDate);
-    return formattedDateMMDDYYYY.toLowerCase() !== "invalid date"
-      ? formattedDateMMDDYYYY
-      : "";
+  get formatStartDateMMDDYYYY(): string {
+    // const tempformattedDate = moment(this.startDate).format("MM/DD/YYYY");
+    // this.startDate =
+    //   tempformattedDate !== "Invalid Date" ? tempformattedDate : "";
+    if (this.isDateValid(this.startDate)) {
+      this.startDate = moment(this.startDate).format("MM/DD/YYYY");
+      return this.startDate;
+    }
+    return "";
+  }
+
+  get formatEndDateMMDDYYYY(): string {
+    // const tempformattedDate = moment(this.endDate).format("MM/DD/YYYY");
+    // this.endDate =
+    //   tempformattedDate !== "Invalid Date" ? tempformattedDate : "";
+    if (this.isDateValid(this.endDate)) {
+      this.endDate = moment(this.endDate).format("MM/DD/YYYY");
+      return this.endDate;
+    }
+    return "";
   }
 
   /**
@@ -282,9 +292,18 @@ export default class ATATDatePicker extends Vue {
   /**
    * validates date in 'YYYY-MM-DD' format
    */
+  // public yyyymmddFormat = [
+  //   /([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))$/,
+  // ];
+  
   public isDateValid(dateString: string): boolean {
     return (
-      /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(dateString) &&
+      (/((0[1-9]|1[0-2])\/(0[1-9]|[12]\\d|3[01])\/[12]\\d{3}-)$/.test(
+        dateString
+      ) ||
+        /([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))$/.test(
+          dateString
+        )) &&
       moment(dateString).isValid()
     );
   }
