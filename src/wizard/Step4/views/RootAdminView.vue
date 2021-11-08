@@ -286,8 +286,6 @@ export default class RootAdminView extends Vue {
       this.returnFocusElementIdRemoveMemberCancel = btnId;
       this.showDialogWhenClicked = true;
     } else if (menuOptionText.toLowerCase() === "edit info") {
-      // EJY if editing a member, return focus to the ... menu for the member
-      // pass as second param to openDialog()
       this.openDialog(event, btnId);
     }
   }

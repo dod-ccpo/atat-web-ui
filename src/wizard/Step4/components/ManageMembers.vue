@@ -250,7 +250,6 @@
                   dense
                   filled
                   :ripple="false"
-                  tabindex="0"
                 />
               </v-col>
             </v-row>

@@ -28,7 +28,7 @@
       ></atat-summary-card>
 
       <v-btn
-        class="primary mb-10 foobar"
+        class="primary mb-10"
         :ripple="false"
         @click="onAddNewTaskOrder"
         role="link"
