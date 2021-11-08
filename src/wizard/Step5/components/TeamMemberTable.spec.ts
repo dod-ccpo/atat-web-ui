@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import store from "../../../store/index";
+
 import { createLocalVue, mount } from "@vue/test-utils";
 import TeamMemberTable from "@/wizard/Step5/components/TeamMemberTable.vue";
 import VueRouter from "vue-router";
@@ -12,6 +12,18 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
   const localVue = createLocalVue();
   localVue.use(Vuex);
   localVue.use(VueRouter);
+  const store = new Vuex.Store({
+    state: {
+      portfolioOperators: [
+        {
+          display_name: "Zach Clark",
+          email: "Zach.clark.ctr@navy.mil",
+          access: "administrator",
+          id: "562580695-3943565392-133314166-295014367",
+        },
+      ],
+    },
+  });
   const routes = [
     {
       name: "dev",
@@ -32,67 +44,131 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
       propsData: {
         data: [
           {
-            name: "App I ",
-            description: "",
+            name: "app1",
+            description: "test app",
+            operators: [
+              {
+                display_name: "Zach Clark",
+                email: "Zach.clark.ctr@navy.mil",
+                access: "administrator",
+                id: "561580695-3943565392-133314166-295014367",
+              },
+            ],
             environments: [
               {
                 name: "Development",
-                operators: [],
-                id: "3119430111-915467763-1369539781-138968660",
+                operators: [
+                  {
+                    display_name: "Sar",
+                    email: "sar@ss.mil",
+                    access: "contributor",
+                    id: "3828921767-897083545-4169711873-1711730514",
+                  },
+                ],
+                id: "2247679727-1796514614-765215127-3722248939",
               },
               {
                 name: "Testing",
-                operators: [],
-                id: "532538470-778722837-3786856452-1864277705",
+                operators: [
+                  {
+                    display_name: "Sar",
+                    email: "sar@ss.mil",
+                    access: "contributor",
+                    id: "4176272411-1896250974-2167074280-3353590155",
+                  },
+                ],
+                id: "2527282020-931494908-3246558546-748548897",
               },
               {
                 name: "Staging",
-                operators: [],
-                id: "534743261-3020911031-2250111013-1241840033",
+                operators: [
+                  {
+                    display_name: "Sar",
+                    email: "sar@ss.mil",
+                    access: "read_only",
+                    id: "3543956481-1104845080-2644944270-2799717884",
+                  },
+                ],
+                id: "2028727406-1005851013-886944661-631909235",
               },
               {
                 name: "Production",
                 operators: [],
-                id: "2751170394-2701461298-2193074251-2484128755",
+                id: "3603487191-1894379752-2988864848-801674135",
               },
             ],
-            operators: [
-              {
-                display_name: "Burt",
-                email: "burt@skirt.mil",
-                access: "administrator",
-                id: "4095681897-2059713500-2250702592-917887623",
-              },
-            ],
-            id: "4155009259-1015820413-2928105448-1428578903",
+            id: "73257629-909530589-3113378507-3185009131",
           },
           {
-            name: "App II",
-            description: "App II Desc",
+            name: "app2",
+            description: "app2",
+            operators: [
+              {
+                display_name: "Sammy Saxena",
+                email: "sammy.saxena@hs.mil",
+                access: "read_only",
+                id: "940162809-1647986521-3974197534-2463217520",
+              },
+            ],
+            environments: [
+              {
+                name: "Development",
+                operators: [],
+                id: "4219284761-2610011508-2179849022-1395475101",
+              },
+              {
+                name: "Testing",
+                operators: [],
+                id: "3261060648-3142988575-2159140386-3007437720",
+              },
+            ],
+            id: "2367297998-1668235977-3505671069-756748914",
+          },
+          {
+            name: "app3",
+            description: "app3",
             operators: [],
             environments: [
               {
                 name: "Development",
                 operators: [],
-                id: "2939568395-1821548397-3681551319-2960283883",
+                id: "1399262081-2710166845-1189357112-2906113028",
               },
               {
                 name: "Testing",
                 operators: [],
-                id: "3159017822-3675756009-4011702815-4017424154",
+                id: "3257337421-1639848947-2507637052-2546714813",
+              },
+            ],
+            id: "2927258070-2429224463-4121966776-2784745036",
+          },
+          {
+            name: "app 04",
+            description: "",
+            operators: [],
+            environments: [
+              {
+                name: "Development",
+                operators: [],
+                id: "1307021621-1074678896-1566037725-581621056",
+              },
+              {
+                name: "Testing",
+                operators: [],
+                id: "2006526322-2519006064-2387408358-2124966171",
               },
               {
                 name: "Staging",
                 operators: [],
-                id: "3843812416-2804251606-276859505-133759044",
+                id: "938092695-2788641705-3038787397-3683398253",
               },
               {
                 name: "Production",
                 operators: [],
-                id: "101772745-1925605321-3364710797-4152709345",
+                id: "3058560492-2450828886-3136367538-3564157673",
               },
             ],
-            id: "3338276719-1446318077-3051345485-1556482597",
+            id: "1990002903-411725093-219915659-1389852477",
           },
         ],
         name: "dev",
@@ -101,6 +177,7 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
   });
 
   it("renders successfully", async () => {
+    wrapper.props;
     expect(wrapper.exists()).toBe(true);
   });
 
