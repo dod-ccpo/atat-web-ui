@@ -28,7 +28,7 @@
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
-                <th id="name">
+                <th class="width-50">
                   <span
                     class="
                       pl-2
@@ -41,7 +41,7 @@
                   </span>
                 </th>
 
-                <th id="workspace_roles">
+                <th class="width-50">
                   <span
                     class="
                       pr-2
