@@ -7,13 +7,9 @@
       :dod_components.sync="model.dod_components"
       :validate-on-load="touched"
     />
-    <div class="py-10">
-      <v-row>
-        <v-col col col-sm-8 col-md-6 cols="4">
-          <v-divider></v-divider>
-        </v-col>
-      </v-row>
-    </div>
+
+    <atat-divider />
+
     <CloudServiceProvider
       class="pb-10"
       ref="cloudServiceProviderForm"
@@ -29,11 +25,13 @@ import CreatePortfolioForm from "../components/CreatePorfolioForm.vue";
 import CloudServiceProvider from "../components/CloudServiceProviderForm.vue";
 import { CreatePortfolioFormModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
+import ATATDivider from "@/components/ATATDivider.vue";
 
 @Component({
   components: {
     CreatePortfolioForm,
     CloudServiceProvider,
+    "atat-divider": ATATDivider,
   },
   // mixins: [ValidatableWizardStep],
 })

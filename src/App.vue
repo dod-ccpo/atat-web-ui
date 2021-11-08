@@ -1,11 +1,11 @@
 <template>
   <v-app>
-    <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
-    <SideDrawer v-if="loginStatus" />
     <ATATHeader />
+    <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
     <v-main style="padding-top: 100px">
       <router-view> </router-view>
     </v-main>
+    <SideDrawer v-if="loginStatus" />
     <ATATFooter />
     <ATATDialog v-show="isDialogDisplayed" />
     <ATATToast />
@@ -63,6 +63,19 @@ export default class App extends Vue {
 
   public mounted(): void {
     this.$store.dispatch("initDialog");
+    this.focusH1();
+  }
+
+  public async updated(): Promise<void> {
+    this.focusH1();
+  }
+
+  public focusH1(): void {
+    // for 508 compliance in SPA, focus on first h1 of a new "page"
+    const h1 = document.getElementsByTagName("h1");
+    if (h1.length) {
+      h1[0].focus();
+    }
   }
 }
 </script>

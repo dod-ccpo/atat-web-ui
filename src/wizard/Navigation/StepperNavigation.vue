@@ -8,7 +8,7 @@
       v-model="getStepNumber"
       non-linear
     >
-      <v-stepper-header class="pa-0">
+      <v-stepper-header class="pa-0" role="navigation">
         <template v-for="(step, index) in stepperControl.Steps">
           <v-stepper-step
             editable

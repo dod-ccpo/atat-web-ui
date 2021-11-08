@@ -9,7 +9,7 @@
         minheight: scrollableDivHeight + 'px !important',
       }"
     >
-      <div class="h3 mb-5 mt-4 text--base-darkest" tabindex="3">
+      <div class="h2 mb-5 mt-4 text--base-darkest">
         Understanding member roles within your cloud console
       </div>
       <span>
@@ -25,7 +25,7 @@
         needs.
       </span>
       <v-divider class="my-5"></v-divider>
-      <div class="h4 mt-4 text--base-darkest mb-1">
+      <div class="h3 mt-4 text--base-darkest mb-1">
         Types of team member roles
       </div>
       <span>
@@ -82,7 +82,7 @@
         </div>
       </v-alert>
       <v-divider class="my-5"></v-divider>
-      <div class="h4 text--base-darkest mb-1">
+      <div class="h3 text--base-darkest mb-1">
         Additional Roles and Permissions
       </div>
       <span class="pb-10">

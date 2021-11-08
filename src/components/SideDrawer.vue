@@ -9,7 +9,6 @@
     :temporary="showOverlay"
     permanent
     right
-    tabindex="3"
     :style="{
       height: getHeight,
       'max-height': getHeight,
@@ -30,16 +29,16 @@
       <div class="font-weight-bold body">{{ setTitle }}</div>
       <div class="pr-7">
         <v-btn
-          class="text--base-darkest h6 pa-0 icon-24"
-          tabindex="3"
+          class="text--base-darkest pa-0 icon-24"
           text
           small
           @click.stop="close"
           ref="drawerCloserRef"
           id="drawerCloser"
           :ripple="false"
+          aria-label="Close panel"
         >
-          <v-icon class="icon-20">close</v-icon>
+          <v-icon aria-hidden="true" class="icon-20">close</v-icon>
         </v-btn>
       </div>
     </div>
@@ -53,7 +52,6 @@
         v-if="sideDrawerType === 'teammemberroles'"
         :scrollableDivHeight="setScrollableDivHeight()"
         class="overflow-y-auto"
-        tabindex="3"
       ></TeamMemberRolesDrawer>
     </div>
   </v-navigation-drawer>

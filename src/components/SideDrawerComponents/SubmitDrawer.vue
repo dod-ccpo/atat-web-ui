@@ -1,9 +1,9 @@
 <template>
   <div class="atat-info-side-drawer">
     <v-divider></v-divider>
-    <div class="h3 mx-6 mb-5 mt-4 text--base-darkest">
+    <h2 class="mx-6 mb-5 mt-4 text--base-darkest">
       Can I update my portfolio after it is provisioned?
-    </div>
+    </h2>
     <div class="body-lg mx-6 text--base-darkest">
       <p>Yes. However, ATAT is not a system of record.</p>
       <p>

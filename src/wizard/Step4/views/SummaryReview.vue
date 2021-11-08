@@ -1,134 +1,128 @@
 <template>
-  <v-container fluid class="ml-3 mr-16 mb-16">
-    <v-row>
-      <div id="inputWidthFaker" ref="inputWidthFaker"></div>
-      <v-col class="pl-0" cols="12">
-        <h2 class="h2">Let’s set up your application teams</h2>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="pa-0 ma-0" cols="9">
-        <p class="body-lg text--base-darkest">
-          In this section, we will invite people to join your application teams,
-          giving them access to your workspaces within the {{ csp }} console.
-          Select each application below to manage your team members. Please add
-          at least one person to each application to ensure your team can access
-          your provisioned cloud resources. When you are done, select
-          <span class="font-weight-bold">Next: Review and Submit</span> to
-          finalize your portfolio.
-        </p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="ma-0 pa-0 mt-4">
-        <v-data-table
-          class="review-table overflow-x-hidden overflow-y-hidden"
-          style="width: 900px"
-          :headers="headers"
-          :items="applicationData"
-          hide-default-footer
-          dense
-          :sort-by="['name']"
-          :custom-sort="sortApplications"
-          :items-per-page="-1"
-        >
-          <template v-slot:header.name="{ header }">
-            <div
-              class="label font-weight-bold text--base-dark mr-5"
-              tabindex="3"
-            >
-              {{ header.text }}
+  <div>
+    <div id="inputWidthFaker" ref="inputWidthFaker"></div>
+    <div class="content-max-width">
+      <h1 tabindex="-1">Let’s set up your application teams</h1>
+      <p class="body-lg text--base-darkest">
+        In this section, we will invite people to join your application teams,
+        giving them access to your workspaces within the {{ csp }} console.
+        Select each application below to manage your team members. Please add at
+        least one person to each application to ensure your team can access your
+        provisioned cloud resources. When you are done, select
+        <strong>Next: Review and Submit</strong> to
+        finalize your portfolio.
+      </p>
+    </div>
+
+    <v-data-table
+      class="review-table overflow-x-hidden overflow-y-hidden"
+      style="width: 900px"
+      :headers="headers"
+      :items="applicationData"
+      hide-default-footer
+      dense
+      :sort-by="['name']"
+      :custom-sort="sortApplications"
+      :items-per-page="-1"
+    >
+      <template v-slot:header.name="{ header }">
+        <div class="label font-weight-bold text--base-dark mr-5">
+          {{ header.text }}
+        </div>
+      </template>
+      <template v-slot:header.description="{ header }">
+        <div class="label font-weight-bold text--base-dark">
+          {{ header.text }}
+        </div>
+      </template>
+      <template v-slot:header.operators="{ header }">
+        <div class="label font-weight-bold text--base-dark">
+          {{ header.text }}
+        </div>
+      </template>
+      <template v-slot:item.name="{ item }">
+        <div class="d-flex align-center">
+          <v-icon
+            class="table-subdirectory-icon text--base-light mr-3"
+            v-if="!item.portfolio"
+            >subdirectory_arrow_right</v-icon
+          >
+          <a
+            @click="handleNameClick(item)"
+            @keydown.enter="handleNameClick(item)"
+            @keydown.space="handleNameClick(item)"
+            tabindex="0"
+            class="
+              body
+              font-weight-bold
+              py-3
+              primary-text
+              text-no-wrap text-truncate
+            "
+            :aria-label="
+              item.name +
+              ' - manage ' +
+              (item.portfolio ? 'root administrators' : 'team members')
+            "
+          >
+            <div class="d-flex align-center justify-between">
+              <div class="overflow-hidden" style="height: 24px">
+                {{ item.name }}
+              </div>
+              <div v-if="item.name && item.name.length > 25">...</div>
             </div>
-          </template>
-          <template v-slot:header.description="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
-          <template v-slot:header.operators="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
-          <template v-slot:item.name="{ item }">
-            <div class="d-flex align-center">
-              <v-icon
-                class="table-subdirectory-icon text--base-light mr-3"
-                v-if="!item.portfolio"
-                >subdirectory_arrow_right</v-icon
-              >
-              <a
-                @click="handleNameClick(item)"
-                class="
-                  body
-                  font-weight-bold
-                  py-3
-                  primary-text
-                  text-no-wrap text-truncate
+          </a>
+        </div>
+      </template>
+      <template v-slot:item.description="{ item }">
+        <div class="d-flex align-center body text--base-darkest">
+          <div class="overflow-hidden text-no-wrap" style="height: 24px">
+            {{ getDescription(item.description) }}
+          </div>
+        </div>
+      </template>
+      <template v-slot:item.operators="{ item }">
+        <div class="d-flex justify-space-between">
+          <div class="body text--base-darkest pt-1">
+            {{ item.operatorCount }}
+          </div>
+
+          <v-menu
+            class="table-menu"
+            transition="slide-y-transition"
+            offset-y
+            nudge-left="190"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="table-row-menu-button pa-0"
+                v-bind="attrs"
+                v-on="on"
+                @click="setApplication(item)"
+                :aria-label="
+                  'View or Add ' +
+                  (item.portfolio ? 'root administrators' : 'team members')
                 "
               >
-                <div class="d-flex align-center justify-between">
-                  <div class="overflow-hidden" style="height: 24px">
-                    {{ item.name }}
-                  </div>
-                  <div v-if="item.name && item.name.length > 25">...</div>
-                </div>
-              </a>
-            </div>
-          </template>
-          <template v-slot:item.description="{ item }">
-            <div class="d-flex align-center body text--base-darkest">
-              <div class="overflow-hidden text-no-wrap" style="height: 24px">
-                {{ item.description }}
-              </div>
-              <div v-if="item.description && item.description.length > 50">
-                ...
-              </div>
-            </div>
-          </template>
-          <template v-slot:item.operators="{ item }">
-            <div class="d-flex justify-space-between">
-              <div class="body text--base-darkest pt-1">
-                {{ item.operatorCount }}
-              </div>
-
-              <v-menu
-                class="table-menu"
-                transition="slide-y-transition"
-                offset-y
-                nudge-left="190"
-                tabindex="2"
+                <v-icon class="icon-18 width-auto">more_horiz</v-icon>
+              </v-btn>
+            </template>
+            <v-list class="table-row-menu pa-0">
+              <v-list-item
+                v-for="(item, i) in isPortfolio(item)"
+                :key="i"
+                @click="handleMenuClick(item, $event)"
               >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    class="table-row-menu-button pa-0"
-                    tabindex="1"
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="setApplication(item)"
-                  >
-                    <v-icon class="icon-18 width-auto">more_horiz</v-icon>
-                  </v-btn>
-                </template>
-                <v-list class="table-row-menu pa-0">
-                  <v-list-item
-                    tabindex="1"
-                    v-for="(item, i) in isPortfolio(item)"
-                    :key="i"
-                    @click="handleMenuClick(item, $event)"
-                  >
-                    <v-list-item-title class="body-lg py-2">{{
-                      item
-                    }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </div>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-  </v-container>
+                <v-list-item-title class="body-lg py-2">
+                  {{ item }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -209,6 +203,13 @@ export default class SummaryReview extends Vue {
       default:
         this.openDialog(event);
     }
+  }
+
+  private getDescription(text: string): string {
+    if (text && text.length) {
+      return text.length <= 50 ? text : text.substring(0, 50) + "...";
+    }
+    return "";
   }
 
   @Watch("$store.state.portfolioOperators")

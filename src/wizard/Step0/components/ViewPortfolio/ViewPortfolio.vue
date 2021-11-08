@@ -2,18 +2,19 @@
   <v-container fluid class="view-portfolio">
     <v-row>
       <v-col cols="12">
-        <h1 class="mb-3 h1 font-weight-bold">My Porfolios</h1>
+        <h1 tabindex="-1" class="mb-3">My Porfolios</h1>
       </v-col>
     </v-row>
     <v-row class="portfolio-banner">
       <v-col class="d-flex justify-space-between align-center">
-        <div class="h3">My Portfolios</div>
+        <div class="h2">My Portfolios</div>
         <div>
           <v-btn
             id="btn-create-new-portfolio"
             class="primary"
             :ripple="false"
             @click="onCreatePortfolio"
+            role="link"
           >
             Create a New Portfolio
           </v-btn>
@@ -37,6 +38,10 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { PortfolioDraft } from "types/Portfolios";
 import PortfolioSummary from "./PortfolioSummary.vue";
+import { State, Action } from "vuex-class";
+import { PortfoliosState } from "@/store/types";
+
+const namespace = "portfolios";
 
 @Component({
   components: {
@@ -44,12 +49,14 @@ import PortfolioSummary from "./PortfolioSummary.vue";
   },
 })
 export default class ViewPortfolio extends Vue {
+  @State("portfolios") portfoliosState!: PortfoliosState;
+  @Action("loadPortfolioDrafts", { namespace })
+  loadPortfolioDrafts!: (n: void) => Promise<void>;
+  @Action("deletePortfolioDraft", { namespace })
+  deletePortfolioDraft!: (draftId: string) => Promise<void>;
+
   get portfolios(): PortfolioDraft[] {
-    return this.$store.state.portfolioDrafts;
-  }
-  private async loadPortfolioDrafts() {
-    // this.portfolios = await await this.getPortfolios();
-    await this.$store.dispatch("loadPortfolioDrafts");
+    return this.portfoliosState.portfolioDrafts;
   }
 
   private async mounted(): Promise<void> {
@@ -58,7 +65,7 @@ export default class ViewPortfolio extends Vue {
 
   private async onDeletePortfolio(id: string) {
     if (id != "") {
-      await this.$store.dispatch("deletePortfolioDraft", id);
+      await this.deletePortfolioDraft(id);
       await this.loadPortfolioDrafts();
     }
   }

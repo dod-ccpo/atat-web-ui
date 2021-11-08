@@ -14,7 +14,7 @@
         <v-card
           v-show="data.cards.length > 0"
           :width="`${cardWidth}rem`"
-          class="v-card ma-9 ml-0 body"
+          class="v-card mb-8 ml-0 body"
         >
           <v-card-title
             class="d-flex justify-space-between align-start pa-6 pb-5"
@@ -32,28 +32,20 @@
                   :ripple="false"
                   @click="leftButtonClicked(card)"
                   small
-                  class="h3 link-button no-focus-shift pa-0"
+                  class="
+                    h2
+                    link-button
+                    no-focus-shift
+                    pa-0
+                    icon-after--chevron-right
+                  "
                   :class="{ 'no-border': card.type === 'APPLICATION' }"
+                  :aria-label="'Edit ' + card.type + ' ' + card.title"
+                  role="link"
                 >
                   <div class="font-weight-bold">
                     {{ truncateText(card.title, 23) }}
                   </div>
-                </v-btn>
-                <v-btn
-                  small
-                  :ripple="false"
-                  @click="leftButtonClicked(card)"
-                  class="
-                    no-focus-shift
-                    pa-0
-                    no-text-decoration no-border
-                    link-button
-                    mx-n2
-                  "
-                >
-                  <v-icon v-if="card.showChevronRight" x-large>
-                    chevron_right
-                  </v-icon>
                 </v-btn>
               </div>
             </div>
@@ -106,6 +98,8 @@
               @click="leftButtonClicked(card)"
               :id="card.leftButtonText + '_' + index"
               :ripple="false"
+              :aria-label="card.leftButtonText + ' ' + card.type"
+              role="link"
               >{{ card.leftButtonText }}</v-btn
             >
             <v-btn
@@ -123,6 +117,8 @@
               @click="rightButtonClicked(card)"
               :ripple="false"
               :id="card.rightButtonText + '_' + (index + 1)"
+              :aria-label="card.rightButtonText + ' ' + card.type"
+              role="button"
               >{{ card.rightButtonText }}</v-btn
             >
           </v-card-actions>

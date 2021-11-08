@@ -3,32 +3,34 @@ h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6 {
     letter-spacing: -0.03rem !important;
 }
 
-.h1{
+h1.large, .h1.large {
     font-size: 4.4rem !important;
     font-weight: 700 !important;
     line-height: 5.7rem !important;
 }
-.h2{
+h1, .h1 {
     font-size: 3.4rem !important;
     font-weight: 700 !important;
     line-height: 4.4rem !important;
+    margin-bottom: 1.6rem;
 }
-.h3{
+h2, .h2 {
     font-size: 2.4rem !important;
     font-weight: 700 !important;
     line-height: 3.1rem !important;
+    margin-bottom: 1.2rem;
 }
-.h4{
+h3, .h3 {
     font-size: 1.9rem !important;
     font-weight: 700 !important;
     line-height: 2.5rem !important;
 }
-.h5{
+h4, .h4 {
     font-size: 1.5rem !important;
     font-weight: 700 !important;
     line-height: 2rem !important;
     }
-.h6{
+h5, .h5 {
     font-size: 1.3rem !important;
     font-weight: 400 !important;
     line-height: 1.7rem !important;
@@ -43,6 +45,11 @@ h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6 {
     font-weight: 300 !important;
     line-height: 5.7rem !important;
 }
+
+p {
+    margin-bottom: 2.4rem !important;
+}
+
 .lead-paragraph{
     font-size: 2.2rem !important;
     font-weight: 400 !important;
@@ -151,6 +158,24 @@ h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6 {
 }
 a {
     color: $primary;
+    .external-link {
+        position: relative;
+        padding-right: 24px;
+        display: inline-block;
+        white-space: nowrap;
+        text-decoration: underline;
+        &:after {
+            font-family: 'Material Icons';
+            content: "launch";
+            text-decoration: none !important;
+            -webkit-font-feature-settings: 'liga';
+            color: $primary;
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            font-size: 20px;
+        }
+    }
 }
 .text-decoration-none {
     text-decoration: none !important;
@@ -193,5 +218,21 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
     dd {
         padding-left: 16px;
         margin-bottom: 2.5rem;
+    }
+}
+
+.icon-after--chevron-right {
+    position: relative;
+    padding-right: 24px;
+    &:after {
+        position: absolute;
+        content: "chevron_right";
+        font-family: "Material Icons";
+        -webkit-font-feature-settings: "liga";
+        right: -28px;
+        font-size: 28px;
+        font-weight: normal;
+        box-shadow: none;
+        color: $primary;
     }
 }

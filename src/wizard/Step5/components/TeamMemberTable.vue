@@ -2,15 +2,19 @@
   <div class="review-table">
     <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
       <v-card-title class="d-flex justify-space-between">
-        <span class="h4">{{ name }}</span>
+        <span class="h3">{{ name }}</span>
         <v-btn
           text
           x-small
-          class="v-btn text-decoration-none mt-1 mx-1 h6 primary--text"
+          class="v-btn text-decoration-none mt-1 mx-1 primary--text"
           @click="handleClicked('addteammembers')"
+          role="link"
           :ripple="false"
+          aria-label="Edit team members"
         >
-          <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+            >edit</v-icon
+          >
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>

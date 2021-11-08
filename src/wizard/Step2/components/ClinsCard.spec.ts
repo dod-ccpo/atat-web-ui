@@ -13,7 +13,7 @@ const formatter = new Intl.NumberFormat("en-US", {
 });
 
 const formatDate = (value: string) => {
-  return moment(new Date(`${value} 00:00:00`)).format("MMMM DD, YYYY");
+  return moment(new Date(`${value} 00:00:00`)).format("MMM DD, YYYY");
 };
 
 describe("Testing Create ClinsCard Component", () => {
@@ -177,9 +177,7 @@ describe("Testing Create ClinsCard Component", () => {
     await Vue.nextTick();
     const popStartRules = wrapper.vm.popStartRules;
     const rule = popStartRules[1]("");
-    expect(rule).toBe(
-      "The period of performance start date must be before the end date"
-    );
+    expect(rule).toBe(true);
   });
 
   it(secondPopStartRule("returns true when valid"), async () => {
@@ -266,9 +264,7 @@ describe("Testing Create ClinsCard Component", () => {
     await Vue.nextTick();
     const popEndRules = wrapper.vm.popEndRules;
     const rule = popEndRules[1]("");
-    expect(rule).toBe(
-      "The period of performance end date must be before the start date"
-    );
+    expect(rule).toBe(true);
   });
 
   it(secondPopEndRule("returns true when valid"), async () => {

@@ -1,9 +1,9 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <v-container fluid class="body-lg pa-0">
+    <v-container fluid class="body-lg">
       <v-row>
-        <v-col cols="10" class="py-0">
-          <h2 class="h2 text--base-darkest">Add a New Task Order</h2>
+        <v-col class="content-max-width">
+          <h1 tabindex="-1">Add a New Task Order</h1>
           <p class="ma-0 mt-4 body-lg text--base-darkest">
             You will find this information in your awarded task order that funds
             your ATAT portfolio. If you have more than one task order, we will
@@ -12,122 +12,130 @@
           </p>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="6 col-xl-3 pt-8">
-          <h3 class="h3 mb-7 text--base-darkest">Task Order Details</h3>
-          <div>
-            <atat-text-field
-              id="task-order-number"
-              label="Task Order Number"
-              :rules="rules.task_order_number"
-              :value.sync="_task_order_number"
-              :helpText="helpText"
-              :validate-on-load="validateOnLoad"
-            />
-            <p class="mt-2 mb-7 text--base">
-              This number must be between 13 and 17 digits
-            </p>
-            <atat-file-upload
-              ref="pdfFileUpload"
-              :multiple="false"
-              :pdfFile.sync="_task_order_file"
-              label="Upload your approved Task Order"
-              message="Only PDF files with a max file size of 20 MB"
-              :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
-              :maxFileSize="20"
-              :stepNumber="2"
-              @removeFile="onRemoveFile"
-            />
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="9">
-          <h5 class="h5 font-weight-bold mt-4 body-xl">
-            Is this Task Order
-            <u>signed by an appropriate, duly warranted Contracting Officer </u>
-            who has the authority to execute the task order on your agency’s
-            behalf?
-          </h5>
-          <p class="mt-2">
-            By selecting yes, you certify that the contracting officer has
-            authorized you to upload the task order in accordance with your
-            agency’s policy and procedures.
-          </p>
-          <v-row v-if="signedTaskOrderErrorMessage !== ''" class="mb-3">
-            <div class="ml-3 mb-3 error--text" role="alert">
-              <div class="v-messages__message">
-                {{ signedTaskOrderErrorMessage }}
-              </div>
-            </div>
-          </v-row>
 
-          <v-btn
-            :class="[
-              signedTaskOrderErrorMessage ? 'error-button' : 'primary',
-              isYesButtonClicked ? '' : 'v-btn--outlined',
-              'ma-2',
-            ]"
-            @click="isTaskOrderSigned(true)"
-          >
-            Yes</v-btn
-          >
-          <v-btn
-            :class="[
-              signedTaskOrderErrorMessage ? 'error-button' : 'primary',
-              isNoButtonClicked ? '' : 'v-btn--outlined',
-              'ma-2',
-            ]"
-            @click="isTaskOrderSigned(false)"
-          >
-            No</v-btn
-          >
-          <v-alert
-            v-if="signedTaskOrder === 'No' && !savedTaskOrderSigned"
-            outlined
-            rounded
-            color="error"
-            type="info"
-            class="text-left error_lighter black-icon mt-3 border-thick pr-14"
-            border="left"
-            width="600"
-          >
-            <div class="black--text h3 ml-2">
-              You must have a signed task order to proceed
-            </div>
-            <div class="black--text body-lg ml-2 mr-2">
-              <p>
-                You will not be able to provision cloud resources within ATAT
-                without an awarded Task Order that is signed by a duly warranted
-                Contracting Officer. Please contact your Contracting Officer for
-                questions regarding your Task Order status or to obtain
-                authorization to spend government funds.
+      <section
+        role="region"
+        title="Task Order Details"
+        class="content-max-width mt-5"
+      >
+        <v-row>
+          <v-col>
+            <h2 class="mb-8">Task Order Details</h2>
+            <div class="input-max-width mb-10">
+              <atat-text-field
+                id="task-order-number"
+                label="Task Order Number"
+                :rules="rules.task_order_number"
+                :value.sync="_task_order_number"
+                :helpText="helpText"
+                :validate-on-load="validateOnLoad"
+              />
+              <p class="mt-2 mb-7 text--base">
+                This number must be between 13 and 17 digits
               </p>
-              <p>
-                You are subject to potential penalties that may include fines,
-                imprisonment, or both, under the U.S. law and regulations for
-                any false statement or misrepresentation in association with
-                this Task Order submission or on any accompanying documentation.
-              </p>
+              <atat-file-upload
+                ref="pdfFileUpload"
+                :multiple="false"
+                :pdfFile.sync="_task_order_file"
+                label="Upload your approved Task Order"
+                message="Only PDF files with a max file size of 20 MB"
+                :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
+                :maxFileSize="20"
+                :stepNumber="2"
+                @removeFile="onRemoveFile"
+              />
             </div>
-          </v-alert>
-          <div>
-            <v-row class="mt-0">
-              <v-col cols="4">
-                <v-divider class="mt-5 mb-2"></v-divider>
-              </v-col>
+
+            <p class="h3 mb-2">
+              Is this Task Order
+              <u>
+                signed by an appropriate, duly warranted Contracting Officer
+              </u>
+              who has the authority to execute the task order on your agency’s
+              behalf?
+            </p>
+            <p>
+              By selecting yes, you certify that the contracting officer has
+              authorized you to upload the task order in accordance with your
+              agency’s policy and procedures.
+            </p>
+            <v-row v-if="signedTaskOrderErrorMessage !== ''" class="mb-3">
+              <div class="ml-3 mb-3 error--text" role="alert">
+                <div class="v-messages__message">
+                  {{ signedTaskOrderErrorMessage }}
+                </div>
+              </div>
             </v-row>
-            <v-row>
-              <v-col>
-                <h3 class="h3 my-2">Contract Line Items</h3>
-                <p class="mb-0">
-                  A CLIN is a line in your contract that lists the services and
-                  products to be delivered with a price or ceiling which cannot
-                  be exceeded. Refer to your task order to locate your Contract
-                  Line Item Numbers (CLINs).
+
+            <v-btn
+              :class="[
+                signedTaskOrderErrorMessage ? 'error-button' : 'primary',
+                isYesButtonClicked ? '' : 'v-btn--outlined',
+                'ma-2 ml-0',
+              ]"
+              @click="isTaskOrderSigned(true)"
+              aria-label="Yes, this task order is signed by an appropriate contracting officer"
+            >
+              Yes
+            </v-btn>
+            <v-btn
+              :class="[
+                signedTaskOrderErrorMessage ? 'error-button' : 'primary',
+                isNoButtonClicked ? '' : 'v-btn--outlined',
+                'ma-2',
+              ]"
+              @click="isTaskOrderSigned(false)"
+              aria-label="No, this task order is not signed by an appropriate contracting officer"
+            >
+              No
+            </v-btn>
+
+            <v-alert
+              v-if="signedTaskOrder === 'No' && !savedTaskOrderSigned"
+              outlined
+              rounded
+              color="error"
+              type="info"
+              class="text-left error_lighter black-icon mt-3 border-thick pr-14"
+              border="left"
+              width="600"
+            >
+              <div class="black--text h2 ml-2">
+                You must have a signed task order to proceed
+              </div>
+              <div class="black--text body-lg ml-2 mr-2">
+                <p>
+                  You will not be able to provision cloud resources within ATAT
+                  without an awarded Task Order that is signed by a duly
+                  warranted Contracting Officer. Please contact your Contracting
+                  Officer for questions regarding your Task Order status or to
+                  obtain authorization to spend government funds.
                 </p>
-              </v-col>
-            </v-row>
+                <p class="mb-0">
+                  You are subject to potential penalties that may include fines,
+                  imprisonment, or both, under the U.S. law and regulations for
+                  any false statement or misrepresentation in association with
+                  this Task Order submission or on any accompanying
+                  documentation.
+                </p>
+              </div>
+            </v-alert>
+          </v-col>
+        </v-row>
+      </section>
+
+      <atat-divider />
+
+      <section role="region" title="Contract Line Items">
+        <v-row>
+          <v-col>
+            <h2>Contract Line Items</h2>
+            <p class="mb-0 content-max-width">
+              A CLIN is a line in your contract that lists the services and
+              products to be delivered with a price or ceiling which cannot be
+              exceeded. Refer to your task order to locate your Contract Line
+              Item Numbers (CLINs).
+            </p>
             <clins-card-list
               class="my-9 mt-7"
               ref="clinsCards"
@@ -135,9 +143,9 @@
               @add="$emit('add')"
               @delete="(cardNumber) => $emit('delete', cardNumber)"
             ></clins-card-list>
-          </div>
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+      </section>
     </v-container>
   </v-form>
 </template>
@@ -148,9 +156,13 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import { TaskOrderFile } from "types/Wizard";
 import ClinsCardList from "./ClinsCardList.vue";
 import { Clin } from "types/Portfolios";
+import ATATDivider from "@/components/ATATDivider.vue";
 
 @Component({
-  components: { ClinsCardList },
+  components: {
+    ClinsCardList,
+    "atat-divider": ATATDivider,
+  },
 })
 export default class CreateTaskOrderForm extends Vue {
   public signedTaskOrder = "";

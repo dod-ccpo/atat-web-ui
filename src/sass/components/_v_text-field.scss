@@ -19,8 +19,6 @@
 }
 
 .v-text-field--outlined {
-  
-  
   .v-input__append-outer {
     margin-top: 6px;
   }
@@ -29,11 +27,11 @@
 .v-text-field {
   .v-text-field__prefix{
     color: $base-darkest !important;
-    padding-right: 0px; 
+    padding-right: 0px;
     margin-top: -1px;
   }
   input{
-    padding-left: 2px; 
+    padding-left: 2px;
   }
   &.show-validation-icon {
     .v-text-field__slot {
@@ -50,7 +48,7 @@
       }
     }
   }
-  
+
   &.valid-icon .v-text-field__slot:after {
     content: "check_circle";
     color: $success;
@@ -64,4 +62,9 @@
       right: -70px;
     }
   }
+}
+
+.input-hint {
+  color: $base;
+  margin-top: 8px;
 }

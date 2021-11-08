@@ -6,7 +6,7 @@
     v-if="showBanner"
   >
     <v-card-actions class="py-0">
-      <div class="h6">
+      <div class="h5">
         <div class="d-flex align-center">
           <div class="mr-3">
             <img
@@ -25,9 +25,8 @@
               plain
               text
               x-small
-              tabindex="1"
               :ripple="false"
-              class="p-0 btn-usa-gov-expand h6"
+              class="p-0 btn-usa-gov-expand h5"
             >
               <span
                 class="
@@ -49,7 +48,7 @@
     <div v-if="show">
       <v-divider></v-divider>
 
-      <v-card-text class="h6 pb-0">
+      <v-card-text class="h5 pb-0">
         <v-row align="center" class="mb-3">
           <v-col
             cols="12"
