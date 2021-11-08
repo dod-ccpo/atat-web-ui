@@ -349,7 +349,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   }
 
   private hasChanges(): boolean {
-    return this.$store.getters.stephasChanges;
+    return this.$store.getters.membersAdded;
   }
 
   public async beforeRouteLeave(
@@ -359,7 +359,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   ): Promise<void> {
     if (this.hasChanges()) {
       try {
-        await this.$store.dispatch("saveStepData", 4);
+        await this.$store.dispatch("saveStepData", 3);
       } catch (error) {
         console.log(error);
       }

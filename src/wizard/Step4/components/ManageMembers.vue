@@ -946,6 +946,7 @@ export default class ManageMember extends mixins(ApplicationData) {
   }
 
   public saveToStore(): void {
+
     if (!this.isEditSingle) {
       let operators: OperatorModel[] = [];
       let environments: EnvironmentModel[] = [];
@@ -1019,7 +1020,7 @@ export default class ManageMember extends mixins(ApplicationData) {
       }
     }
 
-    this.$store.dispatch("step4HasChanges", true);
+    this.$store.dispatch("updateMembersAdded", true);
 
     this.closeModal();
   }
