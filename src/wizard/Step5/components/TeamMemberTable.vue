@@ -40,14 +40,8 @@
                     Name
                   </span>
                 </th>
-                <th id="permissions">
-                  <span
-                    class="text-left text--base-dark label font-weight-black"
-                  >
-                    App Permissions
-                  </span>
-                </th>
-                <th id="environment">
+
+                <th id="workspace_roles">
                   <span
                     class="
                       pr-2
@@ -56,7 +50,7 @@
                       font-weight-black
                     "
                   >
-                    Environment Access
+                    Workspace Roles
                   </span>
                 </th>
               </tr>
@@ -70,9 +64,6 @@
                     </span>
                     <span class="table-item"> {{ item.email }} </span>
                   </div>
-                </td>
-                <td class="pa-4" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column"> </span>
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span class="table-item d-flex flex-column">
@@ -89,9 +80,6 @@
                     <span class="table-item"> {{ item.email }} </span>
                   </div>
                 </td>
-                <td class="pa-4" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column"> </span>
-                </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span class="table-item d-flex flex-column">
                     All: {{ item.workspace_roles }}
@@ -106,9 +94,6 @@
                     </span>
                     <span class="table-item"> {{ item.email }} </span>
                   </div>
-                </td>
-                <td class="pa-4" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column"> </span>
                 </td>
                 <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
                   <span

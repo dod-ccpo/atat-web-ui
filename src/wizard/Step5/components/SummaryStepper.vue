@@ -31,8 +31,7 @@
       <v-stepper-content
         :step="index + 1"
         :key="'step_' + index"
-        class="pt-1"
-        :class="[index === 3 ? 'pt-0 pb-0' : '']"
+        :class="[index === 3 ? 'py-0' : 'pt-1']"
       >
         <portfolio-summary-card
           v-if="step.type === 'portfolio'"
