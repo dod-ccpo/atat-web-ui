@@ -8,9 +8,13 @@
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 primary--text"
           @click="handleClicked('addteammembers')"
+          role="link"
           :ripple="false"
+          aria-label="Edit team members"
         >
-          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1">edit</v-icon>
+          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+            >edit</v-icon
+          >
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>

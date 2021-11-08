@@ -1,5 +1,5 @@
 import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
+import VueRouter, { Route, RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Dashboard from "../views/Dashboard.vue";
 import { wizard } from "../router/wizard";
@@ -11,11 +11,17 @@ const routes: Array<RouteConfig> = [
     path: "/",
     alias: ["/index.html"],
     name: "Home",
+    meta: {
+      title: "Home",
+    },
     component: Home,
   },
   {
     path: "/about",
     name: "About",
+    meta: {
+      title: "About Account Tracking and Automation Tool",
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -25,6 +31,9 @@ const routes: Array<RouteConfig> = [
   {
     path: "/dashboard",
     name: "Dashboard",
+    meta: {
+      title: "My Dashboard",
+    },
     component: Dashboard,
   },
   {
@@ -37,6 +46,9 @@ const routes: Array<RouteConfig> = [
   {
     path: "/portfolios",
     name: "portfolios",
+    meta: {
+      title: "My Portfolios",
+    },
     component: () =>
       import(
         /* webpackChunkName: "style" */ "../wizard/Step0/components/ViewPortfolio/ViewPortfolio.vue"
@@ -45,6 +57,9 @@ const routes: Array<RouteConfig> = [
   {
     path: "/createportfolio",
     name: "createPortfolio",
+    meta: {
+      title: "New Portfolio Introduction",
+    },
     component: () =>
       import(
         /* webpackChunkName: "style" */ "../wizard/Step0/components/CreatePortfolio/CreatePortfolio.vue"
@@ -53,6 +68,9 @@ const routes: Array<RouteConfig> = [
   {
     path: "/profile",
     name: "profile",
+    meta: {
+      title: "Profile Verification",
+    },
     component: () =>
       import(/* webpackChunkName: "style" */ "../views/Profile.vue"),
   },
@@ -66,4 +84,20 @@ const router = new VueRouter({
     return { x: 0, y: 0 };
   },
 });
+
+router.beforeEach((to: Route, from: Route, next) => {
+  console.log(to);
+  if (to.meta?.title) {
+    document.title = "ATAT | " + to.meta.title;
+  }
+  next();
+});
+
+router.afterEach((to: Route, from: Route) => {
+  const h1 = document.getElementsByTagName("h1");
+  if (h1.length) {
+    h1[0].focus();
+  }
+});
+
 export default router;

@@ -9,6 +9,8 @@
           class="v-btn text-decoration-none mt-1 mx-1 h5 primary--text"
           :ripple="false"
           @click="$emit('edit')"
+          role="link"
+          :aria-label="'Edit application ' + application.name"
         >
           <v-icon class="icon-16 text-decoration-none mr-1">edit</v-icon>
           <span class="text-decoration-underline body-lg">Edit</span>

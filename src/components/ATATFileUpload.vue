@@ -145,6 +145,7 @@
                     id="remove_file"
                     class="error-button ml-2"
                     @click.stop="removeFile(item.name)"
+                    :aria-label="'Remove Task Order PDF file ' + item.name"
                   >
                     Remove
                   </v-btn>

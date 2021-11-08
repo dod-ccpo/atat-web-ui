@@ -19,6 +19,7 @@ function CreateWizardRoute(
     next: next,
     previous: previous,
     step: step,
+    title: wizardStep?.meta?.title,
   };
 
   return wizardStep;
@@ -27,6 +28,9 @@ function CreateWizardRoute(
 const addportfolio: RouteConfigSingleView = {
   path: "",
   name: "addportfolio",
+  meta: {
+    title: "Portfolio Details and CSP Selection",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"),
   props: {
@@ -37,6 +41,9 @@ const addportfolio: RouteConfigSingleView = {
 const addfunding: RouteConfigSingleView = {
   path: "addfunding",
   name: "addfunding",
+  meta: {
+    title: "Add a New Task Order",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
   props: {
@@ -47,6 +54,9 @@ const addfunding: RouteConfigSingleView = {
 const fundingsummary: RouteConfigSingleView = {
   path: "fundingsummary",
   name: "fundingsummary",
+  meta: {
+    title: "Your Task Order Summary",
+  },
   component: () =>
     import(
       /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2Summary.vue"
@@ -56,6 +66,9 @@ const fundingsummary: RouteConfigSingleView = {
 const editfunding: RouteConfigSingleView = {
   path: "editfunding/:id",
   name: "editfunding",
+  meta: {
+    title: "Edit Task Order",
+  },
   props: {
     step: 2,
   },
@@ -66,6 +79,9 @@ const editfunding: RouteConfigSingleView = {
 const addapplication: RouteConfigSingleView = {
   path: "addapplication",
   name: "addapplication",
+  meta: {
+    title: "Add Application",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
   props: {
@@ -76,6 +92,9 @@ const addapplication: RouteConfigSingleView = {
 const applicationsummary: RouteConfigSingleView = {
   path: "applicationsummary",
   name: "applicationsummary",
+  meta: {
+    title: "Application Summary",
+  },
   component: () =>
     import(
       /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3Summary.vue"
@@ -85,6 +104,9 @@ const applicationsummary: RouteConfigSingleView = {
 const editapplication: RouteConfigSingleView = {
   path: "editapplication/:id",
   name: "editapplication",
+  meta: {
+    title: "Edit Application",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
   props: {
@@ -95,12 +117,18 @@ const editapplication: RouteConfigSingleView = {
 const addteammembers: RouteConfigSingleView = {
   path: "addteammembers",
   name: "addteammembers",
+  meta: {
+    title: "Add Root Administrators and Team Members",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"),
 };
 const editmembers: RouteConfigSingleView = {
   path: "editmembers/:type/:id",
   name: "editmembers",
+  meta: {
+    title: "Edit Team Members",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"),
 };
@@ -108,6 +136,9 @@ const editmembers: RouteConfigSingleView = {
 const teammembersummary: RouteConfigSingleView = {
   path: "teammembersummary",
   name: "teammembersummary",
+  meta: {
+    title: "Team Member Summary",
+  },
   component: () =>
     import(
       /* webpackChunkName: "style" */ "../wizard/Step4/views/SummaryReview.vue"
@@ -117,6 +148,9 @@ const teammembersummary: RouteConfigSingleView = {
 const reviewandsubmit: RouteConfigSingleView = {
   path: "reviewandsubmit",
   name: "reviewandsubmit",
+  meta: {
+    title: "Review and Submit",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step5/views/Step5.vue"),
 };
@@ -124,6 +158,9 @@ const reviewandsubmit: RouteConfigSingleView = {
 const postreview: RouteConfigSingleView = {
   path: "postreview",
   name: "postreview",
+  meta: {
+    title: "Authorization Acknowledgement",
+  },
   component: () =>
     import(
       /* webpackChunkName: "style" */ "../wizard/Step5/views/PostReview.vue"
@@ -133,6 +170,9 @@ const postreview: RouteConfigSingleView = {
 const submit: RouteConfigSingleView = {
   path: "submit",
   name: "submit",
+  meta: {
+    title: "Submit Portfolio",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/Step5/views/Submit.vue"),
 };
@@ -140,6 +180,9 @@ const submit: RouteConfigSingleView = {
 const wizard: RouteConfigSingleView = {
   path: "/wizard",
   name: "wizard",
+  meta: {
+    title: "Portfolio Details and CSP Selection",
+  },
   component: () =>
     import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
   children: [
