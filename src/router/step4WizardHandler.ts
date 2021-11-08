@@ -19,7 +19,7 @@ const step4RouteHandler: ATATRouteHandler =
     if (
       to.name === addteammembers.name &&
       store &&
-      store.state.applicationModels.length > 0
+      store.getters.hasApplications
     ) {
       if (from.name === teammembersummary.name && to.params) {
         if (to.params.source === "wizard-previous") {

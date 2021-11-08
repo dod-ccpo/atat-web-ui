@@ -1,61 +1,59 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <v-stepper
-          :flat="true"
-          class="summary-stepper width-100 bg-transparent"
-          v-model="_stepNumber"
-          vertical
-          non-linear
+  <v-stepper
+    :flat="true"
+    class="summary-stepper width-100 bg-transparent"
+    v-model="_stepNumber"
+    vertical
+    non-linear
+  >
+    <template v-for="(step, index) in stepperControl">
+      <v-stepper-step
+        editable
+        :id="'summary_step_0' + (index + 1)"
+        :step="index + 1"
+        :key="'stepper_' + index"
+        :error-icon="'  '"
+        :edit-icon="'  '"
+        :complete-icon="'  '"
+      >
+        <a
+          tabindex="0"
+          role="button"
+          class="h2 mb-0 step-description black--text no-text-decoration"
+          @keypress.enter="stepperClicked('summary_step_0' + (index + 1))"
+          @keypress.space="stepperClicked('summary_step_0' + (index + 1))"
+          :aria-label="'Expand ' + step.title + ' summary'"
         >
-          <template v-for="(step, index) in stepperControl">
-            <v-stepper-step
-              editable
-              :id="'summary_step_0' + (index + 1)"
-              :step="index + 1"
-              :key="'stepper_' + index"
-              :error-icon="'  '"
-              :edit-icon="'  '"
-              :complete-icon="'  '"
-            >
-              <a
-                tabindex="0"
-                role="button"
-                class="h2 mb-0 step-description black--text no-text-decoration"
-                @keypress.enter="stepperClicked('summary_step_0' + (index + 1))"
-                @keypress.space="stepperClicked('summary_step_0' + (index + 1))"
-                :aria-label="'Expand ' + step.title + ' summary'"
-              >
-                {{ step.title }}
-              </a>
-              <v-divider :key="'divider_' + index"></v-divider>
-            </v-stepper-step>
-            <v-stepper-content :step="index + 1" :key="'step_' + index">
-              <portfolio-summary-card
-                v-if="step.type === 'portfolio'"
-                :portfolio="portfolio"
-                editPlace="addportfolio"
-              ></portfolio-summary-card>
-              <funding-summary-card
-                v-if="step.type === 'funding'"
-                :task-orders="taskOrders"
-              ></funding-summary-card>
-              <applications-environments-summary-card
-                v-if="step.type === 'applicationEnvironments'"
-                :application-data="applications"
-              ></applications-environments-summary-card>
-              <team-member-summary-card
-                v-if="step.type === 'teamMembers'"
-                :application-data="applications"
-                editPlace="addteammembers"
-              ></team-member-summary-card>
-            </v-stepper-content>
-          </template>
-        </v-stepper>
-      </v-col>
-    </v-row>
-  </v-container>
+          {{ step.title }}
+        </a>
+        <v-divider :key="'divider_' + index"></v-divider>
+      </v-stepper-step>
+      <v-stepper-content
+        :step="index + 1"
+        :key="'step_' + index"
+        :class="[index === 3 ? 'py-0' : 'pt-1']"
+      >
+        <portfolio-summary-card
+          v-if="step.type === 'portfolio'"
+          :portfolio="portfolio"
+          editPlace="addportfolio"
+        ></portfolio-summary-card>
+        <funding-summary-card
+          v-if="step.type === 'funding'"
+          :task-orders="taskOrders"
+        ></funding-summary-card>
+        <applications-environments-summary-card
+          v-if="step.type === 'applicationEnvironments'"
+          :application-data="applications"
+        ></applications-environments-summary-card>
+        <team-member-summary-card
+          v-if="step.type === 'teamMembers'"
+          :application-data="applications"
+          editPlace="addteammembers"
+        ></team-member-summary-card>
+      </v-stepper-content>
+    </template>
+  </v-stepper>
 </template>
 
 <script lang="ts">
@@ -86,7 +84,7 @@ export default class SummaryStepper extends Vue {
   @PropSync("stepNumber", { default: 1 })
   private _stepNumber!: number;
   private currentStepNumber = this._stepNumber;
-  
+
   // keyboard navigation
   // enables user to tab to stepper label and press enter/space to click stepper
   public stepperClicked(stepperId: string): void {

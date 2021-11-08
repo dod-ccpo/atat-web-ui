@@ -2,7 +2,7 @@
   <div>
     <div v-for="application in applicationData" :key="application.id">
       <div class="review-table">
-        <v-card class="v-card ma-9 px-2 ml-0 body">
+        <v-card class="v-card ma-1 px-2 mb-10 body">
           <v-card-title>
             <div class="width-100 d-flex justify-space-between align-center">
               <h3>{{ application.name }}</h3>
@@ -14,7 +14,9 @@
                 :ripple="false"
                 role="link"
                 :aria-label="'Edit application ' + application.name"
-                ><v-icon aria-hidden="true" small class="icon-12 mr-2">edit</v-icon>
+                ><v-icon aria-hidden="true" small class="icon-12 mr-2"
+                  >edit</v-icon
+                >
                 <span class="link-body-md">Edit</span></v-btn
               >
             </div>
@@ -38,12 +40,12 @@
             >
               <div>ENVIRONMENTS</div>
             </div>
-            <div class="body-lg d-flex justify-start black--text grouped-items">
-              <div
-                class="mx-3"
-                v-for="environment in application.environments"
-                :key="environment.name"
-              >
+            <div
+              v-for="environment in application.environments"
+              :key="environment.name"
+              class="body-lg d-flex justify-start black--text grouped-items"
+            >
+              <div class="mx-3">
                 {{ environment.name }}
               </div>
             </div>

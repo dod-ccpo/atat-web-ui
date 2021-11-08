@@ -1,12 +1,12 @@
 <template>
   <v-container fluid>
     <v-row class="body-lg">
-      <v-col class="content-max-width">
+      <v-col class="content-max-width pb-0">
         <h1 tabindex="-1">Let’s wrap up your Portfolio</h1>
         <p class="body-lg" v-if="!invalidStepsExist()">
           In this last step, we will review the information that you provided to
           make sure everything is complete and accurate. Once you have verified
-          your Portfolio details, we will be able to provision your cloud
+          your portfolio details, we will be able to provision your cloud
           resources.
         </p>
         <!-- Invalid steps found -->
@@ -16,7 +16,7 @@
         </p>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="my-0">
       <v-col>
         <portfolio-validation-summary
           v-if="invalidStepsExist()"
@@ -34,8 +34,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
+import ApplicationData from "@/mixins/ApplicationModuleData";
+
 import SummaryStepper from "./SummaryStepper.vue";
 import PortfolioValidationSummary from "./PortfolioValidationSummary.vue";
 import { ApplicationModel, PortFolioDraftDTO } from "types/Portfolios";
@@ -47,10 +49,9 @@ import { ValidationSummaryItem, TaskOrderModel } from "types/Wizard";
     PortfolioValidationSummary,
   },
 })
-export default class PortfolioSummary extends Vue {
+export default class PortfolioSummary extends mixins(ApplicationData) {
   public portfolio!: PortFolioDraftDTO;
   public taskOrders!: TaskOrderModel[];
-  public applications!: ApplicationModel[];
   public invalidStepsExist(): boolean {
     return this.$store.state.erroredSteps.length > 0;
   }
@@ -88,7 +89,6 @@ export default class PortfolioSummary extends Vue {
   created(): void {
     this.portfolio = this.$store.getters.getPortfolio;
     this.taskOrders = this.$store.getters.getTaskOrders;
-    this.applications = this.$store.getters.getApplications;
   }
 
   public mounted(): void {
