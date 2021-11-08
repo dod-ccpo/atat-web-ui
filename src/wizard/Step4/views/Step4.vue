@@ -110,7 +110,6 @@ import ExpandableLink from "@/components/ExpandableLink.vue";
 })
 export default class Step_4 extends Vue {
   private csp = this.$store.getters.getPortfolio.csp;
-  private createdApplication = this.$store.state.applicationModels;
   private editType = this.$route.params.type || "noEdit";
 
   // methods

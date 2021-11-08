@@ -14,7 +14,9 @@
                 :ripple="false"
                 role="link"
                 :aria-label="'Edit application ' + application.name"
-                ><v-icon aria-hidden="true" small class="icon-12 mr-2">edit</v-icon>
+                ><v-icon aria-hidden="true" small class="icon-12 mr-2"
+                  >edit</v-icon
+                >
                 <span class="link-body-md">Edit</span></v-btn
               >
             </div>
