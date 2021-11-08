@@ -9,8 +9,7 @@
         Select each application below to manage your team members. Please add at
         least one person to each application to ensure your team can access your
         provisioned cloud resources. When you are done, select
-        <strong>Next: Review and Submit</strong> to
-        finalize your portfolio.
+        <strong>Next: Review and Submit</strong> to finalize your portfolio.
       </p>
     </div>
 
@@ -138,7 +137,6 @@ import {
   OperatorModel,
 } from "types/Portfolios";
 
-
 // const namespace = "applications";
 
 // Register the router hooks with their names
@@ -221,17 +219,17 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return "";
   }
 
-  @Watch("$store.state.portfolioOperators")
+  @Watch("operators")
   rootAdminsUpdated(): void {
     this.transformData(this.applications);
   }
-  @Watch("$store.state.applicationModels", { deep: true })
+  @Watch("applications", { deep: true })
   membersUpdated(): void {
     this.transformData(this.applications);
   }
 
   private transformData(applications: any): void {
-    const portfolioOperatorsCount = this.portfolioOperators.length || 0;
+    const portfolioOperatorsCount = this.operators.length || 0;
 
     const pIndex = this.applicationData.findIndex(
       (p: any) => p.portfolio === true
@@ -344,23 +342,14 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     this.transformData(this.applications);
     this.incomingModel = JSON.parse(
       JSON.stringify({
-        operators: this.applicationsState.applicationModels,
-        applications: this.applicationsState.portfolioOperators,
+        operators: this.operators,
+        applications: this.applications,
       })
     );
   }
 
   private hasChanges(): boolean {
-    let theSame = true;
-    const serializedIncoming = JSON.stringify(this.incomingModel);
-    const serialiedOutgoing = JSON.stringify({
-      operators: this.applicationsState.applicationModels,
-      applications: this.applicationsState.portfolioOperators,
-    });
-
-    theSame = serializedIncoming === serialiedOutgoing;
-
-    return !theSame;
+    return this.$store.getters.membersAdded;
   }
 
   public async beforeRouteLeave(
@@ -370,7 +359,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   ): Promise<void> {
     if (this.hasChanges()) {
       try {
-        await this.$store.dispatch("saveStepData", 4);
+        await this.$store.dispatch("saveStepData", 3);
       } catch (error) {
         console.log(error);
       }

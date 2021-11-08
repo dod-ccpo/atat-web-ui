@@ -21,6 +21,8 @@ import moment from "moment";
 import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 
+import { validateApplication, validOperator } from "@/validation/application";
+
 Vue.use(Vuex);
 
 const vuexLocalStorage = new VuexPersist({
@@ -326,6 +328,7 @@ export default new Vuex.Store({
         description: "Add Team Members",
         touched: false,
         valid: false,
+        hasChanges: false,
         model: {},
       },
       {
@@ -336,6 +339,7 @@ export default new Vuex.Store({
         model: {},
       },
     ],
+    membersAdded: false,
     user: {
       title: "",
       given_name: "",
@@ -463,6 +467,9 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
+    doUpdateMembersAdded(state, added: boolean) {
+      state.membersAdded = added;
+    },
     /**
      * Partially or fully initializes step model
      * @param state
@@ -483,8 +490,6 @@ export default new Vuex.Store({
 
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
-      Vue.set(state, "applicationModels", []);
-      Vue.set(state, "portfolioOperators", []);
 
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
@@ -695,6 +700,7 @@ export default new Vuex.Store({
       await portfoliosApi.savePortfolio(state.currentPortfolioId, data);
     },
     async saveStep2({ state }, model: TaskOrderModel) {
+      
       const isNew = model.id === "";
       let modelIndex = -1;
 
@@ -738,21 +744,31 @@ export default new Vuex.Store({
         "applications/portfolioOperators"
       ] as OperatorModel[];
 
-      if (model.id === "") {
-        model.id = generateUid();
-        this.dispatch("applications/addApplication", model);
-      } else {
-        const appIndx = getEntityIndex<ApplicationModel>(
-          applicationModels,
-          (application) => application.id === model.id
-        );
-        if (appIndx === -1) {
-          throw new Error(
-            "unable to location task order model with id :" + model.id
-          );
-        }
+      const application = model as ApplicationModel;
 
-        this.dispatch("applications/updateApplication", { appIndx, model });
+      const validOperators =
+        portfolioOperators.length > 0
+          ? portfolioOperators.every((operator) => validOperator(operator))
+          : true;
+
+      // a very basic validation test before attempting to update and save
+      if (validateApplication(application) && validOperators) {
+        if (model.id === "") {
+          model.id = generateUid();
+          this.dispatch("applications/addApplication", model);
+        } else {
+          const appIndx = getEntityIndex<ApplicationModel>(
+            applicationModels,
+            (application) => application.id === model.id
+          );
+          if (appIndx === -1) {
+            throw new Error(
+              "unable to location application model with id :" + model.id
+            );
+          }
+
+          this.dispatch("applications/updateApplication", { appIndx, model });
+        }
       }
 
       const applications = mapApplications(applicationModels);
@@ -764,6 +780,8 @@ export default new Vuex.Store({
       };
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+
+      this.dispatch("updateMembersAdded", false);
     },
     async saveStep4({ state, rootGetters }) {
       const applicationModels = rootGetters[
@@ -783,6 +801,11 @@ export default new Vuex.Store({
       };
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+
+      this.dispatch("updateMembersAdded", false);
+    },
+    updateMembersAdded({ commit }, added: boolean): void {
+      commit("doUpdateMembersAdded", added);
     },
     /**
      * Saves all valid step models with changes
@@ -826,12 +849,18 @@ export default new Vuex.Store({
     async createPortfolioDraft({ commit }): Promise<void> {
       //initialize steps models
       commit("doInitializeSteps");
+
+      //initilize applications module
+      this.dispatch("applications/initialize");
+
       const portfolioDraftId = await portfoliosApi.createDraft();
       commit("doSetCurrentPortfolioId", portfolioDraftId);
     },
     async loadPortfolioDraft({ commit }, draftId: string): Promise<void> {
       //initial step model data
       commit("doInitializeSteps");
+
+      this.dispatch("applications/initialize");
 
       //validate that portfolio draft id exists on the server
       const id = await portfoliosApi.getDraft(draftId);
@@ -846,8 +875,8 @@ export default new Vuex.Store({
         this.dispatch("loadStep2Data", draftId),
         this.dispatch("loadStep3Data", draftId),
       ];
-
       await Promise.all(loadActions);
+      this.dispatch("updateMembersAdded", false);
     },
     async loadStep1Data({ commit }, draftId: string): Promise<void> {
       const draft = await portfoliosApi.getPortfolio(draftId);
@@ -1081,6 +1110,9 @@ export default new Vuex.Store({
       ] as ApplicationModel[];
 
       return applicationModels && applicationModels.length > 0;
+    },
+    membersAdded: (state) => {
+      return state.membersAdded;
     },
   },
   modules: {

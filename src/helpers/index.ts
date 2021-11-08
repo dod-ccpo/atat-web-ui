@@ -14,7 +14,6 @@ export function generateUid(): string {
   return values.join("-").toString();
 }
 
-
 export const getEntityIndex = <TModel>(
   entities: TModel[],
   predicate: (value: TModel, index: number, obj: TModel[]) => unknown,

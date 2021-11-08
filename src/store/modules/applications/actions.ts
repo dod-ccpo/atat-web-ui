@@ -9,6 +9,10 @@ import {
   OperatorModel,
 } from "types/Portfolios";
 
+const initialize = ({ commit }: { commit: Commit }): void => {
+  commit("initialize");
+};
+
 const setCurrentApplicationId = (
   { commit }: { commit: Commit },
   id: string
@@ -155,6 +159,7 @@ const initializeRootAdministrators = ({ commit }: { commit: Commit }): void => {
 };
 
 export const actions: ActionTree<ApplicationsState, RootState> = {
+  initialize,
   setCurrentApplicationId,
   setCurrentApplications,
   addApplication,
