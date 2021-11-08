@@ -1,13 +1,16 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
+import store from "../../../store/index";
 import { createLocalVue, mount } from "@vue/test-utils";
 import TeamMemberTable from "@/wizard/Step5/components/TeamMemberTable.vue";
 import VueRouter from "vue-router";
+import Vuex from "vuex";
 
 Vue.use(Vuetify);
 
 describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
   const localVue = createLocalVue();
+  localVue.use(Vuex);
   localVue.use(VueRouter);
   const routes = [
     {
@@ -25,28 +28,73 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
       localVue,
       vuetify,
       router,
+      store,
       propsData: {
-        data: {
-          member: {
-            name: "Ryan",
-            email: "RyanTest@test",
-            permissions: [
+        data: [
+          {
+            name: "App I ",
+            description: "",
+            environments: [
               {
-                id: "edit_team",
-                label: "Edit Team",
-                is_granted: true,
+                name: "Development",
+                operators: [],
+                id: "3119430111-915467763-1369539781-138968660",
               },
               {
-                id: "manage_environments",
-                label: "Manage Environments",
-                is_granted: true,
+                name: "Testing",
+                operators: [],
+                id: "532538470-778722837-3786856452-1864277705",
+              },
+              {
+                name: "Staging",
+                operators: [],
+                id: "534743261-3020911031-2250111013-1241840033",
+              },
+              {
+                name: "Production",
+                operators: [],
+                id: "2751170394-2701461298-2193074251-2484128755",
               },
             ],
-            environments_settings: [
-              { id: "12", label: "testlabel", accessLevel: "admin" },
+            operators: [
+              {
+                display_name: "Burt",
+                email: "burt@skirt.mil",
+                access: "administrator",
+                id: "4095681897-2059713500-2250702592-917887623",
+              },
             ],
+            id: "4155009259-1015820413-2928105448-1428578903",
           },
-        },
+          {
+            name: "App II",
+            description: "App II Desc",
+            operators: [],
+            environments: [
+              {
+                name: "Development",
+                operators: [],
+                id: "2939568395-1821548397-3681551319-2960283883",
+              },
+              {
+                name: "Testing",
+                operators: [],
+                id: "3159017822-3675756009-4011702815-4017424154",
+              },
+              {
+                name: "Staging",
+                operators: [],
+                id: "3843812416-2804251606-276859505-133759044",
+              },
+              {
+                name: "Production",
+                operators: [],
+                id: "101772745-1925605321-3364710797-4152709345",
+              },
+            ],
+            id: "3338276719-1446318077-3051345485-1556482597",
+          },
+        ],
         name: "dev",
       },
     });
@@ -54,19 +102,6 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
 
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
-  });
-
-  it("test GrantedPermissions  ", async () => {
-    const permissions = [
-      {
-        id: "edit_team",
-        label: "Edit Team",
-        is_granted: true,
-      },
-    ];
-    await wrapper.vm.grantedPermissions(permissions);
-    expect(wrapper.vm.grantedPermissions).toBeDefined();
-    await wrapper.vm.grantedPermissions([]);
   });
 
   it("test handleClick", async () => {

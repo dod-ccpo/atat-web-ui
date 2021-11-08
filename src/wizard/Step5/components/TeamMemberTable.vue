@@ -130,11 +130,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import {
-  ApplicationMember,
-  ApplicationMemberPermissions,
-  ApplicationModel,
-} from "types/Portfolios";
+import { ApplicationModel } from "types/Portfolios";
 
 @Component({})
 export default class TeamMemberTable extends Vue {
@@ -248,7 +244,6 @@ export default class TeamMemberTable extends Vue {
 
   mounted(): void {
     this.setMemberTableData(this.data);
-    console.log(this.tableData);
   }
 }
 </script>
