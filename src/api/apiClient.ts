@@ -1,9 +1,4 @@
-import axios, {
-  AxiosInstance,
-  AxiosPromise,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from "axios";
+import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from "axios";
 
 const apiUrl =
   "https://gj78s0sep8.execute-api.us-gov-west-1.amazonaws.com/prod/";
