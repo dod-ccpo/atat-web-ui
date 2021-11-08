@@ -56,34 +56,6 @@ describe("Testing TeamMemberSummaryCard Component", () => {
             ],
             id: "4155009259-1015820413-2928105448-1428578903",
           },
-          {
-            name: "App II",
-            description: "App II Desc",
-            operators: [],
-            environments: [
-              {
-                name: "Development",
-                operators: [],
-                id: "2939568395-1821548397-3681551319-2960283883",
-              },
-              {
-                name: "Testing",
-                operators: [],
-                id: "3159017822-3675756009-4011702815-4017424154",
-              },
-              {
-                name: "Staging",
-                operators: [],
-                id: "3843812416-2804251606-276859505-133759044",
-              },
-              {
-                name: "Production",
-                operators: [],
-                id: "101772745-1925605321-3364710797-4152709345",
-              },
-            ],
-            id: "3338276719-1446318077-3051345485-1556482597",
-          },
         ],
       },
     });

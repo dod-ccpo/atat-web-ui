@@ -6,7 +6,7 @@
       class="ma-1 width-95 height-100 mb-10"
       elevation="4"
     >
-      <v-card-title class="d-flex justify-space-between">
+      <v-card-title class="d-flex justify-space-between ml-2">
         <span class="h3">{{ application.name }}</span>
         <v-btn
           text
@@ -159,7 +159,7 @@ export default class TeamMemberTable extends Vue {
         rootAdmins.forEach((op: any) => {
           const opObj = {
             id: op.id,
-            display_name: op.display_name || op.first_name + " " + op.last_name,
+            display_name: op.display_name,
             email: op.email,
             workspace_roles: "Root administrator",
           };
@@ -172,7 +172,7 @@ export default class TeamMemberTable extends Vue {
         applicationOperators.forEach((op: any) => {
           const opObj = {
             id: op.id,
-            display_name: op.display_name || op.first_name + " " + op.last_name,
+            display_name: op.display_name,
             email: op.email,
             workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
           };
@@ -199,8 +199,7 @@ export default class TeamMemberTable extends Vue {
             } else {
               const opObj = {
                 id: op.id,
-                display_name:
-                  op.display_name || op.first_name + " " + op.last_name,
+                display_name: op.display_name,
                 email: op.email,
                 workspace_roles: workspace_roles,
               };
