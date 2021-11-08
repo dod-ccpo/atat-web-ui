@@ -140,8 +140,8 @@
       :okText="okText"
       :width="dialogWidth + 'px'"
       v-on:delete="onDelete"
-      :focus-if-cancel="returnFocusElementIdCancel"
-      :focus-if-ok="returnFocusElementIdOk"
+      :focus-on-cancel="returnFocusElementIdCancel"
+      :focus-on-ok="returnFocusElementIdOk"
     />
   </div>
 </template>
@@ -242,7 +242,6 @@ export default class ATATSummaryCard extends Vue {
       this.dialogTitle = `Delete  '${card.title}' from your portfolio drafts`;
       this.dialogMessage = `This portfolio and any details you added will be permanently removed`;
     }
-    // this.$store.state.returnFocusId = buttonId;
     this.returnFocusElementIdCancel = buttonId;
     this.showDialogWhenClicked = true;
   }

@@ -95,6 +95,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                :id="moreButtonId(item.name)"
                 class="table-row-menu-button pa-0"
                 v-bind="attrs"
                 v-on="on"
@@ -109,12 +110,12 @@
             </template>
             <v-list class="table-row-menu pa-0">
               <v-list-item
-                v-for="(item, i) in isPortfolio(item)"
+                v-for="(menuOptionText, i) in isPortfolio(item)"
                 :key="i"
-                @click="handleMenuClick(item, $event)"
+                @click="handleMenuClick(menuOptionText, $event, moreButtonId(item.name))"
               >
                 <v-list-item-title class="body-lg py-2">
-                  {{ item }}
+                  {{ menuOptionText }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -180,7 +181,7 @@ export default class SummaryReview extends Vue {
       },
     });
   }
-  private handleMenuClick(item: any, event: Event): void {
+  private handleMenuClick(item: any, event: Event, returnFocusId: string): void {
     switch (item) {
       case "View root administrators":
         this.$router.push({
@@ -201,7 +202,7 @@ export default class SummaryReview extends Vue {
         });
         break;
       default:
-        this.openDialog(event);
+        this.openDialog(event, returnFocusId);
     }
   }
 
@@ -300,15 +301,19 @@ export default class SummaryReview extends Vue {
       width: "20%",
     },
   ];
-  public openDialog(event: Event): void {
+  public openDialog(event: Event, returnFocusId: string): void {
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;
       memberEmail: string | null;
+      focusOnOk: string;
+      focusOnCancel: string;
     } = {
       isRootAdmin: false,
       isEditSingle: false,
       memberEmail: null,
+      focusOnOk: returnFocusId,
+      focusOnCancel: returnFocusId,
     };
     let currentTarget = event.currentTarget as HTMLElement;
     if (
@@ -316,11 +321,7 @@ export default class SummaryReview extends Vue {
       currentTarget.innerText &&
       currentTarget.innerText === "Add root administrators"
     ) {
-      memberProps = {
-        isRootAdmin: true,
-        isEditSingle: false,
-        memberEmail: "",
-      };
+      memberProps.isRootAdmin = true;
     }
 
     this.$store.dispatch("openDialog", [
@@ -366,8 +367,15 @@ export default class SummaryReview extends Vue {
         console.log(error);
       }
     }
-
     next();
+  }
+  private moreButtonId(workspace: string): string {
+    if (workspace) {
+      return (
+        "moreButton_" + workspace.toLowerCase().replace(/[^a-zA-Z0-9]/gi, "_")
+      );
+    }
+    return "";
   }
 }
 </script>

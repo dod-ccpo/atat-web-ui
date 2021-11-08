@@ -65,43 +65,52 @@ export default class ATATModalDelete extends Vue {
     this._showDialog = false;
     this._isItemDeleted = false;
     // ejy DRY this - move to mixin?
-    this.$nextTick(() => {
-      // const openerId = this.$store.state.returnFocusId;
-      if (this.focusOnCancel !== "") {
-        document.getElementById(this.focusOnCancel)?.focus();
-        this.$store.state.returnFocusId = "";
-      } else {
-        const h1 = document.getElementsByTagName("h1");
-        if (h1.length) {
-          h1[0].focus();
-        }
-      }
-    });
+    this.returnFocus(this.focusOnCancel);
+    // this.$nextTick(() => {
+    //   if (this.focusOnCancel !== "") {
+    //     document.getElementById(this.focusOnCancel)?.focus();
+    //   } else {
+    //     this.focusOnH1();
+    //   }
+    // });
   }
 
   private deleteItem() {
     this._showDialog = false;
     this._isItemDeleted = true;
     this.$emit("delete");
+    this.returnFocus(this.focusOnOk);
+    // this.$nextTick(() => {
+    //   if (this.focusOnOk !== "") {
+    //     const focusEl = document.getElementById(this.focusOnOk);
+    //     if (focusEl) {
+    //       focusEl.focus();
+    //     } else {
+    //       this.focusOnH1();
+    //     }
+    //   }
+    // });
+  }
+  private returnFocus(elementId: string): void {
     this.$nextTick(() => {
-      // this works for member deletion, but not application/task order deletion.
-      // it fires before the app/TO is removed from the DOM, so it focuses
-      // for a moment on the "Delete" button on the cards before the card is removed.
-      // need better solution.
-      // const openerId = this.$store.state.returnFocusId;
-      if (this.focusOnOk !== "") {
-        const focusEl = document.getElementById(this.focusOnOk);
+      if (elementId !== "") {
+        const focusEl = document.getElementById(elementId);
         if (focusEl) {
           focusEl.focus();
-        } else {
-          const h1 = document.getElementsByTagName("h1");
-          if (h1.length) {
-            h1[0].focus();
-          }
+          return;
         }
       }
-      this.$store.state.returnFocusId = "";
+      const h1 = document.getElementsByTagName("h1");
+      if (h1.length) {
+        h1[0].focus();
+      }
     });
   }
+  // private focusOnH1(): void {
+  //   const h1 = document.getElementsByTagName("h1");
+  //   if (h1.length) {
+  //     h1[0].focus();
+  //   }
+  // }
 }
 </script>

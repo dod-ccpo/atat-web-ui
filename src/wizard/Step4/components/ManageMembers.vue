@@ -250,6 +250,7 @@
                   dense
                   filled
                   :ripple="false"
+                  tabindex="0"
                 />
               </v-col>
             </v-row>
@@ -1029,6 +1030,7 @@ export default class ManageMember extends Vue {
     this.assignDifferentRolesForEnvs = false;
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
     this._close = false;
+    this.$emit("modalCancel");
   }
 
   public openLearnMoreDrawer(type: string): void {

@@ -166,8 +166,8 @@
       :okText="okText"
       :width="dialogWidth + 'px'"
       v-on:delete="onDelete"
-      :focus-if-cancel="returnFocusElementIdRemoveMemberCancel"
-      :focus-if-ok="returnFocusElementIdRemoveMemberOk"
+      :focus-on-cancel="returnFocusElementIdRemoveMemberCancel"
+      :focus-on-ok="returnFocusElementIdRemoveMemberOk"
 
     />
   </div>
@@ -230,7 +230,6 @@ export default class RootAdminView extends Vue {
   }
 
   public openDialog(event: Event, returnFocusId: string): void {
-    // this.$store.state.returnFocusId = returnFocusId;
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;

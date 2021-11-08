@@ -49,11 +49,12 @@
       </v-col>
       <v-col class="d-flex flex-row-reverse">
         <v-btn
+          id="inviteTeamMemberButton"
           class="font-weight-bold d-flex align-center px-5"
           :ripple="false"
           color="primary"
-          @keydown.native.enter="openDialog($event)"
-          @click="openDialog($event)"
+          @keydown.native.enter="openDialog($event, 'inviteTeamMemberButton')"
+          @click="openDialog($event, 'inviteTeamMemberButton')"
         >
           <div class="mr-1 mt-n1">
             <v-icon class="icon-20" aira-hidden="true" role="presentation">
@@ -172,8 +173,8 @@
       :okText="okText"
       :width="dialogWidth + 'px'"
       v-on:delete="onDelete"
-      :focus-if-cancel="returnFocusElementIdRemoveMemberCancel"
-      :focus-if-ok="returnFocusElementIdRemoveMemberOk"
+      :focus-on-cancel="returnFocusElementIdRemoveMemberCancel"
+      :focus-on-ok="returnFocusElementIdRemoveMemberOk"
     />
   </div>
 </template>

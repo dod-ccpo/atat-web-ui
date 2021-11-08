@@ -24,6 +24,7 @@
       :dialogProps="dialogProps"
       @membersAdded="onMembersAdded"
       @memberEdited="onMemberEdited(memberType)"
+      @modalCancel="onModalCancel"
     />
   </v-dialog>
 </template>
@@ -59,39 +60,29 @@ export default class ATATDialog extends Vue {
    */
   @Watch("$store.state.dialog.isDisplayed")
   setFocus(newVal: boolean): void {
-    debugger;
-    if (!newVal) {
-      // when false, return focus to
-      debugger;
+    if (newVal) {
       this.$nextTick(() => {
-        const openerId = this.$store.state.returnFocusId;
-        if (openerId !== "") {
-          document.getElementById(openerId)?.focus();
-          this.$store.state.returnFocusId = "";
-        } else {
-          const h1 = document.getElementsByTagName("h1");
-          if (h1.length) {
-            h1[0].focus();
-          }
+        const firstFocusedElement = document.getElementsByClassName(
+          "firstFocus"
+        )[0] as HTMLElement;
+        if (newVal && this.dialog.isDisplayed && firstFocusedElement) {
+          setTimeout(function () {
+            firstFocusedElement?.focus();
+          }, 100);
         }
       });
     }
-    this.$nextTick(() => {
-      const firstFocusedElement = document.getElementsByClassName(
-        "firstFocus"
-      )[0] as HTMLElement;
-      if (newVal && this.dialog.isDisplayed && firstFocusedElement) {
-        setTimeout(function () {
-          firstFocusedElement?.focus();
-        }, 100);
-      }
-    });
+  }
+
+  public onModalCancel(): void {
+    this.returnFocus(this.dialogProps.focusOnCancel);
   }
 
   public onMembersAdded(memberCount: number): void {
     const plural = memberCount > 1 ? "s" : "";
     const message = memberCount + " team  member" + plural + " added";
     this.$store.dispatch("toast", [message, "toast-success"]);
+    this.returnFocus(this.dialogProps.focusOnOk);
   }
 
   public onMemberEdited(memberType: string): void {
@@ -99,6 +90,23 @@ export default class ATATDialog extends Vue {
       memberType + "info updated",
       "toast-success",
     ]);
+    this.returnFocus(this.dialogProps.focusOnOk);
+  }
+
+  public returnFocus(elementId: string): void {
+    this.$nextTick(() => {
+      if (
+        elementId !== "" &&
+        document.getElementById(elementId) !== undefined
+      ) {
+        document.getElementById(elementId)?.focus();
+      } else {
+        const h1 = document.getElementsByTagName("h1");
+        if (h1.length) {
+          h1[0].focus();
+        }
+      }
+    });
   }
 }
 </script>
