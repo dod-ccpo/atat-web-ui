@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-start">
+  <div class="d-flex align-start mb-6">
     <v-card class="v-card ma-1 px-2 body width-100">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
