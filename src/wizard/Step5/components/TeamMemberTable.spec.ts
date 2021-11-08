@@ -177,7 +177,6 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
   });
 
   it("renders successfully", async () => {
-    wrapper.props;
     expect(wrapper.exists()).toBe(true);
   });
 

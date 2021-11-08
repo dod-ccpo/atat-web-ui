@@ -153,67 +153,63 @@ export default class TeamMemberTable extends Vue {
       const rootAdministrators: any = [];
       const appOps: any = [];
       const appEnvOps: any[] = [];
-      if (this.$store.state.portfolioOperators) {
-        const rootAdmins = this.$store.state.portfolioOperators || [];
-        if (rootAdmins && rootAdmins.length) {
-          rootAdmins.forEach((op: any) => {
-            const opObj = {
-              id: op.id,
-              display_name:
-                op.display_name || op.first_name + " " + op.last_name,
-              email: op.email,
-              workspace_roles: "Root administrator",
-            };
-            rootAdministrators.push(opObj);
-          });
-        }
-      }
-      if (application.operators) {
-        const applicationOperators = application.operators || [];
-        if (applicationOperators && applicationOperators.length) {
-          applicationOperators.forEach((op: any) => {
-            const opObj = {
-              id: op.id,
-              display_name:
-                op.display_name || op.first_name + " " + op.last_name,
-              email: op.email,
-              workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
-            };
-            appOps.push(opObj);
-          });
-        }
-      }
-      if (application.environments) {
-        const applicationEnvironments = application.environments;
-        applicationEnvironments.forEach((env: any) => {
-          const envOperators = env.operators;
-          if (envOperators && envOperators.length > 0) {
-            envOperators.forEach((op: any) => {
-              const i = appEnvOps.findIndex((o) => o.email === op.email);
-              const workspace_roles =
-                i > -1
-                  ? env.name +
-                    ": " +
-                    this.roleTranslation(op.access) +
-                    "  " +
-                    appEnvOps[i].workspace_roles
-                  : env.name + ": " + this.roleTranslation(op.access);
-              if (i > -1) {
-                appEnvOps[i].workspace_roles = workspace_roles;
-              } else {
-                const opObj = {
-                  id: op.id,
-                  display_name:
-                    op.display_name || op.first_name + " " + op.last_name,
-                  email: op.email,
-                  workspace_roles: workspace_roles,
-                };
-                appEnvOps.push(opObj);
-              }
-            });
-          }
+
+      const rootAdmins = this.$store.state.portfolioOperators || [];
+      if (rootAdmins && rootAdmins.length) {
+        rootAdmins.forEach((op: any) => {
+          const opObj = {
+            id: op.id,
+            display_name: op.display_name || op.first_name + " " + op.last_name,
+            email: op.email,
+            workspace_roles: "Root administrator",
+          };
+          rootAdministrators.push(opObj);
         });
       }
+
+      const applicationOperators = application.operators || [];
+      if (applicationOperators && applicationOperators.length) {
+        applicationOperators.forEach((op: any) => {
+          const opObj = {
+            id: op.id,
+            display_name: op.display_name || op.first_name + " " + op.last_name,
+            email: op.email,
+            workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
+          };
+          appOps.push(opObj);
+        });
+      }
+
+      const applicationEnvironments = application.environments;
+      applicationEnvironments.forEach((env: any) => {
+        const envOperators = env.operators;
+        if (envOperators && envOperators.length > 0) {
+          envOperators.forEach((op: any) => {
+            const i = appEnvOps.findIndex((o) => o.email === op.email);
+            const workspace_roles =
+              i > -1
+                ? env.name +
+                  ": " +
+                  this.roleTranslation(op.access) +
+                  "  " +
+                  appEnvOps[i].workspace_roles
+                : env.name + ": " + this.roleTranslation(op.access);
+            if (i > -1) {
+              appEnvOps[i].workspace_roles = workspace_roles;
+            } else {
+              const opObj = {
+                id: op.id,
+                display_name:
+                  op.display_name || op.first_name + " " + op.last_name,
+                email: op.email,
+                workspace_roles: workspace_roles,
+              };
+              appEnvOps.push(opObj);
+            }
+          });
+        }
+      });
+
       const appObj = {
         name: application.name,
         root: rootAdministrators,
@@ -224,8 +220,7 @@ export default class TeamMemberTable extends Vue {
     });
   }
   private tranformWorkSpace(data: string) {
-    let workspaceArr = data.split("  ");
-    return workspaceArr;
+    return data.split("  ");
   }
   private roleTranslation(role: string): string {
     switch (role) {
