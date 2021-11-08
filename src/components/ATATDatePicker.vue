@@ -27,7 +27,11 @@
             End Date
           </label>
         </div>
-        <div v-if="_errorMessages.length > 0" class="mt-0 width-100">
+        <div
+          v-if="_errorMessages.length > 0"
+          role="alert"
+          class="mt-0 width-100"
+        >
           <div class="error--text">
             <div class="v-messages__message">
               {{ _errorMessages[0].message }}

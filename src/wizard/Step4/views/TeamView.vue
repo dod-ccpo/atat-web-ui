@@ -168,12 +168,12 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import { Component, Emit, Watch } from "vue-property-decorator";
-import { ApplicationModel } from "../../../../types/Portfolios";
+import { mixins } from "vue-class-component";
+import ApplicationData from "@/mixins/ApplicationModuleData";
 
 @Component({})
-export default class TeamView extends Vue {
+export default class TeamView extends mixins(ApplicationData) {
   private membersData: any = [];
   private filteredData: any = [];
   private isFiltered = false;
@@ -194,8 +194,8 @@ export default class TeamView extends Vue {
     workspace_roles: string;
   }[] = [];
   private setMemberTableData() {
-    if (this.$store.state.portfolioOperators) {
-      const rootAdmins = this.$store.state.portfolioOperators || [];
+    if (this.operators) {
+      const rootAdmins = this.operators || [];
       if (rootAdmins && rootAdmins.length) {
         rootAdmins.forEach((op: any) => {
           const opObj = {
@@ -408,10 +408,6 @@ export default class TeamView extends Vue {
       );
       this.filteredData.splice(itemToRemoveFromFilteredData, 1);
     }
-  }
-
-  get currentApplication(): ApplicationModel {
-    return this.$store.getters.getCurrentApplication;
   }
 
   private openSideDrawer(event: Event): void {

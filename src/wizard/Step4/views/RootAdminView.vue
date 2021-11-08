@@ -160,18 +160,22 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Emit, Watch } from "vue-property-decorator";
+import { Component, Emit } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
+import ApplicationData from "@/mixins/ApplicationModuleData";
+import { OperatorModel } from "types/Portfolios";
 
 @Component({})
-export default class RootAdminView extends Vue {
+export default class RootAdminView extends mixins(ApplicationData) {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
   private currentPortfolio = this.$store.getters.getPortfolio;
   private csp = this.currentPortfolio.csp;
 
-  private rootMembers: any = this.$store.getters.getPortfolioOperators;
+  private get rootMembers(): OperatorModel[] {
+    return this.applicationsState.portfolioOperators;
+  }
   private member: any;
 
   private setMember(item: any) {
