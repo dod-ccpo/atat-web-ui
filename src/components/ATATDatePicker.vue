@@ -114,12 +114,9 @@
             </v-btn>
           </div>
         </div>
-        <div class="width-100 d-flex justify-start mt-1 text--base-light">
-          <div class="width-50 h5">
-            <span>MM/DD/YYYY</span>
-          </div>
-          <div class="width-50 h5">
-            <span>MM/DD/YYYY</span>
+        <div class="width-100 d-flex justify-start mt-2 text--base">
+          <div class="">
+            <span>Month, Day, Year (e.g. MM/DD/YYYY)</span>
           </div>
         </div>
       </div>
@@ -556,20 +553,17 @@ export default class ATATDatePicker extends Vue {
   public async setStartDate(selectedDate: string): Promise<void> {
     this.startDate = selectedDate;
     this.setDateRange;
-    // await this.formatStartDateMMDDYYYY();
   }
 
   public async setEndDate(selectedDate: string): Promise<void> {
     this.endDate = selectedDate;
     this.setDateRange;
-    // await this.formatEndDateMMDDYYYY();
   }
 
   get setDateRange(): string[] {
     this.dateRange[0] = this.formatDate(this.startDate);
     this.dateRange[1] = this.formatDate(this.endDate);
-    // datepickers v-models is this.dateRange
-
+    
     // remove dateRange[1] if === ""
     if (this.dateRange[1] === "") {
       this.dateRange.splice(1, 1);
@@ -595,6 +589,10 @@ export default class ATATDatePicker extends Vue {
     return this.dateRange;
   }
 
+  /**
+   * returns if this.dateRange contains 2  
+   * legitimate dates
+   */
   get isDateRangeValid(): boolean {
     return (
       this.dateRange.length === 2 &&
