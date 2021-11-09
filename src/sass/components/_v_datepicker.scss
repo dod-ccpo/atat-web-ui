@@ -75,17 +75,27 @@
   }
 }
 
+%header-button{
+  border-radius: 6px;
+  width: 24px;
+  height: 24px; 
+  margin: 4px 4px 0px 4px;
+}
+
 .two-date-pickers{
   background-color: $base_lightest;
-
+  .close-datepicker-button{
+    border-radius: 6px !important;
+  }
   .first-month{
     width: 100%;
     .v-picker__body{
       padding-right: 20px;
       .v-date-picker-header{
         padding: 0px;
-        button{
-          height: 24px;
+        border-radius: 6px;
+        button.v-btn{
+          @extend %header-button;
           &:nth-child(3){
               display: none;
           }
@@ -102,9 +112,8 @@
       padding-left: 20px;
       .v-date-picker-header{
         padding: 0px;
-        button{
-          height: 24px;
-
+        button.v-btn{
+          @extend %header-button;
         &.v-btn:nth-child(1){
             display: none;
           }

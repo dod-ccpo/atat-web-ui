@@ -132,8 +132,21 @@
         :close-on-click="!menu"
       >
         <div class="two-date-pickers pa-6">
-          <div class="h3">
-            {{ _title }}
+          <div
+            class="h3 d-flex align-center justify-space-between"
+            tabindex="-1"
+          >
+            <span>{{ _title }}</span>
+            <v-btn
+              icon
+              :ripple="false"
+              small
+              :id="getId('close-datepickers')"
+              aria-label="Close datepicker"
+              class="close-datepicker-button"
+            >
+              <v-icon class="black--text">close</v-icon>
+            </v-btn>
           </div>
           <hr class="mt-6 mb-4" />
           <div class="d-flex align-start">
@@ -150,6 +163,7 @@
               scrollable
               tabindex="0"
               @click:date="setDate"
+              @keydown.native.enter="onKeyDown"
               :picker-date.sync="firstMonth"
               value="firstMonth"
               transition="false"
@@ -169,6 +183,7 @@
               scrollable
               tabindex="0"
               @click:date="setDate"
+              @keydown.native.enter="onKeyDown"
               :picker-date.sync="secondMonth"
               value="secondMonth"
               transition="false"
@@ -232,6 +247,7 @@ export default class ATATDatePicker extends Vue {
   private startDateFormatted = this.formatDate(this.startDate);
   private endDateFormatted = this.formatDate(this.endDate);
   private isDatePickerAdvancing = false;
+  private isKeyboardEvent = false;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -288,6 +304,7 @@ export default class ATATDatePicker extends Vue {
    * 2 - sets title
    */
   private setFocus(event: Event): void {
+    console.log("268: got to here");
     const textBox = event.target as HTMLElement;
     const isStart = textBox.closest(".start-date") !== null;
     this.isStartTextBoxFocused = isStart;
@@ -418,6 +435,7 @@ export default class ATATDatePicker extends Vue {
    */
   private mounted(): void {
     document.addEventListener("click", this.datepickerControlClicked);
+    // document.addEventListener("keydown", this.datepickerControlClicked);
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
         this.isDateValid(this.startDate) ? this.startDate : new Date()
@@ -430,6 +448,7 @@ export default class ATATDatePicker extends Vue {
 
   private destroyed(): void {
     document.removeEventListener("click", this.datepickerControlClicked);
+    // document.removeEventListener("keydown", this.datepickerControlClicked);
   }
 
   /** page click event listener */
@@ -437,6 +456,7 @@ export default class ATATDatePicker extends Vue {
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
+
     const element = event.target as HTMLElement;
     //if control (textboxes, icons, calendars, menu) was clicked
     this.menu =
@@ -445,6 +465,7 @@ export default class ATATDatePicker extends Vue {
     // if icon is clicked
     const isIconClicked = element.classList.contains("date-picker-icon");
 
+    //if (this.menu) {
     if (this.menu) {
       //menu & calendar are opened
       this.calendarClicked = this.menu;
@@ -482,7 +503,7 @@ export default class ATATDatePicker extends Vue {
         const button = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(button, this.isStartTextBoxFocused);
         if (!this.isDateRangeValid) {
-          this.toggleTextBoxes(this.isStartTextBoxFocused);
+          this.toggleTextBoxes(button);
         } else {
           this.removeTextBoxFocus();
         }
@@ -492,7 +513,9 @@ export default class ATATDatePicker extends Vue {
       //menu and calendar are closed
       this.removeTextBoxFocus();
       this._isTextBoxFocused = false;
-
+      this.isStartTextBoxFocused = false;
+      this.isEndTextBoxFocused = false;
+      this._isTextBoxFocused = false;
       // reset firstmonth so calendar will open to the start date
       this.firstMonth = this.startDate;
     }
@@ -508,11 +531,21 @@ export default class ATATDatePicker extends Vue {
   /**
    * toggles textboxes as user selects start/end dates on calendar
    */
-  public toggleTextBoxes(isStart: boolean): void {
-    const textBoxId = isStart ? "end-date-text-box" : "start-date-text-box";
-    (
-      document.querySelector("#" + this.getId(textBoxId)) as HTMLInputElement
-    ).click();
+  public toggleTextBoxes(button: HTMLButtonElement): void {
+    const _id = this.isStartTextBoxFocused
+      ? "end-date-text-box"
+      : "start-date-text-box";
+    this.styleDatePickerButton(button, this.isStartTextBoxFocused);
+    (document.querySelector("#" + this.getId(_id)) as HTMLElement).click();
+    if (this.isKeyboardEvent) {
+      setTimeout(() => {
+        const firstDatePickerButton = document.querySelector(
+          ".v-date-picker-header button:first-child"
+        ) as HTMLButtonElement;
+        firstDatePickerButton.focus();
+        this.setDatePickerHoverButtons();
+      }, 1000);
+    }
   }
 
   /**
@@ -577,6 +610,11 @@ export default class ATATDatePicker extends Vue {
       this.getErrorMessages();
       this._isDatePickerBlurred = this._errorMessages.length > 0;
     });
+  }
+
+  public onKeyDown(event:Event): void {
+    this.isKeyboardEvent = true;
+    // this.datepickerControlClicked(event);
   }
 
   /**
