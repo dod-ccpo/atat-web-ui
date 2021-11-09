@@ -39,7 +39,7 @@
           </div>
         </div>
         <div
-          class="width-100 d-flex justify-start mt-2"
+          class="width-100 d-flex justify-start"
           :id="getId('datepicker-text-boxes')"
         >
           <div class="textbox-button d-flex justify-start">
