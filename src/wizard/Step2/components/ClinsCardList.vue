@@ -71,13 +71,11 @@ export default class ClinsCardList extends Vue {
 
   public ExpandClin(index: number): void {
     this.$nextTick(() => {
-      setTimeout(() => {
-        if (this._clins.length >= index) {
-          const clins = this.$refs.clinscard as Array<ClinsCard>;
-          const clin = clins[index - 1];
-          clin.open();
-        }
-      }, 500);
+      if (this._clins.length >= index) {
+        const clins = this.$refs.clinscard as Array<ClinsCard>;
+        const clin = clins[index - 1];
+        clin.open();
+      }
     });
   }
 }
