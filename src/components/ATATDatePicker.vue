@@ -519,12 +519,10 @@ export default class ATATDatePicker extends Vue {
     // remove dateRange[1] if === ""
     if (this.dateRange[1] === "") {
       this.dateRange.splice(1, 1);
-      // this.endDate = "";
     }
     // remove dateRange[1] if === ""
     if (this.dateRange[0] === "") {
       this.dateRange.splice(0, 1);
-      // this.startDate = "";
     }
 
     /***** final result ****************

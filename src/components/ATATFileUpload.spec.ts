@@ -255,10 +255,10 @@ describe("Testing ATATFileUpload Component", () => {
       eventWithFileTooLarge,
       eventWithFileTooLarge.target.files
     );
-    expect(await fileReaderSpyFileTooLarge).toHaveBeenCalledWith(
+    expect(fileReaderSpyFileTooLarge).toHaveBeenCalledWith(
       eventWithFileTooLarge.target.files[0]
     );
-    expect(await addUploadedFileSpyFileTooLarge).toHaveBeenCalledWith(
+    expect(addUploadedFileSpyFileTooLarge).toHaveBeenCalledWith(
       eventWithFileTooLarge,
       eventWithFileTooLarge.target.files
     );
@@ -344,9 +344,9 @@ describe("Testing ATATFileUpload Component", () => {
       uploadedFile: [validFile01, validFile02],
     });
 
-    const fileUpload = wrapper.find("#file_upload");
-    fileUpload.files = [validFile01];
-    const event = fileUpload.trigger("drop");
+    const uploadedFile = wrapper.find("#file_upload");
+    uploadedFile.files = [validFile01];
+    const event = uploadedFile.trigger("drop");
     event.dataTransfer = {
       files: [validFile01],
     };
@@ -366,9 +366,9 @@ describe("Testing ATATFileUpload Component", () => {
       uploadedFile: [],
     });
 
-    const fileUpload = wrapper.find("#file_upload");
-    fileUpload.files = [validFile01];
-    const event = fileUpload.trigger("drop");
+    const uploadedFile = wrapper.find("#file_upload");
+    uploadedFile.files = [validFile01];
+    const event = uploadedFile.trigger("drop");
 
     await wrapper.vm.onDrop(event);
     expect(wrapper.vm.$data.errorMessages.length).toBe(0);

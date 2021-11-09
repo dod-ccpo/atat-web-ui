@@ -2,10 +2,13 @@
   padding: 40px 56px 104px;
   border-top: 1px solid $base-lighter;
 }
-                                                                                                     
+
 .wizard-button-nav {
   border-top: 1px solid $base-lighter !important;
+  background-color: #fff;
+  padding: 16px 36px;
 
+  // EJY CHECK EVERYTHING BELOW
   .v-btn:focus {
     background-color: $focus-blue !important;
   }
@@ -14,7 +17,7 @@
     padding-left: 20px;
     padding-right: 20px;
     border-width: 2px;
-    
+
 
     &.secondary-btn:focus {
       color: $focus-blue !important;
