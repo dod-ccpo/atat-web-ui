@@ -11,6 +11,7 @@
         <strong>{{ csp }}</strong> after your portfolio is provisioned. Select
         <strong>Next</strong> to add team members to your other applications.
         <a
+          class="text-link"
           role="button"
           tabindex="0"
           @click="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
@@ -18,7 +19,7 @@
           @keydown.space="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
           id="TeamMembers_LearnMoreButton"
         >
-          <span class="link-body-md">Learn more about team member roles</span>
+          Learn more about team member roles
         </a>
       </p>
     </div>

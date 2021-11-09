@@ -12,6 +12,7 @@
         <span class="font-weight-bold">Next</span> to add team members to your
         other applications.
         <a
+          class="text-link"
           role="button"
           tabindex="0"
           @click="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"

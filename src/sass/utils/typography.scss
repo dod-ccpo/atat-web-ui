@@ -157,6 +157,9 @@ p {
     color: $base_darkest;
 }
 a {
+    &.text-link {
+        text-decoration: underline;
+    }
     color: $primary;
     .external-link {
         position: relative;
