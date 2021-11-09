@@ -62,8 +62,25 @@
     font-weight: 600 !important;
     font-size: 1.3rem !important;
     line-height: 1.7rem !important;
-    span{
-      color: $primary !important;
+    color: $primary !important;
+    position: relative;
+    .v-btn__content {
+      opacity: 1 !important;
+    }
+    text-decoration: underline;
+    &:after {
+      content: "expand_more";
+      position: absolute;
+      right: -10px;
+      top: 3px;
+      font-family: "Material Icons";
+      -webkit-font-feature-settings: "liga";
+      font-size: 18px;
+      font-weight: normal;
+      text-decoration: none;
+    }
+    &.open:after {
+      content: "expand_less";
     }
   }
 

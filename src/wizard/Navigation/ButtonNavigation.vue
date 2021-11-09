@@ -1,9 +1,8 @@
 <template>
-  <v-toolbar
+  <nav
     ref="buttonNavigation"
-    elevation="0"
-    :width="getbuttonNavBarWidth"
     class="d-flex justify-end wizard-button-nav"
+    :style="{ width: getbuttonNavBarWidth }"
     style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
     <v-btn
@@ -16,12 +15,12 @@
       :color="button.color"
       v-model="stepNumber"
       @click="clickedAction(button.action)"
-      :class="[button.link ? 'link-button' : '', 'mr-5']"
+      :class="[button.link ? 'link-button no-focus-shift' : '', 'mr-5']"
       role="link"
     >
       {{ button.text }}
     </v-btn>
-  </v-toolbar>
+  </nav>
 </template>
 
 <script lang="ts">
