@@ -308,16 +308,16 @@ export default class ATATDatePicker extends Vue {
    * textboxes date mask
    */
   public dateFormatMMDDYY = [
-    /[01]?/,
-    /[0-9]/,
+    /[01]/,
+    /\d/,
     "/",
     /[0-3]?/,
-    /[0-9]/,
+    /\d/,
     "/",
     /[2]/,
     /[0]/,
     /[1-3]/,
-    /[0-9]/,
+    /\d/,
   ];
 
   /**
