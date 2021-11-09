@@ -301,7 +301,7 @@ import { validateNumber } from "@/validation/";
 })
 export default class ClinsCard extends Vue {
   @Prop({ required: true, default: () => -1 }) card_number!: number;
-  @PropSync("clin_number", { required: true }) _clin_number!: string;
+  @PropSync("clin_number") _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
   @PropSync("total_clin_value") _total_clin_value!: number;
   @PropSync("obligated_funds") _obligated_funds!: number;
