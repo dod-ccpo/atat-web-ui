@@ -40,9 +40,7 @@ import ClinsCard from "./ClinsCard.vue";
 })
 export default class ClinsCardList extends Vue {
   @PropSync("clins", { required: true }) _clins!: Clin[];
-  get addClinLabel(): string {
-    return this._clins.length > 0 ? "Add another CLIN" : "Add CLIN";
-  }
+  private addClinLabel = "Add another CLIN";
 
   public async validate(): Promise<boolean> {
     let valid = false;

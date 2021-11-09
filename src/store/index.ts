@@ -58,7 +58,16 @@ const createStepTwoModel = () => {
       name: "",
       status: "",
     },
-    clins: [],
+    clins: [
+      {
+        clin_number: "",
+        idiq_clin: "",
+        total_clin_value: 0,
+        obligated_funds: 0,
+        pop_start_date: "",
+        pop_end_date: "",
+      },
+    ],
   };
 };
 
@@ -700,7 +709,6 @@ export default new Vuex.Store({
       await portfoliosApi.savePortfolio(state.currentPortfolioId, data);
     },
     async saveStep2({ state }, model: TaskOrderModel) {
-      
       const isNew = model.id === "";
       let modelIndex = -1;
 

@@ -68,3 +68,7 @@
   color: $base;
   margin-top: 8px;
 }
+
+ .empty-funds  .v-text-field__prefix{
+    color: $base_light !important
+  }

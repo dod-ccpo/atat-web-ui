@@ -176,7 +176,8 @@
                         label="Total CLIN Value"
                         :rules="totalClinRules"
                         :helpText="clinHelpText"
-                        :value.sync="_total_clin_value"
+                        :value.sync="isTotalClin"
+                        :class="[isObligatedFunds === '' ? 'empty-funds' : '']"
                         prefix="$"
                       />
                       <atat-currency-field
@@ -185,7 +186,8 @@
                         label="Obligated Funds"
                         :rules="obligatedFundRules"
                         :helpText="obligatedFundsHelpText"
-                        :value.sync="_obligated_funds"
+                        :value.sync="isObligatedFunds"
+                        :class="[isObligatedFunds === '' ? 'empty-funds' : '']"
                         @onkeyup="calculateObligatedPercent"
                         prefix="$"
                       />
@@ -314,6 +316,27 @@ export default class ClinsCard extends Vue {
   private isDatepickerTextBoxFocused = false;
   get validateDatePicker(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
+  }
+  get isObligatedFunds(): number | string {
+    return this._obligated_funds > 0 ? this._obligated_funds : "";
+  }
+
+  set isObligatedFunds(value: number | string) {
+    if (typeof value === "string") {
+      value = parseFloat(value);
+    }
+    this._obligated_funds = value;
+  }
+
+  get isTotalClin(): number | string {
+    return this._total_clin_value > 0 ? this._total_clin_value : "";
+  }
+
+  set isTotalClin(value: number | string) {
+    if (typeof value === "string") {
+      value = parseFloat(value);
+    }
+    this._total_clin_value = value;
   }
 
   get isValidStartDate(): boolean {
