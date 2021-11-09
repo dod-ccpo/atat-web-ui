@@ -157,14 +157,12 @@ export default class SideDrawer extends Vue {
         document.getElementById("PanelTitle")?.focus();
       } else {
         const returnFocusToElementId = this.$store.state.sideDrawerOpenerId;
+        const focusEl = document.getElementById(returnFocusToElementId);
         setTimeout(function () {
-          if (returnFocusToElementId) {
-            document.getElementById(returnFocusToElementId)?.focus();
+          if (focusEl) {
+            focusEl.focus();
           } else {
-            const h1 = document.getElementsByTagName("h1");
-            if (h1.length) {
-              h1[0].focus();
-            }
+            document.getElementsByTagName("h1")[0]?.focus();
           }
         }, 100);
         this.$store.state.sideDrawerOpenerId = "";
