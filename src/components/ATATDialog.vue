@@ -95,17 +95,10 @@ export default class ATATDialog extends Vue {
 
   public returnFocus(elementId: string): void {
     this.$nextTick(() => {
-      if (
-        elementId !== "" &&
-        document.getElementById(elementId) !== undefined
-      ) {
-        document.getElementById(elementId)?.focus();
-      } else {
-        const h1 = document.getElementsByTagName("h1");
-        if (h1.length) {
-          h1[0].focus();
-        }
-      }
+      const focusEl =
+        document.getElementById(elementId) ||
+        document.getElementsByTagName("h1")[0];
+      focusEl?.focus();
     });
   }
 }

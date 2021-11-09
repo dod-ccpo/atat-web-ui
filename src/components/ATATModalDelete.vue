@@ -84,17 +84,10 @@ export default class ATATModalDelete extends Vue {
   }
   private returnFocus(elementId: string): void {
     this.$nextTick(() => {
-      if (elementId !== "") {
-        const focusEl = document.getElementById(elementId);
-        if (focusEl) {
-          focusEl.focus();
-          return;
-        }
-      }
-      const h1 = document.getElementsByTagName("h1");
-      if (h1.length) {
-        h1[0].focus();
-      }
+      const focusEl =
+        document.getElementById(elementId) ||
+        document.getElementsByTagName("h1")[0];
+      focusEl?.focus();
     });
   }
 }
