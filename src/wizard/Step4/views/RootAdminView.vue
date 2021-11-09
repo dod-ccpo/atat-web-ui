@@ -274,6 +274,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   }
 
   private openSideDrawer(event: Event): void {
+    // EJY send third param - the id of the opener
     this.$store.dispatch("openSideDrawer", [
       "teammemberroles",
       event.type === "keydown",

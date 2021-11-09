@@ -26,7 +26,9 @@
         pl-6
       "
     >
-      <div class="font-weight-bold body">{{ setTitle }}</div>
+      <div class="font-weight-bold body" id="panelTitle" tabindex="-1">
+        {{ setTitle }}
+      </div>
       <div class="pr-7">
         <v-btn
           class="text--base-darkest pa-0 icon-24"
@@ -151,7 +153,7 @@ export default class SideDrawer extends Vue {
   setFocus(newVal: boolean): void {
     if (newVal && this.isSideDrawerOpen) {
       setTimeout(function () {
-        document.getElementById("drawerCloser")?.focus();
+        document.getElementById("panelTitle")?.focus();
       }, 500);
     }
   }
@@ -171,6 +173,7 @@ export default class SideDrawer extends Vue {
   }
   // close drawer event
   private close(): void {
+    // EJY -- return focus to opener
     this.$store.state.sideDrawer = false;
   }
 }

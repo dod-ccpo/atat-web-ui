@@ -3,8 +3,8 @@
     <v-btn
       v-for="item in navData.items"
       :id="item.cssClass"
-      @click="itemClicked(item, $event)"
-      @keydown.native.enter="itemClicked(item)"
+      @click="itemClicked(item, $event, item.cssClass)"
+      @keydown.native.enter="itemClicked(item, $event, item.cssClass)"
       :key="item.id"
       :ripple="false"
       class="px-2 mx-2 primary_darken"
@@ -52,9 +52,10 @@ export default class ATATHeaderNav extends Vue {
   }
 
   //Events
-  private itemClicked(item: NavItem, event: Event): void {
+  private itemClicked(item: NavItem, event: Event, linkId: string): void {
+    debugger;
     const mouseEvent = event ? true : false;
-    //setfocus only if keyboardevent
+    //setfocus only if keyboardevent -- EJY no need for this
     const setFocus = !mouseEvent;
     if (item.action && item.action.toLowerCase() === "logout") {
       this.logout();

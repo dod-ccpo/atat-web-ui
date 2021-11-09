@@ -49,6 +49,7 @@
       <div class="mx-n6 mb-6">
         <div>
           <v-alert
+            role="presentation"
             outlined
             rounded
             class="text-left info_lighter black-icon pa-0"

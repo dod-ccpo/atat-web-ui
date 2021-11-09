@@ -239,6 +239,7 @@ export default new Vuex.Store({
     sideDrawer: false,
     sideDrawerType: "",
     isSideDrawerFocused: false,
+    sideDrawerOpenerId: "",
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
     dialog: {
@@ -700,7 +701,7 @@ export default new Vuex.Store({
       await portfoliosApi.savePortfolio(state.currentPortfolioId, data);
     },
     async saveStep2({ state }, model: TaskOrderModel) {
-      
+
       const isNew = model.id === "";
       let modelIndex = -1;
 
@@ -968,6 +969,7 @@ export default new Vuex.Store({
       commit("changeSideDrawer", false);
     },
     openSideDrawer({ commit }, [drawerType, setFocusOnSideDrawer]) {
+      // ACCEPT 3rd param - the opener ID, and set it with one of the commits below
       commit("changeSideDrawer", true);
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
@@ -1035,7 +1037,11 @@ export default new Vuex.Store({
               icon: "person",
               iconPlacement: "left",
               action: "profile",
-              ariaLabel: "User Profile Information",
+              ariaLabel:
+                "Open panel with user profile information for " +
+                state.user.given_name +
+                " " +
+                state.user.family_name,
               ariaRole: "button",
             },
             {
