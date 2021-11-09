@@ -14,8 +14,10 @@
         <a
           role="button"
           tabindex="0"
-          @click="openSideDrawer($event)"
-          @keydown.enter="openSideDrawer($event)"
+          @click="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
+          @keydown.enter="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
+          @keydown.space="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
+          id="RootAdmins_LearnMoreButton"
         >
           Learn more about team member roles
         </a>
@@ -273,12 +275,8 @@ export default class RootAdminView extends mixins(ApplicationData) {
     }
   }
 
-  private openSideDrawer(event: Event): void {
-    // EJY send third param - the id of the opener
-    this.$store.dispatch("openSideDrawer", [
-      "teammemberroles",
-      event.type === "keydown",
-    ]);
+  private openSideDrawer(event: Event, openerId: string): void {
+    this.$store.dispatch("openSideDrawer", ["teammemberroles", openerId]);
   }
 
   private deleteRootMember() {

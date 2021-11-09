@@ -13,8 +13,10 @@
         <a
           role="button"
           tabindex="0"
-          @click="openSideDrawer($event)"
-          @keydown.enter="openSideDrawer($event)"
+          @click="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
+          @keydown.enter="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
+          @keydown.space="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
+          id="TeamMembers_LearnMoreButton"
         >
           <span class="link-body-md">Learn more about team member roles</span>
         </a>
@@ -410,11 +412,8 @@ export default class TeamView extends mixins(ApplicationData) {
     }
   }
 
-  private openSideDrawer(event: Event): void {
-    this.$store.dispatch("openSideDrawer", [
-      "teammemberroles",
-      event.type === "keydown",
-    ]);
+  private openSideDrawer(event: Event, openerId: string): void {
+    this.$store.dispatch("openSideDrawer", ["teammemberroles", openerId]);
   }
 
   public async mounted(): Promise<void> {

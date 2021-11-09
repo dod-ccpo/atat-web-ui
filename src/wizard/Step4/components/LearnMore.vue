@@ -74,6 +74,7 @@
       </dl>
 
       <v-alert
+        role="presentation"
         outlined
         color="cyan"
         type="info"

@@ -59,7 +59,7 @@ export default class ButtonNavigation extends Vue {
   get getbuttonNavBarWidth(): string {
     const windowWidth = window.innerWidth;
     const smBreakPoint = this.$vuetify.breakpoint.sm;
-    const _isSideDrawerOpened = this.$store.state.sideDrawer;
+    const _isSideDrawerOpened = this.$store.state.sideDrawerIsOpen;
 
     if (_isSideDrawerOpened && smBreakPoint) {
       return "100%";

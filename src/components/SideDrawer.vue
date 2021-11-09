@@ -26,7 +26,7 @@
         pl-6
       "
     >
-      <div class="font-weight-bold body" id="panelTitle" tabindex="-1">
+      <div class="font-weight-bold body" id="PanelTitle" tabindex="-1">
         {{ setTitle }}
       </div>
       <div class="pr-7">
@@ -121,7 +121,7 @@ export default class SideDrawer extends Vue {
    * > return isSideDrawerOpen
    */
   get isSideDrawerOpen(): boolean {
-    const _isSideDrawerOpen = this.$store.state.sideDrawer;
+    const _isSideDrawerOpen = this.$store.state.sideDrawerIsOpen;
     setTimeout(() => {
       if (_isSideDrawerOpen && this.showOverlay) {
         document
@@ -146,16 +146,30 @@ export default class SideDrawer extends Vue {
     return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
   }
 
-  /* a watcher used to set focus on the close button if
-   * keyboard event is used to open the side drawer.
+  /* A watcher used to set focus on the opener when the side drawer is changed.
+   * When drawer is closed, return focus to opener. If opener is no longer in the DOM, focus on first h1.
+   * When drawer is opened, set focus to panel title.
    */
-  @Watch("$store.state.isSideDrawerFocused")
-  setFocus(newVal: boolean): void {
-    if (newVal && this.isSideDrawerOpen) {
-      setTimeout(function () {
-        document.getElementById("panelTitle")?.focus();
-      }, 500);
-    }
+  @Watch("$store.state.sideDrawerChange")
+  sideDrawerChange(): void {
+    this.$nextTick(() => {
+      if (this.$store.state.sideDrawerIsOpen) {
+        document.getElementById("PanelTitle")?.focus();
+      } else {
+        const returnFocusToElementId = this.$store.state.sideDrawerOpenerId;
+        setTimeout(function () {
+          if (returnFocusToElementId) {
+            document.getElementById(returnFocusToElementId)?.focus();
+          } else {
+            const h1 = document.getElementsByTagName("h1");
+            if (h1.length) {
+              h1[0].focus();
+            }
+          }
+        }, 100);
+        this.$store.state.sideDrawerOpenerId = "";
+      }
+    });
   }
 
   /*
@@ -173,8 +187,7 @@ export default class SideDrawer extends Vue {
   }
   // close drawer event
   private close(): void {
-    // EJY -- return focus to opener
-    this.$store.state.sideDrawer = false;
+    this.$store.dispatch("closeSideDrawer");
   }
 }
 </script>
