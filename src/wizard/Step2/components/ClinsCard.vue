@@ -252,6 +252,8 @@
                 v-on="on"
                 class="pt-6"
                 :aria-label="'Delete CLIN ' + clin_number"
+                :id="'delete_Clin_' + card_number + '_Button'"
+                @click="returnFocusDeleteClinCancel = 'delete_Clin_' + card_number + '_Button'"
               >
                 <v-icon aria-hidden="true">delete</v-icon>
               </v-btn>
@@ -268,7 +270,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   class="link-button"
-                  @click="dialog = false"
+                  @click="cancelDeleteClin"
                   :ripple="false"
                 >
                   Cancel
@@ -276,7 +278,7 @@
                 <v-btn
                   class="primary"
                   width="140px"
-                  @click="$emit('delete', card_number), (dialog = false)"
+                  @click="deleteClin(card_number)"
                   :ripple="false"
                 >
                   Remove CLIN
@@ -310,6 +312,9 @@ export default class ClinsCard extends Vue {
   private isDatePickerClicked = false;
   private isDatepickerBlurred = false;
   private isDatepickerTextBoxFocused = false;
+  private returnFocusDeleteClinOK = "addClinButton";
+  private returnFocusDeleteClinCancel = "";
+
   get validateDatePicker(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
   }
@@ -645,6 +650,31 @@ export default class ClinsCard extends Vue {
       this.isDatePickerClicked =
         clickedElement.closest("#" + datepickerControlId) !== null;
     }
+  }
+
+  private deleteClin(card_number: number): void {
+    this.$emit('delete', card_number);
+    this.dialog = false;
+    this.returnFocus(this.returnFocusDeleteClinOK);
+  }
+  private cancelDeleteClin(): void {
+    this.dialog = false;
+    this.returnFocus(this.returnFocusDeleteClinCancel);
+  }
+  private returnFocus(elementId: string): void {
+    this.$nextTick(() => {
+      if (elementId !== "") {
+        const focusEl = document.getElementById(elementId);
+        if (focusEl) {
+          focusEl.focus();
+          return;
+        }
+      }
+      const h1 = document.getElementsByTagName("h1");
+      if (h1.length) {
+        h1[0].focus();
+      }
+    });
   }
 
   private mounted(): void {
