@@ -48,11 +48,12 @@
       </v-col>
       <v-col class="d-flex flex-row-reverse">
         <v-btn
+          id="inviteTeamMemberButton"
           class="font-weight-bold d-flex align-center px-5"
           :ripple="false"
           color="primary"
-          @keydown.native.enter="openDialog($event)"
-          @click="openDialog($event)"
+          @keydown.native.enter="openDialog($event, 'inviteTeamMemberButton')"
+          @click="openDialog($event, 'inviteTeamMemberButton')"
         >
           <div class="mr-1 mt-n1">
             <v-icon class="icon-20" aira-hidden="true" role="presentation">
@@ -123,6 +124,7 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                    :id="moreButtonId(item)"
                     :disabled="isDisabled(item.workspace_roles)"
                     class="table-row-menu-button pa-0"
                     v-bind="attrs"
@@ -137,12 +139,18 @@
                 </template>
                 <v-list class="table-row-menu pa-0">
                   <v-list-item
-                    v-for="(item, i) in options"
+                    v-for="(menuOptionText, i) in options"
                     :key="i"
-                    @click="tableOptionClick(item, $event)"
+                    @click="
+                      tableOptionClick(
+                        menuOptionText,
+                        $event,
+                        moreButtonId(item)
+                      )
+                    "
                   >
                     <v-list-item-title class="body-lg py-2">
-                      {{ item }}
+                      {{ menuOptionText }}
                     </v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -164,6 +172,8 @@
       :okText="okText"
       :width="dialogWidth + 'px'"
       v-on:delete="onDelete"
+      :focus-on-cancel="returnFocusElementIdRemoveMemberCancel"
+      :focus-on-ok="returnFocusElementIdRemoveMemberOk"
     />
   </div>
 </template>
@@ -306,26 +316,27 @@ export default class TeamView extends mixins(ApplicationData) {
     }
   }
 
-  public openDialog(event: Event): void {
+  public openDialog(event: Event, returnFocusId: string): void {
     let memberProps: {
       isRootAdmin: boolean;
       isEditSingle: boolean;
       memberEmail: string | null;
+      focusOnOk: string;
+      focusOnCancel: string;
     } = {
       isRootAdmin: false,
       isEditSingle: false,
       memberEmail: "",
+      focusOnOk: returnFocusId,
+      focusOnCancel: returnFocusId,
     };
     const currentTarget = event.currentTarget as HTMLElement;
     if (
       currentTarget &&
       currentTarget.innerText.toLowerCase() === "edit info and roles"
     ) {
-      memberProps = {
-        isRootAdmin: false,
-        isEditSingle: true,
-        memberEmail: this.member.email,
-      };
+      memberProps.isEditSingle = true;
+      memberProps.memberEmail = this.member.email;
     }
 
     this.$store.dispatch("openDialog", [
@@ -359,14 +370,17 @@ export default class TeamView extends mixins(ApplicationData) {
   private dialogTitle = "";
   private showDialogWhenClicked = false;
   private member: any;
+  private returnFocusElementIdRemoveMemberCancel = "";
+  private returnFocusElementIdRemoveMemberOk = "inviteTeamMemberButton";
 
-  private tableOptionClick(item: any, event: Event): void {
-    if (item.toLowerCase() === "remove team member") {
+  private tableOptionClick(menuOptionText: any, event: Event, btnId: string): void {
+    if (menuOptionText.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
+      this.returnFocusElementIdRemoveMemberCancel = btnId;
       this.showDialogWhenClicked = true;
-    } else if (item.toLowerCase() === "edit info and roles") {
-      this.openDialog(event);
+    } else if (menuOptionText.toLowerCase() === "edit info and roles") {
+      this.openDialog(event, btnId);
     }
   }
 
@@ -420,6 +434,14 @@ export default class TeamView extends mixins(ApplicationData) {
   public async mounted(): Promise<void> {
     this.setMemberTableData();
     this.tranformData();
+  }
+  private moreButtonId(item: any): string {
+    if (item && item.email) {
+      return (
+        "moreButton_" + item.email.toLowerCase().replace(/[^a-zA-Z0-9]/gi, "_")
+      );
+    }
+    return "";
   }
 }
 </script>

@@ -1,13 +1,21 @@
 <template>
-  <v-dialog :max-width="width" v-model="_showDialog">
+  <v-dialog
+    :max-width="width"
+    v-model="_showDialog"
+    role="alertdialog"
+    aria-labelledby="modalDeleteTitle"
+    aria-describedby="modalDeleteMessage"
+  >
     <v-card>
-      <v-card-title class="h3 text-break">{{ title }}</v-card-title>
-      <v-card-text class="body-lg black--text">
+      <v-card-title class="h3 text-break" id="modalDeleteTitle" tabindex="-1">
+        {{ title }}
+      </v-card-title>
+      <v-card-text class="body-lg black--text" id="modalDeleteMessage">
         {{ message }}
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn
-          class="link-button no-focus-shift"
+          class="link-button  no-focus-shift"
           :ripple="false"
           @click="cancelItem"
           id="dialog_cancel"
@@ -30,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Component, PropSync, Prop } from "vue-property-decorator";
+import { Component, PropSync, Prop, Watch } from "vue-property-decorator";
 import { VDialog } from "vuetify/lib";
 import Vue from "vue";
 
@@ -42,6 +50,8 @@ export default class ATATModalDelete extends Vue {
   @Prop({ default: "500px" }) private width!: string;
   @Prop({ default: "Cancel" }) private cancelText!: string;
   @Prop({ default: "OK" }) private okText!: string;
+  @Prop() private focusOnCancel!: string;
+  @Prop() private focusOnOk!: string;
 
   @PropSync("isItemDeleted")
   private _isItemDeleted!: boolean;
@@ -49,15 +59,36 @@ export default class ATATModalDelete extends Vue {
   @PropSync("showDialogWhenClicked")
   private _showDialog!: boolean;
 
+  @Watch("showDialogWhenClicked")
+  setFocus(newVal: boolean): void {
+    if (newVal) {
+      this.$nextTick(() => {
+        setTimeout(function () {
+          document.getElementById("modalDeleteTitle")?.focus();
+        }, 100);
+      });
+    }
+  }
+
   private cancelItem() {
     this._showDialog = false;
     this._isItemDeleted = false;
+    this.returnFocus(this.focusOnCancel);
   }
 
   private deleteItem() {
     this._showDialog = false;
     this._isItemDeleted = true;
     this.$emit("delete");
+    this.returnFocus(this.focusOnOk);
+  }
+  private returnFocus(elementId: string): void {
+    this.$nextTick(() => {
+      const focusEl =
+        document.getElementById(elementId) ||
+        document.getElementsByTagName("h1")[0];
+      focusEl?.focus();
+    });
   }
 }
 </script>

@@ -24,6 +24,7 @@
         :data="cardsData"
         v-on:delete="onDeleteTaskOrder"
         v-on:edit="onEditTaskOrder"
+        return-focus-element-id-ok="AddTaskOrderButton"
       ></atat-summary-card>
 
       <v-btn
@@ -31,6 +32,7 @@
         :ripple="false"
         @click="onAddNewTaskOrder"
         role="link"
+        id="AddTaskOrderButton"
       >
         <v-icon aria-hidden="true">control_point</v-icon>
         <div class="ml-2">Add a Task Order</div>
