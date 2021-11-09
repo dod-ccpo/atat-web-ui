@@ -244,7 +244,12 @@
           </v-expansion-panels>
         </v-col>
         <v-col>
-          <v-dialog v-model="dialog" persistent max-width="450">
+          <v-dialog
+            v-model="dialog"
+            role="alertdialog"
+            persistent
+            max-width="450"
+          >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 icon
@@ -253,13 +258,15 @@
                 class="pt-6"
                 :aria-label="'Delete CLIN ' + clin_number"
                 :id="'delete_Clin_' + card_number + '_Button'"
-                @click="returnFocusDeleteClinCancel = 'delete_Clin_' + card_number + '_Button'"
+                @click="
+                  openDeleteClinModal('delete_Clin_' + card_number + '_Button')
+                "
               >
                 <v-icon aria-hidden="true">delete</v-icon>
               </v-btn>
             </template>
             <v-card>
-              <v-card-title class="h2">
+              <v-card-title class="h2" id="RemoveClinModalTitle" tabindex="-1">
                 Remove CLIN {{ clin_number }}?
               </v-card-title>
               <v-card-text class="body-lg"
@@ -652,6 +659,14 @@ export default class ClinsCard extends Vue {
     }
   }
 
+  private openDeleteClinModal(btnId: string) {
+    this.returnFocusDeleteClinCancel = btnId;
+    this.$nextTick(() => {
+      setTimeout(function () {
+        document.getElementById("RemoveClinModalTitle")?.focus();
+      }, 100);
+    });
+  }
   private deleteClin(card_number: number): void {
     this.$emit('delete', card_number);
     this.dialog = false;
