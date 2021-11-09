@@ -155,7 +155,7 @@ describe("Testing Create ClinsCard Component", () => {
 
   const firstPopStartRule = createTestDescription("1st pop start rule");
   const secondPopStartRule = createTestDescription("2nd pop start rule");
- 
+
   it(firstPopStartRule("rule returns validation message"), async () => {
     await Vue.nextTick();
     const popStartRules = wrapper.vm.popStartRules;
@@ -182,7 +182,6 @@ describe("Testing Create ClinsCard Component", () => {
       "Please enter a start date using the format 'MM/DD/YYYY'"
     );
   });
-
 
   const JWCCContractEndDate = "2022-09-14";
 
@@ -307,5 +306,4 @@ describe("Testing Create ClinsCard Component", () => {
     const clin_number = wrapper.find("#clin_number");
     expect(clin_number.text()).toBe(`CLIN ${propsData.clin_number}`);
   });
-
 });

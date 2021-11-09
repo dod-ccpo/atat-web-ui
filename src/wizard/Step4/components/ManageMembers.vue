@@ -946,7 +946,6 @@ export default class ManageMember extends mixins(ApplicationData) {
   }
 
   public saveToStore(): void {
-
     if (!this.isEditSingle) {
       let operators: OperatorModel[] = [];
       let environments: EnvironmentModel[] = [];
