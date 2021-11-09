@@ -51,6 +51,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
 import ValidatableWizardStep from "@/mixins/ValidatableWizardStep";
 import ExpandableLink from "@/components/ExpandableLink.vue";
 
@@ -61,6 +62,7 @@ import {
 } from "../../../../types/Wizard";
 import { ApplicationModel } from "types/Portfolios";
 import { addapplication, editapplication } from "@/router/wizard";
+import ApplicationModuleData from "@/mixins/ApplicationModuleData";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -70,7 +72,7 @@ Component.registerHooks(["beforeRouteLeave"]);
     ExpandableLink,
   },
 })
-export default class Step3Summary extends Vue {
+export default class Step3Summary extends mixins(ApplicationModuleData) {
   private itemToDelete = "";
   private cardsData: ATATSummaryCards = {
     cards: [],
@@ -81,7 +83,7 @@ export default class Step3Summary extends Vue {
   }
 
   get applications(): ApplicationModel[] {
-    return this.$store.getters.getApplications;
+    return this.applicationsState.applicationModels;
   }
 
   get cards(): ATATSummaryCardItem[] {
@@ -122,7 +124,7 @@ export default class Step3Summary extends Vue {
   }
 
   async onDelete(id: string): Promise<void> {
-    await this.$store.dispatch("deleteApplication", id);
+    await this.deleteApplication(id);
 
     if (this.applications.length === 0) {
       //route the user back to add funding step

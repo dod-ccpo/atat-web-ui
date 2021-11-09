@@ -1,6 +1,6 @@
 <template>
   <div class="review-table">
-    <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
+    <v-card class="ma-1 width-95 height-100 mb-10" elevation="4">
       <v-card-title class="d-flex justify-space-between">
         <span class="h3 justify-center">Task Order #{{ name }}</span>
         <v-btn
@@ -31,7 +31,7 @@
                 <th id="clin_number">
                   <span
                     class="
-                      pl-2
+                      pl-1
                       text-left text--base-dark
                       label
                       font-weight-black
@@ -101,7 +101,7 @@
               <tr v-for="(item, index) in data" :key="index">
                 <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
+                    <span class="table-item">
                       {{ item.clin_number }}
                     </span>
                   </div>

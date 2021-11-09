@@ -7,7 +7,7 @@ const navigatingToAddApplication = (to: Route) =>
   to.name === addapplication.name;
 
 const hasApplications = (store?: Store<any>) =>
-  store && store.state.applicationModels.length > 0;
+  store && store.getters.hasApplications;
 
 const comingFromApplicationSummary = (from: Route) =>
   from.name === applicationsummary.name;

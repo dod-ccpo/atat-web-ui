@@ -1,5 +1,4 @@
 <template>
-  <!-- :max-width="width + 'px'" -->
   <v-dialog
     @keydown.esc="hide"
     persistent

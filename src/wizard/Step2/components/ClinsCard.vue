@@ -303,6 +303,8 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
+import { validateNumber } from "@/validation/";
+
 @Component({
   components: {},
 })
@@ -453,29 +455,10 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
-  validateNumber(v: string): boolean | string {
-    const message = "Please enter a valid number";
-
-    v = v.toString();
-
-    if (!v) {
-      return message;
-    }
-
-    const numberValue = parseFloat(v.replace(/,/g, ""));
-    const isNumber = /^([0-9]+(\.?[0-9]?[0-9]?)?)/.test(numberValue.toString());
-
-    if (v !== "" && !isNumber) {
-      return message;
-    }
-
-    return true;
-  }
-
   get totalClinRules(): any[] {
     const validationRules = [];
     validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
-    validationRules.push((v: string) => this.validateNumber(v));
+    validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
       v = parseFloat(v.toString().replace(/,/g, ""));
       let ob = parseFloat(this._obligated_funds.toString().replace(/,/g, ""));
@@ -490,7 +473,7 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
     );
-    validationRules.push((v: string) => this.validateNumber(v));
+    validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
       v = parseFloat(v.toString().replace(/,/g, ""));
       let totalClin = parseFloat(

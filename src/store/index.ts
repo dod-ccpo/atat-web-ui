@@ -8,18 +8,20 @@ import { Dialog, Toast } from "types/Global";
 import {
   Application,
   ApplicationModel,
-  EnvironmentModel,
   Operator,
   OperatorModel,
   TaskOrder,
 } from "types/Portfolios";
 import { portfoliosApi } from "@/api";
 import { TaskOrderModel } from "types/Wizard";
-import { generateUid } from "@/helpers";
+import { generateUid, getEntityIndex } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
 import moment from "moment";
 
 import portfolios from "./modules/portfolios/store";
+import applications from "./modules/applications/store";
+
+import { validateApplication, validOperator } from "@/validation/application";
 
 Vue.use(Vuex);
 
@@ -121,14 +123,6 @@ const stepsModelInitializer = [
     model: createStepFiveModel,
   },
 ];
-
-const getEntityIndex = <TModel>(
-  entities: TModel[],
-  predicate: (value: TModel, index: number, obj: TModel[]) => unknown,
-  thisArg?: any
-): number => {
-  return entities.findIndex(predicate);
-};
 
 const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
   return taskOrderModels.map((model: TaskOrderModel) => {
@@ -256,8 +250,6 @@ export default new Vuex.Store({
       props: null,
     },
     taskOrderModels: [],
-    applicationModels: [],
-    portfolioOperators: [],
     wizardNavigation: {},
     erroredSteps: [],
     currentStepNumber: 1,
@@ -336,6 +328,7 @@ export default new Vuex.Store({
         description: "Add Team Members",
         touched: false,
         valid: false,
+        hasChanges: false,
         model: {},
       },
       {
@@ -346,6 +339,7 @@ export default new Vuex.Store({
         model: {},
       },
     ],
+    membersAdded: false,
     user: {
       title: "",
       given_name: "",
@@ -473,6 +467,9 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
+    doUpdateMembersAdded(state, added: boolean) {
+      state.membersAdded = added;
+    },
     /**
      * Partially or fully initializes step model
      * @param state
@@ -493,8 +490,6 @@ export default new Vuex.Store({
 
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
-      Vue.set(state, "applicationModels", []);
-      Vue.set(state, "portfolioOperators", []);
 
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
@@ -509,9 +504,6 @@ export default new Vuex.Store({
     },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
-    },
-    doSetApplicationId(state, id) {
-      state.currentApplicationId = id;
     },
     setNavSideBarDisplayed(state, routeName: string) {
       if (routeName) {
@@ -559,191 +551,8 @@ export default new Vuex.Store({
         throw new Error("could not delete task order with id: " + id);
       }
     },
-    setCurrentApplications(state, applications: Application[]) {
-      const applicationModels = applications.map((application) => {
-        const applicationModel: ApplicationModel = {
-          ...application,
-          id: generateUid(),
-          operators: application.operators
-            ? application.operators.map((operator) => {
-                return {
-                  ...operator,
-                  id: generateUid(),
-                };
-              })
-            : [],
-          environments: application.environments.map((environment) => {
-            return {
-              ...environment,
-              id: generateUid(),
-              operators: environment.operators
-                ? environment.operators.map((operator) => {
-                    return {
-                      ...operator,
-                      id: generateUid(),
-                    };
-                  })
-                : [],
-            };
-          }),
-        };
-
-        return applicationModel;
-      });
-
-      Vue.set(state, "applicationModels", applicationModels);
-    },
-    doAddApplication(state, model: any) {
-      state.applicationModels.push(model as never);
-    },
-    doUpdateApplication(state, [index, model]) {
-      Vue.set(state.applicationModels, index, model);
-    },
-    doDeleteApplication(state, id: string) {
-      const index = getEntityIndex(
-        state.applicationModels,
-        (application: ApplicationModel) => application.id === id
-      );
-
-      if (index > -1) {
-        state.applicationModels.splice(index, 1);
-      } else {
-        throw new Error("could not delete application order with id: " + id);
-      }
-    },
-    doUpdateEnvironmentOperators(state, [appId, environments]) {
-      const index = getEntityIndex(
-        state.applicationModels,
-        (application: ApplicationModel) => application.id === appId
-      );
-      const appModel: ApplicationModel = state.applicationModels[index];
-      environments.forEach((env: EnvironmentModel) => {
-        const envId = env.id;
-        const index = getEntityIndex(
-          appModel.environments,
-          (environment: EnvironmentModel) => environment.id === envId
-        );
-        const envModel: EnvironmentModel = appModel.environments[index];
-        if (Object.prototype.hasOwnProperty.call(envModel, "operators")) {
-          envModel.operators.push(...env.operators);
-        } else {
-          envModel.operators = env.operators;
-        }
-      });
-    },
-    doUpdateApplicationOperators(state, [appId, operators]) {
-      const index = getEntityIndex(
-        state.applicationModels,
-        (application: ApplicationModel) => application.id === appId
-      );
-      const appModel: ApplicationModel = state.applicationModels[index];
-      if (Object.prototype.hasOwnProperty.call(appModel, "operators")) {
-        appModel.operators.push(...operators);
-      } else {
-        appModel.operators = operators;
-      }
-    },
-
-    doUpdateRootAdministrators(state, operators: OperatorModel[]) {
-      const rootAdmins: OperatorModel[] = state.portfolioOperators;
-      rootAdmins.push(...operators);
-    },
-
-    doInitializeRootAdministrators(state) {
-      Vue.set(state, "portfolioOperators", []);
-    },
     doToast(state, props) {
       state.toast = props;
-    },
-
-    doUpdateRootAdminInfo(state, [index, display_name, email]) {
-      const portfolioOperators: OperatorModel[] = state.portfolioOperators;
-      portfolioOperators[index].display_name = display_name;
-      portfolioOperators[index].email = email;
-    },
-    doUpdateApplicationOperatorInfo(
-      state,
-      [applicationId, access, display_name, email, originalEmail]
-    ) {
-      const apps: ApplicationModel[] = state.applicationModels;
-      const appIndex = apps.map((a) => a.id).indexOf(applicationId);
-      const app: ApplicationModel = apps[appIndex];
-      const appOperators: OperatorModel[] = app.operators || [];
-      const opIndex = appOperators.map((o) => o.email).indexOf(originalEmail);
-      if (opIndex > -1) {
-        // if existing, update info
-        appOperators[opIndex].display_name = display_name;
-        appOperators[opIndex].email = email;
-        appOperators[opIndex].access = access;
-      } else {
-        // if new, push into array
-        const newOp: OperatorModel = {
-          display_name: display_name,
-          email: email,
-          access: access,
-          id: generateUid(),
-        };
-        appOperators.push(newOp);
-      }
-      // remove member from environment-level access if any
-      const envs: EnvironmentModel[] = app.environments;
-      envs.forEach((env) => {
-        const ops: OperatorModel[] = env.operators || [];
-        const newOps = ops.filter((o) => o.email !== originalEmail);
-        ops.splice(0, ops.length, ...newOps);
-      });
-    },
-    doUpdateEnvironmentOperatorInfo(
-      state,
-      [applicationId, display_name, email, originalEmail, updatedEnvs]
-    ) {
-      const apps: ApplicationModel[] = state.applicationModels;
-      const appIndex = apps.map((a) => a.id).indexOf(applicationId);
-      const app: ApplicationModel = apps[appIndex];
-      const appOperators: OperatorModel[] = app.operators || [];
-      // remove from application operators if member was previously app operator
-      if (appOperators.length) {
-        const appOpIndex = appOperators.findIndex(
-          (a) => a.email === originalEmail
-        );
-        if (appOpIndex > -1) {
-          appOperators.splice(appOpIndex, 1);
-        }
-      }
-      // assign new environment access
-      const envs: EnvironmentModel[] = app.environments || [];
-      if (envs.length) {
-        envs.forEach((envInModel) => {
-          const ops: OperatorModel[] = envInModel.operators || [];
-          const opIndex = ops.findIndex((o) => o.email === originalEmail);
-          // find env id in updatedEnvs
-          const updatedEnvIndex = updatedEnvs.findIndex(
-            (u: any) => u.env_id === envInModel.id
-          );
-          const updatedInfo = updatedEnvs[updatedEnvIndex];
-          if (opIndex > -1) {
-            if (updatedInfo.role_value === "no_access") {
-              // remove if found in operators for this env
-              const newOps = ops.filter((o) => o.email !== originalEmail);
-              ops.splice(0, ops.length, ...newOps);
-            } else {
-              // update env operator info
-              ops[opIndex].display_name = display_name;
-              ops[opIndex].email = email;
-              ops[opIndex].access = updatedInfo.role_value;
-            }
-          } else {
-            // add member to this environment operators
-            const newOp = {
-              display_name: display_name,
-              email: email,
-              access: updatedInfo.role_value,
-              id: generateUid(),
-            };
-            ops.push(newOp);
-          }
-        });
-      }
     },
   },
   /*
@@ -769,9 +578,6 @@ export default new Vuex.Store({
     },
     validateStep({ commit }, step: number) {
       commit("setStepValidated", step);
-    },
-    setCurrentApplicationId({ commit }, applicationId) {
-      commit("doSetApplicationId", applicationId);
     },
     displayNavSideBarDisplayed({ commit }, routeName: string) {
       commit("setNavSideBarDisplayed", routeName);
@@ -833,45 +639,20 @@ export default new Vuex.Store({
       const model = { ...createStepTwoModel() };
       commit("doInitializeStepModel", [model, 2]);
     },
-    async addApplication({ commit }, model) {
-      commit("doAddApplication", model);
-    },
-    async updateApplication({ commit }, [index, model]) {
-      commit("doUpdateApplication", [index, model]);
-    },
-    async deleteApplication({ commit, state }, id: string): Promise<void> {
-      try {
-        commit("doDeleteApplication", id);
-        commit("doInitializeStepModel", [createStepThreeModel(), 3]);
-        const _applications = state.applicationModels.map(
-          (model: Application) => {
-            const application: Application = {
-              ...model,
-            };
+    editApplication({ commit, rootGetters }, id: string) {
+      const applicationModels = rootGetters[
+        "applications/applications"
+      ] as ApplicationModel[];
 
-            return application;
-          }
-        );
-
-        const data = {
-          applications: _applications,
-        };
-
-        await portfoliosApi.saveApplications(state.currentPortfolioId, data);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    editApplication({ commit, state }, id: string) {
       const entityIndex = getEntityIndex(
-        state.applicationModels,
+        applicationModels,
         (entity: ApplicationModel) => entity.id === id
       );
 
       if (entityIndex === -1) {
         throw new Error("unable to location task order model with id :" + id);
       }
-      const applicationModel = state.applicationModels[entityIndex];
+      const applicationModel = applicationModels[entityIndex];
 
       commit("doSaveStepModel", [applicationModel, 3, true]);
     },
@@ -919,6 +700,7 @@ export default new Vuex.Store({
       await portfoliosApi.savePortfolio(state.currentPortfolioId, data);
     },
     async saveStep2({ state }, model: TaskOrderModel) {
+      
       const isNew = model.id === "";
       let modelIndex = -1;
 
@@ -953,26 +735,44 @@ export default new Vuex.Store({
         this.dispatch("updateTaskOrder", [modelIndex, model]);
       }
     },
-    async saveStep3({ state }, model: any) {
-      if (model.id === "") {
-        model.id = generateUid();
-        this.dispatch("addApplication", model);
-      } else {
-        const appIndx = getEntityIndex<ApplicationModel>(
-          state.applicationModels,
-          (application) => application.id === model.id
-        );
-        if (appIndx === -1) {
-          throw new Error(
-            "unable to location task order model with id :" + model.id
-          );
-        }
+    async saveStep3({ state, rootGetters }, model: any) {
+      const applicationModels = rootGetters[
+        "applications/applications"
+      ] as ApplicationModel[];
 
-        this.dispatch("updateApplication", [appIndx, model]);
+      const portfolioOperators = rootGetters[
+        "applications/portfolioOperators"
+      ] as OperatorModel[];
+
+      const application = model as ApplicationModel;
+
+      const validOperators =
+        portfolioOperators.length > 0
+          ? portfolioOperators.every((operator) => validOperator(operator))
+          : true;
+
+      // a very basic validation test before attempting to update and save
+      if (validateApplication(application) && validOperators) {
+        if (model.id === "") {
+          model.id = generateUid();
+          this.dispatch("applications/addApplication", model);
+        } else {
+          const appIndx = getEntityIndex<ApplicationModel>(
+            applicationModels,
+            (application) => application.id === model.id
+          );
+          if (appIndx === -1) {
+            throw new Error(
+              "unable to location application model with id :" + model.id
+            );
+          }
+
+          this.dispatch("applications/updateApplication", { appIndx, model });
+        }
       }
 
-      const applications = mapApplications(state.applicationModels);
-      const operators = mapOperators(state.portfolioOperators);
+      const applications = mapApplications(applicationModels);
+      const operators = mapOperators(portfolioOperators);
 
       const data = {
         operators: operators,
@@ -980,10 +780,20 @@ export default new Vuex.Store({
       };
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+
+      this.dispatch("updateMembersAdded", false);
     },
-    async saveStep4({ state }) {
-      const applications = mapApplications(state.applicationModels);
-      const operators = mapOperators(state.portfolioOperators);
+    async saveStep4({ state, rootGetters }) {
+      const applicationModels = rootGetters[
+        "applications/applications"
+      ] as ApplicationModel[];
+
+      const portfolioOperators = rootGetters[
+        "applications/portfolioOperators"
+      ] as OperatorModel[];
+
+      const applications = mapApplications(applicationModels);
+      const operators = mapOperators(portfolioOperators);
 
       const data = {
         operators: operators,
@@ -991,6 +801,11 @@ export default new Vuex.Store({
       };
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+
+      this.dispatch("updateMembersAdded", false);
+    },
+    updateMembersAdded({ commit }, added: boolean): void {
+      commit("doUpdateMembersAdded", added);
     },
     /**
      * Saves all valid step models with changes
@@ -1034,12 +849,18 @@ export default new Vuex.Store({
     async createPortfolioDraft({ commit }): Promise<void> {
       //initialize steps models
       commit("doInitializeSteps");
+
+      //initilize applications module
+      this.dispatch("applications/initialize");
+
       const portfolioDraftId = await portfoliosApi.createDraft();
       commit("doSetCurrentPortfolioId", portfolioDraftId);
     },
     async loadPortfolioDraft({ commit }, draftId: string): Promise<void> {
       //initial step model data
       commit("doInitializeSteps");
+
+      this.dispatch("applications/initialize");
 
       //validate that portfolio draft id exists on the server
       const id = await portfoliosApi.getDraft(draftId);
@@ -1054,8 +875,8 @@ export default new Vuex.Store({
         this.dispatch("loadStep2Data", draftId),
         this.dispatch("loadStep3Data", draftId),
       ];
-
       await Promise.all(loadActions);
+      this.dispatch("updateMembersAdded", false);
     },
     async loadStep1Data({ commit }, draftId: string): Promise<void> {
       const draft = await portfoliosApi.getPortfolio(draftId);
@@ -1085,8 +906,11 @@ export default new Vuex.Store({
       const applicationData = await portfoliosApi.getApplications(draftId);
       if (applicationData != null) {
         //store the applications
-        commit("setCurrentApplications", applicationData.applications);
-        commit("doInitializeRootAdministrators");
+        commit(
+          "applications/setCurrentApplications",
+          applicationData.applications
+        );
+        commit("applications/initializeRootAdministrators");
 
         const operators = applicationData.operators.map(
           (operator: Operator) => {
@@ -1099,7 +923,7 @@ export default new Vuex.Store({
           }
         );
 
-        commit("doUpdateRootAdministrators", operators);
+        commit("applications/updateRootAdministrators", operators);
         commit("doSaveStepModel", [createStepThreeModel(), 3, true]);
       }
     },
@@ -1148,15 +972,6 @@ export default new Vuex.Store({
       commit("changeSideDrawerType", drawerType);
       commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
     },
-    updateEnvironmentOperators({ commit }, [appId, environments]) {
-      commit("doUpdateEnvironmentOperators", [appId, environments]);
-    },
-    updateApplicationOperators({ commit }, [appId, operators]) {
-      commit("doUpdateApplicationOperators", [appId, operators]);
-    },
-    updateRootAdministrators({ commit }, operators: OperatorModel[]) {
-      commit("doUpdateRootAdministrators", operators);
-    },
     toast({ commit }, [message, contentClass]) {
       const toastProps: Toast = {
         isDisplayed: true,
@@ -1168,33 +983,6 @@ export default new Vuex.Store({
     isStepTouched({ state }, stepNumber: number) {
       const index = StepModelIndices[stepNumber];
       return state.portfolioSteps[index].touched;
-    },
-    updateRootAdminInfo({ commit }, [index, display_name, email]) {
-      commit("doUpdateRootAdminInfo", [index, display_name, email]);
-    },
-    updateApplicationOperatorInfo(
-      { commit },
-      [applicationId, access, display_name, email, originalEmail]
-    ) {
-      commit("doUpdateApplicationOperatorInfo", [
-        applicationId,
-        access,
-        display_name,
-        email,
-        originalEmail,
-      ]);
-    },
-    updateEnvironmentOperatorInfo(
-      { commit },
-      [applicationId, display_name, email, originalEmail, envs]
-    ) {
-      commit("doUpdateEnvironmentOperatorInfo", [
-        applicationId,
-        display_name,
-        email,
-        originalEmail,
-        envs,
-      ]);
     },
   },
   /*
@@ -1296,7 +1084,6 @@ export default new Vuex.Store({
     getUser: (state) => state.user,
     getSideDrawer: (state) => state.sideDrawer,
     getTaskOrders: (state) => state.taskOrderModels,
-    getApplications: (state) => state.applicationModels,
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
     getPortfolioName: (state, getters) => (defaultResponse: string) => {
       defaultResponse = defaultResponse || "this portfolio";
@@ -1317,17 +1104,19 @@ export default new Vuex.Store({
       }
       return pName;
     },
-    getCurrentApplication: (state) => {
-      const applicationIndex = getEntityIndex(
-        state.applicationModels,
-        (application: ApplicationModel) =>
-          application.id === state.currentApplicationId
-      );
-      return state.applicationModels[applicationIndex];
+    hasApplications: (state, getters, rootState, rootGetters): boolean => {
+      const applicationModels = rootGetters[
+        "applications/applications"
+      ] as ApplicationModel[];
+
+      return applicationModels && applicationModels.length > 0;
     },
-    getPortfolioOperators: (state) => state.portfolioOperators,
+    membersAdded: (state) => {
+      return state.membersAdded;
+    },
   },
   modules: {
     portfolios,
+    applications,
   },
 });
