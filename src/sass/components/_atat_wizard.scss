@@ -2,12 +2,33 @@
   padding: 40px 56px 104px;
   border-top: 1px solid $base-lighter;
 }
-
+                                                                                                     
 .wizard-button-nav {
   border-top: 1px solid $base-lighter !important;
-   
-  .v-btn:hover {
 
-      background-color: $primary_dark;
+  .v-btn:focus {
+    background-color: $focus-blue !important;
+  }
+
+  .v-btn:not(.link-button) {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-width: 2px;
+    
+
+    &.secondary-btn:focus {
+      color: $focus-blue !important;
+      border-color: $focus-blue !important;
+    }
+
+    &:hover {
+      border-color: $primary_dark !important;
+      background-color: $primary_dark !important;
+
+      &.secondary-btn {
+        color: $primary_dark !important;
+        background-color: #fff !important;
+      }
+    }
   }
 }
