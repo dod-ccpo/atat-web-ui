@@ -6,7 +6,7 @@
     class="atat-header-nav"
   >
     <template v-slot:extension>
-      <USAGovBanner @toggle="toggle" />
+      <USAGovBanner @toggle="toggle" v-show="isUsaGovDisplayed" />
       <div class="d-flex align-center justify-space-between pt-2 nav-header">
         <div class="d-flex align-center px-4">
           <img
@@ -36,9 +36,26 @@ import USAGovBanner from "../components/USAGovBanner.vue";
 })
 export default class ATATHeader extends Vue {
   public show = false;
+  private scrollYPosition = -1;
 
   public toggle(toggle: boolean): void {
     this.show = toggle;
+  }
+
+  get isUsaGovDisplayed(): boolean {
+    return this.scrollYPosition < 100;
+  }
+
+  onScroll(): void {
+    this.scrollYPosition = window.scrollY;
+  }
+
+  mounted(): void {
+    window.addEventListener("scroll", this.onScroll);
+  }
+
+  beforeDestroy(): void {
+    window.removeEventListener("scroll", this.onScroll);
   }
 }
 </script>

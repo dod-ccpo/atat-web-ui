@@ -3,7 +3,6 @@
     outlined
     style="border-radius: 0px"
     class="bg-base-lightest usa-gov-head"
-    v-if="showBanner"
   >
     <v-card-actions class="py-0">
       <div class="h5">
@@ -139,35 +138,6 @@ import { Component, Emit } from "vue-property-decorator";
 @Component({})
 export default class USAGovBanner extends Vue {
   private show = false;
-  private showBanner = true;
-
-  private lastScrollPosition!: number;
-
-  onScroll(): void {
-    const currentScrollPosition =
-      window.pageYOffset || document.documentElement.scrollTop;
-    if (currentScrollPosition < 0) {
-      return;
-    }
-    // Stop executing this function if the difference between
-    // current scroll position and last scroll position is less than some offset
-    if (Math.abs(currentScrollPosition - this.lastScrollPosition) < 60) {
-      return;
-    }
-    this.showBanner = currentScrollPosition < this.lastScrollPosition;
-    if (this.show) {
-      this.show = false;
-    }
-    this.lastScrollPosition = currentScrollPosition;
-  }
-
-  mounted(): void {
-    window.addEventListener("scroll", this.onScroll);
-  }
-
-  beforeDestroy(): void {
-    window.removeEventListener("scroll", this.onScroll);
-  }
 
   @Emit()
   public toggle(): boolean {
