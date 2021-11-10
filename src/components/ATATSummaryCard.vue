@@ -114,9 +114,11 @@
                 px-2
               "
               small
-              @click="rightButtonClicked(card)"
+              @click="
+                rightButtonClicked(card, buttonId(card.rightButtonText, index))
+              "
               :ripple="false"
-              :id="card.rightButtonText + '_' + (index + 1)"
+              :id="buttonId(card.rightButtonText, index)"
               :aria-label="card.rightButtonText + ' ' + card.type"
               role="button"
               >{{ card.rightButtonText }}</v-btn
@@ -137,6 +139,8 @@
       :okText="okText"
       :width="dialogWidth + 'px'"
       v-on:delete="onDelete"
+      :focus-on-cancel="returnFocusElementIdCancel"
+      :focus-on-ok="returnFocusElementIdOk"
     />
   </div>
 </template>
@@ -148,6 +152,9 @@ import Vue from "vue";
 
 @Component({})
 export default class ATATSummaryCard extends Vue {
+  private returnFocusElementIdCancel = "";
+  @Prop({ default: "" }) private returnFocusElementIdOk!: string;
+
   @Prop({
     default: {
       cards: [],
@@ -201,13 +208,20 @@ export default class ATATSummaryCard extends Vue {
     return word;
   }
 
+  private buttonId(buttonText: string, index: number) {
+    return buttonText + "_" + (index + 1);
+  }
+
   private leftButtonClicked(card: ATATSummaryCardItem) {
     this.cardSelected = card;
     //emit edit event
     this.$emit("edit", card.id);
   }
 
-  private rightButtonClicked(card: ATATSummaryCardItem): void {
+  private rightButtonClicked(
+    card: ATATSummaryCardItem,
+    buttonId: string
+  ): void {
     this.isItemDeleted = false;
     this.cardSelected = card;
     if (card.type === "TASK ORDER") {
@@ -227,6 +241,7 @@ export default class ATATSummaryCard extends Vue {
       this.dialogTitle = `Delete  '${card.title}' from your portfolio drafts`;
       this.dialogMessage = `This portfolio and any details you added will be permanently removed`;
     }
+    this.returnFocusElementIdCancel = buttonId;
     this.showDialogWhenClicked = true;
   }
 

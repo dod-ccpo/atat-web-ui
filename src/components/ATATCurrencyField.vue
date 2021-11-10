@@ -63,14 +63,12 @@ export default class ATATCurrencyField extends VTextField {
 
   private format() {
     if (this.numberValue === undefined) return;
-    let v = this.numberValue.toString();
-    v = Number(this.numberValue).toLocaleString(this.languageCode);
+    let v = Number(this.numberValue).toLocaleString(this.languageCode);
     if (
       v.length !== 1 &&
       v.slice(v.indexOf(this.decimalSeperator) + 1).length === 1
     )
-      v += "0";
-    this.model = this.formatter.format(this.numberValue).replace("$", "");
+      this.model = this.formatter.format(this.numberValue).replace("$", "");
   }
 
   private updateNumberValue() {

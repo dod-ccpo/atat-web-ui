@@ -244,7 +244,12 @@
           </v-expansion-panels>
         </v-col>
         <v-col>
-          <v-dialog v-model="dialog" persistent max-width="450">
+          <v-dialog
+            v-model="dialog"
+            role="alertdialog"
+            persistent
+            max-width="450"
+          >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 icon
@@ -252,12 +257,16 @@
                 v-on="on"
                 class="pt-6"
                 :aria-label="'Delete CLIN ' + clin_number"
+                :id="'delete_Clin_' + card_number + '_Button'"
+                @click="
+                  openDeleteClinModal('delete_Clin_' + card_number + '_Button')
+                "
               >
                 <v-icon aria-hidden="true">delete</v-icon>
               </v-btn>
             </template>
             <v-card>
-              <v-card-title class="h2">
+              <v-card-title class="h2" id="RemoveClinModalTitle" tabindex="-1">
                 Remove CLIN {{ clin_number }}?
               </v-card-title>
               <v-card-text class="body-lg"
@@ -268,7 +277,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   class="link-button"
-                  @click="dialog = false"
+                  @click="cancelDeleteClin"
                   :ripple="false"
                 >
                   Cancel
@@ -276,7 +285,7 @@
                 <v-btn
                   class="primary"
                   width="140px"
-                  @click="$emit('delete', card_number), (dialog = false)"
+                  @click="deleteClin(card_number)"
                   :ripple="false"
                 >
                   Remove CLIN
@@ -310,8 +319,11 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
-  private isDatePickerBlurred = false;
-  private isDatePickerTextBoxFocused = false;
+  private isDatepickerBlurred = false;
+  private isDatepickerTextBoxFocused = false;
+  private returnFocusDeleteClinOK = "addClinButton";
+  private returnFocusDeleteClinCancel = "";
+
   get validateDatePicker(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
   }
@@ -628,6 +640,32 @@ export default class ClinsCard extends Vue {
       this.isDatePickerClicked =
         clickedElement.closest("#" + datepickerControlId) !== null;
     }
+  }
+
+  private openDeleteClinModal(btnId: string) {
+    this.returnFocusDeleteClinCancel = btnId;
+    this.$nextTick(() => {
+      setTimeout(function () {
+        document.getElementById("RemoveClinModalTitle")?.focus();
+      }, 100);
+    });
+  }
+  private deleteClin(card_number: number): void {
+    this.$emit('delete', card_number);
+    this.dialog = false;
+    this.returnFocus(this.returnFocusDeleteClinOK);
+  }
+  private cancelDeleteClin(): void {
+    this.dialog = false;
+    this.returnFocus(this.returnFocusDeleteClinCancel);
+  }
+  private returnFocus(elementId: string): void {
+    this.$nextTick(() => {
+      const focusEl =
+        document.getElementById(elementId) ||
+        document.getElementsByTagName("h1")[0];
+      focusEl?.focus();
+    });
   }
 
   private mounted(): void {
