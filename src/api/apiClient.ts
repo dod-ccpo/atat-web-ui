@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from "axios";
+import { retrieveSessionConfig } from "@/atat-config-builder";
 
-const apiUrl =
-  "https://gj78s0sep8.execute-api.us-gov-west-1.amazonaws.com/prod/";
+const apiUrl = retrieveSessionConfig()?.apiUrl;
 const instance = axios.create({
   baseURL: apiUrl,
   timeout: 15000,
