@@ -702,7 +702,6 @@ export default new Vuex.Store({
       await portfoliosApi.savePortfolio(state.currentPortfolioId, data);
     },
     async saveStep2({ state }, model: TaskOrderModel) {
-
       const isNew = model.id === "";
       let modelIndex = -1;
 

@@ -75,17 +75,27 @@
   }
 }
 
+%header-button{
+  border-radius: 6px;
+  width: 24px;
+  height: 24px; 
+  margin: 4px 4px 0px 4px;
+}
+
 .two-date-pickers{
   background-color: $base_lightest;
-
+  .close-datepicker-button{
+    border-radius: 6px !important;
+  }
   .first-month{
     width: 100%;
     .v-picker__body{
       padding-right: 20px;
       .v-date-picker-header{
         padding: 0px;
-        button{
-          height: 24px;
+        border-radius: 6px;
+        button.v-btn{
+          @extend %header-button;
           &:nth-child(3){
               display: none;
           }
@@ -102,9 +112,8 @@
       padding-left: 20px;
       .v-date-picker-header{
         padding: 0px;
-        button{
-          height: 24px;
-
+        button.v-btn{
+          @extend %header-button;
         &.v-btn:nth-child(1){
             display: none;
           }
@@ -163,11 +172,7 @@
                       box-sizing: border-box !important;
                       box-shadow: none !important;
                     }
-                    &.date-picker-start-date{
-                      @extend %selected-start-date-picker-button;
-                    }
                   }
-                  
                 }
               }
             }
@@ -188,9 +193,6 @@
                       border: 4px solid $primary_vivid !important;
                       box-sizing: border-box !important;
                       box-shadow: none !important;
-                    }
-                    &.date-picker-end-date{
-                      @extend %selected-end-date-picker-button;
                     }
                   }
                 }
@@ -245,8 +247,6 @@
                   }
 
                   &.v-date-picker-table__current{
-                    // border: $base-darkest 1px solid !important;
-                    // color: $base_darkest !important;
                     border-radius: 0px !important;
                     border-color: transparent !important;
                     &.accent--text{

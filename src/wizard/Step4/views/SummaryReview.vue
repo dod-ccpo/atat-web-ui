@@ -111,7 +111,13 @@
               <v-list-item
                 v-for="(menuOptionText, i) in isPortfolio(item)"
                 :key="i"
-                @click="handleMenuClick(menuOptionText, $event, moreButtonId(item.name))"
+                @click="
+                  handleMenuClick(
+                    menuOptionText,
+                    $event,
+                    moreButtonId(item.name)
+                  )
+                "
               >
                 <v-list-item-title class="body-lg py-2">
                   {{ menuOptionText }}
@@ -188,7 +194,11 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       },
     });
   }
-  private handleMenuClick(item: any, event: Event, returnFocusId: string): void {
+  private handleMenuClick(
+    item: any,
+    event: Event,
+    returnFocusId: string
+  ): void {
     switch (item) {
       case "View root administrators":
         this.$router.push({
