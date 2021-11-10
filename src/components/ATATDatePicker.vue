@@ -52,7 +52,7 @@
               :error="isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="startDate"
-              v-mask="dateFormatMMDDYY"
+              v-mask="dateMask"
               :value="formatStartDateMMDDYYYY"
               :rules="_startDateRules"
               hide-details
@@ -90,7 +90,7 @@
               :error="isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="endDate"
-              v-mask="dateFormatMMDDYY"
+              v-mask="dateMask"
               :value="formatEndDateMMDDYYYY"
               @focus="setFocus"
               :rules="_endDateRules"
@@ -119,9 +119,7 @@
           </div>
         </div>
         <div class="width-100 d-flex justify-start mt-2 text--base">
-          <div class="">
-            <span>Month, Day, Year (e.g. MM/DD/YYYY)</span>
-          </div>
+            Month, Day, Year (e.g. MM/DD/YYYY)
         </div>
       </div>
       <v-menu
@@ -165,7 +163,6 @@
               no-title
               :id="getId('firstMonthDatePicker')"
               scrollable
-              tabindex="0"
               @click:date="setDate"
               @keydown.native.enter="onEnter"
               :picker-date.sync="firstMonth"
@@ -185,7 +182,6 @@
               no-title
               :id="getId('secondMonthDatePicker')"
               scrollable
-              tabindex="0"
               @click:date="setDate"
               @keydown.native.enter="onEnter"
               :picker-date.sync="secondMonth"
@@ -254,7 +250,22 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
   private isKeyboardEvent = false;
   private isTabEvent = false;
-  // private closeClicked = false;
+ 
+   /**
+   * textboxes date mask
+   */
+  public dateMask = [
+    /[01]/,
+    /\d/,
+    "/",
+    /[0-3]?/,
+    /\d/,
+    "/",
+    /[2]/,
+    /[0]/,
+    /[1-3]/,
+    /\d/,
+  ];
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -324,6 +335,7 @@ export default class ATATDatePicker extends Vue {
 
     //resets datepicker to correct month depending
     //on what text box is focused.
+    
     if (this.isStartTextBoxFocused) {
       this.firstMonth = this.startDate;
     } else if (this.isEndTextBoxFocused) {
@@ -338,21 +350,6 @@ export default class ATATDatePicker extends Vue {
     return prependString + "-" + this.id;
   }
 
-  /**
-   * textboxes date mask
-   */
-  public dateFormatMMDDYY = [
-    /[01]/,
-    /\d/,
-    "/",
-    /[0-3]?/,
-    /\d/,
-    "/",
-    /[2]/,
-    /[0]/,
-    /[1-3]/,
-    /\d/,
-  ];
 
   /**
    * @param dateString - date string
@@ -671,7 +668,10 @@ export default class ATATDatePicker extends Vue {
         this.getErrorMessages();
         this._isDatePickerBlurred = this._errorMessages.length > 0;
       }, 500);
+    } else {
+      event.preventDefault();
     }
+
   }
 
   /**
