@@ -177,7 +177,7 @@
                         :rules="totalClinRules"
                         :helpText="clinHelpText"
                         :value.sync="isTotalClin"
-                        :class="[isObligatedFunds === '' ? 'empty-funds' : '']"
+                        :class="[isTotalClin === '' ? 'empty-funds' : '']"
                         prefix="$"
                       />
                       <atat-currency-field
@@ -253,6 +253,7 @@
                 v-bind="attrs"
                 v-on="on"
                 class="pt-6"
+                :disabled="isDisabled"
                 :aria-label="'Delete CLIN ' + clin_number"
               >
                 <v-icon aria-hidden="true">delete</v-icon>
@@ -297,6 +298,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 import { validateNumber } from "@/validation/";
+import { TaskOrderModel } from "../../../../types/Wizard";
 
 @Component({
   components: {},
@@ -314,6 +316,14 @@ export default class ClinsCard extends Vue {
   private isDatePickerClicked = false;
   private isDatepickerBlurred = false;
   private isDatepickerTextBoxFocused = false;
+  model: TaskOrderModel = this.$store.getters.getStepModel(2);
+
+  get isDisabled(): boolean {
+    return (
+      this.model.clins.length == 1 && this.model.clins[0].clin_number == ""
+    );
+  }
+
   get validateDatePicker(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
   }

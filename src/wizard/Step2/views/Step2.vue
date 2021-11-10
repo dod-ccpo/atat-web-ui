@@ -36,6 +36,8 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     this.valid = await this.$refs.createTaskOrderForm.validateForm();
     return this.valid;
   };
+  private isDisabled =
+    this.model.clins.length == 1 && this.model.clins[0].clin_number == "";
 
   public addClin(): void {
     this.model.clins.push({
@@ -51,9 +53,18 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   }
 
   public deleteClin(itemNumber: number): void {
+    debugger;
     const index = itemNumber - 1;
     const clinLength = this.model.clins.length;
-    if (clinLength && clinLength >= itemNumber) {
+    if (clinLength == 1) {
+      this.model.clins[0].clin_number = "";
+      (this.model.clins[0].idiq_clin = ""),
+        (this.model.clins[0].total_clin_value = 0),
+        (this.model.clins[0].obligated_funds = 0),
+        (this.model.clins[0].pop_start_date = ""),
+        (this.model.clins[0].pop_end_date = "");
+    }
+    if (clinLength > 1 && clinLength >= itemNumber) {
       this.model.clins.splice(index, 1);
     }
   }
