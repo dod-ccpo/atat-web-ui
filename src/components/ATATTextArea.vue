@@ -55,7 +55,6 @@
 
 <script lang="ts">
 import { VTextarea } from "vuetify/lib";
-import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
