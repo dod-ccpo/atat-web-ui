@@ -276,11 +276,11 @@ export default class ATATDatePicker extends Vue {
     }
   }
 
-  /** 
+  /**
    * @dateToBeFormatted
    *
    * return formattedDate || ""
-  */
+   */
   private formatDate(dateToBeFormatted: string): string {
     const formattedDate = moment(dateToBeFormatted).format("YYYY-MM-DD");
     return formattedDate.toLowerCase() !== "invalid date" ? formattedDate : "";
@@ -321,10 +321,14 @@ export default class ATATDatePicker extends Vue {
     this._isTextBoxFocused = true;
     this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
     this.menu = true;
-    // if (this.isKeyboardEvent) {
-    //   this.setFocusOnDatePicker();
-    //   this.isKeyboardEvent = false;
-    // }
+
+    //resets datepicker to correct month depending
+    //on what text box is focused.
+    if (this.isStartTextBoxFocused) {
+      this.firstMonth = this.startDate;
+    } else if (this.isEndTextBoxFocused) {
+      this.secondMonth = this.endDate;
+    }
   }
 
   /**
@@ -534,8 +538,6 @@ export default class ATATDatePicker extends Vue {
       this.isStartTextBoxFocused = false;
       this.isEndTextBoxFocused = false;
       this._isTextBoxFocused = false;
-      // reset firstmonth so calendar will open to the start date
-      this.firstMonth = this.startDate;
     }
 
     Vue.nextTick(() => {
@@ -649,7 +651,7 @@ export default class ATATDatePicker extends Vue {
   }
 
   /**
-   * event handler when pressing 'ENTER' key while 
+   * event handler when pressing 'ENTER' key while
    * navigating the datepickers
    */
   public onEnter(event: Event): void {
