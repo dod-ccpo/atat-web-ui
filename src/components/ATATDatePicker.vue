@@ -7,7 +7,7 @@
       >
         <div class="width-100 d-flex justify-start">
           <label
-            id="start_date_text_field_label"
+            :id="getId('start_date_text_field_label')"
             :class="[
               _errorMessages.length > 0 ? 'font-weight-bold' : '',
               'form-field-label',
@@ -17,7 +17,7 @@
             Start Date
           </label>
           <label
-            id="end_date_text_field_label"
+            :id="getId('end_date_text_field_label')"
             :class="[
               _errorMessages.length > 0 ? 'font-weight-bold' : '',
               'form-field-label',
@@ -68,6 +68,7 @@
             ></v-text-field>
             <v-btn
               icon
+              @keydown.native.tab="onTab"
               :ripple="false"
               :id="getId('start-date-text-box-button')"
               aria-label="Open calendar to select Start Date"
@@ -104,6 +105,7 @@
             ></v-text-field>
             <v-btn
               icon
+              @keydown.native.tab="onTab"
               :ripple="false"
               :id="getId('end-date-text-box-button')"
               aria-label="Open calendar to select End Date"
@@ -144,8 +146,9 @@
               :id="getId('close-datepickers')"
               aria-label="Close datepicker"
               class="close-datepicker-button"
+             
             >
-              <v-icon class="black--text">close</v-icon>
+              <v-icon class="black--text close-datepicker-button">close</v-icon>
             </v-btn>
           </div>
           <hr class="mt-6 mb-4" />
@@ -163,7 +166,7 @@
               scrollable
               tabindex="0"
               @click:date="setDate"
-              @keydown.native.enter="onKeyDown"
+              @keydown.native.enter="onEnter"
               :picker-date.sync="firstMonth"
               value="firstMonth"
               transition="false"
@@ -183,7 +186,7 @@
               scrollable
               tabindex="0"
               @click:date="setDate"
-              @keydown.native.enter="onKeyDown"
+              @keydown.native.enter="onEnter"
               :picker-date.sync="secondMonth"
               value="secondMonth"
               transition="false"
@@ -201,6 +204,7 @@ import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import { CustomErrorMessage } from "types/Wizard";
+import { button } from "@aws-amplify/ui";
 
 @Component({})
 export default class ATATDatePicker extends Vue {
@@ -248,6 +252,8 @@ export default class ATATDatePicker extends Vue {
   private endDateFormatted = this.formatDate(this.endDate);
   private isDatePickerAdvancing = false;
   private isKeyboardEvent = false;
+  private isTabEvent = false;
+  // private closeClicked = false;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -280,7 +286,6 @@ export default class ATATDatePicker extends Vue {
    */
   get formatStartDateMMDDYYYY(): string {
     if (this.isDateValid(this.startDate)) {
-      console.log(moment(this.startDate).format("MM/DD/YYYY"));
       this.startDate = moment(this.startDate).format("MM/DD/YYYY");
       return this.startDate;
     }
@@ -304,7 +309,6 @@ export default class ATATDatePicker extends Vue {
    * 2 - sets title
    */
   private setFocus(event: Event): void {
-    console.log("268: got to here");
     const textBox = event.target as HTMLElement;
     const isStart = textBox.closest(".start-date") !== null;
     this.isStartTextBoxFocused = isStart;
@@ -312,6 +316,10 @@ export default class ATATDatePicker extends Vue {
     this._isTextBoxFocused = true;
     this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
     this.menu = true;
+    if (this.isKeyboardEvent) {
+      this.setFocusOnDatePicker();
+      this.isKeyboardEvent = false;
+    }
   }
 
   /**
@@ -464,7 +472,12 @@ export default class ATATDatePicker extends Vue {
 
     // if icon is clicked
     const isIconClicked = element.classList.contains("date-picker-icon");
-
+    const isCloseButtonClicked = element.classList.contains(
+      "close-datepicker-button"
+    );
+    if (isCloseButtonClicked){
+      this.menu = false;
+    }
     //if (this.menu) {
     if (this.menu) {
       //menu & calendar are opened
@@ -537,6 +550,15 @@ export default class ATATDatePicker extends Vue {
       : "start-date-text-box";
     this.styleDatePickerButton(button, this.isStartTextBoxFocused);
     (document.querySelector("#" + this.getId(_id)) as HTMLElement).click();
+  }
+
+  // private closeMenu(): void {
+  //   this.closeClicked = true;
+  //   this.menu = false;
+  //   console.log("this.menu > " + this.menu);
+  // }
+
+  private setFocusOnDatePicker(): void {
     if (this.isKeyboardEvent) {
       setTimeout(() => {
         const firstDatePickerButton = document.querySelector(
@@ -544,7 +566,7 @@ export default class ATATDatePicker extends Vue {
         ) as HTMLButtonElement;
         firstDatePickerButton.focus();
         this.setDatePickerHoverButtons();
-      }, 1000);
+      }, 0);
     }
   }
 
@@ -612,9 +634,38 @@ export default class ATATDatePicker extends Vue {
     });
   }
 
-  public onKeyDown(event:Event): void {
+  public onTab(event: KeyboardEvent): void {
     this.isKeyboardEvent = true;
-    // this.datepickerControlClicked(event);
+    
+    if (!this.isDateValid(this.startDate)){
+      this.isStartTextBoxFocused = true;
+      this.isEndTextBoxFocused = false;
+      this.setFocusOnDatePicker();
+      event.preventDefault();
+    }
+  }
+
+  public onEnter(): void {
+    // this.isKeyboardEvent = true;
+    const buttonIdToFocus = this.isStartTextBoxFocused
+      ? "start-date-text-box-button"
+      : "end-date-text-box-button";
+    const button = document.getElementById(
+      this.getId(buttonIdToFocus)
+    ) as HTMLButtonElement;
+    // startTextBoxLabel.focus();
+    this.menu = !this.isDateRangeValid;
+    setTimeout(() => {
+      button.focus();
+    }, 500);
+
+    // console.log(startTextBoxLabel);
+    // setTimeout(() => {
+    //   if (this.isDateRangeValid) {
+    //     startTextBoxLabel.focus();
+    //   }
+    // }, 500);
+    //  this.datepickerControlClicked(event);
   }
 
   /**
