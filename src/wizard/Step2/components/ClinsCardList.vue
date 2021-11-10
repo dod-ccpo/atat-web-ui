@@ -16,6 +16,7 @@
       ></clins-card>
     </v-row>
     <v-btn
+      id="addClinButton"
       class="link-button font-weight-bold no-border mt-3 px=-2 no-focus-shift"
       :ripple="false"
       @click="$emit('add')"

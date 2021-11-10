@@ -64,6 +64,7 @@
         </ul>
       </span>
       <v-alert
+        role="presentation"
         color="cyan"
         outlined
         rounded
