@@ -5,6 +5,7 @@
   "authenticationConfig": {
     "userPoolId": "us-gov-west-1_bmGhvyw5q",
     "userPoolClientId": "7vuvs1b4mltqu09tfuu7hcbil1",
-    "awsRegion": "us-gov-west-1"
+    "awsRegion": "us-gov-west-1",
+    "cognitoDomain": "atat-api-dev.auth-fips.us-gov-west-1.amazoncognito.com"
   }
 }

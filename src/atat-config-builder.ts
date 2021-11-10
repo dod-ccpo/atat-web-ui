@@ -16,6 +16,7 @@ interface AuthenticationConfig {
   userPoolId: string;
   userPoolClientId: string;
   awsRegion: string;
+  cognitoDomain: string;
 }
 
 export interface ATATConfiguration {
@@ -23,6 +24,7 @@ export interface ATATConfiguration {
   userPoolId: string;
   userPoolClientId: string;
   awsRegion: string;
+  cognitoDomain: string;
 }
 
 const atatConfigKey = "atat-config";
@@ -53,6 +55,7 @@ const getConfiguration = async (): Promise<ATATConfiguration> => {
       userPoolId: config.authenticationConfig.userPoolId,
       userPoolClientId: config.authenticationConfig.userPoolClientId,
       awsRegion: config.authenticationConfig.awsRegion,
+      cognitoDomain: config.authenticationConfig.cognitoDomain,
     };
 
     sessionStorage.setItem(atatConfigKey, JSON.stringify(atatConfig));
@@ -75,6 +78,7 @@ const getConfiguration = async (): Promise<ATATConfiguration> => {
       userPoolId: proxy.authenticationConfig.userPoolId,
       userPoolClientId: proxy.authenticationConfig.userPoolClientId,
       awsRegion: proxy.authenticationConfig.awsRegion,
+      cognitoDomain: proxy.authenticationConfig.cognitoDomain,
     };
 
     sessionStorage.setItem(atatConfigKey, JSON.stringify(atatConfig));
