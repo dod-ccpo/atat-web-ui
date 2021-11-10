@@ -236,9 +236,10 @@ export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   state: {
     loginStatus: false,
-    sideDrawer: false,
+    sideDrawerIsOpen: false,
     sideDrawerType: "",
-    isSideDrawerFocused: false,
+    sideDrawerOpenerId: "",
+    sideDrawerChange: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
     dialog: {
@@ -394,14 +395,15 @@ export default new Vuex.Store({
     changeDialog(state, dialogProps: Dialog) {
       state.dialog = dialogProps;
     },
-    changeSideDrawer(state, status: boolean) {
-      state.sideDrawer = status;
+    doCloseSideDrawer(state) {
+      state.sideDrawerIsOpen = false;
+      state.sideDrawerChange = !state.sideDrawerChange;
     },
-    changeSideDrawerType(state, type: string) {
-      state.sideDrawerType = type;
-    },
-    changeFocusOnSideDrawer(state, setFocus: boolean) {
-      state.isSideDrawerFocused = setFocus;
+    doOpenSideDrawer(state, [drawerType, openerId]) {
+      state.sideDrawerIsOpen = true;
+      state.sideDrawerType = drawerType;
+      state.sideDrawerOpenerId = openerId;
+      state.sideDrawerChange = !state.sideDrawerChange;
     },
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
@@ -964,12 +966,10 @@ export default new Vuex.Store({
       commit("changeDialog", dialogProps);
     },
     closeSideDrawer({ commit }) {
-      commit("changeSideDrawer", false);
+      commit("doCloseSideDrawer");
     },
-    openSideDrawer({ commit }, [drawerType, setFocusOnSideDrawer]) {
-      commit("changeSideDrawer", true);
-      commit("changeSideDrawerType", drawerType);
-      commit("changeFocusOnSideDrawer", setFocusOnSideDrawer);
+    openSideDrawer({ commit }, [drawerType, openerId]) {
+      commit("doOpenSideDrawer", [drawerType, openerId]);
     },
     toast({ commit }, [message, contentClass]) {
       const toastProps: Toast = {
@@ -1034,7 +1034,11 @@ export default new Vuex.Store({
               icon: "person",
               iconPlacement: "left",
               action: "profile",
-              ariaLabel: "User Profile Information",
+              ariaLabel:
+                "Open panel with user profile information for " +
+                state.user.given_name +
+                " " +
+                state.user.family_name,
               ariaRole: "button",
             },
             {
@@ -1081,7 +1085,7 @@ export default new Vuex.Store({
       return state.portfolioSteps[stepIndex].touched;
     },
     getUser: (state) => state.user,
-    getSideDrawer: (state) => state.sideDrawer,
+    getSideDrawerIsOpen: (state) => state.sideDrawerIsOpen,
     getTaskOrders: (state) => state.taskOrderModels,
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
     getPortfolioName: (state, getters) => (defaultResponse: string) => {

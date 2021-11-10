@@ -206,14 +206,19 @@ a.left-nav-menu-link{
 }
 
 .expandable-content-opener {
-    display: flex;
-    align-items: flex-start;
+    display: inline-block;
+    text-decoration: underline;
     &:after {
         content: "";
         font-family: "Material Icons";
         -webkit-font-feature-settings: "liga";
         font-size: 24px;
         font-weight: normal;
+        display: inline-block;
+        height: 12px;
+        line-height: 0;
+        text-decoration: none !important;
+        vertical-align: text-bottom;
     }
     &.open:after {
         content: "expand_less";

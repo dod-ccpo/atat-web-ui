@@ -1030,6 +1030,7 @@ export default class ManageMember extends mixins(ApplicationData) {
     this.assignDifferentRolesForEnvs = false;
     document.getElementsByClassName("v-dialog--active")[0].scrollTop = 0;
     this._close = false;
+    this.$emit("modalCancel");
   }
 
   public openLearnMoreDrawer(type: string): void {

@@ -3,9 +3,10 @@ import PortfoliosState from "../modules/portfolios/types";
 interface RootState {
   currentPortfolioId: string;
   loginStatus: boolean;
-  sideDrawer: boolean;
+  sideDrawerIsOpen: boolean;
   sideDrawerType: string;
-  isSideDrawerFocused: boolean;
+  sideDrawerOpenerId: string;
+  sideDrawerChange: boolean;
   isUserAuthorizedToProvisionCloudResources: boolean;
   isNavSideBarDisplayed: boolean;
   dialog: {

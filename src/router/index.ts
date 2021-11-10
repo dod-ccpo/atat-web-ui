@@ -86,7 +86,6 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to: Route, from: Route, next) => {
-  console.log(to);
   if (to.meta?.title) {
     document.title = "ATAT | " + to.meta.title;
   }
