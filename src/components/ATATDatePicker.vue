@@ -119,7 +119,7 @@
           </div>
         </div>
         <div class="width-100 d-flex justify-start mt-2 text--base">
-            Month, Day, Year (e.g. MM/DD/YYYY)
+          Month, Day, Year (e.g. MM/DD/YYYY)
         </div>
       </div>
       <v-menu
@@ -250,8 +250,8 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
   private isKeyboardEvent = false;
   private isTabEvent = false;
- 
-   /**
+
+  /**
    * textboxes date mask
    */
   public dateMask = [
@@ -335,7 +335,7 @@ export default class ATATDatePicker extends Vue {
 
     //resets datepicker to correct month depending
     //on what text box is focused.
-    
+
     if (this.isStartTextBoxFocused) {
       this.firstMonth = this.startDate;
     } else if (this.isEndTextBoxFocused) {
@@ -349,7 +349,6 @@ export default class ATATDatePicker extends Vue {
   private getId(prependString: string): string {
     return prependString + "-" + this.id;
   }
-
 
   /**
    * @param dateString - date string
@@ -640,10 +639,16 @@ export default class ATATDatePicker extends Vue {
    * off of each button to the right of the textboxes
    */
   public onTab(event: KeyboardEvent): void {
+    const isTabbingBackward = event.shiftKey === true;
     this.isKeyboardEvent = true;
-    if (!this.isDateValid(this.startDate) || !this.isDateValid(this.endDate)) {
-      this.setFocusOnDatePicker();
-      event.preventDefault();
+    if (!isTabbingBackward) {
+      if (
+        !this.isDateValid(this.startDate) ||
+        !this.isDateValid(this.endDate)
+      ) {
+        this.setFocusOnDatePicker();
+        event.preventDefault();
+      }
     }
   }
 
@@ -671,7 +676,6 @@ export default class ATATDatePicker extends Vue {
     } else {
       event.preventDefault();
     }
-
   }
 
   /**
