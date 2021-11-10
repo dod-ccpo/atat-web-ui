@@ -147,6 +147,7 @@
             font-weight: 700 !important;
             button{
               pointer-events: none;
+              user-select: none;
               color: $base_darkest;
               &:hover{
                 color: $base_darkest;
