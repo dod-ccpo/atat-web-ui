@@ -611,7 +611,7 @@ export default class ATATDatePicker extends Vue {
     this.setDateRange;
   }
 
-/**
+  /**
    * 1 - sets this.dateRange[0] && this.dateRange[1] as necessary
    * 2 - adjusts size of dateRange as necessary to accommodate the
    *     calendar's range selection
@@ -671,14 +671,14 @@ export default class ATATDatePicker extends Vue {
   /**
    * @firstDayLeftMonth: string - first day of left month in datepicker
    * @lastDayRightMonth: string - last day of right month in datepicker
-   * 
+   *
    * add appropriate classnames to the startdate and enddate in the calendars
    */
   public setStyleForStartDateAndEndDateButtons(
     firstDayLeftMonth: string,
     lastDayRightMonth: string
   ): void {
-    // setTimeout to display style for start/end buttons 
+    // setTimeout to display style for start/end buttons
     // when user navigates calendars
     setTimeout(() => {
       const displayedDPs = document.getElementsByClassName(
