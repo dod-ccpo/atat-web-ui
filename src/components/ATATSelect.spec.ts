@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-import Vuex from "vuex";
-import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import { createLocalVue, mount } from "@vue/test-utils";
 import ATATSelect from "@/components/ATATSelect.vue";
 Vue.use(Vuetify);
 
@@ -19,7 +18,7 @@ describe("Testing ATATSelect Component", () => {
   });
 
   it("renders successfully", async () => {
-    await expect(wrapper.exists()).toBe(true);
+    expect(wrapper.exists()).toBe(true);
   });
 
   it('has a `v-select getStatusIcon` with 3 items: ["Foo", "Bar", "Fizz Tony", "Buzz"]', async () => {
@@ -35,19 +34,16 @@ describe("Testing ATATSelect Component", () => {
   });
 
   it('has a `v-select onChange` with 3 items: ["Foo", "Bar", "Fizz Tony", "Buzz"]', async () => {
-    const items = wrapper.find(".v-select").props("items");
     wrapper.findAll(".v-select").at(0).trigger("click");
     await wrapper.vm.onChange();
   });
 
   it('has a `v-select onSelectedValueChanged` with 3 items: ["Foo", "Bar", "Fizz Tony", "Buzz"]', async () => {
-    const items = wrapper.find(".v-select").props("items");
     wrapper.findAll(".v-select").at(0).trigger("click");
     await wrapper.vm.onSelectedValueChanged();
   });
 
   it("has a v-select onErrorBucketChanged", async () => {
-    const items = wrapper.find(".v-select").props("items");
     await wrapper.vm.onErrorBucketChanged();
     await wrapper.vm.getStatusIcon();
     expect(await wrapper.vm.$data.success).toBe(false);
