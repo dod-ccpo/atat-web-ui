@@ -187,9 +187,7 @@ export default class ATATSummaryCard extends Vue {
   @Watch("isItemDeleted")
   protected deleteItem(newVal: string): void {
     if (newVal !== "") {
-      this._itemToDelete = newVal
-        ? this.cardSelected.title || ""
-        : (this._itemToDelete = "");
+      this._itemToDelete = newVal ? this.cardSelected.title || "" : "";
     }
   }
 
