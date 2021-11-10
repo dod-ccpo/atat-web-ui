@@ -651,7 +651,7 @@ export default class ClinsCard extends Vue {
     });
   }
   private deleteClin(card_number: number): void {
-    this.$emit('delete', card_number);
+    this.$emit("delete", card_number);
     this.dialog = false;
     this.returnFocus(this.returnFocusDeleteClinOK);
   }
