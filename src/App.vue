@@ -27,6 +27,7 @@ import ATATToast from "@/components/ATATToast.vue";
 import SecurityBanner from "./components/SecurityBanner.vue";
 import SideDrawer from "@/components/SideDrawer.vue";
 import { Route } from "vue-router";
+import { buildConfiguration } from "./atat-config-builder";
 
 @Component({
   components: {
@@ -64,7 +65,8 @@ export default class App extends Vue {
     this.isDialogDisplayed = newVal;
   }
 
-  public mounted(): void {
+  public async mounted(): Promise<void> {
+    await buildConfiguration();
     this.$store.dispatch("initDialog");
     this.focusH1();
   }
