@@ -376,7 +376,11 @@ export default class TeamView extends mixins(ApplicationData) {
   private returnFocusElementIdRemoveMemberCancel = "";
   private returnFocusElementIdRemoveMemberOk = "inviteTeamMemberButton";
 
-  private tableOptionClick(menuOptionText: any, event: Event, btnId: string): void {
+  private tableOptionClick(
+    menuOptionText: any,
+    event: Event,
+    btnId: string
+  ): void {
     if (menuOptionText.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;

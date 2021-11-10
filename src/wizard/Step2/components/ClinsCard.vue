@@ -232,8 +232,8 @@
                           :pop_end_date.sync="_pop_end_date"
                           :startDateRules.sync="popStartRules"
                           :endDateRules.sync="popEndRules"
-                          :isDatePickerBlurred.sync="isDatepickerBlurred"
-                          :isTextBoxFocused.sync="isDatepickerTextBoxFocused"
+                          :isDatePickerBlurred.sync="isDatePickerBlurred"
+                          :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
                           :nudgeleft="1"
                           :min="minDate"
                           :max="maxDate"
@@ -323,8 +323,8 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
-  private isDatepickerBlurred = false;
-  private isDatepickerTextBoxFocused = false;
+  private isDatePickerBlurred = false;
+  private isDatePickerTextBoxFocused = false;
   private returnFocusDeleteClinOK = "addClinButton";
   private returnFocusDeleteClinCancel = "";
 
@@ -362,13 +362,13 @@ export default class ClinsCard extends Vue {
   }
 
   get isValidStartDate(): boolean {
-    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+    return /((0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/[12]\d{3})$/.test(
       this._pop_start_date
     );
   }
 
   get isValidEndDate(): boolean {
-    return /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/.test(
+    return /((0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/[12]\d{3})$/.test(
       this._pop_end_date
     );
   }
@@ -525,7 +525,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidStartDate ||
-          "Please enter a start date using the format 'YYYY-MM-DD'"
+          "Please enter a start date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -547,8 +547,8 @@ export default class ClinsCard extends Vue {
       if (
         (this.validateFormWhenLeaving ||
           !this.isDatePickerClicked ||
-          this.isDatepickerBlurred) &&
-        !this.isDatepickerTextBoxFocused
+          this.isDatePickerBlurred) &&
+        !this.isDatePickerTextBoxFocused
       ) {
         validationRules.push(
           (v: string) =>
@@ -566,7 +566,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidEndDate ||
-          "Please enter an end date using the format 'YYYY-MM-DD'"
+          "Please enter an end date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -587,8 +587,8 @@ export default class ClinsCard extends Vue {
       if (
         (this.validateFormWhenLeaving ||
           !this.isDatePickerClicked ||
-          this.isDatepickerBlurred) &&
-        !this.isDatepickerTextBoxFocused
+          this.isDatePickerBlurred) &&
+        !this.isDatePickerTextBoxFocused
       ) {
         validationRules.push(
           (v: string) =>
@@ -684,7 +684,7 @@ export default class ClinsCard extends Vue {
     });
   }
   private deleteClin(card_number: number): void {
-    this.$emit('delete', card_number);
+    this.$emit("delete", card_number);
     this.dialog = false;
     this.returnFocus(this.returnFocusDeleteClinOK);
   }

@@ -150,173 +150,63 @@ describe("Testing Create ClinsCard Component", () => {
     const clinRules = wrapper.vm.popEndRules;
     wrapper.setProps({ pop_start_date: "" });
     expect(clinRules).not.toBeNull();
-    expect(clinRules.length).toBe(3);
+    expect(clinRules.length).toBe(1);
   });
 
   const firstPopStartRule = createTestDescription("1st pop start rule");
   const secondPopStartRule = createTestDescription("2nd pop start rule");
-  const thirdPopStartRules = createTestDescription("3rd pop start rule");
-  const fourthPopStartRules = createTestDescription("4th pop start rule");
-  const fifthPopStartRules = createTestDescription("5th pop start rule");
 
   it(firstPopStartRule("rule returns validation message"), async () => {
     await Vue.nextTick();
     const popStartRules = wrapper.vm.popStartRules;
     const rule = popStartRules[0]("100");
-    expect(rule).toBe(true);
+    expect(rule).toBe(
+      "Please enter a start date using the format 'MM/DD/YYYY'"
+    );
   });
 
   it(firstPopStartRule("returns true when valid"), async () => {
     await Vue.nextTick();
     const popStartRules = wrapper.vm.popStartRules;
     const rule = popStartRules[0]("2021-09-01");
-    expect(rule).toBe(true);
+    expect(rule).toBe(
+      "Please enter a start date using the format 'MM/DD/YYYY'"
+    );
   });
 
   it(secondPopStartRule("returns validation message"), async () => {
     await Vue.nextTick();
     const popStartRules = wrapper.vm.popStartRules;
-    const rule = popStartRules[1]("");
-    expect(rule).toBe(true);
+    const rule = popStartRules[0]("");
+    expect(rule).toBe(
+      "Please enter a start date using the format 'MM/DD/YYYY'"
+    );
   });
-
-  it(secondPopStartRule("returns true when valid"), async () => {
-    await Vue.nextTick();
-    const popStartRules = wrapper.vm.popStartRules;
-    const rule = popStartRules[1]("2021-09-01");
-    expect(rule).toBe(true);
-  });
-
-  it(thirdPopStartRules("returns validation message"), async () => {
-    await Vue.nextTick();
-    const popStartRules = wrapper.vm.popStartRules;
-    const rule = popStartRules[2]("");
-    expect(rule).toBe(true);
-  });
-
-  it(thirdPopStartRules("returns true when valid"), async () => {
-    await Vue.nextTick();
-    const popStartRules = wrapper.vm.popStartRules;
-    const rule = popStartRules[2]("2021-09-01");
-    expect(rule).toBe(true);
-  });
-
-  // it(fourthPopStartRules("returns validation message"), async () => {
-  //   await Vue.nextTick();
-  //   const popStartRules = wrapper.vm.popStartRules;
-  //   const rule = popStartRules[3]("2022-09-01");
-  //   expect(rule).toBe("The PoP start date must be before the end date");
-  // });
-
-  // it(fourthPopStartRules("returns true when valid"), async () => {
-  //   await Vue.nextTick();
-  //   const popStartRules = wrapper.vm.popStartRules;
-  //   const rule = popStartRules[3]("2021-09-01");
-  //   expect(rule).toBe(true);
-  // });
 
   const JWCCContractEndDate = "2022-09-14";
-
-  // it(fifthPopStartRules("returns validation message"), async () => {
-  //   await Vue.nextTick();
-  //   const popStartRules = wrapper.vm.popStartRules;
-  //   const rule = popStartRules[4]("");
-  //   expect(rule).toBe(
-  //     `The start date must be before or on ${JWCCContractEndDate}`
-  //   );
-  // });
-
-  // it(fifthPopStartRules("returns true when valid"), async () => {
-  //   await Vue.nextTick();
-  //   const popStartRules = wrapper.vm.popStartRules;
-  //   const rule = popStartRules[4]("2021-09-01");
-  //   expect(rule).toBe(true);
-  // });
 
   // pop end rules
   it("pop end rules should not be null or empty", async () => {
     const rules = wrapper.vm.popEndRules;
     wrapper.setProps({ pop_end_date: "" });
     expect(rules).not.toBeNull();
-    expect(rules.length).toBe(3);
+    expect(rules.length).toBe(1);
   });
   const firstPopEndRule = createTestDescription("1st pop end rule");
-  const secondPopEndRule = createTestDescription("2nd pop end rule");
-  const thirdPopEndRules = createTestDescription("3rd pop end rule");
-  const fourthPopEndRules = createTestDescription("4th pop end rule");
-  const fifthPopEndRules = createTestDescription("5th pop end rule");
 
   it(firstPopEndRule("rule returns validation message"), async () => {
     await Vue.nextTick();
     const popEndRules = wrapper.vm.popEndRules;
     const rule = popEndRules[0]();
-    expect(rule).toBe(true);
+    expect(rule).toBe("Please enter an end date using the format 'MM/DD/YYYY'");
   });
 
   it(firstPopEndRule("returns true when valid"), async () => {
     await Vue.nextTick();
     const popEndRules = wrapper.vm.popEndRules;
     const rule = popEndRules[0]("2021-09-01");
-    expect(rule).toBe(true);
+    expect(rule).toBe("Please enter an end date using the format 'MM/DD/YYYY'");
   });
-
-  it(secondPopEndRule("returns validation message"), async () => {
-    await Vue.nextTick();
-    const popEndRules = wrapper.vm.popEndRules;
-    const rule = popEndRules[1]("");
-    expect(rule).toBe(true);
-  });
-
-  it(secondPopEndRule("returns true when valid"), async () => {
-    await Vue.nextTick();
-    const popEndRules = wrapper.vm.popEndRules;
-    const rule = popEndRules[1]("2022-09-01");
-    expect(rule).toBe(true);
-  });
-
-  it(thirdPopEndRules("returns validation message"), async () => {
-    await Vue.nextTick();
-    const popEndRules = wrapper.vm.popEndRules;
-    const rule = popEndRules[2]("");
-    expect(rule).toBe(true);
-  });
-
-  it(thirdPopEndRules("returns true when valid"), async () => {
-    await Vue.nextTick();
-    const popEndRules = wrapper.vm.popEndRules;
-    const rule = popEndRules[2]("2022-09-01");
-    expect(rule).toBe(true);
-  });
-
-  // it(fourthPopEndRules("returns validation message"), async () => {
-  //   await Vue.nextTick();
-  //   const popEndRules = wrapper.vm.popEndRules;
-  //   const rule = popEndRules[3]("2021-09-01");
-  //   expect(rule).toBe("The PoP end date must be after the start date");
-  // });
-
-  // it(fourthPopEndRules("returns true when valid"), async () => {
-  //   await Vue.nextTick();
-  //   const popEndRules = wrapper.vm.popEndRules;
-  //   const rule = popEndRules[3]("2022-09-01");
-  //   expect(rule).toBe(true);
-  // });
-
-  // it(fifthPopEndRules("returns validation message"), async () => {
-  //   await Vue.nextTick();
-  //   const popEndRules = wrapper.vm.popEndRules;
-  //   const rule = popEndRules[4]("");
-  //   expect(rule).toBe(
-  //     `The end date must be before or on ${JWCCContractEndDate}`
-  //   );
-  // });
-
-  // it(fifthPopEndRules("returns true when valid"), async () => {
-  //   await Vue.nextTick();
-  //   const popEndRules = wrapper.vm.popEndRules;
-  //   const rule = popEndRules[4]("2022-09-01");
-  //   expect(rule).toBe(true);
-  // });
 
   // Obligated Funds Rules
   it("Obligated Funds Rules is not null and has expected rules", async () => {
@@ -416,10 +306,4 @@ describe("Testing Create ClinsCard Component", () => {
     const clin_number = wrapper.find("#clin_number");
     expect(clin_number.text()).toBe(`CLIN ${propsData.clin_number}`);
   });
-
-  //   it("edit dialog exists", async () => {
-  //     await wrapper.vm.$nextTick();
-  //     const modals = wrapper.findAll("v-dialog");
-  //     expect(modals.length).toBe(1);
-  //   });
 });

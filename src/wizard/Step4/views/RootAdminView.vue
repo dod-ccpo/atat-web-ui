@@ -171,7 +171,6 @@
       v-on:delete="onDelete"
       :focus-on-cancel="returnFocusElementIdRemoveMemberCancel"
       :focus-on-ok="returnFocusElementIdRemoveMemberOk"
-
     />
   </div>
 </template>

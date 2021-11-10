@@ -15,7 +15,7 @@
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn
-          class="link-button  no-focus-shift"
+          class="link-button no-focus-shift"
           :ripple="false"
           @click="cancelItem"
           id="dialog_cancel"
