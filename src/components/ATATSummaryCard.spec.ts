@@ -3,7 +3,7 @@ import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
 import VueRouter from "vue-router";
 import ATATSummaryCard from "@/components/ATATSummaryCard.vue";
-import { ATATSummaryCards, ATATSummaryCardItem } from "types/Wizard";
+import { ATATSummaryCardItem } from "types/Wizard";
 Vue.use(Vuetify);
 
 describe("Testing ATATSummaryCard Component", () => {
