@@ -157,7 +157,7 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
-        <v-col>
+        <v-col class="pl-0">
           <v-dialog
             v-model="dialog"
             role="alertdialog"
@@ -169,7 +169,7 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
-                class="pt-6"
+                class="pt-5"
                 :disabled="isDisabled"
                 :aria-label="'Delete CLIN ' + clin_number"
                 :id="'delete_Clin_' + card_number + '_Button'"
