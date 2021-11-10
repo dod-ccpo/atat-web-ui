@@ -49,11 +49,10 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
       pop_end_date: "",
     });
 
-    this.$refs.createTaskOrderForm.ExpandAddedClin();
+    this.$refs.createTaskOrderForm.ExpandAddedClin(false);
   }
 
   public deleteClin(itemNumber: number): void {
-    debugger;
     const index = itemNumber - 1;
     const clinLength = this.model.clins.length;
     if (clinLength == 1) {

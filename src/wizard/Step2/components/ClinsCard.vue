@@ -8,14 +8,14 @@
       <v-row>
         <v-col cols="11" class="width-100 d-block">
           <v-expansion-panels v-model="openItem">
-            <v-expansion-panel @click="calculateObligatedPercent">
+            <v-expansion-panel @click="toggleClinCard">
               <v-expansion-panel-header
                 class="body-lg font-weight-bold pt-2"
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">
                   <v-container class="pa-0">
-                    <div class="d-flex h3 text--base-darkest py-6 width-100">
+                    <div class="d-flex h3 text--base-darkest py-4 width-100">
                       <div class="text-center" style="width: 54px;">
                         {{ card_number }}
                       </div>
@@ -32,7 +32,7 @@
                     </div>
                     <div
                       v-if="!open && _idiq_clin !== ''"
-                      class="v-expansion-panel-content__wrap"
+                      class="v-expansion-panel-content__wrap pb-4"
                     >
                       <table class="data-summary-table">
                         <tr class="micro">
@@ -60,108 +60,101 @@
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-row>
-                  <v-col>
-                    <atat-text-field
+                <div class="input-max-width pb-10">
+                  <atat-text-field
+                    class="mb-3"
+                    name="clin-number"
+                    id="clin-number"
+                    label="CLIN Number"
+                    :rules="clinNumberRules"
+                    :value.sync="_clin_number"
+                  />
+                  <atat-select
+                    class="clin-idiq-select"
+                    label="Corresponding IDIQ CLIN"
+                    placeholder="- Select -"
+                    :items="idiq_clin_items"
+                    :selectedValue.sync="_idiq_clin"
+                    :rules="correspondingIDIQRules"
+                  >
+                  </atat-select>
+                </div>
+
+                <fieldset class="input-max-width pb-10">
+                  <legend class="h3 mb-4">CLIN Funding</legend>
+                  <v-form ref="fundFields">
+                    <atat-currency-field
                       class="mb-3"
-                      name="clin-number"
-                      id="clin-number"
-                      label="CLIN Number"
-                      :rules="clinNumberRules"
-                      :value.sync="_clin_number"
+                      id="total-clin-value"
+                      label="Total CLIN Value"
+                      :rules="totalClinRules"
+                      :helpText="clinHelpText"
+                      :value.sync="isTotalClin"
+                      prefix="$"
+                      :class="[isTotalClin === '' ? 'empty-funds' : '']"
                     />
-                    <atat-select
-                      class="clin-idiq-select"
-                      label="Corresponding IDIQ CLIN"
-                      placeholder="- Select -"
-                      :items="idiq_clin_items"
-                      :selectedValue.sync="_idiq_clin"
-                      :rules="correspondingIDIQRules"
-                    >
-                    </atat-select>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <div class="h3 font-weight-bold my-3">CLIN Funding</div>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <v-form ref="fundFields">
-                      <atat-currency-field
-                        class="mb-3"
-                        id="total-clin-value"
-                        label="Total CLIN Value"
-                        :rules="totalClinRules"
-                        :helpText="clinHelpText"
-                        :value.sync="isTotalClin"
-                        :class="[isTotalClin === '' ? 'empty-funds' : '']"
-                        prefix="$"
+
+                    <atat-currency-field
+                      class="mb-5"
+                      id="obligated-funds"
+                      label="Obligated Funds"
+                      :rules="obligatedFundRules"
+                      :helpText="obligatedFundsHelpText"
+                      :value.sync="isObligatedFunds"
+                      :class="[isObligatedFunds === '' ? 'empty-funds' : '']"
+                      @onkeyup="calculateObligatedPercent"
+                      prefix="$"
+                    />
+                    <div v-if="obligatedPercent <= 100" role="alert">
+                      <span class="h3 font-weight-bold"
+                        >{{
+                          obligatedPercent.split(".")[1] === "00"
+                            ? obligatedPercent.split(".")[0]
+                            : obligatedPercent
+                        }}%</span
+                      >
+                      of your Total Funds are obligated
+                    </div>
+                    <div id="progressBarWrapper" class="width-100">
+                      <div
+                        name="progresBar"
+                        id="progressBar"
+                        value="0"
+                        max="100"
+                        ref="progress-bar"
+                      ></div>
+                    </div>
+                  </v-form>
+                </fieldset>
+
+                <fieldset>
+                  <legend class="h3 mb-4">Period of Performance (PoP)</legend>
+                  <div
+                    class="d-flex align-center mt-0"
+                    style="position: relative"
+                  >
+                    <v-form ref="dateFields">
+                      <atat-date-picker
+                        :id="'clin_' + card_number"
+                        :errormessages.sync="datePickerErrorMessages"
+                        :title.sync="datepickerTitle"
+                        :daterange.sync="dateRange"
+                        :pop_start_date.sync="_pop_start_date"
+                        :pop_end_date.sync="_pop_end_date"
+                        :startDateRules.sync="popStartRules"
+                        :endDateRules.sync="popEndRules"
+                        :isDatePickerBlurred.sync="isDatepickerBlurred"
+                        :isTextBoxFocused.sync="isDatepickerTextBoxFocused"
+                        :nudgeleft="1"
+                        :min="minDate"
+                        :max="maxDate"
                       />
-                      <atat-currency-field
-                        class="mb-5"
-                        id="obligated-funds"
-                        label="Obligated Funds"
-                        :rules="obligatedFundRules"
-                        :helpText="obligatedFundsHelpText"
-                        :value.sync="isObligatedFunds"
-                        :class="[isObligatedFunds === '' ? 'empty-funds' : '']"
-                        @onkeyup="calculateObligatedPercent"
-                        prefix="$"
-                      />
-                      <div v-show="obligatedPercent <= 100">
-                        <span class="h3 font-weight-bold"
-                          >{{
-                            obligatedPercent.split(".")[1] === "00"
-                              ? obligatedPercent.split(".")[0]
-                              : obligatedPercent
-                          }}%</span
-                        >
-                        of your Total Funds are obligated
-                      </div>
-                      <div id="progressBarWrapper" class="width-100">
-                        <div
-                          name="progresBar"
-                          id="progressBar"
-                          value="0"
-                          max="100"
-                          ref="progress-bar"
-                        ></div>
-                      </div>
                     </v-form>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <div class="h3 font-weight-bold mt-6 my-4">
-                      Period of Performance (PoP)
-                    </div>
-                    <div
-                      class="d-flex align-center mt-0"
-                      style="position: relative"
-                    >
-                      <v-form ref="dateFields">
-                        <atat-date-picker
-                          :id="'clin_' + card_number"
-                          :errormessages.sync="datePickerErrorMessages"
-                          :title.sync="datepickerTitle"
-                          :daterange.sync="dateRange"
-                          :pop_start_date.sync="_pop_start_date"
-                          :pop_end_date.sync="_pop_end_date"
-                          :startDateRules.sync="popStartRules"
-                          :endDateRules.sync="popEndRules"
-                          :isDatePickerBlurred.sync="isDatepickerBlurred"
-                          :isTextBoxFocused.sync="isDatepickerTextBoxFocused"
-                          :nudgeleft="1"
-                          :min="minDate"
-                          :max="maxDate"
-                        />
-                      </v-form>
-                    </div>
-                  </v-col>
-                </v-row> </v-expansion-panel-content
-            ></v-expansion-panel>
+                  </div>
+                </fieldset>
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
         <v-col>
@@ -246,12 +239,13 @@ export default class ClinsCard extends Vue {
   private isDatepickerTextBoxFocused = false;
   private returnFocusDeleteClinOK = "addClinButton";
   private returnFocusDeleteClinCancel = "";
+  private focusClinNumberOnCardOpen = true;
 
   model: TaskOrderModel = this.$store.getters.getStepModel(2);
 
   get isDisabled(): boolean {
     return (
-      this.model.clins.length == 1 && this.model.clins[0].clin_number == ""
+      this.model.clins.length === 1 && this.model.clins[0].clin_number === ""
     );
   }
 
@@ -373,6 +367,11 @@ export default class ClinsCard extends Vue {
   }
 
   public JWCCContractEndDate = "2022-09-14";
+
+  public toggleClinCard(): void {
+    this.focusClinNumberOnCardOpen = true;
+    this.calculateObligatedPercent();
+  }
 
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
@@ -541,7 +540,7 @@ export default class ClinsCard extends Vue {
 
   @Watch("openItem")
   onOpenItemChanged(): void {
-    if (this.openItem == 0) {
+    if (this.openItem == 0 && this.focusClinNumberOnCardOpen) {
       setTimeout(() => {
         this.$nextTick(() => {
           // when the clins card is opened the first input (clins number)
@@ -574,7 +573,8 @@ export default class ClinsCard extends Vue {
     return validated;
   }
 
-  public open(): void {
+  public open(isPageLoad: boolean): void {
+    this.focusClinNumberOnCardOpen = !isPageLoad;
     this.openItem = 0;
   }
 

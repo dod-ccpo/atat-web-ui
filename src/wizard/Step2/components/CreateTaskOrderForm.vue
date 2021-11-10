@@ -227,12 +227,13 @@ export default class CreateTaskOrderForm extends Vue {
     return validated.every((v) => v === true);
   }
 
-  public ExpandAddedClin(): void {
+  public ExpandAddedClin(isPageLoad: boolean): void {
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
-    clinsCards.ExpandAddedClin();
+    clinsCards.ExpandAddedClin(isPageLoad);
   }
 
   private mounted(): void {
+    this.ExpandAddedClin(true);
     if (
       this.signed &&
       this._task_order_file &&
