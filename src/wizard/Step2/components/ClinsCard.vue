@@ -14,135 +14,54 @@
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">
-                  <v-container>
-                    <v-row>
-                      <v-col
-                        cols="1"
-                        class="h3 text--base-darkest pr-2"
-                        id="card_number"
-                        >{{ card_number }}</v-col
-                      >
-                      <v-col
-                        cols="10"
-                        class="mr-auto h3 text--base-darkest"
-                        id="clin_number"
-                        >{{ `CLIN ${clin_number}` }}</v-col
-                      >
-                      <v-col cols="1" class="pl-6">
+                  <v-container class="pa-0">
+                    <div class="d-flex h3 text--base-darkest py-6 width-100">
+                      <div class="text-center" style="width: 54px;">
+                        {{ card_number }}
+                      </div>
+                      <div style="flex-grow: 1;">
+                        {{ `CLIN ${clin_number}` }}
+                      </div>
+                      <div class="text-center" style="width: 54px;">
                         <v-icon
                           class="text-right text--base-darkest"
                           :class="{ 'icon-rotate': open }"
                           >expand_more</v-icon
                         >
-                      </v-col>
-                    </v-row>
-                    <v-row v-if="!open && _idiq_clin !== ''">
-                      <v-col cols="1"></v-col>
-                      <v-col cols="11">
-                        <v-row>
-                          <!--IDIQ Type-->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                IDIQ Type
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="idiq_clin"
-                              >
-                                {{ _idiq_clin }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                          <!-- Total Value -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Total Value
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="total_clin_value"
-                              >
-                                {{ formatCurrency(total_clin_value) }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-
-                          <!-- Obligated Funds -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Obligated Funds
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="obligated_funds"
-                              >
-                                {{ formatCurrency(_obligated_funds) }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                          <!-- Period of Performance -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Period of Performance
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="period_of_performance"
-                                v-if="_pop_start_date !== ''"
-                              >
-                                {{
-                                  `${formatDate(
-                                    _pop_start_date
-                                  )} - ${formatDate(_pop_end_date)}`
-                                }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                        </v-row>
-                      </v-col>
-                    </v-row>
+                      </div>
+                    </div>
+                    <div
+                      v-if="!open && _idiq_clin !== ''"
+                      class="v-expansion-panel-content__wrap"
+                    >
+                      <table class="data-summary-table">
+                        <tr class="micro">
+                          <th>IDIQ Type</th>
+                          <th>Total Value</th>
+                          <th>Obligated Funds</th>
+                          <th>Period of Performance</th>
+                        </tr>
+                        <tr class="body">
+                          <td>{{ _idiq_clin }}</td>
+                          <td>{{ formatCurrency(total_clin_value) }}</td>
+                          <td>{{ formatCurrency(_obligated_funds) }}</td>
+                          <td style="white-space: nowrap;">
+                            <span v-if="_pop_start_date !== ''">
+                              {{
+                                `${formatDate(_pop_start_date)} -
+                                  ${formatDate(_pop_end_date)}`
+                              }}
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content class="pl-14 pb-10">
+              <v-expansion-panel-content>
                 <v-row>
-                  <v-col cols="11">
+                  <v-col>
                     <atat-text-field
                       class="mb-3"
                       name="clin-number"
@@ -168,7 +87,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="11">
+                  <v-col>
                     <v-form ref="fundFields">
                       <atat-currency-field
                         class="mb-3"
@@ -214,7 +133,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="11">
+                  <v-col>
                     <div class="h3 font-weight-bold mt-6 my-4">
                       Period of Performance (PoP)
                     </div>
