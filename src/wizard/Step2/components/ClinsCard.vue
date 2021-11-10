@@ -319,8 +319,8 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
-  private isDatepickerBlurred = false;
-  private isDatepickerTextBoxFocused = false;
+  private isDatePickerBlurred = false;
+  private isDatePickerTextBoxFocused = false;
   private returnFocusDeleteClinOK = "addClinButton";
   private returnFocusDeleteClinCancel = "";
 

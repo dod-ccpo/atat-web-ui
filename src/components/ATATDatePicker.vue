@@ -72,6 +72,7 @@
               :ripple="false"
               :id="getId('start-date-text-box-button')"
               aria-label="Open calendar to select Start Date"
+              class="start-date-button"
             >
               <v-icon class="black--text date-picker-icon start-date-icon"
                 >calendar_today</v-icon
@@ -109,6 +110,7 @@
               :ripple="false"
               :id="getId('end-date-text-box-button')"
               aria-label="Open calendar to select End Date"
+              class="end-date-button"
             >
               <v-icon class="black--text date-picker-icon end-date-icon"
                 >calendar_today</v-icon
@@ -274,7 +276,11 @@ export default class ATATDatePicker extends Vue {
     }
   }
 
-  //todo use this often
+  /** 
+   * @dateToBeFormatted
+   *
+   * return formattedDate || ""
+  */
   private formatDate(dateToBeFormatted: string): string {
     const formattedDate = moment(dateToBeFormatted).format("YYYY-MM-DD");
     return formattedDate.toLowerCase() !== "invalid date" ? formattedDate : "";
@@ -315,10 +321,10 @@ export default class ATATDatePicker extends Vue {
     this._isTextBoxFocused = true;
     this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
     this.menu = true;
-    if (this.isKeyboardEvent) {
-      this.setFocusOnDatePicker();
-      this.isKeyboardEvent = false;
-    }
+    // if (this.isKeyboardEvent) {
+    //   this.setFocusOnDatePicker();
+    //   this.isKeyboardEvent = false;
+    // }
   }
 
   /**
@@ -533,7 +539,6 @@ export default class ATATDatePicker extends Vue {
     }
 
     Vue.nextTick(() => {
-      //todo review calendarclicked
       this.calendarClicked = false;
       this.setDatePickerHoverButtons();
       this.getErrorMessages();
@@ -551,12 +556,9 @@ export default class ATATDatePicker extends Vue {
     (document.querySelector("#" + this.getId(_id)) as HTMLElement).click();
   }
 
-  // private closeMenu(): void {
-  //   this.closeClicked = true;
-  //   this.menu = false;
-  //   console.log("this.menu > " + this.menu);
-  // }
-
+  /**
+   * sets focus on Datepicker left menu nav button
+   */
   private setFocusOnDatePicker(): void {
     if (this.isKeyboardEvent) {
       setTimeout(() => {
@@ -633,38 +635,41 @@ export default class ATATDatePicker extends Vue {
     });
   }
 
+  /**
+   * event handler triggers the left calendar
+   * navigation caret to be focused when user tabs
+   * off of each button to the right of the textboxes
+   */
   public onTab(event: KeyboardEvent): void {
     this.isKeyboardEvent = true;
-
-    if (!this.isDateValid(this.startDate)) {
-      this.isStartTextBoxFocused = true;
-      this.isEndTextBoxFocused = false;
+    if (!this.isDateValid(this.startDate) || !this.isDateValid(this.endDate)) {
       this.setFocusOnDatePicker();
       event.preventDefault();
     }
   }
 
-  public onEnter(): void {
-    // this.isKeyboardEvent = true;
-    const buttonIdToFocus = this.isStartTextBoxFocused
-      ? "start-date-text-box-button"
-      : "end-date-text-box-button";
-    const button = document.getElementById(
-      this.getId(buttonIdToFocus)
-    ) as HTMLButtonElement;
-    // startTextBoxLabel.focus();
-    this.menu = !this.isDateRangeValid;
-    setTimeout(() => {
-      button.focus();
-    }, 500);
+  /**
+   * event handler when pressing 'ENTER' key while 
+   * navigating the datepickers
+   */
+  public onEnter(event: Event): void {
+    const buttonTextSelected = (event.target as HTMLButtonElement).innerText;
+    const isDateSelected = parseInt(buttonTextSelected) > 0;
 
-    // console.log(startTextBoxLabel);
-    // setTimeout(() => {
-    //   if (this.isDateRangeValid) {
-    //     startTextBoxLabel.focus();
-    //   }
-    // }, 500);
-    //  this.datepickerControlClicked(event);
+    if (isDateSelected) {
+      const buttonIdToFocus = this.isStartTextBoxFocused
+        ? "start-date-text-box-button"
+        : "end-date-text-box-button";
+      const button = document.getElementById(
+        this.getId(buttonIdToFocus)
+      ) as HTMLButtonElement;
+      this.menu = !this.isDateRangeValid;
+      setTimeout(() => {
+        button.focus();
+        this.getErrorMessages();
+        this._isDatePickerBlurred = this._errorMessages.length > 0;
+      }, 500);
+    }
   }
 
   /**
