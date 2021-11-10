@@ -146,7 +146,6 @@
               :id="getId('close-datepickers')"
               aria-label="Close datepicker"
               class="close-datepicker-button"
-             
             >
               <v-icon class="black--text close-datepicker-button">close</v-icon>
             </v-btn>
@@ -475,7 +474,7 @@ export default class ATATDatePicker extends Vue {
     const isCloseButtonClicked = element.classList.contains(
       "close-datepicker-button"
     );
-    if (isCloseButtonClicked){
+    if (isCloseButtonClicked) {
       this.menu = false;
     }
     //if (this.menu) {
@@ -636,8 +635,8 @@ export default class ATATDatePicker extends Vue {
 
   public onTab(event: KeyboardEvent): void {
     this.isKeyboardEvent = true;
-    
-    if (!this.isDateValid(this.startDate)){
+
+    if (!this.isDateValid(this.startDate)) {
       this.isStartTextBoxFocused = true;
       this.isEndTextBoxFocused = false;
       this.setFocusOnDatePicker();
