@@ -21,18 +21,18 @@
     "typescript": "^4.4"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.129.0",
-    "@aws-cdk/aws-certificatemanager": "1.129.0",
-    "@aws-cdk/aws-cognito": "1.129.0",
-    "@aws-cdk/aws-iam": "1.129.0",
-    "@aws-cdk/aws-lambda": "1.129.0",
-    "@aws-cdk/aws-lambda-nodejs": "1.129.0",
-    "@aws-cdk/aws-s3": "1.129.0",
-    "@aws-cdk/aws-secretsmanager": "1.129.0",
-    "@aws-cdk/aws-ssm": "1.129.0",
-    "@aws-cdk/core": "1.129.0",
-    "@aws-sdk/client-s3": "^3.37.0",
-    "@aws-sdk/client-ssm": "^3.38.0",
-    "aws-cdk": "1.129.0"
+    "@aws-cdk/aws-apigateway": "1.132.0",
+    "@aws-cdk/aws-certificatemanager": "1.132.0",
+    "@aws-cdk/aws-cognito": "1.132.0",
+    "@aws-cdk/aws-iam": "1.132.0",
+    "@aws-cdk/aws-lambda": "1.132.0",
+    "@aws-cdk/aws-lambda-nodejs": "1.132.0",
+    "@aws-cdk/aws-s3": "1.132.0",
+    "@aws-cdk/aws-secretsmanager": "1.132.0",
+    "@aws-cdk/aws-ssm": "1.132.0",
+    "@aws-cdk/core": "1.132.0",
+    "@aws-sdk/client-s3": "^3.40.0",
+    "@aws-sdk/client-ssm": "^3.40.0",
+    "aws-cdk": "1.132.0"
   }
 }
