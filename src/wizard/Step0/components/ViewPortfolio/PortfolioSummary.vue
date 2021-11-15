@@ -1,13 +1,23 @@
 <template>
-  <atat-summary-card
-    emptyCard="Portfolio"
-    cardWidth="120"
-    :data="cardsData"
-    :itemToDelete.sync="itemToDelete"
-    v-on:edit="(id) => $emit('edit', id)"
-    v-on:delete="(id) => $emit('delete', id)"
-    return-focus-element-id-ok="btn-create-new-portfolio"
-  ></atat-summary-card>
+  <div class="wizard-content">
+    <atat-portfolio-summary-card
+      :data="cardsData"
+      v-on:edit="(id) => $emit('portfolio-edit', id)"
+      v-on:delete="(id) => $emit('portfolio-delete', id)"
+      return-focus-element-id-ok="btn-create-new-portfolio"
+    />
+
+    <atat-summary-card
+      emptyCard="Portfolio"
+      cardWidth="120"
+      :data="cardsData"
+      :itemToDelete.sync="itemToDelete"
+      v-on:edit="(id) => $emit('edit', id)"
+      v-on:delete="(id) => $emit('delete', id)"
+      return-focus-element-id-ok="btn-create-new-portfolio"
+    ></atat-summary-card>
+
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,8 +29,13 @@ import {
 } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
+import ATATPortfolioSummaryCard from "@/components/ATATPortfolioSummaryCard.vue";
 
-@Component({})
+@Component({
+  components: {
+    "atat-portfolio-summary-card": ATATPortfolioSummaryCard,
+  }
+})
 export default class PortfolioSummary extends Vue {
   @Prop()
   portfolioDrafts!: PortfolioDraft[];
