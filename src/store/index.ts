@@ -515,29 +515,7 @@ export default new Vuex.Store({
         );
       }
     },
-    setCurrentTaskOrders(state, taskOrders: TaskOrder[]) {
-      const taskOrderModels = taskOrders.map((taskOrder) => {
-        const taskOrderModel: TaskOrderModel = {
-          id: generateUid(),
-          ...taskOrder,
-          task_order_file: {
-            id: taskOrder.task_order_file.id,
-            name: taskOrder.task_order_file.name,
-            created_at: "",
-            updated_at: "",
-            size: 0,
-            status: "",
-          },
-          signed: true, // that the task order is signed is implicitly true
-        };
-        return taskOrderModel;
-      });
-
-      Vue.set(state, "taskOrderModels", taskOrderModels);
-    },
-    doAddTaskOrder(state, model: any) {
-      state.taskOrderModels.push(model as never);
-    },
+   
     doUpdateTaskOrder(state, [index, model]) {
       Vue.set(state.taskOrderModels, index, model);
     },
@@ -603,9 +581,6 @@ export default new Vuex.Store({
     },
     async updateStepModelValidity({ commit }, [stepNumber, valid]) {
       commit("doUpdateStepModelValidity", [stepNumber, valid]);
-    },
-    async addTaskOrder({ commit }, model) {
-      commit("doAddTaskOrder", model);
     },
     async updateTaskOrder({ commit }, [index, model]) {
       commit("doUpdateTaskOrder", [index, model]);
@@ -707,7 +682,7 @@ export default new Vuex.Store({
 
       if (isNew) {
         model.id = generateUid();
-        this.dispatch("addTaskOrder", model);
+        this.dispatch("taskOrders/addTaskOrder", model);
         modelIndex = this.state.taskOrderModels.length - 1;
       } else {
         const taskOrderIndex = getEntityIndex<TaskOrderModel>(
@@ -899,7 +874,7 @@ export default new Vuex.Store({
 
       if (taskOrders !== null) {
         //store the tasks orders
-        commit("setCurrentTaskOrders", taskOrders);
+        commit("taskOrders/setCurrentTaskOrders", taskOrders);
         commit("doSaveStepModel", [createStepTwoModel(), 2, true]);
       }
     },
