@@ -79,7 +79,6 @@ import { PortfolioDraft } from "types/Portfolios";
 import PortfolioSummary from "./PortfolioSummary.vue";
 import { State, Action } from "vuex-class";
 import { PortfoliosState } from "@/store/types";
-import ATATDivider from "@/components/ATATDivider.vue";
 
 const namespace = "portfolios";
 
