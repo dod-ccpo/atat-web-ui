@@ -59,31 +59,16 @@
     <div>
       <v-divider />
     </div>
-    <!--    <v-row class="portfolio-banner">-->
-    <!--      <v-col class="d-flex justify-space-between align-center">-->
-    <!--        <div class="h2">My Portfolios</div>-->
-    <!--        <div>-->
-    <!--          <v-btn-->
-    <!--            id="btn-create-new-portfolio"-->
-    <!--            class="primary"-->
-    <!--            :ripple="false"-->
-    <!--            @click="onCreatePortfolio"-->
-    <!--            role="link"-->
-    <!--          >-->
-    <!--            Create a New Portfolio-->
-    <!--          </v-btn>-->
-    <!--        </div>-->
-    <!--      </v-col>-->
-    <!--    </v-row>-->
-    <!--    <v-row>-->
-    <!--      <v-col cols="6" v-if="portfolios && portfolios.length > 0">-->
-    <!--        <portfolio-summary-->
-    <!--          :portfolioDrafts="portfolios"-->
-    <!--          v-on:delete="onDeletePortfolio"-->
-    <!--          v-on:edit="onEditPortfolio"-->
-    <!--        ></portfolio-summary>-->
-    <!--      </v-col>-->
-    <!--    </v-row>-->
+
+    <v-row>
+      <v-col cols="6" v-if="portfolios && portfolios.length > 0">
+        <portfolio-summary
+          :portfolioDrafts="portfolios"
+          v-on:delete="onDeletePortfolio"
+          v-on:edit="onEditPortfolio"
+        ></portfolio-summary>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
