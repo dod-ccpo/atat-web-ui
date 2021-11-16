@@ -1,7 +1,7 @@
-import { generateUid } from "@/helpers";
+import Vue from "vue";
+import { generateUid, getEntityIndex } from "@/helpers";
 import { TaskOrder } from "types/Portfolios";
 import { TaskOrderModel } from "types/Wizard";
-import Vue from "vue/types/umd";
 import { MutationTree } from "vuex";
 import TaskOrdersState from "./types";
 
@@ -33,7 +33,29 @@ const addTaskOrder = (state: TaskOrdersState, model: TaskOrderModel): void => {
   state.taskOrderModels.push(model);
 };
 
+const updateTaskOrder = (
+  state: TaskOrdersState,
+  { index, model }: { index: number; model: TaskOrderModel }
+) => {
+  Vue.set(state.taskOrderModels, index, model);
+};
+
+const deleteTaskOrder = (state: TaskOrdersState, id: string): void => {
+  const index = getEntityIndex(
+    state.taskOrderModels,
+    (taskOrder: TaskOrderModel) => taskOrder.id === id
+  );
+
+  if (index > -1) {
+    state.taskOrderModels.splice(index, 1);
+  } else {
+    throw new Error("could not delete task order with id: " + id);
+  }
+};
+
 export const mutations: MutationTree<TaskOrdersState> = {
   setCurrentTaskOrders,
   addTaskOrder,
+  updateTaskOrder,
+  deleteTaskOrder,
 };
