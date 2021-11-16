@@ -5,7 +5,7 @@
         <h1 tabindex="-1" class="mb-0">Portfolios</h1>
         <div class="ml-auto">
           <v-btn
-            id="btn-create-new-portfolio"
+            id="btn-create-new-portfolio outlined-btn"
             outlined
             class="primary mr-4"
             :ripple="false"

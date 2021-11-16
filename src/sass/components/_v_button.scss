@@ -98,6 +98,7 @@
       color: $primary !important;
       border-color: $primary !important;
       background-color: #fff !important;
+      border-width: 2px !important;
 
       &:hover{
         color: #fff !important;
@@ -143,7 +144,7 @@
   &.filter {
     background-color: #fff !important;
     border-color: $base_light !important;
-    color:$base !important;
+    color:$base-dark !important;
     height: 35px !important;
     width: 35px;
     min-width: 35px !important;
