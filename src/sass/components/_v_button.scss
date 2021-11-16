@@ -142,9 +142,10 @@
   }
   &.filter {
     background-color: #fff !important;
+    border-color: $base_light !important;
     color:$base !important;
-    height: 40px !important;
-    width: 40px;
+    height: 35px !important;
+    width: 35px;
     min-width: 35px !important;
   }
   span.valid-entry-count {
