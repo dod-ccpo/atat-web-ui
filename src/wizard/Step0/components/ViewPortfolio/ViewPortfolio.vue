@@ -84,7 +84,6 @@ const namespace = "portfolios";
 
 @Component({
   components: {
-    ATATDivider,
     PortfolioSummary,
   },
 })
