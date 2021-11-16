@@ -19,14 +19,15 @@
 
   }
   .logo {
-    // EJY we won't need much of this this when actually have logos
+    // EJY temporary until using actual logos
     width: 48px;
     height: 48px;
     border-radius: 50%;
     background-color: $base-lighter;
     font-size: 8px;
-    text-align: center;
-    padding-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .status-alert-banner-wrapper {
     min-width: 140px;
@@ -37,13 +38,21 @@
       border-radius: 2px;
       font-weight: 700;
       padding: 0 4px;
-      &.warn {
-        background-color: $warning;
+      &.warning {
+        background-color: $warning !important;
         color: $base_darkest;
       }
       &.error {
         background-color: $error;
       }
+      &.info {
+        background-color: $info_dark !important;
+      }
+
+      &.archived {
+        background-color: $base_dark !important;
+      }
+
 
     }
   }
@@ -61,6 +70,10 @@
   .data-primary {
     line-height: 1;
     margin-bottom: 8px;
+    .funds-percent {
+      font-size: 1.2rem;
+      color: $base;
+    }
   }
   .data-secondary {
     font-size: 1.2rem;
