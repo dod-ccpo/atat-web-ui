@@ -40,4 +40,8 @@ describe("Testing ATATModalDelete Component", () => {
     await cancelDialog.trigger("click");
     await wrapper.vm.deleteItem();
   });
+  it("testing setFocus W/O newVal", async () => {
+    await wrapper.vm.setFocus();
+    expect(wrapper.vm.setFocus()).toBe(undefined);
+  });
 });

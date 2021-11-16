@@ -2,7 +2,7 @@
   <div>
     <div class="view-portfolio bg-white px-14 py-6">
       <div class="d-flex">
-        <h1 tabindex="-1" class="mb-3">Portfolios</h1>
+        <h1 tabindex="-1" class="mb-0">Portfolios</h1>
         <div class="ml-auto">
           <v-btn
             id="btn-create-new-portfolio"
