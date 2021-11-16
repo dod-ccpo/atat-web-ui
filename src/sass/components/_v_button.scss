@@ -147,6 +147,9 @@
     height: 35px !important;
     width: 35px;
     min-width: 35px !important;
+    &:hover{
+      background-color: $base_lightest !important;
+    }
   }
   span.valid-entry-count {
     background-color: white;

@@ -49,7 +49,7 @@
           <a
             role="button"
             class="mb-0 pr-5 toggle-content"
-            @click="toggle"
+            @click="open = !open"
             :class="open ? 'open' : 'closed'"
           >
             Portfolio Name A-Z
@@ -95,9 +95,6 @@ export default class ViewPortfolio extends Vue {
   @Action("deletePortfolioDraft", { namespace })
   deletePortfolioDraft!: (draftId: string) => Promise<void>;
   private open = false;
-  private toggle() {
-    return (this.open = !this.open);
-  }
 
   get portfolios(): PortfolioDraft[] {
     return this.portfoliosState.portfolioDrafts;
