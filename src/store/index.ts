@@ -567,13 +567,20 @@ export default new Vuex.Store({
     async updateStepModelValidity({ commit }, [stepNumber, valid]) {
       commit("doUpdateStepModelValidity", [stepNumber, valid]);
     },
-    async deleteTaskOrder({ commit, state }, id: string): Promise<void> {
+    async deleteTaskOrder(
+      { commit, state, rootGetters },
+      id: string
+    ): Promise<void> {
       try {
         this.dispatch("taskOrders/deleteTaskOrder", id);
         commit("doInitializeStepModel", [createStepTwoModel(), 2]);
 
+        const taskOrderModels = rootGetters[
+          "taskOrders/taskOrders"
+        ] as TaskOrderModel[];
+
         const taskOrders = {
-          task_orders: mapTaskOrders(state.taskOrderModels),
+          task_orders: mapTaskOrders(taskOrderModels),
         };
 
         await portfoliosApi.saveFunding(state.currentPortfolioId, taskOrders);
@@ -581,16 +588,20 @@ export default new Vuex.Store({
         console.log(error);
       }
     },
-    editTaskOrder({ commit, state }, id: string) {
+    editTaskOrder({ commit, rootGetters }, id: string) {
+      const taskOrderModels = rootGetters[
+        "taskOrders/taskOrders"
+      ] as TaskOrderModel[];
+
       const taskOrderIndex = getEntityIndex(
-        state.taskOrderModels,
+        taskOrderModels,
         (taskOrder: TaskOrderModel) => taskOrder.id === id
       );
 
       if (taskOrderIndex === -1) {
         throw new Error("unable to location task order model with id :" + id);
       }
-      const taskOrder = state.taskOrderModels[taskOrderIndex];
+      const taskOrder = taskOrderModels[taskOrderIndex];
 
       commit("doSaveStepModel", [taskOrder, 2, true]);
     },
@@ -646,7 +657,7 @@ export default new Vuex.Store({
     setErroredStep({ commit }, [stepNumber, isErroredStep]) {
       commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
-    async saveStep1({ state, commit }, model: any) {
+    async saveStep1({ state }, model: any) {
       // build data from step model
       const data = {
         name: model.name,
@@ -658,17 +669,21 @@ export default new Vuex.Store({
 
       await portfoliosApi.savePortfolio(state.currentPortfolioId, data);
     },
-    async saveStep2({ state }, model: TaskOrderModel) {
+    async saveStep2({ state, rootGetters }, model: TaskOrderModel) {
+      const taskOrderModels = rootGetters[
+        "taskOrders/taskOrders"
+      ] as TaskOrderModel[];
+
       const isNew = model.id === "";
       let modelIndex = -1;
 
       if (isNew) {
         model.id = generateUid();
         this.dispatch("taskOrders/addTaskOrder", model);
-        modelIndex = this.state.taskOrderModels.length - 1;
+        modelIndex = taskOrderModels.length - 1;
       } else {
         const taskOrderIndex = getEntityIndex<TaskOrderModel>(
-          state.taskOrderModels,
+          taskOrderModels,
           (taskOrder) => taskOrder.id === model.id
         );
 
@@ -682,7 +697,7 @@ export default new Vuex.Store({
       }
 
       const taskOrders = {
-        task_orders: mapTaskOrders(state.taskOrderModels),
+        task_orders: mapTaskOrders(taskOrderModels),
       };
 
       await portfoliosApi.saveFunding(state.currentPortfolioId, taskOrders);
@@ -808,8 +823,9 @@ export default new Vuex.Store({
       //initialize steps models
       commit("doInitializeSteps");
 
-      //initilize applications module
+      //initilize module states
       this.dispatch("applications/initialize");
+      this.dispatch("taskOrders/initialize");
 
       const portfolioDraftId = await portfoliosApi.createDraft();
       commit("doSetCurrentPortfolioId", portfolioDraftId);

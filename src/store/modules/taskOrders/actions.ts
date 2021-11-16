@@ -32,9 +32,15 @@ const setCurrentTaskOrders = (
     commit('setCurrentTaskOrders', taskOrders);
 }
 
+
+const initialize = ({commit}: {commit: Commit}): void => {
+   commit('initialize');
+}
+
 export const actions: ActionTree<TaskOrdersState, RootState> = {
   addTaskOrder,
   updateTaskOrder,
   deleteTaskOrder,
   setCurrentTaskOrders,
+  initialize,
 };
