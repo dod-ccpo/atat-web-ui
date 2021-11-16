@@ -118,23 +118,24 @@
                 class="table-menu"
                 transition="slide-y-transition"
                 offset-y
-                nudge-left="190"
+                nudge-left="192"
+                nudge-top="1"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     :id="moreButtonId(item)"
-                    class="table-row-menu-button pa-0"
+                    class="meatball-menu-button pa-0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
                     :aria-label="'Edit or remove ' + item.display_name"
                   >
-                    <v-icon aria-hidden="true" class="icon-18 width-auto">
+                    <v-icon aria-hidden="true" class="width-auto">
                       more_horiz
                     </v-icon>
                   </v-btn>
                 </template>
-                <v-list class="table-row-menu pa-0">
+                <v-list class="meatball-menu pa-0">
                   <v-list-item
                     v-for="(menuOptionText, i) in options"
                     :key="i"

@@ -56,9 +56,6 @@
         </div>
       </div>
     </div>
-    <div>
-      <v-divider />
-    </div>
 
     <v-row>
       <v-col v-if="portfolios && portfolios.length > 0">

@@ -15,7 +15,7 @@
       <div class="pr-5 flex-grow-1">
         <div class="d-flex mb-1 flex-row-reverse flex-md-row flex-column-reverse">
           <div class="card-header flex-grow-1 foo-border">
-            <a role="button" @click="editPortfolio(card)" class="h3 d-block">
+            <a role="button" @click="editPortfolio(card)" class="h3 text-link">
               {{ card.title }}
             </a>
           </div>
@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="text--base-dark mb-4">
-          <a role="button">Maria Missionowner</a>
+          <a role="button" class="text-link">Maria Missionowner</a>
           <atat-separator-bullet />
           <span>Army, Navy</span>
 
@@ -94,7 +94,36 @@
 
       </div>
       <div>
-        <v-icon>more_horiz</v-icon>
+        <v-menu
+          class="table-menu"
+          transition="slide-y-transition"
+          offset-y
+          nudge-left="192"
+          nudge-top="1"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              :id="moreButtonId(card.id)"
+              v-bind="attrs"
+              v-on="on"
+              class="meatball-menu-button mt-n1 width-auto pa-0"
+            >
+              <v-icon class="width-auto">more_horiz</v-icon>
+            </v-btn>
+          </template>
+          <v-list class="meatball-menu pa-0">
+            <v-list-item
+              v-for="(menuOptionText, index) in menuOptions"
+              :key="index"
+              @click="
+                handleMenuClick(menuOptionText, $event, moreButtonId(card.id))
+              "
+            >
+              <v-list-item-title class="body-lg py-2">{{ menuOptionText }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
       </div>
     </v-card>
   </div>
@@ -123,6 +152,33 @@ export default class ATATPortfolioSummaryCard extends Vue {
   // EJY temp props to show draft v active cards
   @Prop({ default: "" }) private tempPortfolioType?: string;
   @Prop({ default: "" }) private tempPortfolioStatus?: string;
+
+  private draftOptions: string[] = [
+    "Edit draft portfolio",
+    "Delete draft portfolio",
+  ];
+  private activeOptions: string[] = ["Open portfolio", "Archive portfolio"];
+  private archivedOptions: string[] = ["Open portfolio"];
+
+  get menuOptions(): string[] {
+    switch (this.tempPortfolioType) {
+      case "draft":
+        return this.draftOptions;
+      case "active":
+        return this.activeOptions;
+      case "archived":
+        return this.archivedOptions;
+      default:
+        return [];
+    }
+  }
+
+  private moreButtonId(portfolioId: string): string {
+    if (portfolioId) {
+      return "moreButton_" + portfolioId;
+    }
+    return "";
+  }
 
   public editPortfolio(card: ATATSummaryCardItem): void {
     // EJY different emits for Active and Archived portfolios?

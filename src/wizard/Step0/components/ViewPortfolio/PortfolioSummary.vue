@@ -2,6 +2,7 @@
   <div class="wizard-content">
 
     <h2 aria-label="A paginated list of draft portfolios">
+      <v-icon class="text--base-darkest">expand_less</v-icon>
       Draft
       <span class="font-size-19 text--base ml-1">15</span>
     </h2>
@@ -14,20 +15,8 @@
       return-focus-element-id-ok="btn-create-new-portfolio"
     />
 
-    <h2 aria-label="A paginated list of archived portfolios">
-      Archived
-      <span class="font-size-19 text--base ml-1">15</span>
-    </h2>
-    <atat-portfolio-summary-card
-      :data="cardsData"
-      tempPortfolioType="archived"
-      tempPortfolioStatus="archived"
-      @portfolio-edit="(id) => $emit('portfolio-edit', id)"
-      @portfolio-delete="(id) => $emit('portfolio-delete', id)"
-      return-focus-element-id-ok="btn-create-new-portfolio"
-    />
-
     <h2 aria-label="A paginated list of active portfolios">
+      <v-icon class="text--base-darkest">expand_less</v-icon>
       Active
       <span class="font-size-19 text--base ml-1">15</span>
     </h2>
@@ -39,6 +28,19 @@
       return-focus-element-id-ok="btn-create-new-portfolio"
     />
 
+    <h2 aria-label="A paginated list of archived portfolios">
+      <v-icon class="text--base-darkest">expand_less</v-icon>
+      Archived
+      <span class="font-size-19 text--base ml-1">15</span>
+    </h2>
+    <atat-portfolio-summary-card
+      :data="cardsData"
+      tempPortfolioType="archived"
+      tempPortfolioStatus="archived"
+      @portfolio-edit="(id) => $emit('portfolio-edit', id)"
+      @portfolio-delete="(id) => $emit('portfolio-delete', id)"
+      return-focus-element-id-ok="btn-create-new-portfolio"
+    />
 
     <atat-summary-card
       emptyCard="Portfolio"
