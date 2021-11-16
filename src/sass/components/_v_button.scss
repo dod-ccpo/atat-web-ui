@@ -136,7 +136,7 @@
     }
   }
   &.input-search-bar {
-    border-radius: 0px 6px 6px 0px;
+    border-radius: 0px 4px 4px 0px;
     height: 40px !important;
     width: 48px;
     min-width: 35px !important;
@@ -144,9 +144,10 @@
   &.filter {
     background-color: #fff !important;
     border-color: $base_light !important;
+    border-radius: 4px;
     color:$base-dark !important;
-    height: 35px !important;
-    width: 35px;
+    height: 32px !important;
+    width: 32px;
     min-width: 35px !important;
     &:hover{
       background-color: $base_lightest !important;
