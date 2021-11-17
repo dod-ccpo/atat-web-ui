@@ -3,6 +3,10 @@ import { Store } from "vuex";
 import { ATATRouteHandler } from "./routerMiddleWare";
 import { addportfolio, addfunding, fundingsummary } from "./wizard";
 
+
+const hasTaskOrders = (store?: Store<any>) =>
+  store && store.getters.hasTaskOrders;
+
 /**
  *  forwards the user to the funding summary if
  *  there are one or more task orders
@@ -12,11 +16,7 @@ import { addportfolio, addfunding, fundingsummary } from "./wizard";
 const step2RouteHandler: ATATRouteHandler =
   (store?: Store<any>) =>
   (to: Route, from: Route, next: NavigationGuardNext<any>) => {
-    if (
-      to.name === addfunding.name &&
-      store &&
-      store.state.taskOrderModels.length > 0
-    ) {
+    if (to.name === addfunding.name && hasTaskOrders(store)) {
       //forward the previous button from funding summary to
       //add portfolio (a.k.a step 1)
       //all other requests to add funding gets redirected to funding summary
