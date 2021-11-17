@@ -22,7 +22,7 @@
       @click="$emit('add')"
     >
       <v-icon color="primary" class="mr-2">control_point</v-icon>
-      <span>{{ addClinLabel }} </span>
+      <span>{{ addClinLabel }}</span>
     </v-btn>
   </div>
 </template>
@@ -64,16 +64,16 @@ export default class ClinsCardList extends Vue {
     return clins ? clins.length : 0;
   }
 
-  public ExpandAddedClin(): void {
-    this.ExpandClin(this._clins.length);
+  public ExpandAddedClin(isPageLoad: boolean): void {
+    this.ExpandClin(this._clins.length, isPageLoad);
   }
 
-  public ExpandClin(index: number): void {
+  public ExpandClin(index: number, isPageLoad: boolean): void {
     this.$nextTick(() => {
       if (this._clins.length >= index) {
         const clins = this.$refs.clinscard as Array<ClinsCard>;
         const clin = clins[index - 1];
-        clin.open();
+        clin.open(isPageLoad);
       }
     });
   }

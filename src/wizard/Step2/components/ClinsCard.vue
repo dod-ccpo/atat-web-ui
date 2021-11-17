@@ -8,258 +8,157 @@
       <v-row>
         <v-col cols="11" class="width-100 d-block">
           <v-expansion-panels v-model="openItem">
-            <v-expansion-panel @click="calculateObligatedPercent">
+            <v-expansion-panel @click="toggleClinCard">
               <v-expansion-panel-header
                 class="body-lg font-weight-bold pt-2"
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">
-                  <v-container>
-                    <v-row>
-                      <v-col
-                        cols="1"
-                        class="h3 text--base-darkest pr-2"
-                        id="card_number"
-                        >{{ card_number }}</v-col
-                      >
-                      <v-col
-                        cols="10"
-                        class="mr-auto h3 text--base-darkest"
-                        id="clin_number"
-                        >{{ `CLIN ${clin_number}` }}</v-col
-                      >
-                      <v-col cols="1" class="pl-6">
+                  <v-container class="pa-0">
+                    <div class="d-flex h3 text--base-darkest py-4 width-100">
+                      <div class="text-center" style="width: 54px">
+                        {{ card_number }}
+                      </div>
+                      <div style="flex-grow: 1">
+                        {{ `CLIN ${clin_number}` }}
+                      </div>
+                      <div class="text-center" style="width: 54px">
                         <v-icon
                           class="text-right text--base-darkest"
                           :class="{ 'icon-rotate': open }"
                           >expand_more</v-icon
                         >
-                      </v-col>
-                    </v-row>
-                    <v-row v-if="!open && _idiq_clin !== ''">
-                      <v-col cols="1"></v-col>
-                      <v-col cols="11">
-                        <v-row>
-                          <!--IDIQ Type-->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                IDIQ Type
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="idiq_clin"
-                              >
-                                {{ _idiq_clin }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                          <!-- Total Value -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Total Value
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="total_clin_value"
-                              >
-                                {{
-                                  total_clin_value >= 0
-                                    ? formatCurrency(total_clin_value)
-                                    : "$0.00"
-                                }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-
-                          <!-- Obligated Funds -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Obligated Funds
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="obligated_funds"
-                              >
-                                 {{
-                                  obligated_funds >= 0
-                                    ? formatCurrency(obligated_funds)
-                                    : "$0.00"
-                                }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                          <!-- Period of Performance -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Period of Performance
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="period_of_performance"
-                                v-if="_pop_start_date !== ''"
-                              >
-                                {{
-                                  `${formatDate(
-                                    _pop_start_date
-                                  )} - ${formatDate(_pop_end_date)}`
-                                }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                        </v-row>
-                      </v-col>
-                    </v-row>
+                      </div>
+                    </div>
+                    <div
+                      v-if="!open && _idiq_clin !== ''"
+                      class="v-expansion-panel-content__wrap pb-4"
+                    >
+                      <table class="data-summary-table">
+                        <tr class="micro">
+                          <th>IDIQ Type</th>
+                          <th>Total Value</th>
+                          <th>Obligated Funds</th>
+                          <th>Period of Performance</th>
+                        </tr>
+                        <tr class="body">
+                          <td>{{ _idiq_clin }}</td>
+                          <td>{{ formatCurrency(total_clin_value) }}</td>
+                          <td>{{ formatCurrency(_obligated_funds) }}</td>
+                          <td style="white-space: nowrap">
+                            <span v-if="_pop_start_date !== ''">
+                              {{
+                                `${formatDate(_pop_start_date)} -
+                                  ${formatDate(_pop_end_date)}`
+                              }}
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content class="pl-14 pb-10">
-                <v-row>
-                  <v-col cols="11">
+              <v-expansion-panel-content>
+                <div class="input-max-width pb-10">
+                  <atat-text-field
+                    class="mb-3"
+                    name="clin-number"
+                    id="clin-number"
+                    label="CLIN Number"
+                    :rules="clinNumberRules"
+                    :value.sync="_clin_number"
+                  />
+                  <atat-select
+                    class="clin-idiq-select"
+                    label="Corresponding IDIQ CLIN"
+                    placeholder="- Select -"
+                    :items="idiq_clin_items"
+                    :selectedValue.sync="_idiq_clin"
+                    :rules="correspondingIDIQRules"
+                  >
+                  </atat-select>
+                </div>
+
+                <fieldset class="input-max-width pb-10">
+                  <legend class="h3 mb-4">CLIN Funding</legend>
+                  <v-form ref="fundFields">
                     <atat-text-field
+                      v-mask="currencyMask"
                       class="mb-3"
-                      name="clin-number"
-                      id="clin-number"
-                      label="CLIN Number"
-                      :rules="clinNumberRules"
-                      :value.sync="_clin_number"
+                      id="total-clin-value"
+                      label="Total CLIN Value"
+                      :rules="totalClinRules"
+                      :helpText="clinHelpText"
+                      :value.sync="_total_clin_value"
+                      :class="[_total_clin_value === null ? 'empty-funds' : '']"
+                      prefix="$"
                     />
-                    <atat-select
-                      class="clin-idiq-select"
-                      label="Corresponding IDIQ CLIN"
-                      placeholder="- Select -"
-                      :items="idiq_clin_items"
-                      :selectedValue.sync="_idiq_clin"
-                      :rules="correspondingIDIQRules"
-                    >
-                    </atat-select>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <div class="h3 font-weight-bold my-3">CLIN Funding</div>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="11">
-                    <v-form ref="fundFields">
-                      <atat-text-field
-                        v-mask="currencyMask"
-                        class="mb-3"
-                        id="total-clin-value"
-                        label="Total CLIN Value"
-                        :rules="totalClinRules"
-                        :helpText="clinHelpText"
-                        :value.sync="_total_clin_value"
-                        :class="[
-                          _total_clin_value === null ? 'empty-funds' : '',
-                        ]"
-                        prefix="$"
+                    <atat-text-field
+                      v-mask="currencyMask"
+                      class="mb-5"
+                      id="obligated-funds"
+                      label="Obligated Funds"
+                      :rules="obligatedFundRules"
+                      :helpText="obligatedFundsHelpText"
+                      :value.sync="_obligated_funds"
+                      @onkeyup="calculateObligatedPercent"
+                      :class="[_obligated_funds === null ? 'empty-funds' : '']"
+                      prefix="$"
+                    />
+
+                    <div v-if="obligatedPercent <= 100" role="alert">
+                      <span class="h3 font-weight-bold"
+                        >{{
+                          obligatedPercent.split(".")[1] === "00"
+                            ? obligatedPercent.split(".")[0]
+                            : obligatedPercent
+                        }}%</span
+                      >
+                      of your Total Funds are obligated
+                    </div>
+                    <div id="progressBarWrapper" class="width-100">
+                      <div
+                        name="progresBar"
+                        id="progressBar"
+                        value="0"
+                        max="100"
+                        ref="progress-bar"
+                      ></div>
+                    </div>
+                  </v-form>
+                </fieldset>
+
+                <fieldset>
+                  <legend class="h3 mb-4">Period of Performance (PoP)</legend>
+                  <div
+                    class="d-flex align-center mt-0"
+                    style="position: relative"
+                  >
+                    <v-form ref="dateFields">
+                      <atat-date-picker
+                        :id="'clin_' + card_number"
+                        :errormessages.sync="datePickerErrorMessages"
+                        :title.sync="datepickerTitle"
+                        :daterange.sync="dateRange"
+                        :pop_start_date.sync="_pop_start_date"
+                        :pop_end_date.sync="_pop_end_date"
+                        :startDateRules.sync="popStartRules"
+                        :endDateRules.sync="popEndRules"
+                        :isDatePickerBlurred.sync="isDatePickerBlurred"
+                        :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
+                        :nudgeleft="1"
+                        :min="minDate"
+                        :max="maxDate"
                       />
-                      <atat-text-field
-                        v-mask="currencyMask"
-                        class="mb-5"
-                        id="obligated-funds"
-                        label="Obligated Funds"
-                        :rules="obligatedFundRules"
-                        :helpText="obligatedFundsHelpText"
-                        :value.sync="_obligated_funds"
-                        @onkeyup="calculateObligatedPercent"
-                        :class="[
-                          _obligated_funds === null ? 'empty-funds' : '',
-                        ]"
-                        prefix="$"
-                      />
-                      <div v-show="obligatedPercent <= 100">
-                        <span class="h3 font-weight-bold"
-                          >{{
-                            obligatedPercent.split(".")[1] === "00"
-                              ? obligatedPercent.split(".")[0]
-                              : obligatedPercent
-                          }}%</span
-                        >
-                        of your Total Funds are obligated
-                      </div>
-                      <div id="progressBarWrapper" class="width-100">
-                        <div
-                          name="progresBar"
-                          id="progressBar"
-                          value="0"
-                          max="100"
-                          ref="progress-bar"
-                        ></div>
-                      </div>
                     </v-form>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="11">
-                    <div class="h3 font-weight-bold mt-6 my-4">
-                      Period of Performance (PoP)
-                    </div>
-                    <div
-                      class="d-flex align-center mt-0"
-                      style="position: relative"
-                    >
-                      <v-form ref="dateFields">
-                        <atat-date-picker
-                          :id="'clin_' + card_number"
-                          :errormessages.sync="datePickerErrorMessages"
-                          :title.sync="datepickerTitle"
-                          :daterange.sync="dateRange"
-                          :pop_start_date.sync="_pop_start_date"
-                          :pop_end_date.sync="_pop_end_date"
-                          :startDateRules.sync="popStartRules"
-                          :endDateRules.sync="popEndRules"
-                          :isDatePickerBlurred.sync="isDatePickerBlurred"
-                          :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
-                          :nudgeleft="1"
-                          :min="minDate"
-                          :max="maxDate"
-                        />
-                      </v-form>
-                    </div>
-                  </v-col>
-                </v-row> </v-expansion-panel-content
-            ></v-expansion-panel>
+                  </div>
+                </fieldset>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
-        <v-col>
+        <v-col class="pl-0">
           <v-dialog
             v-model="dialog"
             role="alertdialog"
@@ -271,7 +170,7 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
-                class="pt-6"
+                class="pt-5"
                 :disabled="isDisabled"
                 :aria-label="'Delete CLIN ' + clin_number"
                 :id="'delete_Clin_' + card_number + '_Button'"
@@ -342,6 +241,7 @@ export default class ClinsCard extends Vue {
   private isDatePickerTextBoxFocused = false;
   private returnFocusDeleteClinOK = "addClinButton";
   private returnFocusDeleteClinCancel = "";
+  private focusClinNumberOnCardOpen = true;
 
   model: TaskOrderModel = this.$store.getters.getStepModel(2);
 
@@ -354,7 +254,7 @@ export default class ClinsCard extends Vue {
 
   get isDisabled(): boolean {
     return (
-      this.model.clins.length == 1 && this.model.clins[0].clin_number == ""
+      this.model.clins.length === 1 && this.model.clins[0].clin_number === ""
     );
   }
 
@@ -455,6 +355,11 @@ export default class ClinsCard extends Vue {
   }
 
   public JWCCContractEndDate = "2022-09-14";
+
+  public toggleClinCard(): void {
+    this.focusClinNumberOnCardOpen = true;
+    this.calculateObligatedPercent();
+  }
 
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
@@ -623,7 +528,7 @@ export default class ClinsCard extends Vue {
 
   @Watch("openItem")
   onOpenItemChanged(): void {
-    if (this.openItem == 0) {
+    if (this.openItem == 0 && this.focusClinNumberOnCardOpen) {
       setTimeout(() => {
         this.$nextTick(() => {
           // when the clins card is opened the first input (clins number)
@@ -656,7 +561,8 @@ export default class ClinsCard extends Vue {
     return validated;
   }
 
-  public open(): void {
+  public open(isPageLoad: boolean): void {
+    this.focusClinNumberOnCardOpen = !isPageLoad;
     this.openItem = 0;
   }
 
