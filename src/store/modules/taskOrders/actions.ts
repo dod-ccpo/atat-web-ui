@@ -27,8 +27,6 @@ const setCurrentTaskOrders = (
   taskOrders: TaskOrder[]
 ): void => {
 
-    debugger;
-
     commit('setCurrentTaskOrders', taskOrders);
 }
 
