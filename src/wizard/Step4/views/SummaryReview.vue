@@ -87,7 +87,6 @@
           </div>
 
           <v-menu
-            class="table-menu"
             transition="slide-y-transition"
             offset-y
             nudge-left="192"
