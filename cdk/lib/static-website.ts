@@ -5,7 +5,7 @@ import { Construct, Stack } from "@aws-cdk/core";
 
 export class StaticSite extends Construct {
   public readonly websiteBucket: s3.IBucket;
-  public readonly deploymentUser: iam.IUser;
+  public readonly deploymentRole: iam.IRole;
   public readonly deploymentPolicy: iam.IManagedPolicy;
 
   constructor(parent: Stack, name: string) {
@@ -19,22 +19,36 @@ export class StaticSite extends Construct {
     });
     this.websiteBucket = siteBucket;
 
-    const deploymentUser = new iam.User(this, "DeploymentUser");
-    const deploymentPolicy = new iam.ManagedPolicy(this, "SpaDeploymentPolicy");
-    deploymentUser.addManagedPolicy(deploymentPolicy);
+    this.deploymentPolicy = new iam.ManagedPolicy(this, "SpaDeploymentPolicy", {
+      statements: [
+        new iam.PolicyStatement({
+          resources: [siteBucket.bucketArn],
+          actions: ["s3:ListBucket"],
+        }),
+        new iam.PolicyStatement({
+          resources: [siteBucket.arnForObjects("*")],
+          actions: ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
+        }),
+      ],
+    });
 
-    this.deploymentUser = deploymentUser;
-    this.deploymentPolicy = deploymentPolicy;
-
-    deploymentPolicy.addStatements(
-      new iam.PolicyStatement({
-        resources: [siteBucket.bucketArn],
-        actions: ["s3:ListBucket"],
+    const githubProvider =
+      iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
+        this,
+        "GitHubProvider",
+        cdk.Fn.importValue("AtatGitHubOidcProvider")
+      );
+    this.deploymentRole = new iam.Role(this, "SpaDeploymentRole", {
+      roleName: "AtatSpaDeploymentRole",
+      description: "Role to perform SPA deployments from a CI/CD pipeline",
+      managedPolicies: [this.deploymentPolicy],
+      assumedBy: new iam.OpenIdConnectPrincipal(githubProvider).withConditions({
+        StringLike: {
+          // Allow deployments only from the develop branch of the atat-web-ui repo
+          "token.actions.githubusercontent.com:sub":
+            "repo:dod-ccpo/atat-web-ui:ref:refs/heads/develop",
+        },
       }),
-      new iam.PolicyStatement({
-        resources: [siteBucket.arnForObjects("*")],
-        actions: ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
-      })
-    );
+    });
   }
 }

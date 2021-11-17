@@ -5,7 +5,7 @@
         <h1 tabindex="-1" class="mb-0">Portfolios</h1>
         <div class="ml-auto">
           <v-btn
-            id="btn-create-new-portfolio"
+            id="btn-create-new-portfolio outlined-btn"
             outlined
             class="primary mr-4"
             :ripple="false"
@@ -45,19 +45,20 @@
           </v-btn>
         </div>
         <div class="d-flex align-center">
-          <p class="body-lg text--base mb-0 pr-1">Sort:</p>
-          <a role="button" class="body-lg text--primary-dark mb-0 pr-5">
+          <span class="text--base mb-0 pr-1">Sort:</span>
+          <a
+            role="button"
+            class="mb-0 pr-5 toggle-content"
+            @click="open = !open"
+            :class="open ? 'open' : 'closed'"
+          >
             Portfolio Name A-Z
-            <v-icon class="text--primary-dark">expand_more</v-icon>
           </a>
-          <v-btn class="filter" outlined>
+          <v-btn class="filter px-0" outlined>
             <v-icon class="icon-24">filter_alt</v-icon>
           </v-btn>
         </div>
       </div>
-    </div>
-    <div>
-      <v-divider />
     </div>
 
     <v-row>
@@ -93,6 +94,7 @@ export default class ViewPortfolio extends Vue {
   loadPortfolioDrafts!: (n: void) => Promise<void>;
   @Action("deletePortfolioDraft", { namespace })
   deletePortfolioDraft!: (draftId: string) => Promise<void>;
+  private open = false;
 
   get portfolios(): PortfolioDraft[] {
     return this.portfoliosState.portfolioDrafts;
