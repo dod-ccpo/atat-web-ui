@@ -63,7 +63,8 @@ jobs:
         id: timestamp
         run: echo "::set-output name=timestamp::$(date --iso-8601=seconds)"
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        # The repo has not tagged a release with OIDC support so we must follow master
+        uses: aws-actions/configure-aws-credentials@master
         with:
           aws-region: us-gov-west-1
           role-to-assume: arn:aws-us-gov:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/AtatSpaDeploymentRole
