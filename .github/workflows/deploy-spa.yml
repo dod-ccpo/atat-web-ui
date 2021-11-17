@@ -56,6 +56,8 @@ jobs:
     name: Deploy SPA to AWS
     runs-on: ubuntu-20.04
     needs: build
+    permissions:
+      id-token: write
     steps:
       # Ensure that the account ID does not appear in any log messages in the pipeline
       - run: echo ::add-mask::${{ secrets.AWS_US_GOV_ACCOUNT_ID }}
