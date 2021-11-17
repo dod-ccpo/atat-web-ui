@@ -222,8 +222,9 @@ export default class ATATPortfolioSummaryCard extends Vue {
     this.okText = "Delete Draft Portfolio";
     this.isItemDeleted = false;
     this.cardSelected = card;
-    this.dialogTitle = `Delete  ‘${card.title}’?`;
-    this.dialogMessage = "This draft portfolio will be permanently removed from ATAT. Any details you previously added will not be saved.";
+    this.dialogTitle = `Delete  “${card.title}”?`;
+    this.dialogMessage = `This draft portfolio will be permanently
+      removed from ATAT. Any details you previously added will not be saved.`;
     if (card.id) {
       this.returnFocusElementIdCancel = this.moreButtonId(card.id);
     }
