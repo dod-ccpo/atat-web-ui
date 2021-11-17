@@ -22,9 +22,11 @@
                       <div style="flex-grow: 1">
                         {{ `CLIN ${clin_number}` }}
                       </div>
-                      <div class="text-center" style="width: 54px">
+                      <div
+                        class="text-center d-flex flex-column align-start mr-4"
+                      >
                         <v-icon
-                          class="text-right text--base-darkest"
+                          class="text-right text--base-darkest icon-24"
                           :class="{ 'icon-rotate': open }"
                           >expand_more</v-icon
                         >
@@ -171,7 +173,7 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
-                class="pt-5"
+                class="pt-4"
                 :disabled="isDisabled"
                 :aria-label="'Delete CLIN ' + clin_number"
                 :id="'delete_Clin_' + card_number + '_Button'"
@@ -249,14 +251,13 @@ export default class ClinsCard extends Vue {
   private currencyMask = createNumberMask({
     prefix: "  ",
     allowDecimal: true,
+    requireDecimal: true,
     includeThousandsSeparator: true,
     allowNegative: false,
   });
 
   get isDisabled(): boolean {
-    return (
-      this.model.clins.length === 1 && this.model.clins[0].clin_number === ""
-    );
+    return this.model.clins.length === 1;
   }
 
   get validateDatePicker(): boolean {
@@ -300,18 +301,19 @@ export default class ClinsCard extends Vue {
     this._total_clin_value = this.sanitizeCurrency(value);
   }
   get unmaskTotalClinValue(): string {
-    return this._total_clin_value.toString();
+    return parseFloat(this._total_clin_value.toString()).toFixed(2);
   }
 
   set unmaskObligatedFunds(value: string) {
     this._obligated_funds = this.sanitizeCurrency(value);
   }
   get unmaskObligatedFunds(): string {
-    return this._obligated_funds.toString();
+    return parseFloat(this._obligated_funds.toString()).toFixed(2);
   }
 
   public sanitizeCurrency(value: string): number {
-    return parseFloat(value.toString().replace(/,/g, ""));
+    const unformattedCurrency = value.toString().replace(/,/g, "");
+    return parseFloat(unformattedCurrency);
   }
 
   private getId(prepend: string) {
