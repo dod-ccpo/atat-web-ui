@@ -3,7 +3,7 @@
 
     <h2 aria-label="A paginated list of draft portfolios">
       <v-icon class="text--base-darkest">expand_less</v-icon>
-      Draft
+      Drafts
       <span class="font-size-19 text--base ml-1">15</span>
     </h2>
     <atat-portfolio-summary-card
