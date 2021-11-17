@@ -23,6 +23,7 @@
     <atat-portfolio-summary-card
       :data="cardsData"
       tempPortfolioType="active"
+      tempPortfolioStatus="testing only"
       @portfolio-edit="(id) => $emit('portfolio-edit', id)"
       @portfolio-delete="(id) => $emit('portfolio-delete', id)"
       return-focus-element-id-ok="btn-create-new-portfolio"
@@ -41,16 +42,6 @@
       @portfolio-delete="(id) => $emit('portfolio-delete', id)"
       return-focus-element-id-ok="btn-create-new-portfolio"
     />
-
-    <atat-summary-card
-      emptyCard="Portfolio"
-      cardWidth="120"
-      :data="cardsData"
-      :itemToDelete.sync="itemToDelete"
-      v-on:edit="(id) => $emit('edit', id)"
-      v-on:delete="(id) => $emit('delete', id)"
-      return-focus-element-id-ok="btn-create-new-portfolio"
-    ></atat-summary-card>
 
   </div>
 </template>
