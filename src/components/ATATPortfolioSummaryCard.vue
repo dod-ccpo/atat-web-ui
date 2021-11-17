@@ -40,14 +40,15 @@
               :class="{
                 info: tempPortfolioType === 'draft',
                 archived: tempPortfolioType === 'archived',
-                warning: tempPortfolioType === 'active',
+                warning: tempPortfolioType === 'active' && index % 2,
+                danger: tempPortfolioType === 'active' && !(index % 2),
               }"
             >
               {{ tempPortfolioType === "draft" ? "Draft" : "" }}
               {{ tempPortfolioType === "archived" ? "Archived" : "" }}
               {{ tempPortfolioType === "active" ? "Sample Alert" : "" }}
             </span>
-            <!-- add class "warning", "error", "info" (for drafts), or "archived"
+            <!-- add class "warning", "danger", "info" (for drafts), or "archived"
             to status-alert-banner for different colored backgrounds -->
           </div>
         </div>

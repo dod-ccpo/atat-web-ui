@@ -42,21 +42,16 @@
         background-color: $warning !important;
         color: $base_darkest;
       }
-      &.error {
+      &.danger {
         background-color: $error;
       }
       &.info {
         background-color: $info_dark !important;
       }
-
       &.archived {
         background-color: $base_dark !important;
       }
-
-
     }
-  }
-  .card-header {
   }
 
   .data-header {
@@ -80,8 +75,4 @@
     color: $base;
     line-height: 1;
   }
-  // .col { // EJY delete this
-  //   border: 1px solid red;
-  // }
-
 }

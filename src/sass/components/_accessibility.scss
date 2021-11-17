@@ -152,7 +152,6 @@ a.left-nav-menu-link{
             &:not([aria-expanded="false"]) {
                 border-bottom-left-radius: 0;
                 border-bottom-right-radius: 0;
-                // border-bottom-color: transparent !important;
             }
             .v-icon {
                 color: $primary;
