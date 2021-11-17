@@ -80,7 +80,11 @@
                                 class="optional body text--base-darkest"
                                 id="total_clin_value"
                               >
-                                {{ formatCurrency(total_clin_value) }}
+                                {{
+                                  total_clin_value >= 0
+                                    ? formatCurrency(total_clin_value)
+                                    : "$0.00"
+                                }}
                               </v-col>
                             </v-row>
                           </v-col>
@@ -103,7 +107,11 @@
                                 class="optional body text--base-darkest"
                                 id="obligated_funds"
                               >
-                                {{ formatCurrency(_obligated_funds) }}
+                                 {{
+                                  obligated_funds >= 0
+                                    ? formatCurrency(obligated_funds)
+                                    : "$0.00"
+                                }}
                               </v-col>
                             </v-row>
                           </v-col>
@@ -170,25 +178,31 @@
                 <v-row>
                   <v-col cols="11">
                     <v-form ref="fundFields">
-                      <atat-currency-field
+                      <atat-text-field
+                        v-mask="currencyMask"
                         class="mb-3"
                         id="total-clin-value"
                         label="Total CLIN Value"
                         :rules="totalClinRules"
                         :helpText="clinHelpText"
-                        :value.sync="isTotalClin"
-                        :class="[isTotalClin === '' ? 'empty-funds' : '']"
+                        :value.sync="_total_clin_value"
+                        :class="[
+                          _total_clin_value === null ? 'empty-funds' : '',
+                        ]"
                         prefix="$"
                       />
-                      <atat-currency-field
+                      <atat-text-field
+                        v-mask="currencyMask"
                         class="mb-5"
                         id="obligated-funds"
                         label="Obligated Funds"
                         :rules="obligatedFundRules"
                         :helpText="obligatedFundsHelpText"
-                        :value.sync="isObligatedFunds"
-                        :class="[isObligatedFunds === '' ? 'empty-funds' : '']"
+                        :value.sync="_obligated_funds"
                         @onkeyup="calculateObligatedPercent"
+                        :class="[
+                          _obligated_funds === null ? 'empty-funds' : '',
+                        ]"
                         prefix="$"
                       />
                       <div v-show="obligatedPercent <= 100">
@@ -308,6 +322,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 import { validateNumber } from "@/validation/";
 import { TaskOrderModel } from "../../../../types/Wizard";
+import createNumberMask from "text-mask-addons/dist/createNumberMask";
 
 @Component({
   components: {},
@@ -316,8 +331,8 @@ export default class ClinsCard extends Vue {
   @Prop({ required: true, default: () => -1 }) card_number!: number;
   @PropSync("clin_number") _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
-  @PropSync("total_clin_value") _total_clin_value!: number;
-  @PropSync("obligated_funds") _obligated_funds!: number;
+  @PropSync("total_clin_value", { default: null }) _total_clin_value!: number;
+  @PropSync("obligated_funds", { default: null }) _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
 
@@ -330,6 +345,13 @@ export default class ClinsCard extends Vue {
 
   model: TaskOrderModel = this.$store.getters.getStepModel(2);
 
+  private currencyMask = createNumberMask({
+    prefix: "  ",
+    allowDecimal: true,
+    includeThousandsSeparator: true,
+    allowNegative: false,
+  });
+
   get isDisabled(): boolean {
     return (
       this.model.clins.length == 1 && this.model.clins[0].clin_number == ""
@@ -338,27 +360,6 @@ export default class ClinsCard extends Vue {
 
   get validateDatePicker(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
-  }
-  get isObligatedFunds(): number | string {
-    return this._obligated_funds > 0 ? this._obligated_funds : "";
-  }
-
-  set isObligatedFunds(value: number | string) {
-    if (typeof value === "string") {
-      value = parseFloat(value);
-    }
-    this._obligated_funds = value;
-  }
-
-  get isTotalClin(): number | string {
-    return this._total_clin_value > 0 ? this._total_clin_value : "";
-  }
-
-  set isTotalClin(value: number | string) {
-    if (typeof value === "string") {
-      value = parseFloat(value);
-    }
-    this._total_clin_value = value;
   }
 
   get isValidStartDate(): boolean {
@@ -494,7 +495,8 @@ export default class ClinsCard extends Vue {
     validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
       v = parseFloat(v.toString().replace(/,/g, ""));
-      let ob = parseFloat(this._obligated_funds.toString().replace(/,/g, ""));
+      let ob =
+        parseFloat(this._obligated_funds.toString().replace(/,/g, "")) || 0;
       return v >= ob || "Obligated Funds cannot exceed total CLIN Values";
     });
 
@@ -509,9 +511,8 @@ export default class ClinsCard extends Vue {
     validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
       v = parseFloat(v.toString().replace(/,/g, ""));
-      let totalClin = parseFloat(
-        this._total_clin_value.toString().replace(/,/g, "")
-      );
+      let totalClin =
+        parseFloat(this._total_clin_value.toString().replace(/,/g, "")) || 0;
       return (
         v <= totalClin || "Obligated Funds cannot exceed total CLIN Values"
       );

@@ -52,9 +52,9 @@
               :error="isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="startDate"
-              v-mask="dateMask"
               :value="formatStartDateMMDDYYYY"
               :rules="_startDateRules"
+              v-mask="setDateMask"
               hide-details
               @focus="setFocus"
               @blur="blurTextField"
@@ -90,8 +90,8 @@
               :error="isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="endDate"
-              v-mask="dateMask"
               :value="formatEndDateMMDDYYYY"
+              v-mask="setDateMask"
               @focus="setFocus"
               :rules="_endDateRules"
               hide-details
@@ -252,20 +252,34 @@ export default class ATATDatePicker extends Vue {
   private isTabEvent = false;
 
   /**
-   * textboxes date mask
+   * create date mask with...
+   * 1) month number is between 1-12
+   * 2) day number is between 01-31
+   * 3) year number is between 2020 and 2029
    */
-  public dateMask = [
-    /[01]/,
-    /\d/,
-    "/",
-    /[0-3]?/,
-    /\d/,
-    "/",
-    /[2]/,
-    /[0]/,
-    /[1-3]/,
-    /\d/,
-  ];
+ 
+  public setDateMask(value: string): (string | RegExp)[] {
+    const numbers = value.replace(/[^0-7]/g, "");
+    const month = [/[0-1]/, numbers.charAt(0) === "0" ? /[1-9]/ : /[0-2]/];
+    let day: (string | RegExp)[] = [];
+    const year = [/[2]/, /[0]/, /[2]/, /[0-9]/];
+    switch (numbers.charAt(2)) {
+      case "0":
+        day = [/[1-9]/];
+        break;
+      case "1":
+      case "2":
+        day = [/[0-9]/];
+        break;
+      case "3":
+        day = [/[0-1]/];
+        break;
+    }
+    day = [/[0-3]/, ...day];
+    return [...month, "/", ...day, "/", ...year];
+  }
+
+
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {

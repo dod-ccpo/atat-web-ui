@@ -53,7 +53,6 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   }
 
   public deleteClin(itemNumber: number): void {
-    debugger;
     const index = itemNumber - 1;
     const clinLength = this.model.clins.length;
     if (clinLength == 1) {
