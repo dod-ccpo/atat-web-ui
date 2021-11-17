@@ -65,9 +65,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_US_GOV_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_US_GOV_SECRET_ACCESS_KEY }}
           aws-region: us-gov-west-1
+          role-to-assume: arn:aws-us-gov:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/AtatSpaDeploymentRole
+          role-session-name: Deployment${{ github.run_id }}-${{ github.run_attempt }}
       - name: Download site artifact
         id: download
         uses: actions/download-artifact@v2
