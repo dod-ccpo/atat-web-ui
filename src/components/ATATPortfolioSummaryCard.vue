@@ -8,22 +8,28 @@
       elevation="0"
     >
       <div class="pr-5">
-        <div class="logo">
-          CSP logo
-        </div>
+        <div class="logo">CSP logo</div>
       </div>
       <div class="pr-5 flex-grow-1">
-        <div class="d-flex mb-1 flex-row-reverse flex-md-row flex-column-reverse">
-          <div class="card-header flex-grow-1 foo-border">
-            <a role="button" @click="editPortfolio(card)" tabindex="0" class="h3 text-link">
+        <div
+          class="d-flex mb-1 flex-row-reverse flex-md-row flex-column-reverse"
+        >
+          <div class="card-header flex-grow-1">
+            <a
+              role="button"
+              @click="editPortfolio(card)"
+              tabindex="0"
+              class="h3 text-link"
+            >
               {{ card.title }}
             </a>
           </div>
+          <!-- NOTE logic for displaying alert banners will be need to be finalized
+          after getting actual data from backend -->
           <div
             v-if="tempPortfolioStatus !== ''"
             class="
               status-alert-banner-wrapper
-              foo-border
               ml-md-5
               text-md-right
               mb-2 mb-md-0
@@ -33,13 +39,16 @@
               class="status-alert-banner"
               :class="{
                 info: tempPortfolioType === 'draft',
-                archived: tempPortfolioType === 'archived'
+                archived: tempPortfolioType === 'archived',
+                warning: tempPortfolioType === 'active',
               }"
             >
               {{ tempPortfolioType === "draft" ? "Draft" : "" }}
               {{ tempPortfolioType === "archived" ? "Archived" : "" }}
+              {{ tempPortfolioType === "active" ? "Sample Alert" : "" }}
             </span>
-            <!-- TODO add class "warning", "error", "info" (for drafts), or "archived" to status-alert-banner for different colored backgrounds -->
+            <!-- add class "warning", "error", "info" (for drafts), or "archived"
+            to status-alert-banner for different colored backgrounds -->
           </div>
         </div>
         <div class="text--base-dark mb-4">
@@ -49,8 +58,7 @@
 
           <span v-if="tempPortfolioType === 'archived'">
             <atat-separator-bullet />
-              <span class="text-no-wrap">Archived on
-              Sept. 12, 2021</span>
+            <span class="text-no-wrap">Archived on Sept. 12, 2021</span>
           </span>
         </div>
 
@@ -64,7 +72,7 @@
         <v-row v-if="tempPortfolioType === 'active'">
           <v-col class="col-12 col-md-4 col-lg-3 col-xl-2">
             <span class="data-header">Total Obligated</span>
-            <span class="data-primary d-block">
+            <span class="data-primary d-block text-no-wrap">
               $15,000,000.00
             </span>
 
@@ -72,13 +80,14 @@
           <v-col class="col-12 col-md-4 col-lg-3">
             <span class="data-header">Funds Spent (%)</span>
             <span class="data-primary d-block">
-              <span class="funds-spent mr-2">$10,000,000.00</span>
-              <span class="funds-percent">(67%)</span>
+              <span class="funds-spent mr-2 text-no-wrap">$10,000,000.00</span>
+              <span class="funds-percent text-no-wrap">(67%)</span>
             </span>
             <span class="data-secondary d-block">
               $5,000,000.00 remaining
             </span>
           </v-col>
+
           <v-col class="col-12 col-md-4 col-lg-6">
             <span class="data-header">Current Period of Performance</span>
             <span class="data-primary d-block">
@@ -88,10 +97,8 @@
             <span class="data-secondary d-block">
               5 days until next period of performance
             </span>
-
           </v-col>
         </v-row>
-
       </div>
       <div>
         <v-menu
@@ -115,15 +122,14 @@
             <v-list-item
               v-for="(menuOptionText, index) in menuOptions"
               :key="index"
-              @click="
-                handleMenuClick(menuOptionText, $event, card, moreButtonId(card.id))
-              "
+              @click="handleMenuClick(menuOptionText, $event, card)"
             >
-              <v-list-item-title class="body-lg py-2">{{ menuOptionText }}</v-list-item-title>
+              <v-list-item-title class="body-lg py-2">
+                {{ menuOptionText }}
+              </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
-
       </div>
     </v-card>
 
@@ -181,12 +187,14 @@ export default class ATATPortfolioSummaryCard extends Vue {
   })
   private data!: ATATSummaryCards;
 
-  // EJY temp props to show draft v active cards
+  // EJY temp props to show draft, active, and archived portfolio summary cards
+  // for testing layout only -- logic for this and many other functionality will
+  // be refactored/finalized once have actual data from the backend
   @Prop({ default: "" }) private tempPortfolioType?: string;
   @Prop({ default: "" }) private tempPortfolioStatus?: string;
+
   @PropSync("itemToDelete")
   private _itemToDelete!: string;
-
 
   get menuOptions(): string[] {
     switch (this.tempPortfolioType) {
@@ -218,8 +226,6 @@ export default class ATATPortfolioSummaryCard extends Vue {
       this.returnFocusElementIdCancel = this.moreButtonId(card.id);
     }
     this.showDialogWhenClicked = true;
-
-    // this.$emit("portfolio-delete", card.id);
   }
 
   @Watch("isItemDeleted")
@@ -232,8 +238,7 @@ export default class ATATPortfolioSummaryCard extends Vue {
   private handleMenuClick(
     menuOptionText: any,
     event: Event,
-    card: ATATSummaryCardItem, // once have data, will make new type
-    returnFocusId: string
+    card: ATATSummaryCardItem // once have actual data, will need to make new type
   ): void {
     switch (menuOptionText) {
       case "Edit draft portfolio":
@@ -246,7 +251,6 @@ export default class ATATPortfolioSummaryCard extends Vue {
   }
 
   public editPortfolio(card: ATATSummaryCardItem): void {
-    // EJY different emits for Active and Archived portfolios?
     this.$emit("portfolio-edit", card.id);
   }
 
@@ -254,13 +258,5 @@ export default class ATATPortfolioSummaryCard extends Vue {
   private onDelete(): string {
     return this.cardSelected.id || "";
   }
-
-
 }
 </script>
-
-<style scoped>
-  /* .foo-border {
-    border: 1px solid blue;
-  } */
-</style>
