@@ -62,11 +62,13 @@
     </div>
 
     <v-row>
-      <v-col cols="6" v-if="portfolios && portfolios.length > 0">
+      <v-col v-if="portfolios && portfolios.length > 0">
         <portfolio-summary
           :portfolioDrafts="portfolios"
           v-on:delete="onDeletePortfolio"
           v-on:edit="onEditPortfolio"
+          @portfolio-edit="onEditPortfolio"
+          @portfolio-delete="onDeletePortfolio"
         ></portfolio-summary>
       </v-col>
     </v-row>

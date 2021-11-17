@@ -7,10 +7,10 @@
     aria-describedby="modalDeleteMessage"
   >
     <v-card>
-      <v-card-title class="h3 text-break" id="modalDeleteTitle" tabindex="-1">
-        {{ title }}
+      <v-card-title class="h2 text-break" id="modalDeleteTitle" tabindex="-1">
+        {{ getTitle }}
       </v-card-title>
-      <v-card-text class="body-lg black--text" id="modalDeleteMessage">
+      <v-card-text class="body-lg black--text mb-7" id="modalDeleteMessage">
         {{ message }}
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -68,6 +68,13 @@ export default class ATATModalDelete extends Vue {
         }, 100);
       });
     }
+  }
+
+  get getTitle(): string {
+    if (this.title && this.title.length > 60) {
+      return this.title.substring(0, 60) + "...”?";
+    }
+    return this.title;
   }
 
   private cancelItem() {

@@ -16,6 +16,12 @@
  }
 .v-input.search-bar {
   border-radius: 4px 0px 0px 4px;
+  &.v-input--is-focused {
+    fieldset[aria-hidden=true] {
+      height: 44px;
+      margin-top: 1px;
+    }
+  }
 }
 
 .v-text-field--outlined {
