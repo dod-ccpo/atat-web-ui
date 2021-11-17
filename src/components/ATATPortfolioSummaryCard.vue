@@ -135,7 +135,6 @@
     </v-card>
 
     <atat-modal-delete
-      v-show="hasDialog"
       :showDialogWhenClicked.sync="showDialogWhenClicked"
       :title="dialogTitle"
       :message="dialogMessage"
