@@ -86,22 +86,23 @@
                     <atat-text-field
                       v-mask="currencyMask"
                       class="mb-3"
-                      id="total-clin-value"
+                      :id="getId('total_clin_value')"
                       label="Total CLIN Value"
                       :rules="totalClinRules"
                       :helpText="clinHelpText"
-                      :value.sync="_total_clin_value"
+                      :value.sync="unmaskTotalClinValue"
                       :class="[_total_clin_value === null ? 'empty-funds' : '']"
                       prefix="$"
                     />
                     <atat-text-field
                       v-mask="currencyMask"
                       class="mb-5"
-                      id="obligated-funds"
+                      :ref="getId('obligated_funds')"
+                      :id="getId('obligated_funds')"
                       label="Obligated Funds"
                       :rules="obligatedFundRules"
                       :helpText="obligatedFundsHelpText"
-                      :value.sync="_obligated_funds"
+                      :value.sync="unmaskObligatedFunds"
                       @onkeyup="calculateObligatedPercent"
                       :class="[_obligated_funds === null ? 'empty-funds' : '']"
                       prefix="$"
@@ -137,7 +138,7 @@
                   >
                     <v-form ref="dateFields">
                       <atat-date-picker
-                        :id="'clin_' + card_number"
+                        :id="getId('datepicker')"
                         :errormessages.sync="datePickerErrorMessages"
                         :title.sync="datepickerTitle"
                         :daterange.sync="dateRange"
@@ -293,6 +294,28 @@ export default class ClinsCard extends Vue {
   @Watch("_pop_end_date")
   protected setEndDate(): void {
     this.setDateRange();
+  }
+
+  set unmaskTotalClinValue(value: string) {
+    this._total_clin_value = this.sanitizeCurrency(value);
+  }
+  get unmaskTotalClinValue(): string {
+    return this._total_clin_value.toString();
+  }
+
+  set unmaskObligatedFunds(value: string) {
+    this._obligated_funds = this.sanitizeCurrency(value);
+  }
+  get unmaskObligatedFunds(): string {
+    return this._obligated_funds.toString();
+  }
+
+  public sanitizeCurrency(value: string): number {
+    return parseFloat(value.toString().replace(/,/g, ""));
+  }
+
+  private getId(prepend: string) {
+    return prepend + "_" + this.card_number;
   }
 
   private setDateRange(): void {

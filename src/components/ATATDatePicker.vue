@@ -257,7 +257,7 @@ export default class ATATDatePicker extends Vue {
    * 2) day number is between 01-31
    * 3) year number is between 2020 and 2029
    */
- 
+
   public setDateMask(value: string): (string | RegExp)[] {
     const numbers = value.replace(/[^0-7]/g, "");
     const month = [/[0-1]/, numbers.charAt(0) === "0" ? /[1-9]/ : /[0-2]/];
@@ -278,8 +278,6 @@ export default class ATATDatePicker extends Vue {
     day = [/[0-3]/, ...day];
     return [...month, "/", ...day, "/", ...year];
   }
-
-
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
