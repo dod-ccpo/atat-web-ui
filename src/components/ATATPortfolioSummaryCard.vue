@@ -15,7 +15,7 @@
       <div class="pr-5 flex-grow-1">
         <div class="d-flex mb-1 flex-row-reverse flex-md-row flex-column-reverse">
           <div class="card-header flex-grow-1 foo-border">
-            <a role="button" @click="editPortfolio(card)" class="h3 text-link">
+            <a role="button" @click="editPortfolio(card)" tabindex="0" class="h3 text-link">
               {{ card.title }}
             </a>
           </div>
@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="text--base-dark mb-4">
-          <a role="button" class="text-link">Maria Missionowner</a>
+          <a role="button" class="text-link" tabindex="0">Maria Missionowner</a>
           <atat-separator-bullet />
           <span>Army, Navy</span>
 
@@ -116,7 +116,7 @@
               v-for="(menuOptionText, index) in menuOptions"
               :key="index"
               @click="
-                handleMenuClick(menuOptionText, $event, moreButtonId(card.id))
+                handleMenuClick(menuOptionText, $event, card, moreButtonId(card.id))
               "
             >
               <v-list-item-title class="body-lg py-2">{{ menuOptionText }}</v-list-item-title>
@@ -126,12 +126,28 @@
 
       </div>
     </v-card>
+
+    <atat-modal-delete
+      v-show="hasDialog"
+      :showDialogWhenClicked.sync="showDialogWhenClicked"
+      :title="dialogTitle"
+      :message="dialogMessage"
+      :isItemDeleted.sync="isItemDeleted"
+      persistent
+      no-click-animation
+      :okText="okText"
+      width="450px"
+      @delete="onDelete"
+      :focus-on-cancel="returnFocusElementIdCancel"
+      :focus-on-ok="returnFocusElementIdOk"
+    />
+
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
 import { ATATSummaryCardItem, ATATSummaryCards } from "types/Wizard";
 import ATATSeparatorBullet from "@/components/ATATSeparatorBullet.vue"
 
@@ -141,6 +157,22 @@ import ATATSeparatorBullet from "@/components/ATATSeparatorBullet.vue"
   }
 })
 export default class ATATPortfolioSummaryCard extends Vue {
+  private draftOptions: string[] = [
+    "Edit draft portfolio",
+    "Delete draft portfolio",
+  ];
+  private activeOptions: string[] = ["Open portfolio", "Archive portfolio"];
+  private archivedOptions: string[] = ["Open portfolio"];
+
+  private dialogTitle = "";
+  private dialogMessage = "";
+  private showDialogWhenClicked = false;
+  private returnFocusElementIdOk = "btn-create-new-portfolio";
+  private returnFocusElementIdCancel = "";
+  private isItemDeleted = false;
+  private cardSelected: ATATSummaryCardItem = {};
+  private okText = "";
+
   @Prop({
     default: {
       cards: [],
@@ -152,13 +184,9 @@ export default class ATATPortfolioSummaryCard extends Vue {
   // EJY temp props to show draft v active cards
   @Prop({ default: "" }) private tempPortfolioType?: string;
   @Prop({ default: "" }) private tempPortfolioStatus?: string;
+  @PropSync("itemToDelete")
+  private _itemToDelete!: string;
 
-  private draftOptions: string[] = [
-    "Edit draft portfolio",
-    "Delete draft portfolio",
-  ];
-  private activeOptions: string[] = ["Open portfolio", "Archive portfolio"];
-  private archivedOptions: string[] = ["Open portfolio"];
 
   get menuOptions(): string[] {
     switch (this.tempPortfolioType) {
@@ -180,10 +208,54 @@ export default class ATATPortfolioSummaryCard extends Vue {
     return "";
   }
 
+  private confirmPortfolioDelete(card: ATATSummaryCardItem) {
+    this.okText = "Delete Draft Portfolio";
+    this.isItemDeleted = false;
+    this.cardSelected = card;
+    this.dialogTitle = `Delete  ‘${card.title}’?`;
+    this.dialogMessage = "This draft portfolio will be permanently removed from ATAT. Any details you previously added will not be saved.";
+    if (card.id) {
+      this.returnFocusElementIdCancel = this.moreButtonId(card.id);
+    }
+    this.showDialogWhenClicked = true;
+
+    // this.$emit("portfolio-delete", card.id);
+  }
+
+  @Watch("isItemDeleted")
+  protected deleteItem(newVal: string): void {
+    if (newVal !== "") {
+      this._itemToDelete = newVal ? this.cardSelected.title || "" : "";
+    }
+  }
+
+  private handleMenuClick(
+    menuOptionText: any,
+    event: Event,
+    card: ATATSummaryCardItem, // once have data, will make new type
+    returnFocusId: string
+  ): void {
+    switch (menuOptionText) {
+      case "Edit draft portfolio":
+        this.$emit("portfolio-edit", card.id);
+        break;
+      case "Delete draft portfolio":
+        this.confirmPortfolioDelete(card);
+        break;
+    }
+  }
+
   public editPortfolio(card: ATATSummaryCardItem): void {
     // EJY different emits for Active and Archived portfolios?
     this.$emit("portfolio-edit", card.id);
   }
+
+  @Emit("portfolio-delete")
+  private onDelete(): string {
+    return this.cardSelected.id || "";
+  }
+
+
 }
 </script>
 

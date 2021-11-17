@@ -64,6 +64,7 @@
           v-on:delete="onDeletePortfolio"
           v-on:edit="onEditPortfolio"
           @portfolio-edit="onEditPortfolio"
+          @portfolio-delete="onDeletePortfolio"
         ></portfolio-summary>
       </v-col>
     </v-row>
@@ -113,7 +114,6 @@ export default class ViewPortfolio extends Vue {
   }
 
   private async onEditPortfolio(draftId: string): Promise<void> {
-    debugger;
     await this.$store.dispatch("loadPortfolioDraft", draftId);
     this.$router.push({ name: "addportfolio" });
   }

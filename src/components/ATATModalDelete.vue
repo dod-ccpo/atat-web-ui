@@ -7,10 +7,10 @@
     aria-describedby="modalDeleteMessage"
   >
     <v-card>
-      <v-card-title class="h3 text-break" id="modalDeleteTitle" tabindex="-1">
+      <v-card-title class="h2 text-break" id="modalDeleteTitle" tabindex="-1">
         {{ title }}
       </v-card-title>
-      <v-card-text class="body-lg black--text" id="modalDeleteMessage">
+      <v-card-text class="body-lg black--text mb-7" id="modalDeleteMessage">
         {{ message }}
       </v-card-text>
       <v-card-actions class="d-flex justify-end">

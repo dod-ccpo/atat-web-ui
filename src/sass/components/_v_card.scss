@@ -27,7 +27,9 @@
     }
   }
 }
-
+.v-card__title {
+  padding: 24px 24px 12px !important;
+}
 .v-card__text, .v-card__title {
   letter-spacing: -0.02rem !important;
 }

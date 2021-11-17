@@ -4,7 +4,8 @@
   }
   .v-card__actions {
     height: 74px;
-    background-color: $base_lightest;
+    background-color: white;
+    border-top: 1px solid $base-lighter;
   }
 }
 
