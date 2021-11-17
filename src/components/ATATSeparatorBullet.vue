@@ -2,9 +2,9 @@
   <span
     class="separator-bullet"
     aria-hidden="true"
-    :style="{ margin: '0px ' + margin }"
+    :style="{ margin: '0px ' + margin, color: color }"
   >
-    <v-icon :style="{ color: color }">circle</v-icon>
+    &bull;
   </span>
 </template>
 

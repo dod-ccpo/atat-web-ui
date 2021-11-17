@@ -63,8 +63,11 @@
           </span>
         </div>
 
-        <div v-if="tempPortfolioType === 'draft'" class="text--base-dark">
-          <v-icon>task_alt</v-icon>
+        <div
+          v-if="tempPortfolioType === 'draft'"
+          class="text--base-dark d-flex"
+        >
+          <v-icon class="mr-1">task_alt</v-icon>
           2 of 5 steps complete
           <atat-separator-bullet />
           Last updated Oct. 1, 2022
