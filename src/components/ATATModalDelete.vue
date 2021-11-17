@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-card-title class="h2 text-break" id="modalDeleteTitle" tabindex="-1">
-        {{ title }}
+        {{ getTitle }}
       </v-card-title>
       <v-card-text class="body-lg black--text mb-7" id="modalDeleteMessage">
         {{ message }}
@@ -68,6 +68,13 @@ export default class ATATModalDelete extends Vue {
         }, 100);
       });
     }
+  }
+
+  get getTitle(): string {
+    if (this.title.length > 60) {
+      return `${this.title.substring(0, 60)}...’?`;
+    }
+    return this.title;
   }
 
   private cancelItem() {
