@@ -1,25 +1,22 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
-import VueRouter from "vue-router";
-import ATATTextField from "@/components/ATATTextField.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
 Vue.use(Vuetify);
-
-describe("Testing ATATTextField Component", () => {
+describe("Testing ATATTextArea Component", () => {
   const localVue = createLocalVue();
-  localVue.use(VueRouter);
-  const router = new VueRouter();
   let vuetify: any;
   let wrapper: any;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(ATATTextField, {
-      router,
+    wrapper = mount(ATATTextArea, {
       localVue,
       vuetify,
+      stubs: ["atat-text-field", "atat-text-area"],
     });
   });
+
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
