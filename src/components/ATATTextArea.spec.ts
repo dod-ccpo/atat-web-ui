@@ -20,4 +20,14 @@ describe("Testing ATATTextArea Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
+  it("showStatusIcon true optional", async () => {
+    await wrapper.setProps({ optional: true, value: "hello" });
+    await wrapper.vm.showStatusIcon();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("showStatusIcon false optional", async () => {
+    await wrapper.setData({ valid: false });
+    await wrapper.vm.showStatusIcon();
+    expect(wrapper.exists()).toBe(true);
+  });
 });
