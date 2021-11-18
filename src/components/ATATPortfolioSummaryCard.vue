@@ -17,7 +17,9 @@
           <div class="card-header flex-grow-1">
             <a
               role="button"
-              @click="editPortfolio(card)"
+              @click="editPortfolio(card, $event)"
+              @keydown.enter="editPortfolio(card, $event)"
+              @keydown.space="editPortfolio(card, $event)"
               tabindex="0"
               class="h3 text-link"
             >
@@ -253,7 +255,10 @@ export default class ATATPortfolioSummaryCard extends Vue {
     }
   }
 
-  public editPortfolio(card: ATATSummaryCardItem): void {
+  public editPortfolio(card: ATATSummaryCardItem, event: KeyboardEvent): void {
+    if (event.code !== undefined) {
+      event.preventDefault();
+    }
     this.$emit("portfolio-edit", card.id);
   }
 
