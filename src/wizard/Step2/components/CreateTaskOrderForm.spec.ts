@@ -82,4 +82,25 @@ describe("Testing CreatePortfolioForm Component", () => {
     const validated = await wrapper.vm.validateForm();
     expect(validated).toBe(true);
   });
+
+  it("test onRemoveFile() ", async () => {
+    await wrapper.setProps({
+      task_order_file: {
+        name: "test",
+      },
+    });
+    await wrapper.vm.onRemoveFile();
+    const validated = await wrapper.vm.validateForm();
+    expect(validated).toBe(false);
+  });
+
+  it("test did user signedTaskOrder", async () => {
+    await wrapper.vm.DidUserSignTaskOrder();
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("test ExpandAddedClin", async () => {
+    await wrapper.vm.ExpandAddedClin();
+    expect(wrapper.exists()).toBe(true);
+  });
 });
