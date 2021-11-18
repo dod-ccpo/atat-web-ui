@@ -319,13 +319,13 @@ export default class ATATDatePicker extends Vue {
     this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
     this.menu = true;
 
-    this.dateMask = "'##/##/####";
+    this.dateMask = "##/##/####";
 
     //resets datepicker to correct month depending
     //on what text box is focused.
 
     if (this.isStartTextBoxFocused) {
-      if (this.isDateValid(this.startDate)){
+      if (this.isDateValid(this.startDate)) {
         this.firstMonth = this.startDate;
       } else {
         this.setStartDate("");
