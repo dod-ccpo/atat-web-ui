@@ -84,4 +84,12 @@ describe("Testing Create ClinsCard Component", () => {
     const valid = await wrapper.vm.validate();
     expect(valid).toBe(true);
   });
+  it("Has no data ", async () => {
+    await wrapper.setProps({ clins: [] });
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test ExpandAddedClin ", async () => {
+    await wrapper.vm.ExpandAddedClin();
+    expect(wrapper.exists()).toBe(true);
+  });
 });
