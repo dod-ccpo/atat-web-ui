@@ -61,7 +61,7 @@
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              <v-expansion-panel-content transition="slide-y-transition">
                 <div class="input-max-width pb-10">
                   <atat-text-field
                     class="mb-3"
@@ -90,10 +90,10 @@
                       class="mb-3"
                       :id="getId('total_clin_value')"
                       label="Total CLIN Value"
+                      @blur="validateFundFields"
                       :rules="totalClinRules"
                       :helpText="clinHelpText"
                       :value.sync="unmaskTotalClinValue"
-                      :class="[_total_clin_value === null ? 'empty-funds' : '']"
                       prefix="$"
                     />
                     <atat-text-field
@@ -103,10 +103,10 @@
                       :id="getId('obligated_funds')"
                       label="Obligated Funds"
                       :rules="obligatedFundRules"
+                      @blur="validateFundFields"
                       :helpText="obligatedFundsHelpText"
                       :value.sync="unmaskObligatedFunds"
                       @onkeyup="calculateObligatedPercent"
-                      :class="[_obligated_funds === null ? 'empty-funds' : '']"
                       prefix="$"
                     />
 
@@ -152,7 +152,7 @@
                         :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
                         :nudgeleft="1"
                         :min="minDate"
-                        :max="maxDate"
+                        :max="JWCCContractEndDate"
                       />
                     </v-form>
                   </div>
@@ -249,9 +249,8 @@ export default class ClinsCard extends Vue {
   model: TaskOrderModel = this.$store.getters.getStepModel(2);
 
   private currencyMask = createNumberMask({
-    prefix: "  ",
+    prefix: "",
     allowDecimal: true,
-    requireDecimal: true,
     includeThousandsSeparator: true,
     allowNegative: false,
   });
@@ -298,17 +297,26 @@ export default class ClinsCard extends Vue {
   }
 
   set unmaskTotalClinValue(value: string) {
-    this._total_clin_value = this.sanitizeCurrency(value);
+    this._total_clin_value = Number(this.sanitizeCurrency(value).toFixed(2));
   }
   get unmaskTotalClinValue(): string {
-    return parseFloat(this._total_clin_value.toString()).toFixed(2);
+    return this._total_clin_value > 0
+      ? this.formatCurrency(this._total_clin_value)
+      : "";
   }
 
   set unmaskObligatedFunds(value: string) {
-    this._obligated_funds = this.sanitizeCurrency(value);
+    this._obligated_funds = Number(this.sanitizeCurrency(value).toFixed(2));
   }
   get unmaskObligatedFunds(): string {
-    return parseFloat(this._obligated_funds.toString()).toFixed(2);
+    console.log(this._obligated_funds);
+    return this._obligated_funds > 0
+      ? this.formatCurrency(this._obligated_funds)
+      : "";
+  }
+
+  public formatCurrency(value: number): string{
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   public sanitizeCurrency(value: string): number {
@@ -356,8 +364,8 @@ export default class ClinsCard extends Vue {
 
   private dialog = false;
   private progress: HTMLProgressElement | undefined;
-  private minDate = "2020-10-01";
-  private maxDate = "2022-09-30";
+  private minDate = "2019-09-14";
+  public JWCCContractEndDate = "2022-09-14";
   private validateFormWhenLeaving = false;
 
   public rules = {};
@@ -369,20 +377,14 @@ export default class ClinsCard extends Vue {
     return true;
   }
 
-  public formatCurrency(value: string | number): string {
-    const amount =
-      typeof value === "string" ? Number(value.replace(",", "")) : value;
-    return this.formatter.format(amount);
-  }
-
   public formatDate(value: string): string {
     return moment(new Date(`${value} 00:00:00`)).format("MMM DD, YYYY");
   }
 
-  public JWCCContractEndDate = "2022-09-14";
-
   public toggleClinCard(): void {
+    // if (this.openItem === 0){
     this.focusClinNumberOnCardOpen = true;
+    // }
     this.calculateObligatedPercent();
   }
 
@@ -456,7 +458,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidStartDate ||
-          "Please enter a start date using the format 'MM/DD/YYYY'"
+          "Please enter a valid start date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -497,7 +499,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidEndDate ||
-          "Please enter an end date using the format 'MM/DD/YYYY'"
+          "Please enter a valid end date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -539,9 +541,9 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
-  @Watch("_obligated_funds")
-  @Watch("_total_clin_value")
-  validateFundsFields(): void {
+  // @Watch("_obligated_funds")
+  // @Watch("_total_clin_value")
+  private validateFundFields(): void {
     this.FundFields.validate();
   }
 

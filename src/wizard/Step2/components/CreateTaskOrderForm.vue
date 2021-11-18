@@ -164,7 +164,7 @@ export default class CreateTaskOrderForm extends Vue {
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
   @PropSync("clins") _clins!: Clin[];
   @Prop({ default: false }) private validateOnLoad!: boolean;
-  @Prop({ default: false }) private signed!: boolean;
+  @PropSync("signed", { default: false }) private _signed!: boolean;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -189,7 +189,7 @@ export default class CreateTaskOrderForm extends Vue {
     this.signedTaskOrder = signed ? "Yes" : "No";
     this.isYesButtonClicked = signed;
     this.isNoButtonClicked = !signed;
-    this.signed = signed;
+    this._signed = signed;
   }
 
   public DidUserSignTaskOrder(): boolean {
@@ -233,13 +233,13 @@ export default class CreateTaskOrderForm extends Vue {
   private mounted(): void {
     this.ExpandAddedClin(true);
     if (
-      this.signed &&
+      this._signed &&
       this._task_order_file &&
       this._task_order_file.name &&
       this._task_order_file.id
     ) {
       this.savedTaskOrderSigned = true;
-      this.isTaskOrderSigned(this.signed);
+      this.isTaskOrderSigned(this._signed);
     }
   }
 

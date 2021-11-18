@@ -166,12 +166,12 @@ export default class Step2Summary extends Vue {
           {
             title: "Total Value",
             prefix: "$",
-            value: totalClinValue,
+            value: this.formatCurrency(totalClinValue),
           },
           {
             title: "Obligated Funds",
             prefix: "$",
-            value: totalObligatedFunds,
+            value: this.formatCurrency(totalObligatedFunds),
           },
         ],
         leftButtonText: "Edit",
@@ -181,6 +181,12 @@ export default class Step2Summary extends Vue {
     }, this);
   }
 
+  public formatCurrency(value: number): string {
+    return value
+      .toFixed(2)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
   public async beforeRouteLeave(
     to: unknown,
     from: unknown,
