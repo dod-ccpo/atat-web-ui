@@ -18,9 +18,25 @@ describe("Testing ATATTextField Component", () => {
       router,
       localVue,
       vuetify,
+      propsData: {
+        rules: [(v: string) => !!v || "is required"],
+      },
     });
   });
   it("renders successfully", async () => {
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test input actions, is success", async () => {
+    await wrapper.setData({
+      isFieldDirty: true,
+      isFieldValid: true,
+    });
+    await wrapper.vm.inputActions("hello");
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("testing validateField", async () => {
+    await wrapper.vm.validateField();
+    await wrapper.setProps({ validateOnLoad: true });
     expect(wrapper.exists()).toBe(true);
   });
 });

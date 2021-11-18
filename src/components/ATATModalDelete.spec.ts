@@ -40,4 +40,15 @@ describe("Testing ATATModalDelete Component", () => {
     await cancelDialog.trigger("click");
     await wrapper.vm.deleteItem();
   });
+  it("testing setFocus W/O newVal", async () => {
+    await wrapper.vm.setFocus();
+    expect(wrapper.vm.setFocus()).toBe(undefined);
+  });
+  it("testing getTitle newVal", async () => {
+    await wrapper.setProps({
+      title:
+        "gfjdkslgfjkdslfhjkdslghfukdgfhjkdslgfukldsgfhjkgdjsk;fgdjsfkfgjdkgfhjkdgfhjkdslgjkl;dgfudgbfjhdvbhdlgfujkewhflkjhdjk;",
+    });
+    expect(wrapper.exists()).toBe(true);
+  });
 });

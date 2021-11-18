@@ -67,8 +67,8 @@ Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
 
 Vue.use(RouterMiddleWare, {
-  store: store, 
-  router: router, 
+  store: store,
+  router: router,
   handlers: routeHandlers,
 });
 

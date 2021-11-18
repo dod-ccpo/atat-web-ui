@@ -176,6 +176,17 @@ export interface ATATSummaryCards {
   cards: ATATSummaryCardItem[];
 }
 
+export interface ATATPortfolioSummaryCardItem {
+  id?: string;
+  portfolioName?: string;
+  portfolioLink?: string;
+  // to be completed when have data structure for portfolio summary cards finalized
+}
+
+export interface ATATPortfolioSummaryCards {
+  cards: ATATPortfolioSummaryCardItem[];
+}
+
 export interface CustomErrorMessage {
   key: number;
   message: string;

@@ -15,7 +15,13 @@
     border: 1px solid $base_dark !important;
  }
 .v-input.search-bar {
-  border-radius: 6px 0px 0px 6px;
+  border-radius: 4px 0px 0px 4px;
+  &.v-input--is-focused {
+    fieldset[aria-hidden=true] {
+      height: 44px;
+      margin-top: 1px;
+    }
+  }
 }
 
 .v-text-field--outlined {

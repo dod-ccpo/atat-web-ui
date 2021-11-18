@@ -82,6 +82,8 @@ import {
 import { Component } from "vue-property-decorator";
 import { addfunding, editfunding } from "@/router/wizard";
 import ExpandableLink from "@/components/ExpandableLink.vue";
+import TaskOrderModuleData from "@/mixins/TaskOrderModuleData";
+import { mixins } from "vue-class-component";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -90,7 +92,7 @@ Component.registerHooks(["beforeRouteLeave"]);
     ExpandableLink,
   },
 })
-export default class Step2Summary extends Vue {
+export default class Step2Summary extends mixins(TaskOrderModuleData) {
   private async mounted(): Promise<void> {
     this.transformData();
   }
@@ -99,10 +101,6 @@ export default class Step2Summary extends Vue {
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
-
-  get taskOrders(): TaskOrderModel[] {
-    return this.$store.state.taskOrderModels;
-  }
 
   async onDeleteTaskOrder(id: string): Promise<void> {
     await this.$store.dispatch("deleteTaskOrder", id);
