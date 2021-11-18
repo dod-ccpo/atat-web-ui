@@ -16,7 +16,11 @@
                 <template v-slot:default="{ open }">
                   <v-container class="pa-0">
                     <div class="d-flex h3 text--base-darkest py-4 width-100">
-                      <div class="text-center" style="width: 54px">
+                      <div
+                        class="text-center"
+                        id="card_number"
+                        style="width: 54px"
+                      >
                         {{ card_number }}
                       </div>
                       <div style="flex-grow: 1">
@@ -44,7 +48,7 @@
                           <th>Period of Performance</th>
                         </tr>
                         <tr class="body">
-                          <td>{{ _idiq_clin }}</td>
+                          <td class="idiq_clin">{{ _idiq_clin }}</td>
                           <td>{{ formatCurrency(total_clin_value) }}</td>
                           <td>{{ formatCurrency(_obligated_funds) }}</td>
                           <td style="white-space: nowrap">
@@ -315,7 +319,7 @@ export default class ClinsCard extends Vue {
       : "";
   }
 
-  public formatCurrency(value: number): string{
+  public formatCurrency(value: number): string {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
