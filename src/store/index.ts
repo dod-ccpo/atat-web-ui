@@ -59,7 +59,16 @@ const createStepTwoModel = () => {
       name: "",
       status: "",
     },
-    clins: [],
+    clins: [
+      {
+        clin_number: "",
+        idiq_clin: "",
+        total_clin_value: 0,
+        obligated_funds: 0,
+        pop_start_date: "",
+        pop_end_date: "",
+      },
+    ],
   };
 };
 

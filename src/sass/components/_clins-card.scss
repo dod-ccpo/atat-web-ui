@@ -1,24 +1,35 @@
 @import "../utils//colors.scss";
 
-
 .clins-card {
+   .v-expansion-panel-content__wrap {
+      padding: 0 54px 40px;
+   }
+   .v-expansion-panel {
+      border: 1px solid $base_lightest;
 
-    .v-expansion-panel {
-        border: 1px solid $base_lightest;
-           
-        .v-expansion-panel-header {
-
-             padding: 6px 4px 6px 4px !important;
-
-        }
-        
+      .v-expansion-panel-header {
+         padding: 0 !important;
       }
+   }
 
-      .v-expansion-panel::before {
-        box-shadow: none !important;
-     }
+   .v-expansion-panel::before {
+      box-shadow: none !important;
+   }
 
-     .icon-rotate {
-        transform: rotate(-180deg);
-     }
+   .icon-rotate {
+      transform: rotate(-180deg);
+   }
+   .data-summary-table {
+      th, td {
+         vertical-align: top;
+      }
+      th {
+         white-space: nowrap;
+         padding: 0 40px 0 0px;
+      }
+      td {
+         padding: 4px 40px 4px 0px;
+         line-height: 1.2;
+      }
+   }
 }

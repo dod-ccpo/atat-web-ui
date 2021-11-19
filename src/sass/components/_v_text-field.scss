@@ -32,10 +32,16 @@
 
 .v-text-field {
   .v-text-field__prefix{
-    color: $base-darkest !important;
+    color: $base-light !important;
     padding-right: 0px;
     margin-top: -1px;
   }
+  &.v-input--is-focused{
+    .v-text-field__prefix{
+      color: $base-darkest !important;
+     }
+  }
+
   input{
     padding-left: 2px;
   }
@@ -74,3 +80,4 @@
   color: $base;
   margin-top: 8px;
 }
+

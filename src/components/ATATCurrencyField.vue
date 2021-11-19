@@ -1,6 +1,7 @@
 <template>
   <atat-text-field
     ref="field"
+    :id="id"
     :rules="rules"
     :prefix="prefix"
     @focus="onFocus"
