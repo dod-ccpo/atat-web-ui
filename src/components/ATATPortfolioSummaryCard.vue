@@ -153,7 +153,7 @@
     <!--Archive Dialog -->
     <atat-dialog-base
       :showDialog.sync="showArchiveDialog"
-      :title="achiveDialogTitle"
+      :title="archiveDialogTitle"
       persistent
       no-click-animation
       okText="Archive Portfolio"
@@ -207,7 +207,7 @@ export default class ATATPortfolioSummaryCard extends Vue {
   private dialogMessage = "";
   private showDialogWhenClicked = false;
   private showArchiveDialog = false;
-  private achiveDialogTitle = "";
+  private archiveDialogTitle = "";
   private returnFocusElementIdOk = "btn-create-new-portfolio";
   private returnFocusElementIdCancel = "";
   private isItemDeleted = false;
@@ -284,7 +284,7 @@ export default class ATATPortfolioSummaryCard extends Vue {
         this.confirmPortfolioDelete(card);
         break;
       case "Archive portfolio":
-        this.achiveDialogTitle = `Archive '${card.title}'`;
+        this.archiveDialogTitle = `Archive '${card.title}'`;
         this.showArchiveDialog = true;
     }
   }
