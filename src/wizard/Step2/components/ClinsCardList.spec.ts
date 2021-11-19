@@ -74,7 +74,12 @@ describe("Testing Create ClinsCard Component", () => {
     wrapper = mount(ClinsCardList, {
       localVue,
       vuetify,
-      stubs: ["atat-text-field", "atat-select", "atat-date-picker"],
+      stubs: [
+        "atat-text-field",
+        "atat-select",
+        "atat-date-picker",
+        "atat-currency-field",
+      ],
       propsData: validPropsData,
     });
   });
@@ -83,5 +88,29 @@ describe("Testing Create ClinsCard Component", () => {
     await Vue.nextTick();
     const valid = await wrapper.vm.validate();
     expect(valid).toBe(true);
+  });
+  it("Has no data ", async () => {
+    await Vue.nextTick();
+    await wrapper.setProps({
+      clins: [],
+    });
+    const valid = await wrapper.vm.validate();
+    expect(valid).toBe(false);
+  });
+
+  it("Test ExpandAddedClin", async (done) => {
+    await wrapper.vm.ExpandAddedClin();
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 500);
+  });
+
+  it("Test ExpandClin", async (done) => {
+    await wrapper.vm.ExpandClin(15);
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 500);
   });
 });
