@@ -1,10 +1,8 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
-
 import { createLocalVue, mount } from "@vue/test-utils";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 Vue.use(Vuetify);
-
 describe("Testing ATATTextArea Component", () => {
   const localVue = createLocalVue();
   let vuetify: any;
@@ -15,10 +13,21 @@ describe("Testing ATATTextArea Component", () => {
     wrapper = mount(ATATTextArea, {
       localVue,
       vuetify,
+      stubs: ["atat-text-field", "atat-text-area"],
     });
   });
 
   it("renders successfully", async () => {
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("showStatusIcon true optional", async () => {
+    await wrapper.setProps({ optional: true, value: "hello" });
+    await wrapper.vm.showStatusIcon();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("showStatusIcon false optional", async () => {
+    await wrapper.setData({ valid: false });
+    await wrapper.vm.showStatusIcon();
     expect(wrapper.exists()).toBe(true);
   });
 });

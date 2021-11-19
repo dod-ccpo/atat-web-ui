@@ -5,7 +5,7 @@ import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.v
 
 Vue.use(Vuetify);
 
-describe("Testing CreatePortfolioForm Component", () => {
+describe("Testing CreateTaskOrderForm", () => {
   const localVue = createLocalVue();
   let vuetify: any;
   let wrapper: any;
