@@ -35,6 +35,7 @@
             hide-details
             clearable
             aria-label="Search"
+            v-model="searchTerm"
           />
           <v-btn
             class="input-search-bar"
@@ -66,11 +67,19 @@
     </div>
 
     <v-row>
-      <div v-show="showNoSearchResults" class="no-portfolio-search-results wizard-content">
+      <v-col v-show="showNoSearchResults" class="no-portfolio-search-results">
         <!-- temporary logic to show the no search results content -->
-          <v-icon>search</v-icon>
-          <h2>No results for &ldquo;{ search string }&rdquo;</h2>
-      </div>
+          <div class="wizard-content">
+            <v-icon>search</v-icon>
+            <h2>No results for &ldquo;{{ searchTermNoResultsDisplay }}&rdquo;</h2>
+            <p>
+              Please try another search term or modify filters to be less specific.
+            </p>
+            <v-btn class="primary" @click="clearSearch">
+              {{ noResultsButtonText }}
+            </v-btn>
+          </div>
+      </v-col>
       <!-- temporary logic to show the no search results content 
            remove !showNoSearchResults when search logic is completed -->
       <v-col v-if="portfolios && portfolios.length > 0 && !showNoSearchResults">
@@ -109,6 +118,9 @@ export default class ViewPortfolio extends Vue {
   deletePortfolioDraft!: (draftId: string) => Promise<void>;
   private open = false;
   private showNoSearchResults = false;
+  private searchTerm = "";
+  private searchTermNoResultsDisplay = "";
+  private noResultsButtonText = "Clear search";
 
   get portfolios(): PortfolioDraft[] {
     return this.portfoliosState.portfolioDrafts;
@@ -126,9 +138,17 @@ export default class ViewPortfolio extends Vue {
     this.open = !this.open;
   }
 
+  private clearSearch(): void {
+    this.showNoSearchResults = false;
+    this.searchTerm = "";
+  }
+
   private searchPortfolios(): void {
     // temporary logic until search functionality is implemented
-    this.showNoSearchResults = !this.showNoSearchResults;
+    this.showNoSearchResults = this.searchTerm ? true : false;
+    this.searchTermNoResultsDisplay = this.searchTerm;
+    this.noResultsButtonText = "Clear search";
+    // when applying filters, button text will be "Clear filters"
   }
 
   private async onDeletePortfolio(id: string) {
