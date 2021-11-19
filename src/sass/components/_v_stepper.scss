@@ -90,8 +90,8 @@
         &.v-stepper__step--error.visited,
         {
           .v-stepper__step__step{
-            background-color: $error-darker !important;
-            box-shadow: inset 0px 0px 0px 4px $error-darker;
+            background-color: $error-dark !important;
+            box-shadow: inset 0px 0px 0px 4px $error-dark;
 
             border: #fff 4px solid !important;
             .v-icon{
@@ -104,8 +104,8 @@
           }
           .v-stepper__label{
             hr{
-              border-color: $error-darker !important;
-              background-color: $error-darker;
+              border-color: $error-dark !important;
+              background-color: $error-dark;
             }
           }
         }

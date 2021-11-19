@@ -89,7 +89,7 @@ p {
 .form-field-label-error{
     @extend .form-field-label;
     font-weight: 700 !important;
-    color: $error-darker !important;
+    color: $error-dark !important;
 }
 .form-field-label-success{
     @extend .form-field-label;
