@@ -120,7 +120,7 @@ export default class ViewPortfolio extends Vue {
   private showNoSearchResults = false;
   private searchTerm = "";
   private searchTermNoResultsDisplay = "";
-  private noResultsButtonText = "Clear search";
+  private noResultsButtonText = "Clear Search";
 
   get portfolios(): PortfolioDraft[] {
     return this.portfoliosState.portfolioDrafts;
@@ -147,8 +147,8 @@ export default class ViewPortfolio extends Vue {
     // temporary logic until search functionality is implemented
     this.showNoSearchResults = this.searchTerm ? true : false;
     this.searchTermNoResultsDisplay = this.searchTerm;
-    this.noResultsButtonText = "Clear search";
-    // when applying filters, button text will be "Clear filters"
+    this.noResultsButtonText = "Clear Search";
+    // when applying filters, button text will be "Clear Filters"
   }
 
   private async onDeletePortfolio(id: string) {
