@@ -1,6 +1,5 @@
 <template>
   <div class="wizard-content">
-
     <h2 aria-label="A paginated list of draft portfolios">
       <v-icon class="text--base-darkest">expand_less</v-icon>
       Drafts
@@ -42,7 +41,6 @@
       @portfolio-delete="(id) => $emit('portfolio-delete', id)"
       return-focus-element-id-ok="btn-create-new-portfolio"
     />
-
   </div>
 </template>
 
@@ -60,7 +58,7 @@ import ATATPortfolioSummaryCard from "@/components/ATATPortfolioSummaryCard.vue"
 @Component({
   components: {
     "atat-portfolio-summary-card": ATATPortfolioSummaryCard,
-  }
+  },
 })
 export default class PortfolioSummary extends Vue {
   @Prop()

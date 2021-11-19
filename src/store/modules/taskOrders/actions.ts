@@ -23,17 +23,15 @@ const deleteTaskOrder = ({ commit }: { commit: Commit }, id: string): void => {
 };
 
 const setCurrentTaskOrders = (
-  {commit}:{commit: Commit},
+  { commit }: { commit: Commit },
   taskOrders: TaskOrder[]
 ): void => {
+  commit("setCurrentTaskOrders", taskOrders);
+};
 
-    commit('setCurrentTaskOrders', taskOrders);
-}
-
-
-const initialize = ({commit}: {commit: Commit}): void => {
-   commit('initialize');
-}
+const initialize = ({ commit }: { commit: Commit }): void => {
+  commit("initialize");
+};
 
 export const actions: ActionTree<TaskOrdersState, RootState> = {
   addTaskOrder,

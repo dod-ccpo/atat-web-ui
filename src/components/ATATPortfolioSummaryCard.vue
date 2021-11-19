@@ -81,7 +81,6 @@
             <span class="data-primary d-block text-no-wrap">
               $15,000,000.00
             </span>
-
           </v-col>
           <v-col class="col-12 col-md-4 col-lg-3">
             <span class="data-header">Funds Spent (%)</span>
@@ -141,7 +140,6 @@
     <atat-modal-delete
       :showDialogWhenClicked.sync="showDialogWhenClicked"
       :title="dialogTitle"
-      :message="dialogMessage"
       :isItemDeleted.sync="isItemDeleted"
       persistent
       no-click-animation
@@ -152,6 +150,35 @@
       :focus-on-ok="returnFocusElementIdOk"
     />
 
+    <!--Archive Dialog -->
+    <atat-dialog-base
+      :showDialog.sync="showArchiveDialog"
+      :title="achiveDialogTitle"
+      persistent
+      no-click-animation
+      okText="Archive Portfolio"
+      width="525px"
+    >
+      <template #content>
+        <p>
+          After archiving, this portfolio will no longer appear in your ATAT
+          dashboard and funding reports.
+        </p>
+        <ul>
+          <li>
+            Your portfolio will become read-only, so you will no longer be able
+            to add funding or team members.
+          </li>
+          <li>You can access it in your Archived Portfolios list.</li>
+        </ul>
+        <p class="pt-6">
+          <strong>NOTE: </strong> Archiving will NOT remove your portfolio from
+          the cloud provider’s console. To avoid incurring unexpected costs, we
+          recommend that your administrators manually delete this workspace from
+          the cloud console before archiving.
+        </p>
+      </template>
+    </atat-dialog-base>
   </div>
 </template>
 
@@ -159,12 +186,14 @@
 import Vue from "vue";
 import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
 import { ATATSummaryCardItem, ATATSummaryCards } from "types/Wizard";
-import ATATSeparatorBullet from "@/components/ATATSeparatorBullet.vue"
+import ATATSeparatorBullet from "@/components/ATATSeparatorBullet.vue";
+import ATATDialogBase from "@/components/ATATDialogBase.vue";
 
 @Component({
   components: {
     "atat-separator-bullet": ATATSeparatorBullet,
-  }
+    "atat-dialog-base": ATATDialogBase,
+  },
 })
 export default class ATATPortfolioSummaryCard extends Vue {
   private draftOptions: string[] = [
@@ -177,6 +206,8 @@ export default class ATATPortfolioSummaryCard extends Vue {
   private dialogTitle = "";
   private dialogMessage = "";
   private showDialogWhenClicked = false;
+  private showArchiveDialog = false;
+  private achiveDialogTitle = "";
   private returnFocusElementIdOk = "btn-create-new-portfolio";
   private returnFocusElementIdCancel = "";
   private isItemDeleted = false;
@@ -252,6 +283,9 @@ export default class ATATPortfolioSummaryCard extends Vue {
       case "Delete draft portfolio":
         this.confirmPortfolioDelete(card);
         break;
+      case "Archive portfolio":
+        this.achiveDialogTitle = `Archive '${card.title}'`;
+        this.showArchiveDialog = true;
     }
   }
 
