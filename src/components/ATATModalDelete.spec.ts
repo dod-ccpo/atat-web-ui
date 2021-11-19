@@ -44,4 +44,11 @@ describe("Testing ATATModalDelete Component", () => {
     await wrapper.vm.setFocus();
     expect(wrapper.vm.setFocus()).toBe(undefined);
   });
+  it("testing getTitle newVal", async () => {
+    await wrapper.setProps({
+      title:
+        "gfjdkslgfjkdslfhjkdslghfukdgfhjkdslgfukldsgfhjkgdjsk;fgdjsfkfgjdkgfhjkdgfhjkdslgjkl;dgfudgbfjhdvbhdlgfujkewhflkjhdjk;",
+    });
+    expect(wrapper.exists()).toBe(true);
+  });
 });
