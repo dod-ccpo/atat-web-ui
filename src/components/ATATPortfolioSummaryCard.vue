@@ -81,7 +81,6 @@
             <span class="data-primary d-block text-no-wrap">
               $15,000,000.00
             </span>
-
           </v-col>
           <v-col class="col-12 col-md-4 col-lg-3">
             <span class="data-header">Funds Spent (%)</span>
@@ -151,7 +150,6 @@
       :focus-on-cancel="returnFocusElementIdCancel"
       :focus-on-ok="returnFocusElementIdOk"
     />
-
   </div>
 </template>
 
@@ -159,12 +157,12 @@
 import Vue from "vue";
 import { Component, Emit, Prop, PropSync, Watch } from "vue-property-decorator";
 import { ATATSummaryCardItem, ATATSummaryCards } from "types/Wizard";
-import ATATSeparatorBullet from "@/components/ATATSeparatorBullet.vue"
+import ATATSeparatorBullet from "@/components/ATATSeparatorBullet.vue";
 
 @Component({
   components: {
     "atat-separator-bullet": ATATSeparatorBullet,
-  }
+  },
 })
 export default class ATATPortfolioSummaryCard extends Vue {
   private draftOptions: string[] = [

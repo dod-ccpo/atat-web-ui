@@ -3,7 +3,6 @@ import { Store } from "vuex";
 import { ATATRouteHandler } from "./routerMiddleWare";
 import { addportfolio, addfunding, fundingsummary } from "./wizard";
 
-
 const hasTaskOrders = (store?: Store<any>) =>
   store && store.getters.hasTaskOrders;
 

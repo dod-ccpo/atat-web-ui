@@ -73,6 +73,7 @@
               :id="getId('start-date-text-box-button')"
               aria-label="Open calendar to select Start Date"
               class="start-date-button"
+              @focus="setTitle(true)"
             >
               <v-icon class="black--text date-picker-icon start-date-icon"
                 >calendar_today</v-icon
@@ -111,6 +112,7 @@
               :id="getId('end-date-text-box-button')"
               aria-label="Open calendar to select End Date"
               class="end-date-button"
+              @focus="setTitle(false)"
             >
               <v-icon class="black--text date-picker-icon end-date-icon"
                 >calendar_today</v-icon
@@ -201,7 +203,6 @@ import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import { CustomErrorMessage } from "types/Wizard";
-import { button } from "@aws-amplify/ui";
 
 @Component({})
 export default class ATATDatePicker extends Vue {
@@ -330,7 +331,7 @@ export default class ATATDatePicker extends Vue {
     this.isStartTextBoxFocused = isStart;
     this.isEndTextBoxFocused = !isStart;
     this._isTextBoxFocused = true;
-    this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
+    this.setTitle(isStart);
     this.menu = true;
 
     //resets datepicker to correct month depending
@@ -341,6 +342,10 @@ export default class ATATDatePicker extends Vue {
     } else if (this.isEndTextBoxFocused) {
       this.secondMonth = this.endDate;
     }
+  }
+  
+  private setTitle(isStart: boolean): void {
+    this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
   }
 
   /**
@@ -511,8 +516,8 @@ export default class ATATDatePicker extends Vue {
         const isStartIcon = element.classList.contains("start-date-icon");
         this.isStartTextBoxFocused = isStartIcon;
         this.isEndTextBoxFocused = !isStartIcon;
+        this.setTitle(isStartIcon);
       }
-
       // if calendars were clicked
       const isCalendarClicked =
         element.closest(".v-date-picker-table") !== null;
