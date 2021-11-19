@@ -343,7 +343,7 @@ export default class ATATDatePicker extends Vue {
       this.secondMonth = this.endDate;
     }
   }
-  
+
   private setTitle(isStart: boolean): void {
     this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
   }
