@@ -158,6 +158,8 @@
       no-click-animation
       okText="Archive Portfolio"
       width="525px"
+      :focusOnCancel="archiveFocusId"
+      :focusOnOk="archiveFocusId"
     >
       <template #content>
         <p>
@@ -208,6 +210,7 @@ export default class ATATPortfolioSummaryCard extends Vue {
   private showDialogWhenClicked = false;
   private showArchiveDialog = false;
   private archiveDialogTitle = "";
+  private archiveFocusId = "";
   private returnFocusElementIdOk = "btn-create-new-portfolio";
   private returnFocusElementIdCancel = "";
   private isItemDeleted = false;
@@ -285,6 +288,10 @@ export default class ATATPortfolioSummaryCard extends Vue {
         break;
       case "Archive portfolio":
         this.archiveDialogTitle = `Archive '${card.title}'`;
+
+        if (card.id) {
+          this.archiveFocusId = this.moreButtonId(card.id);
+        }
         this.showArchiveDialog = true;
     }
   }

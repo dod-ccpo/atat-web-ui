@@ -38,11 +38,10 @@
 
 <script lang="ts">
 import { Component, PropSync, Prop, Watch } from "vue-property-decorator";
-import { VDialog } from "vuetify/lib";
 import Vue from "vue";
 
 @Component({})
-export default class ATATModalDelete extends Vue {
+export default class ATATDialogBase extends Vue {
   @Prop() private message!: string;
   @Prop({ default: "Dialog-Title" }) private title!: string;
   @Prop() private id!: string;
