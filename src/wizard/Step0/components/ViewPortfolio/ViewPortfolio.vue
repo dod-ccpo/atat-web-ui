@@ -40,6 +40,7 @@
             class="input-search-bar"
             color="primary"
             aria-label="Search Portfolio"
+            @click="searchPortfolios"
           >
             <v-icon>search</v-icon>
           </v-btn>
@@ -65,7 +66,14 @@
     </div>
 
     <v-row>
-      <v-col v-if="portfolios && portfolios.length > 0">
+      <div v-show="showNoSearchResults" class="no-portfolio-search-results wizard-content">
+        <!-- temporary logic to show the no search results content -->
+          <v-icon>search</v-icon>
+          <h2>No results for &ldquo;{ search string }&rdquo;</h2>
+      </div>
+      <!-- temporary logic to show the no search results content 
+           remove !showNoSearchResults when search logic is completed -->
+      <v-col v-if="portfolios && portfolios.length > 0 && !showNoSearchResults">
         <portfolio-summary
           :portfolioDrafts="portfolios"
           v-on:delete="onDeletePortfolio"
@@ -100,6 +108,7 @@ export default class ViewPortfolio extends Vue {
   @Action("deletePortfolioDraft", { namespace })
   deletePortfolioDraft!: (draftId: string) => Promise<void>;
   private open = false;
+  private showNoSearchResults = false;
 
   get portfolios(): PortfolioDraft[] {
     return this.portfoliosState.portfolioDrafts;
@@ -115,6 +124,11 @@ export default class ViewPortfolio extends Vue {
     }
     // complete functionality in future task, for now, just toggle this.open
     this.open = !this.open;
+  }
+
+  private searchPortfolios(): void {
+    // temporary logic until search functionality is implemented
+    this.showNoSearchResults = !this.showNoSearchResults;
   }
 
   private async onDeletePortfolio(id: string) {
