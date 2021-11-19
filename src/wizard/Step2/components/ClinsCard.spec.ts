@@ -306,4 +306,28 @@ describe("Testing Create ClinsCard Component", () => {
     const clin_number = wrapper.find("#clin_number");
     expect(clin_number.text()).toBe(`CLIN ${propsData.clin_number}`);
   });
+
+  //testing private functions created after september 2021
+  it("test delete clin", async () => {
+    await wrapper.vm.deleteClin(1);
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("test cancel delete clin", async () => {
+    await wrapper.vm.cancelDeleteClin();
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("test open delete clin", async (done) => {
+    await wrapper.vm.openDeleteClinModal();
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 500);
+  });
+
+  it("test clin form clicked", async (d) => {
+    await wrapper.vm.clinFormClicked();
+    expect(wrapper.exists()).toBe(true);
+  });
 });
