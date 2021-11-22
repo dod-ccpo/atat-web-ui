@@ -564,11 +564,19 @@ export default class ClinsCard extends Vue {
     this.FundFields.validate();
   }
 
-  // @Watch("_clin_number")
-  // @Watch("_idiq_clin")
-  // validateFormFields(): void {
-  //   this.Form.validate();
-  // }
+  @Watch("_clin_number")
+  validateClinNumber(): void {
+    this.Form.validate();
+  }
+
+  @Watch("_idiq_clin")
+  validateIdiqClin(newVal: string): void {
+    if (this.idiq_clin_items.indexOf(newVal) === -1) {
+      newVal = "";
+      this._idiq_clin = "";
+    }
+    this.Form.validate();
+  }
 
   @Watch("openItem")
   onOpenItemChanged(): void {
