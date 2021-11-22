@@ -305,7 +305,6 @@ describe("Testing Create ClinsCard Component", () => {
   //   expect(card_number.text()).toBe(`${propsData.card_number}`);
   // });
 
-
   // it("IDIQ Clin type renders correctly", async () => {
   //   await wrapper.vm.$nextTick();
   //   const idiq_clin = wrapper.find(".idiq_clin");

@@ -154,6 +154,7 @@
                         :endDateRules.sync="popEndRules"
                         :isDatePickerBlurred.sync="isDatePickerBlurred"
                         :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
+                        :isDatePickerVisible.sync="isDatePickerVisible"
                         :nudgeleft="1"
                         :min="minDate"
                         :max="JWCCContractEndDate"
@@ -244,13 +245,25 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
-  private isDatePickerBlurred = false;
+  private isDatePickerBlurred = true;
   private isDatePickerTextBoxFocused = false;
   private returnFocusDeleteClinOK = "addClinButton";
   private returnFocusDeleteClinCancel = "";
   private focusClinNumberOnCardOpen = true;
+  private isDatePickerVisible = false;
 
-  model: TaskOrderModel = this.$store.getters.getStepModel(2);
+  get isClinFormDirty(): boolean {
+    return (
+      this._clin_number.length > 0 ||
+      this._idiq_clin !== "" ||
+      this._total_clin_value > 0 ||
+      this._obligated_funds > 0 ||
+      this._pop_start_date !== "" ||
+      this._pop_end_date !== ""
+    );
+  }
+
+  private model: TaskOrderModel = this.$store.getters.getStepModel(2);
 
   private currencyMask = createNumberMask({
     prefix: "",
@@ -263,7 +276,16 @@ export default class ClinsCard extends Vue {
     return this.model.clins.length === 1;
   }
 
-  get validateDatePicker(): boolean {
+  get validateDatePickerOnLoad(): boolean {
+    // when datepicker not dirty
+    return (
+      this._pop_start_date === "" &&
+      this._pop_end_date === "" &&
+      !this.isClinFormDirty
+    );
+  }
+
+  get validateDatePickerOnSave(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
   }
 
@@ -313,7 +335,6 @@ export default class ClinsCard extends Vue {
     this._obligated_funds = Number(this.sanitizeCurrency(value).toFixed(2));
   }
   get unmaskObligatedFunds(): string {
-    console.log(this._obligated_funds);
     return this._obligated_funds > 0
       ? this.formatCurrency(this._obligated_funds)
       : "";
@@ -422,7 +443,15 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters"
     );
-    return validationRules;
+    return this.isClinFormDirty ? validationRules : [];
+  }
+
+  get correspondingIDIQRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: string) => v !== "" || "Please select an IDIQ CLIN type"
+    );
+    return this.isClinFormDirty ? validationRules : [];
   }
 
   get totalClinRules(): any[] {
@@ -430,13 +459,12 @@ export default class ClinsCard extends Vue {
     validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
     validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
-      v = parseFloat(v.toString().replace(/,/g, ""));
-      let ob =
-        parseFloat(this._obligated_funds.toString().replace(/,/g, "")) || 0;
+      v = this.removeCurrencyFormat(v);
+      let ob = this.removeCurrencyFormat(this._obligated_funds) || 0;
       return v >= ob || "Obligated Funds cannot exceed total CLIN Values";
     });
 
-    return validationRules;
+    return this.isClinFormDirty ? validationRules : [];
   }
 
   get obligatedFundRules(): any[] {
@@ -446,14 +474,13 @@ export default class ClinsCard extends Vue {
     );
     validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
-      v = parseFloat(v.toString().replace(/,/g, ""));
-      let totalClin =
-        parseFloat(this._total_clin_value.toString().replace(/,/g, "")) || 0;
+      v = this.removeCurrencyFormat(v);
+      let totalClin = this.removeCurrencyFormat(this._total_clin_value) || 0;
       return (
         v <= totalClin || "Obligated Funds cannot exceed total CLIN Values"
       );
     });
-    return validationRules;
+    return this.isClinFormDirty ? validationRules : [];
   }
 
   get popStartRules(): any[] {
@@ -477,24 +504,20 @@ export default class ClinsCard extends Vue {
         validationRules.push(
           () =>
             moment(this._pop_start_date).isBefore(this.JWCCContractEndDate) ||
-            "Start Date must be before or on " + this.JWCCContractEndDate
-        );
-      }
-    } else {
-      if (
-        (this.validateFormWhenLeaving ||
-          !this.isDatePickerClicked ||
-          this.isDatePickerBlurred) &&
-        !this.isDatePickerTextBoxFocused
-      ) {
-        validationRules.push(
-          (v: string) =>
-            v !== "" ||
-            "Please enter the start date for your CLIN's period of performance"
+            "Start Date must be before or on " +
+              moment(this.JWCCContractEndDate).format("MM/DD/YYYY")
         );
       }
     }
-    return this.validateDatePicker ? validationRules : [];
+
+    if (this.validateFormWhenLeaving || !this.validateDatePickerOnLoad) {
+      validationRules.push(
+        () =>
+          this.validateDatePickerOnSave ||
+          "Please enter the start date for your CLIN's period of performance"
+      );
+    }
+    return validationRules;
   }
 
   get popEndRules(): any[] {
@@ -517,45 +540,35 @@ export default class ClinsCard extends Vue {
         validationRules.push(
           () =>
             moment(this._pop_end_date).isBefore(this.JWCCContractEndDate) ||
-            "The end date must be before or on " + this.JWCCContractEndDate
+            "The end date must be before or on " +
+              moment(this.JWCCContractEndDate).format("MM/DD/YYYY")
         );
       }
-    } else {
-      if (
-        (this.validateFormWhenLeaving ||
-          !this.isDatePickerClicked ||
-          this.isDatePickerBlurred) &&
-        !this.isDatePickerTextBoxFocused
-      ) {
+
+      if (this.validateFormWhenLeaving) {
         validationRules.push(
-          (v: string) =>
-            v !== "" ||
+          () =>
+            this.validateDatePickerOnSave ||
             "Please enter the end date for your CLIN's period of performance"
         );
       }
     }
-    return this.validateDatePicker ? validationRules : [];
+    return this.validateDatePickerOnLoad && this.isClinFormDirty
+      ? validationRules
+      : [];
   }
 
-  get correspondingIDIQRules(): any[] {
-    const validationRules = [];
-    validationRules.push(
-      (v: string) => v !== "" || "Please select an IDIQ CLIN type"
-    );
-    return validationRules;
-  }
-
-  // @Watch("_obligated_funds")
-  // @Watch("_total_clin_value")
-  private validateFundFields(): void {
+  @Watch("_obligated_funds")
+  @Watch("_total_clin_value")
+  protected validateFundFields(): void {
     this.FundFields.validate();
   }
 
-  @Watch("_clin_number")
-  @Watch("_idiq_clin")
-  validateFormFields(): void {
-    this.Form.validate();
-  }
+  // @Watch("_clin_number")
+  // @Watch("_idiq_clin")
+  // validateFormFields(): void {
+  //   this.Form.validate();
+  // }
 
   @Watch("openItem")
   onOpenItemChanged(): void {
@@ -578,7 +591,7 @@ export default class ClinsCard extends Vue {
 
   // @Watch("_pop_start_date")
   // @Watch("_pop_end_date")
-  // validateDateFields(): void {
+  // public validateDateFields(): void {
   //   this.DateFields.validate();
   // }
 
@@ -587,6 +600,15 @@ export default class ClinsCard extends Vue {
     this.validateFormWhenLeaving = true;
     await this.$nextTick(() => {
       validated = this.Form.validate();
+
+      if (this.DateFields) {
+        debugger;
+        validated =
+          validated &&
+          this.DateFields.validate() &&
+          this.validateDatePickerOnSave;
+      }
+
       this.validateFormWhenLeaving = false;
     });
     return validated;
@@ -611,6 +633,13 @@ export default class ClinsCard extends Vue {
       this.isDatePickerClicked =
         clickedElement.closest("#" + datepickerControlId) !== null;
     }
+  }
+
+  private async clinFormFocused(event: Event): Promise<void> {
+    const isDatePickerFocused =
+      (event.target as HTMLElement).closest(".clin-datepicker-control") !==
+      null;
+    this.isDatePickerVisible = isDatePickerFocused;
   }
 
   private openDeleteClinModal(btnId: string) {
@@ -642,11 +671,13 @@ export default class ClinsCard extends Vue {
   private mounted(): void {
     document.addEventListener("click", this.clinFormClicked);
     document.addEventListener("blur", this.clinFormClicked);
+    document.addEventListener("focus", this.clinFormFocused, true);
   }
 
   private destroyed(): void {
     document.removeEventListener("click", this.clinFormClicked);
     document.removeEventListener("blur", this.clinFormClicked);
+    document.addEventListener("focus", this.clinFormFocused);
   }
 }
 </script>

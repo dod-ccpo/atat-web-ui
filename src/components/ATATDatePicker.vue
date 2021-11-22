@@ -68,7 +68,7 @@
             ></v-text-field>
             <v-btn
               icon
-              @keydown.native.tab="onTab"
+              @keydown.native.tab="onCalendarButtonTab"
               :ripple="false"
               :id="getId('start-date-text-box-button')"
               aria-label="Open calendar to select Start Date"
@@ -107,7 +107,7 @@
             ></v-text-field>
             <v-btn
               icon
-              @keydown.native.tab="onTab"
+              @keydown.native.tab="onCalendarButtonTab"
               :ripple="false"
               :id="getId('end-date-text-box-button')"
               aria-label="Open calendar to select End Date"
@@ -234,7 +234,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "2020-10-01" }) private min!: string;
   @Prop({ default: "2021-10-01" }) private max!: string;
 
-  private menu = false;
+  @PropSync("isDatePickerVisible") menu!: boolean;
   private firstMonth: string =
     moment(this.startDate).format("YYYY-MM-DD") ||
     moment(new Date()).format("YYYY-MM-DD");
@@ -639,7 +639,7 @@ export default class ATATDatePicker extends Vue {
    * navigation caret to be focused when user tabs
    * off of each button to the right of the textboxes
    */
-  public onTab(event: KeyboardEvent): void {
+  public onCalendarButtonTab(event: KeyboardEvent): void {
     const isTabbingBackward = event.shiftKey === true;
     this.isKeyboardEvent = true;
     if (!isTabbingBackward) {
@@ -723,10 +723,17 @@ export default class ATATDatePicker extends Vue {
     // remove dateRange[1] if === ""
     if (this.dateRange[1] === "") {
       this.dateRange.splice(1, 1);
+
+      //resets the first month to the startdate
+      //when user clicks on textbox
+      this.firstMonth = this.dateRange[0];
     }
-    // remove dateRange[1] if === ""
+    // remove dateRange[1] if dateRange[1] === ""
     if (this.dateRange[0] === "") {
       this.dateRange.splice(0, 1);
+      //resets the 2nd month to the enddate 
+      //when user clicks on textbox
+      this.secondMonth = this.dateRange[0];
     }
 
     /***** final result ****************
