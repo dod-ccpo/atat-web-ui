@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form :ref="getId('form')" lazy-validation>
     <v-container
       fluid
       class="clins-card width-100"
@@ -88,30 +88,30 @@
 
                 <fieldset class="input-max-width pb-10">
                   <legend class="h3 mb-4">CLIN Funding</legend>
-                  <v-form ref="fundFields">
+                  <v-form :ref="getId('fundFields')">
+                    <!-- unmaskTotalClinValue -->
+                    <!-- v-mask="currencyMask" -->
                     <atat-text-field
-                      v-mask="currencyMask"
                       class="mb-3"
+                      mask="money"
                       :id="getId('total_clin_value')"
                       label="Total CLIN Value"
-                      @blur="validateFundFields"
                       :rules="totalClinRules"
                       :helpText="clinHelpText"
                       :value.sync="unmaskTotalClinValue"
-                      prefix="$"
                     />
+                    <!-- unmaskObligatedFunds -->
+                    <!-- v-mask="currencyMask" -->
+                    <!-- :ref="getId(' :ref="getId('obligated_funds')"')" -->
                     <atat-text-field
-                      v-mask="currencyMask"
                       class="mb-5"
-                      :ref="getId('obligated_funds')"
+                      mask="money"
                       :id="getId('obligated_funds')"
                       label="Obligated Funds"
                       :rules="obligatedFundRules"
-                      @blur="validateFundFields"
                       :helpText="obligatedFundsHelpText"
                       :value.sync="unmaskObligatedFunds"
                       @onkeyup="calculateObligatedPercent"
-                      prefix="$"
                     />
 
                     <div v-if="obligatedPercent <= 100" role="alert">
@@ -142,7 +142,7 @@
                     class="d-flex align-center mt-0"
                     style="position: relative"
                   >
-                    <v-form ref="dateFields">
+                    <v-form :ref="getId('dateFields')">
                       <atat-date-picker
                         :id="getId('datepicker')"
                         :errormessages.sync="datePickerErrorMessages"
@@ -227,9 +227,7 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
-import { validateNumber } from "@/validation/";
 import { TaskOrderModel } from "../../../../types/Wizard";
-import createNumberMask from "text-mask-addons/dist/createNumberMask";
 
 @Component({
   components: {},
@@ -238,8 +236,8 @@ export default class ClinsCard extends Vue {
   @Prop({ required: true, default: () => -1 }) card_number!: number;
   @PropSync("clin_number") _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
-  @PropSync("total_clin_value", { default: null }) _total_clin_value!: number;
-  @PropSync("obligated_funds", { default: null }) _obligated_funds!: number;
+  @PropSync("total_clin_value") _total_clin_value!: number;
+  @PropSync("obligated_funds") _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
 
@@ -264,13 +262,6 @@ export default class ClinsCard extends Vue {
   }
 
   private model: TaskOrderModel = this.$store.getters.getStepModel(2);
-
-  private currencyMask = createNumberMask({
-    prefix: "",
-    allowDecimal: true,
-    includeThousandsSeparator: true,
-    allowNegative: false,
-  });
 
   get isDisabled(): boolean {
     return this.model.clins.length === 1;
@@ -301,15 +292,19 @@ export default class ClinsCard extends Vue {
     );
   }
   get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
+    return this.$refs[this.getId("form")] as Vue & { validate: () => boolean };
   }
 
   get FundFields(): Vue & { validate: () => boolean } {
-    return this.$refs.fundFields as Vue & { validate: () => boolean };
+    return this.$refs[this.getId("fundFields")] as Vue & {
+      validate: () => boolean;
+    };
   }
 
   get DateFields(): Vue & { validate: () => boolean } {
-    return this.$refs.dateFields as Vue & { validate: () => boolean };
+    return this.$refs[this.getId("dateFields")] as Vue & {
+      validate: () => boolean;
+    };
   }
 
   @Watch("_pop_start_date")
@@ -322,22 +317,24 @@ export default class ClinsCard extends Vue {
     this.setDateRange();
   }
 
-  set unmaskTotalClinValue(value: string) {
-    this._total_clin_value = Number(this.sanitizeCurrency(value).toFixed(2));
+  set unmaskTotalClinValue(value: number) {
+
+    this._total_clin_value = value
+      ? Number(this.sanitizeCurrency(value.toString()).toFixed(2))
+      : 0;
   }
-  get unmaskTotalClinValue(): string {
-    return this._total_clin_value > 0
-      ? this.formatCurrency(this._total_clin_value)
-      : "";
+  get unmaskTotalClinValue(): number {
+    return this._total_clin_value;
   }
 
-  set unmaskObligatedFunds(value: string) {
-    this._obligated_funds = Number(this.sanitizeCurrency(value).toFixed(2));
+  set unmaskObligatedFunds(value: number) {
+    this._obligated_funds = value
+      ? Number(this.sanitizeCurrency(value.toString()).toFixed(2))
+      : 0;
   }
-  get unmaskObligatedFunds(): string {
-    return this._obligated_funds > 0
-      ? this.formatCurrency(this._obligated_funds)
-      : "";
+  
+  get unmaskObligatedFunds(): number {
+    return this._obligated_funds;
   }
 
   public formatCurrency(value: number): string {
@@ -416,9 +413,7 @@ export default class ClinsCard extends Vue {
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
     const percent: number =
-      (this.removeCurrencyFormat(this._obligated_funds) /
-        this.removeCurrencyFormat(this._total_clin_value)) *
-      100;
+      (this._obligated_funds / this._total_clin_value) * 100;
     this.obligatedPercent = percent > 100 ? "0" : percent.toFixed(2);
     if (progress) {
       progress.style.width = this.obligatedPercent + "%";
@@ -428,7 +423,7 @@ export default class ClinsCard extends Vue {
   //todo apply removeCurrencyformat to variables in validation
   //currency validation rules
   public removeCurrencyFormat(formattedCurrency: number): number {
-    return parseFloat(formattedCurrency.toString().replace(/,/g, ""));
+    return parseFloat(formattedCurrency.toString().replace(/,/g, "")) || 0.00;
   }
 
   get clinNumberRules(): any[] {
@@ -457,10 +452,11 @@ export default class ClinsCard extends Vue {
   get totalClinRules(): any[] {
     const validationRules = [];
     validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
-    validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
       v = this.removeCurrencyFormat(v);
+
       let ob = this.removeCurrencyFormat(this._obligated_funds) || 0;
+      console.log("v:" + v + ";  " + "ob:" + ob);
       return v >= ob || "Obligated Funds cannot exceed total CLIN Values";
     });
 
@@ -472,12 +468,14 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
     );
-    validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
       v = this.removeCurrencyFormat(v);
       let totalClin = this.removeCurrencyFormat(this._total_clin_value) || 0;
+      console.log(v);
+      console.log("v:" + v + ";  " + "ob:" + totalClin);
       return (
-        v <= totalClin || "Obligated Funds cannot exceed total CLIN Values"
+        v <= this._total_clin_value ||
+        "Obligated Funds cannot exceed total CLIN Values"
       );
     });
     return this.isClinFormDirty ? validationRules : [];
@@ -558,8 +556,8 @@ export default class ClinsCard extends Vue {
       : [];
   }
 
-  @Watch("_obligated_funds")
-  @Watch("_total_clin_value")
+  // @Watch("_obligated_funds")
+  // @Watch("_total_clin_value")
   protected validateFundFields(): void {
     this.FundFields.validate();
   }
@@ -610,7 +608,6 @@ export default class ClinsCard extends Vue {
       validated = this.Form.validate();
 
       if (this.DateFields) {
-        debugger;
         validated =
           validated &&
           this.DateFields.validate() &&

@@ -11,7 +11,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import RouterMiddleWare, { RouterMiddleWareOptions }  from "./router/routerMiddleWare";
 import routeHandlers from "./router/routeHandlers";
-import VueMask from "v-mask";
+import "./plugins/vuetify-mask.js";
 
 // below 3 scripts for Vuetify in IE
 import 'core-js/stable';
@@ -60,8 +60,6 @@ Vue.component('atat-toast', ATATToast);
 //axios
 axios.defaults.baseURL = "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0"
 Vue.use(VueAxios, axios);
-
-Vue.use(VueMask);
 
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;

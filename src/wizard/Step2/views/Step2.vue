@@ -38,7 +38,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   };
   private isDisabled =
     this.model.clins.length == 1 && this.model.clins[0].clin_number == "";
-
+  
   public addClin(): void {
     this.model.clins.push({
       clin_number: "",
@@ -48,24 +48,11 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
       pop_start_date: "",
       pop_end_date: "",
     });
-
     this.$refs.createTaskOrderForm.ExpandAddedClin(false);
   }
 
   public deleteClin(itemNumber: number): void {
-    const index = itemNumber - 1;
-    const clinLength = this.model.clins.length;
-    if (clinLength == 1) {
-      this.model.clins[0].clin_number = "";
-      (this.model.clins[0].idiq_clin = ""),
-        (this.model.clins[0].total_clin_value = 0),
-        (this.model.clins[0].obligated_funds = 0),
-        (this.model.clins[0].pop_start_date = ""),
-        (this.model.clins[0].pop_end_date = "");
-    }
-    if (clinLength > 1 && clinLength >= itemNumber) {
-      this.model.clins.splice(index, 1);
-    }
+    this.model.clins.splice(itemNumber - 1, 1);
   }
 }
 </script>

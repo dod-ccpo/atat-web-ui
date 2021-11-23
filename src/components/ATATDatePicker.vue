@@ -54,11 +54,11 @@
               v-model="startDate"
               :value="formatStartDateMMDDYYYY"
               :rules="_startDateRules"
-              v-mask="dateMask"
               hide-details
               @focus="setFocus"
               @blur="blurTextField"
               validate-on-blur
+              @keyup="maskDate"
               clearable
               @click:clear="clearTextBox"
               :class="[
@@ -93,10 +93,10 @@
               v-model="endDate"
               :value="formatEndDateMMDDYYYY"
               :rules="_endDateRules"
-              v-mask="dateMask"
               @focus="setFocus"
               hide-details
               @blur="blurTextField"
+              @keyup="maskDate"
               clearable
               @click:clear="clearTextBox"
               validate-on-blur
@@ -251,7 +251,27 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
   private isKeyboardEvent = false;
   private isTabEvent = false;
-  private dateMask = "";
+
+  public maskDate(event: KeyboardEvent): void {
+    const textBox = event.target as HTMLInputElement;
+    const isStartDate = textBox.id.indexOf("start-date") > -1;
+    const value = textBox.value.match(/\d+/g) || [""];
+    const maskedValue = value.join("/");
+    let valueLength = maskedValue.length || 0;
+    textBox.value = maskedValue + "MM/DD/YYYY".substring(valueLength, 10);
+    valueLength =
+      valueLength === 2 || valueLength === 5 ? valueLength + 1 : valueLength;
+    if (valueLength <= 9) {
+      textBox.setSelectionRange(valueLength, valueLength);
+    }
+    if (this.isDateValid(maskedValue)) {
+      if (isStartDate) {
+        this.setStartDate(maskedValue);
+      } else {
+        this.setEndDate(maskedValue);
+      }
+    }
+  }
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -320,8 +340,6 @@ export default class ATATDatePicker extends Vue {
     this._isTextBoxFocused = true;
     this.setTitle(isStart);
     this.menu = true;
-
-    this.dateMask = "##/##/####";
 
     //resets datepicker to correct month depending
     //on what text box is focused.
@@ -731,7 +749,7 @@ export default class ATATDatePicker extends Vue {
     // remove dateRange[1] if dateRange[1] === ""
     if (this.dateRange[0] === "") {
       this.dateRange.splice(0, 1);
-      //resets the 2nd month to the enddate 
+      //resets the 2nd month to the enddate
       //when user clicks on textbox
       this.secondMonth = this.dateRange[0];
     }

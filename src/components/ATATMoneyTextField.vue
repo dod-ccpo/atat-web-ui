@@ -37,35 +37,35 @@
       <div class="d-flex">
         <div class="width-100">
           <v-text-field
-            v-if="!mask"
-            v-bind="textBoxProperties"
-            :value.sync="_value"
+            :rules="rules"
+            :id="id + '_text_field'"
             :aria-describedby="id + '_input_hint'"
+            outlined
+            dense
+            :success="isSuccess"
+            :prefix="prefix"
+            :error="isErrored"
+            :error-messages="errorMessages"
+            :height="42"
+            :rounded="rounded"
+            :value.sync="_value"
+            hide-details="auto"
+            :validate-on-blur="true"
+            :validate-on-load="validateOnLoad"
+            :class="[
+              isErrored ? 'invalid-icon' : '',
+              isSuccess ? 'valid-icon' : '',
+              isErrored || isSuccess ? 'show-validation-icon' : '',
+              showDeleteIcon ? 'additional-button' : '',
+            ]"
             @input="inputActions"
+            @blur="validateField()"
             @change="$emit('change')"
+            @keyup="$emit('keyup')"
+            @focus="$emit('focus')"
           >
           </v-text-field>
-          <v-text-field-money
-            v-if="mask === 'money'"
-            v-model="_value"
-            :value.sync="_value"
-            :aria-describedby="id + '_input_hint'"
-            @input="inputActions"
-            @change="$emit('change')"
-            v-bind:properties="{
-              ...textBoxProperties,
-              ...currencyTextBoxProperties,
-            }"
-            v-bind:options="{
-              humanMask: '###,###,###,###.##',
-              machineMask: '############.##',
-              locale: 'en-US',
-              length: 11,
-              precision: 2,
-              empty: '',
-            }"
-          >
-          </v-text-field-money>
+
           <p v-if="hint !== ''" class="input-hint" :id="id + '_input_hint'">
             {{ hint }}
           </p>
@@ -89,18 +89,13 @@
 </template>
 
 <script lang="ts">
-import { VTextField } from "vuetify/lib";
-import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
-import Money from "../../node_modules/vuetify-mask/Decimal.vue";
 
-import { CurrencyTextBoxProps, TextBoxProps } from "types/FormFields";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
-@Component({
-  components: {
-    "v-text-field-money": Money,
-  },
-})
-export default class ATATTextField extends VTextField {
+import ATATTextField from "./ATATTextField copy.vue";
+
+@Component({})
+export default class ATATMoneyTextField extends ATATTextField {
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -118,16 +113,12 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
   @Prop({ default: false }) private validateOnLoad!: boolean;
-  @Prop({ default: "" }) private mask!: string;
 
   //data
   private rounded = false;
   private isFieldValid = false;
   private isFieldDirty = false;
   private hasInitialValue = false;
-  private textBox = document.getElementById(
-    this.id + "_text_field"
-  ) as HTMLInputElement;
 
   get isSuccess(): boolean {
     return this.isFieldDirty === true && this.isFieldValid === true;
@@ -140,33 +131,6 @@ export default class ATATTextField extends VTextField {
   private inputActions(v: string) {
     this._value = v;
   }
-
-  textBoxProperties: TextBoxProps = {
-    rules: this.$props["rules"],
-    id: this.id + "_text_field",
-    outlined: true,
-    dense: true,
-    success: this.isSuccess,
-    prefix: this.prefix,
-    error: this.isErrored,
-    errorMessages: this.errorMessages,
-    height: 42,
-    rounded: this.rounded,
-    hideDetails: "auto",
-    validateOnBlur: true,
-    validateOnLoad: this.validateOnLoad,
-    class: [
-      this.isErrored ? "invalid-icon" : "",
-      this.isSuccess ? "valid-icon" : "",
-      this.isErrored || this.isSuccess ? "show-validation-icon" : "",
-      this.showDeleteIcon ? "additional-button" : "",
-    ],
-  };
-
-  currencyTextBoxProperties: CurrencyTextBoxProps = {
-    prefix: "$",
-    clearable: true,
-  };
 
   private validateField() {
     // if the rules property isn't set we won't display an icon
@@ -184,23 +148,7 @@ export default class ATATTextField extends VTextField {
     this.$emit("blur");
   }
 
-  @Emit()
-  private onKeyUp(event: KeyboardEvent): KeyboardEvent {
-    return event;
-  }
-
-  @Emit()
-  private onFocus(event: FocusEvent): FocusEvent {
-    return event;
-  }
-
   public mounted(): void {
-    if (this.textBox) {
-      console.log(this.textBox);
-      this.textBox.addEventListener("blur", this.validateField);
-      this.textBox.addEventListener("keyup", this.onKeyUp);
-      this.textBox.addEventListener("focus", this.onFocus);
-    }
     this.$nextTick(() => {
       this.hasInitialValue = this._value.length > 0;
       if (this.validateOnLoad || this.hasInitialValue) {
