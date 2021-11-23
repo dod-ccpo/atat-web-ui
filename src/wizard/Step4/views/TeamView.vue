@@ -396,6 +396,7 @@ export default class TeamView extends mixins(ApplicationData) {
   }
 
   private deleteMemberFromApplication() {
+    debugger;
     if (this.currentApplication.operators) {
       const applicationOperators = this.currentApplication.operators || [];
       let memberindx = applicationOperators.findIndex(
@@ -429,6 +430,9 @@ export default class TeamView extends mixins(ApplicationData) {
       );
       this.filteredData.splice(itemToRemoveFromFilteredData, 1);
     }
+
+    this.$store.dispatch("updateMembersModified", true);
+
   }
 
   private openSideDrawer(event: Event, openerId: string): void {

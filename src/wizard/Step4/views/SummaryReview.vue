@@ -11,6 +11,31 @@
         each application individually. When you are done, select <strong>Next: 
         Review and Submit</strong> to finalize your portfolio.
       </p>
+
+      <v-alert
+        v-if="isStepErrored"
+        outlined
+        rounded
+        color="error"
+        type="info"
+        class="text-left error_lighter black-icon mt-3 mb-8 border-thick pr-14"
+        border="left"
+      >
+        <div class="black--text body-lg">
+          <p class="mb-0">
+            Each workspace must have an administrator to manage your resources
+            within the cloud console. Please review the application teams below
+            and ensure at least one of the following is satisfied:
+          </p>
+          <ul>
+            <li>A root administrator is added to manage all of your applications.</li>
+            <li>An administrator is added to every application individually.</li>
+            <li>An administrator is added to each environment within every application.</li>
+          </ul>
+
+        </div>
+      </v-alert>
+
     </div>
 
 
@@ -164,6 +189,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     }
     return portfolioName;
   }
+  private isStepErrored = this.$store.getters.isStepErrored(4);
   private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
@@ -378,7 +404,8 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   ): Promise<void> {
     if (this.hasChanges()) { // EJY ALSO need to do this on root admin and member pages
       try {
-        await this.$store.dispatch("saveStepData", 3);
+        // await this.$store.dispatch("saveStepData", 3);
+        await this.$store.dispatch("saveStepData", 4);
         await this.$store.dispatch("setStepTouched", [4, true]);
       } catch (error) {
         console.log(error);

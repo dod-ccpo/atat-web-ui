@@ -663,7 +663,7 @@ export default new Vuex.Store({
           await this.dispatch("saveStep3", step.model);
           break;
         case 4:
-          await this.dispatch("saveStep4");
+          await this.dispatch("saveStep4", true);
           break;
       }
     },
@@ -767,19 +767,9 @@ export default new Vuex.Store({
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
 
-      // EJY NEED TO VALIDATE admin HERE?
-      const isStep4Valid = validateHasAdminOperators(portfolioOperators, applicationModels);
-      debugger;
-      if (isStep4Valid) {
-        this.dispatch("validateStep", 4);
-        this.dispatch("setStepTouched", [4, true]);
-      } else {
-        this.dispatch("setErroredStep", [4, true])
-      }
-      this.dispatch("updateMembersModified", false);
+
     },
-    async saveStep4({ state, rootGetters }) {
-      // EJY when is this hit?
+    async saveStep4({ state, rootGetters }, saveApps) {
       debugger;
       const applicationModels = rootGetters[
         "applications/applications"
@@ -789,17 +779,29 @@ export default new Vuex.Store({
         "applications/portfolioOperators"
       ] as OperatorModel[];
 
-      const applications = mapApplications(applicationModels);
-      const operators = mapOperators(portfolioOperators);
+      if (applicationModels.length) {
 
-      const data = {
-        operators: operators,
-        applications: applications,
-      };
+        const applications = mapApplications(applicationModels);
+        const operators = mapOperators(portfolioOperators);
 
-      await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+        if (saveApps) {
+          const data = {
+            operators: operators,
+            applications: applications,
+          };
+          await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+        }
 
-      this.dispatch("updateMembersModified", false);
+        const isStep4Valid = validateHasAdminOperators(portfolioOperators, applicationModels);
+        debugger;
+        if (isStep4Valid) {
+          this.dispatch("validateStep", 4);
+          this.dispatch("setStepTouched", [4, true]);
+        } else {
+          this.dispatch("setErroredStep", [4, true])
+        }
+        this.dispatch("updateMembersModified", false);
+      }
     },
     updateMembersModified({ commit }, added: boolean): void {
       commit("doUpdateMembersModified", added);
@@ -874,7 +876,8 @@ export default new Vuex.Store({
         this.dispatch("loadStep3Data", draftId),
       ];
       await Promise.all(loadActions);
-      this.dispatch("updateMembersModified", false);
+      await this.dispatch("saveStep4", false);
+      // this.dispatch("updateMembersModified", false);
     },
     async loadStep1Data({ commit, getters }, draftId: string): Promise<void> {
       const draft = await portfoliosApi.getPortfolio(draftId);
@@ -928,31 +931,10 @@ export default new Vuex.Store({
         const stepIndex: number = getters.getStepIndex(3);
         commit("doSaveStepModel", [createStepThreeModel(), 3, stepIndex, true]);
         // EJY need to determine if step 4 touched and valid HERE ?
-
-        // let step4valid = rootAdmins.length ? true : false;
-        // let step4touched = rootAdmins.length ? true : false;
         
-        // let allApplicationsHaveAdmins = false;
-        // for (let a = 0; a < applicationData.applications.length; a++) {
-        //   const application = applicationData.applications[a];
-        //   const hasAppLevelAdmin = application.operators.some((e: Operator) => e.access === "administrator");
-        //   if (!hasAppLevelAdmin) {
-        //     // check that each environment has an admin
-        //     let allEnvsHaveAdmin = true;
-        //     for (let e = 0; e < application.environments.length; e++) {
-        //       const envOperators: any = application.environments[e];
-        //       if (!envOperators.some((o: Operator) => o.access === "administrator")) {
-        //         allEnvsHaveAdmin = false;
-        //         break;
-        //       }
-        //     }
+        
 
-
-        //   } else {
-        //     // this application is fine, has application-level admin
-        //   }
-        // }
-        debugger;
+        // debugger;
       }
     },
     openDialog(
@@ -993,10 +975,6 @@ export default new Vuex.Store({
         contentClass: contentClass,
       };
       commit("doToast", toastProps);
-    },
-    isStepTouched({ state }, stepNumber: number) {
-      const index = StepModelIndices[stepNumber];
-      return state.portfolioSteps[index].touched;
     },
   },
   /*
@@ -1146,7 +1124,18 @@ export default new Vuex.Store({
         (x) => x.step === stepNumber
       );
       return stepIndex;
-    }
+    },
+    isStepErrored: (state) => (stepNumber: number): boolean => {
+      const es: number[] = state.erroredSteps;
+      const i = es.indexOf(stepNumber);
+      return i > -1;
+    },
+
+    isStepTouched: (state) => (stepNumber: number): boolean => {
+      const index = StepModelIndices[stepNumber];
+      return state.portfolioSteps[index].touched;
+    },
+
   },
   modules: {
     portfolios,

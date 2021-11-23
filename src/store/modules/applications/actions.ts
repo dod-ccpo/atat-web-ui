@@ -108,13 +108,13 @@ const updateApplicationOperatorInfo = (
     originalEmail: string;
   }
 ): void => {
-  commit("updateApplicationOperatorInfo", [
+  commit("updateApplicationOperatorInfo", {
     applicationId,
     access,
     display_name,
     email,
     originalEmail,
-  ]);
+  });
 };
 
 const updateEnvironmentOperatorInfo = (
@@ -133,13 +133,13 @@ const updateEnvironmentOperatorInfo = (
     updatedEnvs: any;
   }
 ): void => {
-  commit("updateEnvironmentOperatorInfo", [
+  commit("updateEnvironmentOperatorInfo", {
     applicationId,
     display_name,
     email,
     originalEmail,
     updatedEnvs,
-  ]);
+  });
 };
 
 const updateApplicationOperators = (

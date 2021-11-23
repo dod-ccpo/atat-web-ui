@@ -134,6 +134,7 @@ const updateApplicationOperatorInfo = (
     originalEmail: string;
   }
 ): void => {
+  debugger;
   const apps: ApplicationModel[] = state.applicationModels;
   const appIndex = apps.map((a) => a.id).indexOf(applicationId);
   const app: ApplicationModel = apps[appIndex];

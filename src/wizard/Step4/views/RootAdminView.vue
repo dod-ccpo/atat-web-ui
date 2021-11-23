@@ -310,7 +310,10 @@ export default class RootAdminView extends mixins(ApplicationData) {
         operators.splice(memberindx, 1);
       }
     }
+
+    this.$store.dispatch("updateMembersModified", true);
   }
+
   private moreButtonId(item: any): string {
     if (item && item.email) {
       return (

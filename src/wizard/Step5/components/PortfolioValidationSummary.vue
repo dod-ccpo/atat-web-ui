@@ -10,10 +10,10 @@
                 <p class="body-lg">{{ item.description }}</p>
               </div>
               <div class="d-flex align-center w-100 mb-4">
-                <div class="d-flex text-base-error-darker mr-6">
+                <div class="d-flex text-base-error-dark mr-6">
                   <v-icon
                     aria-hidden="true"
-                    class="icon-24 text-base-error-darker mr-2"
+                    class="icon-24 text-base-error-dark mr-2"
                     >error</v-icon
                   >
                   <p class="body-lg font-weight-bold mb-2">Needs Review</p>
