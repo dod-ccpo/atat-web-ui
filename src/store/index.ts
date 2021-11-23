@@ -493,15 +493,17 @@ export default new Vuex.Store({
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
     },
-    doSetErroredStep(state, [stepNumber, isErroredStep]) {
-      const es: number[] = state.erroredSteps;
-      debugger;
-      if (isErroredStep) {
-        es.push(stepNumber);
-      } else {
-        es.splice(stepNumber, 1);
-      }
-    },
+    // doSetErroredStep(state, [stepNumber, isErroredStep]) {
+    //   const es: number[] = state.erroredSteps;
+    //   const i = es.indexOf(stepNumber);
+    //   if (isErroredStep && i === -1) {
+    //     es.push(stepNumber);
+    //     debugger;
+    //   } else {
+    //     es.splice(i, 1);
+    //     debugger;
+    //   }
+    // },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
     },
@@ -667,9 +669,9 @@ export default new Vuex.Store({
           break;
       }
     },
-    setErroredStep({ commit }, [stepNumber, isErroredStep]) {
-      commit("doSetErroredStep", [stepNumber, isErroredStep]);
-    },
+    // setErroredStep({ commit }, [stepNumber, isErroredStep]) {
+    //   commit("doSetErroredStep", [stepNumber, isErroredStep]);
+    // },
     async saveStep1({ state }, model: any) {
       // build data from step model
       const data = {
@@ -769,8 +771,7 @@ export default new Vuex.Store({
 
 
     },
-    async saveStep4({ state, rootGetters }, saveApps) {
-      debugger;
+    async saveStep4({ state, rootGetters, getters }, saveApps) {
       const applicationModels = rootGetters[
         "applications/applications"
       ] as ApplicationModel[];
@@ -792,13 +793,10 @@ export default new Vuex.Store({
           await portfoliosApi.saveApplications(state.currentPortfolioId, data);
         }
 
-        const isStep4Valid = validateHasAdminOperators(portfolioOperators, applicationModels);
-        debugger;
-        if (isStep4Valid) {
-          this.dispatch("validateStep", 4);
-          this.dispatch("setStepTouched", [4, true]);
-        } else {
-          this.dispatch("setErroredStep", [4, true])
+        const [isStep4Valid, portfolioHasOperators] = validateHasAdminOperators(portfolioOperators, applicationModels);
+        this.dispatch("setStepTouched", [4, portfolioHasOperators]);
+        if (portfolioHasOperators) {
+          this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
         }
         this.dispatch("updateMembersModified", false);
       }
@@ -976,6 +974,10 @@ export default new Vuex.Store({
       };
       commit("doToast", toastProps);
     },
+    isStepTouched({ state }, stepNumber: number) {
+      const index = StepModelIndices[stepNumber];
+      return state.portfolioSteps[index].touched;
+    },
   },
   /*
   ██████████████████████████████████████████████████████████
@@ -1130,12 +1132,10 @@ export default new Vuex.Store({
       const i = es.indexOf(stepNumber);
       return i > -1;
     },
-
-    isStepTouched: (state) => (stepNumber: number): boolean => {
-      const index = StepModelIndices[stepNumber];
-      return state.portfolioSteps[index].touched;
-    },
-
+    isStepTouched: (state) => (stepIndex: number): boolean => {
+      return state.portfolioSteps[stepIndex].touched;
+    }
+  
   },
   modules: {
     portfolios,

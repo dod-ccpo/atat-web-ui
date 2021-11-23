@@ -36,16 +36,19 @@ export const validateApplication = (application: ApplicationModel): boolean => {
 export const validateHasAdminOperators = (
   rootAdmins: OperatorModel[], 
   applicationModels: ApplicationModel[]
-  ): boolean => {
-
-  debugger;
+  ): boolean[] => {
+  
+  // debugger;
   if (rootAdmins && rootAdmins.length) {
-    return true;
+    return [true, true];
   }
+  let operatorCount = 0;
   // no root admins, check each application for admins
   const validApplicationIndices = [];
   for (let a = 0; a < applicationModels.length; a++) {
     const application = applicationModels[a];
+    operatorCount += application.operators.length;
+
     const hasAppLevelAdmin = application.operators.some((e: OperatorModel) => e.access === "administrator");
     if (hasAppLevelAdmin) {
       // this app has an admin
@@ -55,6 +58,7 @@ export const validateHasAdminOperators = (
       let allEnvsHaveAdmin = true;
       for (let e = 0; e < application.environments.length; e++) {
         const envOperators: any = application.environments[e].operators;
+        operatorCount += envOperators.length;
         if (!envOperators.some((o: OperatorModel) => o.access === "administrator")) {
           allEnvsHaveAdmin = false;
           break;
@@ -65,17 +69,9 @@ export const validateHasAdminOperators = (
       }
     }
   }
-  debugger;
-  return validApplicationIndices.length === applicationModels.length;
+  // debugger;
+  const isValid = validApplicationIndices.length === applicationModels.length;
+  const isTouched = operatorCount > 0;
+  return [isValid, isTouched];
 
-
-
-
-  // const hasAtleastOneRootAdmin = applicationModel.operators &&
-  // applicationModel.operators.find((operator: OperatorModel) => operator.access === "administrator") !==  undefined;
-
-  // if(applicationModel.operators || )
-
-
-  return false;
 };

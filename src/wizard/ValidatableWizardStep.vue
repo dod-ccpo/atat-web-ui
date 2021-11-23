@@ -25,15 +25,10 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   };
 
   protected updateModelState(isValid: boolean): void {
-
-    // EJY how to hit this on step 4?
-
     this.$store.dispatch("updateStepModelValidity", [this.step, isValid]);
   }
 
   protected async saveData(): Promise<void> {
-    debugger; // VALIDATABLE WIZARD STEP
-    // EJY how to hit this on step 4?
     await this.$store.dispatch("saveStepData", this.step);
   }
 
@@ -41,7 +36,6 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   protected model!: TModel;
 
   private hasChanges(): boolean {
-    debugger;
     let theSame = true;
     const serializedIncoming = JSON.stringify(this.incomingModel);
     const serialiedOutgoing = JSON.stringify(this.model);
@@ -51,13 +45,11 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   }
 
   public async mounted(): Promise<void> {
-    debugger;
     if (this.$route.meta && this.$route.meta.isWizard) {
       if (this.skipValidation) return;
 
       this.incomingModel = JSON.parse(JSON.stringify(this.model)) as TModel;
-      this.touched = await this.$store.getters("isStepTouched", this.step);
-      debugger;
+      this.touched = await this.$store.dispatch("isStepTouched", this.step);
       if (this.touched) {
         this.validate();
       }

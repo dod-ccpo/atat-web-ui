@@ -182,12 +182,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return this.applicationsState.applicationModels;
   }
   public get portfolioName(): string {
-    let portfolioName = "Untitled";
-    if (this.applicationData && this.applicationData.length) {
-      const portfolioObj = this.applicationData.find((o: any) => o.portfolio === true);
-      portfolioName = portfolioObj ? portfolioObj.name : portfolioName;
-    }
-    return portfolioName;
+    return this.$store.getters.getPortfolioName();
   }
   private isStepErrored = this.$store.getters.isStepErrored(4);
   private csp = this.$store.getters.getPortfolio.csp;
