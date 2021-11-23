@@ -250,6 +250,10 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
   private isKeyboardEvent = false;
   private isTabEvent = false;
+  private thisControlId = this.getId("clin-datepicker-text-boxes");
+  private thisControl = document.getElementById(
+    this.thisControlId
+  ) as HTMLElement;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -445,9 +449,11 @@ export default class ATATDatePicker extends Vue {
    * 2 - sets first and secondMonth
    */
   private mounted(): void {
+    this.thisControl = document.getElementById(
+      this.thisControlId
+    ) as HTMLElement;
     this.addMasks();
     document.addEventListener("click", this.datepickerControlClicked);
-    // document.addEventListener("keydown", this.datepickerControlClicked);
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
         this.isDateValid(this.startDate) ? this.startDate : new Date()
@@ -460,18 +466,22 @@ export default class ATATDatePicker extends Vue {
 
   private destroyed(): void {
     document.removeEventListener("click", this.datepickerControlClicked);
-    // document.removeEventListener("keydown", this.datepickerControlClicked);
   }
 
   /**
    * mask input date text boxes with MM/DD/YYYY
    */
   private addMasks(): void {
-    Inputmask({
-      alias: "datetime",
-      inputFormat: "mm/dd/yyyy",
-      placeholder: "MM/DD/YYYY" 
-    }).mask(document.querySelectorAll(".datepicker-text-box input"));
+    [
+      this.getId("start-date-text-box"),
+      this.getId("end-date-text-box"),
+    ].forEach((tbId) => {
+      Inputmask({
+        alias: "datetime",
+        inputFormat: "mm/dd/yyyy",
+        placeholder: "MM/DD/YYYY",
+      }).mask(document.querySelector("#" + tbId) as HTMLElement);
+    });
   }
 
   /** page click event listener */
@@ -560,7 +570,9 @@ export default class ATATDatePicker extends Vue {
       ? "end-date-text-box"
       : "start-date-text-box";
     this.styleDatePickerButton(button, this.isStartTextBoxFocused);
-    (document.querySelector("#" + this.getId(_id)) as HTMLElement).click();
+    (
+      this.thisControl.querySelector("#" + this.getId(_id)) as HTMLElement
+    ).click();
   }
 
   /**
@@ -569,7 +581,7 @@ export default class ATATDatePicker extends Vue {
   private setFocusOnDatePicker(): void {
     if (this.isKeyboardEvent) {
       setTimeout(() => {
-        const firstDatePickerButton = document.querySelector(
+        const firstDatePickerButton = this.thisControl.querySelector(
           ".v-date-picker-header button:first-child"
         ) as HTMLButtonElement;
         firstDatePickerButton.focus();
@@ -585,7 +597,7 @@ export default class ATATDatePicker extends Vue {
   private setDatePickerHoverButtons(): void {
     if (this.menu) {
       // restores datepicker table to default classes
-      const datepickerTables = document.getElementsByClassName(
+      const datepickerTables = this.thisControl.getElementsByClassName(
         "v-date-picker-table"
       );
       Array.from(datepickerTables).forEach((table) => {
@@ -613,7 +625,7 @@ export default class ATATDatePicker extends Vue {
       ? "date-picker-start-date"
       : "date-picker-end-date";
     const elementsWithOutdatedClass =
-      document.getElementsByClassName(classToRemove);
+      this.thisControl.getElementsByClassName(classToRemove);
     if (elementsWithOutdatedClass.length > 0) {
       Array.from(elementsWithOutdatedClass).forEach((el) => {
         el.classList.remove(classToRemove);
@@ -671,8 +683,8 @@ export default class ATATDatePicker extends Vue {
 
     if (isDateSelected) {
       const buttonIdToFocus = this.isStartTextBoxFocused
-        ? "start-date-text-box-button"
-        : "end-date-text-box-button";
+        ? this.getId("start-date-text-box-button")
+        : this.getId("end-date-text-box-button");
       const button = document.getElementById(
         this.getId(buttonIdToFocus)
       ) as HTMLButtonElement;
@@ -796,7 +808,7 @@ export default class ATATDatePicker extends Vue {
     // setTimeout to display style for start/end buttons
     // when user navigates calendars
     setTimeout(() => {
-      const displayedDPs = document.getElementsByClassName(
+      const displayedDPs = this.thisControl.getElementsByClassName(
         "two-date-pickers"
       )[0] as HTMLElement;
       if (displayedDPs) {

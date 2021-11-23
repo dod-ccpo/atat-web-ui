@@ -43,7 +43,7 @@
             outlined
             dense
             :success="isSuccess"
-            :prefix="prefix"
+            :prefix="getPrefix"
             :error="isErrored"
             :error-messages="errorMessages"
             :height="42"
@@ -159,6 +159,18 @@ export default class ATATTextField extends VTextField {
     });
   }
 
+  get getPrefix(): string {
+    let prefix = "";
+    switch (this.mask) {
+      case "currency":
+        prefix = "$";
+        break;
+      default:
+        break;
+    }
+    return prefix || this.prefix;
+  }
+
   private addMasks(): void {
     let textBox = document.querySelector(
       "#" + this.id + "_text_field"
@@ -166,17 +178,11 @@ export default class ATATTextField extends VTextField {
     if (this.mask === "currency") {
       Inputmask({
         alias: "currency",
-         autoUnmask: true,
-       
-        placeholder: "0",
-        prefix: "$",
+        autoUnmask: true,
+        digitsOptional: true,
         rightAlign: false,
       }).mask(textBox);
     }
   }
-  // groupSeparator: ",",
-  //     digits: 2,
-  //     digitsOptional: false,
-  //     prefix: "$",
 }
 </script>

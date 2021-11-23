@@ -76,7 +76,7 @@
                     :value.sync="_clin_number"
                   />
                   <atat-select
-                    class="clin-idiq-select"
+                    class="clin-idiq-select max-width-100"
                     label="Corresponding IDIQ CLIN"
                     placeholder="- Select -"
                     :items="idiq_clin_items"
@@ -223,7 +223,6 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 import { TaskOrderModel } from "../../../../types/Wizard";
-import Inputmask from "inputmask";
 
 @Component({})
 export default class ClinsCard extends Vue {
@@ -407,7 +406,7 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters"
     );
-    return this.isClinFormDirty ? validationRules : [];
+    return validationRules ;
   }
 
   get correspondingIDIQRules(): any[] {
@@ -415,7 +414,7 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v !== "" || "Please select an IDIQ CLIN type"
     );
-    return this.isClinFormDirty ? validationRules : [];
+    return validationRules ;
   }
 
   get totalClinRules(): any[] {
@@ -424,12 +423,14 @@ export default class ClinsCard extends Vue {
     validationRules.push((v: number) => {
       v = this.removeCurrencyFormat(v);
 
-      let ob = this.removeCurrencyFormat(this._obligated_funds) || 0;
-      console.log("v:" + v + ";  " + "ob:" + ob);
-      return v >= ob || "Obligated Funds cannot exceed total CLIN Values";
+      // let ob = this.removeCurrencyFormat(this._obligated_funds) || 0;
+      return (
+        v >= this._obligated_funds ||
+        "Obligated Funds cannot exceed total CLIN Values"
+      );
     });
 
-    return this.isClinFormDirty ? validationRules : [];
+    return validationRules;
   }
 
   get obligatedFundRules(): any[] {
@@ -438,16 +439,14 @@ export default class ClinsCard extends Vue {
       (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
     );
     validationRules.push((v: number) => {
-      v = this.removeCurrencyFormat(v);
-      let totalClin = this.removeCurrencyFormat(this._total_clin_value) || 0;
-      console.log(v);
-      console.log("v:" + v + ";  " + "ob:" + totalClin);
+      // v = this.removeCurrencyFormat(v);
+      // let totalClin = this.removeCurrencyFormat(this._total_clin_value) || 0;
       return (
         v <= this._total_clin_value ||
         "Obligated Funds cannot exceed total CLIN Values"
       );
     });
-    return this.isClinFormDirty ? validationRules : [];
+    return validationRules;
   }
 
   get popStartRules(): any[] {
@@ -520,9 +519,10 @@ export default class ClinsCard extends Vue {
         );
       }
     }
-    return this.validateDatePickerOnLoad && this.isClinFormDirty
-      ? validationRules
-      : [];
+    return validationRules;
+    // return this.validateDatePickerOnLoad && this.isClinFormDirty
+    //   ? validationRules
+    //   : [];
   }
 
   // @Watch("_obligated_funds")
