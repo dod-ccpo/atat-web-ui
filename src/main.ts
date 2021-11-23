@@ -12,6 +12,7 @@ import VueAxios from 'vue-axios';
 import RouterMiddleWare, { RouterMiddleWareOptions }  from "./router/routerMiddleWare";
 import routeHandlers from "./router/routeHandlers";
 import "./plugins/vuetify-mask.js";
+import Inputmask from "inputmask";
 
 // below 3 scripts for Vuetify in IE
 import 'core-js/stable';

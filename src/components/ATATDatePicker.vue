@@ -58,7 +58,6 @@
               @focus="setFocus"
               @blur="blurTextField"
               validate-on-blur
-              @keyup="maskDate"
               clearable
               @click:clear="clearTextBox"
               :class="[
@@ -96,7 +95,6 @@
               @focus="setFocus"
               hide-details
               @blur="blurTextField"
-              @keyup="maskDate"
               clearable
               @click:clear="clearTextBox"
               validate-on-blur
@@ -203,6 +201,7 @@ import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import { CustomErrorMessage } from "types/Wizard";
+import Inputmask from "inputmask";
 
 @Component({})
 export default class ATATDatePicker extends Vue {
@@ -251,27 +250,6 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
   private isKeyboardEvent = false;
   private isTabEvent = false;
-
-  public maskDate(event: KeyboardEvent): void {
-    const textBox = event.target as HTMLInputElement;
-    const isStartDate = textBox.id.indexOf("start-date") > -1;
-    const value = textBox.value.match(/\d+/g) || [""];
-    const maskedValue = value.join("/");
-    let valueLength = maskedValue.length || 0;
-    textBox.value = maskedValue + "MM/DD/YYYY".substring(valueLength, 10);
-    valueLength =
-      valueLength === 2 || valueLength === 5 ? valueLength + 1 : valueLength;
-    if (valueLength <= 9) {
-      textBox.setSelectionRange(valueLength, valueLength);
-    }
-    if (this.isDateValid(maskedValue)) {
-      if (isStartDate) {
-        this.setStartDate(maskedValue);
-      } else {
-        this.setEndDate(maskedValue);
-      }
-    }
-  }
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -467,6 +445,7 @@ export default class ATATDatePicker extends Vue {
    * 2 - sets first and secondMonth
    */
   private mounted(): void {
+    this.addMasks();
     document.addEventListener("click", this.datepickerControlClicked);
     // document.addEventListener("keydown", this.datepickerControlClicked);
     if (this.isDateValid(this.startDate)) {
@@ -482,6 +461,17 @@ export default class ATATDatePicker extends Vue {
   private destroyed(): void {
     document.removeEventListener("click", this.datepickerControlClicked);
     // document.removeEventListener("keydown", this.datepickerControlClicked);
+  }
+
+  /**
+   * mask input date text boxes with MM/DD/YYYY
+   */
+  private addMasks(): void {
+    Inputmask({
+      alias: "datetime",
+      inputFormat: "mm/dd/yyyy",
+      placeholder: "MM/DD/YYYY" 
+    }).mask(document.querySelectorAll(".datepicker-text-box input"));
   }
 
   /** page click event listener */

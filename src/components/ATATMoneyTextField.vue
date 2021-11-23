@@ -89,7 +89,6 @@
 </template>
 
 <script lang="ts">
-
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATTextField from "./ATATTextField copy.vue";

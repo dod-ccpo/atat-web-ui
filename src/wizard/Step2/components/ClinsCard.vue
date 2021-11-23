@@ -89,28 +89,23 @@
                 <fieldset class="input-max-width pb-10">
                   <legend class="h3 mb-4">CLIN Funding</legend>
                   <v-form :ref="getId('fundFields')">
-                    <!-- unmaskTotalClinValue -->
-                    <!-- v-mask="currencyMask" -->
                     <atat-text-field
                       class="mb-3"
-                      mask="money"
                       :id="getId('total_clin_value')"
+                      mask="currency"
                       label="Total CLIN Value"
                       :rules="totalClinRules"
                       :helpText="clinHelpText"
-                      :value.sync="unmaskTotalClinValue"
+                      :value.sync="_total_clin_value"
                     />
-                    <!-- unmaskObligatedFunds -->
-                    <!-- v-mask="currencyMask" -->
-                    <!-- :ref="getId(' :ref="getId('obligated_funds')"')" -->
                     <atat-text-field
                       class="mb-5"
-                      mask="money"
                       :id="getId('obligated_funds')"
+                      mask="currency"
                       label="Obligated Funds"
                       :rules="obligatedFundRules"
                       :helpText="obligatedFundsHelpText"
-                      :value.sync="unmaskObligatedFunds"
+                      :value.sync="_obligated_funds"
                       @onkeyup="calculateObligatedPercent"
                     />
 
@@ -228,10 +223,9 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 import { TaskOrderModel } from "../../../../types/Wizard";
+import Inputmask from "inputmask";
 
-@Component({
-  components: {},
-})
+@Component({})
 export default class ClinsCard extends Vue {
   @Prop({ required: true, default: () => -1 }) card_number!: number;
   @PropSync("clin_number") _clin_number!: string;
@@ -317,33 +311,8 @@ export default class ClinsCard extends Vue {
     this.setDateRange();
   }
 
-  set unmaskTotalClinValue(value: number) {
-
-    this._total_clin_value = value
-      ? Number(this.sanitizeCurrency(value.toString()).toFixed(2))
-      : 0;
-  }
-  get unmaskTotalClinValue(): number {
-    return this._total_clin_value;
-  }
-
-  set unmaskObligatedFunds(value: number) {
-    this._obligated_funds = value
-      ? Number(this.sanitizeCurrency(value.toString()).toFixed(2))
-      : 0;
-  }
-  
-  get unmaskObligatedFunds(): number {
-    return this._obligated_funds;
-  }
-
   public formatCurrency(value: number): string {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
-  public sanitizeCurrency(value: string): number {
-    const unformattedCurrency = value.toString().replace(/,/g, "");
-    return parseFloat(unformattedCurrency);
   }
 
   private getId(prepend: string) {
@@ -423,7 +392,7 @@ export default class ClinsCard extends Vue {
   //todo apply removeCurrencyformat to variables in validation
   //currency validation rules
   public removeCurrencyFormat(formattedCurrency: number): number {
-    return parseFloat(formattedCurrency.toString().replace(/,/g, "")) || 0.00;
+    return parseFloat(formattedCurrency.toString().replace(/,/g, "")) || 0.0;
   }
 
   get clinNumberRules(): any[] {

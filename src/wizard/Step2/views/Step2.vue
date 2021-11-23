@@ -38,7 +38,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   };
   private isDisabled =
     this.model.clins.length == 1 && this.model.clins[0].clin_number == "";
-  
+
   public addClin(): void {
     this.model.clins.push({
       clin_number: "",
