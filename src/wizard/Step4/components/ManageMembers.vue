@@ -1022,7 +1022,7 @@ export default class ManageMember extends mixins(ApplicationData) {
       }
     }
 
-    this.$store.dispatch("updateMembersAdded", true);
+    this.$store.dispatch("updateMembersModified", true);
 
     this.closeModal();
   }

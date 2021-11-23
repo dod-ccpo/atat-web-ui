@@ -5,13 +5,14 @@
       <h1 tabindex="-1">Let’s set up your application teams</h1>
       <p class="body-lg text--base-darkest">
         In this section, we will invite people to join your application teams,
-        giving them access to your workspaces within the {{ csp }} console.
-        Select each application below to manage your team members. Please add at
-        least one person to each application to ensure your team can access your
-        provisioned cloud resources. When you are done, select
-        <strong>Next: Review and Submit</strong> to finalize your portfolio.
+        giving them access to your workspaces within the {{ csp }} console. Add 
+        your root administrators to <strong>“{{ portfolioName }}”</strong> to 
+        manage all of your applications, or customize members and roles within 
+        each application individually. When you are done, select <strong>Next: 
+        Review and Submit</strong> to finalize your portfolio.
       </p>
     </div>
+
 
     <v-data-table
       class="review-table overflow-x-hidden overflow-y-hidden"
@@ -155,7 +156,14 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   public get applications(): ApplicationModel[] {
     return this.applicationsState.applicationModels;
   }
-
+  public get portfolioName(): string {
+    let portfolioName = "Untitled";
+    if (this.applicationData && this.applicationData.length) {
+      const portfolioObj = this.applicationData.find((o: any) => o.portfolio === true);
+      portfolioName = portfolioObj ? portfolioObj.name : portfolioName;
+    }
+    return portfolioName;
+  }
   private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
@@ -360,7 +368,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   }
 
   private hasChanges(): boolean {
-    return this.$store.getters.membersAdded;
+    return this.$store.getters.membersModified;
   }
 
   public async beforeRouteLeave(
@@ -368,9 +376,10 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-    if (this.hasChanges()) {
+    if (this.hasChanges()) { // EJY ALSO need to do this on root admin and member pages
       try {
         await this.$store.dispatch("saveStepData", 3);
+        await this.$store.dispatch("setStepTouched", [4, true]);
       } catch (error) {
         console.log(error);
       }

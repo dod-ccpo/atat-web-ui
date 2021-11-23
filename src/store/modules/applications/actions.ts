@@ -46,13 +46,15 @@ const deleteApplication = async (
     commit,
     state,
     rootState,
+    //getters, // getters from /store/index.ts
   }: { commit: Commit; state: ApplicationsState; rootState: RootState },
   id: string
 ): Promise<void> => {
   try {
     commit("deleteApplication", id);
     //todo fix reference to root store here
-    //commit("doInitializeStepModel", [createStepThreeModel(), 3]);
+    //const stepIndex: number = getters.getStepIndex(3);
+    //commit("doInitializeStepModel", [createStepThreeModel(), 3, stepIndex]);
 
     const _applications = state.applicationModels.map((model: Application) => {
       const application: Application = {
