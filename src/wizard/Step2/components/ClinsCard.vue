@@ -631,8 +631,8 @@ export default class ClinsCard extends Vue {
   }
 
   private async clinFormClicked(event: Event): Promise<void> {
-    console.log(event);
     const clickedElement = event.target as HTMLElement;
+    console.log(clickedElement);
     const datepickerControl = document.getElementsByClassName(
       "clin-datepicker-control"
     )[0];
