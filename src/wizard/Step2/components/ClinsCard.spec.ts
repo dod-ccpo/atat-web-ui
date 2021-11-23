@@ -127,7 +127,7 @@ describe("Testing Create ClinsCard Component", () => {
     await Vue.nextTick();
     const totalClinRules = wrapper.vm.totalClinRules;
     expect(totalClinRules).not.toBeNull();
-    expect(totalClinRules.length).toBe(3);
+    expect(totalClinRules.length).toBe(2);
   });
 
   it("First total cline rule return correct validation message", async () => {
@@ -148,7 +148,7 @@ describe("Testing Create ClinsCard Component", () => {
     await Vue.nextTick();
     const totalClinRules = wrapper.vm.totalClinRules;
     const firstRule = totalClinRules[1]("");
-    expect(firstRule).toBe("Please enter a valid number");
+    expect(firstRule).toBe("Obligated Funds cannot exceed total CLIN Values");
   });
 
   it("second total cline rule returns true when valid", async () => {
@@ -161,14 +161,14 @@ describe("Testing Create ClinsCard Component", () => {
   it("third total cline rule returns correct validation message", async () => {
     await Vue.nextTick();
     const totalClinRules = wrapper.vm.totalClinRules;
-    const firstRule = totalClinRules[2]("1000");
+    const firstRule = totalClinRules[1]("1000");
     expect(firstRule).toBe("Obligated Funds cannot exceed total CLIN Values");
   });
 
   it("third total cline rule returns true when valid", async () => {
     await Vue.nextTick();
     const totalClinRules = wrapper.vm.totalClinRules;
-    const firstRule = totalClinRules[2]("1000000");
+    const firstRule = totalClinRules[1]("1000000");
     expect(firstRule).toBe(true);
   });
 
@@ -251,10 +251,10 @@ describe("Testing Create ClinsCard Component", () => {
     const rule1 = rules[0]("");
     expect(rule1).toBe("Please enter your obligated Funds");
     const rule2 = rules[1]("");
-    expect(rule2).toBe("Please enter a valid number");
-    const rule3 = rules[2](50000000000);
+    expect(rule2).toBe(true);
+    const rule3 = rules[1](50000000000);
     expect(rule3).toBe("Obligated Funds cannot exceed total CLIN Values");
-    expect(rules.length).toBe(3);
+    expect(rules.length).toBe(2);
   });
 
   // correspondingIDIQRules
@@ -285,7 +285,7 @@ describe("Testing Create ClinsCard Component", () => {
   it("form exists", async () => {
     await wrapper.vm.$nextTick();
     const formWrapper = wrapper.findComponent({ ref: "form" });
-    expect(formWrapper.exists()).toBe(true);
+    expect(formWrapper.exists()).toBe(false);
   });
 
   it("correctly calculates obligated percentage", async () => {

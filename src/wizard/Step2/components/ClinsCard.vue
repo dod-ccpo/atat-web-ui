@@ -372,9 +372,7 @@ export default class ClinsCard extends Vue {
   }
 
   public toggleClinCard(): void {
-    // if (this.openItem === 0){
     this.focusClinNumberOnCardOpen = true;
-    // }
     this.calculateObligatedPercent();
   }
 
@@ -386,12 +384,6 @@ export default class ClinsCard extends Vue {
     if (progress) {
       progress.style.width = this.obligatedPercent + "%";
     }
-  }
-
-  //todo apply removeCurrencyformat to variables in validation
-  //currency validation rules
-  public removeCurrencyFormat(formattedCurrency: number): number {
-    return parseFloat(formattedCurrency.toString().replace(/,/g, "")) || 0.0;
   }
 
   get clinNumberRules(): any[] {
@@ -406,7 +398,7 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters"
     );
-    return validationRules ;
+    return validationRules;
   }
 
   get correspondingIDIQRules(): any[] {
@@ -414,16 +406,13 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v !== "" || "Please select an IDIQ CLIN type"
     );
-    return validationRules ;
+    return validationRules;
   }
 
   get totalClinRules(): any[] {
     const validationRules = [];
     validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
     validationRules.push((v: number) => {
-      v = this.removeCurrencyFormat(v);
-
-      // let ob = this.removeCurrencyFormat(this._obligated_funds) || 0;
       return (
         v >= this._obligated_funds ||
         "Obligated Funds cannot exceed total CLIN Values"
@@ -439,8 +428,6 @@ export default class ClinsCard extends Vue {
       (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
     );
     validationRules.push((v: number) => {
-      // v = this.removeCurrencyFormat(v);
-      // let totalClin = this.removeCurrencyFormat(this._total_clin_value) || 0;
       return (
         v <= this._total_clin_value ||
         "Obligated Funds cannot exceed total CLIN Values"
@@ -460,6 +447,11 @@ export default class ClinsCard extends Vue {
       });
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(() => {
+          console.log("startDAte " + this._pop_start_date);
+          console.log("enddate " + this._pop_end_date);
+          console.log(
+            moment(this._pop_start_date).isBefore(this._pop_end_date)
+          );
           return (
             moment(this._pop_start_date).isBefore(this._pop_end_date) ||
             "The period of performance start date must be before the end date"

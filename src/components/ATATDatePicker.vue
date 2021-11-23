@@ -477,10 +477,10 @@ export default class ATATDatePicker extends Vue {
       this.getId("end-date-text-box"),
     ].forEach((tbId) => {
       Inputmask({
-        alias: "datetime",
         inputFormat: "mm/dd/yyyy",
         placeholder: "MM/DD/YYYY",
-      }).mask(document.querySelector("#" + tbId) as HTMLElement);
+        regex: "((0[1-9]|1[0-2])\\/(0[1-9]|[12]\\d|3[01])\\/[12]\\d{3}"
+      }).mask(document.getElementById(tbId) as HTMLElement);
     });
   }
 
