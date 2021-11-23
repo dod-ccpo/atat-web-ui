@@ -952,7 +952,10 @@ export default class ManageMember extends mixins(ApplicationData) {
       const curApp: ApplicationModel = this.currentApplication;
       if (this.assignDifferentRolesForEnvs && !this.isRootAdmin) {
         this.environments_roles.forEach((env) => {
-          if (env.role_value !== "no_access") {
+          const roleIsValid = this.rolesList.some(
+            (el) => el.role_value === env.role_value
+          );
+          if (env.role_value !== "no_access" && roleIsValid) {
             operators = this.setOperators(env.role_value);
             const thisEnv: EnvironmentModel = {
               id: env.env_id,

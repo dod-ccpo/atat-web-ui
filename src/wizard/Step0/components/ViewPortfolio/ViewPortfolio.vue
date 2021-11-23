@@ -48,8 +48,11 @@
           <span class="text--base mb-0 pr-1">Sort:</span>
           <a
             role="button"
-            class="mb-0 pr-5 toggle-content"
-            @click="open = !open"
+            tabindex="0"
+            class="mb-0 mr-5 toggle-content"
+            @click="toggleSortMenu($event)"
+            @keydown.enter="toggleSortMenu($event)"
+            @keydown.space="toggleSortMenu($event)"
             :class="open ? 'open' : 'closed'"
           >
             Portfolio Name A-Z
@@ -104,6 +107,14 @@ export default class ViewPortfolio extends Vue {
 
   private async mounted(): Promise<void> {
     await this.loadPortfolioDrafts();
+  }
+
+  private toggleSortMenu(event: KeyboardEvent) {
+    if (event.code !== undefined) {
+      event.preventDefault();
+    }
+    // complete functionality in future task, for now, just toggle this.open
+    this.open = !this.open;
   }
 
   private async onDeletePortfolio(id: string) {

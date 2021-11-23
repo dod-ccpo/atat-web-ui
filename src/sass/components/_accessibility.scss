@@ -39,6 +39,12 @@ a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
         font-weight: inherit !important;
         box-shadow: $focus-shadow-tight;
     }
+    &.h1, &.h2, &.h3, &.h4, &.h5, &.h6 {
+        &:focus-visible::before,
+        &:focus-visible {
+            font-weight: 700 !important;
+        }
+    }
 }
 a.left-nav-menu-link{
     &:focus{

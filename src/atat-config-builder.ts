@@ -39,6 +39,13 @@ const retrieveSessionConfig = (): ATATConfiguration | undefined => {
   return undefined;
 };
 
+const buildConfigurationUrl = (): string => {
+  const origin = window.location.origin;
+  const basePath = process.env.BASE_URL;
+  const endpoint = "configuration";
+  return `${origin}${basePath}${endpoint}`;
+};
+
 const getConfiguration = async (): Promise<ATATConfiguration> => {
   let atatConfig: ATATConfiguration;
 
@@ -63,13 +70,10 @@ const getConfiguration = async (): Promise<ATATConfiguration> => {
     return atatConfig;
   }
 
-  const baseURL =
-    window.location.hostname === "localhost"
-      ? "https://luv6hxil7k.execute-api.us-gov-west-1.amazonaws.com/prod/"
-      : window.location;
+  const configurationUrl = buildConfigurationUrl();
 
   try {
-    const response = await axios.get<ProxyConfig>(`${baseURL}configuration`);
+    const response = await axios.get<ProxyConfig>(configurationUrl);
 
     const proxy = response.data;
 
