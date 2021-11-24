@@ -13,7 +13,7 @@
       </p>
 
       <v-alert
-        v-if="isStepErrored"
+        v-if="isStepErrored && isStepTouched"
         outlined
         rounded
         color="error"
@@ -32,7 +32,6 @@
             <li>An administrator is added to every application individually.</li>
             <li>An administrator is added to each environment within every application.</li>
           </ul>
-
         </div>
       </v-alert>
     </div>
@@ -194,6 +193,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return this.$store.getters.getPortfolioName();
   }
   private isStepErrored = this.$store.getters.isStepErrored(4);
+  private isStepTouched = this.$store.getters.isStepTouched(4);
   private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
@@ -289,14 +289,14 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     );
     if (pIndex > -1) {
       this.applicationData[pIndex].operatorCount = portfolioOperatorsCount;
-      this.applicationData[pIndex].invalidAdmins = this.isStepErrored;
+      this.applicationData[pIndex].invalidAdmins = this.isStepErrored && this.isStepTouched;
     } else {
       this.applicationData.push({
         name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
         description: "Root administrators can access all applications",
         operatorCount: portfolioOperatorsCount,
         portfolio: true,
-        invalidAdmins: this.isStepErrored,
+        invalidAdmins: this.isStepErrored && this.isStepTouched,
       });
     }
 
@@ -319,7 +319,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       );
       if (aIndex > -1) {
         this.applicationData[aIndex].operatorCount = totalOperatorsCount;
-        this.applicationData[aIndex].invalidAdmins = !isAppValid;
+        this.applicationData[aIndex].invalidAdmins = !isAppValid && this.isStepTouched;
       } else {
         this.applicationData.push({
           id: app.id,
@@ -327,7 +327,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
           operatorCount: totalOperatorsCount,
           description: app.description,
           portfolio: false,
-          invalidAdmins: !isAppValid,
+          invalidAdmins: !isAppValid && this.isStepTouched,
         });
       }
     }

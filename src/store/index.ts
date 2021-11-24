@@ -1098,10 +1098,10 @@ export default new Vuex.Store({
       const i = es.indexOf(stepNumber);
       return i > -1;
     },
-    isStepTouched: (state) => (stepIndex: number): boolean => {
+    isStepTouched: (state, getters) => (stepNumber: number): boolean => {
+      const stepIndex: number = getters.getStepIndex(stepNumber);
       return state.portfolioSteps[stepIndex].touched;
     }
-  
   },
   modules: {
     portfolios,
