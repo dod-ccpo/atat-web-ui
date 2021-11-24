@@ -108,8 +108,18 @@
       </template>
       <template v-slot:item.operators="{ item }">
         <div class="d-flex justify-space-between">
-          <div class="body text--base-darkest pt-1">
-            {{ item.operatorCount }}
+          <div 
+            class="body text--base-darkest pt-1"
+          >
+            <div 
+              class="errorable-field  d-flex align-center"
+              :class="{invalid: item.invalidAdmins}"
+            >
+              {{ item.operatorCount }}
+              <v-icon v-if="item.invalidAdmins">
+                error
+              </v-icon>
+            </div>
           </div>
 
           <v-menu
@@ -162,6 +172,7 @@ import { Component, Watch } from "vue-property-decorator";
 import { editmembers } from "@/router/wizard";
 import { mixins } from "vue-class-component";
 import ApplicationModuleData from "@/mixins/ApplicationModuleData";
+import { validateHasAdminOperators } from "@/validation/application";
 
 import {
   ApplicationDataModel,
@@ -185,6 +196,9 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return this.$store.getters.getPortfolioName();
   }
   private isStepErrored = this.$store.getters.isStepErrored(4);
+  private hasRootAdmin = true;
+  private allAppsHaveAdmins = true;
+  private showInvalidOnRootAdminCount = false;
   private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
@@ -269,23 +283,35 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   }
 
   private transformData(applications: any): void {
-    const portfolioOperatorsCount = this.operators.length || 0;
-
+    const portfolioOperators = this.operators;
+    const portfolioOperatorsCount = portfolioOperators.length || 0;
+    this.hasRootAdmin = portfolioOperatorsCount > 0;
+    const [isPortfolioValid, hasPortfolioOperators] = validateHasAdminOperators(portfolioOperators, applications);
+    this.isStepErrored = !isPortfolioValid;
+    debugger;
+    
     const pIndex = this.applicationData.findIndex(
       (p: any) => p.portfolio === true
     );
+    debugger;
     if (pIndex > -1) {
       this.applicationData[pIndex].operatorCount = portfolioOperatorsCount;
+      this.applicationData[pIndex].invalidAdmins = this.isStepErrored;
     } else {
       this.applicationData.push({
         name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
         description: "Root administrators can access all applications",
         operatorCount: portfolioOperatorsCount,
         portfolio: true,
+        invalidAdmins: this.isStepErrored,
       });
     }
 
+    const appCount = applications.length;
+    let validAppCount = 0;
     for (let app of applications) {
+      const [isAppValid, hasPortfolioOperators] = validateHasAdminOperators(portfolioOperators, [app]);
+      validAppCount = isAppValid ? validAppCount + 1 : validAppCount;
       const opEmails: string[] = [];
       const appOps = app.operators || [];
       appOps.forEach((op: OperatorModel) => opEmails.push(op.email));
@@ -301,17 +327,22 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
         (a: any) => a.id === app.id
       );
       if (aIndex > -1) {
+        debugger;
         this.applicationData[aIndex].operatorCount = totalOperatorsCount;
+        this.applicationData[aIndex].invalidAdmins = !isAppValid;
       } else {
+        debugger;
         this.applicationData.push({
           id: app.id,
           name: app.name,
           operatorCount: totalOperatorsCount,
           description: app.description,
           portfolio: false,
+          invalidAdmins: !isAppValid,
         });
       }
     }
+    this.allAppsHaveAdmins = appCount === validAppCount;
   }
 
   private setApplication(item: any) {

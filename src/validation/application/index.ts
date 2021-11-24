@@ -38,7 +38,7 @@ export const validateHasAdminOperators = (
   applicationModels: ApplicationModel[]
   ): boolean[] => {
   
-  // debugger;
+  debugger;
   if (rootAdmins && rootAdmins.length) {
     return [true, true];
   }
@@ -69,7 +69,7 @@ export const validateHasAdminOperators = (
       }
     }
   }
-  // debugger;
+  debugger;
   const isValid = validApplicationIndices.length === applicationModels.length;
   const isTouched = operatorCount > 0;
   return [isValid, isTouched];
