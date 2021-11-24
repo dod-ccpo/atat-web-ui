@@ -25,7 +25,7 @@
       :style="{ height: scrollableDivHeight + 'px !important' }"
     >
       <div class="pt-8 d-flex align-start">
-        <v-icon class="icon-20">email</v-icon>
+        <v-icon class="icon-20">task_alt</v-icon>
         <div class="pl-4">
           <span class="text--base-dark d-block">Email Address</span>
           <span class="d-block">{{ user.email }}</span>

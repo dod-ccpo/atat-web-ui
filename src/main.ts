@@ -11,7 +11,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import RouterMiddleWare, { RouterMiddleWareOptions }  from "./router/routerMiddleWare";
 import routeHandlers from "./router/routeHandlers";
-import VueMask from "v-mask";
+import Inputmask from "inputmask";
 
 // below 3 scripts for Vuetify in IE
 import 'core-js/stable';
@@ -32,7 +32,6 @@ import ProfileDrawer from "./components/SideDrawerComponents/ProfileDrawer.vue"
 import SubmitDrawer from "./components/SideDrawerComponents/SubmitDrawer.vue"
 import TeamMemberRolesDrawer from "./components/SideDrawerComponents/TeamMemberRolesDrawer.vue"
 import ATATTextField from "./components/ATATTextField.vue";
-import ATATCurrencyField from "./components/ATATCurrencyField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
 import ATATSummaryCard from "./components/ATATSummaryCard.vue";
 import ATATToast from "./components/ATATToast.vue"
@@ -54,14 +53,11 @@ Vue.component('atat-select', ATATSelect)
 Vue.component('atat-summary-card', ATATSummaryCard)
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
-Vue.component('atat-currency-field', ATATCurrencyField);
 Vue.component('atat-toast', ATATToast);
 
 //axios
 axios.defaults.baseURL = "https://virtserver.swaggerhub.com/CCPO-ATAT/mock-atat-internal-api/1.0.0"
 Vue.use(VueAxios, axios);
-
-Vue.use(VueMask);
 
 Vue.config.productionTip = false;
 Vue.prototype.moment = moment;

@@ -169,7 +169,7 @@ export interface ATATSummaryCardItem {
 export interface ATATSummaryCardGroupedItems {
   title?: string;
   prefix?: string;
-  value?: number;
+  value?: number | string;
 }
 
 export interface ATATSummaryCards {

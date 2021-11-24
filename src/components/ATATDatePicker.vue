@@ -39,7 +39,7 @@
           </div>
         </div>
         <div
-          class="width-100 d-flex justify-start mt-2"
+          class="width-100 d-flex justify-start"
           :id="getId('datepicker-text-boxes')"
         >
           <div class="textbox-button d-flex justify-start">
@@ -52,7 +52,6 @@
               :error="isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="startDate"
-              v-mask="dateMask"
               :value="formatStartDateMMDDYYYY"
               :rules="_startDateRules"
               hide-details
@@ -68,11 +67,12 @@
             ></v-text-field>
             <v-btn
               icon
-              @keydown.native.tab="onTab"
+              @keydown.native.tab="onCalendarButtonTab"
               :ripple="false"
               :id="getId('start-date-text-box-button')"
               aria-label="Open calendar to select Start Date"
               class="start-date-button"
+              @focus="setTitle(true)"
             >
               <v-icon class="black--text date-picker-icon start-date-icon"
                 >calendar_today</v-icon
@@ -90,10 +90,9 @@
               :error="isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="endDate"
-              v-mask="dateMask"
               :value="formatEndDateMMDDYYYY"
-              @focus="setFocus"
               :rules="_endDateRules"
+              @focus="setFocus"
               hide-details
               @blur="blurTextField"
               clearable
@@ -106,11 +105,12 @@
             ></v-text-field>
             <v-btn
               icon
-              @keydown.native.tab="onTab"
+              @keydown.native.tab="onCalendarButtonTab"
               :ripple="false"
               :id="getId('end-date-text-box-button')"
               aria-label="Open calendar to select End Date"
               class="end-date-button"
+              @focus="setTitle(false)"
             >
               <v-icon class="black--text date-picker-icon end-date-icon"
                 >calendar_today</v-icon
@@ -201,7 +201,7 @@ import Vue from "vue";
 import moment from "moment";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import { CustomErrorMessage } from "types/Wizard";
-import { button } from "@aws-amplify/ui";
+import Inputmask from "inputmask";
 
 @Component({})
 export default class ATATDatePicker extends Vue {
@@ -233,7 +233,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "2020-10-01" }) private min!: string;
   @Prop({ default: "2021-10-01" }) private max!: string;
 
-  private menu = false;
+  @PropSync("isDatePickerVisible") menu!: boolean;
   private firstMonth: string =
     moment(this.startDate).format("YYYY-MM-DD") ||
     moment(new Date()).format("YYYY-MM-DD");
@@ -250,22 +250,10 @@ export default class ATATDatePicker extends Vue {
   private isDatePickerAdvancing = false;
   private isKeyboardEvent = false;
   private isTabEvent = false;
-
-  /**
-   * textboxes date mask
-   */
-  public dateMask = [
-    /[01]/,
-    /\d/,
-    "/",
-    /[0-3]?/,
-    /\d/,
-    "/",
-    /[2]/,
-    /[0]/,
-    /[1-3]/,
-    /\d/,
-  ];
+  private thisControlId = this.getId("clin-datepicker-text-boxes");
+  private thisControl = document.getElementById(
+    this.thisControlId
+  ) as HTMLElement;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -302,10 +290,11 @@ export default class ATATDatePicker extends Vue {
    */
   get formatStartDateMMDDYYYY(): string {
     if (this.isDateValid(this.startDate)) {
-      this.startDate = moment(this.startDate).format("MM/DD/YYYY");
-      return this.startDate;
+      this.setStartDate(moment(this.startDate).format("MM/DD/YYYY"));
+    } else {
+      this.setStartDate("");
     }
-    return "";
+    return this.startDate;
   }
 
   /**
@@ -313,10 +302,11 @@ export default class ATATDatePicker extends Vue {
    */
   get formatEndDateMMDDYYYY(): string {
     if (this.isDateValid(this.endDate)) {
-      this.endDate = moment(this.endDate).format("MM/DD/YYYY");
-      return this.endDate;
+      this.setEndDate(moment(this.endDate).format("MM/DD/YYYY"));
+    } else {
+      this.setEndDate("");
     }
-    return "";
+    return this.endDate;
   }
 
   /**
@@ -330,17 +320,29 @@ export default class ATATDatePicker extends Vue {
     this.isStartTextBoxFocused = isStart;
     this.isEndTextBoxFocused = !isStart;
     this._isTextBoxFocused = true;
-    this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
+    this.setTitle(isStart);
     this.menu = true;
 
     //resets datepicker to correct month depending
     //on what text box is focused.
 
     if (this.isStartTextBoxFocused) {
-      this.firstMonth = this.startDate;
+      if (this.isDateValid(this.startDate)) {
+        this.firstMonth = this.startDate;
+      } else {
+        this.setStartDate("");
+      }
     } else if (this.isEndTextBoxFocused) {
-      this.secondMonth = this.endDate;
+      if (this.isDateValid(this.endDate)) {
+        this.secondMonth = this.endDate;
+      } else {
+        this.setEndDate("");
+      }
     }
+  }
+
+  private setTitle(isStart: boolean): void {
+    this._title = "What is the PoP " + (isStart ? "Start" : "End") + " Date?";
   }
 
   /**
@@ -447,8 +449,11 @@ export default class ATATDatePicker extends Vue {
    * 2 - sets first and secondMonth
    */
   private mounted(): void {
+    this.thisControl = document.getElementById(
+      this.thisControlId
+    ) as HTMLElement;
+    this.addMasks();
     document.addEventListener("click", this.datepickerControlClicked);
-    // document.addEventListener("keydown", this.datepickerControlClicked);
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
         this.isDateValid(this.startDate) ? this.startDate : new Date()
@@ -461,7 +466,22 @@ export default class ATATDatePicker extends Vue {
 
   private destroyed(): void {
     document.removeEventListener("click", this.datepickerControlClicked);
-    // document.removeEventListener("keydown", this.datepickerControlClicked);
+  }
+
+  /**
+   * mask input date text boxes with MM/DD/YYYY
+   */
+  private addMasks(): void {
+    [
+      this.getId("start-date-text-box"),
+      this.getId("end-date-text-box"),
+    ].forEach((tbId) => {
+      Inputmask({
+        inputFormat: "mm/dd/yyyy",
+        placeholder: "MM/DD/YYYY",
+        regex: "((0[1-9]|1[0-2])\\/(0[1-9]|[12]\\d|3[01])\\/[12]\\d{3}"
+      }).mask(document.getElementById(tbId) as HTMLElement);
+    });
   }
 
   /** page click event listener */
@@ -469,7 +489,6 @@ export default class ATATDatePicker extends Vue {
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
-
     const element = event.target as HTMLElement;
     //if control (textboxes, icons, calendars, menu) was clicked
     this.menu =
@@ -511,8 +530,8 @@ export default class ATATDatePicker extends Vue {
         const isStartIcon = element.classList.contains("start-date-icon");
         this.isStartTextBoxFocused = isStartIcon;
         this.isEndTextBoxFocused = !isStartIcon;
+        this.setTitle(isStartIcon);
       }
-
       // if calendars were clicked
       const isCalendarClicked =
         element.closest(".v-date-picker-table") !== null;
@@ -551,7 +570,9 @@ export default class ATATDatePicker extends Vue {
       ? "end-date-text-box"
       : "start-date-text-box";
     this.styleDatePickerButton(button, this.isStartTextBoxFocused);
-    (document.querySelector("#" + this.getId(_id)) as HTMLElement).click();
+    (
+      this.thisControl.querySelector("#" + this.getId(_id)) as HTMLElement
+    ).click();
   }
 
   /**
@@ -560,7 +581,7 @@ export default class ATATDatePicker extends Vue {
   private setFocusOnDatePicker(): void {
     if (this.isKeyboardEvent) {
       setTimeout(() => {
-        const firstDatePickerButton = document.querySelector(
+        const firstDatePickerButton = this.thisControl.querySelector(
           ".v-date-picker-header button:first-child"
         ) as HTMLButtonElement;
         firstDatePickerButton.focus();
@@ -576,7 +597,7 @@ export default class ATATDatePicker extends Vue {
   private setDatePickerHoverButtons(): void {
     if (this.menu) {
       // restores datepicker table to default classes
-      const datepickerTables = document.getElementsByClassName(
+      const datepickerTables = this.thisControl.getElementsByClassName(
         "v-date-picker-table"
       );
       Array.from(datepickerTables).forEach((table) => {
@@ -604,7 +625,7 @@ export default class ATATDatePicker extends Vue {
       ? "date-picker-start-date"
       : "date-picker-end-date";
     const elementsWithOutdatedClass =
-      document.getElementsByClassName(classToRemove);
+      this.thisControl.getElementsByClassName(classToRemove);
     if (elementsWithOutdatedClass.length > 0) {
       Array.from(elementsWithOutdatedClass).forEach((el) => {
         el.classList.remove(classToRemove);
@@ -638,7 +659,7 @@ export default class ATATDatePicker extends Vue {
    * navigation caret to be focused when user tabs
    * off of each button to the right of the textboxes
    */
-  public onTab(event: KeyboardEvent): void {
+  public onCalendarButtonTab(event: KeyboardEvent): void {
     const isTabbingBackward = event.shiftKey === true;
     this.isKeyboardEvent = true;
     if (!isTabbingBackward) {
@@ -662,8 +683,8 @@ export default class ATATDatePicker extends Vue {
 
     if (isDateSelected) {
       const buttonIdToFocus = this.isStartTextBoxFocused
-        ? "start-date-text-box-button"
-        : "end-date-text-box-button";
+        ? this.getId("start-date-text-box-button")
+        : this.getId("end-date-text-box-button");
       const button = document.getElementById(
         this.getId(buttonIdToFocus)
       ) as HTMLButtonElement;
@@ -722,10 +743,17 @@ export default class ATATDatePicker extends Vue {
     // remove dateRange[1] if === ""
     if (this.dateRange[1] === "") {
       this.dateRange.splice(1, 1);
+
+      //resets the first month to the startdate
+      //when user clicks on textbox
+      this.firstMonth = this.dateRange[0];
     }
-    // remove dateRange[1] if === ""
+    // remove dateRange[1] if dateRange[1] === ""
     if (this.dateRange[0] === "") {
       this.dateRange.splice(0, 1);
+      //resets the 2nd month to the enddate
+      //when user clicks on textbox
+      this.secondMonth = this.dateRange[0];
     }
 
     /***** final result ****************
@@ -780,37 +808,39 @@ export default class ATATDatePicker extends Vue {
     // setTimeout to display style for start/end buttons
     // when user navigates calendars
     setTimeout(() => {
-      const displayedDPs = document.getElementsByClassName(
+      const displayedDPs = this.thisControl.getElementsByClassName(
         "two-date-pickers"
       )[0] as HTMLElement;
       if (displayedDPs) {
         const activeDatePickerButtons =
           displayedDPs.getElementsByClassName("v-btn--active");
 
-        // if this.startDate is between the firstDayLeftMonth and lastDayRightMonth
-        // then add correct class to the right calendar button
-        const isStartDateDisplayed = moment(this.startDate).isBetween(
-          firstDayLeftMonth,
-          lastDayRightMonth,
-          undefined,
-          "[]"
-        );
-        if (isStartDateDisplayed) {
-          activeDatePickerButtons[0].classList.add("date-picker-start-date");
-        }
+        if (activeDatePickerButtons.length > 0) {
+          // if this.startDate is between the firstDayLeftMonth and lastDayRightMonth
+          // then add correct class to the right calendar button
+          const isStartDateDisplayed = moment(this.startDate).isBetween(
+            firstDayLeftMonth,
+            lastDayRightMonth,
+            undefined,
+            "[]"
+          );
+          if (isStartDateDisplayed) {
+            activeDatePickerButtons[0].classList.add("date-picker-start-date");
+          }
 
-        // if this.endDate is between the firstDayLeftMonth and lastDayRightMonth
-        // then add correct class to the right calendar button
-        const isEndDateDisplayed = moment(this.endDate).isBetween(
-          firstDayLeftMonth,
-          lastDayRightMonth,
-          undefined,
-          "[]"
-        );
-        if (isEndDateDisplayed) {
-          activeDatePickerButtons[
-            activeDatePickerButtons.length - 1
-          ].classList.add("date-picker-end-date");
+          // if this.endDate is between the firstDayLeftMonth and lastDayRightMonth
+          // then add correct class to the right calendar button
+          const isEndDateDisplayed = moment(this.endDate).isBetween(
+            firstDayLeftMonth,
+            lastDayRightMonth,
+            undefined,
+            "[]"
+          );
+          if (isEndDateDisplayed) {
+            activeDatePickerButtons[
+              activeDatePickerButtons.length - 1
+            ].classList.add("date-picker-end-date");
+          }
         }
       }
     }, 500);
