@@ -171,24 +171,26 @@ export default class TeamMemberTable extends Vue {
         if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
             const i = appEnvOps.findIndex((o) => o.email === op.email);
-            const workspace_roles =
-              i > -1
-                ? env.name +
-                  ": " +
-                  this.roleTranslation(op.access) +
-                  "  " +
-                  appEnvOps[i].workspace_roles
-                : env.name + ": " + this.roleTranslation(op.access);
-            if (i > -1) {
-              appEnvOps[i].workspace_roles = workspace_roles;
-            } else {
-              const opObj = {
-                id: op.id,
-                display_name: op.display_name,
-                email: op.email,
-                workspace_roles: workspace_roles,
-              };
-              appEnvOps.push(opObj);
+            if (op.access !== "no_access") {
+              const workspace_roles =
+                i > -1
+                  ? env.name +
+                    ": " +
+                    this.roleTranslation(op.access) +
+                    "  " +
+                    appEnvOps[i].workspace_roles
+                  : env.name + ": " + this.roleTranslation(op.access);
+              if (i > -1) {
+                appEnvOps[i].workspace_roles = workspace_roles;
+              } else {
+                const opObj = {
+                  id: op.id,
+                  display_name: op.display_name,
+                  email: op.email,
+                  workspace_roles: workspace_roles,
+                };
+                appEnvOps.push(opObj);
+              }
             }
           });
         }

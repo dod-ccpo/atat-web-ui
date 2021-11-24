@@ -82,6 +82,20 @@
   margin: 4px 4px 0px 4px;
 }
 
+%current-date{
+  border-radius: 0px !important;
+  border-color: transparent !important;
+  &.accent--text{
+    color: $base_darkest !important;
+  }
+  &::before{
+    border: $base-darkest 1px solid !important;
+    color: $base_darkest !important;
+    border-radius: 28px !important;
+    opacity: 1 !important;
+  }
+}
+
 .two-date-pickers{
   background-color: $base_lightest;
   .close-datepicker-button{
@@ -175,11 +189,13 @@
                       box-shadow: none !important;
                     }
                     &.v-date-picker-table__current{
+                      &:hover{
+                        opacity: 1 !important;
+                      }
                       &:focus::before,
                       &:focus-visible::before,
-                      &:hover,
                       &:hover::before{
-                        opacity: 0!important;
+                        opacity: 0 !important;
                       }
                     }
                   }
@@ -206,11 +222,13 @@
                       box-shadow: none !important;
                     }
                     &.v-date-picker-table__current{
+                      &:hover{
+                        opacity: 1 !important;
+                      }
                       &:focus::before,
                       &:focus-visible::before,
-                      &:hover,
                       &:hover::before{
-                        opacity: 0!important;
+                        opacity: 0 !important;
                       }
                     }
                   }
@@ -266,17 +284,7 @@
                   }
 
                   &.v-date-picker-table__current{
-                    border-radius: 0px !important;
-                    border-color: transparent !important;
-                    &.accent--text{
-                      color: $base_darkest !important;
-                    }
-                    &::before{
-                      border: $base-darkest 1px solid !important;
-                      color: $base_darkest !important;
-                      border-radius: 28px !important;
-                      opacity: 1 !important;
-                    }
+                    @extend %current-date;
                   }
                 }
 

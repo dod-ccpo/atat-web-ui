@@ -43,7 +43,7 @@
             outlined
             dense
             :success="isSuccess"
-            :prefix="prefix"
+            :prefix="getPrefix"
             :error="isErrored"
             :error-messages="errorMessages"
             :height="42"
@@ -91,7 +91,7 @@
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
 import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
-
+import Inputmask from "inputmask";
 import Vue from "vue";
 
 @Component({})
@@ -113,6 +113,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
   @Prop({ default: false }) private validateOnLoad!: boolean;
+  @Prop({ default: "" }) private mask!: string;
 
   //data
   private rounded = false;
@@ -149,12 +150,39 @@ export default class ATATTextField extends VTextField {
   }
 
   public mounted(): void {
+    this.addMasks();
     this.$nextTick(() => {
       this.hasInitialValue = this._value.length > 0;
       if (this.validateOnLoad || this.hasInitialValue) {
         this.validateField();
       }
     });
+  }
+
+  get getPrefix(): string {
+    let prefix = "";
+    switch (this.mask) {
+      case "currency":
+        prefix = "$";
+        break;
+      default:
+        break;
+    }
+    return prefix || this.prefix;
+  }
+
+  private addMasks(): void {
+    let textBox = document.querySelector(
+      "#" + this.id + "_text_field"
+    ) as HTMLInputElement;
+    if (this.mask === "currency") {
+      Inputmask({
+        alias: "currency",
+        autoUnmask: true,
+        digitsOptional: true,
+        rightAlign: false,
+      }).mask(textBox);
+    }
   }
 }
 </script>
