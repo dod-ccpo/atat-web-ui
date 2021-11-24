@@ -1002,7 +1002,6 @@ export default class ManageMember extends mixins(ApplicationData) {
         const appId = this.currentApplication.id;
         if (!this.assignDifferentRolesForEnvs) {
           // application-level operator
-          debugger;
           this.$store.dispatch("applications/updateApplicationOperatorInfo", {
             applicationId: appId,
             access: this.roleForAllEnvs,

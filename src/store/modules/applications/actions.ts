@@ -46,7 +46,6 @@ const deleteApplication = async (
     commit,
     state,
     rootState,
-    //getters, // getters from /store/index.ts
   }: { commit: Commit; state: ApplicationsState; rootState: RootState },
   id: string
 ): Promise<void> => {

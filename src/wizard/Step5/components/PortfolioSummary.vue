@@ -91,14 +91,5 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     this.taskOrders = this.$store.getters.getTaskOrders;
   }
 
-  public mounted(): void {
-    this.$store.state.portfolioSteps.forEach((step: any) => {
-      if (!step.valid && step.step != 5) {
-        // EJY WAIT WHAT DOES THIS DO?
-        // this.$store.dispatch("setErroredStep", [step.step, true]);
-        debugger;
-      }
-    });
-  }
 }
 </script>

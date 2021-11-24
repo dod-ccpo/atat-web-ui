@@ -40,8 +40,6 @@
           </p>
         </div>
       </v-alert>
-
-
     </div>
 
     <v-row v-if="currentApplication">
@@ -224,7 +222,9 @@ export default class TeamView extends mixins(ApplicationData) {
   }
 
   private get missingAdminMessage(): string {
-    if (this.environmentsWithoutAdmins.length && this.environmentsWithoutAdmins.length < this.environmentCount) {
+    if (this.environmentsWithoutAdmins.length &&
+      this.environmentsWithoutAdmins.length < this.environmentCount) 
+    {
       let envList = this.environmentsWithoutAdmins.join(", ");
       envList = envList.replace(/,([^,]*)$/, " and" + "$1");
 
@@ -252,7 +252,8 @@ export default class TeamView extends mixins(ApplicationData) {
   }[] = [];
 
   private setMemberTableData() {
-    [this.appHasAdmins, this.isTouched] = validateHasAdminOperators(this.operators, [this.currentApplication]);
+    [this.appHasAdmins, this.isTouched] =
+      validateHasAdminOperators(this.operators, [this.currentApplication]);
     if (this.operators) {
       const rootAdmins = this.operators || [];
       if (rootAdmins && rootAdmins.length) {
@@ -278,7 +279,6 @@ export default class TeamView extends mixins(ApplicationData) {
       const applicationOperators = this.currentApplication.operators || [];
       if (applicationOperators && applicationOperators.length) {
         applicationOperators.forEach((op: any) => {
-          debugger;
           const opObj = {
             id: op.id,
             display_name: op.display_name || op.first_name + " " + op.last_name,
@@ -293,7 +293,6 @@ export default class TeamView extends mixins(ApplicationData) {
       const applicationEnvironments = this.currentApplication.environments;
       applicationEnvironments.forEach((env: any) => {
         const environmentWithoutAdminsIndex = this.environmentsWithoutAdmins.indexOf(env.name);
-        debugger;
         const envOperators = env.operators;
         if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
@@ -320,7 +319,7 @@ export default class TeamView extends mixins(ApplicationData) {
               };
               this.applicationMembers.push(opObj);
             }
-            debugger;
+
             if (op.access === "administrator" && environmentWithoutAdminsIndex > -1) {
               this.environmentsWithoutAdmins.splice(environmentWithoutAdminsIndex, 1)
             }
@@ -457,7 +456,6 @@ export default class TeamView extends mixins(ApplicationData) {
   }
 
   private deleteMemberFromApplication() {
-    debugger;
     if (this.currentApplication.operators) {
       const applicationOperators = this.currentApplication.operators || [];
       let memberindx = applicationOperators.findIndex(

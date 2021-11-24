@@ -35,9 +35,7 @@
 
         </div>
       </v-alert>
-
     </div>
-
 
     <v-data-table
       class="review-table overflow-x-hidden overflow-y-hidden"
@@ -196,9 +194,6 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return this.$store.getters.getPortfolioName();
   }
   private isStepErrored = this.$store.getters.isStepErrored(4);
-  private hasRootAdmin = true;
-  private allAppsHaveAdmins = true;
-  private showInvalidOnRootAdminCount = false;
   private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
@@ -285,15 +280,13 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   private transformData(applications: any): void {
     const portfolioOperators = this.operators;
     const portfolioOperatorsCount = portfolioOperators.length || 0;
-    this.hasRootAdmin = portfolioOperatorsCount > 0;
-    const [isPortfolioValid, hasPortfolioOperators] = validateHasAdminOperators(portfolioOperators, applications);
+    const [isPortfolioValid, hasPortfolioOperators] =
+      validateHasAdminOperators(portfolioOperators, applications);
     this.isStepErrored = !isPortfolioValid;
-    debugger;
     
     const pIndex = this.applicationData.findIndex(
       (p: any) => p.portfolio === true
     );
-    debugger;
     if (pIndex > -1) {
       this.applicationData[pIndex].operatorCount = portfolioOperatorsCount;
       this.applicationData[pIndex].invalidAdmins = this.isStepErrored;
@@ -307,11 +300,9 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       });
     }
 
-    const appCount = applications.length;
-    let validAppCount = 0;
     for (let app of applications) {
-      const [isAppValid, hasPortfolioOperators] = validateHasAdminOperators(portfolioOperators, [app]);
-      validAppCount = isAppValid ? validAppCount + 1 : validAppCount;
+      const [isAppValid, hasPortfolioOperators] =
+        validateHasAdminOperators(portfolioOperators, [app]);
       const opEmails: string[] = [];
       const appOps = app.operators || [];
       appOps.forEach((op: OperatorModel) => opEmails.push(op.email));
@@ -327,11 +318,9 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
         (a: any) => a.id === app.id
       );
       if (aIndex > -1) {
-        debugger;
         this.applicationData[aIndex].operatorCount = totalOperatorsCount;
         this.applicationData[aIndex].invalidAdmins = !isAppValid;
       } else {
-        debugger;
         this.applicationData.push({
           id: app.id,
           name: app.name,
@@ -342,7 +331,6 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
         });
       }
     }
-    this.allAppsHaveAdmins = appCount === validAppCount;
   }
 
   private setApplication(item: any) {
@@ -428,9 +416,8 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-    if (this.hasChanges()) { // EJY ALSO need to do this on root admin and member pages
+    if (this.hasChanges()) {
       try {
-        // await this.$store.dispatch("saveStepData", 3);
         await this.$store.dispatch("saveStepData", 4);
         await this.$store.dispatch("setStepTouched", [4, true]);
       } catch (error) {

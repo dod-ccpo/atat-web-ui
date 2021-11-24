@@ -493,17 +493,6 @@ export default new Vuex.Store({
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
     },
-    // doSetErroredStep(state, [stepNumber, isErroredStep]) {
-    //   const es: number[] = state.erroredSteps;
-    //   const i = es.indexOf(stepNumber);
-    //   if (isErroredStep && i === -1) {
-    //     es.push(stepNumber);
-    //     debugger;
-    //   } else {
-    //     es.splice(i, 1);
-    //     debugger;
-    //   }
-    // },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
     },
@@ -669,9 +658,6 @@ export default new Vuex.Store({
           break;
       }
     },
-    // setErroredStep({ commit }, [stepNumber, isErroredStep]) {
-    //   commit("doSetErroredStep", [stepNumber, isErroredStep]);
-    // },
     async saveStep1({ state }, model: any) {
       // build data from step model
       const data = {
