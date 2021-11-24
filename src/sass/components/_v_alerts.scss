@@ -27,11 +27,11 @@
     border-color: transparent !important;
     background-color:  $info_lighter !important;
   }
-    .warning_lighter {
-      border-color: var(--v-warning-base) !important;
-      border-width: 0px !important;
-      border-style: solid !important;
-    }
+  .warning_lighter {
+    border-color: var(--v-warning-base) !important;
+    border-width: 0px !important;
+    border-style: solid !important;
+  }
   &.error_lighter {
     border-width: 0px !important;
     border-style: solid !important;
