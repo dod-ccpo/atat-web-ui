@@ -88,7 +88,7 @@ const updateRootAdminInfo = (
     email,
   }: { index: number; display_name: string; email: string }
 ): void => {
-  commit("updateRootAdminInfo", [index, display_name, email]);
+  commit("updateRootAdminInfo", { index, display_name, email });
 };
 
 const updateApplicationOperatorInfo = (
