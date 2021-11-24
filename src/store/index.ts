@@ -23,7 +23,11 @@ import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
 
-import { validateApplication, validOperator, validateHasAdminOperators } from "@/validation/application";
+import { 
+  validateApplication, 
+  validOperator, 
+  validateHasAdminOperators 
+} from "@/validation/application";
 
 Vue.use(Vuex);
 
@@ -425,10 +429,6 @@ export default new Vuex.Store({
      * @param param1
      */
     doSaveStepModel(state, [model, stepNumber, stepIndex, valid]) {
-      // const stepIndex = state.portfolioSteps.findIndex(
-      //   (x) => x.step === stepNumber
-      // );
-      debugger;
       Vue.set(state.portfolioSteps[stepIndex], "model", model);
       Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
       Vue.set(state.portfolioSteps[stepIndex], "touched", true);
@@ -551,12 +551,10 @@ export default new Vuex.Store({
     },
     async saveStepModel({ commit, getters }, [model, stepNumber, valid]) {
       const stepIndex: number = getters.getStepIndex(stepNumber);
-      debugger;
       commit("doSaveStepModel", [model, stepNumber, stepIndex, valid]);
     },
     async updateStepModelValidity({ commit, getters }, [stepNumber, valid]) {
       const stepIndex: number = getters.getStepIndex(stepNumber);
-      debugger;
       commit("doUpdateStepModelValidity", [stepNumber, stepIndex, valid]);
     },
     async setStepTouched({ commit, getters }, [stepNumber, isTouched]) {
@@ -570,7 +568,6 @@ export default new Vuex.Store({
       try {
         this.dispatch("taskOrders/deleteTaskOrder", id);
         const stepIndex: number = getters.getStepIndex(2);
-        debugger;
         commit("doInitializeStepModel", [createStepTwoModel(), stepIndex]);
 
         const taskOrderModels = rootGetters[
@@ -601,7 +598,6 @@ export default new Vuex.Store({
       }
       const taskOrder = taskOrderModels[taskOrderIndex];
       const stepIndex: number = getters.getStepIndex(2);
-      debugger;
       commit("doSaveStepModel", [taskOrder, 2, stepIndex, true]);
     },
     addNewTaskOrder({ commit, getters }) {
@@ -624,10 +620,6 @@ export default new Vuex.Store({
       }
       const applicationModel = applicationModels[entityIndex];
       const stepIndex: number = getters.getStepIndex(3);
-      debugger;
-
-      // EJY validate step 4 here as well?
-
       commit("doSaveStepModel", [applicationModel, 3, stepIndex, true]);
     },
     addNewApplication({ commit, getters }) {
@@ -641,7 +633,6 @@ export default new Vuex.Store({
      */
     async saveStepData({ state, getters }, stepNumber) {
       const stepIndex: number = getters.getStepIndex(stepNumber);
-      debugger;
       const step = state.portfolioSteps[stepIndex];
       switch (stepNumber as number) {
         case 1:
@@ -779,7 +770,8 @@ export default new Vuex.Store({
           await portfoliosApi.saveApplications(state.currentPortfolioId, data);
         }
 
-        const [isStep4Valid, portfolioHasOperators] = validateHasAdminOperators(portfolioOperators, applicationModels);
+        const [isStep4Valid, portfolioHasOperators] = 
+          validateHasAdminOperators(portfolioOperators, applicationModels);
         this.dispatch("setStepTouched", [4, portfolioHasOperators]);
         if (portfolioHasOperators) {
           this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
@@ -910,15 +902,9 @@ export default new Vuex.Store({
           }
         );
 
-
         commit("applications/updateRootAdministrators", rootAdmins);
         const stepIndex: number = getters.getStepIndex(3);
         commit("doSaveStepModel", [createStepThreeModel(), 3, stepIndex, true]);
-        // EJY need to determine if step 4 touched and valid HERE ?
-        
-        
-
-        // debugger;
       }
     },
     openDialog(
@@ -1060,11 +1046,7 @@ export default new Vuex.Store({
     },
     getCurrentStepModel: (state) => state.currentStepModel,
     getStepTouched: (state, getters) => (stepNumber: number) => {
-      // const stepIndex = state.portfolioSteps.findIndex(
-      //   (x) => x.step === stepNumber
-      // );
       const stepIndex: number = getters.getStepIndex(stepNumber);
-      debugger;
       return state.portfolioSteps[stepIndex].touched;
     },
     getUser: (state) => state.user,
