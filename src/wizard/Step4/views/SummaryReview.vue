@@ -104,7 +104,7 @@
         </div>
       </template>
       <template v-slot:item.operators="{ item }">
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between align-center">
           <div 
             class="body text--base-darkest pt-1"
           >
