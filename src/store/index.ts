@@ -8,6 +8,7 @@ import { Dialog, Toast } from "types/Global";
 import {
   Application,
   ApplicationModel,
+  Environment,
   Operator,
   OperatorModel,
   TaskOrder,
@@ -22,7 +23,11 @@ import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
 
-import { validateApplication, validOperator } from "@/validation/application";
+import { 
+  validateApplication, 
+  validOperator, 
+  validateHasAdminOperators 
+} from "@/validation/application";
 
 Vue.use(Vuex);
 
@@ -341,7 +346,7 @@ export default new Vuex.Store({
         model: {},
       },
     ],
-    membersAdded: false,
+    membersModified: false,
     user: {
       title: "",
       given_name: "",
@@ -423,11 +428,7 @@ export default new Vuex.Store({
      * @param state
      * @param param1
      */
-    doSaveStepModel(state, [model, stepNumber, valid]) {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
-
+    doSaveStepModel(state, [model, stepNumber, stepIndex, valid]) {
       Vue.set(state.portfolioSteps[stepIndex], "model", model);
       Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
       Vue.set(state.portfolioSteps[stepIndex], "touched", true);
@@ -445,20 +446,12 @@ export default new Vuex.Store({
      * @param state
      * @param param1
      */
-    doInitializeStepModel(state, [model, stepNumber]) {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
-
+    doInitializeStepModel(state, [model, stepIndex]) {
       Vue.set(state.portfolioSteps[stepIndex], "model", model);
       Vue.set(state.portfolioSteps[stepIndex], "valid", true);
       Vue.set(state.portfolioSteps[stepIndex], "touched", false);
     },
-    doUpdateStepModelValidity(state, [stepNumber, valid]) {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
-
+    doUpdateStepModelValidity(state, [stepNumber, stepIndex, valid]) {
       Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
       Vue.set(state.portfolioSteps[stepIndex], "touched", true);
 
@@ -470,8 +463,11 @@ export default new Vuex.Store({
         es.push(stepNumber);
       }
     },
-    doUpdateMembersAdded(state, added: boolean) {
-      state.membersAdded = added;
+    doSetStepTouched(state, [stepIndex, isTouched]) {
+      Vue.set(state.portfolioSteps[stepIndex], "touched", isTouched);
+    },
+    doUpdateMembersModified(state, added: boolean) {
+      state.membersModified = added;
     },
     /**
      * Partially or fully initializes step model
@@ -496,14 +492,6 @@ export default new Vuex.Store({
 
       const es: number[] = state.erroredSteps;
       es.splice(0, es.length);
-    },
-    doSetErroredStep(state, [stepNumber, isErroredStep]) {
-      const es: number[] = state.erroredSteps;
-      if (isErroredStep) {
-        es.push(stepNumber);
-      } else {
-        es.splice(stepNumber, 1);
-      }
     },
     doSetCurrentPortfolioId(state, id) {
       state.currentPortfolioId = id;
@@ -561,19 +549,26 @@ export default new Vuex.Store({
     setCurrentStepModel({ commit }, model) {
       commit("doSetCurrentStepModel", model);
     },
-    async saveStepModel({ commit }, [model, stepNumber, valid]) {
-      commit("doSaveStepModel", [model, stepNumber, valid]);
+    async saveStepModel({ commit, getters }, [model, stepNumber, valid]) {
+      const stepIndex: number = getters.getStepIndex(stepNumber);
+      commit("doSaveStepModel", [model, stepNumber, stepIndex, valid]);
     },
-    async updateStepModelValidity({ commit }, [stepNumber, valid]) {
-      commit("doUpdateStepModelValidity", [stepNumber, valid]);
+    async updateStepModelValidity({ commit, getters }, [stepNumber, valid]) {
+      const stepIndex: number = getters.getStepIndex(stepNumber);
+      commit("doUpdateStepModelValidity", [stepNumber, stepIndex, valid]);
+    },
+    async setStepTouched({ commit, getters }, [stepNumber, isTouched]) {
+      const stepIndex: number = getters.getStepIndex(stepNumber);
+      commit("doSetStepTouched",[stepIndex, isTouched]);
     },
     async deleteTaskOrder(
-      { commit, state, rootGetters },
+      { commit, state, getters, rootGetters },
       id: string
     ): Promise<void> {
       try {
         this.dispatch("taskOrders/deleteTaskOrder", id);
-        commit("doInitializeStepModel", [createStepTwoModel(), 2]);
+        const stepIndex: number = getters.getStepIndex(2);
+        commit("doInitializeStepModel", [createStepTwoModel(), stepIndex]);
 
         const taskOrderModels = rootGetters[
           "taskOrders/taskOrders"
@@ -588,7 +583,7 @@ export default new Vuex.Store({
         console.log(error);
       }
     },
-    editTaskOrder({ commit, rootGetters }, id: string) {
+    editTaskOrder({ commit, getters, rootGetters }, id: string) {
       const taskOrderModels = rootGetters[
         "taskOrders/taskOrders"
       ] as TaskOrderModel[];
@@ -602,14 +597,15 @@ export default new Vuex.Store({
         throw new Error("unable to location task order model with id :" + id);
       }
       const taskOrder = taskOrderModels[taskOrderIndex];
-
-      commit("doSaveStepModel", [taskOrder, 2, true]);
+      const stepIndex: number = getters.getStepIndex(2);
+      commit("doSaveStepModel", [taskOrder, 2, stepIndex, true]);
     },
-    addNewTaskOrder({ commit }) {
+    addNewTaskOrder({ commit, getters }) {
       const model = { ...createStepTwoModel() };
-      commit("doInitializeStepModel", [model, 2]);
+      const stepIndex: number = getters.getStepIndex(2);
+      commit("doInitializeStepModel", [model, stepIndex]);
     },
-    editApplication({ commit, rootGetters }, id: string) {
+    editApplication({ commit, getters, rootGetters }, id: string) {
       const applicationModels = rootGetters[
         "applications/applications"
       ] as ApplicationModel[];
@@ -623,21 +619,20 @@ export default new Vuex.Store({
         throw new Error("unable to location task order model with id :" + id);
       }
       const applicationModel = applicationModels[entityIndex];
-
-      commit("doSaveStepModel", [applicationModel, 3, true]);
+      const stepIndex: number = getters.getStepIndex(3);
+      commit("doSaveStepModel", [applicationModel, 3, stepIndex, true]);
     },
-    addNewApplication({ commit }) {
+    addNewApplication({ commit, getters }) {
       const model = { ...createStepThreeModel() };
-      commit("doInitializeStepModel", [model, 3]);
+      const stepIndex: number = getters.getStepIndex(3);
+      commit("doInitializeStepModel", [model, stepIndex]);
     },
     /**
      *
      * saves step data to backend based on step number
      */
-    async saveStepData({ state }, stepNumber) {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
+    async saveStepData({ state, getters }, stepNumber) {
+      const stepIndex: number = getters.getStepIndex(stepNumber);
       const step = state.portfolioSteps[stepIndex];
       switch (stepNumber as number) {
         case 1:
@@ -650,12 +645,9 @@ export default new Vuex.Store({
           await this.dispatch("saveStep3", step.model);
           break;
         case 4:
-          await this.dispatch("saveStep4");
+          await this.dispatch("saveStep4", true);
           break;
       }
-    },
-    setErroredStep({ commit }, [stepNumber, isErroredStep]) {
-      commit("doSetErroredStep", [stepNumber, isErroredStep]);
     },
     async saveStep1({ state }, model: any) {
       // build data from step model
@@ -719,13 +711,13 @@ export default new Vuex.Store({
 
       const application = model as ApplicationModel;
 
-      const validOperators =
+      const validRootAdmins =
         portfolioOperators.length > 0
           ? portfolioOperators.every((operator) => validOperator(operator))
           : true;
 
       // a very basic validation test before attempting to update and save
-      if (validateApplication(application) && validOperators) {
+      if (validateApplication(application) && validRootAdmins) {
         if (model.id === "") {
           model.id = generateUid();
           this.dispatch("applications/addApplication", model);
@@ -736,7 +728,7 @@ export default new Vuex.Store({
           );
           if (appIndx === -1) {
             throw new Error(
-              "unable to location application model with id :" + model.id
+              "unable to locate application model with id :" + model.id
             );
           }
 
@@ -754,9 +746,9 @@ export default new Vuex.Store({
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
 
-      this.dispatch("updateMembersAdded", false);
+
     },
-    async saveStep4({ state, rootGetters }) {
+    async saveStep4({ state, rootGetters, getters }, saveApps) {
       const applicationModels = rootGetters[
         "applications/applications"
       ] as ApplicationModel[];
@@ -765,20 +757,30 @@ export default new Vuex.Store({
         "applications/portfolioOperators"
       ] as OperatorModel[];
 
-      const applications = mapApplications(applicationModels);
-      const operators = mapOperators(portfolioOperators);
+      if (applicationModels.length) {
 
-      const data = {
-        operators: operators,
-        applications: applications,
-      };
+        const applications = mapApplications(applicationModels);
+        const operators = mapOperators(portfolioOperators);
 
-      await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+        if (saveApps) {
+          const data = {
+            operators: operators,
+            applications: applications,
+          };
+          await portfoliosApi.saveApplications(state.currentPortfolioId, data);
+        }
 
-      this.dispatch("updateMembersAdded", false);
+        const [isStep4Valid, portfolioHasOperators] = 
+          validateHasAdminOperators(portfolioOperators, applicationModels);
+        this.dispatch("setStepTouched", [4, portfolioHasOperators]);
+        if (portfolioHasOperators) {
+          this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
+        }
+        this.dispatch("updateMembersModified", false);
+      }
     },
-    updateMembersAdded({ commit }, added: boolean): void {
-      commit("doUpdateMembersAdded", added);
+    updateMembersModified({ commit }, added: boolean): void {
+      commit("doUpdateMembersModified", added);
     },
     /**
      * Saves all valid step models with changes
@@ -850,9 +852,9 @@ export default new Vuex.Store({
         this.dispatch("loadStep3Data", draftId),
       ];
       await Promise.all(loadActions);
-      this.dispatch("updateMembersAdded", false);
+      await this.dispatch("saveStep4", false);
     },
-    async loadStep1Data({ commit }, draftId: string): Promise<void> {
+    async loadStep1Data({ commit, getters }, draftId: string): Promise<void> {
       const draft = await portfoliosApi.getPortfolio(draftId);
       if (draft) {
         const step1Model = {
@@ -863,22 +865,24 @@ export default new Vuex.Store({
         };
 
         // update step 1 model
-        commit("doSaveStepModel", [step1Model, 1, true]);
+        const stepIndex: number = getters.getStepIndex(1);
+        commit("doSaveStepModel", [step1Model, 1, stepIndex, true]);
       }
     },
-    async loadStep2Data({ commit }, draftId: string): Promise<void> {
+    async loadStep2Data({ commit, getters }, draftId: string): Promise<void> {
       // get funding details
       const taskOrders = await portfoliosApi.getFunding(draftId);
 
       if (taskOrders !== null) {
         //store the tasks orders
         this.dispatch("taskOrders/setCurrentTaskOrders", taskOrders);
-        commit("doSaveStepModel", [createStepTwoModel(), 2, true]);
+        const stepIndex: number = getters.getStepIndex(2);
+        commit("doSaveStepModel", [createStepTwoModel(), 2, stepIndex, true]);
       }
     },
-    async loadStep3Data({ commit }, draftId: string): Promise<void> {
+    async loadStep3Data({ commit, getters }, draftId: string): Promise<void> {
       const applicationData = await portfoliosApi.getApplications(draftId);
-      if (applicationData != null) {
+      if (applicationData !== null) {
         //store the applications
         commit(
           "applications/setCurrentApplications",
@@ -886,7 +890,7 @@ export default new Vuex.Store({
         );
         commit("applications/initializeRootAdministrators");
 
-        const operators = applicationData.operators.map(
+        const rootAdmins = applicationData.operators.map(
           (operator: Operator) => {
             const operatorModels: OperatorModel = {
               ...operator,
@@ -897,21 +901,10 @@ export default new Vuex.Store({
           }
         );
 
-        commit("applications/updateRootAdministrators", operators);
-        commit("doSaveStepModel", [createStepThreeModel(), 3, true]);
+        commit("applications/updateRootAdministrators", rootAdmins);
+        const stepIndex: number = getters.getStepIndex(3);
+        commit("doSaveStepModel", [createStepThreeModel(), 3, stepIndex, true]);
       }
-    },
-    validateOperators(context, applicationModel: ApplicationModel): boolean {
-      //todo : fill out this funcationlity
-      // const hasAtleastOneRootAdmin = applicationModel.operators &&
-      // applicationModel.operators.find((operator: OperatorModel) => operator.access === "administrator") !==  undefined;
-
-      // if(applicationModel.operators || )
-
-      //temporary fix to allow the placeholders
-      console.log(context);
-      console.log(applicationModel);
-      return false;
     },
     openDialog(
       { commit },
@@ -972,8 +965,7 @@ export default new Vuex.Store({
     getInvalidSteps(state) {
       const invalidSteps: number[] = [];
       state.portfolioSteps.forEach((step) => {
-        // EJY TODO - fix logic to be step.step < 5 after step 4 validation is working
-        if (step.step < 4 && (step.touched === false || step.valid === false)) {
+        if (step.step < 5 && (step.touched === false || step.valid === false)) {
           invalidSteps.push(step.step);
         }
       });
@@ -1051,10 +1043,8 @@ export default new Vuex.Store({
       return step?.model;
     },
     getCurrentStepModel: (state) => state.currentStepModel,
-    getStepTouched: (state) => (stepNumber: number) => {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
+    getStepTouched: (state, getters) => (stepNumber: number) => {
+      const stepIndex: number = getters.getStepIndex(stepNumber);
       return state.portfolioSteps[stepIndex].touched;
     },
     getUser: (state) => state.user,
@@ -1094,9 +1084,24 @@ export default new Vuex.Store({
 
       return applicationModels && applicationModels.length > 0;
     },
-    membersAdded: (state) => {
-      return state.membersAdded;
+    membersModified: (state) => {
+      return state.membersModified;
     },
+    getStepIndex: (state) => (stepNumber: number): number => {
+      const stepIndex = state.portfolioSteps.findIndex(
+        (x) => x.step === stepNumber
+      );
+      return stepIndex;
+    },
+    isStepErrored: (state) => (stepNumber: number): boolean => {
+      const es: number[] = state.erroredSteps;
+      const i = es.indexOf(stepNumber);
+      return i > -1;
+    },
+    isStepTouched: (state, getters) => (stepNumber: number): boolean => {
+      const stepIndex: number = getters.getStepIndex(stepNumber);
+      return state.portfolioSteps[stepIndex].touched;
+    }
   },
   modules: {
     portfolios,

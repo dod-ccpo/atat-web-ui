@@ -52,7 +52,8 @@ const deleteApplication = async (
   try {
     commit("deleteApplication", id);
     //todo fix reference to root store here
-    //commit("doInitializeStepModel", [createStepThreeModel(), 3]);
+    //const stepIndex: number = getters.getStepIndex(3);
+    //commit("doInitializeStepModel", [createStepThreeModel(), 3, stepIndex]);
 
     const _applications = state.applicationModels.map((model: Application) => {
       const application: Application = {
@@ -87,7 +88,7 @@ const updateRootAdminInfo = (
     email,
   }: { index: number; display_name: string; email: string }
 ): void => {
-  commit("updateRootAdminInfo", [index, display_name, email]);
+  commit("updateRootAdminInfo", { index, display_name, email });
 };
 
 const updateApplicationOperatorInfo = (
@@ -106,13 +107,13 @@ const updateApplicationOperatorInfo = (
     originalEmail: string;
   }
 ): void => {
-  commit("updateApplicationOperatorInfo", [
+  commit("updateApplicationOperatorInfo", {
     applicationId,
     access,
     display_name,
     email,
     originalEmail,
-  ]);
+  });
 };
 
 const updateEnvironmentOperatorInfo = (
@@ -131,13 +132,13 @@ const updateEnvironmentOperatorInfo = (
     updatedEnvs: any;
   }
 ): void => {
-  commit("updateEnvironmentOperatorInfo", [
+  commit("updateEnvironmentOperatorInfo", {
     applicationId,
     display_name,
     email,
     originalEmail,
     updatedEnvs,
-  ]);
+  });
 };
 
 const updateApplicationOperators = (
