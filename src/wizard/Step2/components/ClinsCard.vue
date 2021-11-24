@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form :ref="getId('form')" lazy-validation>
     <v-container
       fluid
       class="clins-card width-100"
@@ -8,242 +8,160 @@
       <v-row>
         <v-col cols="11" class="width-100 d-block">
           <v-expansion-panels v-model="openItem">
-            <v-expansion-panel @click="calculateObligatedPercent">
+            <v-expansion-panel @click="toggleClinCard">
               <v-expansion-panel-header
                 class="body-lg font-weight-bold pt-2"
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">
-                  <v-container>
-                    <v-row>
-                      <v-col
-                        cols="1"
-                        class="h3 text--base-darkest pr-2"
+                  <v-container class="pa-0">
+                    <div class="d-flex h3 text--base-darkest py-4 width-100">
+                      <div
+                        class="text-center"
                         id="card_number"
-                        >{{ card_number }}</v-col
+                        style="width: 54px"
                       >
-                      <v-col
-                        cols="10"
-                        class="mr-auto h3 text--base-darkest"
-                        id="clin_number"
-                        >{{ `CLIN ${clin_number}` }}</v-col
+                        {{ card_number }}
+                      </div>
+                      <div style="flex-grow: 1">
+                        {{ `CLIN ${clin_number}` }}
+                      </div>
+                      <div
+                        class="text-center d-flex flex-column align-start mr-4"
                       >
-                      <v-col cols="1" class="pl-6">
                         <v-icon
-                          class="text-right text--base-darkest"
+                          class="text-right text--base-darkest icon-24"
                           :class="{ 'icon-rotate': open }"
                           >expand_more</v-icon
                         >
-                      </v-col>
-                    </v-row>
-                    <v-row v-if="!open && _idiq_clin !== ''">
-                      <v-col cols="1"></v-col>
-                      <v-col cols="11">
-                        <v-row>
-                          <!--IDIQ Type-->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                IDIQ Type
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="idiq_clin"
-                              >
-                                {{ _idiq_clin }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                          <!-- Total Value -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Total Value
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="total_clin_value"
-                              >
-                                {{ formatCurrency(total_clin_value) }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-
-                          <!-- Obligated Funds -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Obligated Funds
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="obligated_funds"
-                              >
-                                {{ formatCurrency(_obligated_funds) }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                          <!-- Period of Performance -->
-                          <v-col>
-                            <v-row class="mb-n8">
-                              <v-col
-                                class="
-                                  micro
-                                  font-weight-bold
-                                  text--base-darkest
-                                "
-                              >
-                                Period of Performance
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col
-                                class="optional body text--base-darkest"
-                                id="period_of_performance"
-                                v-if="_pop_start_date !== ''"
-                              >
-                                {{
-                                  `${formatDate(
-                                    _pop_start_date
-                                  )} - ${formatDate(_pop_end_date)}`
-                                }}
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                        </v-row>
-                      </v-col>
-                    </v-row>
+                      </div>
+                    </div>
+                    <div
+                      v-if="!open && _idiq_clin !== ''"
+                      class="v-expansion-panel-content__wrap pb-4"
+                    >
+                      <table class="data-summary-table">
+                        <tr class="micro">
+                          <th>IDIQ Type</th>
+                          <th>Total Value</th>
+                          <th>Obligated Funds</th>
+                          <th>Period of Performance</th>
+                        </tr>
+                        <tr class="body">
+                          <td class="idiq_clin">{{ _idiq_clin }}</td>
+                          <td>{{ formatCurrency(total_clin_value) }}</td>
+                          <td>{{ formatCurrency(_obligated_funds) }}</td>
+                          <td style="white-space: nowrap">
+                            <span v-if="_pop_start_date !== ''">
+                              {{
+                                `${formatDate(_pop_start_date)} -
+                                  ${formatDate(_pop_end_date)}`
+                              }}
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content class="pl-14 pb-10">
-                <v-row>
-                  <v-col cols="11">
+              <v-expansion-panel-content transition="slide-y-transition">
+                <div class="input-max-width pb-10">
+                  <atat-text-field
+                    class="mb-3"
+                    name="clin-number"
+                    id="clin-number"
+                    label="CLIN Number"
+                    :rules="clinNumberRules"
+                    :value.sync="_clin_number"
+                  />
+                  <atat-select
+                    class="clin-idiq-select max-width-100"
+                    label="Corresponding IDIQ CLIN"
+                    placeholder="- Select -"
+                    :items="idiq_clin_items"
+                    :selectedValue.sync="_idiq_clin"
+                    :rules="correspondingIDIQRules"
+                  >
+                  </atat-select>
+                </div>
+
+                <fieldset class="input-max-width pb-10">
+                  <legend class="h3 mb-4">CLIN Funding</legend>
+                  <v-form :ref="getId('fundFields')">
                     <atat-text-field
                       class="mb-3"
-                      name="clin-number"
-                      id="clin-number"
-                      label="CLIN Number"
-                      :rules="clinNumberRules"
-                      :value.sync="_clin_number"
+                      :id="getId('total_clin_value')"
+                      mask="currency"
+                      label="Total CLIN Value"
+                      :rules="totalClinRules"
+                      :helpText="clinHelpText"
+                      :value.sync="_total_clin_value"
                     />
-                    <atat-select
-                      class="clin-idiq-select"
-                      label="Corresponding IDIQ CLIN"
-                      placeholder="- Select -"
-                      :items="idiq_clin_items"
-                      :selectedValue.sync="_idiq_clin"
-                      :rules="correspondingIDIQRules"
-                    >
-                    </atat-select>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <div class="h3 font-weight-bold my-3">CLIN Funding</div>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="11">
-                    <v-form ref="fundFields">
-                      <atat-currency-field
-                        class="mb-3"
-                        id="total-clin-value"
-                        label="Total CLIN Value"
-                        :rules="totalClinRules"
-                        :helpText="clinHelpText"
-                        :value.sync="_total_clin_value"
-                        prefix="$"
+                    <atat-text-field
+                      class="mb-5"
+                      :id="getId('obligated_funds')"
+                      mask="currency"
+                      label="Obligated Funds"
+                      :rules="obligatedFundRules"
+                      :helpText="obligatedFundsHelpText"
+                      :value.sync="_obligated_funds"
+                      @onkeyup="calculateObligatedPercent"
+                    />
+
+                    <div v-if="obligatedPercent <= 100" role="alert">
+                      <span class="h3 font-weight-bold"
+                        >{{
+                          obligatedPercent.split(".")[1] === "00"
+                            ? obligatedPercent.split(".")[0]
+                            : obligatedPercent
+                        }}%</span
+                      >
+                      of your Total Funds are obligated
+                    </div>
+                    <div id="progressBarWrapper" class="width-100">
+                      <div
+                        name="progresBar"
+                        id="progressBar"
+                        value="0"
+                        max="100"
+                        ref="progress-bar"
+                      ></div>
+                    </div>
+                  </v-form>
+                </fieldset>
+
+                <fieldset>
+                  <legend class="h3 mb-4">Period of Performance (PoP)</legend>
+                  <div
+                    class="d-flex align-center mt-0"
+                    style="position: relative"
+                  >
+                    <v-form :ref="getId('dateFields')">
+                      <atat-date-picker
+                        :id="getId('datepicker')"
+                        :errormessages.sync="datePickerErrorMessages"
+                        :title.sync="datepickerTitle"
+                        :daterange.sync="dateRange"
+                        :pop_start_date.sync="_pop_start_date"
+                        :pop_end_date.sync="_pop_end_date"
+                        :startDateRules.sync="popStartRules"
+                        :endDateRules.sync="popEndRules"
+                        :isDatePickerBlurred.sync="isDatePickerBlurred"
+                        :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
+                        :isDatePickerVisible.sync="isDatePickerVisible"
+                        :nudgeleft="1"
+                        :min="minDate"
+                        :max="JWCCContractEndDate"
                       />
-                      <atat-currency-field
-                        class="mb-5"
-                        id="obligated-funds"
-                        label="Obligated Funds"
-                        :rules="obligatedFundRules"
-                        :helpText="obligatedFundsHelpText"
-                        :value.sync="_obligated_funds"
-                        @onkeyup="calculateObligatedPercent"
-                        prefix="$"
-                      />
-                      <div v-show="obligatedPercent <= 100">
-                        <span class="h3 font-weight-bold"
-                          >{{
-                            obligatedPercent.split(".")[1] === "00"
-                              ? obligatedPercent.split(".")[0]
-                              : obligatedPercent
-                          }}%</span
-                        >
-                        of your Total Funds are obligated
-                      </div>
-                      <div id="progressBarWrapper" class="width-100">
-                        <div
-                          name="progresBar"
-                          id="progressBar"
-                          value="0"
-                          max="100"
-                          ref="progress-bar"
-                        ></div>
-                      </div>
                     </v-form>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="11">
-                    <div class="h3 font-weight-bold mt-6 my-4">
-                      Period of Performance (PoP)
-                    </div>
-                    <div
-                      class="d-flex align-center mt-0"
-                      style="position: relative"
-                    >
-                      <v-form ref="dateFields">
-                        <atat-date-picker
-                          :id="'clin_' + card_number"
-                          :errormessages.sync="datePickerErrorMessages"
-                          :title.sync="datepickerTitle"
-                          :daterange.sync="dateRange"
-                          :pop_start_date.sync="_pop_start_date"
-                          :pop_end_date.sync="_pop_end_date"
-                          :startDateRules.sync="popStartRules"
-                          :endDateRules.sync="popEndRules"
-                          :isDatePickerBlurred.sync="isDatePickerBlurred"
-                          :isTextBoxFocused.sync="isDatePickerTextBoxFocused"
-                          :nudgeleft="1"
-                          :min="minDate"
-                          :max="maxDate"
-                        />
-                      </v-form>
-                    </div>
-                  </v-col>
-                </v-row> </v-expansion-panel-content
-            ></v-expansion-panel>
+                  </div>
+                </fieldset>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
-        <v-col>
+        <v-col class="pl-0">
           <v-dialog
             v-model="dialog"
             role="alertdialog"
@@ -255,7 +173,8 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
-                class="pt-6"
+                class="pt-4"
+                :disabled="isDisabled"
                 :aria-label="'Delete CLIN ' + clin_number"
                 :id="'delete_Clin_' + card_number + '_Button'"
                 @click="
@@ -303,14 +222,12 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
-import { validateNumber } from "@/validation/";
+import { TaskOrderModel } from "../../../../types/Wizard";
 
-@Component({
-  components: {},
-})
+@Component({})
 export default class ClinsCard extends Vue {
   @Prop({ required: true, default: () => -1 }) card_number!: number;
-  @PropSync("clin_number", { required: true }) _clin_number!: string;
+  @PropSync("clin_number") _clin_number!: string;
   @PropSync("idiq_clin") _idiq_clin!: string;
   @PropSync("total_clin_value") _total_clin_value!: number;
   @PropSync("obligated_funds") _obligated_funds!: number;
@@ -319,12 +236,40 @@ export default class ClinsCard extends Vue {
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
-  private isDatePickerBlurred = false;
+  private isDatePickerBlurred = true;
   private isDatePickerTextBoxFocused = false;
   private returnFocusDeleteClinOK = "addClinButton";
   private returnFocusDeleteClinCancel = "";
+  private focusClinNumberOnCardOpen = true;
+  private isDatePickerVisible = false;
 
-  get validateDatePicker(): boolean {
+  get isClinFormDirty(): boolean {
+    return (
+      this._clin_number.length > 0 ||
+      this._idiq_clin !== "" ||
+      this._total_clin_value > 0 ||
+      this._obligated_funds > 0 ||
+      this._pop_start_date !== "" ||
+      this._pop_end_date !== ""
+    );
+  }
+
+  private model: TaskOrderModel = this.$store.getters.getStepModel(2);
+
+  get isDisabled(): boolean {
+    return this.model.clins.length === 1;
+  }
+
+  get validateDatePickerOnLoad(): boolean {
+    // when datepicker not dirty
+    return (
+      this._pop_start_date === "" &&
+      this._pop_end_date === "" &&
+      !this.isClinFormDirty
+    );
+  }
+
+  get validateDatePickerOnSave(): boolean {
     return this._pop_start_date !== "" || this._pop_end_date !== "";
   }
 
@@ -340,15 +285,19 @@ export default class ClinsCard extends Vue {
     );
   }
   get Form(): Vue & { validate: () => boolean } {
-    return this.$refs.form as Vue & { validate: () => boolean };
+    return this.$refs[this.getId("form")] as Vue & { validate: () => boolean };
   }
 
   get FundFields(): Vue & { validate: () => boolean } {
-    return this.$refs.fundFields as Vue & { validate: () => boolean };
+    return this.$refs[this.getId("fundFields")] as Vue & {
+      validate: () => boolean;
+    };
   }
 
   get DateFields(): Vue & { validate: () => boolean } {
-    return this.$refs.dateFields as Vue & { validate: () => boolean };
+    return this.$refs[this.getId("dateFields")] as Vue & {
+      validate: () => boolean;
+    };
   }
 
   @Watch("_pop_start_date")
@@ -359,6 +308,14 @@ export default class ClinsCard extends Vue {
   @Watch("_pop_end_date")
   protected setEndDate(): void {
     this.setDateRange();
+  }
+
+  public formatCurrency(value: number): string {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  private getId(prepend: string) {
+    return prepend + "_" + this.card_number;
   }
 
   private setDateRange(): void {
@@ -397,8 +354,8 @@ export default class ClinsCard extends Vue {
 
   private dialog = false;
   private progress: HTMLProgressElement | undefined;
-  private minDate = "10-01-2020";
-  private maxDate = "09-30-2022";
+  private minDate = "2019-09-14";
+  public JWCCContractEndDate = "2022-09-14";
   private validateFormWhenLeaving = false;
 
   public rules = {};
@@ -410,34 +367,23 @@ export default class ClinsCard extends Vue {
     return true;
   }
 
-  public formatCurrency(value: string | number): string {
-    const amount =
-      typeof value === "string" ? Number(value.replace(",", "")) : value;
-    return this.formatter.format(amount);
-  }
-
   public formatDate(value: string): string {
     return moment(new Date(`${value} 00:00:00`)).format("MMM DD, YYYY");
   }
 
-  public JWCCContractEndDate = "2022-09-14";
+  public toggleClinCard(): void {
+    this.focusClinNumberOnCardOpen = true;
+    this.calculateObligatedPercent();
+  }
 
   public calculateObligatedPercent(): void {
     const progress = this.$refs["progress-bar"] as HTMLProgressElement;
     const percent: number =
-      (this.removeCurrencyFormat(this._obligated_funds) /
-        this.removeCurrencyFormat(this._total_clin_value)) *
-      100;
+      (this._obligated_funds / this._total_clin_value) * 100;
     this.obligatedPercent = percent > 100 ? "0" : percent.toFixed(2);
     if (progress) {
       progress.style.width = this.obligatedPercent + "%";
     }
-  }
-
-  //todo apply removeCurrencyformat to variables in validation
-  //currency validation rules
-  public removeCurrencyFormat(formattedCurrency: number): number {
-    return parseFloat(formattedCurrency.toString().replace(/,/g, ""));
   }
 
   get clinNumberRules(): any[] {
@@ -455,14 +401,22 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
+  get correspondingIDIQRules(): any[] {
+    const validationRules = [];
+    validationRules.push(
+      (v: string) => v !== "" || "Please select an IDIQ CLIN type"
+    );
+    return validationRules;
+  }
+
   get totalClinRules(): any[] {
     const validationRules = [];
     validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
-    validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
-      v = parseFloat(v.toString().replace(/,/g, ""));
-      let ob = parseFloat(this._obligated_funds.toString().replace(/,/g, ""));
-      return v >= ob || "Obligated Funds cannot exceed total CLIN Values";
+      return (
+        v >= this._obligated_funds ||
+        "Obligated Funds cannot exceed total CLIN Values"
+      );
     });
 
     return validationRules;
@@ -473,14 +427,10 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
     );
-    validationRules.push((v: string) => validateNumber(v));
     validationRules.push((v: number) => {
-      v = parseFloat(v.toString().replace(/,/g, ""));
-      let totalClin = parseFloat(
-        this._total_clin_value.toString().replace(/,/g, "")
-      );
       return (
-        v <= totalClin || "Obligated Funds cannot exceed total CLIN Values"
+        v <= this._total_clin_value ||
+        "Obligated Funds cannot exceed total CLIN Values"
       );
     });
     return validationRules;
@@ -492,11 +442,16 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidStartDate ||
-          "Please enter a start date using the format 'MM/DD/YYYY'"
+          "Please enter a valid start date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(() => {
+          console.log("startDAte " + this._pop_start_date);
+          console.log("enddate " + this._pop_end_date);
+          console.log(
+            moment(this._pop_start_date).isBefore(this._pop_end_date)
+          );
           return (
             moment(this._pop_start_date).isBefore(this._pop_end_date) ||
             "The period of performance start date must be before the end date"
@@ -507,24 +462,20 @@ export default class ClinsCard extends Vue {
         validationRules.push(
           () =>
             moment(this._pop_start_date).isBefore(this.JWCCContractEndDate) ||
-            "Start Date must be before or on " + this.JWCCContractEndDate
-        );
-      }
-    } else {
-      if (
-        (this.validateFormWhenLeaving ||
-          !this.isDatePickerClicked ||
-          this.isDatePickerBlurred) &&
-        !this.isDatePickerTextBoxFocused
-      ) {
-        validationRules.push(
-          (v: string) =>
-            v !== "" ||
-            "Please enter the start date for your CLIN's period of performance"
+            "Start Date must be before or on " +
+              moment(this.JWCCContractEndDate).format("MM/DD/YYYY")
         );
       }
     }
-    return this.validateDatePicker ? validationRules : [];
+
+    if (this.validateFormWhenLeaving || !this.validateDatePickerOnLoad) {
+      validationRules.push(
+        () =>
+          this.validateDatePickerOnSave ||
+          "Please enter the start date for your CLIN's period of performance"
+      );
+    }
+    return validationRules;
   }
 
   get popEndRules(): any[] {
@@ -533,7 +484,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidEndDate ||
-          "Please enter an end date using the format 'MM/DD/YYYY'"
+          "Please enter a valid end date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -547,37 +498,28 @@ export default class ClinsCard extends Vue {
         validationRules.push(
           () =>
             moment(this._pop_end_date).isBefore(this.JWCCContractEndDate) ||
-            "The end date must be before or on " + this.JWCCContractEndDate
+            "The end date must be before or on " +
+              moment(this.JWCCContractEndDate).format("MM/DD/YYYY")
         );
       }
-    } else {
-      if (
-        (this.validateFormWhenLeaving ||
-          !this.isDatePickerClicked ||
-          this.isDatePickerBlurred) &&
-        !this.isDatePickerTextBoxFocused
-      ) {
+
+      if (this.validateFormWhenLeaving) {
         validationRules.push(
-          (v: string) =>
-            v !== "" ||
+          () =>
+            this.validateDatePickerOnSave ||
             "Please enter the end date for your CLIN's period of performance"
         );
       }
     }
-    return this.validateDatePicker ? validationRules : [];
-  }
-
-  get correspondingIDIQRules(): any[] {
-    const validationRules = [];
-    validationRules.push(
-      (v: string) => v !== "" || "Please select an IDIQ CLIN type"
-    );
     return validationRules;
+    // return this.validateDatePickerOnLoad && this.isClinFormDirty
+    //   ? validationRules
+    //   : [];
   }
 
-  @Watch("_obligated_funds")
-  @Watch("_total_clin_value")
-  validateFundsFields(): void {
+  // @Watch("_obligated_funds")
+  // @Watch("_total_clin_value")
+  protected validateFundFields(): void {
     this.FundFields.validate();
   }
 
@@ -597,7 +539,7 @@ export default class ClinsCard extends Vue {
 
   @Watch("openItem")
   onOpenItemChanged(): void {
-    if (this.openItem == 0) {
+    if (this.openItem == 0 && this.focusClinNumberOnCardOpen) {
       setTimeout(() => {
         this.$nextTick(() => {
           // when the clins card is opened the first input (clins number)
@@ -616,7 +558,7 @@ export default class ClinsCard extends Vue {
 
   // @Watch("_pop_start_date")
   // @Watch("_pop_end_date")
-  // validateDateFields(): void {
+  // public validateDateFields(): void {
   //   this.DateFields.validate();
   // }
 
@@ -625,12 +567,21 @@ export default class ClinsCard extends Vue {
     this.validateFormWhenLeaving = true;
     await this.$nextTick(() => {
       validated = this.Form.validate();
+
+      if (this.DateFields) {
+        validated =
+          validated &&
+          this.DateFields.validate() &&
+          this.validateDatePickerOnSave;
+      }
+
       this.validateFormWhenLeaving = false;
     });
     return validated;
   }
 
-  public open(): void {
+  public open(isPageLoad: boolean): void {
+    this.focusClinNumberOnCardOpen = !isPageLoad;
     this.openItem = 0;
   }
 
@@ -648,6 +599,13 @@ export default class ClinsCard extends Vue {
       this.isDatePickerClicked =
         clickedElement.closest("#" + datepickerControlId) !== null;
     }
+  }
+
+  private async clinFormFocused(event: Event): Promise<void> {
+    const isDatePickerFocused =
+      (event.target as HTMLElement).closest(".clin-datepicker-control") !==
+      null;
+    this.isDatePickerVisible = isDatePickerFocused;
   }
 
   private openDeleteClinModal(btnId: string) {
@@ -679,11 +637,13 @@ export default class ClinsCard extends Vue {
   private mounted(): void {
     document.addEventListener("click", this.clinFormClicked);
     document.addEventListener("blur", this.clinFormClicked);
+    document.addEventListener("focus", this.clinFormFocused, true);
   }
 
   private destroyed(): void {
     document.removeEventListener("click", this.clinFormClicked);
     document.removeEventListener("blur", this.clinFormClicked);
+    document.addEventListener("focus", this.clinFormFocused);
   }
 }
 </script>

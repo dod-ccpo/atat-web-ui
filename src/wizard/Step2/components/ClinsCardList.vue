@@ -22,7 +22,7 @@
       @click="$emit('add')"
     >
       <v-icon color="primary" class="mr-2">control_point</v-icon>
-      <span>{{ addClinLabel }} </span>
+      <span>{{ addClinLabel }}</span>
     </v-btn>
   </div>
 </template>
@@ -41,9 +41,7 @@ import ClinsCard from "./ClinsCard.vue";
 })
 export default class ClinsCardList extends Vue {
   @PropSync("clins", { required: true }) _clins!: Clin[];
-  get addClinLabel(): string {
-    return this._clins.length > 0 ? "Add another CLIN" : "Add CLIN";
-  }
+  private addClinLabel = "Add another CLIN";
 
   public async validate(): Promise<boolean> {
     let valid = false;
@@ -66,19 +64,17 @@ export default class ClinsCardList extends Vue {
     return clins ? clins.length : 0;
   }
 
-  public ExpandAddedClin(): void {
-    this.ExpandClin(this._clins.length);
+  public ExpandAddedClin(isPageLoad: boolean): void {
+    this.ExpandClin(this._clins.length, isPageLoad);
   }
 
-  public ExpandClin(index: number): void {
+  public ExpandClin(index: number, isPageLoad: boolean): void {
     this.$nextTick(() => {
-      setTimeout(() => {
-        if (this._clins.length >= index) {
-          const clins = this.$refs.clinscard as Array<ClinsCard>;
-          const clin = clins[index - 1];
-          clin.open();
-        }
-      }, 500);
+      if (this._clins.length >= index) {
+        const clins = this.$refs.clinscard as Array<ClinsCard>;
+        const clin = clins[index - 1];
+        clin.open(isPageLoad);
+      }
     });
   }
 }

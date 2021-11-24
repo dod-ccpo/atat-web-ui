@@ -53,7 +53,6 @@ const deleteTaskOrder = (state: TaskOrdersState, id: string): void => {
   }
 };
 
-
 const initialize = (state: TaskOrdersState): void => {
   Vue.set(state, "taskOrderModels", []);
 };

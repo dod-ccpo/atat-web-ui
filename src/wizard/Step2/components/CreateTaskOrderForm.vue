@@ -4,9 +4,9 @@
       <h1 tabindex="-1">Add a New Task Order</h1>
       <p class="ma-0 mt-4 body-lg text--base-darkest">
         You will find this information in your awarded task order that funds
-        your ATAT portfolio. If you have more than one task order, we will
-        walk through them one at a time. Select <strong>Next</strong> to
-        view all of your funding sources.
+        your ATAT portfolio. If you have more than one task order, we will walk
+        through them one at a time. Select <strong>Next</strong> to view all of
+        your funding sources.
       </p>
     </section>
 
@@ -100,17 +100,16 @@
         <div class="black--text body-lg ml-2 mr-2">
           <p>
             You will not be able to provision cloud resources within ATAT
-            without an awarded Task Order that is signed by a duly
-            warranted Contracting Officer. Please contact your Contracting
-            Officer for questions regarding your Task Order status or to
-            obtain authorization to spend government funds.
+            without an awarded Task Order that is signed by a duly warranted
+            Contracting Officer. Please contact your Contracting Officer for
+            questions regarding your Task Order status or to obtain
+            authorization to spend government funds.
           </p>
           <p class="mb-0">
             You are subject to potential penalties that may include fines,
-            imprisonment, or both, under the U.S. law and regulations for
-            any false statement or misrepresentation in association with
-            this Task Order submission or on any accompanying
-            documentation.
+            imprisonment, or both, under the U.S. law and regulations for any
+            false statement or misrepresentation in association with this Task
+            Order submission or on any accompanying documentation.
           </p>
         </div>
       </v-alert>
@@ -121,10 +120,9 @@
     <section role="region" title="Contract Line Items">
       <h2>Contract Line Items</h2>
       <p class="mb-0 content-max-width">
-        A CLIN is a line in your contract that lists the services and
-        products to be delivered with a price or ceiling which cannot be
-        exceeded. Refer to your task order to locate your Contract Line
-        Item Numbers (CLINs).
+        A CLIN is a line in your contract that lists the services and products
+        to be delivered with a price or ceiling which cannot be exceeded. Refer
+        to your task order to locate your Contract Line Item Numbers (CLINs).
       </p>
       <clins-card-list
         class="my-9 mt-7"
@@ -166,7 +164,7 @@ export default class CreateTaskOrderForm extends Vue {
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
   @PropSync("clins") _clins!: Clin[];
   @Prop({ default: false }) private validateOnLoad!: boolean;
-  @Prop({ default: false }) private signed!: boolean;
+  @PropSync("signed", { default: false }) private _signed!: boolean;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -191,6 +189,7 @@ export default class CreateTaskOrderForm extends Vue {
     this.signedTaskOrder = signed ? "Yes" : "No";
     this.isYesButtonClicked = signed;
     this.isNoButtonClicked = !signed;
+    this._signed = signed;
   }
 
   public DidUserSignTaskOrder(): boolean {
@@ -226,20 +225,21 @@ export default class CreateTaskOrderForm extends Vue {
     return validated.every((v) => v === true);
   }
 
-  public ExpandAddedClin(): void {
+  public ExpandAddedClin(isPageLoad: boolean): void {
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
-    clinsCards.ExpandAddedClin();
+    clinsCards.ExpandAddedClin(isPageLoad);
   }
 
   private mounted(): void {
+    this.ExpandAddedClin(true);
     if (
-      this.signed &&
+      this._signed &&
       this._task_order_file &&
       this._task_order_file.name &&
       this._task_order_file.id
     ) {
       this.savedTaskOrderSigned = true;
-      this.isTaskOrderSigned(this.signed);
+      this.isTaskOrderSigned(this._signed);
     }
   }
 

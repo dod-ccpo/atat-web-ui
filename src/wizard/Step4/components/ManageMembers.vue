@@ -1002,27 +1002,27 @@ export default class ManageMember extends mixins(ApplicationData) {
         const appId = this.currentApplication.id;
         if (!this.assignDifferentRolesForEnvs) {
           // application-level operator
-          this.$store.dispatch("updateApplicationOperatorInfo", [
-            appId,
-            this.roleForAllEnvs,
-            this.memberToEditName,
-            this.memberToEditEmail,
-            this.memberToEditEmailOriginal,
-          ]);
+          this.$store.dispatch("applications/updateApplicationOperatorInfo", {
+            applicationId: appId,
+            access: this.roleForAllEnvs,
+            display_name: this.memberToEditName,
+            email: this.memberToEditEmail,
+            originalEmail: this.memberToEditEmailOriginal,
+          });
         } else {
           // env-level operators
-          this.$store.dispatch("updateEnvironmentOperatorInfo", [
-            appId,
-            this.memberToEditName,
-            this.memberToEditEmail,
-            this.memberToEditEmailOriginal,
-            this.environments_roles,
-          ]);
+          this.$store.dispatch("applications/updateEnvironmentOperatorInfo", {
+            applicationId: appId,
+            display_name: this.memberToEditName,
+            email: this.memberToEditEmail,
+            originalEmail: this.memberToEditEmailOriginal,
+            updatedEnvs: this.environments_roles,
+          });
         }
       }
     }
 
-    this.$store.dispatch("updateMembersAdded", true);
+    this.$store.dispatch("updateMembersModified", true);
 
     this.closeModal();
   }

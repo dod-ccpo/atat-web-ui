@@ -1,4 +1,5 @@
 import Vue from "vue";
+import Vuex from "vuex";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
@@ -7,29 +8,59 @@ Vue.use(Vuetify);
 
 describe("Testing CreateTaskOrderForm", () => {
   const localVue = createLocalVue();
+  localVue.use(Vuex);
   let vuetify: any;
   let wrapper: any;
+  let state: any;
+
+  const getters: any = {
+    getStepModel: () => (stepNumber: number) => {
+      return {
+        task_order_file: {
+          name: "Lesson 5 - Essentials.pdf",
+          id: "2b032449-37ba-464b-ae35-e7029e64ca60",
+        },
+        clins: [
+          {
+            idiq_clin: "IDIQ CLIN 0003 Unclassified Cloud Support Package",
+            clin_number: "0001",
+            pop_start_date: "2021-11-17",
+            pop_end_date: "2021-12-27",
+            total_clin_value: 12345676,
+            obligated_funds: 1234567,
+          },
+        ],
+        task_order_number: "12345678901234567",
+      };
+    },
+  };
+  const store = new Vuex.Store({
+    getters,
+  });
 
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(CreateTaskOrderForm, {
       localVue,
       vuetify,
+      store,
       stubs: ["atat-text-field", "atat-text-area", "atat-file-upload"],
       propsData: {
         task_order_file: {
-          name: "",
+          name: "Lesson 5 - Essentials.pdf",
+          id: "2b032449-37ba-464b-ae35-e7029e64ca60",
         },
         clins: [
           {
+            idiq_clin: "IDIQ CLIN 0003 Unclassified Cloud Support Package",
             clin_number: "0001",
-            idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
-            total_clin_value: 200000,
-            obligated_funds: 10000,
-            pop_start_date: "2021-09-01",
-            pop_end_date: "2022-09-01",
+            pop_start_date: "2021-11-17",
+            pop_end_date: "2021-12-27",
+            total_clin_value: 12345676,
+            obligated_funds: 1234567,
           },
         ],
+        task_order_number: "12345678901234567",
       },
     });
   });
@@ -63,7 +94,7 @@ describe("Testing CreateTaskOrderForm", () => {
     });
     await wrapper.vm.isTaskOrderSigned(false);
     const validated = await wrapper.vm.validateForm();
-    expect(validated).toBe(false);
+    expect(validated).toBe(true);
   });
   it("test invalid validateForm() ", async () => {
     await wrapper.setData({
