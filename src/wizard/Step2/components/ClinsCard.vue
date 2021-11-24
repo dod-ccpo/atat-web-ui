@@ -397,8 +397,8 @@ export default class ClinsCard extends Vue {
 
   private dialog = false;
   private progress: HTMLProgressElement | undefined;
-  private minDate = "2020-10-01";
-  private maxDate = "2022-09-30";
+  private minDate = "10-01-2020";
+  private maxDate = "09-30-2022";
   private validateFormWhenLeaving = false;
 
   public rules = {};
@@ -640,7 +640,6 @@ export default class ClinsCard extends Vue {
 
   private async clinFormClicked(event: Event): Promise<void> {
     const clickedElement = event.target as HTMLElement;
-    console.log(clickedElement);
     const datepickerControl = document.getElementsByClassName(
       "clin-datepicker-control"
     )[0];
