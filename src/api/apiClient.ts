@@ -25,23 +25,32 @@ export default class ApiClient {
     this.instance = instance;
   }
 
+  // private upwrapResponse<TModel>(response: AxiosPromise<any>):TModel{
+
+  //   try {
+  //     const response = await this.client.get(`${id}`);
+  //     if (response.status !== 200) {
+  //       throw Error(`error occurred retrieving portfolio draft with id ${id}`);
+  //     }
+  //     const data: any = response.data;
+  //     return data.id as string;
+  //   } catch (error) {
+  //     const axiosError = error as AxiosError;
+
+  //     if (axiosError) {
+  //       console.log(
+  //         `failed with msg: ${axiosError.message} status code: ${axiosError.code}`
+  //       );
+  //     }
+  //     console.log(`exception: ${error}`);
+  //   }
+
+  //   return null;
+  // }
+
   public get(url?: string, config?: AxiosRequestConfig): AxiosPromise {
     url = url ? `${this.endpoint}/${url}` : this.endpoint;
     return instance.get(url, config);
-  }
-
-  public getRequest(request: APIRequest): AxiosPromise {
-    let url = request.url ? `${this.endpoint}/${request.url}` : this.endpoint;
-
-    if (request.params) {
-      url += "?";
-
-      for (const [k, v] of Object.entries(request.params)) {
-        url += `${k}=${v}`;
-      }
-    }
-
-    return instance.get(url, request.params);
   }
 
   public post(
