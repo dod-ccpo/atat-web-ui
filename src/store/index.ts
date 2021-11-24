@@ -853,7 +853,6 @@ export default new Vuex.Store({
       ];
       await Promise.all(loadActions);
       await this.dispatch("saveStep4", false);
-      // this.dispatch("updateMembersModified", false);
     },
     async loadStep1Data({ commit, getters }, draftId: string): Promise<void> {
       const draft = await portfoliosApi.getPortfolio(draftId);
@@ -966,7 +965,6 @@ export default new Vuex.Store({
     getInvalidSteps(state) {
       const invalidSteps: number[] = [];
       state.portfolioSteps.forEach((step) => {
-        // EJY TODO - fix logic to be step.step < 5 after step 4 validation is working
         if (step.step < 5 && (step.touched === false || step.valid === false)) {
           invalidSteps.push(step.step);
         }
