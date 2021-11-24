@@ -23,10 +23,10 @@ import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
 
-import { 
-  validateApplication, 
-  validOperator, 
-  validateHasAdminOperators 
+import {
+  validateApplication,
+  validOperator,
+  validateHasAdminOperators,
 } from "@/validation/application";
 
 Vue.use(Vuex);
@@ -568,7 +568,7 @@ export default new Vuex.Store({
     },
     async setStepTouched({ commit, getters }, [stepNumber, isTouched]) {
       const stepIndex: number = getters.getStepIndex(stepNumber);
-      commit("doSetStepTouched",[stepIndex, isTouched]);
+      commit("doSetStepTouched", [stepIndex, isTouched]);
     },
     async deleteTaskOrder(
       { commit, state, getters, rootGetters },
@@ -754,8 +754,6 @@ export default new Vuex.Store({
       };
 
       await portfoliosApi.saveApplications(state.currentPortfolioId, data);
-
-
     },
     async saveStep4({ state, rootGetters, getters }, saveApps) {
       const applicationModels = rootGetters[
@@ -767,7 +765,6 @@ export default new Vuex.Store({
       ] as OperatorModel[];
 
       if (applicationModels.length) {
-
         const applications = mapApplications(applicationModels);
         const operators = mapOperators(portfolioOperators);
 
@@ -779,8 +776,10 @@ export default new Vuex.Store({
           await portfoliosApi.saveApplications(state.currentPortfolioId, data);
         }
 
-        const [isStep4Valid, portfolioHasOperators] = 
-          validateHasAdminOperators(portfolioOperators, applicationModels);
+        const [isStep4Valid, portfolioHasOperators] = validateHasAdminOperators(
+          portfolioOperators,
+          applicationModels
+        );
         this.dispatch("setStepTouched", [4, portfolioHasOperators]);
         if (portfolioHasOperators) {
           this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
@@ -1096,21 +1095,27 @@ export default new Vuex.Store({
     membersModified: (state) => {
       return state.membersModified;
     },
-    getStepIndex: (state) => (stepNumber: number): number => {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
-      return stepIndex;
-    },
-    isStepErrored: (state) => (stepNumber: number): boolean => {
-      const es: number[] = state.erroredSteps;
-      const i = es.indexOf(stepNumber);
-      return i > -1;
-    },
-    isStepTouched: (state, getters) => (stepNumber: number): boolean => {
-      const stepIndex: number = getters.getStepIndex(stepNumber);
-      return state.portfolioSteps[stepIndex].touched;
-    }
+    getStepIndex:
+      (state) =>
+      (stepNumber: number): number => {
+        const stepIndex = state.portfolioSteps.findIndex(
+          (x) => x.step === stepNumber
+        );
+        return stepIndex;
+      },
+    isStepErrored:
+      (state) =>
+      (stepNumber: number): boolean => {
+        const es: number[] = state.erroredSteps;
+        const i = es.indexOf(stepNumber);
+        return i > -1;
+      },
+    isStepTouched:
+      (state, getters) =>
+      (stepNumber: number): boolean => {
+        const stepIndex: number = getters.getStepIndex(stepNumber);
+        return state.portfolioSteps[stepIndex].touched;
+      },
   },
   modules: {
     portfolios,

@@ -90,6 +90,5 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     this.portfolio = this.$store.getters.getPortfolio;
     this.taskOrders = this.$store.getters.getTaskOrders;
   }
-
 }
 </script>

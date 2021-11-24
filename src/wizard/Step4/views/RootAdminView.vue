@@ -30,18 +30,26 @@
         rounded
         color="warning"
         icon="warning"
-        class="text-left warning_lighter black-icon mt-3 mb-8 border-thick pr-14"
+        class="
+          text-left
+          warning_lighter
+          black-icon
+          mt-3
+          mb-8
+          border-thick
+          pr-14
+        "
         border="left"
       >
         <div class="black--text body-lg">
           <p class="mb-0">
-            Adding a root administrator will ensure your team can manage every 
-            application within the cloud console. You can also grant administrator 
-            access to each application or environment individually.
+            Adding a root administrator will ensure your team can manage every
+            application within the cloud console. You can also grant
+            administrator access to each application or environment
+            individually.
           </p>
         </div>
       </v-alert>
-
     </div>
     <v-row>
       <v-col class="d-flex">

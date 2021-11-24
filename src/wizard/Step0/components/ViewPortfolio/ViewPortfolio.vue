@@ -69,16 +69,17 @@
     <v-row>
       <v-col v-show="showNoSearchResults" class="no-portfolio-search-results">
         <!-- temporary logic to show the no search results content -->
-          <div class="wizard-content">
-            <v-icon>search</v-icon>
-            <h2>No results for &ldquo;{{ searchTermNoResultsDisplay }}&rdquo;</h2>
-            <p>
-              Please try another search term or modify filters to be less specific.
-            </p>
-            <v-btn class="primary" @click="clearSearch">
-              {{ noResultsButtonText }}
-            </v-btn>
-          </div>
+        <div class="wizard-content">
+          <v-icon>search</v-icon>
+          <h2>No results for &ldquo;{{ searchTermNoResultsDisplay }}&rdquo;</h2>
+          <p>
+            Please try another search term or modify filters to be less
+            specific.
+          </p>
+          <v-btn class="primary" @click="clearSearch">
+            {{ noResultsButtonText }}
+          </v-btn>
+        </div>
       </v-col>
       <!-- temporary logic to show the no search results content 
            remove !showNoSearchResults when search logic is completed -->
