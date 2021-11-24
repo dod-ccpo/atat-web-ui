@@ -343,15 +343,31 @@ describe("Testing Create ClinsCard Component", () => {
   //   expect(period_of_performance.text()).toBe(formatedValue);
   // });
 
-  it("Clin Number Value renders correctly", async () => {
-    await wrapper.vm.$nextTick();
-    const clin_number = wrapper.find("#clin_number");
-    expect(clin_number.text()).toBe(`CLIN ${propsData.clin_number}`);
-  });
+  // it("Clin Number Value renders correctly", async () => {
+  //   await wrapper.vm.$nextTick();
+  //   const clin_number = wrapper.find("#clin_number");
+  //   expect(clin_number.text()).toBe(`CLIN ${propsData.clin_number}`);
+  // });
 
   //testing private functions created after september 2021
+  // it("test clin form clicked", async (done) => {
+  //   document.body.innerHTML = `
+  //   <div class="clin-datepicker-control">
+  //   <div id="test">blank</div>
+  //   </div>
+  //    `;
+  //   await wrapper.vm.clinFormClicked({ target: "test" });
+  //   setTimeout(() => {
+  //     expect(wrapper.exists()).toBe(true);
+  //     done();
+  //   }, 500);
+  // });
   it("test delete clin", async () => {
     await wrapper.vm.deleteClin(1);
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test toggleClinCard", async () => {
+    await wrapper.vm.toggleClinCard({ target: "test" });
     expect(wrapper.exists()).toBe(true);
   });
 
@@ -399,12 +415,19 @@ describe("Testing Create ClinsCard Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
   it("test allowedDates else", async () => {
+    await wrapper.setProps({
+      pop_start_date: "",
+    });
     await wrapper.vm.allowedDates("09-01-2022");
     expect(wrapper.exists()).toBe(true);
   });
   it("test Destroyed", async () => {
     await wrapper.destroy();
     expect(wrapper.exists()).toBe(false);
+  });
+  it("test clinFormFocused", async () => {
+    await wrapper.clinFormFocused;
+    expect(wrapper.exists()).toBe(true);
   });
   it("test valid Dates", async () => {
     await wrapper.setProps({
@@ -450,22 +473,24 @@ describe("Testing Create ClinsCard Component", () => {
       done();
     }, 500);
   });
-  // it("test clin form clicked", async (done) => {
-  //   document.body.innerHTML = `
-  //   <div class="clin-datepicker-control">
-  //   <div id="test">blank</div>
-  //   </div>
-  //    `;
-  //   await wrapper.vm.clinFormClicked({ target: "test" });
-  //   setTimeout(() => {
-  //     expect(wrapper.exists()).toBe(true);
-  //     done();
-  //   }, 500);
-  // });
+
   it("test get DateFields", async () => {
     await wrapper.vm.DateFields;
     await wrapper.vm.FundFields;
-    // await wrapper.vm.validateFundsFields();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test valid Dates", async () => {
+    await wrapper.setProps({
+      card_number: 1,
+      clin_number: "0001",
+      idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
+      total_clin_value: 200000,
+      obligated_funds: 10000,
+      pop_start_date: "",
+      pop_end_date: formatDate2("2022-09-30"),
+    });
+    await wrapper.vm.validateDatePickerOnSave;
+
     expect(wrapper.exists()).toBe(true);
   });
 });

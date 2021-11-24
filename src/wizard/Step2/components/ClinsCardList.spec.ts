@@ -141,4 +141,9 @@ describe("Testing Create ClinsCardList Component", () => {
       done();
     }, 500);
   });
+  it("Test ExpandClin", async () => {
+    await wrapper.vm.clinLength;
+
+    expect(wrapper.exists()).toBe(true);
+  });
 });
