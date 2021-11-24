@@ -10,6 +10,12 @@ const instance = axios.create({
   },
 });
 
+interface APIRequest {
+  url?: string;
+  params?: Record<string, string | number>;
+  config?: AxiosRequestConfig;
+}
+
 export default class ApiClient {
   private endpoint: string;
   private instance: AxiosInstance;
@@ -22,6 +28,20 @@ export default class ApiClient {
   public get(url?: string, config?: AxiosRequestConfig): AxiosPromise {
     url = url ? `${this.endpoint}/${url}` : this.endpoint;
     return instance.get(url, config);
+  }
+
+  public getRequest(request: APIRequest): AxiosPromise {
+    let url = request.url ? `${this.endpoint}/${request.url}` : this.endpoint;
+
+    if (request.params) {
+      url += "?";
+
+      for (const [k, v] of Object.entries(request.params)) {
+        url += `${k}=${v}`;
+      }
+    }
+
+    return instance.get(url, request.params);
   }
 
   public post(
