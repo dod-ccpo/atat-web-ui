@@ -59,9 +59,8 @@
 
   .v-list.v-select-list {
     padding: 0;
-    border: 1x solid red !important;
+    border: 1px solid $base !important;
     .v-list-item {
-      border-bottom: 1px solid $base;
       &:hover, &:focus, &:active {
         &:before {
           background-color: transparent !important;

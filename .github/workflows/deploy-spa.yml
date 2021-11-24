@@ -14,22 +14,16 @@ jobs:
     name: Build SPA
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout code base
+        uses: actions/checkout@v2
       - name: Get build timestamp
         id: timestamp
         run: echo "::set-output name=timestamp::$(date --iso-8601=seconds)"
-      - name: Configure npm caching
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
       - name: Setup node.js
         uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - name: Checkout code base
-        uses: actions/checkout@v2
+          cache: npm
       - name: Install global dependencies
         run: |
           npm install -g @vue/cli
