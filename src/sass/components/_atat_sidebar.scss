@@ -1,7 +1,11 @@
 @import "../utils/colors.scss";
 
 nav.v-navigation-drawer:not(#right-side-drawer){
-    top: 95px !important;
+    top: 70px !important;
+    .gov-banner-hidden & {
+        top: 48px !important;
+    }
+    transition: top ease-in-out 0.25s;
     max-height: calc(100% - 135px) !important;
     .v-navigation-drawer__content{
     overflow-y: inherit !important;

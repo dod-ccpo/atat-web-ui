@@ -1,8 +1,9 @@
 <template>
-  <v-app>
+  <v-app :class="{ 'gov-banner-hidden': isUsaGovHidden }">
+    <USAGovBanner />
     <ATATHeader />
     <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
-    <v-main style="padding-top: 100px">
+    <v-main style="padding-top: 70px">
       <router-view> </router-view>
     </v-main>
     <SideDrawer v-if="loginStatus" />
@@ -26,6 +27,7 @@ import ATATToast from "@/components/ATATToast.vue";
 import SideDrawer from "@/components/SideDrawer.vue";
 import { Route } from "vue-router";
 import { buildConfiguration } from "./atat-config-builder";
+import USAGovBanner from "@/components/USAGovBanner.vue";
 
 @Component({
   components: {
@@ -35,10 +37,12 @@ import { buildConfiguration } from "./atat-config-builder";
     ATATSideBar,
     ATATToast,
     SideDrawer,
+    USAGovBanner,
   },
 })
 export default class App extends Vue {
   private isDialogDisplayed = false;
+  private scrollYPosition = -1;
 
   get loginStatus(): boolean {
     //todo: remove `|| window.location.protocol === "http:"` as it a temp fix
@@ -66,6 +70,7 @@ export default class App extends Vue {
     await buildConfiguration();
     this.$store.dispatch("initDialog");
     this.focusH1();
+    window.addEventListener("scroll", this.onScroll);
   }
 
   public async updated(): Promise<void> {
@@ -78,6 +83,17 @@ export default class App extends Vue {
     if (h1.length) {
       h1[0].focus();
     }
+  }
+  get isUsaGovHidden(): boolean {
+    return this.scrollYPosition > 100;
+  }
+
+  onScroll(): void {
+    this.scrollYPosition = window.scrollY;
+  }
+
+  beforeDestroy(): void {
+    window.removeEventListener("scroll", this.onScroll);
   }
 }
 </script>
