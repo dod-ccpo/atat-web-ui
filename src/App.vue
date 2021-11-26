@@ -43,7 +43,7 @@ import USAGovBanner from "@/components/USAGovBanner.vue";
 export default class App extends Vue {
   private isDialogDisplayed = false;
   private scrollYPosition = -1;
-
+  private isUsaGovHidden = false;
   get loginStatus(): boolean {
     //todo: remove `|| window.location.protocol === "http:"` as it a temp fix
     //to help QA login without 'https' and for the side bar to appear.
@@ -84,12 +84,13 @@ export default class App extends Vue {
       h1[0].focus();
     }
   }
-  get isUsaGovHidden(): boolean {
-    return this.scrollYPosition > 100;
-  }
 
   onScroll(): void {
-    this.scrollYPosition = window.scrollY;
+    if (window.scrollY < 100) {
+      this.isUsaGovHidden = false;
+    } else {
+      this.isUsaGovHidden = true;
+    }
   }
 
   beforeDestroy(): void {
