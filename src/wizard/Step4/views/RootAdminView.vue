@@ -12,14 +12,36 @@
         <span class="font-weight-bold">Next</span> to add team members to your
         other applications.
         <a
+          class="text-link"
           role="button"
           tabindex="0"
-          @click="openSideDrawer($event)"
-          @keydown.enter="openSideDrawer($event)"
+          @click="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
+          @keydown.enter="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
+          @keydown.space="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
+          id="RootAdmins_LearnMoreButton"
         >
           Learn more about team member roles
         </a>
       </p>
+
+      <v-alert
+        v-if="stepIsErrored && rootMembersCount === 0"
+        outlined
+        rounded
+        color="warning"
+        icon="warning"
+        class="text-left warning_lighter black-icon mt-3 mb-8 border-thick pr-14"
+        border="left"
+      >
+        <div class="black--text body-lg">
+          <p class="mb-0">
+            Adding a root administrator will ensure your team can manage every 
+            application within the cloud console. You can also grant administrator 
+            access to each application or environment individually.
+          </p>
+        </div>
+      </v-alert>
+
     </div>
     <v-row>
       <v-col class="d-flex">
@@ -112,26 +134,26 @@
               </div>
 
               <v-menu
-                class="table-menu"
                 transition="slide-y-transition"
                 offset-y
-                nudge-left="190"
+                nudge-left="192"
+                nudge-top="1"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     :id="moreButtonId(item)"
-                    class="table-row-menu-button pa-0"
+                    class="meatball-menu-button pa-0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
                     :aria-label="'Edit or remove ' + item.display_name"
                   >
-                    <v-icon aria-hidden="true" class="icon-18 width-auto">
+                    <v-icon aria-hidden="true" class="width-auto">
                       more_horiz
                     </v-icon>
                   </v-btn>
                 </template>
-                <v-list class="table-row-menu pa-0">
+                <v-list class="meatball-menu pa-0">
                   <v-list-item
                     v-for="(menuOptionText, i) in options"
                     :key="i"
@@ -168,7 +190,6 @@
       v-on:delete="onDelete"
       :focus-on-cancel="returnFocusElementIdRemoveMemberCancel"
       :focus-on-ok="returnFocusElementIdRemoveMemberOk"
-
     />
   </div>
 </template>
@@ -185,6 +206,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private search = "";
   private currentPortfolio = this.$store.getters.getPortfolio;
   private csp = this.currentPortfolio.csp;
+  private stepIsErrored = this.$store.getters.isStepErrored(4);
 
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
@@ -294,11 +316,8 @@ export default class RootAdminView extends mixins(ApplicationData) {
     }
   }
 
-  private openSideDrawer(event: Event): void {
-    this.$store.dispatch("openSideDrawer", [
-      "teammemberroles",
-      event.type === "keydown",
-    ]);
+  private openSideDrawer(event: Event, openerId: string): void {
+    this.$store.dispatch("openSideDrawer", ["teammemberroles", openerId]);
   }
 
   private deleteRootMember() {
@@ -311,7 +330,10 @@ export default class RootAdminView extends mixins(ApplicationData) {
         operators.splice(memberindx, 1);
       }
     }
+
+    this.$store.dispatch("updateMembersModified", true);
   }
+
   private moreButtonId(item: any): string {
     if (item && item.email) {
       return (

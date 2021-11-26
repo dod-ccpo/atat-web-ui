@@ -1,13 +1,47 @@
 <template>
-  <atat-summary-card
-    emptyCard="Portfolio"
-    cardWidth="120"
-    :data="cardsData"
-    :itemToDelete.sync="itemToDelete"
-    v-on:edit="(id) => $emit('edit', id)"
-    v-on:delete="(id) => $emit('delete', id)"
-    return-focus-element-id-ok="btn-create-new-portfolio"
-  ></atat-summary-card>
+  <div class="wizard-content">
+    <h2 aria-label="A paginated list of draft portfolios">
+      <v-icon class="text--base-darkest">expand_less</v-icon>
+      Drafts
+      <span class="font-size-19 text--base ml-1">15</span>
+    </h2>
+    <atat-portfolio-summary-card
+      :data="cardsData"
+      tempPortfolioStatus="draft"
+      tempPortfolioType="draft"
+      @portfolio-edit="(id) => $emit('portfolio-edit', id)"
+      @portfolio-delete="(id) => $emit('portfolio-delete', id)"
+      return-focus-element-id-ok="btn-create-new-portfolio"
+    />
+
+    <h2 aria-label="A paginated list of active portfolios">
+      <v-icon class="text--base-darkest">expand_less</v-icon>
+      Active
+      <span class="font-size-19 text--base ml-1">15</span>
+    </h2>
+    <atat-portfolio-summary-card
+      :data="cardsData"
+      tempPortfolioType="active"
+      tempPortfolioStatus="testing only"
+      @portfolio-edit="(id) => $emit('portfolio-edit', id)"
+      @portfolio-delete="(id) => $emit('portfolio-delete', id)"
+      return-focus-element-id-ok="btn-create-new-portfolio"
+    />
+
+    <h2 aria-label="A paginated list of archived portfolios">
+      <v-icon class="text--base-darkest">expand_less</v-icon>
+      Archived
+      <span class="font-size-19 text--base ml-1">15</span>
+    </h2>
+    <atat-portfolio-summary-card
+      :data="cardsData"
+      tempPortfolioType="archived"
+      tempPortfolioStatus="archived"
+      @portfolio-edit="(id) => $emit('portfolio-edit', id)"
+      @portfolio-delete="(id) => $emit('portfolio-delete', id)"
+      return-focus-element-id-ok="btn-create-new-portfolio"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,8 +53,13 @@ import {
 } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
+import ATATPortfolioSummaryCard from "@/components/ATATPortfolioSummaryCard.vue";
 
-@Component({})
+@Component({
+  components: {
+    "atat-portfolio-summary-card": ATATPortfolioSummaryCard,
+  },
+})
 export default class PortfolioSummary extends Vue {
   @Prop()
   portfolioDrafts!: PortfolioDraft[];

@@ -30,8 +30,8 @@
         border: 1px solid $primary;
         outline: 1px solid $primary;
       }
-    } 
-  } 
+    }
+  }
 }
 
 .v-select--is-menu-active {
@@ -46,9 +46,7 @@
 }
 
 .v-menu__content {
-  border: 1px solid $base;
-  // margin-top: 40px; // EJY need on select dropdowns in member modal
-
+  box-shadow: 0px 4px 10px rgba(194, 194, 194, 0.5);
   .v-list-item--active {
     background-color: white;
     &:before {
@@ -61,14 +59,13 @@
 
   .v-list.v-select-list {
     padding: 0;
-    border: 1x solid red !important;
+    border: 1px solid $base !important;
     .v-list-item {
-      border-bottom: 1px solid $base;
       &:hover, &:focus, &:active {
         &:before {
           background-color: transparent !important;
           opacity: 0;
-        }  
+        }
         font-weight: bold;
         background-color: $accent-cool-lightest;
         .v-list-item__title {

@@ -1,6 +1,5 @@
 import { AxiosError } from "axios";
 import {
-  Application,
   ApplicationData,
   Portfolio,
   PortfolioDraft as PortfolioModel,
@@ -20,7 +19,8 @@ export default class PortfolioDraftsApi {
     const response = await this.client.get();
 
     if (response.status === 200) {
-      const portfolioDrafts: PortfolioModel[] = response.data;
+      const portfolioDrafts: PortfolioModel[] =
+        response.data as PortfolioModel[];
       return portfolioDrafts;
     } else {
       throw new Error(response.statusText);
@@ -35,7 +35,7 @@ export default class PortfolioDraftsApi {
     const response = await this.client.post();
     if (response.status === 201) {
       //just returning the draft id here for the moment
-      return response.data.id;
+      return response.data.id as string;
     } else {
       throw new Error(response.statusText);
     }
@@ -48,7 +48,7 @@ export default class PortfolioDraftsApi {
         throw Error(`error occurred retrieving portfolio draft with id ${id}`);
       }
       const data: any = response.data;
-      return data.id;
+      return data.id as string;
     } catch (error) {
       const axiosError = error as AxiosError;
 
@@ -130,7 +130,7 @@ export default class PortfolioDraftsApi {
         throw Error(" error occurred retrieving funding details");
       }
 
-      return response.data.task_orders;
+      return response.data.task_orders as TaskOrder[];
     } catch (error) {
       const axiosError = error as AxiosError;
 

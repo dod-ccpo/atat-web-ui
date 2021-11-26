@@ -1,6 +1,10 @@
 
 @import "../utils/colors.scss";
 
+.v-card__title {
+  padding: 24px 24px 12px !important;
+}
+
 .v-sheet.v-card {
   border-radius: 0px;
 
@@ -15,7 +19,7 @@
 
   &.extra-padding {
     .v-card__title {
-      padding: 45px 40px 0;
+      padding: 45px 40px 0 !important;
     }
 
     .v-card__text {
@@ -27,7 +31,6 @@
     }
   }
 }
-
 .v-card__text, .v-card__title {
   letter-spacing: -0.02rem !important;
 }

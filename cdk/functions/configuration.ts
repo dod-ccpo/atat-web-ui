@@ -12,6 +12,7 @@ interface ConfigurationData {
     userPoolId: string;
     userPoolClientId: string;
     awsRegion: string;
+    cognitoDomain: string;
   };
 }
 
@@ -41,6 +42,9 @@ export async function handleConfigurationRoute(): Promise<lambdaTypes.APIGateway
         `/${ssmPrefix}/${environmentId}/cognito/userpool/client/id`
       ),
       awsRegion: region,
+      cognitoDomain: await getStringValue(
+        `/${ssmPrefix}/${environmentId}/cognito/domain`
+      ),
     },
   };
   return {

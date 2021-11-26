@@ -946,14 +946,16 @@ export default class ManageMember extends mixins(ApplicationData) {
   }
 
   public saveToStore(): void {
-
     if (!this.isEditSingle) {
       let operators: OperatorModel[] = [];
       let environments: EnvironmentModel[] = [];
       const curApp: ApplicationModel = this.currentApplication;
       if (this.assignDifferentRolesForEnvs && !this.isRootAdmin) {
         this.environments_roles.forEach((env) => {
-          if (env.role_value !== "no_access") {
+          const roleIsValid = this.rolesList.some(
+            (el) => el.role_value === env.role_value
+          );
+          if (env.role_value !== "no_access" && roleIsValid) {
             operators = this.setOperators(env.role_value);
             const thisEnv: EnvironmentModel = {
               id: env.env_id,
@@ -1000,27 +1002,27 @@ export default class ManageMember extends mixins(ApplicationData) {
         const appId = this.currentApplication.id;
         if (!this.assignDifferentRolesForEnvs) {
           // application-level operator
-          this.$store.dispatch("updateApplicationOperatorInfo", [
-            appId,
-            this.roleForAllEnvs,
-            this.memberToEditName,
-            this.memberToEditEmail,
-            this.memberToEditEmailOriginal,
-          ]);
+          this.$store.dispatch("applications/updateApplicationOperatorInfo", {
+            applicationId: appId,
+            access: this.roleForAllEnvs,
+            display_name: this.memberToEditName,
+            email: this.memberToEditEmail,
+            originalEmail: this.memberToEditEmailOriginal,
+          });
         } else {
           // env-level operators
-          this.$store.dispatch("updateEnvironmentOperatorInfo", [
-            appId,
-            this.memberToEditName,
-            this.memberToEditEmail,
-            this.memberToEditEmailOriginal,
-            this.environments_roles,
-          ]);
+          this.$store.dispatch("applications/updateEnvironmentOperatorInfo", {
+            applicationId: appId,
+            display_name: this.memberToEditName,
+            email: this.memberToEditEmail,
+            originalEmail: this.memberToEditEmailOriginal,
+            updatedEnvs: this.environments_roles,
+          });
         }
       }
     }
 
-    this.$store.dispatch("updateMembersAdded", true);
+    this.$store.dispatch("updateMembersModified", true);
 
     this.closeModal();
   }

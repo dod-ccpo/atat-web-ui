@@ -20,8 +20,8 @@
 
   $tertiary: #162E51 !default;
 
-  $error: #E21C3D !default;
-  $error-darker: #b50909 !default;
+  $error: #D54309 !default;
+  $error-darker: #6f3331 !default;
   $error-dark: #b50909 !default;
 
   $focus-blue: #2491FF !default;
@@ -106,6 +106,7 @@
   .text--base-lightest{color: #f0f0f0 !important};
 
   .text-base-error {color: $error !important};
+  .text-base-error-dark { color:$error-dark !important};
   .text-base-error-darker { color:$error-darker !important};
   .test-base-success { color: $success !important};
 

@@ -59,13 +59,13 @@ div#inputWidthFaker {
     border-color: transparent;
     padding-left: 30px;
     &:hover, &:focus, &:active {
-      border-color: $error-darker;
+      border-color: $error-dark;
     }
     &:before {
       font-family: 'Material Icons';
       content: "error";
       -webkit-font-feature-settings: 'liga';
-      color: $error-darker;
+      color: $error-dark;
       position: absolute;
       top: 4px;
       left: 3px;

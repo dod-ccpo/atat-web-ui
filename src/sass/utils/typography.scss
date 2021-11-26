@@ -89,7 +89,7 @@ p {
 .form-field-label-error{
     @extend .form-field-label;
     font-weight: 700 !important;
-    color: $error-darker !important;
+    color: $error-dark !important;
 }
 .form-field-label-success{
     @extend .form-field-label;
@@ -157,6 +157,9 @@ p {
     color: $base_darkest;
 }
 a {
+    &.text-link {
+        text-decoration: underline;
+    }
     color: $primary;
     .external-link {
         position: relative;
@@ -236,3 +239,10 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
         color: $primary;
     }
 }
+
+.separator-bullet {
+    display: inline-block;
+    font-size: 20px;
+}
+
+

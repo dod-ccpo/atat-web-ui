@@ -174,6 +174,7 @@ import { Component, Prop, Watch, PropSync } from "vue-property-decorator";
 import { UploadedFile } from "../../types/FormFields";
 import { TaskOrderFile } from "types/Wizard";
 import axios from "axios";
+import { retrieveSessionConfig } from "@/atat-config-builder";
 
 @Component
 export default class ATATFileUpload extends Vue {
@@ -393,16 +394,14 @@ export default class ATATFileUpload extends Vue {
     const formData = new FormData();
     formData.append(taskOrderFile.name, this.files[0]);
 
+    const uploadUrl = retrieveSessionConfig()?.apiUrl;
+
     await axios
-      .post(
-        "https://gj78s0sep8.execute-api.us-gov-west-1.amazonaws.com/prod/taskOrderFiles",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
+      .post(`${uploadUrl}/taskOrderFiles`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((response) => {
         this.taskOrderFile = response.data;
         this.uploadedFile = [this.taskOrderFile];

@@ -14,22 +14,16 @@ jobs:
     name: Build SPA
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout code base
+        uses: actions/checkout@v2
       - name: Get build timestamp
         id: timestamp
         run: echo "::set-output name=timestamp::$(date --iso-8601=seconds)"
-      - name: Configure npm caching
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
       - name: Setup node.js
         uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - name: Checkout code base
-        uses: actions/checkout@v2
+          cache: npm
       - name: Install global dependencies
         run: |
           npm install -g @vue/cli
@@ -56,6 +50,8 @@ jobs:
     name: Deploy SPA to AWS
     runs-on: ubuntu-20.04
     needs: build
+    permissions:
+      id-token: write
     steps:
       # Ensure that the account ID does not appear in any log messages in the pipeline
       - run: echo ::add-mask::${{ secrets.AWS_US_GOV_ACCOUNT_ID }}
@@ -63,11 +59,12 @@ jobs:
         id: timestamp
         run: echo "::set-output name=timestamp::$(date --iso-8601=seconds)"
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        # The repo has not tagged a release with OIDC support so we must follow master
+        uses: aws-actions/configure-aws-credentials@master
         with:
-          aws-access-key-id: ${{ secrets.AWS_US_GOV_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_US_GOV_SECRET_ACCESS_KEY }}
           aws-region: us-gov-west-1
+          role-to-assume: arn:aws-us-gov:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/AtatSpaDeploymentRole
+          role-session-name: Deployment${{ github.run_id }}-${{ github.run_attempt }}
       - name: Download site artifact
         id: download
         uses: actions/download-artifact@v2

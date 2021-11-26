@@ -11,14 +11,35 @@
         <strong>{{ csp }}</strong> after your portfolio is provisioned. Select
         <strong>Next</strong> to add team members to your other applications.
         <a
+          class="text-link"
           role="button"
           tabindex="0"
-          @click="openSideDrawer($event)"
-          @keydown.enter="openSideDrawer($event)"
+          @click="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
+          @keydown.enter="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
+          @keydown.space="openSideDrawer($event, 'TeamMembers_LearnMoreButton')"
+          id="TeamMembers_LearnMoreButton"
         >
-          <span class="link-body-md">Learn more about team member roles</span>
+          Learn more about team member roles
         </a>
       </p>
+
+      <v-alert
+        v-if="stepIsErrored && !appHasAdmins"
+        outlined
+        rounded
+        color="warning"
+        icon="warning"
+        class="text-left warning_lighter black-icon mt-3 mb-8 border-thick pr-14"
+        border="left"
+      >
+        <div class="black--text body-lg">
+          <p class="mb-0">
+            {{ missingAdminMessage }}
+            You can also add a root administrator to your “{{ portfolioName }}” 
+            workspace to manage all applications and environments.
+          </p>
+        </div>
+      </v-alert>
     </div>
 
     <v-row v-if="currentApplication">
@@ -117,27 +138,27 @@
               </div>
 
               <v-menu
-                class="table-menu"
                 transition="slide-y-transition"
                 offset-y
-                nudge-left="190"
+                nudge-left="192"
+                nudge-top="1"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     :id="moreButtonId(item)"
                     :disabled="isDisabled(item.workspace_roles)"
-                    class="table-row-menu-button pa-0"
+                    class="meatball-menu-button pa-0"
                     v-bind="attrs"
                     v-on="on"
                     @click="setMember(item)"
                     aria-label="Edit or remove team member"
                   >
-                    <v-icon aria-hidden="true" class="icon-18 width-auto">
+                    <v-icon aria-hidden="true" class="width-auto">
                       more_horiz
                     </v-icon>
                   </v-btn>
                 </template>
-                <v-list class="table-row-menu pa-0">
+                <v-list class="meatball-menu pa-0">
                   <v-list-item
                     v-for="(menuOptionText, i) in options"
                     :key="i"
@@ -181,6 +202,8 @@
 import { Component, Emit, Watch } from "vue-property-decorator";
 import { mixins } from "vue-class-component";
 import ApplicationData from "@/mixins/ApplicationModuleData";
+import { validateHasAdminOperators } from "@/validation/application";
+import { EnvironmentModel } from "types/Portfolios";
 
 @Component({})
 export default class TeamView extends mixins(ApplicationData) {
@@ -189,6 +212,30 @@ export default class TeamView extends mixins(ApplicationData) {
   private isFiltered = false;
   private search = "";
   private csp = this.$store.getters.getPortfolio.csp;
+  private stepIsErrored = this.$store.getters.isStepErrored(4);
+  private appHasAdmins = true;
+  private isTouched = false;
+  private environmentsWithoutAdmins: string[] = [];
+  private environmentCount = 0;
+  public get portfolioName(): string {
+    return this.$store.getters.getPortfolioName();
+  }
+
+  private get missingAdminMessage(): string {
+    if (this.environmentsWithoutAdmins.length &&
+      this.environmentsWithoutAdmins.length < this.environmentCount) 
+    {
+      let envList = this.environmentsWithoutAdmins.join(", ");
+      envList = envList.replace(/,([^,]*)$/, " and" + "$1");
+
+      let envMessage = "Your " + envList + " environment";
+      envMessage += this.environmentsWithoutAdmins.length > 1 ? "s" : "";
+      envMessage += ` must have an administrator to manage resources within the cloud console.
+        Please add an administrator to each environment, or to the entire application.`;
+      return envMessage;
+    }
+    return "Please add an administrator to manage this application within the cloud console.";
+  }
 
   private message = "You do not have any team members in this application yet.";
 
@@ -203,7 +250,10 @@ export default class TeamView extends mixins(ApplicationData) {
     email: string;
     workspace_roles: string;
   }[] = [];
+
   private setMemberTableData() {
+    [this.appHasAdmins, this.isTouched] =
+      validateHasAdminOperators(this.operators, [this.currentApplication]);
     if (this.operators) {
       const rootAdmins = this.operators || [];
       if (rootAdmins && rootAdmins.length) {
@@ -218,6 +268,13 @@ export default class TeamView extends mixins(ApplicationData) {
         });
       }
     }
+
+    this.environmentsWithoutAdmins = [];
+    this.currentApplication.environments.forEach((env: EnvironmentModel) => {
+      this.environmentsWithoutAdmins.push(env.name);
+    });
+    this.environmentCount = this.environmentsWithoutAdmins.length;
+
     if (this.currentApplication.operators) {
       const applicationOperators = this.currentApplication.operators || [];
       if (applicationOperators && applicationOperators.length) {
@@ -235,32 +292,40 @@ export default class TeamView extends mixins(ApplicationData) {
     if (this.currentApplication.environments) {
       const applicationEnvironments = this.currentApplication.environments;
       applicationEnvironments.forEach((env: any) => {
+        const environmentWithoutAdminsIndex = this.environmentsWithoutAdmins.indexOf(env.name);
         const envOperators = env.operators;
         if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
             const i = this.applicationMembers.findIndex(
               (o) => o.email === op.email
             );
-            const workspace_roles =
-              i > -1
-                ? env.name +
-                  ": " +
-                  this.roleTranslation(op.access) +
-                  "  " +
-                  this.applicationMembers[i].workspace_roles
-                : env.name + ": " + this.roleTranslation(op.access);
-            if (i > -1) {
-              this.applicationMembers[i].workspace_roles = workspace_roles;
-            } else {
-              const opObj = {
-                id: op.id,
-                display_name:
-                  op.display_name || op.first_name + " " + op.last_name,
-                email: op.email,
-                workspace_roles: workspace_roles,
-              };
-              this.applicationMembers.push(opObj);
+            if (op.access !== "no_access") {
+              const workspace_roles =
+                i > -1
+                  ? env.name +
+                    ": " +
+                    this.roleTranslation(op.access) +
+                    "  " +
+                    this.applicationMembers[i].workspace_roles
+                  : env.name + ": " + this.roleTranslation(op.access);
+              if (i > -1) {
+                this.applicationMembers[i].workspace_roles = workspace_roles;
+              } else {
+                const opObj = {
+                  id: op.id,
+                  display_name:
+                    op.display_name || op.first_name + " " + op.last_name,
+                  email: op.email,
+                  workspace_roles: workspace_roles,
+                };
+                this.applicationMembers.push(opObj);
+              }
+
+              if (op.access === "administrator" && environmentWithoutAdminsIndex > -1) {
+                this.environmentsWithoutAdmins.splice(environmentWithoutAdminsIndex, 1)
+              }
             }
+
           });
         }
       });
@@ -373,7 +438,11 @@ export default class TeamView extends mixins(ApplicationData) {
   private returnFocusElementIdRemoveMemberCancel = "";
   private returnFocusElementIdRemoveMemberOk = "inviteTeamMemberButton";
 
-  private tableOptionClick(menuOptionText: any, event: Event, btnId: string): void {
+  private tableOptionClick(
+    menuOptionText: any,
+    event: Event,
+    btnId: string
+  ): void {
     if (menuOptionText.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
       this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
@@ -422,13 +491,13 @@ export default class TeamView extends mixins(ApplicationData) {
       );
       this.filteredData.splice(itemToRemoveFromFilteredData, 1);
     }
+
+    this.setMemberTableData();
+    this.$store.dispatch("updateMembersModified", true);
   }
 
-  private openSideDrawer(event: Event): void {
-    this.$store.dispatch("openSideDrawer", [
-      "teammemberroles",
-      event.type === "keydown",
-    ]);
+  private openSideDrawer(event: Event, openerId: string): void {
+    this.$store.dispatch("openSideDrawer", ["teammemberroles", openerId]);
   }
 
   public async mounted(): Promise<void> {

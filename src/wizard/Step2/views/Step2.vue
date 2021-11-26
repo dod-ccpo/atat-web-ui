@@ -36,26 +36,23 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     this.valid = await this.$refs.createTaskOrderForm.validateForm();
     return this.valid;
   };
+  private isDisabled =
+    this.model.clins.length == 1 && this.model.clins[0].clin_number == "";
 
   public addClin(): void {
     this.model.clins.push({
-      clin_number: "000" + (this.model.clins.length + 1),
+      clin_number: "",
       idiq_clin: "",
       total_clin_value: 0,
       obligated_funds: 0,
       pop_start_date: "",
       pop_end_date: "",
     });
-
-    this.$refs.createTaskOrderForm.ExpandAddedClin();
+    this.$refs.createTaskOrderForm.ExpandAddedClin(false);
   }
 
   public deleteClin(itemNumber: number): void {
-    const index = itemNumber - 1;
-    const clinLength = this.model.clins.length;
-    if (clinLength && clinLength >= itemNumber) {
-      this.model.clins.splice(index, 1);
-    }
+    this.model.clins.splice(itemNumber - 1, 1);
   }
 }
 </script>

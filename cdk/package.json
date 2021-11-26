@@ -12,27 +12,27 @@
     "@types/node": "^16.11.3",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
-    "esbuild": "^0.13.8",
+    "esbuild": "^0.13.15",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
     "jest": "^27.3.1",
     "ts-jest": "27.0.7",
-    "typescript": "^4.4"
+    "typescript": "^4.5"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.129.0",
-    "@aws-cdk/aws-certificatemanager": "1.129.0",
-    "@aws-cdk/aws-cognito": "1.129.0",
-    "@aws-cdk/aws-iam": "1.129.0",
-    "@aws-cdk/aws-lambda": "1.129.0",
-    "@aws-cdk/aws-lambda-nodejs": "1.129.0",
-    "@aws-cdk/aws-s3": "1.129.0",
-    "@aws-cdk/aws-secretsmanager": "1.129.0",
-    "@aws-cdk/aws-ssm": "1.129.0",
-    "@aws-cdk/core": "1.129.0",
-    "@aws-sdk/client-s3": "^3.37.0",
-    "@aws-sdk/client-ssm": "^3.38.0",
-    "aws-cdk": "1.129.0"
+    "@aws-cdk/aws-apigateway": "1.132.0",
+    "@aws-cdk/aws-certificatemanager": "1.132.0",
+    "@aws-cdk/aws-cognito": "1.132.0",
+    "@aws-cdk/aws-iam": "1.132.0",
+    "@aws-cdk/aws-lambda": "1.132.0",
+    "@aws-cdk/aws-lambda-nodejs": "1.132.0",
+    "@aws-cdk/aws-s3": "1.132.0",
+    "@aws-cdk/aws-secretsmanager": "1.132.0",
+    "@aws-cdk/aws-ssm": "1.132.0",
+    "@aws-cdk/core": "1.132.0",
+    "@aws-sdk/client-s3": "^3.41.0",
+    "@aws-sdk/client-ssm": "^3.41.0",
+    "aws-cdk": "1.132.0"
   }
 }

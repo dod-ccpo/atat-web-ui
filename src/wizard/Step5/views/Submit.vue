@@ -26,8 +26,10 @@
             <a
               role="button"
               tabindex="0"
-              @click="openSideDrawer($event)"
-              @keydown.native.enter="openSideDrawer($event)"
+              @click="openSideDrawer($event, 'Submit_LearnMoreButton')"
+              @keydown.enter="openSideDrawer($event, 'Submit_LearnMoreButton')"
+              @keydown.space="openSideDrawer($event, 'Submit_LearnMoreButton')"
+              id="Submit_LearnMoreButton"
             >
               Learn More
             </a>
@@ -47,11 +49,8 @@ import { Component } from "vue-property-decorator";
 
 @Component({})
 export default class Submit extends Vue {
-  private openSideDrawer(event: Event): void {
-    this.$store.dispatch("openSideDrawer", [
-      "submit",
-      event.type === "keydown",
-    ]);
+  private openSideDrawer(event: Event, openerId: string): void {
+    this.$store.dispatch("openSideDrawer", ["submit", openerId]);
   }
 }
 </script>

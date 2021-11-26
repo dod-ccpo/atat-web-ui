@@ -2,7 +2,6 @@
 import Vue from "vue";
 import App from "./App.vue";
 import "./registerServiceWorker";
-import {Amplify, Auth, Hub} from 'aws-amplify';
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
@@ -12,14 +11,12 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import RouterMiddleWare, { RouterMiddleWareOptions }  from "./router/routerMiddleWare";
 import routeHandlers from "./router/routeHandlers";
+import Inputmask from "inputmask";
 
 // below 3 scripts for Vuetify in IE
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle.js'
-
-import awsconfig from "./aws-exports";
-Amplify.configure(awsconfig);
 
 import ATATButtonCard from "./components/ATATButtonCard.vue";
 import ATATDatePicker from "./components/ATATDatePicker.vue";
@@ -35,7 +32,6 @@ import ProfileDrawer from "./components/SideDrawerComponents/ProfileDrawer.vue"
 import SubmitDrawer from "./components/SideDrawerComponents/SubmitDrawer.vue"
 import TeamMemberRolesDrawer from "./components/SideDrawerComponents/TeamMemberRolesDrawer.vue"
 import ATATTextField from "./components/ATATTextField.vue";
-import ATATCurrencyField from "./components/ATATCurrencyField.vue";
 import ATATTextArea from "./components/ATATTextArea.vue";
 import ATATSummaryCard from "./components/ATATSummaryCard.vue";
 import ATATToast from "./components/ATATToast.vue"
@@ -57,7 +53,6 @@ Vue.component('atat-select', ATATSelect)
 Vue.component('atat-summary-card', ATATSummaryCard)
 Vue.component('atat-text-area', ATATTextArea);
 Vue.component('atat-text-field', ATATTextField);
-Vue.component('atat-currency-field', ATATCurrencyField);
 Vue.component('atat-toast', ATATToast);
 
 //axios
@@ -68,8 +63,8 @@ Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
 
 Vue.use(RouterMiddleWare, {
-  store: store, 
-  router: router, 
+  store: store,
+  router: router,
   handlers: routeHandlers,
 });
 

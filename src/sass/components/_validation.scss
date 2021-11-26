@@ -121,6 +121,12 @@ div.success--text{
     }
 }
 
+.v-input__append-outer {
+    .v-icon.error--text {
+        color: $error-dark !important;
+    }
+}
+
 .datepicker-text-box{
     .v-text-field__details{
         .error--text{

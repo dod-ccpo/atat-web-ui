@@ -82,6 +82,8 @@ import {
 import { Component } from "vue-property-decorator";
 import { addfunding, editfunding } from "@/router/wizard";
 import ExpandableLink from "@/components/ExpandableLink.vue";
+import TaskOrderModuleData from "@/mixins/TaskOrderModuleData";
+import { mixins } from "vue-class-component";
 
 // Register the router hooks with their names
 Component.registerHooks(["beforeRouteLeave"]);
@@ -90,7 +92,7 @@ Component.registerHooks(["beforeRouteLeave"]);
     ExpandableLink,
   },
 })
-export default class Step2Summary extends Vue {
+export default class Step2Summary extends mixins(TaskOrderModuleData) {
   private async mounted(): Promise<void> {
     this.transformData();
   }
@@ -99,10 +101,6 @@ export default class Step2Summary extends Vue {
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
-
-  get taskOrders(): TaskOrderModel[] {
-    return this.$store.state.taskOrderModels;
-  }
 
   async onDeleteTaskOrder(id: string): Promise<void> {
     await this.$store.dispatch("deleteTaskOrder", id);
@@ -166,12 +164,12 @@ export default class Step2Summary extends Vue {
           {
             title: "Total Value",
             prefix: "$",
-            value: totalClinValue,
+            value: this.formatCurrency(totalClinValue),
           },
           {
             title: "Obligated Funds",
             prefix: "$",
-            value: totalObligatedFunds,
+            value: this.formatCurrency(totalObligatedFunds),
           },
         ],
         leftButtonText: "Edit",
@@ -181,6 +179,12 @@ export default class Step2Summary extends Vue {
     }, this);
   }
 
+  public formatCurrency(value: number): string {
+    return value
+      .toFixed(2)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
   public async beforeRouteLeave(
     to: unknown,
     from: unknown,
