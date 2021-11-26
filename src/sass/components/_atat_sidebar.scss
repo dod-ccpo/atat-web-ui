@@ -25,6 +25,8 @@ nav.v-navigation-drawer:not(#right-side-drawer){
                 font-weight: normal !important;
             }
             &.v-btn.left-nav-menu-link {
+                height: 48px !important;
+                position: relative;
                 &[active=true] {
                     background-color: $info-lighter !important;
                     &:before {

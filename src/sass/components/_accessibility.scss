@@ -46,18 +46,9 @@ a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
         }
     }
 }
-a.left-nav-menu-link{
-    &:focus{
-        span{
-            font-weight: 700 !important;
-        }
-    }
-}
 
 .v-btn {
     &.left-nav-menu-link {
-        height: 48px !important;
-        position: relative;
         &:focus-visible {
             background-color: transparent !important;
             box-shadow: inset 0 0 0 4px $focus-blue !important;
