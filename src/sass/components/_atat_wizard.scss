@@ -7,8 +7,11 @@
   border-top: 1px solid $base-lighter !important;
   background-color: #fff;
   padding: 16px 36px;
+  position: fixed;
+  bottom: 55px;
+  left: 0px;
+  z-index: 2;
 
-  // EJY CHECK EVERYTHING BELOW
   .v-btn:focus {
     background-color: $focus-blue !important;
   }
@@ -19,16 +22,11 @@
     border-width: 2px;
 
 
-    &.secondary-btn:focus {
-      color: $focus-blue !important;
-      border-color: $focus-blue !important;
-    }
-
     &:hover {
       border-color: $primary_dark !important;
       background-color: $primary_dark !important;
 
-      &.secondary-btn {
+      &.secondary-btn, &.v-btn--outlined-btn {
         color: $primary_dark !important;
         background-color: #fff !important;
       }

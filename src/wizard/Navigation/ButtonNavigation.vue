@@ -3,7 +3,6 @@
     ref="buttonNavigation"
     class="d-flex justify-end wizard-button-nav"
     :style="{ width: getbuttonNavBarWidth }"
-    style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
     <v-btn
       v-for="button in pageButtonPanel.buttons"

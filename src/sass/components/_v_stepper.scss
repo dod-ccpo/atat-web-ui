@@ -47,7 +47,7 @@
           a,
           a:hover{
             @extend .body-lg;
-            color: $primary_darken !important;
+            color: $primary_darker !important;
             text-decoration: none;
           }
         }
@@ -57,11 +57,11 @@
             border: #fff 4px solid !important;
             background-color: #fff !important;
             box-shadow: inset 0px 0px 0px 4px $base_lighter;
-            color: $primary_darken !important;
+            color: $primary_darker !important;
           }
 
           &.visited .v-stepper__step__step{
-            background-color: $primary_darken !important;
+            background-color: $primary_darker !important;
             color: #fff !important;
           }
         }

@@ -2,11 +2,12 @@
 
 nav.v-navigation-drawer:not(#right-side-drawer){
     top: 70px !important;
+    max-height: calc(100% - 125px) !important;
     .gov-banner-hidden & {
         top: 48px !important;
+        max-height: calc(100% - 103px) !important;
     }
-    transition: top ease-in-out 0.25s;
-    max-height: calc(100% - 135px) !important;
+    transition: all ease-in-out 0.25s;
     .v-navigation-drawer__content{
         overflow-y: inherit !important;
         overflow-x: inherit !important;
