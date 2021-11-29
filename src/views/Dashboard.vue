@@ -3,14 +3,15 @@
     <v-row>
       <v-col cols="6" offset-lg="1">
         <h1 tabindex="-1" class="mb-8">
-          Welcome to the Account Tracking and Automation Tool, Maria!
+          Welcome to the Account Tracking and Automation Tool (ATAT),
+          {{ userName }}
         </h1>
         <div>
           <p>
             ATAT is your tool for provisioning new cloud resources across
-            multiple vendors and classification levels. Within ATAT, you can
-            create Portfolios to consolidate details about your project into a
-            single location, including:
+            multiple vendors and classification levels. Within ATAT, create
+            portfolios to consolidate details about your project into a single
+            location, including:
           </p>
           <div class="d-flex align-center mb-2 ml-6">
             <img
@@ -40,16 +41,15 @@
             <span class="stepper-text">Team Members</span>
           </div>
           <p>
-            Once your Portfolio is set up, you can submit this information to
-            selected cloud service providers, provisioning your workspaces and
-            teams, as well as establishing a funding stream between your
-            organization and the cloud provider(s).
+            Once your portfolio is set up, information is submitted to the
+            selected Cloud Service Providers (CSPs) to provision your workspaces
+            and teams, and establish a funding stream between your organization
+            and the CSPs.
           </p>
           <p>
-            Team members that develop your applications will then have access to
-            their workspaces within the CSP console, and you will be able to
-            track their cloud spend and contract period of performance directly
-            within ATAT.
+            Team members that develop your applications will have access to
+            their workspaces within the CSP console, and you can track their
+            cloud spend and contract period of performance directly within ATAT.
           </p>
         </div>
       </v-col>
@@ -86,6 +86,14 @@ import { Component } from "vue-property-decorator";
 export default class Dashboard extends Vue {
   public handleClick(): void {
     this.$router.push("/profile");
+  }
+
+  get userName(): string {
+    return (
+      this.$store.state.user.given_name +
+      " " +
+      this.$store.state.user.family_name
+    );
   }
 }
 </script>
