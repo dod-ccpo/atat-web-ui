@@ -81,6 +81,7 @@
             <a
               role="button"
               tabindex="0"
+              class="text-link"
               @keydown.enter="openLearnMoreDrawer('root-admins')"
               @click="openLearnMoreDrawer('root-admins')"
             >
@@ -203,6 +204,7 @@
             <a
               role="button"
               tabindex="0"
+              class="text-link"
               @keydown.enter="openLearnMoreDrawer('member-roles')"
               @click="openLearnMoreDrawer('member-roles')"
             >

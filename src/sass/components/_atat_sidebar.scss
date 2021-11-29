@@ -1,12 +1,17 @@
 @import "../utils/colors.scss";
 
 nav.v-navigation-drawer:not(#right-side-drawer){
-    top: 95px !important;
-    max-height: calc(100% - 135px) !important;
+    top: 70px !important;
+    max-height: calc(100% - 125px) !important;
+    .gov-banner-hidden & {
+        top: 48px !important;
+        max-height: calc(100% - 103px) !important;
+    }
+    transition: all ease-in-out 0.25s;
     .v-navigation-drawer__content{
-    overflow-y: inherit !important;
-    overflow-x: inherit !important;
-    width: 100% !important;
+        overflow-y: inherit !important;
+        overflow-x: inherit !important;
+        width: 100% !important;
         a {
             color: inherit;
             width: 100% !important;
@@ -18,6 +23,25 @@ nav.v-navigation-drawer:not(#right-side-drawer){
                 text-align: left;
                 padding-left: 4px;
                 font-weight: normal !important;
+            }
+            &.v-btn.left-nav-menu-link {
+                height: 48px !important;
+                position: relative;
+                &[active=true] {
+                    background-color: $info-lighter !important;
+                    &:before {
+                        position: absolute;
+                        content: "";
+                        left: 0 ;
+                        top: 0;
+                        bottom: 0;
+                        display: inline-block;
+                        width: 6px;
+                        background-color: $primary !important;
+                        opacity: 1 !important;
+                        border-radius: 0;
+                    }
+                }
             }
         }
     }

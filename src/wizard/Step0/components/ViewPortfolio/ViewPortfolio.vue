@@ -5,9 +5,9 @@
         <h1 tabindex="-1" class="mb-0">Portfolios</h1>
         <div class="ml-auto">
           <v-btn
-            id="btn-create-new-portfolio outlined-btn"
+            id="btn-create-new-portfolio"
             outlined
-            class="primary mr-4"
+            class="secondary-btn mr-4"
             :ripple="false"
             role="link"
           >
@@ -81,7 +81,7 @@
           </v-btn>
         </div>
       </v-col>
-      <!-- temporary logic to show the no search results content 
+      <!-- temporary logic to show the no search results content
            remove !showNoSearchResults when search logic is completed -->
       <v-col v-if="portfolios && portfolios.length > 0 && !showNoSearchResults">
         <portfolio-summary

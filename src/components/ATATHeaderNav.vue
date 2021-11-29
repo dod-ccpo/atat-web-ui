@@ -8,7 +8,7 @@
       @keydown.native.space="itemClicked(item, item.cssClass)"
       :key="item.id"
       :ripple="false"
-      class="px-2 mx-2 primary_darken"
+      class="px-2 mx-2 primary_darker"
       small
       text
       :aria-label="item.ariaLabel"

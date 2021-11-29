@@ -1,9 +1,9 @@
 <template>
-  <v-app>
-    <SecurityBanner />
+  <v-app :class="{ 'gov-banner-hidden': isUsaGovHidden }">
+    <USAGovBanner />
     <ATATHeader />
     <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
-    <v-main style="padding-top: 100px">
+    <v-main style="padding-top: 70px">
       <router-view> </router-view>
     </v-main>
     <SideDrawer v-if="loginStatus" />
@@ -24,10 +24,10 @@ import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
 import ATATSideBar from "./components/ATATSideBar.vue";
 import ATATToast from "@/components/ATATToast.vue";
-import SecurityBanner from "./components/SecurityBanner.vue";
 import SideDrawer from "@/components/SideDrawer.vue";
 import { Route } from "vue-router";
 import { buildConfiguration } from "./atat-config-builder";
+import USAGovBanner from "@/components/USAGovBanner.vue";
 
 @Component({
   components: {
@@ -36,13 +36,14 @@ import { buildConfiguration } from "./atat-config-builder";
     ATATHeader,
     ATATSideBar,
     ATATToast,
-    SecurityBanner,
     SideDrawer,
+    USAGovBanner,
   },
 })
 export default class App extends Vue {
   private isDialogDisplayed = false;
-
+  private scrollYPosition = -1;
+  private isUsaGovHidden = false;
   get loginStatus(): boolean {
     //todo: remove `|| window.location.protocol === "http:"` as it a temp fix
     //to help QA login without 'https' and for the side bar to appear.
@@ -69,6 +70,7 @@ export default class App extends Vue {
     await buildConfiguration();
     this.$store.dispatch("initDialog");
     this.focusH1();
+    window.addEventListener("scroll", this.onScroll);
   }
 
   public async updated(): Promise<void> {
@@ -81,6 +83,18 @@ export default class App extends Vue {
     if (h1.length) {
       h1[0].focus();
     }
+  }
+
+  onScroll(): void {
+    if (window.scrollY < 100) {
+      this.isUsaGovHidden = false;
+    } else {
+      this.isUsaGovHidden = true;
+    }
+  }
+
+  beforeDestroy(): void {
+    window.removeEventListener("scroll", this.onScroll);
   }
 }
 </script>

@@ -7,4 +7,29 @@
   border-top: 1px solid $base-lighter !important;
   background-color: #fff;
   padding: 16px 36px;
+  position: fixed;
+  bottom: 55px;
+  left: 0px;
+  z-index: 2;
+
+  .v-btn:focus {
+    background-color: $focus-blue !important;
+  }
+
+  .v-btn:not(.link-button) {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-width: 2px;
+
+
+    &:hover {
+      border-color: $primary_dark !important;
+      background-color: $primary_dark !important;
+
+      &.secondary-btn, &.v-btn--outlined-btn {
+        color: $primary_dark !important;
+        background-color: #fff !important;
+      }
+    }
+  }
 }

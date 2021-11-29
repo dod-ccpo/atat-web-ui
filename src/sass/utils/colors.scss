@@ -2,7 +2,7 @@
   $primary_light: #73b3e7 !default;
   $primary: #005EA2 !default;
   $primary_dark: #1a4480 !default;
-  $primary_darken: #162E51 !default;
+  $primary_darker: #162E51 !default;
   $primary_vivid: #0050d8 !default;
 
   $secondary-darker: #8b0a03 !default;
@@ -77,14 +77,14 @@
   .bg-primary-light{ background-color: $primary_light !important };
   .bg-primary{ background-color: $primary !important };
   .bg-primary-dark{ background-color: $primary_dark !important };
-  .bg-primary-darken{ background-color: $primary_darken !important };
+  .bg-primary-darken{ background-color: $primary_darker !important };
   .bg-primary-vivid{ background-color: $primary_vivid !important};
 
   .text--primary-lighter{ color: $primary_lighter !important };
   .text--primary-light{ color: $primary_light !important };
   .text--primary{ color: $primary !important };
   .text--primary-dark{ color: $primary_dark !important };
-  .text--primary-darken{ color: $primary_darken !important };
+  .text--primary-darken{ color: $primary_darker !important };
   .text--primary-vivid{ color: $primary_vivid !important};
 
   .bg-base-darkest{background-color: #1b1b1b !important};

@@ -26,6 +26,7 @@
             <a
               role="button"
               tabindex="0"
+              class="text-link"
               @click="openSideDrawer($event, 'Submit_LearnMoreButton')"
               @keydown.enter="openSideDrawer($event, 'Submit_LearnMoreButton')"
               @keydown.space="openSideDrawer($event, 'Submit_LearnMoreButton')"

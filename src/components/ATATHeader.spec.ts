@@ -23,8 +23,4 @@ describe("Testing Header Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
-  it("test toggle()", async () => {
-    wrapper.vm.toggle(true);
-    expect(wrapper.vm.show).toBe(true);
-  });
 });

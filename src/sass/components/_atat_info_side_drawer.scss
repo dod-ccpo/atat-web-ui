@@ -1,6 +1,10 @@
 @import "../utils/colors.scss";
 #right-side-drawer{
-  top: 95px !important;
+  top: 70px !important;
+  .gov-banner-hidden & {
+      top: 48px !important;
+  }
+  transition: top ease-in-out 0.25s;
   .v-navigation-drawer__content{
     // max-height: 100%;
     overflow-y: hidden !important;
@@ -17,7 +21,7 @@
         .v-icon{
           color: $primary !important;
         }
-        
+
       }
     }
   }
