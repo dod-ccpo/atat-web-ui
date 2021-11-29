@@ -14,7 +14,7 @@
           A duly warranted Contracting Officer, who has the authority to execute
           task orders on your agency’s behalf, must authorize you to upload task
           orders and provision cloud resources, in accordance with agency policy
-          and procedures
+          and procedures.
         </p>
       </v-col>
     </v-row>
