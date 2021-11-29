@@ -328,13 +328,9 @@ export default class ClinsCard extends Vue {
   private openItem = -1;
 
   private clinHelpText =
-    "This is the full amount of money requested\n" +
-    "in a task order. It does not have to be spent\n" +
-    "duing the CLIN’s period of performance.";
+    "This is the full amount of money requested in a task order. It does not have to be spent during the CLIN’s period of performance.";
   private obligatedFundsHelpText =
-    "Obligated funds are the legal amount allocated\n" +
-    "for a project or contract that can be spent during\n" +
-    "the CLIN’s period of performance.";
+    " Obligated funds are the legal amount allocated for a project or contract that can be spent during the CLIN’s period of performance.";
 
   private idiq_clin_items = [
     "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
