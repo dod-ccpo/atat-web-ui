@@ -23,10 +23,10 @@ import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
 
-import { 
-  validateApplication, 
-  validOperator, 
-  validateHasAdminOperators 
+import {
+  validateApplication,
+  validOperator,
+  validateHasAdminOperators
 } from "@/validation/application";
 
 Vue.use(Vuex);
@@ -779,11 +779,17 @@ export default new Vuex.Store({
           await portfoliosApi.saveApplications(state.currentPortfolioId, data);
         }
 
-        const [isStep4Valid, portfolioHasOperators] = 
-          validateHasAdminOperators(portfolioOperators, applicationModels);
+        const [isStep4Valid, portfolioHasOperators] = validateHasAdminOperators(
+          portfolioOperators,
+          applicationModels
+        );
+        const portfolioHasHadMembersAdded = getters["applications/portfolioHasHadMembersAdded"];
+        debugger;
+
         this.dispatch("setStepTouched", [4, portfolioHasOperators]);
-        if (portfolioHasOperators) {
+        if (portfolioHasOperators || portfolioHasHadMembersAdded) {
           this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
+          this.dispatch("applications/setPortfolioHasHadMembersAdded", true);
         }
         this.dispatch("updateMembersModified", false);
       }
@@ -846,6 +852,7 @@ export default new Vuex.Store({
       commit("doInitializeSteps");
 
       this.dispatch("applications/initialize");
+      this.dispatch("applications/setPortfolioHasHadMembersAdded", false);
 
       //validate that portfolio draft id exists on the server
       const id = await portfoliosApi.getDraft(draftId);
@@ -1065,6 +1072,7 @@ export default new Vuex.Store({
 
       return taskOrderModels && taskOrderModels.length > 0;
     },
+    // portfolioHasHadMembersAdded: ()
     getTaskOrders: (state, rootGetters) => rootGetters["taskOrders/taskOrders"],
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
     getPortfolioName: (state, getters) => (defaultResponse: string) => {

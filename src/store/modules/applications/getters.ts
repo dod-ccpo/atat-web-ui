@@ -15,4 +15,5 @@ export const getters: GetterTree<ApplicationsState, RootState> = {
     return state.applicationModels[applicationIndex];
   },
   portfolioOperators: (state) => state.portfolioOperators,
+  portfolioHasHadMembersAdded: (state) => state.portfolioHasHadMembersAdded,
 };

@@ -159,6 +159,14 @@ const initializeRootAdministrators = ({ commit }: { commit: Commit }): void => {
   commit("initializeRootAdministrators");
 };
 
+const setPortfolioHasHadMembersAdded = (
+  { commit }: { commit: Commit },
+  membersAdded: boolean
+): void => {
+  debugger;
+  commit("setPortfolioHasHadMembersAdded", membersAdded);
+};
+
 export const actions: ActionTree<ApplicationsState, RootState> = {
   initialize,
   setCurrentApplicationId,
@@ -173,4 +181,5 @@ export const actions: ActionTree<ApplicationsState, RootState> = {
   updateApplicationOperatorInfo,
   updateEnvironmentOperatorInfo,
   initializeRootAdministrators,
+  setPortfolioHasHadMembersAdded,
 };

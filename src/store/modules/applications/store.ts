@@ -9,6 +9,7 @@ const state: ApplicationsState = {
   applicationModels: [],
   portfolioOperators: [],
   currentApplicationId: "",
+  portfolioHasHadMembersAdded: false,
 };
 
 const applications: Module<ApplicationsState, RootState> = {

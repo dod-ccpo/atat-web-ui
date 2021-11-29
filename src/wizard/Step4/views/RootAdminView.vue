@@ -3,14 +3,28 @@
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
       <h1 tabindex="-1">
-        Let’s add root administrators to {{ portfolioName }}
+        {{
+          !isUpdate
+            ? "Let’s add root administrators to " + portfolioName
+            : "Let’s update your " + portfolioName + " team"
+        }}
       </h1>
+
       <p>
-        Invite your root administrators below to grant them full access to all
-        of your applications. These individuals will receive an invitation from
-        {{ csp }} after your portfolio is provisioned. Select
-        <span class="font-weight-bold">Next</span> to add team members to your
-        other applications.
+        <span v-if="!isUpdate">
+          Invite your root administrators below to grant them full access to all
+          of your applications. These individuals will receive an invitation from
+          {{ csp }} after your portfolio is provisioned. Select
+          <strong>Next</strong> to add team members to your other applications.
+        </span>
+        <span v-else>
+          The following people will be granted access to your workspaces within
+          the {{ csp }} console after your portfolio is provisioned. You can
+          invite additional team members or modify permissions below. When you
+          are done, select <strong>Next</strong> to continue reviewing your
+          portfolio.
+        </span>
+
         <a
           class="text-link"
           role="button"
@@ -35,9 +49,10 @@
       >
         <div class="black--text body-lg">
           <p class="mb-0">
-            Adding a root administrator will ensure your team can manage every 
-            application within the cloud console. You can also grant administrator 
-            access to each application or environment individually.
+            Adding a root administrator will ensure your team can manage every
+            application within the cloud console. You can also grant
+            administrator access to each application or environment
+            individually.
           </p>
         </div>
       </v-alert>
@@ -205,11 +220,20 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private isFiltered = false;
   private search = "";
   private currentPortfolio = this.$store.getters.getPortfolio;
-  private csp = this.currentPortfolio.csp;
+  private csp = this.currentPortfolio.csp || "selected CSP";
   private stepIsErrored = this.$store.getters.isStepErrored(4);
+  private isStepTouched = this.$store.getters.isStepTouched(4);
 
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
+  }
+
+  private hasPortfolioHadMembersAdded(): boolean {
+    return this.$store.getters["applications/portfolioHasHadMembersAdded"];
+  }
+
+  private get isUpdate(): boolean {
+    return this.rootMembersCount > 0;
   }
   private member: any;
 
