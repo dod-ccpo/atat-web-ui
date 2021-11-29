@@ -11,6 +11,7 @@ export interface NavButton {
   color?: string;
   disabled?: boolean;
   outlined?: boolean;
+  secondary?: boolean;
 }
 
 export interface NavButtonPanel {

@@ -1,29 +1,17 @@
-@import "../utils/colors.scss";
-
 .v-system-bar{
     padding: 0px !important;
     background-color: $unclass_header !important;
 }
 
-.expandedHeader {
-    height: 187px !important;
-    .col-12{
-        max-height: 100px !important;
-        height: 100px !important;
-        min-height: 100px !important;
-    }
-}
-.condensedHeader {
-    height: 70px !important;
-}
-
-.nav-header{
-    height: 40px !important;
-}
-
-
 .v-application{
+    &.gov-banner-hidden {
+        .atat-header-nav.v-sheet {
+            margin-top: 0 !important;
+        }
+    }
     .atat-header-nav.v-sheet{
+        margin-top: 22px !important;
+        transition: margin-top ease-in-out 0.25s;
 
         hr{
             border: none;
@@ -31,7 +19,7 @@
 
         width: 100% !important;
         padding: 0px !important;
-        background-color: $primary_darken !important;
+        background-color: $primary_darker !important;
         -ieVar-❗border-color: var(--v-primary_darker-base) !important;
 
         // usa gov
@@ -56,6 +44,18 @@
 }
 
 .usa-gov-head {
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    transition: all ease-in-out 0.25s;
+    .gov-banner-hidden & {
+        top: -25px;
+        opacity: 0;
+    }
+
     .usa-banner__guidance {
         align-items: flex-start;
         font-size: 16px;

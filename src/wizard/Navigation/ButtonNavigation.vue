@@ -3,7 +3,6 @@
     ref="buttonNavigation"
     class="d-flex justify-end wizard-button-nav"
     :style="{ width: getbuttonNavBarWidth }"
-    style="position: fixed; bottom: 40px; left: 0px; z-index: 2"
   >
     <v-btn
       v-for="button in pageButtonPanel.buttons"
@@ -15,7 +14,11 @@
       :color="button.color"
       v-model="stepNumber"
       @click="clickedAction(button.action)"
-      :class="[button.link ? 'link-button no-focus-shift' : '', 'mr-5']"
+      :class="[
+        button.link ? 'link-button no-focus-shift' : '',
+        'mr-5',
+        button.secondary ? 'secondary-btn' : '',
+      ]"
       role="link"
     >
       {{ button.text }}
@@ -95,13 +98,39 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "save_and_close",
-            action: ["save", "close"],
+            id: "cancel",
+            action: ["cancel"],
           },
           {
             text: "Previous",
             outlined: true,
             id: "previous",
+            secondary: true,
+            color: "primary",
+            action: ["previous"],
+          },
+          {
+            text: "Next",
+            color: "primary",
+            id: "next",
+            action: ["next"],
+          },
+        ],
+      },
+      {
+        step: 2,
+        buttons: [
+          {
+            text: "Save and Close",
+            link: true,
+            id: "cancel",
+            action: ["cancel"],
+          },
+          {
+            text: "Previous",
+            outlined: true,
+            id: "previous",
+            secondary: true,
             color: "primary",
             action: ["previous"],
           },
@@ -119,13 +148,14 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "save_and_close",
-            action: ["save", "close"],
+            id: "cancel",
+            action: ["cancel"],
           },
           {
             text: "Previous",
             outlined: true,
             id: "previous",
+            secondary: true,
             color: "primary",
             action: ["previous"],
           },
@@ -143,13 +173,14 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "save_and_close",
-            action: ["save", "close"],
+            id: "cancel",
+            action: ["cancel"],
           },
           {
             text: "Previous",
             outlined: true,
             id: "previous",
+            secondary: true,
             color: "primary",
             action: ["previous"],
           },
@@ -174,7 +205,7 @@ export default class ButtonNavigation extends Vue {
             text: "Previous",
             outlined: true,
             id: "previous",
-            color: "primary",
+            secondary: true,
             action: ["previous"],
           },
           {

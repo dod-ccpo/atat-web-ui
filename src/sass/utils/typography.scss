@@ -157,8 +157,14 @@ p {
     color: $base_darkest;
 }
 a {
-    &.text-link {
+    &.text-link, &.expandable-content-opener, &.primary-text {
         text-decoration: underline;
+        &:hover {
+            color: $primary-dark !important;
+        }
+        &:active {
+            color: $primary-darker !important;
+        }
     }
     color: $primary;
     .external-link {

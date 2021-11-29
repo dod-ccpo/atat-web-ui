@@ -6,7 +6,7 @@ import ClinsCardList from "@/wizard/Step2/components/ClinsCardList.vue";
 
 Vue.use(Vuetify);
 
-describe("Testing Create ClinsCard Component", () => {
+describe("Testing Create ClinsCardList Component", () => {
   const localVue = createLocalVue();
   localVue.use(Vuex);
   let vuetify: any;
@@ -20,8 +20,8 @@ describe("Testing Create ClinsCard Component", () => {
         idiq_clin: "Agkistrodon piscivorus",
         total_clin_value: 243820,
         obligated_funds: 11050,
-        pop_start_date: "2021-11-01",
-        pop_end_date: "2022-11-17",
+        pop_start_date: "01-11-2021",
+        pop_end_date: "11-17-2022",
       },
       {
         card_number: 2,
@@ -29,8 +29,8 @@ describe("Testing Create ClinsCard Component", () => {
         idiq_clin: "Uraeginthus granatina",
         total_clin_value: 268717,
         obligated_funds: 13461,
-        pop_start_date: "2021-12-20",
-        pop_end_date: "2022-12-03",
+        pop_start_date: "12-20-2021",
+        pop_end_date: "12-03-2022",
       },
       {
         card_number: 3,
@@ -38,8 +38,8 @@ describe("Testing Create ClinsCard Component", () => {
         idiq_clin: "Lasiodora parahybana",
         total_clin_value: 257756,
         obligated_funds: 11511,
-        pop_start_date: "2021-09-28",
-        pop_end_date: "2022-12-04",
+        pop_start_date: "09-28-2021",
+        pop_end_date: "12-04-2022",
       },
       {
         card_number: 4,
@@ -47,8 +47,8 @@ describe("Testing Create ClinsCard Component", () => {
         idiq_clin: "Phalacrocorax niger",
         total_clin_value: 294665,
         obligated_funds: 14661,
-        pop_start_date: "2021-11-04",
-        pop_end_date: "2022-12-19",
+        pop_start_date: "11-04-2021",
+        pop_end_date: "12-19-2022",
       },
       {
         card_number: 5,
@@ -56,17 +56,17 @@ describe("Testing Create ClinsCard Component", () => {
         idiq_clin: "Castor fiber",
         total_clin_value: 209168,
         obligated_funds: 13753,
-        pop_start_date: "2021-11-17",
-        pop_end_date: "2022-10-10",
+        pop_start_date: "11-04-2021",
+        pop_end_date: "10-10-2021",
       },
       {
         card_number: 6,
-        clin_number: "0004",
-        idiq_clin: "Tapirus terrestris",
-        total_clin_value: 265444,
-        obligated_funds: 12721,
-        pop_start_date: "2021-10-28",
-        pop_end_date: "2022-11-01",
+        clin_number: "",
+        idiq_clin: "",
+        total_clin_value: 0,
+        obligated_funds: 0,
+        pop_start_date: "",
+        pop_end_date: "",
       },
     ],
   };
@@ -102,7 +102,12 @@ describe("Testing Create ClinsCard Component", () => {
       localVue,
       vuetify,
       store,
-      stubs: ["atat-text-field", "atat-select", "atat-date-picker"],
+      stubs: [
+        "atat-text-field",
+        "atat-select",
+        "atat-date-picker",
+        "atat-currency-field",
+      ],
       propsData: validPropsData,
     });
   });
@@ -113,11 +118,32 @@ describe("Testing Create ClinsCard Component", () => {
     expect(valid).toBe(true);
   });
   it("Has no data ", async () => {
-    await wrapper.setProps({ clins: [] });
-    expect(wrapper.exists()).toBe(true);
+    await Vue.nextTick();
+    await wrapper.setProps({
+      clins: [],
+    });
+    const valid = await wrapper.vm.validate();
+    expect(valid).toBe(false);
   });
-  it("test ExpandAddedClin ", async () => {
+
+  it("Test ExpandAddedClin", async (done) => {
     await wrapper.vm.ExpandAddedClin();
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 500);
+  });
+
+  it("Test ExpandClin", async (done) => {
+    await wrapper.vm.ExpandClin(15);
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 500);
+  });
+  it("Test ExpandClin", async () => {
+    await wrapper.vm.clinLength;
+
     expect(wrapper.exists()).toBe(true);
   });
 });

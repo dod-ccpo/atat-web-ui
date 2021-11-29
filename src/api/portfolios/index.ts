@@ -1,6 +1,5 @@
 import { AxiosError } from "axios";
 import {
-  Application,
   ApplicationData,
   Portfolio,
   PortfolioDraft as PortfolioModel,

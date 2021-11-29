@@ -16,6 +16,9 @@ const formatter = new Intl.NumberFormat("en-US", {
 const formatDate = (value: string) => {
   return moment(new Date(`${value} 00:00:00`)).format("MMM DD, YYYY");
 };
+const formatDate2 = (value: string) => {
+  return moment(new Date(`${value} 00:00:00`)).format("MM/DD/YYYY");
+};
 
 describe("Testing Create ClinsCard Component", () => {
   const localVue = createLocalVue();
@@ -56,8 +59,8 @@ describe("Testing Create ClinsCard Component", () => {
     idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
     total_clin_value: 200000,
     obligated_funds: 10000,
-    pop_start_date: "2021-09-01",
-    pop_end_date: "2022-09-01",
+    pop_start_date: "2021-10-01",
+    pop_end_date: "2022-09-30",
   };
 
   beforeEach(() => {
@@ -66,7 +69,12 @@ describe("Testing Create ClinsCard Component", () => {
       localVue,
       vuetify,
       store,
-      stubs: ["atat-text-field", "atat-select", "atat-date-picker"],
+      stubs: [
+        "atat-text-field",
+        "atat-select",
+        "atat-date-picker",
+        "atat-currency-field",
+      ],
       propsData: propsData,
     });
 
@@ -340,4 +348,149 @@ describe("Testing Create ClinsCard Component", () => {
   //   const clin_number = wrapper.find("#clin_number");
   //   expect(clin_number.text()).toBe(`CLIN ${propsData.clin_number}`);
   // });
+
+  //testing private functions created after september 2021
+  // it("test clin form clicked", async (done) => {
+  //   document.body.innerHTML = `
+  //   <div class="clin-datepicker-control">
+  //   <div id="test">blank</div>
+  //   </div>
+  //    `;
+  //   await wrapper.vm.clinFormClicked({ target: "test" });
+  //   setTimeout(() => {
+  //     expect(wrapper.exists()).toBe(true);
+  //     done();
+  //   }, 500);
+  // });
+  it("test delete clin", async () => {
+    await wrapper.vm.deleteClin(1);
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test toggleClinCard", async () => {
+    await wrapper.vm.toggleClinCard({ target: "test" });
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("test cancel delete clin", async () => {
+    await wrapper.vm.cancelDeleteClin();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test onOpenItemChanged", async () => {
+    wrapper.setData({ openItem: 1 });
+    await wrapper.vm.onOpenItemChanged();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test onOpenItemChanged else", async () => {
+    wrapper.setData({ openItem: 0 });
+    await wrapper.vm.onOpenItemChanged();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test Open", async () => {
+    wrapper.setData({ openItem: 1 });
+    await wrapper.vm.open();
+    expect(wrapper.vm.$data.openItem).toBe(0);
+  });
+  it("test validatClinNumber", async () => {
+    await wrapper.vm.validateClinNumber();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test validateIdiqClin", async () => {
+    await wrapper.vm.validateIdiqClin();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test validateIdiqClin else", async () => {
+    await wrapper.vm.validateIdiqClin("IDIQ CLIN 0001 Unclassified IaaS/PaaS");
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("test open delete clin", async (done) => {
+    await wrapper.vm.openDeleteClinModal();
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 500);
+  });
+  it("test allowedDates", async () => {
+    await wrapper.vm.allowedDates("2022-10-01");
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test allowedDates else", async () => {
+    await wrapper.setProps({
+      pop_start_date: "",
+    });
+    await wrapper.vm.allowedDates("09-01-2022");
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test Destroyed", async () => {
+    await wrapper.destroy();
+    expect(wrapper.exists()).toBe(false);
+  });
+  it("test clinFormFocused", async () => {
+    await wrapper.clinFormFocused;
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test valid Dates", async () => {
+    await wrapper.setProps({
+      pop_end_date: "2021-09-01",
+      pop_start_date: "2022-09-01",
+    });
+    await wrapper.vm.setDateRange();
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test valid Dates", async () => {
+    await wrapper.setProps({
+      card_number: 1,
+      clin_number: "0001",
+      idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
+      total_clin_value: 200000,
+      obligated_funds: 10000,
+      pop_start_date: formatDate2("2021-10-01"),
+      pop_end_date: formatDate2("2022-09-30"),
+    });
+    await wrapper.setData({ validationRules: [] });
+
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test valid Dates wrong order", async () => {
+    await wrapper.setProps({
+      card_number: 1,
+      clin_number: "0001",
+      idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
+      total_clin_value: 200000,
+      obligated_funds: 10000,
+      pop_end_date: formatDate2("2021-10-01"),
+      pop_start_date: formatDate2("2022-09-30"),
+    });
+    await wrapper.setData({ validationRules: [] });
+
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("test clin form clicked", async (done) => {
+    await wrapper.vm.clinFormClicked({ target: "test" });
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 500);
+  });
+
+  it("test get DateFields", async () => {
+    await wrapper.vm.DateFields;
+    await wrapper.vm.FundFields;
+    expect(wrapper.exists()).toBe(true);
+  });
+  it("test valid Dates", async () => {
+    await wrapper.setProps({
+      card_number: 1,
+      clin_number: "0001",
+      idiq_clin: "IDIQ CLIN 0001 Unclassified IaaS/PaaS",
+      total_clin_value: 200000,
+      obligated_funds: 10000,
+      pop_start_date: "",
+      pop_end_date: formatDate2("2022-09-30"),
+    });
+    await wrapper.vm.validateDatePickerOnSave;
+
+    expect(wrapper.exists()).toBe(true);
+  });
 });
