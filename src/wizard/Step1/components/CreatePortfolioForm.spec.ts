@@ -1,12 +1,18 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
+
 import { createLocalVue, mount } from "@vue/test-utils";
 import CreatePortfolioForm from "@/wizard/Step1/components/CreatePorfolioForm.vue";
 
 Vue.use(Vuetify);
 
 describe("Testing CreatePortfolioForm Component", () => {
+  const $route = {
+    path: "editportfolio/:id",
+    name: "editportfolio",
+  };
   const localVue = createLocalVue();
+
   let vuetify: any;
   let wrapper: any;
 
@@ -21,6 +27,7 @@ describe("Testing CreatePortfolioForm Component", () => {
         description: "testDescription",
         dod_components: undefined,
       },
+      mocks: { $route },
     });
   });
 
