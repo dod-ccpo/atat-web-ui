@@ -32,7 +32,7 @@ export async function handleConfigurationRoute(): Promise<lambdaTypes.APIGateway
   const region = process.env.AWS_REGION!;
   const configuration: ConfigurationData = {
     applicationConfig: {
-      apiUrl: await getStringValue(`/${ssmPrefix}/${environmentId}/api/url`),
+      apiUrl: await getStringValue(`/${ssmPrefix}/${environmentId}/draftApi/url`),
     },
     authenticationConfig: {
       userPoolId: await getStringValue(
