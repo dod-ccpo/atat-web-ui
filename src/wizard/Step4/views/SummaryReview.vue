@@ -5,11 +5,11 @@
       <h1 tabindex="-1">Let’s set up your application teams</h1>
       <p class="body-lg text--base-darkest">
         In this section, we will invite people to join your application teams,
-        giving them access to your workspaces within the {{ csp }} console. Add 
-        your root administrators to <strong>“{{ portfolioName }}”</strong> to 
-        manage all of your applications, or customize members and roles within 
-        each application individually. When you are done, select <strong>Next: 
-        Review and Submit</strong> to finalize your portfolio.
+        giving them access to your workspaces within the {{ csp }} console. Add
+        your root administrators to <strong>“{{ portfolioName }}”</strong> to
+        manage all of your applications, or customize members and roles within
+        each application individually. When you are done, select
+        <strong>Next: Review and Submit</strong> to finalize your portfolio.
       </p>
 
       <v-alert
@@ -105,10 +105,10 @@
       </template>
       <template v-slot:item.operators="{ item }">
         <div class="d-flex justify-space-between align-center">
-          <div 
+          <div
             class="body text--base-darkest pt-1"
           >
-            <div 
+            <div
               class="errorable-field  d-flex align-center"
               :class="{invalid: item.invalidAdmins}"
             >
@@ -283,7 +283,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     const [isPortfolioValid, hasPortfolioOperators] =
       validateHasAdminOperators(portfolioOperators, applications);
     this.isStepErrored = !isPortfolioValid;
-    
+
     const pIndex = this.applicationData.findIndex(
       (p: any) => p.portfolio === true
     );
