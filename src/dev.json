@@ -1,6 +1,6 @@
 {
   "applicationConfig": {
-    "apiUrl": "https://gj78s0sep8.execute-api.us-gov-west-1.amazonaws.com/prod/"
+    "apiUrl": "https://n9ke865fo9.execute-api.us-gov-west-1.amazonaws.com/prod/"
   },
   "authenticationConfig": {
     "userPoolId": "us-gov-west-1_bmGhvyw5q",
