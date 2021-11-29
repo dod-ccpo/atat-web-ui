@@ -7,6 +7,10 @@ import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.v
 Vue.use(Vuetify);
 
 describe("Testing CreateTaskOrderForm", () => {
+  const $route = {
+    path: "editfunding/:id",
+    name: "editfunding",
+  };
   const localVue = createLocalVue();
   localVue.use(Vuex);
   let vuetify: any;
@@ -61,6 +65,9 @@ describe("Testing CreateTaskOrderForm", () => {
           },
         ],
         task_order_number: "12345678901234567",
+      },
+      mocks: {
+        $route,
       },
     });
   });
