@@ -3,15 +3,15 @@
     <v-row>
       <v-col class="mb-4">
         <h1 tabindex="-1">
-          Let’s start with some details about your portfolio
+          {{ route }}
         </h1>
         <p>
           Your portfolio is a collection of your funding sources and
-          applications within a single cloud service provider. If you would like
-          like to create a multi-cloud application with environments deployed
-          different CSPs, you will need to create a portfolio for each CSP. When
-          you are done, click <strong>Next</strong> and we will walk you through
-          through adding your funding sources.
+          applications within a single Cloud Service Provider (CSP). If you
+          would like to create a multi-cloud application with environments
+          deployed to different CSPs, you will need to create a portfolio for
+          each CSP. When you are done, click <strong>Next</strong> and we will
+          walk you through adding your funding sources.
         </p>
       </v-col>
     </v-row>
@@ -121,7 +121,7 @@ export default class CreatePortfolioForm
   extends Vue
   implements ValidatableForm
 {
-  private valid = true;
+  private titleText = "";
   private dodComponents = dodComponents;
   private portfolioDetailsDescription = `Choose a name that is descriptive enough for users to identify the portfolio. Consider naming based on your organization.`;
   private portfolioDescriptionText = `Add a brief one to two sentence description of your Portfolio.
@@ -147,6 +147,11 @@ export default class CreatePortfolioForm
   }
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
+  }
+  get route(): string {
+    return this.$route.name == "editportfolio"
+      ? "Let’s update your portfolio details"
+      : "Let’s start with some details about your portfolio";
   }
 
   get rules(): any {
