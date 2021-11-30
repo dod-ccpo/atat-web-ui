@@ -9,7 +9,18 @@
         your funding sources.
       </p>
     </section>
-
+    <section role="region" title="Error Panel" class="content-max-width">
+      <ATATAlert type="error" class="my-8" v-if="erroredFields.length > 0">
+        <template v-slot:content>
+          Please review the fields below and take any necessary actions.
+          <ul>
+            <li v-for="(field, index) in erroredFields" :key="index">
+              {{ field }}
+            </li>
+          </ul>
+        </template>
+      </ATATAlert>
+    </section>
     <section
       role="region"
       title="Task Order Details"
@@ -83,36 +94,32 @@
       >
         No
       </v-btn>
-
-      <v-alert
+      <ATATAlert
         v-if="signedTaskOrder === 'No' && !savedTaskOrderSigned"
-        outlined
-        rounded
-        color="error"
-        type="info"
-        class="text-left error_lighter black-icon mt-3 border-thick pr-14"
-        border="left"
+        type="error"
+        :closeButton="false"
         width="600"
+        class="mt-8 mb-10"
       >
-        <div class="black--text h2 ml-2">
-          You must have a signed task order to proceed
-        </div>
-        <div class="black--text body-lg ml-2 mr-2">
-          <p>
-            You will not be able to provision cloud resources within ATAT
-            without an awarded Task Order that is signed by a duly warranted
-            Contracting Officer. Please contact your Contracting Officer for
-            questions regarding your Task Order status or to obtain
-            authorization to spend government funds.
-          </p>
-          <p class="mb-0">
-            You are subject to potential penalties that may include fines,
-            imprisonment, or both, under the U.S. law and regulations for any
-            false statement or misrepresentation in association with this Task
-            Order submission or on any accompanying documentation.
-          </p>
-        </div>
-      </v-alert>
+        <template v-slot:content>
+          <div class="h2">You must have a signed task order to proceed</div>
+          <div>
+            <p>
+              You will not be able to provision cloud resources within ATAT
+              without an awarded Task Order that is signed by a duly warranted
+              Contracting Officer. Please contact your Contracting Officer for
+              questions regarding your Task Order status or to obtain
+              authorization to spend government funds.
+            </p>
+            <p class="mb-0">
+              You are subject to potential penalties that may include fines,
+              imprisonment, or both, under the U.S. law and regulations for any
+              false statement or misrepresentation in association with this Task
+              Order submission or on any accompanying documentation.
+            </p>
+          </div>
+        </template>
+      </ATATAlert>
     </section>
 
     <atat-divider />
@@ -142,11 +149,13 @@ import { TaskOrderFile } from "types/Wizard";
 import ClinsCardList from "./ClinsCardList.vue";
 import { Clin } from "types/Portfolios";
 import ATATDivider from "@/components/ATATDivider.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
     ClinsCardList,
     "atat-divider": ATATDivider,
+    ATATAlert,
   },
 })
 export default class CreateTaskOrderForm extends Vue {
@@ -159,6 +168,7 @@ export default class CreateTaskOrderForm extends Vue {
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private savedTaskOrderSigned = false;
+  private erroredFields: string[] = [];
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
@@ -171,7 +181,7 @@ export default class CreateTaskOrderForm extends Vue {
   }
 
   get rules(): unknown {
-    return {
+    const rulesObj = {
       task_order_number: [
         (v: string) =>
           /^\d+$/.test(v) ||
@@ -181,6 +191,14 @@ export default class CreateTaskOrderForm extends Vue {
           "Task Order Numbers must be between 13 and 17 digits",
       ],
     };
+debugger;
+    const hasError = rulesObj.task_order_number.some(
+      (rule) => typeof rule(this._task_order_number.toString()) === "string"
+    );
+    if (hasError){
+      this.erroredFields.push("Task Order Number");
+    }
+    return rulesObj;
   }
 
   public isTaskOrderSigned(signed: boolean): void {
