@@ -10,12 +10,20 @@
       </p>
     </section>
     <section role="region" title="Error Panel" class="content-max-width">
-      <ATATAlert type="error" class="my-8" v-if="erroredFields.length > 0">
+      <ATATAlert
+        type="error"
+        class="my-8"
+        :closeButton="false"
+        v-if="displayedErrorPanelMessages.length > 0"
+      >
         <template v-slot:content>
           Please review the fields below and take any necessary actions.
           <ul>
-            <li v-for="(field, index) in erroredFields" :key="index">
-              {{ field }}
+            <li
+              v-for="(item, index) in displayedErrorPanelMessages"
+              :key="index"
+            >
+              {{ item.message }}
             </li>
           </ul>
         </template>
@@ -145,7 +153,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
-import { TaskOrderFile } from "types/Wizard";
+import {
+  CustomErrorMessage,
+  ErrorPanelMessages,
+  TaskOrderFile,
+} from "types/Wizard";
 import ClinsCardList from "./ClinsCardList.vue";
 import { Clin } from "types/Portfolios";
 import ATATDivider from "@/components/ATATDivider.vue";
@@ -168,7 +180,24 @@ export default class CreateTaskOrderForm extends Vue {
     Form 1149: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private savedTaskOrderSigned = false;
-  private erroredFields: string[] = [];
+  private erroredFields: CustomErrorMessage[] = [];
+
+  private errorPanelMessages: ErrorPanelMessages[] = [
+    { id: 0, display: false, message: "Task Order Number" },
+    { id: 1, display: false, message: "Upload your approved task order" },
+    { id: 2, display: false, message: "Verify your signed task order" },
+    { id: 3, display: false, message: "CLIN Number" },
+    { id: 4, display: false, message: "Corresponding IDIQ CLIN" },
+    { id: 5, display: false, message: "Total CLIN Value" },
+    { id: 6, display: false, message: "Obligated Funds" },
+    { id: 7, display: false, message: "Period of Performance" },
+  ];
+
+  get displayedErrorPanelMessages(): ErrorPanelMessages[] {
+    return this.errorPanelMessages.filter((epm) => {
+      return epm.display === true;
+    });
+  }
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
@@ -191,13 +220,10 @@ export default class CreateTaskOrderForm extends Vue {
           "Task Order Numbers must be between 13 and 17 digits",
       ],
     };
-    debugger;
     const hasError = rulesObj.task_order_number.some(
       (rule) => typeof rule(this._task_order_number.toString()) === "string"
     );
-    if (hasError) {
-      this.erroredFields.push("Task Order Number");
-    }
+    this.errorPanelMessages[0].display = hasError;
     return rulesObj;
   }
 
@@ -222,6 +248,8 @@ export default class CreateTaskOrderForm extends Vue {
       this.fileUploadRequiredErrorMessage =
         "Please upload your task order document";
     }
+    this.errorPanelMessages[1].display =
+      this._task_order_file && this._task_order_file.name === "";
     validated.push(this._task_order_file && this._task_order_file.name !== "");
 
     if (this.signedTaskOrder === "") {
@@ -230,9 +258,10 @@ export default class CreateTaskOrderForm extends Vue {
     }
 
     validated.push(this.signedTaskOrder !== "");
+    this.errorPanelMessages[2].display = this.signedTaskOrder === "";
 
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
-
+    this.clinCardPanelErrorMessages;
     if (clinsCards && clinsCards.validate) {
       validated.push(await clinsCards.validate());
     }
@@ -246,6 +275,26 @@ export default class CreateTaskOrderForm extends Vue {
   public ExpandAddedClin(isPageLoad: boolean): void {
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
     clinsCards.ExpandAddedClin(isPageLoad);
+  }
+
+  get clinCardPanelErrorMessages(): null {
+    this.errorPanelMessages[3].display =
+      document.querySelectorAll(
+        "[id^='clin_number'].atat-text-field .error--text"
+      ).length > 0;
+
+    this.errorPanelMessages[5].display =
+      document.querySelectorAll(
+        "[id^='total_clin_value'].atat-text-field .error--text"
+      ).length > 0;
+
+    this.errorPanelMessages[6].display =
+      document.querySelectorAll(
+        "[id^='obligated_funds'].atat-text-field .error--text"
+      ).length > 0;
+
+    
+    return null;
   }
 
   private mounted(): void {
