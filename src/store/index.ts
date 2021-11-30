@@ -771,6 +771,23 @@ export default new Vuex.Store({
         const applications = mapApplications(applicationModels);
         const operators = mapOperators(portfolioOperators);
 
+        let hasAppOrEnvOperators = false;
+        for (let a = 0; a < applications.length; a++) {
+          if (applications[a].operators.length > 0) {
+            hasAppOrEnvOperators = true;
+            break;
+          } else {
+            for (let e = 0; e < applications[a].environments.length; e++) {
+              if (applications[a].environments[e].operators.length > 0) {
+                hasAppOrEnvOperators = true;
+                break;
+              }
+            }
+          }
+        }
+        if (hasAppOrEnvOperators) {
+          this.dispatch("applications/setPortfolioHasHadMembersAdded", true);
+        }
         if (saveApps) {
           const data = {
             operators: operators,
@@ -783,13 +800,11 @@ export default new Vuex.Store({
           portfolioOperators,
           applicationModels
         );
-        const portfolioHasHadMembersAdded = getters["applications/portfolioHasHadMembersAdded"];
+        const portfolioHasHadMembersAdded =
+          getters["applications/portfolioHasHadMembersAdded"];
 
-        this.dispatch("setStepTouched", [4, portfolioHasOperators]);
-        if (portfolioHasOperators || portfolioHasHadMembersAdded) {
-          this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
-          this.dispatch("applications/setPortfolioHasHadMembersAdded", true);
-        }
+        this.dispatch("setStepTouched", [4, portfolioHasHadMembersAdded]);
+        this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
         this.dispatch("updateMembersModified", false);
       }
     },
@@ -1071,7 +1086,6 @@ export default new Vuex.Store({
 
       return taskOrderModels && taskOrderModels.length > 0;
     },
-    // portfolioHasHadMembersAdded: ()
     getTaskOrders: (state, rootGetters) => rootGetters["taskOrders/taskOrders"],
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
     getPortfolioName: (state, getters) => (defaultResponse: string) => {

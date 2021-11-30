@@ -231,10 +231,6 @@ export default class RootAdminView extends mixins(ApplicationData) {
     return this.applicationsState.portfolioOperators;
   }
 
-  private hasPortfolioHadMembersAdded(): boolean {
-    return this.$store.getters["applications/portfolioHasHadMembersAdded"];
-  }
-
   private member: any;
 
   private setMember(item: any) {
