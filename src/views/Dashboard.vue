@@ -20,7 +20,7 @@
               class="mr-4"
               alt="Step 1"
             />
-            <span class="stepper-text">Task Orders</span>
+            <span class="stepper-text">Task orders</span>
           </div>
           <div class="d-flex align-center mb-2 ml-6">
             <img
@@ -29,7 +29,7 @@
               class="mr-4"
               alt="Step 2"
             />
-            <span class="stepper-text">Application and Environments</span>
+            <span class="stepper-text">Application and environments</span>
           </div>
           <div class="d-flex align-center mb-6 ml-6">
             <img
@@ -38,7 +38,7 @@
               class="mr-4"
               alt="Step 3"
             />
-            <span class="stepper-text">Team Members</span>
+            <span class="stepper-text">Team members</span>
           </div>
           <p>
             Once your portfolio is set up, information is submitted to the
