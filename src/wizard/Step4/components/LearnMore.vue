@@ -107,7 +107,7 @@
         <strong>Root administrators</strong> have the highest level of access to
         your resources within the cloud console. This role is designed for
         people responsible for managing accounts, configuring workspace
-        settings, as well as adding or removing applications and environments.
+        settings, and adding or removing applications and environments..
       </p>
       <p>
         Team members can only be added or removed as
@@ -119,7 +119,7 @@
         You can assign a basic <strong>administrator</strong> role to members
         within an individual application team. This will grant full access to
         manage accounts and settings within the application, but does not
-        provide access to add, edit or remove other applications within your
+        provide access to add, edit, or remove other applications within your
         portfolio.
       </p>
 

@@ -4,14 +4,14 @@
     <div class="content-max-width">
       <h1 tabindex="-1">
         {{
-          !isUpdate
+          noRootMembersOnLoad
             ? "Let’s add root administrators to " + portfolioName
             : "Let’s update your " + portfolioName + " team"
         }}
       </h1>
 
       <p>
-        <span v-if="!isUpdate">
+        <span v-if="noRootMembersOnLoad">
           Invite your root administrators below to grant them full access to all
           of your applications. These individuals will receive an invitation from
           {{ csp }} after your portfolio is provisioned. Select
@@ -224,6 +224,9 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private stepIsErrored = this.$store.getters.isStepErrored(4);
   private isStepTouched = this.$store.getters.isStepTouched(4);
 
+  private noRootMembersOnLoad =
+    this.$store.getters["applications/portfolioOperators"].length === 0;
+
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
   }
@@ -232,9 +235,6 @@ export default class RootAdminView extends mixins(ApplicationData) {
     return this.$store.getters["applications/portfolioHasHadMembersAdded"];
   }
 
-  private get isUpdate(): boolean {
-    return this.rootMembersCount > 0;
-  }
   private member: any;
 
   private setMember(item: any) {
