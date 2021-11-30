@@ -1,16 +1,23 @@
 <template>
   <v-form ref="form" lazy-validation class="body-lg">
     <section role="region" title="Page Overview" class="content-max-width">
-      <h1 v-if="!isEdit" tabindex="-1">Add a New Task Order</h1>
-      <p v-if="!isEdit" class="ma-0 mt-4 body-lg text--base-darkest">
+      <h1 v-if="!stepHasBeenTouched" tabindex="-1">
+        Let’s add a new task order
+      </h1>
+      <p
+        v-if="!stepHasBeenTouched"
+        class="ma-0 mt-4 body-lg text--base-darkest"
+      >
         You will find this information in your awarded task order that funds
         your ATAT portfolio. If you have more than one task order, we will walk
         through them one at a time. Select <strong>Next</strong> to view all of
         your funding sources.
       </p>
       <!--      edit-->
-      <h1 v-if="isEdit" tabindex="-1">Let’s update your task order details</h1>
-      <p v-if="isEdit" class="ma-0 mt-4 body-lg text--base-darkest">
+      <h1 v-if="stepHasBeenTouched" tabindex="-1">
+        Let’s update your task order details
+      </h1>
+      <p v-if="stepHasBeenTouched" class="ma-0 mt-4 body-lg text--base-darkest">
         You will find this information in your awarded task order that funds
         your ATAT portfolio. Select <strong>Next</strong> when you are done
         making changes, or to skip to your task order summary. From there, you
@@ -167,7 +174,7 @@ export default class CreateTaskOrderForm extends Vue {
     Form 1449: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private savedTaskOrderSigned = false;
-  private isEdit = false;
+  private stepHasBeenTouched = false;
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
@@ -251,9 +258,7 @@ export default class CreateTaskOrderForm extends Vue {
       this.isTaskOrderSigned(this._signed);
     }
 
-    if (this.$route.name === "editfunding") {
-      this.isEdit = true;
-    }
+    this.stepHasBeenTouched = this.$store.getters.getStepTouched(2);
   }
 
   private async onRemoveFile(): Promise<void> {

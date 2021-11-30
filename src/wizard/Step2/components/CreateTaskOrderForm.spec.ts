@@ -37,6 +37,9 @@ describe("Testing CreateTaskOrderForm", () => {
         task_order_number: "12345678901234567",
       };
     },
+    getStepTouched: () => (stepNumber: number) => {
+      return false;
+    },
   };
   const store = new Vuex.Store({
     getters,
