@@ -17,6 +17,7 @@ const setCurrentApplicationId = (
   { commit }: { commit: Commit },
   id: string
 ): void => {
+  debugger;
   commit("setCurrentApplicationId", id);
 };
 

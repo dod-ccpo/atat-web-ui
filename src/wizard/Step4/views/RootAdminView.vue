@@ -6,7 +6,7 @@
         {{
           noRootMembersOnLoad
             ? "Let’s add root administrators to " + portfolioName
-            : "Let’s update your " + portfolioName + " team"
+            : "Let’s update your root administrators for " + portfolioName
         }}
       </h1>
 
@@ -20,11 +20,9 @@
         <span v-else>
           The following people will be granted access to your workspaces within
           the {{ csp }} console after your portfolio is provisioned. You can
-          invite additional team members or modify permissions below. When you
-          are done, select <strong>Next</strong> to continue reviewing your
-          portfolio.
+          invite additional team members or modify permissions below.
+          <span v-html="nextText" class="mr-1"></span>
         </span>
-
         <a
           class="text-link"
           role="button"
@@ -33,9 +31,7 @@
           @keydown.enter="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
           @keydown.space="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
           id="RootAdmins_LearnMoreButton"
-        >
-          Learn more about team member roles
-        </a>
+        >Learn more about team member roles</a>
       </p>
 
       <v-alert
@@ -227,6 +223,15 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private noRootMembersOnLoad =
     this.$store.getters["applications/portfolioOperators"].length === 0;
 
+  private isReturnToStep5 = this.$store.getters.isReturnToReviewAndSubmit;
+
+  get nextText(): string {
+    if (this.isReturnToStep5) {
+      return "When you are done, select <strong>Return to Review and Submit</strong> to finalize your portfolio.";
+    }
+    return "When you are done, select <strong>Next</strong> to view or edit your workspace teams.";
+  }
+
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
   }
@@ -237,7 +242,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
     this.member = item;
   }
 
-  private message = "You do not have any team members in this workspace yet.";
+  private message = "You do not have any team members in this workspace.";
   private headers = [
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "access", sortable: false },

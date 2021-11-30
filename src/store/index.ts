@@ -373,6 +373,7 @@ export default new Vuex.Store({
       message: "",
       contentClass: "",
     },
+    returnToReviewAndSubmit: false,
   },
   /*
   ███████████████████████████████████████████████████████████████████████████
@@ -496,6 +497,8 @@ export default new Vuex.Store({
         Vue.set(state.portfolioSteps[stepIndex], "touched", false);
       });
 
+      Vue.set(state, "returnToReviewAndSubmit", false);
+
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
 
@@ -515,6 +518,9 @@ export default new Vuex.Store({
     },
     doToast(state, props) {
       state.toast = props;
+    },
+    doSetReturnToReviewAndSubmit(state, shouldReturn) {
+      state.returnToReviewAndSubmit = shouldReturn;
     },
   },
   /*
@@ -771,20 +777,8 @@ export default new Vuex.Store({
         const applications = mapApplications(applicationModels);
         const operators = mapOperators(portfolioOperators);
 
-        let hasAppOrEnvOperators = false;
-        for (let a = 0; a < applications.length; a++) {
-          if (applications[a].operators.length > 0) {
-            hasAppOrEnvOperators = true;
-            break;
-          } else {
-            for (let e = 0; e < applications[a].environments.length; e++) {
-              if (applications[a].environments[e].operators.length > 0) {
-                hasAppOrEnvOperators = true;
-                break;
-              }
-            }
-          }
-        }
+        const hasAppOrEnvOperators =
+          rootGetters["applications/appOrEnvHasOperators"](applications);
         if (hasAppOrEnvOperators) {
           this.dispatch("applications/setPortfolioHasHadMembersAdded", true);
         }
@@ -979,6 +973,9 @@ export default new Vuex.Store({
       const index = StepModelIndices[stepNumber];
       return state.portfolioSteps[index].touched;
     },
+    setReturnToReviewAndSubmit({ commit }, shouldReturn: boolean) {
+      commit("doSetReturnToReviewAndSubmit", shouldReturn);
+    },
   },
   /*
   ██████████████████████████████████████████████████████████
@@ -1131,7 +1128,10 @@ export default new Vuex.Store({
     isStepTouched: (state, getters) => (stepNumber: number): boolean => {
       const stepIndex: number = getters.getStepIndex(stepNumber);
       return state.portfolioSteps[stepIndex].touched;
-    }
+    },
+    isReturnToReviewAndSubmit: (state) => {
+      return state.returnToReviewAndSubmit;
+    },
   },
   modules: {
     portfolios,

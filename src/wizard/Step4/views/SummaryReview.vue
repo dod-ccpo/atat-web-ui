@@ -223,12 +223,11 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       return;
     }
     this.setCurrentApplicationId(item.id);
-
     this.$router.push({
       name: editmembers.name,
       params: {
         type: "application",
-        id: this.$store.state.currentApplicationId,
+        id: this.$store.state.applications.currentApplicationId,
       },
     });
   }
@@ -252,7 +251,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
           name: editmembers.name,
           params: {
             type: "application",
-            id: this.$store.state.currentApplicationId,
+            id: this.$store.state.applications.currentApplicationId,
           },
         });
         break;
