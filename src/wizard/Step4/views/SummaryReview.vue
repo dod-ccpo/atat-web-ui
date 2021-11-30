@@ -112,12 +112,10 @@
       </template>
       <template v-slot:item.operators="{ item }">
         <div class="d-flex justify-space-between align-center">
-          <div
-            class="body text--base-darkest pt-1"
-          >
+          <div class="body text--base-darkest pt-1">
             <div
-              class="errorable-field  d-flex align-center"
-              :class="{invalid: item.invalidAdmins}"
+              class="errorable-field d-flex align-center"
+              :class="{ invalid: item.invalidAdmins }"
             >
               {{ item.operatorCount }}
               <v-icon v-if="item.invalidAdmins"> error </v-icon>

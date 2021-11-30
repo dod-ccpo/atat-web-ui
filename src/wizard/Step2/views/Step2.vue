@@ -1,6 +1,5 @@
 <template>
   <v-flex>
-  
     <CreateTaskOrderForm
       ref="createTaskOrderForm"
       :task_order_number.sync="model.task_order_number"
@@ -20,10 +19,9 @@ import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.v
 import { TaskOrderModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 
-
 @Component({
   components: {
-    CreateTaskOrderForm
+    CreateTaskOrderForm,
   },
 })
 export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {

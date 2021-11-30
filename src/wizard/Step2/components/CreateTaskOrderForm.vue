@@ -191,11 +191,11 @@ export default class CreateTaskOrderForm extends Vue {
           "Task Order Numbers must be between 13 and 17 digits",
       ],
     };
-debugger;
+    debugger;
     const hasError = rulesObj.task_order_number.some(
       (rule) => typeof rule(this._task_order_number.toString()) === "string"
     );
-    if (hasError){
+    if (hasError) {
       this.erroredFields.push("Task Order Number");
     }
     return rulesObj;
