@@ -163,7 +163,6 @@ const setPortfolioHasHadMembersAdded = (
   { commit }: { commit: Commit },
   membersAdded: boolean
 ): void => {
-  debugger;
   commit("setPortfolioHasHadMembersAdded", membersAdded);
 };
 

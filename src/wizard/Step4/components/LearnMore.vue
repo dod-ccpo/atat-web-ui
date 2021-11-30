@@ -1,7 +1,7 @@
 <template>
   <div id="learnMoreDrawer" class="modal__title--sticky">
     <v-card-title class="modal__title modal__title--border-bottom">
-      <h2 class="modal__title__text mb-0" tabindex="-1" id="learnMoreHeading">
+      <h2 class="modal__title__text mb-8" tabindex="-1" id="learnMoreHeading">
         <span v-if="learnMoreType === 'member-roles'">
           Understanding member roles
         </span>
@@ -13,7 +13,7 @@
       <v-btn
         id="closeModalButton"
         @click="closeLearnMoreDrawer()"
-        class="pa-0 mr-3 bg-transparent modal__slideout__button-close"
+        class="pa-0 mr-3 mb-8 bg-transparent modal__slideout__button-close"
         min-width="25"
         aria-label="Close Learn More Panel"
       >

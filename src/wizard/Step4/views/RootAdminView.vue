@@ -310,7 +310,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   }
 
   //Dialog stuff
-  private okText = "Remove Root Administrator";
+  private okText = "Remove Administrator";
   private cardWidth = "40";
   private cancelText = "Cancel";
   private hasDialog = true;
@@ -331,8 +331,10 @@ export default class RootAdminView extends mixins(ApplicationData) {
     btnId: string
   ): void {
     if (menuOptionText.toLowerCase() === "remove root administrator") {
-      this.dialogTitle = `Remove ${this.member.display_name}`;
-      this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
+      this.dialogTitle = `Remove ${this.member.display_name}?`;
+      this.dialogMessage = `${this.member.display_name} will be removed as
+        a root administrator of ${this.portfolioName}. This individual will
+        no longer have access to any of your applications in the cloud console.`;
       this.returnFocusElementIdRemoveMemberCancel = btnId;
       this.showDialogWhenClicked = true;
     } else if (menuOptionText.toLowerCase() === "edit info") {

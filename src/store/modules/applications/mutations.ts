@@ -257,7 +257,6 @@ const initializeRootAdministrators = (state: ApplicationsState): void => {
 const initialize = (state: ApplicationsState): void => {
   Vue.set(state, "applicationModels", []);
   Vue.set(state, "portfolioOperators", []);
-  debugger;
   Vue.set(state, "portfolioHasHadMembersAdded", false);
 };
 
@@ -265,7 +264,6 @@ const setPortfolioHasHadMembersAdded = (
   state: ApplicationsState,
   membersAdded: boolean
 ): void => {
-  debugger;
   Vue.set(state, "portfolioHasHadMembersAdded", membersAdded);
 };
 

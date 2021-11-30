@@ -784,7 +784,6 @@ export default new Vuex.Store({
           applicationModels
         );
         const portfolioHasHadMembersAdded = getters["applications/portfolioHasHadMembersAdded"];
-        debugger;
 
         this.dispatch("setStepTouched", [4, portfolioHasOperators]);
         if (portfolioHasOperators || portfolioHasHadMembersAdded) {
