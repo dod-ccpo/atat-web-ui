@@ -61,12 +61,9 @@ export default class Wizard extends Vue {
   ): Promise<void> {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-
-// // check if "returnToReviewAndSubmit === true"
-      const returnToReviewAndSubmit = this.$store.getters.isReturnToReviewAndSubmit;
-      this.$store.dispatch("setReturnToReviewAndSubmit", false);
-      debugger;
-      const nextRoute = returnToReviewAndSubmit
+      const returnToReview = this.$store.getters.isReturnToReview;
+      this.$store.dispatch("setReturnToReview", false);
+      const nextRoute = returnToReview
         ? "reviewandsubmit" :
         currentRoute.meta && currentRoute.meta.isWizard
           ? currentRoute.meta.next

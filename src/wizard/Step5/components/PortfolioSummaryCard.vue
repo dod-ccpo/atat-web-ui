@@ -80,8 +80,8 @@ export default class PortfolioSummaryCard extends Vue {
   }
 
   public onEdit(): void {
-    // set in wizard store state "returnToReviewAndSubmit = true"
-    this.$store.dispatch("setReturnToReviewAndSubmit", true);
+    // set in wizard store state "returnToReview = true"
+    this.$store.dispatch("setReturnToReview", true);
 
     this.$router.push({
       name: "addportfolio",

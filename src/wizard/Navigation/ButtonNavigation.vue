@@ -18,7 +18,7 @@
       :class="{
         'link-button no-focus-shift': button.link,
         'secondary-btn': button.secondary,
-        'd-none': isReturnToStep5 && button.text === 'Previous',
+        'd-none': isReturnToReview && button.text === 'Previous',
       }"
       role="link"
     >
@@ -74,12 +74,12 @@ export default class ButtonNavigation extends Vue {
     );
   }
 
-  get isReturnToStep5(): boolean {
-    return this.$store.getters.isReturnToReviewAndSubmit;
+  get isReturnToReview(): boolean {
+    return this.$store.getters.isReturnToReview;
   }
 
   private getButtonText(button: any): string {
-    if (button.action[0] === "next" && this.isReturnToStep5) {
+    if (button.action[0] === "next" && this.isReturnToReview) {
       return "Return to Review and Submit";
     }
     return button.text;
@@ -239,29 +239,6 @@ export default class ButtonNavigation extends Vue {
     return this.wizardNavButtons.NavButtonPanels.find((buttonPanel) => {
         return buttonPanel.step === this.stepNumber;
       }) || this.wizardNavButtons.NavButtonPanels[0];
-
-    // // if state returnToReviewAndSubmit === true,
-    // //   • find the "next" button and change text to "Next: Review and Submit"
-    // //   • remove "Previous" button
-    // const nextStep5 = this.$store.getters.isReturnToReviewAndSubmit;
-    // const nextBtnIndex = buttonsObj.buttons.findIndex(
-    //   (button) => button.action[0] === "next"
-    // );
-    // if (nextStep5 && nextBtnIndex > -1) {
-    //   buttonsObj.buttons[nextBtnIndex].text = "Return to Review and Submit";
-    //   buttonsObj.buttons[nextBtnIndex].id = "review_and_submit";
-    //   const prevBtnIndex = buttonsObj.buttons.findIndex(
-    //     (button) => button.action[0] === "previous"
-    //   );
-    //   if (prevBtnIndex > -1) {
-    //     buttonsObj.buttons.splice(prevBtnIndex, 1);
-    //   }
-    // } else if (nextBtnIndex > -1) {
-    //   buttonsObj.buttons[nextBtnIndex].text = "Next";
-    //   buttonsObj.buttons[nextBtnIndex].id = "next";
-    // }
-
-    // return buttonsObj;
   }
 }
 </script>

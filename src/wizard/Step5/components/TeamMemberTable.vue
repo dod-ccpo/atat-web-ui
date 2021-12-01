@@ -131,15 +131,13 @@ export default class TeamMemberTable extends Vue {
   @Prop({ default: "" }) private name!: string;
 
   private onEdit(application: any) {
-    // set in wizard store state "returnToReviewAndSubmit = true"
-    this.$store.dispatch("setReturnToReviewAndSubmit", true);
-    debugger;
+    // set in wizard store state "returnToReview = true"
+    this.$store.dispatch("setReturnToReview", true);
     this.$store.dispatch(
       "applications/setCurrentApplicationId",
       application.appId
     );
     const routeName = editmembers.name;
-    debugger;
     this.$router.push({
       name: routeName,
       params: {

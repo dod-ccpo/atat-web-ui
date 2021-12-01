@@ -373,7 +373,7 @@ export default new Vuex.Store({
       message: "",
       contentClass: "",
     },
-    returnToReviewAndSubmit: false,
+    returnToReview: false,
   },
   /*
   ███████████████████████████████████████████████████████████████████████████
@@ -497,7 +497,7 @@ export default new Vuex.Store({
         Vue.set(state.portfolioSteps[stepIndex], "touched", false);
       });
 
-      Vue.set(state, "returnToReviewAndSubmit", false);
+      Vue.set(state, "returnToReview", false);
 
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
@@ -519,8 +519,8 @@ export default new Vuex.Store({
     doToast(state, props) {
       state.toast = props;
     },
-    doSetReturnToReviewAndSubmit(state, shouldReturn) {
-      state.returnToReviewAndSubmit = shouldReturn;
+    doSetReturnToReview(state, shouldReturn) {
+      state.returnToReview = shouldReturn;
     },
   },
   /*
@@ -973,8 +973,8 @@ export default new Vuex.Store({
       const index = StepModelIndices[stepNumber];
       return state.portfolioSteps[index].touched;
     },
-    setReturnToReviewAndSubmit({ commit }, shouldReturn: boolean) {
-      commit("doSetReturnToReviewAndSubmit", shouldReturn);
+    setReturnToReview({ commit }, shouldReturn: boolean) {
+      commit("doSetReturnToReview", shouldReturn);
     },
   },
   /*
@@ -1129,8 +1129,8 @@ export default new Vuex.Store({
       const stepIndex: number = getters.getStepIndex(stepNumber);
       return state.portfolioSteps[stepIndex].touched;
     },
-    isReturnToReviewAndSubmit: (state) => {
-      return state.returnToReviewAndSubmit;
+    isReturnToReview: (state) => {
+      return state.returnToReview;
     },
   },
   modules: {

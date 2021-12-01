@@ -152,8 +152,8 @@ export default class FundingTable extends Vue {
   @Prop({ default: {} }) private taskOrderFile!: TaskOrderFile;
 
   private onEdit() {
-    // set in wizard store state "returnToReviewAndSubmit = true"
-    this.$store.dispatch("setReturnToReviewAndSubmit", true);
+    // set in wizard store state "returnToReview = true"
+    this.$store.dispatch("setReturnToReview", true);
 
     this.$store.dispatch("editTaskOrder", this.id);
     this.$router.push({ name: "editfunding", params: { id: `${this.id}` } });

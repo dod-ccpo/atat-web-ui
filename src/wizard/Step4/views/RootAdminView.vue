@@ -216,20 +216,22 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private isFiltered = false;
   private search = "";
   private currentPortfolio = this.$store.getters.getPortfolio;
-  private csp = this.currentPortfolio.csp || "selected CSP";
+  private csp = this.currentPortfolio.csp || "your selected CSP";
   private stepIsErrored = this.$store.getters.isStepErrored(4);
   private isStepTouched = this.$store.getters.isStepTouched(4);
 
   private noRootMembersOnLoad =
     this.$store.getters["applications/portfolioOperators"].length === 0;
 
-  private isReturnToStep5 = this.$store.getters.isReturnToReviewAndSubmit;
+  private isReturnToReview = this.$store.getters.isReturnToReview;
 
   get nextText(): string {
-    if (this.isReturnToStep5) {
-      return "When you are done, select <strong>Return to Review and Submit</strong> to finalize your portfolio.";
+    if (this.isReturnToReview) {
+      return `When you are done, select <strong>Return to Review and
+        Submit</strong> to finalize your portfolio.`;
     }
-    return "When you are done, select <strong>Next</strong> to view or edit your workspace teams.";
+    return `When you are done, select <strong>Next</strong> to view
+      or edit your workspace teams.`;
   }
 
   private get rootMembers(): OperatorModel[] {
