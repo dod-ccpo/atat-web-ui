@@ -16,7 +16,7 @@ instance.interceptors.request.use(async (config) => {
   // currentSession() should refresh the session if required in most cases
   // if that turns out to not be the case, we'll need to refresh the token
   // manually.
-  const token = (await Auth.currentSession()).getAccessToken().getJwtToken();
+  const token = (await Auth.currentSession()).getIdToken().getJwtToken();
   config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
