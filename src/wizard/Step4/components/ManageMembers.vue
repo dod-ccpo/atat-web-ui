@@ -15,7 +15,7 @@
     </v-navigation-drawer>
 
     <v-card-title>
-      <h2 id="modalHeading" class="mb-2 firstFocus" tabindex="-1">
+      <h2 id="modalHeading" class="mb-0 firstFocus" tabindex="-1">
         <span v-if="!isEditSingle">
           Add
           {{ isRootAdmin ? "root administrators" : "team members" }}
@@ -65,7 +65,7 @@
             class="mt-6"
           />
           <div class="color-base mt-2" id="EmailInputInstructions">
-            Must use a .mil email address.
+            Must use a .mil email address
           </div>
         </div>
 
@@ -356,9 +356,9 @@ export default class ManageMember extends mixins(ApplicationData) {
     env_name: string;
     role_value: string;
   }[] = [];
-  private displayNameHelpText = `This could be your team member's
-  full name or a nickname. It will be used to refer to this individual
-  within ATAT.`;
+  private displayNameHelpText = `This could be your team member’s
+    full name or a nickname. It will be used to refer to this
+    individual within ATAT.`;
   private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   private valid = true;
   private memberToEditName = "";

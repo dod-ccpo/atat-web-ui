@@ -14,14 +14,15 @@
       :color="button.color"
       v-model="stepNumber"
       @click="clickedAction(button.action)"
-      :class="[
-        button.link ? 'link-button no-focus-shift' : '',
-        'mr-5',
-        button.secondary ? 'secondary-btn' : '',
-      ]"
+      class="mr-5"
+      :class="{
+        'link-button no-focus-shift': button.link,
+        'secondary-btn': button.secondary,
+        'd-none': isReturnToReview && button.action[0] === 'previous',
+      }"
       role="link"
     >
-      {{ button.text }}
+      {{ getButtonText(button) }}
     </v-btn>
   </nav>
 </template>
@@ -73,6 +74,17 @@ export default class ButtonNavigation extends Vue {
     );
   }
 
+  get isReturnToReview(): boolean {
+    return this.$store.getters.isReturnToReview;
+  }
+
+  private getButtonText(button: any): string {
+    if (button.action[0] === "next" && this.isReturnToReview) {
+      return "Return to Review and Submit";
+    }
+    return button.text;
+  }
+
   public wizardNavButtons: NavigationButtons = {
     NavButtonPanels: [
       {
@@ -98,8 +110,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -123,8 +135,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -148,8 +160,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -173,8 +185,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -224,11 +236,9 @@ export default class ButtonNavigation extends Vue {
   };
 
   get pageButtonPanel(): NavButtonPanel {
-    return (
-      this.wizardNavButtons.NavButtonPanels.find((buttonPanel) => {
+    return this.wizardNavButtons.NavButtonPanels.find((buttonPanel) => {
         return buttonPanel.step === this.stepNumber;
-      }) || this.wizardNavButtons.NavButtonPanels[0]
-    );
+      }) || this.wizardNavButtons.NavButtonPanels[0];
   }
 }
 </script>

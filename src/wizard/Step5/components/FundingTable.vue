@@ -18,7 +18,7 @@
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>
-      <v-card-subtitle class="d-flex justify-space-between">
+      <v-card-subtitle class="d-flex justify-space-between px-6">
         <span class="body-lg text--base font-size-15">
           Uploaded file: {{ taskOrderFile.name }}
         </span>
@@ -152,6 +152,7 @@ export default class FundingTable extends Vue {
   @Prop({ default: {} }) private taskOrderFile!: TaskOrderFile;
 
   private onEdit() {
+    this.$store.dispatch("setReturnToReview", true);
     this.$store.dispatch("editTaskOrder", this.id);
     this.$router.push({ name: "editfunding", params: { id: `${this.id}` } });
   }
