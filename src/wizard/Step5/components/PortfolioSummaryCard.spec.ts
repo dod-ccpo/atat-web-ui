@@ -4,12 +4,11 @@ import { createLocalVue, mount } from "@vue/test-utils";
 import VueRouter from "vue-router";
 import Vuex from "vuex";
 import PortfolioSummaryCard from "@/wizard/Step5/components/PortfolioSummaryCard.vue";
-import Vuex from "vuex";
 
 Vue.use(Vuetify);
 
 describe("Testing PortfolioSummaryCard Component", () => {
- const localVue = createLocalVue();
+  const localVue = createLocalVue();
   localVue.use(VueRouter);
   localVue.use(Vuex);
 
@@ -20,11 +19,9 @@ describe("Testing PortfolioSummaryCard Component", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    store = new Vuex.Store(state);
     wrapper = mount(PortfolioSummaryCard, {
       localVue,
       router,
-      store,
       vuetify,
       store,
       propsData: {
