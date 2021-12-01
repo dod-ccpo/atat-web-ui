@@ -197,13 +197,13 @@
           <p>
             Choose the role
             {{ isEditSingle ? "this individual" : "people" }} will have in
-            <span v-if="isEditSingle">{{ currentApplicationName }}.</span>
-            <span v-else>your application.</span>
-            <br />
+            {{ currentApplicationName }}.
+            <br v-if="isEditSingle" />
             <a
               role="button"
               tabindex="0"
-              class="text-link"
+              class="text-link d-inline-block"
+              :class="{ 'ml-1': !isEditSingle }"
               @keydown.enter="openLearnMoreDrawer('member-roles')"
               @click="openLearnMoreDrawer('member-roles')"
             >

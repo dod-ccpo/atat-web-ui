@@ -6,7 +6,7 @@
         {{
           noAppOrEnvOperatorsOnLoad
             ? "Let’s add team members to " + currentApplication.name
-            : "Let’s update your " + currentApplication.name + "team"
+            : "Let’s update your " + currentApplication.name + " team"
         }}
       </h1>
       <p>
@@ -29,7 +29,7 @@
           </span>
           <span v-else>
             When you are done, select
-            <strong>Next</strong>to view all of your workspace teams.
+            <strong>Next</strong> to view all of your workspace teams.
           </span>
         </span>
 
@@ -240,8 +240,8 @@ export default class TeamView extends mixins(ApplicationData) {
   private isTouched = false;
   private environmentsWithoutAdmins: string[] = [];
   private environmentCount = 0;
-  private noAppOrEnvOperatorsOnLoad = true; // EJY fix after merge dev with last branch
-  private isReturnToReview = false; // EJY fix after merge dev
+  private noAppOrEnvOperatorsOnLoad = true;
+  private isReturnToReview = this.$store.getters.isReturnToReview;
 
   public get portfolioName(): string {
     return this.$store.getters.getPortfolioName();
@@ -531,8 +531,14 @@ export default class TeamView extends mixins(ApplicationData) {
   public async mounted(): Promise<void> {
     this.setMemberTableData();
     this.tranformData();
+
+    this.noAppOrEnvOperatorsOnLoad =
+      !this.$store.getters["applications/appOrEnvHasOperators"]([
+        this.currentApplication
+      ]);
   }
-  private moreButtonId(item: any): string {
+
+private moreButtonId(item: any): string {
     if (item && item.email) {
       return (
         "moreButton_" + item.email.toLowerCase().replace(/[^a-zA-Z0-9]/gi, "_")
