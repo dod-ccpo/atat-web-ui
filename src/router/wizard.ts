@@ -37,6 +37,18 @@ const addportfolio: RouteConfigSingleView = {
     step: 1,
   },
 };
+const editportfolio: RouteConfigSingleView = {
+  path: "editportfolio/:id",
+  name: "editportfolio",
+  meta: {
+    title: "Edit Portfolio Details and CSP Selection",
+  },
+  component: () =>
+    import(/* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"),
+  props: {
+    step: 1,
+  },
+};
 
 const addfunding: RouteConfigSingleView = {
   path: "addfunding",
@@ -188,6 +200,7 @@ const wizard: RouteConfigSingleView = {
   children: [
     //main routes
     CreateWizardRoute(addportfolio, undefined, addfunding.name, 1),
+    CreateWizardRoute(editportfolio, undefined, addfunding.name, 1),
     CreateWizardRoute(addfunding, addportfolio.name, fundingsummary.name, 2),
     CreateWizardRoute(fundingsummary, addfunding.name, addapplication.name, 2),
     CreateWizardRoute(
@@ -258,4 +271,5 @@ export {
   addteammembers,
   editmembers,
   teammembersummary,
+  editportfolio,
 };
