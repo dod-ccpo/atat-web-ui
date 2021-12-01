@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from "axios";
 import { retrieveSessionConfig } from "@/atat-config-builder";
+import { Auth } from "aws-amplify";
 
 const apiUrl = retrieveSessionConfig()?.apiUrl;
 const instance = axios.create({
@@ -8,6 +9,16 @@ const instance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+});
+
+// Handle adding the authorization header based on the current session
+instance.interceptors.request.use(async (config) => {
+  // currentSession() should refresh the session if required in most cases
+  // if that turns out to not be the case, we'll need to refresh the token
+  // manually.
+  const token = (await Auth.currentSession()).getAccessToken().getJwtToken();
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
 });
 
 interface APIRequest {
