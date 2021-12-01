@@ -1,7 +1,7 @@
 import { generateUid } from "@/helpers";
 
-export const getStepIndex = (step: number): string => {
- 
+export const getStepIndex = (step: number): number => {
+  return step - 1;
 };
 
 export const createStepOneModel = () => {
@@ -93,3 +93,9 @@ export const stepsModelInitializers: Array<any> = [
   createStepFourModel,
   createStepFiveModel,
 ];
+
+export const getStepModel = (stepNumber: number): any => {
+  const modelCreator = stepsModelInitializers[stepNumber - 1];
+
+  return modelCreator();
+};
