@@ -116,13 +116,13 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   public async mounted(): Promise<void> {
     console.log("hi");
     // if (this.touched) {
-      console.log("touched")
-      await this.displayedErrorPanelMessages();
-      console.log(document.querySelectorAll("input"));
-      Array.from(await document.querySelectorAll("input")).forEach((input) => {
-        console.log(input);
-        input.addEventListener("input", this.displayedErrorPanelMessages);
-      });
+    console.log("touched");
+    await this.displayedErrorPanelMessages();
+    console.log(document.querySelectorAll("input"));
+    Array.from(await document.querySelectorAll("input")).forEach((input) => {
+      console.log(input);
+      input.addEventListener("input", this.displayedErrorPanelMessages);
+    });
     // }
   }
 }

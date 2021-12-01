@@ -1,17 +1,28 @@
 <template>
   <v-form ref="form" lazy-validation class="body-lg content-max-width">
     <v-row>
-      <v-col class="mb-4">
+      <v-col v-if="!stepHasBeenTouched" class="mb-4">
         <h1 tabindex="-1">
           Let’s start with some details about your portfolio
         </h1>
         <p>
           Your portfolio is a collection of your funding sources and
-          applications within a single cloud service provider. If you would like
-          like to create a multi-cloud application with environments deployed
-          different CSPs, you will need to create a portfolio for each CSP. When
-          you are done, click <strong>Next</strong> and we will walk you through
-          through adding your funding sources.
+          applications within a single Cloud Service Provider (CSP). If you
+          would like to create a multi-cloud application with environments
+          deployed to different CSPs, you will need to create a portfolio for
+          each CSP. When you are done, click <strong>Next</strong> and we will
+          walk you through adding your funding sources.
+        </p>
+      </v-col>
+      <v-col v-else class="mb-4">
+        <h1 tabindex="-1">Let’s update your portfolio details</h1>
+        <p>
+          Your portfolio is a collection of your funding sources and
+          applications within a single Cloud Service Provider (CSP). If you
+          would like to create a multi-cloud application with environments
+          deployed to different CSPs, you will need to create a portfolio for
+          each CSP. When you are done, click <strong>Next</strong> to continue
+          reviewing your portfolio.
         </p>
       </v-col>
     </v-row>
@@ -121,7 +132,6 @@ export default class CreatePortfolioForm
   extends Vue
   implements ValidatableForm
 {
-  private valid = true;
   private dodComponents = dodComponents;
   private portfolioDetailsDescription = `Choose a name that is descriptive enough for users to identify the portfolio. Consider naming based on your organization.`;
   private portfolioDescriptionText = `Add a brief one to two sentence description of your Portfolio.
@@ -130,6 +140,7 @@ export default class CreatePortfolioForm
   private isChecked(dodComp: string) {
     return this._dod_components.findIndex((d) => d === dodComp) > -1;
   }
+  private stepHasBeenTouched = false;
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
   @PropSync("description", { default: "", required: true })
   portfolio_description!: string;
@@ -175,6 +186,9 @@ export default class CreatePortfolioForm
     });
 
     return validated && typeof this.isDodComponentsValid === "boolean";
+  }
+  private mounted(): void {
+    this.stepHasBeenTouched = this.$store.getters.getStepTouched(1);
   }
 }
 </script>

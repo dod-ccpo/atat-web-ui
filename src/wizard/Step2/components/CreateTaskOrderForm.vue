@@ -2,12 +2,27 @@
 <template>
   <v-form ref="form" lazy-validation class="body-lg">
     <section role="region" title="Page Overview" class="content-max-width">
-      <h1 tabindex="-1">Add a New Task Order</h1>
-      <p class="ma-0 mt-4 body-lg text--base-darkest">
+      <h1 v-if="!stepHasBeenTouched" tabindex="-1">
+        Let’s add a new task order
+      </h1>
+      <p
+        v-if="!stepHasBeenTouched"
+        class="ma-0 mt-4 body-lg text--base-darkest"
+      >
         You will find this information in your awarded task order that funds
         your ATAT portfolio. If you have more than one task order, we will walk
         through them one at a time. Select <strong>Next</strong> to view all of
         your funding sources.
+      </p>
+      <!--      edit-->
+      <h1 v-if="stepHasBeenTouched" tabindex="-1">
+        Let’s update your task order details
+      </h1>
+      <p v-if="stepHasBeenTouched" class="ma-0 mt-4 body-lg text--base-darkest">
+        You will find this information in your awarded task order that funds
+        your ATAT portfolio. Select <strong>Next</strong> when you are done
+        making changes, or to skip to your task order summary. From there, you
+        can add additional task orders to your portfolio, if needed
       </p>
     </section>
     <section role="region" title="Error Panel" class="content-max-width">
@@ -43,14 +58,14 @@
           :validate-on-load="validateOnLoad"
         />
         <p class="mt-2 mb-7 text--base">
-          This number must be between 13 and 17 digits
+          This number must be either 13 or 17 digits.
         </p>
         <atat-file-upload
           ref="pdfFileUpload"
           :multiple="false"
           :pdfFile.sync="_task_order_file"
           label="Upload Your Approved Task Order"
-          message="Only PDF files with a max file size of 20 MB"
+          message="Only PDF files with a max file size of 10 MB"
           :errorMessageFromParent.sync="fileUploadRequiredErrorMessage"
           :maxFileSize="20"
           :stepNumber="2"
@@ -64,9 +79,9 @@
         who has the authority to execute the task order on your agency’s behalf?
       </p>
       <p>
-        By selecting yes, you certify that the contracting officer has
+        By selecting yes, you certify that the Contracting Officer has
         authorized you to upload the task order in accordance with your agency’s
-        policy and procedures.
+        policies and procedures.
       </p>
       <div
         v-if="signedTaskOrderErrorMessage !== ''"
@@ -133,9 +148,9 @@
     <section role="region" title="Contract Line Items">
       <h2>Contract Line Items</h2>
       <p class="mb-0 content-max-width">
-        A CLIN is a line in your contract that lists the services and products
-        to be delivered with a price or ceiling which cannot be exceeded. Refer
-        to your task order to locate your Contract Line Item Numbers (CLINs).
+        A Contract Line Item Number (CLIN) is a line in your task order that
+        lists the services and products to be delivered with a price or ceiling
+        which cannot be exceeded. Refer to your task order to locate your CLINs.
       </p>
       <clins-card-list
         class="my-9 mt-7"
@@ -170,10 +185,11 @@ export default class CreateTaskOrderForm extends Vue {
   public isYesButtonClicked = false;
   public isNoButtonClicked = false;
   private fileUploadRequiredErrorMessage = "";
-  private helpText = `If your contracting officer used:
-    Form 1149: Enter the “Order Number”
+  private helpText = `If your Contracting Officer used:
+    Form 1449: Enter the “Order Number”
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private savedTaskOrderSigned = false;
+  private stepHasBeenTouched = false;
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
@@ -260,6 +276,8 @@ export default class CreateTaskOrderForm extends Vue {
       this.savedTaskOrderSigned = true;
       this.isTaskOrderSigned(this._signed);
     }
+
+    this.stepHasBeenTouched = this.$store.getters.getStepTouched(2);
   }
 
   // private updated(): void {

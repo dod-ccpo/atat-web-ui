@@ -81,8 +81,8 @@ export default class PortfolioSummaryCard extends Vue {
 
   public onEdit(): void {
     this.$router.push({
-      name: "addportfolio",
-      params: { id: `${this.portfolio.id}` },
+      name: "editportfolio",
+      params: { id: `${this.$store.state.currentPortfolioId}` },
     });
   }
 }

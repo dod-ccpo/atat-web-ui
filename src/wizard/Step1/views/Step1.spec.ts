@@ -9,6 +9,10 @@ import VueAxios from "vue-axios";
 Vue.use(Vuetify);
 
 describe("Testing Step1 Component", () => {
+  const $route = {
+    path: "editportfolio/:id",
+    name: "editportfolio",
+  };
   const localVue = createLocalVue();
   localVue.use(Vuex);
   localVue.use(VueAxios, axios);
@@ -49,6 +53,7 @@ describe("Testing Step1 Component", () => {
         "atat-text-area",
         "atat-button-card",
       ],
+      mocks: { $route },
     });
     wrapper.setData({
       model: {
