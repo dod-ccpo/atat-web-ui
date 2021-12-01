@@ -6,14 +6,14 @@
         <v-col class="pl-0 content-max-width">
           <h1 tabindex="-1">Invite team members to your application</h1>
           <p class="body-lg text--base-darkest">
-            In this section, you will be able to invite people from your
-            application’s development team and assign permission levels, so they
-            can contribute to your workspaces within the
-            <span class="font-weight-bold">{{ csp }}</span> console.
+            In this section, you can invite people from your application’s
+            development team and assign permission levels, so they can
+            contribute to your workspaces within the
+            <strong>{{ csp }}</strong> console.
           </p>
           <p class="body-lg text--base-darkest">
-            In order to invite team members, you must set up at least one
-            application within your portfolio. Please
+            To invite team members, set up at least one application within your
+            portfolio. Please
             <a
               href="/wizard/addapplication"
               class="link-body-md font-weight-bold"
