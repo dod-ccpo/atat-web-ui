@@ -12,7 +12,7 @@
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 primary--text"
-          @click="handleClicked('addteammembers')"
+          @click="onEdit(application)"
           role="link"
           :ripple="false"
           aria-label="Edit team members"
@@ -24,7 +24,10 @@
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0">
-        <v-simple-table class="pb-2">
+        <v-simple-table
+          class="pb-2"
+          v-if="application.appOps.length || application.envOps.length"
+        >
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
@@ -71,7 +74,7 @@
                   </span>
                 </td>
               </tr>
-              <tr v-for="item in application.appOp" :key="item.id">
+              <tr v-for="item in application.appOps" :key="item.id">
                 <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
                   <div class="d-flex flex-column">
                     <span class="table-item font-weight-bold">
@@ -108,6 +111,9 @@
             </tbody>
           </template>
         </v-simple-table>
+        <div v-else class="body px-8 pb-5">
+          You do not have any team members in this workspace.
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -116,6 +122,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { ApplicationModel } from "types/Portfolios";
+import { editmembers } from "@/router/wizard";
 
 @Component({})
 export default class TeamMemberTable extends Vue {
@@ -123,14 +130,27 @@ export default class TeamMemberTable extends Vue {
   @Prop({ default: [] }) private data!: ApplicationModel[];
   @Prop({ default: "" }) private name!: string;
 
-  private handleClicked(name: string) {
-    this.$router.push({ name: name });
+  private onEdit(application: any) {
+    this.$store.dispatch("setReturnToReview", true);
+    this.$store.dispatch(
+      "applications/setCurrentApplicationId",
+      application.appId
+    );
+    const routeName = editmembers.name;
+    this.$router.push({
+      name: routeName,
+      params: {
+        type: "application",
+        id: application.appId,
+      },
+    });
   }
 
   private tableData: {
+    appId: string;
     name: string;
     root: any;
-    appOp: any;
+    appOps: any;
     envOps: any;
   }[] = [];
   private setMemberTableData(data: ApplicationModel[]) {
@@ -197,9 +217,10 @@ export default class TeamMemberTable extends Vue {
       });
 
       const appObj = {
+        appId: application.id,
         name: application.name,
         root: rootAdministrators,
-        appOp: appOps,
+        appOps: appOps,
         envOps: appEnvOps,
       };
       this.tableData.push(appObj);

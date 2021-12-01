@@ -8,8 +8,8 @@
         giving them access to your workspaces within the {{ csp }} console. Add
         your root administrators to <strong>“{{ portfolioName }}”</strong> to
         manage all of your applications, or customize members and roles within
-        each application individually. When you are done, select
-        <strong>Next: Review and Submit</strong> to finalize your portfolio.
+        each application individually. When you are done, select <strong>Next:
+        Review and Submit</strong> to finalize your portfolio.
       </p>
 
       <v-alert
@@ -223,12 +223,11 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       return;
     }
     this.setCurrentApplicationId(item.id);
-
     this.$router.push({
       name: editmembers.name,
       params: {
         type: "application",
-        id: this.$store.state.currentApplicationId,
+        id: this.$store.state.applications.currentApplicationId,
       },
     });
   }
@@ -252,7 +251,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
           name: editmembers.name,
           params: {
             type: "application",
-            id: this.$store.state.currentApplicationId,
+            id: this.$store.state.applications.currentApplicationId,
           },
         });
         break;
@@ -411,12 +410,16 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return this.$store.getters.membersModified;
   }
 
+  private hasPortfolioHadMembersAdded(): boolean {
+    return this.$store.getters["applications/portfolioHasHadMembersAdded"];
+  }
+
   public async beforeRouteLeave(
     to: unknown,
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-    if (this.hasChanges()) {
+    if (this.hasChanges() || this.hasPortfolioHadMembersAdded()) {
       try {
         await this.$store.dispatch("saveStepData", 4);
         await this.$store.dispatch("setStepTouched", [4, true]);

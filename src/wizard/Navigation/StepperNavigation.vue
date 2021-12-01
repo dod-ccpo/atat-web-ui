@@ -78,6 +78,7 @@ export default class StepperNavigation extends Vue {
 
   @Emit()
   public clickedAction(stepSelected: number): number {
+    this.$store.dispatch("setReturnToReview", false);
     return stepSelected;
   }
 

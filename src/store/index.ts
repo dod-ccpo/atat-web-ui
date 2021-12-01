@@ -23,10 +23,10 @@ import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
 
-import { 
-  validateApplication, 
-  validOperator, 
-  validateHasAdminOperators 
+import {
+  validateApplication,
+  validOperator,
+  validateHasAdminOperators
 } from "@/validation/application";
 
 Vue.use(Vuex);
@@ -373,6 +373,7 @@ export default new Vuex.Store({
       message: "",
       contentClass: "",
     },
+    returnToReview: false,
   },
   /*
   ███████████████████████████████████████████████████████████████████████████
@@ -496,6 +497,8 @@ export default new Vuex.Store({
         Vue.set(state.portfolioSteps[stepIndex], "touched", false);
       });
 
+      Vue.set(state, "returnToReview", false);
+
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
 
@@ -515,6 +518,9 @@ export default new Vuex.Store({
     },
     doToast(state, props) {
       state.toast = props;
+    },
+    doSetReturnToReview(state, shouldReturn) {
+      state.returnToReview = shouldReturn;
     },
   },
   /*
@@ -771,6 +777,11 @@ export default new Vuex.Store({
         const applications = mapApplications(applicationModels);
         const operators = mapOperators(portfolioOperators);
 
+        const hasAppOrEnvOperators =
+          rootGetters["applications/appOrEnvHasOperators"](applications);
+        if (hasAppOrEnvOperators || operators.length > 0) {
+          this.dispatch("applications/setPortfolioHasHadMembersAdded", true);
+        }
         if (saveApps) {
           const data = {
             operators: operators,
@@ -779,12 +790,15 @@ export default new Vuex.Store({
           await portfoliosApi.saveApplications(state.currentPortfolioId, data);
         }
 
-        const [isStep4Valid, portfolioHasOperators] = 
-          validateHasAdminOperators(portfolioOperators, applicationModels);
-        this.dispatch("setStepTouched", [4, portfolioHasOperators]);
-        if (portfolioHasOperators) {
-          this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
-        }
+        const [isStep4Valid, portfolioHasOperators] = validateHasAdminOperators(
+          portfolioOperators,
+          applicationModels
+        );
+        const portfolioHasHadMembersAdded =
+          getters["applications/portfolioHasHadMembersAdded"];
+
+        this.dispatch("setStepTouched", [4, portfolioHasHadMembersAdded]);
+        this.dispatch("updateStepModelValidity", [4, isStep4Valid]);
         this.dispatch("updateMembersModified", false);
       }
     },
@@ -958,6 +972,9 @@ export default new Vuex.Store({
       const index = StepModelIndices[stepNumber];
       return state.portfolioSteps[index].touched;
     },
+    setReturnToReview({ commit }, shouldReturn: boolean) {
+      commit("doSetReturnToReview", shouldReturn);
+    },
   },
   /*
   ██████████████████████████████████████████████████████████
@@ -1110,7 +1127,10 @@ export default new Vuex.Store({
     isStepTouched: (state, getters) => (stepNumber: number): boolean => {
       const stepIndex: number = getters.getStepIndex(stepNumber);
       return state.portfolioSteps[stepIndex].touched;
-    }
+    },
+    isReturnToReview: (state) => {
+      return state.returnToReview;
+    },
   },
   modules: {
     portfolios,
