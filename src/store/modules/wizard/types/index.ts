@@ -7,4 +7,5 @@ export default interface WizardState {
   currentStepModel: any;
   currentPortfolioId: string;
   membersModified: boolean;
+  currentApplicationId: string;
 }

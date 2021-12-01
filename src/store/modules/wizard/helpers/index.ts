@@ -86,6 +86,13 @@ export const createStepFiveModel = () => {
   return {};
 };
 
+export const stepModelHasData = (
+  stepModel: any,
+  initialModel: any
+): unknown => {
+  return JSON.stringify(stepModel) !== JSON.stringify(initialModel);
+};
+
 export const stepsModelInitializers: Array<any> = [
   createStepOneModel,
   createStepTwoModel,

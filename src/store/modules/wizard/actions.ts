@@ -3,10 +3,15 @@ import { RootState } from "@/store/types";
 import { ApplicationModel, OperatorModel } from "types/Portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { ActionContext, ActionTree, Commit } from "vuex";
-import { getStepIndex } from "./helpers";
+import {
+  getStepIndex,
+  stepModelHasData,
+  stepsModelInitializers,
+} from "./helpers";
 import WizardState from "./types";
 import { WizardSteps } from "./types/PortfolioStepModels";
 import { validateApplication, validOperator } from "@/validation/application";
+import { portfoliosApi } from "@/api";
 
 const validateStep = ({ commit }: { commit: Commit }, step: number): void => {
   commit("setStepValidated", step);
@@ -34,7 +39,7 @@ const saveStepModel = (
     valid,
   }: { model: any; stepNumber: number; valid: boolean }
 ): void => {
-  commit("saveStepModel", [model, stepNumber, valid]);
+  commit("saveStepModel", { model, stepNumber, valid });
 };
 
 const updateStepModelValidity = (
@@ -95,10 +100,10 @@ const editTaskOrder = (
   if (taskOrderIndex === -1) {
     throw new Error("unable to location task order model with id :" + id);
   }
-  const taskOrder = taskOrderModels[taskOrderIndex];
+  const model = taskOrderModels[taskOrderIndex];
   const stepNumber = WizardSteps.Two;
   const valid = true;
-  commit("saveStepModel", { taskOrder, stepNumber, valid });
+  commit("saveStepModel", { model, stepNumber, valid });
 };
 
 const addNewApplication = ({
@@ -127,6 +132,12 @@ const editApplication = (
   const stepNumber = WizardSteps.Three;
   const valid = true;
   commit("saveStepModel", { applicationModel, stepNumber, valid });
+};
+
+const initializeSteps = ({
+  commit,
+}: ActionContext<WizardState, RootState>): void => {
+  commit("initializeSteps");
 };
 
 const saveStep1 = async (
@@ -243,6 +254,51 @@ const saveStep4 = async (
   dispatch("updateMembersModified", false);
 };
 
+const isStepTouched = (
+  { state }: ActionContext<WizardState, RootState>,
+  stepNumber: number
+): boolean => {
+  const index = stepNumber - 1;
+  return state.portfolioSteps[index].touched;
+};
+
+const saveAllValidSteps = async ({
+  state,
+  dispatch,
+}: ActionContext<WizardState, RootState>): Promise<boolean> => {
+  let saved = false;
+  //trigger validation
+  // await this.dispatch("triggerValidation");
+  // an array of promises to hold each step save api call
+  const saveActions: unknown[] = [];
+  // iterate over portfolio steps model and push valid models to save actions
+  for (const key in state.portfolioSteps) {
+    const step = state.portfolioSteps[key];
+
+    // only save models that have changes and are valid
+    if (step.touched && step.valid) {
+      if (step.step === 2) {
+        const modelCreator = stepsModelInitializers[WizardSteps.Two];
+        if (!stepModelHasData(step.model, modelCreator())) continue;
+      }
+
+      if (step.step === 3) {
+        const modelCreator = stepsModelInitializers[WizardSteps.Three];
+        if (!stepModelHasData(step.model, modelCreator())) continue;
+      }
+      saveActions.push(dispatch("saveStepData", step.step));
+    }
+  }
+
+  try {
+    await Promise.all(saveActions);
+    saved = true;
+  } catch (error) {
+    console.log(error);
+  }
+  return saved;
+};
+
 const saveActions = ["saveStep1", "saveStep2", "saveStep3", "saveStep4"];
 
 /**
@@ -259,11 +315,74 @@ const saveStepData = async (
   await dispatch(saveAction, step.model);
 };
 
+export const createPortfolioDraft = async ({
+  commit,
+  dispatch,
+}: ActionContext<WizardState, RootState>): Promise<void> => {
+  //initialize steps models
+  commit("initializeSteps");
+
+  //initilize module states
+  dispatch("applications/initialize");
+  dispatch("taskOrders/initialize");
+
+  const portfolioDraftId = await portfoliosApi.createDraft();
+  commit("setCurrentPortfolioId", portfolioDraftId);
+};
+
+const loadPortfolioDraft = async (
+  { commit, dispatch }: ActionContext<WizardState, RootState>,
+  draftId: string
+): Promise<void> => {
+  //initial step model data
+  commit("initializeSteps");
+
+  dispatch("applications/initialize");
+
+  //validate that portfolio draft id exists on the server
+  const id = await portfoliosApi.getDraft(draftId);
+
+  if (id === null) {
+    throw new Error(`unable to locate portfolio draft with ${id}`);
+  }
+
+  commit("setCurrentPortfolioId", draftId);
+  const loadActions = [
+    dispatch("loadStep1Data", draftId),
+    dispatch("loadStep2Data", draftId),
+    dispatch("loadStep3Data", draftId),
+  ];
+  await Promise.all(loadActions);
+  await dispatch("saveStep4", false);
+};
+
+const loadStep1Data = async (
+  { commit }: ActionContext<WizardState, RootState>,
+  draftId: string
+): Promise<void> => {
+  const draft = await portfoliosApi.getPortfolio(draftId);
+  if (draft) {
+    const model = {
+      name: draft.name,
+      description: draft.description,
+      dod_components: draft.dod_components,
+      csp: draft.csp,
+    };
+
+    const stepNumber = WizardSteps.One;
+    const valid = true;
+    // update step 1 model
+    commit("doSaveStepModel", { model, stepNumber, valid });
+  }
+};
+
 export const actions: ActionTree<WizardState, RootState> = {
   validateStep,
   setCurrentStepNumber,
   setCurrentStepModel,
   saveStepModel,
+  saveStepData,
+  isStepTouched,
   updateStepModelValidity,
   setStepTouched,
   addNewTaskOrder,
@@ -272,4 +391,6 @@ export const actions: ActionTree<WizardState, RootState> = {
   addNewApplication,
   editApplication,
   updateMembersModified,
+  saveAllValidSteps,
+  loadPortfolioDraft,
 };
