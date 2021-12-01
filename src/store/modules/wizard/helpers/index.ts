@@ -1,5 +1,4 @@
 import { generateUid } from "@/helpers";
-import { WizardSteps } from "../types/PortfolioStepModels";
 
 export const getStepIndex = (step: number): string => {
   const steps: Record<string, string> = {};
@@ -87,7 +86,7 @@ export const createStepFiveModel = () => {
   return {};
 };
 
-export const stepsModelInitializers = [
+export const stepsModelInitializers: Array<any> = [
   createStepOneModel,
   createStepTwoModel,
   createStepThreeModel,
