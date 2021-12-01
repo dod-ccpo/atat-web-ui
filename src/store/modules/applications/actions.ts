@@ -1,4 +1,4 @@
-import { ActionTree, Commit } from "vuex";
+import { ActionContext, ActionTree, Commit } from "vuex";
 import { RootState } from "@/store/types";
 import ApplicationsState from "./types";
 import { portfoliosApi } from "@/api";
@@ -8,6 +8,8 @@ import {
   EnvironmentModel,
   OperatorModel,
 } from "types/Portfolios";
+import { mapApplications, mapOperators } from "./helpers";
+import { validateHasAdminOperators } from "@/validation/application";
 
 const initialize = ({ commit }: { commit: Commit }): void => {
   commit("initialize");
@@ -159,6 +161,33 @@ const initializeRootAdministrators = ({ commit }: { commit: Commit }): void => {
   commit("initializeRootAdministrators");
 };
 
+const saveToServer = async (
+  { state }: ActionContext<ApplicationsState, RootState>,
+  portfolioId: string
+): Promise<void> => {
+  const applicationModels = state.applicationModels;
+  const portfolioOperators = state.portfolioOperators;
+
+  if (applicationModels.length) {
+    const applications = mapApplications(applicationModels);
+    const operators = mapOperators(portfolioOperators);
+
+    const data = {
+      operators: operators,
+      applications: applications,
+    };
+    await portfoliosApi.saveApplications(portfolioId, data);
+  }
+};
+
+const validateAdminOperatators = ({
+  state,
+}: ActionContext<ApplicationsState, RootState>): boolean[] => {
+  const applications = state.applicationModels;
+  const operators = state.portfolioOperators;
+  return validateHasAdminOperators(operators, applications);
+};
+
 export const actions: ActionTree<ApplicationsState, RootState> = {
   initialize,
   setCurrentApplicationId,
@@ -173,4 +202,6 @@ export const actions: ActionTree<ApplicationsState, RootState> = {
   updateApplicationOperatorInfo,
   updateEnvironmentOperatorInfo,
   initializeRootAdministrators,
+  saveToServer,
+  validateAdminOperatators,
 };
