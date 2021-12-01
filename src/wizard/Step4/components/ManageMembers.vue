@@ -89,9 +89,8 @@
             </a>
           </p>
           <p v-else>
-            Team members can have different levels of access to your application
-            and environments. Invite multiple people with the same permissions
-            at once.
+            Team members can have different levels of application access. Invite
+            people with the same permissions below.
           </p>
 
           <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
@@ -196,7 +195,7 @@
             <span v-if="!isEditSingle">Team Member Roles</span>
           </h2>
           <p>
-            Choose what type of role
+            Choose the role
             {{ isEditSingle ? "this individual" : "people" }} will have in
             <span v-if="isEditSingle">{{ currentApplicationName }}.</span>
             <span v-else>your application.</span>
