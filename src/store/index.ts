@@ -779,7 +779,7 @@ export default new Vuex.Store({
 
         const hasAppOrEnvOperators =
           rootGetters["applications/appOrEnvHasOperators"](applications);
-        if (hasAppOrEnvOperators) {
+        if (hasAppOrEnvOperators || operators.length > 0) {
           this.dispatch("applications/setPortfolioHasHadMembersAdded", true);
         }
         if (saveApps) {
@@ -860,7 +860,6 @@ export default new Vuex.Store({
       commit("doInitializeSteps");
 
       this.dispatch("applications/initialize");
-      this.dispatch("applications/setPortfolioHasHadMembersAdded", false);
 
       //validate that portfolio draft id exists on the server
       const id = await portfoliosApi.getDraft(draftId);

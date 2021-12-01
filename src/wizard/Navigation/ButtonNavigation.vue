@@ -18,7 +18,7 @@
       :class="{
         'link-button no-focus-shift': button.link,
         'secondary-btn': button.secondary,
-        'd-none': isReturnToReview && button.text === 'Previous',
+        'd-none': isReturnToReview && button.action[0] === 'previous',
       }"
       role="link"
     >

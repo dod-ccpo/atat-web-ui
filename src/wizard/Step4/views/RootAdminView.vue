@@ -313,7 +313,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   }
 
   //Dialog stuff
-  private okText = "Remove Administrator";
+  private okText = "Remove Root Administrator";
   private cardWidth = "40";
   private cancelText = "Cancel";
   private hasDialog = true;
