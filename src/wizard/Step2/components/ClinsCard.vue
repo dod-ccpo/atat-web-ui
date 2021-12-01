@@ -70,7 +70,7 @@
                   <atat-text-field
                     class="mb-3"
                     name="clin-number"
-                    id="clin-number"
+                    :id="getId('clin-number')"
                     label="CLIN Number"
                     :rules="clinNumberRules"
                     :value.sync="_clin_number"
@@ -78,6 +78,7 @@
                   <atat-select
                     class="clin-idiq-select max-width-100"
                     label="Corresponding IDIQ CLIN"
+                    :id="getId('clin-idiq')"
                     placeholder="- Select -"
                     :items="idiq_clin_items"
                     :selectedValue.sync="_idiq_clin"
@@ -398,6 +399,7 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters"
     );
+
     return validationRules;
   }
 
@@ -507,9 +509,6 @@ export default class ClinsCard extends Vue {
       }
     }
     return validationRules;
-    // return this.validateDatePickerOnLoad && this.isClinFormDirty
-    //   ? validationRules
-    //   : [];
   }
 
   // @Watch("_obligated_funds")
