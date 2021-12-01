@@ -3,10 +3,10 @@
     <div class="content-max-width">
       <h1 tabindex="-1">Let’s create your new application</h1>
       <p>
-        In this section, we’ll set up your cloud workspaces within
+        In this section, we will set up your cloud workspaces within
         <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
         >. If you have more than one application, we will walk through them one
-        at a time. Select <strong>Next</strong> to view your applications
+        at a time. Select <strong>Next</strong> to view your application
         summary.
       </p>
     </div>
@@ -102,10 +102,8 @@ export default class CreateApplicationForm extends Vue {
   @PropSync("application") _application!: CreateApplicationModel;
   @Prop({ default: false }) private validateOnLoad!: boolean;
 
-  private applicationNameHelpText = `This name will be displayed within the cloud provider’s console. It should be intuitive
-    and easily recognizable for all of your team members.`;
-  private applicationDetailsHelpText = `Add a brief one to two sentence description of your application.
-    Consider using the “Description of Work” from your task order.`;
+  private applicationNameHelpText = `This name will be displayed within the cloud provider’s console. It should be intuitive and easily recognizable for all of your team members.`;
+  private applicationDetailsHelpText = `Add a brief one to two sentence description of your application. Consider using the “Description of Work” from your task order.`;
 
   get rules(): unknown {
     return {
