@@ -376,6 +376,23 @@ const loadStep1Data = async (
   }
 };
 
+
+const loadStep2Data = async ({ commit, dispatch}: ActionContext<WizardState, RootState>, draftId: string): Promise<void> => {
+  // get funding details
+  const taskOrders = await portfoliosApi.getFunding(draftId);
+
+  if (taskOrders !== null) {
+    //store the tasks orders
+    dispatch("taskOrders/setCurrentTaskOrders", taskOrders);
+    const stepIndex = WizardSteps.Two;
+    const modelCreator = stepsModelInitializers[stepIndex];
+    const model = modelCreator();
+    const stepNumber = WizardSteps.Two;
+    commit("saveStepModel", [stepsModelInitializers, 2, stepIndex, true]);
+  }
+};
+
+
 export const actions: ActionTree<WizardState, RootState> = {
   validateStep,
   setCurrentStepNumber,
@@ -393,4 +410,5 @@ export const actions: ActionTree<WizardState, RootState> = {
   updateMembersModified,
   saveAllValidSteps,
   loadPortfolioDraft,
+  loadStep1Data,
 };

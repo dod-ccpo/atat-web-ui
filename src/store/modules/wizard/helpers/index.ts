@@ -1,14 +1,7 @@
 import { generateUid } from "@/helpers";
 
 export const getStepIndex = (step: number): string => {
-  const steps: Record<string, string> = {};
-  steps["1"] = "stepOne";
-  steps["2"] = "stepTwo";
-  steps["3"] = "stepThree";
-  steps["4"] = "stepFour";
-  steps["5"] = "stepFive";
-
-  return steps[`${step}`];
+ 
 };
 
 export const createStepOneModel = () => {
