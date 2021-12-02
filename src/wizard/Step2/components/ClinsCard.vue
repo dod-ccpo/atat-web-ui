@@ -10,7 +10,8 @@
           <v-expansion-panels v-model="openItem">
             <v-expansion-panel @click="toggleClinCard">
               <v-expansion-panel-header
-                class="body-lg font-weight-bold pt-2"
+                class="body-lg font-weight-bold"
+                style="min-height: 57px"
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">
@@ -49,7 +50,9 @@
                         </tr>
                         <tr class="body">
                           <td class="idiq_clin">{{ _idiq_clin }}</td>
-                          <td>{{ formatCurrency(total_clin_value) }}</td>
+                          <td>
+                            {{ formatCurrency(_total_clin_value) }}
+                          </td>
                           <td>{{ formatCurrency(_obligated_funds) }}</td>
                           <td style="white-space: nowrap">
                             <span v-if="_pop_start_date !== ''">
@@ -223,6 +226,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 import { TaskOrderModel } from "../../../../types/Wizard";
+import Inputmask from "inputmask";
 
 @Component({})
 export default class ClinsCard extends Vue {
@@ -311,7 +315,10 @@ export default class ClinsCard extends Vue {
   }
 
   public formatCurrency(value: number): string {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return Inputmask.format(value.toString(), {
+      alias: "currency",
+      prefix: "$",
+    });
   }
 
   private getId(prepend: string) {

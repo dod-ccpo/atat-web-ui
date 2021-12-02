@@ -2,8 +2,37 @@
   border-radius: 0 !important;
 }
 
-.atat-select {
+.atat-select,
+.v-select {
   color: $base_darkest !important;
+
+  .show-validation-icon {
+    .v-select__slot {
+      position: relative;
+      &:after {
+        content: "";
+        font-family: "Material Icons";
+        -webkit-font-feature-settings: "liga";
+        position: absolute;
+        right: -40px;
+        top: 7px;
+        font-size: 20px;
+        font-weight: normal;
+      }
+    }
+  };
+
+  .valid-icon .v-select__slot::after {
+    content: "check_circle";
+    color: $success;
+  }
+  .invalid-icon .v-select__slot::after {
+    content: "error";
+    color: $error-dark;
+  }
+  // .invalid-icon  .v-input__slot{
+  //   border: 5px solid purple !important;
+  // }
 }
 
 .v-input__control {
@@ -13,6 +42,9 @@
 .v-input__slot {
   &:after {
     display: none;
+  }
+  .v-input__append-inner{
+    margin-top: 11px !important;
   }
 }
 
