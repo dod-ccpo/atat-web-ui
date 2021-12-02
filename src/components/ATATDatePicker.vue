@@ -124,7 +124,7 @@
       </div>
       <v-menu
         v-model="menu"
-        id="CLIN-datepicker-menu"
+        :id="getId('CLIN-datepicker-menu')"
         :attach="'#datepicker-text-boxes-' + this.id"
         origin="top left"
         :nudge-left="2"
@@ -254,6 +254,7 @@ export default class ATATDatePicker extends Vue {
   private thisControl = document.getElementById(
     this.thisControlId
   ) as HTMLElement;
+  private thisControlClicked = false;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -477,9 +478,11 @@ export default class ATATDatePicker extends Vue {
       this.getId("end-date-text-box"),
     ].forEach((tbId) => {
       Inputmask({
+        alias: "datetime",
         inputFormat: "mm/dd/yyyy",
         placeholder: "MM/DD/YYYY",
-        regex: "((0[1-9]|1[0-2])\\/(0[1-9]|[12]\\d|3[01])\\/[12]\\d{3}"
+        min: "01/01/2020",
+        max: "12/21/2035",
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
   }
@@ -489,10 +492,14 @@ export default class ATATDatePicker extends Vue {
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
+
     const element = event.target as HTMLElement;
     //if control (textboxes, icons, calendars, menu) was clicked
-    this.menu =
-      element.closest("#" + this.getId("clin-datepicker-text-boxes")) !== null;
+
+    this.thisControlClicked =
+      this.thisControl.querySelector("#" + element.getAttribute("id")) !== null;
+
+    this.menu = this.thisControlClicked;
 
     // if icon is clicked
     const isIconClicked = element.classList.contains("date-picker-icon");
@@ -535,7 +542,7 @@ export default class ATATDatePicker extends Vue {
       // if calendars were clicked
       const isCalendarClicked =
         element.closest(".v-date-picker-table") !== null;
-      if (isCalendarClicked) {
+      if (isCalendarClicked && this.thisControlClicked) {
         // if both textboxes have valid dates, close menu
         const button = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(button, this.isStartTextBoxFocused);
