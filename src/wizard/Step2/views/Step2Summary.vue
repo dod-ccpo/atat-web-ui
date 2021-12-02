@@ -5,9 +5,15 @@
       <p v-if="cardsData.cards.length > 0" class="mb-8">
         If you have more task orders, <strong>add</strong> them below. You can
         also <strong>edit</strong> or <strong>delete</strong> any of the task
-        orders you already entered. When you are done, click
-        <strong>Next</strong> and we will walk you through adding your
-        applications and environments.
+        orders you already entered.
+        <span v-if="!isReturnToReview"
+          >When you are done, click <strong>Next</strong> and we will walk you
+          through adding your applications and environments.</span
+        ><span v-else
+          >When you are done, click
+          <strong>Return to Review and Submit</strong> to finalize your
+          portfolio.</span
+        >
       </p>
       <v-card v-else class="pa-12 mb-8 mt-0">
         <v-card-text class="pa-0">
@@ -96,7 +102,7 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   private async mounted(): Promise<void> {
     this.transformData();
   }
-
+  private isReturnToReview = this.$store.getters.isReturnToReview;
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],

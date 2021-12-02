@@ -68,7 +68,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
         id: 2,
         title: "Funding Details",
         description: "Ensures you have Task Orders to fund your Portfolio",
-        name: "addfunding",
+        name: "fundingsummary",
       },
       {
         id: 3,
@@ -90,6 +90,5 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     this.portfolio = this.$store.getters.getPortfolio;
     this.taskOrders = this.$store.getters.getTaskOrders;
   }
-
 }
 </script>
