@@ -24,46 +24,61 @@ describe("Testing ATATSelect Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('has a `v-select getStatusIcon` with 3 items: ["Foo", "Bar", "Fizz Tony", "Buzz"]', async () => {
-    const items = wrapper.find(".v-select").props("items");
-    expect(items.length).toBe(4);
-    expect(items).toStrictEqual(["Foo", "Bar", "Fizz Tony", "Buzz"]);
-    wrapper.findAll(".v-select").at(0).trigger("click");
-    await wrapper.vm.getStatusIcon();
-    expect(await wrapper.vm.$data.success).toBe(false);
+  it("executes validateField method with no _selectedValue", async () => {
+    await wrapper.setProps({
+      selectedValue: "",
+    });
+    await wrapper.vm.validateField();
+    expect(wrapper.vm.isFieldValid).toBe(false);
   });
 
-  it('has a `v-select onChange` with 3 items: ["Foo", "Bar", "Fizz Tony", "Buzz"]', async () => {
-    wrapper.findAll(".v-select").at(0).trigger("click");
-    await wrapper.vm.onChange();
+  it("executes validateField method with valid _selectedValue", async () => {
+    await wrapper.setProps({
+      selectedValue: "dummy value",
+    });
+    await wrapper.vm.validateField();
+    expect(wrapper.vm.isFieldValid).toBe(true);
   });
 
-  it('has a `v-select onSelectedValueChanged` with 3 items: ["Foo", "Bar", "Fizz Tony", "Buzz"]', async () => {
-    wrapper.findAll(".v-select").at(0).trigger("click");
-    await wrapper.vm.onSelectedValueChanged();
-  });
-
-  it("has a v-select onErrorBucketChanged", async () => {
-    await wrapper.vm.onErrorBucketChanged();
-    await wrapper.vm.getStatusIcon();
-    expect(await wrapper.vm.$data.success).toBe(false);
-  });
-
-  it("testing getStatus icon with empty rules", async () => {
+  it("executes validateField method with no rules", async () => {
     await wrapper.setProps({
       rules: [],
-      items: [],
     });
-    await wrapper.setData({ isFieldValid: true, success: true });
-
-    expect(wrapper.vm.$data.success).toBe(true);
+    await wrapper.vm.validateField();
+    expect(wrapper.vm.isFieldValid).toBe(false);
   });
 
-  it("testing getStatus icon", async () => {
-    const rules1 = wrapper.vm.rules[0](true);
-    await wrapper.setProps({ selectedValue: "true" });
+  it("executes onchange method", async () => {
+    const changedValue = "New Value";
+    await wrapper.vm.onChange(changedValue);
+    expect(wrapper.vm.selected).toBe(changedValue);
+  });
 
-    expect(rules1).toBe(true);
-    expect(wrapper.vm.$data.success).toBe(true);
+  it("component mounted with existing value", async () => {
+    wrapper = mount(ATATSelect, {
+      localVue,
+      vuetify,
+      propsData: {
+        selectedValue: "dummy value",
+        validateOnLoad: true,
+        rules: [(v: string) => !!v || "is required"],
+      },
+    });
+    await wrapper.vm.validateField();
+    expect(wrapper.vm.isFieldValid).toBe(true);
+  });
+
+  it("component mounted with no existing value && validateOnLoad == false", async () => {
+    wrapper = mount(ATATSelect, {
+      localVue,
+      vuetify,
+      propsData: {
+        selectedValue: "",
+        validateOnLoad: false,
+        rules: [(v: string) => !!v || "is required"],
+      },
+    });
+    await wrapper.vm.validateField();
+    expect(wrapper.vm.isFieldValid).toBe(false);
   });
 });

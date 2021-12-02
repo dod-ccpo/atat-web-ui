@@ -236,9 +236,11 @@ export default class ButtonNavigation extends Vue {
   };
 
   get pageButtonPanel(): NavButtonPanel {
-    return this.wizardNavButtons.NavButtonPanels.find((buttonPanel) => {
+    return (
+      this.wizardNavButtons.NavButtonPanels.find((buttonPanel) => {
         return buttonPanel.step === this.stepNumber;
-      }) || this.wizardNavButtons.NavButtonPanels[0];
+      }) || this.wizardNavButtons.NavButtonPanels[0]
+    );
   }
 }
 </script>

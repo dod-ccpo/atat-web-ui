@@ -10,7 +10,7 @@
           <v-expansion-panels v-model="openItem">
             <v-expansion-panel @click="toggleClinCard">
               <v-expansion-panel-header
-                class="body-lg font-weight-bold pt-2"
+                class="body-lg font-weight-bold"
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">
@@ -49,7 +49,9 @@
                         </tr>
                         <tr class="body">
                           <td class="idiq_clin">{{ _idiq_clin }}</td>
-                          <td>{{ formatCurrency(total_clin_value) }}</td>
+                          <td>
+                            {{ formatCurrency(_total_clin_value) }}
+                          </td>
                           <td>{{ formatCurrency(_obligated_funds) }}</td>
                           <td style="white-space: nowrap">
                             <span v-if="_pop_start_date !== ''">
@@ -223,6 +225,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 import { TaskOrderModel } from "../../../../types/Wizard";
+import Inputmask from "inputmask";
 
 @Component({})
 export default class ClinsCard extends Vue {
@@ -311,7 +314,10 @@ export default class ClinsCard extends Vue {
   }
 
   public formatCurrency(value: number): string {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return Inputmask.format(value.toString(), {
+      alias: "currency",
+      prefix: "$",
+    });
   }
 
   private getId(prepend: string) {
@@ -443,11 +449,6 @@ export default class ClinsCard extends Vue {
       });
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(() => {
-          console.log("startDAte " + this._pop_start_date);
-          console.log("enddate " + this._pop_end_date);
-          console.log(
-            moment(this._pop_start_date).isBefore(this._pop_end_date)
-          );
           return (
             moment(this._pop_start_date).isBefore(this._pop_end_date) ||
             "The period of performance start date must be before the end date"

@@ -172,7 +172,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch, PropSync } from "vue-property-decorator";
 import { UploadedFile } from "../../types/FormFields";
-import { TaskOrderFile } from "types/Wizard";;
+import { TaskOrderFile } from "types/Wizard";
 import { uploadTaskOrderFile } from "@/api/utility";
 
 @Component
@@ -397,7 +397,7 @@ export default class ATATFileUpload extends Vue {
       const uploadedTaskOrderFile = await uploadTaskOrderFile(formData);
       this.taskOrderFile = uploadedTaskOrderFile;
       this.uploadedFile = [this.taskOrderFile];
-       this._pdfFile = this.taskOrderFile;
+      this._pdfFile = this.taskOrderFile;
     } catch (error) {
       console.log(error);
     }
