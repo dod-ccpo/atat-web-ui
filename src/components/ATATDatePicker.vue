@@ -481,8 +481,8 @@ export default class ATATDatePicker extends Vue {
         alias: "datetime",
         inputFormat: "mm/dd/yyyy",
         placeholder: "MM/DD/YYYY",
-        min: "01/01/2020",
-        max: "12/21/2035",
+        min: moment(this.min).format("MM/DD/YYYY"),
+        max: moment(this.max).format("MM/DD/YYYY"),
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
   }
