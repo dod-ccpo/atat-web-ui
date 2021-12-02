@@ -8,13 +8,12 @@
       <p>Yes. However, ATAT is not a system of record.</p>
       <p>
         After provisioning, you will be able to add new task orders and team
-        members. This information will be submitted to your cloud service
-        provider, in order to keep your cloud resources funded and operational
-        in the future.
+        members. This information will be submitted to your CSP, in order to
+        keep your cloud resources funded and operational in the future.
       </p>
       <p>
         However, any updates made to existing task orders, applications,
-        environments and team member permissions within ATAT will not be
+        environments, and team member permissions within ATAT will not be
         reflected within your cloud service provider console. And vice versa,
         any changes that your team members make within the CSP console will not
         be synced with ATAT.
