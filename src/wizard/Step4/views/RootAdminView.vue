@@ -124,34 +124,19 @@
       <v-col cols="12" class="ma-0">
         <v-data-table
           v-if="rootMembersCount >= 1"
-          class="review-table"
+          class="review-table review-table--shadowed"
           :headers="headers"
           :items="isFiltered ? filteredData : rootMembers"
           hide-default-footer
         >
-          <template v-slot:header.display_name="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
-          <template v-slot:header.access="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
-          <template class="hello" v-slot:item.display_name="{ item }">
-            <div class="body font-weight-bold pt-6">
-              {{ item.display_name }}
-            </div>
-            <div class="body text--base-dark pb-6">
-              {{ item.email }}
-            </div>
+          <template v-slot:item.display_name="{ item }">
+            <strong>{{ item.display_name }}</strong>
+            <br />
+            {{ item.email }}
           </template>
           <template v-slot:item.access="{ item }">
             <div class="d-flex justify-space-between">
-              <div class="body text--base-dark pt-3">
-                {{ roleTranslation(item.access) }}
-              </div>
+              {{ roleTranslation(item.access) }}
 
               <v-menu
                 transition="slide-y-transition"

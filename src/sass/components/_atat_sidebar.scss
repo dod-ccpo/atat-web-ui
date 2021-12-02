@@ -25,10 +25,13 @@ nav.v-navigation-drawer:not(#right-side-drawer){
                 font-weight: normal !important;
             }
             &.v-btn.left-nav-menu-link {
+                margin-bottom: 1px;
                 height: 48px !important;
                 position: relative;
+                &[active=true], &:hover {
+                    background-color: $accent-cool-lightest !important;
+                }
                 &[active=true] {
-                    background-color: $info-lighter !important;
                     &:before {
                         position: absolute;
                         content: "";
