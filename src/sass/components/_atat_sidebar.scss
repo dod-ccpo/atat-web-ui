@@ -30,6 +30,8 @@ nav.v-navigation-drawer:not(#right-side-drawer){
                 position: relative;
                 &[active=true], &:hover {
                     background-color: $accent-cool-lightest !important;
+                }
+                &[active=true] {
                     &:before {
                         position: absolute;
                         content: "";

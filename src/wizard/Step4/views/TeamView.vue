@@ -373,7 +373,7 @@ export default class TeamView extends mixins(ApplicationData) {
       case "administrator":
         return "Administrator";
       case "contributor":
-        return "Contributer";
+        return "Contributor";
       case "read_only":
         return "Billing read-only";
       default:

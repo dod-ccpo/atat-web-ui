@@ -137,7 +137,7 @@ export default class TeamMemberTable extends Vue {
           id: op.id,
           display_name: op.display_name,
           email: op.email,
-          workspace_roles: "Root Administrator",
+          workspace_roles: "Root administrator",
         };
         rootOperators.push(opObj);
       });
@@ -172,7 +172,7 @@ export default class TeamMemberTable extends Vue {
         const envOperators = env.operators;
         if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
-            const i = operators.findIndex((o) => o.email === op.email);
+            const i = operators.findIndex((o: any) => o.email === op.email);
             if (op.access !== "no_access") {
               const workspace_roles =
                 i > -1
@@ -217,7 +217,7 @@ export default class TeamMemberTable extends Vue {
       case "administrator":
         return "Administrator";
       case "contributor":
-        return "Contributer";
+        return "Contributor";
       case "read_only":
         return "Billing read-only";
       default:
