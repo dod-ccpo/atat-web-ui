@@ -18,10 +18,19 @@
           <strong>Next</strong> to add team members to your other applications.
         </span>
         <span v-else>
-          The following people will be granted access to your workspaces within
-          the {{ csp }} console after your portfolio is provisioned. You can
-          invite additional team members or modify permissions below.
-          <span v-html="nextText" class="mr-1"></span>
+          The following people will be granted full access to all of your
+          applications within the {{ csp }} console after your portfolio is
+          provisioned. You can <strong>invite</strong> additional root
+          administrators below. When you are done, select <strong>Next</strong>
+          to view all of your workspace teams.
+          <span v-if="isReturnToReview">
+            When you are done, select <strong>Return to Review and
+            Submit</strong> to finalize your portfolio.
+          </span>
+          <span v-else>
+            When you are done, select <strong>Next</strong> to view
+            or edit your workspace teams.
+          </span>
         </span>
         <a
           class="text-link"
@@ -224,15 +233,6 @@ export default class RootAdminView extends mixins(ApplicationData) {
     this.$store.getters["applications/portfolioOperators"].length === 0;
 
   private isReturnToReview = this.$store.getters.isReturnToReview;
-
-  get nextText(): string {
-    if (this.isReturnToReview) {
-      return `When you are done, select <strong>Return to Review and
-        Submit</strong> to finalize your portfolio.`;
-    }
-    return `When you are done, select <strong>Next</strong> to view
-      or edit your workspace teams.`;
-  }
 
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
