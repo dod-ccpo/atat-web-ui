@@ -4,9 +4,8 @@
       v-for="application in this.tableData"
       :key="application.name"
       class="ma-1 width-95 height-100 mb-10"
-      elevation="4"
     >
-      <v-card-title class="d-flex justify-space-between ml-2">
+      <v-card-title class="d-flex justify-space-between">
         <span class="h3">{{ application.name }}</span>
         <v-btn
           text
@@ -24,10 +23,7 @@
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0">
-        <v-simple-table
-          class="pb-2"
-          v-if="application.appOps.length || application.envOps.length"
-        >
+        <v-simple-table v-if="application.operators.length">
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
@@ -59,52 +55,32 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in application.root" :key="item.id">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
-                  <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
-                      {{ item.display_name }}
-                    </span>
-                    <span class="table-item"> {{ item.email }} </span>
-                  </div>
+              <tr v-for="operator in application.operators" :key="operator.id">
+                <td
+                  class="pl-6 pt-4 pb-4 pr-4 body"
+                  style="vertical-align: top"
+                >
+                  <strong>{{ operator.display_name }}</strong>
+                  <br />
+                  {{ operator.email }}
                 </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    {{ item.workspace_roles }}
+                <td
+                  class="pl-4 pt-4 pb-4 pr-6 body"
+                  style="vertical-align: top"
+                >
+                  <span v-if="operator.workspace_roles.indexOf('|') > -1">
+                    <span
+                      v-for="access in tranformWorkSpace(
+                        operator.workspace_roles
+                      )"
+                      :key="access"
+                      class="d-block"
+                    >
+                      {{ access }}
+                    </span>
                   </span>
-                </td>
-              </tr>
-              <tr v-for="item in application.appOps" :key="item.id">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
-                  <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
-                      {{ item.display_name }}
-                    </span>
-                    <span class="table-item"> {{ item.email }} </span>
-                  </div>
-                </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    All: {{ item.workspace_roles }}
-                  </span>
-                </td>
-              </tr>
-              <tr v-for="item in application.envOps" :key="item.id">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
-                  <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
-                      {{ item.display_name }}
-                    </span>
-                    <span class="table-item"> {{ item.email }} </span>
-                  </div>
-                </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span
-                    v-for="access in tranformWorkSpace(item.workspace_roles)"
-                    :key="access"
-                    class="table-item d-flex flex-column"
-                  >
-                    {{ access }}
+                  <span v-else>
+                    {{ operator.workspace_roles }}
                   </span>
                 </td>
               </tr>
@@ -130,47 +106,53 @@ export default class TeamMemberTable extends Vue {
   @Prop({ default: [] }) private data!: ApplicationModel[];
   @Prop({ default: "" }) private name!: string;
 
-  private onEdit(application: any) {
+  private onEdit(data: any) {
     this.$store.dispatch("setReturnToReview", true);
-    this.$store.dispatch(
-      "applications/setCurrentApplicationId",
-      application.appId
-    );
+    if (data.type === "application") {
+      this.$store.dispatch("applications/setCurrentApplicationId", data.id);
+    }
     const routeName = editmembers.name;
     this.$router.push({
       name: routeName,
       params: {
-        type: "application",
-        id: application.appId,
+        type: data.type,
+        id: data.id,
       },
     });
   }
 
   private tableData: {
-    appId: string;
+    type: string;
+    id: string;
     name: string;
-    root: any;
-    appOps: any;
-    envOps: any;
+    operators: any;
   }[] = [];
   private setMemberTableData(data: ApplicationModel[]) {
-    data.forEach((application) => {
-      const rootAdministrators: any = [];
-      const appOps: any = [];
-      const appEnvOps: any[] = [];
+    const rootAdmins =
+      this.$store.getters["applications/portfolioOperators"] || [];
+    if (rootAdmins && rootAdmins.length) {
+      const rootOperators: any = [];
+      rootAdmins.forEach((op: any) => {
+        const opObj = {
+          id: op.id,
+          display_name: op.display_name,
+          email: op.email,
+          workspace_roles: "Root Administrator",
+        };
+        rootOperators.push(opObj);
+      });
 
-      const rootAdmins = this.$store.state.portfolioOperators || [];
-      if (rootAdmins && rootAdmins.length) {
-        rootAdmins.forEach((op: any) => {
-          const opObj = {
-            id: op.id,
-            display_name: op.display_name,
-            email: op.email,
-            workspace_roles: "Root administrator",
-          };
-          rootAdministrators.push(opObj);
-        });
-      }
+      const rootObj = {
+        type: "portfolio",
+        id: this.$store.getters.getPortfolioId,
+        name: "Root Administrators",
+        operators: rootOperators,
+      };
+      this.tableData.push(rootObj);
+    }
+
+    data.forEach((application) => {
+      const operators: any = [];
 
       const applicationOperators = application.operators || [];
       if (applicationOperators && applicationOperators.length) {
@@ -179,9 +161,9 @@ export default class TeamMemberTable extends Vue {
             id: op.id,
             display_name: op.display_name,
             email: op.email,
-            workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
+            workspace_roles: "All: " + this.roleTranslation(op.access), // get nice name, not enum
           };
-          appOps.push(opObj);
+          operators.push(opObj);
         });
       }
 
@@ -190,18 +172,18 @@ export default class TeamMemberTable extends Vue {
         const envOperators = env.operators;
         if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
-            const i = appEnvOps.findIndex((o) => o.email === op.email);
+            const i = operators.findIndex((o) => o.email === op.email);
             if (op.access !== "no_access") {
               const workspace_roles =
                 i > -1
                   ? env.name +
                     ": " +
                     this.roleTranslation(op.access) +
-                    "  " +
-                    appEnvOps[i].workspace_roles
+                    "|" +
+                    operators[i].workspace_roles
                   : env.name + ": " + this.roleTranslation(op.access);
               if (i > -1) {
-                appEnvOps[i].workspace_roles = workspace_roles;
+                operators[i].workspace_roles = workspace_roles;
               } else {
                 const opObj = {
                   id: op.id,
@@ -209,7 +191,7 @@ export default class TeamMemberTable extends Vue {
                   email: op.email,
                   workspace_roles: workspace_roles,
                 };
-                appEnvOps.push(opObj);
+                operators.push(opObj);
               }
             }
           });
@@ -217,17 +199,16 @@ export default class TeamMemberTable extends Vue {
       });
 
       const appObj = {
-        appId: application.id,
+        type: "application",
+        id: application.id,
         name: application.name,
-        root: rootAdministrators,
-        appOps: appOps,
-        envOps: appEnvOps,
+        operators: operators,
       };
       this.tableData.push(appObj);
     });
   }
   private tranformWorkSpace(data: string) {
-    return data.split("  ");
+    return data.split("|");
   }
   private roleTranslation(role: string): string {
     switch (role) {

@@ -1,8 +1,13 @@
-@import "../utils/colors.scss";
 @import "../utils/typography.scss";
 
+
+.theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+  background-color: rgba($accent-cool-lightest, 0.5) !important;
+}
 .review-table {
-  box-shadow: 0px 2px 5px rgba(208, 219, 231, 0.5);
+  &.review-table--shadowed {
+    box-shadow: 0px 2px 5px rgba(208, 219, 231, 0.5) !important;
+  }
 
   border-radius: 0px !important;
   .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper){
@@ -25,6 +30,9 @@
         color: $base_darkest;
         padding-top: 24px;
         padding-bottom: 24px;
+      }
+      td {
+        border-radius: 0 !important;
       }
     }
   }

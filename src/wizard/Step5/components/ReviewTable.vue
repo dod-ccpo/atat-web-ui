@@ -1,6 +1,6 @@
 <template>
   <div class="review-table">
-    <v-card class="ml-4 mt-4 width-95 height-100 mb-10" elevation="4">
+    <v-card class="ml-4 mt-4 width-95 height-100 mb-10">
       <v-card-title class="d-flex justify-space-between">
         <span class="h3">{{ application.name }}</span>
         <v-btn

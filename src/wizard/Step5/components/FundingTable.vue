@@ -1,6 +1,6 @@
 <template>
   <div class="review-table">
-    <v-card class="ma-1 width-95 height-100 mb-10" elevation="4">
+    <v-card class="ma-1 width-95 height-100 mb-10">
       <v-card-title class="d-flex justify-space-between">
         <span class="h3 justify-center">Task Order #{{ name }}</span>
         <v-btn

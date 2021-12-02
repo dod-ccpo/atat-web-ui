@@ -35,7 +35,7 @@
         <div class="black--text body-lg">
           <p class="mb-0">
             {{ missingAdminMessage }}
-            You can also add a root administrator to your “{{ portfolioName }}” 
+            You can also add a root administrator to your “{{ portfolioName }}”
             workspace to manage all applications and environments.
           </p>
         </div>
@@ -101,7 +101,7 @@
     <v-row v-if="membersData.length > 0">
       <v-col cols="12" class="ma-0">
         <v-data-table
-          class="review-table"
+          class="review-table review-table--shadowed"
           :headers="headers"
           :items="isFiltered ? filteredData : membersData"
           hide-default-footer
@@ -223,7 +223,7 @@ export default class TeamView extends mixins(ApplicationData) {
 
   private get missingAdminMessage(): string {
     if (this.environmentsWithoutAdmins.length &&
-      this.environmentsWithoutAdmins.length < this.environmentCount) 
+      this.environmentsWithoutAdmins.length < this.environmentCount)
     {
       let envList = this.environmentsWithoutAdmins.join(", ");
       envList = envList.replace(/,([^,]*)$/, " and" + "$1");

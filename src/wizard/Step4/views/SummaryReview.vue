@@ -37,7 +37,10 @@
     </div>
 
     <v-data-table
-      class="review-table overflow-x-hidden overflow-y-hidden"
+      class="
+        review-table review-table--shadowed
+        overflow-x-hidden overflow-y-hidden
+      "
       style="width: 900px"
       :headers="headers"
       :items="applicationData"

@@ -115,7 +115,7 @@
       <v-col cols="12" class="ma-0">
         <v-data-table
           v-if="rootMembersCount >= 1"
-          class="review-table"
+          class="review-table review-table--shadowed"
           :headers="headers"
           :items="isFiltered ? filteredData : rootMembers"
           hide-default-footer

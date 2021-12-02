@@ -180,6 +180,7 @@ const mapApplications = (
               access: op.access,
               display_name: op.display_name,
               email: op.email,
+              id: op.id,
             };
           })
         : [],
@@ -192,6 +193,7 @@ const mapApplications = (
                   access: op.access,
                   display_name: op.display_name,
                   email: op.email,
+                  id: op.id,
                 };
               })
             : [],
@@ -209,6 +211,7 @@ const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
     const { id, ...baseModel } = operatorModel;
 
     const operator: Operator = {
+      id,
       ...baseModel,
     };
 
@@ -915,12 +918,11 @@ export default new Vuex.Store({
 
         const rootAdmins = applicationData.operators.map(
           (operator: Operator) => {
-            const operatorModels: OperatorModel = {
+            const operatorObj: OperatorModel = {
               ...operator,
               id: generateUid(),
             };
-
-            return operator;
+            return operatorObj;
           }
         );
 
@@ -1084,6 +1086,7 @@ export default new Vuex.Store({
     },
     getTaskOrders: (state, rootGetters) => rootGetters["taskOrders/taskOrders"],
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
+    getPortfolioId: (state) => state.currentPortfolioId,
     getPortfolioName: (state, getters) => (defaultResponse: string) => {
       defaultResponse = defaultResponse || "this portfolio";
       let pName = defaultResponse;

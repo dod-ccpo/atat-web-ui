@@ -136,7 +136,7 @@ a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
             border-color: $base-lighter;
         }
         &:focus, &:active {
-            background-color: $primary-lighter !important;
+            background-color: $accent-cool-lightest !important;
             border: solid 1px $primary !important;
             &:not([aria-expanded="false"]) {
                 border-bottom-left-radius: 0;
