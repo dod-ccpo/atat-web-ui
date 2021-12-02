@@ -21,61 +21,32 @@
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
-                <th id="name">
-                  <span
-                    class="
-                      pl-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Name
-                  </span>
-                </th>
-                <th id="permissions">
-                  <span
-                    class="text-left text--base-dark label font-weight-black"
-                  >
-                    App Permissions
-                  </span>
-                </th>
-                <th id="environment">
-                  <span
-                    class="
-                      pr-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Environment Access
-                  </span>
-                </th>
+                <th id="name">Name</th>
+                <th id="permissions">App Permissions</th>
+                <th id="environment">Environment Access</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in getMembers" :key="item.id">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
+                <td>
                   <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
-                      {{ item.name }}
-                    </span>
-                    <span class="table-item"> {{ item.email }} </span>
+                    <strong>{{ item.name }}</strong>
+                    <br />
+                    {{ item.email }}
                   </div>
                 </td>
-                <td class="pa-4" style="vertical-align: top">
+                <td>
                   <span
-                    class="table-item d-flex flex-column"
+                    class="d-flex flex-column"
                     v-for="permission in grantedPermissions(item.permissions)"
                     :key="permission"
                   >
                     {{ permission }}
                   </span>
                 </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
+                <td>
                   <span
-                    class="table-item d-flex flex-column"
+                    class="d-flex flex-column"
                     v-for="setting in item.environments_settings"
                     :key="setting.id"
                   >

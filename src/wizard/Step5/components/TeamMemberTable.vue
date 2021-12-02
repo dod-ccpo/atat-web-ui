@@ -25,64 +25,20 @@
       <v-card-text class="pa-0">
         <v-simple-table v-if="data.operators.length">
           <template v-slot:default>
-            <thead class="bg-base-lightest">
+            <thead>
               <tr>
-                <th class="width-50">
-                  <span
-                    class="
-                      pl-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Name
-                  </span>
-                </th>
-
-                <th class="width-50">
-                  <span
-                    class="
-                      pr-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Workspace Roles
-                  </span>
-                </th>
+                <th class="width-50">Name</th>
+                <th class="width-50">Workspace Roles</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="operator in data.operators" :key="operator.id">
-                <td
-                  class="pl-6 pt-4 pb-4 pr-4 body"
-                  style="vertical-align: top"
-                >
+                <td>
                   <strong>{{ operator.display_name }}</strong>
                   <br />
                   {{ operator.email }}
                 </td>
-                <td
-                  class="pl-4 pt-4 pb-4 pr-6 body"
-                  style="vertical-align: top"
-                >
-                  <span v-if="operator.workspace_roles.indexOf('|') > -1">
-                    <span
-                      v-for="access in tranformWorkSpace(
-                        operator.workspace_roles
-                      )"
-                      :key="access"
-                      class="d-block"
-                    >
-                      {{ access }}
-                    </span>
-                  </span>
-                  <span v-else>
-                    {{ operator.workspace_roles }}
-                  </span>
-                </td>
+                <td v-html="operator.workspace_roles"></td>
               </tr>
             </tbody>
           </template>
@@ -179,7 +135,7 @@ export default class TeamMemberTable extends Vue {
                   ? env.name +
                     ": " +
                     this.roleTranslation(op.access) +
-                    "|" +
+                    "<br />" +
                     operators[i].workspace_roles
                   : env.name + ": " + this.roleTranslation(op.access);
               if (i > -1) {
@@ -206,9 +162,6 @@ export default class TeamMemberTable extends Vue {
       };
       this.tableData.push(appObj);
     });
-  }
-  private tranformWorkSpace(data: string) {
-    return data.split("|");
   }
   private roleTranslation(role: string): string {
     switch (role) {
