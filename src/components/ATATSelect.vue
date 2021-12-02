@@ -18,7 +18,6 @@
         dense
         :success="isSuccess"
         :error="isErrored"
-        :append-outer-icon="appendedOuterIcon"
         v-model="_selectedValue"
         :height="42"
         :rounded="rounded"
@@ -77,41 +76,12 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: false }) private validateOnLoad!: boolean;
 
-  // @Watch("errorBucket")
-  // onErrorBucketChanged(): void {
-  //   this.getStatusIcon();
-  // }
-
-  // @Watch("selectedValue")
-  // onSelectedValueChanged(newVal: string): void {
-  //   this.selected = newVal;
-  //   this.getStatusIcon();
-  // }
-
   //data
   private rounded = false;
-  private appendedOuterIcon = "";
   private isFieldValid = false;
   private selected = "";
-  private success = false;
   private isFieldDirty = false;
   private hasInitialValue = false;
-
-  private getStatusIcon() {
-    this.$nextTick(() => {
-      // if the rules property isn't set we won't display an icon
-      // when the rules property is populated (i.e when the parent form is saved)
-      // we evalute the rules to determine what icon to display
-      if (this.$props["rules"].length > 0) {
-        const v = this._selectedValue;
-        this.isFieldValid = this.$props["rules"].every(
-          (rule: (a: unknown) => string | boolean) => rule(v) === true
-        );
-        this.success = this.isFieldValid ? true : false;
-        this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
-      }
-    });
-  }
 
   private validateField() {
     // if the rules property isn't set we won't display an icon
@@ -148,10 +118,6 @@ export default class ATATSelect extends Vue {
         this.validateField();
       }
     });
-  }
-
-  private updated() {
-    //this.getStatusIcon();
   }
 }
 </script>
