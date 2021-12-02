@@ -450,11 +450,6 @@ export default class ClinsCard extends Vue {
       });
       if (this.isValidStartDate && this.isValidEndDate) {
         validationRules.push(() => {
-          console.log("startDAte " + this._pop_start_date);
-          console.log("enddate " + this._pop_end_date);
-          console.log(
-            moment(this._pop_start_date).isBefore(this._pop_end_date)
-          );
           return (
             moment(this._pop_start_date).isBefore(this._pop_end_date) ||
             "The period of performance start date must be before the end date"

@@ -16,7 +16,7 @@
         :rules="rules"
         outlined
         dense
-        :success="success"
+        :success="isSuccess"
         :error="isErrored"
         :append-outer-icon="appendedOuterIcon"
         v-model="_selectedValue"
