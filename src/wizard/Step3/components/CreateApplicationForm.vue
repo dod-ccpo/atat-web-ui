@@ -1,13 +1,33 @@
 <template>
   <v-form ref="form" lazy-validation class="body-lg">
     <div class="content-max-width">
-      <h1 tabindex="-1">Let’s create your new application</h1>
-      <p>
+      <h1 v-if="!isStepTouched" tabindex="-1">
+        Let’s create your new application
+      </h1>
+      <p v-if="!isStepTouched">
         In this section, we will set up your cloud workspaces within
         <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
         >. If you have more than one application, we will walk through them one
         at a time. Select <strong>Next</strong> to view your application
         summary.
+      </p>
+      <h1 v-if="isStepTouched" tabindex="-1">
+        Let’s update your application details
+      </h1>
+      <p v-if="isStepTouched">
+        The following information will be used to set up your application and
+        environments within
+        <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
+        >.
+        <span v-if="!isReturnToReview"
+          >Select <strong>Next</strong> when you are done making changes, or to
+          skip to your application summary. From there, you can add additional
+          applications to your portfolio, if needed.</span
+        ><span v-if="isReturnToReview"
+          >Select <strong>Next</strong>. When you are done, select
+          <strong>Return to Review and Submit</strong> to finalize your
+          portfolio.</span
+        >
       </p>
     </div>
 
@@ -105,6 +125,8 @@ export default class CreateApplicationForm extends Vue {
   private applicationNameHelpText = `This name will be displayed within the cloud provider’s console. It should be intuitive and easily recognizable for all of your team members.`;
   private applicationDetailsHelpText = `Add a brief one to two sentence description of your application. Consider using the “Description of Work” from your task order.`;
 
+  private isReturnToReview = this.$store.getters.isReturnToReview;
+  private isStepTouched = this.$store.getters.isStepTouched(3);
   get rules(): unknown {
     return {
       applicationName: [
