@@ -78,10 +78,12 @@
             "
           >
             <div class="d-flex align-center justify-between">
-              <div class="overflow-hidden">
+              <div v-if="item.name && item.name.length <= 25">
                 {{ item.name }}
               </div>
-              <div v-if="item.name && item.name.length > 25">...</div>
+              <div v-else-if="item.name">
+                {{ item.name.substring(0, 25) }}...
+              </div>
             </div>
           </a>
         </div>
