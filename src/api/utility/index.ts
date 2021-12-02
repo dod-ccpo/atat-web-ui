@@ -15,6 +15,5 @@ export const uploadTaskOrderFile = async (
   if (response.status !== 201) {
     throw Error(" error uploading file");
   }
-  const data = response.data as TaskOrderFile;
-  return data;
+  return response.data as TaskOrderFile;
 };
