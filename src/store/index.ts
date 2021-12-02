@@ -5,29 +5,13 @@ import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { Dialog, Toast } from "types/Global";
-import {
-  Application,
-  ApplicationModel,
-  Environment,
-  Operator,
-  OperatorModel,
-  TaskOrder,
-} from "types/Portfolios";
-import { portfoliosApi } from "@/api";
+import { ApplicationModel } from "types/Portfolios";
 import { TaskOrderModel } from "types/Wizard";
-import { generateUid, getEntityIndex } from "@/helpers";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
-import moment from "moment";
 
 import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
-
-import { 
-  validateApplication, 
-  validOperator, 
-  validateHasAdminOperators 
-} from "@/validation/application";
 
 Vue.use(Vuex);
 
@@ -40,200 +24,16 @@ const vuexLocalStorage = new VuexPersist({
   // filter: mutation => (true)
 });
 
-const createStepOneModel = () => {
-  return {
-    model: {
-      name: "",
-      description: "",
-      dod_components: [],
-      csp: "",
-    },
-  };
-};
+// const parseNumber = (value: string) => {
+//   value = value.replace(",", "");
+//   const num = parseFloat(value);
 
-const createStepTwoModel = () => {
-  return {
-    id: "",
-    task_order_number: "",
-    task_order_file: {
-      description: "",
-      id: "",
-      crated_at: "",
-      updated_at: "",
-      size: 0,
-      name: "",
-      status: "",
-    },
-    clins: [
-      {
-        clin_number: "",
-        idiq_clin: "",
-        total_clin_value: 0,
-        obligated_funds: 0,
-        pop_start_date: "",
-        pop_end_date: "",
-      },
-    ],
-  };
-};
+//   return num;
+// };
 
-const createStepThreeModel = () => {
-  return {
-    id: "",
-    name: "",
-    description: "",
-    operators: [],
-    environments: [
-      {
-        name: "Development",
-        id: generateUid(),
-        operators: [],
-      },
-      {
-        name: "Testing",
-        id: generateUid(),
-        operators: [],
-      },
-      {
-        name: "Staging",
-        id: generateUid(),
-        operators: [],
-      },
-      {
-        name: "Production",
-        id: generateUid(),
-        operators: [],
-      },
-    ],
-  };
-};
-
-const createStepFourModel = () => {
-  return {};
-};
-
-const createStepFiveModel = () => {
-  return {};
-};
-
-const stepsModelInitializer = [
-  {
-    step: 1,
-    model: createStepOneModel,
-  },
-  {
-    step: 2,
-    model: createStepTwoModel,
-  },
-  {
-    step: 3,
-    model: createStepThreeModel,
-  },
-  {
-    step: 4,
-    model: createStepFourModel,
-  },
-  {
-    step: 5,
-    model: createStepFiveModel,
-  },
-];
-
-const mapTaskOrders = (taskOrderModels: TaskOrderModel[]): TaskOrder[] => {
-  return taskOrderModels.map((model: TaskOrderModel) => {
-    //extract all properties except the id
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, signed, ...baseModel } = model;
-
-    const taskOrders: TaskOrder = {
-      ...baseModel,
-      task_order_file: {
-        id: model.task_order_file.id,
-        name: model.task_order_file.name,
-      },
-      clins: model.clins.map((clin) => {
-        return {
-          ...clin,
-          total_clin_value: parseNumber(clin.total_clin_value.toString()),
-          obligated_funds: parseNumber(clin.obligated_funds.toString()),
-          pop_start_date: moment(clin.pop_start_date).format("YYYY-MM-DD"),
-          pop_end_date: moment(clin.pop_end_date).format("YYYY-MM-DD"),
-        };
-      }),
-    };
-
-    return taskOrders;
-  });
-};
-
-const mapApplications = (
-  applicationModels: ApplicationModel[]
-): Application[] => {
-  return applicationModels.map((model: ApplicationModel) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...baseModel } = model;
-    const application: Application = {
-      ...baseModel,
-      operators: model.operators
-        ? model.operators.map((op) => {
-            return {
-              access: op.access,
-              display_name: op.display_name,
-              email: op.email,
-            };
-          })
-        : [],
-      environments: model.environments.map((env) => {
-        return {
-          name: env.name,
-          operators: env.operators
-            ? env.operators.map((op) => {
-                return {
-                  access: op.access,
-                  display_name: op.display_name,
-                  email: op.email,
-                };
-              })
-            : [],
-        };
-      }),
-    };
-
-    return application;
-  });
-};
-
-const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
-  return operatorsModels.map((operatorModel: OperatorModel) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...baseModel } = operatorModel;
-
-    const operator: Operator = {
-      ...baseModel,
-    };
-
-    return operator;
-  });
-};
-
-const StepModelIndices: Record<number, number> = {
-  1: 0,
-  2: 1,
-  3: 2,
-  4: 3,
-  5: 4,
-};
-
-const parseNumber = (value: string) => {
-  value = value.replace(",", "");
-  const num = parseFloat(value);
-
-  return num;
-};
-
-const stepModelHasData = (stepModel: any, initialModel: any) => {
-  return JSON.stringify(stepModel) !== JSON.stringify(initialModel);
-};
+// const stepModelHasData = (stepModel: any, initialModel: any) => {
+//   return JSON.stringify(stepModel) !== JSON.stringify(initialModel);
+// };
 
 /*
 █████████████████████████████████████████
@@ -257,6 +57,7 @@ export default new Vuex.Store({
     sideDrawerChange: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
+    currentPortfolioId: "",
     dialog: {
       isDisplayed: false,
       type: "",
@@ -332,9 +133,6 @@ export default new Vuex.Store({
     changeisUserAuthorizedToProvisionCloudResources(state, status: boolean) {
       state.isUserAuthorizedToProvisionCloudResources = status;
     },
-    doSetCurrentPortfolioId(state, id) {
-      state.currentPortfolioId = id;
-    },
     setNavSideBarDisplayed(state, routeName: string) {
       if (routeName) {
         const routesWithNoNavSideBar = ["home", "dashboard", "profile"];
@@ -345,6 +143,9 @@ export default new Vuex.Store({
     },
     doToast(state, props) {
       state.toast = props;
+    },
+    setCurrentPortfolioId(state, id: string) {
+      state.currentPortfolioId = id;
     },
   },
   /*
@@ -376,33 +177,6 @@ export default new Vuex.Store({
     },
     unauthorizeUser({ commit }) {
       commit("changeisUserAuthorizedToProvisionCloudResources", false);
-    },
-
-    async loadStep3Data({ commit, getters }, draftId: string): Promise<void> {
-      const applicationData = await portfoliosApi.getApplications(draftId);
-      if (applicationData !== null) {
-        //store the applications
-        commit(
-          "applications/setCurrentApplications",
-          applicationData.applications
-        );
-        commit("applications/initializeRootAdministrators");
-
-        const rootAdmins = applicationData.operators.map(
-          (operator: Operator) => {
-            const operatorModels: OperatorModel = {
-              ...operator,
-              id: generateUid(),
-            };
-
-            return operator;
-          }
-        );
-
-        commit("applications/updateRootAdministrators", rootAdmins);
-        const stepIndex: number = getters.getStepIndex(3);
-        commit("doSaveStepModel", [createStepThreeModel(), 3, stepIndex, true]);
-      }
     },
     openDialog(
       { commit },
@@ -456,15 +230,6 @@ export default new Vuex.Store({
   ██████████████████████████████████████████████████████████
   */
   getters: {
-    getInvalidSteps(state) {
-      const invalidSteps: number[] = [];
-      state.portfolioSteps.forEach((step) => {
-        if (step.step < 5 && (step.touched === false || step.valid === false)) {
-          invalidSteps.push(step.step);
-        }
-      });
-      return invalidSteps;
-    },
     getLoginStatus(state) {
       return state.loginStatus;
     },
@@ -530,17 +295,6 @@ export default new Vuex.Store({
     getMockTaskOrders() {
       return mockTaskOrders;
     },
-    getStepModel: (state) => (stepNumber: number) => {
-      const step = state.portfolioSteps.find(
-        (o: { step: number }) => o.step === stepNumber
-      );
-      return step?.model;
-    },
-    getCurrentStepModel: (state) => state.currentStepModel,
-    getStepTouched: (state, getters) => (stepNumber: number) => {
-      const stepIndex: number = getters.getStepIndex(stepNumber);
-      return state.portfolioSteps[stepIndex].touched;
-    },
     getUser: (state) => state.user,
     getSideDrawerIsOpen: (state) => state.sideDrawerIsOpen,
     hasTaskOrders: (state, getters, rootState, rootGetters): boolean => {
@@ -551,26 +305,6 @@ export default new Vuex.Store({
       return taskOrderModels && taskOrderModels.length > 0;
     },
     getTaskOrders: (state, rootGetters) => rootGetters["taskOrders/taskOrders"],
-    getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
-    getPortfolioName: (state, getters) => (defaultResponse: string) => {
-      defaultResponse = defaultResponse || "this portfolio";
-      let pName = defaultResponse;
-      const portfolio = getters.getPortfolio;
-      if (portfolio) {
-        if (Object.prototype.hasOwnProperty.call(portfolio, "name")) {
-          pName = portfolio.name || pName;
-        }
-        if (
-          pName === defaultResponse &&
-          Object.prototype.hasOwnProperty.call(portfolio, "model")
-        ) {
-          if (Object.prototype.hasOwnProperty.call(portfolio, "name")) {
-            pName = portfolio.model.name || pName;
-          }
-        }
-      }
-      return pName;
-    },
     hasApplications: (state, getters, rootState, rootGetters): boolean => {
       const applicationModels = rootGetters[
         "applications/applications"
@@ -578,24 +312,6 @@ export default new Vuex.Store({
 
       return applicationModels && applicationModels.length > 0;
     },
-    membersModified: (state) => {
-      return state.membersModified;
-    },
-    getStepIndex: (state) => (stepNumber: number): number => {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
-      return stepIndex;
-    },
-    isStepErrored: (state) => (stepNumber: number): boolean => {
-      const es: number[] = state.erroredSteps;
-      const i = es.indexOf(stepNumber);
-      return i > -1;
-    },
-    isStepTouched: (state, getters) => (stepNumber: number): boolean => {
-      const stepIndex: number = getters.getStepIndex(stepNumber);
-      return state.portfolioSteps[stepIndex].touched;
-    }
   },
   modules: {
     portfolios,

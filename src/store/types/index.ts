@@ -1,7 +1,6 @@
 import PortfoliosState from "../modules/portfolios/types";
 
 interface RootState {
-  currentPortfolioId: string;
   loginStatus: boolean;
   sideDrawerIsOpen: boolean;
   sideDrawerType: string;
@@ -34,6 +33,7 @@ interface RootState {
     message: string;
     contentClass: string;
   };
+  currentPortfolioId: string;
 }
 
 export { RootState, PortfoliosState };

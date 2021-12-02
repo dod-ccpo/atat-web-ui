@@ -1,13 +1,9 @@
 import { generateUid, getEntityIndex } from "@/helpers";
 import { RootState } from "@/store/types";
-import { ApplicationModel, OperatorModel } from "types/Portfolios";
+import { ApplicationModel, Operator, OperatorModel } from "types/Portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { ActionContext, ActionTree, Commit } from "vuex";
-import {
-  getStepIndex,
-  stepModelHasData,
-  stepsModelInitializers,
-} from "./helpers";
+import { stepModelHasData, stepsModelInitializers } from "./helpers";
 import WizardState from "./types";
 import { WizardSteps } from "./types/PortfolioStepModels";
 import { validateApplication, validOperator } from "@/validation/application";
@@ -46,8 +42,7 @@ const updateStepModelValidity = (
   { commit }: { commit: Commit },
   { stepNumber, valid }: { stepNumber: number; valid: boolean }
 ): void => {
-  const stepIndex = getStepIndex(stepNumber);
-  commit("updateStepModelValidity", { stepNumber, stepIndex, valid });
+  commit("updateStepModelValidity", { stepNumber, valid });
 };
 
 const updateMembersModified = (
@@ -61,8 +56,7 @@ const setStepTouched = (
   { commit }: { commit: Commit },
   { stepNumber, isTouched }: { stepNumber: number; isTouched: boolean }
 ): void => {
-  const stepIndex = getStepIndex(stepNumber);
-  commit("setStepTouched", { stepIndex, isTouched });
+  commit("setStepTouched", { stepNumber, isTouched });
 };
 
 const deleteTaskOrder = async (
@@ -81,7 +75,7 @@ const deleteTaskOrder = async (
 const addNewTaskOrder = ({
   commit,
 }: ActionContext<WizardState, RootState>): void => {
-  commit("doInitializeStepModel", WizardSteps.Two);
+  commit("initializeStepModel", WizardSteps.Two);
 };
 
 const editTaskOrder = (
@@ -347,6 +341,7 @@ const loadPortfolioDraft = async (
   }
 
   commit("setCurrentPortfolioId", draftId);
+  commit("setCurrentPorfolioId", draftId, { root: true });
   const loadActions = [
     dispatch("loadStep1Data", draftId),
     dispatch("loadStep2Data", draftId),
@@ -376,22 +371,43 @@ const loadStep1Data = async (
   }
 };
 
-
-const loadStep2Data = async ({ commit, dispatch}: ActionContext<WizardState, RootState>, draftId: string): Promise<void> => {
+const loadStep2Data = async (
+  { commit, dispatch }: ActionContext<WizardState, RootState>,
+  draftId: string
+): Promise<void> => {
   // get funding details
   const taskOrders = await portfoliosApi.getFunding(draftId);
 
   if (taskOrders !== null) {
     //store the tasks orders
     dispatch("taskOrders/setCurrentTaskOrders", taskOrders);
-    const stepIndex = WizardSteps.Two;
-    const modelCreator = stepsModelInitializers[stepIndex];
-    const model = modelCreator();
-    const stepNumber = WizardSteps.Two;
-    commit("saveStepModel", [stepsModelInitializers, 2, stepIndex, true]);
   }
+  dispatch("initializeStepModel", WizardSteps.Two);
 };
 
+const loadStep3Data = async (
+  { commit, dispatch }: ActionContext<WizardState, RootState>,
+  draftId: string
+): Promise<void> => {
+  const applicationData = await portfoliosApi.getApplications(draftId);
+  if (applicationData !== null) {
+    //store the applications
+    commit("applications/setCurrentApplications", applicationData.applications);
+    commit("applications/initializeRootAdministrators");
+
+    const rootAdmins = applicationData.operators.map((operator: Operator) => {
+      const operatorModels: OperatorModel = {
+        ...operator,
+        id: generateUid(),
+      };
+
+      return operator;
+    });
+
+    commit("applications/updateRootAdministrators", rootAdmins);
+    dispatch("initializeStepModel", WizardSteps.Three);
+  }
+};
 
 export const actions: ActionTree<WizardState, RootState> = {
   validateStep,
