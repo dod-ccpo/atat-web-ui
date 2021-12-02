@@ -1,17 +1,17 @@
 <template>
   <div class="review-table">
     <v-card
-      v-for="application in this.tableData"
-      :key="application.name"
+      v-for="data in this.tableData"
+      :key="data.name"
       class="ma-1 width-95 height-100 mb-10"
     >
       <v-card-title class="d-flex justify-space-between">
-        <span class="h3">{{ application.name }}</span>
+        <span class="h3">{{ data.name }}</span>
         <v-btn
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 primary--text"
-          @click="onEdit(application)"
+          @click="onEdit(data)"
           role="link"
           :ripple="false"
           aria-label="Edit team members"
@@ -23,7 +23,7 @@
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0">
-        <v-simple-table v-if="application.operators.length">
+        <v-simple-table v-if="data.operators.length">
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
@@ -55,7 +55,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="operator in application.operators" :key="operator.id">
+              <tr v-for="operator in data.operators" :key="operator.id">
                 <td
                   class="pl-6 pt-4 pb-4 pr-4 body"
                   style="vertical-align: top"
