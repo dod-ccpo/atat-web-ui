@@ -15,4 +15,22 @@ export const getters: GetterTree<ApplicationsState, RootState> = {
     return state.applicationModels[applicationIndex];
   },
   portfolioOperators: (state) => state.portfolioOperators,
+  portfolioHasHadMembersAdded: (state) => state.portfolioHasHadMembersAdded,
+  appOrEnvHasOperators: () => (applications: ApplicationModel[]) => {
+    let hasAppOrEnvOperators = false;
+    for (let a = 0; a < applications.length; a++) {
+      if (applications[a].operators.length > 0) {
+        hasAppOrEnvOperators = true;
+        break;
+      } else {
+        for (let e = 0; e < applications[a].environments.length; e++) {
+          if (applications[a].environments[e].operators.length > 0) {
+            hasAppOrEnvOperators = true;
+            break;
+          }
+        }
+      }
+    }
+    return hasAppOrEnvOperators;
+  },
 };
