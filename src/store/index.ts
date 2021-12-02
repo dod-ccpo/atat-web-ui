@@ -2,6 +2,7 @@
 
 import Vue from "vue";
 import Vuex from "vuex";
+import { Auth } from "aws-amplify";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { Dialog, Toast } from "types/Global";
@@ -539,7 +540,8 @@ export default new Vuex.Store({
       commit("changeLoginStatus", true);
       commit("changeUser", user);
     },
-    logout({ commit }) {
+    async logout({ commit }) {
+      await Auth.signOut({ global: true });
       commit("changeLoginStatus", false);
       commit("changeUser", null);
       window.sessionStorage.clear();
