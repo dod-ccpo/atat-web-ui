@@ -114,7 +114,6 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
   @Prop({ default: false }) private validateOnLoad!: boolean;
   @Prop({ default: "" }) private mask!: string;
-  
 
   //data
   private rounded = false;

@@ -8,8 +8,8 @@
         giving them access to your workspaces within the {{ csp }} console. Add
         your root administrators to <strong>“{{ portfolioName }}”</strong> to
         manage all of your applications, or customize members and roles within
-        each application individually. When you are done, select <strong>Next:
-        Review and Submit</strong> to finalize your portfolio.
+        each application individually. When you are done, select
+        <strong>Next: Review and Submit</strong> to finalize your portfolio.
       </p>
 
       <v-alert

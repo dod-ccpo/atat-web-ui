@@ -26,7 +26,7 @@ import taskOrders from "./modules/taskOrders/store";
 import {
   validateApplication,
   validOperator,
-  validateHasAdminOperators
+  validateHasAdminOperators,
 } from "@/validation/application";
 
 Vue.use(Vuex);
@@ -1110,21 +1110,27 @@ export default new Vuex.Store({
     membersModified: (state) => {
       return state.membersModified;
     },
-    getStepIndex: (state) => (stepNumber: number): number => {
-      const stepIndex = state.portfolioSteps.findIndex(
-        (x) => x.step === stepNumber
-      );
-      return stepIndex;
-    },
-    isStepErrored: (state) => (stepNumber: number): boolean => {
-      const es: number[] = state.erroredSteps;
-      const i = es.indexOf(stepNumber);
-      return i > -1;
-    },
-    isStepTouched: (state, getters) => (stepNumber: number): boolean => {
-      const stepIndex: number = getters.getStepIndex(stepNumber);
-      return state.portfolioSteps[stepIndex].touched;
-    },
+    getStepIndex:
+      (state) =>
+      (stepNumber: number): number => {
+        const stepIndex = state.portfolioSteps.findIndex(
+          (x) => x.step === stepNumber
+        );
+        return stepIndex;
+      },
+    isStepErrored:
+      (state) =>
+      (stepNumber: number): boolean => {
+        const es: number[] = state.erroredSteps;
+        const i = es.indexOf(stepNumber);
+        return i > -1;
+      },
+    isStepTouched:
+      (state, getters) =>
+      (stepNumber: number): boolean => {
+        const stepIndex: number = getters.getStepIndex(stepNumber);
+        return state.portfolioSteps[stepIndex].touched;
+      },
     isReturnToReview: (state) => {
       return state.returnToReview;
     },
