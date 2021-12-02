@@ -34,10 +34,9 @@ export const validateApplication = (application: ApplicationModel): boolean => {
 };
 
 export const validateHasAdminOperators = (
-  rootAdmins: OperatorModel[], 
+  rootAdmins: OperatorModel[],
   applicationModels: ApplicationModel[]
-  ): boolean[] => {
-  
+): boolean[] => {
   if (rootAdmins && rootAdmins.length) {
     return [true, true];
   }
@@ -48,7 +47,9 @@ export const validateHasAdminOperators = (
     const application = applicationModels[a];
     operatorCount += application.operators.length;
 
-    const hasAppLevelAdmin = application.operators.some((e: OperatorModel) => e.access === "administrator");
+    const hasAppLevelAdmin = application.operators.some(
+      (e: OperatorModel) => e.access === "administrator"
+    );
     if (hasAppLevelAdmin) {
       // this app has an admin
       validApplicationIndices.push(a);
@@ -58,7 +59,9 @@ export const validateHasAdminOperators = (
       for (let e = 0; e < application.environments.length; e++) {
         const envOperators: any = application.environments[e].operators;
         operatorCount += envOperators.length;
-        if (!envOperators.some((o: OperatorModel) => o.access === "administrator")) {
+        if (
+          !envOperators.some((o: OperatorModel) => o.access === "administrator")
+        ) {
           allEnvsHaveAdmin = false;
           break;
         }

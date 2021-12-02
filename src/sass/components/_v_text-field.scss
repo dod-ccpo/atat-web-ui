@@ -36,7 +36,11 @@
     padding-right: 0px;
     margin-top: -1px;
   }
-  &.v-input--is-focused{
+
+
+  &.v-input--is-focused,
+  &.error--text,
+  &.success--text{
     .v-text-field__prefix{
       color: $base-darkest !important;
      }

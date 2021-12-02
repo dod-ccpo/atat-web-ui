@@ -13,7 +13,8 @@
       <p>
         <span v-if="noRootMembersOnLoad">
           Invite your root administrators below to grant them full access to all
-          of your applications. These individuals will receive an invitation from
+          of your applications. These individuals will receive an invitation
+          from
           {{ csp }} after your portfolio is provisioned. Select
           <strong>Next</strong> to add team members to your other applications.
         </span>
@@ -40,7 +41,8 @@
           @keydown.enter="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
           @keydown.space="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
           id="RootAdmins_LearnMoreButton"
-        >Learn more about team member roles</a>
+          >Learn more about team member roles</a
+        >
       </p>
 
       <v-alert
@@ -49,7 +51,15 @@
         rounded
         color="warning"
         icon="warning"
-        class="text-left warning_lighter black-icon mt-3 mb-8 border-thick pr-14"
+        class="
+          text-left
+          warning_lighter
+          black-icon
+          mt-3
+          mb-8
+          border-thick
+          pr-14
+        "
         border="left"
       >
         <div class="black--text body-lg">
@@ -61,7 +71,6 @@
           </p>
         </div>
       </v-alert>
-
     </div>
     <v-row>
       <v-col class="d-flex">
