@@ -4,10 +4,9 @@
       <v-col class="content-max-width pb-0">
         <h1 tabindex="-1">Let’s wrap up your Portfolio</h1>
         <p class="body-lg" v-if="!invalidStepsExist()">
-          In this last step, we will review the information that you provided to
-          make sure everything is complete and accurate. Once you have verified
-          your portfolio details, we will be able to provision your cloud
-          resources.
+          In this last step, we will review the information provided to make
+          sure everything is complete and accurate. Once verified, we will
+          provision your cloud resources.
         </p>
         <!-- Invalid steps found -->
         <p v-else>
@@ -90,6 +89,5 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     this.portfolio = this.$store.getters.getPortfolio;
     this.taskOrders = this.$store.getters.getTaskOrders;
   }
-
 }
 </script>
