@@ -109,7 +109,7 @@
     <v-row v-if="membersData.length > 0">
       <v-col cols="12" class="ma-0">
         <v-data-table
-          class="review-table"
+          class="review-table review-table--shadowed"
           :headers="headers"
           :items="isFiltered ? filteredData : membersData"
           hide-default-footer
@@ -117,32 +117,21 @@
           :sort-by="['name']"
           :items-per-page="-1"
         >
-          <template v-slot:header.display_name="{ header }">
-            <div class="label font-weight-bold text--base-dark mr-5">
-              {{ header.text }}
-            </div>
-          </template>
-          <template v-slot:header.workspace_roles="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
           <template v-slot:item.display_name="{ item }">
-            <div class="pt-6 pb-6">
-              <div class="body font-weight-bold">
-                {{ item.display_name }}
-              </div>
-              <div class="body text--base-dark">
-                {{ item.email }}
-              </div>
-            </div>
+            <strong>{{ item.display_name }}</strong>
+            <br />
+            {{ item.email }}
           </template>
           <template v-slot:item.workspace_roles="{ item }">
-            <div class="d-flex justify-space-between pb-6 pt-6">
-              <div class="d-flex flex-column body text--base-dark">
-                <div v-for="value in item.workspace_roles" :key="value">
+            <div class="d-flex justify-space-between">
+              <div>
+                <span
+                  v-for="value in item.workspace_roles"
+                  :key="value"
+                  class="d-block"
+                >
                   {{ value }}
-                </div>
+                </span>
               </div>
 
               <v-menu
@@ -390,7 +379,7 @@ export default class TeamView extends mixins(ApplicationData) {
       case "administrator":
         return "Administrator";
       case "contributor":
-        return "Contributer";
+        return "Contributor";
       case "read_only":
         return "Billing read-only";
       default:

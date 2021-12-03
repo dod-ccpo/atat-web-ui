@@ -912,12 +912,11 @@ export default new Vuex.Store({
 
         const rootAdmins = applicationData.operators.map(
           (operator: Operator) => {
-            const operatorModels: OperatorModel = {
+            const operatorObj: OperatorModel = {
               ...operator,
               id: generateUid(),
             };
-
-            return operator;
+            return operatorObj;
           }
         );
 
@@ -1081,6 +1080,7 @@ export default new Vuex.Store({
     },
     getTaskOrders: (state, rootGetters) => rootGetters["taskOrders/taskOrders"],
     getPortfolio: (state) => state.portfolioSteps[StepModelIndices[1]].model,
+    getPortfolioId: (state) => state.currentPortfolioId,
     getPortfolioName: (state, getters) => (defaultResponse: string) => {
       defaultResponse = defaultResponse || "this portfolio";
       let pName = defaultResponse;

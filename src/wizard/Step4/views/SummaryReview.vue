@@ -44,7 +44,10 @@
     </div>
 
     <v-data-table
-      class="review-table overflow-x-hidden overflow-y-hidden"
+      class="
+        review-table review-table--shadowed
+        overflow-x-hidden overflow-y-hidden
+      "
       style="width: 900px"
       :headers="headers"
       :items="applicationData"
@@ -54,26 +57,12 @@
       :custom-sort="sortApplications"
       :items-per-page="-1"
     >
-      <template v-slot:header.name="{ header }">
-        <div class="label font-weight-bold text--base-dark mr-5">
-          {{ header.text }}
-        </div>
-      </template>
-      <template v-slot:header.description="{ header }">
-        <div class="label font-weight-bold text--base-dark">
-          {{ header.text }}
-        </div>
-      </template>
-      <template v-slot:header.operators="{ header }">
-        <div class="label font-weight-bold text--base-dark">
-          {{ header.text }}
-        </div>
-      </template>
       <template v-slot:item.name="{ item }">
         <div class="d-flex align-center">
           <v-icon
             class="table-subdirectory-icon text--base-light mr-3"
             v-if="!item.portfolio"
+            aria-hidden="true"
             >subdirectory_arrow_right</v-icon
           >
           <a
@@ -81,13 +70,7 @@
             @keydown.enter="handleNameClick(item)"
             @keydown.space="handleNameClick(item)"
             tabindex="0"
-            class="
-              body
-              font-weight-bold
-              py-3
-              primary-text
-              text-no-wrap text-truncate
-            "
+            class="text-no-wrap text-truncate font-weight-bold text-link"
             :aria-label="
               item.name +
               ' - manage ' +
@@ -95,31 +78,36 @@
             "
           >
             <div class="d-flex align-center justify-between">
-              <div class="overflow-hidden" style="height: 24px">
+              <div v-if="item.name && item.name.length <= 25">
                 {{ item.name }}
               </div>
-              <div v-if="item.name && item.name.length > 25">...</div>
+              <div v-else-if="item.name">
+                {{ item.name.substring(0, 25) }}...
+              </div>
             </div>
           </a>
         </div>
       </template>
       <template v-slot:item.description="{ item }">
-        <div class="d-flex align-center body text--base-darkest">
-          <div class="overflow-hidden text-no-wrap" style="height: 24px">
-            {{ getDescription(item.description) }}
-          </div>
+        <div class="overflow-hidden text-no-wrap">
+          {{ getDescription(item.description) }}
         </div>
       </template>
       <template v-slot:item.operators="{ item }">
-        <div class="d-flex justify-space-between align-center">
-          <div class="body text--base-darkest pt-1">
-            <div
-              class="errorable-field d-flex align-center"
-              :class="{ invalid: item.invalidAdmins }"
-            >
-              {{ item.operatorCount }}
-              <v-icon v-if="item.invalidAdmins"> error </v-icon>
-            </div>
+        <div
+          class="
+            d-flex
+            justify-space-between
+            align-center
+            errorable-field-wrapper
+          "
+        >
+          <div
+            class="errorable-field d-flex align-center"
+            :class="{ invalid: item.invalidAdmins }"
+          >
+            {{ item.operatorCount }}
+            <v-icon v-if="item.invalidAdmins"> error </v-icon>
           </div>
 
           <v-menu

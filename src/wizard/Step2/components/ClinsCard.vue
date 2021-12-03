@@ -11,7 +11,6 @@
             <v-expansion-panel @click="toggleClinCard">
               <v-expansion-panel-header
                 class="body-lg font-weight-bold"
-                style="min-height: 57px"
                 :hide-actions="true"
               >
                 <template v-slot:default="{ open }">

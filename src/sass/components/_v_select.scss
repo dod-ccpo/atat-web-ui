@@ -2,8 +2,7 @@
   border-radius: 0 !important;
 }
 
-.atat-select,
-.v-select {
+.atat-select {
   color: $base_darkest !important;
 
   .show-validation-icon {
@@ -20,7 +19,7 @@
         font-weight: normal;
       }
     }
-  };
+  }
 
   .valid-icon .v-select__slot::after {
     content: "check_circle";
@@ -29,6 +28,11 @@
   .invalid-icon .v-select__slot::after {
     content: "error";
     color: $error-dark;
+  }
+  .v-input__slot {
+    .v-input__append-inner{
+      margin-top: 11px !important;
+    }
   }
 }
 
@@ -39,9 +43,6 @@
 .v-input__slot {
   &:after {
     display: none;
-  }
-  .v-input__append-inner{
-    margin-top: 11px !important;
   }
 }
 
