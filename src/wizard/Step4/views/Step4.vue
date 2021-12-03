@@ -105,6 +105,7 @@ import RootAdminView from "@/wizard/Step4/views/RootAdminView.vue";
 import TeamView from "@/wizard/Step4/views/TeamView.vue";
 import ExpandableLink from "@/components/ExpandableLink.vue";
 
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   components: {
     ExpandableLink,
@@ -116,6 +117,25 @@ import ExpandableLink from "@/components/ExpandableLink.vue";
 export default class Step_4 extends Vue {
   private csp = this.$store.getters.getPortfolio.csp;
   private editType = this.$route.params.type || "noEdit";
+  public hasChanges = this.$store.getters.membersModified;
+  public hasPortfolioHadMembersAdded =
+    this.$store.getters["applications/portfolioHasHadMembersAdded"];
+
+  public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    if (this.hasChanges || this.hasPortfolioHadMembersAdded) {
+      try {
+        await this.$store.dispatch("saveStepData", 4);
+        await this.$store.dispatch("setStepTouched", [4, true]);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    next();
+  }
 
   // methods
 

@@ -172,7 +172,7 @@ export default class ATATTextField extends VTextField {
   }
 
   private addMasks(): void {
-    let textBox = document.querySelector(
+    let textBox = document.getElementById(
       "#" + this.id + "_text_field"
     ) as HTMLInputElement;
     if (this.mask === "currency") {

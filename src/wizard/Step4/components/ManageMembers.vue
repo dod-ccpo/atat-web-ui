@@ -569,8 +569,10 @@ export default class ManageMember extends mixins(ApplicationData) {
     }
     if (!this.isRootAdmin) {
       this.assignDifferentRolesForEnvs = true;
-      this.roleForAllEnvs = this.rolesList[0].role_value;
-      this.initEnvRoleDropdowns(this.roleForAllEnvs);
+      if (this.rolesList && this.rolesList.length) {
+        this.roleForAllEnvs = this.rolesList[0].role_value;
+        this.initEnvRoleDropdowns(this.roleForAllEnvs);
+      }
     }
 
     if (this.isEditSingle) {
