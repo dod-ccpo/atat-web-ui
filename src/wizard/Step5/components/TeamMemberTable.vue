@@ -5,22 +5,22 @@
       :key="data.name"
       class="ma-1 width-95 height-100 mb-10"
     >
-      <v-card-title class="d-flex justify-space-between">
-        <span class="h3">{{ data.name }}</span>
-        <v-btn
-          text
-          x-small
-          class="v-btn text-decoration-none mt-1 mx-1 primary--text"
-          @click="onEdit(data)"
-          role="link"
-          :ripple="false"
-          aria-label="Edit team members"
-        >
-          <v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
-            >edit</v-icon
-          >
-          <span class="text-decoration-underline body-lg">Edit</span>
-        </v-btn>
+      <v-card-title>
+        <div class="width-100 d-flex justify-space-between align-center">
+          <h3 class="text-clamp text-clamp--1-line">{{ data.name }}</h3>
+          <v-btn
+            text
+            x-small
+            class="py-0 px-2 primary--text"
+            @click="onEdit(data)"
+            role="link"
+            :ripple="false"
+            aria-label="Edit team members"
+          ><v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+              >edit</v-icon
+            ><span class="link-body-md">Edit</span>
+          </v-btn>
+        </div>
       </v-card-title>
       <v-card-text class="pa-0">
         <v-simple-table v-if="data.operators.length">
@@ -43,7 +43,7 @@
             </tbody>
           </template>
         </v-simple-table>
-        <div v-else class="body px-8 pb-5">
+        <div v-else class="body px-6 pb-5">
           You do not have any team members in this workspace.
         </div>
       </v-card-text>

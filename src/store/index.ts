@@ -25,9 +25,6 @@ const vuexLocalStorage = new VuexPersist({
   // filter: mutation => (true)
 });
 
-// const parseNumber = (value: string) => {
-//   value = value.replace(",", "");
-//   const num = parseFloat(value);
 
 //   return num;
 // };

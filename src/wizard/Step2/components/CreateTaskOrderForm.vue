@@ -19,9 +19,16 @@
       </h1>
       <p v-if="stepHasBeenTouched" class="ma-0 mt-4 body-lg text--base-darkest">
         You will find this information in your awarded task order that funds
-        your ATAT portfolio. Select <strong>Next</strong> when you are done
-        making changes, or to skip to your task order summary. From there, you
-        can add additional task orders to your portfolio, if needed
+        your ATAT portfolio.<span v-if="!isReturnToReview">
+          Select <strong>Next</strong> when you are done making changes, or to
+          skip to your task order summary. From there, you can add additional
+          task orders to your portfolio, if needed.</span
+        >
+        <span v-else>
+          When you are done, select
+          <strong>Return to Review and Submit</strong> to finalize your
+          portfolio.</span
+        >
       </p>
     </section>
 
@@ -175,6 +182,7 @@ export default class CreateTaskOrderForm extends Vue {
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private savedTaskOrderSigned = false;
   private stepHasBeenTouched = false;
+  private isReturnToReview = this.$store.getters.isReturnToReview;
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
@@ -257,6 +265,7 @@ export default class CreateTaskOrderForm extends Vue {
       this.savedTaskOrderSigned = true;
       this.isTaskOrderSigned(this._signed);
     }
+    console.log(this.isReturnToReview);
 
     this.stepHasBeenTouched = this.$store.getters["wizard/getStepTouched"](2);
   }

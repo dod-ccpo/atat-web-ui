@@ -122,7 +122,6 @@ export interface Operator {
   access: string;
   display_name: string;
   email: string;
-  id: string;
 }
 
 /**

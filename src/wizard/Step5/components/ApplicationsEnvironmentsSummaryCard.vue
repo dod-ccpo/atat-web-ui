@@ -5,7 +5,9 @@
         <v-card class="v-card ma-1 px-2 mb-10 body">
           <v-card-title>
             <div class="width-100 d-flex justify-space-between align-center">
-              <h3>{{ application.name }}</h3>
+              <h3 class="text-clamp text-clamp--1-line">
+                {{ application.name }}
+              </h3>
               <v-btn
                 class="py-0 px-2 primary--text"
                 text
