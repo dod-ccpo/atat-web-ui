@@ -4,6 +4,7 @@
       <div
         class="clin-datepicker-control"
         :id="getId('clin-datepicker-text-boxes')"
+        @click="datepickerControlClicked"
       >
         <div class="width-100 d-flex justify-start">
           <label
@@ -59,6 +60,7 @@
               @blur="blurTextField"
               validate-on-blur
               clearable
+              @keydown="keyDownTextField"
               @click:clear="clearTextBox"
               :class="[
                 isStartTextBoxFocused ? 'focused' : '',
@@ -74,7 +76,9 @@
               class="start-date-button"
               @focus="setTitle(true)"
             >
-              <v-icon class="black--text date-picker-icon start-date-icon"
+              <v-icon
+                :id="getId('start-date-calendar-icon')"
+                class="black--text date-picker-icon start-date-icon"
                 >calendar_today</v-icon
               >
             </v-btn>
@@ -95,6 +99,7 @@
               @focus="setFocus"
               hide-details
               @blur="blurTextField"
+              @keydown="keyDownTextField"
               clearable
               @click:clear="clearTextBox"
               validate-on-blur
@@ -112,18 +117,18 @@
               class="end-date-button"
               @focus="setTitle(false)"
             >
-              <v-icon class="black--text date-picker-icon end-date-icon"
+              <v-icon
+                :id="getId('end-date-calendar-icon')"
+                class="black--text date-picker-icon end-date-icon"
                 >calendar_today</v-icon
               >
             </v-btn>
           </div>
         </div>
-        <div class="width-100 d-flex justify-start mt-2 text--base">
-          Month, Day, Year (e.g. MM/DD/YYYY)
-        </div>
       </div>
       <v-menu
         v-model="menu"
+        ref="datepickerMenu"
         :id="getId('CLIN-datepicker-menu')"
         :attach="'#datepicker-text-boxes-' + this.id"
         origin="top left"
@@ -208,6 +213,7 @@ export default class ATATDatePicker extends Vue {
   $refs!: {
     startDate: Vue & { errorBucket: string[]; errorCount: number };
     endDate: Vue & { errorBucket: string[]; errorCount: number };
+    datepickerMenu: Vue;
   };
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -233,7 +239,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "2020-10-01" }) private min!: string;
   @Prop({ default: "2021-10-01" }) private max!: string;
 
-  @PropSync("isDatePickerVisible") menu!: boolean;
+  private menu = false;
   private firstMonth: string =
     moment(this.startDate).format("YYYY-MM-DD") ||
     moment(new Date()).format("YYYY-MM-DD");
@@ -254,7 +260,6 @@ export default class ATATDatePicker extends Vue {
   private thisControl = document.getElementById(
     this.thisControlId
   ) as HTMLElement;
-  private thisControlClicked = false;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -454,7 +459,6 @@ export default class ATATDatePicker extends Vue {
       this.thisControlId
     ) as HTMLElement;
     this.addMasks();
-    document.addEventListener("click", this.datepickerControlClicked);
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
         this.isDateValid(this.startDate) ? this.startDate : new Date()
@@ -463,10 +467,6 @@ export default class ATATDatePicker extends Vue {
         .add(1, "M")
         .format("YYYY-MM-DD");
     }
-  }
-
-  private destroyed(): void {
-    document.removeEventListener("click", this.datepickerControlClicked);
   }
 
   /**
@@ -487,19 +487,31 @@ export default class ATATDatePicker extends Vue {
     });
   }
 
+  /**
+   * event for resetting start/end date when clicking backspace
+   */
+  private keyDownTextField(event: KeyboardEvent): void {
+    if (event.key.toLowerCase() === "backspace") {
+      if (this.isStartTextBoxFocused) {
+        this.setStartDate("");
+      } else if (this.isEndTextBoxFocused) {
+        this.setEndDate("");
+      }
+    }
+  }
+
   /** page click event listener */
-  private async datepickerControlClicked(event: Event): Promise<void> {
+  private datepickerControlClicked(event: Event): void {
     // accommodates for all items in div #clin-datepicker-text-boxes" being clicked
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
-
     const element = event.target as HTMLElement;
-    //if control (textboxes, icons, calendars, menu) was clicked
 
-    this.thisControlClicked =
-      this.thisControl.querySelector("#" + element.getAttribute("id")) !== null;
-
-    this.menu = this.thisControlClicked;
+    // opens menu if one of the textboxes or calendar icons
+    // or calendar dates were clicked
+    this.menu =
+      element.closest("button") !== null ||
+      element.closest(".v-input__slot") !== null;
 
     // if icon is clicked
     const isIconClicked = element.classList.contains("date-picker-icon");
@@ -542,7 +554,7 @@ export default class ATATDatePicker extends Vue {
       // if calendars were clicked
       const isCalendarClicked =
         element.closest(".v-date-picker-table") !== null;
-      if (isCalendarClicked && this.thisControlClicked) {
+      if (isCalendarClicked) {
         // if both textboxes have valid dates, close menu
         const button = element.parentElement as HTMLButtonElement;
         this.styleDatePickerButton(button, this.isStartTextBoxFocused);
