@@ -6,19 +6,16 @@
       </h1>
       <p v-if="!isStepTouched">
         In this section, we will set up your cloud workspaces within
-        <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
-        >. If you have more than one application, we will walk through them one
-        at a time. Select <strong>Next</strong> to view your application
-        summary.
+        {{ this.$store.getters.getPortfolio.csp }}. If you have more than one
+        application, we will walk through them one at a time. Select 
+        <strong>Next</strong> to view your application summary.
       </p>
       <h1 v-if="isStepTouched" tabindex="-1">
         Let’s update your application details
       </h1>
       <p v-if="isStepTouched">
         The following information will be used to set up your application and
-        environments within
-        <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
-        >.
+        environments within {{ this.$store.getters.getPortfolio.csp }}.
         <span v-if="!isReturnToReview"
           >Select <strong>Next</strong> when you are done making changes, or to
           skip to your application summary. From there, you can add additional
