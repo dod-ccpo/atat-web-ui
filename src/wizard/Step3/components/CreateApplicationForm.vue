@@ -4,9 +4,9 @@
       <h1 tabindex="-1">Let’s create your new application</h1>
       <p>
         In this section, we will set up your cloud workspaces within
-        <strong>{{ this.$store.getters.getPortfolio.csp }}</strong
+        <strong>{{ this.$store.getters["wizard/getPortfolio"].csp }}</strong
         >. If you have more than one application, we will walk through them one
-        at a time. Select <strong>Next</strong> to view your application
+        at a time. Select <strong>Next</strong> to view your application[]
         summary.
       </p>
     </div>

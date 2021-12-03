@@ -258,7 +258,7 @@ export default class CreateTaskOrderForm extends Vue {
       this.isTaskOrderSigned(this._signed);
     }
 
-    this.stepHasBeenTouched = this.$store.getters.getStepTouched(2);
+    this.stepHasBeenTouched = this.$store.getters["wizard/getStepTouched"](2);
   }
 
   private async onRemoveFile(): Promise<void> {

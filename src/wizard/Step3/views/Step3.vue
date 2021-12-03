@@ -55,7 +55,7 @@ export default class Step_3 extends ValidatableWizardStep<CreateApplicationModel
   };
 
   public async mounted(): Promise<void> {
-    this.touched = this.$store.getters.getStepTouched(3);
+    this.touched = this.$store.getters["wizard/getStepTouched"](3);
     if (this.touched) {
       this.validate();
     }

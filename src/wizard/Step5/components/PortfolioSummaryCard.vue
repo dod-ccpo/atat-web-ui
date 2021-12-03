@@ -80,7 +80,7 @@ export default class PortfolioSummaryCard extends Vue {
   }
 
   public onEdit(): void {
-    this.$store.dispatch("setReturnToReview", true);
+    this.$store.dispatch("wizard/setReturnToReview", true);
     this.$router.push({
       name: "editportfolio",
       params: { id: `${this.$store.state.currentPortfolioId}` },

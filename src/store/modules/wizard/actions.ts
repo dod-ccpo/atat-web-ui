@@ -437,6 +437,10 @@ const setReturnToReview = (
 export const actions: ActionTree<WizardState, RootState> = {
   createPortfolioDraft,
   validateStep,
+  saveStep1,
+  saveStep2,
+  saveStep3,
+  saveStep4,
   setCurrentStepNumber,
   setCurrentStepModel,
   saveStepModel,
