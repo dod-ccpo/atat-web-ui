@@ -74,7 +74,7 @@ export class StaticSiteStack extends cdk.Stack {
       ),
       accessTokenValidity: cdk.Duration.minutes(5),
       idTokenValidity: cdk.Duration.minutes(5),
-      refreshTokenValidity: cdk.Duration.minutes(30),
+      refreshTokenValidity: cdk.Duration.minutes(60),
       oAuth: {
         flows: {
           authorizationCodeGrant: true,
