@@ -180,7 +180,6 @@ const mapApplications = (
               access: op.access,
               display_name: op.display_name,
               email: op.email,
-              id: op.id,
             };
           })
         : [],
@@ -193,7 +192,6 @@ const mapApplications = (
                   access: op.access,
                   display_name: op.display_name,
                   email: op.email,
-                  id: op.id,
                 };
               })
             : [],
@@ -211,7 +209,6 @@ const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
     const { id, ...baseModel } = operatorModel;
 
     const operator: Operator = {
-      id,
       ...baseModel,
     };
 
