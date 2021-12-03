@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { MutationTree } from "vuex";
-import { getStepIndex, getStepModel, stepsModelInitializers } from "./helpers";
+import { getStepModel, stepsModelInitializers } from "./helpers";
 import WizardState from "./types";
 
 const setStepValidated = (state: WizardState, step: number): void => {

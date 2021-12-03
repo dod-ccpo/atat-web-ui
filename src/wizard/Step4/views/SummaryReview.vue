@@ -5,11 +5,11 @@
       <h1 tabindex="-1">Let’s set up your application teams</h1>
       <p class="body-lg text--base-darkest">
         In this section, we will invite people to join your application teams,
-        giving them access to your workspaces within the {{ csp }} console. Add 
-        your root administrators to <strong>“{{ portfolioName }}”</strong> to 
-        manage all of your applications, or customize members and roles within 
-        each application individually. When you are done, select <strong>Next: 
-        Review and Submit</strong> to finalize your portfolio.
+        giving them access to your workspaces within the {{ csp }} console. Add
+        your root administrators to <strong>“{{ portfolioName }}”</strong> to
+        manage all of your applications, or customize members and roles within
+        each application individually. When you are done, select
+        <strong>Next: Review and Submit</strong> to finalize your portfolio.
       </p>
 
       <v-alert
@@ -28,9 +28,16 @@
             and ensure at least one of the following is satisfied:
           </p>
           <ul>
-            <li>A root administrator is added to manage all of your applications.</li>
-            <li>An administrator is added to every application individually.</li>
-            <li>An administrator is added to each environment within every application.</li>
+            <li>
+              A root administrator is added to manage all of your applications.
+            </li>
+            <li>
+              An administrator is added to every application individually.
+            </li>
+            <li>
+              An administrator is added to each environment within every
+              application.
+            </li>
           </ul>
         </div>
       </v-alert>
@@ -105,17 +112,13 @@
       </template>
       <template v-slot:item.operators="{ item }">
         <div class="d-flex justify-space-between align-center">
-          <div 
-            class="body text--base-darkest pt-1"
-          >
-            <div 
-              class="errorable-field  d-flex align-center"
-              :class="{invalid: item.invalidAdmins}"
+          <div class="body text--base-darkest pt-1">
+            <div
+              class="errorable-field d-flex align-center"
+              :class="{ invalid: item.invalidAdmins }"
             >
               {{ item.operatorCount }}
-              <v-icon v-if="item.invalidAdmins">
-                error
-              </v-icon>
+              <v-icon v-if="item.invalidAdmins"> error </v-icon>
             </div>
           </div>
 
@@ -192,8 +195,8 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   public get portfolioName(): string {
     return this.$store.getters.getPortfolioName();
   }
-  private isStepErrored = this.$store.getters.isStepErrored(4);
-  private isStepTouched = this.$store.getters.isStepTouched(4);
+  private isStepErrored = this.$store.getters["wizard/isStepErrored"](4);
+  private isStepTouched = this.$store.getters["wizard/isStepTouched"](4);
   private csp = this.$store.getters.getPortfolio.csp;
   private applicationData: any = [];
   private sortAsc = true;
@@ -280,16 +283,19 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   private transformData(applications: any): void {
     const portfolioOperators = this.operators;
     const portfolioOperatorsCount = portfolioOperators.length || 0;
-    const [isPortfolioValid, hasPortfolioOperators] =
-      validateHasAdminOperators(portfolioOperators, applications);
+    const [isPortfolioValid, hasPortfolioOperators] = validateHasAdminOperators(
+      portfolioOperators,
+      applications
+    );
     this.isStepErrored = !isPortfolioValid;
-    
+
     const pIndex = this.applicationData.findIndex(
       (p: any) => p.portfolio === true
     );
     if (pIndex > -1) {
       this.applicationData[pIndex].operatorCount = portfolioOperatorsCount;
-      this.applicationData[pIndex].invalidAdmins = this.isStepErrored && this.isStepTouched;
+      this.applicationData[pIndex].invalidAdmins =
+        this.isStepErrored && this.isStepTouched;
     } else {
       this.applicationData.push({
         name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
@@ -301,8 +307,10 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     }
 
     for (let app of applications) {
-      const [isAppValid, hasPortfolioOperators] =
-        validateHasAdminOperators(portfolioOperators, [app]);
+      const [isAppValid, hasPortfolioOperators] = validateHasAdminOperators(
+        portfolioOperators,
+        [app]
+      );
       const opEmails: string[] = [];
       const appOps = app.operators || [];
       appOps.forEach((op: OperatorModel) => opEmails.push(op.email));
@@ -319,7 +327,8 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       );
       if (aIndex > -1) {
         this.applicationData[aIndex].operatorCount = totalOperatorsCount;
-        this.applicationData[aIndex].invalidAdmins = !isAppValid && this.isStepTouched;
+        this.applicationData[aIndex].invalidAdmins =
+          !isAppValid && this.isStepTouched;
       } else {
         this.applicationData.push({
           id: app.id,
@@ -418,8 +427,11 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   ): Promise<void> {
     if (this.hasChanges()) {
       try {
-        await this.$store.dispatch("saveStepData", 4);
-        await this.$store.dispatch("setStepTouched", [4, true]);
+        await this.$store.dispatch("wizard/saveStepData", 4);
+        await this.$store.dispatch("wizard/setStepTouched", {
+          stepNumber: 4,
+          isTouched: true,
+        });
       } catch (error) {
         console.log(error);
       }

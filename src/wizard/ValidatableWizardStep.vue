@@ -25,11 +25,17 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   };
 
   protected updateModelState(isValid: boolean): void {
-    this.$store.dispatch("updateStepModelValidity", [this.step, isValid]);
+    const stepNumber = this.step;
+    const valid = isValid;
+
+    this.$store.dispatch("wizard/updateStepModelValidity", {
+      stepNumber,
+      valid,
+    });
   }
 
   protected async saveData(): Promise<void> {
-    await this.$store.dispatch("saveStepData", this.step);
+    await this.$store.dispatch("wizard/saveStepData", this.step);
   }
 
   protected incomingModel!: TModel;
@@ -49,7 +55,10 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
       if (this.skipValidation) return;
 
       this.incomingModel = JSON.parse(JSON.stringify(this.model)) as TModel;
-      this.touched = await this.$store.dispatch("isStepTouched", this.step);
+      this.touched = await this.$store.dispatch(
+        "wizard/isStepTouched",
+        this.step
+      );
       if (this.touched) {
         this.validate();
       }

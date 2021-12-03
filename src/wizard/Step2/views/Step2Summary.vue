@@ -103,11 +103,11 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   };
 
   async onDeleteTaskOrder(id: string): Promise<void> {
-    await this.$store.dispatch("deleteTaskOrder", id);
+    await this.$store.dispatch("wizard/deleteTaskOrder", id);
 
     if (this.taskOrders.length === 0) {
       //route the user back to add funding step
-      await this.$store.dispatch("addNewTaskOrder");
+      await this.$store.dispatch("wizard/addNewTaskOrder");
       this.$router.push({
         name: addfunding.name,
         params: {
@@ -120,7 +120,7 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   }
 
   async onEditTaskOrder(id: string): Promise<void> {
-    this.$store.dispatch("editTaskOrder", id);
+    this.$store.dispatch("wizard/editTaskOrder", id);
     this.$router.push({
       name: editfunding.name,
       params: {
@@ -130,7 +130,7 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   }
 
   async onAddNewTaskOrder(id: string): Promise<void> {
-    await this.$store.dispatch("addNewTaskOrder");
+    await this.$store.dispatch("wizard/addNewTaskOrder");
     this.$router.push({
       name: addfunding.name,
       params: {

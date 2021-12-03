@@ -410,6 +410,7 @@ const loadStep3Data = async (
 };
 
 export const actions: ActionTree<WizardState, RootState> = {
+  createPortfolioDraft,
   validateStep,
   setCurrentStepNumber,
   setCurrentStepModel,

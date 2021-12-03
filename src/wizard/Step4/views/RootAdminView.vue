@@ -331,7 +331,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
       }
     }
 
-    this.$store.dispatch("updateMembersModified", true);
+    this.$store.dispatch("wizard/updateMembersModified", true);
   }
 
   private moreButtonId(item: any): string {

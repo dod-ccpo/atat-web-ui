@@ -12,6 +12,7 @@ import { mockTaskOrders } from "./mocks/taskOrderMockData";
 import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
+import wizard from "./modules/wizard/store";
 
 Vue.use(Vuex);
 
@@ -317,5 +318,6 @@ export default new Vuex.Store({
     portfolios,
     applications,
     taskOrders,
+    wizard,
   },
 });

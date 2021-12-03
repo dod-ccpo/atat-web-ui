@@ -152,7 +152,7 @@ export default class FundingTable extends Vue {
   @Prop({ default: {} }) private taskOrderFile!: TaskOrderFile;
 
   private onEdit() {
-    this.$store.dispatch("editTaskOrder", this.id);
+    this.$store.dispatch("wizard/editTaskOrder", this.id);
     this.$router.push({ name: "editfunding", params: { id: `${this.id}` } });
   }
   public formatDate(value: string): string {

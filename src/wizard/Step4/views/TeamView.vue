@@ -493,7 +493,7 @@ export default class TeamView extends mixins(ApplicationData) {
     }
 
     this.setMemberTableData();
-    this.$store.dispatch("updateMembersModified", true);
+    this.$store.dispatch("wizard/updateMembersModified", true);
   }
 
   private openSideDrawer(event: Event, openerId: string): void {

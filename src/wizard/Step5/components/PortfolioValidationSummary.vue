@@ -57,11 +57,19 @@ export default class PortfolioValidationSummary extends Vue {
     //in place Robert McCardell
 
     if (item === 2 && this.$store.state.taskOrderModels.length > 0) {
-      this.$store.dispatch("updateStepModelValidity", [2, true]);
+       const step2Validity = {
+        stepNumber: 2,
+        valid: true,
+      };
+      this.$store.dispatch("wizard/updateStepModelValidity", step2Validity);
     }
 
     if (item === 3 && this.$store.state.applicationModels.length > 0) {
-      this.$store.dispatch("updateStepModelValidity", [3, true]);
+      const step3Validity = {
+        stepNumber: 3,
+        valid: true,
+      };
+      this.$store.dispatch("wizard/updateStepModelValidity", step3Validity);
     }
     this.$router.push({ name: componentName });
   }

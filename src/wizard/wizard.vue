@@ -101,7 +101,9 @@ export default class Wizard extends Vue {
           break;
         case "save":
           try {
-            const saved = await this.$store.dispatch("saveAllValidSteps");
+            const saved = await this.$store.dispatch(
+              "wizard/saveAllValidSteps"
+            );
             if (saved) {
               alert("Data has been validated and is saved");
               await this.routerPush({ name: "portfolios" });

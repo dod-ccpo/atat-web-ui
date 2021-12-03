@@ -160,12 +160,12 @@ export default class ViewPortfolio extends Vue {
   }
 
   private async onCreatePortfolio(): Promise<void> {
-    await this.$store.dispatch("createPortfolioDraft");
+    await this.$store.dispatch("wizard/createPortfolioDraft");
     this.$router.push({ name: "addportfolio" });
   }
 
   private async onEditPortfolio(draftId: string): Promise<void> {
-    await this.$store.dispatch("loadPortfolioDraft", draftId);
+    await this.$store.dispatch("wizard/loadPortfolioDraft", draftId);
     this.$router.push({ name: "addportfolio" });
   }
 }

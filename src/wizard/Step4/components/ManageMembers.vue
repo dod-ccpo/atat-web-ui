@@ -1024,7 +1024,7 @@ export default class ManageMember extends mixins(ApplicationData) {
       }
     }
 
-    this.$store.dispatch("updateMembersModified", true);
+    this.$store.dispatch("wizard/updateMembersModified", true);
 
     this.closeModal();
   }
