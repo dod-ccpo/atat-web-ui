@@ -3,7 +3,7 @@
     <v-card class="v-card ma-1 body width-100">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
-          <h3>{{ portfolio.name }}</h3>
+          <h3 class="text-clamp text-clamp--1-line">{{ portfolio.name }}</h3>
           <v-btn
             class="py-0 px-2 primary--text"
             text
