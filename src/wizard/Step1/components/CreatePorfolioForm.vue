@@ -188,7 +188,7 @@ export default class CreatePortfolioForm
     return validated && typeof this.isDodComponentsValid === "boolean";
   }
   private mounted(): void {
-    this.stepHasBeenTouched = this.$store.getters.getStepTouched(1);
+    this.stepHasBeenTouched = this.$store.getters["wizard/getStepTouched"](1);
   }
 }
 </script>

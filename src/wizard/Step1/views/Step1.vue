@@ -41,7 +41,7 @@ export default class Step_1 extends ValidatableWizardStep<CreatePortfolioFormMod
     cloudServiceProviderForm: CloudServiceProvider;
   };
 
-  model: CreatePortfolioFormModel = this.$store.getters.getStepModel(1);
+  model: CreatePortfolioFormModel = this.$store.getters["wizard/getStepModel"](1);
 
   public validate: () => Promise<boolean> = async () => {
     const createPortofolioValidation =

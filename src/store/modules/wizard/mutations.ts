@@ -1,14 +1,14 @@
 import Vue from "vue";
 import { MutationTree } from "vuex";
 import { getStepModel, stepsModelInitializers } from "./helpers";
-import WizardState from "./types";
+import { WizardState } from "./types";
 
 const setStepValidated = (state: WizardState, step: number): void => {
   state.erroredSteps = state.erroredSteps.filter((es) => es !== step);
 };
 
 const setCurrentStepNumber = (state: WizardState, step: number): void => {
-  const portfolioStep = state.portfolioSteps[`${step}`];
+  const portfolioStep = state.portfolioSteps[step];
   setCurrentStepModel(state, portfolioStep.model);
 };
 
@@ -24,10 +24,9 @@ const saveStepModel = (
     valid,
   }: { model: any; stepNumber: number; valid: boolean }
 ): void => {
-  const stepKey = `${stepNumber}`;
-  Vue.set(state.portfolioSteps[stepKey], "model", model);
-  Vue.set(state.portfolioSteps[stepKey], "valid", valid);
-  Vue.set(state.portfolioSteps[stepKey], "touched", true);
+  Vue.set(state.portfolioSteps[stepNumber], "model", model);
+  Vue.set(state.portfolioSteps[stepNumber], "valid", valid);
+  Vue.set(state.portfolioSteps[stepNumber], "touched", true);
 
   const es: number[] = state.erroredSteps;
   const erroredStepIndex = es.indexOf(stepNumber);
@@ -40,19 +39,17 @@ const saveStepModel = (
 
 const initializeStepModel = (state: WizardState, stepNumber: number): void => {
   const modelCreator = getStepModel(stepNumber);
-  const stepIndex = `${stepNumber}`;
-  Vue.set(state.portfolioSteps[stepIndex], "model", modelCreator());
-  Vue.set(state.portfolioSteps[stepIndex], "valid", true);
-  Vue.set(state.portfolioSteps[stepIndex], "touched", false);
+  Vue.set(state.portfolioSteps[stepNumber], "model", modelCreator());
+  Vue.set(state.portfolioSteps[stepNumber], "valid", true);
+  Vue.set(state.portfolioSteps[stepNumber], "touched", false);
 };
 
 const updateStepModelValidity = (
   state: WizardState,
   { stepNumber, valid }: { stepNumber: number; valid: boolean }
 ): void => {
-  const stepIndex = `${stepNumber}`;
-  Vue.set(state.portfolioSteps[stepIndex], "valid", valid);
-  Vue.set(state.portfolioSteps[stepIndex], "touched", true);
+  Vue.set(state.portfolioSteps[stepNumber], "valid", valid);
+  Vue.set(state.portfolioSteps[stepNumber], "touched", true);
 
   const es: number[] = state.erroredSteps;
   const erroredStepIndex = es.indexOf(stepNumber);
@@ -67,19 +64,16 @@ const setStepTouched = (
   state: WizardState,
   { stepNumber, isTouched }: { stepNumber: number; isTouched: boolean }
 ): void => {
-  Vue.set(state.portfolioSteps[`${stepNumber}`], "touched", isTouched);
+  Vue.set(state.portfolioSteps[stepNumber], "touched", isTouched);
 };
 
 const initializeSteps = (state: WizardState): void => {
   stepsModelInitializers.forEach((initializer, index) => {
-    Vue.set(state.portfolioSteps[index], "model", initializer());
-    Vue.set(state.portfolioSteps[index], "valid", true);
-    Vue.set(state.portfolioSteps[index], "touched", false);
+    const stepKey = index + 1;
+    Vue.set(state.portfolioSteps[stepKey], "model", initializer());
+    Vue.set(state.portfolioSteps[stepKey], "valid", true);
+    Vue.set(state.portfolioSteps[stepKey], "touched", false);
   });
-
-  //todo: make sure this is right
-  //   //clear out task order models
-  //   Vue.set(state, "taskOrderModels", []);
 
   const es: number[] = state.erroredSteps;
   es.splice(0, es.length);
@@ -93,6 +87,10 @@ const setCurrentPortfolioId = (state: WizardState, id: string): void => {
   state.currentPortfolioId = id;
 };
 
+const setReturnToReview = (state: WizardState, shouldReturn: boolean): void => {
+  state.returnToReview = shouldReturn;
+};
+
 export const mutations: MutationTree<WizardState> = {
   setStepValidated,
   setCurrentStepNumber,
@@ -103,4 +101,5 @@ export const mutations: MutationTree<WizardState> = {
   initializeSteps,
   updateMembersModified,
   setCurrentPortfolioId,
+  setReturnToReview,
 };

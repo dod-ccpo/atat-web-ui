@@ -63,7 +63,7 @@ export default class TeamMemberTable extends Vue {
   @Prop({ default: "" }) private name!: string;
 
   private onEdit(data: any) {
-    this.$store.dispatch("setReturnToReview", true);
+    this.$store.dispatch("wizard/setReturnToReview", true);
     if (data.type === "application") {
       this.$store.dispatch("applications/setCurrentApplicationId", data.id);
     }

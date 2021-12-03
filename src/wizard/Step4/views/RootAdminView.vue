@@ -211,8 +211,8 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private search = "";
   private currentPortfolio = this.$store.getters.getPortfolio;
   private csp = this.currentPortfolio.csp || "your selected CSP";
-  private stepIsErrored = this.$store.getters.isStepErrored(4);
-  private isStepTouched = this.$store.getters.isStepTouched(4);
+  private stepIsErrored = this.$store.getters["wizard/isStepErrored"](4);
+  private isStepTouched = this.$store.getters["wizard/isStepTouched"](4);
 
   private noRootMembersOnLoad =
     this.$store.getters["applications/portfolioOperators"].length === 0;

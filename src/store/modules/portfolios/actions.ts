@@ -2,7 +2,6 @@ import { ActionContext, ActionTree, Commit } from "vuex";
 import { RootState } from "@/store/types";
 import PortfoliosState from "./types";
 import { portfoliosApi } from "@/api";
-import WizardState from "../wizard/types";
 
 const loadPortfolioDrafts = async ({
   commit,

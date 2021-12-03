@@ -1,11 +1,15 @@
 import { PortfolioStep } from "./PortfolioStepModels";
 
-export default interface WizardState {
-  portfolioSteps: Record<string, PortfolioStep>;
+
+export type PortfolioSteps = { [key: number]: PortfolioStep };
+
+export interface WizardState {
+  portfolioSteps: PortfolioSteps;
   erroredSteps: number[];
   currentStepNumber: number;
   currentStepModel: any;
   currentPortfolioId: string;
   membersModified: boolean;
   currentApplicationId: string;
+  returnToReview: boolean;
 }

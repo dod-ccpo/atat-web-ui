@@ -19,6 +19,7 @@ export const mapApplications = (
               access: op.access,
               display_name: op.display_name,
               email: op.email,
+              id: op.id,
             };
           })
         : [],
@@ -28,6 +29,7 @@ export const mapApplications = (
           operators: env.operators
             ? env.operators.map((op) => {
                 return {
+                  id: op.id,
                   access: op.access,
                   display_name: op.display_name,
                   email: op.email,
@@ -45,7 +47,7 @@ export const mapApplications = (
 export const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
   return operatorsModels.map((operatorModel: OperatorModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...baseModel } = operatorModel;
+    const { ...baseModel } = operatorModel;
 
     const operator: Operator = {
       ...baseModel,

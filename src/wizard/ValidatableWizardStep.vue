@@ -72,7 +72,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
   ): Promise<void> {
     next((vm: ValidatableWizardStep<TModel>) => {
       //loads model before route enter
-      vm.model = vm.$store.getters.getStepModel(vm.step);
+      vm.model = vm.$store.getters["wizard/getStepModel"](vm.step);
     });
   }
 

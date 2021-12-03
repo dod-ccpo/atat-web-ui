@@ -1,6 +1,6 @@
 import { RootState } from "@/store/types";
 import { GetterTree } from "vuex";
-import WizardState from "./types";
+import { WizardState } from "./types";
 import { WizardSteps } from "./types/PortfolioStepModels";
 
 export const getters: GetterTree<WizardState, RootState> = {
@@ -15,12 +15,12 @@ export const getters: GetterTree<WizardState, RootState> = {
     return invalidSteps;
   },
   getStepModel: (state) => (stepNumber: number) => {
-    return state.portfolioSteps[`${stepNumber}`].model;
+    return state.portfolioSteps[stepNumber].model;
   },
   getStepTouched: (state) => (stepNumber: number) => {
-    return state.portfolioSteps[`${stepNumber}`].touched;
+    return state.portfolioSteps[stepNumber].touched;
   },
-  getPortfolio: (state) => state.portfolioSteps[`${WizardSteps.One}`].model,
+  getPortfolio: (state) => state.portfolioSteps[WizardSteps.One].model,
   isStepErrored:
     (state) =>
     (stepNumber: number): boolean => {
@@ -34,7 +34,7 @@ export const getters: GetterTree<WizardState, RootState> = {
   isStepTouched:
     (state) =>
     (stepNumber: number): boolean => {
-      return state.portfolioSteps[`${stepNumber}`].touched;
+      return state.portfolioSteps[stepNumber].touched;
     },
   getPortfolioName: (state, getters) => (defaultResponse: string) => {
     defaultResponse = defaultResponse || "this portfolio";
@@ -55,4 +55,13 @@ export const getters: GetterTree<WizardState, RootState> = {
     }
     return pName;
   },
+  isReturnToReview: (state) => {
+    return state.returnToReview;
+  },
+  portfolioSteps: (state) => {
+    return state.portfolioSteps;
+  },
+  erroredSteps: (state) => {
+    return state.erroredSteps;
+  }
 };

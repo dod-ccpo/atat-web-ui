@@ -3,9 +3,8 @@ import { RootState } from "@/store/types";
 import { actions } from "./actions";
 import { mutations } from "./mutations";
 import { getters } from "./getters";
-import WizardState from "./types";
+import { WizardState } from "./types";
 import { PortfolioStep } from "./types/PortfolioStepModels";
-
 const step1: PortfolioStep = {
   step: 1,
   description: "Create Portfolio",
@@ -64,12 +63,12 @@ const step5: PortfolioStep = {
   model: {},
 };
 
-const portfolioSteps: Record<string, PortfolioStep> = {
-  "1": step1,
-  "2": step2,
-  "3": step3,
-  "4": step4,
-  "5": step5,
+const portfolioSteps: { [key: number]: PortfolioStep } = {
+  1: step1,
+  2: step2,
+  3: step3,
+  4: step4,
+  5: step5,
 };
 
 const state: WizardState = {
@@ -80,6 +79,7 @@ const state: WizardState = {
   currentPortfolioId: "",
   membersModified: false,
   currentApplicationId: "",
+  returnToReview: false,
 };
 
 const wizard: Module<WizardState, RootState> = {
