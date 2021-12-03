@@ -3,14 +3,27 @@
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
       <h1 tabindex="-1">
-        Let’s add root administrators to {{ portfolioName }}
+        {{
+          noRootMembersOnLoad
+            ? "Let’s add root administrators to " + portfolioName
+            : "Let’s update your root administrators for " + portfolioName
+        }}
       </h1>
+
       <p>
-        Invite your root administrators below to grant them full access to all
-        of your applications. These individuals will receive an invitation from
-        {{ csp }} after your portfolio is provisioned. Select
-        <span class="font-weight-bold">Next</span> to add team members to your
-        other applications.
+        <span v-if="noRootMembersOnLoad">
+          Invite your root administrators below to grant them full access to all
+          of your applications. These individuals will receive an invitation
+          from
+          {{ csp }} after your portfolio is provisioned. Select
+          <strong>Next</strong> to add team members to your other applications.
+        </span>
+        <span v-else>
+          The following people will be granted access to your workspaces within
+          the {{ csp }} console after your portfolio is provisioned. You can
+          invite additional team members or modify permissions below.
+          <span v-html="nextText" class="mr-1"></span>
+        </span>
         <a
           class="text-link"
           role="button"
@@ -19,9 +32,8 @@
           @keydown.enter="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
           @keydown.space="openSideDrawer($event, 'RootAdmins_LearnMoreButton')"
           id="RootAdmins_LearnMoreButton"
+          >Learn more about team member roles</a
         >
-          Learn more about team member roles
-        </a>
       </p>
 
       <v-alert
@@ -30,18 +42,26 @@
         rounded
         color="warning"
         icon="warning"
-        class="text-left warning_lighter black-icon mt-3 mb-8 border-thick pr-14"
+        class="
+          text-left
+          warning_lighter
+          black-icon
+          mt-3
+          mb-8
+          border-thick
+          pr-14
+        "
         border="left"
       >
         <div class="black--text body-lg">
           <p class="mb-0">
-            Adding a root administrator will ensure your team can manage every 
-            application within the cloud console. You can also grant administrator 
-            access to each application or environment individually.
+            Adding a root administrator will ensure your team can manage every
+            application within the cloud console. You can also grant
+            administrator access to each application or environment
+            individually.
           </p>
         </div>
       </v-alert>
-
     </div>
     <v-row>
       <v-col class="d-flex">
@@ -104,34 +124,19 @@
       <v-col cols="12" class="ma-0">
         <v-data-table
           v-if="rootMembersCount >= 1"
-          class="review-table"
+          class="review-table review-table--shadowed"
           :headers="headers"
           :items="isFiltered ? filteredData : rootMembers"
           hide-default-footer
         >
-          <template v-slot:header.display_name="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
-          <template v-slot:header.access="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
-          <template class="hello" v-slot:item.display_name="{ item }">
-            <div class="body font-weight-bold pt-6">
-              {{ item.display_name }}
-            </div>
-            <div class="body text--base-dark pb-6">
-              {{ item.email }}
-            </div>
+          <template v-slot:item.display_name="{ item }">
+            <strong>{{ item.display_name }}</strong>
+            <br />
+            {{ item.email }}
           </template>
           <template v-slot:item.access="{ item }">
             <div class="d-flex justify-space-between">
-              <div class="body text--base-dark pt-3">
-                {{ roleTranslation(item.access) }}
-              </div>
+              {{ roleTranslation(item.access) }}
 
               <v-menu
                 transition="slide-y-transition"
@@ -205,19 +210,35 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private isFiltered = false;
   private search = "";
   private currentPortfolio = this.$store.getters.getPortfolio;
-  private csp = this.currentPortfolio.csp;
+  private csp = this.currentPortfolio.csp || "your selected CSP";
   private stepIsErrored = this.$store.getters.isStepErrored(4);
+  private isStepTouched = this.$store.getters.isStepTouched(4);
+
+  private noRootMembersOnLoad =
+    this.$store.getters["applications/portfolioOperators"].length === 0;
+
+  private isReturnToReview = this.$store.getters.isReturnToReview;
+
+  get nextText(): string {
+    if (this.isReturnToReview) {
+      return `When you are done, select <strong>Return to Review and
+        Submit</strong> to finalize your portfolio.`;
+    }
+    return `When you are done, select <strong>Next</strong> to view
+      or edit your workspace teams.`;
+  }
 
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
   }
+
   private member: any;
 
   private setMember(item: any) {
     this.member = item;
   }
 
-  private message = "You do not have any team members in this workspace yet.";
+  private message = "You do not have any team members in this workspace.";
   private headers = [
     { text: "Name", value: "display_name", align: "start" },
     { text: "Workplace Access ", value: "access", sortable: false },
@@ -307,8 +328,10 @@ export default class RootAdminView extends mixins(ApplicationData) {
     btnId: string
   ): void {
     if (menuOptionText.toLowerCase() === "remove root administrator") {
-      this.dialogTitle = `Remove ${this.member.display_name}`;
-      this.dialogMessage = `${this.member.display_name} will be removed as a root administrator of ${this.portfolioName}. This individual will no longer have access to any of your applications in the cloud console.`;
+      this.dialogTitle = `Remove ${this.member.display_name}?`;
+      this.dialogMessage = `${this.member.display_name} will be removed as
+        a root administrator of ${this.portfolioName}. This individual will
+        no longer have access to any of your applications in the cloud console.`;
       this.returnFocusElementIdRemoveMemberCancel = btnId;
       this.showDialogWhenClicked = true;
     } else if (menuOptionText.toLowerCase() === "edit info") {

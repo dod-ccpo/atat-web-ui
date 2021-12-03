@@ -16,8 +16,8 @@
         :rules="rules"
         outlined
         dense
-        :success="success"
-        :append-outer-icon="appendedOuterIcon"
+        :success="isSuccess"
+        :error="isErrored"
         v-model="_selectedValue"
         :height="42"
         :rounded="rounded"
@@ -25,6 +25,13 @@
         :value.sync="_selectedValue"
         @change="onChange"
         :placeholder="placeholder"
+        :validate-on-load="validateOnLoad"
+        @blur="validateField()"
+        :class="[
+          isErrored ? 'invalid-icon' : '',
+          isSuccess ? 'valid-icon' : '',
+          isErrored || isSuccess ? 'show-validation-icon' : '',
+        ]"
       >
         <template v-slot:selection="{ item }">
           {{ item }}
@@ -56,7 +63,7 @@ import Vue from "vue";
 
 @Component({})
 export default class ATATSelect extends Vue {
-  @PropSync("selectedValue") private _selectedValue!: unknown;
+  @PropSync("selectedValue") private _selectedValue!: string;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({
@@ -67,46 +74,50 @@ export default class ATATSelect extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
-  @Watch("errorBucket")
-  onErrorBucketChanged(): void {
-    this.getStatusIcon();
-  }
-
-  @Watch("selectedValue")
-  onSelectedValueChanged(newVal: string): void {
-    this.selected = newVal;
-    this.getStatusIcon();
-  }
+  @Prop({ default: false }) private validateOnLoad!: boolean;
 
   //data
   private rounded = false;
-  private appendedOuterIcon = "";
   private isFieldValid = false;
   private selected = "";
-  private success = false;
+  private isFieldDirty = false;
+  private hasInitialValue = false;
 
-  private getStatusIcon() {
-    this.$nextTick(() => {
-      // if the rules property isn't set we won't display an icon
-      // when the rules property is populated (i.e when the parent form is saved)
-      // we evalute the rules to determine what icon to display
-      if (this.$props["rules"].length > 0) {
-        const v = this._selectedValue;
-        this.isFieldValid = this.$props["rules"].every(
-          (rule: (a: unknown) => string | boolean) => rule(v) === true
-        );
-        this.success = this.isFieldValid ? true : false;
-        this.appendedOuterIcon = this.isFieldValid ? "check_circle" : "error";
-      }
-    });
+  private validateField() {
+    // if the rules property isn't set we won't display an icon
+    // when the rules property is populated (i.e when the parent form is saved)
+    // we evalute the rules to determine what icon to display
+    this.isFieldDirty = true;
+
+    if (this.$props["rules"].length > 0) {
+      let value = this._selectedValue;
+      this.isFieldValid = this.$props["rules"].every(
+        (rule: (a: unknown) => string | boolean) => rule(value) === true
+      );
+    }
+
+    this.$emit("blur");
+  }
+
+  get isSuccess(): boolean {
+    return this.isFieldDirty === true && this.isFieldValid === true;
+  }
+
+  get isErrored(): boolean {
+    return (this.isFieldDirty || this.hasInitialValue) && !this.isFieldValid;
   }
 
   private onChange(val: string): void {
     this.selected = val;
   }
 
-  private updated() {
-    this.getStatusIcon();
+  private mounted(): void {
+    this.$nextTick(() => {
+      this.hasInitialValue = this._selectedValue.length > 0;
+      if (this.validateOnLoad || this.hasInitialValue) {
+        this.validateField();
+      }
+    });
   }
 }
 </script>

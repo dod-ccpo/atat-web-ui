@@ -126,7 +126,7 @@ a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
             color: $base_lightest;
         }
         .v-icon {
-            color: $base-darkest;
+            color: $base;
         }
         .v-btn__content{
             flex: none;
@@ -134,9 +134,13 @@ a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
 
         &:hover {
             border-color: $base-lighter;
+            background-color: white !important;
+            .v-icon {
+                color: $base-darkest;
+            }
         }
         &:focus, &:active {
-            background-color: $primary-lighter !important;
+            background-color: $accent-cool-lightest !important;
             border: solid 1px $primary !important;
             &:not([aria-expanded="false"]) {
                 border-bottom-left-radius: 0;

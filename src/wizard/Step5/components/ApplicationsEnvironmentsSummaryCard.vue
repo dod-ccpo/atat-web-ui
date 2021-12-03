@@ -2,7 +2,7 @@
   <div>
     <div v-for="application in applicationData" :key="application.id">
       <div class="review-table">
-        <v-card class="v-card ma-1 px-2 mb-10 body">
+        <v-card class="v-card ma-1 mb-10 body">
           <v-card-title>
             <div class="width-100 d-flex justify-space-between align-center">
               <h3>{{ application.name }}</h3>
@@ -27,7 +27,7 @@
               {{ application.description }}
             </p>
           </v-card-title>
-          <v-card-text class="body-lg text--base-darkest">
+          <v-card-text class="body-lg text--base-darkest pa-6 pt-0">
             <div
               class="
                 text--base
@@ -38,7 +38,7 @@
                 black--text
               "
             >
-              <div>ENVIRONMENTS</div>
+              ENVIRONMENTS
             </div>
             <div
               v-for="environment in application.environments"
@@ -69,6 +69,7 @@ export default class ApplicationsEnvironmentsSummaryCard extends SummaryCard {
   private applicationData!: ApplicationModel[];
 
   public onEdit(id: string): void {
+    this.$store.dispatch("setReturnToReview", true);
     this.$store.dispatch("editApplication", id);
     this.$router.push({
       name: editapplication.name,

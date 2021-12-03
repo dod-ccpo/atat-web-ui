@@ -1,18 +1,17 @@
 <template>
   <div class="review-table">
     <v-card
-      v-for="application in this.tableData"
-      :key="application.name"
+      v-for="data in this.tableData"
+      :key="data.name"
       class="ma-1 width-95 height-100 mb-10"
-      elevation="4"
     >
-      <v-card-title class="d-flex justify-space-between ml-2">
-        <span class="h3">{{ application.name }}</span>
+      <v-card-title class="d-flex justify-space-between">
+        <span class="h3">{{ data.name }}</span>
         <v-btn
           text
           x-small
           class="v-btn text-decoration-none mt-1 mx-1 primary--text"
-          @click="handleClicked('addteammembers')"
+          @click="onEdit(data)"
           role="link"
           :ripple="false"
           aria-label="Edit team members"
@@ -24,90 +23,29 @@
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0">
-        <v-simple-table class="pb-2">
+        <v-simple-table v-if="data.operators.length">
           <template v-slot:default>
-            <thead class="bg-base-lightest">
+            <thead>
               <tr>
-                <th class="width-50">
-                  <span
-                    class="
-                      pl-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Name
-                  </span>
-                </th>
-
-                <th class="width-50">
-                  <span
-                    class="
-                      pr-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Workspace Roles
-                  </span>
-                </th>
+                <th class="width-50">Name</th>
+                <th class="width-50">Workspace Roles</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in application.root" :key="item.id">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
-                  <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
-                      {{ item.display_name }}
-                    </span>
-                    <span class="table-item"> {{ item.email }} </span>
-                  </div>
+              <tr v-for="operator in data.operators" :key="operator.id">
+                <td>
+                  <strong>{{ operator.display_name }}</strong>
+                  <br />
+                  {{ operator.email }}
                 </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    {{ item.workspace_roles }}
-                  </span>
-                </td>
-              </tr>
-              <tr v-for="item in application.appOp" :key="item.id">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
-                  <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
-                      {{ item.display_name }}
-                    </span>
-                    <span class="table-item"> {{ item.email }} </span>
-                  </div>
-                </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    All: {{ item.workspace_roles }}
-                  </span>
-                </td>
-              </tr>
-              <tr v-for="item in application.envOps" :key="item.id">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
-                  <div class="d-flex flex-column">
-                    <span class="table-item font-weight-bold">
-                      {{ item.display_name }}
-                    </span>
-                    <span class="table-item"> {{ item.email }} </span>
-                  </div>
-                </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span
-                    v-for="access in tranformWorkSpace(item.workspace_roles)"
-                    :key="access"
-                    class="table-item d-flex flex-column"
-                  >
-                    {{ access }}
-                  </span>
-                </td>
+                <td v-html="operator.workspace_roles"></td>
               </tr>
             </tbody>
           </template>
         </v-simple-table>
+        <div v-else class="body px-8 pb-5">
+          You do not have any team members in this workspace.
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -116,6 +54,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { ApplicationModel } from "types/Portfolios";
+import { editmembers } from "@/router/wizard";
 
 @Component({})
 export default class TeamMemberTable extends Vue {
@@ -123,34 +62,53 @@ export default class TeamMemberTable extends Vue {
   @Prop({ default: [] }) private data!: ApplicationModel[];
   @Prop({ default: "" }) private name!: string;
 
-  private handleClicked(name: string) {
-    this.$router.push({ name: name });
+  private onEdit(data: any) {
+    this.$store.dispatch("setReturnToReview", true);
+    if (data.type === "application") {
+      this.$store.dispatch("applications/setCurrentApplicationId", data.id);
+    }
+    const routeName = editmembers.name;
+    this.$router.push({
+      name: routeName,
+      params: {
+        type: data.type,
+        id: data.id,
+      },
+    });
   }
 
   private tableData: {
+    type: string;
+    id: string;
     name: string;
-    root: any;
-    appOp: any;
-    envOps: any;
+    operators: any;
   }[] = [];
   private setMemberTableData(data: ApplicationModel[]) {
-    data.forEach((application) => {
-      const rootAdministrators: any = [];
-      const appOps: any = [];
-      const appEnvOps: any[] = [];
+    const rootAdmins =
+      this.$store.getters["applications/portfolioOperators"] || [];
+    if (rootAdmins && rootAdmins.length) {
+      const rootOperators: any = [];
+      rootAdmins.forEach((op: any) => {
+        const opObj = {
+          id: op.id,
+          display_name: op.display_name,
+          email: op.email,
+          workspace_roles: "Root administrator",
+        };
+        rootOperators.push(opObj);
+      });
 
-      const rootAdmins = this.$store.state.portfolioOperators || [];
-      if (rootAdmins && rootAdmins.length) {
-        rootAdmins.forEach((op: any) => {
-          const opObj = {
-            id: op.id,
-            display_name: op.display_name,
-            email: op.email,
-            workspace_roles: "Root administrator",
-          };
-          rootAdministrators.push(opObj);
-        });
-      }
+      const rootObj = {
+        type: "portfolio",
+        id: this.$store.getters.getPortfolioId,
+        name: "Root Administrators",
+        operators: rootOperators,
+      };
+      this.tableData.push(rootObj);
+    }
+
+    data.forEach((application) => {
+      const operators: any = [];
 
       const applicationOperators = application.operators || [];
       if (applicationOperators && applicationOperators.length) {
@@ -159,9 +117,9 @@ export default class TeamMemberTable extends Vue {
             id: op.id,
             display_name: op.display_name,
             email: op.email,
-            workspace_roles: this.roleTranslation(op.access), // get nice name, not enum
+            workspace_roles: "All: " + this.roleTranslation(op.access), // get nice name, not enum
           };
-          appOps.push(opObj);
+          operators.push(opObj);
         });
       }
 
@@ -170,18 +128,18 @@ export default class TeamMemberTable extends Vue {
         const envOperators = env.operators;
         if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
-            const i = appEnvOps.findIndex((o) => o.email === op.email);
+            const i = operators.findIndex((o: any) => o.email === op.email);
             if (op.access !== "no_access") {
               const workspace_roles =
                 i > -1
                   ? env.name +
                     ": " +
                     this.roleTranslation(op.access) +
-                    "  " +
-                    appEnvOps[i].workspace_roles
+                    "<br />" +
+                    operators[i].workspace_roles
                   : env.name + ": " + this.roleTranslation(op.access);
               if (i > -1) {
-                appEnvOps[i].workspace_roles = workspace_roles;
+                operators[i].workspace_roles = workspace_roles;
               } else {
                 const opObj = {
                   id: op.id,
@@ -189,7 +147,7 @@ export default class TeamMemberTable extends Vue {
                   email: op.email,
                   workspace_roles: workspace_roles,
                 };
-                appEnvOps.push(opObj);
+                operators.push(opObj);
               }
             }
           });
@@ -197,16 +155,13 @@ export default class TeamMemberTable extends Vue {
       });
 
       const appObj = {
+        type: "application",
+        id: application.id,
         name: application.name,
-        root: rootAdministrators,
-        appOp: appOps,
-        envOps: appEnvOps,
+        operators: operators,
       };
       this.tableData.push(appObj);
     });
-  }
-  private tranformWorkSpace(data: string) {
-    return data.split("  ");
   }
   private roleTranslation(role: string): string {
     switch (role) {
@@ -215,7 +170,7 @@ export default class TeamMemberTable extends Vue {
       case "administrator":
         return "Administrator";
       case "contributor":
-        return "Contributer";
+        return "Contributor";
       case "read_only":
         return "Billing read-only";
       default:

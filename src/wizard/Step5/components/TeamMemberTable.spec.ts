@@ -180,8 +180,8 @@ describe("Testing ApplicationsEnvironmentsSummaryCard Component", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("test handleClick", async () => {
-    await wrapper.vm.handleClicked("dev");
+  it("test onEdit", async () => {
+    await wrapper.vm.onEdit("dev");
     expect(wrapper.exists()).toBe(true);
   });
 });

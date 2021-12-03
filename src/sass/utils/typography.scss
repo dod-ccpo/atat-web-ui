@@ -147,15 +147,6 @@ p {
     line-height: 2rem !important;
 }
 
-//todo change this on the component to
-// .body
-.table-item{
-    font-size: 1.5rem;
-    line-height: 2.4rem;
-    font-style: normal;
-    font-weight: normal;
-    color: $base_darkest;
-}
 a {
     &.text-link, &.expandable-content-opener, &.primary-text {
         text-decoration: underline;

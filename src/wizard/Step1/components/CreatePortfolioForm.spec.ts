@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
+import Vuex from "vuex";
 import { createLocalVue, mount } from "@vue/test-utils";
 import CreatePortfolioForm from "@/wizard/Step1/components/CreatePorfolioForm.vue";
 
@@ -7,13 +8,22 @@ Vue.use(Vuetify);
 
 describe("Testing CreatePortfolioForm Component", () => {
   const localVue = createLocalVue();
+  localVue.use(Vuex);
   let vuetify: any;
   let wrapper: any;
-
+  const getters: any = {
+    getStepTouched: () => (stepNumber: number) => {
+      return false;
+    },
+  };
+  const store = new Vuex.Store({
+    getters,
+  });
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(CreatePortfolioForm, {
       localVue,
+      store,
       vuetify,
       stubs: ["atat-text-field", "atat-text-area"],
       propsData: {

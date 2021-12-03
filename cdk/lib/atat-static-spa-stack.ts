@@ -72,8 +72,9 @@ export class StaticSiteStack extends cdk.Stack {
       supportedIdentityProviders: idpNames.map(
         cognito.UserPoolClientIdentityProvider.custom
       ),
-      accessTokenValidity: cdk.Duration.minutes(60),
-      refreshTokenValidity: cdk.Duration.days(1),
+      accessTokenValidity: cdk.Duration.minutes(5),
+      idTokenValidity: cdk.Duration.minutes(5),
+      refreshTokenValidity: cdk.Duration.minutes(30),
       oAuth: {
         flows: {
           authorizationCodeGrant: true,

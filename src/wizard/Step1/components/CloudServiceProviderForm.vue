@@ -3,12 +3,10 @@
     <fieldset>
       <legend>Cloud Service Provider</legend>
       <p class="mb-1">
-        Select the cloud service provider where you want to deploy this
-        portfolio.
-        <strong>
-          Your selection must match the CSP listed in your awarded task
-          order(s).
-        </strong>
+        Select the CSP where you want to deploy this portfolio.<strong
+          >Your selection must match the CSP listed in your awarded task
+          order(s).</strong
+        >
       </p>
       <v-form ref="form" lazy-validation>
         <atat-button-card

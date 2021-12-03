@@ -186,6 +186,13 @@ const validateAdminOperatators = ({
   const applications = state.applicationModels;
   const operators = state.portfolioOperators;
   return validateHasAdminOperators(operators, applications);
+}
+
+const setPortfolioHasHadMembersAdded = (
+  { commit }: { commit: Commit },
+  membersAdded: boolean
+): void => {
+  commit("setPortfolioHasHadMembersAdded", membersAdded);
 };
 
 export const actions: ActionTree<ApplicationsState, RootState> = {
@@ -204,4 +211,5 @@ export const actions: ActionTree<ApplicationsState, RootState> = {
   initializeRootAdministrators,
   saveToServer,
   validateAdminOperatators,
+  setPortfolioHasHadMembersAdded,
 };
