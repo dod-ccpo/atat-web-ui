@@ -43,7 +43,7 @@
             </tbody>
           </template>
         </v-simple-table>
-        <div v-else class="body px-8 pb-5">
+        <div v-else class="body px-6 pb-5">
           You do not have any team members in this workspace.
         </div>
       </v-card-text>
