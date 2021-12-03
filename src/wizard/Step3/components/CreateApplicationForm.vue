@@ -21,7 +21,7 @@
           skip to your application summary. From there, you can add additional
           applications to your portfolio, if needed.</span
         ><span v-if="isReturnToReview"
-          >Select <strong>Next</strong>. When you are done, select
+          >When you are done, select
           <strong>Return to Review and Submit</strong> to finalize your
           portfolio.</span
         >
