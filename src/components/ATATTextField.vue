@@ -52,6 +52,7 @@
             hide-details="auto"
             :validate-on-blur="true"
             :validate-on-load="validateOnLoad"
+            :placeholder="placeHolder"
             :class="[
               isErrored ? 'invalid-icon' : '',
               isSuccess ? 'valid-icon' : '',
@@ -90,9 +91,8 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import Inputmask from "inputmask";
-import Vue from "vue";
 
 @Component({})
 export default class ATATTextField extends VTextField {
@@ -120,6 +120,7 @@ export default class ATATTextField extends VTextField {
   private isFieldValid = false;
   private isFieldDirty = false;
   private hasInitialValue = false;
+  private placeHolder = "";
 
   get isSuccess(): boolean {
     return this.isFieldDirty === true && this.isFieldValid === true;
@@ -130,7 +131,11 @@ export default class ATATTextField extends VTextField {
   }
 
   private inputActions(v: string) {
-    this._value = v;
+    if (this.mask === "currency") {
+      this._value = parseInt(v) > 0 ? v : "";
+    } else {
+      this._value = v;
+    }
   }
 
   private validateField() {
@@ -151,6 +156,10 @@ export default class ATATTextField extends VTextField {
 
   public mounted(): void {
     this.addMasks();
+    if (this.mask === "currency") {
+      this._value = parseInt(this._value) > 0 ? this._value : "";
+      this.placeHolder = "";
+    }
     this.$nextTick(() => {
       this.hasInitialValue = this._value.length > 0;
       if (this.validateOnLoad || this.hasInitialValue) {
@@ -181,6 +190,8 @@ export default class ATATTextField extends VTextField {
         autoUnmask: true,
         digitsOptional: true,
         rightAlign: false,
+        showMaskOnHover: false,
+        showMaskOnFocus: false,
       }).mask(textBox);
     }
   }

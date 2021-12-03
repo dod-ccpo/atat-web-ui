@@ -52,7 +52,15 @@
         rounded
         color="warning"
         icon="warning"
-        class="text-left warning_lighter black-icon mt-3 mb-8 border-thick pr-14"
+        class="
+          text-left
+          warning_lighter
+          black-icon
+          mt-3
+          mb-8
+          border-thick
+          pr-14
+        "
         border="left"
       >
         <div class="black--text body-lg">
@@ -124,7 +132,7 @@
     <v-row v-if="membersData.length > 0">
       <v-col cols="12" class="ma-0">
         <v-data-table
-          class="review-table"
+          class="review-table review-table--shadowed"
           :headers="headers"
           :items="isFiltered ? filteredData : membersData"
           hide-default-footer
@@ -132,32 +140,21 @@
           :sort-by="['name']"
           :items-per-page="-1"
         >
-          <template v-slot:header.display_name="{ header }">
-            <div class="label font-weight-bold text--base-dark mr-5">
-              {{ header.text }}
-            </div>
-          </template>
-          <template v-slot:header.workspace_roles="{ header }">
-            <div class="label font-weight-bold text--base-dark">
-              {{ header.text }}
-            </div>
-          </template>
           <template v-slot:item.display_name="{ item }">
-            <div class="pt-6 pb-6">
-              <div class="body font-weight-bold">
-                {{ item.display_name }}
-              </div>
-              <div class="body text--base-dark">
-                {{ item.email }}
-              </div>
-            </div>
+            <strong>{{ item.display_name }}</strong>
+            <br />
+            {{ item.email }}
           </template>
           <template v-slot:item.workspace_roles="{ item }">
-            <div class="d-flex justify-space-between pb-6 pt-6">
-              <div class="d-flex flex-column body text--base-dark">
-                <div v-for="value in item.workspace_roles" :key="value">
+            <div class="d-flex justify-space-between">
+              <div>
+                <span
+                  v-for="value in item.workspace_roles"
+                  :key="value"
+                  class="d-block"
+                >
                   {{ value }}
-                </div>
+                </span>
               </div>
 
               <v-menu
@@ -248,9 +245,10 @@ export default class TeamView extends mixins(ApplicationData) {
   }
 
   private get missingAdminMessage(): string {
-    if (this.environmentsWithoutAdmins.length &&
-      this.environmentsWithoutAdmins.length < this.environmentCount)
-    {
+    if (
+      this.environmentsWithoutAdmins.length &&
+      this.environmentsWithoutAdmins.length < this.environmentCount
+    ) {
       let envList = this.environmentsWithoutAdmins.join(", ");
       envList = envList.replace(/,([^,]*)$/, " and" + "$1");
 
@@ -278,8 +276,10 @@ export default class TeamView extends mixins(ApplicationData) {
   }[] = [];
 
   private setMemberTableData() {
-    [this.appHasAdmins, this.isTouched] =
-      validateHasAdminOperators(this.operators, [this.currentApplication]);
+    [this.appHasAdmins, this.isTouched] = validateHasAdminOperators(
+      this.operators,
+      [this.currentApplication]
+    );
     if (this.operators) {
       const rootAdmins = this.operators || [];
       if (rootAdmins && rootAdmins.length) {
@@ -318,7 +318,8 @@ export default class TeamView extends mixins(ApplicationData) {
     if (this.currentApplication.environments) {
       const applicationEnvironments = this.currentApplication.environments;
       applicationEnvironments.forEach((env: any) => {
-        const environmentWithoutAdminsIndex = this.environmentsWithoutAdmins.indexOf(env.name);
+        const environmentWithoutAdminsIndex =
+          this.environmentsWithoutAdmins.indexOf(env.name);
         const envOperators = env.operators;
         if (envOperators && envOperators.length > 0) {
           envOperators.forEach((op: any) => {
@@ -347,11 +348,16 @@ export default class TeamView extends mixins(ApplicationData) {
                 this.applicationMembers.push(opObj);
               }
 
-              if (op.access === "administrator" && environmentWithoutAdminsIndex > -1) {
-                this.environmentsWithoutAdmins.splice(environmentWithoutAdminsIndex, 1)
+              if (
+                op.access === "administrator" &&
+                environmentWithoutAdminsIndex > -1
+              ) {
+                this.environmentsWithoutAdmins.splice(
+                  environmentWithoutAdminsIndex,
+                  1
+                );
               }
             }
-
           });
         }
       });
@@ -399,7 +405,7 @@ export default class TeamView extends mixins(ApplicationData) {
       case "administrator":
         return "Administrator";
       case "contributor":
-        return "Contributer";
+        return "Contributor";
       case "read_only":
         return "Billing read-only";
       default:

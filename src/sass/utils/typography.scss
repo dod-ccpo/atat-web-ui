@@ -147,15 +147,6 @@ p {
     line-height: 2rem !important;
 }
 
-//todo change this on the component to
-// .body
-.table-item{
-    font-size: 1.5rem;
-    line-height: 2.4rem;
-    font-style: normal;
-    font-weight: normal;
-    color: $base_darkest;
-}
 a {
     &.text-link, &.expandable-content-opener, &.primary-text {
         text-decoration: underline;
@@ -251,4 +242,11 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
     font-size: 20px;
 }
 
-
+.text-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.text-clamp--1-line {
+    -webkit-line-clamp: 1;
+}

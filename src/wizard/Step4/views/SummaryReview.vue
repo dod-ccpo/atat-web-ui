@@ -8,8 +8,8 @@
         giving them access to your workspaces within the {{ csp }} console. Add
         your root administrators to <strong>“{{ portfolioName }}”</strong> to
         manage all of your applications, or customize members and roles within
-        each application individually. When you are done, select <strong>Next:
-        Review and Submit</strong> to finalize your portfolio.
+        each application individually. When you are done, select
+        <strong>Next: Review and Submit</strong> to finalize your portfolio.
       </p>
 
       <v-alert
@@ -28,16 +28,26 @@
             and ensure at least one of the following is satisfied:
           </p>
           <ul>
-            <li>A root administrator is added to manage all of your applications.</li>
-            <li>An administrator is added to every application individually.</li>
-            <li>An administrator is added to each environment within every application.</li>
+            <li>
+              A root administrator is added to manage all of your applications.
+            </li>
+            <li>
+              An administrator is added to every application individually.
+            </li>
+            <li>
+              An administrator is added to each environment within every
+              application.
+            </li>
           </ul>
         </div>
       </v-alert>
     </div>
 
     <v-data-table
-      class="review-table overflow-x-hidden overflow-y-hidden"
+      class="
+        review-table review-table--shadowed
+        overflow-x-hidden overflow-y-hidden
+      "
       style="width: 900px"
       :headers="headers"
       :items="applicationData"
@@ -47,26 +57,12 @@
       :custom-sort="sortApplications"
       :items-per-page="-1"
     >
-      <template v-slot:header.name="{ header }">
-        <div class="label font-weight-bold text--base-dark mr-5">
-          {{ header.text }}
-        </div>
-      </template>
-      <template v-slot:header.description="{ header }">
-        <div class="label font-weight-bold text--base-dark">
-          {{ header.text }}
-        </div>
-      </template>
-      <template v-slot:header.operators="{ header }">
-        <div class="label font-weight-bold text--base-dark">
-          {{ header.text }}
-        </div>
-      </template>
       <template v-slot:item.name="{ item }">
         <div class="d-flex align-center">
           <v-icon
             class="table-subdirectory-icon text--base-light mr-3"
             v-if="!item.portfolio"
+            aria-hidden="true"
             >subdirectory_arrow_right</v-icon
           >
           <a
@@ -74,13 +70,7 @@
             @keydown.enter="handleNameClick(item)"
             @keydown.space="handleNameClick(item)"
             tabindex="0"
-            class="
-              body
-              font-weight-bold
-              py-3
-              primary-text
-              text-no-wrap text-truncate
-            "
+            class="text-no-wrap text-truncate font-weight-bold text-link"
             :aria-label="
               item.name +
               ' - manage ' +
@@ -88,35 +78,36 @@
             "
           >
             <div class="d-flex align-center justify-between">
-              <div class="overflow-hidden" style="height: 24px">
+              <div v-if="item.name && item.name.length <= 25">
                 {{ item.name }}
               </div>
-              <div v-if="item.name && item.name.length > 25">...</div>
+              <div v-else-if="item.name">
+                {{ item.name.substring(0, 25) }}...
+              </div>
             </div>
           </a>
         </div>
       </template>
       <template v-slot:item.description="{ item }">
-        <div class="d-flex align-center body text--base-darkest">
-          <div class="overflow-hidden text-no-wrap" style="height: 24px">
-            {{ getDescription(item.description) }}
-          </div>
+        <div class="overflow-hidden text-no-wrap">
+          {{ getDescription(item.description) }}
         </div>
       </template>
       <template v-slot:item.operators="{ item }">
-        <div class="d-flex justify-space-between align-center">
+        <div
+          class="
+            d-flex
+            justify-space-between
+            align-center
+            errorable-field-wrapper
+          "
+        >
           <div
-            class="body text--base-darkest pt-1"
+            class="errorable-field d-flex align-center"
+            :class="{ invalid: item.invalidAdmins }"
           >
-            <div
-              class="errorable-field  d-flex align-center"
-              :class="{invalid: item.invalidAdmins}"
-            >
-              {{ item.operatorCount }}
-              <v-icon v-if="item.invalidAdmins">
-                error
-              </v-icon>
-            </div>
+            {{ item.operatorCount }}
+            <v-icon v-if="item.invalidAdmins"> error </v-icon>
           </div>
 
           <v-menu
@@ -279,8 +270,10 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   private transformData(applications: any): void {
     const portfolioOperators = this.operators;
     const portfolioOperatorsCount = portfolioOperators.length || 0;
-    const [isPortfolioValid, hasPortfolioOperators] =
-      validateHasAdminOperators(portfolioOperators, applications);
+    const [isPortfolioValid, hasPortfolioOperators] = validateHasAdminOperators(
+      portfolioOperators,
+      applications
+    );
     this.isStepErrored = !isPortfolioValid;
 
     const pIndex = this.applicationData.findIndex(
@@ -288,7 +281,8 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     );
     if (pIndex > -1) {
       this.applicationData[pIndex].operatorCount = portfolioOperatorsCount;
-      this.applicationData[pIndex].invalidAdmins = this.isStepErrored && this.isStepTouched;
+      this.applicationData[pIndex].invalidAdmins =
+        this.isStepErrored && this.isStepTouched;
     } else {
       this.applicationData.push({
         name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
@@ -300,8 +294,10 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     }
 
     for (let app of applications) {
-      const [isAppValid, hasPortfolioOperators] =
-        validateHasAdminOperators(portfolioOperators, [app]);
+      const [isAppValid, hasPortfolioOperators] = validateHasAdminOperators(
+        portfolioOperators,
+        [app]
+      );
       const opEmails: string[] = [];
       const appOps = app.operators || [];
       appOps.forEach((op: OperatorModel) => opEmails.push(op.email));
@@ -318,7 +314,8 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
       );
       if (aIndex > -1) {
         this.applicationData[aIndex].operatorCount = totalOperatorsCount;
-        this.applicationData[aIndex].invalidAdmins = !isAppValid && this.isStepTouched;
+        this.applicationData[aIndex].invalidAdmins =
+          !isAppValid && this.isStepTouched;
       } else {
         this.applicationData.push({
           id: app.id,
