@@ -15,9 +15,7 @@ const getAuthToken = async (): Promise<string | undefined> => {
   // attempt to retrieve the current session and get the auth token
   // If an exception occurs, the session has expired. Force the user to authenticate
   try {
-    const token = (await Auth.currentSession()).getIdToken().getJwtToken();
-
-    return token;
+    return (await Auth.currentSession()).getIdToken().getJwtToken();
   } catch {
     await Auth.federatedSignIn({
       customProvider: "IdP",
@@ -28,9 +26,12 @@ const getAuthToken = async (): Promise<string | undefined> => {
 // Handle adding the authorization header based on the current session
 instance.interceptors.request.use(async (config) => {
   const token = await getAuthToken();
-  config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
+
 
 interface APIRequest {
   url?: string;
