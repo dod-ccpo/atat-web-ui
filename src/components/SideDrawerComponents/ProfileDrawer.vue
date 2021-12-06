@@ -74,9 +74,13 @@
         </div>
       </div>
 
-      <expandable-link
-        header="How will my contact information be used?"
-        content="<p>We will send email notifications to let you know when your funding
+      <expandable-link aria-id="ContactFAQ1">
+        <template v-slot:header>
+          How will my contact information be used?
+        </template>
+        <template v-slot:content>
+          <p>
+            We will send email notifications to let you know when your funding
             or period of performance is close to expiring. This will allow you
             to add additional task orders and keep your portfolios active.
           </p>
@@ -84,22 +88,31 @@
             Our administrators may also use this information to contact you, in
             the event that there are issues with your cloud resources or
             funding.
-          </p>"
-      />
+          </p>
+        </template>
+      </expandable-link>
 
-      <expandable-link
-        header="Why can’t I update my profile in ATAT?"
-        content="<p>ATAT uses Global Directory for CAC authentication. GD is an
+      <expandable-link aria-id="ContactFAQ2">
+        <template v-slot:header>
+          Why can’t I update my profile in ATAT?
+        </template>
+        <template v-slot:content>
+          <p>
+            ATAT uses Global Directory for CAC authentication. GD is an
             enterprise identity solution that provides a trusted single source
             of truth for digital authentication for every DoD employee.
           </p>
           <p>
             When you update your contact information on the
-            <a href='https://idco.dmdc.osd.mil/idco/' target='_blank'>ID Card Office
-            Online (IDCO) <span class='external-link'>website</span></a>, it is automatically updated anywhere you use
-            your CAC, saving you the time and hassle of updating your information on multiple DoD
-            websites."
-      />
+            <a href="https://idco.dmdc.osd.mil/idco/" target="_blank"
+              >ID Card Office Online (IDCO)
+              <span class="external-link">website</span></a
+            >, it is automatically updated anywhere you use your CAC, saving you
+            the time and hassle of updating your information on multiple DoD
+            websites.
+          </p>
+        </template>
+      </expandable-link>
     </div>
   </div>
 </template>
