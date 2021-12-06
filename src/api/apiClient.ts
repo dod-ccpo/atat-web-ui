@@ -28,7 +28,9 @@ const getAuthToken = async (): Promise<string | undefined> => {
 // Handle adding the authorization header based on the current session
 instance.interceptors.request.use(async (config) => {
   const token = await getAuthToken();
-  config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
