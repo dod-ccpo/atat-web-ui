@@ -15,9 +15,7 @@ const getAuthToken = async (): Promise<string | undefined> => {
   // attempt to retrieve the current session and get the auth token
   // If an exception occurs, the session has expired. Force the user to authenticate
   try {
-    const token = (await Auth.currentSession()).getIdToken().getJwtToken();
-
-    return token;
+    return (await Auth.currentSession()).getIdToken().getJwtToken();
   } catch {
     await Auth.federatedSignIn({
       customProvider: "IdP",
