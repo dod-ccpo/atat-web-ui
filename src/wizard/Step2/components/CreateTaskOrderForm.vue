@@ -154,6 +154,7 @@
         @delete="(cardNumber) => $emit('delete', cardNumber)"
         :validate-on-load="validateOnLoad"
       ></clins-card-list>
+      this.validateonLoad = {{ validateOnLoad }}
     </section>
   </v-form>
 </template>

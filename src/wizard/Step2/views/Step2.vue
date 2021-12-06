@@ -10,6 +10,7 @@
       @delete="deleteClin"
       :validate-on-load="touched"
     />
+    touched: {{ touched }}
   </v-flex>
 </template>
 

@@ -475,7 +475,6 @@ export default class ClinsCard extends Vue {
           "Please enter the start date for your CLIN's period of performance"
       );
     }
-    console.log(validationRules);
     return validationRules;
   }
 
@@ -625,6 +624,7 @@ export default class ClinsCard extends Vue {
   }
 
   private mounted(): void {
+    console.log("ClinsCard.vue > validateonLoad:" + this.validateOnLoad);
     document.addEventListener("click", this.clinFormClicked);
     document.addEventListener("blur", this.clinFormClicked);
     document.addEventListener("focus", this.clinFormFocused, true);

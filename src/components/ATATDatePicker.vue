@@ -49,8 +49,7 @@
               outlined
               dense
               :id="getId('start-date-text-box')"
-              :success="isFieldValid"
-              :error="isFieldValid"
+              :error="!isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="startDate"
               :value="formatStartDateMMDDYYYY"
@@ -91,8 +90,8 @@
               outlined
               dense
               :id="getId('end-date-text-box')"
-              :success="isFieldValid"
-              :error="isFieldValid"
+              
+              :error="!isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="endDate"
               :value="formatEndDateMMDDYYYY"
@@ -248,8 +247,7 @@ export default class ATATDatePicker extends Vue {
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
     .format("YYYY-MM-DD");
-  private isFieldValid =
-    (this._errorMessages && this._errorMessages.length > 0) || true;
+  private isFieldValid = true;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
   private menuTop = 375;
@@ -457,14 +455,15 @@ export default class ATATDatePicker extends Vue {
    * 1 - adds Event Listener for control
    * 2 - sets first and secondMonth
    */
-  private mounted(): void {
+  private async mounted(): Promise<void> {
     this.thisControl = document.getElementById(
       this.thisControlId
     ) as HTMLElement;
     this.addMasks();
-
-    if (this.validateOnLoad) {
+    console.log('this.validateOnLoad > ' + this.validateOnLoad);
+    if (await this.validateOnLoad) {
       this.getErrorMessages();
+      this.isFieldValid = this._errorMessages.length > 0;
     }
 
     if (this.isDateValid(this.startDate)) {
