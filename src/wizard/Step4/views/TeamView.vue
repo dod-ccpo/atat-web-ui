@@ -13,14 +13,14 @@
         <span v-if="noAppOrEnvOperatorsOnLoad">
           Invite your application team members and assign their permissions
           below. These individuals will receive an invitation from
-          <strong>{{ csp }}</strong> after your portfolio is provisioned. Select
+          {{ csp }} after your portfolio is provisioned. Select
           <strong>Next</strong> to add team members to your other applications.
         </span>
         <span v-else>
           The following people will be granted access to your application within
-          the <strong>{{ csp }}</strong> console after your portfolio is
-          provisioned. You can <strong>invite</strong> additional team members
-          or <strong>modify</strong> permissions below.
+          the {{ csp }} console after your portfolio is provisioned. You can
+          <strong>invite</strong> additional team members or
+          <strong>modify</strong> permissions below.
 
           <span v-if="isReturnToReview">
             When you are done, select
@@ -231,7 +231,7 @@ export default class TeamView extends mixins(ApplicationData) {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private csp = this.$store.getters.getPortfolio.csp;
+  private csp = this.$store.getters.getPortfolio.csp || "your selected CSP";
   private stepIsErrored = this.$store.getters.isStepErrored(4);
   private appHasAdmins = true;
   private isTouched = false;
