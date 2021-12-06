@@ -25,12 +25,13 @@
           administrators below. When you are done, select <strong>Next</strong>
           to view all of your workspace teams.
           <span v-if="isReturnToReview">
-            When you are done, select <strong>Return to Review and
-            Submit</strong> to finalize your portfolio.
+            When you are done, select
+            <strong>Return to Review and Submit</strong> to finalize your
+            portfolio.
           </span>
           <span v-else>
-            When you are done, select <strong>Next</strong> to view
-            or edit your workspace teams.
+            When you are done, select <strong>Next</strong> to view or edit your
+            workspace teams.
           </span>
         </span>
         <a

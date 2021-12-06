@@ -7,7 +7,7 @@
       <p v-if="!isStepTouched">
         In this section, we will set up your cloud workspaces within
         {{ this.$store.getters.getPortfolio.csp }}. If you have more than one
-        application, we will walk through them one at a time. Select 
+        application, we will walk through them one at a time. Select
         <strong>Next</strong> to view your application summary.
       </p>
       <h1 v-if="isStepTouched" tabindex="-1">

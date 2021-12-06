@@ -520,7 +520,6 @@ export default class ClinsCard extends Vue {
     this.FundFields.validate();
   }
 
-
   @Watch("openItem")
   onOpenItemChanged(): void {
     if (this.openItem == 0 && this.focusClinNumberOnCardOpen) {
