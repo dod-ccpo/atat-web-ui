@@ -163,7 +163,6 @@ const saveToServer = async (
   { state }: ActionContext<ApplicationsState, RootState>,
   portfolioId: string
 ): Promise<void> => {
-  debugger;
   const applicationModels = state.applicationModels;
   const portfolioOperators = state.portfolioOperators;
 

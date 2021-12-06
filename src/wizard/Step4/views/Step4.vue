@@ -92,7 +92,6 @@
           access to environments in the cloud console.
         </template>
       </expandable-link>
-
     </section>
   </v-container>
 </template>
@@ -128,8 +127,11 @@ export default class Step_4 extends Vue {
   ): Promise<void> {
     if (this.hasChanges || this.hasPortfolioHadMembersAdded) {
       try {
-        await this.$store.dispatch("saveStepData", 4);
-        await this.$store.dispatch("setStepTouched", [4, true]);
+        await this.$store.dispatch("wizard/saveStepData", 4);
+        await this.$store.dispatch("wizard/setStepTouched", {
+          stepNumber: 4,
+          isTouched: true,
+        });
       } catch (error) {
         console.log(error);
       }

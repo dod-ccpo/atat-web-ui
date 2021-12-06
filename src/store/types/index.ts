@@ -8,6 +8,7 @@ interface RootState {
   sideDrawerChange: boolean;
   isUserAuthorizedToProvisionCloudResources: boolean;
   isNavSideBarDisplayed: boolean;
+  currentPortfolioId: string;
   dialog: {
     isDisplayed: boolean;
     type: string;

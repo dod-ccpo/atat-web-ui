@@ -167,8 +167,6 @@ const saveStep2 = async (
     "taskOrders/taskOrders"
   ] as TaskOrderModel[];
 
-  debugger;
-
   if (model.id === "") {
     model.id = generateUid();
     dispatch("taskOrders/addTaskOrder", model, { root: true });
@@ -268,13 +266,6 @@ const saveStep4 = async (
     });
   }
   dispatch("updateMembersModified", false);
-};
-
-const isStepTouched = (
-  { state }: ActionContext<WizardState, RootState>,
-  stepNumber: number
-): boolean => {
-  return state.portfolioSteps[stepNumber].touched;
 };
 
 const saveAllValidSteps = async ({
@@ -450,7 +441,6 @@ export const actions: ActionTree<WizardState, RootState> = {
   setCurrentStepModel,
   saveStepModel,
   saveStepData,
-  isStepTouched,
   updateStepModelValidity,
   setStepTouched,
   addNewTaskOrder,

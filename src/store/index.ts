@@ -70,7 +70,6 @@ export default new Vuex.Store({
       message: "",
       contentClass: "",
     },
-    returnToReview: false,
   },
   /*
   ███████████████████████████████████████████████████████████████████████████

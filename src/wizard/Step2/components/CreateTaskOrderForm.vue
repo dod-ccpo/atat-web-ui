@@ -265,7 +265,6 @@ export default class CreateTaskOrderForm extends Vue {
       this.savedTaskOrderSigned = true;
       this.isTaskOrderSigned(this._signed);
     }
-    console.log(this.isReturnToReview);
 
     this.stepHasBeenTouched = this.$store.getters["wizard/getStepTouched"](2);
   }

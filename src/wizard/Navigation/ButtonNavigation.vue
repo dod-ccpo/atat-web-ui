@@ -75,7 +75,7 @@ export default class ButtonNavigation extends Vue {
   }
 
   get isReturnToReview(): boolean {
-    return this.$store.getters.isReturnToReview;
+    return this.$store.getters["wizard/isReturnToReview"];
   }
 
   private getButtonText(button: any): string {
