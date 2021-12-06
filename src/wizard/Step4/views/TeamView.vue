@@ -209,7 +209,7 @@ export default class TeamView extends mixins(ApplicationData) {
   private isFiltered = false;
   private search = "";
   private csp = this.$store.getters["wizard/getPortfolio"].csp;
-  private stepIsErrored = this.$store.getters.isStepErrored(4);
+  private stepIsErrored = this.$store.getters["wizard/isStepErrored"](4);
   private appHasAdmins = true;
   private isTouched = false;
   private environmentsWithoutAdmins: string[] = [];
