@@ -34,7 +34,7 @@
             single-line
             hide-details
             clearable
-            aria-label="Search"
+            aria-label="Search Term"
             v-model="searchTerm"
           />
           <v-btn
@@ -59,7 +59,13 @@
           >
             Portfolio Name A-Z
           </a>
-          <v-btn class="filter px-0" outlined>
+          <v-btn
+            aria-label="Open panel to filter portfolio results"
+            id="PortfolioFilter"
+            class="filter px-0"
+            outlined
+            @click="openFilterPanel"
+          >
             <v-icon class="icon-24">filter_alt</v-icon>
           </v-btn>
         </div>
@@ -129,6 +135,14 @@ export default class ViewPortfolio extends Vue {
 
   private async mounted(): Promise<void> {
     await this.loadPortfolioDrafts();
+  }
+
+  private openFilterPanel(): void {
+    this.$store.dispatch("openSideDrawer", [
+      "portfoliofilter",
+      "PortfolioFilter",
+    ]);
+
   }
 
   private toggleSortMenu(event: KeyboardEvent) {
