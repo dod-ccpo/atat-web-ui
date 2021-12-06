@@ -42,7 +42,7 @@
               @dragenter.prevent="dragover = true"
               @dragleave.prevent="dragover = false"
               elevation="0"
-              class="width-100"
+              class="width-100 no-shadow"
             >
               <v-card-text>
                 <v-row dense>

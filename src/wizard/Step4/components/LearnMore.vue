@@ -26,76 +26,7 @@
       v-if="learnMoreType === 'member-roles'"
       class="body-lg"
     >
-      <p>
-        Roles determine what people can see and do within the cloud provider’s
-        console. There are administrative roles that are designed for people
-        responsible for managing accounts and configuring workspace settings.
-        Non-administrative roles let people work within the cloud resources or
-        access key features.
-      </p>
-      <p>
-        Assigning a single role will grant the same level of access to all
-        environments within the application. You may also choose to assign
-        different roles for each environment, based on your organization’s
-        needs.
-      </p>
-
-      <v-divider></v-divider>
-
-      <h3 class="mt-5">Types of team member roles</h3>
-      <p>Below is a list of the roles available for your team members:</p>
-      <dl class="dl-bullets">
-        <dt>Root administrator</dt>
-        <dd>
-          Grants full access to manage all of your applications, including the
-          ability to manage team members, control workspace configurations, and
-          add/edit/remove applications. This role can only be added to the
-          top-level portfolio workspace.
-        </dd>
-        <dt>Administrator</dt>
-        <dd>
-          Grants full access to manage resources within the workspace, including
-          the ability to manage team members, assign roles and control workspace
-          settings.
-        </dd>
-        <dt>Contributor</dt>
-        <dd>
-          Grants full access to manage resources within the workspace, but does
-          not allow access to team management or workspace settings.
-        </dd>
-        <dt>Billing read-only</dt>
-        <dd>
-          Grants access to view costs and manage cost configurations (e.g.
-          budgets, exports), but does not allow access to view or make any
-          changes to cloud resources.
-        </dd>
-        <dt>No Access</dt>
-        <dd>Team member cannot view any resources for the environment.</dd>
-      </dl>
-
-      <v-alert
-        role="presentation"
-        outlined
-        color="cyan"
-        type="info"
-        class="text-left cyan info_lighter black-icon"
-        border="left"
-      >
-        <div class="black--text body-lg">
-          Team member roles do not grant access to your portfolio within ATAT.
-          These roles only assign a level of permissions and access to
-          workspaces within the cloud console.
-        </div>
-      </v-alert>
-
-      <v-divider class="mb-5 mt-6"></v-divider>
-
-      <strong>Additional roles and permissions</strong>
-      <p>
-        Each cloud provider offers additional controls to manage your
-        application team’s permissions. Administrators can customize these
-        permissions directly in the cloud console.
-      </p>
+      <about-member-role-content />
     </v-card-text>
 
     <v-card-text
@@ -143,8 +74,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
+import AboutMemberRoleContent from "@/components/SideDrawerComponents/AboutMemberRoleContent.vue";
 
-@Component({})
+@Component({
+  components: {
+    "about-member-role-content": AboutMemberRoleContent,
+  },
+})
 export default class LearnMoreMemberRoles extends Vue {
   @Prop() private learnMoreType!: string;
   @Prop() private bus: any;
