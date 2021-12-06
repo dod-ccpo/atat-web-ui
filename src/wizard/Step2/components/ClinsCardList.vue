@@ -11,6 +11,7 @@
         :obligated_funds.sync="clin.obligated_funds"
         :pop_start_date.sync="clin.pop_start_date"
         :pop_end_date.sync="clin.pop_end_date"
+        :validate-on-load="validateOnLoad && !isClinCardNew(clin)"
         @delete="(cardNumber) => $emit('delete', cardNumber)"
         @add="() => $emit('add')"
       ></clins-card>
@@ -30,7 +31,7 @@
 <script lang="ts">
 import { Clin } from "types/Portfolios";
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ClinsCard from "./ClinsCard.vue";
 
@@ -41,11 +42,13 @@ import ClinsCard from "./ClinsCard.vue";
 })
 export default class ClinsCardList extends Vue {
   @PropSync("clins", { required: true }) _clins!: Clin[];
+  @Prop({ default: false }) private validateOnLoad!: boolean;
   private addClinLabel = "Add another CLIN";
 
   public async validate(): Promise<boolean> {
     let valid = false;
     const clins = this.$refs.clinscard as Array<ClinsCard>;
+    console.log(clins);
 
     if (!clins || clins.length === 0) {
       return false;
@@ -57,6 +60,10 @@ export default class ClinsCardList extends Vue {
     );
 
     return valid;
+  }
+
+  private isClinCardNew(clin: ClinsCard): boolean {
+    return Object.values(clin).every((attrib) => attrib === "");
   }
 
   get clinLength(): number {

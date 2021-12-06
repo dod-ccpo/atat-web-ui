@@ -76,6 +76,7 @@
                     label="CLIN Number"
                     :rules="clinNumberRules"
                     :value.sync="_clin_number"
+                    :validate-on-load="validateOnLoad"
                   />
                   <atat-select
                     class="clin-idiq-select max-width-100"
@@ -84,6 +85,7 @@
                     :items="idiq_clin_items"
                     :selectedValue.sync="_idiq_clin"
                     :rules="correspondingIDIQRules"
+                    :validate-on-load="validateOnLoad"
                   >
                   </atat-select>
                 </div>
@@ -99,6 +101,7 @@
                       :rules="totalClinRules"
                       :helpText="clinHelpText"
                       :value.sync="_total_clin_value"
+                      :validate-on-load="validateOnLoad"
                     />
                     <atat-text-field
                       class="mb-5"
@@ -109,6 +112,7 @@
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                       @onkeyup="calculateObligatedPercent"
+                      :validate-on-load="validateOnLoad"
                     />
 
                     <div v-if="obligatedPercent <= 100" role="alert">
@@ -155,6 +159,7 @@
                         :nudgeleft="1"
                         :min="minDate"
                         :max="JWCCContractEndDate"
+                        :validate-on-load="validateOnLoad"
                       />
                     </v-form>
                   </div>
@@ -236,6 +241,7 @@ export default class ClinsCard extends Vue {
   @PropSync("obligated_funds") _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
+  @Prop({ default: false }) private validateOnLoad!: boolean;
 
   private datepickerTitle = "What is the PoP Start Date?";
   private isDatePickerClicked = false;
@@ -246,14 +252,14 @@ export default class ClinsCard extends Vue {
   private focusClinNumberOnCardOpen = true;
   private isDatePickerVisible = false;
 
-  get isClinFormDirty(): boolean {
+  get isClinFormNew(): boolean {
     return (
-      this._clin_number.length > 0 ||
-      this._idiq_clin !== "" ||
-      this._total_clin_value > 0 ||
-      this._obligated_funds > 0 ||
-      this._pop_start_date !== "" ||
-      this._pop_end_date !== ""
+      this._clin_number === "" ||
+      this._idiq_clin === "" ||
+      this._total_clin_value.toString() === "" ||
+      this._obligated_funds.toString() === "" ||
+      this._pop_start_date === "" ||
+      this._pop_end_date === ""
     );
   }
 
@@ -261,15 +267,6 @@ export default class ClinsCard extends Vue {
 
   get isDisabled(): boolean {
     return this.model.clins.length === 1;
-  }
-
-  get validateDatePickerOnLoad(): boolean {
-    // when datepicker not dirty
-    return (
-      this._pop_start_date === "" &&
-      this._pop_end_date === "" &&
-      !this.isClinFormDirty
-    );
   }
 
   get validateDatePickerOnSave(): boolean {
@@ -444,7 +441,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidStartDate ||
-          "Please enter a valid start date using the format 'MM/DD/YYYY'"
+          "Please enter a start date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -463,6 +460,12 @@ export default class ClinsCard extends Vue {
               moment(this.JWCCContractEndDate).format("MM/DD/YYYY")
         );
       }
+    } else if (this.validateOnLoad) {
+      validationRules.push((v: string) => {
+        return (
+          v !== "" || "Please enter a start date using the format 'MM/DD/YYYY'"
+        );
+      });
     }
 
     if (this.validateFormWhenLeaving) {
@@ -472,6 +475,7 @@ export default class ClinsCard extends Vue {
           "Please enter the start date for your CLIN's period of performance"
       );
     }
+    console.log(validationRules);
     return validationRules;
   }
 
@@ -481,7 +485,7 @@ export default class ClinsCard extends Vue {
       validationRules.push(() => {
         return (
           this.isValidEndDate ||
-          "Please enter a valid end date using the format 'MM/DD/YYYY'"
+          "Please enter a end date using the format 'MM/DD/YYYY'"
         );
       });
       if (this.isValidStartDate && this.isValidEndDate) {
@@ -507,11 +511,14 @@ export default class ClinsCard extends Vue {
             "Please enter the end date for your CLIN's period of performance"
         );
       }
+    } else if (this.validateOnLoad) {
+      validationRules.push((v: string) => {
+        return (
+          v !== "" || "Please enter a end date using the format 'MM/DD/YYYY'"
+        );
+      });
     }
     return validationRules;
-    // return this.validateDatePickerOnLoad && this.isClinFormDirty
-    //   ? validationRules
-    //   : [];
   }
 
   // @Watch("_obligated_funds")
@@ -550,7 +557,6 @@ export default class ClinsCard extends Vue {
     this.validateFormWhenLeaving = true;
     await this.$nextTick(() => {
       validated = this.Form.validate();
-
       if (this.DateFields) {
         validated =
           validated &&
@@ -560,6 +566,7 @@ export default class ClinsCard extends Vue {
 
       this.validateFormWhenLeaving = false;
     });
+    console.log(validated);
     return validated;
   }
 

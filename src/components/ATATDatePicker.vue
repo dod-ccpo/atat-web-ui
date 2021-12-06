@@ -34,7 +34,7 @@
           class="mt-0 width-100"
         >
           <div class="error--text">
-            <div class="v-messages__message">
+            <div class="v-messages__message mb-2">
               {{ _errorMessages[0].message }}
             </div>
           </div>
@@ -58,6 +58,7 @@
               hide-details
               @focus="setFocus"
               @blur="blurTextField"
+              :validate-on-load="validateOnLoad"
               validate-on-blur
               clearable
               @keydown="keyDownTextField"
@@ -102,6 +103,7 @@
               @keydown="keyDownTextField"
               clearable
               @click:clear="clearTextBox"
+              :validate-on-load="validateOnLoad"
               validate-on-blur
               :class="[
                 isEndTextBoxFocused ? 'focused' : '',
@@ -218,7 +220,6 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: "color" }) private color!: string;
-  @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
@@ -238,6 +239,7 @@ export default class ATATDatePicker extends Vue {
   @PropSync("isTextBoxFocused") private _isTextBoxFocused!: boolean;
   @Prop({ default: "2020-10-01" }) private min!: string;
   @Prop({ default: "2021-10-01" }) private max!: string;
+  @Prop({ default: false }) private validateOnLoad!: boolean;
 
   private menu = false;
   private firstMonth: string =
@@ -246,7 +248,8 @@ export default class ATATDatePicker extends Vue {
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
     .format("YYYY-MM-DD");
-  private isFieldValid = false;
+  private isFieldValid =
+    (this._errorMessages && this._errorMessages.length > 0) || true;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
   private menuTop = 375;
@@ -459,6 +462,11 @@ export default class ATATDatePicker extends Vue {
       this.thisControlId
     ) as HTMLElement;
     this.addMasks();
+
+    if (this.validateOnLoad) {
+      this.getErrorMessages();
+    }
+
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
         this.isDateValid(this.startDate) ? this.startDate : new Date()

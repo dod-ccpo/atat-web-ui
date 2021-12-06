@@ -152,6 +152,7 @@
         :clins="_clins"
         @add="$emit('add')"
         @delete="(cardNumber) => $emit('delete', cardNumber)"
+        :validate-on-load="validateOnLoad"
       ></clins-card-list>
     </section>
   </v-form>
@@ -265,7 +266,6 @@ export default class CreateTaskOrderForm extends Vue {
       this.savedTaskOrderSigned = true;
       this.isTaskOrderSigned(this._signed);
     }
-    console.log(this.isReturnToReview);
 
     this.stepHasBeenTouched = this.$store.getters.getStepTouched(2);
   }
