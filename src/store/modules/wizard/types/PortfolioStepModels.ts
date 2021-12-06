@@ -16,7 +16,7 @@ export interface StepOneModel {
 }
 
 export interface StepTwoModel {
-  index: number; //local guid
+  id: string; //local guid
   task_order_number: string;
   task_order_file: {
     description: string;

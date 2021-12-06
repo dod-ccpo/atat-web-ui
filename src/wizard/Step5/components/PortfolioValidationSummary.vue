@@ -56,7 +56,7 @@ export default class PortfolioValidationSummary extends Vue {
     //in place Robert McCardell
 
     if (item === 2 && this.$store.state.taskOrderModels.length > 0) {
-       const step2Validity = {
+      const step2Validity = {
         stepNumber: 2,
         valid: true,
       };

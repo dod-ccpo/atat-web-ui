@@ -44,11 +44,7 @@ const updateApplication = (
 };
 
 const deleteApplication = async (
-  {
-    commit,
-    state,
-    rootState,
-  }: { commit: Commit; state: ApplicationsState; rootState: RootState },
+  { commit, state, rootGetters }: ActionContext<ApplicationsState, RootState>,
   id: string
 ): Promise<void> => {
   try {
@@ -69,7 +65,9 @@ const deleteApplication = async (
       applications: _applications,
     };
 
-    await portfoliosApi.saveApplications(rootState.currentPortfolioId, data);
+    const currentPortfolioId = rootGetters["wizard/currentPortfolioId"];
+
+    await portfoliosApi.saveApplications(currentPortfolioId, data);
   } catch (error) {
     console.log(error);
   }
@@ -165,6 +163,7 @@ const saveToServer = async (
   { state }: ActionContext<ApplicationsState, RootState>,
   portfolioId: string
 ): Promise<void> => {
+  debugger;
   const applicationModels = state.applicationModels;
   const portfolioOperators = state.portfolioOperators;
 
@@ -180,13 +179,13 @@ const saveToServer = async (
   }
 };
 
-const validateAdminOperatators = ({
+const validateAdminOperators = ({
   state,
 }: ActionContext<ApplicationsState, RootState>): boolean[] => {
   const applications = state.applicationModels;
   const operators = state.portfolioOperators;
   return validateHasAdminOperators(operators, applications);
-}
+};
 
 const setPortfolioHasHadMembersAdded = (
   { commit }: { commit: Commit },
@@ -210,6 +209,6 @@ export const actions: ActionTree<ApplicationsState, RootState> = {
   updateEnvironmentOperatorInfo,
   initializeRootAdministrators,
   saveToServer,
-  validateAdminOperatators,
+  validateAdminOperators,
   setPortfolioHasHadMembersAdded,
 };

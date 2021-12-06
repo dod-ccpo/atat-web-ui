@@ -181,11 +181,11 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return this.applicationsState.applicationModels;
   }
   public get portfolioName(): string {
-    return this.$store.getters.getPortfolioName();
+    return this.$store.getters["wizard/getPortfolioName"]();
   }
   private isStepErrored = this.$store.getters["wizard/isStepErrored"](4);
   private isStepTouched = this.$store.getters["wizard/isStepTouched"](4);
-  private csp = this.$store.getters.getPortfolio.csp;
+  private csp = this.$store.getters["wizard/getPortfolio"].csp;
   private applicationData: any = [];
   private sortAsc = true;
   private sortApplications(items: any[], index: number) {
@@ -208,7 +208,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
         name: editmembers.name,
         params: {
           type: "portfolio",
-          id: this.$store.state.currentPortfolioId,
+          id: this.$store.getters["wizard/currentPortfolioId"],
         },
       });
       return;
@@ -233,7 +233,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
           name: editmembers.name,
           params: {
             type: "portfolio",
-            id: this.$store.state.currentPortfolioId,
+            id: this.$store.state.wizard.currentPortfolioId,
           },
         });
         break;
@@ -285,7 +285,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
         this.isStepErrored && this.isStepTouched;
     } else {
       this.applicationData.push({
-        name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
+        name: this.portfolioName || "Untitled",
         description: "Root administrators can access all applications",
         operatorCount: portfolioOperatorsCount,
         portfolio: true,
@@ -404,7 +404,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   }
 
   private hasChanges(): boolean {
-    return this.$store.getters.membersModified;
+    return this.$store.getters["wizard/membersModified"];
   }
 
   private hasPortfolioHadMembersAdded(): boolean {

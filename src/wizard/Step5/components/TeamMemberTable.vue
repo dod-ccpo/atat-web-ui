@@ -16,7 +16,9 @@
             role="link"
             :ripple="false"
             aria-label="Edit team members"
-          ><v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+            ><v-icon
+              aria-hidden="true"
+              class="icon-16 text-decoration-none mr-1"
               >edit</v-icon
             ><span class="link-body-md">Edit</span>
           </v-btn>

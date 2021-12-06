@@ -84,6 +84,7 @@ const updateMembersModified = (state: WizardState, added: boolean): void => {
 };
 
 const setCurrentPortfolioId = (state: WizardState, id: string): void => {
+  debugger;
   state.currentPortfolioId = id;
 };
 

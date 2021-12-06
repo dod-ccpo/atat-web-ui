@@ -63,5 +63,5 @@ export const getters: GetterTree<WizardState, RootState> = {
   },
   erroredSteps: (state) => {
     return state.erroredSteps;
-  }
+  },
 };

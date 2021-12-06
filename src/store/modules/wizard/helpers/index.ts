@@ -1,27 +1,30 @@
 import { generateUid } from "@/helpers";
+import {
+  StepOneModel,
+  StepTwoModel,
+  StepThreeModel,
+} from "../types/PortfolioStepModels";
 
 export const getStepIndex = (step: number): number => {
   return step - 1;
 };
 
-export const createStepOneModel = () => {
+export const createStepOneModel = (): StepOneModel => {
   return {
-    model: {
-      name: "",
-      description: "",
-      dod_components: [],
-      csp: "",
-    },
+    name: "",
+    description: "",
+    dod_components: [],
+    csp: "",
   };
 };
-export const createStepTwoModel = () => {
+export const createStepTwoModel = (): StepTwoModel => {
   return {
     id: "",
     task_order_number: "",
     task_order_file: {
       description: "",
       id: "",
-      crated_at: "",
+      created_at: "",
       updated_at: "",
       size: 0,
       name: "",
@@ -40,7 +43,7 @@ export const createStepTwoModel = () => {
   };
 };
 
-export const createStepThreeModel = () => {
+export const createStepThreeModel = (): StepThreeModel => {
   return {
     id: "",
     name: "",
@@ -71,17 +74,17 @@ export const createStepThreeModel = () => {
   };
 };
 
-export const createStepFourModel = () => {
+export const createStepFourModel = (): any => {
   return {};
 };
 
-export const createStepFiveModel = () => {
+export const createStepFiveModel = (): any => {
   return {};
 };
 
 export const stepModelHasData = (
-  stepModel: any,
-  initialModel: any
+  stepModel: unknown,
+  initialModel: unknown
 ): unknown => {
   return JSON.stringify(stepModel) !== JSON.stringify(initialModel);
 };
@@ -97,7 +100,5 @@ export const stepsModelInitializers: Array<any> = [
 export const getStepModel = (stepNumber: number): any => {
   const modelCreator = stepsModelInitializers[stepNumber - 1];
 
-  return modelCreator();
+  return modelCreator;
 };
-
-

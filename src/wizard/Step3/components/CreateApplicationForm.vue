@@ -14,7 +14,8 @@
       </h1>
       <p v-if="isStepTouched">
         The following information will be used to set up your application and
-        environments within {{ this.$store.getters["wizard/getPortfolio"].csp }}.
+        environments within
+        {{ this.$store.getters["wizard/getPortfolio"].csp }}.
         <span v-if="!isReturnToReview"
           >Select <strong>Next</strong> when you are done making changes, or to
           skip to your application summary. From there, you can add additional
@@ -121,8 +122,8 @@ export default class CreateApplicationForm extends Vue {
   private applicationNameHelpText = `This name will be displayed within the cloud provider’s console. It should be intuitive and easily recognizable for all of your team members.`;
   private applicationDetailsHelpText = `Add a brief one to two sentence description of your application. Consider using the “Description of Work” from your task order.`;
 
-  private isReturnToReview = this.$store.getters.isReturnToReview;
-  private isStepTouched = this.$store.getters.isStepTouched(3);
+  private isReturnToReview = this.$store.getters["wizard/isReturnToReview"];
+  private isStepTouched = this.$store.getters["wizard/isStepTouched"](3);
   get rules(): unknown {
     return {
       applicationName: [

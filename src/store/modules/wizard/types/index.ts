@@ -1,6 +1,5 @@
 import { PortfolioStep } from "./PortfolioStepModels";
 
-
 export type PortfolioSteps = { [key: number]: PortfolioStep };
 
 export interface WizardState {

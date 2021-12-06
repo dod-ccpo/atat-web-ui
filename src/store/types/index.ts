@@ -33,7 +33,6 @@ interface RootState {
     message: string;
     contentClass: string;
   };
-  currentPortfolioId: string;
 }
 
 export { RootState, PortfoliosState };

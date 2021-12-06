@@ -25,12 +25,13 @@
           administrators below. When you are done, select <strong>Next</strong>
           to view all of your workspace teams.
           <span v-if="isReturnToReview">
-            When you are done, select <strong>Return to Review and
-            Submit</strong> to finalize your portfolio.
+            When you are done, select
+            <strong>Return to Review and Submit</strong> to finalize your
+            portfolio.
           </span>
           <span v-else>
-            When you are done, select <strong>Next</strong> to view
-            or edit your workspace teams.
+            When you are done, select <strong>Next</strong> to view or edit your
+            workspace teams.
           </span>
         </span>
         <a
@@ -218,7 +219,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private currentPortfolio = this.$store.getters.getPortfolio;
+  private currentPortfolio = this.$store.getters["wizard/getPortfolio"];
   private csp = this.currentPortfolio.csp || "your selected CSP";
   private stepIsErrored = this.$store.getters["wizard/isStepErrored"](4);
   private isStepTouched = this.$store.getters["wizard/isStepTouched"](4);
@@ -226,7 +227,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private noRootMembersOnLoad =
     this.$store.getters["applications/portfolioOperators"].length === 0;
 
-  private isReturnToReview = this.$store.getters.isReturnToReview;
+  private isReturnToReview = this.$store.getters["wizard/isReturnToReview"];
 
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
@@ -246,7 +247,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private options = ["Edit info", "Remove root administrator"];
 
   get portfolioName(): string {
-    return this.$store.getters.getPortfolioName();
+    return this.$store.getters["wizard/getPortfolioName"]();
   }
 
   get rootMembersCount(): number {

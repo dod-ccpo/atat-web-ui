@@ -5,7 +5,7 @@ import {
   Operator,
 } from "types/Portfolios";
 
-const mapApplications = (
+export const mapApplications = (
   applicationModels: ApplicationModel[]
 ): Application[] => {
   return applicationModels.map((model: ApplicationModel) => {
@@ -42,7 +42,7 @@ const mapApplications = (
   });
 };
 
-const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
+export const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
   return operatorsModels.map((operatorModel: OperatorModel) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...baseModel } = operatorModel;

@@ -437,7 +437,7 @@ export default class ManageMember extends mixins(ApplicationData) {
   }
 
   get selectedCSP(): string {
-    return this.$store.getters.getPortfolio.csp;
+    return this.$store.getters["wizard/getPortfolio"].csp;
   }
 
   get currentApplicationName(): string {
@@ -448,9 +448,8 @@ export default class ManageMember extends mixins(ApplicationData) {
   }
 
   get portfolioName(): string {
-    return this.$store.getters.getPortfolioName();
+    return this.$store.getters["wizard/getPortfolioName"]();
   }
-
   get rolesForAllEnvsList(): unknown {
     return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
   }

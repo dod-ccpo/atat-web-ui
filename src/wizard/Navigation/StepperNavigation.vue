@@ -62,10 +62,6 @@ export default class StepperNavigation extends mixins(WizardModuleData) {
   @Prop({ default: 1 }) private stepNumber!: number;
   private currentStepNumber = this.stepNumber;
 
-  // public stepperControl: Stepper = {
-  //   Steps: this.steps,
-  // };
-
   private getValidationRules(idx: number) {
     const rules: any = [];
     const isStepValid = this.erroredSteps.indexOf(idx + 1) === -1;
@@ -109,7 +105,7 @@ export default class StepperNavigation extends mixins(WizardModuleData) {
   }
 
   public isStepComplete(stepNumber: number): boolean {
-    const isErroredStep = this.erroredSteps.indexOf(stepNumber + 1) != -1;
+    const isErroredStep = this.erroredSteps.indexOf(stepNumber) != -1;
     const isTouched = this.isTouched(stepNumber);
     return !isErroredStep && isTouched;
   }

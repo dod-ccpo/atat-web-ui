@@ -9,6 +9,7 @@ import { ApplicationModel } from "types/Portfolios";
 import { TaskOrderModel } from "types/Wizard";
 import { mockTaskOrders } from "./mocks/taskOrderMockData";
 
+// modules
 import portfolios from "./modules/portfolios/store";
 import applications from "./modules/applications/store";
 import taskOrders from "./modules/taskOrders/store";
@@ -19,19 +20,7 @@ Vue.use(Vuex);
 const vuexLocalStorage = new VuexPersist({
   key: "vuex", // The key to store the state on in the storage provider.
   storage: window.sessionStorage, // or window.sessionStorage or localForage
-  // Function that passes the state and returns the state with only the objects you want to store.
-  // reducer: state => state,
-  // Function that passes a mutation and lets you decide if it should update the state in localStorage.
-  // filter: mutation => (true)
 });
-
-
-//   return num;
-// };
-
-// const stepModelHasData = (stepModel: any, initialModel: any) => {
-//   return JSON.stringify(stepModel) !== JSON.stringify(initialModel);
-// };
 
 /*
 █████████████████████████████████████████
@@ -142,9 +131,6 @@ export default new Vuex.Store({
     },
     doToast(state, props) {
       state.toast = props;
-    },
-    setCurrentPortfolioId(state, id: string) {
-      state.currentPortfolioId = id;
     },
   },
   /*

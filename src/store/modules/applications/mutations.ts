@@ -58,6 +58,7 @@ const addApplication = (
   state: ApplicationsState,
   model: ApplicationModel
 ): void => {
+  debugger;
   state.applicationModels.push(model as never);
 };
 

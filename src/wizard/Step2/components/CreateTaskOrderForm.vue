@@ -182,7 +182,7 @@ export default class CreateTaskOrderForm extends Vue {
     Form 1155: Enter the “Delivery Order/Call No.”`;
   private savedTaskOrderSigned = false;
   private stepHasBeenTouched = false;
-  private isReturnToReview = this.$store.getters.isReturnToReview;
+  private isReturnToReview = this.$store.getters["wizard/isReturnToReview"];
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;

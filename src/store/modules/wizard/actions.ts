@@ -60,13 +60,15 @@ const setStepTouched = (
 };
 
 const deleteTaskOrder = async (
-  { commit, dispatch }: ActionContext<WizardState, RootState>,
+  { commit, dispatch, state }: ActionContext<WizardState, RootState>,
   id: string
 ): Promise<void> => {
   try {
     dispatch("taskOrders/deleteTaskOrder", id, { root: true });
     commit("initializeStepModel", WizardSteps.Two);
-    await dispatch("taskOrder/saveToServer", null, { root: true });
+    await dispatch("taskOrder/saveToServer", state.currentPortfolioId, {
+      root: true,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -122,10 +124,10 @@ const editApplication = (
   if (entityIndex === -1) {
     throw new Error("unable to location task order model with id :" + id);
   }
-  const applicationModel = applicationModels[entityIndex];
+  const model = applicationModels[entityIndex];
   const stepNumber = WizardSteps.Three;
   const valid = true;
-  commit("saveStepModel", { applicationModel, stepNumber, valid });
+  commit("saveStepModel", { model, stepNumber, valid });
 };
 
 const initializeSteps = ({
@@ -165,9 +167,9 @@ const saveStep2 = async (
     "taskOrders/taskOrders"
   ] as TaskOrderModel[];
 
-  const isNew = model.id === "";
+  debugger;
 
-  if (isNew) {
+  if (model.id === "") {
     model.id = generateUid();
     dispatch("taskOrders/addTaskOrder", model, { root: true });
   } else {
@@ -187,15 +189,15 @@ const saveStep2 = async (
       { taskOrderIndex, model },
       { root: true }
     );
-    await dispatch("taskOrders/saveToServer", state.currentPortfolioId),
-      null,
-      { root: true };
   }
+  await dispatch("taskOrders/saveToServer", state.currentPortfolioId, {
+    root: true,
+  });
 };
 
 const saveStep3 = async (
-  { rootGetters, dispatch }: ActionContext<WizardState, RootState>,
-  model: any
+  { rootGetters, dispatch, state }: ActionContext<WizardState, RootState>,
+  model: ApplicationModel
 ): Promise<void> => {
   const applicationModels = rootGetters[
     "applications/applications"
@@ -233,8 +235,10 @@ const saveStep3 = async (
         { appIndx, model },
         { root: true }
       );
-      await dispatch("applications/saveToServer", null, { root: true });
     }
+    await dispatch("applications/saveToServer", state.currentPortfolioId, {
+      root: true,
+    });
   }
 };
 
@@ -249,7 +253,9 @@ const saveStep4 = async (
   }
 
   const [isStep4Valid, portfolioHasOperators] = (await dispatch(
-    "applications/validateAdminOperators"
+    "applications/validateAdminOperators",
+    null,
+    { root: true }
   )) as boolean[];
   setStepTouched(
     { commit },
@@ -276,9 +282,7 @@ const saveAllValidSteps = async ({
   dispatch,
 }: ActionContext<WizardState, RootState>): Promise<boolean> => {
   let saved = false;
-  //trigger validation
-  // await this.dispatch("triggerValidation");
-  // an array of promises to hold each step save api call
+
   const saveActions: unknown[] = [];
   // iterate over portfolio steps model and push valid models to save actions
   for (const key in state.portfolioSteps) {
@@ -346,6 +350,7 @@ const loadPortfolioDraft = async (
   commit("initializeSteps");
 
   dispatch("applications/initialize", null, { root: true });
+  dispatch("taskOrders/initialize", null, { root: true });
 
   //validate that portfolio draft id exists on the server
   const id = await portfoliosApi.getDraft(draftId);
@@ -355,7 +360,6 @@ const loadPortfolioDraft = async (
   }
 
   commit("setCurrentPortfolioId", draftId);
-  commit("setCurrentPorfolioId", draftId, { root: true });
   const loadActions = [
     dispatch("loadStep1Data", draftId),
     dispatch("loadStep2Data", draftId),
@@ -381,7 +385,7 @@ const loadStep1Data = async (
     const stepNumber = WizardSteps.One;
     const valid = true;
     // update step 1 model
-    commit("doSaveStepModel", { model, stepNumber, valid });
+    commit("saveStepModel", { model, stepNumber, valid });
   }
 };
 
@@ -396,11 +400,11 @@ const loadStep2Data = async (
     //store the tasks orders
     dispatch("taskOrders/setCurrentTaskOrders", taskOrders, { root: true });
   }
-  dispatch("initializeStepModel", WizardSteps.Two);
+  commit("initializeStepModel", WizardSteps.Two);
 };
 
 const loadStep3Data = async (
-  { commit, dispatch }: ActionContext<WizardState, RootState>,
+  { commit }: ActionContext<WizardState, RootState>,
   draftId: string
 ): Promise<void> => {
   const applicationData = await portfoliosApi.getApplications(draftId);
@@ -423,7 +427,7 @@ const loadStep3Data = async (
     });
 
     commit("applications/updateRootAdministrators", rootAdmins, { root: true });
-    dispatch("initializeStepModel", WizardSteps.Three);
+    commit("initializeStepModel", WizardSteps.Three);
   }
 };
 
@@ -436,6 +440,7 @@ const setReturnToReview = (
 
 export const actions: ActionTree<WizardState, RootState> = {
   createPortfolioDraft,
+  initializeSteps,
   validateStep,
   saveStep1,
   saveStep2,
@@ -457,5 +462,7 @@ export const actions: ActionTree<WizardState, RootState> = {
   saveAllValidSteps,
   loadPortfolioDraft,
   loadStep1Data,
+  loadStep2Data,
+  loadStep3Data,
   setReturnToReview,
 };
