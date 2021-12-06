@@ -32,7 +32,6 @@ instance.interceptors.request.use(async (config) => {
   return config;
 });
 
-
 interface APIRequest {
   url?: string;
   params?: Record<string, string | number>;

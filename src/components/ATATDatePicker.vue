@@ -90,7 +90,6 @@
               outlined
               dense
               :id="getId('end-date-text-box')"
-              
               :error="!isFieldValid"
               placeholder="MM/DD/YYYY"
               v-model="endDate"
@@ -460,7 +459,7 @@ export default class ATATDatePicker extends Vue {
       this.thisControlId
     ) as HTMLElement;
     this.addMasks();
-    console.log('this.validateOnLoad > ' + this.validateOnLoad);
+    console.log("this.validateOnLoad > " + this.validateOnLoad);
     if (await this.validateOnLoad) {
       this.getErrorMessages();
       this.isFieldValid = this._errorMessages.length > 0;

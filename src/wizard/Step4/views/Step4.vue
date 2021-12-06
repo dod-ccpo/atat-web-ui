@@ -92,7 +92,6 @@
           access to environments in the cloud console.
         </template>
       </expandable-link>
-
     </section>
   </v-container>
 </template>

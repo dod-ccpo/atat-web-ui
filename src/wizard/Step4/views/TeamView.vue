@@ -538,13 +538,12 @@ export default class TeamView extends mixins(ApplicationData) {
     this.setMemberTableData();
     this.tranformData();
 
-    this.noAppOrEnvOperatorsOnLoad =
-      !this.$store.getters["applications/appOrEnvHasOperators"]([
-        this.currentApplication
-      ]);
+    this.noAppOrEnvOperatorsOnLoad = !this.$store.getters[
+      "applications/appOrEnvHasOperators"
+    ]([this.currentApplication]);
   }
 
-private moreButtonId(item: any): string {
+  private moreButtonId(item: any): string {
     if (item && item.email) {
       return (
         "moreButton_" + item.email.toLowerCase().replace(/[^a-zA-Z0-9]/gi, "_")
