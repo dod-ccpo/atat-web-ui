@@ -142,7 +142,6 @@ export default class ViewPortfolio extends Vue {
       "portfoliofilter",
       "PortfolioFilter",
     ]);
-
   }
 
   private toggleSortMenu(event: KeyboardEvent) {
