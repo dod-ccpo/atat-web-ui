@@ -1,11 +1,11 @@
 <template>
   <v-card class="" max-width="800" tile>
-    <v-list dense class="px-6 py-0">
+    <v-list dense class="px-6 py-0 no-hover">
       <v-list-item-group>
         <v-list-item tabindex="-1" class="pa-0 border-bottom border-base-lighter" v-for="(item, i) in items" :key="i">
           <v-list-item-content class="w-100 py-6">
             <div class="d-flex w-100 justify-space-between">
-              <div>
+              <div class="pr-4">
                 <h3>{{ item.title }}</h3>
                 <p class="body text--base-dark mb-0">{{ item.description }}</p>
               </div>

@@ -21,5 +21,26 @@
   &.border-bottom:not(:last-child) {
     border-bottom: 1px solid $base;
   }
+  &.v-list-item--link.no-hover {
+    &:hover {
+      &:before {
+        background-color: transparent !important;
+        opacity: 0 !important;
+      }
+    }
+  }
+}
+.v-list {
+  &.no-hover {
+    .v-list-item--link {
+      &:hover, &.v-item--active.v-list-item--active {
+        cursor: default !important;
+        &:before {
+          background-color: transparent !important;
+          opacity: 0 !important;
+        }
+      }
+    }
+  }
 }
 
