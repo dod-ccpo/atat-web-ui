@@ -19,17 +19,10 @@
 
 .v-list-item {
   &.border-bottom:not(:last-child) {
-    border-bottom: 1px solid $base;
-  }
-  &.v-list-item--link.no-hover {
-    &:hover {
-      &:before {
-        background-color: transparent !important;
-        opacity: 0 !important;
-      }
-    }
+    border-bottom: 1px solid $base-lighter;
   }
 }
+
 .v-list {
   &.no-hover {
     .v-list-item--link {
