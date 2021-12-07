@@ -3,13 +3,36 @@
     <div id="inputWidthFaker" ref="inputWidthFaker"></div>
     <div class="content-max-width">
       <h1 tabindex="-1">
-        Let’s add team members to {{ currentApplication.name }}
+        {{
+          noAppOrEnvOperatorsOnLoad
+            ? "Let’s add team members to " + currentApplication.name
+            : "Let’s update your " + currentApplication.name + " team"
+        }}
       </h1>
       <p>
-        Invite your application team members and assign their permissions below.
-        These individuals will receive an invitation from
-        <strong>{{ csp }}</strong> after your portfolio is provisioned. Select
-        <strong>Next</strong> to add team members to your other applications.
+        <span v-if="noAppOrEnvOperatorsOnLoad">
+          Invite your application team members and assign their permissions
+          below. These individuals will receive an invitation from
+          {{ csp }} after your portfolio is provisioned. Select
+          <strong>Next</strong> to add team members to your other applications.
+        </span>
+        <span v-else>
+          The following people will be granted access to your application within
+          the {{ csp }} console after your portfolio is provisioned. You can
+          <strong>invite</strong> additional team members or
+          <strong>modify</strong> permissions below.
+
+          <span v-if="isReturnToReview">
+            When you are done, select
+            <strong>Return to Review and Submit</strong>
+            to finalize your portfolio.
+          </span>
+          <span v-else>
+            When you are done, select
+            <strong>Next</strong> to view all of your workspace teams.
+          </span>
+        </span>
+
         <a
           class="text-link"
           role="button"
@@ -208,12 +231,15 @@ export default class TeamView extends mixins(ApplicationData) {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private csp = this.$store.getters.getPortfolio.csp;
+  private csp = this.$store.getters.getPortfolio.csp || "your selected CSP";
   private stepIsErrored = this.$store.getters.isStepErrored(4);
   private appHasAdmins = true;
   private isTouched = false;
   private environmentsWithoutAdmins: string[] = [];
   private environmentCount = 0;
+  private noAppOrEnvOperatorsOnLoad = true;
+  private isReturnToReview = this.$store.getters.isReturnToReview;
+
   public get portfolioName(): string {
     return this.$store.getters.getPortfolioName();
   }
@@ -451,7 +477,9 @@ export default class TeamView extends mixins(ApplicationData) {
   ): void {
     if (menuOptionText.toLowerCase() === "remove team member") {
       this.dialogTitle = `Remove ${this.member.display_name}`;
-      this.dialogMessage = `${this.member.display_name} will be removed from your ${this.currentApplication.name} team.  Any roles and permissions you assigned will not be saved.`;
+      this.dialogMessage = `${this.member.display_name} will be removed
+        from your ${this.currentApplication.name} team. This individual
+        will no longer have access to the application in the cloud console.`;
       this.returnFocusElementIdRemoveMemberCancel = btnId;
       this.showDialogWhenClicked = true;
     } else if (menuOptionText.toLowerCase() === "edit info and roles") {
@@ -509,8 +537,14 @@ export default class TeamView extends mixins(ApplicationData) {
   public async mounted(): Promise<void> {
     this.setMemberTableData();
     this.tranformData();
+
+    this.noAppOrEnvOperatorsOnLoad =
+      !this.$store.getters["applications/appOrEnvHasOperators"]([
+        this.currentApplication
+      ]);
   }
-  private moreButtonId(item: any): string {
+
+private moreButtonId(item: any): string {
     if (item && item.email) {
       return (
         "moreButton_" + item.email.toLowerCase().replace(/[^a-zA-Z0-9]/gi, "_")

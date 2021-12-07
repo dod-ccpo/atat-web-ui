@@ -46,34 +46,42 @@
     </section>
 
     <section title="Task Order FAQs" class="content-max-width" role="region">
-      <expandable-link
-        header="Can I add additional funding sources after my Portfolio is provisioned?"
-        content="<p>
-          Yes. As the Portfolio Manager, you will be able add CLINs to existing
-          Task Orders or add a new Task Order in the future. This will allow you
-          to continue funding the Applications in this Portfolio after the
-          period of performance has expired or after obligated funds have been
-          exhausted.
-        </p>
-        <p>
-          You will have the opportunity to invite other Portfolio Managers to
-          help you manage funding for this Portfolio later.
-        </p>"
-      ></expandable-link>
-
-      <expandable-link
-        header="What happens to my Portfolio if the period of performance or obligated
-          funds expire?"
-        content="<p>
-          If your Portfolio’s period of performance expires or if you run out of
-          obligated funds, your team members will not be able to access your
-          Applications within the CSP console.
-        </p>
-        <p>
-          We will notify you when your funding sources are in danger of
-          expiration, so that you have ample time to take action.
-        </p>"
-      ></expandable-link>
+      <expandable-link aria-id="TaskOrderFAQ1">
+        <template v-slot:header>
+          Can I add additional funding sources after my Portfolio is
+          provisioned?
+        </template>
+        <template v-slot:content>
+          <p>
+            Yes. As the Portfolio Manager, you will be able add CLINs to
+            existing Task Orders or add a new Task Order in the future. This
+            will allow you to continue funding the Applications in this
+            Portfolio after the period of performance has expired or after
+            obligated funds have been exhausted.
+          </p>
+          <p>
+            You will have the opportunity to invite other Portfolio Managers to
+            help you manage funding for this Portfolio later.
+          </p>
+        </template>
+      </expandable-link>
+      <expandable-link aria-id="TaskOrderFAQ2">
+        <template v-slot:header>
+          What happens to my Portfolio if the period of performance or obligated
+          funds expire?
+        </template>
+        <template v-slot:content>
+          <p>
+            If your Portfolio’s period of performance expires or if you run out
+            of obligated funds, your team members will not be able to access
+            your Applications within the CSP console.
+          </p>
+          <p>
+            We will notify you when your funding sources are in danger of
+            expiration, so that you have ample time to take action.
+          </p>
+        </template>
+      </expandable-link>
     </section>
   </div>
 </template>

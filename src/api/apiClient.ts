@@ -11,15 +11,27 @@ const instance = axios.create({
   },
 });
 
+const getAuthToken = async (): Promise<string | undefined> => {
+  // attempt to retrieve the current session and get the auth token
+  // If an exception occurs, the session has expired. Force the user to authenticate
+  try {
+    return (await Auth.currentSession()).getIdToken().getJwtToken();
+  } catch {
+    await Auth.federatedSignIn({
+      customProvider: "IdP",
+    });
+  }
+};
+
 // Handle adding the authorization header based on the current session
 instance.interceptors.request.use(async (config) => {
-  // currentSession() should refresh the session if required in most cases
-  // if that turns out to not be the case, we'll need to refresh the token
-  // manually.
-  const token = (await Auth.currentSession()).getIdToken().getJwtToken();
-  config.headers.Authorization = `Bearer ${token}`;
+  const token = await getAuthToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
+
 
 interface APIRequest {
   url?: string;

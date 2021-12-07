@@ -40,10 +40,17 @@
     </section>
 
     <section title="Application FAQs" class="content-max-width" role="region">
-      <expandable-link
-        header="What if I need to add more applications after my portfolio is provisioned?"
-        content="In the future, team members with the appropriate permissions can add additional applications and/or environments directly within the cloud console.  We will set those permissions in the next step."
-      ></expandable-link>
+      <expandable-link aria-id="ApplicationFAQ1">
+        <template v-slot:header>
+          What if I need to add more applications after my portfolio is
+          provisioned?
+        </template>
+        <template v-slot:content>
+          In the future, team members with the appropriate permissions can add
+          additional applications and/or environments directly within the cloud
+          console. We will set those permissions in the next step.
+        </template>
+      </expandable-link>
     </section>
   </div>
 </template>
