@@ -89,5 +89,14 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     this.portfolio = this.$store.getters.getPortfolio;
     this.taskOrders = this.$store.getters.getTaskOrders;
   }
+  public mounted(): void {
+    // validate all steps
+    debugger;
+    const stepNumbers: number[] = [1, 2, 3, 4];
+    stepNumbers.forEach((stepNumber) => {
+      this.$store.dispatch("saveStepData", stepNumber);
+    });
+
+  }
 }
 </script>
