@@ -976,8 +976,8 @@ export default new Vuex.Store({
     setReturnToReview({ commit }, shouldReturn: boolean) {
       commit("doSetReturnToReview", shouldReturn);
     },
-    setArrivedFromStep5({ commit }, shouldReturn: boolean) {
-      commit("doSetArrivedFromStep5", shouldReturn);
+    setArrivedFromStep5({ commit }, didArriveFromStep5: boolean) {
+      commit("doSetArrivedFromStep5", didArriveFromStep5);
     },
   },
   /*

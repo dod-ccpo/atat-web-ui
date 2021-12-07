@@ -111,12 +111,11 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
     this.transformData();
     if (this.isArrivedFromStep5) {
       this.$store.dispatch("setReturnToReview", true);
-      this.isReturnToReview = this.$store.getters.isReturnToReview;
+      this.isReturnToReview = true;
     }
-    this.isReturnToReview = this.$store.getters.isReturnToReview;
   }
 
-  private isReturnToReview = "";
+  private isReturnToReview = false;
   private isArrivedFromStep5 = this.$store.getters.isArrivedFromStep5;
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
