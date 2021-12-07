@@ -61,8 +61,8 @@ export default class Wizard extends Vue {
   ): Promise<void> {
     actions.forEach(async (a) => {
       let action = a.toLowerCase();
-      const returnToReview = this.$store.getters.isReturnToReview;
-      this.$store.dispatch("setReturnToReview", false);
+      const returnToReview = this.$store.getters["wizard/isReturnToReview"];
+      this.$store.dispatch("wizard/setReturnToReview", false);
       const nextRoute = returnToReview
         ? "reviewandsubmit"
         : currentRoute.meta && currentRoute.meta.isWizard
@@ -103,7 +103,9 @@ export default class Wizard extends Vue {
           break;
         case "save":
           try {
-            const saved = await this.$store.dispatch("saveAllValidSteps");
+            const saved = await this.$store.dispatch(
+              "wizard/saveAllValidSteps"
+            );
             if (saved) {
               alert("Data has been validated and is saved");
               await this.routerPush({ name: "portfolios" });

@@ -9,20 +9,20 @@
       non-linear
     >
       <v-stepper-header class="pa-0" role="navigation">
-        <template v-for="(step, index) in stepperControl.Steps">
+        <template v-for="(step, index) in steps">
           <v-stepper-step
             editable
             :id="'step_0' + (index + 1)"
             :step="index + 1"
             :key="'stepper_' + index"
-            :complete="isStepComplete(index)"
+            :complete="isStepComplete(index + 1)"
             :rules="getValidationRules(index)"
             @click="clickedAction(index + 1, this)"
             @keydown.enter="clickedAction(index + 1, this)"
             :error-icon="'  '"
             :edit-icon="'  '"
             :complete-icon="'  '"
-            :class="[isTouched(index) ? 'visited' : '']"
+            :class="[isTouched(index + 1) ? 'visited' : '']"
           >
             <a
               tabindex="0"
@@ -43,9 +43,7 @@
       >
         {{ this.stepNumber }}
       </span>
-      <span class="span-of-pages font-size-24">
-        of {{ stepperControl.Steps.length }}</span
-      >
+      <span class="span-of-pages font-size-24"> of {{ steps.length }}</span>
       <span class="span-of-pages step-description ml-2">
         {{ getStepDescription() }}</span
       >
@@ -54,61 +52,67 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { mixins } from "vue-class-component";
 import { Component, Prop, Emit } from "vue-property-decorator";
-import { Stepper } from "types/Wizard";
+import { Step } from "types/Wizard";
+import WizardModuleData from "@/mixins/WizardModuleData";
 
 @Component({})
-export default class StepperNavigation extends Vue {
+export default class StepperNavigation extends mixins(WizardModuleData) {
   @Prop({ default: 1 }) private stepNumber!: number;
   private currentStepNumber = this.stepNumber;
 
-  public stepperControl: Stepper = {
-    Steps: this.$store.state.portfolioSteps,
-  };
-
   private getValidationRules(idx: number) {
     const rules: any = [];
-    const isStepValid = this.$store.state.erroredSteps.indexOf(idx + 1) === -1;
+    const isStepValid = this.erroredSteps.indexOf(idx + 1) === -1;
     if (!isStepValid) {
       rules.push(() => isStepValid);
     }
     return rules;
   }
 
+  private get steps(): Step[] {
+    const steps = [];
+    for (let stepKey in this.portfolioSteps) {
+      const step = this.portfolioSteps[stepKey];
+      steps.push(step);
+    }
+
+    return steps;
+  }
+
   @Emit()
   public clickedAction(stepSelected: number): number {
-    this.$store.dispatch("setReturnToReview", false);
-    this.$store.dispatch("setArrivedFromStep5", false);
+    this.$store.dispatch("wizard/setReturnToReview", false);
+    this.$store.dispatch("wizard/setArrivedFromStep5", false);
     return stepSelected;
   }
 
+  get step(): Step {
+    return this.portfolioSteps[this.stepNumber];
+  }
+
   public getStepDescription(): string {
-    return this.stepperControl.Steps[this.stepNumber - 1].description;
+    return this.step.description;
   }
 
   get getStepNumber(): number {
-    this.$store.dispatch("setCurrentStepNumber", this.stepNumber);
     return this.stepNumber;
   }
 
   set getStepNumber(newValue: number) {
     this.currentStepNumber = newValue + 1;
-    this.$store.dispatch("setCurrentStepNumber", this.currentStepNumber);
+    this.setCurrentStepNumber(this.currentStepNumber);
   }
 
   public isStepComplete(stepNumber: number): boolean {
-    const isErroredStep =
-      this.$store.state.erroredSteps.indexOf(stepNumber + 1) != -1;
+    const isErroredStep = this.erroredSteps.indexOf(stepNumber) != -1;
     const isTouched = this.isTouched(stepNumber);
     return !isErroredStep && isTouched;
   }
 
   public isTouched(stepNumber: number): boolean {
-    const stepIndex = this.$store.state.portfolioSteps.findIndex(
-      (x: any) => x.step === stepNumber + 1
-    );
-    return this.$store.state.portfolioSteps[stepIndex].touched;
+    return this.portfolioSteps[stepNumber].touched;
   }
 }
 </script>

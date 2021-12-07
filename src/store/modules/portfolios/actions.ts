@@ -1,4 +1,4 @@
-import { ActionTree, Commit } from "vuex";
+import { ActionContext, ActionTree, Commit } from "vuex";
 import { RootState } from "@/store/types";
 import PortfoliosState from "./types";
 import { portfoliosApi } from "@/api";
@@ -20,7 +20,15 @@ const deletePortfolioDraft = async (
   commit("deletePortfolioDraft", draftId);
 };
 
+const saveToServer = async (
+  context: ActionContext<PortfoliosState, RootState>,
+  { portfolioId, data }: { portfolioId: string; data: unknown }
+): Promise<void> => {
+  await portfoliosApi.savePortfolio(portfolioId, data);
+};
+
 export const actions: ActionTree<PortfoliosState, RootState> = {
   loadPortfolioDrafts,
   deletePortfolioDraft,
+  saveToServer,
 };

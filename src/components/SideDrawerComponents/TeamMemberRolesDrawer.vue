@@ -14,7 +14,6 @@
       </h2>
 
       <about-member-role-content />
-
     </div>
   </div>
 </template>

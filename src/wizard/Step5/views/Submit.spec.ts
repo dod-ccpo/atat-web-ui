@@ -14,7 +14,7 @@ describe("Testing PostReview Component", () => {
   let store: any;
 
   const getters: any = {
-    getPortfolio: () => {
+    "wizard/getPortfolio": () => {
       return {
         csp: "test CSP",
       };
@@ -31,6 +31,9 @@ describe("Testing PostReview Component", () => {
       vuetify,
       store,
       stubs: [],
+      data: {
+        selectedCsp: "test CSP",
+      },
     });
   });
 

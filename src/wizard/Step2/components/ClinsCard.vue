@@ -257,7 +257,7 @@ export default class ClinsCard extends Vue {
     );
   }
 
-  private model: TaskOrderModel = this.$store.getters.getStepModel(2);
+  private model: TaskOrderModel = this.$store.getters["wizard/getStepModel"](2);
 
   get isDisabled(): boolean {
     return this.model.clins.length === 1;

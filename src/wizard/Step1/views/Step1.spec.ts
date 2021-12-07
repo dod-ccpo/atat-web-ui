@@ -24,10 +24,10 @@ describe("Testing Step1 Component", () => {
     saveStepModel: jest.fn(),
   };
   const getters: any = {
-    getStepTouched: () => (stepNumber: number) => {
+    "wizard/getStepTouched": () => (stepNumber: number) => {
       return false;
     },
-    getStepModel: () => (stepNumber: number) => {
+    "wizard/getStepModel": () => (stepNumber: number) => {
       return {
         name: "",
         description: "",
