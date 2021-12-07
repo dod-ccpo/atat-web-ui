@@ -51,9 +51,9 @@ export default class PortfolioValidationSummary extends Vue {
 
   public onReviewPortfolioItem(componentName: string, item: number): void {
     //todo: route to component item for review
-    this.$store.dispatch("validateStep", item);
-    this.$store.dispatch("setArrivedFromStep5", true);
-    this.$store.dispatch("setReturnToReview", true);
+    this.$store.dispatch("wizard/validateStep", item);
+    this.$store.dispatch("wizard/setArrivedFromStep5", true);
+    this.$store.dispatch("wizard/setReturnToReview", true);
 
     //todo: this is a temporary fix until we get the rest of the summary functionality
     //in place Robert McCardell
