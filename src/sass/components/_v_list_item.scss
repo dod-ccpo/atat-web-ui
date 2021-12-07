@@ -17,4 +17,9 @@
   }
 }
 
+.v-list-item {
+  &.border-bottom:not(:last-child) {
+    border-bottom: 1px solid $base;
+  }
+}
 
