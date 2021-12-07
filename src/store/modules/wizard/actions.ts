@@ -409,12 +409,11 @@ const loadStep3Data = async (
     commit("applications/initializeRootAdministrators", null, { root: true });
 
     const rootAdmins = applicationData.operators.map((operator: Operator) => {
-      // const operatorModels: OperatorModel = {
-      //   ...operator,
-      //   id: generateUid(),
-      // };
-
-      return operator;
+      const operatorModel: OperatorModel = {
+        ...operator,
+        id: generateUid(),
+      };
+      return operatorModel;
     });
 
     commit("applications/updateRootAdministrators", rootAdmins, { root: true });

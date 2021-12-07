@@ -5,9 +5,9 @@
         Let’s create your new application
       </h1>
       <p v-if="!isStepTouched">
-        {{ this.$store.getters["wizard/getPortfolio"].csp }}. If you have more
-        than one application, we will walk through them one at a time. Select
-        <strong>Next</strong> to view your application summary.
+        {{ selectedCsp }}. If you have more than one application, we will walk
+        through them one at a time. Select <strong>Next</strong> to view your
+        application summary.
       </p>
       <h1 v-if="isStepTouched" tabindex="-1">
         Let’s update your application details
@@ -154,6 +154,11 @@ export default class CreateApplicationForm extends Vue {
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
+  }
+
+  get selectedCsp(): string {
+    const portfolio = this.$store.getters["wizard/getPortfolio"];
+    return portfolio && portfolio.csp ? portfolio.csp : "your selected CSP";
   }
 
   public deleteEnvironment(id: string): void {
