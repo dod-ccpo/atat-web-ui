@@ -19,6 +19,7 @@ export class ApiGatewayProxy extends cdk.Construct {
 
     const lambdaProxy = new lambdaNodeJs.NodejsFunction(this, "Proxy", {
       entry: "functions/proxy.ts",
+      memorySize: 512,
       environment: {
         SPA_BUCKET_NAME: props.bucket.bucketName,
         ENVIRONMENT_ID: props.environmentId,

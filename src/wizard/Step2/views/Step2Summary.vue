@@ -101,8 +101,15 @@ Component.registerHooks(["beforeRouteLeave"]);
 export default class Step2Summary extends mixins(TaskOrderModuleData) {
   private async mounted(): Promise<void> {
     this.transformData();
+    if (this.isArrivedFromStep5) {
+      this.$store.dispatch("setReturnToReview", true);
+      this.isReturnToReview = this.$store.getters.isReturnToReview;
+    }
+    this.isReturnToReview = this.$store.getters.isReturnToReview;
   }
-  private isReturnToReview = this.$store.getters.isReturnToReview;
+
+  private isReturnToReview = "";
+  private isArrivedFromStep5 = this.$store.getters.isArrivedFromStep5;
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],
@@ -127,6 +134,8 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
 
   async onEditTaskOrder(id: string): Promise<void> {
     this.$store.dispatch("editTaskOrder", id);
+    this.$store.dispatch("setReturnToReview", false);
+
     this.$router.push({
       name: editfunding.name,
       params: {
@@ -137,6 +146,7 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
 
   async onAddNewTaskOrder(id: string): Promise<void> {
     await this.$store.dispatch("addNewTaskOrder");
+    this.$store.dispatch("setReturnToReview", false);
     this.$router.push({
       name: addfunding.name,
       params: {

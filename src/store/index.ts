@@ -180,7 +180,6 @@ const mapApplications = (
               access: op.access,
               display_name: op.display_name,
               email: op.email,
-              id: op.id,
             };
           })
         : [],
@@ -193,7 +192,6 @@ const mapApplications = (
                   access: op.access,
                   display_name: op.display_name,
                   email: op.email,
-                  id: op.id,
                 };
               })
             : [],
@@ -211,7 +209,6 @@ const mapOperators = (operatorsModels: OperatorModel[]): Operator[] => {
     const { id, ...baseModel } = operatorModel;
 
     const operator: Operator = {
-      id,
       ...baseModel,
     };
 
@@ -377,6 +374,7 @@ export default new Vuex.Store({
       contentClass: "",
     },
     returnToReview: false,
+    arrivedFromStep5: false,
   },
   /*
   ███████████████████████████████████████████████████████████████████████████
@@ -501,6 +499,7 @@ export default new Vuex.Store({
       });
 
       Vue.set(state, "returnToReview", false);
+      Vue.set(state, "arrivedFromStep5", false);
 
       //clear out task order models
       Vue.set(state, "taskOrderModels", []);
@@ -524,6 +523,9 @@ export default new Vuex.Store({
     },
     doSetReturnToReview(state, shouldReturn) {
       state.returnToReview = shouldReturn;
+    },
+    doSetArrivedFromStep5(state, shouldReturn) {
+      state.arrivedFromStep5 = shouldReturn;
     },
   },
   /*
@@ -974,6 +976,9 @@ export default new Vuex.Store({
     setReturnToReview({ commit }, shouldReturn: boolean) {
       commit("doSetReturnToReview", shouldReturn);
     },
+    setArrivedFromStep5({ commit }, shouldReturn: boolean) {
+      commit("doSetArrivedFromStep5", shouldReturn);
+    },
   },
   /*
   ██████████████████████████████████████████████████████████
@@ -1136,6 +1141,9 @@ export default new Vuex.Store({
       },
     isReturnToReview: (state) => {
       return state.returnToReview;
+    },
+    isArrivedFromStep5: (state) => {
+      return state.arrivedFromStep5;
     },
   },
   modules: {
