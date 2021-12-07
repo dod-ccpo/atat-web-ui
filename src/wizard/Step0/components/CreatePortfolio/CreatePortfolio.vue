@@ -48,7 +48,7 @@ import ATATDivider from "@/components/ATATDivider.vue";
 })
 export default class CreatePortfolio extends Vue {
   async onCreatePortfolio(): Promise<void> {
-    await this.$store.dispatch("createPortfolioDraft");
+    await this.$store.dispatch("wizard/createPortfolioDraft");
     this.$router.push({ name: "addportfolio" });
   }
 

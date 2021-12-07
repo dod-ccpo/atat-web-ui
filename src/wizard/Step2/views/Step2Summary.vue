@@ -48,33 +48,33 @@
     <section title="Task Order FAQs" class="content-max-width" role="region">
       <expandable-link aria-id="TaskOrderFAQ1">
         <template v-slot:header>
-          Can I add additional funding sources after my Portfolio is
+          Can I add additional funding sources after my portfolio is
           provisioned?
         </template>
         <template v-slot:content>
           <p>
             Yes. As the Portfolio Manager, you will be able add CLINs to
-            existing Task Orders or add a new Task Order in the future. This
-            will allow you to continue funding the Applications in this
-            Portfolio after the period of performance has expired or after
+            existing task orders or add a new task order in the future. This
+            will allow you to continue funding the applications in this
+            portfolio after the period of performance has expired or after
             obligated funds have been exhausted.
           </p>
           <p>
             You will have the opportunity to invite other Portfolio Managers to
-            help you manage funding for this Portfolio later.
+            help you manage funding for this portfolio later.
           </p>
         </template>
       </expandable-link>
       <expandable-link aria-id="TaskOrderFAQ2">
         <template v-slot:header>
-          What happens to my Portfolio if the period of performance or obligated
+          What happens to my portfolio if the period of performance or obligated
           funds expire?
         </template>
         <template v-slot:content>
           <p>
-            If your Portfolio’s period of performance expires or if you run out
+            If your portfolio's period of performance expires or if you run out
             of obligated funds, your team members will not be able to access
-            your Applications within the CSP console.
+            your applications within the CSP console.
           </p>
           <p>
             We will notify you when your funding sources are in danger of
@@ -123,11 +123,11 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   };
 
   async onDeleteTaskOrder(id: string): Promise<void> {
-    await this.$store.dispatch("deleteTaskOrder", id);
+    await this.$store.dispatch("wizard/deleteTaskOrder", id);
 
     if (this.taskOrders.length === 0) {
       //route the user back to add funding step
-      await this.$store.dispatch("addNewTaskOrder");
+      await this.$store.dispatch("wizard/addNewTaskOrder");
       this.$router.push({
         name: addfunding.name,
         params: {
@@ -140,8 +140,8 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   }
 
   async onEditTaskOrder(id: string): Promise<void> {
-    this.$store.dispatch("editTaskOrder", id);
-    this.$store.dispatch("setReturnToReview", false);
+    this.$store.dispatch("wizard/editTaskOrder", id);
+    this.$store.dispatch("wizard/setReturnToReview", false);
 
     this.$router.push({
       name: editfunding.name,
@@ -152,8 +152,8 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   }
 
   async onAddNewTaskOrder(id: string): Promise<void> {
-    await this.$store.dispatch("addNewTaskOrder");
-    this.$store.dispatch("setReturnToReview", false);
+    await this.$store.dispatch("wizard/addNewTaskOrder");
+    this.$store.dispatch("wizard/setReturnToReview", false);
     this.$router.push({
       name: addfunding.name,
       params: {

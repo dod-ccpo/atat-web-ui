@@ -72,7 +72,7 @@ describe("Testing Create ClinsCardList Component", () => {
   };
 
   const getters: any = {
-    getStepModel: () => (stepNumber: number) => {
+    "wizard/getStepModel": () => (stepNumber: number) => {
       return {
         task_order_file: {
           name: "Lesson 5 - Essentials.pdf",

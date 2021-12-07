@@ -16,7 +16,9 @@
             role="link"
             :ripple="false"
             aria-label="Edit team members"
-          ><v-icon aria-hidden="true" class="icon-16 text-decoration-none mr-1"
+            ><v-icon
+              aria-hidden="true"
+              class="icon-16 text-decoration-none mr-1"
               >edit</v-icon
             ><span class="link-body-md">Edit</span>
           </v-btn>
@@ -63,7 +65,7 @@ export default class TeamMemberTable extends Vue {
   @Prop({ default: "" }) private name!: string;
 
   private onEdit(data: any) {
-    this.$store.dispatch("setReturnToReview", true);
+    this.$store.dispatch("wizard/setReturnToReview", true);
     if (data.type === "application") {
       this.$store.dispatch("applications/setCurrentApplicationId", data.id);
     }
@@ -100,7 +102,7 @@ export default class TeamMemberTable extends Vue {
 
       const rootObj = {
         type: "portfolio",
-        id: this.$store.getters.getPortfolioId,
+        id: this.$store.getters["wizard/getPortfolioId"],
         name: "Root Administrators",
         operators: rootOperators,
       };

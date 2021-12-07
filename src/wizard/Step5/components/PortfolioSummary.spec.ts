@@ -18,32 +18,34 @@ describe("Testing PortfolioSummary Component", () => {
     vuetify = new Vuetify();
 
     state = {
-      erroredSteps: [3, 4],
-      portfolioSteps: [
-        {
-          step: 1,
-          description: "Create Portfolio",
-          touched: false,
-          model: {
-            name: "",
-            description: "",
-            dod_components: [],
-            csp: "",
-          },
-        },
-        {
-          step: 2,
-          description: "Add Funding",
-          touched: false,
-          model: {
-            task_order_number: "",
-            task_order_file: {
+      wizard: {
+        erroredSteps: [3, 4],
+        portfolioSteps: [
+          {
+            step: 1,
+            description: "Create Portfolio",
+            touched: false,
+            model: {
               name: "",
+              description: "",
+              dod_components: [],
+              csp: "",
             },
-            clins: [],
           },
-        },
-      ],
+          {
+            step: 2,
+            description: "Add Funding",
+            touched: false,
+            model: {
+              task_order_number: "",
+              task_order_file: {
+                name: "",
+              },
+              clins: [],
+            },
+          },
+        ],
+      },
     };
     store = new Vuex.Store({ state });
 

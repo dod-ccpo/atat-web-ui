@@ -154,7 +154,7 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
   }
 
   async onEdit(id: string): Promise<void> {
-    this.$store.dispatch("editApplication", id);
+    this.$store.dispatch("wizard/editApplication", id);
     this.$store.dispatch("setReturnToReview", false);
 
     this.$router.push({
@@ -166,7 +166,7 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
   }
 
   async onAddNew(id: string): Promise<void> {
-    await this.$store.dispatch("addNewApplication");
+    await this.$store.dispatch("wizard/addNewApplication");
     this.$store.dispatch("setReturnToReview", false);
 
     this.$router.push({

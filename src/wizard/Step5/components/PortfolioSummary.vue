@@ -52,7 +52,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
   public portfolio!: PortFolioDraftDTO;
   public taskOrders!: TaskOrderModel[];
   public invalidStepsExist(): boolean {
-    return this.$store.state.erroredSteps.length > 0;
+    return this.$store.state.wizard.erroredSteps.length > 0;
   }
 
   public getValidationResults(): ValidationSummaryItem[] {
@@ -82,12 +82,14 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
           "Ensures your team can access their workspaces within the cloud console",
         name: "addteammembers",
       },
-    ].filter((item) => this.$store.state.erroredSteps.indexOf(item.id) > -1);
+    ].filter(
+      (item) => this.$store.state.wizard.erroredSteps.indexOf(item.id) > -1
+    );
   }
 
   created(): void {
-    this.portfolio = this.$store.getters.getPortfolio;
-    this.taskOrders = this.$store.getters.getTaskOrders;
+    this.portfolio = this.$store.getters["wizard/getPortfolio"];
+    this.taskOrders = this.$store.getters["taskOrders/taskOrders"];
   }
 }
 </script>
