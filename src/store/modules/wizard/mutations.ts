@@ -78,6 +78,8 @@ const initializeSteps = (state: WizardState): void => {
     Vue.set(state.portfolioSteps[stepKey], "touched", false);
   });
 
+  Vue.set(state, "arrivedFromStep5", false);
+
   const es: number[] = state.erroredSteps;
   es.splice(0, es.length);
 };
@@ -94,6 +96,13 @@ const setReturnToReview = (state: WizardState, shouldReturn: boolean): void => {
   state.returnToReview = shouldReturn;
 };
 
+const setArrivedFromStep5 = (
+  state: WizardState,
+  didArriveFromStep5: boolean
+): void => {
+  state.arrivedFromStep5 = didArriveFromStep5;
+};
+
 export const mutations: MutationTree<WizardState> = {
   setStepValidated,
   setCurrentStepNumber,
@@ -105,4 +114,5 @@ export const mutations: MutationTree<WizardState> = {
   updateMembersModified,
   setCurrentPortfolioId,
   setReturnToReview,
+  setArrivedFromStep5,
 };

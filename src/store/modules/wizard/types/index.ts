@@ -11,4 +11,5 @@ export interface WizardState {
   membersModified: boolean;
   currentApplicationId: string;
   returnToReview: boolean;
+  arrivedFromStep5: boolean;
 }

@@ -427,7 +427,8 @@ const loadStep3Data = async (
     });
 
     commit("applications/updateRootAdministrators", rootAdmins, { root: true });
-    const hasData = applicationData.applications && applicationData.applications.length > 0;
+    const hasData =
+      applicationData.applications && applicationData.applications.length > 0;
     commit("initializeStepModel", {
       stepNumber: WizardSteps.Three,
       touched: hasData,
@@ -440,6 +441,13 @@ const setReturnToReview = (
   shouldReturn: boolean
 ): void => {
   commit("setReturnToReview", shouldReturn);
+};
+
+const setArrivedFromStep5 = (
+  { commit }: ActionContext<WizardState, RootState>,
+  didArriveFromStep5: boolean
+): void => {
+  commit("setArrivedFromStep5", didArriveFromStep5);
 };
 
 export const actions: ActionTree<WizardState, RootState> = {
@@ -468,4 +476,5 @@ export const actions: ActionTree<WizardState, RootState> = {
   loadStep2Data,
   loadStep3Data,
   setReturnToReview,
+  setArrivedFromStep5,
 };

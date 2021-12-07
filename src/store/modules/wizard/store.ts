@@ -80,6 +80,7 @@ const state: WizardState = {
   membersModified: false,
   currentApplicationId: "",
   returnToReview: false,
+  arrivedFromStep5: false,
 };
 
 const wizard: Module<WizardState, RootState> = {

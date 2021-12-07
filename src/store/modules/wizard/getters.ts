@@ -75,4 +75,7 @@ export const getters: GetterTree<WizardState, RootState> = {
     const applicationModels = rootGetters["applications/applications"];
     return applicationModels && applicationModels.length > 0;
   },
+  isArrivedFromStep5: (state) => {
+    return state.arrivedFromStep5;
+  },
 };
