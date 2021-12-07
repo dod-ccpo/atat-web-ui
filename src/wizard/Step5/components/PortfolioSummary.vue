@@ -59,7 +59,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     return [
       {
         id: 1,
-        title: "Portfolio Details (or Portfolio Settings)",
+        title: "Portfolio Details",
         description: "Ensures your Portfolio is set up correctly",
         name: "addportfolio",
       },
@@ -90,11 +90,12 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     this.taskOrders = this.$store.getters.getTaskOrders;
   }
   public mounted(): void {
-    // validate all steps
-    debugger;
     const stepNumbers: number[] = [1, 2, 3, 4];
     stepNumbers.forEach((stepNumber) => {
-      this.$store.dispatch("saveStepData", stepNumber);
+      const isTouched = this.$store.getters.isStepTouched(stepNumber);
+      if (!isTouched) {
+        this.$store.dispatch("updateStepModelValidity",[stepNumber, false]);
+      }
     });
 
   }
