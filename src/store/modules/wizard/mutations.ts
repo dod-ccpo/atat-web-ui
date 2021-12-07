@@ -37,11 +37,14 @@ const saveStepModel = (
   }
 };
 
-const initializeStepModel = (state: WizardState, stepNumber: number): void => {
+const initializeStepModel = (
+  state: WizardState,
+  { stepNumber, touched }: { stepNumber: number; touched: boolean }
+): void => {
   const modelCreator = getStepModel(stepNumber);
   Vue.set(state.portfolioSteps[stepNumber], "model", modelCreator());
   Vue.set(state.portfolioSteps[stepNumber], "valid", true);
-  Vue.set(state.portfolioSteps[stepNumber], "touched", false);
+  Vue.set(state.portfolioSteps[stepNumber], "touched", touched);
 };
 
 const updateStepModelValidity = (

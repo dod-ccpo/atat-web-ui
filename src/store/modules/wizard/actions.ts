@@ -65,7 +65,10 @@ const deleteTaskOrder = async (
 ): Promise<void> => {
   try {
     dispatch("taskOrders/deleteTaskOrder", id, { root: true });
-    commit("initializeStepModel", WizardSteps.Two);
+    commit("initializeStepModel", {
+      stepNumber: WizardSteps.Two,
+      touched: true,
+    });
     await dispatch("taskOrders/saveToServer", state.currentPortfolioId, {
       root: true,
     });
@@ -77,7 +80,7 @@ const deleteTaskOrder = async (
 const addNewTaskOrder = ({
   commit,
 }: ActionContext<WizardState, RootState>): void => {
-  commit("initializeStepModel", WizardSteps.Two);
+  commit("initializeStepModel", { stepNumber: WizardSteps.One, touched: true });
 };
 
 const editTaskOrder = (
@@ -105,7 +108,10 @@ const editTaskOrder = (
 const addNewApplication = ({
   commit,
 }: ActionContext<WizardState, RootState>): void => {
-  commit("initializeStepModel", WizardSteps.Three);
+  commit("initializeStepModel", {
+    stepNumber: WizardSteps.Three,
+    touched: true,
+  });
 };
 
 const editApplication = (
@@ -391,7 +397,11 @@ const loadStep2Data = async (
     //store the tasks orders
     dispatch("taskOrders/setCurrentTaskOrders", taskOrders, { root: true });
   }
-  commit("initializeStepModel", WizardSteps.Two);
+  const hasData = taskOrders && taskOrders.length > 0;
+  commit("initializeStepModel", {
+    stepNumber: WizardSteps.Two,
+    touched: hasData,
+  });
 };
 
 const loadStep3Data = async (
@@ -417,7 +427,11 @@ const loadStep3Data = async (
     });
 
     commit("applications/updateRootAdministrators", rootAdmins, { root: true });
-    commit("initializeStepModel", WizardSteps.Three);
+    const hasData = applicationData && applicationData.applications.length > 0;
+    commit("initializeStepModel", {
+      stepNumber: WizardSteps.Three,
+      touched: hasData,
+    });
   }
 };
 
