@@ -183,6 +183,7 @@ export default class CreateTaskOrderForm extends Vue {
   private savedTaskOrderSigned = false;
   private stepHasBeenTouched = false;
   private isReturnToReview = this.$store.getters["wizard/isReturnToReview"];
+  private isArrivedFromStep5 = this.$store.getters["wizard/isArrivedFromStep5"];
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;

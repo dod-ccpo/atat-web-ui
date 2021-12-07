@@ -5,9 +5,6 @@ import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
 import { Navs } from "../../types/NavItem";
 import { Dialog, Toast } from "types/Global";
-import { ApplicationModel } from "types/Portfolios";
-import { TaskOrderModel } from "types/Wizard";
-import { mockTaskOrders } from "./mocks/taskOrderMockData";
 
 // modules
 import portfolios from "./modules/portfolios/store";

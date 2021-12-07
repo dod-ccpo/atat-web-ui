@@ -85,6 +85,7 @@ export default class StepperNavigation extends mixins(WizardModuleData) {
   @Emit()
   public clickedAction(stepSelected: number): number {
     this.$store.dispatch("wizard/setReturnToReview", false);
+    this.$store.dispatch("wizard/setArrivedFromStep5", false);
     return stepSelected;
   }
 
