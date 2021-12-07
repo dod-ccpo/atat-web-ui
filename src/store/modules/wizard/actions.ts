@@ -80,7 +80,7 @@ const deleteTaskOrder = async (
 const addNewTaskOrder = ({
   commit,
 }: ActionContext<WizardState, RootState>): void => {
-  commit("initializeStepModel", { stepNumber: WizardSteps.One, touched: true });
+  commit("initializeStepModel", { stepNumber: WizardSteps.Two, touched: true });
 };
 
 const editTaskOrder = (
