@@ -49,25 +49,10 @@ const deleteApplication = async (
 ): Promise<void> => {
   try {
     commit("deleteApplication", id);
-    //todo fix reference to root store here
-    //const stepIndex: number = getters.getStepIndex(3);
-    //commit("doInitializeStepModel", [createStepThreeModel(), 3, stepIndex]);
-
-    const _applications = state.applicationModels.map((model: Application) => {
-      const application: Application = {
-        ...model,
-      };
-
-      return application;
-    });
-
-    const data = {
-      applications: _applications,
-    };
-
+    const applicationModels = state.applicationModels;
+    const portfolioOperators = state.portfolioOperators;
     const currentPortfolioId = rootGetters["wizard/currentPortfolioId"];
-
-    await portfoliosApi.saveApplications(currentPortfolioId, data);
+    await postData(applicationModels, portfolioOperators, currentPortfolioId);
   } catch (error) {
     console.log(error);
   }
@@ -159,16 +144,14 @@ const initializeRootAdministrators = ({ commit }: { commit: Commit }): void => {
   commit("initializeRootAdministrators");
 };
 
-const saveToServer = async (
-  { state }: ActionContext<ApplicationsState, RootState>,
+export const postData = async (
+  applicationModels: ApplicationModel[],
+  operatorModels: OperatorModel[],
   portfolioId: string
 ): Promise<void> => {
-  const applicationModels = state.applicationModels;
-  const portfolioOperators = state.portfolioOperators;
-
   if (applicationModels.length) {
     const applications = mapApplications(applicationModels);
-    const operators = mapOperators(portfolioOperators);
+    const operators = mapOperators(operatorModels);
 
     const data = {
       operators: operators,
@@ -176,6 +159,15 @@ const saveToServer = async (
     };
     await portfoliosApi.saveApplications(portfolioId, data);
   }
+};
+
+const saveToServer = async (
+  { state }: ActionContext<ApplicationsState, RootState>,
+  portfolioId: string
+): Promise<void> => {
+  const applicationModels = state.applicationModels;
+  const portfolioOperators = state.portfolioOperators;
+  await postData(applicationModels, portfolioOperators, portfolioId);
 };
 
 const validateAdminOperators = ({

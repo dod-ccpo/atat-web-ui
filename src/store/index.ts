@@ -44,7 +44,6 @@ export default new Vuex.Store({
     sideDrawerChange: false,
     isUserAuthorizedToProvisionCloudResources: false,
     isNavSideBarDisplayed: false,
-    currentPortfolioId: "",
     dialog: {
       isDisplayed: false,
       type: "",
@@ -276,26 +275,8 @@ export default new Vuex.Store({
         },
       };
     },
-    getMockTaskOrders() {
-      return mockTaskOrders;
-    },
     getUser: (state) => state.user,
-    getSideDrawerIsOpen: (state) => state.sideDrawerIsOpen,
-    hasTaskOrders: (state, getters, rootState, rootGetters): boolean => {
-      const taskOrderModels = rootGetters[
-        "taskOrders/taskOrders"
-      ] as TaskOrderModel[];
-
-      return taskOrderModels && taskOrderModels.length > 0;
-    },
-    getTaskOrders: (state, rootGetters) => rootGetters["taskOrders/taskOrders"],
-    hasApplications: (state, getters, rootState, rootGetters): boolean => {
-      const applicationModels = rootGetters[
-        "applications/applications"
-      ] as ApplicationModel[];
-
-      return applicationModels && applicationModels.length > 0;
-    },
+    getSideDrawerIsOpen: (state) => state.sideDrawerIsOpen
   },
   modules: {
     portfolios,

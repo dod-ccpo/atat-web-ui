@@ -89,7 +89,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
 
   created(): void {
     this.portfolio = this.$store.getters["wizard/getPortfolio"];
-    this.taskOrders = this.$store.getters.getTaskOrders;
+    this.taskOrders = this.$store.getters["taskOrders/taskOrders"];
   }
 }
 </script>

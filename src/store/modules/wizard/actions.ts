@@ -66,7 +66,7 @@ const deleteTaskOrder = async (
   try {
     dispatch("taskOrders/deleteTaskOrder", id, { root: true });
     commit("initializeStepModel", WizardSteps.Two);
-    await dispatch("taskOrder/saveToServer", state.currentPortfolioId, {
+    await dispatch("taskOrders/saveToServer", state.currentPortfolioId, {
       root: true,
     });
   } catch (error) {

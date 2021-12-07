@@ -102,7 +102,7 @@ export default class TeamMemberTable extends Vue {
 
       const rootObj = {
         type: "portfolio",
-        id: this.$store.getters.getPortfolioId,
+        id: this.$store.getters["wizard/getPortfolioId"],
         name: "Root Administrators",
         operators: rootOperators,
       };

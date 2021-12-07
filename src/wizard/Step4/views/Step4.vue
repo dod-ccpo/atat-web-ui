@@ -116,7 +116,7 @@ Component.registerHooks(["beforeRouteLeave"]);
 export default class Step_4 extends Vue {
   private csp = this.$store.getters["wizard/getPortfolio"].csp;
   private editType = this.$route.params.type || "noEdit";
-  public hasChanges = this.$store.getters.membersModified;
+  public hasChanges = this.$store.getters["wizard/membersModified"];
   public hasPortfolioHadMembersAdded =
     this.$store.getters["applications/portfolioHasHadMembersAdded"];
 

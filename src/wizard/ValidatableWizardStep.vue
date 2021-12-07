@@ -55,10 +55,7 @@ export default class ValidatableWizardStep<TModel> extends Validatable {
       if (this.skipValidation) return;
 
       this.incomingModel = JSON.parse(JSON.stringify(this.model)) as TModel;
-      this.touched = await this.$store.dispatch(
-        "wizard/isStepTouched",
-        this.step
-      );
+      this.touched = this.$store.getters["wizard/isStepTouched"](this.step);
       if (this.touched) {
         this.validate();
       }

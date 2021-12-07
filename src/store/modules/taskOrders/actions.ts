@@ -5,6 +5,7 @@ import { TaskOrderModel } from "types/Wizard";
 import { TaskOrder } from "types/Portfolios";
 import { portfoliosApi } from "@/api";
 import { mapTaskOrders } from "./helpers";
+import taskOrders from "./store";
 
 const addTaskOrder = (
   { commit }: { commit: Commit },
@@ -20,8 +21,14 @@ const updateTaskOrder = (
   commit("updateTaskOrder", { index, model });
 };
 
-const deleteTaskOrder = ({ commit }: { commit: Commit }, id: string): void => {
+const deleteTaskOrder = async (
+  { commit, state, rootGetters }: ActionContext<TaskOrdersState, RootState>,
+  id: string
+): Promise<void> => {
   commit("deleteTaskOrder", id);
+  const taskOrderModels = state.taskOrderModels;
+  const currentPortfolioId = rootGetters["wizard/currentPortfolioId"];
+  await postData(taskOrderModels, currentPortfolioId);
 };
 
 const setCurrentTaskOrders = (
@@ -31,15 +38,22 @@ const setCurrentTaskOrders = (
   commit("setCurrentTaskOrders", taskOrders);
 };
 
+const postData = async (
+  taskOrderModels: TaskOrderModel[],
+  portfolioId: string
+): Promise<void> => {
+  const taskOrders = {
+    task_orders: mapTaskOrders(taskOrderModels),
+  };
+  await portfoliosApi.saveFunding(portfolioId, taskOrders);
+};
+
 const saveToServer = async (
   { state }: ActionContext<TaskOrdersState, RootState>,
   portfolioId: string
 ): Promise<void> => {
   const taskOrderModels = state.taskOrderModels;
-  const taskOrders = {
-    task_orders: mapTaskOrders(taskOrderModels),
-  };
-  await portfoliosApi.saveFunding(portfolioId, taskOrders);
+  await postData(taskOrderModels, portfolioId);
 };
 
 const initialize = ({ commit }: { commit: Commit }): void => {

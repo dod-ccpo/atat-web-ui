@@ -64,4 +64,15 @@ export const getters: GetterTree<WizardState, RootState> = {
   erroredSteps: (state) => {
     return state.erroredSteps;
   },
+  currentPortfolioId: (state)=> {
+    return state.currentPortfolioId;
+  },
+  hasTaskOrders: (state, getters, rootState, rootGetters): boolean => {
+    const taskOrderModels = rootGetters["taskOrders/taskOrders"];
+    return taskOrderModels && taskOrderModels.length > 0;
+  },
+  hasApplications: (state, getters, rootState, rootGetters): boolean => {
+    const applicationModels = rootGetters["applications/applications"];
+    return applicationModels && applicationModels.length > 0;
+  },
 };

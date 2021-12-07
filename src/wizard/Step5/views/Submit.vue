@@ -6,8 +6,8 @@
         Once you are ready to submit your portfolio, click the
         <strong>Provision Cloud Resources</strong> button. We will send the
         information you provided to
-        <strong> {{ this.$store.getters.getPortfolio.csp }} </strong> and begin
-        the process of setting up your workspaces and team members.
+        <strong> {{ this.$store.getters["wizards/getPortfolio"].csp }} </strong>
+        and begin the process of setting up your workspaces and team members.
       </p>
       <p class="body-lg mb-0 py-4">
         <strong>Not quite ready?</strong> Save this portfolio as a draft and
