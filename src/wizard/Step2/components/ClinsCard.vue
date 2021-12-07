@@ -191,7 +191,7 @@
                 Remove CLIN {{ clin_number }}?
               </v-card-title>
               <v-card-text class="body-lg"
-                >This CLIN will be deleted from your Task Order. Any changes you
+                >This CLIN will be deleted from your task order. Any changes you
                 made to CLIN details will not be saved.</v-card-text
               >
               <v-card-actions>
