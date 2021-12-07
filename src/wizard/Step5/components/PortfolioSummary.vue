@@ -11,7 +11,7 @@
         <!-- Invalid steps found -->
         <p v-else>
           We found a few details that you need to review before we can provision
-          your cloud resources. Let's take care of these details now.
+          your cloud resources. Let’s take care of these details now.
         </p>
       </v-col>
     </v-row>
