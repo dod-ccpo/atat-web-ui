@@ -5,9 +5,15 @@
       <p v-if="cardsData.cards.length > 0" class="mb-8">
         If you have more task orders, <strong>add</strong> them below. You can
         also <strong>edit</strong> or <strong>delete</strong> any of the task
-        orders you already entered. When you are done, click
-        <strong>Next</strong> and we will walk you through adding your
-        applications and environments.
+        orders you already entered.
+        <span v-if="!isReturnToReview"
+          >When you are done, click <strong>Next</strong> and we will walk you
+          through adding your applications and environments.</span
+        ><span v-else
+          >When you are done, click
+          <strong>Return to Review and Submit</strong> to finalize your
+          portfolio.</span
+        >
       </p>
       <v-card v-else class="pa-12 mb-8 mt-0">
         <v-card-text class="pa-0">
@@ -103,8 +109,14 @@ Component.registerHooks(["beforeRouteLeave"]);
 export default class Step2Summary extends mixins(TaskOrderModuleData) {
   private async mounted(): Promise<void> {
     this.transformData();
+    if (this.isArrivedFromStep5) {
+      this.$store.dispatch("setReturnToReview", true);
+      this.isReturnToReview = true;
+    }
   }
 
+  private isReturnToReview = false;
+  private isArrivedFromStep5 = this.$store.getters.isArrivedFromStep5;
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],
@@ -129,6 +141,8 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
 
   async onEditTaskOrder(id: string): Promise<void> {
     this.$store.dispatch("editTaskOrder", id);
+    this.$store.dispatch("setReturnToReview", false);
+
     this.$router.push({
       name: editfunding.name,
       params: {
@@ -139,6 +153,7 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
 
   async onAddNewTaskOrder(id: string): Promise<void> {
     await this.$store.dispatch("addNewTaskOrder");
+    this.$store.dispatch("setReturnToReview", false);
     this.$router.push({
       name: addfunding.name,
       params: {

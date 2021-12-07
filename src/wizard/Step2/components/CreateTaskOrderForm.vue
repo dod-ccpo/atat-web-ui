@@ -183,6 +183,7 @@ export default class CreateTaskOrderForm extends Vue {
   private savedTaskOrderSigned = false;
   private stepHasBeenTouched = false;
   private isReturnToReview = this.$store.getters.isReturnToReview;
+  private isArrivedFromStep5 = this.$store.getters.isArrivedFromStep5;
 
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
@@ -265,7 +266,6 @@ export default class CreateTaskOrderForm extends Vue {
       this.savedTaskOrderSigned = true;
       this.isTaskOrderSigned(this._signed);
     }
-    console.log(this.isReturnToReview);
 
     this.stepHasBeenTouched = this.$store.getters.getStepTouched(2);
   }

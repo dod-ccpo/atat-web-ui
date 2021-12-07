@@ -18,7 +18,9 @@
       :class="{
         'link-button no-focus-shift': button.link,
         'secondary-btn': button.secondary,
-        'd-none': isReturnToReview && button.action[0] === 'previous',
+        'd-none':
+          (isReturnToReview || isArrivedFromStep5) &&
+          button.action[0] === 'previous',
       }"
       role="link"
     >
@@ -76,6 +78,9 @@ export default class ButtonNavigation extends Vue {
 
   get isReturnToReview(): boolean {
     return this.$store.getters.isReturnToReview;
+  }
+  get isArrivedFromStep5(): boolean {
+    return this.$store.getters.isArrivedFromStep5;
   }
 
   private getButtonText(button: any): string {
