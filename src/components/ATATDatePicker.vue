@@ -49,7 +49,7 @@
               outlined
               dense
               :id="getId('start-date-text-box')"
-              :error="!isFieldValid"
+              :error="!isStartTextBoxValid"
               placeholder="MM/DD/YYYY"
               v-model="startDate"
               :value="formatStartDateMMDDYYYY"
@@ -90,7 +90,7 @@
               outlined
               dense
               :id="getId('end-date-text-box')"
-              :error="!isFieldValid"
+              :error="!isEndTextBoxValid"
               placeholder="MM/DD/YYYY"
               v-model="endDate"
               :value="formatEndDateMMDDYYYY"
@@ -228,16 +228,14 @@ export default class ATATDatePicker extends Vue {
   @PropSync("pop_end_date", { default: "" }) private endDate!: string;
   @PropSync("startDateRules") private _startDateRules!: any[];
   @PropSync("endDateRules") private _endDateRules!: any[];
-  @PropSync("errormessages") private _errorMessages!: (
-    | CustomErrorMessage
-    | undefined
-  )[];
+  @PropSync("errormessages") private _errorMessages!: CustomErrorMessage[];
 
   @PropSync("isDatePickerBlurred") private _isDatePickerBlurred!: boolean;
   @PropSync("isTextBoxFocused") private _isTextBoxFocused!: boolean;
   @Prop({ default: "2020-10-01" }) private min!: string;
   @Prop({ default: "2021-10-01" }) private max!: string;
   @Prop({ default: false }) private validateOnLoad!: boolean;
+  
 
   private menu = false;
   private firstMonth: string =
@@ -246,7 +244,8 @@ export default class ATATDatePicker extends Vue {
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
     .format("YYYY-MM-DD");
-  private isFieldValid = true;
+  private isStartTextBoxValid = true;
+  private isEndTextBoxValid = true;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
   private menuTop = 375;
@@ -450,20 +449,39 @@ export default class ATATDatePicker extends Vue {
     this.isEndTextBoxFocused = false;
   }
 
+  @Watch("validateOnLoad")
+  protected getValidateOnLoad(newVal: boolean): void {
+    console.log("newVal" + newVal);
+    if (newVal) {
+      Vue.nextTick(() => {
+        console.log(this.thisControlId);
+          this.getErrorMessages();
+        // this.isStartTextBoxValid =
+        //   this._errorMessages.filter((em) => em?.description == "start")
+        //     .length === 0;
+        // this.isEndTextBoxValid =
+        //   this._errorMessages.filter((em) => em?.description == "end")
+        //     .length === 0;
+      });
+    }
+  }
+
+
+
   /**
    * 1 - adds Event Listener for control
    * 2 - sets first and secondMonth
    */
-  private async mounted(): Promise<void> {
+  private mounted(): void {
     this.thisControl = document.getElementById(
       this.thisControlId
     ) as HTMLElement;
     this.addMasks();
-    console.log("this.validateOnLoad > " + this.validateOnLoad);
-    if (await this.validateOnLoad) {
-      this.getErrorMessages();
-      this.isFieldValid = this._errorMessages.length > 0;
-    }
+
+    // this.$nextTick(function () {
+    //   console.log(this.thisControlId);
+    //   console.log(this.validateOnLoad);
+    // });
 
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
@@ -876,25 +894,44 @@ export default class ATATDatePicker extends Vue {
    * to a single array
    */
   public getErrorMessages(): void {
-    let newMessages: (CustomErrorMessage | undefined)[] = [];
-    let oldMessages: (CustomErrorMessage | undefined)[] = [];
+    let newMessages: CustomErrorMessage[] = [];
+    let oldMessages: CustomErrorMessage[] = [];
     let errorBucket = [""];
-    if (this.$refs.startDate.errorBucket.length > 0) {
-      errorBucket = this.$refs.startDate.errorBucket;
-    } else if (this.$refs.endDate.errorBucket.length > 0) {
-      errorBucket = this.$refs.endDate.errorBucket;
-    }
-    let errorMessagesToKeep: string = this.$refs.startDate ? "end" : "start";
-    let newMessageDescription: string = this.$refs.startDate ? "start" : "end";
-    newMessages = this.convertToCustomErrorMessage(
-      errorBucket,
-      newMessageDescription
-    );
-    oldMessages = this._errorMessages.filter(
-      (em) => em?.description === errorMessagesToKeep
-    );
-    this._errorMessages = [];
-    this._errorMessages = [...newMessages, ...oldMessages];
+    let errorOrigin = "";
+    this.$nextTick(() => {
+      if (this.$refs.startDate.errorBucket.length > 0) {
+        errorBucket = this.$refs.startDate.errorBucket;
+        // console.log("start date error bucket");
+        errorOrigin = "start";
+      } else if (this.$refs.endDate.errorBucket.length > 0) {
+        // console.log("start date error bucket");
+        errorBucket = this.$refs.endDate.errorBucket;
+        errorOrigin = "end";
+      }
+      // console.log(errorBucket);
+
+      newMessages = this.convertToCustomErrorMessage(errorBucket, errorOrigin);
+      // console.log("newMessages");
+      // console.log(newMessages);
+      oldMessages = this._errorMessages.filter(
+        (em) => em?.description === errorOrigin
+      );
+      // console.log("oldMessages");
+      // console.log(oldMessages);
+      this._errorMessages = [];
+      this.$nextTick(() => {
+        this._errorMessages = [...newMessages, ...oldMessages];
+        // console.log(this._errorMessages);
+        this.$nextTick(() => {
+          this.isStartTextBoxValid =
+            this._errorMessages.filter((em) => em?.description == "start")
+              .length === 0;
+          this.isEndTextBoxValid =
+            this._errorMessages.filter((em) => em?.description == "end")
+              .length === 0;
+        });
+      });
+    });
   }
 
   /*
