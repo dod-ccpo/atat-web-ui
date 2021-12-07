@@ -91,7 +91,7 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import Inputmask from "inputmask";
 
 @Component({})
@@ -135,6 +135,13 @@ export default class ATATTextField extends VTextField {
       this._value = parseInt(v) > 0 ? v : "";
     } else {
       this._value = v;
+    }
+  }
+
+  @Watch("validateOnLoad")
+  protected watchValidateOnLoad(newVal: boolean): void {
+    if (newVal) {
+      this.validateField();
     }
   }
 

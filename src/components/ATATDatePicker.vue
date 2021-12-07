@@ -229,15 +229,13 @@ export default class ATATDatePicker extends Vue {
   @PropSync("startDateRules") private _startDateRules!: any[];
   @PropSync("endDateRules") private _endDateRules!: any[];
   @PropSync("errormessages") private _errorMessages!: CustomErrorMessage[];
-
+  @PropSync("isDatePickerVisible") private _isDatePickerVisible!: boolean;
   @PropSync("isDatePickerBlurred") private _isDatePickerBlurred!: boolean;
   @PropSync("isTextBoxFocused") private _isTextBoxFocused!: boolean;
   @Prop({ default: "2020-10-01" }) private min!: string;
   @Prop({ default: "2021-10-01" }) private max!: string;
   @Prop({ default: false }) private validateOnLoad!: boolean;
-  
 
-  private menu = false;
   private firstMonth: string =
     moment(this.startDate).format("YYYY-MM-DD") ||
     moment(new Date()).format("YYYY-MM-DD");
@@ -259,6 +257,7 @@ export default class ATATDatePicker extends Vue {
   private thisControl = document.getElementById(
     this.thisControlId
   ) as HTMLElement;
+  private menu = false;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -278,6 +277,11 @@ export default class ATATDatePicker extends Vue {
     } else if (this.formatDate(newVal) === this.formatDate(this.startDate)) {
       this.endDate = oldVal;
     }
+  }
+
+  @Watch("_isDatePickerVisible")
+  protected setIsDatePickerVisible(newVal: boolean): void{
+     this.menu = newVal;
   }
 
   /**
@@ -451,22 +455,12 @@ export default class ATATDatePicker extends Vue {
 
   @Watch("validateOnLoad")
   protected getValidateOnLoad(newVal: boolean): void {
-    console.log("newVal" + newVal);
     if (newVal) {
       Vue.nextTick(() => {
-        console.log(this.thisControlId);
-          this.getErrorMessages();
-        // this.isStartTextBoxValid =
-        //   this._errorMessages.filter((em) => em?.description == "start")
-        //     .length === 0;
-        // this.isEndTextBoxValid =
-        //   this._errorMessages.filter((em) => em?.description == "end")
-        //     .length === 0;
+        this.getErrorMessages();
       });
     }
   }
-
-
 
   /**
    * 1 - adds Event Listener for control
@@ -477,11 +471,6 @@ export default class ATATDatePicker extends Vue {
       this.thisControlId
     ) as HTMLElement;
     this.addMasks();
-
-    // this.$nextTick(function () {
-    //   console.log(this.thisControlId);
-    //   console.log(this.validateOnLoad);
-    // });
 
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
@@ -901,35 +890,35 @@ export default class ATATDatePicker extends Vue {
     this.$nextTick(() => {
       if (this.$refs.startDate.errorBucket.length > 0) {
         errorBucket = this.$refs.startDate.errorBucket;
-        // console.log("start date error bucket");
         errorOrigin = "start";
       } else if (this.$refs.endDate.errorBucket.length > 0) {
-        // console.log("start date error bucket");
         errorBucket = this.$refs.endDate.errorBucket;
         errorOrigin = "end";
       }
-      // console.log(errorBucket);
-
+     
       newMessages = this.convertToCustomErrorMessage(errorBucket, errorOrigin);
-      // console.log("newMessages");
-      // console.log(newMessages);
-      oldMessages = this._errorMessages.filter(
-        (em) => em?.description === errorOrigin
-      );
-      // console.log("oldMessages");
-      // console.log(oldMessages);
+      oldMessages = this._errorMessages.filter((em) => {
+        return em.description === errorOrigin;
+      });
       this._errorMessages = [];
       this.$nextTick(() => {
-        this._errorMessages = [...newMessages, ...oldMessages];
-        // console.log(this._errorMessages);
-        this.$nextTick(() => {
-          this.isStartTextBoxValid =
-            this._errorMessages.filter((em) => em?.description == "start")
-              .length === 0;
-          this.isEndTextBoxValid =
-            this._errorMessages.filter((em) => em?.description == "end")
-              .length === 0;
-        });
+        if (newMessages.length > 0) {
+          newMessages.forEach((nm) => {
+            this._errorMessages.push(nm);
+          });
+        }
+        if (oldMessages.length > 0) {
+          oldMessages.forEach((nm) => {
+            this._errorMessages.push(nm);
+          });
+        }
+
+        this.isStartTextBoxValid =
+          this._errorMessages.filter((em) => em.description === "start")
+            .length === 0;
+        this.isEndTextBoxValid =
+          this._errorMessages.filter((em) => em.description === "end")
+            .length === 0;
       });
     });
   }

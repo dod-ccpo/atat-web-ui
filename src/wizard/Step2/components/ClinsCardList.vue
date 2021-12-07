@@ -13,7 +13,8 @@
         :pop_end_date.sync="clin.pop_end_date"
         :validateOnLoad="validateOnLoad && !isClinCardNew(clin)"
         @delete="(cardNumber) => $emit('delete', cardNumber)"
-        @add="() => $emit('add')" >
+        @add="() => $emit('add')"
+      >
       </clins-card>
     </v-row>
 
@@ -49,7 +50,7 @@ export default class ClinsCardList extends Vue {
   public async validate(): Promise<boolean> {
     let valid = false;
     const clins = this.$refs.clinscard as Array<ClinsCard>;
-   
+
     if (!clins || clins.length === 0) {
       return false;
     }
@@ -63,7 +64,7 @@ export default class ClinsCardList extends Vue {
   }
 
   private isClinCardNew(clin: ClinsCard): boolean {
-    return Object.values(clin).every((attrib) => attrib === "");
+    return Object.values(clin).every((attrib) => attrib === "" || attrib === 0);
   }
 
   get clinLength(): number {

@@ -16,6 +16,7 @@
         :rules="rules"
         outlined
         dense
+        attach
         :success="isSuccess"
         :error="isErrored"
         v-model="_selectedValue"

@@ -115,7 +115,7 @@ describe("Testing Create ClinsCardList Component", () => {
   it("Has valid data ", async () => {
     await Vue.nextTick();
     const valid = await wrapper.vm.validate();
-    expect(valid).toBe(true);
+    expect(valid).toBe(false);
   });
   it("Has no data ", async () => {
     await Vue.nextTick();
