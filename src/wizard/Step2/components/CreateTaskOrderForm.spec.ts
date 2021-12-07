@@ -18,7 +18,7 @@ describe("Testing CreateTaskOrderForm", () => {
   let state: any;
 
   const getters: any = {
-    getStepModel: () => (stepNumber: number) => {
+    "wizard/getStepModel": () => (stepNumber: number) => {
       return {
         task_order_file: {
           name: "Lesson 5 - Essentials.pdf",
@@ -37,7 +37,7 @@ describe("Testing CreateTaskOrderForm", () => {
         task_order_number: "12345678901234567",
       };
     },
-    getStepTouched: () => (stepNumber: number) => {
+    "wizard/getStepTouched": () => (stepNumber: number) => {
       return false;
     },
   };
