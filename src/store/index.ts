@@ -524,8 +524,8 @@ export default new Vuex.Store({
     doSetReturnToReview(state, shouldReturn) {
       state.returnToReview = shouldReturn;
     },
-    doSetArrivedFromStep5(state, shouldReturn) {
-      state.arrivedFromStep5 = shouldReturn;
+    doSetArrivedFromStep5(state, didArriveFromStep5) {
+      state.arrivedFromStep5 = didArriveFromStep5;
     },
   },
   /*
