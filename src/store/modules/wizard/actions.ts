@@ -427,7 +427,7 @@ const loadStep3Data = async (
     });
 
     commit("applications/updateRootAdministrators", rootAdmins, { root: true });
-    const hasData = applicationData && applicationData.applications.length > 0;
+    const hasData = applicationData.applications && applicationData.applications.length > 0;
     commit("initializeStepModel", {
       stepNumber: WizardSteps.Three,
       touched: hasData,
