@@ -55,9 +55,6 @@ export default class PortfolioValidationSummary extends Vue {
     this.$store.dispatch("wizard/setArrivedFromStep5", true);
     this.$store.dispatch("wizard/setReturnToReview", true);
 
-    //todo: this is a temporary fix until we get the rest of the summary functionality
-    //in place Robert McCardell
-
     if (item === 2 && this.$store.state.taskOrderModels.length > 0) {
       const step2Validity = {
         stepNumber: 2,
