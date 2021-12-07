@@ -73,7 +73,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
         id: 3,
         title: "Applications and Environments",
         description: "Ensures your cloud workspaces are correct",
-        name: "addapplication",
+        name: "applicationsummary",
       },
       {
         id: 4,
