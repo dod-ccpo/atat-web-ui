@@ -72,7 +72,6 @@ export default class StepperNavigation extends mixins(WizardModuleData) {
   }
 
   private get steps(): Step[] {
-    console.log('in steps');
     const steps = [];
     for (let stepKey in this.portfolioSteps) {
       const step = this.portfolioSteps[stepKey];
