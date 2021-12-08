@@ -36,7 +36,7 @@ const addTaskOrder = (state: TaskOrdersState, model: TaskOrderModel): void => {
 const updateTaskOrder = (
   state: TaskOrdersState,
   { index, model }: { index: number; model: TaskOrderModel }
-) => {
+): void => {
   Vue.set(state.taskOrderModels, index, model);
 };
 
