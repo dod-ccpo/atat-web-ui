@@ -96,9 +96,14 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
   public mounted(): void {
     const stepNumbers: number[] = [1, 2, 3, 4];
     stepNumbers.forEach((stepNumber) => {
-      const isTouched = this.$store.getters.isStepTouched(stepNumber);
+      const isTouched = this.$store.getters["wizard/isStepTouched"](stepNumber);
       if (!isTouched) {
-        this.$store.dispatch("updateStepModelValidity",[stepNumber, false]);
+        this.$store.dispatch("wizard/updateStepModelValidity",
+          {
+            stepNumber: stepNumber,
+            valid: false
+          }
+        );
       }
     });
 
