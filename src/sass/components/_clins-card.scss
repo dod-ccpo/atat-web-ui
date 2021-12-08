@@ -6,6 +6,10 @@
    }
    .v-expansion-panel {
       border: 1px solid $base_lightest;
+      &.errored{
+         border: 3px solid $secondary-dark;
+         border-radius: 4px;
+      }
 
       .v-expansion-panel-header {
          padding: 0 !important;
@@ -20,6 +24,11 @@
    .icon-rotate {
       transform: rotate(-180deg);
    }
+
+   .v-icon.errored{
+      color: $secondary-dark;
+   }
+
    .data-summary-table {
       th, td {
          vertical-align: top;

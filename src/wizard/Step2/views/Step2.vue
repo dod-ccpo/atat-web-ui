@@ -10,7 +10,6 @@
       @delete="deleteClin"
       :validate-on-load="touched"
     />
-    touched: {{ touched }}
   </v-flex>
 </template>
 
@@ -19,7 +18,9 @@ import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
 import { TaskOrderModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
+import { Clin } from "types/TaskOrder";
 
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   components: {
     CreateTaskOrderForm,
@@ -54,6 +55,26 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
 
   public deleteClin(itemNumber: number): void {
     this.model.clins.splice(itemNumber - 1, 1);
+  }
+   private isClinCardNew(clin: Clin): boolean {
+    return Object.values(clin).every((attrib) => attrib === "" || attrib === 0);
+  }
+  private removeEmptyClins(): void {
+    const dirtyClins = this.model.clins.filter((c: any, idx: number) => {
+      if (this.isClinCardNew(c) === false && idx < this.model.clins.length) {
+        return c;
+      }
+    });
+    this.model.clins = dirtyClins;
+  }
+
+   public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    this.removeEmptyClins();
+    next();
   }
 }
 </script>

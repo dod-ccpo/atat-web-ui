@@ -45,6 +45,7 @@ import ClinsCard from "./ClinsCard.vue";
 export default class ClinsCardList extends Vue {
   @PropSync("clins", { required: true }) _clins!: Clin[];
   @Prop({ default: false }) private validateOnLoad!: boolean;
+  private isValidated = true;
   private addClinLabel = "Add another CLIN";
 
   public async validate(): Promise<boolean> {
@@ -59,11 +60,10 @@ export default class ClinsCardList extends Vue {
     await Promise.all(allValid).then(
       (value) => (valid = value.every((v) => v))
     );
-
     return valid;
   }
 
-  private isClinCardNew(clin: ClinsCard): boolean {
+  private isClinCardNew(clin: Clin): boolean {
     return Object.values(clin).every((attrib) => attrib === "" || attrib === 0);
   }
 

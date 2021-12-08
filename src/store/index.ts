@@ -273,7 +273,7 @@ export default new Vuex.Store({
       };
     },
     getUser: (state) => state.user,
-    getSideDrawerIsOpen: (state) => state.sideDrawerIsOpen
+    getSideDrawerIsOpen: (state) => state.sideDrawerIsOpen,
   },
   modules: {
     portfolios,

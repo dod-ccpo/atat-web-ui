@@ -64,7 +64,7 @@ export const getters: GetterTree<WizardState, RootState> = {
   erroredSteps: (state) => {
     return state.erroredSteps;
   },
-  currentPortfolioId: (state)=> {
+  currentPortfolioId: (state) => {
     return state.currentPortfolioId;
   },
   hasTaskOrders: (state, getters, rootState, rootGetters): boolean => {

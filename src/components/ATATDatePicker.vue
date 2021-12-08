@@ -280,8 +280,8 @@ export default class ATATDatePicker extends Vue {
   }
 
   @Watch("_isDatePickerVisible")
-  protected setIsDatePickerVisible(newVal: boolean): void{
-     this.menu = newVal;
+  protected setIsDatePickerVisible(newVal: boolean): void {
+    this.menu = newVal;
   }
 
   /**
@@ -882,7 +882,7 @@ export default class ATATDatePicker extends Vue {
    * combines the errors message of both textboxes controls
    * to a single array
    */
-  public getErrorMessages(): void {
+  public async getErrorMessages(): Promise<void> {
     let newMessages: CustomErrorMessage[] = [];
     let oldMessages: CustomErrorMessage[] = [];
     let errorBucket = [""];
@@ -895,7 +895,7 @@ export default class ATATDatePicker extends Vue {
         errorBucket = this.$refs.endDate.errorBucket;
         errorOrigin = "end";
       }
-     
+
       newMessages = this.convertToCustomErrorMessage(errorBucket, errorOrigin);
       oldMessages = this._errorMessages.filter((em) => {
         return em.description === errorOrigin;

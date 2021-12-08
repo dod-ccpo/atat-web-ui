@@ -11,6 +11,7 @@
           <v-expansion-panels v-model="openItem">
             <v-expansion-panel
               :id="getId('clins-card')"
+              :class="{ errored: isValidated === false }"
               @click="toggleClinCard"
               @change="validateOnOpen"
             >
@@ -81,6 +82,7 @@
                     label="CLIN Number"
                     :rules="clinNumberRules"
                     :value.sync="_clin_number"
+                    :max-length="4"
                     :validate-on-load="isValidateOnLoad"
                   />
                   <atat-select
@@ -226,6 +228,15 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-icon
+            aria-hidden="true"
+            :class="[
+              { errored: isValidated === false },
+              ' pt-4 position-absolute',
+            ]"
+          >
+            error</v-icon
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -257,8 +268,10 @@ export default class ClinsCard extends Vue {
   private returnFocusDeleteClinCancel = "";
   private focusClinNumberOnCardOpen = true;
   private isDatePickerVisible = false;
+  private isStartDatePickerValid = true;
+  private isEndDatePickerValid = true;
   private isValidateOnLoad = this.validateOnLoad;
-  private validated = false;
+  private isValidated = true;
 
   get isClinFormDirty(): boolean {
     return (
@@ -408,7 +421,7 @@ export default class ClinsCard extends Vue {
         /^\d+$/.test(v) || "Please enter a valid 4-digit CLIN Number"
     );
     validationRules.push(
-      (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters"
+      (v: string) => v.length === 4 || "CLIN number must be 4 digits"
     );
     return validationRules;
   }
@@ -433,13 +446,8 @@ export default class ClinsCard extends Vue {
     validationRules.push(() => {
       return (
         this._total_clin_value >= this._obligated_funds ||
-        "Obligated Funds cannot exceed total CLIN Values"
+        "Obligated funds cannot exceed total CLIN values"
       );
-    });
-    console.log("totalClinFunds");
-    validationRules.forEach((vr) => {
-      console.log(vr());
-      return vr;
     });
     return validationRules;
   }
@@ -449,21 +457,16 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       () =>
         this._obligated_funds.toString() !== "" ||
-        "Please enter your obligated Funds"
+        "Please enter your obligated funds"
     );
     validationRules.push(
-      () => this._obligated_funds > 0 || "Please enter your obligated Funds"
+      () => this._obligated_funds > 0 || "Please enter your obligated funds"
     );
     validationRules.push(() => {
       return (
         this._obligated_funds <= this._total_clin_value ||
-        "Obligated Funds cannot exceed total CLIN Values"
+        "Obligated funds cannot exceed total CLIN values"
       );
-    });
-    console.log("obligatedFunds");
-    validationRules.forEach((vr) => {
-      console.log(vr());
-      return vr;
     });
     return validationRules;
   }
@@ -473,9 +476,8 @@ export default class ClinsCard extends Vue {
     const textBox = document.getElementById(
       this.getId("start-date-text-box-datepicker")
     ) as HTMLInputElement;
-    const textBoxValue = (textBox && textBox.value) || this._pop_start_date;
+    const textBoxValue = this._pop_start_date;
     const isDateValid = moment(textBoxValue).isValid();
-
     if (this._pop_start_date !== "" || this.isValidateOnLoad) {
       validationRules.push(() => {
         return (
@@ -507,6 +509,8 @@ export default class ClinsCard extends Vue {
       }
     }
 
+    this.isStartDatePickerValid = validationRules.every((vr) => vr() === true);
+
     return validationRules;
   }
 
@@ -515,7 +519,7 @@ export default class ClinsCard extends Vue {
     const textBox = document.getElementById(
       this.getId("end-date-text-box-datepicker")
     ) as HTMLInputElement;
-    const textBoxValue = (textBox && textBox.value) || this._pop_end_date;
+    const textBoxValue = this._pop_end_date;
     const isDateValid = moment(textBoxValue).isValid();
 
     if (this._pop_end_date !== "" || this.isValidateOnLoad) {
@@ -548,12 +552,18 @@ export default class ClinsCard extends Vue {
         );
       }
     }
-
+    this.isEndDatePickerValid = validationRules.every((vr) => vr() === true);
     return validationRules;
   }
 
+  get isDatePickerValid(): boolean {
+    return this.isStartDatePickerValid && this.isEndDatePickerValid;
+  }
+
   public isPartialDate(val: string): boolean {
-    return val.indexOf("M") > 0 || val.indexOf("D") > 0 || val.indexOf("Y") > 0;
+    return val
+      ? val.indexOf("M") > 0 || val.indexOf("D") > 0 || val.indexOf("Y") > 0
+      : true;
   }
 
   @Watch("openItem")
@@ -585,18 +595,17 @@ export default class ClinsCard extends Vue {
   }
 
   public async validateForm(): Promise<boolean> {
-    return this.isClinFormDirty
-      ? (await this.Form.validate()) &&
-        (await this.FundFields.validate()) &&
-        (await this.DateFields.validate())
-      : false;
+    this.isValidated = this.isClinFormDirty
+      ? this.Form.validate() &&
+        this.FundFields.validate() &&
+        this.isDatePickerValid
+      : true;
+    return this.isValidated;
   }
 
-  public async validateDateFields(): Promise<boolean>{
-    return this.isClinFormDirty ? await this.DateFields.validate(): false;
+  public async validateDateFields(): Promise<boolean> {
+    return this.isClinFormDirty ? await this.DateFields.validate() : false;
   }
-
-
 
   public open(isPageLoad: boolean): void {
     this.focusClinNumberOnCardOpen = !isPageLoad;
@@ -609,22 +618,22 @@ export default class ClinsCard extends Vue {
 
   private async clinFormClicked(event: Event): Promise<void> {
     this.isValidateOnLoad = false;
-    
+
     //close datepicker
     const clickedElement = event.target as HTMLElement;
     const datepickerControl = clickedElement.closest(
       "#" + this.getId("clin-datepicker-text-boxes-datepicker")
     );
 
-    if (datepickerControl !== null){
+    if (datepickerControl !== null) {
       this.isDatePickerVisible = true;
-      if (this.isClinFormDirty){
+      if (this.isClinFormDirty) {
         this.validateDateFields();
       }
     } else {
       this.isDatePickerVisible = false;
     }
-    
+
     // click outside Clincard to validate ClinsCard
     const clinsCardControl = clickedElement.closest(
       "#" + this.getId("clins-card")
@@ -635,7 +644,7 @@ export default class ClinsCard extends Vue {
         this.isValidateOnLoad = true;
         this.validateForm();
       }
-    } 
+    }
   }
 
   private async clinFormFocused(event: Event): Promise<void> {
