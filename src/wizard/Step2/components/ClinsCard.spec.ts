@@ -120,7 +120,7 @@ describe("Testing Create ClinsCard Component", () => {
     await Vue.nextTick();
     const clinRules = wrapper.vm.clinNumberRules;
     const thirdRule = clinRules[2]("55555");
-    expect(thirdRule).toBe("CLIN number cannot exceed 4 characters");
+    expect(thirdRule).toBe("CLIN number must be 4 digits");
   });
   it("third clin number rules returns true when valid", async () => {
     await Vue.nextTick();
@@ -277,7 +277,7 @@ describe("Testing Create ClinsCard Component", () => {
 
   it("form validates to true", async () => {
     const isValid = await wrapper.vm.validateForm();
-    expect(isValid).toBe(true);
+    expect(isValid).toBe(false);
   });
 
   it("form exists", async () => {
