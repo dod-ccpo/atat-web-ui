@@ -279,8 +279,8 @@ export default class ClinsCard extends Vue {
     return (
       this._clin_number !== "" ||
       this._idiq_clin !== "" ||
-      this._total_clin_value > 0 ||
-      this._obligated_funds > 0 ||
+      this._total_clin_value >= 0 ||
+      this._obligated_funds >= 0 ||
       this._pop_start_date !== "" ||
       this._pop_end_date !== ""
     );
@@ -444,7 +444,7 @@ export default class ClinsCard extends Vue {
         this._total_clin_value.toString() !== "" || "Please enter CLIN value"
     );
     validationRules.push(() => {
-      return this._total_clin_value >= 0 || "Please enter CLIN value";
+      return this._total_clin_value > -1 || "Please enter CLIN value";
     });
     validationRules.push(() => {
       return (
@@ -463,7 +463,7 @@ export default class ClinsCard extends Vue {
         "Please enter your obligated funds"
     );
     validationRules.push(
-      () => this._obligated_funds >= 0 || "Please enter your obligated funds"
+      () => this._obligated_funds > -1 || "Please enter your obligated funds"
     );
     validationRules.push(() => {
       return (

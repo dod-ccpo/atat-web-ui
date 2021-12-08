@@ -134,7 +134,7 @@ export default class ATATTextField extends VTextField {
 
   private inputActions(v: string) {
     if (this.mask === "currency") {
-      this._value = parseInt(v) > 0 ? v : "";
+      this._value = parseInt(v) >= 0 ? v : "";
     } else {
       this._value = v;
     }
@@ -210,13 +210,14 @@ export default class ATATTextField extends VTextField {
           showMaskOnFocus: false,
         }).mask(this.input);
 
-        this._value = parseInt(this._value) > 0 ? this._value : "";
+        this._value = parseInt(this._value) > -1 ? this._value : "";
       }
       if (this.mask === "numeric") {
         Inputmask({
           alias: "numeric",
           allowMinus: false,
           rightAlign: false,
+          max: 9999,
         }).mask(this.input);
       }
       this.placeHolder = "";
