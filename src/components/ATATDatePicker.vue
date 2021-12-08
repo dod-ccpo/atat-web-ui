@@ -494,6 +494,8 @@ export default class ATATDatePicker extends Vue {
         alias: "datetime",
         inputFormat: "mm/dd/yyyy",
         placeholder: "MM/DD/YYYY",
+        outputFormat: "MM/DD/YYYY",
+        nullable: true,
         min: moment(this.min).format("MM/DD/YYYY"),
         max: moment(this.max).format("MM/DD/YYYY"),
       }).mask(document.getElementById(tbId) as HTMLElement);
@@ -676,9 +678,10 @@ export default class ATATDatePicker extends Vue {
    */
   private blurTextField(): void {
     this._isDatePickerBlurred = true;
-    const dateToBeSet = this.isStartTextBoxFocused
+    let dateToBeSet = this.isStartTextBoxFocused
       ? this.startDate
       : this.endDate;
+    dateToBeSet = this.isDateValid(dateToBeSet) ? dateToBeSet : "";
     this.setDate(dateToBeSet);
     Vue.nextTick(() => {
       this.getErrorMessages();
@@ -736,6 +739,7 @@ export default class ATATDatePicker extends Vue {
    * sets start/end date as necessary
    */
   public setDate(selectedDate: string): void {
+    
     if (this.isStartTextBoxFocused) {
       this.setStartDate(selectedDate);
     } else {

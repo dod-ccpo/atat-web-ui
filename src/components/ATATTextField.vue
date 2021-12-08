@@ -211,8 +211,15 @@ export default class ATATTextField extends VTextField {
         }).mask(this.input);
 
         this._value = parseInt(this._value) > 0 ? this._value : "";
-        this.placeHolder = "";
       }
+      if (this.mask === "numeric") {
+        Inputmask({
+          alias: "numeric",
+          allowMinus: false,
+          rightAlign: false,
+        }).mask(this.input);
+      }
+      this.placeHolder = "";
     }
   }
 }

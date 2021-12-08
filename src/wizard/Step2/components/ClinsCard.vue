@@ -80,6 +80,7 @@
                     name="clin-number"
                     :id="getId('clin-number')"
                     label="CLIN Number"
+                    mask="numeric"
                     :rules="clinNumberRules"
                     :value.sync="_clin_number"
                     :max-length="4"
@@ -229,7 +230,7 @@
             </v-card>
           </v-dialog>
           <v-icon
-          v-if="isValidated === false"
+            v-if="isValidated === false"
             aria-hidden="true"
             :class="[
               { errored: isValidated === false },
@@ -442,12 +443,12 @@ export default class ClinsCard extends Vue {
         this._total_clin_value.toString() !== "" || "Please enter CLIN value"
     );
     validationRules.push(() => {
-      return this._total_clin_value > 0 || "Please enter CLIN value";
+      return this._total_clin_value >= 0 || "Please enter CLIN value";
     });
     validationRules.push(() => {
       return (
         this._total_clin_value >= this._obligated_funds ||
-        "Obligated funds cannot exceed total CLIN values"
+        "Obligated funds cannot exceed total CLIN value"
       );
     });
     return validationRules;
@@ -461,12 +462,12 @@ export default class ClinsCard extends Vue {
         "Please enter your obligated funds"
     );
     validationRules.push(
-      () => this._obligated_funds > 0 || "Please enter your obligated funds"
+      () => this._obligated_funds >= 0 || "Please enter your obligated funds"
     );
     validationRules.push(() => {
       return (
         this._obligated_funds <= this._total_clin_value ||
-        "Obligated funds cannot exceed total CLIN values"
+        "Obligated funds cannot exceed total CLIN value"
       );
     });
     return validationRules;
@@ -625,7 +626,6 @@ export default class ClinsCard extends Vue {
     const datepickerControl = clickedElement.closest(
       "#" + this.getId("clin-datepicker-text-boxes-datepicker")
     );
-
     if (datepickerControl !== null) {
       this.isDatePickerVisible = true;
       if (this.isClinFormDirty) {
@@ -636,16 +636,18 @@ export default class ClinsCard extends Vue {
     }
 
     // click outside Clincard to validate ClinsCard
-    const clinsCardControl = clickedElement.closest(
-      "#" + this.getId("clins-card")
-    );
+    this.$nextTick(() => {
+      const clinsCardControl = clickedElement.closest(
+        "#" + this.getId("clins-card")
+      );
 
-    if (clinsCardControl === null) {
-      if (this.isClinFormDirty) {
-        this.isValidateOnLoad = true;
-        this.validateForm();
+      if (clinsCardControl === null) {
+        if (this.isClinFormDirty) {
+          this.isValidateOnLoad = true;
+          this.validateForm();
+        }
       }
-    }
+    });
   }
 
   private async clinFormFocused(event: Event): Promise<void> {
