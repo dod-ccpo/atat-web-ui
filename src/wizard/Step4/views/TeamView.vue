@@ -116,7 +116,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="membersData.length === 0">
+    <v-row v-if="membersData && membersData.length === 0">
       <v-col cols="12" class="pa-0 ma-0">
         <v-card rounded width="100%" height="10rem" class="ma-4 ml-3 body">
           <v-card-text class="text-center">
@@ -129,7 +129,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-if="membersData.length > 0">
+    <v-row v-if="membersData && membersData.length > 0">
       <v-col cols="12" class="ma-0">
         <v-data-table
           class="review-table review-table--shadowed"
@@ -231,17 +231,18 @@ export default class TeamView extends mixins(ApplicationData) {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private csp = this.$store.getters.getPortfolio.csp || "your selected CSP";
-  private stepIsErrored = this.$store.getters.isStepErrored(4);
+  private stepIsErrored = this.$store.getters["wizard/isStepErrored"](4);
+  private csp =
+    this.$store.getters["wizard/getPortfolio"].csp || "your selected CSP";
   private appHasAdmins = true;
   private isTouched = false;
   private environmentsWithoutAdmins: string[] = [];
   private environmentCount = 0;
   private noAppOrEnvOperatorsOnLoad = true;
-  private isReturnToReview = this.$store.getters.isReturnToReview;
+  private isReturnToReview = this.$store.getters["wizard/isReturnToReview"];
 
   public get portfolioName(): string {
-    return this.$store.getters.getPortfolioName();
+    return this.$store.getters["wizard/getPortfolioName"]();
   }
 
   private get missingAdminMessage(): string {
@@ -276,6 +277,7 @@ export default class TeamView extends mixins(ApplicationData) {
   }[] = [];
 
   private setMemberTableData() {
+    this.applicationMembers = [];
     [this.appHasAdmins, this.isTouched] = validateHasAdminOperators(
       this.operators,
       [this.currentApplication]
@@ -365,6 +367,7 @@ export default class TeamView extends mixins(ApplicationData) {
   }
 
   private tranformData(): void {
+    this.membersData = [];
     for (let value of this.applicationMembers) {
       let workspaceArr = value.workspace_roles.split("  ");
       const opObj = {
@@ -527,7 +530,7 @@ export default class TeamView extends mixins(ApplicationData) {
     }
 
     this.setMemberTableData();
-    this.$store.dispatch("updateMembersModified", true);
+    this.$store.dispatch("wizard/updateMembersModified", true);
   }
 
   private openSideDrawer(event: Event, openerId: string): void {

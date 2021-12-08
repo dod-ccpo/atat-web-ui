@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 import Vuex from "vuex";
 import stepperNav from "@/wizard/Navigation/StepperNavigation.vue";
 import { createLocalVue, mount } from "@vue/test-utils";
+import { PortfolioStep } from "@/store/modules/wizard/types/PortfolioStepModels";
 
 Vue.use(Vuetify);
 
@@ -41,42 +42,50 @@ describe("Testing Stepper Navigation", () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    state = {
-      erroredSteps: [3, 4],
-      portfolioSteps: [
-        {
-          step: 1,
-          description: "Create Portfolio",
-          touched: false,
-          model: {
+
+    const steps = [
+      {
+        step: 1,
+        description: "Create Portfolio",
+        touched: false,
+        valid: true,
+        model: {
+          name: "",
+          description: "",
+          dod_components: [],
+          csp: "",
+        },
+      },
+      {
+        step: 2,
+        valid: true,
+        description: "Add Funding",
+        touched: false,
+        model: {
+          task_order_number: "",
+          task_order_file: {
             name: "",
-            description: "",
-            dod_components: [],
-            csp: "",
           },
+          clins: [],
         },
-        {
-          step: 2,
-          description: "Add Funding",
-          touched: false,
-          model: {
-            task_order_number: "",
-            task_order_file: {
-              name: "",
-            },
-            clins: [],
-          },
-        },
-      ],
+      },
+    ];
+
+    const portfolioSteps: { [key: number]: PortfolioStep } = {
+      1: steps[0],
+      2: steps[1],
     };
-    store = new Vuex.Store({ state });
 
     wrapper = mount(stepperNav, {
-      store,
       localVue,
       vuetify,
       propsData: {
         propsData: propsData,
+      },
+      computed: {
+        erroredSteps: () => [3, 4],
+        portfolioSteps: () => portfolioSteps,
+        steps: () => steps,
       },
     });
   });

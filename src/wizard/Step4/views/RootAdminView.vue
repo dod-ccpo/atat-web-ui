@@ -219,15 +219,15 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private filteredData: any = [];
   private isFiltered = false;
   private search = "";
-  private currentPortfolio = this.$store.getters.getPortfolio;
+  private currentPortfolio = this.$store.getters["wizard/getPortfolio"];
   private csp = this.currentPortfolio.csp || "your selected CSP";
-  private stepIsErrored = this.$store.getters.isStepErrored(4);
-  private isStepTouched = this.$store.getters.isStepTouched(4);
+  private stepIsErrored = this.$store.getters["wizard/isStepErrored"](4);
+  private isStepTouched = this.$store.getters["wizard/isStepTouched"](4);
 
   private noRootMembersOnLoad =
     this.$store.getters["applications/portfolioOperators"].length === 0;
 
-  private isReturnToReview = this.$store.getters.isReturnToReview;
+  private isReturnToReview = this.$store.getters["wizard/isReturnToReview"];
 
   private get rootMembers(): OperatorModel[] {
     return this.applicationsState.portfolioOperators;
@@ -247,7 +247,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
   private options = ["Edit info", "Remove root administrator"];
 
   get portfolioName(): string {
-    return this.$store.getters.getPortfolioName();
+    return this.$store.getters["wizard/getPortfolioName"]();
   }
 
   get rootMembersCount(): number {
@@ -355,7 +355,7 @@ export default class RootAdminView extends mixins(ApplicationData) {
       }
     }
 
-    this.$store.dispatch("updateMembersModified", true);
+    this.$store.dispatch("wizard/updateMembersModified", true);
   }
 
   private moreButtonId(item: any): string {
