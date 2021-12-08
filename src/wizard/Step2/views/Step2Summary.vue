@@ -110,13 +110,13 @@ export default class Step2Summary extends mixins(TaskOrderModuleData) {
   private async mounted(): Promise<void> {
     this.transformData();
     if (this.isArrivedFromStep5) {
-      this.$store.dispatch("setReturnToReview", true);
+      this.$store.dispatch("wizard/setReturnToReview", true);
       this.isReturnToReview = true;
     }
   }
 
   private isReturnToReview = false;
-  private isArrivedFromStep5 = this.$store.getters.isArrivedFromStep5;
+  private isArrivedFromStep5 = this.$store.getters["wizard/isArrivedFromStep5"];
   private cardType = "Task Orders";
   private cardsData: ATATSummaryCards = {
     cards: [],
