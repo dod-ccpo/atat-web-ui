@@ -17,12 +17,18 @@ export class StaticSiteStack extends cdk.Stack {
   public readonly proxy: apigw.IRestApi;
   public readonly userPoolClient: cognito.IUserPoolClient;
   public readonly ssmParameters: ssm.IParameter[] = [];
+  public readonly cfnOutputs: cdk.CfnOutput[] = [];
 
   constructor(parent: cdk.App, name: string, props: StaticSiteProps) {
     super(parent, name, props);
     const ssmPrefix = props.applicationName.toLowerCase();
     const site = new StaticSite(this, "StaticSite");
     this.bucket = site.websiteBucket;
+    this.cfnOutputs.push(
+      new cdk.CfnOutput(this, "WebsiteBucket", {
+        value: this.bucket.bucketName,
+      })
+    );
     // TODO: Remove this
     this.workaroundToAllowDeveloperRoleToDeploy(site.deploymentPolicy);
 
@@ -54,11 +60,10 @@ export class StaticSiteStack extends cdk.Stack {
       "UserPoolId",
       `/${ssmPrefix}/${props.environmentId}/cognito/userpool/id`
     ).stringValue;
-    const idpNames = ssm.StringListParameter.fromStringListParameterName(
-      this,
-      "CognitoIdPNames",
-      `/${ssmPrefix}/${props.environmentId}/cognito/idps`
-    ).stringListValue;
+    const idpNames = new cdk.CfnParameter(this, "CognitoIdpNames", {
+      type: "AWS::SSM::Parameter::Value<List<String>>",
+      default: `/${ssmPrefix}/${props.environmentId}/cognito/idps`,
+    }).valueAsList;
     const userPool = cognito.UserPool.fromUserPoolId(this, "UserPool", poolId);
 
     const siteUrls = [proxy.api.urlForPath()];

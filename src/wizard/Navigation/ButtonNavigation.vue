@@ -80,7 +80,7 @@ export default class ButtonNavigation extends Vue {
     return this.$store.getters["wizard/isReturnToReview"];
   }
   get isArrivedFromStep5(): boolean {
-    return this.$store.getters.isArrivedFromStep5;
+    return this.$store.getters["wizard/isArrivedFromStep5"];
   }
 
   private getButtonText(button: any): string {

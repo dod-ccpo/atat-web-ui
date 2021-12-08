@@ -73,7 +73,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
         id: 3,
         title: "Applications and Environments",
         description: "Ensures your cloud workspaces are correct",
-        name: "addapplication",
+        name: "applicationsummary",
       },
       {
         id: 4,
@@ -90,6 +90,8 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
   created(): void {
     this.portfolio = this.$store.getters["wizard/getPortfolio"];
     this.taskOrders = this.$store.getters["taskOrders/taskOrders"];
+    this.$store.dispatch("wizard/setReturnToReview", false);
+    this.$store.dispatch("wizard/setArrivedFromStep5", false);
   }
 }
 </script>
