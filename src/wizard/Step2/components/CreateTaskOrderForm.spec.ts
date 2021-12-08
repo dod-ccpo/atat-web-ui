@@ -37,7 +37,13 @@ describe("Testing CreateTaskOrderForm", () => {
         task_order_number: "12345678901234567",
       };
     },
+    "wizard/isReturnToReview": () => (stepNumber: number) => {
+      return false;
+    },
     "wizard/getStepTouched": () => (stepNumber: number) => {
+      return false;
+    },
+    "wizard/isArrivedFromStep5": () => (stepNumber: number) => {
       return false;
     },
   };
@@ -68,6 +74,9 @@ describe("Testing CreateTaskOrderForm", () => {
           },
         ],
         task_order_number: "12345678901234567",
+        erroredFields: [
+          { id: 0, display: false, message: "Task Order Number" },
+          { id: 1, display: false, message: "Upload your approved task order" }]
       },
       mocks: {
         $route,

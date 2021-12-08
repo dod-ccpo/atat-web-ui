@@ -1,5 +1,5 @@
 <template>
-  <div class="width-100">
+  <div class="width-100 file-upload" :id="id + '_control'">
     <v-flex>
       <label
         :id="id + '_text_field_label'"
@@ -11,7 +11,7 @@
       </label>
     </v-flex>
     <v-flex class="my-2">
-      <div class="error--text mb-2 width-100" role="alert" v-show="hasErrors">
+      <div class="error--text mb-2 width-100" role="alert" v-if="hasErrors">
         <div class="v-messages__message">
           <span v-for="(msg, idx) in errorMessages" :key="idx" class="d-block">
             {{ msg }}

@@ -1,9 +1,7 @@
 <template>
   <div class="body-lg">
     <v-divider></v-divider>
-    <div class="mx-6 mt-6">
-      { This is the portfolio filter placeholder }
-    </div>
+    <div class="mx-6 mt-6">{ This is the portfolio filter placeholder }</div>
   </div>
 </template>
 

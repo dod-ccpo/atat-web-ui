@@ -91,7 +91,7 @@
 
 <script lang="ts">
 import { VTextField } from "vuetify/lib";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import Inputmask from "inputmask";
 
 @Component({})
@@ -113,6 +113,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
   @Prop({ default: false }) private validateOnLoad!: boolean;
+  @Prop() private maxLength!: number;
   @Prop({ default: "" }) private mask!: string;
 
   //data
@@ -121,6 +122,7 @@ export default class ATATTextField extends VTextField {
   private isFieldDirty = false;
   private hasInitialValue = false;
   private placeHolder = "";
+  private input: HTMLInputElement | undefined;
 
   get isSuccess(): boolean {
     return this.isFieldDirty === true && this.isFieldValid === true;
@@ -135,6 +137,13 @@ export default class ATATTextField extends VTextField {
       this._value = parseInt(v) > 0 ? v : "";
     } else {
       this._value = v;
+    }
+  }
+
+  @Watch("validateOnLoad")
+  protected watchValidateOnLoad(newVal: boolean): void {
+    if (newVal) {
+      this.validateField();
     }
   }
 
@@ -155,11 +164,12 @@ export default class ATATTextField extends VTextField {
   }
 
   public mounted(): void {
+    this.input = document.getElementById(
+      this.id + "_text_field"
+    ) as HTMLInputElement;
     this.addMasks();
-    if (this.mask === "currency") {
-      this._value = parseInt(this._value) > 0 ? this._value : "";
-      this.placeHolder = "";
-    }
+    this.addAttributes();
+
     this.$nextTick(() => {
       this.hasInitialValue = this._value.length > 0;
       if (this.validateOnLoad || this.hasInitialValue) {
@@ -180,19 +190,29 @@ export default class ATATTextField extends VTextField {
     return prefix || this.prefix;
   }
 
+  private addAttributes(): void {
+    if (this.input !== undefined) {
+      if (this.maxLength > 0) {
+        this.input.setAttribute("maxlength", this.maxLength.toString());
+      }
+    }
+  }
+
   private addMasks(): void {
-    let textBox = document.getElementById(
-      this.id + "_text_field"
-    ) as HTMLInputElement;
-    if (this.mask === "currency") {
-      Inputmask({
-        alias: "currency",
-        autoUnmask: true,
-        digitsOptional: true,
-        rightAlign: false,
-        showMaskOnHover: false,
-        showMaskOnFocus: false,
-      }).mask(textBox);
+    if (this.input !== undefined) {
+      if (this.mask === "currency") {
+        Inputmask({
+          alias: "currency",
+          autoUnmask: true,
+          digitsOptional: true,
+          rightAlign: false,
+          showMaskOnHover: false,
+          showMaskOnFocus: false,
+        }).mask(this.input);
+
+        this._value = parseInt(this._value) > 0 ? this._value : "";
+        this.placeHolder = "";
+      }
     }
   }
 }

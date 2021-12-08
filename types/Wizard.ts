@@ -194,6 +194,13 @@ export interface CustomErrorMessage {
   description?: string;
 }
 
+
+export interface ErrorPanelMessages{
+  id: number;
+  display: boolean;
+  message: string;
+}
+
 /**
  * Model to represent Portfolio data
  *

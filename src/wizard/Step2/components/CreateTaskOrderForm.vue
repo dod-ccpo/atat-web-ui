@@ -31,7 +31,23 @@
         >
       </p>
     </section>
-
+    <section role="region" title="Error Panel" class="content-max-width">
+      <ATATAlert
+        type="error"
+        class="my-8"
+        :closeButton="false"
+        v-if="_erroredFields.length > 0"
+      >
+        <template v-slot:content>
+          Please review the fields below and take any necessary actions.
+          <ul>
+            <li v-for="(item, index) in _erroredFields" :key="index">
+              {{ item.message }}
+            </li>
+          </ul>
+        </template>
+      </ATATAlert>
+    </section>
     <section
       role="region"
       title="Task Order Details"
@@ -51,6 +67,7 @@
           This number must be either 13 or 17 digits.
         </p>
         <atat-file-upload
+          id="task-order-document-upload"
           ref="pdfFileUpload"
           :multiple="false"
           :pdfFile.sync="_task_order_file"
@@ -73,13 +90,17 @@
         authorized you to upload the task order in accordance with your agency’s
         policies and procedures.
       </p>
+
       <div
+        id="task-order-signed-div"
         v-if="signedTaskOrderErrorMessage !== ''"
-        class="mb-3 error--text"
+        class="mb-3 alert"
         role="alert"
       >
-        <div class="v-messages__message">
-          {{ signedTaskOrderErrorMessage }}
+        <div class="error--text">
+          <div class="v-messages__message">
+            {{ signedTaskOrderErrorMessage }}
+          </div>
         </div>
       </div>
 
@@ -105,36 +126,32 @@
       >
         No
       </v-btn>
-
-      <v-alert
+      <ATATAlert
         v-if="signedTaskOrder === 'No' && !savedTaskOrderSigned"
-        outlined
-        rounded
-        color="error"
-        type="info"
-        class="text-left error_lighter black-icon mt-3 border-thick pr-14"
-        border="left"
+        type="error"
+        :closeButton="false"
         width="600"
+        class="mt-8 mb-10"
       >
-        <div class="black--text h2 ml-2">
-          You must have a signed task order to proceed
-        </div>
-        <div class="black--text body-lg ml-2 mr-2">
-          <p>
-            You cannot provision cloud resources within ATAT without an awarded
-            task order that is signed by a duly warranted Contracting Officer.
-            Please contact your Contracting Officer for questions regarding your
-            task order status or to obtain authorization to spend government
-            funds.
-          </p>
-          <p class="mb-0">
-            You are subject to potential penalties that may include fines,
-            imprisonment, or both, under the U.S. law and regulations for any
-            false statement or misrepresentation in association with this task
-            order submission or on any accompanying documentation.
-          </p>
-        </div>
-      </v-alert>
+        <template v-slot:content>
+          <div class="h2">You must have a signed task order to proceed</div>
+          <div>
+            <p>
+              You will not be able to provision cloud resources within ATAT
+              without an awarded Task Order that is signed by a duly warranted
+              Contracting Officer. Please contact your Contracting Officer for
+              questions regarding your Task Order status or to obtain
+              authorization to spend government funds.
+            </p>
+            <p class="mb-0">
+              You are subject to potential penalties that may include fines,
+              imprisonment, or both, under the U.S. law and regulations for any
+              false statement or misrepresentation in association with this Task
+              Order submission or on any accompanying documentation.
+            </p>
+          </div>
+        </template>
+      </ATATAlert>
     </section>
 
     <atat-divider />
@@ -152,6 +169,7 @@
         :clins="_clins"
         @add="$emit('add')"
         @delete="(cardNumber) => $emit('delete', cardNumber)"
+        :validate-on-load.sync="validateOnLoad"
       ></clins-card-list>
     </section>
   </v-form>
@@ -160,15 +178,17 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
-import { TaskOrderFile } from "types/Wizard";
+import { ErrorPanelMessages, TaskOrderFile } from "types/Wizard";
 import ClinsCardList from "./ClinsCardList.vue";
 import { Clin } from "types/Portfolios";
 import ATATDivider from "@/components/ATATDivider.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
     ClinsCardList,
     "atat-divider": ATATDivider,
+    ATATAlert,
   },
 })
 export default class CreateTaskOrderForm extends Vue {
@@ -190,13 +210,16 @@ export default class CreateTaskOrderForm extends Vue {
   @PropSync("clins") _clins!: Clin[];
   @Prop({ default: false }) private validateOnLoad!: boolean;
   @PropSync("signed", { default: false }) private _signed!: boolean;
+  @PropSync("erroredFields") private _erroredFields:
+    | ErrorPanelMessages[]
+    | undefined;
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
 
   get rules(): unknown {
-    return {
+    const rulesObj = {
       task_order_number: [
         (v: string) =>
           /^\d+$/.test(v) ||
@@ -206,6 +229,7 @@ export default class CreateTaskOrderForm extends Vue {
           "Task Order Numbers must be between 13 and 17 digits",
       ],
     };
+    return rulesObj;
   }
 
   public isTaskOrderSigned(signed: boolean): void {
@@ -229,6 +253,7 @@ export default class CreateTaskOrderForm extends Vue {
       this.fileUploadRequiredErrorMessage =
         "Please upload your task order document";
     }
+
     validated.push(this._task_order_file && this._task_order_file.name !== "");
 
     if (this.signedTaskOrder === "") {
@@ -239,14 +264,13 @@ export default class CreateTaskOrderForm extends Vue {
     validated.push(this.signedTaskOrder !== "");
 
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
-
+    // this.clinCardPanelErrorMessages;
     if (clinsCards && clinsCards.validate) {
       validated.push(await clinsCards.validate());
     }
     await this.$nextTick(() => {
       validated.push(this.Form.validate());
     });
-
     return validated.every((v) => v === true);
   }
 
@@ -255,7 +279,7 @@ export default class CreateTaskOrderForm extends Vue {
     clinsCards.ExpandAddedClin(isPageLoad);
   }
 
-  private mounted(): void {
+  private async mounted(): Promise<void> {
     this.ExpandAddedClin(true);
     if (
       this._signed &&
@@ -269,6 +293,10 @@ export default class CreateTaskOrderForm extends Vue {
 
     this.stepHasBeenTouched = this.$store.getters["wizard/getStepTouched"](2);
   }
+
+  // private updated(): void {
+  //   this.displayedErrorPanelMessages();
+  // }
 
   private async onRemoveFile(): Promise<void> {
     this.signedTaskOrder = "";
