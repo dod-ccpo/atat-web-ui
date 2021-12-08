@@ -9,6 +9,7 @@
       @add="addClin"
       @delete="deleteClin"
       :validate-on-load="touched"
+      :erroredFields.sync="erroredFields"
     />
   </v-flex>
 </template>
@@ -16,7 +17,7 @@
 <script lang="ts">
 import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
-import { TaskOrderModel } from "../../../../types/Wizard";
+import { ErrorPanelMessages, TaskOrderModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 import { Clin } from "types/TaskOrder";
 
@@ -32,6 +33,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   };
 
   model: TaskOrderModel = this.$store.getters["wizard/getStepModel"](2);
+  private erroredFields: ErrorPanelMessages[] = [];
 
   public validate: () => Promise<boolean> = async () => {
     this.valid = false;
@@ -56,9 +58,11 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   public deleteClin(itemNumber: number): void {
     this.model.clins.splice(itemNumber - 1, 1);
   }
-   private isClinCardNew(clin: Clin): boolean {
+
+  private isClinCardNew(clin: Clin): boolean {
     return Object.values(clin).every((attrib) => attrib === "" || attrib === 0);
   }
+
   private removeEmptyClins(): void {
     const dirtyClins = this.model.clins.filter((c: any, idx: number) => {
       if (this.isClinCardNew(c) === false && idx < this.model.clins.length) {
@@ -68,7 +72,76 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     this.model.clins = dirtyClins;
   }
 
-   public async beforeRouteLeave(
+  get errorPanelMessages(): ErrorPanelMessages[] {
+    return [
+      { id: 0, display: false, message: "Task Order Number" },
+      { id: 1, display: false, message: "Upload your approved task order" },
+      { id: 2, display: false, message: "Verify your signed task order" },
+      { id: 3, display: false, message: "CLIN Number" },
+      { id: 4, display: false, message: "Corresponding IDIQ CLIN" },
+      { id: 5, display: false, message: "Total CLIN Value" },
+      { id: 6, display: false, message: "Obligated Funds" },
+      { id: 7, display: false, message: "Period of Performance" },
+    ];
+  }
+
+  public async displayedErrorPanelMessages(): Promise<void> {
+    this.getclinCardPanelErrorMessages();
+    this.erroredFields = this.errorPanelMessages.filter((epm) => {
+      return epm.display === true;
+    });
+  }
+
+  public getclinCardPanelErrorMessages(): void {
+    this.errorPanelMessages[0].display = this.displayErrorInPanel(
+      "task-order-number_text_field",
+      "atat-text-field"
+    );
+    this.errorPanelMessages[1].display = this.displayErrorInPanel(
+      "task-order-document-upload",
+      "file-upload"
+    );
+    this.errorPanelMessages[2].display = this.displayErrorInPanel(
+      "task-order-signed",
+      "alert"
+    );
+    this.errorPanelMessages[3].display = this.displayErrorInPanel(
+      "clin-number",
+      "atat-text-field"
+    );
+    this.errorPanelMessages[4].display = this.displayErrorInPanel(
+      "corresponding-idiq-clin",
+      "atat-select"
+    );
+    this.errorPanelMessages[5].display = this.displayErrorInPanel(
+      "total_clin_value",
+      "atat-text-field"
+    );
+    this.errorPanelMessages[6].display = this.displayErrorInPanel(
+      "obligated_funds",
+      "atat-text-field"
+    );
+    this.errorPanelMessages[7].display = this.displayErrorInPanel(
+      "clin-datepicker-text-boxes-datepicker",
+      "atat-date-picker"
+    );
+  }
+
+  public displayErrorInPanel(selectorId: string, type: string): boolean {
+    return (
+      document.querySelector(
+        "[id^='" + selectorId + "']." + type + " .error--text"
+      ) !== null
+    );
+  }
+
+  public async mounted(): Promise<void> {
+    setTimeout(() => {
+      this.displayedErrorPanelMessages();
+    }, 1000);
+  }
+
+  public async beforeRouteLeave(
     to: unknown,
     from: unknown,
     next: (n: void) => void

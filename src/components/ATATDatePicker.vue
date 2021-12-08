@@ -2,7 +2,7 @@
   <v-row>
     <v-col>
       <div
-        class="clin-datepicker-control"
+        class="clin-datepicker-control atat-date-picker"
         :id="getId('clin-datepicker-text-boxes')"
         @click="datepickerControlClicked"
       >

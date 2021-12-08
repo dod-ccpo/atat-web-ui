@@ -13,6 +13,7 @@ describe("Testing PortfolioSummary Component", () => {
   let wrapper: any;
   let store: any;
   let state: any;
+  let actions: any;
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -28,7 +29,7 @@ describe("Testing PortfolioSummary Component", () => {
             model: {
               name: "",
               description: "",
-              dod_components: [],
+              dod_components: ["army"],
               csp: "",
             },
           },
@@ -47,7 +48,20 @@ describe("Testing PortfolioSummary Component", () => {
         ],
       },
     };
-    store = new Vuex.Store({ state });
+    const getters: any = {
+      "wizard/isStepTouched": () => (stepNumber: number) => {
+        return false;
+      },
+    };
+    const actions: any = {
+      dispatch: jest.fn(),
+    };
+
+    const store = new Vuex.Store({
+      actions,
+      state,
+      getters,
+    });
 
     wrapper = mount(PortfolioSummary, {
       store,
@@ -57,7 +71,7 @@ describe("Testing PortfolioSummary Component", () => {
         portfolio: {
           name: "Tracker",
           description: "Test",
-          dod_components: [],
+          dod_components: ["army"],
           csp: "CSP1",
         },
         taskOrders: {

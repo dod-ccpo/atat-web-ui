@@ -60,22 +60,26 @@ export default class PortfolioSummaryCard extends Vue {
 
   public created(): void {
     this.$nextTick(() => {
-      const selectedDodComponents = this.portfolio.dod_components
-        .map((comp) => {
-          const component = dodComponents.find((c) => c.value === comp);
-          return component?.name;
-        })
-        .join(", ");
+      if (
+        Object.prototype.hasOwnProperty.call(this.portfolio, "dod_components")
+      ) {
+        const selectedDodComponents = this.portfolio.dod_components
+          .map((comp) => {
+            const component = dodComponents.find((c) => c.value === comp);
+            return component?.name;
+          })
+          .join(", ");
 
-      this.dataItems.push({
-        prefix: "Funded by",
-        value: selectedDodComponents,
-      });
+        this.dataItems.push({
+          prefix: "Funded by",
+          value: selectedDodComponents,
+        });
 
-      this.dataItems.push({
-        prefix: "Deploy to",
-        value: this.portfolio.csp,
-      });
+        this.dataItems.push({
+          prefix: "Deploy to",
+          value: this.portfolio.csp,
+        });
+      }
     });
   }
 

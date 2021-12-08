@@ -425,6 +425,7 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v.length === 4 || "CLIN number must be 4 digits"
     );
+
     return validationRules;
   }
 

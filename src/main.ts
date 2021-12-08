@@ -18,6 +18,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle.js'
 
+import ATATAlert from "./components/ATATAlert.vue";
 import ATATButtonCard from "./components/ATATButtonCard.vue";
 import ATATDatePicker from "./components/ATATDatePicker.vue";
 import ATATDialog from "./components/ATATDialog.vue"
