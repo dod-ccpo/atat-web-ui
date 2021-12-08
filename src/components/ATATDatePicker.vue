@@ -34,7 +34,7 @@
           class="mt-0 width-100"
         >
           <div class="error--text">
-            <div class="v-messages__message">
+            <div class="v-messages__message mb-2">
               {{ _errorMessages[0].message }}
             </div>
           </div>
@@ -49,8 +49,7 @@
               outlined
               dense
               :id="getId('start-date-text-box')"
-              :success="isFieldValid"
-              :error="isFieldValid"
+              :error="!isStartTextBoxValid"
               placeholder="MM/DD/YYYY"
               v-model="startDate"
               :value="formatStartDateMMDDYYYY"
@@ -58,6 +57,7 @@
               hide-details
               @focus="setFocus"
               @blur="blurTextField"
+              :validate-on-load="validateOnLoad"
               validate-on-blur
               clearable
               @keydown="keyDownTextField"
@@ -90,8 +90,7 @@
               outlined
               dense
               :id="getId('end-date-text-box')"
-              :success="isFieldValid"
-              :error="isFieldValid"
+              :error="!isEndTextBoxValid"
               placeholder="MM/DD/YYYY"
               v-model="endDate"
               :value="formatEndDateMMDDYYYY"
@@ -102,6 +101,7 @@
               @keydown="keyDownTextField"
               clearable
               @click:clear="clearTextBox"
+              :validate-on-load="validateOnLoad"
               validate-on-blur
               :class="[
                 isEndTextBoxFocused ? 'focused' : '',
@@ -218,7 +218,6 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: "color" }) private color!: string;
-  @Prop({ default: false }) private error!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
@@ -229,24 +228,22 @@ export default class ATATDatePicker extends Vue {
   @PropSync("pop_end_date", { default: "" }) private endDate!: string;
   @PropSync("startDateRules") private _startDateRules!: any[];
   @PropSync("endDateRules") private _endDateRules!: any[];
-  @PropSync("errormessages") private _errorMessages!: (
-    | CustomErrorMessage
-    | undefined
-  )[];
-
+  @PropSync("errormessages") private _errorMessages!: CustomErrorMessage[];
+  @PropSync("isDatePickerVisible") private _isDatePickerVisible!: boolean;
   @PropSync("isDatePickerBlurred") private _isDatePickerBlurred!: boolean;
   @PropSync("isTextBoxFocused") private _isTextBoxFocused!: boolean;
   @Prop({ default: "2020-10-01" }) private min!: string;
   @Prop({ default: "2021-10-01" }) private max!: string;
+  @Prop({ default: false }) private validateOnLoad!: boolean;
 
-  private menu = false;
   private firstMonth: string =
     moment(this.startDate).format("YYYY-MM-DD") ||
     moment(new Date()).format("YYYY-MM-DD");
   private secondMonth = moment(this.firstMonth)
     .add(1, "M")
     .format("YYYY-MM-DD");
-  private isFieldValid = false;
+  private isStartTextBoxValid = true;
+  private isEndTextBoxValid = true;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
   private menuTop = 375;
@@ -260,6 +257,7 @@ export default class ATATDatePicker extends Vue {
   private thisControl = document.getElementById(
     this.thisControlId
   ) as HTMLElement;
+  private menu = false;
 
   @Watch("startDate")
   protected processStartDate(newVal: string, oldVal: string): void {
@@ -279,6 +277,11 @@ export default class ATATDatePicker extends Vue {
     } else if (this.formatDate(newVal) === this.formatDate(this.startDate)) {
       this.endDate = oldVal;
     }
+  }
+
+  @Watch("_isDatePickerVisible")
+  protected setIsDatePickerVisible(newVal: boolean): void {
+    this.menu = newVal;
   }
 
   /**
@@ -450,6 +453,15 @@ export default class ATATDatePicker extends Vue {
     this.isEndTextBoxFocused = false;
   }
 
+  @Watch("validateOnLoad")
+  protected getValidateOnLoad(newVal: boolean): void {
+    if (newVal) {
+      Vue.nextTick(() => {
+        this.getErrorMessages();
+      });
+    }
+  }
+
   /**
    * 1 - adds Event Listener for control
    * 2 - sets first and secondMonth
@@ -459,6 +471,7 @@ export default class ATATDatePicker extends Vue {
       this.thisControlId
     ) as HTMLElement;
     this.addMasks();
+
     if (this.isDateValid(this.startDate)) {
       this.firstMonth = moment(
         this.isDateValid(this.startDate) ? this.startDate : new Date()
@@ -481,10 +494,9 @@ export default class ATATDatePicker extends Vue {
         alias: "datetime",
         inputFormat: "mm/dd/yyyy",
         placeholder: "MM/DD/YYYY",
-        outputFormat: "MM/DD/YYYY",
-        min: "01/01/2020",
-        max: "12/21/2035",
-      }).mask(document.getElementById(tbId) as HTMLInputElement);
+        min: moment(this.min).format("MM/DD/YYYY"),
+        max: moment(this.max).format("MM/DD/YYYY"),
+      }).mask(document.getElementById(tbId) as HTMLElement);
     });
   }
 
@@ -870,26 +882,45 @@ export default class ATATDatePicker extends Vue {
    * combines the errors message of both textboxes controls
    * to a single array
    */
-  public getErrorMessages(): void {
-    let newMessages: (CustomErrorMessage | undefined)[] = [];
-    let oldMessages: (CustomErrorMessage | undefined)[] = [];
+  public async getErrorMessages(): Promise<void> {
+    let newMessages: CustomErrorMessage[] = [];
+    let oldMessages: CustomErrorMessage[] = [];
     let errorBucket = [""];
-    if (this.$refs.startDate.errorBucket.length > 0) {
-      errorBucket = this.$refs.startDate.errorBucket;
-    } else if (this.$refs.endDate.errorBucket.length > 0) {
-      errorBucket = this.$refs.endDate.errorBucket;
-    }
-    let errorMessagesToKeep: string = this.$refs.startDate ? "end" : "start";
-    let newMessageDescription: string = this.$refs.startDate ? "start" : "end";
-    newMessages = this.convertToCustomErrorMessage(
-      errorBucket,
-      newMessageDescription
-    );
-    oldMessages = this._errorMessages.filter(
-      (em) => em?.description === errorMessagesToKeep
-    );
-    this._errorMessages = [];
-    this._errorMessages = [...newMessages, ...oldMessages];
+    let errorOrigin = "";
+    this.$nextTick(() => {
+      if (this.$refs.startDate.errorBucket.length > 0) {
+        errorBucket = this.$refs.startDate.errorBucket;
+        errorOrigin = "start";
+      } else if (this.$refs.endDate.errorBucket.length > 0) {
+        errorBucket = this.$refs.endDate.errorBucket;
+        errorOrigin = "end";
+      }
+
+      newMessages = this.convertToCustomErrorMessage(errorBucket, errorOrigin);
+      oldMessages = this._errorMessages.filter((em) => {
+        return em.description === errorOrigin;
+      });
+      this._errorMessages = [];
+      this.$nextTick(() => {
+        if (newMessages.length > 0) {
+          newMessages.forEach((nm) => {
+            this._errorMessages.push(nm);
+          });
+        }
+        if (oldMessages.length > 0) {
+          oldMessages.forEach((nm) => {
+            this._errorMessages.push(nm);
+          });
+        }
+
+        this.isStartTextBoxValid =
+          this._errorMessages.filter((em) => em.description === "start")
+            .length === 0;
+        this.isEndTextBoxValid =
+          this._errorMessages.filter((em) => em.description === "end")
+            .length === 0;
+      });
+    });
   }
 
   /*

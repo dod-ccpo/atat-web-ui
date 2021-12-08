@@ -1,4 +1,3 @@
-
 @import "../utils/colors.scss";
 @import "../utils/typography.scss";
 
@@ -67,6 +66,13 @@ a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
     &:focus-visible,
     &:focus-visible::before{
         box-shadow: $focus-shadow-default;
+    }
+
+    &.accent{
+        &:focus::before,
+        &:focus{
+            background-color: $primary-vivid !important;
+        }
     }
 
     &.primary_darker{

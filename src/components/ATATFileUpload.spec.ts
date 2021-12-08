@@ -25,7 +25,7 @@ function createWrapper() {
     updateWizardStep: jest.fn(),
   };
   const getters: any = {
-   "wizard/getStepTouched": () => (stepNumber: number) => {
+    "wizard/getStepTouched": () => (stepNumber: number) => {
       return false;
     },
   };

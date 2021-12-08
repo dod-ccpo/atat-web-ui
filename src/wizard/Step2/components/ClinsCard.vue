@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 <template>
   <v-form :ref="getId('form')" lazy-validation>
     <v-container
@@ -8,7 +9,12 @@
       <v-row>
         <v-col cols="11" class="width-100 d-block">
           <v-expansion-panels v-model="openItem">
-            <v-expansion-panel @click="toggleClinCard">
+            <v-expansion-panel
+              :id="getId('clins-card')"
+              :class="{ errored: isValidated === false }"
+              @click="toggleClinCard"
+              @change="validateOnOpen"
+            >
               <v-expansion-panel-header
                 class="body-lg font-weight-bold"
                 :hide-actions="true"
@@ -67,7 +73,7 @@
                   </v-container>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content transition="slide-y-transition">
+              <v-expansion-panel-content eager transition="slide-y-transition">
                 <div class="input-max-width pb-10">
                   <atat-text-field
                     class="mb-3"
@@ -76,15 +82,19 @@
                     label="CLIN Number"
                     :rules="clinNumberRules"
                     :value.sync="_clin_number"
+                    :max-length="4"
+                    :validate-on-load="isValidateOnLoad"
                   />
                   <atat-select
                     class="clin-idiq-select max-width-100"
+                    :id="getId('corresponding-idiq-clin')"
                     label="Corresponding IDIQ CLIN"
                     :id="getId('clin-idiq')"
                     placeholder="- Select -"
                     :items="idiq_clin_items"
                     :selectedValue.sync="_idiq_clin"
                     :rules="correspondingIDIQRules"
+                    :validate-on-load="isValidateOnLoad"
                   >
                   </atat-select>
                 </div>
@@ -100,6 +110,7 @@
                       :rules="totalClinRules"
                       :helpText="clinHelpText"
                       :value.sync="_total_clin_value"
+                      :validate-on-load="isValidateOnLoad"
                     />
                     <atat-text-field
                       class="mb-5"
@@ -110,6 +121,7 @@
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                       @onkeyup="calculateObligatedPercent"
+                      :validate-on-load="isValidateOnLoad"
                     />
 
                     <div v-if="obligatedPercent <= 100" role="alert">
@@ -156,6 +168,8 @@
                         :nudgeleft="1"
                         :min="minDate"
                         :max="JWCCContractEndDate"
+                        :validateOnLoad="isValidateOnLoad"
+                        :menu.sync="isDatePickerVisible"
                       />
                     </v-form>
                   </div>
@@ -215,6 +229,15 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-icon
+            aria-hidden="true"
+            :class="[
+              { errored: isValidated === false },
+              ' pt-4 position-absolute',
+            ]"
+          >
+            error</v-icon
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -237,19 +260,23 @@ export default class ClinsCard extends Vue {
   @PropSync("obligated_funds") _obligated_funds!: number;
   @PropSync("pop_start_date") _pop_start_date!: string;
   @PropSync("pop_end_date") _pop_end_date!: string;
+  @Prop({ default: false }) private validateOnLoad!: boolean;
 
   private datepickerTitle = "What is the PoP Start Date?";
-  private isDatePickerClicked = false;
   private isDatePickerBlurred = true;
   private isDatePickerTextBoxFocused = false;
   private returnFocusDeleteClinOK = "addClinButton";
   private returnFocusDeleteClinCancel = "";
   private focusClinNumberOnCardOpen = true;
   private isDatePickerVisible = false;
+  private isStartDatePickerValid = true;
+  private isEndDatePickerValid = true;
+  private isValidateOnLoad = this.validateOnLoad;
+  private isValidated = true;
 
   get isClinFormDirty(): boolean {
     return (
-      this._clin_number.length > 0 ||
+      this._clin_number !== "" ||
       this._idiq_clin !== "" ||
       this._total_clin_value > 0 ||
       this._obligated_funds > 0 ||
@@ -262,15 +289,6 @@ export default class ClinsCard extends Vue {
 
   get isDisabled(): boolean {
     return this.model.clins.length === 1;
-  }
-
-  get validateDatePickerOnLoad(): boolean {
-    // when datepicker not dirty
-    return (
-      this._pop_start_date === "" &&
-      this._pop_end_date === "" &&
-      !this.isClinFormDirty
-    );
   }
 
   get validateDatePickerOnSave(): boolean {
@@ -359,7 +377,6 @@ export default class ClinsCard extends Vue {
   private progress: HTMLProgressElement | undefined;
   private minDate = "2019-09-14";
   public JWCCContractEndDate = "2022-09-14";
-  private validateFormWhenLeaving = false;
 
   public rules = {};
 
@@ -377,6 +394,12 @@ export default class ClinsCard extends Vue {
   public toggleClinCard(): void {
     this.focusClinNumberOnCardOpen = true;
     this.calculateObligatedPercent();
+  }
+
+  public validateOnOpen(): void {
+    if (this.isClinFormDirty) {
+      this.validateForm();
+    }
   }
 
   public calculateObligatedPercent(): void {
@@ -399,7 +422,7 @@ export default class ClinsCard extends Vue {
         /^\d+$/.test(v) || "Please enter a valid 4-digit CLIN Number"
     );
     validationRules.push(
-      (v: string) => v.length < 5 || "CLIN number cannot exceed 4 characters"
+      (v: string) => v.length === 4 || "CLIN number must be 4 digits"
     );
 
     return validationRules;
@@ -415,26 +438,36 @@ export default class ClinsCard extends Vue {
 
   get totalClinRules(): any[] {
     const validationRules = [];
-    validationRules.push((v: string) => v !== "" || "Please enter CLIN value");
-    validationRules.push((v: number) => {
+    validationRules.push(
+      () =>
+        this._total_clin_value.toString() !== "" || "Please enter CLIN value"
+    );
+    validationRules.push(() => {
+      return this._total_clin_value > 0 || "Please enter CLIN value";
+    });
+    validationRules.push(() => {
       return (
-        v >= this._obligated_funds ||
-        "Obligated Funds cannot exceed total CLIN Values"
+        this._total_clin_value >= this._obligated_funds ||
+        "Obligated funds cannot exceed total CLIN values"
       );
     });
-
     return validationRules;
   }
 
   get obligatedFundRules(): any[] {
     const validationRules = [];
     validationRules.push(
-      (v: number) => v.toString() !== "" || "Please enter your obligated Funds"
+      () =>
+        this._obligated_funds.toString() !== "" ||
+        "Please enter your obligated funds"
     );
-    validationRules.push((v: number) => {
+    validationRules.push(
+      () => this._obligated_funds > 0 || "Please enter your obligated funds"
+    );
+    validationRules.push(() => {
       return (
-        v <= this._total_clin_value ||
-        "Obligated Funds cannot exceed total CLIN Values"
+        this._obligated_funds <= this._total_clin_value ||
+        "Obligated funds cannot exceed total CLIN values"
       );
     });
     return validationRules;
@@ -442,95 +475,97 @@ export default class ClinsCard extends Vue {
 
   get popStartRules(): any[] {
     const validationRules = [];
-    if (this._pop_start_date !== "") {
+    const textBox = document.getElementById(
+      this.getId("start-date-text-box-datepicker")
+    ) as HTMLInputElement;
+    const textBoxValue = this._pop_start_date;
+    const isDateValid = moment(textBoxValue).isValid();
+    if (this._pop_start_date !== "" || this.isValidateOnLoad) {
       validationRules.push(() => {
         return (
-          this.isValidStartDate ||
-          "Please enter a valid start date using the format 'MM/DD/YYYY'"
+          !this.isPartialDate(textBoxValue) ||
+          "Please enter the start date for your CLIN’s period of performance"
         );
       });
-      if (this.isValidStartDate && this.isValidEndDate) {
+      validationRules.push(() => {
+        return (
+          isDateValid ||
+          "Please enter a start date using the format 'MM/DD/YYYY'"
+        );
+      });
+      if (isDateValid && this.isValidEndDate) {
         validationRules.push(() => {
           return (
-            moment(this._pop_start_date).isBefore(this._pop_end_date) ||
+            moment(textBoxValue).isBefore(this._pop_end_date) ||
             "The period of performance start date must be before the end date"
           );
         });
       }
-      if (this.isValidStartDate) {
+      if (isDateValid) {
         validationRules.push(
           () =>
-            moment(this._pop_start_date).isBefore(this.JWCCContractEndDate) ||
+            moment(textBoxValue).isBefore(this.JWCCContractEndDate) ||
             "Start Date must be before or on " +
               moment(this.JWCCContractEndDate).format("MM/DD/YYYY")
         );
       }
     }
 
-    if (this.validateFormWhenLeaving || !this.validateDatePickerOnLoad) {
-      validationRules.push(
-        () =>
-          this.validateDatePickerOnSave ||
-          "Please enter the start date for your CLIN's period of performance"
-      );
-    }
+    this.isStartDatePickerValid = validationRules.every((vr) => vr() === true);
+
     return validationRules;
   }
 
   get popEndRules(): any[] {
     const validationRules = [];
-    if (this._pop_end_date !== "") {
+    const textBox = document.getElementById(
+      this.getId("end-date-text-box-datepicker")
+    ) as HTMLInputElement;
+    const textBoxValue = this._pop_end_date;
+    const isDateValid = moment(textBoxValue).isValid();
+
+    if (this._pop_end_date !== "" || this.isValidateOnLoad) {
       validationRules.push(() => {
         return (
-          this.isValidEndDate ||
-          "Please enter a valid end date using the format 'MM/DD/YYYY'"
+          !this.isPartialDate(textBoxValue) ||
+          "Please enter the end date for your CLIN’s period of performance"
         );
       });
-      if (this.isValidStartDate && this.isValidEndDate) {
-        validationRules.push(
-          () =>
-            moment(this._pop_end_date).isAfter(this._pop_start_date) ||
-            "The period of performance end date must be after the start date"
+      validationRules.push(() => {
+        return (
+          isDateValid ||
+          "Please enter an end date using the format 'MM/DD/YYYY'"
         );
+      });
+      if (isDateValid && this.isValidStartDate) {
+        validationRules.push(() => {
+          return (
+            moment(textBoxValue).isAfter(this._pop_start_date) ||
+            "The period of performance end date must be after the start date"
+          );
+        });
       }
-      if (this.isValidEndDate) {
+      if (isDateValid) {
         validationRules.push(
           () =>
-            moment(this._pop_end_date).isBefore(this.JWCCContractEndDate) ||
+            moment(textBoxValue).isBefore(this.JWCCContractEndDate) ||
             "The end date must be before or on " +
               moment(this.JWCCContractEndDate).format("MM/DD/YYYY")
         );
       }
-
-      if (this.validateFormWhenLeaving) {
-        validationRules.push(
-          () =>
-            this.validateDatePickerOnSave ||
-            "Please enter the end date for your CLIN's period of performance"
-        );
-      }
     }
+    this.isEndDatePickerValid = validationRules.every((vr) => vr() === true);
     return validationRules;
   }
 
-  // @Watch("_obligated_funds")
-  // @Watch("_total_clin_value")
-  protected validateFundFields(): void {
-    this.FundFields.validate();
+  get isDatePickerValid(): boolean {
+    return this.isStartDatePickerValid && this.isEndDatePickerValid;
   }
 
-  @Watch("_clin_number")
-  validateClinNumber(): void {
-    this.Form.validate();
-  }
-
-  @Watch("_idiq_clin")
-  validateIdiqClin(newVal: string): void {
-    if (this.idiq_clin_items.indexOf(newVal) === -1) {
-      newVal = "";
-      this._idiq_clin = "";
-    }
-    this.Form.validate();
+  public isPartialDate(val: string): boolean {
+    return val
+      ? val.indexOf("M") > 0 || val.indexOf("D") > 0 || val.indexOf("Y") > 0
+      : true;
   }
 
   @Watch("openItem")
@@ -552,28 +587,26 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  // @Watch("_pop_start_date")
-  // @Watch("_pop_end_date")
-  // public validateDateFields(): void {
-  //   this.DateFields.validate();
-  // }
+  @Watch("isValidateOnLoad")
+  protected getValidateOnLoad(newVal: boolean): void {
+    if (newVal) {
+      Vue.nextTick(() => {
+        this.validateForm();
+      });
+    }
+  }
 
   public async validateForm(): Promise<boolean> {
-    let validated = false;
-    this.validateFormWhenLeaving = true;
-    await this.$nextTick(() => {
-      validated = this.Form.validate();
+    this.isValidated = this.isClinFormDirty
+      ? this.Form.validate() &&
+        this.FundFields.validate() &&
+        this.isDatePickerValid
+      : true;
+    return this.isValidated;
+  }
 
-      if (this.DateFields) {
-        validated =
-          validated &&
-          this.DateFields.validate() &&
-          this.validateDatePickerOnSave;
-      }
-
-      this.validateFormWhenLeaving = false;
-    });
-    return validated;
+  public async validateDateFields(): Promise<boolean> {
+    return this.isClinFormDirty ? await this.DateFields.validate() : false;
   }
 
   public open(isPageLoad: boolean): void {
@@ -586,14 +619,33 @@ export default class ClinsCard extends Vue {
   }
 
   private async clinFormClicked(event: Event): Promise<void> {
+    this.isValidateOnLoad = false;
+
+    //close datepicker
     const clickedElement = event.target as HTMLElement;
-    const datepickerControl = document.getElementsByClassName(
-      "clin-datepicker-control"
-    )[0];
-    if (datepickerControl) {
-      const datepickerControlId = datepickerControl.getAttribute("id") || "";
-      this.isDatePickerClicked =
-        clickedElement.closest("#" + datepickerControlId) !== null;
+    const datepickerControl = clickedElement.closest(
+      "#" + this.getId("clin-datepicker-text-boxes-datepicker")
+    );
+
+    if (datepickerControl !== null) {
+      this.isDatePickerVisible = true;
+      if (this.isClinFormDirty) {
+        this.validateDateFields();
+      }
+    } else {
+      this.isDatePickerVisible = false;
+    }
+
+    // click outside Clincard to validate ClinsCard
+    const clinsCardControl = clickedElement.closest(
+      "#" + this.getId("clins-card")
+    );
+
+    if (clinsCardControl === null) {
+      if (this.isClinFormDirty) {
+        this.isValidateOnLoad = true;
+        this.validateForm();
+      }
     }
   }
 
@@ -633,12 +685,14 @@ export default class ClinsCard extends Vue {
   private mounted(): void {
     document.addEventListener("click", this.clinFormClicked);
     document.addEventListener("blur", this.clinFormClicked);
+    document.addEventListener("keydown", this.clinFormClicked);
     document.addEventListener("focus", this.clinFormFocused, true);
   }
 
   private destroyed(): void {
     document.removeEventListener("click", this.clinFormClicked);
     document.removeEventListener("blur", this.clinFormClicked);
+    document.removeEventListener("keydown", this.clinFormClicked);
     document.addEventListener("focus", this.clinFormFocused);
   }
 }

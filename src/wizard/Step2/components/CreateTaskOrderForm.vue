@@ -165,6 +165,7 @@
         :clins="_clins"
         @add="$emit('add')"
         @delete="(cardNumber) => $emit('delete', cardNumber)"
+        :validate-on-load.sync="validateOnLoad"
       ></clins-card-list>
     </section>
   </v-form>

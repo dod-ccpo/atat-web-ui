@@ -19,7 +19,9 @@ import { Component } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
 import { ErrorPanelMessages, TaskOrderModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
+import { Clin } from "types/TaskOrder";
 
+Component.registerHooks(["beforeRouteLeave"]);
 @Component({
   components: {
     CreateTaskOrderForm,
