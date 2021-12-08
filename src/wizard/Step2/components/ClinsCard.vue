@@ -619,12 +619,13 @@ export default class ClinsCard extends Vue {
     if (datepickerControl !== null){
       this.isDatePickerVisible = true;
       if (this.isClinFormDirty){
-        // this.isValidateOnLoad = true;
         this.validateDateFields();
       }
+    } else {
+      this.isDatePickerVisible = false;
     }
     
-    // validate ClinsCard
+    // click outside Clincard to validate ClinsCard
     const clinsCardControl = clickedElement.closest(
       "#" + this.getId("clins-card")
     );
