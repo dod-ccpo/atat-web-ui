@@ -17,4 +17,23 @@
   }
 }
 
+.v-list-item {
+  &.border-bottom:not(:last-child) {
+    border-bottom: 1px solid $base-lighter;
+  }
+}
+
+.v-list {
+  &.no-hover {
+    .v-list-item--link {
+      &:hover, &.v-item--active.v-list-item--active {
+        cursor: default !important;
+        &:before {
+          background-color: transparent !important;
+          opacity: 0 !important;
+        }
+      }
+    }
+  }
+}
 

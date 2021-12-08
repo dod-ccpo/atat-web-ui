@@ -11,7 +11,7 @@
         <!-- Invalid steps found -->
         <p v-else>
           We found a few details that you need to review before we can provision
-          your cloud resources. Let's take care of these details now.
+          your cloud resources. Let’s take care of these details now.
         </p>
       </v-col>
     </v-row>
@@ -59,7 +59,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     return [
       {
         id: 1,
-        title: "Portfolio Details (or Portfolio Settings)",
+        title: "Portfolio Details",
         description: "Ensures your Portfolio is set up correctly",
         name: "addportfolio",
       },
@@ -92,6 +92,21 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
     this.taskOrders = this.$store.getters["taskOrders/taskOrders"];
     this.$store.dispatch("wizard/setReturnToReview", false);
     this.$store.dispatch("wizard/setArrivedFromStep5", false);
+  }
+  public mounted(): void {
+    const stepNumbers: number[] = [1, 2, 3, 4];
+    stepNumbers.forEach((stepNumber) => {
+      const isTouched = this.$store.getters["wizard/isStepTouched"](stepNumber);
+      if (!isTouched) {
+        this.$store.dispatch("wizard/updateStepModelValidity",
+          {
+            stepNumber: stepNumber,
+            valid: false
+          }
+        );
+      }
+    });
+
   }
 }
 </script>
