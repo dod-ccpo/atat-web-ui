@@ -229,6 +229,7 @@
             </v-card>
           </v-dialog>
           <v-icon
+          v-if="isValidated === false"
             aria-hidden="true"
             :class="[
               { errored: isValidated === false },
