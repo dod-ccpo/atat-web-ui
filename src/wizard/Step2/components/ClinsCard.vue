@@ -89,7 +89,6 @@
                     class="clin-idiq-select max-width-100"
                     :id="getId('corresponding-idiq-clin')"
                     label="Corresponding IDIQ CLIN"
-                    :id="getId('clin-idiq')"
                     placeholder="- Select -"
                     :items="idiq_clin_items"
                     :selectedValue.sync="_idiq_clin"
