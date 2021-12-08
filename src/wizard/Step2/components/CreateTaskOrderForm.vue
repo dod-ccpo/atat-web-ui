@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 <template>
   <v-form ref="form" lazy-validation class="body-lg">
     <section role="region" title="Page Overview" class="content-max-width">
@@ -68,6 +67,7 @@
           This number must be either 13 or 17 digits.
         </p>
         <atat-file-upload
+          id="task-order-document-upload"
           ref="pdfFileUpload"
           :multiple="false"
           :pdfFile.sync="_task_order_file"
@@ -90,13 +90,17 @@
         authorized you to upload the task order in accordance with your agency’s
         policies and procedures.
       </p>
+
       <div
+        id="task-order-signed-div"
         v-if="signedTaskOrderErrorMessage !== ''"
-        class="mb-3 error--text"
+        class="mb-3 alert"
         role="alert"
       >
-        <div class="v-messages__message">
-          {{ signedTaskOrderErrorMessage }}
+        <div class="error--text">
+          <div class="v-messages__message">
+            {{ signedTaskOrderErrorMessage }}
+          </div>
         </div>
       </div>
 

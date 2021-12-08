@@ -32,7 +32,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     createTaskOrderForm: CreateTaskOrderForm;
   };
 
-  model: TaskOrderModel = this.$store.getters.getStepModel(2);
+  model: TaskOrderModel = this.$store.getters["wizard/getStepModel"](2);
   private erroredFields: ErrorPanelMessages[] = [];
 
   public validate: () => Promise<boolean> = async () => {
@@ -59,6 +59,19 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     this.model.clins.splice(itemNumber - 1, 1);
   }
 
+  private isClinCardNew(clin: Clin): boolean {
+    return Object.values(clin).every((attrib) => attrib === "" || attrib === 0);
+  }
+
+  private removeEmptyClins(): void {
+    const dirtyClins = this.model.clins.filter((c: any, idx: number) => {
+      if (this.isClinCardNew(c) === false && idx < this.model.clins.length) {
+        return c;
+      }
+    });
+    this.model.clins = dirtyClins;
+  }
+
   get errorPanelMessages(): ErrorPanelMessages[] {
     return [
       { id: 0, display: false, message: "Task Order Number" },
@@ -73,7 +86,6 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   }
 
   public async displayedErrorPanelMessages(): Promise<void> {
-    console.log(this.errorPanelMessages);
     this.getclinCardPanelErrorMessages();
     this.erroredFields = this.errorPanelMessages.filter((epm) => {
       return epm.display === true;
@@ -85,12 +97,20 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
       "task-order-number_text_field",
       "atat-text-field"
     );
+    this.errorPanelMessages[1].display = this.displayErrorInPanel(
+      "task-order-document-upload",
+      "file-upload"
+    );
+    this.errorPanelMessages[2].display = this.displayErrorInPanel(
+      "task-order-signed",
+      "alert"
+    );
     this.errorPanelMessages[3].display = this.displayErrorInPanel(
-      "clin-number_text_field",
+      "clin-number",
       "atat-text-field"
     );
     this.errorPanelMessages[4].display = this.displayErrorInPanel(
-      "clin-idiq",
+      "corresponding-idiq-clin",
       "atat-select"
     );
     this.errorPanelMessages[5].display = this.displayErrorInPanel(
@@ -116,16 +136,18 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   }
 
   public async mounted(): Promise<void> {
-    console.log("hi");
-    // if (this.touched) {
-    console.log("touched");
-    await this.displayedErrorPanelMessages();
-    console.log(document.querySelectorAll("input"));
-    Array.from(await document.querySelectorAll("input")).forEach((input) => {
-      console.log(input);
-      input.addEventListener("input", this.displayedErrorPanelMessages);
-    });
-    // }
+    setTimeout(() => {
+      this.displayedErrorPanelMessages();
+    }, 1000);
+  }
+
+  public async beforeRouteLeave(
+    to: unknown,
+    from: unknown,
+    next: (n: void) => void
+  ): Promise<void> {
+    this.removeEmptyClins();
+    next();
   }
 }
 </script>
