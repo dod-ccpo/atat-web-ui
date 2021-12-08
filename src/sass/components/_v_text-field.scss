@@ -31,15 +31,15 @@
 }
 
 .v-text-field {
-  .v-text-field__prefix{
-    color: $base-light !important;
-    padding-right: 0px;
-    margin-top: -1px;
+  &.error--text{
+    .v-text-field__prefix{
+      color: $base-light !important;
+      padding-right: 0px;
+      margin-top: -1px;
+    }
   }
-
-
-  &.v-input--is-focused,
-  &.error--text,
+  
+  &.v-input--is-focused, 
   &.success--text{
     .v-text-field__prefix{
       color: $base-darkest !important;
