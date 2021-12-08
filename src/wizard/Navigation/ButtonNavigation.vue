@@ -45,8 +45,8 @@ export default class ButtonNavigation extends Vue {
 
   public isDisabled(text: string): boolean {
     if (
-      this.$store.state.currentStepNumber === 5 &&
-      this.$store.getters.getInvalidSteps.length &&
+      this.$store.state.wizard.currentStepNumber === 5 &&
+      this.$store.getters["wizard/getInvalidSteps"].length &&
       text.toLowerCase() === "next"
     ) {
       return true;
@@ -77,10 +77,10 @@ export default class ButtonNavigation extends Vue {
   }
 
   get isReturnToReview(): boolean {
-    return this.$store.getters.isReturnToReview;
+    return this.$store.getters["wizard/isReturnToReview"];
   }
   get isArrivedFromStep5(): boolean {
-    return this.$store.getters.isArrivedFromStep5;
+    return this.$store.getters["wizard/isArrivedFromStep5"];
   }
 
   private getButtonText(button: any): string {

@@ -40,7 +40,7 @@
                 black--text
               "
             >
-              ENVIRONMENTS
+              <div>ENVIRONMENTS</div>
             </div>
             <div
               v-for="environment in application.environments"
@@ -71,8 +71,8 @@ export default class ApplicationsEnvironmentsSummaryCard extends SummaryCard {
   private applicationData!: ApplicationModel[];
 
   public onEdit(id: string): void {
-    this.$store.dispatch("setReturnToReview", true);
-    this.$store.dispatch("editApplication", id);
+    this.$store.dispatch("wizard/setReturnToReview", true);
+    this.$store.dispatch("wizard/editApplication", id);
     this.$router.push({
       name: editapplication.name,
       params: {

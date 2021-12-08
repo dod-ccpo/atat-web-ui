@@ -12,7 +12,7 @@ describe("Testing CreatePortfolioForm Component", () => {
   let vuetify: any;
   let wrapper: any;
   const getters: any = {
-    getStepTouched: () => (stepNumber: number) => {
+    "wizard/getStepTouched": () => (stepNumber: number) => {
       return false;
     },
   };

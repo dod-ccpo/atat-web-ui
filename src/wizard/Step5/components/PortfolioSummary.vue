@@ -52,7 +52,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
   public portfolio!: PortFolioDraftDTO;
   public taskOrders!: TaskOrderModel[];
   public invalidStepsExist(): boolean {
-    return this.$store.state.erroredSteps.length > 0;
+    return this.$store.state.wizard.erroredSteps.length > 0;
   }
 
   public getValidationResults(): ValidationSummaryItem[] {
@@ -73,7 +73,7 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
         id: 3,
         title: "Applications and Environments",
         description: "Ensures your cloud workspaces are correct",
-        name: "addapplication",
+        name: "applicationsummary",
       },
       {
         id: 4,
@@ -82,12 +82,16 @@ export default class PortfolioSummary extends mixins(ApplicationData) {
           "Ensures your team can access their workspaces within the cloud console",
         name: "addteammembers",
       },
-    ].filter((item) => this.$store.state.erroredSteps.indexOf(item.id) > -1);
+    ].filter(
+      (item) => this.$store.state.wizard.erroredSteps.indexOf(item.id) > -1
+    );
   }
 
   created(): void {
-    this.portfolio = this.$store.getters.getPortfolio;
-    this.taskOrders = this.$store.getters.getTaskOrders;
+    this.portfolio = this.$store.getters["wizard/getPortfolio"];
+    this.taskOrders = this.$store.getters["taskOrders/taskOrders"];
+    this.$store.dispatch("wizard/setReturnToReview", false);
+    this.$store.dispatch("wizard/setArrivedFromStep5", false);
   }
   public mounted(): void {
     const stepNumbers: number[] = [1, 2, 3, 4];
