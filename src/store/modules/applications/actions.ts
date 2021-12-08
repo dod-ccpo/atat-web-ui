@@ -1,4 +1,4 @@
-import { ActionTree, Commit } from "vuex";
+import { ActionContext, ActionTree, Commit } from "vuex";
 import { RootState } from "@/store/types";
 import ApplicationsState from "./types";
 import { portfoliosApi } from "@/api";
@@ -8,6 +8,8 @@ import {
   EnvironmentModel,
   OperatorModel,
 } from "types/Portfolios";
+import { mapApplications, mapOperators } from "./helpers";
+import { validateHasAdminOperators } from "@/validation/application";
 
 const initialize = ({ commit }: { commit: Commit }): void => {
   commit("initialize");
@@ -42,32 +44,15 @@ const updateApplication = (
 };
 
 const deleteApplication = async (
-  {
-    commit,
-    state,
-    rootState,
-  }: { commit: Commit; state: ApplicationsState; rootState: RootState },
+  { commit, state, rootGetters }: ActionContext<ApplicationsState, RootState>,
   id: string
 ): Promise<void> => {
   try {
     commit("deleteApplication", id);
-    //todo fix reference to root store here
-    //const stepIndex: number = getters.getStepIndex(3);
-    //commit("doInitializeStepModel", [createStepThreeModel(), 3, stepIndex]);
-
-    const _applications = state.applicationModels.map((model: Application) => {
-      const application: Application = {
-        ...model,
-      };
-
-      return application;
-    });
-
-    const data = {
-      applications: _applications,
-    };
-
-    await portfoliosApi.saveApplications(rootState.currentPortfolioId, data);
+    const applicationModels = state.applicationModels;
+    const portfolioOperators = state.portfolioOperators;
+    const currentPortfolioId = rootGetters["wizard/currentPortfolioId"];
+    await postData(applicationModels, portfolioOperators, currentPortfolioId);
   } catch (error) {
     console.log(error);
   }
@@ -159,6 +144,47 @@ const initializeRootAdministrators = ({ commit }: { commit: Commit }): void => {
   commit("initializeRootAdministrators");
 };
 
+export const postData = async (
+  applicationModels: ApplicationModel[],
+  operatorModels: OperatorModel[],
+  portfolioId: string
+): Promise<void> => {
+  if (applicationModels.length) {
+    const applications = mapApplications(applicationModels);
+    const operators = mapOperators(operatorModels);
+
+    const data = {
+      operators: operators,
+      applications: applications,
+    };
+    await portfoliosApi.saveApplications(portfolioId, data);
+  }
+};
+
+const saveToServer = async (
+  { state }: ActionContext<ApplicationsState, RootState>,
+  portfolioId: string
+): Promise<void> => {
+  const applicationModels = state.applicationModels;
+  const portfolioOperators = state.portfolioOperators;
+  await postData(applicationModels, portfolioOperators, portfolioId);
+};
+
+const validateAdminOperators = ({
+  state,
+}: ActionContext<ApplicationsState, RootState>): boolean[] => {
+  const applications = state.applicationModels;
+  const operators = state.portfolioOperators;
+  return validateHasAdminOperators(operators, applications);
+};
+
+const setPortfolioHasHadMembersAdded = (
+  { commit }: { commit: Commit },
+  membersAdded: boolean
+): void => {
+  commit("setPortfolioHasHadMembersAdded", membersAdded);
+};
+
 export const actions: ActionTree<ApplicationsState, RootState> = {
   initialize,
   setCurrentApplicationId,
@@ -173,4 +199,7 @@ export const actions: ActionTree<ApplicationsState, RootState> = {
   updateApplicationOperatorInfo,
   updateEnvironmentOperatorInfo,
   initializeRootAdministrators,
+  saveToServer,
+  validateAdminOperators,
+  setPortfolioHasHadMembersAdded,
 };

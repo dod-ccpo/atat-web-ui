@@ -1,9 +1,9 @@
 <template>
   <div class="d-flex align-start mb-6">
-    <v-card class="v-card ma-1 px-2 body width-100">
+    <v-card class="v-card ma-1 body width-100">
       <v-card-title>
         <div class="width-100 d-flex justify-space-between align-center">
-          <h3>{{ portfolio.name }}</h3>
+          <h3 class="text-clamp text-clamp--1-line">{{ portfolio.name }}</h3>
           <v-btn
             class="py-0 px-2 primary--text"
             text
@@ -20,7 +20,7 @@
           {{ portfolio.description }}
         </p>
       </v-card-title>
-      <v-card-text class="body-lg text--base-darkest">
+      <v-card-text class="body-lg text--base-darkest pa-6 pt-0">
         <div
           class="body-lg d-flex justify-start black--text grouped-items"
           v-for="(item, idx) in dataItems"
@@ -80,9 +80,10 @@ export default class PortfolioSummaryCard extends Vue {
   }
 
   public onEdit(): void {
+    this.$store.dispatch("wizard/setReturnToReview", true);
     this.$router.push({
       name: "editportfolio",
-      params: { id: `${this.$store.state.currentPortfolioId}` },
+      params: { id: `${this.$store.getters["wizard/currentPortfolioId"]}` },
     });
   }
 }

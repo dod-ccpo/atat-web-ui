@@ -5,9 +5,16 @@
       <p class="mb-8" v-if="cardsData.cards.length > 0">
         If you have more applications, <strong>add</strong> them below. You can
         also <strong>edit</strong> or <strong>delete</strong> any of the
-        applications you have already entered. When you are done, click
-        <strong>Next</strong> and we will move on to adding team members and
-        assigning permissions within these applications.
+        applications you have already entered.
+        <span v-if="!isReturnToReview"
+          >When you are done, click <strong>Next</strong> and we will move on to
+          adding team members and assigning permissions within these
+          applications.</span
+        ><span v-else>
+          When you are done, click
+          <strong>Return to Review and Submit</strong> to finalize your
+          portfolio.</span
+        >
       </p>
       <v-card v-else class="pa-12 mb-8 mt-0">
         <v-card-text class="pa-0">
@@ -40,10 +47,17 @@
     </section>
 
     <section title="Application FAQs" class="content-max-width" role="region">
-      <expandable-link
-        header="What if I need to add more applications after my portfolio is provisioned?"
-        content="In the future, team members with the appropriate permissions can add additional applications and/or environments directly within the cloud console.  We will set those permissions in the next step."
-      ></expandable-link>
+      <expandable-link aria-id="ApplicationFAQ1">
+        <template v-slot:header>
+          What if I need to add more applications after my portfolio is
+          provisioned?
+        </template>
+        <template v-slot:content>
+          In the future, team members with the appropriate permissions can add
+          additional applications and/or environments directly within the cloud
+          console. We will set those permissions in the next step.
+        </template>
+      </expandable-link>
     </section>
   </div>
 </template>
@@ -77,7 +91,8 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
   private cardsData: ATATSummaryCards = {
     cards: [],
   };
-
+  private isReturnToReview = false;
+  private isArrivedFromStep5 = this.$store.getters["wizard/isArrivedFromStep5"];
   public async validate(): Promise<boolean> {
     return true;
   }
@@ -121,6 +136,10 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
 
   mounted(): void {
     this.transformData();
+    if (this.isArrivedFromStep5) {
+      this.$store.dispatch("wizard/setReturnToReview", true);
+      this.isReturnToReview = true;
+    }
   }
 
   async onDelete(id: string): Promise<void> {
@@ -135,7 +154,9 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
   }
 
   async onEdit(id: string): Promise<void> {
-    this.$store.dispatch("editApplication", id);
+    this.$store.dispatch("wizard/editApplication", id);
+    this.$store.dispatch("wizard/setReturnToReview", false);
+
     this.$router.push({
       name: editapplication.name,
       params: {
@@ -145,7 +166,9 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
   }
 
   async onAddNew(id: string): Promise<void> {
-    await this.$store.dispatch("addNewApplication");
+    await this.$store.dispatch("wizard/addNewApplication");
+    this.$store.dispatch("wizard/setReturnToReview", false);
+
     this.$router.push({
       name: addapplication.name,
       params: {

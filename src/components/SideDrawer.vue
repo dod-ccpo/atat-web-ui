@@ -49,6 +49,9 @@
         v-if="sideDrawerType === 'profile'"
         :scrollableDivHeight="setScrollableDivHeight(95)"
       ></ProfileDrawer>
+      <PortfolioFilterDrawer
+        v-if="sideDrawerType === 'portfoliofilter'"
+      ></PortfolioFilterDrawer>
       <SubmitDrawer v-if="sideDrawerType === 'submit'"></SubmitDrawer>
       <TeamMemberRolesDrawer
         v-if="sideDrawerType === 'teammemberroles'"
@@ -63,12 +66,14 @@ import Vue from "vue";
 
 import { Component, Prop, Watch } from "vue-property-decorator";
 import ProfileDrawer from "./SideDrawerComponents/ProfileDrawer.vue";
+import PortfolioFilterDrawer from "./SideDrawerComponents/PortfolioFilterDrawer.vue";
 import SubmitDrawer from "./SideDrawerComponents/SubmitDrawer.vue";
 import TeamMemberRolesDrawer from "./SideDrawerComponents/TeamMemberRolesDrawer.vue";
 
 @Component({
   components: {
     ProfileDrawer,
+    PortfolioFilterDrawer,
     SubmitDrawer,
     TeamMemberRolesDrawer,
   },
@@ -102,6 +107,9 @@ export default class SideDrawer extends Vue {
       case "submit":
       case "teammemberroles":
         title = "Learn More";
+        break;
+      case "portfoliofilter":
+        title = "Filter Your Results";
         break;
       default:
         break;

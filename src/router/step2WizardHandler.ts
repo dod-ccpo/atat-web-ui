@@ -4,7 +4,7 @@ import { ATATRouteHandler } from "./routerMiddleWare";
 import { addportfolio, addfunding, fundingsummary } from "./wizard";
 
 const hasTaskOrders = (store?: Store<any>) =>
-  store && store.getters.hasTaskOrders;
+  store && store.getters["wizard/hasTaskOrders"];
 
 /**
  *  forwards the user to the funding summary if

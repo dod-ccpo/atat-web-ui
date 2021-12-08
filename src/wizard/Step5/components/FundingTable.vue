@@ -1,6 +1,6 @@
 <template>
   <div class="review-table">
-    <v-card class="ma-1 width-95 height-100 mb-10" elevation="4">
+    <v-card class="ma-1 width-95 height-100 mb-10">
       <v-card-title class="d-flex justify-space-between">
         <span class="h3 justify-center">Task Order #{{ name }}</span>
         <v-btn
@@ -18,117 +18,42 @@
           <span class="text-decoration-underline body-lg">Edit</span>
         </v-btn>
       </v-card-title>
-      <v-card-subtitle class="d-flex justify-space-between">
+      <v-card-subtitle class="d-flex justify-space-between px-6">
         <span class="body-lg text--base font-size-15">
           Uploaded file: {{ taskOrderFile.name }}
         </span>
       </v-card-subtitle>
       <v-card-text class="pa-0">
-        <v-simple-table class="pb-2">
+        <v-simple-table>
           <template v-slot:default>
             <thead class="bg-base-lightest">
               <tr>
-                <th id="clin_number">
-                  <span
-                    class="
-                      pl-1
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    CLIN #
-                  </span>
-                </th>
-                <th id="clin_type">
-                  <span
-                    class="text-left text--base-dark label font-weight-black"
-                  >
-                    CLIN type
-                  </span>
-                </th>
-                <th id="description">
-                  <span
-                    class="
-                      pr-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Description(IDIQ CLIN)
-                  </span>
-                </th>
-                <th id="PoP">
-                  <span
-                    class="
-                      pr-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Period of Performance
-                  </span>
-                </th>
-                <th id="clin_value">
-                  <span
-                    class="
-                      pr-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    CLIN Value
-                  </span>
-                </th>
-                <th id="obligated_funds">
-                  <span
-                    class="
-                      pr-2
-                      text-left text--base-dark
-                      label
-                      font-weight-black
-                    "
-                  >
-                    Obligated Funds
-                  </span>
-                </th>
+                <th id="clin_number">CLIN #</th>
+                <th id="clin_type">CLIN type</th>
+                <th id="description">Description(IDIQ CLIN)</th>
+                <th id="PoP">Period of Performance</th>
+                <th id="clin_value">CLIN Value</th>
+                <th id="obligated_funds">Obligated Funds</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, index) in data" :key="index">
-                <td class="pl-6 pt-4 pb-4 pr-4" style="vertical-align: top">
-                  <div class="d-flex flex-column">
-                    <span class="table-item">
-                      {{ item.clin_number }}
-                    </span>
-                  </div>
+                <td>
+                  {{ item.clin_number }}
                 </td>
-                <td class="pa-4" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column"> Option </span>
+                <td>Option</td>
+                <td>
+                  {{ item.idiq_clin }}
                 </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    {{ item.idiq_clin }}
-                  </span>
+                <td>
+                  {{ formatDate(item.pop_start_date) }} -
+                  {{ formatDate(item.pop_end_date) }}
                 </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    {{ formatDate(item.pop_start_date) }} -
-                    {{ formatDate(item.pop_end_date) }}
-                  </span>
+                <td>
+                  {{ formatCurrency(item.total_clin_value) }}
                 </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    {{ formatCurrency(item.total_clin_value) }}
-                  </span>
-                </td>
-                <td class="pl-4 pt-4 pb-4 pr-6" style="vertical-align: top">
-                  <span class="table-item d-flex flex-column">
-                    {{ formatCurrency(item.obligated_funds) }}
-                  </span>
+                <td>
+                  {{ formatCurrency(item.obligated_funds) }}
                 </td>
               </tr>
             </tbody>
@@ -152,7 +77,9 @@ export default class FundingTable extends Vue {
   @Prop({ default: {} }) private taskOrderFile!: TaskOrderFile;
 
   private onEdit() {
-    this.$store.dispatch("editTaskOrder", this.id);
+    this.$store.dispatch("wizard/editTaskOrder", this.id);
+    this.$store.dispatch("wizard/setReturnToReview", true);
+    this.$store.dispatch("wizard/editTaskOrder", this.id);
     this.$router.push({ name: "editfunding", params: { id: `${this.id}` } });
   }
   public formatDate(value: string): string {

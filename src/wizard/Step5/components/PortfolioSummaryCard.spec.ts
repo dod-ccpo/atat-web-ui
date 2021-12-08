@@ -11,15 +11,14 @@ describe("Testing PortfolioSummaryCard Component", () => {
   const localVue = createLocalVue();
   localVue.use(VueRouter);
   localVue.use(Vuex);
+
+  const store = new Vuex.Store({});
   const router = new VueRouter();
   let vuetify: any;
-  let store: any;
   let wrapper: any;
-  const state = {};
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    store = new Vuex.Store(state);
     wrapper = mount(PortfolioSummaryCard, {
       localVue,
       router,

@@ -15,7 +15,7 @@
     </v-navigation-drawer>
 
     <v-card-title>
-      <h2 id="modalHeading" class="mb-2 firstFocus" tabindex="-1">
+      <h2 id="modalHeading" class="mb-0 firstFocus" tabindex="-1">
         <span v-if="!isEditSingle">
           Add
           {{ isRootAdmin ? "root administrators" : "team members" }}
@@ -65,7 +65,7 @@
             class="mt-6"
           />
           <div class="color-base mt-2" id="EmailInputInstructions">
-            Must use a .mil email address.
+            Must use a .mil email address
           </div>
         </div>
 
@@ -89,9 +89,8 @@
             </a>
           </p>
           <p v-else>
-            Team members can have different levels of access to your application
-            and environments. Invite multiple people with the same permissions
-            at once.
+            Team members can have different levels of application access. Invite
+            people with the same permissions below.
           </p>
 
           <div id="PillboxLabel" class="mt-10 bm-2 body-lg">
@@ -196,15 +195,15 @@
             <span v-if="!isEditSingle">Team Member Roles</span>
           </h2>
           <p>
-            Choose what type of role
+            Choose the role
             {{ isEditSingle ? "this individual" : "people" }} will have in
-            <span v-if="isEditSingle">{{ currentApplicationName }}.</span>
-            <span v-else>your application.</span>
-            <br />
+            {{ currentApplicationName }}.
+            <br v-if="isEditSingle" />
             <a
               role="button"
               tabindex="0"
-              class="text-link"
+              class="text-link d-inline-block"
+              :class="{ 'ml-1': !isEditSingle }"
               @keydown.enter="openLearnMoreDrawer('member-roles')"
               @click="openLearnMoreDrawer('member-roles')"
             >
@@ -357,9 +356,9 @@ export default class ManageMember extends mixins(ApplicationData) {
     env_name: string;
     role_value: string;
   }[] = [];
-  private displayNameHelpText = `This could be your team member's
-  full name or a nickname. It will be used to refer to this individual
-  within ATAT.`;
+  private displayNameHelpText = `This could be your team member’s
+    full name or a nickname. It will be used to refer to this
+    individual within ATAT.`;
   private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   private valid = true;
   private memberToEditName = "";
@@ -437,7 +436,7 @@ export default class ManageMember extends mixins(ApplicationData) {
   }
 
   get selectedCSP(): string {
-    return this.$store.getters.getPortfolio.csp;
+    return this.$store.getters["wizard/getPortfolio"].csp;
   }
 
   get currentApplicationName(): string {
@@ -448,9 +447,8 @@ export default class ManageMember extends mixins(ApplicationData) {
   }
 
   get portfolioName(): string {
-    return this.$store.getters.getPortfolioName();
+    return this.$store.getters["wizard/getPortfolioName"]();
   }
-
   get rolesForAllEnvsList(): unknown {
     return this.rolesList.filter((obj) => obj.avl_for_all_envs === true);
   }
@@ -570,8 +568,10 @@ export default class ManageMember extends mixins(ApplicationData) {
     }
     if (!this.isRootAdmin) {
       this.assignDifferentRolesForEnvs = true;
-      this.roleForAllEnvs = this.rolesList[0].role_value;
-      this.initEnvRoleDropdowns(this.roleForAllEnvs);
+      if (this.rolesList && this.rolesList.length) {
+        this.roleForAllEnvs = this.rolesList[0].role_value;
+        this.initEnvRoleDropdowns(this.roleForAllEnvs);
+      }
     }
 
     if (this.isEditSingle) {
@@ -1024,7 +1024,7 @@ export default class ManageMember extends mixins(ApplicationData) {
       }
     }
 
-    this.$store.dispatch("updateMembersModified", true);
+    this.$store.dispatch("wizard/updateMembersModified", true);
 
     this.closeModal();
   }

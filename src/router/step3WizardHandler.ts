@@ -7,7 +7,7 @@ const navigatingToAddApplication = (to: Route) =>
   to.name === addapplication.name;
 
 const hasApplications = (store?: Store<any>) =>
-  store && store.getters.hasApplications;
+  store && store.getters["wizard/hasApplications"];
 
 const comingFromApplicationSummary = (from: Route) =>
   from.name === applicationsummary.name;

@@ -42,7 +42,7 @@
               @dragenter.prevent="dragover = true"
               @dragleave.prevent="dragover = false"
               elevation="0"
-              class="width-100"
+              class="width-100 no-shadow"
             >
               <v-card-text>
                 <v-row dense>
@@ -173,8 +173,7 @@ import Vue from "vue";
 import { Component, Prop, Watch, PropSync } from "vue-property-decorator";
 import { UploadedFile } from "../../types/FormFields";
 import { TaskOrderFile } from "types/Wizard";
-import axios from "axios";
-import { retrieveSessionConfig } from "@/atat-config-builder";
+import { uploadTaskOrderFile } from "@/api/utility";
 
 @Component
 export default class ATATFileUpload extends Vue {
@@ -222,9 +221,9 @@ export default class ATATFileUpload extends Vue {
   }
 
   get isFileUploaded(): boolean {
-    const stepHasBeenTouched: boolean = this.$store.getters.getStepTouched(
-      this.stepNumber
-    );
+    const stepHasBeenTouched: boolean = this.$store.getters[
+      "wizard/getStepTouched"
+    ](this.stepNumber);
     if (stepHasBeenTouched) {
       this.isFileUploadedSucessfully = this._pdfFile.name !== "";
       this.uploadedFile = [{ name: this._pdfFile.name }];
@@ -394,25 +393,14 @@ export default class ATATFileUpload extends Vue {
     const formData = new FormData();
     formData.append(taskOrderFile.name, this.files[0]);
 
-    const uploadUrl = retrieveSessionConfig()?.apiUrl;
-
-    await axios
-      .post(`${uploadUrl}/taskOrderFiles`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        this.taskOrderFile = response.data;
-        this.uploadedFile = [this.taskOrderFile];
-        // todo add this._pdfFile = taskOrderFile when
-        // API is ready
-        // console.log(this);
-        this._pdfFile = this.taskOrderFile;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const uploadedTaskOrderFile = await uploadTaskOrderFile(formData);
+      this.taskOrderFile = uploadedTaskOrderFile;
+      this.uploadedFile = [this.taskOrderFile];
+      this._pdfFile = this.taskOrderFile;
+    } catch (error) {
+      console.log(error);
+    }
   }
   /**
    * validates file and returns a Promise<boolean> for valid/invalid file

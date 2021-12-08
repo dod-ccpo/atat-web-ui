@@ -26,7 +26,6 @@
 
   $focus-blue: #2491FF !default;
 
-
   $warning_lighter: #faf3d1 !default;
   $warning_light: #fee685 !default;
   $warning: #ffbe2e !default;
@@ -61,9 +60,6 @@
 
   $gray_cool_1: #FBFCFD !default;
 
-
-
-
   //incoporate this into a mixin soon
 .theme--light.v-application{
    color: $base_darkest !important;
@@ -89,7 +85,6 @@
   .bg-base-lighter{background-color: #dfe1e2 !important};
   .bg-base-lightest{background-color: #f0f0f0 !important};
   .bg-white{background-color: #FFFFFF !important};
-
 
   .text--base-darkest{color: #1b1b1b !important};
   .text--base-darker{color: #3d4551 !important};

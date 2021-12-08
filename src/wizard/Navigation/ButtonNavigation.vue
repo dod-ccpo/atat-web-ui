@@ -14,14 +14,17 @@
       :color="button.color"
       v-model="stepNumber"
       @click="clickedAction(button.action)"
-      :class="[
-        button.link ? 'link-button no-focus-shift' : '',
-        'mr-5',
-        button.secondary ? 'secondary-btn' : '',
-      ]"
+      class="mr-5"
+      :class="{
+        'link-button no-focus-shift': button.link,
+        'secondary-btn': button.secondary,
+        'd-none':
+          (isReturnToReview || isArrivedFromStep5) &&
+          button.action[0] === 'previous',
+      }"
       role="link"
     >
-      {{ button.text }}
+      {{ getButtonText(button) }}
     </v-btn>
   </nav>
 </template>
@@ -42,8 +45,8 @@ export default class ButtonNavigation extends Vue {
 
   public isDisabled(text: string): boolean {
     if (
-      this.$store.state.currentStepNumber === 5 &&
-      this.$store.getters.getInvalidSteps.length &&
+      this.$store.state.wizard.currentStepNumber === 5 &&
+      this.$store.getters["wizard/getInvalidSteps"].length &&
       text.toLowerCase() === "next"
     ) {
       return true;
@@ -73,6 +76,20 @@ export default class ButtonNavigation extends Vue {
     );
   }
 
+  get isReturnToReview(): boolean {
+    return this.$store.getters["wizard/isReturnToReview"];
+  }
+  get isArrivedFromStep5(): boolean {
+    return this.$store.getters["wizard/isArrivedFromStep5"];
+  }
+
+  private getButtonText(button: any): string {
+    if (button.action[0] === "next" && this.isReturnToReview) {
+      return "Return to Review and Submit";
+    }
+    return button.text;
+  }
+
   public wizardNavButtons: NavigationButtons = {
     NavButtonPanels: [
       {
@@ -98,8 +115,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -123,8 +140,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -148,8 +165,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -173,8 +190,8 @@ export default class ButtonNavigation extends Vue {
           {
             text: "Save and Close",
             link: true,
-            id: "cancel",
-            action: ["cancel"],
+            id: "save_and_close",
+            action: ["save", "close"],
           },
           {
             text: "Previous",
@@ -185,7 +202,7 @@ export default class ButtonNavigation extends Vue {
             action: ["previous"],
           },
           {
-            text: "Next",
+            text: "Next: Review and Submit",
             color: "primary",
             id: "review_and_submit",
             action: ["next"],

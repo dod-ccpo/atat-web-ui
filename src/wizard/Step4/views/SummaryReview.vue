@@ -44,7 +44,10 @@
     </div>
 
     <v-data-table
-      class="review-table overflow-x-hidden overflow-y-hidden"
+      class="
+        review-table review-table--shadowed
+        overflow-x-hidden overflow-y-hidden
+      "
       style="width: 900px"
       :headers="headers"
       :items="applicationData"
@@ -54,26 +57,12 @@
       :custom-sort="sortApplications"
       :items-per-page="-1"
     >
-      <template v-slot:header.name="{ header }">
-        <div class="label font-weight-bold text--base-dark mr-5">
-          {{ header.text }}
-        </div>
-      </template>
-      <template v-slot:header.description="{ header }">
-        <div class="label font-weight-bold text--base-dark">
-          {{ header.text }}
-        </div>
-      </template>
-      <template v-slot:header.operators="{ header }">
-        <div class="label font-weight-bold text--base-dark">
-          {{ header.text }}
-        </div>
-      </template>
       <template v-slot:item.name="{ item }">
         <div class="d-flex align-center">
           <v-icon
             class="table-subdirectory-icon text--base-light mr-3"
             v-if="!item.portfolio"
+            aria-hidden="true"
             >subdirectory_arrow_right</v-icon
           >
           <a
@@ -81,13 +70,7 @@
             @keydown.enter="handleNameClick(item)"
             @keydown.space="handleNameClick(item)"
             tabindex="0"
-            class="
-              body
-              font-weight-bold
-              py-3
-              primary-text
-              text-no-wrap text-truncate
-            "
+            class="text-no-wrap text-truncate font-weight-bold text-link"
             :aria-label="
               item.name +
               ' - manage ' +
@@ -95,31 +78,36 @@
             "
           >
             <div class="d-flex align-center justify-between">
-              <div class="overflow-hidden" style="height: 24px">
+              <div v-if="item.name && item.name.length <= 25">
                 {{ item.name }}
               </div>
-              <div v-if="item.name && item.name.length > 25">...</div>
+              <div v-else-if="item.name">
+                {{ item.name.substring(0, 25) }}...
+              </div>
             </div>
           </a>
         </div>
       </template>
       <template v-slot:item.description="{ item }">
-        <div class="d-flex align-center body text--base-darkest">
-          <div class="overflow-hidden text-no-wrap" style="height: 24px">
-            {{ getDescription(item.description) }}
-          </div>
+        <div class="overflow-hidden text-no-wrap">
+          {{ getDescription(item.description) }}
         </div>
       </template>
       <template v-slot:item.operators="{ item }">
-        <div class="d-flex justify-space-between align-center">
-          <div class="body text--base-darkest pt-1">
-            <div
-              class="errorable-field d-flex align-center"
-              :class="{ invalid: item.invalidAdmins }"
-            >
-              {{ item.operatorCount }}
-              <v-icon v-if="item.invalidAdmins"> error </v-icon>
-            </div>
+        <div
+          class="
+            d-flex
+            justify-space-between
+            align-center
+            errorable-field-wrapper
+          "
+        >
+          <div
+            class="errorable-field d-flex align-center"
+            :class="{ invalid: item.invalidAdmins }"
+          >
+            {{ item.operatorCount }}
+            <v-icon v-if="item.invalidAdmins"> error </v-icon>
           </div>
 
           <v-menu
@@ -193,11 +181,11 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     return this.applicationsState.applicationModels;
   }
   public get portfolioName(): string {
-    return this.$store.getters.getPortfolioName();
+    return this.$store.getters["wizard/getPortfolioName"]();
   }
-  private isStepErrored = this.$store.getters.isStepErrored(4);
-  private isStepTouched = this.$store.getters.isStepTouched(4);
-  private csp = this.$store.getters.getPortfolio.csp;
+  private isStepErrored = this.$store.getters["wizard/isStepErrored"](4);
+  private isStepTouched = this.$store.getters["wizard/isStepTouched"](4);
+  private csp = this.$store.getters["wizard/getPortfolio"].csp;
   private applicationData: any = [];
   private sortAsc = true;
   private sortApplications(items: any[], index: number) {
@@ -220,18 +208,17 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
         name: editmembers.name,
         params: {
           type: "portfolio",
-          id: this.$store.state.currentPortfolioId,
+          id: this.$store.getters["wizard/currentPortfolioId"],
         },
       });
       return;
     }
     this.setCurrentApplicationId(item.id);
-
     this.$router.push({
       name: editmembers.name,
       params: {
         type: "application",
-        id: this.$store.state.currentApplicationId,
+        id: this.$store.state.applications.currentApplicationId,
       },
     });
   }
@@ -246,7 +233,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
           name: editmembers.name,
           params: {
             type: "portfolio",
-            id: this.$store.state.currentPortfolioId,
+            id: this.$store.state.wizard.currentPortfolioId,
           },
         });
         break;
@@ -255,7 +242,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
           name: editmembers.name,
           params: {
             type: "application",
-            id: this.$store.state.currentApplicationId,
+            id: this.$store.state.applications.currentApplicationId,
           },
         });
         break;
@@ -298,7 +285,7 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
         this.isStepErrored && this.isStepTouched;
     } else {
       this.applicationData.push({
-        name: this.$store.state.portfolioSteps[0].model.name || "Untitled",
+        name: this.portfolioName || "Untitled",
         description: "Root administrators can access all applications",
         operatorCount: portfolioOperatorsCount,
         portfolio: true,
@@ -417,7 +404,11 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
   }
 
   private hasChanges(): boolean {
-    return this.$store.getters.membersModified;
+    return this.$store.getters["wizard/membersModified"];
+  }
+
+  private hasPortfolioHadMembersAdded(): boolean {
+    return this.$store.getters["applications/portfolioHasHadMembersAdded"];
   }
 
   public async beforeRouteLeave(
@@ -425,10 +416,13 @@ export default class SummaryReview extends mixins(ApplicationModuleData) {
     from: unknown,
     next: (n: void) => void
   ): Promise<void> {
-    if (this.hasChanges()) {
+    if (this.hasChanges() || this.hasPortfolioHadMembersAdded()) {
       try {
-        await this.$store.dispatch("saveStepData", 4);
-        await this.$store.dispatch("setStepTouched", [4, true]);
+        await this.$store.dispatch("wizard/saveStepData", 4);
+        await this.$store.dispatch("wizard/setStepTouched", {
+          stepNumber: 4,
+          isTouched: true,
+        });
       } catch (error) {
         console.log(error);
       }

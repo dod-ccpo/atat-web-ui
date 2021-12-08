@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5 body-lg">
+  <div class="mb-5 body-lg content-max-width">
     <a
       @click="open = !open"
       @keydown.enter="open = !open"
@@ -12,21 +12,10 @@
       :aria-expanded="open + ''"
       :id="'button_' + ariaId"
     >
-      {{ header }}
+      <slot name="header"></slot>
     </a>
-    <div v-show="open">
-      <v-card-text class="pb-0">
-        <v-row class="mt-n5 ml-n7">
-          <v-col class="content-max-width">
-            <span
-              class="body-lg"
-              :id="'content_' + ariaId"
-              :aria-hidden="!open + ''"
-              v-html="content"
-            ></span>
-          </v-col>
-        </v-row>
-      </v-card-text>
+    <div v-show="open" :id="'content_' + ariaId" :aria-hidden="!open + ''">
+      <slot name="content"></slot>
     </div>
   </div>
 </template>
@@ -39,14 +28,6 @@ import { Component, Prop } from "vue-property-decorator";
 export default class ExpandableLink extends Vue {
   private open = false;
 
-  @Prop({ required: true }) header!: string;
-  @Prop({ required: true }) content!: string;
-
-  get ariaId(): string {
-    return this.header
-      .toLowerCase()
-      .substring(0, 30)
-      .replace(/[^A-Z0-9]+/gi, "_");
-  }
+  @Prop({ required: true }) ariaId!: string;
 }
 </script>
