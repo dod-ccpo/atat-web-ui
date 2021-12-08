@@ -739,7 +739,6 @@ export default class ATATDatePicker extends Vue {
    * sets start/end date as necessary
    */
   public setDate(selectedDate: string): void {
-    
     if (this.isStartTextBoxFocused) {
       this.setStartDate(selectedDate);
     } else {
