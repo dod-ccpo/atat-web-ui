@@ -71,6 +71,7 @@ export default class ApplicationsEnvironmentsSummaryCard extends SummaryCard {
   private applicationData!: ApplicationModel[];
 
   public onEdit(id: string): void {
+    this.$store.dispatch("wizard/setReturnToReview", true);
     this.$store.dispatch("wizard/editApplication", id);
     this.$router.push({
       name: editapplication.name,

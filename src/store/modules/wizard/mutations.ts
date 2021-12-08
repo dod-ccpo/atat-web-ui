@@ -79,6 +79,7 @@ const initializeSteps = (state: WizardState): void => {
   });
 
   Vue.set(state, "arrivedFromStep5", false);
+  Vue.set(state, "returnToReview", false);
 
   const es: number[] = state.erroredSteps;
   es.splice(0, es.length);

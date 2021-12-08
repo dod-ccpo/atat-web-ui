@@ -92,7 +92,7 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
     cards: [],
   };
   private isReturnToReview = false;
-  private isArrivedFromStep5 = this.$store.getters.isArrivedFromStep5;
+  private isArrivedFromStep5 = this.$store.getters["wizard/isArrivedFromStep5"];
   public async validate(): Promise<boolean> {
     return true;
   }
@@ -137,7 +137,7 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
   mounted(): void {
     this.transformData();
     if (this.isArrivedFromStep5) {
-      this.$store.dispatch("setReturnToReview", true);
+      this.$store.dispatch("wizard/setReturnToReview", true);
       this.isReturnToReview = true;
     }
   }
@@ -155,7 +155,7 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
 
   async onEdit(id: string): Promise<void> {
     this.$store.dispatch("wizard/editApplication", id);
-    this.$store.dispatch("setReturnToReview", false);
+    this.$store.dispatch("wizard/setReturnToReview", false);
 
     this.$router.push({
       name: editapplication.name,
@@ -167,7 +167,7 @@ export default class Step3Summary extends mixins(ApplicationModuleData) {
 
   async onAddNew(id: string): Promise<void> {
     await this.$store.dispatch("wizard/addNewApplication");
-    this.$store.dispatch("setReturnToReview", false);
+    this.$store.dispatch("wizard/setReturnToReview", false);
 
     this.$router.push({
       name: addapplication.name,
