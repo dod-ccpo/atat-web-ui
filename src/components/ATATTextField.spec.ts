@@ -22,6 +22,9 @@ describe("Testing ATATTextField Component", () => {
         rules: [(v: string) => !!v || "is required"],
       },
     });
+    wrapper.setData({
+      id: "clin-number"
+    })
   });
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);

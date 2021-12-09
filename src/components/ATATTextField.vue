@@ -113,7 +113,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
   @Prop({ default: false }) private validateOnLoad!: boolean;
-  @Prop() private maxLength!: number;
+  @Prop({ default: 50 }) private maxLength!: number;
   @Prop({ default: "" }) private mask!: string;
 
   //data
@@ -134,7 +134,7 @@ export default class ATATTextField extends VTextField {
 
   private inputActions(v: string) {
     if (this.mask === "currency") {
-      this._value = parseInt(v) > 0 ? v : "";
+      this._value = parseInt(v) >= 0 ? v : "";
     } else {
       this._value = v;
     }
@@ -168,7 +168,7 @@ export default class ATATTextField extends VTextField {
       this.id + "_text_field"
     ) as HTMLInputElement;
     this.addMasks();
-    this.addAttributes();
+    //this.addAttributes();
 
     this.$nextTick(() => {
       this.hasInitialValue = this._value.length > 0;
@@ -210,9 +210,15 @@ export default class ATATTextField extends VTextField {
           showMaskOnFocus: false,
         }).mask(this.input);
 
-        this._value = parseInt(this._value) > 0 ? this._value : "";
-        this.placeHolder = "";
+        this._value = parseInt(this._value) > -1 ? this._value : "";
       }
+      if (this.mask === "numeric") {
+        Inputmask({
+          regex: "\\d{" + this.maxLength + "}",
+          placeholder: "",
+        }).mask(this.input);
+      }
+      this.placeHolder = "";
     }
   }
 }
