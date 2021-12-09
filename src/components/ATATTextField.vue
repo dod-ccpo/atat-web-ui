@@ -113,7 +113,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
   @Prop({ default: false }) private validateOnLoad!: boolean;
-  @Prop() private maxLength!: number;
+  @Prop({ default: 50 }) private maxLength!: number;
   @Prop({ default: "" }) private mask!: string;
 
   //data
@@ -214,10 +214,8 @@ export default class ATATTextField extends VTextField {
       }
       if (this.mask === "numeric") {
         Inputmask({
-          alias: "numeric",
-          allowMinus: false,
-          rightAlign: false,
-          max: 9999,
+          regex: "\\d{" + this.maxLength + "}",
+          placeholder: "",
         }).mask(this.input);
       }
       this.placeHolder = "";

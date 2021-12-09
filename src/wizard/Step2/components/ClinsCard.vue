@@ -80,9 +80,9 @@
                     name="clin-number"
                     :id="getId('clin-number')"
                     label="CLIN Number"
-                    mask="numeric"
                     :rules="clinNumberRules"
                     :value.sync="_clin_number"
+                    mask="numeric"
                     :max-length="4"
                     :validate-on-load="isValidateOnLoad"
                   />
@@ -279,8 +279,8 @@ export default class ClinsCard extends Vue {
     return (
       this._clin_number !== "" ||
       this._idiq_clin !== "" ||
-      this._total_clin_value >= 0 ||
-      this._obligated_funds >= 0 ||
+      this._total_clin_value > 0 ||
+      this._obligated_funds > 0 ||
       this._pop_start_date !== "" ||
       this._pop_end_date !== ""
     );
