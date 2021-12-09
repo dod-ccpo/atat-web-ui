@@ -168,7 +168,7 @@ export default class ATATTextField extends VTextField {
       this.id + "_text_field"
     ) as HTMLInputElement;
     this.addMasks();
-    this.addAttributes();
+    //this.addAttributes();
 
     this.$nextTick(() => {
       this.hasInitialValue = this._value.length > 0;
