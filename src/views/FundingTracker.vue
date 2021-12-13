@@ -6,14 +6,11 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="col-sm-6">
-        <chart-stub
-          :chart-data="chartData"
-          :chart-options="options"
-        />
+      <v-col class="col-sm-9">
+        <canvas id="myLineChart" width="400" height="400" />
       </v-col>
       <v-col class="col-sm-6">
-        <canvas id="myChart" width="400" height="400" />
+        <canvas id="myBarChart" width="400" height="400" />
       </v-col>
 
     </v-row>
@@ -24,75 +21,53 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import ChartStub from "@/mixins/ChartStub"
-import Chart from "chart.js";
-import { Bar } from "vue-chartjs";
+// import ChartStub from "@/mixins/ChartStub"
+import Chart from "chart.js/auto";
+import { Bar, Line } from "vue-chartjs";
 @Component({
   components: {
-    "chart-stub": ChartStub,
+    // "chart-stub": ChartStub,
   }
 })
 export default class FundingTracker extends Vue {
-  private options = {
+  private lineChartOptions = {
+  plugins: {
     legend: {
       display: false,
-    },
-    // title: {
-    //   display: true,
-    //   text: "My Line Chart"
-    // },
-    responsive: true,
-    // maintainAspectRatio: false,
-    // aspectRatio: 2,
-    // canvas: {
-    //   height: "200px"
-    // },
-    scales: {
-      xAxes: [
-        {
-          display: true,
-          gridLines: {
-            lineWidth: 0,
-            drawTicks: true,
-
-            ticks: {
-              beginAtZero: true,
-              stepSize: 50,
-              padding: 10,
-            },
-
-            // color: function(context: any) {
-            //   console.dir(context);
-            //   if (context.tick.label === "Jan 2020") {
-            //     return "rgba(200,200,200,1)"
-            //   }
-            //   return "rbga(255,255,255,0)"
-            // }
-
-          },
-        }
-      ],
-      yAxes: [
-        {
-          display: true,
-          drawTicks: false,
-          zeroLineWidth: 0,
-          ticks: {
-            beginAtZero: true,
-            stepSize: 50,
-            padding: 10,
-            callback: function(value, index, values) {
-                return '$' + value + "K";
-            }
-          },
-          gridLines: {
-            drawTicks: false,
-          },
-        }
-      ]
     }
+  },
+  aspectRatio: 1.5,
 
+  scales: {
+      x: {
+        grid: {
+            display: true,
+            borderColor: 'rgba(255,255,255,0)',
+            lineWidth: 3,
+            tickWidth: 0,
+            color: "rgba(255,255,255,0)",
+        },
+        ticks: {
+          maxTicksLimit: 7,
+          maxRotation: 0,
+          minRotation: 0,
+        }
+      },
+      y: {
+        suggestedMax: 250,
+        grid: {
+          borderColor: "rgba(255,255,255,0)",
+          tickWidth: 0,
+        },
+        ticks: {
+          callback: function(value: number) {
+            return '$' + value + 'K';
+          }
+        }
+      }
+    }
   };
+
   private chartData = {
     labels: ["Sept", "Oct", "Nov", "Dec", "Jan 2022", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept"],
     datasets: [
@@ -108,7 +83,8 @@ export default class FundingTracker extends Vue {
       },
       {
         label: 'Projected Burn',
-        data: [null, null, null, null, 160, 140, 120, 100, 80, 60, 40, 20, 0],
+        spanGaps: true,
+        data: [null, null, null, null, 160, null, null, null, null, null, null, null, 0],
         fill: false,
         borderColor: '#00BDE3',
         borderDash: [5,5],
@@ -116,19 +92,30 @@ export default class FundingTracker extends Vue {
       }
     ]
   }
-  private mounted () {
-    var ctx = document.getElementById('line-chart') as unknown as Chart;
-    console.dir(ctx);
-    // if (ctx) {
-    //   const myChart = new Chart(ctx, {});
-    //   myChart.height = 200;
-    // }
-    this.createMyChart();
+  private annotationline: any = {
+    id: 'annotationline',
+    beforeDraw: (chart: any) => {
+      if (chart.tooltip._active && chart.tooltip._active.length) {
+        const ctx = chart.ctx;
+        ctx.save();
+        const activePoint = chart.tooltip._active[0];
+        ctx.beginPath();
+        ctx.moveTo(activePoint.element.x, chart.chartArea.top);
+        ctx.lineTo(activePoint.element.x, chart.chartArea.bottom);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "rgba(180,180,180,1)";
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
   }
 
-  public createMyChart() {
-    var ctx = document.getElementById('myChart') as unknown as Bar;
-    debugger;
+  private mounted () {
+    this.createMyCharts();
+  }
+
+  public createMyCharts() {
+    var ctx = document.getElementById('myBarChart') as unknown as Bar;
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -156,16 +143,27 @@ export default class FundingTracker extends Vue {
             }]
         },
         options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
+          plugins: {
+            legend: {
+              display: false,
             }
+          },
+          scales: {
+              // yAxes: [{
+              //     ticks: {
+              //         beginAtZero: true
+              //     }
+              // }]
+          }
         }
     });
-
+    var ctx2 = document.getElementById('myLineChart') as unknown as Line;
+    var myLineChart = new Chart(ctx2, {
+      type: 'line',
+      data: this.chartData,
+      options: this.lineChartOptions,
+      plugins: [this.annotationline],
+    })
   }
 }
 </script>
