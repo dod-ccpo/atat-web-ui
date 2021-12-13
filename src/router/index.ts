@@ -74,6 +74,16 @@ const routes: Array<RouteConfig> = [
     component: () =>
       import(/* webpackChunkName: "style" */ "../views/Profile.vue"),
   },
+  {
+    path: "/fundingtracker",
+    name: "fundingtracker",
+    meta: {
+      title: "Funding Tracker",
+    },
+    component: () =>
+      import(/* webpackChunkName: "style" */ "../views/FundingTracker.vue"),
+  },
+
 ];
 
 const router = new VueRouter({
