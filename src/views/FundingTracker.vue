@@ -148,13 +148,6 @@ export default class FundingTracker extends Vue {
               display: false,
             }
           },
-          scales: {
-              // yAxes: [{
-              //     ticks: {
-              //         beginAtZero: true
-              //     }
-              // }]
-          }
         }
     });
     var ctx2 = document.getElementById('myLineChart') as unknown as Line;
@@ -163,7 +156,7 @@ export default class FundingTracker extends Vue {
       data: this.chartData,
       options: this.lineChartOptions,
       plugins: [this.annotationline],
-    })
+    });
   }
 }
 </script>
