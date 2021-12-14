@@ -27,6 +27,7 @@
           chart-id="DonutChart2"
           :chart-data="donutChartData"
           :chart-options="donutChartOptions"
+          :use-chart-data-labels="true"
         />
       </v-col>
     </v-row>
@@ -47,11 +48,14 @@ import DonutChart from "@/components/Charts/DonutChart.vue";
 })
 
 export default class FundingTracker extends Vue {
+  // public mounted() {
+  // }
+
   private lineChartData = {
     labels: ["Sept", "Oct", "Nov", "Dec", "Jan 2022", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept"],
     datasets: [
       {
-        label: 'Actual Spend',
+        label: 'Total for all CLINs Actual Spend',
         data: [230, 190, 188, 170, 160, null, null, null],
         fill: false,
         borderColor: '#00BDE3',
@@ -61,14 +65,34 @@ export default class FundingTracker extends Vue {
         lineTension: 0,
       },
       {
-        label: 'Projected Burn',
+        label: 'Total for all CLINs Projected Burn',
         spanGaps: true,
         data: [null, null, null, null, 160, null, null, null, null, null, null, null, 0],
         fill: false,
         borderColor: '#00BDE3',
         borderDash: [5,5],
         pointRadius: 0,
+      },
+      {
+        label: 'Unclassified XaaS Actual Spend',
+        data: [230, 180, 175, 120, 100, null, null, null],
+        fill: false,
+        borderColor: '#5942D2',
+        pointRadius: 4,
+        pointBackgroundColor: '#FFFFFF',
+        pointBorderWidth: 2,
+        lineTension: 0,
+      },
+      {
+        label: 'Unclassified XaaS Projected Burn',
+        spanGaps: true,
+        data: [null, null, null, null, 100, null, null, null, null, null, null, null, 0],
+        fill: false,
+        borderColor: '#5942D2',
+        borderDash: [5,5],
+        pointRadius: 0,
       }
+
     ]
   };
   public lineChartOptions = {
@@ -78,7 +102,11 @@ export default class FundingTracker extends Vue {
       },
       datalabels: {
         display: false,
-      }
+      },
+    },
+    interaction: {
+      mode: "index",
+      intersect: false,
     },
     aspectRatio: 2,
     scales: {
@@ -159,8 +187,9 @@ export default class FundingTracker extends Vue {
   }
   public donutChartOptions = {
     layout: {
-      padding: 50
+      padding: 20
     },
+    aspectRatio: 1.25,
     plugins: {
       legend: {
         display: false,
@@ -169,6 +198,7 @@ export default class FundingTracker extends Vue {
         color: "#000",
         align: "end",
         anchor: "end",
+        offset: 10,
         formatter: function(value, context) {
           return value ? value + "%" : "";
         }
