@@ -58,7 +58,7 @@
               @focus="setFocus"
               @blur="blurTextField"
               :validate-on-load="validateOnLoad"
-              validate-on-blur
+              :validate-on-blur="false"
               clearable
               @keydown="keyDownTextField"
               @click:clear="clearTextBox"
@@ -102,7 +102,7 @@
               clearable
               @click:clear="clearTextBox"
               :validate-on-load="validateOnLoad"
-              validate-on-blur
+              :validate-on-blur="false"
               :class="[
                 isEndTextBoxFocused ? 'focused' : '',
                 'datepicker-text-box end-date',

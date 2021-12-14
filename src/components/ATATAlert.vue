@@ -87,7 +87,7 @@ export default class ATATAlert extends Vue {
    */
   @Prop({ default: "large" }) private size?: string;
   @Prop({ default: true }) private outlined?: boolean;
-  @Prop({ default: true }) private closeButton?: boolean;
+  @Prop({ default: false }) private closeButton?: boolean;
 
   private getBorderWidth(): string {
     return "border-left-" + (this.size === "large" ? "thick" : "slim");

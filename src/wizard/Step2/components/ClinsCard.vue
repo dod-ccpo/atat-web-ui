@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 <template>
-  <v-form :ref="getId('form')" lazy-validation>
+  <v-form ref="form" lazy-validation>
     <v-container
       fluid
       class="clins-card width-100"
@@ -101,7 +101,7 @@
 
                 <fieldset class="input-max-width pb-10">
                   <legend class="h3 mb-4">CLIN Funding</legend>
-                  <v-form :ref="getId('fundFields')">
+                  <v-form ref="currencyFields">
                     <atat-text-field
                       class="mb-3"
                       :id="getId('total_clin_value')"
@@ -110,6 +110,7 @@
                       :rules="totalClinRules"
                       :helpText="clinHelpText"
                       :value.sync="_total_clin_value"
+                      :validate-on-blur="false"
                       :validate-on-load="isValidateOnLoad"
                     />
                     <atat-text-field
@@ -121,6 +122,7 @@
                       :helpText="obligatedFundsHelpText"
                       :value.sync="_obligated_funds"
                       @onkeyup="calculateObligatedPercent"
+                      :validate-on-blur="false"
                       :validate-on-load="isValidateOnLoad"
                     />
 
@@ -152,7 +154,7 @@
                     class="d-flex align-center mt-0"
                     style="position: relative"
                   >
-                    <v-form :ref="getId('dateFields')">
+                    <v-form ref="dateFields">
                       <atat-date-picker
                         :id="getId('datepicker')"
                         :errormessages.sync="datePickerErrorMessages"
@@ -251,6 +253,7 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import moment from "moment";
 import { TaskOrderModel } from "../../../../types/Wizard";
 import Inputmask from "inputmask";
+import { isFormFieldValid } from "@/store/modules/wizard/helpers/validation";
 
 @Component({})
 export default class ClinsCard extends Vue {
@@ -308,17 +311,17 @@ export default class ClinsCard extends Vue {
     );
   }
   get Form(): Vue & { validate: () => boolean } {
-    return this.$refs[this.getId("form")] as Vue & { validate: () => boolean };
+    return this.$refs.form as Vue & { validate: () => boolean };
   }
 
   get FundFields(): Vue & { validate: () => boolean } {
-    return this.$refs[this.getId("fundFields")] as Vue & {
+    return this.$refs.currencyFields as Vue & {
       validate: () => boolean;
     };
   }
 
   get DateFields(): Vue & { validate: () => boolean } {
-    return this.$refs[this.getId("dateFields")] as Vue & {
+    return this.$refs.dateFields as Vue & {
       validate: () => boolean;
     };
   }
@@ -413,7 +416,7 @@ export default class ClinsCard extends Vue {
     }
   }
 
-  get clinNumberRules(): any[] {
+  get clinNumberRules(): ((v: string) => string | boolean)[] {
     const validationRules = [];
     validationRules.push(
       (v: string) => v !== "" || "Please enter your 4-digit CLIN Number"
@@ -425,11 +428,10 @@ export default class ClinsCard extends Vue {
     validationRules.push(
       (v: string) => v.length === 4 || "CLIN number must be 4 digits"
     );
-
     return validationRules;
   }
 
-  get correspondingIDIQRules(): any[] {
+  get correspondingIDIQRules(): ((v: string) => string | boolean)[] {
     const validationRules = [];
     validationRules.push(
       (v: string) => v !== "" || "Please select an IDIQ CLIN type"
@@ -437,7 +439,7 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
-  get totalClinRules(): any[] {
+  get totalClinRules(): (() => string | boolean)[] {
     const validationRules = [];
     validationRules.push(
       () =>
@@ -455,7 +457,7 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
-  get obligatedFundRules(): any[] {
+  get obligatedFundRules(): (() => string | boolean)[] {
     const validationRules = [];
     validationRules.push(
       () =>
@@ -474,7 +476,14 @@ export default class ClinsCard extends Vue {
     return validationRules;
   }
 
-  get popStartRules(): any[] {
+  @Watch("_obligated_funds")
+  @Watch("_total_clin_value")
+  protected async validateCurrencyFields(): Promise<void> {
+    await this.$nextTick();
+    await this.FundFields.validate();
+  }
+
+  get popStartRules(): (() => string | boolean)[] {
     const validationRules = [];
     const textBox = document.getElementById(
       this.getId("start-date-text-box-datepicker")
@@ -511,13 +520,11 @@ export default class ClinsCard extends Vue {
         );
       }
     }
-
-    this.isStartDatePickerValid = validationRules.every((vr) => vr() === true);
-
+    this.isStartDatePickerValid = isFormFieldValid(validationRules);
     return validationRules;
   }
 
-  get popEndRules(): any[] {
+  get popEndRules(): (() => string | boolean)[] {
     const validationRules = [];
     const textBox = document.getElementById(
       this.getId("end-date-text-box-datepicker")
@@ -555,12 +562,18 @@ export default class ClinsCard extends Vue {
         );
       }
     }
-    this.isEndDatePickerValid = validationRules.every((vr) => vr() === true);
+    this.isEndDatePickerValid = isFormFieldValid(validationRules);
     return validationRules;
   }
 
   get isDatePickerValid(): boolean {
     return this.isStartDatePickerValid && this.isEndDatePickerValid;
+  }
+
+  @Watch("_pop_start_date")
+  @Watch("_end_start_date")
+  protected async validateDates(): Promise<void> {
+    await this.DateFields.validate();
   }
 
   public isPartialDate(val: string): boolean {
@@ -603,6 +616,7 @@ export default class ClinsCard extends Vue {
         this.FundFields.validate() &&
         this.isDatePickerValid
       : true;
+    this.$emit("validatePage");
     return this.isValidated;
   }
 

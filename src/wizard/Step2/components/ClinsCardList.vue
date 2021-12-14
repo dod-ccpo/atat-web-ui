@@ -13,6 +13,7 @@
         :pop_end_date.sync="clin.pop_end_date"
         :validateOnLoad="validateOnLoad && !isClinCardNew(clin)"
         @delete="(cardNumber) => $emit('delete', cardNumber)"
+        @validatePage="() => $emit('validatePage')"
         @add="() => $emit('add')"
       >
       </clins-card>

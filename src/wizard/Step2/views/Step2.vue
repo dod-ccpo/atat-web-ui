@@ -8,6 +8,7 @@
       :signed="model.signed"
       @add="addClin"
       @delete="deleteClin"
+      @validatePage="validatePage"
       :validate-on-load="touched"
       :erroredFields.sync="erroredFields"
     />
@@ -15,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import CreateTaskOrderForm from "@/wizard/Step2/components/CreateTaskOrderForm.vue";
 import { ErrorPanelMessages, TaskOrderModel } from "../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
@@ -72,18 +73,16 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     this.model.clins = dirtyClins;
   }
 
-  get errorPanelMessages(): ErrorPanelMessages[] {
-    return [
-      { id: 0, display: false, message: "Task Order Number" },
-      { id: 1, display: false, message: "Upload your approved task order" },
-      { id: 2, display: false, message: "Verify your signed task order" },
-      { id: 3, display: false, message: "CLIN Number" },
-      { id: 4, display: false, message: "Corresponding IDIQ CLIN" },
-      { id: 5, display: false, message: "Total CLIN Value" },
-      { id: 6, display: false, message: "Obligated Funds" },
-      { id: 7, display: false, message: "Period of Performance" },
-    ];
-  }
+  private errorPanelMessages = [
+    { id: 0, display: false, message: "Task Order Number" },
+    { id: 1, display: false, message: "Upload your approved task order" },
+    { id: 2, display: false, message: "Verify your signed task order" },
+    { id: 3, display: false, message: "CLIN Number" },
+    { id: 4, display: false, message: "Corresponding IDIQ CLIN" },
+    { id: 5, display: false, message: "Total CLIN Value" },
+    { id: 6, display: false, message: "Obligated Funds" },
+    { id: 7, display: false, message: "Period of Performance" },
+  ];
 
   public async displayedErrorPanelMessages(): Promise<void> {
     this.getclinCardPanelErrorMessages();
@@ -136,6 +135,10 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   }
 
   public async mounted(): Promise<void> {
+    this.validatePage();
+  }
+
+  public async validatePage(): Promise<void>{
     setTimeout(() => {
       this.displayedErrorPanelMessages();
     }, 1000);

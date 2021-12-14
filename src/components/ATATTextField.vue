@@ -50,7 +50,7 @@
             :rounded="rounded"
             :value.sync="_value"
             hide-details="auto"
-            :validate-on-blur="true"
+            :validate-on-blur="validateOnBlur"
             :validate-on-load="validateOnLoad"
             :placeholder="placeHolder"
             :class="[
@@ -103,7 +103,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: false }) private optional!: boolean;
-  @PropSync("value", { default: "" }) private _value!: string;
+  @PropSync("value", { default: "" }) private _value!: string | number | null;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private success!: boolean;
   @Prop({ default: () => [] }) private errorMessages!: string[];
@@ -113,6 +113,7 @@ export default class ATATTextField extends VTextField {
   @Prop({ default: false }) private showDeleteIcon!: boolean;
   @Prop({ default: false }) private isDeleteDisabled!: boolean;
   @Prop({ default: false }) private validateOnLoad!: boolean;
+  @Prop({ default: true }) private validateOnBlur!: boolean;
   @Prop({ default: 50 }) private maxLength!: number;
   @Prop({ default: "" }) private mask!: string;
 
@@ -171,7 +172,8 @@ export default class ATATTextField extends VTextField {
     //this.addAttributes();
 
     this.$nextTick(() => {
-      this.hasInitialValue = this._value.length > 0;
+      this.hasInitialValue =
+        typeof this._value === "string" && this._value.length > 0;
       if (this.validateOnLoad || this.hasInitialValue) {
         this.validateField();
       }
@@ -208,9 +210,17 @@ export default class ATATTextField extends VTextField {
           rightAlign: false,
           showMaskOnHover: false,
           showMaskOnFocus: false,
+          allowMinus: false
         }).mask(this.input);
 
-        this._value = parseInt(this._value) > -1 ? this._value : "";
+        // if (typeof this._value === "number"){
+        //   this._value == this.+va
+        // }
+
+        // this._value =
+        //   typeof this._value === "number" && parseInt(this._value) > -1
+        //     ? this._value
+        //     : null;
       }
       if (this.mask === "numeric") {
         Inputmask({

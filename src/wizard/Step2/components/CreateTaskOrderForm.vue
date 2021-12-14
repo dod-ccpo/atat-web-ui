@@ -32,12 +32,7 @@
       </p>
     </section>
     <section role="region" title="Error Panel" class="content-max-width">
-      <ATATAlert
-        type="error"
-        class="my-8"
-        :closeButton="false"
-        v-if="_erroredFields.length > 0"
-      >
+      <ATATAlert type="error" class="my-8" v-if="_erroredFields.length > 0">
         <template v-slot:content>
           Please review the fields below and take any necessary actions.
           <ul>
@@ -169,6 +164,7 @@
         :clins="_clins"
         @add="$emit('add')"
         @delete="(cardNumber) => $emit('delete', cardNumber)"
+        @validatePage="() => $emit('validatePage')"
         :validate-on-load.sync="validateOnLoad"
       ></clins-card-list>
     </section>
@@ -204,7 +200,7 @@ export default class CreateTaskOrderForm extends Vue {
   private stepHasBeenTouched = false;
   private isReturnToReview = this.$store.getters["wizard/isReturnToReview"];
   private isArrivedFromStep5 = this.$store.getters["wizard/isArrivedFromStep5"];
-
+  
   @PropSync("task_order_number") _task_order_number!: number;
   @PropSync("task_order_file") _task_order_file!: TaskOrderFile;
   @PropSync("clins") _clins!: Clin[];
@@ -264,7 +260,6 @@ export default class CreateTaskOrderForm extends Vue {
     validated.push(this.signedTaskOrder !== "");
 
     const clinsCards = this.$refs.clinsCards as ClinsCardList;
-    // this.clinCardPanelErrorMessages;
     if (clinsCards && clinsCards.validate) {
       validated.push(await clinsCards.validate());
     }
@@ -293,10 +288,6 @@ export default class CreateTaskOrderForm extends Vue {
 
     this.stepHasBeenTouched = this.$store.getters["wizard/getStepTouched"](2);
   }
-
-  // private updated(): void {
-  //   this.displayedErrorPanelMessages();
-  // }
 
   private async onRemoveFile(): Promise<void> {
     this.signedTaskOrder = "";
