@@ -8,8 +8,25 @@
     <v-row>
       <v-col class="col-sm-8">
         <line-chart
-          :chart-data="chartData"
-          :chart-options="chartOptions"
+          chart-id="LineChart1"
+          :chart-data="lineChartData"
+          :chart-options="lineChartOptions"
+        />
+      </v-col>
+      <v-col class="col-sm-4">
+        <donut-chart
+          chart-id="DonutChart1"
+          :chart-data="arcGuageChartData"
+          :chart-options="arcGuageChartOptions"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="col-sm-7">
+        <donut-chart
+          chart-id="DonutChart2"
+          :chart-data="donutChartData"
+          :chart-options="donutChartOptions"
         />
       </v-col>
     </v-row>
@@ -19,16 +36,18 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import LineChart from "@/components/Charts/ATATLineChart.vue"
+import LineChart from "@/components/Charts/ATATLineChart.vue";
+import DonutChart from "@/components/Charts/DonutChart.vue";
 
 @Component({
   components: {
     "line-chart": LineChart,
+    "donut-chart": DonutChart,
   }
 })
 
 export default class FundingTracker extends Vue {
-private chartData = {
+  private lineChartData = {
     labels: ["Sept", "Oct", "Nov", "Dec", "Jan 2022", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept"],
     datasets: [
       {
@@ -52,9 +71,12 @@ private chartData = {
       }
     ]
   };
-  public chartOptions = {
+  public lineChartOptions = {
     plugins: {
       legend: {
+        display: false,
+      },
+      datalabels: {
         display: false,
       }
     },
@@ -87,6 +109,72 @@ private chartData = {
         }
       }
     }
+  };
+  public arcGuageChartData = {
+    labels: [
+      'Funds spent',
+      'Funds remaining'
+    ],
+    datasets: [{
+      label: 'Funding Status',
+      data: [75, 25],
+      backgroundColor: [
+        '#005EA2',
+        '#C9C9C9',
+      ],
+      hoverOffset: 0,
+      circumference: 180,
+      rotation: -90,
+      cutout: "80%",
+    }],
+  };
+  public arcGuageChartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        display: false,
+      }
+    }
+  };
+
+  public donutChartData = {
+    labels: [
+      'Funds spent',
+      'Funds awaiting invoice',
+      'Funds remaining',
+    ],
+    datasets: [{
+      label: 'Funding Status',
+      data: [73.7, 4.2, 22],
+      backgroundColor: [
+        '#00BDE3',
+        '#5942D2',
+        '#DFE1E2',
+      ],
+      hoverOffset: 0,
+      cutout: "67%",
+    }],
+  }
+  public donutChartOptions = {
+    layout: {
+      padding: 50
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        color: "#000",
+        align: "end",
+        anchor: "end",
+        formatter: function(value, context) {
+          return value ? value + "%" : "";
+        }
+      }
+    }
+
   };
 }
 </script>
