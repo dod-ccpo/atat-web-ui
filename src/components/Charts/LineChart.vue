@@ -5,13 +5,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import Chart from "chart.js/auto";
+import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 
 @Component({})
 export default class LineChart extends Vue {
-  @Prop({ required: true, default : "myLineChart" }) public chartId: string|undefined;
-  @Prop({ required: true, default : {} }) public chartData: any;
-  @Prop({ required: true, default : {} }) public chartOptions: any;
+  @Prop({ required: true, default: "myLineChart" }) public chartId:
+    | string
+    | undefined;
+  @Prop({ required: true, default: {} }) public chartData!: ChartData;
+  @Prop({ required: true, default: {} }) public chartOptions!: any;
 
   private annotationline: any = {
     id: "annotationline",
@@ -28,29 +30,28 @@ export default class LineChart extends Vue {
         ctx.stroke();
         ctx.restore();
       }
-    }
-  }
+    },
+  };
 
-  private mounted () {
+  private mounted() {
     const toolTipExternalOptions = {
       enabled: false,
       position: "nearest",
-      external: this.externalTooltipHandler
-    }
-    this.chartOptions.plugins["tooltip"] = toolTipExternalOptions;
-    this.createMyCharts();
+      external: this.externalTooltipHandler,
+    };
+    this.chartOptions.plugins.tooltip = toolTipExternalOptions;
+    this.createChart();
   }
 
-  public createMyCharts() {
+  public createChart(): void {
     if (this.chartId) {
-      var ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
-      var myLineChart = new Chart(ctx, {
+      const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
+      new Chart(ctx, {
         type: "line",
         data: this.chartData,
         options: this.chartOptions,
         plugins: [this.annotationline],
       });
-
     }
   }
 
@@ -80,7 +81,7 @@ export default class LineChart extends Vue {
 
   public externalTooltipHandler = (context: any) => {
     // Tooltip Element
-    const {chart, tooltip} = context;
+    const { chart, tooltip } = context;
     const tooltipEl = this.getOrCreateTooltip(chart);
 
     // Hide if no tooltip
@@ -135,7 +136,6 @@ export default class LineChart extends Vue {
           td.appendChild(text);
           tr.appendChild(td);
           tableBody.appendChild(tr);
-
         }
       });
 
@@ -151,17 +151,15 @@ export default class LineChart extends Vue {
       tableRoot.appendChild(tableBody);
     }
 
-    const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
+    const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
 
     // Display, position, and set styles for font
     tooltipEl.style.opacity = 1;
     tooltipEl.style.left = positionX + tooltip.caretX + "px";
     tooltipEl.style.top = positionY + tooltip.caretY + "px";
     tooltipEl.style.font = tooltip.options.bodyFont.string;
-    tooltipEl.style.padding = tooltip.options.padding + "px " + tooltip.options.padding + "px";
+    tooltipEl.style.padding =
+      tooltip.options.padding + "px " + tooltip.options.padding + "px";
   };
-
-
 }
-
 </script>
