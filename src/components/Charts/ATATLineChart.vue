@@ -38,7 +38,6 @@ export default class LineChart extends Vue {
       external: this.externalTooltipHandler
     }
     this.chartOptions.plugins["tooltip"] = toolTipExternalOptions;
-  debugger;
     this.createMyCharts();
   }
 
@@ -81,7 +80,6 @@ export default class LineChart extends Vue {
 
   public externalTooltipHandler = (context: any) => {
     // Tooltip Element
-    debugger;
     const {chart, tooltip} = context;
     const tooltipEl = this.getOrCreateTooltip(chart);
 
@@ -90,7 +88,6 @@ export default class LineChart extends Vue {
       tooltipEl.style.opacity = 0;
       return;
     }
-    debugger;
     // Set Text
     if (tooltip.body) {
       const titleLines = tooltip.title || [];
@@ -113,30 +110,33 @@ export default class LineChart extends Vue {
 
       const tableBody = document.createElement('tbody');
       bodyLines.forEach((body: any, i: any) => {
-        const colors = tooltip.labelColors[i];
+        if (body[0].toLowerCase().indexOf("burn") === -1) {
+          const colors = tooltip.labelColors[i];
 
-        const span = document.createElement('span');
-        span.style.background = colors.backgroundColor;
-        span.style.borderColor = colors.borderColor;
-        span.style.borderWidth = '2px';
-        span.style.marginRight = '10px';
-        span.style.height = '10px';
-        span.style.width = '10px';
-        span.style.display = 'inline-block';
+          const span = document.createElement('span');
+          span.style.background = colors.backgroundColor;
+          span.style.borderColor = colors.borderColor;
+          span.style.borderWidth = '2px';
+          span.style.marginRight = '10px';
+          span.style.height = '10px';
+          span.style.width = '10px';
+          span.style.display = 'inline-block';
 
-        const tr = document.createElement('tr');
-        tr.style.backgroundColor = 'inherit';
-        tr.style.borderWidth = "0";
+          const tr = document.createElement('tr');
+          tr.style.backgroundColor = 'inherit';
+          tr.style.borderWidth = "0";
 
-        const td = document.createElement('td');
-        td.style.borderWidth = "0";
+          const td = document.createElement('td');
+          td.style.borderWidth = "0";
 
-        const text = document.createTextNode(body);
+          const text = document.createTextNode(body);
 
-        td.appendChild(span);
-        td.appendChild(text);
-        tr.appendChild(td);
-        tableBody.appendChild(tr);
+          td.appendChild(span);
+          td.appendChild(text);
+          tr.appendChild(td);
+          tableBody.appendChild(tr);
+
+        }
       });
 
       const tableRoot = tooltipEl.querySelector('table');
