@@ -1,6 +1,6 @@
 <template>
   <div class="body-lg content-max-width">
-    <fieldset>
+    <fieldset id="cloud-service-provider" class="atat-radio-button-cards">
       <legend>Cloud Service Provider</legend>
       <p class="mb-1">
         Select the CSP where you want to deploy this portfolio.<strong
