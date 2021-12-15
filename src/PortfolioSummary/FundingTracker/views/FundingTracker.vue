@@ -37,7 +37,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import LineChart from "@/components/Charts/ATATLineChart.vue";
+import LineChart from "@/components/Charts/LineChart.vue";
 import DonutChart from "@/components/Charts/DonutChart.vue";
 
 @Component({
