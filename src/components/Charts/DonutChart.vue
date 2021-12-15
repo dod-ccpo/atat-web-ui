@@ -6,7 +6,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import Chart from "chart.js/auto";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 @Component({})
 export default class DonutChart extends Vue {
@@ -29,7 +29,7 @@ export default class DonutChart extends Vue {
       }
       var ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
       var myLineChart = new Chart(ctx, {
-        type: 'doughnut',
+        type: "doughnut",
         data: this.chartData,
         options: this.chartOptions,
         plugins: plugins,
