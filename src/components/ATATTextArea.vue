@@ -93,7 +93,6 @@ export default class ATATTextArea extends VTextarea {
   private hasInitialValue = false;
 
   private validateField() {
-    debugger;
     // if the rules property isn't set we won't display an icon
     // when the rules property is populated (i.e when the parent form is saved)
     // we evalute the rules to determine what icon to display
