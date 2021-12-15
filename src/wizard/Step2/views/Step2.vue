@@ -56,8 +56,16 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     this.$refs.createTaskOrderForm.ExpandAddedClin(false);
   }
 
-  public deleteClin(itemNumber: number): void {
-    this.model.clins.splice(itemNumber - 1, 1);
+  public async deleteClin(itemNumber: number): Promise<void> {
+    const scrollYPosition = window.scrollY;
+    await this.model.clins.splice(itemNumber - 1, 1);
+    await this.validatePage();
+    if (this.model.clins.length === 0) {
+      this.addClin();
+      setTimeout(() => {
+        window.scrollTo(0, scrollYPosition);
+      }, 500);
+    }
   }
 
   private isClinCardNew(clin: Clin): boolean {
@@ -138,7 +146,7 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
     this.validatePage();
   }
 
-  public async validatePage(): Promise<void>{
+  public async validatePage(): Promise<void> {
     setTimeout(() => {
       this.displayedErrorPanelMessages();
     }, 1000);

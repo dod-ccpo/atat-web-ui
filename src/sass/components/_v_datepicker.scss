@@ -97,6 +97,9 @@
 }
 
 .two-date-pickers{
+  min-height: 455px !important;
+  max-height: 455px !important;
+  height: 455px !important;
   background-color: $base_lightest;
   .close-datepicker-button{
     border-radius: 6px !important;

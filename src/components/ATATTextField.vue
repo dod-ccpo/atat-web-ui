@@ -210,7 +210,7 @@ export default class ATATTextField extends VTextField {
           rightAlign: false,
           showMaskOnHover: false,
           showMaskOnFocus: false,
-          allowMinus: false
+          allowMinus: false,
         }).mask(this.input);
 
         // if (typeof this._value === "number"){

@@ -181,56 +181,33 @@
           </v-expansion-panels>
         </v-col>
         <v-col class="pl-0">
-          <v-dialog
-            v-model="dialog"
-            role="alertdialog"
-            persistent
-            max-width="450"
+          <v-btn
+            icon
+            class="pt-4"
+            :disabled="isDeleteButtonDisabled"
+            :aria-label="'Delete CLIN ' + clin_number"
+            :id="'delete_Clin_' + card_number + '_Button'"
+            @click="openDeleteClinModal"
           >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-                class="pt-4"
-                :disabled="isDisabled"
-                :aria-label="'Delete CLIN ' + clin_number"
-                :id="'delete_Clin_' + card_number + '_Button'"
-                @click="
-                  openDeleteClinModal('delete_Clin_' + card_number + '_Button')
-                "
-              >
-                <v-icon aria-hidden="true">delete</v-icon>
-              </v-btn>
+            <v-icon aria-hidden="true">delete</v-icon>
+          </v-btn>
+
+          <atat-dialog-base
+            :title="'Remove CLIN ' + clin_number + '?'"
+            :show-dialog="showDeleteDialog"
+            persistent
+            :width="450"
+            okText="Remove CLIN"
+            @ok="deleteClin(card_number)"
+            @cancel="cancelDeleteClin"
+          >
+            <template v-slot:content>
+              <div class="body-lg">
+                This CLIN will be deleted from your task order. Any changes you
+                made to CLIN details will not be saved.
+              </div>
             </template>
-            <v-card>
-              <v-card-title class="h2" id="RemoveClinModalTitle" tabindex="-1">
-                Remove CLIN {{ clin_number }}?
-              </v-card-title>
-              <v-card-text class="body-lg"
-                >This CLIN will be deleted from your task order. Any changes you
-                made to CLIN details will not be saved.</v-card-text
-              >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  class="link-button"
-                  @click="cancelDeleteClin"
-                  :ripple="false"
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  class="primary"
-                  width="140px"
-                  @click="deleteClin(card_number)"
-                  :ripple="false"
-                >
-                  Remove CLIN
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          </atat-dialog-base>
           <v-icon
             v-if="isValidated === false"
             aria-hidden="true"
@@ -277,6 +254,7 @@ export default class ClinsCard extends Vue {
   private isEndDatePickerValid = true;
   private isValidateOnLoad = this.validateOnLoad;
   private isValidated = true;
+  private showDeleteDialog = false;
 
   get isClinFormDirty(): boolean {
     return (
@@ -291,8 +269,8 @@ export default class ClinsCard extends Vue {
 
   private model: TaskOrderModel = this.$store.getters["wizard/getStepModel"](2);
 
-  get isDisabled(): boolean {
-    return this.model.clins.length === 1;
+  get isDeleteButtonDisabled(): boolean {
+    return this.model.clins.length === 1 && !this.isClinFormDirty;
   }
 
   get validateDatePickerOnSave(): boolean {
@@ -377,7 +355,6 @@ export default class ClinsCard extends Vue {
     minimumFractionDigits: 2,
   });
 
-  private dialog = false;
   private progress: HTMLProgressElement | undefined;
   private minDate = "2019-09-14";
   public JWCCContractEndDate = "2022-09-14";
@@ -672,23 +649,32 @@ export default class ClinsCard extends Vue {
     this.isDatePickerVisible = isDatePickerFocused;
   }
 
-  private openDeleteClinModal(btnId: string) {
-    this.returnFocusDeleteClinCancel = btnId;
-    this.$nextTick(() => {
-      setTimeout(function () {
-        document.getElementById("RemoveClinModalTitle")?.focus();
-      }, 100);
-    });
+  private openDeleteClinModal() {
+    if (!this.isClinFormDirty) {
+      this.deleteClin();
+    } else {
+      this.showDeleteDialog = true;
+      this.returnFocusDeleteClinCancel =
+        "delete_Clin_" + this.card_number + "_Button'";
+      this.$nextTick(() => {
+        setTimeout(function () {
+          document.getElementById("RemoveClinModalTitle")?.focus();
+        }, 100);
+      });
+    }
   }
-  private deleteClin(card_number: number): void {
-    this.$emit("delete", card_number);
-    this.dialog = false;
+
+  private deleteClin(): void {
+    this.showDeleteDialog = false;
+    this.$emit("delete", this.card_number);
     this.returnFocus(this.returnFocusDeleteClinOK);
   }
+
   private cancelDeleteClin(): void {
-    this.dialog = false;
+    this.showDeleteDialog = false;
     this.returnFocus(this.returnFocusDeleteClinCancel);
   }
+
   private returnFocus(elementId: string): void {
     this.$nextTick(() => {
       const focusEl =

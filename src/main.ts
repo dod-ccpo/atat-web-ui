@@ -22,6 +22,7 @@ import ATATAlert from "./components/ATATAlert.vue";
 import ATATButtonCard from "./components/ATATButtonCard.vue";
 import ATATDatePicker from "./components/ATATDatePicker.vue";
 import ATATDialog from "./components/ATATDialog.vue"
+import ATATDialogBase from "@/components/ATATDialogBase.vue";
 import ATATFileUpload from "./components/ATATFileUpload.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATHeader from "./components/ATATHeader.vue";
@@ -48,6 +49,7 @@ import VuexPersistence from "vuex-persist";
 Vue.component('atat-button-card', ATATButtonCard);
 Vue.component('atat-date-picker',ATATDatePicker)
 Vue.component('atat-dialog', ATATDialog);
+Vue.component('atat-dialog-base', ATATDialogBase);
 Vue.component('atat-file-upload', ATATFileUpload);
 Vue.component('atat-modal-delete', ATATModalDelete);
 Vue.component('atat-select', ATATSelect)

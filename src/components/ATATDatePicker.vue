@@ -132,8 +132,8 @@
         :id="getId('CLIN-datepicker-menu')"
         :attach="'#datepicker-text-boxes-' + this.id"
         origin="top left"
-        :nudge-left="2"
-        :nudge-top="menuTop"
+        :nudge-left="0"
+        :nudge-top="429"
         absolute
         :close-on-content-click="false"
         :close-on-click="!menu"
@@ -246,8 +246,6 @@ export default class ATATDatePicker extends Vue {
   private isEndTextBoxValid = true;
   private isStartTextBoxFocused = false;
   private isEndTextBoxFocused = false;
-  private menuTop = 375;
-  private calendarClicked = false;
   private startDateFormatted = this.formatDate(this.startDate);
   private endDateFormatted = this.formatDate(this.endDate);
   private isDatePickerAdvancing = false;
@@ -412,40 +410,6 @@ export default class ATATDatePicker extends Vue {
   }
 
   /**
-   * readjusts top of menu as user navigates datepickers backwards/forwards
-   */
-  @Watch("calendarClicked")
-  protected getMenuTop(newVal: boolean): void {
-    if (newVal) {
-      if (this.menu || this.calendarClicked) {
-        setTimeout(() => {
-          this.adjustMenu(Array.from(document.getElementsByTagName("tbody")));
-        }, 500);
-        this.calendarClicked = false;
-      }
-    }
-  }
-
-  /**
-   * adjusts menu based on number of calendar table rows
-   */
-  private adjustMenu(tableBodies: HTMLTableSectionElement[]) {
-    let hasSixRows = false;
-    tableBodies.forEach((tb) => {
-      let tableRows = tb.children;
-      if (tableRows.length === 6) {
-        if (tableRows[5].children[0].innerHTML !== "") {
-          hasSixRows = true;
-        } else {
-          let lastTableRow = tableRows[5] as HTMLTableRowElement;
-          lastTableRow.style.display = "none";
-        }
-      }
-    });
-    this.menuTop = hasSixRows ? 415 : 375;
-  }
-
-  /**
    * removes focus from both textboxes
    */
   private removeTextBoxFocus(): void {
@@ -539,7 +503,6 @@ export default class ATATDatePicker extends Vue {
     //if (this.menu) {
     if (this.menu) {
       //menu & calendar are opened
-      this.calendarClicked = this.menu;
       this.setStartDate(this.startDate);
       this.setEndDate(this.endDate);
 
@@ -590,7 +553,6 @@ export default class ATATDatePicker extends Vue {
     }
 
     Vue.nextTick(() => {
-      this.calendarClicked = false;
       this.setDatePickerHoverButtons();
       this.getErrorMessages();
     });
@@ -959,7 +921,6 @@ export default class ATATDatePicker extends Vue {
         this.firstMonth = moment(newVal).format("YYYY-MM-DD");
         if (newVal !== oldVal) {
           this.secondMonth = moment(oldVal).format("YYYY-MM-DD");
-          this.calendarClicked = true;
           this.setStyleForStartDateAndEndDateButtons(
             newVal,
             moment(oldVal).endOf("month").format("YYYY-MM-DD")
@@ -982,7 +943,6 @@ export default class ATATDatePicker extends Vue {
         this.secondMonth = moment(newVal).format("YYYY-MM-DD");
         if (oldVal !== this.secondMonth) {
           this.firstMonth = moment(oldVal).format("YYYY-MM-DD");
-          this.calendarClicked = true;
           this.setStyleForStartDateAndEndDateButtons(
             oldVal,
             moment(newVal).endOf("month").format("YYYY-MM-DD")
