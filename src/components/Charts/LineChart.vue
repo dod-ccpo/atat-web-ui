@@ -9,9 +9,7 @@ import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 
 @Component({})
 export default class LineChart extends Vue {
-  @Prop({ required: true, default: "myLineChart" }) public chartId:
-    | string
-    | undefined;
+  @Prop({ required: true, default: "myLineChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: any;
 

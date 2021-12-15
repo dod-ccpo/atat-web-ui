@@ -10,9 +10,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 @Component({})
 export default class DonutChart extends Vue {
-  @Prop({ required: true, default: "myDonutChart" }) public chartId:
-    | string
-    | undefined;
+  @Prop({ required: true, default: "myDonutChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: ChartOptions;
   @Prop({ required: false, default: false }) public useChartDataLabels:
