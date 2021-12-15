@@ -18,6 +18,9 @@
           chart-id="DonutChart1"
           :chart-data="arcGuageChartData"
           :chart-options="arcGuageChartOptions"
+          :is-arc-gauge="true"
+          center-text1="75%"
+          center-text2="Funds Spent"
         />
       </v-col>
     </v-row>
@@ -28,6 +31,8 @@
           :chart-data="donutChartData"
           :chart-options="donutChartOptions"
           :use-chart-data-labels="true"
+          center-text1="$1,200,000"
+          center-text2="Total Portfolio Funds"
         />
       </v-col>
     </v-row>
@@ -210,6 +215,7 @@ export default class FundingTracker extends Vue {
         display: false,
       },
     },
+    aspectRatio: 2,
     elements: {
       arc: {
         borderWidth: 2,
