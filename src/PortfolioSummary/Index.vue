@@ -2,11 +2,19 @@
   <div>
     <div class="body-lg pl-14 pt-3 bg-white">
       <h1 class="mb-0">{{ portfolio.name }}</h1>
-      <v-tabs class="atat-tabbar width-70">
-        <v-tab class="font-weight-bold body px-0">Funding Tracker</v-tab>
-        <v-tab class="font-weight-bold body px-0">Task Orders</v-tab>
-        <v-tab class="font-weight-bold body px-0">Applications</v-tab>
-        <v-tab class="font-weight-bold body px-0">Settings</v-tab>
+      <v-tabs class="atat-tabbar">
+        <v-tab class="font-weight-bold body px-0 atat-tabbar-content"
+          >Funding Tracker</v-tab
+        >
+        <v-tab class="font-weight-bold body px-0 atat-tabbar-content"
+          >Task Orders</v-tab
+        >
+        <v-tab class="font-weight-bold body px-0 atat-tabbar-content"
+          >Applications</v-tab
+        >
+        <v-tab class="font-weight-bold body px-0 atat-tabbar-content"
+          >Settings</v-tab
+        >
       </v-tabs>
     </div>
     <div class="wizard-content"></div>

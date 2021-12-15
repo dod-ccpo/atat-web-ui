@@ -4,6 +4,9 @@
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: auto;
-    gap:24px
+    gap:24px;
   }
+}
+.v-tab {
+  text-transform: none !important;
 }
