@@ -30,6 +30,7 @@ describe("Testing CreatePortfolioForm Component", () => {
         name: undefined,
         description: "testDescription",
         dod_components: undefined,
+        erroredFields: [],
       },
     });
   });

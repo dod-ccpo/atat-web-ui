@@ -26,6 +26,21 @@
         </p>
       </v-col>
     </v-row>
+    <ATATAlert
+      type="error"
+      class="mt-0 mb-8"
+      :closeButton="false"
+      v-if="_erroredFields.length > 0"
+    >
+      <template v-slot:content>
+        Please review the fields below and take any necessary actions.
+        <ul>
+          <li v-for="(item, index) in _erroredFields" :key="index">
+            {{ item.message }}
+          </li>
+        </ul>
+      </template>
+    </ATATAlert>
     <v-row class="mt-0 pt-0">
       <v-col class="py-0 input-max-width">
         <atat-text-field
@@ -117,15 +132,17 @@
 </template>
 
 <script lang="ts">
-import { ValidatableForm } from "types/Wizard";
+import { ErrorPanelMessages, ValidatableForm } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import dodComponents from "../../../data/dodComponents";
 import ATATDivider from "@/components/ATATDivider.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
     "atat-divider": ATATDivider,
+    ATATAlert,
   },
 })
 export default class CreatePortfolioForm
@@ -141,6 +158,9 @@ export default class CreatePortfolioForm
     return this._dod_components.findIndex((d) => d === dodComp) > -1;
   }
   private stepHasBeenTouched = false;
+  @PropSync("erroredFields") private _erroredFields:
+    | ErrorPanelMessages[]
+    | undefined;
   @PropSync("name", { default: "", required: true }) portfolio_name!: string;
   @PropSync("description", { default: "", required: true })
   portfolio_description!: string;

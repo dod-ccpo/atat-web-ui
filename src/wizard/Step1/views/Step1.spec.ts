@@ -53,6 +53,9 @@ describe("Testing Step1 Component", () => {
         "atat-text-area",
         "atat-button-card",
       ],
+      propsData: {
+        step: 1,
+      },
       mocks: { $route },
     });
     wrapper.setData({
@@ -75,6 +78,22 @@ describe("Testing Step1 Component", () => {
 
   it("contains CloudServiceProviderForm Component", () => {
     expect(wrapper.vm.$refs.cloudServiceProviderForm).toBeDefined();
+  });
+
+  it("should get errorPanelMessages", async () => {
+    await wrapper.vm.errorPanelMessages;
+    expect(wrapper.vm.errorPanelMessages).toStrictEqual([
+      { display: false, id: 0, message: "Portfolio Name" },
+      { display: false, id: 1, message: "DoD Component" },
+      { display: false, id: 2, message: "Cloud Service Provider" },
+    ]);
+    await wrapper.vm.displayedErrorPanelMessages();
+  });
+  it("setTimeout in mount", async (done) => {
+    setTimeout(() => {
+      expect(wrapper.exists()).toBe(true);
+      done();
+    }, 1000);
   });
 
   it("test validate() ", async () => {
