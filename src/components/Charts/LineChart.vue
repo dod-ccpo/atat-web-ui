@@ -64,7 +64,7 @@ export default class LineChart extends Vue {
       tooltipEl.style.opacity = 1;
       tooltipEl.style.pointerEvents = "none";
       tooltipEl.style.position = "absolute";
-      tooltipEl.style.transform = "translate(-50%, 0)";
+      tooltipEl.style.transform = "translate(8%, -50%)";
       tooltipEl.style.transition = "all .1s ease";
 
       const table = document.createElement("table");
@@ -100,6 +100,7 @@ export default class LineChart extends Vue {
 
         const th = document.createElement("th");
         th.style.borderWidth = "0";
+        th.colSpan = 2;
         const text = document.createTextNode(title);
 
         th.appendChild(text);
@@ -114,11 +115,12 @@ export default class LineChart extends Vue {
 
           const span = document.createElement("span");
           span.style.background = colors.backgroundColor;
-          span.style.borderColor = colors.borderColor;
-          span.style.borderWidth = "2px";
-          span.style.marginRight = "10px";
-          span.style.height = "10px";
-          span.style.width = "10px";
+          span.style.borderColor = "#ffffff";
+          span.style.borderStyle = "solid";
+          span.style.borderWidth = "1px";
+          span.style.marginRight = "12px";
+          span.style.height = "14px";
+          span.style.width = "14px";
           span.style.display = "inline-block";
 
           const tr = document.createElement("tr");
@@ -127,12 +129,22 @@ export default class LineChart extends Vue {
 
           const td = document.createElement("td");
           td.style.borderWidth = "0";
-
-          const text = document.createTextNode(body);
+          const sep = body[0].indexOf(":");
+          const labelText = body[0].slice(0, sep);
+          const labelValue = "$" + body[0].slice(sep + 2, body[0].length);
+          debugger;
+          const text = document.createTextNode(labelText);
+          const val = document.createTextNode(labelValue);
 
           td.appendChild(span);
           td.appendChild(text);
           tr.appendChild(td);
+
+          const td2 = document.createElement("td");
+          td2.style.paddingLeft = "8px";
+          td2.appendChild(val);
+          tr.appendChild(td2);
+
           tableBody.appendChild(tr);
         }
       });

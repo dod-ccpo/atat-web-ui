@@ -163,10 +163,16 @@ export default class FundingTracker extends Vue {
       x: {
         grid: {
           display: true,
-          borderColor: "rgba(255,255,255,0)",
-          lineWidth: 3,
+          borderDash: [2, 2],
+          borderRadius: 10,
+          borderColor: "transparent",
+          lineWidth: function(context: any) {
+            return context.tick.label === "Jan 2022" ? 1 : 3;
+          },
           tickWidth: 0,
-          color: "rgba(255,255,255,0)",
+          color: function(context: any) {
+            return context.tick.label === "Jan 2022" ? "#bbb" : "transparent";
+          },
         },
         ticks: {
           maxTicksLimit: 7,
@@ -177,7 +183,7 @@ export default class FundingTracker extends Vue {
       y: {
         suggestedMax: 250,
         grid: {
-          borderColor: "rgba(255,255,255,0)",
+          borderColor: "transparent",
           tickWidth: 0,
         },
         ticks: {
