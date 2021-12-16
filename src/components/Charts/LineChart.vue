@@ -132,7 +132,6 @@ export default class LineChart extends Vue {
           const sep = body[0].indexOf(":");
           const labelText = body[0].slice(0, sep);
           const labelValue = "$" + body[0].slice(sep + 2, body[0].length);
-          debugger;
           const text = document.createTextNode(labelText);
           const val = document.createTextNode(labelValue);
 
