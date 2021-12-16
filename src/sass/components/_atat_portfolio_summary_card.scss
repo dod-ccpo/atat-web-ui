@@ -83,3 +83,12 @@
     font-size: 150px;
   }
 }
+
+.portfolio-summary-wrapper {
+  .v-card {
+    // border: 1px solid $base-lighter;
+    border-radius: 4px !important;
+    padding: 32px;
+    font-size: 1.5rem;
+  }
+}
