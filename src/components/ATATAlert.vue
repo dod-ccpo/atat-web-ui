@@ -30,7 +30,8 @@
         v-if="closeButton"
         class="
           text-center
-          px-0
+          pr-0
+          pl-4
           pt-1
           mx-0
           d-flex
