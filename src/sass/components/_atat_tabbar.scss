@@ -1,4 +1,8 @@
 .atat-tabbar{
+  .v-slide-group__wrapper {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
   .v-slide-group__content.v-tabs-bar__content{
     display: flex;
     flex-grow: 1;
@@ -10,10 +14,29 @@
     background-color: transparent !important;
   }
   .v-tab {
+    padding: 0 4px;
+    border-radius: 0 !important;
     text-transform: none !important;
+    &.v-tab--active {
+      &:after {
+        content: "";
+        position: absolute;
+        display: block;
+        background-color: $primary;
+        height: 3px;
+        bottom: -3px;
+        left: 4px;
+        right: 4px;
+      }
+    }
+    &:hover, &:focus {
+      &:before {
+        background-color: transparent !important;
+      }
+    }
 
   }
   .v-tabs-slider-wrapper{
-   height: 4px;
+    display: none !important;
   }
 }
