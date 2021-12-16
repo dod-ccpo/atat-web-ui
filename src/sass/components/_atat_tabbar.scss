@@ -6,6 +6,9 @@
     flex-basis: auto;
     gap:24px;
   }
+  .theme--light.v-tabs-items{
+    background-color: transparent !important;
+  }
   .v-tab {
     text-transform: none !important;
 
