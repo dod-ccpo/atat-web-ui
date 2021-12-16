@@ -32,7 +32,9 @@ const addportfolio: RouteConfigSingleView = {
     title: "Portfolio Details and CSP Selection",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step1/views/Step1.vue"
+    ),
   props: {
     step: 1,
   },
@@ -44,7 +46,9 @@ const editportfolio: RouteConfigSingleView = {
     title: "Edit Portfolio Details and CSP Selection",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step1/views/Step1.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step1/views/Step1.vue"
+    ),
   props: {
     step: 1,
   },
@@ -57,7 +61,9 @@ const addfunding: RouteConfigSingleView = {
     title: "Add a New Task Order",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step2/views/Step2.vue"
+    ),
   props: {
     step: 2,
   },
@@ -71,7 +77,7 @@ const fundingsummary: RouteConfigSingleView = {
   },
   component: () =>
     import(
-      /* webpackChunkName: "style" */ "../wizard/Step2/views/Step2Summary.vue"
+      /* webpackChunkName: "style" */ "../views/wizard/Step2/views/Step2Summary.vue"
     ),
 };
 
@@ -85,7 +91,9 @@ const editfunding: RouteConfigSingleView = {
     step: 2,
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step2/views/Step2.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step2/views/Step2.vue"
+    ),
 };
 
 const addapplication: RouteConfigSingleView = {
@@ -95,7 +103,9 @@ const addapplication: RouteConfigSingleView = {
     title: "Add Application",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step3/views/Step3.vue"
+    ),
   props: {
     step: 3,
   },
@@ -109,7 +119,7 @@ const applicationsummary: RouteConfigSingleView = {
   },
   component: () =>
     import(
-      /* webpackChunkName: "style" */ "../wizard/Step3/views/Step3Summary.vue"
+      /* webpackChunkName: "style" */ "../views/wizard/Step3/views/Step3Summary.vue"
     ),
 };
 
@@ -120,7 +130,9 @@ const editapplication: RouteConfigSingleView = {
     title: "Edit Application",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step3/views/Step3.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step3/views/Step3.vue"
+    ),
   props: {
     step: 3,
   },
@@ -133,7 +145,9 @@ const addteammembers: RouteConfigSingleView = {
     title: "Add Root Administrators and Team Members",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step4/views/Step4.vue"
+    ),
 };
 const editmembers: RouteConfigSingleView = {
   path: "editmembers/:type/:id",
@@ -142,7 +156,9 @@ const editmembers: RouteConfigSingleView = {
     title: "Edit Team Members",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step4/views/Step4.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step4/views/Step4.vue"
+    ),
 };
 
 const teammembersummary: RouteConfigSingleView = {
@@ -153,7 +169,7 @@ const teammembersummary: RouteConfigSingleView = {
   },
   component: () =>
     import(
-      /* webpackChunkName: "style" */ "../wizard/Step4/views/SummaryReview.vue"
+      /* webpackChunkName: "style" */ "../views/wizard/Step4/views/SummaryReview.vue"
     ),
 };
 
@@ -164,7 +180,9 @@ const reviewandsubmit: RouteConfigSingleView = {
     title: "Review and Submit",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step5/views/Step5.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step5/views/Step5.vue"
+    ),
 };
 
 const postreview: RouteConfigSingleView = {
@@ -175,7 +193,7 @@ const postreview: RouteConfigSingleView = {
   },
   component: () =>
     import(
-      /* webpackChunkName: "style" */ "../wizard/Step5/views/PostReview.vue"
+      /* webpackChunkName: "style" */ "../views/wizard/Step5/views/PostReview.vue"
     ),
 };
 
@@ -186,7 +204,9 @@ const submit: RouteConfigSingleView = {
     title: "Submit Portfolio",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/Step5/views/Submit.vue"),
+    import(
+      /* webpackChunkName: "style" */ "../views/wizard/Step5/views/Submit.vue"
+    ),
 };
 
 const wizard: RouteConfigSingleView = {
@@ -196,7 +216,7 @@ const wizard: RouteConfigSingleView = {
     title: "Portfolio Details and CSP Selection",
   },
   component: () =>
-    import(/* webpackChunkName: "style" */ "../wizard/wizard.vue"),
+    import(/* webpackChunkName: "style" */ "../views/wizard/wizard.vue"),
   children: [
     //main routes
     CreateWizardRoute(addportfolio, undefined, addfunding.name, 1),
@@ -253,7 +273,7 @@ const wizard: RouteConfigSingleView = {
       name: "showvalidationsummary",
       component: () =>
         import(
-          /* webpackChunkName: "style" */ "../wizard/Step5/views/Step5.vue"
+          /* webpackChunkName: "style" */ "../views/wizard/Step5/views/Step5.vue"
         ),
     },
   ],
