@@ -1,19 +1,19 @@
 <template>
   <div>
     <div class="body-lg pl-14 pt-3 bg-white">
-      <h1 class="mb-0">{{ portfolio.name }}</h1>
+      <h3 class="h3 mb-0">{{ portfolio.name }}</h3>
       <v-tabs class="atat-tabbar dense">
         <v-tab class="h5 font-weight-bold body px-0 atat-tabbar-content"
-          >Funding Tracker</v-tab
+          ><div class="tabname pb-4">Funding Tracker</div></v-tab
         >
         <v-tab class="h5 font-weight-bold body px-0 atat-tabbar-content"
-          >Task Orders</v-tab
+          ><div class="tabname pb-4">Task Orders</div></v-tab
         >
         <v-tab class="h5 font-weight-bold body px-0 atat-tabbar-content"
-          >Applications</v-tab
+          ><div class="tabname pb-4">Applications</div></v-tab
         >
         <v-tab class="h5 font-weight-bold body px-0 atat-tabbar-content"
-          >Settings</v-tab
+          ><div class="tabname pb-4">Settings</div></v-tab
         >
       </v-tabs>
     </div>
