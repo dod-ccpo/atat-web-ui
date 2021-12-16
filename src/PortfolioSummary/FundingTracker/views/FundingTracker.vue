@@ -1,11 +1,11 @@
 <template>
-  <v-container class="main-content-wrapper body-lg portfolio-summary-wrapper">
+  <v-container fluid class="main-content-wrapper body-lg portfolio-summary-wrapper">
     <v-row>
       <v-col cols="6">
-        <h2>Overview</h2>
+        <h2 class="mb-0">Overview</h2>
       </v-col>
-      <v-col cols="6" class="text-right">
-        { last login }
+      <v-col cols="6" class="text-right text--base-dark">
+        Last Sync: Nov. 15, 0100
       </v-col>
     </v-row>
     <v-row>
@@ -30,7 +30,7 @@
             :chart-data="arcGuageChartData"
             :chart-options="arcGuageChartOptions"
             :is-arc-gauge="true"
-            center-text1="75%"
+            center-text1="74%"
             center-text2="Funds Spent"
           />
           <v-divider class="my-4" />
@@ -38,13 +38,25 @@
             At your current rate of spending, you will run out of funds by
             <strong>Sept. 23, 2021.</strong>
           </p>
-          <v-btn class="secondary-btn width-100">Set spending alerts</v-btn>
+          <!-- EJY button below to be included in future milestone -->
+          <!-- <v-btn class="secondary-btn width-100">Set spending alerts</v-btn> -->
         </v-card>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        { financial data note }
+        <ATATAlert
+          type="info"
+          class=""
+          :closeButton="true"
+        >
+          <template v-slot:content>
+            <strong>NOTE:</strong> All financial data depicted are estimates to
+            assist with tracking cloud spend. Login to your CSP console to get
+            detailed cost analyses and breakdowns.
+            <a role="button">Learn more</a>
+          </template>
+        </ATATAlert>
       </v-col>
     </v-row>
     <v-row>
@@ -116,11 +128,13 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import LineChart from "@/components/Charts/LineChart.vue";
 import DonutChart from "@/components/Charts/DonutChart.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
-    "line-chart": LineChart,
+    ATATAlert,
     "donut-chart": DonutChart,
+    "line-chart": LineChart,
   },
 })
 export default class FundingTracker extends Vue {
@@ -235,15 +249,15 @@ export default class FundingTracker extends Vue {
       x: {
         grid: {
           display: true,
-          borderDash: [2, 2],
+          borderDash: [4, 4],
           borderRadius: 10,
           borderColor: "transparent",
           lineWidth: function(context: any) {
-            return context.tick.label === "Jan 2022" ? 1 : 3;
+            return context.tick.label === "Jan 2022" ? 2 : 3;
           },
           tickWidth: 0,
           color: function(context: any) {
-            return context.tick.label === "Jan 2022" ? "#bbb" : "transparent";
+            return context.tick.label === "Jan 2022" ? "#A9AEB1" : "transparent";
           },
         },
         ticks: {
@@ -271,7 +285,7 @@ export default class FundingTracker extends Vue {
     datasets: [
       {
         label: "Funding Status",
-        data: [75, 25],
+        data: [74, 26],
         backgroundColor: ["#005EA2", "#C9C9C9"],
         hoverOffset: 0,
         hoverBorderWidth: 0,

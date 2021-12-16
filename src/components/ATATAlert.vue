@@ -23,7 +23,7 @@
           {{ getIcon() }}
         </i>
       </div>
-      <div class="body-lg black--text pl-4">
+      <div class="body-lg black--text pl-4 content-max-width">
         <slot name="content"></slot>
       </div>
       <div
@@ -32,7 +32,7 @@
           text-center
           px-0
           pt-1
-          mx-4
+          mx-0
           d-flex
           flex-column
           align-start
