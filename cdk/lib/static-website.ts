@@ -1,14 +1,19 @@
 import * as iam from "@aws-cdk/aws-iam";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as cdk from "@aws-cdk/core";
-import { Construct, Stack } from "@aws-cdk/core";
+import { Construct, Stack, StaticSiteProps } from "@aws-cdk/core";
+
+interface StaticSiteProps extends cdk.StackProps {
+  environmentId: string;
+  applicationName: string;
+}
 
 export class StaticSite extends Construct {
   public readonly websiteBucket: s3.IBucket;
   public readonly deploymentRole: iam.IRole;
   public readonly deploymentPolicy: iam.IManagedPolicy;
 
-  constructor(parent: Stack, name: string) {
+  constructor(parent: Stack, name: string, props: StaticSiteProps) {
     super(parent, name);
 
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
@@ -39,7 +44,7 @@ export class StaticSite extends Construct {
         cdk.Fn.importValue("AtatGitHubOidcProvider")
       );
     this.deploymentRole = new iam.Role(this, "SpaDeploymentRole", {
-      roleName: "AtatSpaDeploymentRole",
+      roleName: props.environmentId + "AtatSpaDeploymentRole",
       description: "Role to perform SPA deployments from a CI/CD pipeline",
       managedPolicies: [this.deploymentPolicy],
       assumedBy: new iam.OpenIdConnectPrincipal(githubProvider).withConditions({

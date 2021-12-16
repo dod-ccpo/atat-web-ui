@@ -22,7 +22,7 @@ export class StaticSiteStack extends cdk.Stack {
   constructor(parent: cdk.App, name: string, props: StaticSiteProps) {
     super(parent, name, props);
     const ssmPrefix = props.applicationName.toLowerCase();
-    const site = new StaticSite(this, "StaticSite");
+    const site = new StaticSite(this, "StaticSite", props);
     this.bucket = site.websiteBucket;
     this.cfnOutputs.push(
       new cdk.CfnOutput(this, "WebsiteBucket", {
