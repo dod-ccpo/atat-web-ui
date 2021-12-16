@@ -1,5 +1,8 @@
 <template>
-  <v-container fluid class="main-content-wrapper body-lg portfolio-summary-wrapper">
+  <v-container
+    fluid
+    class="main-content-wrapper body-lg portfolio-summary-wrapper"
+  >
     <v-row>
       <v-col cols="6">
         <h2 class="mb-0">Overview</h2>
@@ -13,12 +16,8 @@
         <v-card class="no-shadow v-sheet--outlined height-100">
           <h3>Portfolio Details</h3>
           <v-row>
-            <v-col class="col-sm-5">
-              { Avl funds area }
-            </v-col>
-            <v-col class="col-sm-7">
-              { Total Portfolio Funds }
-            </v-col>
+            <v-col class="col-sm-5">{ Avl funds area }</v-col>
+            <v-col class="col-sm-7">{ Total Portfolio Funds }</v-col>
           </v-row>
         </v-card>
       </v-col>
@@ -45,11 +44,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <ATATAlert
-          type="info"
-          class=""
-          :closeButton="true"
-        >
+        <ATATAlert type="info" :closeButton="true">
           <template v-slot:content>
             <strong>NOTE:</strong> All financial data depicted are estimates to
             assist with tracking cloud spend. Login to your CSP console to get
@@ -112,11 +107,8 @@
                 center-text2="Total Portfolio Funds"
               />
             </v-col>
-            <v-col class="col-sm-7">
-              { legend }
-            </v-col>
+            <v-col class="col-sm-7"> { legend } </v-col>
           </v-row>
-
         </v-card>
       </v-col>
     </v-row>
@@ -257,7 +249,9 @@ export default class FundingTracker extends Vue {
           },
           tickWidth: 0,
           color: function(context: any) {
-            return context.tick.label === "Jan 2022" ? "#A9AEB1" : "transparent";
+            return context.tick.label === "Jan 2022"
+              ? "#A9AEB1"
+              : "transparent";
           },
         },
         ticks: {
