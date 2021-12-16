@@ -66,6 +66,28 @@ export default new Vuex.Store({
       message: "",
       contentClass: "",
     },
+    chartDataColors: {
+      // Color pallete for data visualizations.
+      // Must maintain this sequence to maximize contrast between
+      // neighboring colors to help with visual differentiation, optimizing
+      // charts for users with color vision deficiencies.
+      cyan: "#00bde3",
+      blue: "#0076d6",
+      orange: "#fa9441",
+      magenta: "#d72d79",
+      "green-cool": "#70e17b",
+      "indigo-warm": "#b69fff",
+      yellow: "#face00",
+      "violet-warm": "#b04abd",
+      "mint-cool": "#7efbe1",
+      "orange-warm": "#914734",
+      gray: "#dfe1e2",
+    },
+    chartAuxColors: {
+      "lineChart-axis": "#3d4551",
+      "lineChart-border": "#dfe1e2",
+      "lineChart-dataHiliteBorder": "#a9aeb1",
+    },
   },
   /*
   ███████████████████████████████████████████████████████████████████████████
@@ -274,6 +296,9 @@ export default new Vuex.Store({
     },
     getUser: (state) => state.user,
     getSideDrawerIsOpen: (state) => state.sideDrawerIsOpen,
+    getChartDataColors: (state) => state.chartDataColors,
+    getChartDataColorSequence: (state) => Object.values(state.chartDataColors),
+    getChartAuxColors: (state) => state.chartAuxColors,
   },
   modules: {
     portfolios,

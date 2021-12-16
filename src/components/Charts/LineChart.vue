@@ -54,10 +54,11 @@ export default class LineChart extends Vue {
   }
 
   public getOrCreateTooltip = (chart: any) => {
-    let tooltipEl = chart.canvas.parentNode.querySelector("div");
+    let tooltipEl = chart.canvas.parentNode.querySelector("div#lineChartTooltip");
 
     if (!tooltipEl) {
       tooltipEl = document.createElement("div");
+      tooltipEl.setAttribute("id", "lineChartTooltip")
       tooltipEl.style.background = "rgba(27, 27, 27, 0.9)";
       tooltipEl.style.borderRadius = "3px";
       tooltipEl.style.color = "white";
@@ -68,6 +69,7 @@ export default class LineChart extends Vue {
       tooltipEl.style.transition = "all .1s ease";
 
       const table = document.createElement("table");
+      table.setAttribute("id", "lineChartTooltipTable")
       table.style.margin = "0px";
 
       tooltipEl.appendChild(table);
@@ -148,16 +150,16 @@ export default class LineChart extends Vue {
         }
       });
 
-      const tableRoot = tooltipEl.querySelector("table");
-
+      const tableRoot = tooltipEl.querySelector("table#lineChartTooltipTable");
       // Remove old children
-      while (tableRoot.firstChild) {
-        tableRoot.firstChild.remove();
+      if (tableRoot && tableRoot.firstChild) {
+        while (tableRoot.firstChild) {
+          tableRoot.firstChild.remove();
+        }
+        // Add new children
+        tableRoot.appendChild(tableHead);
+        tableRoot.appendChild(tableBody);
       }
-
-      // Add new children
-      tableRoot.appendChild(tableHead);
-      tableRoot.appendChild(tableBody);
     }
 
     const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;

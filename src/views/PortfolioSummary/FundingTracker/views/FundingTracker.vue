@@ -64,11 +64,24 @@
             historical trends and show approximately when you are projected to
             exceed your portfolio’s budget.
           </p>
+          <v-row class="mb-0">
+            <v-col>
+              Funds available
+            </v-col>
+            <v-col class="text-right">
+              Current Period: Jan. 1, 2021–Dec. 31, 2021
+            </v-col>
+          </v-row>
           <line-chart
             chart-id="LineChart1"
             :chart-data="lineChartData"
             :chart-options="lineChartOptions"
           />
+          { legend }
+          <div class="bg-base-lightest pv-2">
+            NOTE: Solid lines denote actual spend from previous months. Dashed
+            lines denote projected burn for upcoming months.
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -130,6 +143,9 @@ import ATATAlert from "@/components/ATATAlert.vue";
   },
 })
 export default class FundingTracker extends Vue {
+  public chartDataColors = this.$store.getters.getChartDataColors;
+  public chartDataColorSequence = this.$store.getters.getChartDataColorSequence;
+  public chartAuxColors = this.$store.getters.getChartAuxColors;
   private lineChartData = {
     labels: [
       "Sept",
@@ -151,10 +167,10 @@ export default class FundingTracker extends Vue {
         label: "Total for all CLINs",
         data: [230, 190, 188, 170, 160, null, null, null],
         fill: false,
-        borderColor: "#00BDE3",
+        borderColor: this.chartDataColorSequence[0],
         borderWidth: 2,
         pointRadius: 3,
-        pointBackgroundColor: "#00BDE3",
+        pointBackgroundColor: this.chartDataColorSequence[0],
         pointHoverBackgroundColor: "#FFFFFF",
         pointBorderWidth: 2,
         pointHoverBorderWidth: 2,
@@ -180,18 +196,18 @@ export default class FundingTracker extends Vue {
         ],
         fill: false,
         borderWidth: 2,
-        borderColor: "#00BDE3",
-        borderDash: [5, 5],
+        borderColor: this.chartDataColorSequence[0],
+        borderDash: [6, 4],
         pointRadius: 0,
       },
       {
         label: "Unclassified XaaS",
         data: [230, 180, 175, 120, 100, null, null, null],
         fill: false,
-        borderColor: "#5942D2",
+        borderColor: this.chartDataColorSequence[1],
         borderWidth: 2,
         pointRadius: 3,
-        pointBackgroundColor: "#5942D2",
+        pointBackgroundColor: this.chartDataColorSequence[1],
         pointHoverBackgroundColor: "#FFFFFF",
         pointBorderWidth: 2,
         pointHoverBorderWidth: 2,
@@ -217,8 +233,8 @@ export default class FundingTracker extends Vue {
         ],
         fill: false,
         borderWidth: 2,
-        borderColor: "#5942D2",
-        borderDash: [5, 5],
+        borderColor: this.chartDataColorSequence[1],
+        borderDash: [6, 4],
         pointRadius: 0,
       },
     ],
@@ -241,11 +257,11 @@ export default class FundingTracker extends Vue {
       x: {
         grid: {
           display: true,
-          borderDash: [4, 4],
-          borderRadius: 10,
-          borderColor: "transparent",
+          borderDash: [3, 3],
+          borderWidth: 2,
+          borderColor: this.chartAuxColors["lineChart-axis"],
           lineWidth: function(context: any) {
-            return context.tick.label === "Jan 2022" ? 2 : 3;
+            return context.tick.label === "Jan 2022" ? 1 : 3;
           },
           tickWidth: 0,
           color: function(context: any) {
@@ -280,7 +296,7 @@ export default class FundingTracker extends Vue {
       {
         label: "Funding Status",
         data: [74, 26],
-        backgroundColor: ["#005EA2", "#C9C9C9"],
+        backgroundColor: [this.chartDataColors.blue, this.chartDataColors.gray],
         hoverOffset: 0,
         hoverBorderWidth: 0,
         circumference: 180,
@@ -312,15 +328,21 @@ export default class FundingTracker extends Vue {
     },
   };
 
+  public donutChartColors = [
+    this.chartDataColorSequence[0],
+    this.chartDataColorSequence[1],
+    this.chartDataColors.gray,
+  ];
+
   public donutChartData = {
     labels: ["Funds spent", "Funds awaiting invoice", "Funds remaining"],
     datasets: [
       {
         label: "Funding Status",
         data: [73.7, 4.2, 22],
-        backgroundColor: ["#00BDE3", "#5942D2", "#DFE1E2"],
-        hoverBackgroundColor: ["#00BDE3", "#5942D2", "#DFE1E2"],
-        hoverBorderColor: ["#00BDE3", "#5942D2", "#DFE1E2"],
+        backgroundColor: this.donutChartColors,
+        hoverBackgroundColor: this.donutChartColors,
+        hoverBorderColor: this.donutChartColors,
         hoverBorderRadius: 0,
         hoverOffset: 10,
         hoverBorderWidth: 0,
