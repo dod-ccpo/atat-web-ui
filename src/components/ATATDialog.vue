@@ -32,7 +32,7 @@
 import Vue from "vue";
 import { Dialog } from "types/Global";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import ManageMembers from "../wizard/Step4/components/ManageMembers.vue";
+import ManageMembers from "../views/wizard/Step4/components/ManageMembers.vue";
 
 @Component({
   components: {

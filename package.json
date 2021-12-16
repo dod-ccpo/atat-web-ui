@@ -10,7 +10,7 @@
     "serve-no-auth": "vue-cli-service serve",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test:unit": "vue-cli-service test:unit",
-    "test:unit-file-watch": "vue-cli-service test:unit --watch --no-cache src/wizard/Step2/components/CreateTaskOrderForm.vue",
+    "test:unit-file-watch": "vue-cli-service test:unit --watch --no-cache src/views/wizard/Step2/components/CreateTaskOrderForm.vue",
     "lint": "vue-cli-service lint",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
