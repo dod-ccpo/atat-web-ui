@@ -31,6 +31,7 @@
             :is-arc-gauge="true"
             center-text1="74%"
             center-text2="Funds Spent"
+            aria-label="Chart displaying 74% Funds Spent"
           />
           <v-divider class="my-4" />
           <p>
