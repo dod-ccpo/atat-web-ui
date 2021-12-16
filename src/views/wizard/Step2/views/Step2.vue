@@ -23,7 +23,9 @@ import {
 } from "../../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 import { Clin } from "types/TaskOrder";
-import { displayErrorInPanel } from "../../helpers";
+import { displayErrorInPanel } from "@/helpers/wizard";
+
+
 
 Component.registerHooks(["beforeRouteLeave"]);
 @Component({

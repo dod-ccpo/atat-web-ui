@@ -130,8 +130,8 @@ import { CreateApplicationModel } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATDivider from "@/components/ATATDivider.vue";
-import { displayErrorInPanel } from "@/wizard/helpers";
 import ATATAlert from "@/components/ATATAlert.vue";
+import { displayErrorInPanel } from "@/helpers/wizard/index";
 
 @Component({
   components: {
