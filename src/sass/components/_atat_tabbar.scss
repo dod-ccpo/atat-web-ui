@@ -1,0 +1,16 @@
+.atat-tabbar{
+  .v-slide-group__content.v-tabs-bar__content{
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: auto;
+    gap:24px;
+  }
+  .v-tab {
+    text-transform: none !important;
+
+  }
+  .v-tabs-slider-wrapper{
+   height: 4px;
+  }
+}
