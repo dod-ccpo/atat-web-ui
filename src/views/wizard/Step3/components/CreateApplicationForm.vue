@@ -28,6 +28,25 @@
       </p>
     </div>
 
+    <section role="region" title="Error Panel" class="content-max-width">
+      <ATATAlert
+        type="error"
+        class="my-8"
+        :closeButton="false"
+        v-if="hasValidationErrors"
+      >
+        <template v-slot:content>
+          Please review the missing or invalid information below and take any
+          necessary actions.
+          <ul>
+            <li v-for="(item, index) in validationErrors" :key="index">
+              {{ item.name }}
+            </li>
+          </ul>
+        </template>
+      </ATATAlert>
+    </section>
+
     <section title="Application Details" role="region" class="input-max-width">
       <fieldset>
         <legend>Application Details</legend>
@@ -45,8 +64,10 @@
           id="application-details"
           label="Application Details"
           class="mt-15"
+          :rules="rules.applicationDetails"
           :value.sync="_application.description"
           :helpText="applicationDetailsHelpText"
+          :validate-on-load="validateOnLoad"
         />
       </fieldset>
     </section>
@@ -73,7 +94,7 @@
         >
           <atat-text-field
             :value.sync="env.name"
-            :key="`env_${env.id}`"
+            :key="env.id"
             label=""
             :id="env.id"
             :rules="rules.environments"
@@ -109,15 +130,21 @@ import { CreateApplicationModel } from "types/Wizard";
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATDivider from "@/components/ATATDivider.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+import { displayErrorInPanel } from "@/helpers/wizard/index";
 
 @Component({
   components: {
     "atat-divider": ATATDivider,
+    ATATAlert,
   },
 })
 export default class CreateApplicationForm extends Vue {
   @PropSync("application") _application!: CreateApplicationModel;
   @Prop({ default: false }) private validateOnLoad!: boolean;
+
+  private hasValidationErrors = false;
+  private validations: Array<{ name: string; error: boolean }> = [];
 
   private applicationNameHelpText = `This name will be displayed within the cloud provider’s console. It should be intuitive and easily recognizable for all of your team members.`;
   private applicationDetailsHelpText = `Add a brief one to two sentence description of your application. Consider using the “Description of Work” from your task order.`;
@@ -131,6 +158,10 @@ export default class CreateApplicationForm extends Vue {
         (v: string) =>
           (v.trim().length <= 100 && v.trim().length >= 4) ||
           "Please enter between 4 and 100 characters.",
+      ],
+      applicationDetails: [
+        (v: string) =>
+          v.trim().length <= 300 || "Description cannot exceed 300 characters",
       ],
       environments: [
         (v: string) =>
@@ -172,7 +203,51 @@ export default class CreateApplicationForm extends Vue {
       const formValidated = this.Form.validate();
       validated = formValidated;
     });
+
     return validated;
+  }
+
+  private checkForValidationErrors(): void {
+    let fields = [
+      {
+        id: "application-name_text_field_control",
+        type: "atat-text-field",
+        name: "Application Name",
+      },
+      {
+        id: "application-details_text_field_control",
+        type: "atat-text-field",
+        name: "Application Details",
+      },
+    ];
+
+    this._application.environments.forEach((env) => {
+      fields.push({
+        id: `${env.id}_text_field_control`,
+        type: "atat-text-field",
+        name: "Application Environment",
+      });
+    });
+
+    this.validations = fields.map((field) => {
+      return {
+        name: field.name,
+        error: displayErrorInPanel(field.id, field.type),
+      };
+    });
+
+    this.hasValidationErrors =
+      this.validations.some((item) => item.error == true) && this.isStepTouched;
+  }
+
+  mounted(): void {
+    this.$nextTick(() => {
+      this.checkForValidationErrors();
+    });
+  }
+
+  get validationErrors(): Array<{ name: string; error: boolean }> {
+    return this.validations.filter((validation) => validation.error === true);
   }
 }
 </script>
