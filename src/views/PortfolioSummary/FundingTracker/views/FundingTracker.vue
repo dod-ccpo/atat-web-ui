@@ -245,11 +245,11 @@ export default class FundingTracker extends Vue {
           borderDash: [4, 4],
           borderRadius: 10,
           borderColor: "transparent",
-          lineWidth: function(context: any) {
+          lineWidth: function (context: any) {
             return context.tick.label === "Jan 2022" ? 2 : 3;
           },
           tickWidth: 0,
-          color: function(context: any) {
+          color: function (context: any) {
             return context.tick.label === "Jan 2022"
               ? "#A9AEB1"
               : "transparent";

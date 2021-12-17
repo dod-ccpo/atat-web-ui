@@ -70,7 +70,6 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextArea extends VTextarea {
-
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -84,9 +83,9 @@ export default class ATATTextArea extends VTextarea {
   @Prop({ default: false }) private validateOnLoad!: boolean;
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @PropSync("value", { default: "" }) private _value!: string;
-  
+
   //data
-  private isFieldValid: undefined | boolean  = false;
+  private isFieldValid: undefined | boolean = false;
   private rounded = false;
   private appendedOuterIcon = "";
   private isFieldDirty = false;

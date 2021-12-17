@@ -53,7 +53,7 @@ export default class ATATDialogBase extends Vue {
 
   @PropSync("showDialog")
   private _showDialog!: boolean;
- 
+
   @Watch("showDialog")
   setFocus(newVal: boolean): void {
     if (newVal) {

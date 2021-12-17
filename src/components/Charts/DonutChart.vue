@@ -43,7 +43,7 @@ export default class DonutChart extends Vue {
   public centertext(self: any): any {
     const centertext: any = {
       id: "centertext",
-      beforeDraw: function(chart: any) {
+      beforeDraw: function (chart: any) {
         const width = chart.width,
           height = chart.height,
           ctx = chart.ctx;

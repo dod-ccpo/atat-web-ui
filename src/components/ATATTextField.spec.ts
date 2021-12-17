@@ -23,8 +23,8 @@ describe("Testing ATATTextField Component", () => {
       },
     });
     wrapper.setData({
-      id: "clin-number"
-    })
+      id: "clin-number",
+    });
   });
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
