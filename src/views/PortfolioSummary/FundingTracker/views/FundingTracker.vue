@@ -183,7 +183,7 @@
                 :chart-data="donutChartData"
                 :chart-options="donutChartOptions"
                 :use-chart-data-labels="true"
-                center-text1="$1,200,000"
+                center-text1="$200,000"
                 center-text2="Total Portfolio Funds"
               />
             </v-col>

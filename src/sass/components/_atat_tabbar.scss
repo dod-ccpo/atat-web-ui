@@ -1,8 +1,11 @@
 .atat-tabbar{
+  .theme--light.v-tabs-items{
+    background-color: transparent !important;
+  }
   .v-tabs-bar{
-    height: 44px !important;  
+    height: 44px !important;
     .v-slide-group__wrapper {
-      
+
       padding-bottom: 3px;
     }
     .v-slide-group__content.v-tabs-bar__content{
@@ -11,9 +14,6 @@
       flex-shrink: 0;
       flex-basis: auto;
       gap:24px;
-    }
-    .theme--light.v-tabs-items{
-      background-color: transparent !important;
     }
     .v-tab {
       padding: 0;
