@@ -534,7 +534,6 @@ export default class ATATDatePicker extends Vue {
       const isCalendarClicked =
         element.closest(".v-date-picker-table") !== null;
       if (isCalendarClicked) {
-        debugger;
         // if both textboxes have valid dates, close menu
         const button = element.parentElement as HTMLButtonElement;
         if (button.nodeName.toLowerCase() === "button"){
