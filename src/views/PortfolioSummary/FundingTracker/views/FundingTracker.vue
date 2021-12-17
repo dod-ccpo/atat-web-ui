@@ -14,10 +14,35 @@
     <v-row>
       <v-col class="col-sm-8">
         <v-card class="no-shadow v-sheet--outlined height-100">
-          <h3>Portfolio Details</h3>
+          <h3 class="mb-0 pb-6">Portfolio Details</h3>
           <v-row>
-            <v-col class="col-sm-5">{ Avl funds area }</v-col>
-            <v-col class="col-sm-7">{ Total Portfolio Funds }</v-col>
+            <v-col class="col-sm-5"
+              ><div
+                class="bg-accent-cool-lightest pl-6 pt-6 pr-3 pb-16 rounded-sm"
+              >
+                <h2 class="h1 mb-0">$147,469.04</h2>
+                <p class="font-weight-bold body-lg mb-0 pb-5">
+                  Available Funds
+                </p>
+                <p class="mb-0 pb-2">
+                  Your remaining portfolio balance from all of your active task
+                  orders
+                </p>
+              </div></v-col
+            >
+            <v-col class="col-sm-7">
+              <p class="text--base-darkest pt-4 mb-0">Total Portfolio Funds</p>
+              <h3 class="mb-0">$200,000.00</h3>
+              <p class="text--base-dark mb-0">
+                Total value of your active task orders
+              </p>
+              <v-divider class="mb-9 mt-8" />
+              <p class="text--base-darkest mb-0">
+                Current Period of Performance
+              </p>
+              <h4 class="mb-0">Jan. 1, 2021–Dec. 31, 2021</h4>
+              <p class="text--base-dark mb-0">8 months to expiration</p>
+            </v-col>
           </v-row>
         </v-card>
       </v-col>
@@ -245,11 +270,11 @@ export default class FundingTracker extends Vue {
           borderDash: [4, 4],
           borderRadius: 10,
           borderColor: "transparent",
-          lineWidth: function(context: any) {
+          lineWidth: function (context: any) {
             return context.tick.label === "Jan 2022" ? 2 : 3;
           },
           tickWidth: 0,
-          color: function(context: any) {
+          color: function (context: any) {
             return context.tick.label === "Jan 2022"
               ? "#A9AEB1"
               : "transparent";
