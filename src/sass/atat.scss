@@ -29,6 +29,7 @@
 @import "./components/v_tooltip.scss";
 @import "./components/atat_wizard.scss";
 @import "./components/clins-card";
+@import "./components/atat_tabbar.scss";
 
 
 @import "./components/validation.scss";
@@ -50,6 +51,9 @@ body,html{
 
 .content-max-width {
     max-width: 740px !important;
+    .atat-alert & {
+        max-width: 820px !important;
+    }
 }
 
 .input-max-width {

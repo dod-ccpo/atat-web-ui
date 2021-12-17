@@ -293,6 +293,13 @@ export default class ATATPortfolioSummaryCard extends Vue {
           this.archiveFocusId = this.moreButtonId(card.id);
         }
         this.showArchiveDialog = true;
+        break;
+      case "Open portfolio":
+        this.$store.commit("wizard/setCurrentPortfolioId", card.id);
+        this.$router.push({
+          name: "portfoliosummary",
+        });
+        break;
     }
   }
 
@@ -300,7 +307,15 @@ export default class ATATPortfolioSummaryCard extends Vue {
     if (event.code !== undefined) {
       event.preventDefault();
     }
-    this.$emit("portfolio-edit", card.id);
+    if (this.tempPortfolioType === "active") {
+      this.$store.commit("wizard/setCurrentPortfolioId", card.id);
+      this.$router.push({
+        name: "portfoliosummary",
+      });
+    }
+    if (this.tempPortfolioType === "draft") {
+      this.$emit("portfolio-edit", card.id);
+    }
   }
 
   @Emit("portfolio-delete")

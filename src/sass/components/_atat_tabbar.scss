@@ -1,0 +1,50 @@
+.atat-tabbar{
+  .v-tabs-bar{
+    height: 44px !important;  
+    .v-slide-group__wrapper {
+      
+      padding-bottom: 3px;
+    }
+    .v-slide-group__content.v-tabs-bar__content{
+      display: flex;
+      flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: auto;
+      gap:24px;
+    }
+    .theme--light.v-tabs-items{
+      background-color: transparent !important;
+    }
+    .v-tab {
+      padding: 0;
+      border-radius: 0 !important;
+      text-transform: none !important;
+      min-width: auto;
+      &.v-tab--active {
+        &:after {
+          content: "";
+          position: absolute;
+          display: block;
+          background-color: $primary;
+          height: 3px;
+          bottom: -3px;
+          width: 100%;
+        }
+      }
+      &:hover, &:focus {
+        &:before {
+          background-color: transparent !important;
+        }
+      }
+      .tabname{
+        padding-top: 8px;
+        padding-bottom: 12px;
+        line-height: 20px;
+      }
+
+    }
+    .v-tabs-slider-wrapper{
+      display: none !important;
+    }
+  }
+}

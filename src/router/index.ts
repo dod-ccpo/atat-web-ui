@@ -51,7 +51,7 @@ const routes: Array<RouteConfig> = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "style" */ "../wizard/Step0/components/ViewPortfolio/ViewPortfolio.vue"
+        /* webpackChunkName: "style" */ "../views/wizard/Step0/components/ViewPortfolio/ViewPortfolio.vue"
       ),
   },
   {
@@ -62,7 +62,7 @@ const routes: Array<RouteConfig> = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "style" */ "../wizard/Step0/components/CreatePortfolio/CreatePortfolio.vue"
+        /* webpackChunkName: "style" */ "../views/wizard/Step0/components/CreatePortfolio/CreatePortfolio.vue"
       ),
   },
   {
@@ -73,6 +73,28 @@ const routes: Array<RouteConfig> = [
     },
     component: () =>
       import(/* webpackChunkName: "style" */ "../views/Profile.vue"),
+  },
+  {
+    path: "/portfoliosummary",
+    name: "portfoliosummary",
+    meta: {
+      title: "Portfolio Summary",
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../views/PortfolioSummary/Index.vue"
+      ),
+  },
+  {
+    path: "/portfoliosummary/fundingtracker",
+    name: "fundingtracker",
+    meta: {
+      title: "Funding Tracker",
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "style" */ "../views/PortfolioSummary/FundingTracker/views/FundingTracker.vue"
+      ),
   },
 ];
 
