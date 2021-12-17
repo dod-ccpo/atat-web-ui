@@ -6,7 +6,7 @@
         <v-tab
           href="#fundingTracker"
           class="h5 font-weight-bold body atat-tabbar-content ml-14"
-          ><div class="tabname pb-4">Funding Tracker</div></v-tab
+          ><div class="tabname">Funding Tracker</div></v-tab
         >
         <v-tab-item value="fundingTracker">
           <funding-tracker></funding-tracker>
@@ -15,19 +15,19 @@
           class="h5 font-weight-bold body atat-tabbar-content"
           disabled
           tabindex="-1"
-          ><div class="tabname pb-4">Task Orders</div></v-tab
+          ><div class="tabname">Task Orders</div></v-tab
         >
         <v-tab
           class="h5 font-weight-bold body atat-tabbar-content"
           disabled
           tabindex="-1"
-          ><div class="tabname pb-4">Applications</div></v-tab
+          ><div class="tabname">Applications</div></v-tab
         >
         <v-tab
           class="h5 font-weight-bold body atat-tabbar-content"
           disabled
           tabindex="-1"
-          ><div class="tabname pb-4">Settings</div></v-tab
+          ><div class="tabname">Settings</div></v-tab
         >
       </v-tabs>
     </div>
