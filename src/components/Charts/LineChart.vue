@@ -19,12 +19,11 @@ export default class LineChart extends Vue {
 
   @Watch("toggleDataset")
   protected doToggleDataset(): void {
-    debugger;
     const i = this.datasetToToggle;
     const isDatasetVisible = this.myChart.isDatasetVisible(i);
     if (isDatasetVisible) {
-      this.myChart.hide(i);
-      this.myChart.hide(i + 1);
+      this.myChart.hide(i); // actual spend (solid)
+      this.myChart.hide(i + 1); // burndown (dashed)
     } else {
       this.myChart.show(i);
       this.myChart.show(i + 1);

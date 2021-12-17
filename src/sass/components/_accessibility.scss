@@ -300,12 +300,3 @@ a.v-tab {
     content: "expand_more";
   }
 }
-
-.v-input--checkbox {
-    &:focus-visible {
-        .v-input--selection-controls__input {
-                border-radius: 3px;
-                box-shadow: $focus-shadow-tight;
-        }
-    }
-}

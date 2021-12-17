@@ -106,6 +106,7 @@
               row
               class="
                 checkbox-group-row
+                center-checkboxes
                 chart-legend-checkboxes
                 label-small
                 no-messages
@@ -221,7 +222,6 @@ export default class FundingTracker extends Vue {
   public toggleDataset = false;
 
   private doToggleDataset(datasetIndex: number) {
-    debugger;
     this.datasetToToggle = datasetIndex;
     this.toggleDataset = !this.toggleDataset;
   }
