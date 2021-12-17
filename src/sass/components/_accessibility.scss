@@ -293,3 +293,12 @@ a:not(.left-nav-menu-link):not(.menu-item):not(.step-description) {
     content: "expand_more";
   }
 }
+
+.v-input--checkbox {
+    &:focus-visible {
+        .v-input--selection-controls__input {
+                border-radius: 3px;
+                box-shadow: $focus-shadow-tight;
+        }
+    }
+}

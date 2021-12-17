@@ -63,9 +63,7 @@
   &.border--left{
       border-width: 4px;
     }
-
 }
-
 
 .v-application .warning_lighter.border {
   border-color: var(--v-warning-base) !important;
@@ -114,3 +112,11 @@
   }
   border-left-style: solid !important;
 }
+
+// .note {
+//   font-size: 1.2rem;
+//   &.bg-gray {
+//     background-color: $base-lightest;
+
+//   }
+// }

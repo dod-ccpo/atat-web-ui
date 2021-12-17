@@ -77,8 +77,40 @@
             :chart-data="lineChartData"
             :chart-options="lineChartOptions"
           />
-          { legend }
-          <div class="bg-base-lightest pv-2">
+          <div class="d-block text-center">
+            <v-radio-group row class="checkbox-group-row label-small">
+              <v-checkbox
+                id="TotalForAllClins_checkbox"
+                v-model="totalCLINs_checked"
+                label="Total of All CLINs"
+                hide-details="true"
+                :ripple="false"
+                class="color_chart_1"
+                @change="toggleDataset(0)"
+              ></v-checkbox>
+
+              <v-checkbox
+                label="Unclassified XaaS"
+                v-model="unclassifiedXaaS_checked"
+                hide-details="true"
+                :ripple="false"
+                class="color_chart_2"
+                @change="toggleDataset(2)"
+              ></v-checkbox>
+
+              <v-checkbox
+                label="Unclassified Cloud Support Package"
+                v-model="unclassifiedCloudSupportPackage_checked"
+                hide-details="true"
+                :ripple="false"
+                disabled
+                class="color_chart_3"
+                @change="toggleDataset(4)"
+              ></v-checkbox>
+            </v-radio-group>
+          </div>
+
+          <div class="bg-base-lightest py-1 px-6 text-center mt-4 font-size-12">
             NOTE: Solid lines denote actual spend from previous months. Dashed
             lines denote projected burn for upcoming months.
           </div>
@@ -146,6 +178,16 @@ export default class FundingTracker extends Vue {
   public chartDataColors = this.$store.getters.getChartDataColors;
   public chartDataColorSequence = this.$store.getters.getChartDataColorSequence;
   public chartAuxColors = this.$store.getters.getChartAuxColors;
+
+  public totalCLINs_checked = true;
+  public unclassifiedXaaS_checked = false;
+  public unclassifiedCloudSupportPackage_checked = false;
+
+  private toggleDataset(datasetIndex: number) {
+    debugger;
+    // revisit
+    // this.$emit('toggleDataset', [datasetIndex, this.totalCLINs_checked])
+  }
   private lineChartData = {
     labels: [
       "Sept",
@@ -164,6 +206,7 @@ export default class FundingTracker extends Vue {
     ],
     datasets: [
       {
+        dataSetId: "TotalCLINs",
         label: "Total for all CLINs",
         data: [230, 190, 188, 170, 160, null, null, null],
         fill: false,
@@ -177,6 +220,7 @@ export default class FundingTracker extends Vue {
         lineTension: 0,
       },
       {
+        dataSetId: "TotalCLINs",
         label: "Total for all CLINs Projected Burn",
         spanGaps: true,
         data: [
@@ -200,43 +244,43 @@ export default class FundingTracker extends Vue {
         borderDash: [6, 4],
         pointRadius: 0,
       },
-      {
-        label: "Unclassified XaaS",
-        data: [230, 180, 175, 120, 100, null, null, null],
-        fill: false,
-        borderColor: this.chartDataColorSequence[1],
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: this.chartDataColorSequence[1],
-        pointHoverBackgroundColor: "#FFFFFF",
-        pointBorderWidth: 2,
-        pointHoverBorderWidth: 2,
-        lineTension: 0,
-      },
-      {
-        label: "Unclassified XaaS Projected Burn",
-        spanGaps: true,
-        data: [
-          null,
-          null,
-          null,
-          null,
-          100,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          0,
-        ],
-        fill: false,
-        borderWidth: 2,
-        borderColor: this.chartDataColorSequence[1],
-        borderDash: [6, 4],
-        pointRadius: 0,
-      },
+      // {
+      //   label: "Unclassified XaaS",
+      //   data: [230, 180, 175, 120, 100, null, null, null],
+      //   fill: false,
+      //   borderColor: this.chartDataColorSequence[1],
+      //   borderWidth: 2,
+      //   pointRadius: 3,
+      //   pointBackgroundColor: this.chartDataColorSequence[1],
+      //   pointHoverBackgroundColor: "#FFFFFF",
+      //   pointBorderWidth: 2,
+      //   pointHoverBorderWidth: 2,
+      //   lineTension: 0,
+      // },
+      // {
+      //   label: "Unclassified XaaS Projected Burn",
+      //   spanGaps: true,
+      //   data: [
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     100,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     0,
+      //   ],
+      //   fill: false,
+      //   borderWidth: 2,
+      //   borderColor: this.chartDataColorSequence[1],
+      //   borderDash: [6, 4],
+      //   pointRadius: 0,
+      // },
     ],
   };
   public lineChartOptions = {
@@ -252,7 +296,7 @@ export default class FundingTracker extends Vue {
       mode: "index",
       intersect: false,
     },
-    aspectRatio: 2,
+    aspectRatio: 2.75,
     scales: {
       x: {
         grid: {
