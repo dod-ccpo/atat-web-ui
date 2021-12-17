@@ -485,11 +485,11 @@ export default class ATATDatePicker extends Vue {
     // menu to remain open if any components within this component are clicked and
     // closed if user clicks elsewhere
     const element = event.target as HTMLElement;
-
+  
     // opens menu if one of the textboxes or calendar icons
     // or calendar dates were clicked
     this.menu =
-      element.closest("button") !== null ||
+      element.closest(".two-date-pickers") !== null ||
       element.closest(".v-input__slot") !== null;
 
     // if icon is clicked
@@ -529,19 +529,23 @@ export default class ATATDatePicker extends Vue {
         this.isEndTextBoxFocused = !isStartIcon;
         this.setTitle(isStartIcon);
       }
-      // if calendars were clicked
+    
+    // if calendars were clicked
       const isCalendarClicked =
         element.closest(".v-date-picker-table") !== null;
       if (isCalendarClicked) {
+        debugger;
         // if both textboxes have valid dates, close menu
         const button = element.parentElement as HTMLButtonElement;
-        this.styleDatePickerButton(button, this.isStartTextBoxFocused);
-        if (!this.isDateRangeValid) {
-          this.toggleTextBoxes(button);
-        } else {
-          this.removeTextBoxFocus();
+        if (button.nodeName.toLowerCase() === "button"){
+          this.styleDatePickerButton(button, this.isStartTextBoxFocused);
+          if (!this.isDateRangeValid) {
+            this.toggleTextBoxes(button);
+          } else {
+            this.removeTextBoxFocus();
+          }
+          this.menu = !this.isDateRangeValid;
         }
-        this.menu = !this.isDateRangeValid;
       }
     } else {
       //menu and calendar are closed
