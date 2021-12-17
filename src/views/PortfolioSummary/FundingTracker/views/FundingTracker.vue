@@ -13,7 +13,7 @@
     </v-row>
     <v-row>
       <v-col class="col-md-6 col-lg-8">
-        <v-card class="no-shadow v-sheet--outlined">
+        <v-card class="no-shadow v-sheet--outlined height-100">
           <h3 class="mb-0 pb-6">Portfolio Details</h3>
           <div class="d-flex flex-wrap align-stretch">
             <div
