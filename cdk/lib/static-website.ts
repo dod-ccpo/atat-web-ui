@@ -1,9 +1,9 @@
 import * as iam from "@aws-cdk/aws-iam";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as cdk from "@aws-cdk/core";
-import { Construct, Stack, StaticSiteProps } from "@aws-cdk/core";
+import { Construct, Stack } from "@aws-cdk/core";
 
-interface StaticSiteProps extends cdk.StackProps {
+interface StaticSiteProps {
   environmentId: string;
   applicationName: string;
 }
