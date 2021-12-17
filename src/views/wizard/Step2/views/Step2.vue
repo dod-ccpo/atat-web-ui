@@ -23,6 +23,9 @@ import {
 } from "../../../../../types/Wizard";
 import ValidatableWizardStep from "../../ValidatableWizardStep.vue";
 import { Clin } from "types/TaskOrder";
+import { displayErrorInPanel } from "@/helpers/wizard";
+
+
 
 Component.registerHooks(["beforeRouteLeave"]);
 @Component({
@@ -96,45 +99,37 @@ export default class Step_2 extends ValidatableWizardStep<TaskOrderModel> {
   }
 
   public getclinCardPanelErrorMessages(): void {
-    this.errorPanelMessages[0].display = this.displayErrorInPanel(
+    this.errorPanelMessages[0].display = displayErrorInPanel(
       "task-order-number_text_field",
       "atat-text-field"
     );
-    this.errorPanelMessages[1].display = this.displayErrorInPanel(
+    this.errorPanelMessages[1].display = displayErrorInPanel(
       "task-order-document-upload",
       "file-upload"
     );
-    this.errorPanelMessages[2].display = this.displayErrorInPanel(
+    this.errorPanelMessages[2].display = displayErrorInPanel(
       "task-order-signed",
       "alert"
     );
-    this.errorPanelMessages[3].display = this.displayErrorInPanel(
+    this.errorPanelMessages[3].display = displayErrorInPanel(
       "clin-number",
       "atat-text-field"
     );
-    this.errorPanelMessages[4].display = this.displayErrorInPanel(
+    this.errorPanelMessages[4].display = displayErrorInPanel(
       "corresponding-idiq-clin",
       "atat-select"
     );
-    this.errorPanelMessages[5].display = this.displayErrorInPanel(
+    this.errorPanelMessages[5].display = displayErrorInPanel(
       "total_clin_value",
       "atat-text-field"
     );
-    this.errorPanelMessages[6].display = this.displayErrorInPanel(
+    this.errorPanelMessages[6].display = displayErrorInPanel(
       "obligated_funds",
       "atat-text-field"
     );
-    this.errorPanelMessages[7].display = this.displayErrorInPanel(
+    this.errorPanelMessages[7].display = displayErrorInPanel(
       "clin-datepicker-text-boxes-datepicker",
       "atat-date-picker"
-    );
-  }
-
-  public displayErrorInPanel(selectorId: string, type: string): boolean {
-    return (
-      document.querySelector(
-        "[id^='" + selectorId + "']." + type + " .error--text"
-      ) !== null
     );
   }
 
