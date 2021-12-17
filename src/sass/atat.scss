@@ -51,6 +51,9 @@ body,html{
 
 .content-max-width {
     max-width: 740px !important;
+    .atat-alert & {
+        max-width: 820px !important;
+    }
 }
 
 .input-max-width {

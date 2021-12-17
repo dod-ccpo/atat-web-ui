@@ -164,6 +164,7 @@
     }
   }
   &.secondary-btn, &.v-btn--outlinedbtn {
+    background-color: #fff !important;
     border: 2px solid $primary;
     color: $primary;
     &:hover {

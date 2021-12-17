@@ -23,16 +23,17 @@
           {{ getIcon() }}
         </i>
       </div>
-      <div class="body-lg black--text pl-4">
+      <div class="body-lg black--text pl-4 content-max-width">
         <slot name="content"></slot>
       </div>
       <div
         v-if="closeButton"
         class="
           text-center
-          px-0
+          pr-0
+          pl-4
           pt-1
-          mx-4
+          mx-0
           d-flex
           flex-column
           align-start
