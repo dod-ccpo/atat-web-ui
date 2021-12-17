@@ -177,7 +177,7 @@
             active task orders during this period of performance.
           </p>
           <v-row>
-            <v-col class="col-sm-5 ml-n6">
+            <v-col class="col-sm-12 col-md-6 col-lg-5 ml-n6">
               <donut-chart
                 chart-id="DonutChart2"
                 :chart-data="donutChartData"
@@ -187,7 +187,63 @@
                 center-text2="Total Portfolio Funds"
               />
             </v-col>
-            <v-col class="col-sm-7"> { legend } </v-col>
+            <v-col class="col-sm-12 col-md-6 col-lg-7">
+              <div class="d-flex height-100 align-center">
+                <div>
+                  <table class="width-100 chart-legend-table">
+                    <thead class="hidden-table-headers">
+                      <tr>
+                        <th>Funds Type</th>
+                        <th>Amount</th>
+                        <th>Percentage of Total Portfolio Funds</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="d-flex align-center pr-4">
+                          <span
+                            class="chart-legend-square"
+                            :class="'bg-chart_color' + 1"
+                          >
+                          </span>
+                          <strong>Funds spent</strong>
+                        </td>
+                        <td class="text-right pr-4">$147,469.04</td>
+                        <td class="text-right font-weight-bold">73.7%</td>
+                      </tr>
+                      <tr>
+                        <td class="d-flex align-center pr-4 nowrap">
+                          <span
+                            class="chart-legend-square"
+                            :class="'bg-chart_color' + 2"
+                          >
+                          </span>
+                          <strong>Funds awaiting invoice</strong>
+                        </td>
+                        <td class="text-right pr-4">$8,452.48</td>
+                        <td class="text-right font-weight-bold">4.2%</td>
+                      </tr>
+                      <tr>
+                        <td class="d-flex align-center pr-4">
+                          <span class="chart-legend-square bg-chart_gray"></span>
+                          <strong>Funds remaining</strong>
+                        </td>
+                        <td class="text-right pr-4">$44,078.48</td>
+                        <td class="text-right font-weight-bold">22%</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3" class="py-2"><v-divider /></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Total Portfolio Funds</strong></td>
+                        <td class="text-right pr-4">$200,000.00</td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </v-col>
           </v-row>
         </v-card>
       </v-col>

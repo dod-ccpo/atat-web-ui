@@ -300,3 +300,12 @@ a.v-tab {
     content: "expand_more";
   }
 }
+
+.hidden-table-headers {
+    font-size: 0px;
+    tr {
+        position: absolute;
+        left: -10000;
+
+    }
+}
