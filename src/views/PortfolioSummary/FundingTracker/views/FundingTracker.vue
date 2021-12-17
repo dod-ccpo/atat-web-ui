@@ -15,22 +15,21 @@
       <v-col class="col-md-6 col-lg-8">
         <v-card class="no-shadow v-sheet--outlined">
           <h3 class="mb-0 pb-6">Portfolio Details</h3>
-          <div class="d-flex flex-wrap">
-            <div style="width: 270px" class="mr-5">
-              <div class="bg-accent-cool-lightest pl-6 pt-6 pr-3 pb-16 rounded">
-                <span class="h1 mb-0">$147,469.04</span>
-                <p class="font-weight-bold body-lg mb-0 pb-5">
-                  Available Funds
-                </p>
-                <p class="mb-0 pb-2">
-                  Your remaining portfolio balance from all of your active task
-                  orders
-                </p>
-              </div>
+          <div class="d-flex flex-wrap align-stretch">
+            <div
+              class="bg-accent-cool-lightest px-6 py-6 mr-5"
+              style="border-radius: 4px; width: 270px"
+            >
+              <span class="h1 mb-0">$147,469.04</span>
+              <p class="font-weight-bold body-lg mb-0 pb-5">Available Funds</p>
+              <p class="mb-0 pb-2">
+                Your remaining portfolio balance from all of your active task
+                orders
+              </p>
             </div>
-            <div>
+            <div class="pb-4">
               <p class="text--base-darkest pt-4 mb-0">Total Portfolio Funds</p>
-              <span class="h3 mb-0">$200,000.00</span>
+              <span class="h2 mb-0">$200,000.00</span>
               <p class="text--base-dark mb-0">
                 Total value of your active task orders
               </p>
@@ -38,7 +37,7 @@
               <p class="text--base-darkest mb-0">
                 Current Period of Performance
               </p>
-              <span class="mb-0">Jan. 1, 2021–Dec. 31, 2021</span>
+              <span class="h3 mb-0">Jan. 1, 2021–Dec. 31, 2021</span>
               <p class="text--base-dark mb-0">8 months to expiration</p>
             </div>
           </div>
