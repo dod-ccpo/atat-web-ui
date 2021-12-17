@@ -65,20 +65,31 @@
             exceed your portfolio’s budget.
           </p>
           <v-row class="mb-0">
-            <v-col>
-              Funds available
-            </v-col>
+            <v-col>Funds available</v-col>
             <v-col class="text-right">
               Current Period: Jan. 1, 2021–Dec. 31, 2021
             </v-col>
           </v-row>
           <line-chart
             chart-id="LineChart1"
+            ref="lineChart"
             :chart-data="lineChartData"
             :chart-options="lineChartOptions"
+            :dataset-to-toggle="datasetToToggle"
+            :toggle-dataset="toggleDataset"
           />
           <div class="d-block text-center">
-            <v-radio-group row class="checkbox-group-row label-small">
+            <v-radio-group
+              row
+              class="
+                checkbox-group-row
+                chart-legend-checkboxes
+                label-small
+                no-messages
+                compact
+                mt-4
+              "
+            >
               <v-checkbox
                 id="TotalForAllClins_checkbox"
                 v-model="totalCLINs_checked"
@@ -86,16 +97,17 @@
                 hide-details="true"
                 :ripple="false"
                 class="color_chart_1"
-                @change="toggleDataset(0)"
+                @change="doToggleDataset(0)"
               ></v-checkbox>
 
-              <v-checkbox
+              <!-- EJY stubbed, to add back in future ticket -->
+              <!-- <v-checkbox
                 label="Unclassified XaaS"
                 v-model="unclassifiedXaaS_checked"
                 hide-details="true"
                 :ripple="false"
                 class="color_chart_2"
-                @change="toggleDataset(2)"
+                @change="doToggleDataset(2)"
               ></v-checkbox>
 
               <v-checkbox
@@ -103,10 +115,9 @@
                 v-model="unclassifiedCloudSupportPackage_checked"
                 hide-details="true"
                 :ripple="false"
-                disabled
                 class="color_chart_3"
-                @change="toggleDataset(4)"
-              ></v-checkbox>
+                @change="doToggleDataset(4)"
+              ></v-checkbox> -->
             </v-radio-group>
           </div>
 
@@ -180,14 +191,18 @@ export default class FundingTracker extends Vue {
   public chartAuxColors = this.$store.getters.getChartAuxColors;
 
   public totalCLINs_checked = true;
-  public unclassifiedXaaS_checked = false;
+  public unclassifiedXaaS_checked = true;
   public unclassifiedCloudSupportPackage_checked = false;
 
-  private toggleDataset(datasetIndex: number) {
+  public datasetToToggle: number | null = null;
+  public toggleDataset = false;
+
+  private doToggleDataset(datasetIndex: number) {
     debugger;
-    // revisit
-    // this.$emit('toggleDataset', [datasetIndex, this.totalCLINs_checked])
+    this.datasetToToggle = datasetIndex;
+    this.toggleDataset = !this.toggleDataset;
   }
+
   private lineChartData = {
     labels: [
       "Sept",
@@ -244,9 +259,9 @@ export default class FundingTracker extends Vue {
         borderDash: [6, 4],
         pointRadius: 0,
       },
-      // {
+      // { // stubbed second dataset to be added in future ticket
       //   label: "Unclassified XaaS",
-      //   data: [230, 180, 175, 120, 100, null, null, null],
+      //   data: [190, 180, 175, 120, 100, null, null, null],
       //   fill: false,
       //   borderColor: this.chartDataColorSequence[1],
       //   borderWidth: 2,
@@ -292,6 +307,9 @@ export default class FundingTracker extends Vue {
         display: false,
       },
     },
+    animation: {
+      duration: 0,
+    },
     interaction: {
       mode: "index",
       intersect: false,
@@ -321,7 +339,9 @@ export default class FundingTracker extends Vue {
         },
       },
       y: {
-        suggestedMax: 250,
+        stepSize: 50, // needs to be dynamic based on data
+        min: 0,
+        max: 250, // needs to be dynamic based on data
         grid: {
           borderColor: "transparent",
           tickWidth: 0,
@@ -334,6 +354,7 @@ export default class FundingTracker extends Vue {
       },
     },
   };
+
   public arcGuageChartData = {
     labels: ["Funds spent", "Funds remaining"],
     datasets: [

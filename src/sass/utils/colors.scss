@@ -114,6 +114,7 @@ $gray_cool_1: #FBFCFD !default;
   background-color: transparent !important;
 }
 
+// chart/data visualization colors
 $chart_cyan: #00bde3;
 $chart_blue: #0076d6;
 $chart_orange: #fa9441;
@@ -124,8 +125,10 @@ $chart_yellow: #face00;
 $chart_violet-warm: #b04abd;
 $chart_mint-cool: #7efbe1;
 $chart_orange-warm: #914734;
-$chart_gray:  $base_lighter;
 
+$chart_gray: $base_lighter;
+
+// chart/data visualization color sequence
 $chart_color1: $chart_cyan;
 $chart_color2: $chart_blue;
 $chart_color3: $chart_orange;
@@ -136,14 +139,3 @@ $chart_color7: $chart_yellow;
 $chart_color8: $chart_violet-warm;
 $chart_color9: $chart_mint-cool;
 $chart_color10: $chart_orange-warm;
-
-// .chart_cyan, .chart_color1 { color: $chart_cyan !important; }
-// .chart_blue, .chart_color2 { color: $chart_blue !important; }
-// .chart_orange, .chart_color3 { color: $chart_orange !important; }
-// .chart_magenta, .chart_color4 { color: $chart_magenta !important; }
-// .chart_green-cool, .chart_color5 { color: $chart_green-cool !important; }
-// .chart_indigo-warm, .chart_color6 { color: $chart_indigo-warm !important; }
-// .chart_yellow, .chart_color7 { color: $chart_yellow !important; }
-// .chart_violet-warm, .chart_color8 { color: $chart_violet-warm !important; }
-// .chart_mint-cool, .chart_color9 { color: $chart_mint-cool !important; }
-// .chart_orange-warm, .chart_color10 { color: $chart_orange-warm !important; }

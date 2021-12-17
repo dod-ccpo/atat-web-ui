@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 
 @Component({})
@@ -12,10 +12,27 @@ export default class LineChart extends Vue {
   @Prop({ required: true, default: "myLineChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: any;
+  @Prop({ required: false }) public datasetToToggle!: number;
+  @Prop({ required: false }) public toggleDataset!: boolean;
 
-  private myChart: any;
-  private annotationline: any = {
-    id: "annotationline",
+  private myChart!: Chart;
+
+  @Watch("toggleDataset")
+  protected doToggleDataset(): void {
+    debugger;
+    const i = this.datasetToToggle;
+    const isDatasetVisible = this.myChart.isDatasetVisible(i);
+    if (isDatasetVisible) {
+      this.myChart.hide(i);
+      this.myChart.hide(i + 1);
+    } else {
+      this.myChart.show(i);
+      this.myChart.show(i + 1);
+    }
+  }
+
+  private currentMonthLine: any = {
+    id: "currentMonthLine",
     beforeDraw: (chart: any) => {
       if (chart.tooltip._active && chart.tooltip._active.length) {
         const ctx = chart.ctx;
@@ -49,10 +66,11 @@ export default class LineChart extends Vue {
         type: "line",
         data: this.chartData,
         options: this.chartOptions,
-        plugins: [this.annotationline],
+        plugins: [this.currentMonthLine],
       });
     }
   }
+
 
   public getOrCreateTooltip = (chart: any) => {
     let tooltipEl = chart.canvas.parentNode.querySelector("div#lineChartTooltip");
