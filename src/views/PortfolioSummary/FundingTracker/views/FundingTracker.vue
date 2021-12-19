@@ -105,6 +105,53 @@
             forecasts to see how much you are projected to spend to ensure your
             portfolio is funded appropriately.
           </p>
+          <v-row class="spend-summary-container mb-6">
+            <v-col col="4" class="spend-summary">
+              <p class="body-lg text--base-darkest mb-0">Last Month</p>
+              <span class="h1 mb-0">$15,752.59</span>
+              <p class="text--base-dark mb-0">
+                <v-icon class="success--text icon-20">trending_down</v-icon>
+                <span class="font-weight-bold pl-1">4.25%</span> vs monthly
+                average
+              </p>
+            </v-col>
+            <v-col col="4" class="spend-summary">
+              <p class="body-lg text--base-darkest mb-0">Month-to-Date</p>
+              <span class="h1 mb-0">$8,452</span>
+              <p class="text--base-dark mb-0">
+                <v-icon class="success--text icon-20">trending_down</v-icon>
+                <span class="font-weight-bold pl-1">5.48%</span> vs monthly
+                average
+              </p>
+            </v-col>
+            <v-col col="4" class="spend-summary">
+              <p class="body-lg text--base-darkest mb-0">
+                End-of-Month Forecast
+              </p>
+              <span class="h1 mb-0">$16,962.01</span>
+              <p class="text--base-dark mb-0">
+                <v-icon class="error--text icon-20">trending_up</v-icon>
+                <span class="font-weight-bold pl-1">3.1%</span> vs monthly
+                average
+              </p>
+            </v-col>
+          </v-row>
+          <v-row class="spend-summary-container">
+            <v-col col="4" class="spend-summary mr-4">
+              <p class="body-lg text--base-darkest mb-0">Month Average</p>
+              <span class="h1 mb-0">$16,452</span>
+            </v-col>
+            <v-col col="4" class="spend-summary mr-4">
+              <p class="body-lg text--base-darkest mb-0">Period-to-Date</p>
+              <span class="h1 mb-0">$173,809.52</span>
+            </v-col>
+            <v-col col="4" class="spend-summary">
+              <p class="body-lg text--base-darkest mb-0">
+                End-of-Period Forecast
+              </p>
+              <span class="h1 mb-0">$195,567.89</span>
+            </v-col>
+          </v-row>
         </v-card>
       </v-col>
     </v-row>
