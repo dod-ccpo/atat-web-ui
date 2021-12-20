@@ -80,6 +80,56 @@
   }
 }
 
+.v-textarea{
+  &.error--text{
+    .v-text-field__prefix{
+      color: $base-light !important;
+      padding-right: 0px;
+      margin-top: -1px;
+    }
+  }
+  
+  &.v-input--is-focused, 
+  &.success--text{
+    .v-text-field__prefix{
+      color: $base-darkest !important;
+     }
+  }
+
+  input{
+    padding-left: 2px;
+  }
+  &.show-validation-icon {
+    .v-text-field__slot {
+      position: relative;
+      &:after {
+        content: "";
+        font-family: "Material Icons";
+        -webkit-font-feature-settings: "liga";
+        position: absolute;
+        right: -30px;
+        top: 7px;
+        font-size: 20px;
+        font-weight: normal;
+      }
+    }
+  }
+
+  &.valid-icon .v-text-field__slot:after {
+    content: "check_circle";
+    color: $success;
+  }
+  &.invalid-icon .v-text-field__slot:after {
+    content: "error";
+    color: $error-dark;
+  }
+  &.additional-button {
+    .v-text-field__slot:after {
+      right: -70px;
+    }
+  }
+}
+
 .input-hint {
   color: $base;
   margin-top: 8px;

@@ -4,7 +4,7 @@
       <label
         :id="id + '_text_field_label'"
         class="form-field-label mr-2"
-        :class="[hasError ? 'font-weight-bold' : '']"
+        :class="[isErrored ? 'font-weight-bold' : '']"
         :for="id + '_text_field'"
       >
         {{ label }}
@@ -70,7 +70,6 @@ import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextArea extends VTextarea {
-
   // props
   @Prop({ default: "auto" }) private hideDetails!: boolean | string;
   @Prop({ default: true }) private dense!: boolean;
@@ -84,9 +83,9 @@ export default class ATATTextArea extends VTextarea {
   @Prop({ default: false }) private validateOnLoad!: boolean;
   @Prop({ default: () => [] }) private errorMessages!: string[];
   @PropSync("value", { default: "" }) private _value!: string;
-  
+
   //data
-  private isFieldValid: undefined | boolean  = false;
+  private isFieldValid: undefined | boolean = false;
   private rounded = false;
   private appendedOuterIcon = "";
   private isFieldDirty = false;
@@ -97,6 +96,7 @@ export default class ATATTextArea extends VTextarea {
     // when the rules property is populated (i.e when the parent form is saved)
     // we evalute the rules to determine what icon to display
     this.isFieldDirty = true;
+    this.isFieldValid = this.$props["rules"].length > 0 ? true : undefined;
 
     if (this.$props["rules"].length > 0) {
       let value = this._value;
@@ -113,7 +113,9 @@ export default class ATATTextArea extends VTextarea {
   }
 
   get isErrored(): boolean {
-    return (this.isFieldDirty || this.hasInitialValue) && !this.isFieldValid;
+    return (
+      (this.isFieldDirty || this.hasInitialValue) && this.isFieldValid === false
+    );
   }
 
   @Watch("validateOnLoad")
