@@ -477,13 +477,13 @@ export default class FundingTracker extends Vue {
     this.chartDataColorSequence[1],
     this.chartDataColors.gray,
   ];
-
+  public donutChartTotal = 200000.00;
   public donutChartData = {
     labels: ["Funds spent", "Funds awaiting invoice", "Funds remaining"],
     datasets: [
       {
         label: "Funding Status",
-        data: [73.7, 4.2, 22],
+        data: [147469.04, 8452.48, 44078.48],
         backgroundColor: this.donutChartColors,
         hoverBackgroundColor: this.donutChartColors,
         hoverBorderColor: this.donutChartColors,
@@ -509,8 +509,17 @@ export default class FundingTracker extends Vue {
         align: "end",
         anchor: "end",
         offset: 10,
-        formatter: function (value: number): string {
-          return value ? value + "%" : "";
+        formatter: (value: number, ctx: any) => {
+          let sum = 0;
+          const dataArr = ctx.chart.data.datasets[0].data;
+          dataArr.map((data: number) => {
+            sum += data;
+          });
+          const percentage = Number((value * 100 / sum).toFixed(1));
+          const percentString = !(percentage % 1)
+            ? percentage.toFixed() + "%"
+            : percentage + "%";
+          return percentString;
         },
       },
     },
