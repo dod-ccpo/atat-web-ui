@@ -13,7 +13,7 @@
     </v-row>
     <v-row>
       <v-col class="col-md-6 col-lg-8">
-        <v-card class="no-shadow v-sheet--outlined">
+        <v-card class="no-shadow v-sheet--outlined height-100">
           <h3 class="mb-0 pb-6">Portfolio Details</h3>
           <div class="d-flex flex-wrap align-stretch">
             <div
@@ -87,11 +87,68 @@
             historical trends and show approximately when you are projected to
             exceed your portfolio’s budget.
           </p>
+          <v-row class="mb-0">
+            <v-col>Funds available</v-col>
+            <v-col class="text-right">
+              Current Period: Jan. 1, 2021–Dec. 31, 2021
+            </v-col>
+          </v-row>
           <line-chart
             chart-id="LineChart1"
+            ref="lineChart"
             :chart-data="lineChartData"
             :chart-options="lineChartOptions"
+            :dataset-to-toggle="datasetToToggle"
+            :toggle-dataset="toggleDataset"
           />
+          <div class="d-block text-center">
+            <v-radio-group
+              row
+              class="
+                checkbox-group-row
+                center-checkboxes
+                chart-legend-checkboxes
+                label-small
+                no-messages
+                compact
+                mt-4
+              "
+            >
+              <v-checkbox
+                id="TotalForAllClins_checkbox"
+                v-model="totalCLINs_checked"
+                label="Total of All CLINs"
+                hide-details="true"
+                :ripple="false"
+                class="color_chart_1"
+                @change="doToggleDataset(0)"
+              ></v-checkbox>
+
+              <!-- EJY stubbed, to add back in future ticket -->
+              <!-- <v-checkbox
+                label="Unclassified XaaS"
+                v-model="unclassifiedXaaS_checked"
+                hide-details="true"
+                :ripple="false"
+                class="color_chart_2"
+                @change="doToggleDataset(2)"
+              ></v-checkbox>
+
+              <v-checkbox
+                label="Unclassified Cloud Support Package"
+                v-model="unclassifiedCloudSupportPackage_checked"
+                hide-details="true"
+                :ripple="false"
+                class="color_chart_3"
+                @change="doToggleDataset(4)"
+              ></v-checkbox> -->
+            </v-radio-group>
+          </div>
+
+          <div class="bg-base-lightest py-1 px-6 text-center mt-4 font-size-12">
+            NOTE: Solid lines denote actual spend from previous months. Dashed
+            lines denote projected burn for upcoming months.
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -153,6 +210,22 @@ import ATATAlert from "@/components/ATATAlert.vue";
   },
 })
 export default class FundingTracker extends Vue {
+  public chartDataColors = this.$store.getters.getChartDataColors;
+  public chartDataColorSequence = this.$store.getters.getChartDataColorSequence;
+  public chartAuxColors = this.$store.getters.getChartAuxColors;
+
+  public totalCLINs_checked = true;
+  public unclassifiedXaaS_checked = true;
+  public unclassifiedCloudSupportPackage_checked = false;
+
+  public datasetToToggle: number | null = null;
+  public toggleDataset = false;
+
+  private doToggleDataset(datasetIndex: number) {
+    this.datasetToToggle = datasetIndex;
+    this.toggleDataset = !this.toggleDataset;
+  }
+
   private lineChartData = {
     labels: [
       "Sept",
@@ -171,19 +244,21 @@ export default class FundingTracker extends Vue {
     ],
     datasets: [
       {
+        dataSetId: "TotalCLINs",
         label: "Total for all CLINs",
         data: [230, 190, 188, 170, 160, null, null, null],
         fill: false,
-        borderColor: "#00BDE3",
+        borderColor: this.chartDataColorSequence[0],
         borderWidth: 2,
         pointRadius: 3,
-        pointBackgroundColor: "#00BDE3",
+        pointBackgroundColor: this.chartDataColorSequence[0],
         pointHoverBackgroundColor: "#FFFFFF",
         pointBorderWidth: 2,
         pointHoverBorderWidth: 2,
         lineTension: 0,
       },
       {
+        dataSetId: "TotalCLINs",
         label: "Total for all CLINs Projected Burn",
         spanGaps: true,
         data: [
@@ -203,47 +278,47 @@ export default class FundingTracker extends Vue {
         ],
         fill: false,
         borderWidth: 2,
-        borderColor: "#00BDE3",
-        borderDash: [5, 5],
+        borderColor: this.chartDataColorSequence[0],
+        borderDash: [6, 4],
         pointRadius: 0,
       },
-      {
-        label: "Unclassified XaaS",
-        data: [230, 180, 175, 120, 100, null, null, null],
-        fill: false,
-        borderColor: "#5942D2",
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: "#5942D2",
-        pointHoverBackgroundColor: "#FFFFFF",
-        pointBorderWidth: 2,
-        pointHoverBorderWidth: 2,
-        lineTension: 0,
-      },
-      {
-        label: "Unclassified XaaS Projected Burn",
-        spanGaps: true,
-        data: [
-          null,
-          null,
-          null,
-          null,
-          100,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          0,
-        ],
-        fill: false,
-        borderWidth: 2,
-        borderColor: "#5942D2",
-        borderDash: [5, 5],
-        pointRadius: 0,
-      },
+      // { // stubbed second dataset to be added in future ticket
+      //   label: "Unclassified XaaS",
+      //   data: [190, 180, 175, 120, 100, null, null, null],
+      //   fill: false,
+      //   borderColor: this.chartDataColorSequence[1],
+      //   borderWidth: 2,
+      //   pointRadius: 3,
+      //   pointBackgroundColor: this.chartDataColorSequence[1],
+      //   pointHoverBackgroundColor: "#FFFFFF",
+      //   pointBorderWidth: 2,
+      //   pointHoverBorderWidth: 2,
+      //   lineTension: 0,
+      // },
+      // {
+      //   label: "Unclassified XaaS Projected Burn",
+      //   spanGaps: true,
+      //   data: [
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     100,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     null,
+      //     0,
+      //   ],
+      //   fill: false,
+      //   borderWidth: 2,
+      //   borderColor: this.chartDataColorSequence[1],
+      //   borderDash: [6, 4],
+      //   pointRadius: 0,
+      // },
     ],
   };
   public lineChartOptions = {
@@ -255,20 +330,23 @@ export default class FundingTracker extends Vue {
         display: false,
       },
     },
+    animation: {
+      duration: 0,
+    },
     interaction: {
       mode: "index",
       intersect: false,
     },
-    aspectRatio: 2,
+    aspectRatio: 2.75,
     scales: {
       x: {
         grid: {
           display: true,
-          borderDash: [4, 4],
-          borderRadius: 10,
-          borderColor: "transparent",
-          lineWidth: function (context: any) {
-            return context.tick.label === "Jan 2022" ? 2 : 3;
+          borderDash: [3, 3],
+          borderWidth: 2,
+          borderColor: this.chartAuxColors["lineChart-axis"],
+          lineWidth: function(context: any) {
+            return context.tick.label === "Jan 2022" ? 1 : 3;
           },
           tickWidth: 0,
           color: function (context: any) {
@@ -284,7 +362,9 @@ export default class FundingTracker extends Vue {
         },
       },
       y: {
-        suggestedMax: 250,
+        stepSize: 50, // needs to be dynamic based on data
+        min: 0,
+        max: 250, // needs to be dynamic based on data
         grid: {
           borderColor: "transparent",
           tickWidth: 0,
@@ -297,13 +377,14 @@ export default class FundingTracker extends Vue {
       },
     },
   };
+
   public arcGuageChartData = {
     labels: ["Funds spent", "Funds remaining"],
     datasets: [
       {
         label: "Funding Status",
         data: [74, 26],
-        backgroundColor: ["#005EA2", "#C9C9C9"],
+        backgroundColor: [this.chartDataColors.blue, this.chartDataColors.gray],
         hoverOffset: 0,
         hoverBorderWidth: 0,
         circumference: 180,
@@ -335,15 +416,21 @@ export default class FundingTracker extends Vue {
     },
   };
 
+  public donutChartColors = [
+    this.chartDataColorSequence[0],
+    this.chartDataColorSequence[1],
+    this.chartDataColors.gray,
+  ];
+
   public donutChartData = {
     labels: ["Funds spent", "Funds awaiting invoice", "Funds remaining"],
     datasets: [
       {
         label: "Funding Status",
         data: [73.7, 4.2, 22],
-        backgroundColor: ["#00BDE3", "#5942D2", "#DFE1E2"],
-        hoverBackgroundColor: ["#00BDE3", "#5942D2", "#DFE1E2"],
-        hoverBorderColor: ["#00BDE3", "#5942D2", "#DFE1E2"],
+        backgroundColor: this.donutChartColors,
+        hoverBackgroundColor: this.donutChartColors,
+        hoverBorderColor: this.donutChartColors,
         hoverBorderRadius: 0,
         hoverOffset: 10,
         hoverBorderWidth: 0,
