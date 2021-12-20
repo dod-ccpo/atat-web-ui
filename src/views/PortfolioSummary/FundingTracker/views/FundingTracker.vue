@@ -477,7 +477,6 @@ export default class FundingTracker extends Vue {
     this.chartDataColorSequence[1],
     this.chartDataColors.gray,
   ];
-  public donutChartTotal = 200000.00;
   public donutChartData = {
     labels: ["Funds spent", "Funds awaiting invoice", "Funds remaining"],
     datasets: [
@@ -494,7 +493,6 @@ export default class FundingTracker extends Vue {
       },
     ],
   };
-
   public donutChartOptions = {
     layout: {
       padding: 20,
