@@ -283,7 +283,7 @@ describe("Testing Create ClinsCard Component", () => {
   it("form exists", async () => {
     await wrapper.vm.$nextTick();
     const formWrapper = wrapper.findComponent({ ref: "form" });
-    expect(formWrapper.exists()).toBe(false);
+    expect(formWrapper.exists()).toBe(true);
   });
 
   it("correctly calculates obligated percentage", async () => {
