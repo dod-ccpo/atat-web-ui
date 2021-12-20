@@ -105,7 +105,7 @@
             forecasts to see how much you are projected to spend to ensure your
             portfolio is funded appropriately.
           </p>
-          <v-row class="spend-summary-container mb-6 mx-1">
+          <v-row class="spend-summary-container mx-1 mb-1">
             <v-col col="4" class="spend-summary">
               <p class="body-lg text--base-darkest mb-0">Last Month</p>
               <span class="h1 mb-0">$15,752.59</span>
@@ -137,11 +137,11 @@
             </v-col>
           </v-row>
           <v-row class="spend-summary-container mx-1 mb-1">
-            <v-col col="4" class="spend-summary mr-4">
+            <v-col col="4" class="spend-summary">
               <p class="body-lg text--base-darkest mb-0">Month Average</p>
               <span class="h1 mb-0">$16,452</span>
             </v-col>
-            <v-col col="4" class="spend-summary mr-4">
+            <v-col col="4" class="spend-summary">
               <p class="body-lg text--base-darkest mb-0">Period-to-Date</p>
               <span class="h1 mb-0">$173,809.52</span>
             </v-col>
