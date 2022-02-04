@@ -5,15 +5,7 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-  - package-ecosystem: npm
-    directory: "/cdk"
-    schedule:
-      interval: daily
     reviewers:
-      # Since this particular directory's ownership is shared between the two
-      # teams, each team is specifically listed in reviewers to ensure both
-      # get notified of updates.
-      - dod-ccpo/platform-team
       - dod-ccpo/portal-team
   - package-ecosystem: github-actions
     directory: "/"
