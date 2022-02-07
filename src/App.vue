@@ -1,14 +1,25 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png" />
-   <!-- Users:
-    <users /> -->
+  <v-app id="app">
+    <v-img
+        max-height="150"
+        max-width="250"
+        src="./assets/logo.png"/>
+    <v-alert
+        border="top"
+        color="red lighten-2"
+        dark
+    >
+      I'm an alert with a top border and red color
+    </v-alert>
+    <!-- Users:
+     <users /> -->
     <hello-world></hello-world>
-  </div>
+
+  </v-app>
 </template>
 
 <style lang="scss">
-@import "./sass/atat.scss"; 
+@import "./sass/atat.scss";
 </style>
 
 <script>
