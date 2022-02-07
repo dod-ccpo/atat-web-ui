@@ -13,7 +13,7 @@
     "clear": "^0.1.0",
     "core-js": "^3.6.5",
     "d": "^1.0.1",
-    "directory-tree": "^3.0.1",
+    "directory-tree": "^3.1.0",
     "vuetify": "^2.6.0",
     "typeface-source-sans-pro": "^1.1.13",
     "material-design-icons": "^3.0.1",
