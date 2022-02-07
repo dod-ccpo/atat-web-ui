@@ -1,10 +1,18 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png" />
+  <v-app id="app">
+    <v-img src="./assets/logo.png" />
+    <v-alert
+        border="top"
+        color="red lighten-2"
+        dark
+    >
+      I'm an alert with a top border and red color
+    </v-alert>
    <!-- Users:
     <users /> -->
     <hello-world></hello-world>
-  </div>
+
+  </v-app>
 </template>
 
 <style lang="scss">
