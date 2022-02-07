@@ -1,6 +1,9 @@
 <template>
   <v-app id="app">
-    <v-img src="./assets/logo.png"/>
+    <v-img
+        max-height="150"
+        max-width="250"
+        src="./assets/logo.png"/>
     <v-alert
         border="top"
         color="red lighten-2"
