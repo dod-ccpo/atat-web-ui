@@ -24,7 +24,7 @@ export default {
 
 <style lang="scss" scoped>
 .theme--light.v-navigation-drawer.global-side-nav-bar {
-  background-color: #EDEFF0;  /* USWDS/Base/base-lightest */
+  background-color: #E0E1E2;  /* DISA base-lighter */
   padding: 24px !important;
 }
 .v-list {

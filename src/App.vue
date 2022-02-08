@@ -39,7 +39,7 @@ export default {
   color: #2c3e50;
 }
 .v-main__wrap {
-  background-color: #FBFCFD; /* USWDS/Base/Off-white */
+  background-color: #FBFBFB; /* DISA Off-white */
   padding: 40px 56px;
   text-align: left;
 }
