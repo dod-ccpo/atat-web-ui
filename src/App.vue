@@ -1,20 +1,13 @@
 <template>
-  <v-app id="app">
-    <v-img
-        max-height="150"
-        max-width="250"
-        src="./assets/logo.png"/>
-    <v-alert
-        border="top"
-        color="red lighten-2"
-        dark
-    >
-      I'm an alert with a top border and red color
-    </v-alert>
-    <!-- Users:
-     <users /> -->
-    <hello-world></hello-world>
-
+  <v-app>
+    <ATATSideStepper />
+    <v-main id="app">
+      <div>
+        <h1>Main content</h1>
+        <p>Replace this div with <pre>&lt;router-view /&gt;</pre></p>
+      </div>
+      <ATATFooter />
+    </v-main>
   </v-app>
 </template>
 
@@ -23,14 +16,16 @@
 </style>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ATATSideStepper from './components/ATATSideStepper.vue'
+import ATATFooter from './components/ATATFooter.vue'
 //import users from './components/users.vue'
 
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ATATSideStepper,
+    ATATFooter,
   }
 }
 </script>
@@ -42,6 +37,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 10px;
+}
+.v-main__wrap {
+  background-color: #FBFCFD; /* USWDS/Base/Off-white */
+  padding: 40px 56px;
+  text-align: left;
 }
 </style>

@@ -1,11 +1,13 @@
-html{
-    font-size: 62.5%;
-} 
+html {
+    font-size: 10px;
+}
+body {
+    font-size: 1.6rem;
+}
+
 @import "./utils/typography.scss";
 @import "./utils/colors.scss";
 @import "./utils/utils.scss";
-
-
 
 // @import "./components/_atat_sidebar";
 // @import "./components/app-bar-top-nav";
