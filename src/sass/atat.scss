@@ -1,11 +1,34 @@
-html{
-    font-size: 62.5%;
-} 
+html {
+  font-size: 10px;
+}
+body {
+  font-size: 1.6rem;
+}
+
+.theme--light { // find a good home for theme overrides and sidebar stepper nav
+  &.v-navigation-drawer {
+    &.global-side-nav-bar {
+      background-color: #e0e1e2; /* DISA base-lighter */
+      padding: 24px !important;
+      .v-navigation-drawer__border {
+        display: none;
+      }
+      .v-list {
+        padding: 0;
+        .v-list-item {
+          padding: 0;
+          a {
+            font-size: 1.7rem;
+          }
+        }
+      }
+    }
+  }
+}
+
 @import "./utils/typography.scss";
 @import "./utils/colors.scss";
 @import "./utils/utils.scss";
-
-
 
 // @import "./components/_atat_sidebar";
 // @import "./components/app-bar-top-nav";
@@ -33,7 +56,6 @@ html{
 // @import "./components/atat_wizard.scss";
 // @import "./components/clins-card";
 // @import "./components/atat_tabbar.scss";
-
 
 // @import "./components/validation.scss";
 // @import "./components/_accessibility";
@@ -66,7 +88,6 @@ html{
 //     }
 // }
 
-
 // fieldset:not([aria-hidden="true"]) {
 //     border: none;
 //     legend {
@@ -83,4 +104,3 @@ html{
 //         font-size: initial !important;
 //     }
 // }
-

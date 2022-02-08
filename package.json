@@ -9,7 +9,6 @@
     "postbuild": "node servicenow.postbuild.js"
   },
   "dependencies": {
-    "chalk": "^5.0.0",
     "clear": "^0.1.0",
     "core-js": "^3.21.0",
     "d": "^1.0.1",
