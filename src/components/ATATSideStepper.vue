@@ -21,19 +21,3 @@ export default {
   name: "ATATSideStepper"
 }
 </script>
-
-<style lang="scss" scoped>
-.theme--light.v-navigation-drawer.global-side-nav-bar {
-  background-color: #E0E1E2;  /* DISA base-lighter */
-  padding: 24px !important;
-}
-.v-list {
-  padding: 0;
-  .v-list-item {
-    padding: 0;
-    a {
-      font-size: 1.7rem;
-    }
-  }
-}
-</style>
