@@ -4,7 +4,6 @@
 const servicenowConfig = require('./servicenow.config')
 const fs = require('fs')
 const dirTree = require('directory-tree')
-const chalk = require('chalk')
 const clear = require('clear')
 const PATH_TO_DIST_HTML = 'dist/index.html'
 const linkRelRegEx = /<\s*link[^>]*(.*?)>/g;
@@ -196,7 +195,7 @@ function outputResults() {
 
   console.log('\n')
   console.log(
-    'Find the production build in the ' + chalk.yellow('dist/') + ' directory.'
+    'Find the production build in the dist/ directory.'
   )
   console.log('\n')
 
@@ -205,28 +204,28 @@ function outputResults() {
 
     const indexHtml = tree.children.find(child => child.name === 'index.html')
     const roundedSizeKbs = bytesNumToKbsStr(indexHtml.size)
-    console.log(chalk.bold(indexHtml.path.replace('/index.html', '')))
+    console.log(indexHtml.path.replace('/index.html', ''))
     console.log('├── ' + indexHtml.name + ', ' + roundedSizeKbs)
     console.log('\n')
 
     const totalSize = bytesNumToKbsStr(tree.size)
 
-    console.log(chalk.yellow('Total bundle size: ' + totalSize))
+    console.log('Total bundle size: ' + totalSize)
     console.log('See the build files above.')
     console.log('\n')
 
     console.log(
-      chalk.green(
+      
         'Your app production build is ready for deployment in ServiceNow.'
-      )
+      
     )
     console.log('\n')
   } catch (err) {
     console.log(err.message)
     console.log(
-      chalk.yellow(
+      
         'Something went wrong. There should be an error message above.'
-      )
+      
     )
   }
 }
