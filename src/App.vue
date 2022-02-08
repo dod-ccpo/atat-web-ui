@@ -24,13 +24,12 @@
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
-//import users from './components/users.vue'
 
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    HelloWorld,
   }
 }
 </script>
