@@ -11,7 +11,7 @@
   "dependencies": {
     "chalk": "^5.0.0",
     "clear": "^0.1.0",
-    "core-js": "^3.6.5",
+    "core-js": "^3.21.0",
     "d": "^1.0.1",
     "directory-tree": "^3.1.0",
     "vuetify": "^2.6.0",
