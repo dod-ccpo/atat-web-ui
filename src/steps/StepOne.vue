@@ -5,6 +5,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-@Component({})
-export default class StepOne extends Vue {}
+@Component({
+    name:"StepOne"
+})
+export default class StepOne extends Vue {
+    private step = null;
+
+}
 </script>
