@@ -2,10 +2,7 @@
   <v-app>
     <ATATSideStepper />
     <v-main id="app">
-      <div>
-        <h1>Main content</h1>
-        <p>Replace this div with <pre>&lt;router-view /&gt;</pre></p>
-      </div>
+      <router-view></router-view>
       <ATATFooter />
     </v-main>
   </v-app>
@@ -16,18 +13,17 @@
 </style>
 
 <script>
-import ATATSideStepper from './components/ATATSideStepper.vue'
-import ATATFooter from './components/ATATFooter.vue'
+import ATATSideStepper from "./components/ATATSideStepper.vue";
+import ATATFooter from "./components/ATATFooter.vue";
 //import users from './components/users.vue'
 
-
 export default {
-  name: 'App',
+  name: "App",
   components: {
     ATATSideStepper,
     ATATFooter,
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -39,7 +35,7 @@ export default {
   color: #2c3e50;
 }
 .v-main__wrap {
-  background-color: #FBFBFB; /* DISA Off-white */
+  background-color: #fbfbfb; /* DISA Off-white */
   padding: 40px 56px;
   text-align: left;
 }
