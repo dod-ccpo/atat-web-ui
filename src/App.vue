@@ -3,6 +3,15 @@
     <ATATSideStepper />
     <v-main id="app">
       <router-view></router-view>
+      <div class="content-max-width">
+        <h1>Main content</h1>
+        <p>Replace this div with <pre>&lt;router-view /&gt;</pre></p>
+        <v-row>
+          <v-col class="col-sm-6 col-md-8">
+            <ATATAutoComplete />
+          </v-col>
+        </v-row>
+      </div>
       <ATATFooter />
     </v-main>
   </v-app>
@@ -14,18 +23,21 @@
 
 <script lang="ts">
 import Vue from "vue";
+import ATATAutoComplete from './components/ATATAutoComplete.vue'
 import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import { Component } from "vue-property-decorator";
 @Component({
   components: {
+    ATATAutoComplete,
     ATATSideStepper,
     ATATFooter
   }
 })
-export default class App extends Vue {}
-</script>
 
+export default class App extends Vue {}
+
+</script>
 
 <style>
 #app {

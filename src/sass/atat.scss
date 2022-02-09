@@ -5,7 +5,7 @@ body {
   font-size: 1.6rem;
 }
 
-.theme--light { // find a good home for theme overrides and sidebar stepper nav
+.theme--light { // TODO find a good home for theme overrides and sidebar stepper nav
   &.v-navigation-drawer {
     &.global-side-nav-bar {
       background-color: #e0e1e2; /* DISA base-lighter */
@@ -24,6 +24,21 @@ body {
       }
     }
   }
+}
+
+// TODO find good home for the below css
+.search-icon.v-select.v-select--is-menu-active .v-input__icon--append .v-icon {
+  transform: rotate(0deg);
+}
+
+.wrapper-max-width {
+  // max page width for very wide screens
+  max-width: 1000px;
+}
+
+.content-max-width {
+  // max width of the content in main content area when side panel present
+  max-width: 740px !important;
 }
 
 @import "./utils/typography.scss";
