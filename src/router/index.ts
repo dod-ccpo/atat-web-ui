@@ -1,6 +1,6 @@
 import VueRouter from "vue-router";
-import StepOne from "@/steps/StepOne.vue";
-import StepTwo from "@/steps/StepTwo.vue";
+import StepOne from "../steps/StepOne.vue";
+import StepTwo from "../steps/StepTwo.vue";
 
 const routes = [
     { path: '/', component: StepOne },
