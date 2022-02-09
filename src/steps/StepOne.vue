@@ -24,23 +24,23 @@
   </div>
 </template>
 
-<script>
-export default {
-    name:"StepOne",
-  data: () => ({
-    select:null,
-    items: [
-      'Programming',
-      'Design',
-      'Vue',
-      'Vuetify',
-    ],
-  })
-}
-</script>
 
-<style >
+<style>
 .v-list-item__title {
   font-size: 1.4rem;
 }
 </style>
+<script lang="ts">
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
+
+export default class StepOne extends Vue {
+    private select = null;
+    private items = [
+        'Programming',
+        'Design',
+        'Vue',
+        'Vuetify',
+    ]
+}
+</script>
