@@ -42,3 +42,10 @@ export default {
   })
 }
 </script>
+<style>
+.v-list-item__title {
+  font-size: 1.4rem !important;
+  line-height: 1.5 !important;
+}
+
+</style>

@@ -38,3 +38,9 @@ export default {
   })
 }
 </script>
+
+<style >
+.v-list-item__title {
+  font-size: 1.4rem;
+}
+</style>
