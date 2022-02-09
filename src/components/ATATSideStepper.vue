@@ -16,8 +16,9 @@
   </v-navigation-drawer>
 </template>
 
-<script>
-export default {
-  name: "ATATSideStepper"
-}
+<script lang="ts">
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
+@Component({})
+export default class ATATSideStepper extends Vue {}
 </script>

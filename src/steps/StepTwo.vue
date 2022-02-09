@@ -27,21 +27,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name:"StepOne",
-  data: () => ({
-    checked:null,
-    select:null,
-    items: [
-      'Programming',
-      'Design',
-      'Vue',
-      'Vuetify',
-    ],
-  })
-}
-</script>
 <style>
 .v-list-item__title {
   font-size: 1.4rem !important;
@@ -49,3 +34,18 @@ export default {
 }
 
 </style>
+<script lang="ts">
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
+@Component({})
+export default class StepTwo extends Vue {
+    private checked = null;
+    private select = null;
+    private items = [
+     'Programming',
+      'Design',
+      'Vue',
+      'Vuetify',
+    ]
+}
+</script>
