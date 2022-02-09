@@ -1,9 +1,40 @@
 <template>
+  <div>
     <div>Step One</div>
+    <v-container>
+      <v-row>
+        <v-col
+            cols="12"
+            md="4"
+        >
+          <v-text-field
+              label="Textbox Label"
+              required
+          ></v-text-field>
+          <v-select
+              v-model="select"
+              :items="items"
+              :rules="[v => !!v || 'Item is required']"
+              label="Select"
+              required
+          ></v-select>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
 export default {
-    name:"StepOne"
+    name:"StepOne",
+  data: () => ({
+    select:null,
+    items: [
+      'Programming',
+      'Design',
+      'Vue',
+      'Vuetify',
+    ],
+  })
 }
 </script>
