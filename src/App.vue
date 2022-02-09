@@ -12,19 +12,20 @@
 @import "./sass/atat.scss";
 </style>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATFooter from "./components/ATATFooter.vue";
-//import users from './components/users.vue'
-
-export default {
-  name: "App",
+import { Component } from "vue-property-decorator";
+@Component({
   components: {
     ATATSideStepper,
-    ATATFooter,
-  },
-};
+    ATATFooter
+  }
+})
+export default class App extends Vue {}
 </script>
+
 
 <style>
 #app {

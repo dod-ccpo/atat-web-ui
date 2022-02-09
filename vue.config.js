@@ -21,7 +21,7 @@ module.exports = {
     if (process.env.NODE_ENV === 'production') {
 
       // config.entry = {
-      //   [CONFIG.JS_API_PATH + 'app']: ['./src/main.js'],
+      //   [CONFIG.JS_API_PATH + 'app']: ['./src/main.ts'],
       // }
 
       config.optimization = {
