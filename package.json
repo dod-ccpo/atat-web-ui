@@ -9,7 +9,7 @@
     "postbuild": "node servicenow.postbuild.js"
   },
   "dependencies": {
-    "@types/node": "^17.0.16",
+    "@types/node": "^17.0.17",
     "clear": "^0.1.0",
     "core-js": "^3.21.0",
     "d": "^1.0.1",
