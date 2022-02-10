@@ -35,63 +35,68 @@
 
 </template>
 
-<script>
-export default {
-  name: "ATATAutoComplete",
+<script lang="ts">
+import { Component, Prop } from "vue-property-decorator";
+import Vue from "vue";
 
-  data: () => ({
-    descriptionLimit: 60,
-    entries: [],
-    isLoading: false,
-    model: null,
-    search: null,
-  }),
+@Component({})
 
-  computed: {
-    // fields () { // EJY what does this do?
-    //   if (!this.model) return []
+export default class ATATAutoComplete extends Vue {
+  @Prop({ default: false }) private hasSubtitle!: boolean;
 
-    //   return Object.keys(this.model).map(key => {
-    //     return {
-    //       key,
-    //       value: this.model[key] || 'n/a',
-    //     }
-    //   })
-    // },
-    items () {
-      return this.entries.map(entry => {
-        let Description = entry.Description.length > this.descriptionLimit
-          ? entry.Description.slice(0, this.descriptionLimit) + '...'
-          : entry.Description
-        return Object.assign({}, entry, { Description })
-      })
-    },
-  },
+  // data: () => ({
+  //   descriptionLimit: 60,
+  //   entries: [],
+  //   isLoading: false,
+  //   model: null,
+  //   search: null,
+  // }),
 
-  watch: {
-    search () { // search (val) {
-      // Items have already been loaded
-      if (this.items.length > 0) return
+  // computed: {
+  //   // fields () { // EJY what does this do?
+  //   //   if (!this.model) return []
 
-      // Items have already been requested
-      if (this.isLoading) return
+  //   //   return Object.keys(this.model).map(key => {
+  //   //     return {
+  //   //       key,
+  //   //       value: this.model[key] || 'n/a',
+  //   //     }
+  //   //   })
+  //   // },
+  //   items () {
+  //     return this.entries.map(entry => {
+  //       let Description = entry.Description.length > this.descriptionLimit
+  //         ? entry.Description.slice(0, this.descriptionLimit) + '...'
+  //         : entry.Description
+  //       return Object.assign({}, entry, { Description })
+  //     })
+  //   },
+  // },
 
-      this.isLoading = true
+  // watch: {
+  //   search () { // search (val) {
+  //     // Items have already been loaded
+  //     if (this.items.length > 0) return
 
-      // Lazily load input items
-      fetch('https://api.publicapis.org/entries')
-        .then(res => res.json())
-        .then(res => {
-          const { count, entries } = res
-          this.count = count
-          this.entries = entries
-        })
-        .catch(err => {
-          console.log(err)
-        })
-        .finally(() => (this.isLoading = false))
-    },
-  },
+  //     // Items have already been requested
+  //     if (this.isLoading) return
+
+  //     this.isLoading = true
+
+  //     // Lazily load input items
+  //     fetch('https://api.publicapis.org/entries')
+  //       .then(res => res.json())
+  //       .then(res => {
+  //         const { count, entries } = res
+  //         this.count = count
+  //         this.entries = entries
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //       })
+  //       .finally(() => (this.isLoading = false))
+  //   },
+  // },
 
 }
 </script>
