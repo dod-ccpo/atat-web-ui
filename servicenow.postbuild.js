@@ -5,7 +5,9 @@ const servicenowConfig = require('./servicenow.config')
 const fs = require('fs')
 const dirTree = require('directory-tree')
 const clear = require('clear')
-const { Console } = require('console')
+const {
+  Console
+} = require('console')
 const PATH_TO_DIST_HTML = 'dist/index.html'
 const linkRelRegEx = /<\s*link[^>]*(.*?)>/g;
 const scriptTagRegEx = /<script\b[^>]*>[\s\S/]*?<\/script\b[^>]*>/g
@@ -192,7 +194,7 @@ function decorateIndexHTML(pathToHTML) {
 function updateAssetPaths() {
 
   debugger;
-  
+
   clear();
 
   console.log('\n');
@@ -207,12 +209,11 @@ function updateAssetPaths() {
     const vendorJsPath = `./dist/js/${vendorJsFile}`;
     const vendorJsContent = fs.readFileSync(vendorJsPath, 'utf-8');
     let vendorJs = vendorJsContent;
-    vendorJs = vendorJs.replace(materialIconsRegEx, 
-    `${servicenowConfig.ASSETS_API_PATH}MaterialIcons`);
+    vendorJs = vendorJs.replace(materialIconsRegEx,
+      `${servicenowConfig.ASSETS_API_PATH}MaterialIcons`);
 
     fs.writeFileSync(vendorJsPath, vendorJs, 'utf-8');
-  }
-  else{
+  } else {
 
     console.error("unable to locate vendor js file");
   }
