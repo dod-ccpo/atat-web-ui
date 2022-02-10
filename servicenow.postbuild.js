@@ -5,12 +5,15 @@ const servicenowConfig = require('./servicenow.config')
 const fs = require('fs')
 const dirTree = require('directory-tree')
 const clear = require('clear')
+const { Console } = require('console')
 const PATH_TO_DIST_HTML = 'dist/index.html'
 const linkRelRegEx = /<\s*link[^>]*(.*?)>/g;
-const scriptTagRegEx = /<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/g
+const scriptTagRegEx = /<script\b[^>]*>[\s\S/]*?<\/script\b[^>]*>/g
 const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g
+const materialIconsRegEx = /\s*other_assets\/MaterialIcons/g
 
 decorateIndexHTML(PATH_TO_DIST_HTML)
+updateAssetPaths()
 outputResults()
 
 /**
@@ -51,8 +54,8 @@ function transformLinks(inputHTML) {
     //   inputHTML = transformLinkJs(link, inputHTML);
     // }
 
-     //for now we'll just remove the link tags
-     inputHTML = inputHTML.replace(link, '');
+    //for now we'll just remove the link tags
+    inputHTML = inputHTML.replace(link, '');
 
   });
   return inputHTML;
@@ -74,15 +77,15 @@ function transformScripts(inputHTML) {
   return inputHTML;
 }
 
-function resolveMetaTags(inputHTML){
+function resolveMetaTags(inputHTML) {
   return inputHTML.match(metaTagRegEx);
 }
 
-function removeMetaTags(inputHTML){
-   const metaTags = resolveMetaTags(inputHTML);
-   metaTags.forEach(metaTag=> inputHTML = inputHTML.replace(metaTag, ''));
+function removeMetaTags(inputHTML) {
+  const metaTags = resolveMetaTags(inputHTML);
+  metaTags.forEach(metaTag => inputHTML = inputHTML.replace(metaTag, ''));
 
-   return inputHTML;
+  return inputHTML;
 }
 
 function injectJellyWrappers(inputHTML) {
@@ -125,11 +128,11 @@ function injectJellyDoctype(inputHTML) {
   )
 }
 
-function removeXmlTag(inputHTML){
+function removeXmlTag(inputHTML) {
 
-  const tag ='<?xml version="1.0" encoding="utf-8" ?>'
+  const tag = '<?xml version="1.0" encoding="utf-8" ?>'
 
-   return inputHTML.replace(tag, '');
+  return inputHTML.replace(tag, '');
 
 }
 
@@ -150,7 +153,7 @@ function removeXmlTag(inputHTML){
 //   const headIndex = inputHTML.indexOf(headStartTag);
 //   const metaTags =  injectJellyContent('metatags', `<meta charset="utf-8"><meta http-equiv="X-UA-Compatible"
 //    content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1">`);
-   
+
 //   return (
 //     inputHTML.substring(0, headIndex + headStartTag.length) +
 //     metaTags +
@@ -186,12 +189,40 @@ function decorateIndexHTML(pathToHTML) {
   fs.writeFileSync(pathToHTML, decoratedHTML)
 }
 
+function updateAssetPaths() {
+
+  debugger;
+  
+  clear();
+
+  console.log('\n');
+  console.log("update assets path");
+
+  const files = fs.readdirSync('./dist/js');
+  const vendorJsFile = files.find(file => file.includes('vendor'));
+
+  if (vendorJsFile) {
+
+    //replace all material icon paths with asset api path
+    const vendorJsPath = `./dist/js/${vendorJsFile}`;
+    const vendorJsContent = fs.readFileSync(vendorJsPath, 'utf-8');
+    let vendorJs = vendorJsContent;
+    vendorJs = vendorJs.replace(materialIconsRegEx, 
+    `${servicenowConfig.ASSETS_API_PATH}MaterialIcons`);
+
+    fs.writeFileSync(vendorJsPath, vendorJs, 'utf-8');
+  }
+  else{
+
+    console.error("unable to locate vendor js file");
+  }
+}
+
 function bytesNumToKbsStr(bytesNum) {
   return Math.round(bytesNum / 1000) + 'kB'
 }
 
 function outputResults() {
-  clear()
 
   console.log('\n')
   console.log(
@@ -200,7 +231,7 @@ function outputResults() {
   console.log('\n')
 
   try {
-    const tree = dirTree('./dist')
+    const tree = dirTree('./dist', {})
 
     const indexHtml = tree.children.find(child => child.name === 'index.html')
     const roundedSizeKbs = bytesNumToKbsStr(indexHtml.size)
@@ -215,17 +246,17 @@ function outputResults() {
     console.log('\n')
 
     console.log(
-      
-        'Your app production build is ready for deployment in ServiceNow.'
-      
+
+      'Your app production build is ready for deployment in ServiceNow.'
+
     )
     console.log('\n')
   } catch (err) {
     console.log(err.message)
     console.log(
-      
-        'Something went wrong. There should be an error message above.'
-      
+
+      'Something went wrong. There should be an error message above.'
+
     )
   }
 }
