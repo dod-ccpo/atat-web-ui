@@ -49,21 +49,36 @@ module.exports = {
 
     if (process.env.NODE_ENV === 'production') {
       config.module
-          .rule("images")
-          .use("url-loader")
-          .loader("url-loader")
-          .tap(options => Object.assign(options,
-              {
-                limit: CONFIG.ASSET_SIZE_LIMIT,
-                fallback: {
-                  ...options.fallback,
-                  options: {
-                    name: 'img/[name]-[hash:6]-[ext]',
-                  }
+        .rule("images")
+        .use("url-loader")
+        .loader("url-loader")
+        .tap(options => Object.assign(options, {
+          limit: CONFIG.ASSET_SIZE_LIMIT,
+          fallback: {
+            ...options.fallback,
+            options: {
+              name: 'img/[name]-[hash:6]-[ext]',
+            }
 
-                }
+          }
 
-              }));
+        }));
+
+      config.module
+        .rule("fonts")
+        .use("url-loader")
+        .loader("url-loader")
+        .tap(options => Object.assign(options, {
+          limit: CONFIG.ASSET_SIZE_LIMIT,
+          fallback: {
+            ...options.fallback,
+            options: {
+              name: 'other_assets/[name]-[hash:6]-[ext]',
+            }
+
+          }
+
+        }));
 
       if (process.env.NODE_ENV === 'development') {
         config.plugin('define').tap((definitions) => {
@@ -72,19 +87,6 @@ module.exports = {
           return definitions;
         });
       }
-
-
-      // imgsRule.options = {
-      //   limit: CONFIG.ASSET_SIZE_LIMIT,
-      //   name: 'img/[name]-[hash:6]-[ext]',
-      // }
-
-      //   config.module.rule('fonts').
-      //   fonts.options = {
-      //     limit: CONFIG.ASSET_SIZE_LIMIT,
-      //     name: 'assets/[name]-[hash:6]-[ext]',
-      //   }
-      // }
     }
   },
   css: {
