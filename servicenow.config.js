@@ -15,12 +15,12 @@ const servicenowConfig = {
      * Image files (png, jpg, gif)
      * SVG files will be embedded into javascript files
      */
-    IMG_API_PATH: '/api/x_744337_vue_app/container/img/',
+    IMG_API_PATH: 'api/x_744337_vue_app/container/img/',
     /**
      * ServiceNow path to GET resource which serves
      * other files, like fonts etc.
      */
-    ASSETS_API_PATH: '/api/x_744337_vue_app/container/other_assets/',
+    ASSETS_API_PATH: 'api/x_744337_vue_app/container/other_assets/',
     /**
      * fonts and images below this size will be put inside
      * JS chunks, instead of being saved as separate files
