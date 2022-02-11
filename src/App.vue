@@ -27,18 +27,3 @@ import { Component } from "vue-property-decorator";
 export default class App extends Vue {}
 
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-.v-main__wrap {
-  background-color: #fbfbfb; /* DISA Off-white */
-  padding: 40px 56px;
-  text-align: left;
-}
-</style>
