@@ -47,7 +47,7 @@ Open your service now personal developer instance....
     } 
    ```
 7. Click Update.  
-8. in the left hand nav bar, right0click `Vue Container`, then `Rest API` and open the Rest API page in a new tab. 
+8. in the left hand nav bar, right click `Vue Container`, then `Rest API` and open the Rest API page in a new tab. 
 9. Click `JS` link in the bottom resources table.
 10. Click Attachment icon in the upper right hand corner. 
 11. Remove any existing attachments in the modal popup.
