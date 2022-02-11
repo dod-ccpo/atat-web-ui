@@ -1,0 +1,16 @@
+html {
+  font-size: 10px;
+}
+body {
+  font-size: 1.6rem;
+}
+
+.wrapper-max-width {
+  // max page width for very wide screens
+  max-width: 1000px;
+}
+
+.content-max-width {
+  // max width of the content in main content area when side panel present
+  max-width: 740px !important;
+}

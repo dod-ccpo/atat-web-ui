@@ -1,0 +1,11 @@
+.v-autocomplete {
+  &.v-select {
+    &.v-select--is-menu-active {
+      &.icon-no-rotate {
+        .v-input__icon--append .v-icon {
+          transform: none;
+        }
+      }
+    }
+  }
+}
