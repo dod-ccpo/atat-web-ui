@@ -1,36 +1,12 @@
-html {
-  font-size: 10px;
-}
-body {
-  font-size: 1.6rem;
-}
-
-.theme--light { // find a good home for theme overrides and sidebar stepper nav
-  &.v-navigation-drawer {
-    &.global-side-nav-bar {
-      background-color: #e0e1e2; /* DISA base-lighter */
-      padding: 24px !important;
-      .v-navigation-drawer__border {
-        display: none;
-      }
-      .v-list {
-        padding: 0;
-        .v-list-item {
-          padding: 0;
-          a {
-            font-size: 1.7rem;
-          }
-        }
-      }
-    }
-  }
-}
-
+@import "./utils/base.scss";
 @import "./utils/typography.scss";
 @import "./utils/colors.scss";
 @import "./utils/utils.scss";
 
+@import "./components/ATATAutoComplete";
 @import "./components/ATATFooter";
+@import "./components/VNavigationDrawer";
+@import "./components/VSelect";
 @import "./components/ATATTextField";
 
 
