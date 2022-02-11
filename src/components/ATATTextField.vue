@@ -31,11 +31,11 @@
 </template>
 
 <script lang="ts">
-import {VTextField} from "vuetify/lib";
+import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 
 @Component({})
-export default class ATATTextField extends VTextField {
+export default class ATATTextField extends Vue {
   // props
   @Prop({default: true}) private dense!: boolean;
   @Prop({default: true}) private singleLine!: boolean;
