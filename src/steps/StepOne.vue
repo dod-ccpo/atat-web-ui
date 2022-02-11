@@ -27,7 +27,9 @@
             Auto-Complete Component
           </strong>
           <ATATAutoComplete 
-            id="Autocomplete_Contact"
+            id="TO_COR"
+            label="Search and Select Task Order COR"
+            :label-sr-only="true"
             titleKey="FullName"
             subtitleKey="Email"
             :searchFields="['FullName', 'Email']"

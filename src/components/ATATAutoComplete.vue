@@ -1,6 +1,13 @@
 <template>
-  <div :id="id">
+  <div :id="id + '_AutoComplete_Wrapper'">
+    <label
+      :for="id"
+      :class="{ 'd-sr-only': labelSrOnly }"
+    >
+      {{ label }}
+    </label>
     <v-autocomplete
+      :id="id"
       v-model="model"
       :class="inputClass"
       :items="items"
@@ -52,6 +59,8 @@ export default class ATATAutoComplete extends Vue {
 
   // props
   @Prop({ default: "", required: true }) private id!: string;
+  @Prop({ default: "", required: true }) private label!: string;
+  @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
