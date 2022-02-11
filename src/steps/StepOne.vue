@@ -31,7 +31,7 @@
             subtitleKey="Email"
             :searchFields="['FullName', 'Email']"
             :items="searchData"
-            :selectedValue.sync="selectedContact"
+            :selectedItem.sync="selectedContact"
             placeholder="Search by name or email"
             icon="search"
             noResultsText="Manually enter my contact’s information"

@@ -57,14 +57,10 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: () => [], required: true }) private searchFields!: [];
   @Prop({ default: () => [], required: true }) private items!: [];
   @Prop({ default: "" }) private placeholder!: string;
-  @PropSync("selectedValue") private _selectedValue!: unknown;
+  @PropSync("selectedItem") private _selectedItem!: unknown;
   @Prop({ default: "" }) private noResultsText!: string;
 
   // computed
-  get hasSearchText(): boolean {
-    return (this.search !== null && this.search !== "");
-  }
-
   get inputClass(): string {
     let inputClass = this.icon.length ? "is-" + this.icon + "-icon" : "";
     if (this.icon === "search") {
@@ -75,10 +71,10 @@ export default class ATATAutoComplete extends Vue {
 
   // methods
   private onChange(val: any): void {
-    this._selectedValue = val;
+    this._selectedItem = val;
   }
 
-  private customFilter(item: any, queryText:string) {
+  private customFilter(item: any, queryText: string) {
     let text = "";
     this.searchFields.forEach((key) => {
       text += item[key] + " ";
