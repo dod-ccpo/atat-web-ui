@@ -27,6 +27,7 @@
             Auto-Complete Component
           </strong>
           <ATATAutoComplete 
+            id="Autocomplete_Contact"
             titleKey="FullName"
             subtitleKey="Email"
             :searchFields="['FullName', 'Email']"

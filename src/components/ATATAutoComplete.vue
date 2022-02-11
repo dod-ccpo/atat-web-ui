@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :id="id">
     <v-autocomplete
       v-model="model"
       :class="inputClass"
@@ -51,6 +51,7 @@ export default class ATATAutoComplete extends Vue {
   private search = null;
 
   // props
+  @Prop({ default: "", required: true }) private id!: string;
   @Prop({ default: "" }) private icon!: string;
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
