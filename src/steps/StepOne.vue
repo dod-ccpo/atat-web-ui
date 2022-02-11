@@ -18,6 +18,13 @@
               label="Select"
               required
           ></v-select>
+
+          <atat-text-field
+              label="Custom text-field"
+              placeholder="Custom text-field"
+              id="Custom text-field"
+              :value.sync="customTextValue"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -32,15 +39,17 @@
 </style>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import {Component} from "vue-property-decorator";
+
 @Component({})
 export default class StepOne extends Vue {
-    private select = null;
-    private items = [
-        'Programming',
-        'Design',
-        'Vue',
-        'Vuetify',
-    ]
+  private select = null;
+  private items = [
+    'Programming',
+    'Design',
+    'Vue',
+    'Vuetify',
+  ];
+  private customTextValue = null;
 }
 </script>
