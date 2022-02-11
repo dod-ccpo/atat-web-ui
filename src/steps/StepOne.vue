@@ -35,7 +35,7 @@
             placeholder="Search by name or email"
             icon="search"
             noResultsText="Manually enter my contact’s information"
-            @noResultsAction="noResultsAction"
+            @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
           />
           <v-card v-if="contactIsSelected" >
             <v-card-title>
@@ -87,7 +87,7 @@ export default class StepOne extends Vue {
       return this.selectedContact && Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName");
     }
 
-    private noResultsAction(): void {
+    private noAutoCompleteResultsAction(): void {
       alert('do something');
     }
 

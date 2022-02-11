@@ -24,7 +24,7 @@
       </template>
 
       <template v-slot:no-data>
-        <v-list-item v-show="search !== null">
+        <v-list-item v-show="search !== null" class="no-results">
           <v-list-item-title>
             No results found.
             <a v-if="noResultsText" @click="noResultsAction">
@@ -52,10 +52,10 @@ export default class ATATAutoComplete extends Vue {
 
   // props
   @Prop({ default: "" }) private icon!: string;
-  @Prop({ default: "" }) private titleKey!: string;
+  @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: () => [], required: true }) private searchFields!: [];
-  @Prop({ default: () => [] }) private items!: [];
+  @Prop({ default: () => [], required: true }) private items!: [];
   @Prop({ default: "" }) private placeholder!: string;
   @PropSync("selectedValue") private _selectedValue!: unknown;
   @Prop({ default: "" }) private noResultsText!: string;
@@ -88,7 +88,7 @@ export default class ATATAutoComplete extends Vue {
   }
 
   private noResultsAction() {
-    this.$emit("noResultsAction");
+    this.$emit("noAutoCompleteResultsAction");
   }
 
 }
