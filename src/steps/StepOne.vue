@@ -17,9 +17,7 @@
           <v-select
             v-model="select"
             :items="items"
-            :rules="[(v) => !!v || 'Item is required']"
             label=""
-            required
           ></v-select>
           <atat-select
               class="clin-idiq-select max-width-100"
