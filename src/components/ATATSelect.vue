@@ -3,7 +3,6 @@
     <v-flex>
       <label
         :id="id + '_dropdown_field_label'"
-        :class="[isErrored ? 'font-weight-bold' : 'form-field-label my-1']"
         :for="id + '_dropdown'"
       >
         {{ label }}
