@@ -18,6 +18,12 @@
               label="Select"
               required
           ></v-select>
+          <atat-select
+              class="clin-idiq-select max-width-100"
+              label="Custom Select"
+              placeholder="- Select -"
+          >
+          </atat-select>
         </v-col>
       </v-row>
     </v-container>
