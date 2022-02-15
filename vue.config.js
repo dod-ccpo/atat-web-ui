@@ -46,6 +46,24 @@ module.exports = {
   },
   chainWebpack: config => {
 
+    const BASE_API_URL = CONFIG.SERVICENOW_INSTANCE + "api";
+
+    config.plugin('define').tap((definitions) => {
+      let _base = definitions[0]["process.env"];
+      definitions[0]["process.env"] = {
+        ..._base,
+        'VUE_APP_BASE_API_URL': JSON.stringify(BASE_API_URL),
+      };
+      return definitions;
+    });
+
+    if (process.env.NODE_ENV === 'development') {
+      config.plugin('define').tap((definitions) => {
+        definitions[0]['process.env']['VUE_APP_USER'] = JSON.stringify(servicenowConfig.VUE_APP_USER);
+        definitions[0]['process.env']['VUE_APP_PASSWORD'] = JSON.stringify(servicenowConfig.VUE_APP_PASSWORD);
+        return definitions;
+      });
+    }
 
     if (process.env.NODE_ENV === 'production') {
       config.module
@@ -79,14 +97,6 @@ module.exports = {
           }
 
         }));
-
-      if (process.env.NODE_ENV === 'development') {
-        config.plugin('define').tap((definitions) => {
-          definitions[0]['process.env']['VUE_APP_USER'] = JSON.stringify(servicenowConfig.VUE_APP_USER);
-          definitions[0]['process.env']['VUE_APP_PASSWORD'] = JSON.stringify(servicenowConfig.VUE_APP_PASSWORD);
-          return definitions;
-        });
-      }
     }
   },
   css: {

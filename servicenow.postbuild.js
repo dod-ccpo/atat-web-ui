@@ -193,8 +193,6 @@ function decorateIndexHTML(pathToHTML) {
 
 function updateAssetPaths() {
 
-  debugger;
-
   clear();
 
   console.log('\n');
