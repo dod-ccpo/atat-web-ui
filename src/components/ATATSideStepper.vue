@@ -7,10 +7,10 @@
   >
     <v-list>
       <v-list-item>
-        <router-link to="/">Step 1</router-link>
+        <router-link id="Step1" to="/">Step 1</router-link>
       </v-list-item>
       <v-list-item>
-          <router-link to="/steptwo">Step 2</router-link>
+          <router-link id="Step2" to="/steptwo">Step 2</router-link>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
