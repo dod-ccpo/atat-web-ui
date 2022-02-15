@@ -5,28 +5,28 @@
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
           <ATATTextField
-            label="Custom text-field"
-            placeholder="Custom text-field"
-            id="Custom text-field"
-            :value.sync="customTextValue"
+              label="Custom text-field"
+              placeholder="Custom text-field"
+              id="Custom text-field"
+              :value.sync="customTextValue"
           />
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
           <v-select
-            v-model="select"
-            :items="items"
-            :rules="[(v) => !!v || 'Item is required']"
-            label=""
-            required
+              v-model="select"
+              :items="items"
+              :rules="[(v) => !!v || 'Item is required']"
+              label=""
+              required
           ></v-select>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
           <strong
-            style="
+              style="
               font-size: 12px;
               font-style: italic;
               display: block;
@@ -36,28 +36,28 @@
             Auto-Complete Component
           </strong>
           <ATATAutoComplete
-            id="TO_COR"
-            label="Search and Select Task Order COR"
-            :label-sr-only="true"
-            titleKey="FullName"
-            subtitleKey="Email"
-            :searchFields="['FullName', 'Email']"
-            :items="searchData"
-            :selectedItem.sync="selectedContact"
-            placeholder="Search by name or email"
-            icon="search"
-            noResultsText="Manually enter my contact’s information"
-            @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
+              id="TO_COR"
+              label="Search and Select Task Order COR"
+              :label-sr-only="true"
+              titleKey="FullName"
+              subtitleKey="Email"
+              :searchFields="['FullName', 'Email']"
+              :items="searchData"
+              :selectedItem.sync="selectedContact"
+              placeholder="Search by name or email"
+              icon="search"
+              noResultsText="Manually enter my contact’s information"
+              @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
           />
           <v-card v-if="contactIsSelected">
             <v-card-title>
               <strong>AUTOCOMPLETE SELECTED OBJECT</strong>
             </v-card-title>
             <v-card-text style="font-size: 12px; line-height: 1.5">
-              <strong>Id:</strong> {{ selectedContact.Id }}<br />
-              <strong>FirstName:</strong> {{ selectedContact.FirstName }}<br />
-              <strong>LastName:</strong> {{ selectedContact.LastName }}<br />
-              <strong>FullName:</strong> {{ selectedContact.FullName }}<br />
+              <strong>Id:</strong> {{ selectedContact.Id }}<br/>
+              <strong>FirstName:</strong> {{ selectedContact.FirstName }}<br/>
+              <strong>LastName:</strong> {{ selectedContact.LastName }}<br/>
+              <strong>FullName:</strong> {{ selectedContact.FullName }}<br/>
               <strong>Email:</strong> {{ selectedContact.Email }}
             </v-card-text>
           </v-card>
@@ -77,7 +77,7 @@ import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import {Component} from "vue-property-decorator";
 
 @Component({
   components: {
@@ -89,11 +89,12 @@ export default class StepOne extends Vue {
   private select = null;
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
+  private customTextValue = '';
 
   get contactIsSelected(): boolean {
     return (
-      this.selectedContact &&
-      Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
+        this.selectedContact &&
+        Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
     );
   }
 

@@ -26,16 +26,29 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["**/tests/unit/**/*.spec.{j,t}s?(x)"],
+      files: [
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+      ],
       env: {
-        jest: true,
-      },
+        jest: true
+      }
     },
     {
-      files: ["cypress/**/*.js"],
+      files: [
+        'cypress/**/*.js'
+      ],
       rules: {
-        "@typescript-eslint/explicit-module-boundary-types": 0,
-      },
+        '@typescript-eslint/explicit-module-boundary-types': 0
+      }
     },
+    {
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+      ],
+      env: {
+        jest: true
+      }
+    }
   ],
 };
