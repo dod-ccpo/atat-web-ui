@@ -8,7 +8,6 @@
             label="Custom text-field"
             placeholder="Custom text-field"
             id="Custom text-field"
-            :value.sync="customTextValue"
           />
         </v-col>
       </v-row>
@@ -63,6 +62,11 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col class="col-sm-12 col-md-8 col-lg-6">
+          <Users></Users>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -75,6 +79,7 @@
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
+import Users from "../components/Users.vue"
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
@@ -83,6 +88,7 @@ import { Component } from "vue-property-decorator";
   components: {
     ATATAutoComplete,
     ATATTextField,
+    Users
   },
 })
 export default class StepOne extends Vue {

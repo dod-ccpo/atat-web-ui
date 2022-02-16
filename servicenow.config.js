@@ -10,7 +10,7 @@ const servicenowConfig = {
    * it is being used in DEVELOPMENT mode only
    * This should be the instance where React application will be deployed to
    */
-  SERVICENOW_INSTANCE: 'https://dev117675.service-now.com',
+  SERVICENOW_INSTANCE: 'https://dev113490.service-now.com/',
   /**
    * User Name for API requests
    * it is being used for sending REST calls in DEVELOPMENT mode only
@@ -20,7 +20,7 @@ const servicenowConfig = {
   /**
    * User password, for DEVELOPMENT mode only
    */
-  VUE_APP_PASSWORD: 'eW6rB0NhUaPh',
+  VUE_APP_PASSWORD: '',
   /**
    * ServiceNow path to GET resource which serves javascript files
    * Current configuration does not produce CSS files

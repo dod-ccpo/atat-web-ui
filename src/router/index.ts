@@ -6,7 +6,6 @@ import Users from "../pages/Users.vue";
 const routes = [
   { path: "/", component: StepOne },
   { path: "/steptwo", component: StepTwo },
-  { path: "/users", component: Users },
 ];
 
 const router = new VueRouter({
