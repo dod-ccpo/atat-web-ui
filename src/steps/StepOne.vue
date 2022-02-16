@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>Step One</div>
+    <div class="h2">Step One</div>
     <v-container>
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
@@ -87,6 +87,7 @@ import { Component } from "vue-property-decorator";
 })
 export default class StepOne extends Vue {
   private select = null;
+  private customTextValue = null;
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
 
