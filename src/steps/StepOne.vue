@@ -8,7 +8,6 @@
             label="Custom text-field"
             placeholder="Custom text-field"
             id="Custom text-field"
-            :value.sync="customTextValue"
           />
         </v-col>
       </v-row>
@@ -19,12 +18,13 @@
             :items="items"
             label=""
           ></v-select>
-          <atat-select
+          <ATATSelect
+              id="dummy-atat-select"
               class="clin-idiq-select max-width-100"
               label="Custom Select"
-              placeholder="- Select -"
+              placeholder="Select"
           >
-          </atat-select>
+          </ATATSelect>
         </v-col>
       </v-row>
       <v-row>
@@ -79,6 +79,8 @@
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
+import ATATSelect from "../components/ATATSelect.vue";
+
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
@@ -87,6 +89,7 @@ import { Component } from "vue-property-decorator";
   components: {
     ATATAutoComplete,
     ATATTextField,
+    ATATSelect,
   },
 })
 export default class StepOne extends Vue {
