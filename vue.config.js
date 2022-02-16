@@ -13,7 +13,6 @@ const CONFIG = {
   ...servicenowConfig
 }
 
-
 module.exports = {
 
   // eslint-disable-next-line no-unused-vars
@@ -46,7 +45,8 @@ module.exports = {
   },
   chainWebpack: config => {
 
-    const BASE_API_URL = CONFIG.SERVICENOW_INSTANCE + "api";
+    let BASE_API_URL = CONFIG.SERVICENOW_INSTANCE;
+    BASE_API_URL += BASE_API_URL.endsWith("/") ? "api" : "/api";
 
     config.plugin('define').tap((definitions) => {
       let _base = definitions[0]["process.env"];
