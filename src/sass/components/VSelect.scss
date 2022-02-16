@@ -15,7 +15,7 @@
   }
   .v-list-item__subtitle {
     font-size: 1.2rem !important;
-    color: #61686C !important; // use var DISA Base
+    color: $base !important; 
   }
 }
 
