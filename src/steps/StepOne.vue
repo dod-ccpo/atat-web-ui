@@ -14,18 +14,25 @@
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
           <v-select
-            v-model="select"
-            :items="items"
-            :rules="[(v) => !!v || 'Item is required']"
-            label=""
-            required
+              v-model="select"
+              :items="items"
+              :rules="[(v) => !!v || 'Item is required']"
+              label=""
+              required
           ></v-select>
+          <ATATSelect
+              id="dummy-atat-select"
+              class="clin-idiq-select max-width-100"
+              label="Custom Select"
+              placeholder="Select"
+          >
+          </ATATSelect>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
           <strong
-            style="
+              style="
               font-size: 12px;
               font-style: italic;
               display: block;
@@ -35,28 +42,28 @@
             Auto-Complete Component
           </strong>
           <ATATAutoComplete
-            id="TO_COR"
-            label="Search and Select Task Order COR"
-            :label-sr-only="true"
-            titleKey="FullName"
-            subtitleKey="Email"
-            :searchFields="['FullName', 'Email']"
-            :items="searchData"
-            :selectedItem.sync="selectedContact"
-            placeholder="Search by name or email"
-            icon="search"
-            noResultsText="Manually enter my contact’s information"
-            @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
+              id="TO_COR"
+              label="Search and Select Task Order COR"
+              :label-sr-only="true"
+              titleKey="FullName"
+              subtitleKey="Email"
+              :searchFields="['FullName', 'Email']"
+              :items="searchData"
+              :selectedItem.sync="selectedContact"
+              placeholder="Search by name or email"
+              icon="search"
+              noResultsText="Manually enter my contact’s information"
+              @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
           />
           <v-card v-if="contactIsSelected">
             <v-card-title>
               <strong>AUTOCOMPLETE SELECTED OBJECT</strong>
             </v-card-title>
             <v-card-text style="font-size: 12px; line-height: 1.5">
-              <strong>Id:</strong> {{ selectedContact.Id }}<br />
-              <strong>FirstName:</strong> {{ selectedContact.FirstName }}<br />
-              <strong>LastName:</strong> {{ selectedContact.LastName }}<br />
-              <strong>FullName:</strong> {{ selectedContact.FullName }}<br />
+              <strong>Id:</strong> {{ selectedContact.Id }}<br/>
+              <strong>FirstName:</strong> {{ selectedContact.FirstName }}<br/>
+              <strong>LastName:</strong> {{ selectedContact.LastName }}<br/>
+              <strong>FullName:</strong> {{ selectedContact.FullName }}<br/>
               <strong>Email:</strong> {{ selectedContact.Email }}
             </v-card-text>
           </v-card>
@@ -67,6 +74,68 @@
           <Users></Users>
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col>
+          <h3>DISA PURPLE (PRIMARY)</h3>
+          <div class="bg-primary-darker text-white">$primary-darker: #2a224b;</div>
+          <div class="bg-primary-dark text-white">$primary-dark: #3b3069;</div>
+          <div class="bg-primary text-white">$primary: #544496;</div>
+          <div class="bg-primary-light">$primary-light: #a9a1ca;</div>
+          <div class="bg-primary-lighter">$primary-lighter: #eeecf5;</div>
+        </v-col>
+        <v-col>
+          <h3>DISA BLUE</h3>
+          <div class="bg-info-darker text-white">$info-darker: #004f6f;</div>
+          <div class="bg-info-dark text-white">$info-dark: #0076a6;</div>
+          <div class="bg-info text-white">$info: #009ddd;</div>
+          <div class="bg-info-light">$info-light: #80ceee;</div>
+          <div class="bg-info-lighter">$info-lighter: #e6f5fc;</div>
+        </v-col>
+        <v-col>
+          <h3>DISA GREEN</h3>
+          <div class="bg-success-darker text-white">$success-darker: #315f2d;</div>
+          <div class="bg-success-dark text-white">$success-dark: #498e43;</div>
+          <div class="bg-success text-white">$success: #62bd59;</div>
+          <div class="bg-success-light">$success-light: #b1deac;</div>
+          <div class="bg-success-lighter">$success-lighter: #eff8ee;</div>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <h3>DISA GOLD</h3>
+          <div class="bg-warning-darker text-white">$warning-darker: #80642a;</div>
+          <div class="bg-warning-dark text-white">$warning-dark: #bf963e;</div>
+          <div class="bg-warning">$warning: #ffc853;</div>
+          <div class="bg-warning-light">$warning-light: #ffe4a9;</div>
+          <div class="bg-warning-lighter">$warning-lighter: #fff9ed;</div>
+        </v-col>
+        <v-col>
+          <h3>DISA RED</h3>
+          <div class="bg-error-darker text-white">$error-darker: #63031a;</div>
+          <div class="bg-error-dark text-white">$error-dark: #940427;</div>
+          <div class="bg-error text-white">$error: #c60634;</div>
+          <div class="bg-error-light">$error-light: #e3839a;</div>
+          <div class="bg-error-lighter">$error-lighter: #f9e6ea;</div>
+        </v-col>
+        <v-col>
+          <h3>DISA GRAY (BASE)</h3>
+          <div class="bg-base-darkest text-white">$base-darkest: #161b1e;</div>
+          <div class="bg-base-darker text-white">$base-darker: #2c353b;</div>
+          <div class="bg-base-dark text-white">$base-dark: #41494e;</div>
+          <div class="bg-base text-white">$base: #61686c;</div>
+          <div class="bg-base-light text-white">$base-light: #959a9d;</div>
+          <div class="bg-base-lighter">$base-lighter: #e0e1e2;</div>
+          <div class="bg-base-lightest">$base-lightest: #f4f5f5;</div>
+
+          <h3 style="margin-top: 20px;">DISABLED</h3>
+          <div class="bg-disabled-dark">$disabled-dark: #adadad;</div>
+          <div class="bg-disabled">$disabled: #c9c9c9;</div>
+          <div class="bg-disabled-light">$disabled-light: #e6e6e6;</div>
+
+        </v-col>
+      </v-row>
+
     </v-container>
   </div>
 </template>
@@ -80,26 +149,30 @@
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
 import Users from "../components/Users.vue"
+import ATATSelect from "../components/ATATSelect.vue";
+
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import {Component} from "vue-property-decorator";
 
 @Component({
   components: {
     ATATAutoComplete,
     ATATTextField,
-    Users
+    Users,
+    ATATSelect,
   },
 })
 export default class StepOne extends Vue {
   private select = null;
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
+  private customTextValue = '';
 
   get contactIsSelected(): boolean {
     return (
-      this.selectedContact &&
-      Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
+        this.selectedContact &&
+        Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
     );
   }
 
