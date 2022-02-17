@@ -13,7 +13,7 @@
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'"
   },
   "dependencies": {
-    "@types/node": "^17.0.16",
+    "@types/node": "^17.0.18",
     "axios": "^0.26.0",
     "clear": "^0.1.0",
     "core-js": "^3.21.0",
