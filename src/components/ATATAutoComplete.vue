@@ -1,8 +1,10 @@
 <template>
   <div :id="id + '_AutoComplete_Wrapper'">
     <label
+    
       :for="id"
       :class="{ 'd-sr-only': labelSrOnly }"
+      class="mb-2 d-block"
     >
       {{ label }}
     </label>
