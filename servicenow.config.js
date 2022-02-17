@@ -10,13 +10,13 @@ const servicenowConfig = {
    * it is being used in DEVELOPMENT mode only
    * This should be the instance where React application will be deployed to
    */
-  SERVICENOW_INSTANCE: 'https://dev113490.service-now.com/',
+  SERVICENOW_INSTANCE: 'https://dev49920.service-now.com/',
   /**
    * User Name for API requests
    * it is being used for sending REST calls in DEVELOPMENT mode only
    * no need to provide credentials for PRODUCTION
    */
-  VUE_APP_USER: 'admin',
+  VUE_APP_USER: '',
   /**
    * User password, for DEVELOPMENT mode only
    */
