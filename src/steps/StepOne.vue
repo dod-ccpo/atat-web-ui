@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>Step One</div>
-    <v-container>
+    <v-container class="mb-10">
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
           <ATATTextField
