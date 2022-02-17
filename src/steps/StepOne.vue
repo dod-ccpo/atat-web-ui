@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>Step One</div>
-    <v-container>
+    <v-container class="mb-10">
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
           <ATATTextField
@@ -67,6 +67,11 @@
               <strong>Email:</strong> {{ selectedContact.Email }}
             </v-card-text>
           </v-card>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="col-sm-12 col-md-8 col-lg-6">
+          <Users></Users>
         </v-col>
       </v-row>
 
@@ -143,6 +148,7 @@
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
+import Users from "../components/Users.vue"
 import ATATSelect from "../components/ATATSelect.vue";
 
 import Vue from "vue";
@@ -153,6 +159,7 @@ import {Component} from "vue-property-decorator";
   components: {
     ATATAutoComplete,
     ATATTextField,
+    Users,
     ATATSelect,
   },
 })
