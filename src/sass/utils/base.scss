@@ -4,11 +4,17 @@ html {
 body {
   font-size: 1.6rem;
 }
+.body {
+  font-weight: 400 !important;
+  font-size: 1.6rem !important;
+  line-height: 1.5em !important;
+}
 
 #app {
   font-family: $base-font;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @extend .body
 }
 
 .v-main__wrap {

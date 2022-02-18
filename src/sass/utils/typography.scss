@@ -1,7 +1,6 @@
 
-
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: $heading-font ;
+  font-family: $heading-font;
   font-weight: 700 !important;
   line-height: 1.3em !important
 }
@@ -42,37 +41,22 @@ p {
   line-height: 1.5em !important;
 }
 
-.body-xl {
-  font-size: 1.9rem !important;
-  font-weight: 400 !important;
-  line-height: 2.8rem !important;
-}
-
-.body-lg {
-  font-weight: 400 !important;
-  font-size: 1.6rem !important;
-  line-height: 1.6em !important;
-}
-
 .body {
-  font-size: 1.5rem !important;
-  font-weight: 400 !important;
-  line-height: 2.4rem !important;
+  font-size: 1.6rem !important;
+  line-height: 1.5em !important;
 }
+
 .body-sm {
-  font-weight: 300 !important;
   font-size: 1.4rem !important;
   line-height: 1.5em !important;
 }
 
 .label {
-  font-weight: 400 !important;
   font-size: 1.2rem !important;
   line-height: 1.3em !important;
 }
 
 .micro {
-  font-weight: 400 !important;
   font-size: 1rem !important;
   line-height: 1.2em !important;
 }
@@ -80,7 +64,6 @@ p {
 .form-field-label {
   color: $base-darkest !important;
   font-size: 1.7rem !important;
-  font-weight: 400 !important;
   line-height: 2.6rem !important;
 }
 
@@ -93,34 +76,6 @@ p {
 .form-field-label-success {
   @extend .form-field-label;
   color: $success;
-}
-
-.link-body {
-  font-weight: 300 !important;
-  font-size: 1.6rem !important;
-  line-height: 1.5em !important;
-}
-
-.link-body-lg {
-  font-size: 1.9rem !important;
-  font-weight: 400 !important;
-  line-height: 2.8rem !important;
-  text-decoration: underline !important;
-}
-
-.link-body-md {
-  font-size: 1.7rem !important;
-  font-weight: 400 !important;
-  line-height: 2.6rem !important;
-  text-decoration: underline !important;
-
-}
-
-.link-body-sm {
-  font-size: 1.5rem !important;
-  font-weight: 400 !important;
-  line-height: 2.4rem !important;
-  text-decoration: underline !important;
 }
 
 .stepper-step-lg {
@@ -138,7 +93,6 @@ p {
 
 .optional {
   font-size: 1.5rem !important;
-  font-weight: 400 !important;
   line-height: 2.3rem !important;
   color: $base_dark !important;
 }
@@ -149,7 +103,6 @@ p {
 
 .datepicker-text {
   font-size: 1.6rem !important;
-  font-weight: 400 !important;
   line-height: 2rem !important;
 }
 
