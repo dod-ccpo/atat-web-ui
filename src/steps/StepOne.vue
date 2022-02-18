@@ -82,7 +82,6 @@ import {Component} from "vue-property-decorator";
 })
 export default class StepOne extends Vue {
   private select = null;
-  private customTextValue = null;
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
   private customTextValue = '';
