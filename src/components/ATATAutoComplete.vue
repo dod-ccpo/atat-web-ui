@@ -3,6 +3,7 @@
     <label
       :for="id"
       :class="{ 'd-sr-only': labelSrOnly }"
+      class="mb-2 d-block"
     >
       {{ label }}
     </label>

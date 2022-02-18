@@ -9,12 +9,12 @@
     "lint": "vue-cli-service lint",
     "postbuild": "node servicenow.postbuild.js",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
-    "test:unit": "vue-cli-service test:unit",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'"
   },
   "dependencies": {
     "@types/node": "^17.0.16",
+    "axios": "^0.26.0",
     "clear": "^0.1.0",
     "core-js": "^3.21.0",
     "d": "^1.0.1",
