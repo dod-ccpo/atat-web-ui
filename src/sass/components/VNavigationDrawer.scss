@@ -1,7 +1,7 @@
 .theme--light {
   &.v-navigation-drawer {
     &.global-side-nav-bar {
-      background-color: #e0e1e2; /* DISA base-lighter */
+      background-color: $base-lighter;
       padding: 24px !important;
       .v-navigation-drawer__border {
         display: none;
