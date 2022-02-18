@@ -2,7 +2,7 @@
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: $heading-font;
   font-weight: 700 !important;
-  line-height: 1.3em !important
+  line-height: 1.3em !important;
   color: $base-darkest;
 }
 
@@ -125,7 +125,7 @@ a {
     text-decoration: underline;
 
     &:after {
-      font-family: 'Material Icons';
+      font-family: $icon-font;
       content: "launch";
       text-decoration: none !important;
       -webkit-font-feature-settings: 'liga';
@@ -191,7 +191,7 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
   &:after {
     position: absolute;
     content: "chevron_right";
-    font-family: "Material Icons";
+    font-family: $icon-font;
     -webkit-font-feature-settings: "liga";
     right: -28px;
     font-size: 28px;
