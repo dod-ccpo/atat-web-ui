@@ -1,17 +1,17 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
-import ATATTextField from "@/components/ATATTextField.vue";
+import StepOne from "./StepOne.vue"
 Vue.use(Vuetify);
 
-describe("Testing ATATTextField Component", () => {
+describe("Testing StepOne View", () => {
   const localVue = createLocalVue();
   let vuetify: any;
   let wrapper: any;
-
+  window.alert = jest.fn();
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(ATATTextField, {
+    wrapper = mount(StepOne, {
       localVue,
       vuetify,
     });
@@ -19,8 +19,9 @@ describe("Testing ATATTextField Component", () => {
   it("renders successfully", async () => {
     expect(wrapper.exists()).toBe(true);
   });
-  it("test input actions, is success", async () => {
-    await wrapper.vm.inputActions("hello");
-    expect(wrapper.exists()).toBe(true);
-  });
+
+  it('no autoComplete fn exist', async () => {
+    expect(wrapper.vm.noAutoCompleteResultsAction())
+  })
+  
 });

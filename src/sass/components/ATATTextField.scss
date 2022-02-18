@@ -1,0 +1,85 @@
+.v-text-field--outlined.v-input--is-focused fieldset,
+.v-text-field--outlined.v-input--has-state fieldset {
+    border: 3px solid currentColor !important;
+}
+
+.focused{
+  &.v-text-field--outlined fieldset {
+    border: 3px solid $primary !important;
+  }
+}
+
+.v-text-field--outlined fieldset {
+    border: 1px solid $base_dark !important;
+ }
+.v-input.search-bar {
+  border-radius: 4px 0px 0px 4px;
+  &.v-input--is-focused {
+    fieldset[aria-hidden=true] {
+      height: 44px;
+      margin-top: 1px;
+    }
+  }
+}
+
+.v-text-field--outlined {
+  .v-input__append-outer {
+    margin-top: 6px;
+  }
+}
+
+.v-text-field {
+  &.error--text{
+    .v-text-field__prefix{
+      color: $base-light !important;
+      padding-right: 0px;
+      margin-top: -1px;
+    }
+  }
+  
+  &.v-input--is-focused, 
+  &.success--text{
+    .v-text-field__prefix{
+      color: $base-darkest !important;
+     }
+  }
+
+  input{
+    padding-left: 2px;
+  }
+  &.show-validation-icon {
+    .v-text-field__slot {
+      position: relative;
+      &:after {
+        content: "";
+        font-family: "Material Icons";
+        -webkit-font-feature-settings: "liga";
+        position: absolute;
+        right: -40px;
+        top: 7px;
+        font-size: 20px;
+        font-weight: normal;
+      }
+    }
+  }
+
+  &.valid-icon .v-text-field__slot:after {
+    content: "check_circle";
+    color: $success;
+  }
+  &.invalid-icon .v-text-field__slot:after {
+    content: "error";
+    color: $error-dark;
+  }
+  &.additional-button {
+    .v-text-field__slot:after {
+      right: -70px;
+    }
+  }
+}
+
+.input-hint {
+  color: $base;
+  margin-top: 8px;
+}
+

@@ -1,17 +1,19 @@
 <template>
-  <v-footer class="atat-footer" app>
-    <div class="body footer-content">Last login: {{ getToday() }}</div>
+  <v-footer absolute class="atat-page-footer">
+    <div class="links">
+      <a href="#">Security Notice</a>
+      <a href="#">Privacy</a>
+      <a href="#">Accessibility</a>
+    </div>
+    <div>
+      Last login: Sept. 3, 2020 1616-0400
+    </div>
   </v-footer>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import moment from "moment";
 import { Component } from "vue-property-decorator";
 @Component({})
-export default class ATATFooter extends Vue {
-  private getToday() {
-    return moment(new Date()).format("MMMM DD, YYYY, hh:mm Z");
-  }
-}
+export default class ATATFooter extends Vue {}
 </script>

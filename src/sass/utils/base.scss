@@ -1,0 +1,34 @@
+html {
+  font-size: 10px;
+}
+body {
+  font-size: 1.6rem;
+}
+.body {
+  font-weight: 400 !important;
+  font-size: 1.6rem !important;
+  line-height: 1.5em !important;
+}
+
+#app {
+  font-family: $base-font;
+  color: $base-darker;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @extend .body
+}
+
+.v-main__wrap {
+  background-color: $offwhite;
+  padding: 40px 56px 120px 56px;
+}
+
+.wrapper-max-width {
+  // max page width for very wide screens
+  max-width: 1000px;
+}
+
+.content-max-width {
+  // max width of the content in main content area when side panel present
+  max-width: 740px !important;
+}

@@ -13,14 +13,12 @@ module.exports = {
     "plugin:vue/essential",
     "eslint:recommended",
     "@vue/typescript/recommended",
-    "@vue/prettier",
-    "@vue/prettier/@typescript-eslint",
-    "plugin:cypress/recommended",
+    "prettier"
   ],
   parserOptions: {
     ecmaVersion: "es2020",
   },
-  ignorePatterns: ["**/*.min.js"],
+  ignorePatterns: ["**/*.min.js",  "**/*.config.js","**/*.postbuild.js"],
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
@@ -28,16 +26,29 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["**/tests/unit/**/*.spec.{j,t}s?(x)"],
+      files: [
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+      ],
       env: {
-        jest: true,
-      },
+        jest: true
+      }
     },
     {
-      files: ["cypress/**/*.js"],
+      files: [
+        'cypress/**/*.js'
+      ],
       rules: {
-        "@typescript-eslint/explicit-module-boundary-types": 0,
-      },
+        '@typescript-eslint/explicit-module-boundary-types': 0
+      }
     },
+    {
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+      ],
+      env: {
+        jest: true
+      }
+    }
   ],
 };

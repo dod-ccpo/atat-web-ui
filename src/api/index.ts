@@ -1,5 +1,6 @@
-import PortfolioDraftsApi from "./portfolios";
+import { UsersApi } from "./users";
 
-const portfoliosApi = new PortfolioDraftsApi();
 
-export { portfoliosApi };
+export default {
+   users: new UsersApi(),
+}

@@ -1,15 +1,10 @@
 <template>
-  <v-app :class="{ 'gov-banner-hidden': isUsaGovHidden }">
-    <USAGovBanner />
-    <ATATHeader />
-    <ATATSideBar v-if="loginStatus && getIsNavSideBarDisplayed" />
-    <v-main style="padding-top: 70px">
-      <router-view> </router-view>
+  <v-app>
+    <ATATSideStepper />
+    <v-main id="app">
+      <router-view></router-view>
+      <ATATFooter />
     </v-main>
-    <SideDrawer v-if="loginStatus" />
-    <ATATFooter />
-    <ATATDialog v-show="isDialogDisplayed" />
-    <ATATToast />
   </v-app>
 </template>
 
@@ -18,83 +13,17 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import ATATDialog from "@/components/ATATDialog.vue";
+import Vue from "vue";
+import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATFooter from "./components/ATATFooter.vue";
-import ATATHeader from "./components/ATATHeader.vue";
-import ATATSideBar from "./components/ATATSideBar.vue";
-import ATATToast from "@/components/ATATToast.vue";
-import SideDrawer from "@/components/SideDrawer.vue";
-import { Route } from "vue-router";
-import { buildConfiguration } from "./atat-config-builder";
-import USAGovBanner from "@/components/USAGovBanner.vue";
-
+import { Component } from "vue-property-decorator";
 @Component({
   components: {
-    ATATDialog,
-    ATATFooter,
-    ATATHeader,
-    ATATSideBar,
-    ATATToast,
-    SideDrawer,
-    USAGovBanner,
-  },
+    ATATSideStepper,
+    ATATFooter
+  }
 })
-export default class App extends Vue {
-  private isDialogDisplayed = false;
-  private scrollYPosition = -1;
-  private isUsaGovHidden = false;
-  get loginStatus(): boolean {
-    //todo: remove `|| window.location.protocol === "http:"` as it a temp fix
-    //to help QA login without 'https' and for the side bar to appear.
-    return (
-      this.$store.getters.getLoginStatus || window.location.protocol === "http:"
-    );
-  }
 
-  @Watch("$route", { immediate: true, deep: true })
-  onUrlChange(newVal: Route): void {
-    this.$store.dispatch("displayNavSideBarDisplayed", newVal.name);
-  }
+export default class App extends Vue {}
 
-  get getIsNavSideBarDisplayed(): boolean {
-    return this.$store.getters.getIsNavSideBarDisplayed;
-  }
-
-  @Watch("$store.state.dialog.isDisplayed")
-  onDialogDisplayedChange(newVal: boolean): void {
-    this.isDialogDisplayed = newVal;
-  }
-
-  public async mounted(): Promise<void> {
-    await buildConfiguration();
-    this.$store.dispatch("initDialog");
-    this.focusH1();
-    window.addEventListener("scroll", this.onScroll);
-  }
-
-  public async updated(): Promise<void> {
-    this.focusH1();
-  }
-
-  public focusH1(): void {
-    // for 508 compliance in SPA, focus on first h1 of a new "page"
-    const h1 = document.getElementsByTagName("h1");
-    if (h1.length) {
-      h1[0].focus();
-    }
-  }
-
-  onScroll(): void {
-    if (window.scrollY < 100) {
-      this.isUsaGovHidden = false;
-    } else {
-      this.isUsaGovHidden = true;
-    }
-  }
-
-  beforeDestroy(): void {
-    window.removeEventListener("scroll", this.onScroll);
-  }
-}
 </script>

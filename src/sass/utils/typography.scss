@@ -1,256 +1,221 @@
-@import "colors";
-h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6 {
-    letter-spacing: -0.03rem !important;
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: $heading-font;
+  font-weight: 700 !important;
+  line-height: 1.3em !important;
+  color: $base-darkest;
 }
 
 h1.large, .h1.large {
-    font-size: 4.4rem !important;
-    font-weight: 700 !important;
-    line-height: 5.7rem !important;
+  font-size: 5.2rem !important;
 }
+
 h1, .h1 {
-    font-size: 3.4rem !important;
-    font-weight: 700 !important;
-    line-height: 4.4rem !important;
-    margin-bottom: 1.6rem;
+  font-size: 4.4rem !important;
+
 }
+
 h2, .h2 {
-    font-size: 2.4rem !important;
-    font-weight: 700 !important;
-    line-height: 3.1rem !important;
-    margin-bottom: 1.2rem;
+  font-size: 3.4rem !important;
 }
+
 h3, .h3 {
-    font-size: 1.9rem !important;
-    font-weight: 700 !important;
-    line-height: 2.5rem !important;
+  font-size: 2.4rem !important;
 }
+
 h4, .h4 {
-    font-size: 1.5rem !important;
-    font-weight: 700 !important;
-    line-height: 2rem !important;
-    }
+  font-size: 1.9rem !important;
+}
+
 h5, .h5 {
-    font-size: 1.3rem !important;
-    font-weight: 400 !important;
-    line-height: 1.7rem !important;
-}
-.display-1{
-    font-size: 5.2rem !important;
-    font-weight: 600 !important;
-    line-height: 6.2rem !important;
-}
-.display-2{
-    font-size: 4.4rem !important;
-    font-weight: 300 !important;
-    line-height: 5.7rem !important;
+  font-size: 1.5rem !important;
 }
 
 p {
-    margin-bottom: 2.4rem !important;
+
+  margin-bottom: 2.4rem !important;
 }
 
-.lead-paragraph{
-    font-size: 2.2rem !important;
-    font-weight: 400 !important;
-    line-height: 3.3rem !important;
-}
-.body-xl{
-    font-size: 1.9rem !important;
-    font-weight: 400 !important;
-    line-height: 2.8rem !important;
-}
-.body-lg{
-    font-size: 1.7rem !important;
-    font-weight: 400 !important;
-    line-height: 2.6rem !important;
-}
-.body{
-    font-size: 1.5rem !important;
-    font-weight: 400 !important;
-    line-height: 2.4rem !important;
-}
-.label{
-    font-size: 1.2rem !important;
-    font-weight: 400 !important;
-    line-height: 1.6rem !important;
-}
-.micro{
-    font-size: 1rem !important;
-    font-weight: 400 !important;
-    line-height: 1.1rem !important;
-}
-.form-field-label{
-    color: $base-darkest !important;
-    font-size: 1.7rem !important;
-    font-weight: 400 !important;
-    line-height: 2.6rem !important;
-}
-.form-field-label-error{
-    @extend .form-field-label;
-    font-weight: 700 !important;
-    color: $error-dark !important;
-}
-.form-field-label-success{
-    @extend .form-field-label;
-    color: $success;
-}
-.link-body-lg{
-    font-size: 1.9rem !important;
-    font-weight: 400 !important;
-    line-height: 2.8rem !important;
-    text-decoration: underline !important;
-    color: $primary !important;
-}
-.link-body-md{
-    font-size: 1.7rem !important;
-    font-weight: 400 !important;
-    line-height: 2.6rem !important;
-    text-decoration: underline !important;
-    color: $primary !important;
-
-}
-.link-body-sm{
-    font-size: 1.5rem !important;
-    font-weight: 400 !important;
-    line-height: 2.4rem !important;
-    text-decoration: underline !important;
-    color: $primary !important;
-}
-.stepper-step-lg{
-    font-size: 1.9rem !important;
-    font-weight: 700 !important;
-    line-height: 2.5rem !important;
+.lead-paragraph {
+  font-weight: 300 !important;
+  font-size: 2.1rem !important;
+  line-height: 1.5em !important;
 }
 
-.hr{
-    border-color: var(--v-hr_color-base) !important;
-    -ieVar-❗border-color: var(--v-hr_color-base) !important;
-    border-width: 1px !important;
-    border-style: solid !important;
+.body-sm {
+  font-size: 1.4rem !important;
+  line-height: 1.5em !important;
 }
 
-.optional{
-    font-size: 1.5rem !important;
-    font-weight: 400 !important;
-    line-height: 2.3rem !important;
-    color: $base_dark !important;
+.label {
+  font-size: 1.2rem !important;
+  line-height: 1.3em !important;
+}
+
+.micro {
+  font-size: 1rem !important;
+  line-height: 1.2em !important;
+}
+
+.form-field-label {
+  color: $base-darkest !important;
+  font-size: 1.7rem !important;
+  line-height: 2.6rem !important;
+}
+
+.form-field-label-error {
+  @extend .form-field-label;
+  font-weight: 700 !important;
+  color: $primary !important;
+}
+
+.form-field-label-success {
+  @extend .form-field-label;
+  color: $success;
+}
+
+.stepper-step-lg {
+  font-size: 1.9rem !important;
+  font-weight: 700 !important;
+  line-height: 2.5rem !important;
+}
+
+.hr {
+  border-color: var(--v-hr_color-base) !important;
+  -ieVar-❗border-color: var(--v-hr_color-base) !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+}
+
+.optional {
+  font-size: 1.5rem !important;
+  line-height: 2.3rem !important;
+  color: $base_dark !important;
 }
 
 .color-base {
-    color: $base !important;
+  color: $base !important;
 }
 
-.datepicker-text{
-    font-size: 1.6rem !important;
-    font-weight: 400 !important;
-    line-height: 2rem !important;
+.datepicker-text {
+  font-size: 1.6rem !important;
+  line-height: 2rem !important;
 }
 
 a {
-    &.text-link, &.expandable-content-opener, &.primary-text {
-        text-decoration: underline;
-        &:hover {
-            color: $primary-dark !important;
-        }
-        &:active {
-            color: $primary-darker !important;
-        }
+  &.text-link, &.expandable-content-opener, &.primary-text {
+    text-decoration: underline;
+
+    &:hover {
+      color: $primary-dark !important;
     }
-    color: $primary;
-    .external-link {
-        position: relative;
-        padding-right: 24px;
-        display: inline-block;
-        white-space: nowrap;
-        text-decoration: underline;
-        &:after {
-            font-family: 'Material Icons';
-            content: "launch";
-            text-decoration: none !important;
-            -webkit-font-feature-settings: 'liga';
-            color: $primary;
-            position: absolute;
-            top: -2px;
-            right: 2px;
-            font-size: 20px;
-        }
+
+    &:active {
+      color: $primary-darker !important;
     }
+  }
+
+  color: $primary;
+
+  .external-link {
+    position: relative;
+    padding-right: 24px;
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: underline;
+
+    &:after {
+      font-family: $icon-font;
+      content: "launch";
+      text-decoration: none !important;
+      -webkit-font-feature-settings: 'liga';
+      color: $primary;
+      position: absolute;
+      top: -2px;
+      right: 2px;
+      font-size: 20px;
+    }
+  }
 }
+
 .text-decoration-none {
-    text-decoration: none !important;
+  text-decoration: none !important;
 }
 
 $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
-@each $size in $sizes{
-    .icon-#{$size}{
-        font-size: #{$size}px !important;
-        height: #{$size}px !important;
-        width: #{$size}px !important;
-        min-height: #{$size}px !important;
-        min-width: #{$size}px !important;
-    }
+@each $size in $sizes {
+  .icon-#{$size} {
+    font-size: #{$size}px !important;
+    height: #{$size}px !important;
+    width: #{$size}px !important;
+    min-height: #{$size}px !important;
+    min-width: #{$size}px !important;
+  }
 }
 
 $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
-@each $size in $fontSizes{
-    .font-size-#{$size}{
-        font-size: #{$size}px !important;
-    }
+@each $size in $fontSizes {
+  .font-size-#{$size} {
+    font-size: #{$size}px !important;
+  }
 }
 
-.word-break-normal{
-    word-break: normal !important;
+.word-break-normal {
+  word-break: normal !important;
 }
 
 .dl-bullets {
-    dt {
-        position: relative;
-        padding-left: 16px;
-        font-weight: 700;
-        &:before {
-            content: "•";
-            font-weight: 700;
-            position: absolute;
-            left: 0;
-        }
+  dt {
+    position: relative;
+    padding-left: 16px;
+    font-weight: 700;
+
+    &:before {
+      content: "•";
+      font-weight: 700;
+      position: absolute;
+      left: 0;
     }
-    dd {
-        padding-left: 16px;
-        margin-bottom: 2.5rem;
-    }
+  }
+
+  dd {
+    padding-left: 16px;
+    margin-bottom: 2.5rem;
+  }
 }
 
 .icon-after--chevron-right {
-    position: relative;
-    padding-right: 24px;
-    &:after {
-        position: absolute;
-        content: "chevron_right";
-        font-family: "Material Icons";
-        -webkit-font-feature-settings: "liga";
-        right: -28px;
-        font-size: 28px;
-        font-weight: normal;
-        box-shadow: none;
-        color: $primary;
-    }
+  position: relative;
+  padding-right: 24px;
+
+  &:after {
+    position: absolute;
+    content: "chevron_right";
+    font-family: $icon-font;
+    -webkit-font-feature-settings: "liga";
+    right: -28px;
+    font-size: 28px;
+    font-weight: normal;
+    box-shadow: none;
+    color: $primary;
+  }
 }
 
 .separator-bullet {
-    display: inline-block;
-    font-size: 20px;
+  display: inline-block;
+  font-size: 20px;
 }
 
 .text-clamp {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
 .text-clamp--1-line {
-    -webkit-line-clamp: 1;
+  -webkit-line-clamp: 1;
 }
 
 .nowrap {
-    white-space: nowrap !important;
+  white-space: nowrap !important;
 }
