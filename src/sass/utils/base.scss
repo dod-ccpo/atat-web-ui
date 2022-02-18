@@ -12,6 +12,7 @@ body {
 
 #app {
   font-family: $base-font;
+  color: $base-darker;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @extend .body
