@@ -10,11 +10,6 @@
 
 <style lang="scss">
 @import "./sass/atat.scss";
-@font-face {
-  font-family: "League Gothic";
-  src: local("League Gothic"),
-  url(./fonts/League-Gothic/LeagueGothic-Regular.ttf) format("truetype")
-}
 </style>
 
 <script lang="ts">
