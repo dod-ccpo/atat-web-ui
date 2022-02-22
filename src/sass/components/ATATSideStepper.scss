@@ -25,7 +25,7 @@
             margin-bottom: 20px;
             position: relative;
             display: flex;
-            &:hover {
+            &:focus-visible {
               .step-text {
                 text-decoration: underline;
               }
@@ -55,36 +55,75 @@
               background-color: $white;
               outline: 2px solid $white;
             }
+            &:hover {
+              .step-text {
+                color: $base-darkest;
+              }
+              .step-circle {
+                background-color: $base-lightest;
+                border-color: $base;
+              }
+              &.step-complete {
+                .step-circle {
+                  background-color: $success-lighter;
+                }
+              }
+            }
+
+            &.step-complete {
+              .step-text {
+                color: $base-darkest;
+              }
+              .step-circle {
+                border-color: $success;
+                position: relative;
+                color: $success-dark;
+                &:before {
+                  content: "check_circle";
+                  position: absolute;
+                  color: $success;
+                  top: -2px;
+                  right: -5px;
+                  line-height: 1;
+                  z-index: 2;
+                  font-family: "Material Icons";
+                  -webkit-font-feature-settings: "liga";
+                  font-size: 12px;
+                  font-weight: normal;
+                  display: inline-block;
+                  text-decoration: none !important;
+                  vertical-align: text-bottom;
+                }
+                &:after {
+                  content: "";
+                  position: absolute;
+                  background-color: $white;
+                  top: 0;
+                  right: -3px;
+                  line-height: 1;
+                  z-index: 1;
+                  width: 8px;
+                  height: 8px;
+                  display: inline-block;
+                  border-radius: 50%;
+                }
+              }
+            }            
             &.router-link-exact-active  {
               color: $primary;
-              // .step-text {
-              //   font-weight: 700;
-              // }
+              .step-text {
+                font-weight: 500;
+              }
               .step-circle {
                 border-color: $primary;
-                background-color: $primary-lighter;               
-                // font-weight: 700;
-                // color: $white;
+                background-color: $primary-lighter;   
+                color: $primary;            
               }
               &:after {
                 background-color: $primary;
               }
-              &.step-complete{ 
-                .step-circle {
-                  background-color: $success-lighter;
-                  color: $success-dark;
-                }
-              }
             }
-            &.step-complete {
-              // color: $success-dark;
-              .step-circle {
-                border-color: $success;
-                &:after {
-                  // content: $check-green;
-                }
-              }
-            }
+
           }
         }
       }

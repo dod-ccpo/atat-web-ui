@@ -7,7 +7,7 @@
   >
     <v-list>
       <v-list-item>
-        <router-link id="Step1" class="step-complete" to="/">
+        <router-link id="Step1" to="/">
           <span class="step-circle">01</span>
           <span class="step-text">
             Acquisition Package Details Long Name that Wraps
@@ -31,13 +31,23 @@
           </router-link>
       </v-list-item>
       <v-list-item>
-          <router-link id="Step4" to="/stepfour">
+          <router-link id="Step4" class="step-complete" to="/stepfour">
             <span class="step-circle">04</span>
             <span class="step-text">
               Exception to Fair Opportunity
             </span>
           </router-link>
       </v-list-item>
+
+      <v-list-item>
+          <router-link id="Step5" class="step-complete" to="/stepfive">
+            <span class="step-circle">05</span>
+            <span class="step-text">
+              Evaluation Criteria
+            </span>
+          </router-link>
+      </v-list-item>
+
     </v-list>
   </v-navigation-drawer>
 </template>
