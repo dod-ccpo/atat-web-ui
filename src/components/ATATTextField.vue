@@ -23,7 +23,6 @@
               @input="inputActions"
           >
           </v-text-field>
-
         </div>
       </div>
     </v-flex>
