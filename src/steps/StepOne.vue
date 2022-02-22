@@ -6,12 +6,12 @@
           <ATATTextField
             label="Custom text-field"
             placeholder="Custom text-field"
-            id="Custom text-field"
+            id="CustomTextField"
           />
         </v-col>
         <v-col class="col-sm-3">
           <ATATSelect
-              id="dummy-atat-select"
+              id="DummyATATSelect"
               class="clin-idiq-select max-width-100"
               label="Custom Select"
               placeholder="Select"
