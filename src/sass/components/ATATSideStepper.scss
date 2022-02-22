@@ -1,7 +1,7 @@
 .theme--light {
   &.v-navigation-drawer {
     &.global-side-nav-bar {
-      background-color: $base-lighter;
+      background-color: $white;
       padding: 24px !important;
       .v-navigation-drawer__border {
         display: none;
@@ -9,9 +9,82 @@
       .v-list {
         padding: 0;
         .v-list-item {
+          min-height: unset;
           padding: 0;
+          &:last-child {
+            a {
+              &:after {
+                background-color: transparent !important;
+              }
+            }
+          }
           a {
-            font-size: 1.7rem;
+            font-size: 1.6rem;
+            text-decoration: none;
+            color: $base-dark;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            &:hover {
+              .step-text {
+                text-decoration: underline;
+              }
+            }
+            &:after {
+              position: absolute;
+              left: 14px;
+              bottom: -30px;
+              content: "";
+              width: 1px;
+              height: 100%;
+              background-color: $base-light;
+            }
+            .step-text {
+              margin-top: 2px;
+            }
+            .step-circle {
+              flex: 0 0 28px;
+              font-size: 1.2rem;
+              border: 1px solid $base-light;
+              margin-right: 8px;
+              text-align: center;
+              width: 28px;
+              height: 28px;
+              border-radius: 50%;
+              line-height: 26px;
+              background-color: $white;
+              outline: 2px solid $white;
+            }
+            &.router-link-exact-active  {
+              color: $primary;
+              // .step-text {
+              //   font-weight: 700;
+              // }
+              .step-circle {
+                border-color: $primary;
+                background-color: $primary-lighter;               
+                // font-weight: 700;
+                // color: $white;
+              }
+              &:after {
+                background-color: $primary;
+              }
+              &.step-complete{ 
+                .step-circle {
+                  background-color: $success-lighter;
+                  color: $success-dark;
+                }
+              }
+            }
+            &.step-complete {
+              // color: $success-dark;
+              .step-circle {
+                border-color: $success;
+                &:after {
+                  // content: $check-green;
+                }
+              }
+            }
           }
         }
       }
