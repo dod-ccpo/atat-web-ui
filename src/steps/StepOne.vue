@@ -7,6 +7,7 @@
             label="Custom text-field"
             placeholder="Custom text-field"
             id="CustomTextField"
+            :helpText="tooltipTxt"
           />
         </v-col>
         <v-col class="col-sm-3">
@@ -85,6 +86,7 @@ export default class StepOne extends Vue {
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
   private customTextValue = '';
+  private tooltipTxt = 'hello from tooltip'
 
   get contactIsSelected(): boolean {
     return (
