@@ -12,28 +12,34 @@
     background-color: $primary-lighter !important;
     border: solid 2px $primary;
     border-radius: 4px !important;
+    .v-icon {
+      color: $primary !important;
+      z-index: 2;
+      &:hover{
+        color:$primary;
+      }
+    }
   }
 
   .v-icon {
     color: $base !important;
-    position: relative;
-
+    z-index: 2;
+  }
+  .v-input--selection-controls__input {
     &:after {
-      z-index: 2;
-    }
-
-    &:before {
       content: '';
       display: inline-block;
       position: absolute;
       width: 16px;
       height: 16px;
+      top: 4px;
+      left: 4px;
       border-radius: 50%;
+      background-color: $white;
       z-index: 1;
     }
   }
-
-  &:hover {
-    color: $primary !important;
+  &:hover{
+    color:$primary;
   }
 }
