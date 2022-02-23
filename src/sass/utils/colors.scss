@@ -1,3 +1,12 @@
+// DISA GRAY (BASE)
+$base-darkest: #161b1e;
+$base-darker: #2c353b;
+$base-dark: #41494e;
+$base: #61686c;
+$base-light: #959a9d;
+$base-lighter: #e0e1e2;
+$base-lightest: #f4f5f5;
+
 // DISA PURPLE (Primary)
 $primary-darker: #2a224b;
 $primary-dark: #3b3069;
@@ -33,19 +42,6 @@ $error: #c60634;
 $error-light: #e3839a;
 $error-lighter: #f9e6ea;
 
-// DISA GRAY (BASE)
-$base-darkest: #161b1e;
-$base-darker: #2c353b;
-$base-dark: #41494e;
-$base: #61686c;
-$base-light: #959a9d;
-$base-lighter: #e0e1e2;
-$base-lightest: #f4f5f5;
-
-$black: #000000;
-$offwhite: #fbfbfb;
-$white: #ffffff;
-
 // DISABLED
 $disabled-dark: #adadad;
 $disabled: #c9c9c9;
@@ -57,3 +53,8 @@ $disabled-light: #e6e6e6;
 // $accent-cool: 
 // $accent-cool-light: 
 $accent-cool-lighter: #f4f5f5;
+
+// MISC
+$black: #000000;
+$offwhite: #fbfbfb;
+$white: #ffffff;

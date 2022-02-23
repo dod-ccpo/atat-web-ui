@@ -6,48 +6,21 @@
     width="350"
   >
     <v-list>
-      <v-list-item>
-        <router-link id="Step1" to="/">
-          <span class="step-circle">01</span>
+      <v-list-item 
+        v-for="(step, index) in stepperData"
+        :key="index"
+      >
+        <router-link 
+          :id="'Step'+ step.stepNumber"
+          :to="step.route"
+          :class="{'step-complete': step.completed}"
+        >
+          <span class="step-circle">{{ step.stepNumber }}</span>
           <span class="step-text">
-            Acquisition Package Details Long Name that Wraps
+            {{ step.menuText }}
           </span>
         </router-link>
       </v-list-item>
-      <v-list-item>
-          <router-link id="Step2" to="/steptwo">
-            <span class="step-circle">02</span>
-            <span class="step-text">
-              Existing Contract / Background
-            </span>
-          </router-link>
-      </v-list-item>
-      <v-list-item>
-          <router-link id="Step3" to="/stepthree">
-            <span class="step-circle">03</span>
-            <span class="step-text">
-              Order Type
-            </span>
-          </router-link>
-      </v-list-item>
-      <v-list-item>
-          <router-link id="Step4" class="step-complete" to="/stepfour">
-            <span class="step-circle">04</span>
-            <span class="step-text">
-              Exception to Fair Opportunity
-            </span>
-          </router-link>
-      </v-list-item>
-
-      <v-list-item>
-          <router-link id="Step5" class="step-complete" to="/stepfive">
-            <span class="step-circle">05</span>
-            <span class="step-text">
-              Evaluation Criteria
-            </span>
-          </router-link>
-      </v-list-item>
-
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -55,17 +28,18 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { StepperStep } from "../../types/Global";
 @Component({})
 export default class ATATSideStepper extends Vue {
   
   // data
-  private sideStepperData = [
+  private stepperData: StepperStep[] = [
     {
-      stepNumber: 1,
-      completed: false,
+      stepNumber: "01",
+      completed: true,
       completePercentageWeight: 15,
       menuText: "Acquisition Package Details",
-      route: "/stepone",
+      route: "/",
       subSteps: [
         {
           menuText: "Project Overview",
@@ -82,32 +56,97 @@ export default class ATATSideStepper extends Vue {
         {
           menuText: "Organization",
           route: "stepone-2",
-          subSteps: []
         },
         {
           menuText: "Contact Information",
           route: "stepone-3",
-          subSteps: []
         },
       ]
     },
     {
-      stepNumber: 2,
+      stepNumber: "02",
       completed: false,
       completePercentageWeight: 4,
       menuText: "Existing Contract / Background",
       route: "/steptwo",
-      subSteps: [],
     },
     {
-      stepNumber: 3,
+      stepNumber: "03",
       completed: false,
       completePercentageWeight: 5,
       menuText: "Order Type",
-      route: "/stepthree",
-      subSteps: [],
-    }
+      route: "/order-type",
+    },
+    {
+      stepNumber: "04",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Exception to Fair Opportunity",
+      route: "/exception-to-fair-opportunity",
+    },
+    {
+      stepNumber: "05",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Evaluation Criteria",
+      route: "/evaluation-criteria",
+    },
+    {
+      stepNumber: "06",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Classification Requirements",
+      route: "/classification-requirements",
+    },
+    {
+      stepNumber: "07",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Financial Details",
+      route: "/financial-details",
+    },
+    {
+      stepNumber: "08",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Public Disclosure of Information",
+      route: "/public-disclosure-of-information",
+    },
+    {
+      stepNumber: "09",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Statutory Compliance",
+      route: "/statutory-compliance",
+    },
+    {
+      stepNumber: "10",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Supply Chain Risk Management",
+      route: "/supply-chain-risk-management",
+    },
+    {
+      stepNumber: "11",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Government Furnished Equipment",
+      route: "/government-furnished-equipment",
+    },
+    {
+      stepNumber: "12",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Section 508",
+      route: "/section-508",
+    },
+    {
+      stepNumber: "13",
+      completed: false,
+      completePercentageWeight: 5,
+      menuText: "Review Required Forms",
+      route: "/review-required-forms",
+    },
   ]
-
 }
 </script>

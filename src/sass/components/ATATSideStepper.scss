@@ -1,6 +1,7 @@
 .theme--light {
   &.v-navigation-drawer {
     &.global-side-nav-bar {
+      border-right: 1px solid $base-lighter;
       background-color: $white;
       padding: 24px !important;
       .v-navigation-drawer__border {
@@ -71,6 +72,9 @@
             }
 
             &.step-complete {
+              &:after {
+                background-color: $success;
+              }
               .step-text {
                 color: $base-darkest;
               }
@@ -110,8 +114,8 @@
               }
             }            
             &.router-link-exact-active  {
-              color: $primary;
               .step-text {
+                color: $primary;
                 font-weight: 500;
               }
               .step-circle {
@@ -122,8 +126,15 @@
               &:after {
                 background-color: $primary;
               }
+              &:hover {
+                .step-text {
+                  color: $base-darkest;
+                }
+                .step-circle {
+                  background-color: $primary-lighter;   
+                }
+              }
             }
-
           }
         }
       }
