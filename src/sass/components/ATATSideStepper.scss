@@ -43,15 +43,6 @@
               height: 100%;
               background-color: $base-light;
             }
-            &.substep {
-              &:after {
-                bottom: -30px;
-                height: 150%;
-              }
-              .step-text {
-                margin-left: 9px;
-              }
-            }
             .step-text {
               margin-top: 2px;
             }
@@ -67,18 +58,6 @@
               line-height: 26px;
               background-color: $white;
               outline: 2px solid $white;
-              z-index: 2;
-            }
-            .substep-circle {
-              flex: 0 0 28px;
-              border: 1px solid $base-light;
-              margin: 9px 8px 0 10px;
-              width: 9px;
-              max-width: 9px;
-              height: 9px;
-              border-radius: 50%;
-              line-height: 26px;
-              background-color: $white;
               z-index: 2;
             }
             &:hover {

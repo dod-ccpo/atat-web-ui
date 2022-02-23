@@ -6,7 +6,6 @@
     width="350"
   >
     <v-list>
-
       <v-list-item 
         v-for="(step, index) in stepperData"
         :key="index"
@@ -21,24 +20,7 @@
             {{ step.menuText }}
           </span>
         </router-link>
-
-        <router-link 
-          v-for="(subStep, index) in step.subSteps"
-          :key="'substep' + index"
-          :id="'Substep' + index"
-          :to="subStep.route"
-          class="substep"
-        >
-          <span class="substep-circle"></span>
-          <span class="step-text">
-            {{ subStep.menuText }}
-          </span>
-        </router-link>
-
-
       </v-list-item>
-
-
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -60,7 +42,7 @@ export default class ATATSideStepper extends Vue {
       route: "/",
       subSteps: [
         {
-          menuText: "Project Overview Long Name that Wraps Two Lines",
+          menuText: "Project Overview ",
           route: "stepone-1-1",
           completed: true,
           // subSteps: [
