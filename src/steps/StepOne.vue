@@ -61,6 +61,13 @@
             card="true"
         >
         </ATATRadioGroup>
+        <ATATRadioGroup
+            id="DummyATATRadio"
+            label="Custom Radio"
+            :value.sync="radioValue"
+            :items="items"
+        >
+        </ATATRadioGroup>
       </v-col>
 
     </v-container>

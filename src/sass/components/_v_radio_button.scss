@@ -1,26 +1,14 @@
 @import "../utils/colors.scss";
-
-._v_radio-button-cards {
-  background-color: $base-lightest !important;
-  border: solid 2px $base-light;
-  border-radius: 4px !important;
-
+._radio-button {
   label {
     color: $base-darkest !important;
   }
   &.v-item--active {
-    background-color: $primary-lighter !important;
-    border: solid 2px $primary;
-    border-radius: 4px !important;
     .v-icon {
       color: $primary !important;
       z-index: 2;
-      &:hover{
-        color:$primary;
-      }
     }
   }
-
   .v-icon {
     color: $base !important;
     z-index: 2;
@@ -41,5 +29,17 @@
   }
   &:hover{
     color:$primary;
+  }
+}
+._v_radio-button-cards {
+  @extend ._radio-button;
+  background-color: $base-lightest !important;
+  border: solid 2px $base-light;
+  border-radius: 4px !important;
+
+  &.v-item--active {
+    background-color: $primary-lighter !important;
+    border: solid 2px $primary;
+    border-radius: 4px !important;
   }
 }
