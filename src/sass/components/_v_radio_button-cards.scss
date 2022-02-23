@@ -2,11 +2,16 @@
 
 ._v_radio-button-cards {
   background-color: $base-lightest !important;
-  border: solid 1px $base-light;
+  border: solid 2px $base-light;
   border-radius: 4px !important;
 
   label {
     color: $base-darkest !important;
+  }
+  &.v-item--active {
+    background-color: $primary-lighter !important;
+    border: solid 2px $primary;
+    border-radius: 4px !important;
   }
 
   .v-icon {
@@ -24,8 +29,11 @@
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background-color: red;
       z-index: 1;
     }
+  }
+
+  &:hover {
+    color: $primary !important;
   }
 }
