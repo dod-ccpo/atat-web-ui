@@ -14,7 +14,7 @@ import Vue from "vue";
 export default class ATATRadioGroup extends Vue {
   @PropSync("value") private _selectedValue!: string;
   @Prop({default: "Form Field Label"}) private label!: string;
-  @Prop({default: "Form Field Label"}) private items!: string[];
+  @Prop({default: ['empty items array']}) private items!: string[];
   @Prop({default: false}) private card!: boolean;
 }
 </script>
