@@ -13,6 +13,9 @@
     color: $base !important;
     z-index: 2;
   }
+  .v-radio--is-focused {
+    color: $primary !important;
+  }
   .v-input--selection-controls__input {
     &:after {
       content: '';
@@ -27,9 +30,6 @@
       z-index: 1;
     }
   }
-  &:hover{
-    color:$primary;
-  }
 }
 ._v_radio-button-cards {
   @extend ._radio-button;
@@ -41,5 +41,10 @@
     background-color: $primary-lighter !important;
     border: solid 2px $primary;
     border-radius: 4px !important;
+  }
+  &:hover{
+    border:$primary solid 2px;
+    background-color: $primary-lighter !important;
+    color:$primary;
   }
 }
