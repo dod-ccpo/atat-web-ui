@@ -6,7 +6,6 @@
     width="320"
   >
     <v-list>
-
       <v-list-item 
         v-for="(step, index) in stepperData"
         :key="index"
@@ -24,33 +23,26 @@
             {{ step.menuText }}
           </span>
         </router-link>
-        <span v-if="hasSubSteps(step)">
 
-          <Transition name="fade">
-            <span 
-              v-show="activeStep === step.stepNumber"
+        <v-expand-transition v-if="hasSubSteps(step)">
+          <span v-show="activeStep === step.stepNumber">
+            <router-link 
+              v-for="(subStep, index) in step.subSteps"
+              :key="'substep' + index"
+              :id="'Substep' + index"
+              :to="subStep.route"
+              :class="{'step-complete': subStep.completed}"
+              class="substep"
             >
-
-              <router-link 
-                v-for="(subStep, index) in step.subSteps"
-                :key="'substep' + index"
-                :id="'Substep' + index"
-                :to="subStep.route"
-                :class="{'step-complete': subStep.completed}"
-                class="substep"
-              >
-                <span class="substep-circle"></span>
-                <span class="step-text">
-                  {{ subStep.menuText }}
-                </span>
-              </router-link>
-            </span>
-          </Transition>
-        </span>
+              <span class="substep-circle"></span>
+              <span class="step-text">
+                {{ subStep.menuText }}
+              </span>
+            </router-link>
+          </span>
+        </v-expand-transition>
 
       </v-list-item>
-
-
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -84,14 +76,14 @@ export default class ATATSideStepper extends Vue {
           menuText: "Project Overview",
           route: "/", // should be same as parent route
           completed: true,
-          // subSteps: [
-          //   {
-          //     route: "/" // should be same as parent route
-          //   },
-          //   {
-          //     route: "stepone-1-2"
-          //   }
-          // ]
+          subSteps: [
+            {
+              route: "/" // should be same as parent route
+            },
+            {
+              route: "stepone-1-2"
+            }
+          ]
         },
         {
           menuText: "Organization",
@@ -127,6 +119,11 @@ export default class ATATSideStepper extends Vue {
           route: "steptwo-3",
           completed: false,
         },
+        {
+          menuText: "Substep 4",
+          route: "steptwo-4",
+          completed: false,
+        },
       ]
     },
     {
@@ -146,12 +143,6 @@ export default class ATATSideStepper extends Vue {
           route: "stepthree-B",
           completed: false,
         },
-        {
-          menuText: "Substep C",
-          route: "stepthree-C",
-          completed: false,
-        },
-
       ]
     },
     {

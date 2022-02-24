@@ -49,27 +49,21 @@
       </v-row>
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
-          <!-- <Users></Users> -->
+          <Users></Users>
         </v-col>
       </v-row>
-
-<button @click="show = !show">Toggle</button>
-<Transition name="fade">
-  <p v-if="show">hello</p>
-</Transition>
-
     </v-container>
   </div>
 </template>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
+.v-enter-active,
+.v-leave-active {
   transition: opacity 0.5s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.v-enter,
+.v-leave-to {
   opacity: 0;
 }
 </style>

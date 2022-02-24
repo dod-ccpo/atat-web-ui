@@ -113,12 +113,13 @@
               .step-text {
                 color: $base-darkest;
               }
-              .step-circle, .substep-circle {
-                background-color: $base-lightest;
-                border-color: $base;
+              .step-circle {
+                background-color: $primary-lighter;
+                border-color: $primary;
               }
               .substep-circle {
                 border-color: $primary;
+                background-color: $primary;
               }
               &.step-complete {
                 .step-circle {
@@ -197,9 +198,9 @@
           }
           &.active-step {
             a.step {
-              // &:after {
-              //   // background-color: $primary;
-              // }
+              &:after {
+                background-color: $primary;
+              }
               .step-text {
                 font-weight: 500;
                 color: $primary;  
