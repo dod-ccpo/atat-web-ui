@@ -3,7 +3,6 @@
   transform: scale(1) !important;
   opacity: 1 !important;
 }
-
 ._radio-button {
   &.v-item--active {
     .v-icon {
@@ -54,7 +53,6 @@
   border: solid 2px $base-light;
   border-radius: 4px !important;
   padding: 12px 0px 12px 12px;
-
   &.v-item--active {
     background-color: $primary-lighter !important;
     border: solid 2px $primary;

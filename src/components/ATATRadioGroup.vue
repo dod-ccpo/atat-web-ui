@@ -1,12 +1,12 @@
 <template>
-  <v-container fluid>
-    <v-radio-group v-model="_selectedValue">
-      <v-radio
-          v-for="item in items"
-          :class="[card? '_radio-button-card': '_radio-button']"
-          :key="item" :label="item" :value="item"></v-radio>
-    </v-radio-group>
-  </v-container>
+  <v-radio-group v-model="_selectedValue">
+    <v-radio
+        v-for="item in items"
+        :class="[card? '_radio-button-card': '_radio-button']"
+        :key="item"
+        :label="item"
+        :value="item"/>
+  </v-radio-group>
 </template>
 
 <script lang="ts">

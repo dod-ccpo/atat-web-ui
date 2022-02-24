@@ -4,9 +4,9 @@
       <v-row>
         <v-col class="col-sm-3">
           <ATATTextField
-            label="Custom text-field"
-            placeholder="Custom text-field"
-            id="CustomTextField"
+              label="Custom text-field"
+              placeholder="Custom text-field"
+              id="CustomTextField"
           />
         </v-col>
         <v-col class="col-sm-3">
@@ -52,24 +52,25 @@
           <Users></Users>
         </v-col>
       </v-row>
-      <v-col>
-        <ATATRadioGroup
-            id="DummyATATRadio"
-            label="Custom Radio"
-            :value.sync="radioValue"
-            :items="items"
-            card="true"
-        >
-        </ATATRadioGroup>
-        <ATATRadioGroup
-            id="DummyATATRadio"
-            label="Custom Radio"
-            :value.sync="radioValue"
-            :items="items"
-        >
-        </ATATRadioGroup>
-      </v-col>
-
+      <v-row>
+        <v-col>
+          <ATATRadioGroup
+              id="DummyATATRadio"
+              label="Custom Radio"
+              :value.sync="radioValue"
+              :items="items"
+              card="true"
+          >
+          </ATATRadioGroup>
+          <ATATRadioGroup
+              id="DummyATATRadio2"
+              label="Custom Radio"
+              :value.sync="radioValue"
+              :items="items"
+          >
+          </ATATRadioGroup>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
