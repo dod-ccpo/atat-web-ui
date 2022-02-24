@@ -7,12 +7,12 @@
   >
     <v-list>
       <v-list-item 
-        v-for="(step, index) in stepperData"
-        :key="index"
+        v-for="(step, stepIndex) in stepperData"
+        :key="stepIndex"
         :class="{ 'active-step': step.stepNumber === activeStep}"
       >
         <router-link 
-          :id="'Step'+ step.stepNumber"
+          :id="'Step' + step.stepNumber + '_' + getIdText(step.menuText)"
           :to="step.route"
           :class="{'step-complete': step.completed}"
           class="step"
@@ -33,14 +33,20 @@
         <v-expand-transition v-if="hasSubSteps(step)">
           <span v-show="activeStep === step.stepNumber">
             <router-link 
-              v-for="(subStep, index) in step.subSteps"
-              :key="'substep' + index"
-              :id="'Substep' + index"
+              v-for="(subStep, subStepIndex) in step.subSteps"
+              :key="'substep' + subStepIndex"
+              :id="'Step' + step.stepNumber + '_' + getIdText(subStep.menuText)"
               :to="subStep.route"
               :class="{'step-complete': subStep.completed}"
               class="substep"
             >
-              <span class="substep-circle"></span>
+              <span class="substep-circle">
+                <span v-if="subStep.completed" class="completed-check">
+                  <span class="d-sr-only">Completed</span>
+                  <v-icon>check_circle</v-icon>
+                </span>
+
+              </span>
               <span class="step-text">
                 {{ subStep.menuText }}
               </span>
@@ -66,6 +72,10 @@ export default class ATATSideStepper extends Vue {
 
   private hasSubSteps(step: StepperStep) {
     return (Object.prototype.hasOwnProperty.call(step, "subSteps") && step.subSteps?.length)
+  }
+
+  private getIdText(string: string) {
+    return string.replace(/[^A-Z0-9]/ig, '');
   }
 
   // data

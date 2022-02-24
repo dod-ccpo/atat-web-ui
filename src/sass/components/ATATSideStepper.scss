@@ -64,20 +64,13 @@
                 .substep-circle {
                   background-color: $white;
                   border-color: $white;
-                  &:before {
-                    content: "check_circle";
-                    position: absolute;
-                    color: $success;
-                    top: 7px;
-                    left: 8px;
-                    line-height: 1;
-                    z-index: 2;
-                    font-family: "Material Icons";
-                    -webkit-font-feature-settings: "liga";
-                    font-size: 13px;
-                    font-weight: normal;
+                  .completed-check {
+                    @extend ._completed-check;
+                    .v-icon {
+                      right: -3px !important;
+                      font-size: 13px !important;                    
+                    }
                   }
-  
                 }
               }
             }
@@ -109,6 +102,7 @@
               line-height: 26px;
               background-color: $white;
               z-index: 2;
+              position: relative;
             }
             &:hover {
               .step-text {
@@ -141,33 +135,7 @@
                 position: relative;
                 color: $success-dark;
                 .completed-check {
-                  display: block;
-                  position: absolute;
-                  height: 12px;
-                  width: 12px;
-                  top: -1px;
-                  right: 0;
-                  &:after {
-                    content: "";
-                    position: absolute;
-                    background-color: $white;
-                    top: 0;
-                    right: -3px;
-                    line-height: 1;
-                    z-index: 1;
-                    width: 8px;
-                    height: 8px;
-                    display: inline-block;
-                    border-radius: 50%;
-                  }
-                  .v-icon {
-                    position: absolute;
-                    top: -1px;
-                    right: -5px;
-                    font-size: 12px;
-                    color: $success;
-                    z-index: 2;
-                  }
+                  @extend ._completed-check;
                 }
               }
             }            
@@ -228,3 +196,32 @@
   }
 }
 
+._completed-check {
+  display: block;
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  top: -1px;
+  right: 0;
+  &:after {
+    content: "";
+    position: absolute;
+    background-color: $white;
+    top: 0;
+    right: -3px;
+    line-height: 1;
+    z-index: 1;
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+  .v-icon {
+    position: absolute;
+    top: -1px;
+    right: -5px;
+    font-size: 12px;
+    color: $success;
+    z-index: 2;
+  }
+}
