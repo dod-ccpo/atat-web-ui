@@ -102,7 +102,7 @@ p {
   line-height: 2rem !important;
 }
 
-a,.primary--text{
+a {
   &.text-link, &.expandable-content-opener, &.primary-text {
     text-decoration: underline;
 
