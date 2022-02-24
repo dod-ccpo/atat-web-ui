@@ -12,7 +12,7 @@
         :class="{ 'active-step': step.stepNumber === activeStep}"
       >
         <router-link 
-          :id="'Step' + step.stepNumber + '_' + getIdText(step.menuText)"
+          :id="'Step_' + getIdText(step.menuText)"
           :to="step.route"
           :class="{'step-complete': step.completed}"
           class="step"
@@ -35,7 +35,7 @@
             <router-link 
               v-for="(subStep, subStepIndex) in step.subSteps"
               :key="'step' + step.stepNumber + '_substep' + subStepIndex"
-              :id="'Step' + step.stepNumber + '_' + getIdText(subStep.menuText)"
+              :id="'SubStep_' + getIdText(subStep.menuText)"
               :to="subStep.route"
               :class="{'step-complete': subStep.completed}"
               class="substep"
