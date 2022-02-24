@@ -1,22 +1,39 @@
-@import "../utils/colors.scss";
+._radio-focus {
+  background: $primary-lighter !important;
+  transform: scale(1) !important;
+  opacity: 1 !important;
+}
+
 ._radio-button {
-  label {
-    color: $base-darkest !important;
-  }
   &.v-item--active {
     .v-icon {
       color: $primary !important;
       z-index: 2;
     }
   }
+  &.v-radio--is-focused {
+    color: $primary !important;
+    .v-input--selection-controls__ripple {
+      &:before {
+        @extend ._radio-focus;
+      }
+    }
+  }
+  label {
+    color: $base-darkest !important;
+  }
   .v-icon {
     color: $base !important;
     z-index: 2;
   }
-  .v-radio--is-focused {
-    color: $primary !important;
-  }
   .v-input--selection-controls__input {
+    &:hover {
+      .v-input--selection-controls__ripple {
+        &:before {
+          @extend ._radio-focus;
+        }
+      }
+    }
     &:after {
       content: '';
       display: inline-block;
@@ -29,10 +46,9 @@
       background-color: $white;
       z-index: 1;
     }
-
   }
 }
-._v_radio-button-cards {
+._radio-button-card {
   @extend ._radio-button;
   background-color: $base-lightest !important;
   border: solid 2px $base-light;
@@ -44,9 +60,9 @@
     border: solid 2px $primary;
     border-radius: 4px !important;
   }
-  &:hover{
-    border:$primary solid 2px;
+  &:hover, &.v-radio--is-focused {
+    border: $primary solid 2px;
     background-color: $primary-lighter !important;
-    color:$primary;
+    color: $primary;
   }
 }
