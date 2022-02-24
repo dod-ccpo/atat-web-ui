@@ -58,6 +58,7 @@
               }
               &.step-complete {
                 &:after {
+                  // vertical line
                   background-color: $primary;
                 }
                 .substep-circle {
@@ -139,31 +140,34 @@
                 border-color: $success;
                 position: relative;
                 color: $success-dark;
-                &:before {
-                  content: "check_circle";
+                .completed-check {
+                  display: block;
                   position: absolute;
-                  color: $success;
-                  top: -2px;
-                  right: -5px;
-                  line-height: 1;
-                  z-index: 2;
-                  font-family: "Material Icons";
-                  -webkit-font-feature-settings: "liga";
-                  font-size: 12px;
-                  font-weight: normal;
-                }
-                &:after {
-                  content: "";
-                  position: absolute;
-                  background-color: $white;
-                  top: 0;
-                  right: -3px;
-                  line-height: 1;
-                  z-index: 1;
-                  width: 8px;
-                  height: 8px;
-                  display: inline-block;
-                  border-radius: 50%;
+                  height: 12px;
+                  width: 12px;
+                  top: -1px;
+                  right: 0;
+                  &:after {
+                    content: "";
+                    position: absolute;
+                    background-color: $white;
+                    top: 0;
+                    right: -3px;
+                    line-height: 1;
+                    z-index: 1;
+                    width: 8px;
+                    height: 8px;
+                    display: inline-block;
+                    border-radius: 50%;
+                  }
+                  .v-icon {
+                    position: absolute;
+                    top: -1px;
+                    right: -5px;
+                    font-size: 12px;
+                    color: $success;
+                    z-index: 2;
+                  }
                 }
               }
             }            
@@ -198,6 +202,11 @@
           }
           &.active-step {
             a.step {
+              &:hover {
+                .step-text {
+                  color: $base-darkest;
+                }
+              }
               &:after {
                 background-color: $primary;
               }

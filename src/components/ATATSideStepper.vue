@@ -18,7 +18,13 @@
           class="step"
           @click.native="setCurrentStep(step.stepNumber)"
         >
-          <span class="step-circle">{{ step.stepNumber }}</span>
+          <span class="step-circle">
+            {{ step.stepNumber }}
+            <span v-if="step.completed" class="completed-check">
+              <span class="d-sr-only">Completed</span>
+              <v-icon>check_circle</v-icon>
+            </span>
+          </span>
           <span class="step-text">
             {{ step.menuText }}
           </span>
