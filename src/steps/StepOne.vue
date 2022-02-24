@@ -49,19 +49,33 @@
       </v-row>
       <v-row>
         <v-col class="col-sm-12 col-md-8 col-lg-6">
-          <Users></Users>
+          <!-- <Users></Users> -->
         </v-col>
       </v-row>
+
+<button @click="show = !show">Toggle</button>
+<Transition name="fade">
+  <p v-if="show">hello</p>
+</Transition>
 
     </v-container>
   </div>
 </template>
 
-<style>
-.v-list-item__title {
-  font-size: 1.4rem;
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
+
+
+
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
@@ -81,6 +95,8 @@ import {Component} from "vue-property-decorator";
   },
 })
 export default class StepOne extends Vue {
+  private show = true;
+
   private select = null;
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
@@ -451,3 +467,4 @@ export default class StepOne extends Vue {
   ];
 }
 </script>
+

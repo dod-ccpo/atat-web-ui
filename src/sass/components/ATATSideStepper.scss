@@ -44,12 +44,40 @@
               background-color: $base-light;
             }
             &.substep {
+              margin-bottom: 12px;
+              &:last-child {
+                margin-bottom: 20px;
+              }
               &:after {
                 bottom: -30px;
-                height: 150%;
+                height: calc(100% + 20px);
+                background-color: $primary;
               }
               .step-text {
                 margin-left: 9px;
+              }
+              &.step-complete {
+                &:after {
+                  background-color: $primary;
+                }
+                .substep-circle {
+                  background-color: $white;
+                  border-color: $white;
+                  &:before {
+                    content: "check_circle";
+                    position: absolute;
+                    color: $success;
+                    top: 7px;
+                    left: 8px;
+                    line-height: 1;
+                    z-index: 2;
+                    font-family: "Material Icons";
+                    -webkit-font-feature-settings: "liga";
+                    font-size: 13px;
+                    font-weight: normal;
+                  }
+  
+                }
               }
             }
             .step-text {
@@ -59,7 +87,7 @@
               flex: 0 0 28px;
               font-size: 1.2rem;
               border: 1px solid $base-light;
-              margin-right: 8px;
+              margin-right: 12px;
               text-align: center;
               width: 28px;
               height: 28px;
@@ -71,8 +99,8 @@
             }
             .substep-circle {
               flex: 0 0 28px;
-              border: 1px solid $base-light;
-              margin: 9px 8px 0 10px;
+              border: 1px solid $primary;
+              margin: 9px 12px 0 10px;
               width: 9px;
               max-width: 9px;
               height: 9px;
@@ -85,9 +113,12 @@
               .step-text {
                 color: $base-darkest;
               }
-              .step-circle {
+              .step-circle, .substep-circle {
                 background-color: $base-lightest;
                 border-color: $base;
+              }
+              .substep-circle {
+                border-color: $primary;
               }
               &.step-complete {
                 .step-circle {
@@ -98,7 +129,7 @@
 
             &.step-complete {
               &:after {
-                background-color: $success;
+                background-color: $success !important;
               }
               .step-text {
                 color: $base-darkest;
@@ -145,17 +176,40 @@
                 background-color: $primary-lighter;   
                 color: $primary;            
               }
+              .substep-circle {
+                border-color: $primary;
+                background-color: $primary;
+              }
               &:after {
                 background-color: $primary;
               }
               &:hover {
-                .step-text {
-                  color: $base-darkest;
-                }
-                .step-circle {
-                  background-color: $primary-lighter;   
+                &:not(.substep) {
+                  .step-text {
+                    color: $base-darkest;
+                  }
+                  .step-circle {
+                    background-color: $primary-lighter;   
+                  } 
                 }
               }
+            }
+          }
+          &.active-step {
+            a.step {
+              // &:after {
+              //   // background-color: $primary;
+              // }
+              .step-text {
+                font-weight: 500;
+                color: $primary;  
+              }
+              .step-circle {
+                color: $primary !important;
+                border-color: $primary !important;
+                background-color: $primary-lighter;
+              }
+  
             }
           }
         }

@@ -3,38 +3,50 @@
     app
     permanent
     class="global-side-nav-bar"
-    width="350"
+    width="320"
   >
     <v-list>
 
       <v-list-item 
         v-for="(step, index) in stepperData"
         :key="index"
+        :class="{ 'active-step': step.stepNumber === activeStep}"
       >
         <router-link 
           :id="'Step'+ step.stepNumber"
           :to="step.route"
           :class="{'step-complete': step.completed}"
+          class="step"
+          @click.native="setCurrentStep(step.stepNumber)"
         >
           <span class="step-circle">{{ step.stepNumber }}</span>
           <span class="step-text">
             {{ step.menuText }}
           </span>
         </router-link>
+        <span v-if="hasSubSteps(step)">
 
-        <router-link 
-          v-for="(subStep, index) in step.subSteps"
-          :key="'substep' + index"
-          :id="'Substep' + index"
-          :to="subStep.route"
-          class="substep"
-        >
-          <span class="substep-circle"></span>
-          <span class="step-text">
-            {{ subStep.menuText }}
-          </span>
-        </router-link>
+          <Transition name="fade">
+            <span 
+              v-show="activeStep === step.stepNumber"
+            >
 
+              <router-link 
+                v-for="(subStep, index) in step.subSteps"
+                :key="'substep' + index"
+                :id="'Substep' + index"
+                :to="subStep.route"
+                :class="{'step-complete': subStep.completed}"
+                class="substep"
+              >
+                <span class="substep-circle"></span>
+                <span class="step-text">
+                  {{ subStep.menuText }}
+                </span>
+              </router-link>
+            </span>
+          </Transition>
+        </span>
 
       </v-list-item>
 
@@ -50,7 +62,16 @@ import { StepperStep } from "../../types/Global";
 @Component({})
 export default class ATATSideStepper extends Vue {
   
+  private setCurrentStep(stepNumber: string) {
+    this.activeStep = stepNumber;
+  }
+
+  private hasSubSteps(step: StepperStep) {
+    return (Object.prototype.hasOwnProperty.call(step, "subSteps") && step.subSteps?.length)
+  }
+
   // data
+  private activeStep = "01";
   private stepperData: StepperStep[] = [
     {
       stepNumber: "01",
@@ -60,12 +81,12 @@ export default class ATATSideStepper extends Vue {
       route: "/",
       subSteps: [
         {
-          menuText: "Project Overview Long Name that Wraps Two Lines",
-          route: "stepone-1-1",
+          menuText: "Project Overview",
+          route: "/", // should be same as parent route
           completed: true,
           // subSteps: [
           //   {
-          //     route: "stepone-1-1"
+          //     route: "/" // should be same as parent route
           //   },
           //   {
           //     route: "stepone-1-2"
@@ -75,12 +96,12 @@ export default class ATATSideStepper extends Vue {
         {
           menuText: "Organization",
           route: "stepone-2",
-          completed: false,
+          completed: true,
         },
         {
           menuText: "Contact Information",
           route: "stepone-3",
-          completed: false,
+          completed: true,
         },
       ]
     },
@@ -90,6 +111,23 @@ export default class ATATSideStepper extends Vue {
       completePercentageWeight: 4,
       menuText: "Existing Contract / Background",
       route: "/steptwo",
+      subSteps: [
+        {
+          menuText: "Substep 1",
+          route: "/steptwo",
+          completed: true,
+        },
+        {
+          menuText: "Substep 2",
+          route: "steptwo-2",
+          completed: true,
+        },
+        {
+          menuText: "Substep 3",
+          route: "steptwo-3",
+          completed: false,
+        },
+      ]
     },
     {
       stepNumber: "03",
@@ -97,6 +135,24 @@ export default class ATATSideStepper extends Vue {
       completePercentageWeight: 5,
       menuText: "Order Type",
       route: "/order-type",
+      subSteps: [
+        {
+          menuText: "Substep A",
+          route: "/order-type",
+          completed: false,
+        },
+        {
+          menuText: "Substep B",
+          route: "stepthree-B",
+          completed: false,
+        },
+        {
+          menuText: "Substep C",
+          route: "stepthree-C",
+          completed: false,
+        },
+
+      ]
     },
     {
       stepNumber: "04",
