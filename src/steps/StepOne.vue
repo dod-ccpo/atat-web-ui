@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-container class="">
+    <v-container>
       <v-row>
         <v-col class="col-sm-3">
           <ATATTextField
-            label="Custom text-field"
-            placeholder="Custom text-field"
-            id="CustomTextField"
+              label="Custom text-field"
+              placeholder="Custom text-field"
+              id="CustomTextField"
           />
         </v-col>
         <v-col class="col-sm-3">
@@ -52,7 +52,25 @@
           <Users></Users>
         </v-col>
       </v-row>
-
+      <v-row>
+        <v-col>
+          <ATATRadioGroup
+              id="DummyATATRadio"
+              label="Custom Radio"
+              :value.sync="radioValue"
+              :items="items"
+              card="true"
+          >
+          </ATATRadioGroup>
+          <ATATRadioGroup
+              id="DummyATATRadio2"
+              label="Custom Radio"
+              :value.sync="radioValue"
+              :items="items"
+          >
+          </ATATRadioGroup>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -67,6 +85,7 @@ import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
 import Users from "../components/Users.vue"
 import ATATSelect from "../components/ATATSelect.vue";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
 import Vue from "vue";
 
@@ -78,6 +97,7 @@ import {Component} from "vue-property-decorator";
     ATATTextField,
     Users,
     ATATSelect,
+    ATATRadioGroup
   },
 })
 export default class StepOne extends Vue {
@@ -85,6 +105,7 @@ export default class StepOne extends Vue {
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
   private customTextValue = '';
+  private radioValue = ''
 
   get contactIsSelected(): boolean {
     return (
