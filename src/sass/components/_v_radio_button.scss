@@ -29,6 +29,7 @@
       background-color: $white;
       z-index: 1;
     }
+
   }
 }
 ._v_radio-button-cards {
@@ -36,6 +37,7 @@
   background-color: $base-lightest !important;
   border: solid 2px $base-light;
   border-radius: 4px !important;
+  padding: 12px 0px 12px 12px;
 
   &.v-item--active {
     background-color: $primary-lighter !important;
