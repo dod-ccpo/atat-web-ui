@@ -59,6 +59,7 @@
               label="Custom Radio"
               :value.sync="radioValue"
               :items="items"
+              name="my-radio-group"
               card="true"
           >
           </ATATRadioGroup>
@@ -67,6 +68,7 @@
               label="Custom Radio"
               :value.sync="radioValue"
               :items="items"
+              name="another-radio-group"
           >
           </ATATRadioGroup>
         </v-col>
@@ -92,7 +94,7 @@
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
-import Users from "../components/Users.vue"
+import Users from "../components/Users.vue";
 import ATATSelect from "../components/ATATSelect.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
@@ -132,7 +134,7 @@ export default class StepOne extends Vue {
   ];
   private selectedContact = {};
   private customTextValue = '';
-  private radioValue = ''
+  private radioValue = '';
 
   get contactIsSelected(): boolean {
     return (

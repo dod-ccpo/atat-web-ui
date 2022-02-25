@@ -9,5 +9,5 @@ export interface StepperStep {
 export interface RadioButton {
  id: string;
  label: string;
- value: string
+ value: string;
 }
