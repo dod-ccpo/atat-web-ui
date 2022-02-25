@@ -6,4 +6,8 @@ export interface StepperStep {
     route: string;
     subSteps?: StepperStep[];   
 }
-
+export interface RadioButton {
+ id: string;
+ label: string;
+ value: string
+}
