@@ -13,9 +13,11 @@ const linkRelRegEx = /<\s*link[^>]*(.*?)>/g;
 const scriptTagRegEx = /<script\b[^>]*>[\s\S/]*?<\/script\b[^>]*>/g
 const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g
 const materialIconsRegEx = /\s*other_assets\/MaterialIcons/g
+const robotoFontsRegex = /\s*other_assets\/roboto-/g
 
 decorateIndexHTML(PATH_TO_DIST_HTML)
-updateAssetPaths()
+updateAppAssetPaths()
+updateVendorAssetPaths()
 outputResults()
 
 /**
@@ -191,7 +193,7 @@ function decorateIndexHTML(pathToHTML) {
   fs.writeFileSync(pathToHTML, decoratedHTML)
 }
 
-function updateAssetPaths() {
+function updateVendorAssetPaths() {
 
   clear();
 
@@ -216,6 +218,33 @@ function updateAssetPaths() {
     console.error("unable to locate vendor js file");
   }
 }
+
+function updateAppAssetPaths() {
+
+  clear();
+
+  console.log('\n');
+  console.log("update assets path");
+
+  const files = fs.readdirSync('./dist/js');
+  const appJsFile = files.find(file => file.includes('app'));
+
+  if (appJsFile) {
+
+    //replace all material icon paths with asset api path
+    const appJSPath = `./dist/js/${appJsFile}`;
+    const appJsContent = fs.readFileSync(appJSPath, 'utf-8');
+    let appJs = appJsContent;
+    appJs = appJsContent.replace(robotoFontsRegex,
+      `${servicenowConfig.ASSETS_API_PATH}roboto-`);
+
+    fs.writeFileSync(appJSPath, appJs, 'utf-8');
+  } else {
+
+    console.error("unable to locate app js file");
+  }
+}
+
 
 function bytesNumToKbsStr(bytesNum) {
   return Math.round(bytesNum / 1000) + 'kB'
