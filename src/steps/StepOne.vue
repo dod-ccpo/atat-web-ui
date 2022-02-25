@@ -75,11 +75,20 @@
   </div>
 </template>
 
-<style>
-.v-list-item__title {
-  font-size: 1.4rem;
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
+
+
+
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
@@ -101,6 +110,8 @@ import {Component} from "vue-property-decorator";
   },
 })
 export default class StepOne extends Vue {
+  private show = true;
+
   private select = null;
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
@@ -472,3 +483,4 @@ export default class StepOne extends Vue {
   ];
 }
 </script>
+
