@@ -7,8 +7,8 @@
         display: none;
       }
       .v-list {
-        padding: 24px;
-        .v-list-item {
+        padding: 100px 24px 24px;
+        .v-list-item { 
           align-items: flex-start;
           flex-direction: column;
           min-height: unset;
@@ -226,6 +226,10 @@
 }
 
 ._stepper-progress-bar {
+  position: absolute;
+  width: 100%;
+  background-color: $white;
+  z-index: 3;
   font-size: 1.4rem;
   border-bottom: 1px solid $base-lighter;
   padding: 20px 24px;
