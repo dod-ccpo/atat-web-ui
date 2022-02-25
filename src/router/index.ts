@@ -6,6 +6,7 @@ import Users from "../pages/Users.vue";
 const routes = [
   { path: "/", component: StepOne },
   { path: "/steptwo", component: StepTwo },
+  { path: "/contact-info", component: ContactInfo }
 ];
 
 const router = new VueRouter({
