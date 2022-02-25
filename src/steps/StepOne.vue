@@ -113,7 +113,23 @@ export default class StepOne extends Vue {
   private show = true;
 
   private select = null;
-  private items = ["Programming", "Design", "Vue", "Vuetify"];
+  private items = [
+    {
+      id: "Programming",
+      label: "Programming is fun!",
+      value: "prog",
+    },
+    {
+      id: "Design",
+      label: "Designing is cool!",
+      value: "des",
+    },
+    {
+      id: "Vue",
+      label: "Vue 3 would be nice",
+      value: "vue",
+    }
+  ];
   private selectedContact = {};
   private customTextValue = '';
   private radioValue = ''
