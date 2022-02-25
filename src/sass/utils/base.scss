@@ -2,12 +2,13 @@ html {
   font-size: 10px;
 }
 body {
-  font-size: 1.6rem;
+  font-size: 1.6rem; 
 }
 .body {
   font-weight: 400 !important;
   font-size: 1.6rem !important;
   line-height: 1.5em !important;
+  letter-spacing: .025rem !important;
 }
 
 #app {
@@ -20,7 +21,7 @@ body {
 
 .v-main__wrap {
   background-color: $white;
-  padding: 40px 56px 120px 56px;
+  padding: 28px 56px 120px 44px;
 }
 
 .wrapper-max-width {

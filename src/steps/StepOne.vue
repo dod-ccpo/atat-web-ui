@@ -2,111 +2,58 @@
   <div>
     <v-container>
       <v-row>
-        <v-col class="col-sm-3">
-          <ATATTextField
-              label="Custom text-field"
-              placeholder="Custom text-field"
-              id="CustomTextField"
-          />
-        </v-col>
-        <v-col class="col-sm-3">
-          <ATATSelect
-              id="DummyATATSelect"
-              class="clin-idiq-select max-width-100"
-              label="Custom Select"
-              placeholder="Select"
-          >
-          </ATATSelect>
-        </v-col>
-        <v-col class="col-sm-4">
-          <ATATAutoComplete
-              id="TO_COR"
-              label="Custom AutoComplete"
-              :label-sr-only="false"
-              titleKey="FullName"
-              subtitleKey="Email"
-              :searchFields="['FullName', 'Email']"
-              :items="searchData"
-              :selectedItem.sync="selectedContact"
-              placeholder="Search by name or email"
-              icon="search"
-              noResultsText="Manually enter my contact’s information"
-              @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
-          />
-          <v-card v-if="contactIsSelected">
-            <v-card-title>
-              <strong>AUTOCOMPLETE SELECTED OBJECT</strong>
-            </v-card-title>
-            <v-card-text style="font-size: 12px; line-height: 1.5">
-              <strong>Id:</strong> {{ selectedContact.Id }}<br/>
-              <strong>FirstName:</strong> {{ selectedContact.FirstName }}<br/>
-              <strong>LastName:</strong> {{ selectedContact.LastName }}<br/>
-              <strong>FullName:</strong> {{ selectedContact.FullName }}<br/>
-              <strong>Email:</strong> {{ selectedContact.Email }}
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="col-sm-12 col-md-8 col-lg-6">
-          <Users></Users>
+        <v-col class="col-12">
+          <h2>Let’s start with basic info about your new acquisition</h2>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <ATATRadioGroup
-              id="DummyATATRadio"
-              label="Custom Radio"
-              :value.sync="radioValue"
-              :items="items"
-              card="true"
+          <span
+            >In this section, we will gather some overarching details about your
+            project requirements, organization, and points of contact. This
+            information will be used to complete your required acquisition forms
+            and will also help us to guide you through the JWCC procurement
+            process.</span
           >
-          </ATATRadioGroup>
-          <ATATRadioGroup
-              id="DummyATATRadio2"
-              label="Custom Radio"
-              :value.sync="radioValue"
-              :items="items"
-          >
-          </ATATRadioGroup>
+          <div class="mt-10">
+            <ATATTextField
+              label="Project/Requirements Title"
+              class="input-max-width"
+              helpText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
+            />
+          </div>
+          <div class="d-flex align-start flex-column mt-10 content-max-width">
+            <span class="font-weight-bold"> What is the scope of your requirement? </span>
+            <span
+              >Briefly describe the type of resources and services to be
+              acquired, and what is necessary to achieve mission specific
+              outcomes for this particluar task (e.g., move DITCO’s contract
+              writing system to a cloud environment).</span
+            >
+             <ATATTextArea
+              label=""
+              width="width-100"
+            />
+          </div>
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
 
-<style scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.v-enter,
-.v-leave-to {
-  opacity: 0;
-}
-</style>
-
-
-
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
-import Users from "../components/Users.vue"
-import ATATSelect from "../components/ATATSelect.vue";
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATTextArea from "../components/ATATTextArea.vue";
 
 import Vue from "vue";
 
-import {Component} from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 @Component({
   components: {
-    ATATAutoComplete,
     ATATTextField,
-    Users,
-    ATATSelect,
-    ATATRadioGroup
+    ATATTextArea
   },
 })
 export default class StepOne extends Vue {
@@ -115,13 +62,14 @@ export default class StepOne extends Vue {
   private select = null;
   private items = ["Programming", "Design", "Vue", "Vuetify"];
   private selectedContact = {};
-  private customTextValue = '';
-  private radioValue = ''
+  private customTextValue = "";
+  private tooltipTxt = "hello from tooltip";
+  private radioValue = "";
 
   get contactIsSelected(): boolean {
     return (
-        this.selectedContact &&
-        Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
+      this.selectedContact &&
+      Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
     );
   }
 

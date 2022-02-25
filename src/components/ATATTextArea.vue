@@ -31,23 +31,19 @@
         <span>{{ helpText }}</span>
       </v-tooltip>
     </v-flex>
-    <v-flex>
-      <div class="d-flex">
-        <div class="width-100">
-          <v-text-field
-              :id="id + '_text_field'"
-              outlined
-              dense
-              :height="42"
-              :value.sync="_value"
-              hide-details="auto"
-              :placeholder="placeHolder"
-              @input="inputActions"
-              class="text-primary"
-          >
-          </v-text-field>
-        </div>
-      </div>
+    <v-flex class="d-flex width-100">
+        <v-textarea
+            :id="id + '_text_area'"
+            outlined
+            :value.sync="_value"
+            hide-details="auto"
+            :placeholder="placeHolder"
+            @input="inputActions"
+            auto-grow
+            rows="4"
+            class="text-primary"
+        >
+        </v-textarea>
     </v-flex>
   </div>
 </template>
@@ -57,7 +53,7 @@ import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 
 @Component({})
-export default class ATATTextField extends Vue {
+export default class ATATTextArea extends Vue {
   // props
   @Prop({default: true}) private dense!: boolean;
   @Prop({default: true}) private singleLine!: boolean;

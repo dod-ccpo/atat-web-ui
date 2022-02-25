@@ -1,0 +1,14 @@
+.input-max-width {
+  max-width: 416px !important;
+  &.with-buttons-1 {
+      max-width: 446px !important;
+  }
+}
+
+
+.v-textarea,
+.v-text-field{
+  border: 1px solid $base;
+  box-sizing: border-box;
+}
+

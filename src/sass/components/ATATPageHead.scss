@@ -1,0 +1,10 @@
+header{
+  height: 5.9rem !important;
+  background-color: $white !important;
+  .v-toolbar__content{
+    height: 5.9rem !important;
+    padding: 16px 24px !important;
+    border-bottom: $base-lighter solid 1px !important;
+  }
+
+}
