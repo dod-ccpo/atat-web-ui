@@ -48,11 +48,6 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-sm-12 col-md-8 col-lg-6">
-          <Users></Users>
-        </v-col>
-      </v-row>
-      <v-row>
         <v-col>
           <ATATRadioGroup
               id="DummyATATRadio"
