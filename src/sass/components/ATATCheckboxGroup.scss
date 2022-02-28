@@ -86,6 +86,10 @@
     font-size:1.6rem;
     margin-bottom:4px !important;
   }
+  label {
+    color: $base-darkest !important;
+    padding-top: 2px;
+  }
 }
 ._checkbox-focus {
   background: $primary-lighter !important;
