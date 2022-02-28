@@ -9,8 +9,14 @@
       :label="item.label"
       :value="item.value"
       :name="name"
-
-    />
+    >
+      <template v-if="item.description && card" v-slot:label>
+        <div class="d-flex flex-column">
+          <p class="card-label">{{ item.label }}</p>
+          <p v-if="item.description" class="mb-0">{{ item.description }}</p>
+        </div>
+      </template>
+    </v-checkbox>
   </div>
 </template>
 

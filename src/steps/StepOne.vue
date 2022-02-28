@@ -149,6 +149,12 @@ export default class StepOne extends Vue {
       id: "Vue",
       label: "Vue 3 would be nice",
       value: "vue",
+    },
+    {
+      id: "Checkbox",
+      label: "Cool Stuff",
+      value: "Checkbox",
+      description: "We have Radio Buttons... with text!!!",
     }
   ];
   private checkboxItems = [
@@ -171,6 +177,12 @@ export default class StepOne extends Vue {
       id: "Checkbox",
       label: "We have checkboxes!!!",
       value: "Checkbox?",
+    },
+    {
+      id: "Checkbox",
+      label: "Cool Stuff",
+      value: "Checkbox",
+      description: "We have checkboxes... with text!!!      fhjdkwlhsfuihuipwerhfnjklhewufklhewuifhndjklnsungjkl;nfjik;dsnfjk;nsdfjds;nfjdsnfj",
     }
   ];
   private selectedContact = {};

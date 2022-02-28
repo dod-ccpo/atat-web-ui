@@ -50,6 +50,7 @@
       z-index: 1;
     }
   }
+
 }
 
 ._checkbox-card {
@@ -78,6 +79,12 @@
 
   .v-input__slot {
     margin-bottom: 0px;
+    align-items:start;
+  }
+  .card-label {
+    font-weight:700 !important;
+    font-size:1.6rem;
+    margin-bottom:4px !important;
   }
 }
 ._checkbox-focus {

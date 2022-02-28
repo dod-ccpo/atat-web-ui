@@ -53,6 +53,7 @@
   border: solid 2px $base-light;
   border-radius: 4px !important;
   padding: 12px 0px 12px 12px;
+  align-items: start !important;
   &.v-item--active {
     background-color: $primary-lighter !important;
     border: solid 2px $primary;
@@ -62,5 +63,10 @@
     border: $primary solid 2px;
     background-color: $primary-lighter !important;
     color: $primary;
+  }
+  .card-label {
+    font-weight:700 !important;
+    font-size:1.6rem;
+    margin-bottom:4px !important;
   }
 }

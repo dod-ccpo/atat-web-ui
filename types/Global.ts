@@ -10,9 +10,11 @@ export interface RadioButton {
  id: string;
  label: string;
  value: string;
+ description?: string;
 }
 export interface Checkbox {
   id: string;
   label: string;
   value: string;
+  description?: string;
 }
