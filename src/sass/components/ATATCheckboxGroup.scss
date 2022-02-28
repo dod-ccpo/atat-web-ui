@@ -1,0 +1,87 @@
+._checkbox {
+  &.v-input--is-label-active {
+    .v-icon {
+      color: $primary !important;
+    }
+  }
+
+  &.v-input--is-focused {
+    color: $primary !important;
+
+    .v-input--selection-controls__ripple {
+      &:before {
+        @extend ._radio-focus;
+      }
+    }
+  }
+
+  &.v-input--checkbox {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  label {
+    color: $base-darkest !important;
+  }
+
+  .v-icon {
+    color: $base !important;
+    z-index: 2;
+  }
+
+  .v-input--selection-controls__input {
+    &:hover {
+      .v-input--selection-controls__ripple {
+        &:before {
+          @extend ._checkbox-focus;
+        }
+      }
+    }
+
+    &:after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 4px;
+      left: 4px;
+      background-color: $white;
+      z-index: 1;
+    }
+  }
+}
+
+._checkbox-card {
+  @extend ._checkbox;
+  background-color: $base-lightest !important;
+  border: solid 2px $base-light;
+  border-radius: 4px !important;
+  padding: 12px 0px 0px 12px;
+
+  &.v-input--is-label-active {
+    background-color: $primary-lighter !important;
+    border: solid 2px $primary;
+    border-radius: 4px !important;
+  }
+
+  &:hover, &.v-input--is-focused {
+    border: $primary solid 2px;
+    background-color: $primary-lighter !important;
+    color: $primary;
+  }
+
+  &.v-input--checkbox {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  .v-input__slot {
+    margin-bottom: 0px;
+  }
+}
+._checkbox-focus {
+  background: $primary-lighter !important;
+  transform: scale(1) !important;
+  opacity: 1 !important;
+}

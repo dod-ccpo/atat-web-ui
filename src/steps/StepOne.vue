@@ -4,34 +4,34 @@
       <v-row>
         <v-col class="col-sm-3">
           <ATATTextField
-              label="Custom text-field"
-              placeholder="Custom text-field"
-              id="CustomTextField"
+            label="Custom text-field"
+            placeholder="Custom text-field"
+            id="CustomTextField"
           />
         </v-col>
         <v-col class="col-sm-3">
           <ATATSelect
-              id="DummyATATSelect"
-              class="clin-idiq-select max-width-100"
-              label="Custom Select"
-              placeholder="Select"
+            id="DummyATATSelect"
+            class="clin-idiq-select max-width-100"
+            label="Custom Select"
+            placeholder="Select"
           >
           </ATATSelect>
         </v-col>
         <v-col class="col-sm-4">
           <ATATAutoComplete
-              id="TO_COR"
-              label="Custom AutoComplete"
-              :label-sr-only="false"
-              titleKey="FullName"
-              subtitleKey="Email"
-              :searchFields="['FullName', 'Email']"
-              :items="searchData"
-              :selectedItem.sync="selectedContact"
-              placeholder="Search by name or email"
-              icon="search"
-              noResultsText="Manually enter my contact’s information"
-              @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
+            id="TO_COR"
+            label="Custom AutoComplete"
+            :label-sr-only="false"
+            titleKey="FullName"
+            subtitleKey="Email"
+            :searchFields="['FullName', 'Email']"
+            :items="searchData"
+            :selectedItem.sync="selectedContact"
+            placeholder="Search by name or email"
+            icon="search"
+            noResultsText="Manually enter my contact’s information"
+            @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
           />
           <v-card v-if="contactIsSelected">
             <v-card-title>
@@ -55,22 +55,41 @@
       <v-row>
         <v-col>
           <ATATRadioGroup
-              id="DummyATATRadio"
-              label="Custom Radio"
-              :value.sync="radioValue"
-              :items="items"
-              name="my-radio-group"
-              card="true"
+            id="DummyATATRadio"
+            label="Custom Radio"
+            :value.sync="radioValue"
+            :items="items"
+            name="my-radio-group"
+            card="true"
           >
           </ATATRadioGroup>
           <ATATRadioGroup
-              id="DummyATATRadio2"
-              label="Custom Radio"
-              :value.sync="radioValue"
-              :items="items"
-              name="another-radio-group"
+            id="DummyATATRadio2"
+            label="Custom Radio"
+            :value.sync="radioValue"
+            :items="items"
+            name="another-radio-group"
           >
           </ATATRadioGroup>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <ATATCheckboxGroup
+            id="ATATCheckbox"
+            label="Custom Checkbox"
+            :value.sync="ATATCheckboxValue"
+            :items="checkboxItems"
+            name="another-checkbox"/>
+          <ATATCheckboxGroup
+            id="ATATCheckbox"
+            label="Custom Checkbox"
+            :value.sync="ATATCheckboxValue"
+            :items="checkboxItems"
+            name="another-checkbox"
+            card="true"
+          />
+
         </v-col>
       </v-row>
     </v-container>
@@ -90,14 +109,13 @@
 </style>
 
 
-
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
 import Users from "../components/Users.vue";
 import ATATSelect from "../components/ATATSelect.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue"
 import Vue from "vue";
 
 import {Component} from "vue-property-decorator";
@@ -108,7 +126,8 @@ import {Component} from "vue-property-decorator";
     ATATTextField,
     Users,
     ATATSelect,
-    ATATRadioGroup
+    ATATRadioGroup,
+    ATATCheckboxGroup
   },
 })
 export default class StepOne extends Vue {
@@ -132,14 +151,37 @@ export default class StepOne extends Vue {
       value: "vue",
     }
   ];
+  private checkboxItems = [
+    {
+      id: "Programming",
+      label: "Programming is fun!",
+      value: "prog",
+    },
+    {
+      id: "Design",
+      label: "Designing is cool!",
+      value: "des",
+    },
+    {
+      id: "Vue",
+      label: "Vue 3 would be nice",
+      value: "vue",
+    },
+    {
+      id: "Checkbox",
+      label: "We have checkboxes!!!",
+      value: "Checkbox?",
+    }
+  ];
   private selectedContact = {};
   private customTextValue = '';
   private radioValue = '';
+  private ATATCheckboxValue = []
 
   get contactIsSelected(): boolean {
     return (
-        this.selectedContact &&
-        Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
+      this.selectedContact &&
+      Object.prototype.hasOwnProperty.call(this.selectedContact, "FullName")
     );
   }
 

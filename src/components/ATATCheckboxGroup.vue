@@ -1,27 +1,29 @@
 <template>
-  <v-radio-group v-model="_selectedValue">
-    <v-radio
+  <div>
+    <v-checkbox
       v-for="item in items"
-      :id="'Radio_' + getIdText(item.id)"
-      :class="[card ? '_radio-button-card' : '_radio-button']"
-      :key="item"
+      v-model="_selected"
+      :id="'Checkbox_' + getIdText(item.id)"
+      :class="[card ? '_checkbox-card' : '_checkbox']"
+      :key="item.value"
       :label="item.label"
       :value="item.value"
       :name="name"
+
     />
-  </v-radio-group>
+  </div>
 </template>
 
 <script lang="ts">
 import {Component, Prop, PropSync} from "vue-property-decorator";
 import Vue from "vue";
-import {RadioButton} from "../../types/Global";
+import {Checkbox} from "../../types/Global";
 
 @Component({})
-export default class ATATRadioGroup extends Vue {
-  @PropSync("value") private _selectedValue!: string;
+export default class ATATCheckboxGroup extends Vue {
+  @PropSync("value") private _selected!: string;
   @Prop({default: "Form Field Label"}) private label!: string;
-  @Prop({default: ['empty items array']}) private items!: RadioButton[];
+  @Prop({default: ['empty items array']}) private items!: Checkbox[];
   @Prop({default: false}) private card!: boolean;
   @Prop() private name!: string;
 
