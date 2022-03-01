@@ -61,6 +61,7 @@
             :items="items"
             name="my-radio-group"
             card="true"
+            :error="true"
           >
           </ATATRadioGroup>
           <ATATRadioGroup

@@ -1,5 +1,7 @@
 <template>
-  <v-radio-group :disabled="disabled" v-model="_selectedValue">
+
+  <v-radio-group
+    v-model="_selectedValue">
     <v-radio
       v-for="item in items"
       :id="'Radio_' + getIdText(item.id)"
@@ -16,7 +18,6 @@
         </div>
       </template>
     </v-radio>
-
   </v-radio-group>
 </template>
 
@@ -30,6 +31,7 @@ export default class ATATRadioGroup extends Vue {
   @PropSync("value") private _selectedValue!: string;
   @Prop({default: "Form Field Label"}) private label!: string;
   @Prop({default: ['empty items array']}) private items!: RadioButton[];
+  @Prop({default: "no legend text passed"}) private legend!: string;
   @Prop({default: false}) private card!: boolean;
   @Prop({default: false}) private error!: boolean;
   @Prop({default: false}) private disabled!: boolean;

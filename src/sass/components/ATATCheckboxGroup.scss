@@ -32,6 +32,10 @@
   .v-icon {
     color: $base !important;
     z-index: 2;
+    &.error--text {
+      color: $error !important;
+
+    }
   }
 
   .v-input--selection-controls__input {
