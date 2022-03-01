@@ -52,7 +52,11 @@
               class="substep"
             >
               <span class="substep-circle">
-                <span v-if="subStep.completed" class="completed-check">
+                <span 
+                  v-if="subStep.completed" 
+                  class="completed-check"
+                  :data-substep-complete-percentage="subStep.completePercentageWeight"
+                >
                   <span class="d-sr-only">Completed</span>
                   <v-icon>check_circle</v-icon>
                 </span>
