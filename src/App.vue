@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <ATATSideStepper ref="sideStepper"/>
-    <ATATPageHead />
+    <ATATPageHead  :headline="getCurrentStepMenuText()"/>
     <v-main id="app">
       <router-view></router-view>
       <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')" />
@@ -71,5 +71,9 @@ export default class App extends Vue {
       this.$router.push({ name: navStep});
     }
   }
+
+   getCurrentStepMenuText(): string | undefined {
+       return Steps.currentStep?.stepLabel;
+   }
 }
 </script>

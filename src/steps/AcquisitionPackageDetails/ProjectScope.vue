@@ -41,8 +41,8 @@
 </template>
 
 <script lang="ts">
-import ATATAlert from "../components/ATATAlert.vue";
-import ATATTextField from "../components/ATATTextField.vue";
+import ATATAlert from "../../components/ATATAlert.vue";
+import ATATTextField from "../../components/ATATTextField.vue";
 
 import Vue from "vue";
 import { Component } from "vue-property-decorator";

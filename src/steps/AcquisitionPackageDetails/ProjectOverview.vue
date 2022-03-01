@@ -54,9 +54,9 @@
 </template>
 
 <script lang="ts">
-import ATATTextField from "../components/ATATTextField.vue";
-import ATATTextArea from "../components/ATATTextArea.vue";
-import ATATRadioGroup from "../components/ATATRadioGroup.vue"
+import ATATTextField from "../../components/ATATTextField.vue";
+import ATATTextArea from "../../components/ATATTextArea.vue";
+import ATATRadioGroup from "../../components/ATATRadioGroup.vue"
 
 import Vue from "vue";
 

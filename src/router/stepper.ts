@@ -1,40 +1,40 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
-import ProjectOverview from "../steps/ProjectOverview.vue";
-import ProjectScope from "../steps/ProjectScope.vue";
+import AcquisitionPackageDetails from "../steps/Index.vue";
+import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
+import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import StepTwo from "../steps/StepTwo.vue";
 
+/**
+ * Stepper Route config definition
+ * The menu items defined in this route drive both the Side Stepper Menu 
+ * and the Steps store both which invoke routing
+ * Rules:
+ * 1. Parent steps cannot have a name
+ * 2. Parent steps need a page component with a router view defined
+ * 2. All steps needs to have unique names
+ * 3. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
+ */
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     path: "/",
     stepNumber: "01",
-    name: "Acquisition_Package_Details",
     completePercentageWeight: 15,
     menuText: "Acquisition Package Details",
-    component: ProjectOverview,
+    component: AcquisitionPackageDetails,
     children: [
       {
         menuText: "Project Overview",
         name: "Project_Overview",
         path: "/", // should be same as parent route
         completePercentageWeight: 5,
-        children: [
-          {
-            name: "Project_Scope",
-            menuText: "Project Scope",
-            component: ProjectScope,
-            path: "project-scope",
-          }
-        ]
-        //exclude from menu example
-        // children: [
-
-        //   {
-        //     name: "Excluded Path",
-        //     excludeFromMenu: true,
-        //     component: SomeComponent
-        //     path: "",  // whatever the path should be
-        //   }
-        // ]
+        component: ProjectOverview,
+      },
+      {
+        name: "Project_Scope",
+        menuText: "Project Scope",
+        excludeFromMenu: true,
+        component: ProjectScope,
+        path: "project-scope",
       },
       {
         menuText: "Organization",
@@ -210,7 +210,7 @@ const mapStepRouteToStepperData = (
     stepperRouteConfig;
   let { name } = stepperRouteConfig;
   name = name || "";
-  
+
   const stepperStep: StepperStep = {
     stepNumber,
     menuText,
@@ -218,14 +218,13 @@ const mapStepRouteToStepperData = (
     completed: false,
     completePercentageWeight,
     route: path,
-    subSteps: stepperRouteConfig.children?.map((child) =>
-      mapStepRouteToStepperData(child)
-    ),
+    subSteps: stepperRouteConfig.children
+      ?.filter((child) => child.excludeFromMenu != true)
+      .map((child) => mapStepRouteToStepperData(child)),
   };
 
   return stepperStep;
 };
 
 export const buildStepperData = (): StepperStep[] =>
-  stepperRoutes.filter(step=> step.excludeFromMenu !== true)
-  .map((step) => mapStepRouteToStepperData(step));
+  stepperRoutes.map((step) => mapStepRouteToStepperData(step));
