@@ -34,14 +34,15 @@
     <v-flex class="d-flex width-100">
         <v-textarea
             :id="id + '_text_area'"
-            outlined
             :value.sync="_value"
             hide-details="auto"
             :placeholder="placeHolder"
             @input="inputActions"
-            auto-grow
-            rows="4"
+            :rows="rows"
             class="text-primary"
+            :readonly="readOnly"
+            :no-resize="noResize"
+            outlined
         >
         </v-textarea>
     </v-flex>
@@ -61,6 +62,9 @@ export default class ATATTextArea extends Vue {
   @Prop({default: "Form Field Label"}) private label!: string;
   @Prop({ default: "" }) private helpText!: string;
   @PropSync("value", {default: ""}) private _value!: string;
+  @Prop ({default: 4}) private rows!: number;
+  @Prop ({default: false}) private readOnly!: boolean;
+  @Prop ({default: true}) private noResize!: boolean;
   //data
   private placeHolder = "";
 

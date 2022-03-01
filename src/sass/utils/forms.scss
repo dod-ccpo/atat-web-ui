@@ -5,10 +5,16 @@
   }
 }
 
-
-.v-textarea,
-.v-text-field{
-  border: 1px solid $base;
-  box-sizing: border-box;
+.v-text-field,
+.v-textarea{
+  fieldset{
+    border: 1px solid $base;
+    border-radius: 4px;
+  }
 }
 
+
+// radio buttons
+.v-input--selection-controls {
+  padding-top: 0px !important;
+}
