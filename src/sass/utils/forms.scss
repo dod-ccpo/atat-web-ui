@@ -18,3 +18,14 @@
 .v-input--selection-controls {
   padding-top: 0px !important;
 }
+
+//hr  
+hr{
+  &.base-lighter{
+    border: $base-lighter 1px solid !important;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+}
