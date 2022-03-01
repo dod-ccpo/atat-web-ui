@@ -70,7 +70,7 @@ import { RadioButton } from "types/Global";
     ATATRadioGroup
   },
 })
-export default class StepOneOld extends Vue {
+export default class ProjectOverview extends Vue {
   private radioValue = '';
   private radioGroupItems:RadioButton[] = [
     {

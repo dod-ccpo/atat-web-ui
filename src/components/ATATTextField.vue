@@ -1,6 +1,6 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
-    <v-flex class="d-flex align-center">
+    <v-flex class="d-flex align-center" v-if="label">
       <label
           :id="id + '_text_field_label'"
           class="form-field-label mb-2"

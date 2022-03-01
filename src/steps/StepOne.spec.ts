@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import { createLocalVue, mount } from "@vue/test-utils";
-import StepOne from "./StepOne.vue"
+import StepOne from "./ProjectOverview.vuee.vue"
 Vue.use(Vuetify);
 
 describe("Testing StepOne View", () => {

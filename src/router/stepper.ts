@@ -1,5 +1,6 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
-import StepOne from "../steps/StepOne.vue";
+import ProjectOverview from "../steps/ProjectOverview.vue";
+import ProjectScope from "../steps/ProjectScope.vue";
 import StepTwo from "../steps/StepTwo.vue";
 
 export const stepperRoutes: Array<StepperRouteConfig> = [
@@ -9,13 +10,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     name: "Acquisition_Package_Details",
     completePercentageWeight: 15,
     menuText: "Acquisition Package Details",
-    component: StepOne,
+    component: ProjectOverview,
     children: [
       {
         menuText: "Project Overview",
         name: "Project_Overview",
         path: "/", // should be same as parent route
         completePercentageWeight: 5,
+        children: [
+          {
+            name: "Project_Scope",
+            menuText: "Project Scope",
+            component: ProjectScope,
+            path: "project-scope",
+          }
+        ]
         //exclude from menu example
         // children: [
 
