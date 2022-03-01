@@ -218,5 +218,5 @@ const mapStepRouteToStepperData = (
 };
 
 export const buildStepperData = (): StepperStep[] =>
-  stepperRoutes.filter(step=> step.excludeFromMenu === false)
+  stepperRoutes.filter(step=> step.excludeFromMenu !== true)
   .map((step) => mapStepRouteToStepperData(step));
