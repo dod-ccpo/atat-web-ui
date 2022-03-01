@@ -17,14 +17,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: "Project_Overview",
         path: "/", // should be same as parent route
         completePercentageWeight: 5,
-        children: [
-          {
-            name: "Project_Scope",
-            menuText: "Project Scope",
-            component: ProjectScope,
-            path: "project-scope",
-          }
-        ]
+        // children: [
+        //   {
+        //     name: "Project_Scope",
+        //     menuText: "Project Scope",
+        //     component: ProjectScope,
+        //     path: "project-scope",
+        //   }
+        // ]
         //exclude from menu example
         // children: [
 
