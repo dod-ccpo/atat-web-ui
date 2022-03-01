@@ -8,18 +8,18 @@
       </v-row>
       <v-row>
         <v-col>
-          <span
-            >In this section, we will gather some overarching details about your
-            project requirements, organization, and points of contact. This
-            information will be used to complete your required acquisition forms
-            and will also help us to guide you through the JWCC procurement
-            process.</span
-          >
+            <p>
+                In this section, we will gather some overarching details about your
+                project requirements, organization, and points of contact. This
+                information will be used to complete your required acquisition forms
+                and will also help us to guide you through the JWCC procurement
+                process.
+            </p>
           <div class="mt-10">
             <ATATTextField
               label="Project/Requirements Title"
               class="input-max-width"
-              helpText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
+              tooltipText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 content-max-width">

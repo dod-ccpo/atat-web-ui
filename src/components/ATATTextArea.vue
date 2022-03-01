@@ -13,7 +13,7 @@
           max-width="250px"
           color="rgba(0,0,0,1)"
           top
-          v-if="helpText"
+          v-if="tooltipText"
       >
         <template v-slot:activator="{ on }">
           <v-btn
@@ -28,7 +28,7 @@
           </v-icon>
           </v-btn>
         </template>
-        <span>{{ helpText }}</span>
+        <span>{{ tooltipText }}</span>
       </v-tooltip>
     </v-flex>
     <v-flex class="d-flex width-100">
@@ -60,7 +60,7 @@ export default class ATATTextArea extends Vue {
   @Prop({default: true}) private singleLine!: boolean;
   @Prop({default: "id_is_missing"}) private id!: string;
   @Prop({default: "Form Field Label"}) private label!: string;
-  @Prop({ default: "" }) private helpText!: string;
+  @Prop({ default: "" }) private tooltipText!: string;
   @PropSync("value", {default: ""}) private _value!: string;
   @Prop ({default: 4}) private rows!: number;
   @Prop ({default: false}) private readOnly!: boolean;
