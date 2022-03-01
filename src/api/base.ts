@@ -38,8 +38,6 @@ export default class {
 
     configureDefaults();
 
-    console.log(BASE_API_URL);
-
     this.instance = axios.create({
       baseURL: BASE_API_URL,
     });

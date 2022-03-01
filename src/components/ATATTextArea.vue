@@ -31,23 +31,20 @@
         <span>{{ helpText }}</span>
       </v-tooltip>
     </v-flex>
-    <v-flex>
-      <div class="d-flex">
-        <div class="width-100">
-          <v-text-field
-              :id="id + '_text_field'"
-              outlined
-              dense
-              :height="42"
-              :value.sync="_value"
-              hide-details="auto"
-              :placeholder="placeHolder"
-              @input="inputActions"
-              class="text-primary"
-          >
-          </v-text-field>
-        </div>
-      </div>
+    <v-flex class="d-flex width-100">
+        <v-textarea
+            :id="id + '_text_area'"
+            :value.sync="_value"
+            hide-details="auto"
+            :placeholder="placeHolder"
+            @input="inputActions"
+            :rows="rows"
+            class="text-primary"
+            :readonly="readOnly"
+            :no-resize="noResize"
+            outlined
+        >
+        </v-textarea>
     </v-flex>
   </div>
 </template>
@@ -57,7 +54,7 @@ import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 
 @Component({})
-export default class ATATTextField extends Vue {
+export default class ATATTextArea extends Vue {
   // props
   @Prop({default: true}) private dense!: boolean;
   @Prop({default: true}) private singleLine!: boolean;
@@ -65,6 +62,9 @@ export default class ATATTextField extends Vue {
   @Prop({default: "Form Field Label"}) private label!: string;
   @Prop({ default: "" }) private helpText!: string;
   @PropSync("value", {default: ""}) private _value!: string;
+  @Prop ({default: 4}) private rows!: number;
+  @Prop ({default: false}) private readOnly!: boolean;
+  @Prop ({default: true}) private noResize!: boolean;
   //data
   private placeHolder = "";
 

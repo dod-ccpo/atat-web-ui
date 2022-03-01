@@ -15,6 +15,10 @@ const CONFIG = {
 
 module.exports = {
 
+  transpileDependencies: [
+    'vuex-module-decorators'
+  ],
+
   // eslint-disable-next-line no-unused-vars
   configureWebpack: (config) => {
     if (process.env.NODE_ENV === 'production') {
