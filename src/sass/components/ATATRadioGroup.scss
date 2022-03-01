@@ -4,6 +4,7 @@
   opacity: 1 !important;
 }
 ._radio-button {
+  
   &.v-item--active {
     .v-icon {
       color: $primary !important;
@@ -26,6 +27,7 @@
     z-index: 2;
   }
   .v-input--selection-controls__input {
+    margin-right: 12px !important;
     &:hover {
       .v-input--selection-controls__ripple {
         &:before {
@@ -62,5 +64,12 @@
     border: $primary solid 2px;
     background-color: $primary-lighter !important;
     color: $primary;
+  }
+}
+
+.v-input--radio-group--column{
+   margin-top: 0px !important;
+  .v-radio:not(:last-child):not(:only-child){
+    margin-bottom: 12px !important
   }
 }

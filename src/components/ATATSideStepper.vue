@@ -5,6 +5,17 @@
     class="global-side-nav-bar"
     width="320"
   >
+    <div class="_stepper-progress-bar">
+      <strong class="text-primary pl-1">{{ percentComplete }}%</strong>&nbsp; 
+      <span class="text-base">COMPLETE</span>
+      <v-progress-linear 
+        :value="percentComplete"
+        height="12"
+        rounded
+        color="#544496"
+      ></v-progress-linear>
+    </div>
+
     <v-list>
       <v-list-item 
         v-for="(step, stepIndex) in stepperData"
@@ -78,9 +89,29 @@ export default class ATATSideStepper extends Vue {
   private getIdText(string: string) {
     return string.replace(/[^A-Z0-9]/ig, "");
   }
+  private calculatePercentComplete() {
+    this.stepperData.forEach((step) => {
+      if (step.completed && step.completePercentageWeight) {
+        this.percentComplete += step.completePercentageWeight;
+      } else if (this.hasSubSteps(step)) {
+        step.subSteps?.forEach((subStep) => {
+          if (subStep.completed && subStep.completePercentageWeight) {
+            this.percentComplete += subStep.completePercentageWeight;
+          }
+        });
+      }
+    });
+    this.percentComplete = Math.round(this.percentComplete);
+  }
+
+  private mounted(): void {
+    this.calculatePercentComplete();
+  }
 
   // data
   private activeStep = "01";
   private stepperData: StepperStep[] = buildStepperData();
+  private percentComplete = 0;
+ 
 }
 </script>

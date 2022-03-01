@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <ATATSideStepper ref="sideStepper" />
+    <ATATSideStepper />
+    <ATATPageHead />
     <v-main id="app">
       <router-view></router-view>
       <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')" />
@@ -20,6 +21,7 @@ import Steps from "@/store/steps";
 import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATFooter from "./components/ATATFooter.vue";
+import ATATPageHead from "./components/ATATPageHead.vue"
 import { Component } from "vue-property-decorator";
 
 @Component({
@@ -27,7 +29,8 @@ import { Component } from "vue-property-decorator";
     ATATSideStepper,
     ATATStepperNavigation,
     ATATFooter,
-  },
+    ATATPageHead
+  }
 })
 export default class App extends Vue {
 

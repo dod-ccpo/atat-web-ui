@@ -43,3 +43,8 @@ export interface StepperStep {
  */
  export type StepperRouteConfig = StepperRouteSingleConfig | StepperRouteMultipleConfig;
 
+export interface RadioButton {
+ id: string;
+ label: string;
+ value: string;
+}
