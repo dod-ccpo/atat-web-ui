@@ -4,7 +4,8 @@ html {
 body {
   font-size: 1.6rem; 
 }
-.body {
+.body,
+%body {
   font-weight: 400 !important;
   font-size: 1.6rem !important;
   line-height: 1.5em !important;
