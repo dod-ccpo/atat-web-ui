@@ -16,6 +16,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: "Project_Overview",
         path: "/", // should be same as parent route
         completePercentageWeight: 5,
+        //exclude from menu example
+        // children: [
+
+        //   {
+        //     name: "Excluded Path",
+        //     excludeFromMenu: true,
+        //     component: SomeComponent
+        //     path: "",  // whatever the path should be
+        //   }
+        // ]
       },
       {
         menuText: "Organization",
@@ -191,7 +201,7 @@ const mapStepRouteToStepperData = (
     stepperRouteConfig;
   let { name } = stepperRouteConfig;
   name = name || "";
-
+  
   const stepperStep: StepperStep = {
     stepNumber,
     menuText,
@@ -208,4 +218,5 @@ const mapStepRouteToStepperData = (
 };
 
 export const buildStepperData = (): StepperStep[] =>
-  stepperRoutes.map((step) => mapStepRouteToStepperData(step));
+  stepperRoutes.filter(step=> step.excludeFromMenu === false)
+  .map((step) => mapStepRouteToStepperData(step));
