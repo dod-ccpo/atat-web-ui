@@ -7,3 +7,7 @@ export interface StepperStep {
     subSteps?: StepperStep[];   
 }
 
+export interface SelectData {
+    text: string;
+    value?: string;
+}
