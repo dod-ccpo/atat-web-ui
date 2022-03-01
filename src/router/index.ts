@@ -1,6 +1,7 @@
 import VueRouter from "vue-router";
 import StepOne from "../steps/StepOne.vue";
 import StepTwo from "../steps/StepTwo.vue";
+import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue"
 import Users from "../pages/Users.vue";
 
 const routes = [

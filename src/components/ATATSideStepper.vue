@@ -109,7 +109,7 @@ export default class ATATSideStepper extends Vue {
         },
         {
           menuText: "Contact Information",
-          route: "stepone-3",
+          route: "contact-info",
           completed: true,
           completePercentageWeight: 5,
         },
