@@ -68,16 +68,7 @@ export default class App extends Vue {
     const step = await Steps.findRoute(navStep || '');
 
     if (step) {
-      const {stepNumber, stepName} = step;
-      this.$router.push({ name: navStep}).then(
-        () => {
-          Steps.setCurrentStep(stepName)
-          this.$refs.sideStepper.setCurrentStep(stepNumber)
-        },
-        (reason) => {
-          console.log(reason);
-        }
-      );
+      this.$router.push({ name: navStep});
     }
   }
 }
