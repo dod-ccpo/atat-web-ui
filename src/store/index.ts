@@ -1,9 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-// modules
-import steps from "./steps";
-
 Vue.use(Vuex);
 
 
@@ -51,9 +48,6 @@ export default new Vuex.Store({
     */
     getters: {
      
-    },
-    modules: {
-    steps,
     },
   });
   

@@ -1,9 +1,9 @@
 
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
-import StepsStore from "@/store/steps"
-import { buildStepList } from "../helpers";
+import  {StepsStore} from "@/store/steps"
 import { StepsState } from '../types';
+import { getModule } from 'vuex-module-decorators';
 
 
 const localVue = createLocalVue();
@@ -43,26 +43,12 @@ localVue.use(Vuex);
     menuText: "Step Two",
   }];
 
-const storeOptions = {
-  modules: {
-    steps: StepsStore,
-  },
-}
 
-const createStore = (storeOptions: any = {}): Store<{
-  steps: StepsState
-}> => new Vuex.Store({ ...storeOptions });
-
-
-
+const createStore = (storeOptions: any = {}): Store<{ steps: StepsState}> => new Vuex.Store({ ...storeOptions });
+const stepsStore = getModule(StepsStore, createStore());
+stepsStore.setSteps(stepperRoutes);
 
 test('"setCurrentStep" sets "state.currentState" when it exists', () => {
-
-  const localVue = createLocalVue()
-  localVue.use(Vuex)
-  const store = new Vuex.Store(createStore())
-  const stepsStore = store.state.steps;
-  stepsStore.steps = buildStepList(stepperRoutes);
 
   const step = stepperRoutes[0];
   const stepOneChildOne = step.children?.length ? step.children[0] : undefined;

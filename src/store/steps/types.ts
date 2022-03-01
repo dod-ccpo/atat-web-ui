@@ -1,5 +1,3 @@
-import { VNodeDirective } from "vue/types/umd";
-
 export interface StepInfo {
 
     stepNumber: string;
