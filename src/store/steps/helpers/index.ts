@@ -10,6 +10,7 @@ export const mapStepConfigs = (
     const stepInfo: StepInfo = {
       stepNumber: routeConfig.stepNumber || "",
       stepName: routeConfig.name || "",
+      stepLabel : routeConfig.menuText  || "",
       prev: undefined,
       next: undefined,
     };
