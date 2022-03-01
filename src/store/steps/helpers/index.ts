@@ -1,38 +1,37 @@
 import { StepperRouteConfig } from "types/Global";
 import { StepInfo } from "../types";
 
-const buildStepInfo = (config: StepperRouteConfig, steps: StepInfo[]) => {
-  const pushStep = (config: StepperRouteConfig) => {
+export const mapStepConfigs = (
+  config: StepperRouteConfig[]
+): Map<string, StepInfo> => {
+  const map = new Map<string, StepInfo>();
+  let last = "";
+  const mapStep = (routeConfig: StepperRouteConfig) => {
     const stepInfo: StepInfo = {
-      stepNumber: config.stepNumber || "",
-      stepName: config.name || "",
+      stepNumber: routeConfig.stepNumber || "",
+      stepName: routeConfig.name || "",
       prev: undefined,
       next: undefined,
     };
 
-    const length = steps.push(stepInfo);
+    const lastStep = map?.get(last || "");
 
-    if (length >= 2) {
-      const prev = steps[length - 2];
-      prev.next = stepInfo;
-      stepInfo.prev = prev;
+    if (lastStep) {
+      lastStep.next = stepInfo.stepName;
+      stepInfo.prev = lastStep.stepName;
     }
+
+    map?.set(stepInfo.stepName, stepInfo);
+    last = stepInfo.stepName;
+    routeConfig.children?.forEach((childConfig) =>
+      mapStep({
+        ...childConfig,
+        stepNumber: stepInfo.stepNumber,
+      })
+    );
   };
 
-  pushStep(config);
+  config.forEach((routeConfig) => mapStep(routeConfig));
 
-  if (config.children) {
-    config.children.forEach((child) => buildStepInfo({
-        ...child,
-        stepNumber: config.stepNumber,
-    }, steps));
-  }
-};
-
-export const buildStepList = (
-  stepperRouteConfigs: StepperRouteConfig[]
-): StepInfo[] => {
-  const steps: StepInfo[] = [];
-  stepperRouteConfigs.forEach((step) => buildStepInfo(step, steps));
-  return steps;
+  return map;
 };

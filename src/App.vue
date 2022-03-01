@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <ATATSideStepper />
+    <ATATSideStepper ref="sideStepper" />
     <v-main id="app">
       <router-view></router-view>
-      <ATATStepperNavigation />
+      <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')" />
       <ATATFooter />
     </v-main>
   </v-app>
@@ -15,13 +15,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {stepsStore} from "@/store/steps";
+import Steps from "@/store/steps";
 
 import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import { Component } from "vue-property-decorator";
-import { StepInfo } from "./store/steps/types";
 
 @Component({
   components: {
@@ -32,13 +31,39 @@ import { StepInfo } from "./store/steps/types";
 })
 export default class App extends Vue {
 
-  mounted(): void {
-    const firstStep = this.$store.state.steps.steps as StepInfo;
-    stepsStore.setCurrentStep({
-      stepNumber: firstStep.stepNumber,
-      stepName: firstStep.stepName
-    });
+   $refs!: {
+    sideStepper: ATATSideStepper;
+  };
 
+  async mounted(): Promise<void> {
+    //get first step and intitialize store to first step;
+    const routeName = this.$route.name;
+    const step = await Steps.findRoute(routeName || "");
+
+    if (routeName && step) {
+      const { stepName} = step;
+      Steps.setCurrentStep(stepName);
+    }
+  }
+
+  async navigate(direction: string): Promise<void> {
+    const navStep =
+      direction === "next" ? Steps.currentStep?.next : Steps.currentStep?.prev;
+
+    const step = await Steps.findRoute(navStep || '');
+
+    if (step) {
+      const {stepNumber, stepName} = step;
+      this.$router.push({ name: navStep}).then(
+        () => {
+          Steps.setCurrentStep(stepName)
+          this.$refs.sideStepper.setCurrentStep(stepNumber)
+        },
+        (reason) => {
+          console.log(reason);
+        }
+      );
+    }
   }
 }
 </script>

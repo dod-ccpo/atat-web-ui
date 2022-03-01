@@ -44,6 +44,7 @@ localVue.use(Vuex);
   }];
 
 
+
 const createStore = (storeOptions: any = {}): Store<{ steps: StepsState}> => new Vuex.Store({ ...storeOptions });
 const stepsStore = getModule(StepsStore, createStore());
 stepsStore.setSteps(stepperRoutes);
@@ -53,7 +54,7 @@ test('"setCurrentStep" sets "state.currentState" when it exists', () => {
   const step = stepperRoutes[0];
   const stepOneChildOne = step.children?.length ? step.children[0] : undefined;
 
-  stepsStore.setCurrentStep({stepNumber: step.stepNumber, stepName: step.name});
+  stepsStore.setCurrentStep(step.name);
 
   expect(stepsStore.currentStep).toBeDefined();
   expect(stepsStore.currentStep?.stepName).toBe(step.name);
@@ -61,10 +62,13 @@ test('"setCurrentStep" sets "state.currentState" when it exists', () => {
   const next = stepsStore.currentStep?.next;
 
   expect(next).toBeDefined();
-  expect(next?.stepName).toBe(stepOneChildOne?.name);
-  expect(next?.prev).toBeDefined();
-  expect(next?.prev?.stepName).toBe(step.name);
-  
+  expect(next).toBe(stepOneChildOne?.name);
+
+  stepsStore.setCurrentStep(stepOneChildOne?.name || '');
+  const prev = stepsStore.currentStep?.prev;
+  expect(prev).toBeDefined();
+  expect(prev).toBe(step.name);
+
 
 
 })

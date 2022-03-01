@@ -1,14 +1,13 @@
 import {  VuexModule, Module, Action, Mutation, getModule} from "vuex-module-decorators";
-import store from "../index";
-import { StepInfo, StepsState} from "./types";
-// import { Mutations} from "./types"
-import { buildStepList } from "./helpers";
+import rootStore from "../index";
+import { Mutations, StepInfo, StepsState} from "./types";
+import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
 
 
 
-@Module({ name: 'Steps',  namespaced: true, dynamic: true, store})
+@Module({ name: 'Steps',  namespaced: true, dynamic: true, store: rootStore})
 export class StepsStore extends VuexModule implements StepsState {
 
     currentStep: StepInfo | undefined = {
@@ -17,13 +16,11 @@ export class StepsStore extends VuexModule implements StepsState {
         prev: undefined,
         next: undefined,
     };
-    steps:StepInfo[] = buildStepList(stepperRoutes);
+    stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
     @Mutation
-    _setCurrentStep({stepNumber, stepName}: {stepNumber: string, stepName: string}): void {
-        
-        const step = this.steps.find(stepInfo=> 
-            stepInfo.stepNumber === stepNumber && stepInfo.stepName === stepName );
+    [Mutations.SET_CURRENT_STEP](stepName: string): void {
+        const step = this.stepMap.get(stepName);
     
          if(step){
              this.currentStep = step;
@@ -32,13 +29,17 @@ export class StepsStore extends VuexModule implements StepsState {
 
       @Mutation
       public setSteps(stepperRoutes: StepperRouteConfig[]): void{
-
-          this.steps = buildStepList(stepperRoutes);
+          this.stepMap = mapStepConfigs(stepperRoutes);
       }
 
-    @Action
-    public setCurrentStep({stepNumber, stepName}: {stepNumber: string, stepName: string}): void {
-        this.context.commit('_setCurrentStep', {stepNumber, stepName});
+    @Action({ rawError: true })    
+    public setCurrentStep(stepName: string): void {
+        this.context.commit(Mutations.SET_CURRENT_STEP, stepName);
+    }
+
+    @Action({rawError: true})
+    public findRoute(name: string): StepInfo | undefined {
+        return this.stepMap.get(name);
     }
 }
 

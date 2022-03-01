@@ -67,7 +67,7 @@ import {buildStepperData} from "../router/stepper";
 @Component({})
 export default class ATATSideStepper extends Vue {
   
-  private setCurrentStep(stepNumber: string) {
+  public setCurrentStep(stepNumber: string): void {
     this.activeStep = stepNumber;
   }
 

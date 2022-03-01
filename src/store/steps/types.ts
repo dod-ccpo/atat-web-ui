@@ -2,16 +2,15 @@ export interface StepInfo {
 
     stepNumber: string;
     stepName: string;
-    prev: StepInfo | undefined;
-    next: StepInfo | undefined;
+    prev: string | undefined;
+    next: string | undefined;
 }
-
 
 export interface StepsState {
 
      currentStep : StepInfo | undefined;
-     steps: Array<StepInfo>
-     setCurrentStep: ({stepNumber, stepName}: {stepNumber: string, stepName: string})=> void
+     stepMap: Map<string, StepInfo>
+     setCurrentStep: (stepName: string)=> void
 }
 
 
