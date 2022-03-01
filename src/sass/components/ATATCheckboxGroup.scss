@@ -20,8 +20,13 @@
     padding-top: 0;
   }
 
+
   label {
     color: $base-darkest !important;
+    padding-top: 1px;
+    &.error--text {
+      color: $error-dark !important;
+    }
   }
 
   .v-icon {
@@ -75,6 +80,15 @@
   &.v-input--checkbox {
     margin-top: 12px;
     padding-top: 12px;
+  }
+  &.error--text {
+    background-color: $base-lightest !important;
+    border: solid 2px $error;
+    border-radius: 4px !important;
+    padding: 12px 0px 0px 12px;
+    label {
+      color: $error-dark !important;
+    }
   }
 
   .v-input__slot {

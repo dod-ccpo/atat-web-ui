@@ -3,6 +3,7 @@
   transform: scale(1) !important;
   opacity: 1 !important;
 }
+
 ._radio-button {
   &.v-item--active {
     .v-icon {
@@ -10,21 +11,32 @@
       z-index: 2;
     }
   }
+
   &.v-radio--is-focused {
     color: $primary !important;
+
     .v-input--selection-controls__ripple {
       &:before {
         @extend ._radio-focus;
       }
     }
   }
+
   label {
     color: $base-darkest !important;
+    padding-top: 1px;
+
+    &.error--text {
+      color: $error-dark !important;
+
+    }
   }
+
   .v-icon {
     color: $base !important;
     z-index: 2;
   }
+
   .v-input--selection-controls__input {
     &:hover {
       .v-input--selection-controls__ripple {
@@ -33,6 +45,7 @@
         }
       }
     }
+
     &:after {
       content: '';
       display: inline-block;
@@ -47,6 +60,7 @@
     }
   }
 }
+
 ._radio-button-card {
   @extend ._radio-button;
   background-color: $base-lightest !important;
@@ -54,23 +68,47 @@
   border-radius: 4px !important;
   padding: 12px 0px 12px 12px;
   align-items: start !important;
+
   &.v-item--active {
     background-color: $primary-lighter !important;
     border: solid 2px $primary;
     border-radius: 4px !important;
   }
+
+  label {
+    color: $base-darkest !important;
+    padding-top: 1px;
+
+    &.error--text {
+      color: $error-dark !important;
+
+    }
+  }
+
   &:hover, &.v-radio--is-focused {
     border: $primary solid 2px;
     background-color: $primary-lighter !important;
     color: $primary;
   }
+
   .card-label {
-    font-weight:700 !important;
-    font-size:1.6rem;
-    margin-bottom:4px !important;
+    font-weight: 700 !important;
+    font-size: 1.6rem;
+    margin-bottom: 4px !important;
   }
+
   label {
     color: $base-darkest !important;
     padding-top: 1px;
   }
+}
+.error--text {
+  ._radio-button-card {
+    background-color: $base-lightest !important;
+    border: solid 2px $error;
+    border-radius: 4px !important;
+    padding: 12px 0px 12px 12px;
+    align-items: start !important;
+  }
+
 }

@@ -9,6 +9,8 @@
       :label="item.label"
       :value="item.value"
       :name="name"
+      :error="error"
+      :disabled="disabled"
     >
       <template v-if="item.description && card" v-slot:label>
         <div class="d-flex flex-column">
@@ -31,7 +33,11 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({default: "Form Field Label"}) private label!: string;
   @Prop({default: ['empty items array']}) private items!: Checkbox[];
   @Prop({default: false}) private card!: boolean;
+  @Prop({default: false}) private error!: boolean;
+  @Prop({default: false}) private disabled!: boolean;
+
   @Prop() private name!: string;
+
 
   private getIdText(string: string) {
     return string.replace(/[^A-Z0-9]/ig, "");

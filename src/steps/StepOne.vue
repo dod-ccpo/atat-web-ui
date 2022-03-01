@@ -80,7 +80,8 @@
             label="Custom Checkbox"
             :value.sync="ATATCheckboxValue"
             :items="checkboxItems"
-            name="another-checkbox"/>
+            name="another-checkbox"
+          />
           <ATATCheckboxGroup
             id="checkbox card"
             label="Custom Checkbox 2"
