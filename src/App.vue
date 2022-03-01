@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <ATATSideStepper />
+    <ATATSideStepper ref="sideStepper"/>
     <ATATPageHead />
     <v-main id="app">
       <router-view></router-view>
@@ -22,7 +22,7 @@ import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 @Component({
   components: {
@@ -46,6 +46,18 @@ export default class App extends Vue {
     if (routeName && step) {
       const { stepName} = step;
       Steps.setCurrentStep(stepName);
+    }
+  }
+
+   @Watch("$route")
+  async onRouteChanged(): Promise<void> {
+    const routeName = this.$route.name;
+    const step = await Steps.findRoute(routeName || "");
+
+    if (routeName && step) {
+      const { stepName, stepNumber } = step;
+      Steps.setCurrentStep(stepName);
+      this.$refs.sideStepper.setCurrentStep(stepNumber);
     }
   }
 
