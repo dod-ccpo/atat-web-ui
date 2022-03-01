@@ -1,23 +1,19 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
-    <v-flex class="d-flex align-center" v-if="label">
+    <v-flex class="d-flex align-center">
       <label
           :id="id + '_text_field_label'"
           class="form-field-label mb-2"
-          :class="['mr-2']"
           :for="id + '_text_field'"
       >
         {{ label }}
-        <span v-if="optional" class="optional">
-          Optional
-        </span>
       </label>
       <v-tooltip
           transition="slide-y-reverse-transition"
           max-width="250px"
           color="rgba(0,0,0,1)"
           top
-          v-if="tooltipText"
+          v-if="helpText"
       >
         <template v-slot:activator="{ on }">
           <v-btn
@@ -32,24 +28,23 @@
           </v-icon>
           </v-btn>
         </template>
-        <span>{{ tooltipText }}</span>
+        <span>{{ helpText }}</span>
       </v-tooltip>
     </v-flex>
-    <v-flex :style="{ 'width': width }">
-      <v-text-field
-          :id="id + '_text_field'"
-          outlined
-          dense
-          :height="42"
-          :value.sync="_value"
-          hide-details="auto"
-          :placeholder="placeHolder"
-          @input="inputActions"
-      >
-      </v-text-field>
-    </v-flex>
-    <v-flex v-if="inputHelperText" class="input-helper-text">
-      {{ inputHelperText }}
+    <v-flex class="d-flex width-100">
+        <v-textarea
+            :id="id + '_text_area'"
+            :value.sync="_value"
+            hide-details="auto"
+            :placeholder="placeHolder"
+            @input="inputActions"
+            :rows="rows"
+            class="text-primary"
+            :readonly="readOnly"
+            :no-resize="noResize"
+            outlined
+        >
+        </v-textarea>
     </v-flex>
   </div>
 </template>
@@ -59,19 +54,17 @@ import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 
 @Component({})
-export default class ATATTextField extends Vue {
+export default class ATATTextArea extends Vue {
   // props
   @Prop({default: true}) private dense!: boolean;
   @Prop({default: true}) private singleLine!: boolean;
   @Prop({default: "id_is_missing"}) private id!: string;
   @Prop({default: "Form Field Label"}) private label!: string;
-  @Prop({default: false}) private optional!: string;
-  @Prop({default: "auto"}) private width!: string;
-  @Prop({default: null}) private inputHelperText!: string;
-  @Prop({ default: "" }) private tooltipText!: string;
+  @Prop({ default: "" }) private helpText!: string;
   @PropSync("value", {default: ""}) private _value!: string;
-
-
+  @Prop ({default: 4}) private rows!: number;
+  @Prop ({default: false}) private readOnly!: boolean;
+  @Prop ({default: true}) private noResize!: boolean;
   //data
   private placeHolder = "";
 

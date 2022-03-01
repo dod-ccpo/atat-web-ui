@@ -1,13 +1,8 @@
 import VueRouter from "vue-router";
-import StepOne from "../steps/StepOne.vue";
-import StepTwo from "../steps/StepTwo.vue";
-import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue"
-import Users from "../pages/Users.vue";
+import {stepperRoutes} from "./stepper";
 
 const routes = [
-  { path: "/", component: StepOne },
-  { path: "/steptwo", component: StepTwo },
-  { path: "/contact-info", component: ContactInfo }
+   ...stepperRoutes,
 ];
 
 const router = new VueRouter({

@@ -1,5 +1,8 @@
 .input-max-width {
     max-width: 416px !important;
+    &.with-buttons-1 {
+        max-width: 446px !important;
+    }
 }
 
 .optional {
@@ -17,4 +20,29 @@
 .form-section {
     margin-top: 0 !important;
     margin-bottom: 28px !important;
+}
+
+.v-text-field,
+.v-textarea{
+  fieldset{
+    border: 1px solid $base;
+    border-radius: 4px;
+  }
+}
+
+
+// radio buttons
+.v-input--selection-controls {
+  padding-top: 0px !important;
+}
+
+//hr  
+hr{
+  &.base-lighter{
+    border: $base-lighter 1px solid !important;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
 }
