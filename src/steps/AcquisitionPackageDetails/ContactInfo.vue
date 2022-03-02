@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="wrapper-max-width">
     <v-row class="form-section">
       <v-col>
         <h1 class="mb-10">Let’s confirm your contact information</h1>
@@ -33,16 +33,16 @@
       </v-col>
     </v-row>
     <v-row class="form-section">
-      <v-col>
-        <ATATTextField label="First name" id="FirstName" />
+      <v-col class="col-12 col-lg-3">
+        <ATATTextField label="First name" id="FirstName" class="input-max-width" />
       </v-col>
-      <v-col>
-        <ATATTextField label="Middle name" id="MiddleName" :optional="true" />
+      <v-col class="col-12 col-lg-3">
+        <ATATTextField label="Middle name" id="MiddleName" :optional="true" class="input-max-width" />
       </v-col>
-      <v-col>
-        <ATATTextField label="Last name" id="LastName" />
+      <v-col class="col-12 col-lg-3">
+        <ATATTextField label="Last name" id="LastName" class="input-max-width" />
       </v-col>
-      <v-col>
+      <v-col class="col-12 col-lg-3">
         <ATATTextField
           label="Suffix"
           id="Suffix"

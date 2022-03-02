@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container fluid>
+    <v-container fluid class="wrapper-max-width">
       <v-row>
         <v-col>
           <h1>Let’s start with basic info about your new acquisition</h1>
