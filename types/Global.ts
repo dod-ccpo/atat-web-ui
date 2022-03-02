@@ -20,6 +20,7 @@ export interface StepperStep {
     stepNumber?: string;
     completePercentageWeight?: number;
     menuText?: string;
+    completed?: boolean;
     /**
      * Setting this flag to true will prevent item from being 
      * rendered in menu but will still include it in the route record

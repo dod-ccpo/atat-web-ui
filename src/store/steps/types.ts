@@ -2,6 +2,7 @@ export interface StepInfo {
 
     stepNumber: string;
     stepName: string;
+    stepLabel: string;
     prev: string | undefined;
     next: string | undefined;
 }

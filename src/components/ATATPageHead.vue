@@ -5,10 +5,10 @@
     <div><h4>{{ headline }}</h4></div>
     <div class="d-flex justify-end">
       <v-btn icon class="mr-5 icon-24">
-        <v-icon>person_add_alt_1</v-icon>
+        <v-icon class="text-base-dark">person_add_alt_1</v-icon>
       </v-btn>
       <v-btn icon class="icon-24">
-        <v-icon>more_horiz</v-icon>
+        <v-icon class="text-base-dark">more_horiz</v-icon>
       </v-btn>
     </div>
   </div>
