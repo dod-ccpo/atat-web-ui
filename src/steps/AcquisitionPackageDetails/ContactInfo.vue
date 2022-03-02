@@ -157,23 +157,23 @@ export default class ContactInfo extends Vue {
     private salutationData: SelectData[] = [
         {
             text: "Mr.",
-            value: "Mr.V",
+            value: "Mr.",
         },
         {
             text: "Mrs.",
-            value: "Mrs.V",
+            value: "Mrs.",
         },
         {
             text: "Miss",
-            value: "MissV",
+            value: "Miss",
         },
         {
             text: "Ms.",
-            value: "Ms.V",
+            value: "Ms.",
         },
         {
             text: "Dr.",
-            value: "Dr.V",
+            value: "Dr.",
         },
     ];
     private selectedRank = "";
