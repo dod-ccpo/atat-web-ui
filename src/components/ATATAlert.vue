@@ -5,7 +5,7 @@
     :class="[
       getBorderWidth(),
       type + '_alert',
-      'v-application d-block atat-alert black--text body-lg',
+      'v-application d-block atat-alert text-base-darkest',
     ]"
   >
     <div class="d-flex justify-start">
@@ -23,7 +23,7 @@
           {{ getIcon() }}
         </i>
       </div>
-      <div class="body-lg black--text content-max-width">
+      <div class="text-base-darkest content-max-width">
         <slot name="content"></slot>
       </div>
       <div

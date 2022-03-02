@@ -51,10 +51,15 @@ p {
   line-height: 1.5rem !important;
 }                             
 
-.body-sm {
+.body-sm,
+.helper-text {
   font-size: 1.4rem !important;
   line-height: 2.1rem !important;
   letter-spacing: .025rem !important;
+}
+
+.helper-text{
+  color: $base-dark;
 }
 
 label {

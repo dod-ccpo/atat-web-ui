@@ -23,17 +23,14 @@
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 content-max-width">
-            <span class="font-weight-bold"> What is the scope of your requirement? </span>
-            <span class="body-sm"
-              >Briefly describe the type of resources and services to be
-              acquired, and what is necessary to achieve mission specific
-              outcomes for this particular task (e.g., move DITCO’s contract
-              writing system to a cloud environment).</span
-            >
              <ATATTextArea
-              label=""
+              label="What is the scope of your requirement?"
               class="width-100"
               :rows=7
+              helpText="Briefly describe the type of resources and services to be
+              acquired, and what is necessary to achieve mission specific
+              outcomes for this particular task (e.g., move DITCO’s contract
+              writing system to a cloud environment)"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 content-max-width">

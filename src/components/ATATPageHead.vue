@@ -3,7 +3,7 @@
 
   <div class="d-flex justify-space-between width-100">
     <div><h4>{{ headline }}</h4></div>
-    <div class="d-flex justify-end ">
+    <div class="d-flex justify-end">
       <v-btn icon class="mr-5 icon-24">
         <v-icon class="text-base-dark">person_add_alt_1</v-icon>
       </v-btn>
