@@ -50,14 +50,20 @@ p {
   line-height: 1.5em !important;
 }                             
 
-.body-sm {
+.body-sm,
+.helper-text {
   font-size: 1.4rem !important;
   line-height: 1.5em !important;
   letter-spacing: .025rem !important;
 }
 
+.helper-text{
+  color: $base;
+}
+
 label {
   color: $base-darkest !important;
+  @extend .body;
   .chart,
   .graph{
     font-size: 1.2rem !important;
@@ -67,8 +73,8 @@ label {
 
 .field-error {
   @extend label;
-  font-weight: 700 !important;
-  color: $primary !important;
+  color: $error !important;
+  font-weight: 500 !important;
 }
 
 .field-success {

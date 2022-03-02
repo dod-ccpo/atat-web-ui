@@ -24,6 +24,7 @@ export interface SelectData {
     stepNumber?: string;
     completePercentageWeight?: number;
     menuText?: string;
+    completed?: boolean;
     /**
      * Setting this flag to true will prevent item from being 
      * rendered in menu but will still include it in the route record
@@ -56,4 +57,11 @@ export interface RadioButton {
  id: string;
  label: string;
  value: string;
+ description?: string;
+}
+export interface Checkbox {
+  id: string;
+  label: string;
+  value: string;
+  description?: string;
 }

@@ -22,12 +22,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/", // should be same as first substep route
     completePercentageWeight: 15,
     component: AcquisitionPackageDetails,
+    completed: true,
     children: [
       {
         menuText: "Project Overview",
         path: "/project-overview", // should be same as parent route
         name: "Project_Overview",
         completePercentageWeight: 4,
+        completed: true,
         component: ProjectOverview,
       },
       {
@@ -37,11 +39,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         excludeFromMenu: true,
         component: ProjectScope,
+        completed: true,
       },
       {
         menuText: "Organization",
         path: "organization-info",
         name: "Organization",
+        completed: true,
         completePercentageWeight: 5,
       },
       {
@@ -72,7 +76,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: "Substep_2",
         menuText: "Substep 2",
         path: "steptwo-2",
-
+        completed: true,
         completePercentageWeight: 3,
       },
       {
@@ -86,7 +90,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: "Substep 4",
         menuText: "Substep 4",
         path: "steptwo-4",
-
+        completed: true,
         completePercentageWeight: 1,
       },
     ],
@@ -206,7 +210,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
 const mapStepRouteToStepperData = (
   stepperRouteConfig: StepperRouteConfig
 ): StepperStep => {
-  const { completePercentageWeight, menuText, path, stepNumber } =
+  const { completePercentageWeight, completed, menuText, path, stepNumber } =
     stepperRouteConfig;
   let { name } = stepperRouteConfig;
   name = name || "";
@@ -215,7 +219,7 @@ const mapStepRouteToStepperData = (
     stepNumber,
     menuText,
     name,
-    completed: false,
+    completed,
     completePercentageWeight,
     route: path,
     subSteps: stepperRouteConfig.children

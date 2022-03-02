@@ -1,9 +1,10 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
     <v-flex class="d-flex align-center">
+      <div class="width-100">
       <label
           :id="id + '_text_field_label'"
-          class="form-field-label mb-2"
+          class="form-field-label font-weight-medium width-100"
           :for="id + '_text_field'"
       >
         {{ label }}
@@ -30,7 +31,9 @@
         </template>
         <span>{{ tooltipText }}</span>
       </v-tooltip>
+       </div>
     </v-flex>
+    <v-flex class="width-100 mb-2 helper-text">{{ helpText }}</v-flex>
     <v-flex class="d-flex width-100">
         <v-textarea
             :id="id + '_text_area'"
@@ -51,20 +54,21 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextArea extends Vue {
   // props
-  @Prop({default: true}) private dense!: boolean;
-  @Prop({default: true}) private singleLine!: boolean;
-  @Prop({default: "id_is_missing"}) private id!: string;
-  @Prop({default: "Form Field Label"}) private label!: string;
+  @Prop({ default: true }) private dense!: boolean;
+  @Prop({ default: true }) private singleLine!: boolean;
+  @Prop({ default: "id_is_missing" }) private id!: string;
+  @Prop({ default: "Form Field Label" }) private label!: string;
+  @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipText!: string;
-  @PropSync("value", {default: ""}) private _value!: string;
-  @Prop ({default: 4}) private rows!: number;
-  @Prop ({default: false}) private readOnly!: boolean;
-  @Prop ({default: true}) private noResize!: boolean;
+  @PropSync("value", { default: "" }) private _value!: string;
+  @Prop({ default: 4 }) private rows!: number;
+  @Prop({ default: false }) private readOnly!: boolean;
+  @Prop({ default: true }) private noResize!: boolean;
   //data
   private placeHolder = "";
 

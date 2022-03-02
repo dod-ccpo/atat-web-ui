@@ -1,23 +1,11 @@
-.v-input--radio-group {
-  fieldset {
-    border: none !important;
-  }
-}
-._radio-focus {
-  background: $primary-lighter !important;
-  transform: scale(1) !important;
-  opacity: 1 !important;
-}
-
-._radio-button {
-  &.v-item--active {
+._checkbox {
+  &.v-input--is-label-active {
     .v-icon {
       color: $primary !important;
-      z-index: 2;
     }
   }
 
-  &.v-radio--is-focused {
+  &.v-input--is-focused {
     color: $primary !important;
 
     .v-input--selection-controls__ripple {
@@ -27,16 +15,19 @@
     }
   }
 
+  &.v-input--checkbox {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+
   label {
     color: $base-darkest !important;
-    padding-top: 1px;
 
     &.error--text {
       color: $error-dark !important;
-
     }
   }
-
 
   .v-icon {
     color: $base !important;
@@ -48,11 +39,10 @@
   }
 
   .v-input--selection-controls__input {
-    margin-right: 12px !important;
     &:hover {
       .v-input--selection-controls__ripple {
         &:before {
-          @extend ._radio-focus;
+          @extend ._checkbox-focus;
         }
       }
     }
@@ -65,75 +55,69 @@
       height: 16px;
       top: 4px;
       left: 4px;
-      border-radius: 50%;
       background-color: $white;
       z-index: 1;
     }
   }
+
 }
 
-._radio-button-card {
-  @extend ._radio-button;
+._checkbox-card {
+  @extend ._checkbox;
   background-color: $base-lightest !important;
   border: solid 1px $base-lighter;
   border-radius: 4px !important;
-  padding: 12px 0px 12px 12px;
-  margin-bottom: 12px !important;
-  align-items: start !important;
+  padding: 12px;
 
-  &.v-item--active {
+  &.v-input--is-label-active {
     background-color: $primary-lighter !important;
     border: solid 2px $primary;
     border-radius: 4px !important;
-    &.v-radio--is-focused {
+    &.v-input--is-focused {
       box-shadow:0px 0px 0px 1px $primary, 0px 0px 0px 3px white, 0px 0px 0px 6px $primary !important;
     }
   }
-  &.v-radio--is-focused {
-    box-shadow: 0px 0px 0px 2px white, 0px 0px 0px 4px $primary !important;
-  }
-  label {
-    color: $base-darkest !important;
-    padding-top: 1px;
 
-    &.error--text {
-      color: $error-dark !important;
-
-    }
-  }
-
-  &:hover:not(.v-item--active)  {
+  &:hover:not(.v-input--is-label-active) {
     border: solid 1px $primary;
     color: $primary;
   }
-
-  .card-label {
-    font-weight: 700 !important;
-    font-size: 1.6rem;
-    margin-bottom: 4px !important;
+  &.v-input--is-focused {
+    box-shadow: 0px 0px 0px 2px white, 0px 0px 0px 4px $primary !important;
   }
 
-  label {
-    color: $base-darkest !important;
-    padding-top: 1px;
+  &.v-input--checkbox {
+    margin-top: 12px !important;;
+    padding-top: 12px !important;;
   }
-}
-
-.error--text {
-  ._radio-button-card {
+  &.error--text {
     background-color: $base-lightest !important;
     border: solid 2px $error;
     border-radius: 4px !important;
-    padding: 12px 0px 12px 12px;
-    align-items: start !important;
+    padding: 12px 0px 0px 12px;
+    label {
+      color: $error-dark !important;
+    }
   }
-
+  .v-messages {
+    min-height: 0;
+  }
+  .v-input__slot {
+    margin-bottom: 0px;
+    align-items:start;
+  }
+  .card-label {
+    font-weight:700 !important;
+    font-size:1.6rem;
+    margin-bottom:4px !important;
+  }
+  label {
+    color: $base-darkest !important;
+    padding-top: 2px;
+  }
 }
-
-
-.v-input--radio-group--column{
-   margin-top: 0px !important;
-  .v-radio:not(:last-child):not(:only-child){
-    margin-bottom: 12px !important
-  }
+._checkbox-focus {
+  background: $primary-lighter !important;
+  transform: scale(1) !important;
+  opacity: 1 !important;
 }

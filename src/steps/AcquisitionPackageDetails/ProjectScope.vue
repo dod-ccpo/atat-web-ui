@@ -3,12 +3,12 @@
     <v-container>
       <v-row>
         <v-col class="col-12">
-          <h1 class="mb-10">Tell us more about the scope of your project</h1>
-
-          <ATATAlert type="info" :showIcon="false" class="content-max-width">
+          <h1>Tell us more about the scope of your project</h1>
+       
+          <ATATAlert type="info" :showIcon="false" class="content-max-width mt-10">
             <template v-slot:content>
               <h2>Surge Capabilities</h2>
-              <p class="mt-2">
+              <p class="mt-2 mb-0">
                 The Government may require surge capabilities during the base or
                 any option period, and surge modifications will be within the
                 scope of the contract for the defined task areas in the
@@ -22,12 +22,17 @@
                 Regulation (FAR) 52.217-8.
               </p>
             </template>
-          </ATATAlert>       
-
-           <p class="mt-10 mb-2">
+          </ATATAlert>
+           <p class="mt-8 mb-2">
             If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded?
           </p>
-          <ATATTextField label="" class="input-max-width" />
+          <ATATTextField 
+            label="" 
+            id="ContractPricePercentage"
+            placeHolder="1-50" 
+            class="width-20" 
+            suffix="%"
+            :rules="contractPricePercentageRules"/>
         </v-col>
       </v-row>
     </v-container>
@@ -47,6 +52,19 @@ import { Component } from "vue-property-decorator";
     ATATTextField
   },
 })
-export default class ProjectScope extends Vue {}
+export default class ProjectScope extends Vue {
+
+  get contractPricePercentageRules(): unknown[] {
+    const validationRules = [];
+    validationRules.push(
+      (v:number) => v > 0 && v <= 50  ||  "Enter a number between 1-50"
+    );
+    validationRules.push(
+      (v:string) => /[0-9]/.test(v)  ||  "Enter a number between 1-50"
+    );
+    
+    return validationRules; 
+  }
+}
 </script>
 
