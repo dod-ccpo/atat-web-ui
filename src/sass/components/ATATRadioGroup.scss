@@ -1,3 +1,8 @@
+.v-input--radio-group {
+  fieldset {
+    border: none !important;
+  }
+}
 ._radio-focus {
   background: $primary-lighter !important;
   transform: scale(1) !important;
@@ -69,8 +74,7 @@
 ._radio-button-card {
   @extend ._radio-button;
   background-color: $base-lightest !important;
-  border: solid 1px $base-lightest;
-  box-shadow:0px 0px 0px 1px $base-lightest !important;
+  border: solid 1px $base-lighter;
   border-radius: 4px !important;
   padding: 12px 0px 12px 12px;
   margin-bottom: 12px !important;
@@ -97,8 +101,9 @@
     }
   }
 
-  &:hover {
-    box-shadow:0px 0px 0px 2px $primary !important;
+  &:hover:not(.v-item--active)  {
+    //box-shadow:0px 0px 0px 1px $primary !important;
+    border: solid 1px $primary;
     color: $primary;
   }
 
