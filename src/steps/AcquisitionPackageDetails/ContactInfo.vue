@@ -70,7 +70,7 @@
                     label="Your email"
                     id="ContactEmail"
                     class="input-max-width mb-10"
-                    inputHelperText="Enter a .mil or .gov email address."
+                    helpText="Enter a .mil or .gov email address."
                 />
                 <ATATTextField
                     label="Your phone number"

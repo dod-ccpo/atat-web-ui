@@ -17,13 +17,15 @@
           </p>
           <div class="mt-10">
             <ATATTextField
+              id="ProjectTitle"
               label="Project/Requirement Title"
               class="input-max-width"
               tooltipText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 content-max-width">
-             <ATATTextArea
+            <ATATTextArea
+              id="ProjectScope"
               label="What is the scope of your requirement?"
               class="width-100"
               :rows=7
@@ -34,10 +36,9 @@
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 content-max-width">
-            <!-- EJY change to send fieldset legend after Devonte's branch merged -->
-            <span> Is this requirement in support of an emergency declaration?</span>
            <ATATRadioGroup
               id="emergency-declaration-support-requirement"
+              legend="Is this requirement in support of an emergency declaration?"
               :value.sync="radioValue"
               :items="radioGroupItems"
               name="emergency-declaration-support-requirement-radio-group"

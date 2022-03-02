@@ -53,6 +53,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "contact-info",
         name: "Contact_Information",
         completePercentageWeight: 5,
+        completed: true,
         component: ContactInfo,
       },
     ],

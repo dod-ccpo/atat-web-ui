@@ -16,7 +16,7 @@
         max-width="250px"
         color="rgba(0,0,0,1)"
         top
-        v-if="helpText"
+        v-if="tooltipText"
       >
         <template v-slot:activator="{ on }">
           <v-btn
@@ -56,7 +56,7 @@
       </template>
       </v-text-field>
     </v-flex>
-    <v-flex v-if="helpText" class="help-text">
+    <v-flex v-if="helpText" class="help-text mt-2">
       {{ helpText }}
     </v-flex>
   </div>
@@ -74,11 +74,14 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: "" }) private helpText!: string;
+  @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: []}) private rules!: Array<unknown>;
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
+  @Prop({ default: "" }) private width!: string;
+  
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
