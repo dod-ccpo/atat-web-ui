@@ -26,7 +26,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Project Overview",
-        path: "/project-overview", // should be same as parent route
+        path: "/", // should be same as parent route
         name: "Project_Overview",
         completePercentageWeight: 4,
         completed: true,
