@@ -28,6 +28,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: "Project_Overview",
         path: "/", // should be same as parent route
         completePercentageWeight: 5,
+        completed: true,
         component: ProjectOverview,
       },
       {
@@ -35,20 +36,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Project Scope",
         excludeFromMenu: true,
         component: ProjectScope,
+        completed: true,
         path: "project-scope",
       },
       {
         menuText: "Organization",
         name: "Organization",
         path: "stepone-2",
-
+        completed: true,
         completePercentageWeight: 5,
       },
       {
         menuText: "Contact Information",
         name: "Contact_Information",
         path: "stepone-3",
-
+        completed: true,
         completePercentageWeight: 5,
       },
     ],

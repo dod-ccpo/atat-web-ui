@@ -39,7 +39,7 @@
               id="emergency-declaration-support-requirement"
               :value.sync="radioValue"
               :items="radioGroupItems"
-              name="another-radio-group"
+              name="emergency-declaration-support-requirement-radio-group"
               class="mt-3"
           >
           </ATATRadioGroup>

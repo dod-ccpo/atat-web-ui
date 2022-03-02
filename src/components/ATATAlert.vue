@@ -10,14 +10,14 @@
   >
     <div class="d-flex justify-start">
       <div
-        v-if="showIcon"
+        v-if="icon"
         class="text-center px-0 pt-1 d-flex flex-column align-start"
       >
         <i
           aria-hidden="true"
           :class="[
             getIconSize(),
-            'v-icon notranslate material-icons theme--light text--base-darkest',
+            'v-icon notranslate material-icons theme--light text-base-darkest',
           ]"
         >
           {{ getIcon() }}
@@ -53,7 +53,7 @@
               notranslate
               material-icons
               theme--light
-              text--base-darkest
+              text-base-darkest
               icon-20
             "
           >
@@ -73,7 +73,6 @@ import { Component, Prop } from "vue-property-decorator";
 export default class ATATAlert extends Vue {
   @Prop({ default: "presentation" }) private role?: string;
   @Prop({ default: "" }) private icon?: string;
-  @Prop({ default: true }) private showIcon?: boolean;
   @Prop({ default: true }) private show?: boolean;
 
   /**
