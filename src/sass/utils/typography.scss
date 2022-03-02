@@ -43,7 +43,6 @@ h5, .h5 {
 }                 
 
 p {
-
   margin-bottom: 2.4rem !important;
 }
 
@@ -60,6 +59,7 @@ p {
 
 label {
   color: $base-darkest !important;
+  @extend .body;
   .chart,
   .graph{
     font-size: 1.2rem !important;
@@ -69,8 +69,7 @@ label {
 
 .field-error {
   @extend label;
-  font-weight: 700 !important;
-  color: $primary !important;
+  color: $error !important;
 }
 
 .field-success {

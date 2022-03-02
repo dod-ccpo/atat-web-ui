@@ -17,7 +17,7 @@
           >
           <div class="mt-10">
             <ATATTextField
-              label="Project/Requirements Title"
+              label="Project/Requirement Title"
               class="input-max-width"
               helpText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
             />

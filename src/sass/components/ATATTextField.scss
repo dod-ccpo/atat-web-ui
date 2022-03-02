@@ -3,15 +3,28 @@
     border: 1px solid $base;
     border-radius: 4px;
     &:focus{
+        border-width: 2px;
         border-color: $primary;
     }
   }
+
+&.error--text{
+    fieldset, 
+    fieldset:focus{
+        border-color: $error !important;
+        border-width: 2px;
+      } 
+    .v-text-field__suffix{
+        color: $error;
+    }
+}
+
 
   .v-text-field__details{
     padding: 0px !important;
     max-width: inherit !important;
     position: fixed;
-    margin-top: 45px !important;
+    margin-top: 50px !important;
   }
 
   .atat-error-text{

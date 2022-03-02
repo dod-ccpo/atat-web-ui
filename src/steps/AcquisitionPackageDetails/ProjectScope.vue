@@ -11,7 +11,7 @@
           <ATATAlert type="info" :showIcon="false" class="content-max-width">
             <template v-slot:content>
               <h3>Surge Capabilities</h3>
-              <p class="mt-2">
+              <p class="mt-2 mb-0">
                 The Government may require surge capabilities during the base or
                 any option period, and surge modifications will be within the
                 scope of the contract for the defined task areas in the
@@ -25,18 +25,15 @@
               </p>
             </template>
           </ATATAlert>
-         
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-           <p class="mt-14 mb-2">
+           <p class="mt-8 mb-2">
             If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded?
           </p>
           <ATATTextField 
             label="" 
+            id="ContractPricePercentage"
             placeHolder="1-50" 
             class="width-20" 
+            suffix="%"
             :rules="contractPricePercentageRules"/>
         </v-col>
       </v-row>
