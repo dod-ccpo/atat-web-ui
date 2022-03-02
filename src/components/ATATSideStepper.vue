@@ -1,14 +1,9 @@
 <template>
-  <v-navigation-drawer
-    app
-    permanent
-    class="global-side-nav-bar"
-    width="320"
-  >
+  <v-navigation-drawer app permanent class="global-side-nav-bar" width="320">
     <div class="_stepper-progress-bar">
-      <strong class="text-primary pl-1">{{ percentComplete }}%</strong>&nbsp; 
+      <strong class="text-primary pl-1">{{ percentComplete }}%</strong>&nbsp;
       <span class="text-base">COMPLETE</span>
-      <v-progress-linear 
+      <v-progress-linear
         :value="percentComplete"
         height="12"
         rounded
@@ -17,15 +12,15 @@
     </div>
 
     <v-list>
-      <v-list-item 
+      <v-list-item
         v-for="(step, stepIndex) in stepperData"
         :key="stepIndex"
-        :class="{ 'active-step': step.stepNumber === activeStep}"
+        :class="{ 'active-step': step.stepNumber === activeStep }"
       >
-        <router-link 
+        <router-link
           :id="'Step_' + getIdText(step.menuText)"
-          :to="{ name: `${step.name}`}"
-          :class="{'step-complete': step.completed}"
+          :to="{ name: getRouteName(step) }"
+          :class="{ 'step-complete': step.completed }"
           class="step"
           @click.native="setCurrentStep(step.stepNumber)"
         >
@@ -43,19 +38,21 @@
 
         <v-expand-transition v-if="hasSubSteps(step)">
           <span v-show="activeStep === step.stepNumber">
-            <router-link 
+            <router-link
               v-for="(subStep, subStepIndex) in step.subSteps"
               :key="'step' + step.stepNumber + '_substep' + subStepIndex"
               :id="'SubStep_' + getIdText(subStep.menuText)"
               :to="subStep.route"
-              :class="{'step-complete': subStep.completed}"
+              :class="{ 'step-complete': subStep.completed }"
               class="substep"
             >
               <span class="substep-circle">
-                <span 
-                  v-if="subStep.completed" 
+                <span
+                  v-if="subStep.completed"
                   class="completed-check"
-                  :data-substep-complete-percentage="subStep.completePercentageWeight"
+                  :data-substep-complete-percentage="
+                    subStep.completePercentageWeight
+                  "
                 >
                   <span class="d-sr-only">Completed</span>
                   <v-icon>check_circle</v-icon>
@@ -67,7 +64,6 @@
             </router-link>
           </span>
         </v-expand-transition>
-
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -77,21 +73,37 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { StepperStep } from "../../types/Global";
-import {buildStepperData} from "../router/stepper";
+import { buildStepperData } from "../router/stepper";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
-  
   public setCurrentStep(stepNumber: string): void {
     this.activeStep = stepNumber;
   }
 
   private hasSubSteps(step: StepperStep) {
-    return (Object.prototype.hasOwnProperty.call(step, "subSteps") && step.subSteps?.length)
+    return (
+      Object.prototype.hasOwnProperty.call(step, "subSteps") &&
+      step.subSteps?.length
+    );
   }
 
   private getIdText(string: string) {
-    return string.replace(/[^A-Z0-9]/ig, "");
+    return string.replace(/[^A-Z0-9]/gi, "");
+  }
+
+  private getRouteName(step: StepperStep) {
+    if (step.name !== "") return step.name;
+
+    if (!this.hasSubSteps(step)) {
+      throw new Error(
+        `step: ${JSON.stringify(step)} doesn't have a name defined`
+      );
+    }
+
+    //a stepper route with children should not have a named defined 
+    // so we will use the child step name for routing
+    return step.subSteps ? step.subSteps[0].name : "";
   }
   private calculatePercentComplete() {
     this.stepperData.forEach((step) => {
@@ -116,6 +128,5 @@ export default class ATATSideStepper extends Vue {
   private activeStep = "01";
   private stepperData: StepperStep[] = buildStepperData();
   private percentComplete = 0;
- 
 }
 </script>

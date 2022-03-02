@@ -6,6 +6,9 @@
         :for="id + '_dropdown'"
       >
         {{ label }}
+        <span v-if="optional" class="optional">
+          Optional
+        </span>
       </label>
     </v-flex>
     <v-flex>
@@ -25,16 +28,17 @@
         class="mt-2"
       >
         <template v-slot:selection="{ item }">
-          {{ item }}
+          {{ item.text }}
         </template>
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">
             <v-list-item-content
-              :id="id + '_dropdown_list_item_' + item.replace(/ /g, '_')"
+              :id="id + '_DropdownListItem_' + item.text.replace(/[^A-Z0-9]/ig, '')"
+              :item-value = item.value
             >
               <v-list-item-title class="body">
                 <v-row no-gutters align="center">
-                  <span>{{ item }}</span>
+                  <span>{{ item.text }}</span>
                 </v-row>
               </v-list-item-title>
             </v-list-item-content>
@@ -50,6 +54,7 @@
 
 <script lang="ts">
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { SelectData } from "../../types/Global";
 import Vue from "vue";
 
 @Component({})
@@ -57,23 +62,15 @@ export default class ATATSelect extends Vue {
   @PropSync("selectedValue") private _selectedValue!: string;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
-  @Prop({
-    default: () => [
-      'Programming',
-      'Design',
-      'Vue',
-      'Vuetify',
-    ],
-  })
-  private items!: string[];
+  @Prop({ default: ()=>[] }) private items?: SelectData[];
   @Prop() private rules: any;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
+  @Prop({ default: false }) private optional!: boolean;
 
   //data
   private rounded = false;
   private selected = "";
-
 
   private onChange(val: string): void {
     this.selected = val;

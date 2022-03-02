@@ -6,6 +6,9 @@
       class="mb-2 d-block"
     >
       {{ label }}
+      <span v-if="optional" class="optional">
+        Optional
+      </span>
     </label>
     <v-autocomplete
       :id="id"
@@ -26,7 +29,10 @@
     >
       <template v-slot:item="{item}">
         <v-list-item-content>
-          <v-list-item-title v-text="item[titleKey]"></v-list-item-title>
+          <v-list-item-title 
+            v-text="item[titleKey]"
+            :class="{'font-weight-normal': !subtitleKey}"
+          ></v-list-item-title>
           <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]"></v-list-item-subtitle>
         </v-list-item-content>
       </template>
@@ -68,8 +74,9 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: () => [], required: true }) private searchFields!: [];
   @Prop({ default: () => [], required: true }) private items!: [];
   @Prop({ default: "" }) private placeholder!: string;
-  @PropSync("selectedItem") private _selectedItem!: unknown;
+  @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
+  @PropSync("selectedItem") private _selectedItem!: unknown;
 
   // computed
   get inputClass(): string {

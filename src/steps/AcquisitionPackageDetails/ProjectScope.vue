@@ -1,19 +1,20 @@
 <template>
   <div class="mb-7">
-    <v-container>
+    <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <h2>Tell us more about the scope of your project</h2>
+          <h1>Tell us more about the scope of your project</h1>
        
-          <ATATAlert type="info" :showIcon="false" class="content-max-width mt-10">
+          <ATATAlert type="info" :showIcon="false" class="copy-max-width mt-10">
             <template v-slot:content>
-              <h3>Surge Capabilities</h3>
-              <p class="mt-2 mb-0">
+              <h2>Surge Capabilities</h2>
+              <p class="mt-2">
                 The Government may require surge capabilities during the base or
                 any option period, and surge modifications will be within the
                 scope of the contract for the defined task areas in the
                 description of work.
-                <br/><br/>
+              </p>
+              <p class="mb-0">
                 Surge capabilities over the life of the task
                 order cannot exceed between 1-50% of the contractor’s total
                 proposed price for the base and all option periods, excluding any

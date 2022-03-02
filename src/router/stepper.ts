@@ -1,6 +1,7 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
 import AcquisitionPackageDetails from "../steps/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
+import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
 import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import StepTwo from "../steps/StepTwo.vue";
 
@@ -16,51 +17,52 @@ import StepTwo from "../steps/StepTwo.vue";
  */
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
-    path: "/",
     stepNumber: "01",
-    completePercentageWeight: 15,
     menuText: "Acquisition Package Details",
+    path: "/", // should be same as first substep route
+    completePercentageWeight: 15,
     component: AcquisitionPackageDetails,
     completed: true,
     children: [
       {
         menuText: "Project Overview",
-        name: "Project_Overview",
         path: "/", // should be same as parent route
-        completePercentageWeight: 5,
+        name: "Project_Overview",
+        completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
       },
       {
-        name: "Project_Scope",
         menuText: "Project Scope",
+        path: "project-scope",
+        name: "Project_Scope",
+        completePercentageWeight: 1,
         excludeFromMenu: true,
         component: ProjectScope,
         completed: true,
-        path: "project-scope",
       },
       {
         menuText: "Organization",
+        path: "organization-info",
         name: "Organization",
-        path: "stepone-2",
         completed: true,
         completePercentageWeight: 5,
       },
       {
         menuText: "Contact Information",
+        path: "contact-info",
         name: "Contact_Information",
-        path: "stepone-3",
-        completed: true,
         completePercentageWeight: 5,
+        completed: true,
+        component: ContactInfo,
       },
     ],
   },
   {
-    path: "/steptwo",
     stepNumber: "02",
-
-    completePercentageWeight: 10,
     menuText: "Existing Contract / Background",
+    path: "/steptwo",
+    completePercentageWeight: 10,
     name: "Existing_Contract_Background",
     component: StepTwo,
     children: [

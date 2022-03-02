@@ -5,7 +5,7 @@
       <label
           :id="id + '_text_field_label'"
           class="form-field-label font-weight-medium width-100"
-          :for="id + '_text_field'"
+          :for="id + '_text_area'"
       >
         {{ label }}
       </label>
@@ -29,11 +29,11 @@
           </v-icon>
           </v-btn>
         </template>
-        <span>{{ tootipText }}</span>
+        <span>{{ tooltipText }}</span>
       </v-tooltip>
        </div>
     </v-flex>
-    <v-flex class="width-100 mb-2 helper-text">{{ helpText }}</v-flex>
+    <v-flex class="width-100 mb-2 help-text">{{ helpText }}</v-flex>
     <v-flex class="d-flex width-100">
         <v-textarea
             :id="id + '_text_area'"

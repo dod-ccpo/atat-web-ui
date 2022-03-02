@@ -11,6 +11,10 @@ export interface StepperStep {
     subSteps?: StepperStep[];   
 }
 
+export interface SelectData {
+    text: string;
+    value?: string;
+}
 
 /**
  * Defines Stepper Route Base properties

@@ -1,8 +1,22 @@
 .input-max-width {
-  max-width: 416px !important;
-  &.with-buttons-1 {
-      max-width: 446px !important;
-  }
+    max-width: 416px !important;
+    &.with-buttons-1 {
+        max-width: 446px !important;
+    }
+}
+
+.optional {
+    font-size: 1.4rem;
+    color: $base;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.form-section {
+    margin-bottom: 16px !important;
+    &:not(:first-of-type) {
+        margin-top: 0 !important;
+    }
 }
 
 
@@ -15,6 +29,7 @@
 hr{
   &.base-lighter{
     border: $base-lighter 1px solid !important;
+    border-bottom: none !important;
     flex: none;
     order: 0;
     align-self: stretch;
