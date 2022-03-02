@@ -8,7 +8,7 @@
         v-for="item in items"
         :id="'Radio_' + getIdText(item.id)"
         :class="[card ? '_radio-button-card' : '_radio-button']"
-        :key="item.value"
+        :key="item.id"
         :label="item.label"
         :value="item.value"
         :name="name"

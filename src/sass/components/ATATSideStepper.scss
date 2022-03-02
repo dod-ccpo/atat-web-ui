@@ -3,13 +3,12 @@
     &.global-side-nav-bar {
       border-right: 1px solid $base-lighter;
       background-color: $white;
-      padding: 24px !important;
       .v-navigation-drawer__border {
         display: none;
       }
       .v-list {
-        padding: 0;
-        .v-list-item {
+        padding: 100px 24px 24px;
+        .v-list-item { 
           align-items: flex-start;
           flex-direction: column;
           min-height: unset;
@@ -223,5 +222,22 @@
     font-size: 12px;
     color: $success;
     z-index: 2;
+  }
+}
+
+._stepper-progress-bar {
+  position: absolute;
+  width: 100%;
+  background-color: $white;
+  z-index: 3;
+  font-size: 1.4rem;
+  border-bottom: 1px solid $base-lighter;
+  padding: 20px 24px;
+  .v-progress-linear--rounded {
+    border-radius: 6px;
+  }
+  .v-progress-linear__background {
+    opacity: 1 !important;
+    background-color: $primary-lighter !important;
   }
 }
