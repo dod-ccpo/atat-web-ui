@@ -23,7 +23,7 @@
 
   label {
     color: $base-darkest !important;
-    padding-top: 1px;
+
     &.error--text {
       color: $error-dark !important;
     }
@@ -67,7 +67,7 @@
   background-color: $base-lightest !important;
   border: solid 1px $base-lighter;
   border-radius: 4px !important;
-  padding: 12px 0px 0px 12px;
+  padding: 12px;
 
   &.v-input--is-label-active {
     background-color: $primary-lighter !important;
@@ -99,7 +99,9 @@
       color: $error-dark !important;
     }
   }
-
+  .v-messages {
+    min-height: 0;
+  }
   .v-input__slot {
     margin-bottom: 0px;
     align-items:start;

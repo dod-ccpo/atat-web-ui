@@ -103,7 +103,6 @@
   }
 
   &:hover:not(.v-item--active)  {
-    //box-shadow:0px 0px 0px 1px $primary !important;
     border: solid 1px $primary;
     color: $primary;
   }
@@ -130,11 +129,7 @@
   }
 
 }
-//&:hover {
-//  border: $primary-lighter solid 1px;
-//  box-shadow: 0px 0px 0px 2px $primary !important;
-//  color: $primary;
-//}
+
 
 .v-input--radio-group--column{
    margin-top: 0px !important;
