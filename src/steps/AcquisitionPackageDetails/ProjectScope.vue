@@ -33,7 +33,11 @@
            <p class="mt-14 mb-2">
             If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded?
           </p>
-          <ATATTextField label="" class="input-max-width" />
+          <ATATTextField 
+            label="" 
+            placeHolder="1-50" 
+            class="width-20" 
+            :rules="contractPricePercentageRules"/>
         </v-col>
       </v-row>
     </v-container>
@@ -53,6 +57,15 @@ import { Component } from "vue-property-decorator";
     ATATTextField
   },
 })
-export default class ProjectScope extends Vue {}
+export default class ProjectScope extends Vue {
+
+  get contractPricePercentageRules(): unknown[] {
+    const validationRules = [];
+    validationRules.push(
+      (v:number) => v > 0 && v < 50  ||  "Enter a number between 1-50"
+    );
+    return validationRules; 
+  }
+}
 </script>
 

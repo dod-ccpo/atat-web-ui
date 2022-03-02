@@ -45,7 +45,14 @@
             @input="inputActions"
             class="text-primary"
             suffix="%"
+            :rules="rules"
           >
+           <template v-slot:message="{ message }">
+            <div class="d-flex justify-start text-base-error atat-error-text">
+              <v-icon class="text-base-error">error</v-icon>
+              <div class="ml-1">{{message}}</div>
+            </div>
+          </template>
           </v-text-field>
         </div>
       </div>
@@ -67,6 +74,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
+  @Prop({ default: []}) private rules!: Array<unknown>;
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data

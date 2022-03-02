@@ -6,4 +6,17 @@
         border-color: $primary;
     }
   }
+
+  .v-text-field__details{
+    padding: 0px !important;
+    max-width: inherit !important;
+    position: fixed;
+    margin-top: 45px !important;
+  }
+
+  .atat-error-text{
+      @extend %body;
+      color: $error;
+  }
+
 }
