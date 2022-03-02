@@ -1,5 +1,5 @@
 <template>
-  <nav class="stepper-nav">
+  <nav class="stepper-nav container-max-width">
     <hr class="base-lighter ml-3" />
     <div class="d-flex pt-8">
       <v-btn

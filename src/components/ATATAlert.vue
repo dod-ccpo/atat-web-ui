@@ -23,7 +23,7 @@
           {{ getIcon() }}
         </i>
       </div>
-      <div class="text-base-darkest content-max-width">
+      <div class="text-base-darkest">
         <slot name="content"></slot>
       </div>
       <div

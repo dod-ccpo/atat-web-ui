@@ -1,11 +1,11 @@
 <template>
   <div class="mb-7">
-    <v-container fluid class="wrapper-max-width">
+    <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
           <h1>Tell us more about the scope of your project</h1>
        
-          <ATATAlert type="info" :showIcon="false" class="content-max-width mt-10">
+          <ATATAlert type="info" :showIcon="false" class="copy-max-width mt-10">
             <template v-slot:content>
               <h2>Surge Capabilities</h2>
               <p class="mt-2">

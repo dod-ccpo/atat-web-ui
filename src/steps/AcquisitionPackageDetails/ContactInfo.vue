@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="wrapper-max-width">
+  <v-container fluid class="container-max-width">
     <v-row class="form-section">
       <v-col>
         <h1 class="mb-10">Let’s confirm your contact information</h1>

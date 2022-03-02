@@ -1,5 +1,5 @@
 <template>
-  <v-footer absolute class="atat-page-footer">
+  <v-footer absolute class="atat-page-footer container-max-width">
     <div class="links">
       <a href="#">Security Notice</a>
       <a href="#">Privacy</a>
