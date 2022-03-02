@@ -13,9 +13,11 @@ export class StepsStore extends VuexModule implements StepsState {
     currentStep: StepInfo | undefined = {
         stepName: '',
         stepNumber:'',
+        stepLabel: '',
         prev: undefined,
         next: undefined,
     };
+    
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
     @Mutation

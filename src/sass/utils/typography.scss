@@ -43,7 +43,6 @@ h5, .h5 {
 }                 
 
 p {
-
   margin-bottom: 2.4rem !important;
 }
 
@@ -52,14 +51,20 @@ p {
   line-height: 1.5rem !important;
 }                             
 
-.body-sm {
+.body-sm,
+.helper-text {
   font-size: 1.4rem !important;
   line-height: 2.1rem !important;
   letter-spacing: .025rem !important;
 }
 
+.helper-text{
+  color: $base;
+}
+
 label {
   color: $base-darkest !important;
+  @extend .body;
   .chart,
   .graph{
     font-size: 1.2rem !important;
@@ -69,8 +74,8 @@ label {
 
 .field-error {
   @extend label;
-  font-weight: 700 !important;
-  color: $primary !important;
+  color: $error !important;
+  font-weight: 500 !important;
 }
 
 .field-success {
