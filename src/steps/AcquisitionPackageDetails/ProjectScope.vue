@@ -1,6 +1,6 @@
 <template>
   <div class="mb-7">
-    <v-container>
+    <v-container fluid>
       <v-row>
         <v-col class="col-12">
           <h1>Tell us more about the scope of your project</h1>

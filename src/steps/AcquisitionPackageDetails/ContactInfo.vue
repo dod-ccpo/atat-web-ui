@@ -9,9 +9,7 @@
                     :items="contactRoles"
                     :value.sync="selectedRole"
                     class="mb-8"
-
                 />
-
                 <ATATSelect
                     v-show="selectedRole !== 'MIL'"
                     id="Salutation"
@@ -32,7 +30,6 @@
                     :items="rankData"
                     :selectedValue.sync="selectedRank"
                 />
-
             </v-col>
         </v-row>
         <v-row class="form-section">
@@ -77,7 +74,6 @@
                     id="ContactPhone"
                     class="input-max-width mb-10"
                 />
-
                 <ATATAutoComplete
                     v-show="selectedRole === 'CIV'"
                     id="ContactGrade"
@@ -92,18 +88,10 @@
                     placeholder=""
                     icon="arrow_drop_down"
                 />
-
-
             </v-col>
         </v-row>
     </v-container>
 </template>
-
-<style scoped>
-fieldset {
-    border: none;
-}
-</style>
 
 <script lang="ts">
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -126,8 +114,6 @@ import { RadioButton, SelectData } from "../../../types/Global";
 })
 
 export default class ContactInfo extends Vue {
-    // EJY  update this after Devonte's new code 
-    // for radios merged in
     private selectedRole = "";
     private contactRoles: RadioButton[] = [
         {
@@ -220,10 +206,6 @@ export default class ContactInfo extends Vue {
             text: "Staff Sergeant (SSG)",
             value: "SSG",
         },
-
     ];
-
 }
-
-
 </script>
