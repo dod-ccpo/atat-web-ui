@@ -17,7 +17,7 @@
     "@vue/vue2-jest": "^27.0.0-alpha.4",
     "axios": "^0.26.0",
     "clear": "^0.1.0",
-    "core-js": "^3.21.0",
+    "core-js": "^3.21.1",
     "d": "^1.0.1",
     "directory-tree": "^3.1.0",
     "eslint-config-prettier": "^8.3.0",
