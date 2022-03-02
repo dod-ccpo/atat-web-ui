@@ -1,20 +1,20 @@
 <template>
   <div>
-    <v-container>
+    <v-container fluid>
       <v-row>
-        <v-col class="col-12">
-          <h2>Let’s start with basic info about your new acquisition</h2>
+        <v-col>
+          <h1>Let’s start with basic info about your new acquisition</h1>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-            <p>
-                In this section, we will gather some overarching details about your
-                project requirements, organization, and points of contact. This
-                information will be used to complete your required acquisition forms
-                and will also help us to guide you through the JWCC procurement
-                process.
-            </p>
+          <p>
+            In this section, we will gather some overarching details about your
+            project requirements, organization, and points of contact. This
+            information will be used to complete your required acquisition forms
+            and will also help us to guide you through the JWCC procurement
+            process.
+          </p>
           <div class="mt-10">
             <ATATTextField
               label="Project/Requirements Title"
@@ -23,6 +23,7 @@
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 content-max-width">
+            <!-- EJY need to 508 this better -->
             <span class="font-weight-bold"> What is the scope of your requirement? </span>
             <span class="body-sm"
               >Briefly describe the type of resources and services to be
@@ -37,12 +38,13 @@
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 content-max-width">
+            <!-- EJY change to send fieldset legend after Devonte's branch merged -->
             <span> Is this requirement in support of an emergency declaration?</span>
            <ATATRadioGroup
               id="emergency-declaration-support-requirement"
               :value.sync="radioValue"
               :items="radioGroupItems"
-              name="another-radio-group"
+              name="IsEmergencyDeclarationRequirement"
               class="mt-3"
           >
           </ATATRadioGroup>
