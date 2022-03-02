@@ -27,9 +27,11 @@
     margin-top: 50px !important;
   }
 
-  .atat-error-text{
-      @extend %body;
-      color: $error;
+  .atat-text-field-error{
+    i{
+        margin-top: 1px;   
+    }
   }
+
 
 }

@@ -4,11 +4,8 @@
       <v-row>
         <v-col class="col-12">
           <h2>Tell us more about the scope of your project</h2>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <ATATAlert type="info" :showIcon="false" class="content-max-width">
+       
+          <ATATAlert type="info" :showIcon="false" class="content-max-width mt-10">
             <template v-slot:content>
               <h3>Surge Capabilities</h3>
               <p class="mt-2 mb-0">
@@ -59,8 +56,12 @@ export default class ProjectScope extends Vue {
   get contractPricePercentageRules(): unknown[] {
     const validationRules = [];
     validationRules.push(
-      (v:number) => v > 0 && v < 50  ||  "Enter a number between 1-50"
+      (v:number) => v > 0 && v <= 50  ||  "Enter a number between 1-50"
     );
+    validationRules.push(
+      (v:string) => /[0-9]/.test(v)  ||  "Enter a number between 1-50"
+    );
+    
     return validationRules; 
   }
 }

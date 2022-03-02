@@ -48,9 +48,9 @@
             :rules="rules"
           >
            <template v-slot:message="{ message }">
-            <div class="d-flex justify-start text-base-error field-error">
+            <div class="d-flex justify-start align-center atat-text-field-error">
               <v-icon class="text-base-error icon-20">error</v-icon>
-              <div class="ml-2">{{message}}</div>
+              <div class="field-error ml-2">{{message}}</div>
             </div>
           </template>
           </v-text-field>
