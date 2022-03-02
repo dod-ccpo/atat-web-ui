@@ -8,7 +8,7 @@
           id="ContactRole"
           :items="contactRoles"
           :value.sync="selectedRole"
-          class="mb-8"
+          class="mb-6"
         />
         <ATATSelect
           v-show="selectedRole !== 'MIL'"
