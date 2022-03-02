@@ -6,6 +6,9 @@
       class="mb-2 d-block"
     >
       {{ label }}
+      <span v-if="optional" class="optional">
+        Optional
+      </span>
     </label>
     <v-autocomplete
       :id="id"
@@ -68,8 +71,9 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: () => [], required: true }) private searchFields!: [];
   @Prop({ default: () => [], required: true }) private items!: [];
   @Prop({ default: "" }) private placeholder!: string;
-  @PropSync("selectedItem") private _selectedItem!: unknown;
+  @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
+  @PropSync("selectedItem") private _selectedItem!: unknown;
 
   // computed
   get inputClass(): string {

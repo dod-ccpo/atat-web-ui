@@ -3,19 +3,17 @@
         <v-row class="form-section">
             <v-col>
                 <h1 class="mb-10">Let’s confirm your contact information</h1>
-                <fieldset class="mb-10">
-                    <legend>
-                        What role best describes your affiliation with the DoD? 
-                    </legend>
-                    <ATATRadioGroup
-                        id="ContactRole"
-                        :items="contactRoles"
-                        :value.sync="selectedRole"
+                <ATATRadioGroup
+                    legend="What role best describes your affiliation with the DoD?"
+                    id="ContactRole"
+                    :items="contactRoles"
+                    :value.sync="selectedRole"
+                    class="mb-8"
 
-                    />
-                </fieldset>
+                />
 
                 <ATATSelect
+                    v-show="selectedRole !== 'MIL'"
                     id="Salutation"
                     class="input-max-width"
                     label="Salutation"
@@ -24,6 +22,17 @@
                     :items="salutationData"
                     :selectedValue.sync="selectedSalutation"
                 />
+                <ATATSelect
+                    v-show="selectedRole === 'MIL'"
+                    id="Rank"
+                    class="input-max-width"
+                    label="Rank"
+                    :optional="true"
+                    placeholder=""
+                    :items="rankData"
+                    :selectedValue.sync="selectedRank"
+                />
+
             </v-col>
         </v-row>
         <v-row class="form-section">
@@ -70,9 +79,11 @@
                 />
 
                 <ATATAutoComplete
+                    v-show="selectedRole === 'CIV'"
                     id="ContactGrade"
+                    optional="true"
                     class="input-max-width"
-                    label="Custom AutoComplete"
+                    label="Grade"
                     :label-sr-only="false"
                     titleKey="grade"
                     :searchFields="['grade']"
@@ -103,7 +114,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import Vue from "vue";
 
 import {Component} from "vue-property-decorator";
-import { SelectData } from "../../../types/Global";
+import { RadioButton, SelectData } from "../../../types/Global";
 
 @Component({
   components: {
@@ -115,6 +126,27 @@ import { SelectData } from "../../../types/Global";
 })
 
 export default class ContactInfo extends Vue {
+    // EJY  update this after Devonte's new code 
+    // for radios merged in
+    private selectedRole = "";
+    private contactRoles: RadioButton[] = [
+        {
+            id: "Military",
+            label: "Military",
+            value: "MIL",
+        },
+        {
+            id: "Civilian",
+            label: "Civilian",
+            value: "CIV",
+        },
+        {
+            id: "Contractor",
+            label: "Contractor",
+            value: "CTR",
+        },
+    ];
+
     private selectedGrade = "";
     private gradeData = [
         { grade: "GS-01" },
@@ -133,7 +165,7 @@ export default class ContactInfo extends Vue {
         { grade: "GS-14" },
         { grade: "GS-15" },
         { grade: "SES" },
-    ]
+    ];
 
     private selectedSalutation = "";
     private salutationData: SelectData[] = [
@@ -158,13 +190,39 @@ export default class ContactInfo extends Vue {
             value: "Dr.V",
         },
     ];
+    private selectedRank = "";
+    private rankData: SelectData[] = [
+        {
+            text: "Private E-1 (PVT)",
+            value: "PVT",
+        },
+        {
+            text: "Private E-2 (PV2)",
+            value: "PV2",
+        },
+        {
+            text: "Private First Class (PFC)",
+            value: "PFC",
+        },
+        {
+            text: "Corporal (CPL)",
+            value: "CPL",
+        },
+        {
+            text: "Specialist (SPC)",
+            value: "SPC",
+        },
+        {
+            text: "Sergeant (SGT)",
+            value: "SGT",
+        },
+        {
+            text: "Staff Sergeant (SSG)",
+            value: "SSG",
+        },
 
-    // EJY  update this after Devonte's new code 
-    // for radios merged in
-    private selectedRole = "";
-    private contactRoles = [
-        "Military", "Civilian", "Contractor"
     ];
+
 }
 
 

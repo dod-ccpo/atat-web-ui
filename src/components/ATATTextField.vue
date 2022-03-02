@@ -78,6 +78,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: []}) private rules!: Array<unknown>;
   @Prop({ default: ""}) private suffix!: string;
+  @Prop({ default: "" }) private optional!: boolean;
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
