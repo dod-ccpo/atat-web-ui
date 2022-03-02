@@ -29,6 +29,7 @@
 hr{
   &.base-lighter{
     border: $base-lighter 1px solid !important;
+    border-bottom: none !important;
     flex: none;
     order: 0;
     align-self: stretch;
