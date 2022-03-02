@@ -67,7 +67,7 @@
         <ATATAutoComplete
           v-show="selectedRole === 'CIV'"
           id="ContactGrade"
-          optional="true"
+          :optional="true"
           class="input-max-width"
           label="Grade"
           :label-sr-only="false"
