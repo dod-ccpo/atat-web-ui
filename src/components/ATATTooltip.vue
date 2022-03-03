@@ -41,7 +41,7 @@ export default class ATATTooltip extends Vue {
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "id_is_missing" }) private id!: string;
-  @Prop({ default: "id_is_missing" }) private label!: string;
+  @Prop({ default: "Label is missing" }) private label!: string;
 }
 
 </script>
