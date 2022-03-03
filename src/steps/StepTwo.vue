@@ -48,11 +48,6 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-sm-12 col-md-8 col-lg-6">
-          <Users></Users>
-        </v-col>
-      </v-row>
-      <v-row>
         <v-col>
           <ATATRadioGroup
             id="DummyATATRadio"
@@ -113,7 +108,6 @@
 <script lang="ts">
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
-import Users from "../components/Users.vue";
 import ATATSelect from "../components/ATATSelect.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue"
@@ -123,7 +117,6 @@ import {Component} from "vue-property-decorator";
   components: {
     ATATAutoComplete,
     ATATTextField,
-    Users,
     ATATSelect,
     ATATRadioGroup,
     ATATCheckboxGroup
