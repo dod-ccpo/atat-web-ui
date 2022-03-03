@@ -11,28 +11,12 @@
           Optional
         </span>
       </label>
-      <v-tooltip
-        transition="slide-y-reverse-transition"
-        max-width="250px"
-        color="rgba(0,0,0,1)"
-        top
-        v-if="tooltipText"
-      >
-        <template v-slot:activator="{ on }">
-          <v-btn
-            class="mb-2 ml-1 pa-0 link-button no-border"
-            icon
-            x-small
-            v-on="on"
-            :ripple="false"
-            :aria-label="'Help for ' + label"
-            ><v-icon class="icon-16 ma-0 pa-0" small color="#544496"
-              >help_outline
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>{{ tooltipText }}</span>
-      </v-tooltip>
+      <ATATTooltip 
+        :tooltipText="tooltipText"
+        :tooltipTitle="tooltipTitle"
+        :id="id"
+        :label="label"
+      />
     </v-flex>
     <v-flex :style="{ 'width': width }">
       <v-text-field
@@ -65,8 +49,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import ATATTooltip from "@/components/ATATTooltip.vue"
 
-@Component({})
+@Component({
+  components: {
+    ATATTooltip,
+  }
+})
 export default class ATATTextField extends Vue {
   // props
   @Prop({ default: true }) private dense!: boolean;
@@ -74,6 +63,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: "" }) private helpText!: string;
+  @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
