@@ -2,7 +2,7 @@
   <v-container fluid class="container-max-width">
     <v-row>
       <v-col>
-        <h1 class="page-header">
+        <h1 class="page-header mb-13">
           Next, we’ll gather information about your organization
         </h1>
 
@@ -71,7 +71,7 @@
                 :value.sync="selectedAddressType"
                 :items="addressTypeOptions"
                 name="AddressType"
-                class="mt-3 mb-6"
+                class="mt-3 mb-8"
             />
 
             <v-row>
@@ -79,7 +79,7 @@
                 <ATATTextField
                   id="StreetAddress"
                   label="Street address"
-                  :class="{ 'input-max-width': stackInputs }"
+                  :class="[{'input-max-width': stackInputs}, 'my-2']"
                 />
               </v-col>
               <v-col class="col-12 col-lg-3">
@@ -87,7 +87,7 @@
                   id="UnitSuite"
                   label="Unit, suite, etc."
                   :optional="true"
-                  :class="{ 'input-max-width': stackInputs }"
+                  :class="[{'input-max-width': stackInputs}, 'my-2']"
                 />
               </v-col>
             </v-row>
@@ -96,14 +96,14 @@
                 <ATATTextField
                   id="City"
                   label="City"
-                  :class="{ 'input-max-width': stackInputs }"
+                  :class="[{'input-max-width': stackInputs}, 'my-2']"
                 />
               </v-col>
               <v-col class="col-12 col-lg-3">
                 <ATATAutoComplete
                   id="State"
                   label="State"
-                  :class="{ 'input-max-width': stackInputs }"
+                  :class="[{'input-max-width': stackInputs}, 'my-2']"
                   :label-sr-only="false"
                   titleKey="text"
                   :searchFields="['text', 'value']"
@@ -117,7 +117,7 @@
                 <ATATTextField
                   id="ZIP"
                   label="ZIP code"
-                  :class="{ 'input-max-width': stackInputs }"
+                  :class="[{'input-max-width': stackInputs}, 'my-2']"
                 />
               </v-col>
             </v-row>

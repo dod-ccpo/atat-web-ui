@@ -3,7 +3,7 @@
     class="ATATRadioGroup"
     v-model="_selectedValue">
     <fieldset>
-      <legend v-if="legend" class="form-field-label mb-3">{{ legend }}</legend>
+      <legend v-if="legend" class="form-field-label mb-3 pb-0">{{ legend }}</legend>
       <v-radio
         v-for="item in items"
         :id="'Radio_' + getIdText(item.id)"
@@ -11,6 +11,7 @@
         :key="item.id"
         :label="item.label"
         :value="item.value"
+        
         :name="name"
         :disabled="item.disabled"
       >
