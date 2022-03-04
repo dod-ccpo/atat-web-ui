@@ -1,6 +1,6 @@
 <template>
   <nav class="stepper-nav container-max-width">
-    <hr class="base-lighter ml-3" />
+    <hr class="base-lighter ml-3 mt-15 mb-8" />
     <div class="d-flex">
       <v-btn
         @click="$emit('previous')"
