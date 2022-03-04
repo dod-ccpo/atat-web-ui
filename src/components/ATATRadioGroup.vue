@@ -12,6 +12,7 @@
         :label="item.label"
         :value="item.value"
         :name="name"
+        :disabled="item.disabled"
       >
         <template v-if="item.description && card" v-slot:label>
           <div class="d-flex flex-column">
