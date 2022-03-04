@@ -70,7 +70,19 @@
       z-index: 1;
     }
   }
+  &.v-radio--is-disabled {
+    .v-input--selection-controls__input {
+      &:after {
+        background-color: $base-lightest;
+      }
+    }
+    .v-label {
+      color: $disabled !important;
+    }
+  }
 }
+
+
 
 ._radio-button-card {
   @extend ._radio-button;

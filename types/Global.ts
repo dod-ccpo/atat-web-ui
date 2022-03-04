@@ -59,6 +59,7 @@ export interface RadioButton {
  label: string;
  value: string;
  description?: string;
+ disabled?: boolean;
 }
 export interface Checkbox {
   id: string;

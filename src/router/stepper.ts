@@ -2,6 +2,7 @@ import { StepperRouteConfig, StepperStep } from "../../types/Global";
 import AcquisitionPackageDetails from "../steps/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
+import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
 import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import StepTwo from "../steps/StepTwo.vue";
 
@@ -47,6 +48,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: "Organization",
         completed: true,
         completePercentageWeight: 5,
+        component: OrganizationInfo,
       },
       {
         menuText: "Contact Information",

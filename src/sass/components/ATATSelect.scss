@@ -23,8 +23,16 @@
   &.v-text-field--outlined fieldset {
     border-color: $base !important;
   }
+  &.v-text-field--outlined.v-input--is-focused fieldset {
+    border-color: $primary !important;
+  }
   .v-icon {
     color: $base-darkest;
+  }
+  &.v-input--is-focused {
+    .v-icon {
+      color: $primary !important;
+    } 
   }
 }
 

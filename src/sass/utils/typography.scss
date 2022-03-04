@@ -27,6 +27,13 @@ h1, .h1 {
 h2, .h2 {
   font-size: 2.4rem !important;
   line-height: 1.3em !important;
+  &.form-section-heading {
+    font-size: 2.0rem !important;
+    font-weight: 400 !important;
+    line-height: 3.2rem !important;
+    margin-bottom: 20px !important; 
+    font-family: $base-font !important;
+  }
 }
 
 h3, .h3 {
@@ -93,20 +100,23 @@ label {
   line-height: 2.5rem !important;
 }
 
-.hr {
-  border-color: var(--v-hr_color-base) !important;
-  -ieVar-❗border-color: var(--v-hr_color-base) !important;
+hr, .hr {
+  border-color: $base-lighter !important;
+  -ieVar-❗border-color: $base-lighter !important;
   border-width: 1px !important;
   border-style: solid !important;
+  border-bottom: none !important;
+  margin: 40px 0;
 }
 
 .color-base {
   color: $base !important;
 }
 
-a {
+.v-application a {
   &.text-link, &.expandable-content-opener, &.primary-text {
     text-decoration: underline;
+    color: $primary !important;
 
     &:hover {
       color: $primary-dark !important;
@@ -230,4 +240,8 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
 
 .font-weight-normal {
   font-weight: 400 !important;
+}
+
+.page-header {
+  margin-bottom: 40px;
 }
