@@ -38,30 +38,34 @@
 
         <v-expand-transition v-if="hasSubSteps(step)">
           <span v-show="activeStep === step.stepNumber">
-            <router-link
+            <span 
               v-for="(subStep, subStepIndex) in step.subSteps"
               :key="'step' + step.stepNumber + '_substep' + subStepIndex"
-              :id="'SubStep_' + getIdText(subStep.menuText)"
-              :to="subStep.route"
-              :class="{ 'step-complete': subStep.completed }"
-              class="substep"
             >
-              <span class="substep-circle">
-                <span
-                  v-if="subStep.completed"
-                  class="completed-check"
-                  :data-substep-complete-percentage="
-                    subStep.completePercentageWeight
-                  "
-                >
-                  <span class="d-sr-only">Completed</span>
-                  <v-icon>check_circle</v-icon>
+              <router-link
+                v-show="!subStep.excludeFromMenu"
+                :id="'SubStep_' + getIdText(subStep.menuText)"
+                :to="subStep.route"
+                :class="{ 'step-complete': subStep.completed }"
+                class="substep"
+              >
+                <span class="substep-circle">
+                  <span
+                    v-if="subStep.completed"
+                    class="completed-check"
+                    :data-substep-complete-percentage="
+                      subStep.completePercentageWeight
+                    "
+                  >
+                    <span class="d-sr-only">Completed</span>
+                    <v-icon>check_circle</v-icon>
+                  </span>
                 </span>
-              </span>
-              <span class="step-text">
-                {{ subStep.menuText }}
-              </span>
-            </router-link>
+                <span class="step-text">
+                  {{ subStep.menuText }}
+                </span>
+              </router-link>
+            </span>
           </span>
         </v-expand-transition>
       </v-list-item>
