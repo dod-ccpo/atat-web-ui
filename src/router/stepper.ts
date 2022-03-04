@@ -211,21 +211,27 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
 const mapStepRouteToStepperData = (
   stepperRouteConfig: StepperRouteConfig
 ): StepperStep => {
-  const { completePercentageWeight, completed, menuText, path, stepNumber } =
-    stepperRouteConfig;
+  const { 
+    completePercentageWeight, 
+    excludeFromMenu, 
+    completed, 
+    menuText, 
+    path, 
+    stepNumber 
+  } = stepperRouteConfig;
   let { name } = stepperRouteConfig;
   name = name || "";
 
   const stepperStep: StepperStep = {
     stepNumber,
     menuText,
+    excludeFromMenu,
     name,
     completed,
     completePercentageWeight,
     route: path,
     subSteps: stepperRouteConfig.children
-      ?.filter((child) => child.excludeFromMenu != true)
-      .map((child) => mapStepRouteToStepperData(child)),
+      ?.map((child) => mapStepRouteToStepperData(child)),
   };
 
   return stepperStep;

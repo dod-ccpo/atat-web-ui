@@ -5,6 +5,7 @@ export interface StepperStep {
     name: string;
     stepNumber?: string;
     completed?: boolean;
+    excludeFromMenu?: boolean;
     completePercentageWeight?: number;
     menuText?: string;
     route: string;
