@@ -21,13 +21,14 @@
           @click="cancelItem"
           id="dialog_cancel"
           name="cancelDialog"
-          >{{ cancelText }}
+        >{{ cancelText }}
         </v-btn>
         <v-btn
           color="primary"
           class="px-5"
           :ripple="false"
           id="dialog_ok"
+          :disabled='disabled'
           @click="onOK"
         >
           {{ okText }}
@@ -38,19 +39,20 @@
 </template>
 
 <script lang="ts">
-import { Component, PropSync, Prop, Watch } from "vue-property-decorator";
+import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
 export default class ATATDialog extends Vue {
   @Prop() private message!: string;
-  @Prop({ default: "Dialog-Title" }) private title!: string;
+  @Prop({default: "Dialog-Title"}) private title!: string;
   @Prop() private id!: string;
-  @Prop({ default: "500px" }) private width!: string;
-  @Prop({ default: "Cancel" }) private cancelText!: string;
-  @Prop({ default: "OK" }) private okText!: string;
+  @Prop({default: "500px"}) private width!: string;
+  @Prop({default: "Cancel"}) private cancelText!: string;
+  @Prop({default: "OK"}) private okText!: string;
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
+  @Prop() private disabled = false
 
   @PropSync("showDialog")
   private _showDialog!: boolean;
