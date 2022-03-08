@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import { SelectData } from "../../types/Global";
 import Vue from "vue";
 
@@ -62,7 +62,7 @@ export default class ATATSelect extends Vue {
   @PropSync("selectedValue") private _selectedValue!: string;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
-  @Prop({ default: ()=>[] }) private items?: SelectData[];
+  @Prop({ default: [] }) private items?: SelectData[];
   @Prop() private rules: any;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
@@ -72,6 +72,7 @@ export default class ATATSelect extends Vue {
   private rounded = false;
   private selected = "";
 
+  // @Emit("onChange")
   private onChange(val: string): void {
     this.selected = val;
   }
