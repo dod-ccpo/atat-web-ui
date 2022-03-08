@@ -11,7 +11,9 @@
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
-    "test:e2e":"node ./node_modules/cypress/bin/cypress run"
+    "test:e2e":"node ./node_modules/cypress/bin/cypress run",
+    "test-file:watch": "jest --watch --no-cache src/components/ATATSelect.spec.ts "
+    
   },
   "dependencies": {
     "@types/node": "^17.0.16",
@@ -58,6 +60,7 @@
     "sass-loader": "^10.0.0",
     "typescript": "~4.1.5",
     "vue-cli-plugin-vuetify": "~2.4.1",
+    "vue-jest": "^3.0.7",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0",
     "vuex-module-decorators": "^2.0.0",
@@ -67,10 +70,5 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ],
-  "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/node_modules"
-    ]
-  }
+  ]
 }

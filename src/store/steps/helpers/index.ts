@@ -1,5 +1,5 @@
 import { StepperRouteConfig } from "types/Global";
-import { StepInfo } from "../types";
+import { StepInfo, StepRouteResolver } from "../types";
 
 export const mapStepConfigs = (
   config: StepperRouteConfig[]
@@ -10,9 +10,10 @@ export const mapStepConfigs = (
     const stepInfo: StepInfo = {
       stepNumber: routeConfig.stepNumber || "",
       stepName: routeConfig.name || "",
-      stepLabel : routeConfig.menuText  || "",
+      stepLabel: routeConfig.menuText || "",
       prev: undefined,
       next: undefined,
+      resolver: routeConfig.routeResolver,
     };
 
     const lastStep = map?.get(last || "");
@@ -36,3 +37,24 @@ export const mapStepConfigs = (
 
   return map;
 };
+
+export const resolveNextRouteName = (current: string, stepInfo: StepInfo): string | undefined  => {
+
+  if(stepInfo.resolver){
+      return (stepInfo.resolver(current));
+  }
+
+  return stepInfo.stepName;
+}
+
+export const resolvePreviousRouteName = (current: string, stepInfo: StepInfo): string | undefined  => {
+ debugger;
+
+  if(!stepInfo.prev)
+      return stepInfo.prev;
+
+  const prev =  (typeof stepInfo.prev === 'string') ? 
+  stepInfo.prev : (stepInfo.prev as StepRouteResolver)(current);
+
+   return prev;
+}

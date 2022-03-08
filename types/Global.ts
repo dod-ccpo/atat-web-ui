@@ -1,6 +1,11 @@
 import { RouteConfigMultipleViews, 
     RouteConfigSingleView } from "vue-router/types/router";
 
+export interface StepperRouteHandlerParams {
+    previous: string;
+    next: string;
+}
+
 export interface StepperStep {
     name: string;
     stepNumber?: string;
@@ -9,7 +14,7 @@ export interface StepperStep {
     completePercentageWeight?: number;
     menuText?: string;
     route: string;
-    subSteps?: StepperStep[];   
+    subSteps?: StepperStep[]; 
 }
 
 export interface SelectData {
@@ -31,6 +36,10 @@ export interface SelectData {
      * rendered in menu but will still include it in the route record
      */
     excludeFromMenu?: boolean;
+    /**
+     * A handler to 
+     */
+    routeResolver?:(currentRoute: string)=> string  
  }
 
  /**
