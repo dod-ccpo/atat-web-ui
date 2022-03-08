@@ -8,6 +8,44 @@
     }
     .v-card__actions {
       border-top: 1px solid $base-lighter;
+      padding:16px 24px;
+      .v-btn {
+        &.link-button{
+          padding: 6px 12px !important;
+          &.tooltip-button {
+            padding: 12px !important;
+          }
+          background-color: transparent !important;
+          i{
+            margin-right: 4px;
+          }
+          span{
+            color: $primary !important;
+            text-decoration: none !important;
+            font-weight: normal;
+            opacity: 1 !important;
+          }
+          &:hover,
+          &:focus,
+          &:active {
+            background-color: $primary-lighter !important;
+
+          }
+          // &:active span {
+          //   color: $primary-darken !important;
+          // }
+          &.no-border{
+            span{
+              text-decoration: none !important;
+            }
+          }
+          &.font-weight-bold{
+            span{
+              font-weight: 700 !important;
+            }
+          }
+        }
+      }
     }
   }
 }

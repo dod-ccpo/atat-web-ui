@@ -11,7 +11,7 @@
       <v-card-title class="h2 text-break" id="modalDialogTitle" tabindex="-1">
         {{ getTitle }}
       </v-card-title>
-      <v-card-text class="body-lg black--text px-10 mb-7" id="modalDialogMessage">
+      <v-card-text class="body-lg black--text px-10" id="modalDialogMessage">
         <slot name="content"></slot>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -25,7 +25,6 @@
         </v-btn>
         <v-btn
           color="primary"
-          class="px-5"
           :ripple="false"
           id="dialog_ok"
           :disabled='disabled'

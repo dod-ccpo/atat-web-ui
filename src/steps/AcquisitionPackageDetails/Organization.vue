@@ -132,7 +132,7 @@
       persistent
       no-click-animation
       okText="Send Request"
-      width="600px"
+      width="632px"
     >
       <template #content>
         <p class="body">
@@ -142,7 +142,7 @@
         <ATATTextField
           id="Agency/Organization Name"
           label="Agency/Organization Name"
-          :class="[{'input-max-width': stackInputs}, 'my-2']"
+          :class="[{'input-max-width': stackInputs}, 'my-2 pb-16 mb-9']"
         />
       </template>
     </ATATDialog>
