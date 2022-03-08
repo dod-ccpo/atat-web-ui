@@ -3,12 +3,31 @@ import AcquisitionPackageDetails from "../steps/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
 import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
+import CorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
+import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
+import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
+import Summary from "../steps/Summary.vue";
 import StepTwo from "../steps/StepTwo.vue";
+
+// route resolves
+import { AcorsRouteResolver } from "./resolvers";
+
+export const routeNames = {
+  Project_Overview: "Project_Overview",
+  Project_Scope: "Project_Scope",
+  Organization_Info: "Organization_Info",
+  Contact_Information: "Contact_Information",
+  Cor_Information: "Cor_Information",
+  Alternate_Cor:"Alternate_Cor",
+  Acor_Information: "Acor_Information",
+  Existing_Contract_Background: "Existing_Contract_Background",
+  Summary: "Summary"
+};
 
 /**
  * Stepper Route config definition
- * The menu items defined in this route drive both the Side Stepper Menu 
+ * The menu items defined in this route drive both the Side Stepper Menu
  * and the Steps store both which invoke routing
  * Rules:
  * 1. Parent steps cannot have a name
@@ -28,7 +47,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Project Overview",
         path: "/", // should be same as parent route
-        name: "Project_Overview",
+        name: routeNames.Project_Overview,
         completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
@@ -36,7 +55,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Project Scope",
         path: "project-scope",
-        name: "Project_Scope",
+        name: routeNames.Project_Scope,
         completePercentageWeight: 1,
         excludeFromMenu: true,
         component: ProjectScope,
@@ -45,7 +64,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Organization",
         path: "organization-info",
-        name: "Organization",
+        name: routeNames.Organization_Info,
         completed: true,
         completePercentageWeight: 5,
         component: OrganizationInfo,
@@ -53,11 +72,43 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Contact Information",
         path: "contact-info",
-        name: "Contact_Information",
+        name: routeNames.Contact_Information,
         completePercentageWeight: 5,
         completed: true,
         component: ContactInfo,
       },
+      {
+        menuText: "Demo Package",
+        path: "cor-info",
+        name: routeNames.Cor_Information,
+        excludeFromMenu: true,
+        completePercentageWeight: 5,
+        component: CorInfo,
+      },
+      {
+        menuText: "Alternate COR",
+        path: "alt-cor",
+        name: routeNames.Alternate_Cor,
+        excludeFromMenu: true,
+        component: AlternateCOR,
+      },
+      {
+        menuText: "Acors",
+        path: "acor-info",
+        name: routeNames.Acor_Information,
+        excludeFromMenu: true,
+        completePercentageWeight: 5,
+        component: AcorInfo,
+        routeResolver: AcorsRouteResolver,
+      },
+      {
+        menuText: "Summary",
+        path: "summary",
+        name: routeNames.Summary,
+        excludeFromMenu: false,
+        completePercentageWeight: 5,
+        component: Summary,
+      }
     ],
   },
   {
@@ -213,13 +264,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
 const mapStepRouteToStepperData = (
   stepperRouteConfig: StepperRouteConfig
 ): StepperStep => {
-  const { 
-    completePercentageWeight, 
-    excludeFromMenu, 
-    completed, 
-    menuText, 
-    path, 
-    stepNumber 
+  const {
+    completePercentageWeight,
+    excludeFromMenu,
+    completed,
+    menuText,
+    path,
+    stepNumber,
   } = stepperRouteConfig;
   let { name } = stepperRouteConfig;
   name = name || "";
@@ -232,8 +283,9 @@ const mapStepRouteToStepperData = (
     completed,
     completePercentageWeight,
     route: path,
-    subSteps: stepperRouteConfig.children
-      ?.map((child) => mapStepRouteToStepperData(child)),
+    subSteps: stepperRouteConfig.children?.map((child) =>
+      mapStepRouteToStepperData(child)
+    ),
   };
 
   return stepperStep;

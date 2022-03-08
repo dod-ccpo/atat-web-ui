@@ -62,13 +62,12 @@ export default class App extends Vue {
   }
 
   async navigate(direction: string): Promise<void> {
-    const navStep =
-      direction === "next" ? Steps.currentStep?.next : Steps.currentStep?.prev;
+    const nextStepName =
+      direction === "next" ? await Steps.getNext(): 
+      await Steps.getPrevious();
 
-    const step = await Steps.findRoute(navStep || '');
-
-    if (step) {
-      this.$router.push({ name: navStep});
+    if (nextStepName) {
+      this.$router.push({ name: nextStepName});
     }
   }
 
