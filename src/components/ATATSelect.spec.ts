@@ -39,11 +39,11 @@ describe("Testing ATATTextField Component", () => {
   });
 
   describe("PROPS", () => { 
-    it("'optional' prop",()=>{
-      wrapper.vm.$data.optional = true;
+    it("optional", async()=>{
+      await wrapper.setProps({optional: true});
       expect(wrapper.find(".optional")).toBeDefined;
-
-      wrapper.vm.$data.optional = false;
+      
+      await wrapper.setProps({optional: false});
       expect(wrapper.find(".optional")).toBeUndefined;
     });
   });
@@ -57,19 +57,12 @@ describe("Testing ATATTextField Component", () => {
   });
  
   describe("EVENTS", () => {
-    // it("onChange", async () => {
-    //   wrapper.vm.$emit("onChange", "value_04");
-    //   expect(wrapper.emitted("onChange")?.length).toBe(1);
-      
-    //   await wrapper.vm.$nextTick();
-    //   // expect(wrapper.emitted("onChange")[0][0]).toEqual("value_04");
-    //   console.log(wrapper.emitted("onChange"))
-
-    //   await wrapper.vm.$nextTick();
-    //   // expect(wrapper.vm.$data.selected).toEqual("value_04");
-    // });
     it("onChange", async () => {
-      const changedValue = "value_04";
+      let changedValue = "value_04";
+      await wrapper.vm.onChange(changedValue);
+      expect(wrapper.vm.$data.selected).toEqual(changedValue);
+
+      changedValue = "";
       await wrapper.vm.onChange(changedValue);
       expect(wrapper.vm.$data.selected).toEqual(changedValue);
      });
