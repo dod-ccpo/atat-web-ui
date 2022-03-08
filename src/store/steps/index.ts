@@ -1,11 +1,9 @@
 import {  VuexModule, Module, Action, Mutation, getModule} from "vuex-module-decorators";
 import rootStore from "../index";
-import { Mutations, StepInfo, StepsState} from "./types";
+import { Mutations, RouteDirection, StepInfo, StepsState} from "./types";
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
-
-
 
 @Module({ name: 'Steps',  namespaced: true, dynamic: true, store: rootStore})
 export class StepsStore extends VuexModule implements StepsState {
@@ -16,6 +14,8 @@ export class StepsStore extends VuexModule implements StepsState {
         stepLabel: '',
         prev: undefined,
         next: undefined,
+        resolver: undefined
+        
     };
     
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
@@ -42,6 +42,38 @@ export class StepsStore extends VuexModule implements StepsState {
     @Action({rawError: true})
     public findRoute(name: string): StepInfo | undefined {
         return this.stepMap.get(name);
+    }
+
+    @Action({rawError: true})
+    public async resolveRoute(direction: RouteDirection): Promise<string | undefined>{
+         
+        const nextStepName = direction === RouteDirection.NEXT?  (this.currentStep?.next || '') : 
+        (this.currentStep?.prev || '');
+
+        const currentStepName = this.currentStep?.stepName;
+
+        if(currentStepName === undefined || nextStepName.length === 0)
+          return undefined;
+
+        const nextStep = await this.findRoute(nextStepName) || undefined;
+
+        const stepResolver = nextStep?.resolver;
+
+        if(stepResolver){
+            return stepResolver(currentStepName);
+        }
+        
+        return nextStep?.stepName;  
+    }
+
+    @Action({rawError: true})
+    public async getNext(): Promise<string | undefined> {
+      return this.resolveRoute(RouteDirection.NEXT);
+    }
+
+    @Action({rawError: true})
+    public async getPrevious(): Promise<string | undefined> {
+        return this.resolveRoute(RouteDirection.PREVIOUS)
     }
 }
 
