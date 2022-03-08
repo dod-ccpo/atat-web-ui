@@ -133,6 +133,7 @@
       no-click-animation
       okText="Send Request"
       width="632px"
+      disabled="true"
     >
       <template #content>
         <p class="body">
