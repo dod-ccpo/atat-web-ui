@@ -13,7 +13,8 @@ module.exports = {
     "plugin:vue/essential",
     "eslint:recommended",
     "@vue/typescript/recommended",
-    "prettier"
+    "prettier",
+    "plugin:cypress/recommended"
   ],
   parserOptions: {
     ecmaVersion: "es2020",
