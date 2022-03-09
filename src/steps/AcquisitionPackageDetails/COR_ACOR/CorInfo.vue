@@ -5,7 +5,10 @@
       contact
       information on any necessary forms and will send your COR an email when documents are ready to be signed. Search
       for your COR below or manually enter their contact information. For more guidance about CORs, visit
-      https://www.ditco.disa.mil/hq/cor/index.asp.</p>
+      <a href="https://www.ditco.disa.mil/hq/cor/index.asp" target="_blank">
+        https://www.ditco.disa.mil/hq/cor/index.asp
+        <span class="external-link">website</span>
+      </a>.</p>
     <common :isCOR=true :isACOR=false />
   </v-container>
 </template>
