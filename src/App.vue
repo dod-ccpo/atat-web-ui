@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <ATATSideStepper ref="sideStepper"/>
+    <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
     <ATATPageHead  :headline="getCurrentStepMenuText()"/>
     <v-main id="app">
       <router-view></router-view>
@@ -23,6 +23,7 @@ import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
 import { Component, Watch } from "vue-property-decorator";
+import { buildStepperData } from "./router/stepper";
 
 @Component({
   components: {
@@ -33,10 +34,11 @@ import { Component, Watch } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-
    $refs!: {
     sideStepper: ATATSideStepper;
   };
+
+   private stepperData = buildStepperData();
 
   async mounted(): Promise<void> {
     //get first step and intitialize store to first step;
