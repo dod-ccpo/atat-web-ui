@@ -45,7 +45,7 @@ describe("Test suite: Common SPA functionality", () => {
         //Completed Percentage(Steps completed)
         cy.completePercent()
             .then((returned_value) => {
-                //cy.log("Percentage completed = " + returned_value)
+               
                 cy.iframe('#atat-app')
                     .find("._stepper-progress-bar .text-primary").should("contain", returned_value + "%");
             })
