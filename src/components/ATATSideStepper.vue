@@ -75,12 +75,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { StepperStep } from "../../types/Global";
-import { buildStepperData } from "../router/stepper";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
+  @Prop({ default: ()=>[] })  private stepperData!: StepperStep[]
+
   public setCurrentStep(stepNumber: string): void {
     this.activeStep = stepNumber;
   }
@@ -107,9 +108,11 @@ export default class ATATSideStepper extends Vue {
 
     //a stepper route with children should not have a named defined 
     // so we will use the child step name for routing
-    return step.subSteps ? step.subSteps[0].name : "";
+    return step.subSteps ? step.subSteps.length > 0 && step.subSteps[0].name : "";
   }
   private calculatePercentComplete() {
+    this.percentComplete = 0;
+
     this.stepperData.forEach((step) => {
       if (step.completed && step.completePercentageWeight) {
         this.percentComplete += step.completePercentageWeight;
@@ -124,13 +127,14 @@ export default class ATATSideStepper extends Vue {
     this.percentComplete = Math.round(this.percentComplete);
   }
 
-  private mounted(): void {
+  public mounted(): void {
     this.calculatePercentComplete();
+     this.activeStep = this.stepperData && this.stepperData.length > 0 ? 
+     (this.stepperData[0].stepNumber || '') : '';
   }
 
   // data
-  private activeStep = "01";
-  private stepperData: StepperStep[] = buildStepperData();
+  private activeStep = "";
   private percentComplete = 0;
 }
 </script>
