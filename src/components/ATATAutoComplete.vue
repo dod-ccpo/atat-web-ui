@@ -12,7 +12,7 @@
     </label>
     <v-autocomplete
       :id="id"
-      v-model="model"
+      v-model="_selectedItem"
       :class="inputClass"
       :items="items"
       :search-input.sync="search"
@@ -61,7 +61,6 @@ import Vue from "vue";
 
 export default class ATATAutoComplete extends Vue {
   // data
-  private model = null;
   private search = null;
 
   // props

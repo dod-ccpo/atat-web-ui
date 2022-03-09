@@ -1,17 +1,27 @@
 <template>
-  <v-flex>
-    <h2>Do you have an Alternate Contracting Officer’s Representative (ACOR)?</h2>
-    <ATATRadioGroup
-      id="hasAlternateCOR"
-      legend=""
-      card="true"
-      :value.sync="hasAlternateCOR"
-      :items="alternateCoreOptions"
-      name="hasAlternateCOR"
-      class="mt-3 mb-8"
-      style="width: 30%"
-    />
-  </v-flex>
+  <v-container fluid class="container-max-width">
+    <v-row>
+      <v-col>
+
+        <h1 class="page-header">
+          Do you have an Alternate Contracting Officer’s Representative (ACOR)?
+        </h1>
+
+        <ATATRadioGroup
+          id="hasAlternateCOR"
+          legend=""
+          card="true"
+          :value.sync="hasAlternateCOR"
+          :items="alternateCoreOptions"
+          name="hasAlternateCOR"
+          class="mt-3 mb-8"
+          width="180px"
+        />
+
+      </v-col>
+    </v-row>
+
+  </v-container>
 </template>
 
 <script lang="ts">

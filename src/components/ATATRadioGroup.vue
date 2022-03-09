@@ -11,7 +11,7 @@
         :key="item.id"
         :label="item.label"
         :value="item.value"
-        
+        :style="{ 'width': width }"        
         :name="name"
         :disabled="item.disabled"
       >
@@ -39,6 +39,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({default: false}) private card!: boolean;
   @Prop({default: false}) private error!: boolean;
   @Prop({default: false}) private disabled!: boolean;
+  @Prop({default: ""}) private width!: string;
 
   @Prop() private name!: string;
 

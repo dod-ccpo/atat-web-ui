@@ -30,7 +30,7 @@
       <PersonCard 
         v-if="selectedContact" 
         :isACOR="isACOR"
-        :selectedContact="selectedContact"
+        :selectedContact.sync="selectedContact"
       />
  
     </div>

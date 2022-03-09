@@ -2,7 +2,7 @@
   <v-container fluid class="container-max-width">
     <v-row class="form-section">
       <v-col>
-        <h1 class="mb-10">Let’s confirm your contact information</h1>
+        <h1 class="page-header">Let’s confirm your contact information</h1>
         <ATATRadioGroup
           legend="What role best describes your affiliation with the DoD?"
           id="ContactRole"

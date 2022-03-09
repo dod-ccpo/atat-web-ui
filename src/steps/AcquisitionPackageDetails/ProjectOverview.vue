@@ -3,12 +3,8 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
-          <h1>Let’s start with basic info about your new acquisition</h1>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <p class="copy-max-width">
+          <h1 class="page-header">Let’s start with basic info about your new acquisition</h1>
+          <p class="copy-max-width page-intro">
             In this section, we will gather some overarching details about your
             project requirements, organization, and points of contact. This
             information will be used to complete your required acquisition forms

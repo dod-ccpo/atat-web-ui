@@ -2,7 +2,7 @@
   <v-container fluid class="container-max-width">
     <v-row>
       <v-col>
-        <h1 class="page-header mb-13">
+        <h1 class="page-header">
           Next, we’ll gather information about your organization
         </h1>
 

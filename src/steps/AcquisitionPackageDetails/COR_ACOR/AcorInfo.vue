@@ -1,5 +1,5 @@
 <template>
-  <common :isCOR=false :isACOR=true />
+  <common :isACOR="true" />
 </template>
 <script lang="ts">
 import Vue from "vue";
