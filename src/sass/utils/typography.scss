@@ -245,6 +245,13 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
 .page-header {
   margin-bottom: 40px;
 }
+.page-intro {
+  margin-top: -28px;
+  margin-bottom: 40px !important;
+  @extend .copy-max-width;
+}
+
+
 a {
   &.text-link, &.expandable-content-opener, &.primary-text {
     text-decoration: underline;

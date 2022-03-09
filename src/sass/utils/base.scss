@@ -31,12 +31,22 @@ body {
   margin-left: 0;
 }
 
-
-
 .copy-max-width {
   // used for longer paragraphs of text that wrap to more than 1 line
   max-width: 840px !important;
 }
+
 .max-width-640 {
   max-width: 640px !important;
+}
+
+.border1 {
+  border: 1px solid !important
+}
+
+.border-rounded {
+  border-radius: 4px !important;
+}
+.border-rounded-more {
+  border-radius: 8px !important
 }
