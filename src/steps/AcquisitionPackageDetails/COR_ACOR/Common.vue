@@ -15,7 +15,7 @@
           @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
         />
         <expandable-link class="pt-8" aria-id="CORs_Contact">
-          <template v-slot:header>
+          <template v-if="isCOR" v-slot:header>
             Manually enter your COR’s contact information
           </template>
           <template v-slot:content>
