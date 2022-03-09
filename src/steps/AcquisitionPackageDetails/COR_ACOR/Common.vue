@@ -1,9 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="col-sm-8 pl-0 pt-10">
+      <v-col class=" pl-0 pt-10">
         <ATATAutoComplete
           id="TO_COR"
+          class="max-width-640"
           :label-sr-only="false"
           titleKey="FullName"
           subtitleKey="Email"

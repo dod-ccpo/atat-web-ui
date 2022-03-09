@@ -4,6 +4,10 @@
         max-width: 446px !important;
     }
 }
+.textarea-max-width {
+  // only used for textareas
+  max-width: 740px !important;
+}
 
 .optional {
     font-size: 1.4rem;
