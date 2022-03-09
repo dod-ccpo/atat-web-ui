@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5 body-lg content-max-width">
+  <div class="mb-5 content-max-width">
     <a
       @click="open = !open"
       @keydown.enter="open = !open"
