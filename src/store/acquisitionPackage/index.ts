@@ -12,5 +12,5 @@ export class AcquisitionPackageStore extends VuexModule  {
 
 }
 
-const AcquisitionPackage= getModule(AcquisitionPackageStore);
+const AcquisitionPackage = getModule(AcquisitionPackageStore);
 export default AcquisitionPackage;

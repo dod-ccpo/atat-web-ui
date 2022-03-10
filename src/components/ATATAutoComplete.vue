@@ -27,11 +27,6 @@
       dense
       @update:search-input="updateSearchInput" 
     >
-      <!-- 
-      @change="onChange"
-        
-        @input="onInput"
-      -->
       <template v-slot:item="{item}">
         <v-list-item-content>
           <v-list-item-title 
@@ -66,14 +61,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync } from "vue-property-decorator";
 import Vue from "vue";
+
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({})
 
 export default class ATATAutoComplete extends Vue {
   // data
-  
+
   private searchText = null;
   private isReset = false;
 
