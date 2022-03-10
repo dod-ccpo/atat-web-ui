@@ -1,18 +1,27 @@
 <template>
-  <common :isACOR="true" />
+  <v-container fluid class="container-max-width">
+    <v-row>
+      <v-col>
+        <common :isACOR="isACOR" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import {Component} from "vue-property-decorator";
 import Common from "./Common.vue";
 
 @Component({
   components: {
-     Common,
+    Common,
   }
 })
-export default class AcorInfo extends Vue {
-  
+
+export default class CorInfo extends Vue {
+  private isACOR = true;
 }
+
 </script>

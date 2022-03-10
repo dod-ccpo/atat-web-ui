@@ -44,5 +44,11 @@ hr{
 //hides the empty error messages space below each form field
 //that is put there by vuetify
 .v-messages{
-   min-height: 0px !important;
+  min-height: 0px !important;
+}
+
+.ATATRadioGroup {
+  legend {
+    font-weight: 500;
+  }
 }

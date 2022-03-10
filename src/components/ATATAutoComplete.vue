@@ -41,7 +41,7 @@
         <v-list-item v-show="search !== null" class="no-results">
           <v-list-item-title>
             No results found.
-            <a v-if="noResultsText" @click="noResultsAction">
+            <a v-if="noResultsText" @click="noResultsAction" class="text-link">
               {{ noResultsText }}
             </a>
           </v-list-item-title>
