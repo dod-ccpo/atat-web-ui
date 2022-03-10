@@ -43,9 +43,11 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 export default class PersonCard extends Vue {
   @Prop({default: false}) private isACOR!: boolean;
   @PropSync("selectedContact") private _selectedContact!: unknown;
+  @PropSync("showContactForm") private _showContactForm!: unknown;
   
   private removeCorInfo(): void {
     this._selectedContact = null;
+    this._showContactForm = false;
   }
 
   private corOrAcor(): string {

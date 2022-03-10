@@ -15,18 +15,23 @@
       v-model="_selectedItem"
       :class="inputClass"
       :items="items"
-      :search-input.sync="search"
+      :search-input.sync="searchText"
       :placeholder="placeholder"
       :append-icon="icon"
       :item-text="titleKey"
       :filter="customFilter"
-      @change="onChange"
       return-object
       clearable
       outlined
       attach
       dense
+      @update:search-input="updateSearchInput" 
     >
+      <!-- 
+      @change="onChange"
+        
+        @input="onInput"
+      -->
       <template v-slot:item="{item}">
         <v-list-item-content>
           <v-list-item-title 
@@ -38,10 +43,17 @@
       </template>
 
       <template v-slot:no-data>
-        <v-list-item v-show="search !== null" class="no-results">
+        <v-list-item v-show="searchText !== null" class="no-results">
           <v-list-item-title>
             No results found.
-            <a v-if="noResultsText" @click="noResultsAction" class="text-link">
+            <a 
+              v-if="noResultsText" 
+              @click="noResultsAction" 
+              class="text-link"
+              role="button"
+              tabindex="0"
+              :id="'NoResults_' + id"
+            >
               {{ noResultsText }}
             </a>
           </v-list-item-title>
@@ -61,9 +73,12 @@ import Vue from "vue";
 
 export default class ATATAutoComplete extends Vue {
   // data
-  private search = null;
+  
+  private searchText = null;
+  private isReset = false;
 
   // props
+
   @Prop({ default: "", required: true }) private id!: string;
   @Prop({ default: "", required: true }) private label!: string;
   @Prop({ default: false }) private labelSrOnly!: string;
@@ -78,6 +93,7 @@ export default class ATATAutoComplete extends Vue {
   @PropSync("selectedItem") private _selectedItem!: unknown;
 
   // computed
+
   get inputClass(): string {
     let inputClass = this.icon.length ? "is-" + this.icon + "-icon" : "";
     if (this.icon === "search") {
@@ -87,8 +103,14 @@ export default class ATATAutoComplete extends Vue {
   }
 
   // methods
-  private onChange(val: any): void {
-    this._selectedItem = val;
+
+  private updateSearchInput(): void {
+    if (this.isReset) {
+      this._selectedItem = {};
+      this.searchText = null;
+      this.$emit("autocompleteInputUpdate", this.isReset);
+    }
+    this.isReset = false;
   }
 
   private customFilter(item: any, queryText: string) {
@@ -101,6 +123,9 @@ export default class ATATAutoComplete extends Vue {
   }
 
   private noResultsAction() {
+    this._selectedItem = {};
+    this.searchText = null;
+    this.isReset = true;
     this.$emit("noAutoCompleteResultsAction");
   }
 

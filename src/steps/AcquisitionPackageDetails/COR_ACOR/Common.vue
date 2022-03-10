@@ -5,7 +5,7 @@
       <div class="max-width-640">
         <ATATAutoComplete
           id="SearchContact"
-          :class="selectedContact ? 'mb-10' : 'mb-8'"
+          :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
           :label-sr-only="true"
           :label="'Search for your ' + corOrAcor()"
           titleKey="FullName"
@@ -16,19 +16,20 @@
           placeholder="Search by name or email"
           icon="search"
           :noResultsText="'Manually enter my ' + corOrAcor() + '’s contact information'"
-          @noAutoCompleteResultsAction="noAutoCompleteResultsAction"
+          @autocompleteInputUpdate="autocompleteInputUpdate"
         />
 
         <PersonCard 
-          v-if="selectedContact" 
+          v-if="haveSelectedContact" 
           :isACOR="isACOR"
           :selectedContact.sync="selectedContact"
+          :showContactForm.sync="showContactForm"
         />
       </div>
 
       <a 
         id="ContactFormToggle"
-        v-show="!selectedContact"
+        v-show="!haveSelectedContact"
         role="button" 
         class="expandable-content-opener"
         :class="showContactForm ? 'open' : 'closed'"
@@ -38,9 +39,9 @@
         Manually enter your {{ corOrAcor() }}’s contact information
       </a>
 
-      <ContactInfoForm :isACOR="isACOR" v-show="showContactForm && !selectedContact"/>
+      <ContactInfoForm :isACOR="isACOR" v-show="showContactForm && !haveSelectedContact"/>
       
-      <section id="AccessRadioButtons" v-show="selectedContact || showContactForm">
+      <section id="AccessRadioButtons" v-show="haveSelectedContact || showContactForm">
         <hr />
         <ATATRadioGroup
           legend="Does this individual need access to help you create this acquisition package in ATAT?"
@@ -82,7 +83,7 @@ export default class COR_ACOR extends Vue {
     return this.isACOR ? "ACOR" : "COR";
   }
 
-  private showContactForm = false;
+  public showContactForm = false;
   private toggleContactForm(): void {
     this.showContactForm = !this.showContactForm;
   }
@@ -101,17 +102,24 @@ export default class COR_ACOR extends Vue {
     },
   ];
 
-  private selectedContact = null;
+  public selectedContact = {};
   private contactList = [
     {
       Id: 1,
-      FullName: "Carl Contractingofficerep",
-      Email: "carl.contractingofficerrep.civ@mail.mil  ",
+      FullName: "Adam Ant",
+      Email: "adam.ant.civ@mail.mil",
       Phone: "555-555-5555",
       OrgName: "HQ1234 - Corresponding Organization Name"
     },
     {
-      Id: 1,
+      Id: 2,
+      FullName: "Carl Contractingofficerep",
+      Email: "carl.contractingofficerrep.civ@mail.mil",
+      Phone: "555-555-5555",
+      OrgName: "HQ1234 - Corresponding Organization Name"
+    },
+    {
+      Id: 3,
       FullName: "Selia Wentzel",
       Email: "sel.wentz@acusage.net",
       Phone: "444-444-4444",
@@ -119,8 +127,12 @@ export default class COR_ACOR extends Vue {
     },
   ];
 
-  private noAutoCompleteResultsAction(): void {
-    this.showContactForm = true;
+  get haveSelectedContact(): boolean {
+    return this.selectedContact && Object.keys(this.selectedContact).length > 0;
+  }
+
+  private autocompleteInputUpdate(isReset: boolean): void {
+    this.showContactForm = isReset;
   }
 
 }

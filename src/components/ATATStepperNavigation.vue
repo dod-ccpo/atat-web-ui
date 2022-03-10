@@ -6,13 +6,21 @@
         @click="$emit('previous')"
         role="link"
         class="link-button no-border"
+        id="BackButton"
       >
         <v-icon size="20">chevron_left</v-icon>
-        <span>Back</span></v-btn
+        <span>Back</span>
+      </v-btn>
+      <v-btn 
+        @click="$emit('next')" 
+        depressed 
+        color="primary" 
+        role="link" 
+        class="ml-auto"
+        id="ContinueButton"
       >
-      <v-btn @click="$emit('next')" depressed color="primary" role="link" class="ml-auto"
-        >Continue</v-btn
-      >
+          Continue
+      </v-btn>
     </div>
   </nav>
 </template>
