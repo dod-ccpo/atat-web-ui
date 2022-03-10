@@ -1,9 +1,9 @@
 describe("Test suite: Acquisition Package ", () => {
     
     let projectDetails;
-    beforeEach(() => {   
+    beforeEach(() => {
         
-         cy.fixture("projectOverview").then((details) => {
+        cy.fixture("projectOverview").then((details) => {
             projectDetails = details;
         });
         cy.visit(Cypress.env("testUrl"));
@@ -11,7 +11,8 @@ describe("Test suite: Acquisition Package ", () => {
         cy.get('title').should('have.text', 'DISA Sandbox home page - DISA Sandbox');
         cy.frameLoaded("#atat-app");
                 
-    })
+    });
+
     it("TC1: Acquisition Package Substeps on the Vertical Stepper", () => {
         
         //Verify the text of Acquistion Package details is visible 
@@ -22,18 +23,18 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists("#SubStep_Organization > .step-text", " Organization ");
         cy.textExists("#SubStep_ContactInformation > .step-text", " Contact Information ");
             
-    })
-   
+    });
+    
     it("TC2: Acquisition Package step is active", () => {
         cy.iframe("#atat-app")
             .find("#Step_AcquisitionPackageDetails > .step-circle")
             .should("be.visible")
             .and('have.css', 'color', 'rgb(84, 68, 150)')
             .click();
-        
-    })
+    });
+
     it("TC3: Asserts on Let’s start with basic info about your new acquisition", () => {
-           
+
         // lands on Demo Package
         //header of the view
         cy.textExists("header.v-toolbar div.h3", "Demo Package");
@@ -44,17 +45,16 @@ describe("Test suite: Acquisition Package ", () => {
         //label of the "Project/Requirement Title" text
         cy.textExists("#ProjectTitle_text_field_label", " Project/Requirement Title ");
 
-         //tooltip
+        //tooltip
         cy.iframe("#atat-app")
             .find("#TooltipButton_ProjectTitle")
             .should("be.visible")
             .realHover();
         const expectedText = " Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms. "
         cy.textExists("#TooltipText_ProjectTitle", expectedText);
-                
+        
         //Enter the Value
-        cy.enterTextInTextField("#ProjectTitle_text_field", projectDetails.projectTitle)
-            .click();
+        cy.enterTextInTextField("#ProjectTitle_text_field", projectDetails.projectTitle).click();
         
         //label of the "Projectscope" text
         cy.textExists("#ProjectScope_text_field_label", " What is the scope of your requirement? ");
@@ -64,10 +64,13 @@ describe("Test suite: Acquisition Package ", () => {
         
         //Assert Emergency declaration text          
         cy.iframe("#atat-app")
-            .find("#emergency-declaration-support-requirement").then(($emergencytext) => {
-                expect($emergencytext).to.have.text("Is this requirement in support of an emergency declaration?radio_button_uncheckedYesradio_button_uncheckedNo")
-                
+            .find("#emergency-declaration-support-requirement legend").then(($emergencytext) => {
+                expect($emergencytext).to.have.text("Is this requirement in support of an emergency declaration?");
             });
+        
+        //Assert radio button
+        cy.iframe("#atat-app")
+            .find("#Radio_No").should("have.value", "no");
         
         //select radio button
         cy.iframe("#atat-app")
@@ -77,22 +80,23 @@ describe("Test suite: Acquisition Package ", () => {
         //buttons that exists on the view
         cy.iframe("#atat-app")
             .find("[type='button']").contains("Back");
-       
+            
         cy.iframe("#atat-app")
             .find("[type='button']").contains("Continue");
-    })
+    });
+
     it("TC4: Surge Capabilities-Asserts and Validations Tell us more about the scope of your project", () => {
-           
+
         cy.fillNewAcquisition(projectDetails.projectTitle + "001", projectDetails.scope)
         // Navigates to "Tell us more about the scope of your project"
         cy.textExists("div.col-12.col h1", "Tell us more about the scope of your project");
         
         //Label of the view
-        cy.textExists("div.text-base-darkest h2", "Surge Capabilities");        
+        cy.textExists("div.text-base-darkest h2", "Surge Capabilities");
         
         // ContractPricePercentage text
         cy.textExists("p.mt-8.mb-2", " If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded? ");
-                
+        
         //Enter the aplha numeric value to validate the error message        
         cy.iframe("#atat-app")
             .find("#ContractPricePercentage_text_field_control")
@@ -114,9 +118,9 @@ describe("Test suite: Acquisition Package ", () => {
         //buttons that exists on the view
         cy.iframe("#atat-app")
             .find("[type='button']").contains("Back");
-       
+        
         cy.iframe("#atat-app")
             .find("[type='button']").contains("Continue");
     });
         
-})
+});
