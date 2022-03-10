@@ -51,7 +51,7 @@
         />
       </v-col>
     </v-row>
-    <v-row class="form-section">
+    <v-row class="form-section mb-0">
       <v-col>
         <ATATTextField
           label="Your email"
@@ -62,7 +62,8 @@
         <ATATTextField
           label="Your phone number"
           id="ContactPhone"
-          class="input-max-width mb-10"
+          class="input-max-width"
+          :class="{'mb-10' : selectedRole === 'CIV'}"
         />
         <ATATAutoComplete
           v-show="selectedRole === 'CIV'"

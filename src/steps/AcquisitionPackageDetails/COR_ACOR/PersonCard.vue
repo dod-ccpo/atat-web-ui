@@ -16,12 +16,12 @@
         {{ selectedContact.OrgName }}<br />
       </span>
       <p class="mb-10 text-base">
-        To make any changes to your {{ corOrAcor() }}’s contact information, please send a 
+        To make any changes to your {{ corOrAcor }}’s contact information, please send a 
         request to our User Engagement Team.
       </p>
 
       <a role="button" class="text-link" id="RequestContactChange">
-        Request changes to {{ corOrAcor() }}’s contact information
+        Request changes to {{ corOrAcor }}’s contact information
       </a>
     </div>
     <v-icon class="text-primary mr-1" @click="removeCorInfo">delete</v-icon>
@@ -31,7 +31,7 @@
       tabindex="0"
       id="RemoveSelectedContactInfo"
       @click="removeCorInfo"
-    >Remove {{ corOrAcor() }} info
+    >Remove {{ corOrAcor }} info
     </a>
   </div>  
 </template>
@@ -39,20 +39,29 @@
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
+
 @Component({})
+
 export default class PersonCard extends Vue {
+  
+  // props
+  
   @Prop({default: false}) private isACOR!: boolean;
   @PropSync("selectedContact") private _selectedContact!: unknown;
   @PropSync("showContactForm") private _showContactForm!: unknown;
+
+  // computed
+
+  get corOrAcor(): string {
+    return this.isACOR ? "ACOR" : "COR";
+  }
+
+  // methods
   
   private removeCorInfo(): void {
     this._selectedContact = null;
     this._showContactForm = false;
   }
 
-  private corOrAcor(): string {
-    return this.isACOR ? "ACOR" : "COR";
-  }
 }
 </script>
-

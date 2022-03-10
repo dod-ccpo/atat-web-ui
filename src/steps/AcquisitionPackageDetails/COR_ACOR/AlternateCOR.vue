@@ -8,8 +8,9 @@
         </h1>
 
         <ATATRadioGroup
-          id="hasAlternateCOR"
-          legend=""
+          id="HasAlternateCOR"
+          legend="Indicate if you have an ACOR"
+          :legend-sr-only="true"
           card="true"
           :value.sync="hasAlternateCOR"
           :items="alternateCoreOptions"
@@ -39,19 +40,23 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class AlternateCOR extends Vue {
   private alternateCoreOptions: RadioButton[] = [
     {
-      id: "YesAlternateCore",
+      id: "YesAlternateCOR",
       label: "Yes",
       value: "true",
     },
     {
-      id: "NoAlternateCore",
+      id: "NoAlternateCOR",
       label: "No",
       value: "false",
     },
   ];
 
   public get hasAlternateCOR(): string {
-    return AcquisitionPackage.hasAlternativeContactRep.toString();
+    const ACORValue = AcquisitionPackage.hasAlternativeContactRep;
+    if (ACORValue) {
+      return ACORValue.toString();
+    }
+    return "";
   }
 
   public set hasAlternateCOR(value: string) {

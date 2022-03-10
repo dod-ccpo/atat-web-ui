@@ -1,13 +1,12 @@
 <template>
     <div class="pt-0">
-      <intro :isACOR="isACOR" />
 
       <div class="max-width-640">
         <ATATAutoComplete
           id="SearchContact"
           :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
           :label-sr-only="true"
-          :label="'Search for your ' + corOrAcor()"
+          :label="'Search for your ' + corOrAcor"
           titleKey="FullName"
           subtitleKey="Email"
           :items="contactList"
@@ -15,7 +14,7 @@
           :selectedItem.sync="selectedContact"
           placeholder="Search by name or email"
           icon="search"
-          :noResultsText="'Manually enter my ' + corOrAcor() + '’s contact information'"
+          :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
           @autocompleteInputUpdate="autocompleteInputUpdate"
         />
 
@@ -36,12 +35,12 @@
         tabindex="0"
         @click="toggleContactForm"
       >
-        Manually enter your {{ corOrAcor() }}’s contact information
+        Manually enter your {{ corOrAcor }}’s contact information
       </a>
 
       <ContactInfoForm :isACOR="isACOR" v-show="showContactForm && !haveSelectedContact"/>
       
-      <section id="AccessRadioButtons" v-show="haveSelectedContact || showContactForm">
+      <section id="AccessRadioButtons" v-show="showContactForm || haveSelectedContact">
         <hr />
         <ATATRadioGroup
           legend="Does this individual need access to help you create this acquisition package in ATAT?"
@@ -61,7 +60,6 @@ import {Component, Prop} from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ContactInfoForm from "./ContactInfoForm.vue";
-import Intro from "./Intro.vue";
 import PersonCard from "./PersonCard.vue";
 
 import { RadioButton } from "../../../../types/Global";
@@ -71,23 +69,28 @@ import { RadioButton } from "../../../../types/Global";
     ATATAutoComplete,
     ATATRadioGroup,
     ContactInfoForm,
-    Intro,
     PersonCard,
   }
 })
 
 export default class COR_ACOR extends Vue {
+  // props
+
   @Prop({default: false}) private isACOR!: boolean;
 
-  private corOrAcor(): string {
+  // computed
+  
+  get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
   }
 
-  public showContactForm = false;
-  private toggleContactForm(): void {
-    this.showContactForm = !this.showContactForm;
+  get haveSelectedContact(): boolean {
+    return this.selectedContact && Object.keys(this.selectedContact).length > 0;
   }
 
+  // data
+
+  public showContactForm = false;
   private selectedAccessToEdit = "";
   private accessToEditOptions: RadioButton[] = [
     {
@@ -101,20 +104,19 @@ export default class COR_ACOR extends Vue {
       value: "no",
     },
   ];
-
   public selectedContact = {};
   private contactList = [
     {
       Id: 1,
-      FullName: "Adam Ant",
-      Email: "adam.ant.civ@mail.mil",
-      Phone: "555-555-5555",
+      FullName: "Adam Adamson",
+      Email: "adam.adamson-civ@mail.mil",
+      Phone: "333-333-3333",
       OrgName: "HQ1234 - Corresponding Organization Name"
     },
     {
       Id: 2,
       FullName: "Carl Contractingofficerep",
-      Email: "carl.contractingofficerrep.civ@mail.mil",
+      Email: "carl.contractingofficerrep-civ@mail.mil",
       Phone: "555-555-5555",
       OrgName: "HQ1234 - Corresponding Organization Name"
     },
@@ -127,8 +129,10 @@ export default class COR_ACOR extends Vue {
     },
   ];
 
-  get haveSelectedContact(): boolean {
-    return this.selectedContact && Object.keys(this.selectedContact).length > 0;
+  // methods
+
+  private toggleContactForm(): void {
+    this.showContactForm = !this.showContactForm;
   }
 
   private autocompleteInputUpdate(isReset: boolean): void {

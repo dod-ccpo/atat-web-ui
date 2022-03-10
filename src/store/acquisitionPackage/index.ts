@@ -1,10 +1,9 @@
 import {  VuexModule, Module, getModule, Action, Mutation} from "vuex-module-decorators";
 import rootStore from "../index";
 
-
 @Module({ name: 'AcquisitionPackage',  namespaced: true, dynamic: true, store: rootStore})
 export class AcquisitionPackageStore extends VuexModule  {
-   hasAlternativeContactRep=  false;
+   hasAlternativeContactRep: boolean | null = null;
 
    @Mutation
    public setHasAlternateCOR(value: boolean): void{
@@ -12,7 +11,6 @@ export class AcquisitionPackageStore extends VuexModule  {
    }
 
 }
-
 
 const AcquisitionPackage= getModule(AcquisitionPackageStore);
 export default AcquisitionPackage;

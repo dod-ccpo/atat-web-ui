@@ -2,7 +2,10 @@
   <v-container fluid class="container-max-width">
     <v-row>
       <v-col>
-        <common :isACOR="isACOR" />
+        <p class="pv-10">Put ACOR header and intro here</p>
+
+        <common :isACOR="true" />
+
       </v-col>
     </v-row>
   </v-container>
@@ -11,7 +14,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import {Component} from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import Common from "./Common.vue";
 
 @Component({
@@ -20,8 +23,6 @@ import Common from "./Common.vue";
   }
 })
 
-export default class CorInfo extends Vue {
-  private isACOR = true;
-}
+export default class CorInfo extends Vue {}
 
 </script>
