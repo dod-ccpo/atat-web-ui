@@ -1,0 +1,7 @@
+{
+  "projectTitle": " ATAT TESTProject",
+  "scope": "helloScope",
+  "validContractPercentage": 34,
+  "invalidTextContractPercentage": "test",
+  "invalidNumericContractPercentage": 55
+}

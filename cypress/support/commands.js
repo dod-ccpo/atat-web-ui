@@ -62,3 +62,26 @@ Cypress.Commands.add('completePercent', () => {
             return percentComplete
     })
 });
+Cypress.Commands.add('fillNewAcquisition', (ProjectTitle, Scope) => {    
+        cy.enterTextInTextField("#ProjectTitle_text_field", ProjectTitle)
+        cy.enterTextInTextField("#ProjectScope_text_area", Scope)
+        cy.iframe("#atat-app")
+            .find("#Radio_Yes").should("have.value", "yes")
+            .click({ force: true })
+        cy.iframe("#atat-app")
+            .find("[type='button']").contains("Continue").click()
+    
+    
+});
+Cypress.Commands.add('fillSurgeCapabilities', (Percentage) => {    
+    cy.iframe("#atat-app")
+            .find("#ContractPricePercentage_text_field_control")
+            .should("be.visible")
+            .type(Percentage)        
+            .click()
+    
+    cy.iframe("#atat-app")
+            .find("[type='button']").contains("Continue").click()
+    
+    
+});

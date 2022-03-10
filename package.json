@@ -11,9 +11,8 @@
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
-    "test:e2e":"node ./node_modules/cypress/bin/cypress run",
+    "test:e2e": "node ./node_modules/cypress/bin/cypress run",
     "test-file:watch": "jest --watch --no-cache src/components/ATATSelect.spec.ts "
-    
   },
   "dependencies": {
     "@types/node": "^17.0.16",
@@ -50,6 +49,7 @@
     "babel-eslint": "^10.1.0",
     "cypress": "^9.5.1",
     "cypress-iframe": "^1.0.1",
+    "cypress-real-events": "^1.7.0",
     "dotenv": "^16.0.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^8.4.1",
