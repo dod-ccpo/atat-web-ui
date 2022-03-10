@@ -32,7 +32,7 @@
             />
           </div>
           <div class="d-flex align-start flex-column mt-10">
-           <ATATRadioGroup
+            <ATATRadioGroup
               id="emergency-declaration-support-requirement"
               legend="Is this requirement in support of an emergency declaration?"
               :value.sync="radioValue"

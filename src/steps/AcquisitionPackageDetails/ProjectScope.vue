@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">Tell us more about the scope of your project</h1>
-       
+
           <ATATAlert type="info" :showIcon="false" class="copy-max-width mt-10">
             <template v-slot:content>
               <h2>Surge Capabilities</h2>
@@ -23,7 +23,7 @@
               </p>
             </template>
           </ATATAlert>
-           <p class="mt-8 mb-2">
+          <p class="mt-8 mb-2">
             If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded?
           </p>
           <ATATTextField 
