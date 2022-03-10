@@ -28,8 +28,7 @@ import 'cypress-iframe';
 Cypress.Commands.add('login', (user, password) => {    
     cy.get('#username').type(user)
     cy.get('#password').type(password)
-    cy.contains('button', 'Log in').click()
-    
+    cy.contains('button', 'Log in').click()    
     
 });
 
@@ -57,14 +56,9 @@ Cypress.Commands.add('completePercent', () => {
                
       const text = $el[0].dataset.substepCompletePercentage
       cy.wrap(text)
-      percentComplete = percentComplete + parseFloat(text)
-      //console.log(percentComplete)
-                     
+      percentComplete = percentComplete + parseFloat(text)                      
             
-    }).then(() => {
-                
-      
-      return percentComplete
+    }).then(() => {              
+            return percentComplete
     })
 });
-
