@@ -17,9 +17,19 @@ export interface StepperStep {
     subSteps?: StepperStep[]; 
 }
 
+/**
+ * interface for select items
+ */
 export interface SelectData {
     text: string;
     value?: string;
+}
+
+/**
+ * interface for autocomplete Items
+ */
+export interface AutoCompleteItem {
+    [key: string]: string | number |  null | boolean
 }
 
 /**
