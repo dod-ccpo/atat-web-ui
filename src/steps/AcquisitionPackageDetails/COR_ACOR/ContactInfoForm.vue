@@ -2,13 +2,13 @@
 <template>
   <section class="mt-10">
     <hr />
-    <h2 class="form-section-heading">
+    <h2 id="ContactInfoHeader" class="form-section-heading">
       Your COR’s Contact Information
     </h2>
 
     <ATATRadioGroup
-      legend="What role best describes your COR’s affiliation with the DoD?"
       id="ContactAffiliation"
+      legend="What role best describes your COR’s affiliation with the DoD?"
       :items="contactAffiliations"
       :value.sync="selectedContactAffiliation"
       class="mb-10"
@@ -39,8 +39,8 @@
       />
 
       <ATATSelect
-        v-show="selectedContactAffiliation === 'CIV'"
         id="Salutation"
+        v-show="selectedContactAffiliation === 'CIV'"
         class="input-max-width mb-7"
         label="Salutation"
         :optional="true"
@@ -70,21 +70,21 @@
       </v-row>
 
       <ATATTextField 
-        label="Email address" 
         id="EmailAddress" 
+        label="Email address" 
         class="input-max-width mb-10" 
         helpText="Enter a .mil or .gov email address."
       />
 
       <div class="d-flex mb-10">
         <ATATTextField 
-          label="Phone number" 
           id="PhoneNumber" 
+          label="Phone number" 
           class="input-max-width width-100" 
         />
         <ATATTextField 
-          label="Extension" 
           id="PhoneExtension" 
+          label="Extension" 
           width="140px"
           :optional="true"
           class="ml-6"
@@ -92,8 +92,8 @@
       </div>
 
       <ATATTextField 
-        label="DoD Activity Address Code (DoDAAC)" 
         id="DoDAAC" 
+        label="DoD Activity Address Code (DoDAAC)" 
         class="input-max-width"
         tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
           unit, activity, or organization that has the authority to requisition, 
