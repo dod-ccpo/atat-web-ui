@@ -29,7 +29,11 @@ export interface SelectData {
  * interface for autocomplete Items
  */
 export interface AutoCompleteItem {
-    [key: string]: string | number |  null | boolean
+    [ key: string ]: string | number | null | boolean
+}
+
+export interface AutoCompleteItemGroups {
+    [ key: string ]: AutoCompleteItem[];
 }
 
 /**

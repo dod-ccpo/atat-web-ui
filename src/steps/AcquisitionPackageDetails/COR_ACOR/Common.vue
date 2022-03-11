@@ -45,7 +45,7 @@
       />
       
       <section id="AccessRadioButtons" 
-        v-show="showAccessRadioButtons || haveSelectedContact"
+        v-show="(showContactForm && showAccessRadioButtons) || haveSelectedContact"
       >
       <!-- EJY need to send up when branch is selected or civilian is selected from
       the contact form -->
@@ -108,7 +108,7 @@ export default class COR_ACOR extends Vue {
     },
     {
       id: "AccessToEdit_No",
-      label: "No",
+      label: "No.",
       value: "no",
     },
   ];
