@@ -47,8 +47,6 @@
       <section id="AccessRadioButtons" 
         v-show="(showContactForm && showAccessRadioButtons) || haveSelectedContact"
       >
-      <!-- EJY need to send up when branch is selected or civilian is selected from
-      the contact form -->
         <hr />
         <ATATRadioGroup
           legend="Does this individual need access to help you create this acquisition package in ATAT?"

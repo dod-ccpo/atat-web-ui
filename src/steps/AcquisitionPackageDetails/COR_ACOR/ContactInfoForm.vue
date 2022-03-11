@@ -24,6 +24,7 @@
       :selectedValue.sync="selectedBranch"
       :showAccessRadioButtons.sync="showAccessRadioButtons"
     />
+
     <div v-show="selectedBranch || selectedContactAffiliation === 'CIV'">
       <ATATAutoComplete
         id="Rank"
@@ -99,9 +100,7 @@
           contract for, or fund/pay bills for materials and services." 
       />
 
-
     </div>
-
   </section>
 </template>
 
