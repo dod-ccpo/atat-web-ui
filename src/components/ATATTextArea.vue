@@ -62,7 +62,7 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
-  @Prop({ default: "Form Field Label" }) private label!: string;
+  @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @PropSync("value", { default: "" }) private _value!: string;

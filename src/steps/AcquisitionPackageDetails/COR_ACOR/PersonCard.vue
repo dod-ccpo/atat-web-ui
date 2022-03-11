@@ -20,7 +20,7 @@
         request to our User Engagement Team.
       </p>
 
-      <a role="button" class="text-link" id="RequestContactChange">
+      <a role="button" class="text-link" id="RequestContactChange" @click="showDialog = true">
         Request changes to {{ corOrAcor }}’s contact information
       </a>
     </div>
@@ -33,14 +33,40 @@
       @click="removeCorInfo"
     >Remove {{ corOrAcor }} info
     </a>
-  </div>  
+    <ATATDialog
+      :showDialog.sync="showDialog"
+      :title='title'
+      no-click-animation
+      okText="Send Request"
+      width="632px"
+      disabled="true"
+    >
+      <template #content>
+        <p class="body">
+          Please let us know what information needs to be updated for this {{ corOrAcor }}.
+        </p>
+        <ATATTextArea
+          id="InformationChange"
+          rows="7"
+          :class="[{'input-max-width': stackInputs}, ' pb-16']"
+        />
+      </template>
+    </ATATDialog>
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
+import ATATDialog from "@/components/ATATDialog.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
-@Component({})
+@Component({
+  components: {
+    ATATDialog,
+    ATATTextArea
+  }
+})
 
 export default class PersonCard extends Vue {
   
@@ -50,10 +76,19 @@ export default class PersonCard extends Vue {
   @PropSync("selectedContact") private _selectedContact!: unknown;
   @PropSync("showContactForm") private _showContactForm!: unknown;
 
+  private showDialog = false
   // computed
 
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
+  }
+  get title(): string {
+    return this.corOrAcor == 'COR'? "Request change to COR's contact information": "Request change to ACOR's contact information"
+  }
+
+  get stackInputs(): boolean {
+    console.log(this.$vuetify.breakpoint.mdAndDown)
+    return this.$vuetify.breakpoint.mdAndDown;
   }
 
   // methods
@@ -62,6 +97,7 @@ export default class PersonCard extends Vue {
     this._selectedContact = null;
     this._showContactForm = false;
   }
+
 
 }
 </script>
