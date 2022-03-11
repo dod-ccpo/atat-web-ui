@@ -36,12 +36,9 @@ describe("Testing ATATAutoComplete Component", () => {
     },
   ];
 
-
   const searchFields = ['FullName'];
   const id="dummyAutoComplete";
   const label="Dummy Auto Complete";
-  const titleKey = "value";
-  
   
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -53,7 +50,6 @@ describe("Testing ATATAutoComplete Component", () => {
         searchFields,
         id,
         label,
-        titleKey,
         rules: [(v: string) => !!v || "is required"],
       }
     });
