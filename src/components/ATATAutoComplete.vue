@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { AutoCompleteItem } from "types/Global";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
@@ -81,12 +82,12 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private icon!: string;
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
-  @Prop({ default: () => [], required: true }) private searchFields!: [];
-  @Prop({ default: () => [], required: true }) private items!: [];
+  @Prop({ default: [], required: true }) private searchFields!: [];
+  @Prop({ default: [], required: true }) private items!: [];
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
-  @PropSync("selectedItem") private _selectedItem!: unknown;
+  @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
 
   // computed
 
@@ -109,7 +110,7 @@ export default class ATATAutoComplete extends Vue {
     this.isReset = false;
   }
 
-  private customFilter(item: any, queryText: string) {
+  private customFilter(item: AutoCompleteItem, queryText: string) {
     let text = "";
     this.searchFields.forEach((key) => {
       text += item[key] + " ";
