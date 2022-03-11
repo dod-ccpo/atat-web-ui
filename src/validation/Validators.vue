@@ -1,13 +1,37 @@
 <template>
- <v-form ref="form" lazy-validation>
+  <v-form ref="form" lazy-validation>
     <v-row>
-      <v-col cols="7"><ATATTextField :rules="minRules" :value="minValue" label="Min Length 3"/></v-col>
-       <v-col cols="7"><ATATTextField :rules="minCustomRules" :value="minValueCustom" label="Min Length 3 Custom message"/></v-col>
-      <v-col cols="7"><ATATTextField :rules="maxRules" :value="maxValue" label="Max Length 9"/></v-col>
-      <v-col cols="7"><ATATTextField :rules="requiredRules" :value="requiredValue" label="Value Required"/></v-col>
-       <v-col cols="7"><ATATTextField :rules="integerRules" :value="integerValue" label="Integers only"/></v-col>
+      <v-col cols="7"
+        ><ATATTextField
+          :rules="minRules"
+          :value="minValue"
+          label="Min Length 3"
+      /></v-col>
+      <v-col cols="7"
+        ><ATATTextField
+          :rules="minCustomRules"
+          :value="minValueCustom"
+          label="Min Length 3 Custom message"
+      /></v-col>
+      <v-col cols="7"
+        ><ATATTextField
+          :rules="maxRules"
+          :value="maxValue"
+          label="Max Length 9"
+      /></v-col>
+      <v-col cols="7"
+        ><ATATTextField
+          :rules="requiredRules"
+          :value="requiredValue"
+          label="Value Required"
+      /></v-col>
+      <v-col cols="7"
+        ><ATATTextField
+          :rules="integerRules"
+          :value="integerValue"
+          label="Integers only"
+      /></v-col>
     </v-row>
-    
   </v-form>
 </template>
 
@@ -19,23 +43,24 @@ import validators from "@/validation/";
 
 @Component({
   components: {
-      ATATTextField,
+    ATATTextField,
   },
 })
 export default class Validatators extends Vue {
+  private minValue = "a";
+  private minValueCustom = "a";
+  private minCustomRules: Array<unknown> = [
+    validators.minLength(3, "you need at least 3 chars"),
+  ];
+  private minRules: Array<unknown> = [validators.minLength(3)];
+  private maxValue = "12345678910";
+  private maxRules: Array<unknown> = [validators.maxLength(9)];
+  private requiredValue = "";
+  private requiredRules: Array<unknown> = [validators.required()];
+  private integerValue = "y";
+  private integerRules: Array<unknown> = [validators.integer()];
 
-     private minValue = "a";
-     private minValueCustom="a";
-     private minCustomRules: Array<unknown> = [validators.minLength(3, 'you need at least 3 chars')];
-     private minRules:Array<unknown> =[validators.minLength(3)];
-     private maxValue="12345678910";
-     private maxRules:Array<unknown> = [validators.maxLength(9)];
-     private requiredValue = "";
-     private requiredRules:Array<unknown> = [validators.required()];
-     private integerValue = "y";
-     private integerRules:Array<unknown> = [validators.integer()];
-
-       get Form(): Vue & { validate: () => boolean } {
+  get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
   }
 
@@ -43,17 +68,14 @@ export default class Validatators extends Vue {
     let valid = false;
 
     await this.$nextTick(() => {
-     valid = this.Form.validate();
+      valid = this.Form.validate();
     });
 
     return valid;
   }
 
-  public async mounted():Promise<void>{
-
-      await this.validateForm();
-       
+  public async mounted(): Promise<void> {
+    await this.validateForm();
   }
-
 }
 </script>
