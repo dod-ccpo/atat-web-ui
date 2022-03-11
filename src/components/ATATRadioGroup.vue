@@ -3,7 +3,11 @@
     class="ATATRadioGroup"
     v-model="_selectedValue">
     <fieldset>
-      <legend v-if="legend" class="form-field-label mb-3 pb-0">{{ legend }}</legend>
+      <legend 
+        v-if="legend" 
+        class="form-field-label mb-3 pb-0"
+        :class="{'d-sr-only' : legendSrOnly }"
+      >{{ legend }}</legend>
       <v-radio
         v-for="item in items"
         :id="'Radio_' + getIdText(item.id)"
@@ -11,7 +15,7 @@
         :key="item.id"
         :label="item.label"
         :value="item.value"
-        
+        :style="{ 'width': width }"        
         :name="name"
         :disabled="item.disabled"
       >
@@ -39,6 +43,8 @@ export default class ATATRadioGroup extends Vue {
   @Prop({default: false}) private card!: boolean;
   @Prop({default: false}) private error!: boolean;
   @Prop({default: false}) private disabled!: boolean;
+  @Prop({default: false}) private legendSrOnly!: boolean;
+  @Prop({default: ""}) private width!: string;
 
   @Prop() private name!: string;
 

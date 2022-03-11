@@ -6,7 +6,12 @@ $total: 20;
     .height-#{$i*5} { height: ($i * 5%) !important}; 
     .min-height-#{$i*5} { min-height: ($i * 5%) !important}; 
     .max-height-#{$i*5} { max-height: ($i * 5%) !important}; 
-    .font-size-#{$i*1} { font-size: ($i * 1rem) !important};
+}
+
+@for $i from 10 through 30 {
+    .font-size-#{$i}{
+        font-size: #{$i}px !important;
+    }
 }
 
 $total: 900;

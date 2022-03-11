@@ -1,6 +1,6 @@
 
 <template>
-  <v-flex>
+  <v-flex class="mt-10">
     Contact Info Form
   </v-flex>
 </template>
