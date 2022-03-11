@@ -48,9 +48,9 @@
         <ATATTextArea
           id="InformationChange"
           rows="7"
-          :class="[{'input-max-width': stackInputs}, ' pb-16']"
+          class="pb-16"
         />
-      </template>
+      </template>s
     </ATATDialog>
   </div>
 </template>
@@ -83,12 +83,9 @@ export default class PersonCard extends Vue {
     return this.isACOR ? "ACOR" : "COR";
   }
   get title(): string {
-    return this.corOrAcor == 'COR'? "Request change to COR's contact information": "Request change to ACOR's contact information"
-  }
-
-  get stackInputs(): boolean {
-    console.log(this.$vuetify.breakpoint.mdAndDown)
-    return this.$vuetify.breakpoint.mdAndDown;
+    return this.corOrAcor === 'COR'
+      ? "Request change to COR's contact information"
+      : "Request change to ACOR's contact information"
   }
 
   // methods
