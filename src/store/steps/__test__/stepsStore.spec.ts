@@ -95,7 +95,7 @@ describe('Steps Store', ()=> {
   test('step resolver returns correct step name', async ()=> {
 
     const startingStep = "CHILD_STEP_TWO";
-    const nextStep = "CHILD_STEP_THREE";
+    const nextStep = "CHILD_STEP_FOUR";
 
     stepsStore.setCurrentStep(startingStep);
     expect(stepsStore.currentStep).toBeDefined();

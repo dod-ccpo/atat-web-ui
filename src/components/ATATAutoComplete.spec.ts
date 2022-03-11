@@ -42,7 +42,7 @@ describe("Testing ATATAutoComplete Component", () => {
   const label="Dummy Auto Complete";
   const titleKey = "value";
   
-
+  
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(ATATAutoComplete, {
@@ -83,17 +83,16 @@ describe("Testing ATATAutoComplete Component", () => {
   });
  
   describe("FUNCTIONS", () => {
-    it("onChange", async () => {
-      const spy = jest.spyOn(wrapper.vm, "onChange");
-      const changedValue = {
-        Id: 2,
-        FullName: "Carl Contractingofficerep",
-        Email: "carl.contractingofficerrep.civ@mail.mil",
-        Phone: "555-555-5555",
-        OrgName: "HQ1234 - Corresponding Organization Name"
-      };
-      wrapper.vm.onChange(changedValue);
-      expect(spy).toHaveBeenCalled();
+    it("updateSearchInput", async () => {
+      const isReset = true;
+      wrapper.setData({searchText: "__searchText"});
+      wrapper.setData({isReset: isReset});
+
+      wrapper.vm.updateSearchInput()
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.$data.searchText).toBeNull();
+      expect(wrapper.vm.$data.isReset).toBe(false);
     });
 
     it("customFilter > returns true", async () => {
