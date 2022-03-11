@@ -38,10 +38,14 @@
         Manually enter your {{ corOrAcor }}’s contact information
       </a>
 
-      <ContactInfoForm :isACOR="isACOR" v-show="showContactForm && !haveSelectedContact"/>
+      <ContactInfoForm 
+        :isACOR="isACOR" 
+        v-show="showContactForm && !haveSelectedContact"
+        :showAccessRadioButtons.sync="showAccessRadioButtons"
+      />
       
       <section id="AccessRadioButtons" 
-        v-show="(showContactForm && selectedBranch) || haveSelectedContact"
+        v-show="showAccessRadioButtons || haveSelectedContact"
       >
       <!-- EJY need to send up when branch is selected or civilian is selected from
       the contact form -->
@@ -93,7 +97,7 @@ export default class COR_ACOR extends Vue {
   }
 
   // data
-
+  public showAccessRadioButtons = false;
   public showContactForm = false;
   private selectedAccessToEdit = "";
   private accessToEditOptions: RadioButton[] = [

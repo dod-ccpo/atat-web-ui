@@ -21,21 +21,20 @@
       placeholder=""
       :items="branchData"
       :selectedValue.sync="selectedBranch"
+      :showAccessRadioButtons.sync="showAccessRadioButtons"
     />
-
-
 
   </section>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 
-import { RadioButton, SelectData } from "../../../../types/Global";
+import { RadioButton, SelectData, AutoCompleteItem } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -49,37 +48,19 @@ export default class ContactInfoForm extends Vue {
   //props
 
   @Prop({default: true}) private isACOR!: boolean;
+  @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
 
   // data
 
   private selectedBranch = "";
   private branchData: SelectData[] = [
-    {
-      text: "U.S. Air Force",
-      value: "USAF",
-    },
-    {
-      text: "U.S. Army",
-      value: "ARMY",
-    },
-    {
-      text: "U.S. Coast Guard",
-      value: "USCG",
-    },
-    {
-      text: "U.S. Marine Corps",
-      value: "USMC",
-    },
-    {
-      text: "U.S. Navy",
-      value: "NAVY",
-    },
-    {
-      text: "U.S. Space Force",
-      value: "USSF",
-    },
+    { text: "U.S. Air Force", value: "USAF", },
+    { text: "U.S. Army", value: "ARMY", },
+    { text: "U.S. Coast Guard", value: "USCG", },
+    { text: "U.S. Marine Corps", value: "USMC", },
+    { text: "U.S. Navy", value: "NAVY", },
+    { text: "U.S. Space Force", value: "USSF", },
   ];
-
 
   private selectedContactAffiliation = "";
   private contactAffiliations: RadioButton[] = [
@@ -95,13 +76,46 @@ export default class ContactInfoForm extends Vue {
     },
   ];
 
+  private branchRanksData: unknown = [
+    {
+      "USAF": [
+        { rank: "AF Rank 1", value: "AF-R1", },
+        { rank: "AF Rank 2", value: "AF-R1", },
+        { rank: "AF Rank 3", value: "AF-R1", },
+      ],
+    }
+
+  ];
+
   // computed
   
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
   }
 
+  // methods
+
+  private setShowAccessRadioButtons(): void {
+    this._showAccessRadioButtons = this.selectedContactAffiliation === "CIV" 
+      || this.selectedBranch !== "";
+  }
+
+  private setRankData(): void {
+
+  }
+
+  // watchers
+
+  @Watch("selectedBranch")
+  protected branchChange(): void {
+    this.setShowAccessRadioButtons();
+    this.setRankData();
+  }
+
+  @Watch("selectedContactAffiliation")
+  protected contactAffiliationChange(): void {
+    this.setShowAccessRadioButtons();
+  }
+
 }
 </script>
-
-           
