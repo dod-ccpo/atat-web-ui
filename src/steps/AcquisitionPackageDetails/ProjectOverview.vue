@@ -17,6 +17,7 @@
               label="Project/Requirement Title"
               class="input-max-width"
               tooltipText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
+              :rules=[required]
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
@@ -79,6 +80,9 @@ export default class ProjectOverview extends Vue {
       value: "no",
     }
   ] 
+
+  private required = (v:string)=> v === "" || "Please enter your project title";
+  private maxLength = (v:string)=> v.length >= 60 || "Title cannot exceed 60 characters." 
 }
 </script>
 
