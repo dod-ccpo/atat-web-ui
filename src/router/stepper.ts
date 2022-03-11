@@ -9,7 +9,7 @@ import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/Alternate
 import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import Summary from "../steps/Summary.vue";
 import StepTwo from "../steps/StepTwo.vue";
-import Validators from "../validation/Validators.vue";
+import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
 import { AcorsRouteResolver } from "./resolvers";
@@ -252,7 +252,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     name: "Review_Required_Forms",
     menuText: "Review Required Forms",
     path: "/review-required-forms",
-    component: Validators,
+    component: ValidatorsExample,
   },
 ];
 

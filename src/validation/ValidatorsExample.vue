@@ -3,31 +3,31 @@
     <v-row>
       <v-col cols="7"
         ><ATATTextField
-          :rules="minRules"
+          :rules="[minValue(3)]"
           :value="minValue"
           label="Min Length 3"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="minCustomRules"
+          :rules="[]"
           :value="minValueCustom"
           label="Min Length 3 Custom message"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="maxRules"
+          :rules="[]"
           :value="maxValue"
           label="Max Length 9"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="requiredRules"
+          :rules="[]"
           :value="requiredValue"
           label="Value Required"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="integerRules"
+          :rules="[]"
           :value="integerValue"
           label="Integers only"
       /></v-col>
@@ -36,29 +36,29 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import Vue from "vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import validators from "@/validation/";
+import Validators from "@/mixins/Validators";
 
 @Component({
   components: {
     ATATTextField,
   },
 })
-export default class Validatators extends Vue {
+export default class ValidatatorsExample extends Mixins(Validators) {
   private minValue = "a";
   private minValueCustom = "a";
-  private minCustomRules: Array<unknown> = [
-    validators.minLength(3, "you need at least 3 chars"),
-  ];
-  private minRules: Array<unknown> = [validators.minLength(3)];
+//   private minCustomRules: Array<unknown> = [
+//     validators.minLength(3, "you need at least 3 chars"),
+//   ];
+//   private minRules: Array<unknown> = [validators.minLength(3)];
   private maxValue = "12345678910";
-  private maxRules: Array<unknown> = [validators.maxLength(9)];
+//   private maxRules: Array<unknown> = [validators.maxLength(9)];
   private requiredValue = "";
-  private requiredRules: Array<unknown> = [validators.required()];
+//   private requiredRules: Array<unknown> = [validators.required()];
   private integerValue = "y";
-  private integerRules: Array<unknown> = [validators.integer()];
+//   private integerRules: Array<unknown> = [validators.integer()];
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
