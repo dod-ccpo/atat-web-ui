@@ -7,7 +7,7 @@ import { DefaultProps } from "vue/types/options";
 Vue.config.productionTip = false;
 Vue.use(Vuetify);
 
-describe("Testing ATATTextField Component", () => {
+describe("Testing ATATSelect Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
