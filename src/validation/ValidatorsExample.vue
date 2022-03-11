@@ -9,7 +9,7 @@
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="[$validators.minLength(3, 'need more than 3 chars bud')]"
+          :rules="[$validators.minLength(3, 'need at least than 3 chars bud')]"
           :value="minValueCustom"
           label="Min Length 3 Custom message"
       /></v-col>
