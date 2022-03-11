@@ -3,12 +3,12 @@
   <section class="mt-10">
     <hr />
     <h2 id="ContactInfoHeader" class="form-section-heading">
-      Your COR’s Contact Information
+      Your {{ corOrAcor }}’s Contact Information
     </h2>
 
     <ATATRadioGroup
       id="ContactAffiliation"
-      legend="What role best describes your COR’s affiliation with the DoD?"
+      :legend="'What role best describes your ' + corOrAcor + '’s affiliation with the DoD?'"
       :items="contactAffiliations"
       :value.sync="selectedContactAffiliation"
       class="mb-10"
