@@ -2,7 +2,7 @@
   <v-container fluid class="container-max-width">
     <v-row>
       <v-col>
-        <h1 class="page-header mb-13">
+        <h1 class="page-header">
           Next, we’ll gather information about your organization
         </h1>
 
@@ -21,6 +21,7 @@
 
         <a
           role="button"
+          id="RequestAgencyAdded"
           class="text-link"
           :class="{ 'mb-10 d-inline-block': !selectedServiceOrAgency}"
           @click="showDialog = true"
@@ -30,7 +31,7 @@
 
         <div v-if="selectedServiceOrAgency" class="mt-10">
           <hr/>
-          <section>
+          <section id="Section1">
             <h2 class="form-section-heading">1. Tell us more about your organization</h2>
             <ATATAutoComplete
               id="DisaOrg"
@@ -63,7 +64,7 @@
             <hr/>
           </section>
 
-          <section>
+          <section id="Section2">
             <h2 class="form-section-heading">2. What is your organization’s address?</h2>
 
             <ATATRadioGroup

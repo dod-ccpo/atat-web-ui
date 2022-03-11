@@ -3,7 +3,7 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <h1>Tell us more about the scope of your project</h1>
+          <h1 class="page-header">Tell us more about the scope of your project</h1>
        
           <ATATAlert type="info" :showIcon="false" class="copy-max-width mt-10">
             <template v-slot:content>

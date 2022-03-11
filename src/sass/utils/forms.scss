@@ -4,6 +4,10 @@
         max-width: 446px !important;
     }
 }
+.textarea-max-width {
+  // only used for textareas
+  max-width: 740px !important;
+}
 
 .optional {
     font-size: 1.4rem;
@@ -18,7 +22,6 @@
         margin-top: 0 !important;
     }
 }
-
 
 // radio buttons
 .v-input--selection-controls {
@@ -40,5 +43,11 @@ hr{
 //hides the empty error messages space below each form field
 //that is put there by vuetify
 .v-messages{
-   min-height: 0px !important;
+  min-height: 0px !important;
+}
+
+.ATATRadioGroup {
+  legend {
+    font-weight: 500;
+  }
 }

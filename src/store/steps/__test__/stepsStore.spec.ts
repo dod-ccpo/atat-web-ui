@@ -32,13 +32,13 @@ localVue.use(Vuex);
         name: "CHILD_STEP_TWO",
         path: "/two", // should be same as parent route
         completePercentageWeight: 5,
-        routeResolver: testRouteResolver,
       },
       {
         menuText: "Child Step Three",
         name: "CHILD_STEP_THREE",
         path: "/three", // should be same as parent route
         completePercentageWeight: 5,
+        routeResolver: testRouteResolver,
       },
       {
         menuText: "Child Step Four",
