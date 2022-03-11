@@ -3,31 +3,31 @@
     <v-row>
       <v-col cols="7"
         ><ATATTextField
-          :rules="[minValue(3)]"
+          :rules="[$validators.minLength(3)]"
           :value="minValue"
           label="Min Length 3"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="[]"
+          :rules="[$validators.minLength(3, 'need more than 3 chars bud')]"
           :value="minValueCustom"
           label="Min Length 3 Custom message"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="[]"
+          :rules="[$validators.maxLength(9)]"
           :value="maxValue"
           label="Max Length 9"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="[]"
+          :rules="[$validators.required()]"
           :value="requiredValue"
           label="Value Required"
       /></v-col>
       <v-col cols="7"
         ><ATATTextField
-          :rules="[]"
+          :rules="[$validators.integer()]"
           :value="integerValue"
           label="Integers only"
       /></v-col>
@@ -46,7 +46,7 @@ import Validators from "@/mixins/Validators";
     ATATTextField,
   },
 })
-export default class ValidatatorsExample extends Mixins(Validators) {
+export default class ValidatatorsExample extends Vue {
   private minValue = "a";
   private minValueCustom = "a";
 //   private minCustomRules: Array<unknown> = [
@@ -75,6 +75,7 @@ export default class ValidatatorsExample extends Mixins(Validators) {
   }
 
   public async mounted(): Promise<void> {
+    console.log(this.$validators)
     await this.validateForm();
   }
 }
