@@ -35,7 +35,7 @@
     </a>
     <ATATDialog
       :showDialog.sync="showDialog"
-      :title='title'
+      :title="'Request change to ' + corOrAcor + '\'s contact information'"
       no-click-animation
       okText="Send Request"
       width="632px"
@@ -81,11 +81,6 @@ export default class PersonCard extends Vue {
 
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
-  }
-  get title(): string {
-    return this.corOrAcor === 'COR'
-      ? "Request change to COR's contact information"
-      : "Request change to ACOR's contact information"
   }
 
   // methods
