@@ -18,7 +18,8 @@
       "webpack-env",
       "vuetify",
       "jest",
-      "cypress"
+      "cypress",
+      "cypress-real-events"
     ],
     "paths": {
       "@/*": [
