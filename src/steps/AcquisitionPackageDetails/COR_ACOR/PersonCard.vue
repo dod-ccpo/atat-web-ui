@@ -50,7 +50,7 @@
           rows="7"
           class="pb-16"
         />
-      </template>s
+      </template>
     </ATATDialog>
   </div>
 </template>
