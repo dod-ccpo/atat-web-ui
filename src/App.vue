@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
-    <ATATPageHead  :headline="getCurrentStepMenuText()"/>
+    <ATATPageHead  :headline="projectTitle"/>
     <v-main id="app">
       <router-view></router-view>
       <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')" />
@@ -24,6 +24,9 @@ import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
 import { Component, Watch } from "vue-property-decorator";
 import { buildStepperData } from "./router/stepper";
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
+
 
 @Component({
   components: {
@@ -85,5 +88,10 @@ export default class App extends Vue {
 
       return label;
    }
+  public get projectTitle(): string {
+    return AcquisitionPackage.projectTitle !== ""
+      ? AcquisitionPackage.projectTitle
+      : "New Acquisition";
+  }
 }
 </script>
