@@ -1,7 +1,6 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
-    <v-flex class="d-flex align-center">
-      <div class="width-100">
+    <div class="d-flex align-center" v-if="label">
       <label
           :id="id + '_text_field_label'"
           class="form-field-label font-weight-medium width-100"
@@ -24,31 +23,38 @@
               v-on="on"
               :ripple="false"
               :aria-label="'Help for ' + label"
-          ><v-icon class="icon-16 ma-0 pa-0" small color="#544496"
-          >help_outline
-          </v-icon>
+          >
+            <v-icon class="icon-16 ma-0 pa-0" small color="#544496"
+            >help_outline
+            </v-icon>
           </v-btn>
         </template>
         <span>{{ tooltipText }}</span>
       </v-tooltip>
-       </div>
-    </v-flex>
-    <v-flex class="width-100 mb-2 help-text">{{ helpText }}</v-flex>
-    <v-flex class="d-flex width-100">
+    </div>
+    <div class="width-100 mb-2 help-text">{{ helpText }}</div>
+    <div class="d-flex flex-column width-100">
         <v-textarea
+            ref="atatTextArea"
             :id="id + '_text_area'"
+            outlined
             :value.sync="_value"
-            hide-details="auto"
             :placeholder="placeHolder"
             @input="inputActions"
-            :rows="rows"
             class="text-primary"
+            :hide-details="true"
+            :rules="rules"
+            :rows="rows"
             :readonly="readOnly"
             :no-resize="noResize"
-            outlined
-        >
-        </v-textarea>
-    </v-flex>
+            @blur="onBlur"
+            @update:error="setErrorMessage"
+        ></v-textarea>
+        <div v-if="errorMessage.length>0" class="d-flex justify-start align-center atat-text-field-error mt-2">
+          <div><v-icon class="text-base-error icon-16 mt-0 ma-1">error</v-icon></div>
+          <div class="field-error ml-2">{{errorMessage[0]}}</div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -58,22 +64,39 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({})
 export default class ATATTextArea extends Vue {
+  // refs
+  $refs!: {
+    atatTextArea: Vue & { errorBucket: string[]; errorCount: number };
+  };
+
   // props
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
-  @Prop({ default: "Form Field Label" }) private label!: string;
+  @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @PropSync("value", { default: "" }) private _value!: string;
   @Prop({ default: 4 }) private rows!: number;
   @Prop({ default: false }) private readOnly!: boolean;
+  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
   @Prop({ default: true }) private noResize!: boolean;
+
+
   //data
   private placeHolder = "";
-
+  private errorMessage: string[] = [];
   private inputActions(v: string) {
     this._value = v;
+  }
+
+  private setErrorMessage(): void {
+    this.errorMessage = this.$refs.atatTextArea.errorBucket;
+  }
+
+  //@Events
+  private onBlur() : void{
+    this.setErrorMessage();
   }
 }
 </script>

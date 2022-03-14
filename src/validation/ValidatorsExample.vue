@@ -36,10 +36,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import Vue from "vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import Validators from "@/mixins/Validators";
 
 @Component({
   components: {
@@ -70,12 +69,10 @@ export default class ValidatatorsExample extends Vue {
     await this.$nextTick(() => {
       valid = this.Form.validate();
     });
-
     return valid;
   }
 
   public async mounted(): Promise<void> {
-    console.log(this.$validators)
     await this.validateForm();
   }
 }

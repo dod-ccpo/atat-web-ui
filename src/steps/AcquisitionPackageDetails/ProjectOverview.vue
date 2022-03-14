@@ -15,9 +15,13 @@
             <ATATTextField
               id="ProjectTitle"
               label="Project/Requirement Title"
+              :rules="[
+                $validators.required('Please enter your project title'), 
+                $validators.maxLength(5, 'Title cannot exceed 60 characters')
+              ]"
+              :value="projectTitle"
               class="input-max-width"
               tooltipText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
-              :rules=[required]
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
@@ -26,6 +30,10 @@
               label="What is the scope of your requirement?"
               class="width-100"
               :rows=7
+              :rules="[
+                $validators.required('Please describe the scope of your requirement'), 
+                $validators.maxLength(300, 'Please limit your description to 300 characters or less.')
+              ]"
               helpText="Briefly describe the type of resources and services to be
               acquired, and what is necessary to achieve mission specific
               outcomes for this particular requirement (e.g., move DITCO’s contract
@@ -68,6 +76,7 @@ import { RadioButton } from "types/Global";
 })
 export default class ProjectOverview extends Vue {
   private radioValue = '';
+  private projectTitle = '';
   private radioGroupItems:RadioButton[] = [
     {
       id: "Yes",
@@ -80,9 +89,6 @@ export default class ProjectOverview extends Vue {
       value: "no",
     }
   ] 
-
-  private required = (v:string)=> v === "" || "Please enter your project title";
-  private maxLength = (v:string)=> v.length >= 60 || "Title cannot exceed 60 characters." 
 }
 </script>
 
