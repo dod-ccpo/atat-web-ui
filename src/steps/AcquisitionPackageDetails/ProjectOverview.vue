@@ -88,13 +88,16 @@ export default class ProjectOverview extends Vue {
 
   private currentTitle = "";
 
+  public get projectTitle() {
+   return AcquisitionPackage.getTitle()
+  }
+
   public set projectTitle(value: string) {
     AcquisitionPackage.setProjectTitle(value);
   }
 
   public onTitleChanged():void {
     this.projectTitle = this.currentTitle;
-      
   }
 }
 </script>

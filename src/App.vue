@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
-    <ATATPageHead  :headline="projectTitle"/>
+    <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
       <router-view></router-view>
-      <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')" />
-      <ATATFooter />
+      <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')"/>
+      <ATATFooter/>
     </v-main>
   </v-app>
 </template>
@@ -22,8 +22,8 @@ import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
-import { Component, Watch } from "vue-property-decorator";
-import { buildStepperData } from "./router/stepper";
+import {Component, Watch} from "vue-property-decorator";
+import {buildStepperData} from "./router/stepper";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -37,11 +37,11 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 export default class App extends Vue {
-   $refs!: {
+  $refs!: {
     sideStepper: ATATSideStepper;
   };
 
-   private stepperData = buildStepperData();
+  private stepperData = buildStepperData();
 
   async mounted(): Promise<void> {
     //get first step and intitialize store to first step;
@@ -49,18 +49,18 @@ export default class App extends Vue {
     const step = await Steps.findRoute(routeName || "");
 
     if (routeName && step) {
-      const { stepName} = step;
+      const {stepName} = step;
       Steps.setCurrentStep(stepName);
     }
   }
 
-   @Watch("$route")
+  @Watch("$route")
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
 
     if (routeName && step) {
-      const { stepName, stepNumber } = step;
+      const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
     }
@@ -68,26 +68,27 @@ export default class App extends Vue {
 
   async navigate(direction: string): Promise<void> {
     const nextStepName =
-      direction === "next" ? await Steps.getNext(): 
-      await Steps.getPrevious();
+      direction === "next" ? await Steps.getNext() :
+        await Steps.getPrevious();
 
     if (nextStepName) {
-      this.$router.push({ name: nextStepName});
+      this.$router.push({name: nextStepName});
     }
   }
 
-   getCurrentStepMenuText(): string | undefined {
-      let label = Steps.currentStep?.stepLabel;
-      // temporarily transform the 'project overview' and 'project scope' 
-      // titles to 'demo package'
-      let demoPackage = ["project overview", "project scope"];
-      
-      if (demoPackage.some((dp)=> dp=== (label && label.toLowerCase()) )){
-        label = "Demo Package";
-      }
+  getCurrentStepMenuText(): string | undefined {
+    let label = Steps.currentStep?.stepLabel;
+    // temporarily transform the 'project overview' and 'project scope'
+    // titles to 'demo package'
+    let demoPackage = ["project overview", "project scope"];
 
-      return label;
-   }
+    if (demoPackage.some((dp) => dp === (label && label.toLowerCase()))) {
+      label = "Demo Package";
+    }
+
+    return label;
+  }
+
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
       ? AcquisitionPackage.projectTitle

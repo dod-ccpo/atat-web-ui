@@ -1,10 +1,20 @@
 import {getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "../index";
 
-@Module({name: 'AcquisitionPackage', namespaced: true, dynamic: true, store: rootStore})
+@Module({
+  name: 'AcquisitionPackage',
+  namespaced: true,
+  dynamic: true,
+  store: rootStore
+})
+
 export class AcquisitionPackageStore extends VuexModule {
   projectTitle = "";
   hasAlternativeContactRep: boolean | null = null;
+
+  public getTitle(): string {
+    return this.projectTitle;
+  }
 
   @Mutation
   public setHasAlternateCOR(value: boolean): void {
