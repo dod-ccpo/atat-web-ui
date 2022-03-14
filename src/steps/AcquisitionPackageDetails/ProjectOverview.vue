@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <h1 class="page-header">
-            Let’s start with basic info about your {{ projectTitle }}
+            Let’s start with basic info about your new acquisition
           </h1>
           <p class="page-intro">
             In this section, we will gather some overarching details about your
@@ -99,11 +99,6 @@ export default class ProjectOverview extends Vue {
   }
 
   public onTitleChanged():void {
-
-    if(this.currentTitle === "" || this.currentTitle == this.projectTitle){
-        return;
-    }
-
     this.projectTitle = this.currentTitle;
       
   }
