@@ -9,10 +9,10 @@
 const minLength = (
   length: number,
   message?: string
-): ((v: any) => string | true | undefined) => {
+): ((v: string ) => string | true | undefined) => {
   message = message || `Min ${length} characters allowed.`;
 
-  return (v: any) => {
+  return (v: string ) => {
     return v && v.length < length ? message : true;
   };
 };
@@ -28,9 +28,9 @@ const minLength = (
 const maxLength = (
   length: number,
   message?: string
-): ((v: any) => string | true | undefined) => {
+): ((v: string) => string | true | undefined) => {
   message = message || `Max ${length} characters allowed.`;
-  return (v: any) => {
+  return (v: string) => {
     return v && v.length > length ? message : true;
   };
 };
@@ -43,10 +43,10 @@ const maxLength = (
  */
 const required = (
   message?: string
-): ((v: any) => string | true | undefined) => {
+): ((v: string) => string | true | undefined) => {
   message = message || "This field is required.";
 
-  return (v: any) => {
+  return (v: string) => {
     return !v || (v.length && v.length < 1) ? message : true;
   };
 };
@@ -58,7 +58,7 @@ const required = (
  * @param message
  * @returns {function(*=): boolean}
  */
-const integer = (message?: string): ((v: any) => string | true | undefined) => {
+const integer = (message?: string): ((v: string) => string | true | undefined) => {
   message = message || "The value must be an integer number";
 
   return (v) => Number.isInteger(Number(v)) || message;
