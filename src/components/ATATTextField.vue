@@ -31,6 +31,7 @@
         class="text-primary"
         :suffix="suffix"
         :rules="rules"
+        @blur="$emit('blur', $event)"
       >
         <template v-slot:message="{ message }">
         <div class="d-flex justify-start align-center atat-text-field-error">
