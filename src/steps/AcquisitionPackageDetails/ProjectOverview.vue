@@ -59,8 +59,8 @@ import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
-import { RadioButton } from "types/Global";
+import {Component} from "vue-property-decorator";
+import {RadioButton} from "types/Global";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
@@ -88,15 +88,15 @@ export default class ProjectOverview extends Vue {
 
   private currentTitle = "";
 
-  public get projectTitle() {
-   return AcquisitionPackage.getTitle()
+  public get projectTitle(): string {
+    return AcquisitionPackage.getTitle()
   }
 
   public set projectTitle(value: string) {
     AcquisitionPackage.setProjectTitle(value);
   }
 
-  public onTitleChanged():void {
+  public onTitleChanged(): void {
     this.projectTitle = this.currentTitle;
   }
 }
