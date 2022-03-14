@@ -114,6 +114,7 @@ hr, .hr {
 }
 
 .v-application a {
+  color: $primary;
   &.text-link, &.expandable-content-opener, &.primary-text {
     text-decoration: underline;
     color: $primary !important;
@@ -132,8 +133,6 @@ hr, .hr {
     line-height: 1.5rem !important;
     letter-spacing: .025rem !important;
   }
-
-  color: $primary;
 
   .external-link {
     position: relative;
@@ -245,33 +244,8 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
 .page-header {
   margin-bottom: 40px;
 }
-a {
-  &.text-link, &.expandable-content-opener, &.primary-text {
-    text-decoration: underline;
-    &:hover {
-      color: $primary-dark !important;
-    }
-    &:active {
-      color: $primary-darker !important;
-    }
-  }
-  color: $primary !important;
-  .external-link {
-    position: relative;
-    padding-right: 24px;
-    display: inline-block;
-    white-space: nowrap;
-    text-decoration: underline;
-    &:after {
-      font-family: 'Material Icons';
-      content: "launch";
-      text-decoration: none !important;
-      -webkit-font-feature-settings: 'liga';
-      color: $primary;
-      position: absolute;
-      top: -2px;
-      right: 2px;
-      font-size: 20px;
-    }
-  }
+.page-intro {
+  margin-top: -28px;
+  margin-bottom: 40px !important;
+  @extend .copy-max-width;
 }

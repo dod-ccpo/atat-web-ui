@@ -3,12 +3,8 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
-          <h1>Let’s start with basic info about your new acquisition</h1>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <p class="copy-max-width">
+          <h1 class="page-header">Let’s start with basic info about your new acquisition</h1>
+          <p class="page-intro">
             In this section, we will gather some overarching details about your
             project requirements, organization, and points of contact. This
             information will be used to complete your required acquisition forms
@@ -36,7 +32,7 @@
             />
           </div>
           <div class="d-flex align-start flex-column mt-10">
-           <ATATRadioGroup
+            <ATATRadioGroup
               id="emergency-declaration-support-requirement"
               legend="Is this requirement in support of an emergency declaration?"
               :value.sync="radioValue"

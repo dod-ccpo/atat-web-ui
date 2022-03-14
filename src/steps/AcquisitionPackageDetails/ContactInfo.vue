@@ -2,7 +2,7 @@
   <v-container fluid class="container-max-width">
     <v-row class="form-section">
       <v-col>
-        <h1 class="mb-10">Let’s confirm your contact information</h1>
+        <h1 class="page-header">Let’s confirm your contact information</h1>
         <ATATRadioGroup
           legend="What role best describes your affiliation with the DoD?"
           id="ContactRole"
@@ -51,7 +51,7 @@
         />
       </v-col>
     </v-row>
-    <v-row class="form-section">
+    <v-row class="form-section mb-0">
       <v-col>
         <ATATTextField
           label="Your email"
@@ -62,7 +62,8 @@
         <ATATTextField
           label="Your phone number"
           id="ContactPhone"
-          class="input-max-width mb-10"
+          class="input-max-width"
+          :class="{'mb-10' : selectedRole === 'CIV'}"
         />
         <ATATAutoComplete
           v-show="selectedRole === 'CIV'"
@@ -144,27 +145,13 @@ export default class ContactInfo extends Vue {
 
   private selectedSalutation = "";
   private salutationData: SelectData[] = [
-    {
-      text: "Mr.",
-      value: "Mr.",
-    },
-    {
-      text: "Mrs.",
-      value: "Mrs.",
-    },
-    {
-      text: "Miss",
-      value: "Miss",
-    },
-    {
-      text: "Ms.",
-      value: "Ms.",
-    },
-    {
-      text: "Dr.",
-      value: "Dr.",
-    },
+    { text: "Mr.", value: "Mr.", },
+    { text: "Mrs.", value: "Mrs.", },
+    { text: "Miss", value: "Miss", },
+    { text: "Ms.", value: "Ms.", },
+    { text: "Dr.", value: "Dr.", },
   ];
+  
   private selectedRank = "";
   private rankData: SelectData[] = [
     {
