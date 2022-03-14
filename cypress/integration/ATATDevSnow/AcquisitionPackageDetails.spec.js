@@ -37,10 +37,10 @@ describe("Test suite: Acquisition Package ", () => {
 
         // lands on Demo Package
         //header of the view
-        cy.textExists("header.v-toolbar div.h3", "Demo Package");
+        cy.textExists("header.v-toolbar div.h3", "New Acquisition");
         
         //Sub header
-        cy.textExists("div.col h1", "Let’s start with basic info about your new acquisition");
+        cy.textExists("h1.page-header", " Let’s start with basic info about your new acquisition ");
         
         //label of the "Project/Requirement Title" text
         cy.textExists("#ProjectTitle_text_field_label", " Project/Requirement Title ");
@@ -79,17 +79,17 @@ describe("Test suite: Acquisition Package ", () => {
         
         //buttons that exists on the view
         cy.iframe("#atat-app")
-            .find("[type='button']").contains("Back");
+            .find("#BackButton").contains("Back");
             
         cy.iframe("#atat-app")
-            .find("[type='button']").contains("Continue");
+            .find("#ContinueButton").contains("Continue");
     });
 
     it("TC4: Surge Capabilities-Asserts and Validations Tell us more about the scope of your project", () => {
 
         cy.fillNewAcquisition(projectDetails.projectTitle + "001", projectDetails.scope)
         // Navigates to "Tell us more about the scope of your project"
-        cy.textExists("div.col-12.col h1", "Tell us more about the scope of your project");
+        cy.textExists("h1.page-header", "Tell us more about the scope of your project");
         
         //Label of the view
         cy.textExists("div.text-base-darkest h2", "Surge Capabilities");
@@ -117,10 +117,10 @@ describe("Test suite: Acquisition Package ", () => {
 
         //buttons that exists on the view
         cy.iframe("#atat-app")
-            .find("[type='button']").contains("Back");
+            .find("#BackButton").contains("Back");
         
         cy.iframe("#atat-app")
-            .find("[type='button']").contains("Continue");
+            .find("#ContinueButton").contains("Continue");
     });
         
 });
