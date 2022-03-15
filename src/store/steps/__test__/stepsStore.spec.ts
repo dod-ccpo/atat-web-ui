@@ -5,8 +5,8 @@ import  {StepsStore} from "@/store/steps"
 import { StepsState } from '../types';
 import { getModule } from 'vuex-module-decorators';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const testRouteResolver = (current: string): string => {
-
     return "CHILD_STEP_FOUR";
     
 }
