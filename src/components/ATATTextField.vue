@@ -91,8 +91,9 @@ export default class ATATTextField extends Vue {
   }
 
   //@Events
-  private onBlur() : void{
+  private onBlur(event: Event) : void{
     this.setErrorMessage();
+    this.$emit('blur', event)
   }
 }
 </script>

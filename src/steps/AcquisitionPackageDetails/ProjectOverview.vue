@@ -19,9 +19,10 @@
                 $validators.required('Please enter your project title'), 
                 $validators.maxLength(60, 'Title cannot exceed 60 characters')
               ]"
-              :value="projectTitle"
               class="input-max-width"
               tooltipText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
+              :value.sync="currentTitle"
+              @blur="onTitleChanged"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
@@ -64,6 +65,7 @@
 import ATATTextField from "../../components/ATATTextField.vue";
 import ATATTextArea from "../../components/ATATTextArea.vue";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue"
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import Vue from "vue";
 
@@ -79,7 +81,6 @@ import { RadioButton } from "types/Global";
 })
 export default class ProjectOverview extends Vue {
   private radioValue = '';
-  private projectTitle = '';
   private radioGroupItems:RadioButton[] = [
     {
       id: "Yes",
@@ -104,6 +105,20 @@ export default class ProjectOverview extends Vue {
       valid = this.Form.validate();
     });
     return valid;
+  }
+
+  private currentTitle = "";
+
+  public get projectTitle(): string {
+    return AcquisitionPackage.getTitle()
+  }
+
+  public set projectTitle(value: string) {
+    AcquisitionPackage.setProjectTitle(value);
+  }
+
+  public onTitleChanged(): void {
+    this.projectTitle = this.currentTitle;
   }
 
   public async mounted(): Promise<void> {
