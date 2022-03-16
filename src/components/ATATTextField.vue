@@ -18,7 +18,7 @@
         :label="label"
       />
     </div>
-    <div :style="{ 'width': width }">
+    <div >
       <v-text-field
         ref="atatTextField"
         :id="id + '_text_field'"
@@ -31,6 +31,7 @@
         class="text-primary"
         :hide-details="true"
         :suffix="suffix"
+        :style="{ 'max-width': width + 'px' }"
         :rules="rules"
         @blur="onBlur"
         @update:error="setErrorMessage"

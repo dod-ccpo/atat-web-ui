@@ -49,7 +49,7 @@
               name="emergency-declaration-support-requirement-radio-group"
               class="mt-3"
               :rules="[
-                $validators.required('Please select an options'), 
+                $validators.required('Please select an option'), 
               ]"
           >
           </ATATRadioGroup>

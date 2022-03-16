@@ -31,8 +31,10 @@
             id="ContractPricePercentage"
             placeHolder="1-50" 
             suffix="%"
+            width="150"
             :rules="[
-              $validators.required('Please enter your project title'), 
+              $validators.isBetween(1,50,'Please enter a number between 1-50'),
+              $validators.required('Please enter a number between 1-50'), 
             ]"/>
 
         </v-col>
