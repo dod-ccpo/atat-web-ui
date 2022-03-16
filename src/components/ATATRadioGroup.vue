@@ -27,7 +27,6 @@
           :name="name"
           :disabled="item.disabled"
           @blur="setErrorMessage"
-          :ripple="false"
           @click="clearErrorMessage"
         >
           <template v-if="item.description && card" v-slot:label>
