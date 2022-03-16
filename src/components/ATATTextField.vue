@@ -1,6 +1,6 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
-    <v-flex class="d-flex align-center" v-if="label">
+    <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_text_field_label'"
         class="form-field-label mb-2 mr-2"
@@ -17,33 +17,31 @@
         :id="id"
         :label="label"
       />
-    </v-flex>
-    <v-flex :style="{ 'width': width }">
+    </div>
+    <div >
       <v-text-field
+        ref="atatTextField"
         :id="id + '_text_field'"
         outlined
         dense
         :height="42"
         :value.sync="_value"
-        hide-details="auto"
         :placeholder="placeHolder"
         @input="inputActions"
         class="text-primary"
+        :hide-details="true"
         :suffix="suffix"
+        :style="{ 'max-width': width + 'px' }"
         :rules="rules"
-        @blur="$emit('blur', $event)"
+        @blur="onBlur"
+        @update:error="setErrorMessage"
       >
-        <template v-slot:message="{ message }">
-        <div class="d-flex justify-start align-center atat-text-field-error">
-          <v-icon class="text-base-error icon-20">error</v-icon>
-          <div class="field-error ml-2">{{message}}</div>
-        </div>
-      </template>
       </v-text-field>
-    </v-flex>
-    <v-flex v-if="helpText" class="help-text mt-2">
+    </div>
+    <ATATErrorValidation :errorMessages="errorMessages" />
+    <div v-if="helpText" class="help-text mt-2">
       {{ helpText }}
-    </v-flex>
+    </div>
   </div>
 </template>
 
@@ -51,24 +49,31 @@
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 @Component({
   components: {
     ATATTooltip,
+    ATATErrorValidation
   }
 })
 export default class ATATTextField extends Vue {
+  // refs
+  $refs!: {
+    atatTextField: Vue & { errorBucket: string[]; errorCount: number };
+  }; 
+
   // props
   @Prop({ default: true }) private dense!: boolean;
   @Prop({ default: true }) private singleLine!: boolean;
   @Prop({ default: "id_is_missing" }) private id!: string;
-  @Prop({ default: "Form Field Label" }) private label!: string;
+  @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
+  @Prop({ default: []}) private rules!: [];
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
@@ -76,8 +81,19 @@ export default class ATATTextField extends Vue {
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
+  private errorMessages: string[] = [];
   private inputActions(v: string) {
     this._value = v;
+  }
+
+   private setErrorMessage(): void {
+    this.errorMessages = this.$refs.atatTextField.errorBucket;
+  }
+
+  //@Events
+  private onBlur(event: Event) : void{
+    this.setErrorMessage();
+    this.$emit('blur', event)
   }
 }
 </script>

@@ -6,7 +6,7 @@
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-const minLength = (
+ const minLength = (
   length: number,
   message?: string
 ): ((v: string ) => string | true | undefined) => {
@@ -64,6 +64,63 @@ const integer = (message?: string): ((v: string) => string | true | undefined) =
   return (v) => Number.isInteger(Number(v)) || message;
 };
 
+/**
+ * Validator that validates input should not exceed a given 'max' number
+ * Returns the error message otherwise.
+ *
+ * @param {number} max Maximum number allowed
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+ const lessThan = (
+  max: number,
+  message?: string
+): ((v: number) => string | true | undefined) => {
+  message = message || `Value must be less than ${max}`;
+  return (v: number) => {
+    return v && v < max || message ;
+  };
+};
+
+/**
+ * Validator that validates input should be greater than a given 'min' number
+ * Returns the error message otherwise.
+ *
+ * @param {number} min Minimum number allowed
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+ const greaterThan = (
+  min: number,
+  message?: string
+): ((v: number) => string | true | undefined) => {
+  message = message || `Value must be greater than ${min}`;
+  return (v: number) => {
+    return v && v > min ||  message;
+  };
+};
+
+/**
+ * Validator that validates input should be between a given 'min' number
+ * and a given 'max' number
+ * Returns the error message otherwise.
+ *
+ * @param {number} min Minimum number allowed
+ * @param {number} max Maximum number allowed
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+ const isBetween = (
+  min: number,
+  max: number,
+  message?: string
+): ((v: number) => string | true | undefined) => {
+  message = message || `Value must be between ${min} and ${max}`;
+  return (v: number) => {
+    return v && (v >= min && v <= max) ||  message;
+  };
+};
+
 export default {
   install(Vue: any, options: any): void {
     Vue.prototype.$validators = {
@@ -71,7 +128,10 @@ export default {
       minLength,
       maxLength,
       integer,
-      required
+      required,
+      lessThan,
+      greaterThan,
+      isBetween
     };
   },
 };
