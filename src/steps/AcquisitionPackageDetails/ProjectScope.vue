@@ -30,9 +30,11 @@
             label="" 
             id="ContractPricePercentage"
             placeHolder="1-50" 
-            class="width-20" 
             suffix="%"
-            :rules="contractPricePercentageRules"/>
+            :rules="[
+              $validators.required('Please enter your project title'), 
+            ]"/>
+
         </v-col>
       </v-row>
     </v-container>

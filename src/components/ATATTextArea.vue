@@ -50,10 +50,7 @@
             @blur="onBlur"
             @update:error="setErrorMessage"
         ></v-textarea>
-        <div v-if="errorMessage.length>0" class="d-flex justify-start align-center atat-text-field-error mt-2">
-          <div><v-icon class="text-base-error icon-16 mt-0 ma-1">error</v-icon></div>
-          <div class="field-error ml-2">{{errorMessage[0]}}</div>
-        </div>
+      <ATATErrorValidation :errorMessages="errorMessages" />
     </div>
   </div>
 </template>
@@ -61,8 +58,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATErrorValidation
+  }
+})
 export default class ATATTextArea extends Vue {
   // refs
   $refs!: {
@@ -85,13 +87,13 @@ export default class ATATTextArea extends Vue {
 
   //data
   private placeHolder = "";
-  private errorMessage: string[] = [];
+  private errorMessages: string[] = [];
   private inputActions(v: string) {
     this._value = v;
   }
 
   private setErrorMessage(): void {
-    this.errorMessage = this.$refs.atatTextArea.errorBucket;
+    this.errorMessages = this.$refs.atatTextArea.errorBucket;
   }
 
   //@Events

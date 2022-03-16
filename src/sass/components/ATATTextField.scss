@@ -8,28 +8,10 @@
     }
   }
 
-  &.error--text{
-    fieldset, 
-    fieldset:focus{
-        border-color: $error !important;
-        border-width: 2px;
-      } 
-    .v-text-field__suffix{
-        color: $error;
-    }
-  }
-
+  
   .v-text-field__details{
     padding: 0px !important;
     max-width: inherit !important;
     position: fixed;
   }
-
-  .atat-text-field-error{
-    i{
-        margin-top: 1px;   
-    }
-  }
-
-
 }

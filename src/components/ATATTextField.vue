@@ -37,10 +37,7 @@
       >
       </v-text-field>
     </div>
-     <div v-if="errorMessage.length>0" class="d-flex justify-start align-center atat-text-field-error mt-2">
-          <div><v-icon class="text-base-error icon-20 ma-1 mt-0">error</v-icon></div>
-          <div class="field-error ml-2">{{errorMessage[0]}}</div>
-        </div>
+    <ATATErrorValidation :errorMessages="errorMessages" />
     <div v-if="helpText" class="help-text mt-2">
       {{ helpText }}
     </div>
@@ -51,14 +48,16 @@
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 @Component({
   components: {
     ATATTooltip,
+    ATATErrorValidation
   }
 })
 export default class ATATTextField extends Vue {
-    // refs
+  // refs
   $refs!: {
     atatTextField: Vue & { errorBucket: string[]; errorCount: number };
   }; 
@@ -73,7 +72,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
+  @Prop({ default: []}) private rules!: [];
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
@@ -81,13 +80,13 @@ export default class ATATTextField extends Vue {
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
-  private errorMessage: string[] = [];
+  private errorMessages: string[] = [];
   private inputActions(v: string) {
     this._value = v;
   }
 
    private setErrorMessage(): void {
-    this.errorMessage = this.$refs.atatTextField.errorBucket;
+    this.errorMessages = this.$refs.atatTextField.errorBucket;
   }
 
   //@Events

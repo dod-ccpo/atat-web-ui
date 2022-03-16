@@ -1,5 +1,5 @@
 <template>
-  <div>
+   <v-form ref="form" lazy-validation>
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col>
@@ -17,7 +17,7 @@
               label="Project/Requirement Title"
               :rules="[
                 $validators.required('Please enter your project title'), 
-                $validators.maxLength(5, 'Title cannot exceed 60 characters')
+                $validators.maxLength(60, 'Title cannot exceed 60 characters')
               ]"
               :value="projectTitle"
               class="input-max-width"
@@ -48,13 +48,16 @@
               :items="radioGroupItems"
               name="emergency-declaration-support-requirement-radio-group"
               class="mt-3"
+              :rules="[
+                $validators.required('Please select an options'), 
+              ]"
           >
           </ATATRadioGroup>
           </div>
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -89,6 +92,23 @@ export default class ProjectOverview extends Vue {
       value: "no",
     }
   ] 
+
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.form as Vue & { validate: () => boolean };
+  }
+  
+  public async validateForm(): Promise<boolean> {
+    let valid = false;
+
+    await this.$nextTick(() => {
+      valid = this.Form.validate();
+    });
+    return valid;
+  }
+
+  public async mounted(): Promise<void> {
+    // await this.validateForm();
+  }
 }
 </script>
 

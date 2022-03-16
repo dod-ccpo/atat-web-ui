@@ -64,6 +64,24 @@ const integer = (message?: string): ((v: string) => string | true | undefined) =
   return (v) => Number.isInteger(Number(v)) || message;
 };
 
+/**
+ * Validator that validates input should not exceed a given length
+ * Returns the error message otherwise.
+ *
+ * @param {number} max Maximum number allowed
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+ const lessThan = (
+  max: number,
+  message?: string
+): ((v: number) => string | true | undefined) => {
+  message = message || `Value must be less than ${max}`;
+  return (v: number) => {
+    return v && v < max ? message : true;
+  };
+};
+
 export default {
   install(Vue: any, options: any): void {
     Vue.prototype.$validators = {
@@ -71,7 +89,8 @@ export default {
       minLength,
       maxLength,
       integer,
-      required
+      required,
+      lessThan
     };
   },
 };
