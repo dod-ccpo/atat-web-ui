@@ -1,6 +1,5 @@
-describe("Test suite: Common SPA functionality", () => {
-    
-         
+describe("Test suite: Common SPA functionality", () => { 
+
     beforeEach(() => {
 
         cy.visit(Cypress.env("testUrl"));
@@ -10,7 +9,7 @@ describe("Test suite: Common SPA functionality", () => {
         
     })
     
-    it("Testcase1: Vertical Stepper", () => {
+    it("TC1: Vertical Stepper", () => {
         
         const expectedMenuOptions = [
             "01 Acquisition Package Details",
@@ -37,15 +36,15 @@ describe("Test suite: Common SPA functionality", () => {
                 }
             })
         return foundSideMenuItems === expectedMenuOptions.length;
-      
+        
     });
 
-    it('Testcase2: Progress Bar for Vertical Stepper', () => {
+    it('TC2: Progress Bar for Vertical Stepper', () => {
         
         //Completed Percentage(Steps completed)
         cy.completePercent()
             .then((returned_value) => {
-               
+                
                 cy.iframe('#atat-app')
                     .find("._stepper-progress-bar .text-primary").should("contain", returned_value + "%");
             })
@@ -62,7 +61,7 @@ describe("Test suite: Common SPA functionality", () => {
         
     });
 
-    it("Testcase3: Menu tabs on the rightcorner", () => {
+    it("TC3: Menu tabs on the rightcorner", () => {
         const expectedMenuItems = ["Dashboard", "MyPackages", "Resources", "Portals", "UserTab"]
         let foundMenuItems = 0
         
@@ -74,10 +73,10 @@ describe("Test suite: Common SPA functionality", () => {
             }
         })
         return foundMenuItems === expectedMenuItems.length;
-          
+        
     });
 
-    it("Testcase3: Portal Dropdown", () => {
+    it("TC4: Portal Dropdown", () => {
         //Portal dropdown
         cy.get("#Portals").should("exist").click({ force: true });          
         const expectedValues = ["Global Service Desk", " Mission Partner Portal"]
@@ -89,11 +88,11 @@ describe("Test suite: Common SPA functionality", () => {
             }
         })
         return foundValues === expectedValues.length;
-          
-    });                                         
-             
-    it("Testcase4: User Tab", () => {
-               
+        
+    });                                      
+    
+    it("TC5: User Tab", () => {
+        
         //Verifying the Usertab tab at the top right corner
         cy.get(".sub-avatar").then(($loginUserName) => {
             
@@ -105,7 +104,7 @@ describe("Test suite: Common SPA functionality", () => {
             var lastName = names[1];
             let firstlastNameChar = lastName.charAt(0);
             expect(username).to.deep.eq(firstNameChar.toUpperCase() + firstlastNameChar.toUpperCase());
-         
+            
         })
     })
 
@@ -124,7 +123,7 @@ describe("Test suite: Common SPA functionality", () => {
                 }
             })
         return foundItems === footerItems.length;
-          
+        
     })      
                 
 });

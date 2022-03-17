@@ -40,7 +40,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists("header.v-toolbar div.h3", "New Acquisition");
         
         //Sub header
-        cy.textExists("h1.page-header", " Let’s start with basic info about your new acquisition ");
+        cy.textExists("h1.page-header", "Let’s start with basic info about your new acquisition");
         
         //label of the "Project/Requirement Title" text
         cy.textExists("#ProjectTitle_text_field_label", " Project/Requirement Title ");
@@ -64,8 +64,8 @@ describe("Test suite: Acquisition Package ", () => {
         
         //Assert Emergency declaration text          
         cy.iframe("#atat-app")
-            .find("#emergency-declaration-support-requirement legend").then(($emergencytext) => {
-                expect($emergencytext).to.have.text("Is this requirement in support of an emergency declaration?");
+            .find("#emergency-declaration-support-requirement_radio_group_control legend").then(($emergencytext) => {
+                expect($emergencytext).to.have.text(" Is this requirement in support of an emergency declaration? ");
             });
         
         //Assert radio button
@@ -99,21 +99,23 @@ describe("Test suite: Acquisition Package ", () => {
         
         //Enter the aplha numeric value to validate the error message        
         cy.iframe("#atat-app")
-            .find("#ContractPricePercentage_text_field_control")
+            .find("#ContractPricePercentage_text_field")
             .should("be.visible")
-            .type(projectDetails.invalidTextContractPercentage).click()
-            .find(".v-messages__message")
-            .should("contain.text", "Enter a number between 1-50");
+            .type(projectDetails.invalidTextContractPercentage).blur({ force: true })
+        cy.iframe("#atat-app")
+            .find("#ContractPricePercentage_text_field_control .field-error")
+            .should("contain.text", "Please enter a number between 1-50");
         
         //Enter the value more than 50  to validate the error message
         cy.iframe("#atat-app")
-            .find("#ContractPricePercentage_text_field_control")
+            .find("#ContractPricePercentage_text_field")
             .should("be.visible")
             .clear()
             .type(projectDetails.invalidNumericContractPercentage)
-            .click()
-            .find(".v-messages__message")
-            .should("contain.text", "Enter a number between 1-50");
+            .blur({ force: true });
+        cy.iframe("#atat-app")
+            .find("#ContractPricePercentage_text_field_control .field-error")
+            .should("contain.text", "Please enter a number between 1-50");       
 
         //buttons that exists on the view
         cy.iframe("#atat-app")
