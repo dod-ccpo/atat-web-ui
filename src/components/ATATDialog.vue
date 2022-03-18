@@ -27,8 +27,8 @@
           color="primary"
           :ripple="false"
           id="dialog_ok"
-          @click="onOK"
           :disabled="disabled"
+          @click="onOK"
         >
           {{ okText }}
         </v-btn>
