@@ -112,7 +112,7 @@
                   label="APO/FPO"
                   :class="inputClass"
                   :items="militaryPostOfficeOptions"
-                  :selectedValue.sync="selectedMilitaryPO"
+                  :value.sync="selectedMilitaryPO"
                 />
               </v-col>
               <v-col 
