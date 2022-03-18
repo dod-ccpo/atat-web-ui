@@ -82,7 +82,7 @@
                 <ATATTextField
                   id="StreetAddress"
                   label="Street address"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                 />
               </v-col>
               <v-col class="col-12 col-lg-3">
@@ -90,7 +90,7 @@
                   id="UnitSuite"
                   label="Unit, suite, etc."
                   :optional="true"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                   width="160px"
                 />
               </v-col>
@@ -104,13 +104,13 @@
                   v-show="selectedAddressType !== 'MIL'"
                   id="City"
                   label="City"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                 />
                 <ATATSelect
                   v-show="selectedAddressType === 'MIL'"
                   id="APO_FPO"
                   label="APO/FPO"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                   :items="militaryPostOfficeOptions"
                   :selectedValue.sync="selectedMilitaryPO"
                 />
@@ -123,7 +123,7 @@
                   id="State"
                   label="State"
                   v-show="selectedAddressType === 'USA'"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                   titleKey="text"
                   :searchFields="['text', 'value']"
                   :items="stateListData"
@@ -136,7 +136,7 @@
                   v-show="selectedAddressType === 'MIL'"
                   id="StateCode"
                   label="State code"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                   :items="stateCodeListData"
                   :selectedValue.sync="selectedStateCode"
                 />
@@ -145,14 +145,14 @@
                   v-show="selectedAddressType === 'FOR'"
                   id="StateProvince"
                   label="State or Province"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                 />
               </v-col>
               <v-col class="col-12 col-lg-3">
                 <ATATTextField
                   id="ZIP"
                   :label="zipLabel"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                   width="160px"
                 />
               </v-col>
@@ -162,7 +162,7 @@
                 <ATATAutoComplete
                   id="Country"
                   label="Country"
-                  :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  :class="inputClass"
                   titleKey="text"
                   :searchFields="['text', 'value']"
                   :items="countryListData"
@@ -194,7 +194,7 @@
         <ATATTextField
           id="AgencyOrgName"
           label="Agency/Organization Name"
-          :class="[{'input-max-width': stackInputs}, 'my-2 pb-16 mb-9']"
+          :class="[inputClass, 'pb-16 mb-9']"
         />
       </template>
     </ATATDialog>
@@ -227,8 +227,8 @@ import { RadioButton, SelectData } from "types/Global";
 export default class OrganizationInfo extends Vue {
   
   // computed
-  get stackInputs(): boolean {
-    return this.$vuetify.breakpoint.mdAndDown;
+  get inputClass(): string {
+    return this.$vuetify.breakpoint.mdAndDown ? "input-max-width my-2" : "my-2";
   }
 
   get zipLabel(): string {

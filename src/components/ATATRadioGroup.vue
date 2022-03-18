@@ -90,7 +90,7 @@ export default class ATATRadioGroup extends Vue {
   }
 
   // events
-  private onClick(value: string): void {
+  private onClick(): void {
     this.clearErrorMessage();
   }
 
