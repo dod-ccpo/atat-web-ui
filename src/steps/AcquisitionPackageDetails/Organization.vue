@@ -259,8 +259,8 @@ export default class OrganizationInfo extends Vue {
 
   private selectedMilitaryPO = "";
   private militaryPostOfficeOptions: SelectData[] = [
-    { text: "APO", value: "APO" },
-    { text: "FPO", value: "FPO" },
+    { text: "Army Post Office (APO)", value: "APO" },
+    { text: "Fleet Post Office (FPO)", value: "FPO" },
   ];
 
   private selectedDisaOrg = "";
