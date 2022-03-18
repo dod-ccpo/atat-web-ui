@@ -78,7 +78,7 @@
             />
 
             <v-row>
-              <v-col class="col-12 col-lg-7">
+              <v-col class="col-12 col-lg-8">
                 <ATATTextField
                   id="StreetAddress"
                   label="Street address"
@@ -96,7 +96,10 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col class="col-12 col-lg-4">
+              <v-col 
+                class="col-12"
+                :class="[selectedAddressType !== 'FOR' ? 'col-lg-5' : 'col-lg-4']"
+              >
                 <ATATTextField
                   v-show="selectedAddressType !== 'MIL'"
                   id="City"
@@ -112,7 +115,10 @@
                   :selectedValue.sync="selectedMilitaryPO"
                 />
               </v-col>
-              <v-col class="col-12 col-lg-3">
+              <v-col 
+                class="col-12"
+                :class="[selectedAddressType !== 'FOR' ? 'col-lg-3' : 'col-lg-4']"
+              >
                 <ATATAutoComplete
                   id="State"
                   label="State"
@@ -140,7 +146,6 @@
                   id="StateProvince"
                   label="State or Province"
                   :class="[{ 'input-max-width': stackInputs }, 'my-2']"
-                  width="160px"
                 />
               </v-col>
               <v-col class="col-12 col-lg-3">
@@ -148,6 +153,7 @@
                   id="ZIP"
                   :label="zipLabel"
                   :class="[{ 'input-max-width': stackInputs }, 'my-2']"
+                  width="160px"
                 />
               </v-col>
             </v-row>

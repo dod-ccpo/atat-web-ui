@@ -18,7 +18,7 @@
         :label="label"
       />
     </div>
-    <div >
+    <div :style="'width: ' + width">
       <v-text-field
         ref="atatTextField"
         :id="id + '_text_field'"

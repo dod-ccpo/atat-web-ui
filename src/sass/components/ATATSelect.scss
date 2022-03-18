@@ -43,9 +43,21 @@
   border-radius: 8px !important;
 }
 
-/* TODO need to make this only for single selection... need to add class */
+// accommodate selected text longer than the width of the input
+// keeps content on one line and fades out before the search or dropdown icon
 .v-select__selections {
   white-space: nowrap;
-  // overflow: hidden;
+  overflow-x: hidden;
+  flex-wrap: unset;
   max-height: 25px;
+  position: relative;
+  &:after {
+    position: absolute;
+    content: "";
+    right: 0;
+    height: 25px;
+    width: 20px;
+    display: block;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);   
+  }
 }
