@@ -27,8 +27,8 @@
           color="primary"
           :ripple="false"
           id="dialog_ok"
-          :disabled='disabled'
           @click="onOK"
+          :disabled="disabled"
         >
           {{ okText }}
         </v-btn>
@@ -51,7 +51,7 @@ export default class ATATDialog extends Vue {
   @Prop({default: "OK"}) private okText!: string;
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
-  @Prop() private disabled = false
+  @Prop({ default: false }) private disabled!: boolean;
 
   @PropSync("showDialog")
   private _showDialog!: boolean;

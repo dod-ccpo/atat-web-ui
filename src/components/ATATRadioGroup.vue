@@ -26,8 +26,8 @@
           :style="{ width: width }"
           :name="name"
           :disabled="item.disabled"
-          @blur="setErrorMessage"
-          @click="clearErrorMessage"
+          @blur="onBlur"
+          @click="onClick"
         >
           <template v-if="item.description && card" v-slot:label>
             <div class="d-flex flex-column">
@@ -43,8 +43,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync } from "vue-property-decorator";
 import Vue from "vue";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import { RadioButton } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
@@ -53,6 +53,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
     ATATErrorValidation
   }
 })
+
 export default class ATATRadioGroup extends Vue {
 
   // refs
@@ -60,11 +61,12 @@ export default class ATATRadioGroup extends Vue {
     radioButtonGroup: Vue & { errorBucket: string[]; errorCount: number };
   }; 
 
+  // props
   @PropSync("value") private _selectedValue!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "" }) private legend!: string;
-  @Prop({ default: ["empty items array"] }) private items!: RadioButton[];
-  @Prop({ default: [] }) private rules!: [];
+  @Prop({ default: [""] }) private items!: RadioButton[];
+  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;
@@ -72,8 +74,10 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: "" }) private width!: string;
   @Prop() private name!: string;
 
-  //data
+  // data
   private errorMessages: string[] = [];
+
+  // methods
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
   } 
@@ -85,13 +89,19 @@ export default class ATATRadioGroup extends Vue {
     return string.replace(/[^A-Z0-9]/gi, "");
   }
 
-  //@Events
-  private onBlur() : void{
+  // events
+  private onClick(value: string): void {
+    this.clearErrorMessage();
+  }
+
+  private onBlur(): void {
     this.setErrorMessage();
   }
 
-  public async mounted(): Promise<void>{
-    // this.setErrorMessage();
+  // watch
+  @Watch("_selectedValue")
+  protected valueChange(): void {
+    this.$emit("radioButtonSelected", this._selectedValue);
   }
 }
 </script>
