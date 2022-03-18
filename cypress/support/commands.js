@@ -47,7 +47,39 @@ Cypress.Commands.add('enterTextInTextField', (selector, text) => {
         .should("have.value", text);
 });
 
-Cypress.Commands.add('completePercent', () => {        
+Cypress.Commands.add('btnExists', (selector, text) => {
+    cy.iframe("#atat-app")
+        .find(selector)
+        .should("be.visible")
+        .and("have.text", text);  
+});
+
+Cypress.Commands.add('radioBtn', (selector,text) => {
+    cy.iframe("#atat-app")
+        .find(selector).should("have.value", text);  
+});
+
+Cypress.Commands.add( "hoverToolTip", (selector, selector1, expectedText) => {
+    cy.iframe("#atat-app")
+        .find(selector)
+        .should("be.visible")        
+        .realHover();
+    cy.textExists(selector1, expectedText);  
+});
+
+
+Cypress.Commands.add("dropDownClick", (selector) => {
+    cy.iframe("#atat-app")
+        .find(selector).click();  
+});
+
+Cypress.Commands.add("autoCompleteSelection", (selector, inputText, selector1) => {
+    cy.iframe("#atat-app")
+        .find(selector).type(inputText);
+    cy.iframe("#atat-app").find(selector1).first().click({ force: true });  
+});
+
+Cypress.Commands.add("completePercent", () => {        
     let percentComplete = 0;
     cy.iframe('#atat-app')
         .find(".global-side-nav-bar .completed-check[data-substep-complete-percentage]")
@@ -61,24 +93,68 @@ Cypress.Commands.add('completePercent', () => {
         });
 });
 
-Cypress.Commands.add('fillNewAcquisition', (ProjectTitle, Scope) => {    
-    cy.enterTextInTextField("#ProjectTitle_text_field", ProjectTitle);
-    cy.enterTextInTextField("#ProjectScope_text_area", Scope);
+Cypress.Commands.add("fillNewAcquisition", (projectTitle, scope) => {    
+    cy.enterTextInTextField("#ProjectTitle_text_field", projectTitle);
+    cy.enterTextInTextField("#ProjectScope_text_area", scope);
     cy.iframe("#atat-app")
         .find("#Radio_Yes").should("have.value", "yes")
         .click({ force: true });
-    cy.iframe("#atat-app")
-        .find("[type='button']").contains("Continue").click();  
+    cy.btnExists("#ContinueButton", " Continue ").click();  
 });
 
-Cypress.Commands.add('fillSurgeCapabilities', (Percentage) => {    
+Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
     cy.iframe("#atat-app")
-        .find("#ContractPricePercentage_text_field_control")
+        .find("#ContractPricePercentage_text_field")
         .should("be.visible")
-        .type(Percentage)
-        .click();
-    
-    cy.iframe("#atat-app")
-        .find("[type='button']").contains("Continue").click();    
-    
+        .clear().type(percentage).blur({ force: true })
+        .then(($el) => {
+            cy.log($el.val());
+            const enteredText = $el.val();
+            if (enteredText < 1 || enteredText > 50) {
+                cy.iframe("#atat-app")
+                    .find("#ContractPricePercentage_text_field_control .field-error")
+                    .should("contain.text", "Please enter a number between 1-50");
+            } else if (isNaN(parseInt(enteredText))) {
+                cy.iframe("#atat-app")
+                    .find("#ContractPricePercentage_text_field_control .field-error")
+                    .should("contain.text", "Please enter a number between 1-50");
+            } else {
+                cy.iframe("#atat-app")
+                    .find("#ContractPricePercentage_text_field_control")
+                    .should("not.contain", "Please enter a number between 1-50");
+            };
+        });
+    if (clickContinue) {
+        cy.btnExists("#ContinueButton", " Continue ").click();
+    };         
 });
+
+Cypress.Commands.add("serviceOrAgency", (inputText) => {
+    cy.dropDownClick("#ServiceOrAgency_AutoComplete_Wrapper .v-input__icon.v-input__icon--append");
+    cy.autoCompleteSelection("#ServiceOrAgency", inputText, "#ServiceOrAgency_AutoComplete_Wrapper .v-list-item__title");
+    cy.iframe("#atat-app")
+        .find("#ServiceOrAgency")
+        .then(($option) => {
+            const selectedOption = $option.val();
+            cy.log(selectedOption);
+            if (selectedOption == "Defense Information Systems Agency (DISA) **") {
+                cy.iframe("#atat-app").find("#DisaOrg_AutoComplete_Wrapper")
+                    .should('exist')
+                    .and("be.visible")
+                    .and("contain", "DISA Organization");
+            } else {
+                cy.iframe("#atat-app").find("#OrgName_text_field_control")
+                    .should("exist")
+                    .and("be.visible")
+                    .and("contain", " Organization name ");
+            };
+        }); 
+});
+
+Cypress.Commands.add("enterOrganizationAddress", (StreetAddress, Unit, City, State, Zipcode) => {
+    cy.enterTextInTextField("#StreetAddress_text_field", StreetAddress);
+    cy.enterTextInTextField("#UnitSuite_text_field", Unit);
+    cy.enterTextInTextField("#City_text_field", City);
+    cy.autoCompleteSelection("#State", State, "#State_AutoComplete_Wrapper .v-list-item__title");
+    cy.enterTextInTextField("#ZIP_text_field", Zipcode);            
+});  
