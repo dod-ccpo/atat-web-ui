@@ -21,8 +21,8 @@ describe("Testing ATATSelect Component", () => {
         headline,
       }
     });
-
   });
+
   describe("INITIALIZATION", () => { 
       it("renders successfully", async () => {
         expect(wrapper.exists()).toBe(true);

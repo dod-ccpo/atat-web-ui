@@ -21,8 +21,8 @@ describe("Testing ATATSelect Component", () => {
         ariaId,
       }
     });
-
   });
+
   describe("INITIALIZATION", () => { 
       it("renders successfully", async () => {
         expect(wrapper.exists()).toBe(true);
@@ -32,10 +32,8 @@ describe("Testing ATATSelect Component", () => {
   describe("PROPS", () => { 
     it("ariaId defined", async()=>{
       expect(wrapper.find("#Button_" + ariaId)).toBeDefined;
-
       await wrapper.setProps({ ariaId: null })
       expect(wrapper.vm.ariaId).toBe(null)
-
     });
   });
 
@@ -46,23 +44,20 @@ describe("Testing ATATSelect Component", () => {
 
       const content = wrapper.find("#Content_" + ariaId);
       expect(content.isVisible()).toBe(false);
-      // expect(content.attributes("aira-hidden")).toBe("true");
       
       expandLink.trigger("click");
 
       wrapper.vm.$nextTick(async () => {
         expect(content.isVisible()).toBe(true);
         expect(expandLink.classes()).toContain("open");
-        // expect(content.attributes("aira-hidden")).toBe("false");
         expandLink.trigger("click");
         wrapper.vm.$nextTick(() => {
           expect(expandLink.classes()).toContain("closed");
           expect(content.isVisible()).toBe(false);
         });
-  
       });
+    });
 
-     });
-  })
+  });
 
 });
