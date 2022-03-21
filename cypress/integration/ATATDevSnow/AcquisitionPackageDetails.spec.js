@@ -2,6 +2,8 @@ describe("Test suite: Acquisition Package ", () => {
     
     let projectDetails;
     let orgAddressType;
+    let contactInfo;
+
     beforeEach(() => {
         
         cy.fixture("projectOverview").then((details) => {
@@ -9,7 +11,10 @@ describe("Test suite: Acquisition Package ", () => {
         });
         cy.fixture("orgAddressType").then((types) => {
             orgAddressType = types;
-    });
+        });
+        cy.fixture("contactInfo").then((info) => {
+            contactInfo = info;
+        });
         cy.visit(Cypress.env("testUrl"));
         cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
         cy.get('title').should('have.text', 'DISA Sandbox home page - DISA Sandbox');
@@ -225,6 +230,7 @@ describe("Test suite: Acquisition Package ", () => {
     it("TC8: Organization: Request to add your agency", () => {
         cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
         cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
+
         // Navigates to "Organization"
         cy.textExists("header.v-toolbar div.h3", projectDetails.projectTitle3);
         cy.textExists("a.text-link.mb-10.d-inline-block", " Request to have your agency added ").click();
@@ -232,5 +238,143 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists("#AgencyOrgName_text_field_label", " Agency/Organization Name ");
         
     });    
+
+    it("TC9: Asserts on Let’s confirm your contact information", () => {
+        cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
+        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
+        cy.textExists("h1.page-header", " Next, we’ll gather information about your organization ");
+
+        //Service Agency is not DISA
+        cy.serviceOrAgency("Communications");
+        cy.enterTextInTextField("#OrgName_text_field", "TestDepartmentof Defense");
+        cy.enterTextInTextField("#DoDAAC_text_field", "DoDCEC");
+        cy.enterOrganizationAddress(orgAddressType.StreetAddress, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();       
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
         
-});
+        //list of contactrole
+        cy.iframe("#atat-app")
+            .find("#ContactRole_radio_group_control legend").then(($contactrole) => {
+                expect($contactrole).to.have.text(" What role best describes your affiliation with the DoD? ");
+            });
+        
+        //select radio button
+        cy.contactRoleRadioBtnOption("#Radio_Civilian");
+
+        //Salutation dropdown
+        cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon");
+        const salutationDropdownList = "Mr.Mrs.MissMs.Dr."
+        cy.iframe("#atat-app")
+            .find("#Salutation_dropdown_field_control .v-list-item").then(($el) => {
+                console.log($el.text());
+                expect(Cypress.$($el).text()).to.eq(salutationDropdownList);
+            });
+        
+         //select the salutationfrom dropdown
+        cy.iframe("#atat-app").find("#Salutation_DropdownListItem_Mr")
+            .should("have.text", "Mr.").click({ force: true });
+        
+        // Assert ContactInformation Labels
+        cy.textExists("#FirstName_text_field_label", " First name ");     
+        cy.textExists("#LastName_text_field_label", " Last name ");        
+        cy.textExists("#MiddleName_text_field_label", " Middle name  Optional ");  
+        cy.textExists("#ContactEmail_text_field_label", " Your email ");
+        cy.textExists("#ContactEmail_text_field_control .help-text.mt-2", " Enter a .mil or .gov email address. ");
+        cy.textExists("#ContactPhone_text_field_label", " Your phone number ");
+        
+         //Enter the Contact Information
+        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName,"#MiddleName_text_field",contactInfo.middleName,"#LastName_text_field",contactInfo.lastName,"#ContactEmail_text_field",contactInfo.email,"#ContactPhone_text_field",contactInfo.phoneNumber );
+    });
+
+    it("TC10: Contact Information: Role is Military", () => {
+        cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
+        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
+        cy.textExists("h1.page-header", " Next, we’ll gather information about your organization ");
+
+        //Service Agency is not DISA
+        cy.serviceOrAgency("Communications");
+        cy.enterTextInTextField("#OrgName_text_field", "TestDepartmentof Defense");
+        cy.enterTextInTextField("#DoDAAC_text_field", "DoDCEC");
+        cy.enterOrganizationAddress(orgAddressType.StreetAddress, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information"); 
+        
+        //select radio button
+        cy.contactRoleRadioBtnOption("#Radio_Military");           
+
+        //Click Rank dropdown
+        cy.dropDownClick("#Rank_dropdown_field_control .v-input__append-inner > .v-icon");            
+    
+        //select the value from Rank Dropdown
+        cy.iframe('#atat-app').find("#Rank_dropdown_field_control .v-list-item__title").first().click({ force: true });
+
+        //enter the ContactInformation
+        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName1,"#MiddleName_text_field",contactInfo.middleName1,"#LastName_text_field",contactInfo.lastName1,"#ContactEmail_text_field",contactInfo.email1,"#ContactPhone_text_field",contactInfo.phoneNumber1 );
+        
+    });
+
+    it("TC11: Contact Information: Role is Civilian", () => {
+        cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
+        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
+        cy.textExists("h1.page-header", " Next, we’ll gather information about your organization ");   
+        cy.serviceOrAgency("Communications");
+        cy.enterTextInTextField("#OrgName_text_field", "TestDepartmentof Defense");
+        cy.enterTextInTextField("#DoDAAC_text_field", "DoDCEC");
+        cy.enterOrganizationAddress(orgAddressType.StreetAddress, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+    
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //select radio button
+        cy.contactRoleRadioBtnOption("#Radio_Civilian");
+
+        //select the value from salutationDropdownList
+        cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon");
+        cy.iframe("#atat-app").find("#Salutation_DropdownListItem_Mrs")
+            .should("have.text", "Mrs.").click({ force: true });      
+        
+         //Enter contact information
+        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName2,"#MiddleName_text_field",contactInfo.middleName2,"#LastName_text_field",contactInfo.lastName2,"#ContactEmail_text_field",contactInfo.email2,"#ContactPhone_text_field",contactInfo.phoneNumber2 );
+        
+        //Select the Grade 
+        cy.textExists("#ContactGrade_AutoComplete_Wrapper .mb-2.d-block", " Grade  Optional ");
+        cy.dropDownClick("#ContactGrade_AutoComplete_Wrapper .v-input__icon.v-input__icon--append");
+        cy.autoCompleteSelection("#ContactGrade_AutoComplete_Wrapper", "GS-05", "#ContactGrade_AutoComplete_Wrapper .v-list-item__title");
+    
+    });
+    
+    it("TC12: Contact Information: Role is Contractor", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+    
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //select radio button
+        cy.contactRoleRadioBtnOption("#Radio_Contractor")
+    
+        //Salutation dropdown
+        cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon"); 
+        const salutationDropdownList = "Mr.Mrs.MissMs.Dr."
+        cy.iframe("#atat-app").find("#Salutation_dropdown_field_control .v-list-item").then(($el) => {
+            console.log($el.text())
+            expect(Cypress.$($el).text()).to.eq(salutationDropdownList);
+        });
+
+        //select the value from salutationDropdownList
+        cy.iframe("#atat-app").find("#Salutation_DropdownListItem_Mr ")
+            .should('have.text', 'Mr.').click({ force: true });
+        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName3,"#MiddleName_text_field",contactInfo.middleName3,"#LastName_text_field",contactInfo.lastName3,"#ContactEmail_text_field",contactInfo.email3,"#ContactPhone_text_field",contactInfo.phoneNumber3 );
+    });    
+
+});      
