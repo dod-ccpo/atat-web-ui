@@ -4,7 +4,12 @@
     <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
       <router-view></router-view>
+
       <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')"/>
+      <!-- EJY add prop to steppernav component if additional buttons 
+        pass button text and isPrimary, and text to emit
+       -->
+
       <ATATFooter/>
     </v-main>
   </v-app>
@@ -58,10 +63,13 @@ export default class App extends Vue {
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
+    
+    // EJY look for additionalButtons in `step`
 
     if (routeName && step) {
       const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
+      // EJY Steps.getAdditionalButtons(stepName)
       this.$refs.sideStepper.setCurrentStep(stepNumber);
     }
   }
@@ -76,18 +84,18 @@ export default class App extends Vue {
     }
   }
 
-  getCurrentStepMenuText(): string | undefined {
-    let label = Steps.currentStep?.stepLabel;
-    // temporarily transform the 'project overview' and 'project scope'
-    // titles to 'demo package'
-    let demoPackage = ["project overview", "project scope"];
+  // getCurrentStepMenuText(): string | undefined {
+  //   let label = Steps.currentStep?.stepLabel;
+  //   // temporarily transform the 'project overview' and 'project scope'
+  //   // titles to 'demo package'
+  //   let demoPackage = ["project overview", "project scope"];
 
-    if (demoPackage.some((dp) => dp === (label && label.toLowerCase()))) {
-      label = "Demo Package";
-    }
+  //   if (demoPackage.some((dp) => dp === (label && label.toLowerCase()))) {
+  //     label = "Demo Package";
+  //   }
 
-    return label;
-  }
+  //   return label;
+  // }
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""

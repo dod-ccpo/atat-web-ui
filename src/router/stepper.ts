@@ -33,8 +33,8 @@ export const routeNames = {
  * Rules:
  * 1. Parent steps cannot have a name
  * 2. Parent steps need a page component with a router view defined
- * 2. All steps needs to have unique names
- * 3. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
+ * 3. All steps needs to have unique names
+ * 4. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
  */
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
@@ -52,6 +52,18 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
+        additionalButtons: [
+          {
+            name: routeNames.Acor_Information,
+            buttonText: "I don't have blah",
+            buttonId: "MyButton",
+            isPrimary: false,
+            emitText: "skip", 
+            component: "foo",
+            actionName: "bar", // EJY where does the action live?
+            route: "baz", // where to go when clicked
+          },
+        ],
       },
       {
         menuText: "Project Scope",

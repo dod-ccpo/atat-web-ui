@@ -1,6 +1,8 @@
 import { RouteConfigMultipleViews, 
     RouteConfigSingleView } from "vue-router/types/router";
 
+import { AdditionalButton } from "@/store/steps/types";
+
 export interface StepperRouteHandlerParams {
     previous: string;
     next: string;
@@ -53,7 +55,9 @@ export interface AutoCompleteItemGroups {
     /**
      * A handler to 
      */
-    routeResolver?:(currentRoute: string)=> string  
+    routeResolver?:(currentRoute: string)=> string;
+    additionalButtons?: AdditionalButton[];
+
  }
 
  /**
