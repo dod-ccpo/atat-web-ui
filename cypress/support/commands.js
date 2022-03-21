@@ -110,14 +110,16 @@ Cypress.Commands.add("fillSurgeCapabilities", (percentage, clickContinue) => {
         .then(($el) => {
             cy.log($el.val());
             const enteredText = $el.val();
+            const showError = (() => {
+                cy.iframe("#atat-app")
+                    .find("#ContractPricePercentage_text_field_control .field-error")
+                    .should("contain.text", "Please enter a number between 1-50");
+            });
+
             if (enteredText < 1 || enteredText > 50) {
-                cy.iframe("#atat-app")
-                    .find("#ContractPricePercentage_text_field_control .field-error")
-                    .should("contain.text", "Please enter a number between 1-50");
+                showError();
             } else if (isNaN(parseInt(enteredText))) {
-                cy.iframe("#atat-app")
-                    .find("#ContractPricePercentage_text_field_control .field-error")
-                    .should("contain.text", "Please enter a number between 1-50");
+                showError();
             } else {
                 cy.iframe("#atat-app")
                     .find("#ContractPricePercentage_text_field_control")
