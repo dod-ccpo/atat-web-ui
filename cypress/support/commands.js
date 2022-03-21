@@ -137,7 +137,7 @@ Cypress.Commands.add("serviceOrAgency", (inputText) => {
         .then(($option) => {
             const selectedOption = $option.val();
             cy.log(selectedOption);
-            if (selectedOption == "Defense Information Systems Agency (DISA) **") {
+            if (selectedOption === "Defense Information Systems Agency (DISA) **") {
                 cy.iframe("#atat-app").find("#DisaOrg_AutoComplete_Wrapper")
                     .should('exist')
                     .and("be.visible")
