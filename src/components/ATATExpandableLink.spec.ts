@@ -73,8 +73,6 @@ describe("Testing ATATSelect Component", () => {
       });
     });
 
-
-
   });
 
 });
