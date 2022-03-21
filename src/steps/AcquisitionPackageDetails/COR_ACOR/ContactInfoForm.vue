@@ -168,9 +168,7 @@ export default class ContactInfoForm extends Vue {
 
   private selectedRank = "";
   private selectedBranchRanks: AutoCompleteItem[] = [];
-  private branchRanksData: AutoCompleteItemGroups 
-    = AcquisitionPackage.branchRanksData;
-
+  private branchRanksData: AutoCompleteItemGroups = AcquisitionPackage.branchRanksData;
 
   // computed
   

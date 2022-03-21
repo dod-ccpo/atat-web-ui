@@ -152,14 +152,12 @@ export default class ContactInfo extends Vue {
     this.setRankData();
   }  
 
-  // move branches to store, repeated in ContactInfoForm.vue
   private selectedBranch = "";
   private branchData: SelectData[] = AcquisitionPackage.branchData;
 
   private selectedRank = "";
   private selectedBranchRanks: AutoCompleteItem[] = [];
-  private branchRanksData: AutoCompleteItemGroups 
-    = AcquisitionPackage.branchRanksData;
+  private branchRanksData: AutoCompleteItemGroups = AcquisitionPackage.branchRanksData;
 
   private selectedRole = "";
   private contactRoles: RadioButton[] = [
