@@ -10,6 +10,17 @@
           :value.sync="selectedRole"
           class="mb-6"
         />
+
+        <ATATSelect
+          id="Branch"
+          v-show="selectedRole === 'MIL'"
+          class="input-max-width mb-10"
+          label="Service Branch"
+          placeholder=""
+          :items="branchData"
+          :selectedValue.sync="selectedBranch"
+        />
+
         <ATATSelect
           v-show="selectedRole !== 'MIL'"
           id="Salutation"
@@ -20,19 +31,23 @@
           :items="salutationData"
           :selectedValue.sync="selectedSalutation"
         />
-        <ATATSelect
-          v-show="selectedRole === 'MIL'"
+        
+        <ATATAutoComplete
           id="Rank"
-          class="input-max-width"
+          v-show="selectedRole === 'MIL' && showContactInfoFields"
           label="Rank"
-          :optional="true"
-          placeholder=""
-          :items="rankData"
-          :selectedValue.sync="selectedRank"
+          titleKey="rank"
+          :items="selectedBranchRanks"
+          :searchFields="['rank', 'value']"
+          :selectedItem.sync="selectedRank"
+          class="input-max-width mb-7"
+          icon="arrow_drop_down"
         />
+
+
       </v-col>
     </v-row>
-    <v-row class="form-section">
+    <v-row class="form-section" v-show="showContactInfoFields">
       <v-col class="col-12 col-lg-3">
         <ATATTextField label="First name" id="FirstName" class="input-max-width" />
       </v-col>
@@ -51,8 +66,13 @@
         />
       </v-col>
     </v-row>
-    <v-row class="form-section mb-0">
+    <v-row class="form-section mb-0" v-show="showContactInfoFields">
       <v-col>
+        <ATATTextField
+          label="Your title"
+          id="ContactTitle"
+          class="input-max-width mb-10"
+        />
         <ATATTextField
           label="Your email"
           id="ContactEmail"
@@ -85,15 +105,20 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
+import { Component, Watch } from "vue-property-decorator";
+
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import Vue from "vue";
-
-import { Component } from "vue-property-decorator";
-import { RadioButton, SelectData } from "../../../types/Global";
+import { 
+  AutoCompleteItem, 
+  AutoCompleteItemGroups, 
+  RadioButton, 
+  SelectData 
+} from "../../../types/Global";
 
 @Component({
   components: {
@@ -103,7 +128,75 @@ import { RadioButton, SelectData } from "../../../types/Global";
     ATATRadioGroup,
   },
 })
+
 export default class ContactInfo extends Vue {
+
+  // computed
+
+  get showContactInfoFields(): boolean {
+    return this.selectedRole !== "MIL" 
+      || (this.selectedRole === "MIL" && this.selectedBranch !== "")
+  }
+
+  // methods
+
+  private setRankData(): void {
+    this.selectedBranchRanks = this.branchRanksData[this.selectedBranch];
+  }
+
+  // watchers
+
+  @Watch("selectedBranch")
+  protected branchChange(): void {
+    this.setRankData();
+  }  
+
+  // move branches to store, repeated in ContactInfoForm.vue
+  private selectedBranch = "";
+  private branchData: SelectData[] = [
+    { text: "U.S. Air Force", value: "USAF", },
+    { text: "U.S. Army", value: "ARMY", },
+    { text: "U.S. Coast Guard", value: "USCG", },
+    { text: "U.S. Marine Corps", value: "USMC", },
+    { text: "U.S. Navy", value: "NAVY", },
+    { text: "U.S. Space Force", value: "USSF", },
+  ];
+
+  private selectedRank = "";
+  private selectedBranchRanks: AutoCompleteItem[] = [];
+  private branchRanksData: AutoCompleteItemGroups = {
+    "USAF": [
+      { rank: "AF Rank 1", value: "AF-R1", },
+      { rank: "AF Rank 2", value: "AF-R2", },
+      { rank: "AF Rank 3", value: "AF-R3", },
+    ],
+    "ARMY": [
+      { rank: "ARMY Rank 1", value: "ARMY-R1", },
+      { rank: "ARMY Rank 2", value: "ARMY-R2", },
+      { rank: "ARMY Rank 3", value: "ARMY-R3", },
+    ],
+    "USCG": [
+      { rank: "USCG Rank 1", value: "USCG-R1", },
+      { rank: "USCG Rank 2", value: "USCG-R2", },
+      { rank: "USCG Rank 3", value: "USCG-R3", },
+    ],
+    "USMC": [
+      { rank: "USMC Rank 1", value: "USMC-R1", },
+      { rank: "USMC Rank 2", value: "USMC-R2", },
+      { rank: "USMC Rank 3", value: "USMC-R3", },
+    ],    
+    "NAVY": [
+      { rank: "NAVY Rank 1", value: "NAVY-R1", },
+      { rank: "NAVY Rank 2", value: "NAVY-R2", },
+      { rank: "NAVY Rank 3", value: "NAVY-R3", },
+    ],
+      "USSF": [
+      { rank: "USSF Rank 1", value: "USSF-R1", },
+      { rank: "USSF Rank 2", value: "USSF-R2", },
+      { rank: "USSF Rank 3", value: "USSF-R3", },
+    ],
+  };
+
   private selectedRole = "";
   private contactRoles: RadioButton[] = [
     {
