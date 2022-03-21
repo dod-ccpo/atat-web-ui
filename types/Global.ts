@@ -1,5 +1,7 @@
-import { RouteConfigMultipleViews, 
-    RouteConfigSingleView } from "vue-router/types/router";
+import {
+    RouteConfigMultipleViews,
+    RouteConfigSingleView
+} from "vue-router/types/router";
 
 import { AdditionalButton } from "@/store/steps/types";
 
@@ -16,7 +18,8 @@ export interface StepperStep {
     completePercentageWeight?: number;
     menuText?: string;
     route: string;
-    subSteps?: StepperStep[]; 
+    subSteps?: StepperStep[];
+    additionalButtons?: AdditionalButton[];
 }
 
 /**
@@ -31,17 +34,17 @@ export interface SelectData {
  * interface for autocomplete Items
  */
 export interface AutoCompleteItem {
-    [ key: string ]: string | number | null | boolean
+    [key: string]: string | number | null | boolean
 }
 
 export interface AutoCompleteItemGroups {
-    [ key: string ]: AutoCompleteItem[];
+    [key: string]: AutoCompleteItem[];
 }
 
 /**
  * Defines Stepper Route Base properties
  */
- interface StepperRouteBase {
+interface StepperRouteBase {
 
     stepNumber?: string;
     completePercentageWeight?: number;
@@ -55,42 +58,42 @@ export interface AutoCompleteItemGroups {
     /**
      * A handler to 
      */
-    routeResolver?:(currentRoute: string)=> string;
+    routeResolver?: (currentRoute: string) => string;
     additionalButtons?: AdditionalButton[];
 
- }
+}
 
- /**
-  * Stepper Route Single Extends Route Single View
-  */
- export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigSingleView{
+/**
+ * Stepper Route Single Extends Route Single View
+ */
+export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigSingleView {
 
-    children? : StepperRouteConfig[]
- }
+    children?: StepperRouteConfig[]
+}
 
-  /**
-  * Stepper Route Multiple Extends Route Multiple Views
-  */
- export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteConfigMultipleViews{
-    children? : StepperRouteConfig[]
+/**
+* Stepper Route Multiple Extends Route Multiple Views
+*/
+export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteConfigMultipleViews {
+    children?: StepperRouteConfig[]
 
- }
+}
 
 /**
  * Defines a StepperRouteConfig type for Stepper Routes
  */
- export type StepperRouteConfig = StepperRouteSingleConfig | StepperRouteMultipleConfig;
+export type StepperRouteConfig = StepperRouteSingleConfig | StepperRouteMultipleConfig;
 
 export interface RadioButton {
- id: string;
- label: string;
- value: string;
- description?: string;
- disabled?: boolean;
+    id: string;
+    label: string;
+    value: string;
+    description?: string;
+    disabled?: boolean;
 }
 export interface Checkbox {
-  id: string;
-  label: string;
-  value: string;
-  description?: string;
+    id: string;
+    label: string;
+    value: string;
+    description?: string;
 }

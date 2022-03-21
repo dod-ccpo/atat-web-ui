@@ -5,7 +5,11 @@
     <v-main id="app">
       <router-view></router-view>
 
-      <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')"/>
+      <ATATStepperNavigation 
+        @next="navigate('next')" 
+        @previous="navigate('previous')"
+        :additionalButtons="additionalButtons"
+      />
       <!-- EJY add prop to steppernav component if additional buttons 
         pass button text and isPrimary, and text to emit
        -->
@@ -46,12 +50,24 @@ export default class App extends Vue {
     sideStepper: ATATSideStepper;
   };
 
+  private additionalButtons = [{
+    name: "foo",
+    buttonText: "I don't have blah",
+    buttonId: "MyButton",
+    isPrimary: false,
+    emitText: "skip", 
+    component: "foo",
+    actionName: "bar", // EJY where does the action live?
+    route: "baz", // where to go when clicked
+  }];
+
   private stepperData = buildStepperData();
 
   async mounted(): Promise<void> {
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
+    debugger;
 
     if (routeName && step) {
       const {stepName} = step;
@@ -63,7 +79,7 @@ export default class App extends Vue {
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-    
+    // debugger;
     // EJY look for additionalButtons in `step`
 
     if (routeName && step) {

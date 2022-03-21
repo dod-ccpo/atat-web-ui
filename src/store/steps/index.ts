@@ -15,9 +15,9 @@ export class StepsStore extends VuexModule implements StepsState {
         prev: undefined,
         next: undefined,
         resolver: undefined,
-        additionalButtons: undefined,
+        additionalButtons: [],
     };
-
+    
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
     @Mutation
@@ -41,6 +41,8 @@ export class StepsStore extends VuexModule implements StepsState {
 
     @Action({ rawError: true })
     public findRoute(name: string): StepInfo | undefined {
+        const foo = this.stepMap.get(name);
+        debugger;
         return this.stepMap.get(name);
     }
     // EJY Action to getAdditionalButtons(stepName)

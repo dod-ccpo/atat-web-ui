@@ -23,7 +23,7 @@ export const routeNames = {
   Alternate_Cor:"Alternate_Cor",
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
-  Summary: "Summary"
+  Summary: "Summary",
 };
 
 /**
@@ -46,7 +46,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     completed: true,
     children: [
       {
-        menuText: "Project Overview",
+        menuText: "Project Overview foo",
         path: "/", // should be same as parent route
         name: routeNames.Project_Overview,
         completePercentageWeight: 4,
@@ -54,7 +54,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ProjectOverview,
         additionalButtons: [
           {
-            name: routeNames.Acor_Information,
+            name: routeNames.Project_Overview,
             buttonText: "I don't have blah",
             buttonId: "MyButton",
             isPrimary: false,
@@ -284,7 +284,9 @@ const mapStepRouteToStepperData = (
     menuText,
     path,
     stepNumber,
+    additionalButtons,
   } = stepperRouteConfig;
+  debugger;
   let { name } = stepperRouteConfig;
   name = name || "";
 
@@ -299,8 +301,9 @@ const mapStepRouteToStepperData = (
     subSteps: stepperRouteConfig.children?.map((child) =>
       mapStepRouteToStepperData(child)
     ),
+    additionalButtons,
   };
-
+  debugger;
   return stepperStep;
 };
 
