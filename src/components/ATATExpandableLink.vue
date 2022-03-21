@@ -8,13 +8,13 @@
       :class="open ? 'open' : 'closed'"
       role="button"
       tabindex="0"
-      :aria-controls="'content_' + ariaId"
+      :aria-controls="'Content_' + ariaId"
       :aria-expanded="open + ''"
-      :id="'button_' + ariaId"
+      :id="'Button_' + ariaId"
     >
       <slot name="header"></slot>
     </a>
-    <div v-show="open" :id="'content_' + ariaId" :aria-hidden="!open + ''">
+    <div v-show="open" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
       <slot name="content"></slot>
     </div>
   </div>
