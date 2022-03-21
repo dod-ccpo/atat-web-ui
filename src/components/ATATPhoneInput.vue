@@ -1,0 +1,90 @@
+<template>
+  <div id="phone_control" class="atat-phone-field">
+    <div class="d-flex align-center" v-if="label">
+      <label
+        :id="id + '_text_field_label'"
+        class="form-field-label mb-2 mr-2"
+        :for="id + '_text_field'"
+      >
+        {{ label }}
+        <span v-if="optional" class="optional">
+          Optional
+        </span>
+      </label>
+    </div>
+    <div >
+      <v-text-field
+        ref="atatTextField"
+        :id="id + '_text_field'"
+        outlined
+        dense
+        :height="42"
+        :value.sync="_value"
+        :placeholder="placeHolder"
+        @input="inputActions"
+        class="text-primary"
+        :hide-details="true"
+        :suffix="suffix"
+        :style="{ 'max-width': width + 'px' }"
+        :rules="rules"
+        @blur="onBlur"
+        @update:error="setErrorMessage"
+      >
+      </v-text-field>
+    </div>
+    <ATATErrorValidation :errorMessages="errorMessages" />
+    <div v-if="helpText" class="help-text mt-2">
+      {{ helpText }}
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
+
+@Component({
+  components: {
+    ATATErrorValidation,
+    ATATAutoComplete
+  }
+})
+export default class ATATPhoneInput extends Vue {
+  // refs
+  $refs!: {
+    atatPhoneField: Vue & { errorBucket: string[]; errorCount: number };
+  };
+
+  // props
+  @Prop({ default: true }) private dense!: boolean;
+  @Prop({ default: true }) private singleLine!: boolean;
+  @Prop({ default: "id_is_missing" }) private id!: string;
+  @Prop({ default: "" }) private label!: string;
+  @Prop({ default: "" }) private appendIcon!: string;
+  @Prop({ default: "" }) private placeHolder!: string;
+  @Prop({ default: []}) private rules!: [];
+  @Prop({ default: ""}) private suffix!: string;
+  @Prop({ default: "" }) private optional!: boolean;
+  @Prop({ default: "" }) private width!: string;
+
+  @PropSync("value", { default: "" }) private _value!: string;
+
+  //data
+  private errorMessages: string[] = [];
+  private inputActions(v: string) {
+    this._value = v;
+  }
+
+  private setErrorMessage(): void {
+    this.errorMessages = this.$refs.atatPhoneField.errorBucket;
+  }
+
+  //@Events
+  private onBlur(event: Event) : void{
+    this.setErrorMessage();
+    this.$emit('blur', event)
+  }
+}
+</script>
