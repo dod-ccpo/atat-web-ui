@@ -11,6 +11,7 @@ describe("Testing ATATSelect Component", () => {
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
   const ariaId = "MyId";
+  let expandLink: Wrapper<DefaultProps & Vue, Element>
 
   beforeEach(() => {
     vuetify = new Vuetify();
@@ -21,6 +22,7 @@ describe("Testing ATATSelect Component", () => {
         ariaId,
       }
     });
+    expandLink = wrapper.find(".expandable-content-opener");
   });
 
   describe("INITIALIZATION", () => { 
@@ -30,46 +32,24 @@ describe("Testing ATATSelect Component", () => {
   });
 
   describe("PROPS", () => { 
-    it("ariaId defined", async()=>{
+    it("ariaId", async()=>{
       expect(wrapper.find("#Button_" + ariaId)).toBeDefined;
-      await wrapper.setProps({ ariaId: null })
-      expect(wrapper.vm.ariaId).toBe(null)
     });
   });
 
   describe("EVENTS", () => {
     it("clicks to expand", async () => {
-      wrapper.setData({ "open": false });
-      const expandLink = wrapper.find(".expandable-content-opener");
-      expect(expandLink.classes("closed")).toBe(true);
-
-      const content = wrapper.find("#Content_" + ariaId);
-      expect(content.isVisible()).toBe(false);
-      
-      expandLink.trigger("click");
-
+      wrapper.setData({ "open": true });
       wrapper.vm.$nextTick(async () => {
-        expect(content.isVisible()).toBe(true);
         expect(expandLink.classes()).toContain("open");
       });
     });
 
     it("presses enter key to close", async () => {
       wrapper.setData({ "open": true });
+      expandLink.trigger("keydown.enter");
       wrapper.vm.$nextTick(async () => {
-        const expandLink = wrapper.find(".expandable-content-opener");
-        expect(expandLink.classes("open")).toBe(true);
-
-        const content = wrapper.find("#Content_" + ariaId);
-        expect(content.isVisible()).toBe(true);
-        
-        expandLink.trigger("keydown.enter");
-        wrapper.setData({ "open": false });
-
-        wrapper.vm.$nextTick(async () => {
-          expect(content.isVisible()).toBe(false);
-          expect(expandLink.classes()).toContain("closed");
-        });
+        expect(expandLink.classes()).toContain("closed");
       });
     });
 
