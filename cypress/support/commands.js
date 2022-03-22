@@ -67,6 +67,14 @@ Cypress.Commands.add( "hoverToolTip", (selector, selector1, expectedText) => {
     cy.textExists(selector1, expectedText);  
 });
 
+Cypress.Commands.add("clickSideStepper", (stepper_Selector,stepperText) => {
+        cy.iframe("#atat-app")
+            .find(stepper_Selector)
+            .should("be.visible")
+            .and("have.length", 1)
+            .and('contain', stepperText)
+            .click();
+});
 
 Cypress.Commands.add("dropDownClick", (selector) => {
     cy.iframe("#atat-app")
@@ -141,7 +149,7 @@ Cypress.Commands.add("serviceOrAgency", (inputText) => {
             cy.log(selectedOption);
             if (selectedOption === "Defense Information Systems Agency (DISA) **") {
                 cy.iframe("#atat-app").find("#DisaOrg_AutoComplete_Wrapper")
-                    .should('exist')
+                    .should("exist")
                     .and("be.visible")
                     .and("contain", "DISA Organization");
             } else {
@@ -160,3 +168,52 @@ Cypress.Commands.add("enterOrganizationAddress", (StreetAddress, Unit, City, Sta
     cy.autoCompleteSelection("#State", State, "#State_AutoComplete_Wrapper .v-list-item__title");
     cy.enterTextInTextField("#ZIP_text_field", Zipcode);            
 });  
+
+Cypress.Commands.add("contactRoleRadioBtnOption", (selector) => {
+    cy.iframe("#atat-app")
+    .find(selector).click({ force: true });
+    cy.iframe("#atat-app")
+    .find("#ContactRole_radio_group_control .v-item--active")
+        .then(($radioBtn) => {
+            cy.log($radioBtn.text());
+            const selectedOption = $radioBtn.text();
+            if (selectedOption === "radio_button_checkedMilitary") {
+                cy.iframe("#atat-app").find("#Rank_dropdown_field_control")
+                    .should('exist')
+                    .and("be.visible")
+                    .and("contain", "Rank");
+                cy.iframe("#atat-app").find("#ContactGrade_AutoComplete_Wrapper")
+                    .should('exist')
+                    .and("not.visible");
+            } else if (selectedOption === "radio_button_checkedContractor") {
+                cy.iframe("#atat-app").find("#Salutation_dropdown_field_label")
+                    .should("exist")
+                    .and("be.visible")
+                    .and("contain", "Salutation");
+                cy.iframe("#atat-app").find('#ContactGrade_AutoComplete_Wrapper')
+                    .should("exist")
+                    .and("not.visible");
+            } else if (selectedOption === "radio_button_checkedCivilian") {
+                cy.iframe("#atat-app").find("#ContactGrade_AutoComplete_Wrapper")
+                    .should("exist")
+                    .and("be.visible")
+                    .and("contain", "Grade");
+                cy.iframe("#atat-app").find("#Salutation_dropdown_field_label")
+                    .should('exist')
+                    .and("be.visible")
+                    .and("contain", "Salutation");
+                cy.iframe("#atat-app").find("#Rank_dropdown_field_control")
+                    .should("exist")
+                    .and("not.visible");
+            };
+    });  
+});
+
+Cypress.Commands.add("enterContactInformation", (firstName_selector,firstName, mName_selector,mName,lastName_selector,lastName, email_selector,email,phone_selector,phone ) => {    
+    cy.enterTextInTextField(firstName_selector, firstName);
+    cy.enterTextInTextField(mName_selector, mName);
+    cy.enterTextInTextField(lastName_selector, lastName);    
+    cy.enterTextInTextField(email_selector, email);
+    cy.enterTextInTextField(phone_selector, phone);
+});
+
