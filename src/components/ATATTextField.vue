@@ -27,7 +27,7 @@
         :height="42"
         :value.sync="_value"
         :placeholder="placeHolder"
-        @input="inputActions"
+        @input="onInput"
         class="text-primary"
         :hide-details="true"
         :suffix="suffix"
@@ -82,7 +82,7 @@ export default class ATATTextField extends Vue {
 
   //data
   private errorMessages: string[] = [];
-  private inputActions(v: string) {
+  private onInput(v: string) {
     this._value = v;
   }
 
@@ -91,9 +91,9 @@ export default class ATATTextField extends Vue {
   }
 
   //@Events
-  private onBlur(event: Event) : void{
+  private onBlur(value: string) : void{
     this.setErrorMessage();
-    this.$emit('blur', event)
+    this.$emit('blur', value);
   }
 }
 </script>
