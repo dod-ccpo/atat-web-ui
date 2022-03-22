@@ -1,18 +1,18 @@
 import Vue from "vue";
 import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
-import ATATTextField from "@/components/ATATTextField.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
 import {DefaultProps} from "vue/types/options";
 Vue.use(Vuetify);
 
-describe("Testing ATATTextField Component", () => {
+describe("Testing ATATTextArea Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
   
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(ATATTextField, {
+    wrapper = mount(ATATTextArea, {
       localVue,
       vuetify,
     });
