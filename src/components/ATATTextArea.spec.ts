@@ -36,19 +36,19 @@ describe("Testing ATATTextArea Component", () => {
 
   describe("EVENTS", () => { 
     it("onInput", async () => {
-      const newVal = "newVal"
-      await wrapper.vm.onInput(newVal)
+      const newVal = "newVal";
+      await wrapper.vm.onInput(newVal);
       await wrapper.vm.$nextTick(()=>{
         expect(wrapper.emitted("update:value")?.flat()[0]).toMatch(newVal);
-      })
+      });
     });
 
     it("onBlur", async () => {
-      const valOnBlur = "newVa"
-      await wrapper.vm.onBlur(valOnBlur)
+      const valOnBlur = "newVa";
+      await wrapper.vm.onBlur(valOnBlur);
       await wrapper.vm.$nextTick(()=>{
         expect(wrapper.emitted("blur")?.flat()[0]).toMatch(valOnBlur);
-      })
+      });
       
     });
   });
