@@ -49,6 +49,7 @@
       </v-row>
       <v-row>
         <v-col>
+          <ATATPhoneInput />
           <ATATRadioGroup
             id="DummyATATRadio"
             label="Custom Radio"
@@ -86,7 +87,9 @@
             name="checkbox-card"
             card="true"
           />
-
+          <div class="flag">
+            <span class="flag-icon flag-icon-gr">Hello</span>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -113,13 +116,15 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue"
 import Vue from "vue";
 import {Component} from "vue-property-decorator";
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 @Component({
   components: {
     ATATAutoComplete,
     ATATTextField,
     ATATSelect,
     ATATRadioGroup,
-    ATATCheckboxGroup
+    ATATCheckboxGroup,
+    ATATPhoneInput
   },
 })
 export default class StepTwo extends Vue {
