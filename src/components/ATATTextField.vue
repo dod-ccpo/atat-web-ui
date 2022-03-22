@@ -18,7 +18,7 @@
         :label="label"
       />
     </div>
-    <div >
+    <div :style="'width: ' + width">
       <v-text-field
         ref="atatTextField"
         :id="id + '_text_field'"
@@ -73,7 +73,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: []}) private rules!: [];
+  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;

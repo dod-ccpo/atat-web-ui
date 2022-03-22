@@ -54,12 +54,13 @@
     </ATATDialog>
   </div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-
-import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({
   components: {
@@ -72,11 +73,14 @@ export default class PersonCard extends Vue {
   
   // props
   
-  @Prop({default: false}) private isACOR!: boolean;
+  @Prop({ default: false }) private isACOR!: boolean;
   @PropSync("selectedContact") private _selectedContact!: unknown;
   @PropSync("showContactForm") private _showContactForm!: unknown;
 
+  // data
+
   private showDialog = false
+
   // computed
 
   get corOrAcor(): string {
