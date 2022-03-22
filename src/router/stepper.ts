@@ -1,5 +1,5 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
-import AcquisitionPackageDetails from "../steps/Index.vue";
+import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
 import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
@@ -8,7 +8,10 @@ import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import Summary from "../steps/Summary.vue";
-import StepTwo from "../steps/StepTwo.vue";
+import Background from "../steps/Background/Index.vue";
+import CurrentContract from "../steps/Background/CurrentContract/CurrentContract.vue";
+import CurrentContractDetails from "../steps/Background/CurrentContract/CurrentContractDetails.vue";
+
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
@@ -114,39 +117,29 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "02",
-    menuText: "Existing Contract / Background",
-    path: "/steptwo",
+    menuText: "Background",
+    path: "/current-contract",
     completePercentageWeight: 10,
-    name: "Existing_Contract_Background",
-    component: StepTwo,
+    component: Background,
+    completed: false,
     children: [
-      {
-        name: "Substep_1",
-        menuText: "Substep 1",
-        path: "/steptwo", // should be same as parent route
-
-        completePercentageWeight: 2,
+       {
+        menuText: "Current Contract",
+        path: "/current-contract",
+        name: "CurrentContract",
+        completePercentageWeight: 0,
+        component: CurrentContract,
+        completed: false,
       },
       {
-        name: "Substep_2",
-        menuText: "Substep 2",
-        path: "steptwo-2",
-        completed: true,
-        completePercentageWeight: 3,
-      },
-      {
-        name: "Substep_3",
-        menuText: "Substep 3",
-        path: "steptwo-3",
-
-        completePercentageWeight: 4,
-      },
-      {
-        name: "Substep 4",
-        menuText: "Substep 4",
-        path: "steptwo-4",
-        completed: true,
-        completePercentageWeight: 1,
+        menuText: "Details",
+        path: "/current-contract-details",
+        name: "CurrentContractDetails",
+        excludeFromMenu: true,
+        completePercentageWeight: 0,
+        component: CurrentContractDetails,
+        completed: false,
+        //todo add routenames
       },
     ],
   },

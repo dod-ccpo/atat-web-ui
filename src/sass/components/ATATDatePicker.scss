@@ -1,0 +1,32 @@
+.v-picker--date {
+  .v-picker__body {
+    @extend %text-base-darkest;
+    padding: 12px 8px;
+    .v-date-picker-header {
+      padding: 0px;
+      @extend %body;
+
+      i {
+        @extend %icon-20;
+        font-weight: 900 !important;
+      }
+
+      .v-date-picker-header__value {
+        .accent--text {
+          @extend %body;
+        }
+      }
+
+      button {
+        padding: 0px;
+        height: 24px;
+      }
+    }
+    .v-date-picker-table {
+      padding: 0px;
+      .v-btn__content{
+        font-weight: normal;
+      }
+    }
+  }
+}
