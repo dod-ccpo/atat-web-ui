@@ -1,4 +1,4 @@
-import {getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "../index";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
 
@@ -17,16 +17,47 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.projectTitle;
   }
 
+  // EJY needs an action. don't call mutations directly
   @Mutation
   public setHasAlternateCOR(value: boolean): void {
     this.hasAlternativeContactRep = value;
   }
 
+  // EJY needs an action. don't call mutations directly
   @Mutation
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
 
+  // service or agency selected on Organiation page
+  selectedServiceOrAgency: SelectData | undefined;
+  public getSelectedServiceOrAgency(): SelectData | undefined {
+    return this.selectedServiceOrAgency || undefined;
+  }
+  @Action
+  public setSelectedServiceOrAgency(value: SelectData): void {
+    this.doSetSelectedServiceOrAgency(value);
+  }
+
+  @Mutation
+  public doSetSelectedServiceOrAgency(value: SelectData): void {
+    this.selectedServiceOrAgency = value;
+  }
+
+  // military branch selected on Contact Info page
+  public selectedContactBranch: SelectData | undefined;
+
+  @Action
+  public setSelectedContactBranch(value: SelectData): void {
+    this.doSetSelectedContactBranch(value);
+  }
+
+  @Mutation
+  public doSetSelectedContactBranch(value: SelectData): void {
+    this.selectedContactBranch = value;
+  }
+
+  // used on Contact Info and COR/ACOR pages
   public branchData: SelectData[] = [
     { text: "U.S. Air Force", value: "USAF", },
     { text: "U.S. Army", value: "ARMY", },
@@ -36,6 +67,7 @@ export class AcquisitionPackageStore extends VuexModule {
     { text: "U.S. Space Force", value: "USSF", },
   ];
 
+  // used on Contact Info and COR/ACOR pages
   public branchRanksData: AutoCompleteItemGroups = {
     USAF: [
       { rank: "Airman Basic (AB)", value: "Airman Basic", grade: "E-1", },

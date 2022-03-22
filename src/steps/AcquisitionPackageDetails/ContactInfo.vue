@@ -13,6 +13,7 @@
 
         <ATATSelect
           id="Branch"
+          v-model="selectedBranch"
           v-show="selectedRole === 'MIL'"
           class="input-max-width mb-10"
           label="Service branch"
@@ -145,12 +146,39 @@ export default class ContactInfo extends Vue {
     this.selectedBranchRanks = this.branchRanksData[this.selectedBranch];
   }
 
+  // mounted
+
+  // public mounted(): void {
+  //   this.selectedBranch = AcquisitionPackage.getSelectedBranch();
+  // }
+
   // watchers
 
   @Watch("selectedBranch")
   protected branchChange(): void {
     this.setRankData();
   }  
+
+  // public get selectedServiceOrAgency(): SelectData | undefined {
+  //   return AcquisitionPackage.selectedServiceOrAgency;
+  // }
+  private selectedServiceOrAgency: SelectData | undefined 
+    = AcquisitionPackage.selectedServiceOrAgency;
+    
+  @Watch("selectedRole") 
+  protected roleChange(newRole: string): void {
+    if (newRole === "MIL") {
+
+      const agency = this.selectedServiceOrAgency;
+      debugger;
+      if (agency && Object.prototype.hasOwnProperty.call(agency, "value")) {
+        const branch = this.branchData.filter((branchObj) => {
+          return branchObj.value === agency.value;
+        });
+        debugger;
+      }
+    }
+  }
 
   private selectedBranch = "";
   private branchData: SelectData[] = AcquisitionPackage.branchData;

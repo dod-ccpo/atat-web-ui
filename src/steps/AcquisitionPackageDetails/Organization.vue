@@ -204,7 +204,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -213,6 +213,9 @@ import ATATSelect from "../../components/ATATSelect.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
 import { RadioButton, SelectData } from "types/Global";
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
+
 
 @Component({
   components: {
@@ -325,57 +328,59 @@ export default class OrganizationInfo extends Vue {
     { text: 'Workforce Services and Development Directorate (WSD)', value: 'WSD',},
   ];
 
+  @Watch("selectedServiceOrAgency")
+  protected serviceOrAgencyChanged(newVal: string): void {
+    AcquisitionPackage.setSelectedServiceOrAgency(newVal);
+  }
+
+
   private selectedServiceOrAgency = "";
   private serviceOrAgencyData: SelectData[] = [
-    { text: 'Communications & Electronics Command', value: 'Communications & Electronics Command',},
-    { text: 'Defense Advanced Research Project Agency (DARPA)', value: 'DARPA',},
-    { text: 'Defense Commissary Agency', value: 'Defense Commissary Agency',},
-    { text: 'Defense Contract Audit Agency (DCAA)', value: 'DCAA',},
-    { text: 'Defense Contract Management Agency (DCMA)', value: 'DCMA',},
-    {
-      text: 'Defense Counterintelligence and Security Agency',
-      value: 'Defense Counterintelligence and Security Agency',
-    },
-    { text: 'Defense Criminal Investigation Service', value: 'Defense Criminal Investigation Service',},
-    { text: 'Defense Finance and Accounting Service', value: 'Defense Finance and Accounting Service',},
-    { text: 'Defense Information Systems Agency (DISA)', value: 'DISA',},
-    { text: 'Defense Intelligence Agency (DIA)', value: 'DIA',},
-    { text: 'Defense Logistics Agency (DLA)', value: 'DLA',},
-    { text: 'Defense Media Activity (DMA)', value: 'DMA',},
-    { text: 'Defense Security Cooperation Agency', value: 'Defense Security Cooperation Agency',},
-    { text: 'Defense Technical Information Center', value: 'Defense Technical Information Center',},
-    { text: 'Defense Threat Reduction Center (DTRA)', value: 'DTRA',},
-    { text: 'Department of Defense', value: 'Department of Defense',},
-    { text: 'Joint Chiefs of Staff', value: 'Joint Chiefs of Staff',},
-    { text: 'Joint Forces Command', value: 'Joint Forces Command',},
-    { text: 'Joint Informaiton Operations Warfare Command', value: 'Joint Informaiton Operations Warfare Command',},
-    { text: 'Joint Logistics Systems Center', value: 'Joint Logistics Systems Center',},
-    { text: 'Joint Staff Comptroller', value: 'Joint Staff Comptroller',},
-    { text: 'Joint System Engineering & Integration Office (JSEIO)', value: 'JSEIO',},
-    { text: 'Military Health System (MHS)', value: 'MHS ',},
-    { text: 'Defense Health Agency (DHA)', value: 'DHA',},
-    { text: 'Military Sealift Command', value: 'National Geospatial Intelligence Agency',},
-    { text: 'National Geospatial Intelligence Agency', value: 'National Ground Intelligence Agency',},
-    { text: 'National Ground Intelligence Agency', value: 'National Guard Bureau',},
-    { text: 'National Guard Bureau', value: 'National Security Agency',},
-    { text: 'National Security Agency', value: 'Office of the Secretary of Defense (OSD)',},
-    { text: 'Office of the Secretary of Defense (OSD)', value: 'OSD',},
-    { text: 'U.S. Africa Command', value: 'U.S. Air Force',},
-    { text: 'U.S. Air Force', value: 'U.S. Air Force Europe (USAFE)',},
-    { text: 'U.S. Air Force Europe (USAFE)', value: 'USAFE',},
-    { text: 'U.S. Army', value: 'U.S. Central Command (USCENTCOM)',},
-    { text: 'U.S. Central Command (USCENTCOM)', value: 'USCENTCOM',},
-    { text: 'U.S. Coast Guard', value: 'U.S. Cyber Command',},
-    { text: 'U.S. Cyber Command', value: 'U.S. European Command (USEUCOM)',},
-    { text: 'U.S. European Command (USEUCOM)', value: 'USEUCOM',},
-    { text: 'U.S. Marine Corps', value: 'U.S. Navy',},
-    { text: 'U.S. Navy', value: 'U.S. Northern Command (USNORTHCOM)',},
-    { text: 'U.S. Northern Command (USNORTHCOM)', value: 'USNORTHCOM',},
-    { text: 'U.S. Pacific Command (USPACCOM)', value: 'USPACCOM',},
-    { text: 'U.S. Southern Command (USSOUTHCOM)', value: 'USSOUTHCOM',},
-    { text: 'U.S. Special Operations Command (USSOCCOM)', value: 'USSOCCOM',},
-    { text: 'U.S. Strategic Command (USSTRATCOM)', value: 'USSTRATCOM',},
-    { text: 'U.S. Transportation Command (USTRANSCOM)', value: 'USTRANSCOM',},
+    { text: "Communications & Electronics Command", value: "Communications & Electronics Command",},
+    { text: "Defense Advanced Research Project Agency (DARPA)", value: "DARPA",},
+    { text: "Defense Commissary Agency", value: "Defense Commissary Agency",},
+    { text: "Defense Contract Audit Agency (DCAA)", value: "DCAA",},
+    { text: "Defense Contract Management Agency (DCMA)", value: "DCMA",},
+    { text: "Defense Counterintelligence and Security Agency", value: "Defense Counterintelligence and Security Agency",},
+    { text: "Defense Criminal Investigation Service", value: "Defense Criminal Investigation Service",},
+    { text: "Defense Finance and Accounting Service", value: "Defense Finance and Accounting Service",},
+    { text: "Defense Information Systems Agency (DISA)", value: "DISA",},
+    { text: "Defense Intelligence Agency (DIA)", value: "DIA",},
+    { text: "Defense Logistics Agency (DLA)", value: "DLA",},
+    { text: "Defense Media Activity (DMA)", value: "DMA",},
+    { text: "Defense Security Cooperation Agency", value: "Defense Security Cooperation Agency",},
+    { text: "Defense Technical Information Center", value: "Defense Technical Information Center",},
+    { text: "Defense Threat Reduction Center (DTRA)", value: "DTRA",},
+    { text: "Department of Defense", value: "Department of Defense",},
+    { text: "Joint Chiefs of Staff", value: "Joint Chiefs of Staff",},
+    { text: "Joint Forces Command", value: "Joint Forces Command",},
+    { text: "Joint Informaiton Operations Warfare Command", value: "Joint Informaiton Operations Warfare Command",},
+    { text: "Joint Logistics Systems Center", value: "Joint Logistics Systems Center",},
+    { text: "Joint Staff Comptroller", value: "Joint Staff Comptroller",},
+    { text: "Joint System Engineering & Integration Office (JSEIO)", value: "JSEIO",},
+    { text: "Military Health System (MHS) Defense Health Agency (DHA)", value: "MHS DHA",},
+    { text: "Military Sealift Command", value: "Military Sealift Command",},
+    { text: "National Geospatial Intelligence Agency", value: "National Geospatial Intelligence Agency",},
+    { text: "National Ground Intelligence Agency", value: "National Ground Intelligence Agency",},
+    { text: "National Guard Bureau", value: "National Guard Bureau",},
+    { text: "National Security Agency", value: "National Security Agency",},
+    { text: "Office of the Secretary of Defense (OSD)", value: "OSD",},
+    { text: "U.S. Africa Command", value: "U.S. Africa Command",},
+    { text: "U.S. Air Force", value: "USAF",},
+    { text: "U.S. Air Force Europe (USAFE)", value: "USAFE",},
+    { text: "U.S. Army", value: "ARMY",},
+    { text: "U.S. Central Command (USCENTCOM)", value: "USCENTCOM",},
+    { text: "U.S. Coast Guard", value: "USCG",},
+    { text: "U.S. Cyber Command", value: "U.S. Cyber Command",},
+    { text: "U.S. European Command (USEUCOM)", value: "USEUCOM",},
+    { text: "U.S. Marine Corps", value: "USMC",},
+    { text: "U.S. Navy", value: "NAVY",},
+    { text: "U.S. Northern Command (USNORTHCOM)", value: "USNORTHCOM",},
+    { text: "U.S. Pacific Command (USPACCOM)", value: "USPACCOM",},
+    { text: "U.S. Southern Command (USSOUTHCOM)", value: "USSOUTHCOM",},
+    { text: "U.S. Special Operations Command (USSOCCOM)", value: "USSOCCOM",},
+    { text: "U.S. Strategic Command (USSTRATCOM)", value: "USSTRATCOM",},
+    { text: "U.S. Transportation Command (USTRANSCOM)", value: "USTRANSCOM",},
   ];
 
   private selectedStateCode = "";
