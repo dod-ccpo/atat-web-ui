@@ -17,15 +17,17 @@
     <ATATSelect
       id="Branch"
       v-show="selectedContactAffiliation === 'MIL'"
+      v-model="selectedBranch"
       class="input-max-width mb-10"
       label="Service Branch"
       placeholder=""
       :items="branchData"
       :selectedValue.sync="selectedBranch"
       :showAccessRadioButtons.sync="showAccessRadioButtons"
+      :returnObject="true"
     />
 
-    <div v-show="selectedBranch || selectedContactAffiliation === 'CIV'">
+    <div v-show="selectedBranch.value || selectedContactAffiliation === 'CIV'">
       <ATATAutoComplete
         id="Rank"
         v-show="selectedContactAffiliation === 'MIL'"
@@ -149,7 +151,7 @@ export default class ContactInfoForm extends Vue {
     { text: "Dr.", value: "Dr.", },
   ];
 
-  private selectedBranch = "";
+  private selectedBranch: SelectData = { text: "", value: "" };
   private branchData: SelectData[] = AcquisitionPackage.branchData;
 
   private selectedContactAffiliation = "";
@@ -180,11 +182,13 @@ export default class ContactInfoForm extends Vue {
 
   private setShowAccessRadioButtons(): void {
     this._showAccessRadioButtons = this.selectedContactAffiliation === "CIV" 
-      || this.selectedBranch !== "";
+      || this.selectedBranch.value !== "";
   }
 
   private setRankData(): void {
-    this.selectedBranchRanks = this.branchRanksData[this.selectedBranch];
+    if (this.selectedBranch.value) {
+      this.selectedBranchRanks = this.branchRanksData[this.selectedBranch.value];
+    }
   }
 
   // watchers
@@ -196,8 +200,12 @@ export default class ContactInfoForm extends Vue {
   }
 
   @Watch("selectedContactAffiliation")
-  protected contactAffiliationChange(): void {
+  protected contactAffiliationChange(newRole: string): void {
     this.setShowAccessRadioButtons();
+    debugger;
+    if (newRole === "MIL") {
+      this.selectedBranch = AcquisitionPackage.selectedContactBranch;
+    }
   }
 
 }

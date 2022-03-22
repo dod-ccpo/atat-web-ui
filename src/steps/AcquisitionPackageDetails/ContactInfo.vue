@@ -20,6 +20,7 @@
           placeholder=""
           :items="branchData"
           :selectedValue.sync="selectedBranch"
+          :return-object="true"
         />
 
         <ATATSelect
@@ -137,50 +138,40 @@ export default class ContactInfo extends Vue {
 
   get showContactInfoFields(): boolean {
     return this.selectedRole !== "MIL" 
-      || (this.selectedRole === "MIL" && this.selectedBranch !== "")
+      || (this.selectedRole === "MIL" && this.selectedBranch.value !== "")
   }
 
   // methods
 
   private setRankData(): void {
-    this.selectedBranchRanks = this.branchRanksData[this.selectedBranch];
+    if (this.selectedBranch.value) {
+      this.selectedBranchRanks = this.branchRanksData[this.selectedBranch.value];
+    }
   }
-
-  // mounted
-
-  // public mounted(): void {
-  //   this.selectedBranch = AcquisitionPackage.getSelectedBranch();
-  // }
 
   // watchers
 
   @Watch("selectedBranch")
   protected branchChange(): void {
     this.setRankData();
+    AcquisitionPackage.setSelectedContactBranch(this.selectedBranch);
   }  
 
-  // public get selectedServiceOrAgency(): SelectData | undefined {
-  //   return AcquisitionPackage.selectedServiceOrAgency;
-  // }
-  private selectedServiceOrAgency: SelectData | undefined 
-    = AcquisitionPackage.selectedServiceOrAgency;
-    
+  public selectedServiceOrAgency: SelectData = AcquisitionPackage.selectedServiceOrAgency;
+
   @Watch("selectedRole") 
   protected roleChange(newRole: string): void {
     if (newRole === "MIL") {
-
-      const agency = this.selectedServiceOrAgency;
-      debugger;
-      if (agency && Object.prototype.hasOwnProperty.call(agency, "value")) {
-        const branch = this.branchData.filter((branchObj) => {
-          return branchObj.value === agency.value;
-        });
-        debugger;
+      const branch = this.branchData.filter((branchObj) => {
+        return branchObj.value === this.selectedServiceOrAgency.value;
+      });
+      if (branch.length) {
+        this.selectedBranch = branch[0];
       }
     }
   }
 
-  private selectedBranch = "";
+  private selectedBranch: SelectData = { text: "", value: "" };
   private branchData: SelectData[] = AcquisitionPackage.branchData;
 
   private selectedRank = "";
