@@ -25,7 +25,7 @@
           :value="item.value"
           :style="{ width: width }"
           :name="name"
-          :disabled="item.disabled"
+          :disabled="item.disabled || disabled"
           @blur="onBlur"
           @click="onClick"
         >
@@ -50,7 +50,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 @Component({
   components: {
-    ATATErrorValidation
+    ATATErrorValidation,
   }
 })
 

@@ -65,7 +65,7 @@ describe("Testing ATATSelect Component", () => {
       changedValue = "";
       await wrapper.vm.onChange(changedValue);
       expect(wrapper.vm.$data.selected).toEqual(changedValue);
-     });
-  })
+    });
+  });
 
 });
