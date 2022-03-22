@@ -11,9 +11,6 @@ Vue.config.productionTip = false;
 Vue.use(Vuetify);
 Vue.use(validation);
 
-
-
-
 describe("Testing Validators", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;

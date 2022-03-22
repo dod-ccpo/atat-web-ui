@@ -27,9 +27,6 @@
         :placeholder="placeholder"
         class="mt-2"
       >
-        <template v-slot:selection="{ item }">
-          {{ item.text }}
-        </template>
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">
             <v-list-item-content

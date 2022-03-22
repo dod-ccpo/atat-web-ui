@@ -40,7 +40,7 @@
             outlined
             :value.sync="_value"
             :placeholder="placeHolder"
-            @input="inputActions"
+            @input="onInput"
             class="text-primary"
             :hide-details="true"
             :rules="rules"
@@ -88,7 +88,7 @@ export default class ATATTextArea extends Vue {
   //data
   private placeHolder = "";
   private errorMessages: string[] = [];
-  private inputActions(v: string) {
+  private onInput(v: string) {
     this._value = v;
   }
 
