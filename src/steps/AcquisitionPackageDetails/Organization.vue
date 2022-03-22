@@ -110,7 +110,6 @@
                   v-show="selectedAddressType === 'MIL'"
                   id="APO_FPO"
                   label="APO/FPO"
-                  v-model="selectedMilitaryPO"
                   :class="inputClass"
                   :items="militaryPostOfficeOptions"
                   :selectedValue.sync="selectedMilitaryPO"
@@ -138,7 +137,6 @@
                   v-show="selectedAddressType === 'MIL'"
                   id="StateCode"
                   label="State code"
-                  v-model="selectedStateCode"
                   :class="inputClass"
                   :items="stateCodeListData"
                   :selectedValue.sync="selectedStateCode"
@@ -220,7 +218,6 @@ import { RadioButton, SelectData } from "types/Global";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
-
 @Component({
   components: {
     ATATAutoComplete,
@@ -234,6 +231,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 export default class OrganizationInfo extends Vue {
   
   // computed
+
   get inputClass(): string {
     return this.$vuetify.breakpoint.mdAndDown ? "input-max-width my-2" : "my-2";
   }
@@ -243,6 +241,7 @@ export default class OrganizationInfo extends Vue {
   }
 
   // data
+
   private selectedAddressType = "USA";
   private showDialog = false;
 
@@ -273,11 +272,6 @@ export default class OrganizationInfo extends Vue {
   private selectedDisaOrg: SelectData = { text: "", value: "" };
   private disaOrgData: SelectData[] = AcquisitionPackage.disaOrgData;
 
-  @Watch("selectedServiceOrAgency")
-  protected serviceOrAgencyChanged(newVal: SelectData): void {
-    AcquisitionPackage.setSelectedServiceOrAgency(newVal);
-  }
-
   private selectedServiceOrAgency: SelectData = { text: "", value: "" };
   private serviceOrAgencyData: SelectData[] = AcquisitionPackage.serviceOrAgencyData;
 
@@ -295,12 +289,22 @@ export default class OrganizationInfo extends Vue {
   
   public countryListData: SelectData[] = [{ text: "", value: "" }]; 
   public async mounted(): Promise<void> {
-    this.countryListData = await AcquisitionPackage.getCountryListData(["US", "GB"]);
+    this.countryListData = await AcquisitionPackage.getCountryListData(["US"]);
   }
+
+  // methods 
 
   private addressTypeChange(addressType: string): void {
     this.selectedCountry = addressType === "FOR" ? "" : "US";
   }
+
+  // watchers
+  
+  @Watch("selectedServiceOrAgency")
+  protected serviceOrAgencyChanged(newVal: SelectData): void {
+    AcquisitionPackage.setSelectedServiceOrAgency(newVal);
+  }
+
 }
 
 </script>

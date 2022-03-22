@@ -202,9 +202,11 @@ export default class ContactInfoForm extends Vue {
   @Watch("selectedContactAffiliation")
   protected contactAffiliationChange(newRole: string): void {
     this.setShowAccessRadioButtons();
-    debugger;
+
     if (newRole === "MIL") {
       this.selectedBranch = AcquisitionPackage.selectedContactBranch;
+    } else {
+      this.selectedBranch = { text: "", value: "" };
     }
   }
 

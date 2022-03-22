@@ -1,4 +1,4 @@
-import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import { Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "../index";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
 

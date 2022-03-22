@@ -157,8 +157,6 @@ export default class ContactInfo extends Vue {
     AcquisitionPackage.setSelectedContactBranch(this.selectedBranch);
   }  
 
-  public selectedServiceOrAgency: SelectData = AcquisitionPackage.selectedServiceOrAgency;
-
   @Watch("selectedRole") 
   protected roleChange(newRole: string): void {
     if (newRole === "MIL") {
@@ -170,6 +168,10 @@ export default class ContactInfo extends Vue {
       }
     }
   }
+
+  // data
+  
+  public selectedServiceOrAgency: SelectData = AcquisitionPackage.selectedServiceOrAgency;
 
   private selectedBranch: SelectData = { text: "", value: "" };
   private branchData: SelectData[] = AcquisitionPackage.branchData;
@@ -225,7 +227,6 @@ export default class ContactInfo extends Vue {
     { text: "Ms.", value: "Ms.", },
     { text: "Dr.", value: "Dr.", },
   ];
-  
 
 }
 </script>
