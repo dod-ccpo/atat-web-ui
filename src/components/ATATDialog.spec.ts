@@ -39,16 +39,16 @@ describe("Testing ATATDialog Component", () => {
     });
   });
 
-  describe("Functions", () => {
+  describe("METHODS", () => {
     it("fires off cancel event", async () => {
       await wrapper.setProps({showDialog: true});
-      jest.advanceTimersByTime(100000);
+      jest.advanceTimersByTime(2500);
       expect(wrapper.find('#dialog_cancel')).toBeDefined();
 
       const cancelBtn = wrapper.find('#dialog_cancel');
       cancelBtn.trigger('click');
       expect(wrapper.vm.cancelItem).toBeDefined();
-    })
+    });
 
     it("fires off onOk event", async () => {
       await wrapper.setProps({showDialog: true});
@@ -57,7 +57,6 @@ describe("Testing ATATDialog Component", () => {
       const okBtn = wrapper.find('#dialog_ok');
       okBtn.trigger('click');
       expect(wrapper.vm.onOK).toBeDefined();
-    })
-  })
-
+    });
+  });
 });
