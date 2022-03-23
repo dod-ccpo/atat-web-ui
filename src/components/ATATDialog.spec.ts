@@ -23,39 +23,41 @@ describe("Testing ATATDialog Component", () => {
       }
     });
   });
-  it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
-  });
+  describe("INITIALIZATION", () => {
+    it("renders successfully", async () => {
+      expect(wrapper.exists()).toBe(true);
+    });
+  })
 
   describe("PROPS", () => {
-    it("optional", async()=>{
-      await wrapper.setProps({title: `Bacon ipsum dolor amet ball tip minim shoulder
-         buffalo t-bone eu.Strip steak nostrud pancetta ullamco
-         tongue irure`});
-      expect(wrapper.find(".modalDialogTitle")).toBeDefined;
+    it("optional", async () => {
+      await wrapper.setProps({
+        title: `Bacon ipsum dolor amet ball tip minim shoulder
+        buffalo t-bone eu.Strip steak nostrud pancetta ullamcotongue irure`
+      });
+      expect(wrapper.find(".modalDialogTitle")).toBeDefined();
     });
   });
 
-  describe("CancelBtn", () => {
-    it("fires off cancel event", async() => {
+  describe("Functions", () => {
+    it("fires off cancel event", async () => {
       await wrapper.setProps({showDialog: true});
-      jest.advanceTimersByTime(100000)
-      expect(wrapper.find('#dialog_cancel')).toBeDefined()
+      jest.advanceTimersByTime(100000);
+      expect(wrapper.find('#dialog_cancel')).toBeDefined();
 
-      const cancelBtn = wrapper.find('#dialog_cancel')
-      cancelBtn.trigger('click')
-      expect(wrapper.vm.cancelItem).toBeDefined()
+      const cancelBtn = wrapper.find('#dialog_cancel');
+      cancelBtn.trigger('click');
+      expect(wrapper.vm.cancelItem).toBeDefined();
+    })
+
+    it("fires off onOk event", async () => {
+      await wrapper.setProps({showDialog: true});
+      expect(wrapper.find('#dialog_ok')).toBeDefined();
+
+      const okBtn = wrapper.find('#dialog_ok');
+      okBtn.trigger('click');
+      expect(wrapper.vm.onOK).toBeDefined();
     })
   })
 
-  describe("okBtn", () => {
-    it("fires off onOk event", async() => {
-      await wrapper.setProps({showDialog: true});
-      expect(wrapper.find('#dialog_ok')).toBeDefined()
-
-      const okBtn = wrapper.find('#dialog_ok')
-      okBtn.trigger('click')
-      expect(wrapper.vm.onOK).toBeDefined()
-    })
-  })
 });
