@@ -26,13 +26,12 @@ describe("Testing ATATStepperNavigation", () => {
       await wrapper.setProps({size: ''});
       expect(wrapper.vm.getIconSize()).toBe('icon-16');
     });
-  });
-  describe("getIconSize", () => {
     it("getIconSize Large", async () => {
       await wrapper.setProps({size: 'large'});
       expect(wrapper.vm.getIconSize()).toBe('icon-20');
     });
   });
+
   describe("getIcon", () => {
     it("getIcon should return passed icon", async () => {
       await wrapper.setProps({icon: 'smile'});
