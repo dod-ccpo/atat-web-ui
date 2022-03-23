@@ -22,6 +22,7 @@
         :isACOR="isACOR"
         :selectedContact.sync="selectedContact"
         :showContactForm.sync="showContactForm"
+        id="SelectedContactCard"
       />
     </div>
 

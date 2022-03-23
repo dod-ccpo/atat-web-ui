@@ -48,7 +48,6 @@ export const resolveNextRouteName = (current: string, stepInfo: StepInfo): strin
 }
 
 export const resolvePreviousRouteName = (current: string, stepInfo: StepInfo): string | undefined  => {
- debugger;
 
   if(!stepInfo.prev)
       return stepInfo.prev;
@@ -56,5 +55,5 @@ export const resolvePreviousRouteName = (current: string, stepInfo: StepInfo): s
   const prev =  (typeof stepInfo.prev === 'string') ? 
   stepInfo.prev : (stepInfo.prev as StepRouteResolver)(current);
 
-   return prev;
+  return prev;
 }

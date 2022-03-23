@@ -66,7 +66,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "" }) private legend!: string;
   @Prop({ default: [""] }) private items!: RadioButton[];
-  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
+  @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;
