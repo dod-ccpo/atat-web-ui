@@ -22,7 +22,7 @@ describe("Testing ATATStepperNavigation", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
     });
-  })
+  });
 
   describe("PROPS", () => {
     it("errors.length > 0", async () => {

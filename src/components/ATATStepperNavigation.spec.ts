@@ -23,5 +23,5 @@ describe("Testing ATATStepperNavigation", () => {
       expect(wrapper.exists()).toBe(true);
     });
   });
-
 });
+
