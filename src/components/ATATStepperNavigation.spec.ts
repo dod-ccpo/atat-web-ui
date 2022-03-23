@@ -18,7 +18,10 @@ describe("Testing ATATStepperNavigation", () => {
       vuetify,
     });
   });
-  it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
+  describe("INITIALIZATION", () => {
+    it("renders successfully", async () => {
+      expect(wrapper.exists()).toBe(true);
+    });
   });
+
 });

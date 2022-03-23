@@ -3,6 +3,7 @@ import Vuetify from "vuetify";
 import {createLocalVue, mount, Wrapper} from "@vue/test-utils";
 import {DefaultProps} from "vue/types/options";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+
 Vue.use(Vuetify);
 
 describe("Testing ATATStepperNavigation", () => {
@@ -17,13 +18,15 @@ describe("Testing ATATStepperNavigation", () => {
       localVue
     });
   });
-  it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
-  });
+  describe("INITIALIZATION", () => {
+    it("renders successfully", async () => {
+      expect(wrapper.exists()).toBe(true);
+    });
+  })
 
-  describe("With Errors", () => {
+  describe("PROPS", () => {
     it("errors.length > 0", async () => {
-      await wrapper.setProps({ errorMessages: ['error1', 'error2'] });
+      await wrapper.setProps({errorMessages: ['error1', 'error2']});
       expect(wrapper.vm.$props.errorMessages.length).toBe(2);
     });
   });
