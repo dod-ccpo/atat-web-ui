@@ -49,7 +49,7 @@ describe("Testing ATATStepperNavigation", () => {
     });
   });
 
-  describe("FUNCTIONS", () => {
+  describe("METHODS", () => {
     it("close", async () => {
       await wrapper.vm.close();
       expect(wrapper.vm.$props.show).toBe(false);
