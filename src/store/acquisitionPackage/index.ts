@@ -45,7 +45,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
-  public doSomethingInStore(foo: string, bar: string): void {
+  public sampleAdditionalButtonActionInStore(foo: string, bar: string): void {
     console.log("do something in the store, e.g., set flag to not validate this substep");
     console.log("argsPasssed: foo: " + foo + ", bar: " + bar);
   }

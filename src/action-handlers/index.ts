@@ -9,11 +9,11 @@ const stores = {
 }
 
 const actionHandlerNames = {
-  doSomething: "doSomething",
+  sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
 }
 
 const actions =  {
-  [actionHandlerNames.doSomething]: doSomething,
+  [actionHandlerNames.sampleAdditionalButtonAction]: sampleAdditionalButtonAction,
 };
 
 async function actionHandler(
@@ -24,12 +24,12 @@ async function actionHandler(
   await actions[actionName](actionArgs, stepStore);
 } 
 
-function doSomething(actionArgs: string[], stepStore: string) {
+function sampleAdditionalButtonAction(actionArgs: string[], stepStore: string) {
   console.log('args in actionHandler:', actionArgs);
   const foo = actionArgs[0];
   const bar = actionArgs[1];
   const store = stores[stepStore];
-  store.doSomethingInStore(foo, bar);
+  store.sampleAdditionalButtonActionInStore(foo, bar);
   alert("\"Cancel\" will navigate to JWCC intro when completed.")
 }
 

@@ -59,7 +59,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonId: "MyButton",
             buttonClass: "tertirary",
             emitText: "skipThisStep", 
-            actionName: "doSomething",
+            actionName: "sampleAdditionalButtonAction",
             actionArgs: ["foo", "bar"],
             stepStore: "AcquisitionPackage",
           },
