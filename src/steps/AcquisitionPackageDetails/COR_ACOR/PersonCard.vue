@@ -1,21 +1,22 @@
-
 <template>
-  <div>
+  <div :id="id">
     <div class="max-width-640 border1 border-base-lighter border-rounded-more pa-8 mb-5">
-      <span class="font-size-20 mb-5 d-block">{{ selectedContact.FullName }}</span>
-      <span class="ml-3 mb-5 d-block">
+      <span class="font-size-20 mb-5 d-block" :id="id + '_Name'">
+        {{ selectedContact.FullName }}
+      </span>
+      <span class="ml-3 mb-5 d-block" :id="id + '_Email'">
         <v-icon class="mr-2 text-base-light">mail</v-icon> 
         {{ selectedContact.Email }}
       </span>
-      <span class="ml-3 mb-5 d-block">
+      <span class="ml-3 mb-5 d-block" :id="id + '_Phone'">
         <v-icon class="mr-2 text-base-light">phone</v-icon> 
         {{ selectedContact.Phone }}<br />
       </span>
-      <span class="ml-3 mb-10 d-block">
+      <span class="ml-3 mb-10 d-block" :id="id + '_OrgName'">
         <v-icon class="mr-2 text-base-light">pentagon</v-icon> 
         {{ selectedContact.OrgName }}<br />
       </span>
-      <p class="mb-10 text-base">
+      <p class="mb-10 text-base" :id="id + '_Message'">
         To make any changes to your {{ corOrAcor }}’s contact information, please send a 
         request to our User Engagement Team.
       </p>
@@ -54,12 +55,13 @@
     </ATATDialog>
   </div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-
-import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({
   components: {
@@ -72,11 +74,15 @@ export default class PersonCard extends Vue {
   
   // props
   
-  @Prop({default: false}) private isACOR!: boolean;
+  @Prop({ default: false }) private isACOR!: boolean;
+  @Prop({ default: "PersonCard" }) private id!: boolean;
   @PropSync("selectedContact") private _selectedContact!: unknown;
   @PropSync("showContactForm") private _showContactForm!: unknown;
 
+  // data
+
   private showDialog = false
+
   // computed
 
   get corOrAcor(): string {

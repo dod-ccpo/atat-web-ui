@@ -59,5 +59,5 @@ export const resolvePreviousRouteName
     const prev = (typeof stepInfo.prev === 'string') ?
       stepInfo.prev : (stepInfo.prev as StepRouteResolver)(current);
 
-    return prev;
-  }
+  return prev;
+}

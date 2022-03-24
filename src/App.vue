@@ -63,6 +63,7 @@ export default class App extends Vue {
       // this.additionalButtons = Steps.getAdditionalButtons(step)
       this.getAdditionalButtons(step);
     }
+    await AcquisitionPackage.initialize();
   }
 
   @Watch("$route")

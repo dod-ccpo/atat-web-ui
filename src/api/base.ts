@@ -12,10 +12,11 @@ function configureDefaults(){
   // define ServiceNow authentication schema for REST calls
 // set up axios defaults
 if (process.env.NODE_ENV === "development") {
-  // use username and password defined in a config file
+  // use username and password defined in .env file
   // for local development
-  const username = process.env.VUE_APP_USER;
-  const password = process.env.VUE_APP_PASSWORD;
+  const username = process.env.VUE_APP_SNOWUSER;
+  const password = process.env.VUE_APP_SNOWPASS;
+
   axios.defaults.auth = {
     username,
     password,
@@ -29,7 +30,6 @@ axios.defaults.headers.put["Content-Type"] = "application/json";
 }
 
 const BASE_API_URL = process.env.VUE_APP_BASE_API_URL;
-// const BASE_API_URL = 'https://dev117675.service-now.com/api';
 
 export default class {
   protected instance: AxiosInstance;
