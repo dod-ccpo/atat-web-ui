@@ -54,10 +54,10 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ProjectOverview,
         additionalButtons: [
           {
-            name: routeNames.Project_Scope,
-            buttonText: "Skip this substep",
+            name: routeNames.Project_Overview,
+            buttonText: "Cancel",
             buttonId: "MyButton",
-            isPrimary: false,
+            buttonClass: "tertirary",
             emitText: "skipThisStep", 
             actionName: "doSomething",
             actionArgs: ["foo", "bar"],
@@ -79,12 +79,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "Skip this substep",
             buttonId: "MyButton2",
             stepStore: "",
+            buttonClass: "secondary",
           },
           {
             name: routeNames.Cor_Information,
             buttonText: "Skip several substeps",
             buttonId: "MyButton",
-            isPrimary: true,
+            buttonClass: "primary",
           },
         ],
 
@@ -136,6 +137,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: false,
         completePercentageWeight: 5,
         component: Summary,
+        backButtonText: "Back to XXX",
       }
     ],
   },
@@ -300,8 +302,9 @@ const mapStepRouteToStepperData = (
     path,
     stepNumber,
     additionalButtons,
+    backButtonText,
   } = stepperRouteConfig;
-  // debugger;
+
   let { name } = stepperRouteConfig;
   name = name || "";
 
@@ -317,8 +320,9 @@ const mapStepRouteToStepperData = (
       mapStepRouteToStepperData(child)
     ),
     additionalButtons,
+    backButtonText,
   };
-  // debugger;
+
   return stepperStep;
 };
 

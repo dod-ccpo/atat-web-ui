@@ -20,6 +20,7 @@ export interface StepperStep {
     route: string;
     subSteps?: StepperStep[];
     additionalButtons?: AdditionalButton[];
+    backButtonText?: string;
 }
 
 /**
@@ -60,14 +61,13 @@ interface StepperRouteBase {
      */
     routeResolver?: (currentRoute: string) => string;
     additionalButtons?: AdditionalButton[];
-
+    backButtonText?: string;
 }
 
 /**
  * Stepper Route Single Extends Route Single View
  */
 export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigSingleView {
-
     children?: StepperRouteConfig[]
 }
 
@@ -76,7 +76,6 @@ export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigS
 */
 export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteConfigMultipleViews {
     children?: StepperRouteConfig[]
-
 }
 
 /**

@@ -3,13 +3,14 @@
     <hr class="base-lighter ml-3 mt-10 mb-8" />
     <div class="d-flex">
       <v-btn
+        v-if="!noPrevious"
         @click="$emit('previous')"
         role="link"
         class="link-button no-border"
         id="BackButton"
       >
         <v-icon size="20">chevron_left</v-icon>
-        <span>Back</span>
+        <span>{{ backButtonText }}</span>
       </v-btn>
 
       <span class="ml-auto d-flex">
@@ -18,7 +19,7 @@
             v-for="button in additionalButtons"
             :key="button.id"
             @click="$emit('additionalButtonClick', button)" 
-            :color="button.isPrimary ? 'primary' : 'secondary'" 
+            :color="getButtonClass(button)" 
             role="link" 
             class="ml-4"
             :id="button.buttonId"
@@ -45,10 +46,18 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
+import { AdditionalButton } from "@/store/steps/types";
 
 @Component({})
 
 export default class ATATStepperNavigation extends Vue {
   @Prop({ default: () => []}) private additionalButtons?: Array<unknown>;
+  @Prop({ default: "Back" }) private backButtonText?: string;
+  @Prop({ default: false }) private noPrevious?: boolean;
+
+  private getButtonClass(button: AdditionalButton) {
+    return button.buttonClass || "secondary";
+  }
+
 }
 </script>

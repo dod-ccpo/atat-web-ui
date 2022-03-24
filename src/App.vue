@@ -10,6 +10,8 @@
         @previous="navigate('previous')"
         @additionalButtonClick="additionalButtonClick"
         :additionalButtons="additionalButtons"
+        :backButtonText="backButtonText"
+        :noPrevious="noPrevious"
       />
 
       <ATATFooter/>
@@ -52,6 +54,8 @@ export default class App extends Vue {
   private additionalButtons: AdditionalButton[] = [];
 
   private stepperData = buildStepperData();
+  private noPrevious = false;
+  private backButtonText = "Back";
 
   async mounted(): Promise<void> {
     //get first step and intitialize store to first step;
@@ -60,8 +64,7 @@ export default class App extends Vue {
     if (routeName && step) {
       const {stepName} = step;
       Steps.setCurrentStep(stepName);
-      // this.additionalButtons = Steps.getAdditionalButtons(step)
-      this.getAdditionalButtons(step);
+      this.setNavButtons(step);
     }
     await AcquisitionPackage.initialize();
   }
@@ -74,8 +77,16 @@ export default class App extends Vue {
     if (routeName && step) {
       const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
-      this.getAdditionalButtons(step);
+      this.setNavButtons(step);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
+    }
+  }
+
+  private setNavButtons(step: StepInfo): void {
+    this.noPrevious = !step.prev;
+    this.backButtonText = step.backButtonText || "Back";
+    if (step.additionalButtons) {
+      this.additionalButtons = step?.additionalButtons;
     }
   }
 
@@ -91,12 +102,6 @@ export default class App extends Vue {
     }
 
     this.$router.push({name: button.name})
-  }
-
-  private getAdditionalButtons(step: StepInfo): void {
-    if (step?.additionalButtons) {
-      this.additionalButtons = step?.additionalButtons;
-    }
   }
 
   async navigate(direction: string): Promise<void> {

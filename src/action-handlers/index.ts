@@ -30,6 +30,7 @@ function doSomething(actionArgs: string[], stepStore: string) {
   const bar = actionArgs[1];
   const store = stores[stepStore];
   store.doSomethingInStore(foo, bar);
+  alert("\"Cancel\" will navigate to JWCC intro when completed.")
 }
 
 export default actionHandler;

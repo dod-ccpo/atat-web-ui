@@ -7,13 +7,14 @@ export interface StepInfo {
     next: string | undefined;
     resolver: StepRouteResolver | undefined;
     additionalButtons: AdditionalButton[];
+    backButtonText: string | undefined;
 }
 
 export interface AdditionalButton {
     name: string;
     buttonText: string;
     buttonId: string;
-    isPrimary?: boolean;
+    buttonClass?: string;
     emitText?: string;
     actionName?: string;
     actionArgs?: string[];
