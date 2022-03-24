@@ -19,9 +19,8 @@
           v-for="item in items"
           :id="'Radio_' + getIdText(item.id)"
           :class="[card ? '_radio-button-card' : '_radio-button',
-                    errorMessages.length > 0 ? 'error--text v-input--has-state': '', 'ATATRadioGroup']"
+          errorMessages.length > 0 ? 'error--text v-input--has-state': '', 'ATATRadioGroup']"
           :key="item.id"
-          :label="item.label"
           :value="item.value"
           :style="{ width: width }"
           :name="name"
@@ -31,10 +30,14 @@
         >
           <template v-if="item.description && card" v-slot:label>
             <div class="d-flex flex-column">
-              <p class="card-label">{{ item.label }}</p>
-              <p class="mb-0">{{ item.description }}</p>
+              <p class="card-label" v-html="item.label"></p>
+              <p class="mb-0" v-html="item.description"></p>
             </div>
           </template>
+          <template v-else v-slot:label>
+            <span v-html="item.label"></span>
+          </template>
+
         </v-radio>
       </fieldset>
     </v-radio-group>

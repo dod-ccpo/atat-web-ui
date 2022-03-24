@@ -1,4 +1,6 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
+
+// Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
@@ -8,7 +10,11 @@ import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import Summary from "../steps/Summary.vue";
-import StepTwo from "../steps/StepTwo.vue";
+
+// Step 2 - Fair Opportunity Process
+import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
+
+// other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
@@ -23,7 +29,8 @@ export const routeNames = {
   Alternate_Cor:"Alternate_Cor",
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
-  Summary: "Summary"
+  Summary: "Summary",
+  Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
 };
 
 /**
@@ -114,39 +121,17 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "02",
-    menuText: "Existing Contract / Background",
-    path: "/steptwo",
+    menuText: "Fair Opportunity Process",
+    path: "/fair-opportunity-exceptions",
     completePercentageWeight: 10,
-    name: "Existing_Contract_Background",
-    component: StepTwo,
+    name: routeNames.Fair_Opportunity_Exceptions,
+    component: FairOpportunity_Exceptions,
     children: [
       {
-        name: "Substep_1",
-        menuText: "Substep 1",
-        path: "/steptwo", // should be same as parent route
-
+        name: "Exceptions",
+        menuText: "Exceptions",
+        path: "/fair-opportunity-exceptions",
         completePercentageWeight: 2,
-      },
-      {
-        name: "Substep_2",
-        menuText: "Substep 2",
-        path: "steptwo-2",
-        completed: true,
-        completePercentageWeight: 3,
-      },
-      {
-        name: "Substep_3",
-        menuText: "Substep 3",
-        path: "steptwo-3",
-
-        completePercentageWeight: 4,
-      },
-      {
-        name: "Substep 4",
-        menuText: "Substep 4",
-        path: "steptwo-4",
-        completed: true,
-        completePercentageWeight: 1,
       },
     ],
   },
