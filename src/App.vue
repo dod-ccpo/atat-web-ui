@@ -120,6 +120,5 @@ export default class App extends Vue {
     this.$router.push({name: button.name})
   }
 
-
 }
 </script>

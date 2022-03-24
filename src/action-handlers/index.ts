@@ -30,7 +30,7 @@ function sampleAdditionalButtonAction(actionArgs: string[], stepStore: string) {
   const bar = actionArgs[1];
   const store = stores[stepStore];
   store.sampleAdditionalButtonActionInStore(foo, bar);
-  alert("\"Cancel\" will navigate to JWCC intro when completed.")
+  alert("\"Cancel\" will navigate to JWCC intro when completed.");
 }
 
 export default actionHandler;
