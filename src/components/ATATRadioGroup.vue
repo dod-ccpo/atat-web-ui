@@ -2,6 +2,7 @@
   <div 
     :id="id+'_radio_group_control'" >
     <v-radio-group
+      class="_atat-radio-group"
       ref="radioButtonGroup"
       :hide-details="false"
       :rules="rules"
@@ -18,8 +19,8 @@
         <v-radio
           v-for="item in items"
           :id="'Radio_' + getIdText(item.id)"
-          :class="[card ? '_radio-button-card' : '_radio-button',
-          errorMessages.length > 0 ? 'error--text v-input--has-state': '', 'ATATRadioGroup']"
+          class="_atat-radio"
+          :class="radioClasses"
           :key="item.id"
           :value="item.value"
           :style="{ width: width }"
@@ -92,6 +93,11 @@ export default class ATATRadioGroup extends Vue {
     return string.replace(/[^A-Z0-9]/gi, "");
   }
 
+  private radioClasses() {
+    let classes = this.card ? "_radio-button-card " : "_radio-button ";
+    classes += this. errorMessages.length > 0 ? 'error--text v-input--has-state' : '';
+    return classes;
+  }
   // events
   private onClick(): void {
     this.clearErrorMessage();

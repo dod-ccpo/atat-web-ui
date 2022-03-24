@@ -46,8 +46,12 @@ hr{
   min-height: 0px !important;
 }
 
-.ATATRadioGroup {
-  legend {
-    font-weight: 500;
+._atat-radio-group {
+  .v-radio._atat-radio {
+    align-items: flex-start;
+    legend {
+      font-weight: 500;
+    }
   }
+  
 }
