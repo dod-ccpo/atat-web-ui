@@ -1,6 +1,9 @@
-import { Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import rootStore from "../index";
+import api from "@/api";
+import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
+const ATAT_ACQUISTION_PACKAGE_KEY="ATAT_ACQUISTION_PACKAGE_KEY";
 
 @Module({
   name: 'AcquisitionPackage',
@@ -16,6 +19,7 @@ export class AcquisitionPackageStore extends VuexModule {
   // the undefined will be returned when getting the variable value.
 
   projectTitle = "";
+  acquisitionPackage: AcquisitionPackageDTO  | null = null;
   hasAlternativeContactRep: boolean | null = null;
 
   public getTitle(): string {
@@ -30,10 +34,40 @@ export class AcquisitionPackageStore extends VuexModule {
 
   // EJY needs an action. shouldn't call mutations directly
   @Mutation
+  public setAcquisitionPackage(value: AcquisitionPackageDTO): void {
+    this.acquisitionPackage = value;
+  }
+
+  @Mutation
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
 
+  @Action({ rawError: true })
+  public async initialize(): Promise<void> {
+     
+       const storedAcquisitionPackageData = sessionStorage.getItem(ATAT_ACQUISTION_PACKAGE_KEY) as string;
+       
+      if(storedAcquisitionPackageData && storedAcquisitionPackageData.length > 0){
+           const parsedData = JSON.parse(storedAcquisitionPackageData) as AcquisitionPackageDTO;
+           this.setAcquisitionPackage(parsedData);
+      }
+      else{
+
+           try {
+            const acquisitionPackage = await api.acquisitionPackages.create();
+             if(acquisitionPackage){
+               this.setAcquisitionPackage(acquisitionPackage);
+               sessionStorage.setItem(ATAT_ACQUISTION_PACKAGE_KEY, JSON.stringify(acquisitionPackage));
+             }
+             
+           } catch (error) {
+             
+              console.log(`error creating acquisition package ${error}`);
+           }
+
+      }
+  }
   // service or agency selected on Organiation page
   selectedServiceOrAgency: SelectData = { text: "", value: "" };
   public getSelectedServiceOrAgency(): SelectData {

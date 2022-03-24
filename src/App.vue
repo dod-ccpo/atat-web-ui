@@ -52,6 +52,7 @@ export default class App extends Vue {
       const {stepName} = step;
       Steps.setCurrentStep(stepName);
     }
+    await AcquisitionPackage.initialize();
   }
 
   @Watch("$route")
