@@ -165,8 +165,8 @@ describe("Test suite: Acquisition Package ", () => {
         
         //radio buttons        
         cy.radioBtn("#Radio_USAddress", "USA").not("[disabled]");
-        cy.radioBtn("#Radio_MilitaryAddress", "MIL").and("be.disabled");
-        cy.radioBtn("#Radio_ForeignAddress", "FOR").and("be.disabled");
+        cy.radioBtn("#Radio_MilitaryAddress", "MIL").not("[disabled]");
+        cy.radioBtn("#Radio_ForeignAddress", "FOR").not("[disabled]");
 
         //Assert Organization's address labels
         cy.textExists("#StreetAddress_text_field_label", " Street address ");
