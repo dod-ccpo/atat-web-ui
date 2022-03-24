@@ -18,7 +18,6 @@ export interface AdditionalButton {
     emitText?: string;
     actionName?: string;
     actionArgs?: string[];
-    stepStore?: string;
 }
 
 export interface StepsState {

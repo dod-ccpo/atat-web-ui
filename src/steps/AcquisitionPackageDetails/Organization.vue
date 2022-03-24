@@ -91,7 +91,7 @@
                   label="Unit, suite, etc."
                   :optional="true"
                   :class="inputClass"
-                  width="160px"
+                  width="160"
                 />
               </v-col>
             </v-row>
@@ -155,7 +155,7 @@
                   id="ZIP"
                   :label="zipLabel"
                   :class="inputClass"
-                  width="160px"
+                  width="160"
                 />
               </v-col>
             </v-row>
