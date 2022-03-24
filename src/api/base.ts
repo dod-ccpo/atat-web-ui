@@ -21,11 +21,8 @@ if (process.env.NODE_ENV === "development") {
     username,
     password,
   };
-} else {
-  if (axios.defaults?.headers && axios.defaults.headers.common) {
-    axios.defaults.headers.common["x-auth-token"] = window.servicenowUserToken;
-  }
 }
+
 axios.defaults.headers.put["Content-Type"] = "application/json";
 }
 
