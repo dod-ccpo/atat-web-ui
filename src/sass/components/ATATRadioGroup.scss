@@ -34,10 +34,8 @@
 
     &.error--text {
       color: $error-dark !important;
-
     }
   }
-
 
   .v-icon {
     color: $base !important;
@@ -82,8 +80,6 @@
     }
   }
 }
-
-
 
 ._radio-button-card {
   @extend ._radio-button;
@@ -140,7 +136,6 @@
     padding: 12px 0px 12px 12px;
     align-items: start !important;
   }
-
 }
 
 .v-input--radio-group--column{
@@ -151,6 +146,5 @@
       margin-bottom: 12px !important
     }
   }
-
 }
 
