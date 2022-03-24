@@ -20,7 +20,7 @@ async function actionHandler(
   actionName: string, 
   actionArgs: string[],
   stepStore: string,
-  ): Promise<void> {
+): Promise<void> {
   await actions[actionName](actionArgs, stepStore);
 } 
 

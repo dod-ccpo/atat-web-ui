@@ -41,24 +41,21 @@ export const mapStepConfigs = (
   return map;
 };
 
-export const resolveNextRouteName
-  = (current: string, stepInfo: StepInfo): string | undefined => {
-
-    if (stepInfo.resolver) {
-      return (stepInfo.resolver(current));
-    }
-
-    return stepInfo.stepName;
+export const resolveNextRouteName = (current: string, stepInfo: StepInfo): string | undefined => {
+  if (stepInfo.resolver) {
+    return (stepInfo.resolver(current));
   }
 
-export const resolvePreviousRouteName
-  = (current: string, stepInfo: StepInfo): string | undefined => {
+  return stepInfo.stepName;
+}
 
-    if (!stepInfo.prev)
-      return stepInfo.prev;
+export const resolvePreviousRouteName = (current: string, stepInfo: StepInfo): string | undefined => {
+  if (!stepInfo.prev)
+    return stepInfo.prev;
 
-    const prev = (typeof stepInfo.prev === 'string') ?
-      stepInfo.prev : (stepInfo.prev as StepRouteResolver)(current);
+  const prev = (typeof stepInfo.prev === 'string')
+    ? stepInfo.prev
+    : (stepInfo.prev as StepRouteResolver)(current);
 
   return prev;
 }

@@ -25,18 +25,19 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Steps from "@/store/steps";
+import { Component, Watch } from "vue-property-decorator";
 
-import ATATSideStepper from "./components/ATATSideStepper.vue";
-import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
-import {Component, Watch} from "vue-property-decorator";
-import {buildStepperData} from "./router/stepper";
+import ATATSideStepper from "./components/ATATSideStepper.vue";
+import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
+import Steps from "@/store/steps";
+
+import { buildStepperData } from "./router/stepper";
 import actionHandler from "./action-handlers/index"
-import { AdditionalButton, StepInfo } from "@/store/steps/types";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { AdditionalButton, StepInfo } from "@/store/steps/types";
 
 @Component({
   components: {
@@ -51,9 +52,8 @@ export default class App extends Vue {
     sideStepper: ATATSideStepper;
   };
 
-  private additionalButtons: AdditionalButton[] = [];
-
   private stepperData = buildStepperData();
+  private additionalButtons: AdditionalButton[] = [];
   private noPrevious = false;
   private backButtonText = "Back";
 
@@ -82,28 +82,6 @@ export default class App extends Vue {
     }
   }
 
-  private setNavButtons(step: StepInfo): void {
-    this.noPrevious = !step.prev;
-    this.backButtonText = step.backButtonText || "Back";
-    if (step.additionalButtons) {
-      this.additionalButtons = step?.additionalButtons;
-    }
-  }
-
-  private async additionalButtonClick(button: AdditionalButton) {
-    console.log(button);
-    if (button.emitText) {
-      this.$emit('AdditionalButtonClicked', button.emitText);
-    }
-    if (button.actionName) {
-      const actionArgs = button.actionArgs || [];
-      const stepStore = button.stepStore || "";
-      await actionHandler(button.actionName, actionArgs, stepStore);
-    }
-
-    this.$router.push({name: button.name})
-  }
-
   async navigate(direction: string): Promise<void> {
     const nextStepName =
       direction === "next" 
@@ -120,5 +98,28 @@ export default class App extends Vue {
       ? AcquisitionPackage.projectTitle
       : "New Acquisition";
   }
+
+  private setNavButtons(step: StepInfo): void {
+    this.noPrevious = !step.prev;
+    this.backButtonText = step.backButtonText || "Back";
+    if (step.additionalButtons) {
+      this.additionalButtons = step?.additionalButtons;
+    }
+  }
+
+  private async additionalButtonClick(button: AdditionalButton) {
+    if (button.emitText) {
+      this.$emit('AdditionalButtonClicked', button.emitText);
+    }
+    if (button.actionName) {
+      const actionArgs = button.actionArgs || [];
+      const stepStore = button.stepStore || "";
+      await actionHandler(button.actionName, actionArgs, stepStore);
+    }
+
+    this.$router.push({name: button.name})
+  }
+
+
 }
 </script>

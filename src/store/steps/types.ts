@@ -22,7 +22,6 @@ export interface AdditionalButton {
 }
 
 export interface StepsState {
-
     currentStep: StepInfo | undefined;
     stepMap: Map<string, StepInfo>
     setCurrentStep: (stepName: string) => void
@@ -36,4 +35,3 @@ export enum RouteDirection {
     NEXT = "NEXT",
     PREVIOUS = "PREVIOUS"
 }
-

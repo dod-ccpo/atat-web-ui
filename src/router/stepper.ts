@@ -46,7 +46,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     completed: true,
     children: [
       {
-        menuText: "Project Overview foo",
+        menuText: "Project Overview",
         path: "/", // should be same as parent route
         name: routeNames.Project_Overview,
         completePercentageWeight: 4,
@@ -78,7 +78,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             name: routeNames.Organization_Info,
             buttonText: "Skip this substep",
             buttonId: "MyButton2",
-            stepStore: "",
             buttonClass: "secondary",
           },
           {
@@ -88,7 +87,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonClass: "primary",
           },
         ],
-
       },
       {
         menuText: "Organization",
@@ -107,7 +105,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ContactInfo,
       },
       {
-        menuText: "Demo Package", // EJY do we still need menuText?
+        menuText: "Cor Info",
         path: "cor-info",
         name: routeNames.Cor_Information,
         excludeFromMenu: true,

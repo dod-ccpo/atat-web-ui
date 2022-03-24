@@ -47,8 +47,9 @@ export class StepsStore extends VuexModule implements StepsState {
     @Action({ rawError: true })
     public async resolveRoute(direction: RouteDirection): Promise<string | undefined> {
 
-        const nextStepName = direction === RouteDirection.NEXT ? (this.currentStep?.next || '') :
-            (this.currentStep?.prev || '');
+        const nextStepName = direction === RouteDirection.NEXT 
+            ? (this.currentStep?.next || '') 
+            : (this.currentStep?.prev || '');
 
         const currentStepName = this.currentStep?.stepName;
 
