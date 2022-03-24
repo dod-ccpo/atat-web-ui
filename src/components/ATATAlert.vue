@@ -74,6 +74,7 @@ export default class ATATAlert extends Vue {
   @Prop({ default: "presentation" }) private role?: string;
   @Prop({ default: "" }) private icon?: string;
   @Prop({ default: true }) private show?: boolean;
+  @Prop({ default: "Alert" }) private id?: string;
 
   /**
    * type: 1) info, 2) error, 3) warning

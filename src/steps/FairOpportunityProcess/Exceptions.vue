@@ -7,7 +7,12 @@
             Let’s see if you qualify for an exception to the fair opportunity process
           </h1>
 
-          <ATATAlert type="info" :showIcon="false" class="copy-max-width my-10">
+          <ATATAlert 
+            id="FairOpportunityAlert"
+            type="info" 
+            :showIcon="false" 
+            class="copy-max-width my-10"
+          >
             <template v-slot:content>
               <h2>Fair opportunity</h2>
               <p class="mt-2 mb-0">
@@ -15,18 +20,22 @@
                 a fair opportunity to be considered for task orders exceeding the micro-purchase 
                 threshold, unless a statutory exception applies. Any exceptions will require 
                 written justification, in accordance with 
-                  <a href="#" target="_blank" class="text-link">
+                  <a 
+                    href="#" 
+                    target="_blank" 
+                    class="text-link" 
+                    id="ExceptionExternalLink"
+                  >
                     <span class="external-link">FAR 16.505(b)(2)</span>
                   </a>.
-                We will help you 
-                complete justification documentation, if needed.
+                We will help you complete justification documentation, if needed.
               </p>
             </template>
           </ATATAlert>
 
           <ATATRadioGroup
             class="copy-max-width mb-10"
-            id="ContactAffiliation"
+            id="ExceptionRadioOptions"
             legend="Based on your market research, do any of the following exceptions to fair 
               opportunity apply to your acquisition?"
             :items="exceptionOptions"
@@ -79,6 +88,5 @@ export default class FairOpportunity_Exceptions extends Vue {
       value: "NoneApply",
     },
   ];
-
 }
 </script>

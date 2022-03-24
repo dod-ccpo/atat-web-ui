@@ -28,7 +28,7 @@
           @blur="onBlur"
           @click="onClick"
         >
-          <template v-if="item.description && card" v-slot:label>
+          <template v-if="item.description || card" v-slot:label>
             <div class="d-flex flex-column">
               <p class="card-label" v-html="item.label"></p>
               <p class="mb-0" v-html="item.description"></p>

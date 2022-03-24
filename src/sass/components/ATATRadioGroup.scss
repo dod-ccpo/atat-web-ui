@@ -145,11 +145,12 @@
 
 .v-input--radio-group--column{
    margin-top: 0px !important;
-  .v-radio {
+  
+   .v-radio {
     &:not(:last-child):not(:only-child) {
       margin-bottom: 12px !important
     }
-
   }
+
 }
 
