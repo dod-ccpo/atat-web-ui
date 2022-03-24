@@ -4,6 +4,7 @@ import { Mutations, RouteDirection, StepInfo, StepsState } from "./types";
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
+import { AdditionalButton } from "@/store/steps/types";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
@@ -23,7 +24,6 @@ export class StepsStore extends VuexModule implements StepsState {
     @Mutation
     [Mutations.SET_CURRENT_STEP](stepName: string): void {
         const step = this.stepMap.get(stepName);
-
         if (step) {
             this.currentStep = step;
         }
@@ -41,13 +41,19 @@ export class StepsStore extends VuexModule implements StepsState {
 
     @Action({ rawError: true })
     public findRoute(name: string): StepInfo | undefined {
-        const foo = this.stepMap.get(name);
-        debugger;
         return this.stepMap.get(name);
     }
     // EJY Action to getAdditionalButtons(stepName)
     // could use this:         const step = this.stepMap.get(stepName);
     // then see if any thing in additionalButtons
+    // @Action({ rawError: true })
+    // public getAdditionalButtons(step: StepInfo): AdditionalButton[] {
+    //     debugger;
+    //     if (step?.additionalButtons) {
+    //         return step.additionalButtons;
+    //     }
+    //     return [];
+    // }
 
     @Action({ rawError: true })
     public async resolveRoute(direction: RouteDirection): Promise<string | undefined> {

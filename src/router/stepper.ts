@@ -54,14 +54,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ProjectOverview,
         additionalButtons: [
           {
-            name: routeNames.Project_Overview,
-            buttonText: "I don't have blah",
+            name: routeNames.Project_Scope,
+            buttonText: "Skip this substep",
             buttonId: "MyButton",
             isPrimary: false,
-            emitText: "skip", 
-            component: "foo",
-            actionName: "bar", // EJY where does the action live?
-            route: "baz", // where to go when clicked
+            emitText: "skipThisStep", 
+            actionName: "doSomething",
+            actionArgs: ["foo", "bar"],
+            stepStore: "AcquisitionPackage",
           },
         ],
       },
@@ -73,6 +73,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         component: ProjectScope,
         completed: true,
+        additionalButtons: [
+          {
+            name: routeNames.Organization_Info,
+            buttonText: "Skip this substep",
+            buttonId: "MyButton2",
+            stepStore: "",
+          },
+          {
+            name: routeNames.Cor_Information,
+            buttonText: "Skip several substeps",
+            buttonId: "MyButton",
+            isPrimary: true,
+          },
+        ],
+
       },
       {
         menuText: "Organization",
@@ -91,7 +106,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ContactInfo,
       },
       {
-        menuText: "Demo Package",
+        menuText: "Demo Package", // EJY do we still need menuText?
         path: "cor-info",
         name: routeNames.Cor_Information,
         excludeFromMenu: true,
@@ -286,7 +301,7 @@ const mapStepRouteToStepperData = (
     stepNumber,
     additionalButtons,
   } = stepperRouteConfig;
-  debugger;
+  // debugger;
   let { name } = stepperRouteConfig;
   name = name || "";
 
@@ -303,7 +318,7 @@ const mapStepRouteToStepperData = (
     ),
     additionalButtons,
   };
-  debugger;
+  // debugger;
   return stepperStep;
 };
 

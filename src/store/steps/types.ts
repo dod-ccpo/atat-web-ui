@@ -6,18 +6,18 @@ export interface StepInfo {
     prev: string | undefined;
     next: string | undefined;
     resolver: StepRouteResolver | undefined;
-    additionalButtons: AdditionalButton[] | undefined;
+    additionalButtons: AdditionalButton[];
 }
 
 export interface AdditionalButton {
     name: string;
     buttonText: string;
     buttonId: string;
-    isPrimary: boolean;
-    emitText: string;
-    component: string;
-    actionName: string;
-    route: string;
+    isPrimary?: boolean;
+    emitText?: string;
+    actionName?: string;
+    actionArgs?: string[];
+    stepStore?: string;
 }
 
 export interface StepsState {

@@ -8,11 +8,9 @@
       <ATATStepperNavigation 
         @next="navigate('next')" 
         @previous="navigate('previous')"
+        @additionalButtonClick="additionalButtonClick"
         :additionalButtons="additionalButtons"
       />
-      <!-- EJY add prop to steppernav component if additional buttons 
-        pass button text and isPrimary, and text to emit
-       -->
 
       <ATATFooter/>
     </v-main>
@@ -33,9 +31,10 @@ import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
 import {Component, Watch} from "vue-property-decorator";
 import {buildStepperData} from "./router/stepper";
+import actionHandler from "./action-handlers/index"
+import { AdditionalButton, StepInfo } from "@/store/steps/types";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
-
 
 @Component({
   components: {
@@ -50,16 +49,7 @@ export default class App extends Vue {
     sideStepper: ATATSideStepper;
   };
 
-  private additionalButtons = [{
-    name: "foo",
-    buttonText: "I don't have blah",
-    buttonId: "MyButton",
-    isPrimary: false,
-    emitText: "skip", 
-    component: "foo",
-    actionName: "bar", // EJY where does the action live?
-    route: "baz", // where to go when clicked
-  }];
+  private additionalButtons: AdditionalButton[] = [];
 
   private stepperData = buildStepperData();
 
@@ -67,11 +57,11 @@ export default class App extends Vue {
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-    debugger;
-
     if (routeName && step) {
       const {stepName} = step;
       Steps.setCurrentStep(stepName);
+      // this.additionalButtons = Steps.getAdditionalButtons(step)
+      this.getAdditionalButtons(step);
     }
   }
 
@@ -79,39 +69,45 @@ export default class App extends Vue {
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-    // debugger;
-    // EJY look for additionalButtons in `step`
 
     if (routeName && step) {
       const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
-      // EJY Steps.getAdditionalButtons(stepName)
+      this.getAdditionalButtons(step);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
+    }
+  }
+
+  private async additionalButtonClick(button: AdditionalButton) {
+    console.log(button);
+    if (button.emitText) {
+      this.$emit('AdditionalButtonClicked', button.emitText);
+    }
+    if (button.actionName) {
+      const actionArgs = button.actionArgs || [];
+      const stepStore = button.stepStore || "";
+      await actionHandler(button.actionName, actionArgs, stepStore);
+    }
+
+    this.$router.push({name: button.name})
+  }
+
+  private getAdditionalButtons(step: StepInfo): void {
+    if (step?.additionalButtons) {
+      this.additionalButtons = step?.additionalButtons;
     }
   }
 
   async navigate(direction: string): Promise<void> {
     const nextStepName =
-      direction === "next" ? await Steps.getNext() :
-        await Steps.getPrevious();
+      direction === "next" 
+        ? await Steps.getNext() 
+        : await Steps.getPrevious();
 
     if (nextStepName) {
       this.$router.push({name: nextStepName});
     }
   }
-
-  // getCurrentStepMenuText(): string | undefined {
-  //   let label = Steps.currentStep?.stepLabel;
-  //   // temporarily transform the 'project overview' and 'project scope'
-  //   // titles to 'demo package'
-  //   let demoPackage = ["project overview", "project scope"];
-
-  //   if (demoPackage.some((dp) => dp === (label && label.toLowerCase()))) {
-  //     label = "Demo Package";
-  //   }
-
-  //   return label;
-  // }
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""

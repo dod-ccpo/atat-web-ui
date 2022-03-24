@@ -14,9 +14,8 @@ export const mapStepConfigs = (
       prev: undefined,
       next: undefined,
       resolver: routeConfig.routeResolver,
-      additionalButtons: [],
+      additionalButtons: routeConfig.additionalButtons || [],
     };
-    // EJY not set here
 
     const lastStep = map?.get(last || "");
 
@@ -27,7 +26,7 @@ export const mapStepConfigs = (
 
     map?.set(stepInfo.stepName, stepInfo);
     last = stepInfo.stepName;
-    // debugger;
+
     routeConfig.children?.forEach((childConfig) =>
       mapStep({
         ...childConfig,

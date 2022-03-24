@@ -13,15 +13,15 @@
       </v-btn>
 
       <span class="ml-auto d-flex">
-        <span v-if="additionalButtons.length">
+        <span v-if="additionalButtons.length" class="d-flex">
           <v-btn 
             v-for="button in additionalButtons"
             :key="button.id"
-            @click="$emit(additionalButtons.emitText)" 
-            :color="additionalButtons.isPrimary ? 'primary' : 'secondary'" 
+            @click="$emit('additionalButtonClick', button)" 
+            :color="button.isPrimary ? 'primary' : 'secondary'" 
             role="link" 
-            class="ml-auto"
-            :id="additionalButtons.buttonId"
+            class="ml-4"
+            :id="button.buttonId"
           >
             {{ button.buttonText }}
           </v-btn>
