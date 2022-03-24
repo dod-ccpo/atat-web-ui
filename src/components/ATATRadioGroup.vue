@@ -19,7 +19,7 @@
         <v-radio
           v-for="item in items"
           :id="'Radio_' + getIdText(item.id)"
-          class="_atat-radio"
+          class="_radio-button"
           :class="radioClasses"
           :key="item.id"
           :value="item.value"
