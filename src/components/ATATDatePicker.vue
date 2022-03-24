@@ -13,8 +13,6 @@
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           ref="atat-date-picker"
-          v-model="_date"
-          
           :id="id + 'DatePickerTextField'"
           :height="42"
           :placeholder="placeHolder"
@@ -22,9 +20,9 @@
           :hide-details="true"
           outlined
           dense
+
           v-bind="attrs"
           v-on="on"
-          @input = "onInput"
         ></v-text-field>
         <v-btn
           icon
@@ -37,7 +35,7 @@
       </template>
       <v-date-picker 
         :id="id + 'DatePicker'"
-        @input = "onInput"
+        @click:date="setDate"
         :show-adjacent-months="showAdjacentMonths"
         no-title 
         scrollable></v-date-picker>
@@ -46,21 +44,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import Inputmask from "inputmask";
+import { format, compareAsc } from 'date-fns'
 
 @Component({})
 export default class ATATDatePicker extends Vue {
   //props
   @Prop({ default: "" }) private id!: string;
-  @PropSync("date", { default: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10)}) private _date!: string;
+  @PropSync("date", { default: format(new Date(Date.now() - new Date().getTimezoneOffset() * 60000),"MM/dd/yyyy")}) private _date!: string;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: true }) private showAdjacentMonths!: boolean;
   
   // data
   private menu = false;
-  // private date = "";
+  private date = "";
   //functions
   /**
    * toggle menus based on value of this.menu
@@ -87,13 +86,21 @@ export default class ATATDatePicker extends Vue {
   }
 
   //events
-  private onInput(d:string){
-    this._date = d;
+  private async setDate(selectedDate: string): Promise<void>{
+debugger;
+    this.date= selectedDate;
   }
 
   //lifecycle hooks
   private mounted(): void {
     this.addMasks();
+  }
+
+  //Watches
+  @Watch("date")
+  protected dateChanged(newVal: string): void{
+    
+    this.date=newVal;
   }
 }
 </script>
