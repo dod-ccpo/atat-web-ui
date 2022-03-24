@@ -1,3 +1,5 @@
+import {bootstrapMockApis} from "../../helpers";
+
 describe("Test suite: Acquisition Package ", () => {
     
     let projectDetails;
@@ -5,7 +7,9 @@ describe("Test suite: Acquisition Package ", () => {
     let contactInfo;
 
     beforeEach(() => {
-        
+
+        bootstrapMockApis();
+                
         cy.fixture("projectOverview").then((details) => {
             projectDetails = details;
         });
