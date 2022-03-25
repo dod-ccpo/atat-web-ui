@@ -1,4 +1,4 @@
-import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
 import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
@@ -37,7 +37,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public setAcquisitionPackage(value: AcquisitionPackageDTO): void {
     this.acquisitionPackage = value;
   }
-
+ 
   @Mutation
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
@@ -45,29 +45,24 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
-     
-       const storedAcquisitionPackageData = sessionStorage.getItem(ATAT_ACQUISTION_PACKAGE_KEY) as string;
-       
-      if(storedAcquisitionPackageData && storedAcquisitionPackageData.length > 0){
-           const parsedData = JSON.parse(storedAcquisitionPackageData) as AcquisitionPackageDTO;
-           this.setAcquisitionPackage(parsedData);
-      }
-      else{
+    const storedAcquisitionPackageData = sessionStorage.getItem(ATAT_ACQUISTION_PACKAGE_KEY) as string;
 
-           try {
-            const acquisitionPackage = await api.acquisitionPackages.create();
-             if(acquisitionPackage){
-               this.setAcquisitionPackage(acquisitionPackage);
-               sessionStorage.setItem(ATAT_ACQUISTION_PACKAGE_KEY, JSON.stringify(acquisitionPackage));
-             }
-             
-           } catch (error) {
-             
-              console.log(`error creating acquisition package ${error}`);
-           }
-
+    if (storedAcquisitionPackageData && storedAcquisitionPackageData.length > 0) {
+      const parsedData = JSON.parse(storedAcquisitionPackageData) as AcquisitionPackageDTO;
+      this.setAcquisitionPackage(parsedData);
+    } else {
+      try {
+        const acquisitionPackage = await api.acquisitionPackages.create();
+        if (acquisitionPackage) {
+          this.setAcquisitionPackage(acquisitionPackage);
+          sessionStorage.setItem(ATAT_ACQUISTION_PACKAGE_KEY, JSON.stringify(acquisitionPackage));
+        }
+      } catch (error) {
+        console.log(`error creating acquisition package ${error}`);
       }
+    }
   }
+
   // service or agency selected on Organiation page
   selectedServiceOrAgency: SelectData = { text: "", value: "" };
   public getSelectedServiceOrAgency(): SelectData {

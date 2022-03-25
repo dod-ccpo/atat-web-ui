@@ -1,7 +1,7 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
-import AcquisitionPackageDetails from "../steps/Index.vue";
+import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
 import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
@@ -17,12 +17,17 @@ import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptio
 // Step 5 - Contract Details
 import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
 
+// Step 6 - Government Furnished Equipment
+import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
+import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
+import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
+import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
-import { AcorsRouteResolver } from "./resolvers";
+import { AcorsRouteResolver, CustodianRouteResolver } from "./resolvers";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
@@ -36,6 +41,9 @@ export const routeNames = {
   Summary: "Summary",
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
+  Property_Requirements: "Property_Requirements",
+  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
+  Property_Custodian: "Property_Custodian", 
 };
 
 /**
@@ -180,24 +188,49 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PeriodOfPerformance,
     children: [
       {
-        name: "PeriodOfPerformance",
+        name: routeNames.Period_Of_Performance,
         menuText: "Period of Performance",
         path: "/period-of-performance",
         completePercentageWeight: 2,
+        component: PeriodOfPerformance,
       },
     ]
   },
   {
     stepNumber: "06",
-
     completePercentageWeight: 7,
-    name: "Classification_Requirements",
-    menuText: "Classification Requirements",
-    path: "/classification-requirements",
+    name: routeNames.Property_Requirements,
+    menuText: "Government Furnished Equipment",
+    path: "/property-requirements",
+    component: GovtFurnishedEquipment,
+    children: [
+      {
+        name: routeNames.Property_Requirements,
+        menuText: "Property Requirements",
+        path: "/property-requirements",
+        completePercentageWeight: 2,
+        component: PropertyRequirements,
+      },
+      {
+        menuText: "Will Govt Equip Furnished",
+        path: "/will-govt-equip-be-furnished",
+        name: routeNames.Will_Govt_Equip_Be_Furnished,
+        completePercentageWeight: 2,
+        excludeFromMenu: true,
+        component: WillGovtEquipBeFurnished,
+      },
+      {
+        name: routeNames.Property_Custodian,
+        menuText: "Property Custodian",
+        path: "/property-custodian",
+        completePercentageWeight: 2,
+        component: PropertyCustodian,
+        routeResolver: CustodianRouteResolver,
+      },
+    ]
   },
   {
     stepNumber: "07",
-
     completePercentageWeight: 7,
     name: "Financial_Details",
     menuText: "Financial Details",
