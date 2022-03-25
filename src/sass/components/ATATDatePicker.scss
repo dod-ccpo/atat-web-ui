@@ -3,90 +3,94 @@
   height: 40px;
 }
 
-.v-menu__content {
-  //  width: 320px !important;
+.atat-date-picker{
+  .v-input__append-outer{
+    margin: 0px !important;
+  }
+  .v-menu__content {
+    left: inherit !important;
+    .v-picker--date {
+    
+      .v-picker__body {
+        width: 308px !important;
+        @extend %text-base-darkest;
+        padding: 12px 0px;
 
-  .v-picker--date {
-   
-    .v-picker__body {
-      width: 308px !important;
-      @extend %text-base-darkest;
-      padding: 12px 0px;
-
-      .v-date-picker-header {
-        padding: 0px;
-        @extend %body;
-        border-bottom: 1px solid $base-lighter;
-        padding-bottom: 12px;
-        i {
-          @extend %icon-20;
-          font-weight: 900 !important;
-        }
-
-        .v-date-picker-header__value {
-          .accent--text {
-            @extend %body;
-            @extend %text-base-darkest;
-          }
-        }
-
-        button {
+        .v-date-picker-header {
           padding: 0px;
-          height: 24px;
-        }
-      }
+          @extend %body;
+          border-bottom: 1px solid $base-lighter;
+          padding-bottom: 12px;
+          i {
+            @extend %icon-20;
+            font-weight: 900 !important;
+          }
 
-      .v-date-picker-table {
-        margin: 0px 4px 8px 4px;
-        padding: 0px;
+          .v-date-picker-header__value {
+            .accent--text {
+              @extend %body;
+              @extend %text-base-darkest;
+            }
+          }
 
-        thead {
-          th {
-            @extend %body;
-            @extend %table-cell;
-            font-weight: 500 !important;
-            font-style: normal;
-            color: $base-darkest;
+          button {
+            padding: 0px;
+            height: 24px;
           }
         }
 
-        tbody {
-          td {
-            @extend %table-cell;
-            button.v-btn{
-              font-weight: 400 !important; 
-              border-radius:30px;
-              border: solid 2px $white !important;
-              padding: 0px !important;
-              width: 39px;
-              height: 38px;
-              &.v-btn--disabled {
-                .v-btn__content {
-                  color: $disabled-dark;
+        .v-date-picker-table {
+          margin: 0px 4px 8px 4px;
+          padding: 0px;
+
+          thead {
+            th {
+              @extend %body;
+              @extend %table-cell;
+              font-weight: 500 !important;
+              font-style: normal;
+              color: $base-darkest;
+            }
+          }
+
+          tbody {
+            td {
+              @extend %table-cell;
+              button.v-btn{
+                font-weight: 400 !important; 
+                border-radius:30px;
+                border: solid 2px $white !important;
+                padding: 0px !important;
+                width: 39px;
+                height: 38px;
+                &.v-btn--disabled {
+                  .v-btn__content {
+                    color: $disabled-dark;
+                  }
+                }
+                &.v-btn--active.accent,
+                &.v-btn--active.accent:hover {
+                  background-color: $primary !important;
+                  border-color: $primary !important;
+                  color: $white !important;
+                }
+                &.v-date-picker-table__current.accent--text,
+                &.v-date-picker-table__current.accent--text:hover {
+                  color: $base-darkest !important;
+                }
+                &.v-btn--active.accent:hover::before{
+                  opacity: 0;
+                }
+                &:hover{
+                  border: solid 2px $primary !important;
                 }
               }
-              &.v-btn--active.accent,
-              &.v-btn--active.accent:hover {
-                background-color: $primary !important;
-                border-color: $primary !important;
-                color: $white !important;
-              }
-              &.v-date-picker-table__current.accent--text,
-              &.v-date-picker-table__current.accent--text:hover {
-                color: $base-darkest !important;
-              }
-              &.v-btn--active.accent:hover::before{
-                opacity: 0;
-              }
-              &:hover{
-                border: solid 2px $primary !important;
-              }
+              font-weight: normal;
+            
             }
-            font-weight: normal;
-           
           }
-        }
 
+        }
       }
     }
   }

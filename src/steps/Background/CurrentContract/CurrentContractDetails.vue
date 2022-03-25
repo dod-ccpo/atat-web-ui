@@ -2,7 +2,9 @@
 <template>
   <div>
     <h2>Current Contract Details</h2>
-    <ATATDatePicker id="Expiration" :date.sync="expiredDate" />
+    <ATATDatePicker id="Expiration" 
+      label="Contract/Order Expiration Date"
+      :date.sync="expiredDate" />
   </div>
 </template>
 <script lang="ts">
