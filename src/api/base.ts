@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 
 declare global {
   interface Window {
-    servicenowUserToken: string;
+    sessionToken: string;
   }
 }
 
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === "development") {
   };
 } else {
   if (axios.defaults?.headers && axios.defaults.headers.common) {
-    axios.defaults.headers.common["x-auth-token"] = window.servicenowUserToken;
+    axios.defaults.headers.common['X-UserToken'] = window.sessionToken;
   }
 }
 axios.defaults.headers.put["Content-Type"] = "application/json";
