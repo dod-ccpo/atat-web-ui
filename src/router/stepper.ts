@@ -1,7 +1,7 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
-import AcquisitionPackageDetails from "../steps/Index.vue";
+import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
 import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
@@ -18,7 +18,9 @@ import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptio
 import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
 
 // Step 6 - Government Furnished Equipment
+import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
 import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
+import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
@@ -39,6 +41,7 @@ export const routeNames = {
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
+  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",  
 };
 
 /**
@@ -183,10 +186,11 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PeriodOfPerformance,
     children: [
       {
-        name: "PeriodOfPerformance",
+        name: routeNames.Period_Of_Performance,
         menuText: "Period of Performance",
         path: "/period-of-performance",
         completePercentageWeight: 2,
+        component: PeriodOfPerformance,
       },
     ]
   },
@@ -196,13 +200,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     name: routeNames.Property_Requirements,
     menuText: "Government Furnished Equipment",
     path: "/property-requirements",
-    component: PropertyRequirements,
+    component: GovtFurnishedEquipment,
     children: [
       {
-        name: "PropertyRequirements",
+        name: routeNames.Property_Requirements,
         menuText: "Property Requirements",
         path: "/property-requirements",
         completePercentageWeight: 2,
+        component: PropertyRequirements,
+      },
+      {
+        menuText: "Will Govt Equip Furnished",
+        path: "/will-govt-equip-be-furnished",
+        name: routeNames.Will_Govt_Equip_Be_Furnished,
+        completePercentageWeight: 2,
+        excludeFromMenu: true,
+        component: WillGovtEquipBeFurnished,
       },
     ]
   },

@@ -1,4 +1,3 @@
-
 <template>
   <router-view/>
 </template>
@@ -11,4 +10,3 @@ import { Component } from "vue-property-decorator";
 export default class AcquisitionPackageDetails extends Vue {
 }
 </script>
-
