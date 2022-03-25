@@ -21,12 +21,13 @@ import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vu
 import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
 import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
 import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
+import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
-import { AcorsRouteResolver } from "./resolvers";
+import { AcorsRouteResolver, CustodianRouteResolver } from "./resolvers";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
@@ -41,7 +42,8 @@ export const routeNames = {
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
-  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",  
+  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
+  Property_Custodian: "Property_Custodian", 
 };
 
 /**
@@ -217,6 +219,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         component: WillGovtEquipBeFurnished,
       },
+      {
+        name: routeNames.Property_Custodian,
+        menuText: "Property Custodian",
+        path: "/property-custodian",
+        completePercentageWeight: 2,
+        component: PropertyCustodian,
+        routeResolver: CustodianRouteResolver,
+      },
+
     ]
   },
   {
