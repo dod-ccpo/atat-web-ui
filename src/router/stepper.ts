@@ -208,7 +208,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "07",
-
     completePercentageWeight: 7,
     name: "Financial_Details",
     menuText: "Financial Details",
