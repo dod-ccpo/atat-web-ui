@@ -2,7 +2,7 @@
 <template>
   <div>
     <h2>Current Contract Details</h2>
-    <ATATDatePicker id="Expiration" />
+    <ATATDatePicker id="Expiration" :date.sync="expiredDate" />
   </div>
 </template>
 <script lang="ts">
@@ -16,6 +16,9 @@ import ATATDatePicker from "@/components/ATATDatePicker.vue";
     ATATDatePicker,
   },
 })
-export default class CurrentContractDetails extends Vue {}
+export default class CurrentContractDetails extends Vue {
+  private expiredDate="";
+
+}
 </script>
 
