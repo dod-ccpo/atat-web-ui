@@ -329,3 +329,21 @@ Cypress.Commands.add("requestChangeContactInformation", (requestLink, requestTit
     cy.btnExists("#dialog_cancel","Cancel ").not("to.be.disabled")
 
 });
+
+Cypress.Commands.add("acorOption", (radio_selector, value) => {
+    cy.textExists("h1.page-header", " Do you have an Alternate Contracting Officer’s Representative (ACOR)? ");
+    cy.radioBtn(radio_selector, value).click({ force: true });
+    cy.iframe("#atat-app").find("#HasAlternateCOR_radio_group_control .v-item--active")
+        .then(($radioBtn) => {
+            const selectedOption = $radioBtn.text();
+            cy.log(selectedOption);
+            cy.btnExists("#ContinueButton", ' Continue ').click();
+            if (selectedOption === "radio_button_checkedYes") {
+                //naviagtes to ACOR
+                cy.textExists("h1.page-header", " Let’s gather info about your ACOR ");
+            } else {
+                cy.iframe("#atat-app").find("div").contains("Summary");
+            };
+        });
+
+});
