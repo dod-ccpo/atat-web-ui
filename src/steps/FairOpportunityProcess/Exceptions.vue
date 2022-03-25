@@ -21,7 +21,7 @@
                 threshold, unless a statutory exception applies. Any exceptions will require 
                 written justification, in accordance with 
                   <a 
-                    href="#" 
+                    href="https://www.acquisition.gov/far/16.505" 
                     target="_blank" 
                     class="text-link" 
                     id="ExceptionExternalLink"
