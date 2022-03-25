@@ -12,7 +12,7 @@
               question will enable contract specialists to populate the tracking system.
             </p>
             <ATATRadioGroup
-              class="copy-max-width mb-10 textarea-max-width"
+              class="copy-max-width mb-10 max-width-740"
               id="RecurringOptions"
               :card="true"
               :items="recurringOptions"
