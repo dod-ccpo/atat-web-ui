@@ -26,7 +26,8 @@
               label="DPAS Custodian number" 
               id="DPASCustodianNumber" 
               class="input-max-width mb-10" 
-              tooltipText="This is a one-to-six character unique code used to identify an individual responsible for assigned assets in all property functions. "
+              tooltipText="This is a one-to-six character unique code used to identify an 
+                individual responsible for assigned assets in all property functions. "
             />
 
           </div>

@@ -22,10 +22,12 @@ export const AcorsRouteResolver = (current: string): string => {
 
 export const CustodianRouteResolver = (current: string): string => {
   const needsPropertyCustodian = GovtFurnishedEquipment.needsPropertyCustodian;
+  
   // if government equipment will be furnished, route to Property Custodian page
   if (current === routeNames.Will_Govt_Equip_Be_Furnished && needsPropertyCustodian) {
     return routeNames.Property_Custodian;
   }
+
   // else stay on same page until next step after Property Custodian is completed
   alert("Business rule is to skip Property Custodian page if answer is \"No\" (or unanswered) here. " +
     "Navigation will temporarily stay on this page until the substep after Property " +

@@ -12,7 +12,6 @@ export class GovtFurnishedEquipmentStore extends VuexModule {
 
   needsPropertyCustodian: boolean | null = null;
 
-  // Step 6 
   @Action
   public setNeedsPropertyCustodian(isNeeded: boolean): void {
     this.doSetNeedsPropertyCustodian(isNeeded);

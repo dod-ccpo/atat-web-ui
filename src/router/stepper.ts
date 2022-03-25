@@ -227,7 +227,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: PropertyCustodian,
         routeResolver: CustodianRouteResolver,
       },
-
     ]
   },
   {

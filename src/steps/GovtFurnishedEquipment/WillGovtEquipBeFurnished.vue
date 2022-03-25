@@ -38,7 +38,6 @@ import { RadioButton } from "../../../types/Global";
 })
 
 export default class WillGovtEquipBeFurnished extends Vue {
-  // private selectedEquipmentProvidedOption = "";
   private equipmentProvidedOptions: RadioButton[] = [
     {
       id: "Yes",
