@@ -1,6 +1,11 @@
+import {bootstrapMockApis} from "../../helpers";
+
 describe("Test suite: Common SPA functionality", () => { 
 
+
     beforeEach(() => {
+
+        bootstrapMockApis();
 
         cy.visit(Cypress.env("testUrl"));
         cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));

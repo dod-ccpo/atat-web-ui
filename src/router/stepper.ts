@@ -1,4 +1,6 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
+
+// Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
@@ -8,7 +10,17 @@ import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import Summary from "../steps/Summary.vue";
-import StepTwo from "../steps/StepTwo.vue";
+
+// Step 2 - Fair Opportunity Process
+import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
+
+// Step 5 - Contract Details
+import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
+
+// Step 6 - Government Furnished Equipment
+import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
+
+// other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
@@ -24,6 +36,9 @@ export const routeNames = {
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
+  Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
+  Period_Of_Performance: "Period_Of_Performance",
+  Property_Requirements: "Property_Requirements",
 };
 
 /**
@@ -140,46 +155,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "02",
-    menuText: "Existing Contract / Background",
-    path: "/steptwo",
+    menuText: "Fair Opportunity Process",
+    path: "/fair-opportunity-exceptions",
     completePercentageWeight: 10,
-    name: "Existing_Contract_Background",
-    component: StepTwo,
+    name: routeNames.Fair_Opportunity_Exceptions,
+    component: FairOpportunity_Exceptions,
     children: [
       {
-        name: "Substep_1",
-        menuText: "Substep 1",
-        path: "/steptwo", // should be same as parent route
-
+        name: "Exceptions",
+        menuText: "Exceptions",
+        path: "/fair-opportunity-exceptions",
         completePercentageWeight: 2,
-      },
-      {
-        name: "Substep_2",
-        menuText: "Substep 2",
-        path: "steptwo-2",
-        completed: true,
-        completePercentageWeight: 3,
-      },
-      {
-        name: "Substep_3",
-        menuText: "Substep 3",
-        path: "steptwo-3",
-
-        completePercentageWeight: 4,
-      },
-      {
-        name: "Substep 4",
-        menuText: "Substep 4",
-        path: "steptwo-4",
-        completed: true,
-        completePercentageWeight: 1,
       },
     ],
   },
   {
     stepNumber: "03",
     name: "Order_Type",
-
     completePercentageWeight: 5,
     menuText: "Order Type",
     path: "/order-type",
@@ -210,23 +202,38 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "05",
-
     completePercentageWeight: 7,
-    name: "Evaluation_Criteria",
-    menuText: "Evaluation Criteria",
-    path: "/evaluation-criteria",
+    name: routeNames.Period_Of_Performance,
+    menuText: "Contract Details",
+    path: "/period-of-performance",
+    component: PeriodOfPerformance,
+    children: [
+      {
+        name: "PeriodOfPerformance",
+        menuText: "Period of Performance",
+        path: "/period-of-performance",
+        completePercentageWeight: 2,
+      },
+    ]
   },
   {
     stepNumber: "06",
-
     completePercentageWeight: 7,
-    name: "Classification_Requirements",
-    menuText: "Classification Requirements",
-    path: "/classification-requirements",
+    name: routeNames.Property_Requirements,
+    menuText: "Government Furnished Equipment",
+    path: "/property-requirements",
+    component: PropertyRequirements,
+    children: [
+      {
+        name: "PropertyRequirements",
+        menuText: "Property Requirements",
+        path: "/property-requirements",
+        completePercentageWeight: 2,
+      },
+    ]
   },
   {
     stepNumber: "07",
-
     completePercentageWeight: 7,
     name: "Financial_Details",
     menuText: "Financial Details",
