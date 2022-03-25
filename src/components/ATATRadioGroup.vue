@@ -79,7 +79,7 @@ export default class ATATRadioGroup extends Vue {
 
   // data
   private errorMessages: string[] = [];
-
+  
   // methods
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
@@ -98,7 +98,7 @@ export default class ATATRadioGroup extends Vue {
     classes += this.errorMessages.length > 0 ? ' error--text v-input--has-state' : '';
     return classes;
   }
-  
+
   // events
   private onClick(): void {
     this.clearErrorMessage();
