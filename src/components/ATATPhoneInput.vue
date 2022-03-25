@@ -301,9 +301,9 @@ export default class ATATPhoneInput extends Vue {
       case 'us':
         return Inputmask('999-999-9999').mask(document.getElementById(this.id + '_text_field'))
       case 'dsni':
-        return Inputmask('999-999-9999').mask(document.getElementById(this.id + '_text_field'))
+        return Inputmask('***-999-9999').mask(document.getElementById(this.id + '_text_field'))
       default:
-        console.log(`Sorry, we are out of .`);
+        return
     };
   };
 
