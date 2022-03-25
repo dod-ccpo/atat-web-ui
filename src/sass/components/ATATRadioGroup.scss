@@ -10,6 +10,7 @@
 }
 
 ._radio-button {
+  align-items: flex-start;
   &.v-item--active {
     .v-icon {
       color: $primary !important;
@@ -33,10 +34,8 @@
 
     &.error--text {
       color: $error-dark !important;
-
     }
   }
-
 
   .v-icon {
     color: $base !important;
@@ -81,8 +80,6 @@
     }
   }
 }
-
-
 
 ._radio-button-card {
   @extend ._radio-button;
@@ -139,13 +136,15 @@
     padding: 12px 0px 12px 12px;
     align-items: start !important;
   }
-
 }
 
-
-.v-input--radio-group--column{
-   margin-top: 0px !important;
-  .v-radio:not(:last-child):not(:only-child){
-    margin-bottom: 12px !important
+.v-input--radio-group--column {
+  margin-top: 0px !important;
+  
+  .v-radio {
+    &:not(:last-child):not(:only-child) {
+      margin-bottom: 12px !important
+    }
   }
 }
+
