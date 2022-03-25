@@ -20,7 +20,6 @@ import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vu
 // Step 6 - Government Furnished Equipment
 import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
 
-
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
@@ -193,7 +192,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "06",
-
     completePercentageWeight: 7,
     name: routeNames.Property_Requirements,
     menuText: "Government Furnished Equipment",
@@ -207,7 +205,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
       },
     ]
-
   },
   {
     stepNumber: "07",
