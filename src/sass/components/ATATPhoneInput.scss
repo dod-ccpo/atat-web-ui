@@ -1,0 +1,13 @@
+.atat-phone-field {
+  .v-select {
+    max-width: 67px;
+    .v-select__selections {
+      input {
+        display: none;
+      }
+    }
+  }
+  .v-text-field__prefix {
+    color: $base-darkest
+  }
+}

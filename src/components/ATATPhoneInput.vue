@@ -9,7 +9,7 @@
         {{ label }}
       </label>
     </div>
-    <div class=" d-flex">
+    <div class="country-select d-flex">
       <v-select
         id="countrycode_dropdown'"
         :items="searchResults"
@@ -38,9 +38,9 @@
             >
               <v-list-item-title class="body">
                 <v-row no-gutters align="center">
-                  <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
-                  <span>{{ item.name }}</span>
-                  <span>{{ item.countryCode }}</span>
+                  <span class=" mr-3 fi" :class="[`fi-${item.abbreviation}`]"> </span>
+                  <span class="mr-2">{{ item.name }}</span>
+                  <span class="color-base">{{ item.countryCode }}</span>
                 </v-row>
               </v-list-item-title>
             </v-list-item-content>
@@ -74,6 +74,7 @@ import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask";
 import {CountryObj} from "../../types/Global";
+import placeholder from "cypress/types/lodash/fp/placeholder";
 
 @Component({
   components: {
@@ -292,18 +293,20 @@ export default class ATATPhoneInput extends Vue {
 //@Events
   private onChange(val: CountryObj): void {
     this.selectedValue = val;
-    this.searchTerm = ''
-    this.searchResults = this.countries
+    this.searchTerm = '';
+    this.searchResults = this.countries;
   };
 
   private phoneMask(val: string): void {
+    this._value = val;
     switch (this.selectedValue.abbreviation) {
       case 'us':
-        return Inputmask('999-999-9999').mask(document.getElementById(this.id + '_text_field'))
-      case 'dsni':
-        return Inputmask('***-999-9999').mask(document.getElementById(this.id + '_text_field'))
+        return Inputmask('999-999-9999',{placeholder:''}).mask(document.getElementById(this.id + '_text_field'));
+      case 'dsn':
+        this._value = this.selectedValue.countryCode + val;
+        return Inputmask('999-999-9999').mask(document.getElementById(this.id + '_text_field'));
       default:
-        return
+        return Inputmask.remove(document.getElementById(this.id + '_text_field'));
     };
   };
 
