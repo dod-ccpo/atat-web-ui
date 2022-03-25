@@ -201,9 +201,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PropertyRequirements,
     children: [
       {
-        name: "PropertyRequirements",
+        name: routeNames.Property_Requirements,
         menuText: "Property Requirements",
         path: "/property-requirements",
+        completePercentageWeight: 2,
+      },
+      {
+        name: routeNames.Govt_Equipment_Provided,
+        menuText: "Government Equpment Provided",
+        excludeFromMenu: true,
+        path: "/govt-equipment-provided",
         completePercentageWeight: 2,
       },
     ]
