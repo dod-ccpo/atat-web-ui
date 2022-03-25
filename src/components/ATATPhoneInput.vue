@@ -15,13 +15,12 @@
         :items="searchResults"
         outlined
         dense
-        attach
         v-model="selectedValue"
         :height="42"
         @change="onChange"
       >
         <template v-slot:selection="{ item }">
-          {{ item.name }}
+          <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
         </template>
         <template v-slot:prepend-item>
           <v-text-field
@@ -39,7 +38,9 @@
             >
               <v-list-item-title class="body">
                 <v-row no-gutters align="center">
+                  <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
                   <span>{{ item.name }}</span>
+                  <span>{{ item.countryCode }}</span>
                 </v-row>
               </v-list-item-title>
             </v-list-item-content>
@@ -54,11 +55,12 @@
         :height="42"
         :value.sync="_value"
         :placeholder="placeHolder"
-        @input="inputActions"
+        @input="phoneMask"
         class="text-primary"
         :hide-details="true"
         :suffix="suffix"
         :style="{ 'max-width': width + 'px' }"
+        :prefix="this.selectedValue.countryCode"
       >
       </v-text-field>
     </div>
@@ -70,6 +72,7 @@ import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
+import Inputmask from "inputmask";
 import {CountryObj} from "../../types/Global";
 
 @Component({
@@ -87,7 +90,7 @@ export default class ATATPhoneInput extends Vue {
   // props
   @Prop({default: true}) private dense!: boolean;
   @Prop({default: true}) private singleLine!: boolean;
-  @Prop({default: "id_is_missing"}) private id!: string;
+  @Prop({default: "phoneNumber"}) private id!: string;
   @Prop({default: ""}) private label!: string;
   @Prop({default: ""}) private appendIcon!: string;
   @Prop({default: ""}) private placeHolder!: string;
@@ -192,7 +195,7 @@ export default class ATATPhoneInput extends Vue {
     {
       name: 'Montenegro',
       countryCode: '+382',
-      abbreviation: 'cs'
+      abbreviation: 'me'
     },
     {
       name: 'Netherlands',
@@ -248,7 +251,12 @@ export default class ATATPhoneInput extends Vue {
       name: 'United States',
       countryCode: '+1',
       abbreviation: 'us'
-    }
+    },
+    {
+      name: 'Defense Switched Network',
+      countryCode: 'DSN',
+      abbreviation: 'dsn'
+    },
   ];
   private suggested: CountryObj[] = [
     {
@@ -264,31 +272,39 @@ export default class ATATPhoneInput extends Vue {
   ];
   private searchResults: CountryObj[] = [];
   private searchTerm = '';
-  private selectedValue = '';
+  private selectedValue: CountryObj = {name: '', countryCode: '', abbreviation: ''};
   private errorMessages: string[] = [];
+  private USMask = new Inputmask('(999) 999-9999')
+
+  private inputSelector = document.getElementById("phoneNumber_text_field");
 
   private inputActions(v: string) {
     this._value = v;
-  }
-
-  private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatPhoneField.errorBucket;
   }
 
   private searchCountries(event: Event) {
     if (!this.searchTerm) {
       this.searchResults = this.countries;
     }
-
     this.searchResults = this.countries.filter((country) => {
       return country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
     });
   }
 
 //@Events
-  private onChange(val: string): void {
+  private onChange(val: CountryObj): void {
     this.selectedValue = val;
-    console.log(this.selectedValue)
+    this.searchTerm = ''
+    this.searchResults = this.countries
+  }
+
+  private phoneMask(val: string): void {
+    switch (this.selectedValue.abbreviation) {
+      case 'us':
+        return this.USMask.mask(this.inputSelector)
+      default:
+        console.log(`Sorry, we are out of .`);
+    }
   }
 
   mounted() {
