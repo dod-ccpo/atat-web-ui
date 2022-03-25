@@ -14,6 +14,10 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Fair Opportunity Process
 import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
 
+// Step 5 - Contract Details
+import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
+
+
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
@@ -31,6 +35,7 @@ export const routeNames = {
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
+  Period_Of_Performance: "Period_Of_Performance",
 };
 
 /**
@@ -138,7 +143,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "03",
     name: "Order_Type",
-
     completePercentageWeight: 5,
     menuText: "Order Type",
     path: "/order-type",
@@ -169,11 +173,19 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "05",
-
     completePercentageWeight: 7,
-    name: "Evaluation_Criteria",
-    menuText: "Evaluation Criteria",
-    path: "/evaluation-criteria",
+    name: routeNames.Period_Of_Performance,
+    menuText: "Contract Details",
+    path: "/period-of-performance",
+    component: PeriodOfPerformance,
+    children: [
+      {
+        name: "PeriodOfPerformance",
+        menuText: "Period of Performance",
+        path: "/period-of-performance",
+        completePercentageWeight: 2,
+      },
+    ]
   },
   {
     stepNumber: "06",
