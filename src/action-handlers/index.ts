@@ -15,8 +15,8 @@ async function actionHandler(actionName: string, actionArgs: string[]): Promise<
 function sampleAdditionalButtonAction(actionArgs: string[]) {
   console.log('args in actionHandler:', actionArgs);
   const [foo, bar] = actionArgs;
-  debugger;
-  AcquisitionPackage.sampleAdditionalButtonActionInStore(foo, bar);
+  console.log("in action-handler: foo: " + foo + "bar: " + bar);
+  AcquisitionPackage.sampleAdditionalButtonActionInStore(actionArgs);
   alert("\"Cancel\" will navigate to JWCC intro when completed.");
 }
 

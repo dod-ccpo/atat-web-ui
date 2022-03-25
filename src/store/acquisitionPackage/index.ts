@@ -45,10 +45,8 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action
-  public sampleAdditionalButtonActionInStore(foo: string, bar: string): void {
-    // EJY only foo is getting value, bar is undefined?
-    console.log("do something in the store, e.g., set flag to not validate this substep");
-    console.log("argsPasssed: foo: " + foo + ", bar: " + bar);
+  public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
+    console.log("in store: actionArgs", actionArgs);
   }
 
   @Action({ rawError: true })
