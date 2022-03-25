@@ -27,6 +27,8 @@ import { Component } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 
+import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
+
 import { RadioButton } from "../../../types/Global";
 
 @Component({
@@ -36,7 +38,6 @@ import { RadioButton } from "../../../types/Global";
 })
 
 export default class WillGovtEquipBeFurnished extends Vue {
-  private selectedEquipmentProvidedOption = "";
   private equipmentProvidedOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -49,5 +50,18 @@ export default class WillGovtEquipBeFurnished extends Vue {
       value: "No",
     },
   ];
+
+  public get selectedEquipmentProvidedOption(): string {
+    const ifNeeded = GovtFurnishedEquipment.needsPropertyCustodian;
+    if (ifNeeded !== null) {
+      return ifNeeded ? "Yes" : "No";
+    }
+    return "";
+  }
+
+  public set selectedEquipmentProvidedOption(value: string) {
+    GovtFurnishedEquipment.setNeedsPropertyCustodian(value === "Yes" ? true : false);
+  }
+
 }
 </script>
