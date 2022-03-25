@@ -17,6 +17,9 @@ import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptio
 // Step 5 - Contract Details
 import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
 
+// Step 6 - Government Furnished Equipment
+import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
+
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
@@ -36,6 +39,7 @@ export const routeNames = {
   Summary: "Summary",
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
+  Property_Requirements: "Property_Requirements"
 };
 
 /**
@@ -191,9 +195,19 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "06",
 
     completePercentageWeight: 7,
-    name: "Classification_Requirements",
-    menuText: "Classification Requirements",
-    path: "/classification-requirements",
+    name: routeNames.Property_Requirements,
+    menuText: "Government Furnished Equipment",
+    path: "/property-requirements",
+    component: PropertyRequirements,
+    children: [
+      {
+        name: "PropertyRequirements",
+        menuText: "Property Requirements",
+        path: "/property-requirements",
+        completePercentageWeight: 2,
+      },
+    ]
+
   },
   {
     stepNumber: "07",
