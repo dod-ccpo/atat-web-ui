@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :max-width="width"
+    :max-width="width + 'px'"
     v-model="_showDialog"
     role="alertdialog"
     aria-labelledby="modalDialogTitle"
