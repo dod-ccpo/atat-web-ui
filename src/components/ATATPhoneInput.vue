@@ -276,11 +276,9 @@ export default class ATATPhoneInput extends Vue {
   private errorMessages: string[] = [];
   private USMask = new Inputmask('(999) 999-9999')
 
-  private inputSelector = document.getElementById("phoneNumber_text_field");
-
   private inputActions(v: string) {
     this._value = v;
-  }
+  };
 
   private searchCountries(event: Event) {
     if (!this.searchTerm) {
@@ -289,26 +287,28 @@ export default class ATATPhoneInput extends Vue {
     this.searchResults = this.countries.filter((country) => {
       return country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
     });
-  }
+  };
 
 //@Events
   private onChange(val: CountryObj): void {
     this.selectedValue = val;
     this.searchTerm = ''
     this.searchResults = this.countries
-  }
+  };
 
   private phoneMask(val: string): void {
     switch (this.selectedValue.abbreviation) {
       case 'us':
-        return this.USMask.mask(this.inputSelector)
+        return Inputmask('999-999-9999').mask(document.getElementById(this.id + '_text_field'))
+      case 'dsni':
+        return Inputmask('999-999-9999').mask(document.getElementById(this.id + '_text_field'))
       default:
         console.log(`Sorry, we are out of .`);
-    }
-  }
+    };
+  };
 
   mounted() {
     this.searchResults = [...this.countries]
-  }
-}
+  };
+};
 </script>
