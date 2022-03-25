@@ -4,22 +4,17 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Will this be a future recurring requirement?
+            Will government equipment be furnished, provided or acquired under this acquisition?
           </h1>
           <div class="copy-max-width">
-            <p class="mb-10">
-              DISA has developed a tracking system for expiring contracts. Responding YES to this 
-              question will enable contract specialists to populate the tracking system.
-            </p>
             <ATATRadioGroup
               class="copy-max-width mb-10 max-width-740"
               id="RecurringOptions"
               :card="true"
-              :items="recurringOptions"
-              :value.sync="selectedRecurringOption"
+              :items="equipmentProvidedOptions"
+              :value.sync="selectedEquipmentProvidedOption"
             />
           </div>
-
         </v-col>
       </v-row>
     </v-container>
@@ -40,18 +35,18 @@ import { RadioButton } from "../../../types/Global";
   },
 })
 
-export default class PeriodOfPerformance extends Vue {
-  private selectedRecurringOption = "";
-  private recurringOptions: RadioButton[] = [
+export default class WillGovtEquipBeFurnished extends Vue {
+  private selectedEquipmentProvidedOption = "";
+  private equipmentProvidedOptions: RadioButton[] = [
     {
-      id: "YesRecurring",
-      label: "Yes. This requirement should be tracked for similar efforts in the future.",
-      value: "YesRecurring",
+      id: "Yes",
+      label: "Yes.",
+      value: "Yes",
     },
     {
-      id: "NoRecurring",
-      label: "No. This is a temporary requirement.",
-      value: "NoRecurring",
+      id: "No",
+      label: "No. GFP/GFE will NOT be furnished to the contractor.",
+      value: "No",
     },
   ];
 }
