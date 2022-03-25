@@ -19,7 +19,6 @@ import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vu
 
 // Step 6 - Government Furnished Equipment
 import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
-import GovtEquipmentProvided from "../steps/GovtFurnishedEquipment/GovtEquipmentProvided.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
@@ -40,7 +39,6 @@ export const routeNames = {
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
-  Govt_Equipment_Provided: "Govt_Equipment_Provided",  
 };
 
 /**
