@@ -45,13 +45,29 @@
   width: 420px;
 
  .v-divider + .suggested {
-    background-color:red;
+    background-color:grey;
    .v-list-item__content {
+background-color:yellow;
+     .v-list-item__title {
+    &.body{
+      background-color:pink;
+      &.country {
+        background-color:red;
 
-     :before {
-       content: 'Suggested';
-       color:$base-dark;
+        :first-child {
+          background-color:aqua;
+        }
+
+      }
+    }
+
+       background-color:white;
      }
+      :before {
+        content: 'Suggested';
+        color:$base-dark;
+      }
+
    }
   }
 
