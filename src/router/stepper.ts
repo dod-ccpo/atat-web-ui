@@ -8,7 +8,6 @@ import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vu
 import CorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
 import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
-import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
@@ -22,6 +21,9 @@ import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
 import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
 import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
 import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
+
+// Step 7 - Financial Details
+import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
@@ -69,18 +71,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Project Overview",
         path: "/", // should be same as parent route
         name: routeNames.Project_Overview,
-        completePercentageWeight: 4,
+        completePercentageWeight: 5,
         completed: true,
         component: ProjectOverview,
-      },
-      {
-        menuText: "Project Scope",
-        path: "project-scope",
-        name: routeNames.Project_Scope,
-        completePercentageWeight: 1,
-        excludeFromMenu: true,
-        component: ProjectScope,
-        completed: true,
       },
       {
         menuText: "Organization",
@@ -235,6 +228,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     name: "Financial_Details",
     menuText: "Financial Details",
     path: "/financial-details",
+    component: ProjectScope,
+    children: [
+      {
+        menuText: "Project Scope",
+        path: "project-scope",
+        name: routeNames.Project_Scope,
+        completePercentageWeight: 1,
+      },
+    ]
   },
   {
     stepNumber: "08",
