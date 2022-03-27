@@ -1,13 +1,78 @@
 .atat-phone-field {
-  .v-select {
+  .country-select {
+    padding-right: 0px;
     max-width: 67px;
+
+    .v-input__control > {
+      .v-input__slot {
+        padding-right: 0px !important;
+      }
+    }
+
+    fieldset {
+      border-radius: 4px 0px 0px 4px;
+    }
+
     .v-select__selections {
       input {
         display: none;
       }
     }
   }
-  .v-text-field__prefix {
-    color: $base-darkest
+
+  .phone-number-input {
+    max-width: 351px;
+
+    &.v-text-field--outlined.v-input--is-focused {
+      fieldset {
+        border-width: 2px;
+        border-color: $primary !important;
+      }
+    }
+
+    fieldset {
+      border-radius: 0px 4px 4px 0px;
+    }
+
+    .v-text-field__prefix {
+      color: $base-darkest;
+    }
+  }
+
+}
+
+.v-menu__content.theme--light.menuable__content__active {
+  width: 420px;
+
+ .v-divider + .suggested {
+    background-color:red;
+   .v-list-item__content {
+
+     :before {
+       content: 'Suggested';
+       color:$base-dark;
+     }
+   }
+  }
+
+  .dropdown-text-field {
+    padding-top: 0px;
+    padding-right: 12px;
+    padding-left: 12px;
+    color: $primary;
+
+    &.v-input--is-focused {
+      i.v-icon {
+        color: $primary !important;
+      }
+    }
+
+    :after, :before {
+      border: none;
+    }
+  }
+
+  .v-divider {
+    margin: 0px;
   }
 }

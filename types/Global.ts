@@ -95,4 +95,5 @@ export interface CountryObj {
   name: string;
   countryCode: string;
   abbreviation: string;
+  suggested?: boolean;
 }

@@ -9,14 +9,16 @@
         {{ label }}
       </label>
     </div>
-    <div class="country-select d-flex">
+    <div class="d-flex">
       <v-select
         id="countrycode_dropdown'"
+        class="country-select"
         :items="searchResults"
         outlined
         dense
         v-model="selectedValue"
         :height="42"
+        :menu-props="{ bottom: true, offsetY: true }"
         @change="onChange"
       >
         <template v-slot:selection="{ item }">
@@ -25,18 +27,21 @@
         <template v-slot:prepend-item>
           <v-text-field
             v-model="searchTerm"
+            class="dropdown-text-field"
             placeholder="Search"
             @input="searchCountries"
             append-icon="search"
+            id="dropdown-text-field"
           />
+          <v-divider class="search-divider"/>
         </template>
         <template v-slot:item="{ item, on }">
-          <v-list-item v-on="on">
+          <v-list-item class="country-list" :class="[item.suggested ? 'suggested' : '']" v-on="on">
             <v-list-item-content
               :id="id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/ig, '')"
               :item-value=item.name
             >
-              <v-list-item-title class="body">
+              <v-list-item-title class="body country">
                 <v-row no-gutters align="center">
                   <span class=" mr-3 fi" :class="[`fi-${item.abbreviation}`]"> </span>
                   <span class="mr-2">{{ item.name }}</span>
@@ -56,10 +61,9 @@
         :value.sync="_value"
         :placeholder="placeHolder"
         @input="phoneMask"
-        class="text-primary"
+        class="phone-number-input"
         :hide-details="true"
         :suffix="suffix"
-        :style="{ 'max-width': width + 'px' }"
         :prefix="this.selectedValue.countryCode"
       >
       </v-text-field>
@@ -103,6 +107,18 @@ export default class ATATPhoneInput extends Vue {
 
   //data
   private countries: CountryObj[] = [
+    {
+      name: 'United States',
+      countryCode: '+1',
+      abbreviation: 'us',
+      suggested: true
+    },
+    {
+      name: 'Defense Switched Network',
+      countryCode: 'DSN',
+      abbreviation: 'dsn',
+      suggested: true
+    },
     {
       name: 'Albania',
       countryCode: '+355',
@@ -248,34 +264,11 @@ export default class ATATPhoneInput extends Vue {
       countryCode: '+44',
       abbreviation: 'gb'
     },
-    {
-      name: 'United States',
-      countryCode: '+1',
-      abbreviation: 'us'
-    },
-    {
-      name: 'Defense Switched Network',
-      countryCode: 'DSN',
-      abbreviation: 'dsn'
-    },
-  ];
-  private suggested: CountryObj[] = [
-    {
-      name: 'United States',
-      countryCode: '+1',
-      abbreviation: 'us'
-    },
-    {
-      name: 'Defense Switched Network',
-      countryCode: 'DSN',
-      abbreviation: 'dsn'
-    },
   ];
   private searchResults: CountryObj[] = [];
   private searchTerm = '';
   private selectedValue: CountryObj = {name: '', countryCode: '', abbreviation: ''};
   private errorMessages: string[] = [];
-  private USMask = new Inputmask('(999) 999-9999')
 
   private inputActions(v: string) {
     this._value = v;
