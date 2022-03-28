@@ -1,48 +1,84 @@
 
 <template>
-   <v-container>
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
+   <div :id="id + 'DatePickerContainer'" class="atat-date-picker">
+
         <v-menu
-          ref="menu1"
-          v-model="menu1"
+          ref="date-picker-menu"
+          v-model="menu"
           :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
           min-width="auto"
+          nudge-bottom="getMenuTop"
+          :attach="'#' + id + 'DatePickerContainer'"
+          absolute
+          :nudge-top="0"
+          :nudge-left="0"
         >
           <template v-slot:activator="{ on, attrs }">
+            <div class="d-flex align-center" v-if="label">
+          <label
+            :id="id + 'DatePickerLabel'"
+            class="form-field-label mb-2 mr-2"
+            :for="id + 'DatePickerTextField'"
+          >
+            {{ label }}
+            <span v-if="optional" class="optional"> Optional </span>
+          </label>
+          <ATATTooltip
+            :tooltipText="tooltipText"
+            :tooltipTitle="tooltipTitle"
+            :id="id"
+            :label="label"
+          />
+        </div>
             <v-text-field
+              ref="atat-date-picker"
+              :id="id + 'DatePickerTextField'"
+              :height="42"
+               :placeholder="placeHolder"
+              class="text-primary input-max-width d-flex align-center"
+              :hide-details="true"
               v-model="dateFormatted"
-              label="Date"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              prepend-icon="mdi-calendar"
+              
+              outlined
+              :style="'width: ' + width + 'px'"
+              dense
               v-bind="attrs"
-              @blur="date = parseDate(dateFormatted)"
+              @blur="onBlur"
               v-on="on"
-            ></v-text-field>
+            >
+            <template slot="append-outer">
+            <v-btn
+              icon
+              :id="id + 'DatePickerButton'"
+              aria-label="Open calendar to select date"
+              @click="toggleMenu"
+              class="pa-0 icon-28 ml-2"
+            >
+              <v-icon 
+                :id="id + 'DatePickerButtonIcon'" 
+                class="icon-28 text-base-darkest">
+                calendar_today
+              </v-icon>
+            </v-btn>
+          </template></v-text-field>
           </template>
           <v-date-picker
+            :id="id + 'DatePicker'"
             v-model="date"
+            :show-adjacent-months="showAdjacentMonths"
             no-title
-            @input="menu1 = false"
+            @click:date="updateDateProperty"
+            @input="menu = false"
+            scrollable
           ></v-date-picker>
         </v-menu>
-        <p>Date in ISO format: <strong>{{ date }}</strong></p>
-      </v-col>
-    </v-row>
-   </v-container>
+   </div>
 </template>
 <script lang="ts">
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import Inputmask from "inputmask";
-import { format, isValid } from "date-fns";
+import { format, isValid, parse, parseISO } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 
 @Component({
@@ -53,7 +89,20 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 export default class ATATDatePicker extends Vue {
   private date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
   private dateFormatted = this.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10));
-  private menu1 = false;
+  private menu = false;
+  private vuetifyDatePickerFormat = "yyyy-MM-dd";
+
+  @Prop({ default: "" }) private label!: string;
+  @Prop({ default: "" }) private id!: string;
+  @Prop({ default: false }) private optional!: boolean;
+  @Prop({ default: "" }) private placeHolder!: string;
+  @Prop({ default: true }) private showAdjacentMonths!: boolean;
+  @Prop({ default: "" }) private width!: string;
+  
+  @Prop({ default: "" }) private helpText!: string;
+  @Prop({ default: "" }) private tooltipTitle!: string;
+  @Prop({ default: "" }) private tooltipText!: string;
+  
 
   get computedDateFormatted (): string {
     return this.formatDate(this.date)
@@ -68,17 +117,60 @@ export default class ATATDatePicker extends Vue {
 
   
   private formatDate (date: string): string {
-    if (!date) return ''
-
-    const [year, month, day] = date.split('-')
-    return `${month}/${day}/${year}`
+    // if (!date) return ''
+    // const [year, month, day] = date.split('-')
+    // return `${month}/${day}/${year}`
+    return format(new Date( isValid(new Date(date)) ? date : ""), "MM/dd/yyyy");
   }
 
   private parseDate (date: string): string {
-    if (!date) return "";
+    return format(new Date( isValid(new Date(date)) ? date : ""), this.vuetifyDatePickerFormat);
+  }
 
-    const [month, day, year] = date.split('/')
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+   //functions
+  /**
+   * toggle menus based on value of this.menu
+   */
+  private toggleMenu(): void {
+    this.menu = !this.menu;
+  }
+
+   get getMenutop(): string{
+    return this.label !== "" ? "80" : "40";
+  }
+
+  private onBlur(){
+    console.log(this.dateFormatted);
+    console.log(isValid(new Date(this.dateFormatted)));
+    this.date = isValid(new Date(this.dateFormatted)) ? this.parseDate(this.dateFormatted) : this.parseDate(format(new Date(), "MM/dd/yyyy"));
+    this.updateDateProperty();
+    
+  }
+
+  private updateDateProperty(): void {
+    if (isValid(this.dateFormatted)){
+      this.$emit("update:date", this.dateFormatted);
+    }
+  }
+
+  /**
+   * mask input date text boxes with MM/DD/YYYY
+   */
+  private addMasks(): void {
+    [this.id + "DatePickerTextField"].forEach((tbId) => {
+      Inputmask({
+        alias: "datetime",
+        inputFormat: "mm/dd/yyyy",
+        placeholder: "MM/DD/YYYY",
+        outputFormat: "MM/DD/YYYY",
+        nullable: true,
+      }).mask(document.getElementById(tbId) as HTMLElement);
+    });
+  }
+
+    //lifecycle hooks
+  private mounted(): void {
+    this.addMasks();
   }
     
   }
