@@ -1,72 +1,97 @@
-.atat-phone-field {
-  .country-select {
+._atat-phone-field {
+  ._country-select {
     padding-right: 0px;
     max-width: 67px;
     .v-input__control > {
       .v-input__slot {
-        padding-right: 0px !important;
+        padding-right: 4px !important;
       }
     }
     fieldset {
       border-radius: 4px 0px 0px 4px;
     }
-    .v-select__selections {
-      input {
-        display: none;
-      }
-    }
   }
-  .phone-number-input {
+  ._phone-number-input {
     max-width: 351px;
     &.v-text-field--outlined.v-input--is-focused {
       fieldset {
+        border-left-width: 2px;
         border-width: 2px;
         border-color: $primary !important;
       }
     }
     fieldset {
+      border-left-width: 0px;
       border-radius: 0px 4px 4px 0px;
     }
     .v-text-field__prefix {
+      padding-left: 4px;
       color: $base-darkest;
     }
   }
+  .v-menu__content.theme--light.menuable__content__active {
+    min-width: 416px !important;
+    width: 420px;
+    .v-divider + .suggested {
+      .v-list-item__content {
+        overflow: visible;
+        //margin-top: 26px;
+        position: relative;
+        &:before {
+          content: "SUGGESTED";
+          color: $base;
+          position: absolute;
+          top: -26px;
+          font-size: 12px;
+          font-weight: bold;
+        }
+      }
+    }
+    ._country-list {
+      padding-top: 8px;
+      padding-bottom: 8px
+    }
+    .suggested {
+      :nth-last-of-type(3) {
+        background-color:grey;
+      }
+      + .suggested {
+        border-bottom: 1px solid $base-lighter;
+      }
+    }
+    ._dropdown-text-field {
+      padding-top: 0px;
+      padding-right: 12px;
+      padding-left: 12px;
+      color: $primary;
+      .v-input__icon {
+        &.v-input__icon--append {
+          i.v-icon {
+            transform: none !important;
+            color: $primary !important;
+          }
+        }
+      }
+      &.v-input--is-focused {
+        .v-input__icon {
+          &.v-input__icon--append {
+            i.v-icon {
+              transform: none !important;
+              color: $primary !important;
+            }
+          }
+        }
+
+      }
+      :after, :before {
+        border: none;
+      }
+    }
+    .v-divider {
+      margin: 0px;
+      margin-bottom: 20px
+    }
+  }
+
 }
 
-.v-menu__content.theme--light.menuable__content__active {
-  width: 420px;
-  .v-divider + .suggested {
-    .v-list-item__content {
-      &:before {
-        content: 'Suggested';
-        color: $base;
-        padding-bottom:10px;
-      }
-    }
-  }
-  .suggested {
-    :nth-last-of-type(3) {
-      background-color:grey;
-    }
-    + .suggested {
-      border-bottom: 1px solid $base-lighter;
-    }
-  }
-  .dropdown-text-field {
-    padding-top: 0px;
-    padding-right: 12px;
-    padding-left: 12px;
-    color: $primary;
-    &.v-input--is-focused {
-      i.v-icon {
-        color: $primary !important;
-      }
-    }
-    :after, :before {
-      border: none;
-    }
-  }
-  .v-divider {
-    margin: 0px;
-  }
-}

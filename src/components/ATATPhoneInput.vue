@@ -1,18 +1,19 @@
 <template>
-  <div id="phone_control" class="atat-phone-field">
+  <div id="ChoneControl" class="_atat-phone-field">
     <div class="d-flex align-center" v-if="label">
       <label
-        :id="id + '_text_field_label'"
+        :id="id + '_textFieldLabel'"
         class="form-field-label mb-2 mr-2"
-        :for="id + '_text_field'"
+        :for="id + '_textField'"
       >
         {{ label }}
       </label>
     </div>
     <div class="d-flex">
       <v-select
-        id="countrycode_dropdown'"
-        class="country-select"
+        attach
+        id="CountryCodeDropdown'"
+        class="_country-select"
         :items="searchResults"
         outlined
         dense
@@ -27,16 +28,16 @@
         <template v-slot:prepend-item>
           <v-text-field
             v-model="searchTerm"
-            class="dropdown-text-field"
+            class="_dropdown-text-field"
             placeholder="Search"
             @input="searchCountries"
             append-icon="search"
-            id="dropdown-text-field"
+            id="DropdownTextField"
           />
           <v-divider class="search-divider"/>
         </template>
         <template v-slot:item="{ item, on }">
-          <v-list-item class="country-list" :class="[item.suggested ? 'suggested' : '']" v-on="on">
+          <v-list-item class="_country-list" :class="[item.suggested ? 'suggested' : '']" v-on="on">
             <v-list-item-content
               :id="id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/ig, '')"
               :item-value=item.name
@@ -45,7 +46,7 @@
                 <v-row no-gutters align="center">
                   <span class=" mr-3 fi" :class="[`fi-${item.abbreviation}`]"> </span>
                   <span class="mr-2">{{ item.name }}</span>
-                  <span class="color-base">{{ item.countryCode }}</span>
+                  <span class="color-base body-sm">{{ item.countryCode }}</span>
                 </v-row>
               </v-list-item-title>
             </v-list-item-content>
@@ -54,14 +55,14 @@
       </v-select>
       <v-text-field
         ref="atatTextField"
-        :id="id + '_text_field'"
+        :id="id + '_textField'"
         outlined
         dense
         :height="42"
         :value.sync="_value"
         :placeholder="placeHolder"
         @input="phoneMask"
-        class="phone-number-input"
+        class="_phone-number-input"
         :hide-details="true"
         :suffix="suffix"
         :prefix="this.selectedValue.countryCode"
@@ -108,161 +109,161 @@ export default class ATATPhoneInput extends Vue {
   //data
   private countries: CountryObj[] = [
     {
-      name: 'United States',
-      countryCode: '+1',
-      abbreviation: 'us',
+      name: "United States",
+      countryCode: "+1",
+      abbreviation: "us",
       suggested: true
     },
     {
-      name: 'Defense Switched Network',
-      countryCode: 'DSN',
-      abbreviation: 'dsn',
+      name: "Defense Switched Network",
+      countryCode: "DSN",
+      abbreviation: "dsn",
       suggested: true
     },
     {
-      name: 'Albania',
-      countryCode: '+355',
-      abbreviation: 'al'
+      name: "Albania",
+      countryCode: "+355",
+      abbreviation: "al"
     },
     {
-      name: 'Belgium',
-      countryCode: '+32',
-      abbreviation: 'be'
+      name: "Belgium",
+      countryCode: "+32",
+      abbreviation: "be"
     },
     {
-      name: 'Bulgaria',
-      countryCode: '+359',
-      abbreviation: 'bg'
+      name: "Bulgaria",
+      countryCode: "+359",
+      abbreviation: "bg"
     },
     {
-      name: 'Canada',
-      countryCode: '+1',
-      abbreviation: 'ca'
+      name: "Canada",
+      countryCode: "+1",
+      abbreviation: "ca"
     },
     {
-      name: 'Croatia',
-      countryCode: '+385',
-      abbreviation: 'hr'
+      name: "Croatia",
+      countryCode: "+385",
+      abbreviation: "hr"
     },
     {
-      name: 'Czech Republic',
-      countryCode: '+420',
-      abbreviation: 'cz'
+      name: "Czech Republic",
+      countryCode: "+420",
+      abbreviation: "cz"
     },
     {
-      name: 'Denmark',
-      countryCode: '+45',
-      abbreviation: 'dk'
+      name: "Denmark",
+      countryCode: "+45",
+      abbreviation: "dk"
     },
     {
-      name: 'Estonia',
-      countryCode: '+372',
-      abbreviation: 'ee'
+      name: "Estonia",
+      countryCode: "+372",
+      abbreviation: "ee"
     },
     {
-      name: 'France',
-      countryCode: '+33',
-      abbreviation: 'fr'
+      name: "France",
+      countryCode: "+33",
+      abbreviation: "fr"
     },
     {
-      name: 'Germany',
-      countryCode: '+49',
-      abbreviation: 'de'
+      name: "Germany",
+      countryCode: "+49",
+      abbreviation: "de"
     },
     {
-      name: 'Greece',
-      countryCode: '+30',
-      abbreviation: 'gr'
+      name: "Greece",
+      countryCode: "+30",
+      abbreviation: "gr"
     },
     {
-      name: 'Greenland',
-      countryCode: '+299',
-      abbreviation: 'gl'
+      name: "Greenland",
+      countryCode: "+299",
+      abbreviation: "gl"
     },
     {
-      name: 'Hungary',
-      countryCode: '+36',
-      abbreviation: 'hu'
+      name: "Hungary",
+      countryCode: "+36",
+      abbreviation: "hu"
     },
     {
-      name: 'Iceland',
-      countryCode: '+354',
-      abbreviation: 'is'
+      name: "Iceland",
+      countryCode: "+354",
+      abbreviation: "is"
     },
     {
-      name: 'Italy',
-      countryCode: '+39',
-      abbreviation: 'it'
+      name: "Italy",
+      countryCode: "+39",
+      abbreviation: "it"
     },
     {
-      name: 'Latvia',
-      countryCode: '+371',
-      abbreviation: 'lv'
+      name: "Latvia",
+      countryCode: "+371",
+      abbreviation: "lv"
     },
     {
-      name: 'Lithuania',
-      countryCode: '+370',
-      abbreviation: 'lt'
+      name: "Lithuania",
+      countryCode: "+370",
+      abbreviation: "lt"
     },
     {
-      name: 'Luxembourg',
-      countryCode: '+352',
-      abbreviation: 'lu'
+      name: "Luxembourg",
+      countryCode: "+352",
+      abbreviation: "lu"
     },
     {
-      name: 'Montenegro',
-      countryCode: '+382',
-      abbreviation: 'me'
+      name: "Montenegro",
+      countryCode: "+382",
+      abbreviation: "me"
     },
     {
-      name: 'Netherlands',
-      countryCode: '+31',
-      abbreviation: 'nl'
+      name: "Netherlands",
+      countryCode: "+31",
+      abbreviation: "nl"
     },
     {
-      name: 'Norway',
-      countryCode: '+47',
-      abbreviation: 'no'
+      name: "Norway",
+      countryCode: "+47",
+      abbreviation: "no"
     },
     {
-      name: 'Poland',
-      countryCode: '+48',
-      abbreviation: 'pl'
+      name: "Poland",
+      countryCode: "+48",
+      abbreviation: "pl"
     },
     {
-      name: 'Portugal',
-      countryCode: '+351',
-      abbreviation: 'pt'
+      name: "Portugal",
+      countryCode: "+351",
+      abbreviation: "pt"
     },
     {
-      name: 'Romania',
-      countryCode: '+40',
-      abbreviation: 'ro'
+      name: "Romania",
+      countryCode: "+40",
+      abbreviation: "ro"
     },
     {
-      name: 'Slovakia',
-      countryCode: '+421',
-      abbreviation: 'sk'
+      name: "Slovakia",
+      countryCode: "+421",
+      abbreviation: "sk"
     },
     {
-      name: 'Slovenia',
-      countryCode: '+386',
-      abbreviation: 'si'
+      name: "Slovenia",
+      countryCode: "+386",
+      abbreviation: "si"
     },
     {
-      name: 'Spain',
-      countryCode: '+34',
-      abbreviation: 'es'
+      name: "Spain",
+      countryCode: "+34",
+      abbreviation: "es"
     },
     {
-      name: 'Turkey',
-      countryCode: '+90',
-      abbreviation: 'tr'
+      name: "Turkey",
+      countryCode: "+90",
+      abbreviation: "tr"
     },
     {
-      name: 'United Kingdom',
-      countryCode: '+44',
-      abbreviation: 'gb'
+      name: "United Kingdom",
+      countryCode: "+44",
+      abbreviation: "gb"
     },
   ];
   private searchResults: CountryObj[] = [];
@@ -277,7 +278,7 @@ export default class ATATPhoneInput extends Vue {
   private searchCountries(event: Event) {
     if (!this.searchTerm) {
       this.searchResults = this.countries;
-    }
+    };
     this.searchResults = this.countries.filter((country) => {
       return country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
     });
@@ -293,13 +294,13 @@ export default class ATATPhoneInput extends Vue {
   private phoneMask(val: string): void {
     this._value = val;
     switch (this.selectedValue.abbreviation) {
-      case 'us':
-        return Inputmask('999-999-9999',{placeholder:''}).mask(document.getElementById(this.id + '_text_field'));
+      case "us":
+        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true}).mask(document.getElementById(this.id + '_textField'));
       case 'dsn':
         this._value = this.selectedValue.countryCode + val;
-        return Inputmask('999-999-9999',{placeholder:''}).mask(document.getElementById(this.id + '_text_field'));
+        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true}).mask(document.getElementById(this.id + '_textField'));
       default:
-        return Inputmask.remove(document.getElementById(this.id + '_text_field'));
+        return Inputmask.remove(document.getElementById(this.id + '_textField'));
     };
   };
 

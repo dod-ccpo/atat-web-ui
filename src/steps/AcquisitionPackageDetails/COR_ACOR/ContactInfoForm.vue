@@ -79,7 +79,7 @@
       />
 
       <div class="d-flex mb-10">
-        <ATATTextField 
+        <ATATPhoneInput
           id="PhoneNumber" 
           label="Phone number" 
           class="input-max-width width-100" 
@@ -123,6 +123,7 @@ import {
   AutoCompleteItem, 
   AutoCompleteItemGroups 
 } from "../../../../types/Global";
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 
 @Component({
   components: {
@@ -130,6 +131,7 @@ import {
     ATATRadioGroup,
     ATATSelect,
     ATATTextField,
+    ATATPhoneInput
   }
 })
 
