@@ -49,7 +49,6 @@
       </v-row>
       <v-row>
         <v-col>
-          {{phone}}
           <ATATPhoneInput :value.sync="phone"/>
           <ATATRadioGroup
             id="DummyATATRadio"
