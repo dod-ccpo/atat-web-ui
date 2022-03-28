@@ -297,7 +297,7 @@ export default class ATATPhoneInput extends Vue {
         return Inputmask('999-999-9999',{placeholder:''}).mask(document.getElementById(this.id + '_text_field'));
       case 'dsn':
         this._value = this.selectedValue.countryCode + val;
-        return Inputmask('999-999-9999').mask(document.getElementById(this.id + '_text_field'));
+        return Inputmask('999-999-9999',{placeholder:''}).mask(document.getElementById(this.id + '_text_field'));
       default:
         return Inputmask.remove(document.getElementById(this.id + '_text_field'));
     };

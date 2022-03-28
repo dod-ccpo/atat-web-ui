@@ -49,7 +49,8 @@
       </v-row>
       <v-row>
         <v-col>
-          <ATATPhoneInput />
+          {{phone}}
+          <ATATPhoneInput :value.sync="phone"/>
           <ATATRadioGroup
             id="DummyATATRadio"
             label="Custom Radio"
@@ -185,6 +186,7 @@ export default class StepTwo extends Vue {
   private customTextValue = '';
   private radioValue = '';
   private ATATCheckboxValue = []
+  private phone = ''
   get contactIsSelected(): boolean {
     return (
       this.selectedContact &&
