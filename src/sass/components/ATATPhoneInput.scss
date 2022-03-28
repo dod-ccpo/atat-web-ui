@@ -37,7 +37,11 @@
   width: 420px;
   .v-divider + .suggested {
     .v-list-item__content {
-      padding-top: 30px;
+      &:before {
+        content: 'Suggested';
+        color: $base;
+        padding-bottom:10px;
+      }
     }
   }
   .suggested {
@@ -64,10 +68,5 @@
   }
   .v-divider {
     margin: 0px;
-    &:after {
-      content: 'Suggested';
-      color: $base;
-      padding-left: 12px;
-    }
   }
 }

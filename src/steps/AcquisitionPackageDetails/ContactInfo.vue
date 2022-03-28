@@ -80,7 +80,7 @@
           class="input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
         />
-        <ATATTextField
+        <ATATPhoneInput
           label="Your phone number"
           id="ContactPhone"
           class="input-max-width"
@@ -122,6 +122,7 @@ import {
   RadioButton, 
   SelectData 
 } from "../../../types/Global";
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 
 @Component({
   components: {
@@ -129,6 +130,7 @@ import {
     ATATTextField,
     ATATSelect,
     ATATRadioGroup,
+    ATATPhoneInput
   },
 })
 
