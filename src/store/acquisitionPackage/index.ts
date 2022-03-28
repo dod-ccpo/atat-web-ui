@@ -138,7 +138,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setInitialized(true);
     } else {
       try {
-        const acquisitionPackage = await api.acquisitionPackages.create();
+        const acquisitionPackage = await api.acquisitionPackagesTable.create();
         if (acquisitionPackage) {
           this.setAcquisitionPackage(acquisitionPackage);
           this.setProjectOverview(initialProjectOverview());
@@ -1152,6 +1152,13 @@ export class AcquisitionPackageStore extends VuexModule {
     },
   ];
 
+  @Action({rawError: true})
+  async ensureInitialized():Promise<void>{
+    if (!this.initialized) {
+      await this.initialize();
+    }
+  }
+
   @Action({ rawError: true })
   /**
    * Loads project overview data from back end if a project overview
@@ -1159,14 +1166,13 @@ export class AcquisitionPackageStore extends VuexModule {
    */
   async loadProjectOverview(): Promise<ProjectOverviewDTO> {
     try {
-      if (!this.initialized) {
-        await this.initialize();
-      }
+       
+      await this.ensureInitialized();
 
       const projectSysId = this.projectOverview?.sys_id || "";
 
-      if (projectSysId?.length > 0) {
-        const projectOverviewData = await api.projectOverview.getData(
+      if (projectSysId.length > 0) {
+        const projectOverviewData = await api.projectOverviewTable.retrieve(
           projectSysId as string
         );
         this.setProjectOverview(projectOverviewData);
@@ -1197,8 +1203,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const projectSysId = this.projectOverview?.sys_id || "";
       const savedProjectOverview =
         projectSysId.length > 0
-          ? await api.projectOverview.update({ ...data, sys_id: projectSysId })
-          : await api.projectOverview.create(data);
+          ? await api.projectOverviewTable.update(projectSysId,{ ...data, sys_id: projectSysId })
+          : await api.projectOverviewTable.create(data);
       this.setProjectOverview(savedProjectOverview);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1213,6 +1219,20 @@ export class AcquisitionPackageStore extends VuexModule {
       throw new Error(`error occurred saving project overview ${error}`);
     }
   }
+
+  // @Action({ rawError: true })
+  // async loadOrganization():Promise<OrganizationDTO>{
+
+  //    await this.ensureInitialized();
+
+  //    const organizationSysId = this.organization?.sys_id || "";
+
+  //    if(organizationSysId.length > 0){
+
+
+  //    }
+
+  // }
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);
