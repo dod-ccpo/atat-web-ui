@@ -16,7 +16,7 @@
           :items="alternateCoreOptions"
           name="hasAlternateCOR"
           class="mt-3 mb-8"
-          width="180px"
+          width="180"
         />
 
       </v-col>

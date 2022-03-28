@@ -66,7 +66,7 @@
             label="Suffix"
             id="Suffix"
             :optional="true"
-            width="80px"
+            width="80"
           />
         </v-col>
       </v-row>
@@ -87,7 +87,7 @@
         <ATATTextField 
           id="PhoneExtension" 
           label="Extension" 
-          width="140px"
+          width="140"
           :optional="true"
           class="ml-6"
         />

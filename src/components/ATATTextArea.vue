@@ -10,7 +10,6 @@
       </label>
       <v-tooltip
           transition="slide-y-reverse-transition"
-          max-width="250px"
           color="rgba(0,0,0,1)"
           top
           v-if="tooltipText"
