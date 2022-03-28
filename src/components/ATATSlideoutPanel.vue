@@ -48,6 +48,7 @@
     <div class="pb-10">
       <!-- this is where slot will go -->
       side panel content here
+      <slot></slot>
       <!-- <SampleSlideoutPanel
         :scrollableDivHeight="setScrollableDivHeight(95)"
       ></SampleSlideoutPanel> -->

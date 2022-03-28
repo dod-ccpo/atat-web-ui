@@ -44,19 +44,28 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
+
 import ATATAlert from "../../components/ATATAlert.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import SampleLearnMore2 from "./SampleLearnMore2.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+
 
 @Component({
   components: {
     ATATAlert,
-    ATATTextField
+    ATATTextField,
+    SampleLearnMore2,
   },
 })
 export default class ProjectScope extends Vue {
+
+  public mounted(): void {
+    SlideoutPanel.setSlideoutPanelComponent(SampleLearnMore2);
+  }
 
   get contractPricePercentageRules(): unknown[] {
     const validationRules = [];

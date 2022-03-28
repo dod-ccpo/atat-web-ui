@@ -3,7 +3,9 @@
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
 
     <!-- <ATATSlideoutPanel v-bind:is="currentSlideoutPanelComponent" /> -->
-    <ATATSlideoutPanel  />
+    <ATATSlideoutPanel :key="pKey">
+      <component :is="slideoutPanelComponent"></component>
+    </ATATSlideoutPanel>
 
     <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
@@ -49,8 +51,8 @@ export default class App extends Vue {
     sideStepper: ATATSideStepper;
   };
 
-  // get currentSlideoutPanelComponent -- check SlideoutPanel.slideoutPanelComponent
-  // Watch SlideoutPanel.slideoutPanelComponent for changes
+  public slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
+  public pKey = "a";
 
   private stepperData = buildStepperData();
 
@@ -64,7 +66,14 @@ export default class App extends Vue {
       Steps.setCurrentStep(stepName);
     }
     await AcquisitionPackage.initialize();
+
+    this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
   }
+
+  // @Watch("slideoutPanelComponent")
+  // public onSlideoutPanelComponentChange(c: unknown): void {
+  //   debugger;
+  // }
 
   @Watch("$route")
   async onRouteChanged(): Promise<void> {
@@ -75,6 +84,7 @@ export default class App extends Vue {
       const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
+      this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
     }
   }
 

@@ -72,11 +72,15 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { RadioButton } from "types/Global";
 
+import SampleLearnMore from "./SampleLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+
 @Component({
   components: {
     ATATTextField,
     ATATTextArea,
-    ATATRadioGroup
+    ATATRadioGroup,
+    SampleLearnMore,
   },
 })
 export default class ProjectOverview extends Vue {
@@ -123,6 +127,7 @@ export default class ProjectOverview extends Vue {
 
   public async mounted(): Promise<void> {
     // await this.validateForm();
+    SlideoutPanel.setSlideoutPanelComponent(SampleLearnMore);
   }
 }
 </script>

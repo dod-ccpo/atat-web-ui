@@ -1,3 +1,4 @@
+import { Component } from "vue";
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 
@@ -12,8 +13,19 @@ export class SlideoutPanelStore extends VuexModule {
   
   slideoutPanelIsOpen = false;
   slideoutPanelOpenerId = ""; // for 508 return focus. set when link clicked to open panel
-  slideoutPanelChange = false; // ? if slot component don't need?
- 
+  slideoutPanelChange = false; // used to focus for 508 when opened/closed
+
+  slideoutPanelComponent?: Component = {};
+
+  @Mutation
+  public doSetSlideoutPanelComponent(c: Component): void {
+    this.slideoutPanelComponent = c;
+  }
+  @Action
+  public setSlideoutPanelComponent(c: Component): void {
+    this.doSetSlideoutPanelComponent(c);
+  }
+
   // MUTATIONS from old ATAT
   @Mutation
   public doCloseSideDrawer(): void {
