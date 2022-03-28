@@ -1,9 +1,10 @@
 <template>
   <v-app>
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
-    <keep-alive>
-      <ATATSlideoutPanel v-bind:is="currentSlideoutPanelComponent" />
-    </keep-alive>
+
+    <!-- <ATATSlideoutPanel v-bind:is="currentSlideoutPanelComponent" /> -->
+    <ATATSlideoutPanel  />
+
     <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
       <router-view></router-view>
@@ -29,7 +30,7 @@ import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 
 import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import SlideoutPanel from "@/store/slideoutPanel";
+import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { buildStepperData } from "./router/stepper";
 

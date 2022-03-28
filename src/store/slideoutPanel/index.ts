@@ -11,38 +11,32 @@ import rootStore from "../index";
 export class SlideoutPanelStore extends VuexModule {
   
   slideoutPanelIsOpen = false;
-  
-  // this was the old ATAT way, used to conditionally show components that were all 
-  // imported into the side drawer component instead of using slots
-  slideoutPanelType = ""; // use slots instead? see below... 
-
-  // use to pass component into slot? put a watcher on this in App.vue?
-  slideoutPanelComponent = ""; 
-
-  // for 508 return focus. set when link clicked to open panel
-  slideoutPanelOpenerId = ""; 
-
-  slideoutPanelChange = false; // not sure what this is... if slot component don't need?
+  slideoutPanelOpenerId = ""; // for 508 return focus. set when link clicked to open panel
+  slideoutPanelChange = false; // ? if slot component don't need?
  
   // MUTATIONS from old ATAT
-  // doCloseSideDrawer(state) {
-  //   state.sideDrawerIsOpen = false;
-  //   state.sideDrawerChange = !state.sideDrawerChange;
-  // },
-  // doOpenSideDrawer(state, [drawerType, openerId]) {
-  //   state.sideDrawerIsOpen = true;
-  //   state.sideDrawerType = drawerType;
-  //   state.sideDrawerOpenerId = openerId;
-  //   state.sideDrawerChange = !state.sideDrawerChange;
-  // },
+  @Mutation
+  public doCloseSideDrawer(): void {
+    this.slideoutPanelIsOpen = false;
+    this.slideoutPanelChange = !this.slideoutPanelChange;
+  }
 
-  // ACTIONS from old ATAT
-  // closeSideDrawer({ commit }) {
-  //   commit("doCloseSideDrawer");
-  // },
-  // openSideDrawer({ commit }, [drawerType, openerId]) {
-  //   commit("doOpenSideDrawer", [drawerType, openerId]);
-  // },
+  @Mutation
+  public doOpenSideDrawer(openerId: string): void {
+    this.slideoutPanelIsOpen = true;
+    this.slideoutPanelOpenerId = openerId;
+    this.slideoutPanelChange = !this.slideoutPanelChange;
+  }
+
+  @Action 
+  public closeSideDrawer(): void {
+    this.doCloseSideDrawer();
+  }
+
+  @Action
+  public openSideDrawer(openerId: string): void {
+    this.doOpenSideDrawer(openerId);
+  }
 
 }
 
