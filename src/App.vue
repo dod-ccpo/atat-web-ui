@@ -1,6 +1,9 @@
 <template>
   <v-app>
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
+    <keep-alive>
+      <ATATSlideoutPanel v-bind:is="currentSlideoutPanelComponent" />
+    </keep-alive>
     <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
       <router-view></router-view>
@@ -16,30 +19,37 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Steps from "@/store/steps";
+import { Component, Watch } from "vue-property-decorator";
 
-import ATATSideStepper from "./components/ATATSideStepper.vue";
-import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
-import {Component, Watch} from "vue-property-decorator";
-import {buildStepperData} from "./router/stepper";
+import ATATSideStepper from "./components/ATATSideStepper.vue";
+import ATATSlideoutPanel from "./components/ATATSlideoutPanel.vue";
+import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 
+import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import SlideoutPanel from "@/store/slideoutPanel";
 
+import { buildStepperData } from "./router/stepper";
 
 @Component({
   components: {
-    ATATSideStepper,
-    ATATStepperNavigation,
     ATATFooter,
-    ATATPageHead
+    ATATPageHead,
+    ATATSideStepper,
+    ATATSlideoutPanel,
+    ATATStepperNavigation,
   }
 })
+
 export default class App extends Vue {
   $refs!: {
     sideStepper: ATATSideStepper;
   };
+
+  // get currentSlideoutPanelComponent -- check SlideoutPanel.slideoutPanelComponent
+  // Watch SlideoutPanel.slideoutPanelComponent for changes
 
   private stepperData = buildStepperData();
 

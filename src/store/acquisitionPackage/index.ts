@@ -1,4 +1,4 @@
-import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
 import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
