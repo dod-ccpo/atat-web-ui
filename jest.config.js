@@ -28,5 +28,3 @@ module.exports = {
   testURL: "http://localhost/"
  
 }
-
-// "^.+\\.vue": "vue-jest",

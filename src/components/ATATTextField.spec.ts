@@ -9,7 +9,7 @@ describe("Testing ATATTextField Component", () => {
   const localVue = createLocalVue();
   let vuetify: Vuetify;
   let wrapper: Wrapper<DefaultProps & Vue, Element>;
-
+  
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(ATATTextField, {
@@ -17,11 +17,39 @@ describe("Testing ATATTextField Component", () => {
       vuetify,
     });
   });
-  it("renders successfully", async () => {
-    expect(wrapper.exists()).toBe(true);
+
+  describe("INITIALIZATION", () => { 
+    it("renders successfully", async () => {
+      expect(wrapper.exists()).toBe(true);
+    });
   });
-  it("test input actions, is success", async () => {
-    await wrapper.vm.inputActions("hello");
-    expect(wrapper.exists()).toBe(true);
+
+  describe("PROPS", () => { 
+    it("label", async () => {
+      wrapper.setProps({
+        "label":"label Test"
+      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find("label").exists()).toBe(true);
+    });
+  });
+
+  describe("EVENTS", () => { 
+    it("onInput", async () => {
+      const newVal = "newVal";
+      await wrapper.vm.onInput(newVal);
+      await wrapper.vm.$nextTick(()=>{
+        expect(wrapper.emitted("update:value")?.flat()[0]).toMatch(newVal);
+      });
+    });
+
+    it("onBlur", async () => {
+      const valOnBlur = "newVa";
+      await wrapper.vm.onBlur(valOnBlur);
+      await wrapper.vm.$nextTick(()=>{
+        expect(wrapper.emitted("blur")?.flat()[0]).toMatch(valOnBlur);
+      });
+      
+    });
   });
 });

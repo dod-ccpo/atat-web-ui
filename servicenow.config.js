@@ -6,22 +6,6 @@ const servicenowConfig = {
   REST_API_PATH: '/api',
 
   /**
-   * ServiceNow instance URL for REST calls
-   * it is being used in DEVELOPMENT mode only
-   * This should be the instance where React application will be deployed to
-   */
-  SERVICENOW_INSTANCE: 'https://dev49920.service-now.com/',
-  /**
-   * User Name for API requests
-   * it is being used for sending REST calls in DEVELOPMENT mode only
-   * no need to provide credentials for PRODUCTION
-   */
-  VUE_APP_USER: '',
-  /**
-   * User password, for DEVELOPMENT mode only
-   */
-  VUE_APP_PASSWORD: '',
-  /**
    * ServiceNow path to GET resource which serves javascript files
    * Current configuration does not produce CSS files
    * CSS code will be embedded into javascript files

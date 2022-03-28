@@ -4826,6 +4826,10 @@ hr, .hr {
   box-shadow: 0px 4px 10px rgba(194, 194, 194, 0.5);
   border-radius: 8px;
 }
+.v-autocomplete .v-select__slot input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .atat-button-hover {
   background-color: transparent !important;
@@ -5122,6 +5126,7 @@ header .v-toolbar__content {
   margin-bottom: 0 !important;
   line-height: 1.25 !important;
   font-weight: 400 !important;
+  white-space: normal;
 }
 .v-select-list .v-list-item__title {
   font-size: 1.6rem !important;

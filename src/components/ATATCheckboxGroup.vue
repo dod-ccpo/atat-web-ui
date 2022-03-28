@@ -23,21 +23,21 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, PropSync} from "vue-property-decorator";
 import Vue from "vue";
+import {Component, Prop, PropSync} from "vue-property-decorator";
+
 import {Checkbox} from "../../types/Global";
 
 @Component({})
+
 export default class ATATCheckboxGroup extends Vue {
   @PropSync("value") private _selected!: string;
-  @Prop({default: "Form Field Label"}) private label!: string;
-  @Prop({default: ['empty items array']}) private items!: Checkbox[];
+  @Prop({default: [""], required: true}) private items!: Checkbox[];
   @Prop({default: false}) private card!: boolean;
   @Prop({default: false}) private error!: boolean;
   @Prop({default: false}) private disabled!: boolean;
 
   @Prop() private name!: string;
-
 
   private getIdText(string: string) {
     return string.replace(/[^A-Z0-9]/ig, "");

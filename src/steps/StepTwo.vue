@@ -74,18 +74,16 @@
         <v-col>
           <ATATCheckboxGroup
             id="ATATCheckbox"
-            label="Custom Checkbox"
             :value.sync="ATATCheckboxValue"
             :items="checkboxItems"
             name="another-checkbox"
           />
           <ATATCheckboxGroup
             id="checkbox card"
-            label="Custom Checkbox 2"
             :value.sync="ATATCheckboxValue"
             :items="checkboxItems"
             name="checkbox-card"
-            card="true"
+            :card="true"
           />
           <div class="flag">
             <span class="flag-icon flag-icon-gr">Hello</span>

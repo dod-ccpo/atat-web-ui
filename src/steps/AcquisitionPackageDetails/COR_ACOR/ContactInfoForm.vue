@@ -17,15 +17,17 @@
     <ATATSelect
       id="Branch"
       v-show="selectedContactAffiliation === 'MIL'"
+      v-model="selectedBranch"
       class="input-max-width mb-10"
       label="Service Branch"
       placeholder=""
       :items="branchData"
       :selectedValue.sync="selectedBranch"
       :showAccessRadioButtons.sync="showAccessRadioButtons"
+      :returnObject="true"
     />
 
-    <div v-show="selectedBranch || selectedContactAffiliation === 'CIV'">
+    <div v-show="selectedBranch.value || selectedContactAffiliation === 'CIV'">
       <ATATAutoComplete
         id="Rank"
         v-show="selectedContactAffiliation === 'MIL'"
@@ -113,6 +115,8 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
+import AcquisitionPackage from "@/store/acquisitionPackage";
+
 import { 
   RadioButton, 
   SelectData, 
@@ -147,15 +151,8 @@ export default class ContactInfoForm extends Vue {
     { text: "Dr.", value: "Dr.", },
   ];
 
-  private selectedBranch = "";
-  private branchData: SelectData[] = [
-    { text: "U.S. Air Force", value: "USAF", },
-    { text: "U.S. Army", value: "ARMY", },
-    { text: "U.S. Coast Guard", value: "USCG", },
-    { text: "U.S. Marine Corps", value: "USMC", },
-    { text: "U.S. Navy", value: "NAVY", },
-    { text: "U.S. Space Force", value: "USSF", },
-  ];
+  private selectedBranch: SelectData = { text: "", value: "" };
+  private branchData: SelectData[] = AcquisitionPackage.branchData;
 
   private selectedContactAffiliation = "";
   private contactAffiliations: RadioButton[] = [
@@ -173,38 +170,7 @@ export default class ContactInfoForm extends Vue {
 
   private selectedRank = "";
   private selectedBranchRanks: AutoCompleteItem[] = [];
-  private branchRanksData: AutoCompleteItemGroups = {
-    "USAF": [
-      { rank: "AF Rank 1", value: "AF-R1", },
-      { rank: "AF Rank 2", value: "AF-R2", },
-      { rank: "AF Rank 3", value: "AF-R3", },
-    ],
-    "ARMY": [
-      { rank: "ARMY Rank 1", value: "ARMY-R1", },
-      { rank: "ARMY Rank 2", value: "ARMY-R2", },
-      { rank: "ARMY Rank 3", value: "ARMY-R3", },
-    ],
-    "USCG": [
-      { rank: "USCG Rank 1", value: "USCG-R1", },
-      { rank: "USCG Rank 2", value: "USCG-R2", },
-      { rank: "USCG Rank 3", value: "USCG-R3", },
-    ],
-    "USMC": [
-      { rank: "USMC Rank 1", value: "USMC-R1", },
-      { rank: "USMC Rank 2", value: "USMC-R2", },
-      { rank: "USMC Rank 3", value: "USMC-R3", },
-    ],    
-    "NAVY": [
-      { rank: "NAVY Rank 1", value: "NAVY-R1", },
-      { rank: "NAVY Rank 2", value: "NAVY-R2", },
-      { rank: "NAVY Rank 3", value: "NAVY-R3", },
-    ],
-      "USSF": [
-      { rank: "USSF Rank 1", value: "USSF-R1", },
-      { rank: "USSF Rank 2", value: "USSF-R2", },
-      { rank: "USSF Rank 3", value: "USSF-R3", },
-    ],
-  };
+  private branchRanksData: AutoCompleteItemGroups = AcquisitionPackage.branchRanksData;
 
   // computed
   
@@ -216,11 +182,13 @@ export default class ContactInfoForm extends Vue {
 
   private setShowAccessRadioButtons(): void {
     this._showAccessRadioButtons = this.selectedContactAffiliation === "CIV" 
-      || this.selectedBranch !== "";
+      || this.selectedBranch.value !== "";
   }
 
   private setRankData(): void {
-    this.selectedBranchRanks = this.branchRanksData[this.selectedBranch];
+    if (this.selectedBranch.value) {
+      this.selectedBranchRanks = this.branchRanksData[this.selectedBranch.value];
+    }
   }
 
   // watchers
@@ -232,8 +200,14 @@ export default class ContactInfoForm extends Vue {
   }
 
   @Watch("selectedContactAffiliation")
-  protected contactAffiliationChange(): void {
+  protected contactAffiliationChange(newRole: string): void {
     this.setShowAccessRadioButtons();
+
+    if (newRole === "MIL") {
+      this.selectedBranch = AcquisitionPackage.selectedContactBranch;
+    } else {
+      this.selectedBranch = { text: "", value: "" };
+    }
   }
 
 }

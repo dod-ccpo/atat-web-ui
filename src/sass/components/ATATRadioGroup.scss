@@ -10,6 +10,7 @@
 }
 
 ._radio-button {
+  align-items: flex-start;
   &.v-item--active {
     .v-icon {
       color: $primary !important;
@@ -33,10 +34,8 @@
 
     &.error--text {
       color: $error-dark !important;
-
     }
   }
-
 
   .v-icon {
     color: $base !important;
@@ -82,8 +81,6 @@
   }
 }
 
-
-
 ._radio-button-card {
   @extend ._radio-button;
   background-color: $base-lightest !important;
@@ -93,17 +90,20 @@
   margin-bottom: 12px !important;
   align-items: start !important;
 
+  &.v-radio--is-focused {
+    box-shadow: 0px 0px 0px 2px white, 0px 0px 0px 4px $primary;
+  }
+
   &.v-item--active {
     background-color: $primary-lighter !important;
-    border: solid 2px $primary;
+    border: solid 1px $primary;
+    outline: solid 1px $primary;
     border-radius: 4px !important;
     &.v-radio--is-focused {
-      box-shadow:0px 0px 0px 1px $primary, 0px 0px 0px 3px white, 0px 0px 0px 6px $primary !important;
+      box-shadow:0px 0px 0px 1px $primary, 0px 0px 0px 3px white, 0px 0px 0px 6px $primary;
     }
   }
-  &.v-radio--is-focused {
-    box-shadow: 0px 0px 0px 2px white, 0px 0px 0px 4px $primary !important;
-  }
+
   label {
     color: $base-darkest !important;
     padding-top: 1px;
@@ -139,13 +139,20 @@
     padding: 12px 0px 12px 12px;
     align-items: start !important;
   }
-
 }
 
+.v-input--radio-group--column {
+  margin-top: 0px !important;
+  
+  .v-radio {
+    &:not(:last-child):not(:only-child) {
+      margin-bottom: 12px !important
+    }
+  }
+}
 
-.v-input--radio-group--column{
-   margin-top: 0px !important;
-  .v-radio:not(:last-child):not(:only-child){
-    margin-bottom: 12px !important
+._atat-radio-group {
+  legend {
+    font-weight: 500;
   }
 }

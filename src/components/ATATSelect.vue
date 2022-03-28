@@ -26,10 +26,8 @@
         @change="onChange"
         :placeholder="placeholder"
         class="mt-2"
+        :return-object="returnObject"
       >
-        <template v-slot:selection="{ item }">
-          {{ item.text }}
-        </template>
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">
             <v-list-item-content
@@ -59,14 +57,15 @@ import Vue from "vue";
 
 @Component({})
 export default class ATATSelect extends Vue {
-  @PropSync("selectedValue") private _selectedValue!: string;
+  @PropSync("selectedValue") private _selectedValue!: string | SelectData;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "Form Field Label" }) private label!: string;
   @Prop({ default: [] }) private items?: SelectData[];
-  @Prop() private rules: any;
+  @Prop() private rules: unknown;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private optional!: boolean;
+  @Prop({ default: false }) private returnObject!: boolean;
 
   //data
   private rounded = false;
