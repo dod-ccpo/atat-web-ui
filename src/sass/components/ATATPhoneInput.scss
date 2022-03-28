@@ -1,4 +1,5 @@
 ._atat-phone-field {
+
   ._country-select {
     padding-right: 0px;
     max-width: 67px;
@@ -35,7 +36,7 @@
     .v-divider + .suggested {
       .v-list-item__content {
         overflow: visible;
-        //margin-top: 26px;
+        margin-top: 26px;
         position: relative;
         &:before {
           content: "SUGGESTED";
@@ -52,14 +53,16 @@
       padding-bottom: 8px
     }
     .suggested {
-      :nth-last-of-type(3) {
-        background-color:grey;
-      }
       + .suggested {
         border-bottom: 1px solid $base-lighter;
       }
     }
+    .v-select-list {
+      position: relative;
+    }
     ._dropdown-text-field {
+      position: sticky;
+      width: 100%;
       padding-top: 0px;
       padding-right: 12px;
       padding-left: 12px;
