@@ -2,93 +2,72 @@
   .country-select {
     padding-right: 0px;
     max-width: 67px;
-
     .v-input__control > {
       .v-input__slot {
         padding-right: 0px !important;
       }
     }
-
     fieldset {
       border-radius: 4px 0px 0px 4px;
     }
-
     .v-select__selections {
       input {
         display: none;
       }
     }
   }
-
   .phone-number-input {
     max-width: 351px;
-
     &.v-text-field--outlined.v-input--is-focused {
       fieldset {
         border-width: 2px;
         border-color: $primary !important;
       }
     }
-
     fieldset {
       border-radius: 0px 4px 4px 0px;
     }
-
     .v-text-field__prefix {
       color: $base-darkest;
     }
   }
-
 }
 
 .v-menu__content.theme--light.menuable__content__active {
   width: 420px;
-
- .v-divider + .suggested {
-    background-color:grey;
-   .v-list-item__content {
-background-color:yellow;
-     .v-list-item__title {
-    &.body{
-      background-color:pink;
-      &.country {
-        background-color:red;
-
-        :first-child {
-          background-color:aqua;
-        }
-
-      }
+  .v-divider + .suggested {
+    .v-list-item__content {
+      padding-top: 30px;
     }
-
-       background-color:white;
-     }
-      :before {
-        content: 'Suggested';
-        color:$base-dark;
-      }
-
-   }
   }
-
+  .suggested {
+    :nth-last-of-type(3) {
+      background-color:grey;
+    }
+    + .suggested {
+      border-bottom: 1px solid $base-lighter;
+    }
+  }
   .dropdown-text-field {
     padding-top: 0px;
     padding-right: 12px;
     padding-left: 12px;
     color: $primary;
-
     &.v-input--is-focused {
       i.v-icon {
         color: $primary !important;
       }
     }
-
     :after, :before {
       border: none;
     }
   }
-
   .v-divider {
     margin: 0px;
+    &:after {
+      content: 'Suggested';
+      color: $base;
+      padding-left: 12px;
+    }
   }
 }
