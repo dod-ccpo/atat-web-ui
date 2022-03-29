@@ -49,7 +49,7 @@ const required = (
   message = message || "This field is required.";
 
   return (v: string) => {
-    return !v || (v.length && v.length < 1) ? message : true;
+    return (v && (v.length && v.length > 0)) || message;
   };
 };
 
@@ -137,9 +137,7 @@ const isDateValid = (
   message = message || `Invalid Date`;
   // validate date isn't something like 12/DD/YYYY
   return (v: string) => {
-    // console.log(v);
-    // console.log(/^[0-9]*$/.test(v.replaceAll(/\//g, "")) )
-    return v && /^[0-9]*$/.test(v.replaceAll(/\//g, "")) || message 
+    return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
   };
 };
 

@@ -13,7 +13,7 @@
       absolute
       :nudge-top="0"
       :nudge-left="0"
-      @blur="onBlur"
+      
     >
       <template v-slot:activator="{ on, attrs }">
         <div class="d-flex align-center" v-if="label">
@@ -39,17 +39,18 @@
           :placeholder="placeHolder"
           class="text-primary input-max-width d-flex align-center"
           :hide-details="true"
-          v-model="dateFormatted"
           outlined
+          v-model="dateFormatted"
           :style="'width: ' + width"
           dense
           v-bind="attrs"
           v-on="on"
           :rules="rules"
+          validate-on-blur
+          @blur = "onBlur"
           @update:error="setErrorMessage"
         >
         <!-- todo:  validate-on-blur -->
-
           <template slot="append-outer">
             <v-btn
               icon
@@ -76,7 +77,6 @@
         :min="min"
         :max="max"
         @click:date="datePickerClick"
-        
         scrollable
       ></v-date-picker>
     </v-menu>
@@ -114,7 +114,6 @@ export default class ATATDatePicker extends Vue {
   private date = "";
   private dateFormatted = "";
   private menu = false;
-  private vuetifyDatePickerFormat = "yyyy-MM-dd";
   private errorMessages: string[] = [];
 
   @Prop({ default: "" }) private label!: string;
@@ -129,14 +128,14 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
   private max!: Date;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: [] }) private rules!: Array<unknown>;
 
   /**
    * WATCHERS
    */
   @Watch("date")
   protected formatDateWatcher(): void {
-    this.dateFormatted = this.formatMMDDYYYY(this.date);
+    this.dateFormatted = this.reformatDate(this.date);
   }
 
   /**
@@ -144,11 +143,14 @@ export default class ATATDatePicker extends Vue {
    */
 
   private onBlur() : void {
-    //  this.setErrorMessage();
+    
     if (isValid(new Date(this.dateFormatted))){
-       this.date = this.formatYYYYMMDD(this.dateFormatted)
+       this.date = this.reformatDate(this.dateFormatted)
        this.updateDateProperty();
-    } 
+    }
+    Vue.nextTick(()=>{
+      this.setErrorMessage();
+    }) 
   }
 
   /**
@@ -162,13 +164,14 @@ export default class ATATDatePicker extends Vue {
   }
 
   private datePickerClick(selectedDate: string){
-    // this.menu = false;
-   
-
-    this.dateFormatted = this.formatMMDDYYYY(selectedDate);
-    this.date = this.formatYYYYMMDD(selectedDate);
+    this.dateFormatted = this.reformatDate(selectedDate);
+    this.date = this.reformatDate(selectedDate);
     this.updateDateProperty();
-    this.setErrorMessage();
+    Vue.nextTick(()=>{
+      this.setErrorMessage();
+    })
+    
+   
   }
 
   /**
@@ -195,30 +198,21 @@ export default class ATATDatePicker extends Vue {
 
   /**
    * @date (string)
-   * returns formatted date as mm/dd/yyyy if date isValid
-   */
-  private formatMMDDYYYY(date: string): string {
-    if (isValid(new Date(date))) {
-      const [year, month, day] = date.split("-");
-      return `${month}/${day}/${year}`;
-    }
-    return "";
-  }
-
-  /**
-   * @date (string)
    * returns formatted date as yyyy-MM-dd if date isValid
    */
-  private formatYYYYMMDD(date: string): string {
+  private reformatDate(date: string): string {
+    let formattedDate = "";
     if (isValid(new Date(date))) {
-      const [year, month, day] = date.split("-");
-      return `${year}-${month}-${day}`;
+      let month="", day="", year="";
+      if (date.indexOf('-') > 0) {
+        [year, month, day] = date.split("-");
+        formattedDate = `${month}/${day}/${year}`;
+      }else if (date.indexOf('/') > 0) {
+        [month, day, year] = date.split("/");
+        formattedDate = `${year}-${month}-${day}`;
+      }
     }
-    return "";
-    // return format(
-    //   new Date(isValid(new Date(date)) ? date : ""),
-    //   this.vuetifyDatePickerFormat
-    // );
+    return formattedDate;
   }
 
   /**
