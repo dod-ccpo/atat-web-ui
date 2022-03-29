@@ -2,23 +2,40 @@
   ._country-select {
     padding-right: 0px;
     max-width: 67px;
-
     .v-input__control > {
+
       .v-input__slot {
         padding-top: 8px;
         padding-right: 4px;
         margin-bottom: 0px;
       }
+
     }
 
     fieldset {
       border-radius: 4px 0px 0px 4px;
     }
-  }
 
+    .v-select__selections {
+      flex-direction: column-reverse;
+      input {
+        max-width: 0px;
+        max-height: 0px;
+      }
+      .fi {
+        margin-right: 11px;
+        position: relative;
+        top: -8px;
+      }
+    }
+    .v-input__icon--append {
+      i.v-icon {
+        margin-left: 4px;
+      }
+    }
+  }
   ._phone-number-input {
     max-width: 351px;
-
     &.v-text-field--outlined.v-input--is-focused {
       fieldset {
         border-left-width: 2px;
@@ -26,12 +43,10 @@
         border-color: $primary !important;
       }
     }
-
     fieldset {
       border-left-width: 0px;
       border-radius: 0px 4px 4px 0px;
     }
-
     .v-text-field__prefix {
       padding-left: 4px;
       color: $base-darkest;
@@ -42,40 +57,37 @@
     padding-top: 0px;
     min-width: 416px !important;
     width: 420px;
-
     ._dropdown-text-field + ._suggested {
       .v-list-item__content {
         overflow: visible;
-        //margin-top: 26px;
         position: relative;
-
         &:before {
           content: "SUGGESTED";
           color: $base;
           position: absolute;
           top: -33px;
           font-size: 12px;
-          font-weight: bold;
+          font-weight: 500;
         }
       }
     }
+    .v-input__append-inner {
 
+      margin-top: 0px;
+    }
     ._country-list {
       padding-top: 6px;
       padding-bottom: 6px
     }
-
     ._suggested {
       + ._suggested {
         border-bottom: 1px solid $base-lighter;
       }
     }
-
     .v-select-list {
       padding-top: 0px;
       position: relative;
     }
-
     ._dropdown-text-field {
       background-color: white;
       position: sticky;
@@ -87,19 +99,18 @@
       padding-right: 12px;
       padding-left: 12px;
       margin-top: 0;
-      margin-bottom: 30px;
+      margin-bottom: 36px;
       color: $primary;
       border-bottom: 1px solid $base-lighter;
-
       .v-input__icon {
         &.v-input__icon--append {
           i.v-icon {
+            top: 4px;
             transform: none !important;
             color: $primary !important;
           }
         }
       }
-
       &.v-input--is-focused {
         .v-input__icon {
           &.v-input__icon--append {
@@ -109,11 +120,17 @@
             }
           }
         }
-
       }
-
-      :after, :before {
-        border: none;
+      .v-input__slot {
+        &:after, &:before {
+          border: none;
+        }
+      }
+    }
+    ._active {
+      background-color: $base-lightest;
+      ._country-name {
+        font-weight: 700;
       }
     }
   }

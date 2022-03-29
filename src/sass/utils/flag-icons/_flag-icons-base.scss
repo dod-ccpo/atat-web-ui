@@ -21,8 +21,5 @@
 @mixin flag-icon($country) {
   .fi-#{$country} {
     background-image: url(#{$flag-icons-path}#{$flag-icons-rect-path}/#{$country}.svg);
-    //&.fis {
-    //  background-image: url(#{$flag-icons-path}#{$flag-icons-square-path}/#{$country}.svg);
-    //}
   }
 }

@@ -110,6 +110,7 @@ import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -122,15 +123,15 @@ import {
   RadioButton, 
   SelectData 
 } from "../../../types/Global";
-import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
+
 
 @Component({
   components: {
     ATATAutoComplete,
-    ATATTextField,
-    ATATSelect,
+    ATATPhoneInput,
     ATATRadioGroup,
-    ATATPhoneInput
+    ATATSelect,
+    ATATTextField,
   },
 })
 

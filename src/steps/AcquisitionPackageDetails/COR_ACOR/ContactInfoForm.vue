@@ -111,6 +111,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue"
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -123,15 +124,15 @@ import {
   AutoCompleteItem, 
   AutoCompleteItemGroups 
 } from "../../../../types/Global";
-import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
+
 
 @Component({
   components: {
     ATATAutoComplete,
+    ATATPhoneInput,
     ATATRadioGroup,
     ATATSelect,
     ATATTextField,
-    ATATPhoneInput
   }
 })
 
