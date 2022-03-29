@@ -89,6 +89,7 @@
       position: relative;
     }
     ._dropdown-text-field {
+      align-items: center;
       background-color: white;
       position: sticky;
       height: 48px;
@@ -105,7 +106,6 @@
       .v-input__icon {
         &.v-input__icon--append {
           i.v-icon {
-            top: 4px;
             transform: none !important;
             color: $primary !important;
           }
