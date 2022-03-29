@@ -1,6 +1,7 @@
 <template>
   <v-navigation-drawer
     id="SlideoutPanel"
+    class="_slideout-panel"
     v-model="isSlideoutPanelOpen"
     transition="slide-x-reverse-transition"
     :width="panelWidth + 'px'"
@@ -46,7 +47,7 @@ export default class ATATSlideoutPanel extends Vue {
   get panelTitle(): string {
     return SlideoutPanel.slideoutPanelTitle;
   }
-  
+
   private isOpen = false;
   set isSlideoutPanelOpen(isOpen: boolean) {
     this.isOpen = isOpen;

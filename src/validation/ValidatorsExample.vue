@@ -1,11 +1,13 @@
 <template>
   <v-form ref="form" lazy-validation>
 
-      <a class="d-block mb-10" 
+      <a 
+        class="d-block mb-10" 
         role="button" 
         id="SlideoutPanelOpener" 
         tabindex="0" 
         @click="openSlideoutPanel"
+        aria-label="Example slideout panel trigger"
       >
         Open slideout panel
       </a>
