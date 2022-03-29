@@ -37,7 +37,7 @@
           <v-divider class="search-divider"/>
         </template>
         <template v-slot:item="{ item, on }">
-          <v-list-item class="_country-list" :class="[item.suggested ? 'suggested' : '']" v-on="on">
+          <v-list-item class="_country-list" :class="[item.suggested ? '_suggested' : '']" v-on="on">
             <v-list-item-content
               :id="id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/ig, '')"
               :item-value=item.name

@@ -1,5 +1,4 @@
 ._atat-phone-field {
-
   ._country-select {
     padding-right: 0px;
     max-width: 67px;
@@ -33,7 +32,7 @@
   .v-menu__content.theme--light.menuable__content__active {
     min-width: 416px !important;
     width: 420px;
-    .v-divider + .suggested {
+    .v-divider + ._suggested {
       .v-list-item__content {
         overflow: visible;
         margin-top: 26px;
@@ -52,8 +51,8 @@
       padding-top: 8px;
       padding-bottom: 8px
     }
-    .suggested {
-      + .suggested {
+    ._suggested {
+      + ._suggested {
         border-bottom: 1px solid $base-lighter;
       }
     }
@@ -61,12 +60,16 @@
       position: relative;
     }
     ._dropdown-text-field {
+      background-color: white;
       position: sticky;
       width: 100%;
+      top: 0;
+      z-index: 1;
       padding-top: 0px;
       padding-right: 12px;
       padding-left: 12px;
       color: $primary;
+      border-bottom: 1px solid $base-lighter;
       .v-input__icon {
         &.v-input__icon--append {
           i.v-icon {
@@ -91,8 +94,9 @@
       }
     }
     .v-divider {
+      display: none;
       margin: 0px;
-      margin-bottom: 20px
+      margin-bottom: 10px
     }
   }
 
