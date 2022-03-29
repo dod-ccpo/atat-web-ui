@@ -169,14 +169,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        const current: ProjectOverviewDTO = {
-          title: this.currentTitle,
-          scope: this.projectScope,
-          emergency_declaration:
-            this.emergencyDeclaration === "yes" ? "true" : "false",
-        };
-
-        await AcquisitionPackage.saveProjectOverview(current);
+        await AcquisitionPackage.saveProjectOverview(this.currentData);
       }
     } catch (error) {
       console.log(error);

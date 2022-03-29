@@ -5,13 +5,14 @@ export interface OrganizationDTO {
     sys_updated_by?: string;
     sys_created_on?: string;
     sys_created_by?: string;
-    zip_code: string;
-    sys_id: string;
+    sys_id?: string;
     street_address_1: string;
     street_address_2: string;
+    organization_name: string;
     disa_organization: string;
     service_agency: string;
     state: string;
+    zip_code: string;
     country: string;
     address_type: string;
     city: string;

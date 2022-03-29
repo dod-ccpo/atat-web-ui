@@ -35,7 +35,8 @@
             <h2 class="form-section-heading">1. Tell us more about your organization</h2>
             <ATATAutoComplete
               id="DisaOrg"
-              v-show="selectedServiceOrAgency && selectedServiceOrAgency.value === 'DISA'"
+              v-show="selectedServiceOrAgency && selectedServiceOrAgency.value 
+              === 'DEFENSE_INFORMATION_SYSTEMS_AGENCY'"
               class="input-max-width mb-10"
               label="DISA Organization"
               :label-sr-only="false"
@@ -52,6 +53,7 @@
               v-show="selectedServiceOrAgency && selectedServiceOrAgency.value !== 'DISA'"
               label="Organization name"
               class="input-max-width mb-10"
+              :value.sync="organizationName"
             />
 
             <ATATTextField
@@ -59,6 +61,7 @@
               label="DoD Activity Address Code (DoDAAC)"
               class="input-max-width"
               tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, activity, or organization that has the authority to requisition, contract for, or fund/pay bills for materials and services."
+              :value.sync="dodAddressCode"
             />
 
             <hr/>
@@ -83,6 +86,7 @@
                   id="StreetAddress"
                   label="Street address"
                   :class="inputClass"
+                  :value.sync="streetAddress1"
                 />
               </v-col>
               <v-col class="col-12 col-lg-3">
@@ -92,38 +96,41 @@
                   :optional="true"
                   :class="inputClass"
                   width="160px"
+                   :value.sync="streetAddress2"
                 />
               </v-col>
             </v-row>
             <v-row>
               <v-col 
                 class="col-12"
-                :class="[selectedAddressType !== 'FOR' ? 'col-lg-5' : 'col-lg-4']"
+                :class="[selectedAddressType !== AddressTypes.FOR ? 'col-lg-5' : 'col-lg-4']"
               >
                 <ATATTextField
-                  v-show="selectedAddressType !== 'MIL'"
+                  v-show="selectedAddressType !== AddressTypes.MIL"
                   id="City"
                   label="City"
                   :class="inputClass"
+                  :value.sync="city"
                 />
                 <ATATSelect
-                  v-show="selectedAddressType === 'MIL'"
+                  v-show="selectedAddressType === AddressTypes.MIL"
                   id="APO_FPO"
                   label="APO/FPO"
                   :class="inputClass"
                   :items="militaryPostOfficeOptions"
                   :selectedValue.sync="selectedMilitaryPO"
                   :returnObject="true"
+                  :value.sync="city"
                 />
               </v-col>
               <v-col 
                 class="col-12"
-                :class="[selectedAddressType !== 'FOR' ? 'col-lg-3' : 'col-lg-4']"
+                :class="[selectedAddressType !== AddressTypes.FOR ? 'col-lg-3' : 'col-lg-4']"
               >
                 <ATATAutoComplete
                   id="State"
                   label="State"
-                  v-show="selectedAddressType === 'USA'"
+                  v-show="selectedAddressType === AddressTypes.USA"
                   :class="inputClass"
                   titleKey="text"
                   :searchFields="['text', 'value']"
@@ -134,7 +141,7 @@
                 />
 
                 <ATATSelect
-                  v-show="selectedAddressType === 'MIL'"
+                  v-show="selectedAddressType === AddressTypes.FOR"
                   id="StateCode"
                   label="State code"
                   :class="inputClass"
@@ -144,7 +151,7 @@
                 />
 
                 <ATATTextField
-                  v-show="selectedAddressType === 'FOR'"
+                  v-show="selectedAddressType === AddressTypes.FOR"
                   id="StateProvince"
                   label="State or Province"
                   :class="inputClass"
@@ -156,10 +163,11 @@
                   :label="zipLabel"
                   :class="inputClass"
                   width="160px"
+                  :value.sync="zipCode"
                 />
               </v-col>
             </v-row>
-            <v-row v-show="selectedAddressType === 'FOR'">
+            <v-row v-show="selectedAddressType === AddressTypes.FOR">
               <v-col class="col-12 col-lg-4">
                 <ATATAutoComplete
                   id="Country"
@@ -205,8 +213,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch, Mixins } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
@@ -216,7 +225,10 @@ import ATATTextField from "../../components/ATATTextField.vue";
 
 import { RadioButton, SelectData } from "types/Global";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage from "@/store/acquisitionPackage"
+import { OrganizationDTO } from "@/models/OrganizationDTO";
+import { hasChanges } from "@/helpers";
+
 
 @Component({
   components: {
@@ -228,7 +240,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   }
 })
 
-export default class OrganizationInfo extends Vue {
+export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   
   // computed
 
@@ -241,25 +253,84 @@ export default class OrganizationInfo extends Vue {
   }
 
   // data
+      private AddressTypes = {
 
-  private selectedAddressType = "USA";
+      USA : "U.S.",
+      MIL: "Military",
+      FOR: "Foreign"
+  }
+
+  private organizationName="";
+  private dodAddressCode = "";
+  private selectedAddressType = this.AddressTypes.USA;
+  private streetAddress1 = "";
+  private streetAddress2 = "";
+  private city="";
+  private zipCode="";
   private showDialog = false;
+
+  private get current():OrganizationDTO {
+
+       const state = this.selectedAddressType === 
+       this.AddressTypes.USA ? this.selectedState.value  || "": this.selectedStateCode.value || "";
+
+       const data:OrganizationDTO = {
+             disa_organization: this.selectedDisaOrg.value || "",
+             organization_name: this.organizationName,
+             dodaac: this.dodAddressCode,
+             service_agency: this.selectedServiceOrAgency.value || "",
+             address_type : this.selectedAddressType,
+             street_address_1: this.streetAddress1,
+             street_address_2: this.streetAddress2,
+             city: this.city,
+             zip_code: this.zipCode,
+             state,
+             country: this.selectedCountry
+       }
+
+       console.log(data);
+
+       return data;
+  }
+
+  private get saved():OrganizationDTO{
+
+       const {disa_organization,organization_name, dodaac, service_agency, address_type, 
+       street_address_1, street_address_2, city, zip_code, state, country} 
+       = AcquisitionPackage.organization as OrganizationDTO;
+    return {
+
+             disa_organization,
+             organization_name,
+             dodaac,
+             service_agency,
+             address_type ,
+             street_address_1,
+             street_address_2,
+             city,
+             zip_code,
+             state,
+             country
+    }
+  }
+
+
 
   private addressTypeOptions: RadioButton[] = [
     {
       id: "USAddress",
       label: "U.S. address",
-      value: "USA",
+      value: "US",
     },
     {
       id: "MilitaryAddress",
       label: "Military",
-      value: "MIL",
+      value: "MILITARY",
     },
     {
       id: "ForeignAddress",
       label: "Foreign address",
-      value: "FOR",
+      value: "FOREIGN",
     },
   ];
 
@@ -285,17 +356,18 @@ export default class OrganizationInfo extends Vue {
   private selectedState: SelectData = { text: "", value: "" };
   private stateListData: SelectData[] = AcquisitionPackage.stateListData;
 
-  private selectedCountry = "US";
+  private selectedCountry = this.AddressTypes.USA;
   
   public countryListData: SelectData[] = [{ text: "", value: "" }]; 
   public async mounted(): Promise<void> {
     this.countryListData = await AcquisitionPackage.getCountryListData(["US"]);
+     await this.loadOnEnter();
   }
 
   // methods 
 
   private addressTypeChange(addressType: string): void {
-    this.selectedCountry = addressType === "FOR" ? "" : "US";
+    this.selectedCountry = addressType === this.AddressTypes.FOR ? "" : this.AddressTypes.USA;
   }
 
   // watchers
@@ -303,6 +375,83 @@ export default class OrganizationInfo extends Vue {
   @Watch("selectedServiceOrAgency")
   protected serviceOrAgencyChanged(newVal: SelectData): void {
     AcquisitionPackage.setSelectedServiceOrAgency(newVal);
+  }
+
+
+    public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadOrganization();
+
+    if (storeData) {
+       debugger;
+        const selectedAgencyIndex = 
+        this.serviceOrAgencyData.findIndex(svc=> svc.value === storeData.service_agency);
+
+        if(selectedAgencyIndex > -1){
+          this.selectedServiceOrAgency = this.serviceOrAgencyData[selectedAgencyIndex];
+        }
+        
+        const selectedDisaOrgIndx = this.disaOrgData.findIndex(org=> org.value 
+        === storeData.disa_organization);
+
+        if(selectedDisaOrgIndx){
+          this.selectedDisaOrg =this.disaOrgData[selectedDisaOrgIndx];
+        }
+
+        this.organizationName = storeData.organization_name;
+        this.dodAddressCode = storeData.dodaac;
+
+       const selectedAddressTypeIndx = this.addressTypeOptions.
+       findIndex(options=> options.value === storeData.address_type);
+
+        this.selectedAddressType = selectedAddressTypeIndx > -1  ?  
+        this.addressTypeOptions[selectedAddressTypeIndx].value : "";
+        this.streetAddress1 = storeData.street_address_1;
+        this.streetAddress2 = storeData.street_address_2;
+        this.city = storeData.city;
+
+        if(this.selectedAddressType === this.AddressTypes.USA){
+          const selectedStateIndex = this.stateListData.findIndex(state=> state.text === storeData.state);
+          if(selectedStateIndex > -1){
+            this.selectedState = this.stateCodeListData[selectedStateIndex];
+          }
+        }
+
+        if(this.selectedAddressType === this.AddressTypes.MIL){
+          const selectedStateCodeIndx = this.stateCodeListData.findIndex(state=> state.text == storeData.state);
+          if(selectedStateCodeIndx > -1)
+          {
+              this.selectedStateCode = this.stateCodeListData[selectedStateCodeIndx];
+          }
+        }
+
+
+        if(this.selectedAddressType === this.AddressTypes.FOR){
+           const selectedCountryIndx = this.countryListData.findIndex(country=> country.text === storeData.country);
+           if(selectedCountryIndx > -1){
+             this.selectedCountry = this.countryListData[selectedCountryIndx].value || '';
+           }
+        }
+
+        this.zipCode = storeData.zip_code;        
+        
+    }
+  }
+
+    private hasChanged(): boolean {
+    return hasChanges(this.current, this.saved);
+  }
+
+
+  protected async saveOnLeave(): Promise<boolean> {
+
+      try {
+         await AcquisitionPackage.saveOrganization(this.current);        
+      } catch (error) {
+      console.log(error);
+    }
+
+
+      return true;
   }
 
 }
