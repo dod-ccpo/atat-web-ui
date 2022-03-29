@@ -80,6 +80,7 @@ import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
 import {CountryObj} from "../../types/Global";
+import Instance = Inputmask.Instance;
 
 
 @Component({
@@ -327,18 +328,19 @@ export default class ATATPhoneInput extends Vue {
     this.searchResults = this.countries;
   };
 
-  private phoneMask(val: string): void {
+  private phoneMask(val: string): Inputmask.Instance {
     this._value = val;
     switch (this.selectedValue.abbreviation) {
       case "us":
         return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
-          .mask(document.getElementById(this.id + '_textField'));
+          .mask(document.getElementById(this.id + '_textField') as HTMLElement);
       case 'dsn':
         this._value = this.selectedValue.countryCode + val;
         return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
-          .mask(document.getElementById(this.id + '_textField'));
+          .mask(document.getElementById(this.id + '_textField') as HTMLElement);
       default:
-        return Inputmask.remove(document.getElementById(this.id + '_textField'));
+        return Inputmask('*{20}',{placeholder:'', jitMasking: true})
+          .mask(document.getElementById(this.id + '_textField') as HTMLElement)
     };
   };
 
