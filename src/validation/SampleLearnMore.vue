@@ -13,7 +13,7 @@
       andouille ribeye doner tongue, biltong pig. Biltong t-bone jerky ribeye, pastrami burgdoggen 
       fatback kielbasa pork belly. Pork turkey jowl andouille hamburger.
     </p>
-    <!-- <expandable-link aria-id="ContactFAQ2">
+    <ATATExpandableLink aria-id="ContactFAQ2">
       <template v-slot:header>
         Why can’t I update my profile in ATAT?
       </template>
@@ -33,7 +33,7 @@
           websites.
         </p>
       </template>
-    </expandable-link> -->
+    </ATATExpandableLink>
     <p>
       Burgdoggen beef sirloin shank doner leberkas biltong ball tip pork belly bresaola ham cupim 
       andouille beef ribs picanha. Cupim biltong t-bone, jerky filet mignon meatball cow buffalo 
@@ -57,11 +57,11 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-// import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
 @Component({
   components: {
-    // ATATExpandableLink,
+    ATATExpandableLink,
   }
 })
 
