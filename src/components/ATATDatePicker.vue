@@ -4,11 +4,12 @@
     :id="id + 'DatePickerContainer'" 
     class="atat-date-picker">
     <v-menu
-      ref="date-picker-menu"
+      ref="atatDatePickerMenu"
       v-model="menu"
       :close-on-content-click="false"
       min-width="auto"
       nudge-bottom="getMenuTop"
+      :return-value.sync="date"
       :attach="'#' + id + 'DatePickerContainer'"
       absolute
       :nudge-top="0"
@@ -46,11 +47,10 @@
           v-bind="attrs"
           v-on="on"
           :rules="rules"
-          validate-on-blur
-          @blur = "onBlur"
+          @blur="onBlur"  
           @update:error="setErrorMessage"
         >
-        <!-- todo:  validate-on-blur -->
+          <!--    -->
           <template slot="append-outer">
             <v-btn
               icon
@@ -76,7 +76,7 @@
         no-title
         :min="min"
         :max="max"
-        @click:date="datePickerClick"
+        @click:date="datePickerClicked"
         scrollable
       ></v-date-picker>
     </v-menu>
@@ -101,6 +101,7 @@ export default class ATATDatePicker extends Vue {
   // refs
   $refs!: {
     atatDatePicker: Vue & { errorBucket: string[]; errorCount: number };
+    atatDatePickerMenu: Vue & {save: ((selectedDate: string )=>Record<string, never>)};
   };
 /**
  * key in/tab off no error only red outlined
@@ -142,16 +143,20 @@ export default class ATATDatePicker extends Vue {
    * EVENTS
    */
 
-  private onBlur() : void {
-    
-    if (isValid(new Date(this.dateFormatted))){
-       this.date = this.reformatDate(this.dateFormatted)
-       this.updateDateProperty();
-    }
-    Vue.nextTick(()=>{
-      this.setErrorMessage();
-    }) 
-  }
+  private onBlur(event: Event) : void {
+    console.log(event);
+    // if (!this.menu) {
+      if (isValid(new Date(this.dateFormatted))){
+        this.date = this.reformatDate(this.dateFormatted)
+        this.updateDateProperty();
+      }
+      Vue.nextTick(()=>{
+        this.setErrorMessage();
+      })
+    // } else {
+
+    // }
+}
 
   /**
    * emits 'update:date' value when dp is clicked or
@@ -163,16 +168,21 @@ export default class ATATDatePicker extends Vue {
     }
   }
 
-  private datePickerClick(selectedDate: string){
-    this.dateFormatted = this.reformatDate(selectedDate);
-    this.date = this.reformatDate(selectedDate);
+
+private datePickerClicked(selectedDate: string){
+    this.$refs.atatDatePickerMenu.save(selectedDate); 
     this.updateDateProperty();
-    Vue.nextTick(()=>{
-      this.setErrorMessage();
-    })
-    
-   
-  }
+}
+
+  // private datePickerClick(selectedDate: string){
+    // debugger;
+    // this.dateFormatted = this.reformatDate(selectedDate);
+    // this.date = selectedDate;
+    // this.updateDateProperty();
+    // Vue.nextTick(()=>{
+    //   this.setErrorMessage();
+    // }) 
+  // }
 
   /**
    * FUNCTIONS
@@ -231,6 +241,7 @@ export default class ATATDatePicker extends Vue {
 
   private async setErrorMessage(): Promise<void> {
     this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
+    // this.menu = this.errorMessages.length === 0;
     console.log(this.errorMessages)
   }
 
@@ -239,6 +250,7 @@ export default class ATATDatePicker extends Vue {
    */
   private mounted(): void {
     this.addMasks();
+    this.$refs.atatDatePicker.errorBucket =[];
   }
 }
 </script>

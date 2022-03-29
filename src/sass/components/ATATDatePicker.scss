@@ -14,6 +14,7 @@
     
       .v-picker__body {
         width: 308px !important;
+        height: 346px !important;
         @extend %text-base-darkest;
         padding: 12px 0px;
 
@@ -65,9 +66,7 @@
                 width: 39px;
                 height: 38px;
                 &.v-btn--disabled {
-                  .v-btn__content {
-                    color: $disabled-dark;
-                  }
+                    color: $disabled-dark !important;
                 }
                 &.v-btn--active.accent,
                 &.v-btn--active.accent:hover,
