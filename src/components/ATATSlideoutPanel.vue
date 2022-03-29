@@ -8,12 +8,13 @@
     :temporary="showOverlay"
     permanent
     right
-    :style="{
+  >
+      <!-- :style="{
       height: getHeight,
       'max-height': getHeight,
       'min-height': getHeight,
-    }"
-  >
+    }" -->
+
     <div class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
         {{ panelTitle }} 
@@ -51,11 +52,11 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 export default class ATATSlideoutPanel extends Vue {
   @Prop({ default: "380" }) private drawerWidth!: string;
-  private clientHeight = document.getElementById("right-side-drawer")?.clientHeight;
-  private offsetHeight = document.getElementById("right-side-drawer")?.offsetHeight;
-  private appNavBarHeight = 0;
-  private drawerHeaderHeight = 0;
-  private drawerBottomMargin = 117;
+  // private clientHeight = document.getElementById("right-side-drawer")?.clientHeight;
+  // private offsetHeight = document.getElementById("right-side-drawer")?.offsetHeight;
+  // private appNavBarHeight = 0;
+  // private drawerHeaderHeight = 0;
+  // private drawerBottomMargin = 117;
 
   get panelTitle(): string {
     return SlideoutPanel.slideoutPanelTitle;
@@ -63,9 +64,9 @@ export default class ATATSlideoutPanel extends Vue {
   /*
    * returns height of window.innerHeight in pixels
    */
-  get getHeight(): string {
-    return window.innerHeight + "px";
-  }
+  // get getHeight(): string {
+  //   return window.innerHeight + "px";
+  // }
 
   /*
    * > adds click event listener to overlay if Displayed
@@ -121,11 +122,11 @@ export default class ATATSlideoutPanel extends Vue {
    * subtracts nonScrollableHeight & drawerHeight
    * window.innerHeight to determine scrollableDiv within drawer
    */
-  private setScrollableDivHeight(nonScrollableHeight: number): number {
-    nonScrollableHeight = nonScrollableHeight || 0;
-    const scrollableDivHeight = window.innerHeight - nonScrollableHeight - this.drawerHeaderHeight;
-    return scrollableDivHeight;
-  }
+  // private setScrollableDivHeight(nonScrollableHeight: number): number {
+  //   nonScrollableHeight = nonScrollableHeight || 0;
+  //   const scrollableDivHeight = window.innerHeight - nonScrollableHeight - this.drawerHeaderHeight;
+  //   return scrollableDivHeight;
+  // }
   // close drawer event
   private closeSlideoutPanel(): void {
     SlideoutPanel.closeSlideoutPanel();

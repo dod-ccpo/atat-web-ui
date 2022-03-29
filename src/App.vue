@@ -2,7 +2,6 @@
   <v-app>
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
 
-    <!-- <ATATSlideoutPanel v-bind:is="currentSlideoutPanelComponent" /> -->
     <ATATSlideoutPanel>
       <component :is="slideoutPanelComponent"></component>
     </ATATSlideoutPanel>
@@ -69,11 +68,6 @@ export default class App extends Vue {
     this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
   }
 
-  // @Watch("slideoutPanelComponent")
-  // public onSlideoutPanelComponentChange(c: unknown): void {
-  //   debugger;
-  // }
-
   @Watch("$route")
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
@@ -83,6 +77,8 @@ export default class App extends Vue {
       const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
+      
+      SlideoutPanel.closeSlideoutPanel();
       this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
     }
   }
@@ -95,19 +91,6 @@ export default class App extends Vue {
     if (nextStepName) {
       this.$router.push({name: nextStepName});
     }
-  }
-
-  getCurrentStepMenuText(): string | undefined {
-    let label = Steps.currentStep?.stepLabel;
-    // temporarily transform the 'project overview' and 'project scope'
-    // titles to 'demo package'
-    let demoPackage = ["project overview", "project scope"];
-
-    if (demoPackage.some((dp) => dp === (label && label.toLowerCase()))) {
-      label = "Demo Package";
-    }
-
-    return label;
   }
 
   public get projectTitle(): string {

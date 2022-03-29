@@ -1,6 +1,5 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
+    <v-container fluid class="container-max-width mb-7">
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">Tell us more about the scope of your project</h1>
@@ -39,8 +38,11 @@
 
         </v-col>
       </v-row>
+      <a class="d-block mt-10" role="button" id="SlideoutPanelOpener" tabindex="0" @click="openSlideoutPanel">
+        Learn more
+      </a>
+
     </v-container>
-  </div>
 </template>
 
 <script lang="ts">
@@ -84,5 +86,13 @@ export default class ProjectScope extends Vue {
     
     return validationRules; 
   }
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
 }
 </script>

@@ -57,7 +57,7 @@
           </div>
         </v-col>
       </v-row>
-      <a role="button" id="SlideoutPanelOpener" tabindex="0" @click="openSlideoutPanel">
+      <a class="d-block mt-10" role="button" id="SlideoutPanelOpener" tabindex="0" @click="openSlideoutPanel">
         Learn more
       </a>
     </v-container>
