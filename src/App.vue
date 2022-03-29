@@ -2,7 +2,7 @@
   <v-app>
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
 
-    <ATATSlideoutPanel>
+    <ATATSlideoutPanel v-if="hasSlideoutPanelComponent">
       <component :is="slideoutPanelComponent"></component>
     </ATATSlideoutPanel>
 
@@ -52,6 +52,12 @@ export default class App extends Vue {
 
   public slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
 
+  public hasSlideoutPanelComponent = false;
+  @Watch("slideoutPanelComponent")
+  public onSlideoutPanelComponentChange(c: unknown): void {
+    this.hasSlideoutPanelComponent = c !== undefined ? true : false;
+  }
+
   private stepperData = buildStepperData();
 
   async mounted(): Promise<void> {
@@ -64,7 +70,7 @@ export default class App extends Vue {
       Steps.setCurrentStep(stepName);
     }
     await AcquisitionPackage.initialize();
-
+    
     this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
   }
 

@@ -57,9 +57,6 @@
           </div>
         </v-col>
       </v-row>
-      <a class="d-block mt-10" role="button" id="SlideoutPanelOpener" tabindex="0" @click="openSlideoutPanel">
-        Learn more
-      </a>
     </v-container>
   </v-form>
 </template>
@@ -75,16 +72,11 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { RadioButton } from "types/Global";
 
-import SampleLearnMore from "./SampleLearnMore.vue";
-import SlideoutPanel from "@/store/slideoutPanel/index";
-import { SlideoutPanelContent } from "types/Global";
-
 @Component({
   components: {
     ATATTextField,
     ATATTextArea,
     ATATRadioGroup,
-    SampleLearnMore,
   },
 })
 export default class ProjectOverview extends Vue {
@@ -129,20 +121,5 @@ export default class ProjectOverview extends Vue {
     this.projectTitle = this.currentTitle;
   }
 
-  public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
-    }
-  }
-
-  public async mounted(): Promise<void> {
-    // await this.validateForm();
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: SampleLearnMore,
-      title: "Learn More 1",
-    }
-    SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-  }
 }
 </script>

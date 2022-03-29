@@ -13,16 +13,13 @@ import { SlideoutPanelContent } from "types/Global";
 export class SlideoutPanelStore extends VuexModule {
   
   slideoutPanelIsOpen = false;
-  slideoutPanelOpenerId = ""; // for 508 return focus. set when link clicked to open panel
-
-  // can we watch change on slideoutPanelIsOpen instead?
-  // slideoutPanelToggle = false; // used to focus for 508 when opened/closed
+  // slideoutPanelOpenerId for 508 return focus. set when link clicked to open panel
+  slideoutPanelOpenerId = ""; 
   slideoutPanelTitle = "";
-
-  slideoutPanelComponent?: Component = {};
+  slideoutPanelComponent: Component = {};
 
   @Action
-  public setSlideoutPanelComponent(panelContent: SlideoutPanelContent): void {
+  async setSlideoutPanelComponent(panelContent: SlideoutPanelContent): Promise<void> {
     this.doSetSlideoutPanelComponent(panelContent);
   }
 
@@ -39,7 +36,6 @@ export class SlideoutPanelStore extends VuexModule {
   @Mutation
   public doCloseSlideoutPanel(): void {
     this.slideoutPanelIsOpen = false;
-    // this.slideoutPanelToggle = !this.slideoutPanelToggle;
   }
 
   @Action
@@ -51,7 +47,6 @@ export class SlideoutPanelStore extends VuexModule {
   public doOpenSlideoutPanel(openerId: string): void {
     this.slideoutPanelIsOpen = true;
     this.slideoutPanelOpenerId = openerId;
-    // this.slideoutPanelToggle = !this.slideoutPanelToggle;
   }
 
 }

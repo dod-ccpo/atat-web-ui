@@ -1,20 +1,13 @@
 <template>
   <v-navigation-drawer
-    v-if="isSlideoutPanelOpen"
-    transition="slide-x-reverse-transition"
-    :width="drawerWidth + 'px'"
     id="SlideoutPanel"
+    v-model="isSlideoutPanelOpen"
+    transition="slide-x-reverse-transition"
+    :width="panelWidth + 'px'"
     app
-    :temporary="showOverlay"
-    permanent
     right
+    :temporary="showOverlay"
   >
-      <!-- :style="{
-      height: getHeight,
-      'max-height': getHeight,
-      'min-height': getHeight,
-    }" -->
-
     <div class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
         {{ panelTitle }} 
@@ -24,8 +17,8 @@
         text
         small
         @click.stop="closeSlideoutPanel"
-        ref="drawerCloserRef"
-        id="drawerCloser"
+        ref="panelCloserRef"
+        id="PanelCloser"
         :ripple="false"
         aria-label="Close panel"
       >
@@ -33,7 +26,7 @@
       </v-btn>
     </div>
 
-    <div class="_panel-content-wrap">
+    <div class="_panel-content-wrap" v-if="panelTitle">
       <slot></slot>
     </div>
 
@@ -45,32 +38,22 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-@Component({
-  components: {
-  },
-})
+@Component({})
 
 export default class ATATSlideoutPanel extends Vue {
-  @Prop({ default: "380" }) private drawerWidth!: string;
-  // private clientHeight = document.getElementById("right-side-drawer")?.clientHeight;
-  // private offsetHeight = document.getElementById("right-side-drawer")?.offsetHeight;
-  // private appNavBarHeight = 0;
-  // private drawerHeaderHeight = 0;
-  // private drawerBottomMargin = 117;
+  @Prop({ default: "380" }) private panelWidth!: string;
 
   get panelTitle(): string {
     return SlideoutPanel.slideoutPanelTitle;
   }
+  
+  private isOpen = false;
+  set isSlideoutPanelOpen(isOpen: boolean) {
+    this.isOpen = isOpen;
+  }
   /*
-   * returns height of window.innerHeight in pixels
-   */
-  // get getHeight(): string {
-  //   return window.innerHeight + "px";
-  // }
-
-  /*
-   * > adds click event listener to overlay if Displayed
-   * > return isSlideoutPanelOpen
+   * adds click event listener to overlay if Displayed
+   * return isSlideoutPanelOpen 
    */
   get isSlideoutPanelOpen(): boolean {
     const _isSlideoutPanelOpen = SlideoutPanel.slideoutPanelIsOpen;
@@ -97,9 +80,9 @@ export default class ATATSlideoutPanel extends Vue {
     return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
   }
 
-  /* A watcher used to set focus on the opener when the side drawer is changed.
-   * When drawer is closed, return focus to opener. If opener is no longer in the DOM, focus on first h1.
-   * When drawer is opened, set focus to panel title.
+  /* A watcher used to set focus on the opener when the slideout panel is toggled.
+   * When panel is closed, return focus to opener. If opener is no longer in the DOM, focus on first h1.
+   * When panel is opened, set focus to panel title.
    */
   @Watch("isSlideoutPanelOpen")
   slideoutPanelToggle(isOpen: boolean): void {
@@ -118,16 +101,6 @@ export default class ATATSlideoutPanel extends Vue {
     });
   }
 
-  /*
-   * subtracts nonScrollableHeight & drawerHeight
-   * window.innerHeight to determine scrollableDiv within drawer
-   */
-  // private setScrollableDivHeight(nonScrollableHeight: number): number {
-  //   nonScrollableHeight = nonScrollableHeight || 0;
-  //   const scrollableDivHeight = window.innerHeight - nonScrollableHeight - this.drawerHeaderHeight;
-  //   return scrollableDivHeight;
-  // }
-  // close drawer event
   private closeSlideoutPanel(): void {
     SlideoutPanel.closeSlideoutPanel();
   }

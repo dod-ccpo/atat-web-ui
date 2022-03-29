@@ -38,10 +38,6 @@
 
         </v-col>
       </v-row>
-      <a class="d-block mt-10" role="button" id="SlideoutPanelOpener" tabindex="0" @click="openSlideoutPanel">
-        Learn more
-      </a>
-
     </v-container>
 </template>
 
@@ -52,29 +48,13 @@ import { Component } from "vue-property-decorator";
 import ATATAlert from "../../components/ATATAlert.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
-import SampleLearnMore2 from "./SampleLearnMore2.vue";
-import SlideoutPanel from "@/store/slideoutPanel/index";
-import { SlideoutPanelContent } from "types/Global";
-
-
 @Component({
   components: {
     ATATAlert,
     ATATTextField,
-    SampleLearnMore2,
   },
 })
 export default class ProjectScope extends Vue {
-
-  public mounted(): void {
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: SampleLearnMore2,
-      title: "Learn More 2",
-    }
-
-    SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-  }
-
   get contractPricePercentageRules(): unknown[] {
     const validationRules = [];
     validationRules.push(
@@ -85,13 +65,6 @@ export default class ProjectScope extends Vue {
     );
     
     return validationRules; 
-  }
-
-  public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
-    }
   }
 
 }
