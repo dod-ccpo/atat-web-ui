@@ -52,6 +52,7 @@ import ATATTextField from "../../components/ATATTextField.vue";
 
 import SampleLearnMore2 from "./SampleLearnMore2.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
+import { SlideoutPanelContent } from "types/Global";
 
 
 @Component({
@@ -64,7 +65,12 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 export default class ProjectScope extends Vue {
 
   public mounted(): void {
-    SlideoutPanel.setSlideoutPanelComponent(SampleLearnMore2);
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: SampleLearnMore2,
+      title: "Learn More 2",
+    }
+
+    SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
 
   get contractPricePercentageRules(): unknown[] {

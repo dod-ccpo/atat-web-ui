@@ -1,6 +1,7 @@
 import { Component } from "vue";
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
+import { SlideoutPanelContent } from "types/Global";
 
 @Module({
   name: 'SlideoutPanel',
@@ -13,41 +14,44 @@ export class SlideoutPanelStore extends VuexModule {
   
   slideoutPanelIsOpen = false;
   slideoutPanelOpenerId = ""; // for 508 return focus. set when link clicked to open panel
-  slideoutPanelChange = false; // used to focus for 508 when opened/closed
+
+  // can we watch change on slideoutPanelIsOpen instead?
+  // slideoutPanelToggle = false; // used to focus for 508 when opened/closed
+  slideoutPanelTitle = "";
 
   slideoutPanelComponent?: Component = {};
 
-  @Mutation
-  public doSetSlideoutPanelComponent(c: Component): void {
-    this.slideoutPanelComponent = c;
-  }
   @Action
-  public setSlideoutPanelComponent(c: Component): void {
-    this.doSetSlideoutPanelComponent(c);
-  }
-
-  // MUTATIONS from old ATAT
-  @Mutation
-  public doCloseSideDrawer(): void {
-    this.slideoutPanelIsOpen = false;
-    this.slideoutPanelChange = !this.slideoutPanelChange;
+  public setSlideoutPanelComponent(panelContent: SlideoutPanelContent): void {
+    this.doSetSlideoutPanelComponent(panelContent);
   }
 
   @Mutation
-  public doOpenSideDrawer(openerId: string): void {
-    this.slideoutPanelIsOpen = true;
-    this.slideoutPanelOpenerId = openerId;
-    this.slideoutPanelChange = !this.slideoutPanelChange;
+  public doSetSlideoutPanelComponent(panelContent: SlideoutPanelContent): void {
+    this.slideoutPanelComponent = panelContent.component;
+    this.slideoutPanelTitle = panelContent.title;
   }
 
   @Action 
-  public closeSideDrawer(): void {
-    this.doCloseSideDrawer();
+  public closeSlideoutPanel(): void {
+    this.doCloseSlideoutPanel();
+  }
+  @Mutation
+  public doCloseSlideoutPanel(): void {
+    this.slideoutPanelIsOpen = false;
+    // this.slideoutPanelToggle = !this.slideoutPanelToggle;
   }
 
   @Action
-  public openSideDrawer(openerId: string): void {
-    this.doOpenSideDrawer(openerId);
+  public openSlideoutPanel(openerId: string): void {
+    this.doOpenSlideoutPanel(openerId);
+  }
+
+  @Mutation
+  public doOpenSlideoutPanel(openerId: string): void {
+    this.slideoutPanelIsOpen = true;
+    this.slideoutPanelOpenerId = openerId;
+    // this.slideoutPanelToggle = !this.slideoutPanelToggle;
   }
 
 }

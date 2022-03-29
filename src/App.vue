@@ -3,7 +3,7 @@
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
 
     <!-- <ATATSlideoutPanel v-bind:is="currentSlideoutPanelComponent" /> -->
-    <ATATSlideoutPanel :key="pKey">
+    <ATATSlideoutPanel>
       <component :is="slideoutPanelComponent"></component>
     </ATATSlideoutPanel>
 
@@ -52,7 +52,6 @@ export default class App extends Vue {
   };
 
   public slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
-  public pKey = "a";
 
   private stepperData = buildStepperData();
 

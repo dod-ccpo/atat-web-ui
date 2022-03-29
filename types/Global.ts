@@ -1,3 +1,4 @@
+import { Component } from "vue";
 import { RouteConfigMultipleViews, 
     RouteConfigSingleView } from "vue-router/types/router";
 
@@ -89,4 +90,9 @@ export interface Checkbox {
   label: string;
   value: string;
   description?: string;
+}
+
+export interface SlideoutPanelContent {
+    component: Component;
+    title: string;
 }
