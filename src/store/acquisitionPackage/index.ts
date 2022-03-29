@@ -12,6 +12,7 @@ import { AutoCompleteItemGroups, SelectData } from "types/Global";
 import { SessionData } from "./models";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { OrganizationDTO } from "@/models/OrganizationDTO";
+import { ContactDTO } from "@/models/ContactDTO";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 const initialProjectOverview = () => {
@@ -40,21 +41,36 @@ const initialOrganization = () => {
   };
 };
 
-const saveSessionData = ({
-  acquisitionPackage,
-  projectOverview,
-  organization,
-}: {
-  acquisitionPackage: AcquisitionPackageDTO;
-  projectOverview: ProjectOverviewDTO;
-  organization: OrganizationDTO;
-}) => {
+const initialContact=()=>{
+
+     return {
+      type: "",
+      can_access_package: "",
+      phone: "",
+      rank: "",
+      salutation: "",
+      first_name: "",
+      email: "",
+      grade_civ: "",
+      grade_mil: "",
+      role: "",
+      dodaac: "",
+      last_name: "",
+      middle_name: "",
+      suffix: "",
+     }
+}
+
+
+const saveSessionData = (
+    store:AcquisitionPackageStore) => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
     JSON.stringify({
-      acquisitionPackage,
-      projectOverview,
-      organization,
+      acquisitionPackage: store.acquisitionPackage,
+      projectOverview: store.projectOverview,
+      organization: store.organization,
+      contactInfo: store.contactInfo,
     })
   );
 };
@@ -78,6 +94,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acquisitionPackage: AcquisitionPackageDTO | null = null;
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
+  contactInfo:ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
 
   public getTitle(): string {
@@ -99,6 +116,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setAcquisitionPackage(value: AcquisitionPackageDTO): void {
     this.acquisitionPackage = value;
+    saveSessionData(this);
   }
 
   @Mutation
@@ -109,6 +127,11 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setOrganization(value: OrganizationDTO): void {
     this.organization = value;
+  }
+
+  @Mutation
+  public setContact(value: ContactDTO): void {
+    this.contactInfo = value;
   }
 
   @Mutation
@@ -141,14 +164,10 @@ export class AcquisitionPackageStore extends VuexModule {
       try {
         const acquisitionPackage = await api.acquisitionPackageTable.create();
         if (acquisitionPackage) {
-          this.setAcquisitionPackage(acquisitionPackage);
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
-          saveSessionData({
-            acquisitionPackage,
-            projectOverview: this.projectOverview as ProjectOverviewDTO,
-            organization: this.organization as OrganizationDTO,
-          });
+          this.setContact(initialContact());
+          this.setAcquisitionPackage(acquisitionPackage);
           this.setInitialized(true);
         }
       } catch (error) {
@@ -1661,12 +1680,6 @@ export class AcquisitionPackageStore extends VuexModule {
           ...this.acquisitionPackage,
           project_overview: projectSysId,
         } as AcquisitionPackageDTO);
-
-        saveSessionData({
-          acquisitionPackage: this.acquisitionPackage as AcquisitionPackageDTO,
-          projectOverview: this.projectOverview as ProjectOverviewDTO,
-          organization: this.organization as OrganizationDTO,
-        });
       }
       return this.projectOverview as ProjectOverviewDTO;
     } catch (error) {
@@ -1693,11 +1706,6 @@ export class AcquisitionPackageStore extends VuexModule {
         ...this.acquisitionPackage,
         project_overview: savedProjectOverview.sys_id,
       } as AcquisitionPackageDTO);
-      saveSessionData({
-        acquisitionPackage: this.acquisitionPackage as AcquisitionPackageDTO,
-        projectOverview: this.projectOverview as ProjectOverviewDTO,
-        organization: this.organization as OrganizationDTO,
-      });
     } catch (error) {
       throw new Error(`error occurred saving project overview ${error}`);
     }
@@ -1719,12 +1727,6 @@ export class AcquisitionPackageStore extends VuexModule {
           ...this.acquisitionPackage,
           organization: sys_id,
         } as AcquisitionPackageDTO);
-
-        saveSessionData({
-          acquisitionPackage: this.acquisitionPackage as AcquisitionPackageDTO,
-          projectOverview: this.projectOverview as ProjectOverviewDTO,
-          organization: this.organization as OrganizationDTO,
-        });
       }
       return this.organization as OrganizationDTO;
     } catch (error) {
@@ -1748,11 +1750,31 @@ export class AcquisitionPackageStore extends VuexModule {
         ...this.acquisitionPackage,
         organization: sys_id,
       } as AcquisitionPackageDTO);
-      saveSessionData({
-        acquisitionPackage: this.acquisitionPackage as AcquisitionPackageDTO,
-        projectOverview: this.projectOverview as ProjectOverviewDTO,
-        organization: savedOrganization,
-      });
+    } catch (error) {
+      throw new Error(`error occurred saving project overview ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  async loadContactInfo():Promise<ContactDTO>{
+
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.contactInfo?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const contactInfo = await api.contactsTable.retrieve(
+          sys_id as string
+        );
+        this.setContact(contactInfo);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          contact: sys_id,
+        } as AcquisitionPackageDTO);
+
+      }
+      return this.contactInfo as ContactDTO;
     } catch (error) {
       throw new Error(`error occurred saving project overview ${error}`);
     }
