@@ -106,7 +106,7 @@
                 :class="[selectedAddressType !== AddressTypes.FOR ? 'col-lg-5' : 'col-lg-4']"
               >
                 <ATATTextField
-                  v-show="selectedAddressType !== AddressTypes.MIL"
+                  v-show="selectedAddressType == AddressTypes.USA"
                   id="City"
                   label="City"
                   :class="inputClass"
@@ -120,7 +120,6 @@
                   :items="militaryPostOfficeOptions"
                   :selectedValue.sync="selectedMilitaryPO"
                   :returnObject="true"
-                  :value.sync="city"
                 />
               </v-col>
               <v-col 
@@ -141,7 +140,7 @@
                 />
 
                 <ATATSelect
-                  v-show="selectedAddressType === AddressTypes.FOR"
+                  v-show="selectedAddressType === AddressTypes.MIL"
                   id="StateCode"
                   label="State code"
                   :class="inputClass"
@@ -154,6 +153,7 @@
                   v-show="selectedAddressType === AddressTypes.FOR"
                   id="StateProvince"
                   label="State or Province"
+                  :value.sync="stateOrProvince"
                   :class="inputClass"
                 />
               </v-col>
@@ -176,7 +176,7 @@
                   titleKey="text"
                   :searchFields="['text', 'value']"
                   :items="countryListData"
-                  :selectedItem.sync="selectedCountry"
+                  :selectedItem.sync="selectedCountryData"
                   placeholder=""
                   icon="arrow_drop_down"
                 />
@@ -255,9 +255,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // data
       private AddressTypes = {
 
-      USA : "U.S.",
-      MIL: "Military",
-      FOR: "Foreign"
+      USA : "US",
+      MIL: "MILITARY",
+      FOR: "FOREIGN"
   }
 
   private organizationName="";
@@ -267,12 +267,30 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private streetAddress2 = "";
   private city="";
   private zipCode="";
+  private stateOrProvince="";
+  private country="";
   private showDialog = false;
 
   private get current():OrganizationDTO {
 
-       const state = this.selectedAddressType === 
-       this.AddressTypes.USA ? this.selectedState.value  || "": this.selectedStateCode.value || "";
+      let state = "";
+      let city = this.city;
+      let country = this.country;
+
+      if(this.selectedAddressType == this.AddressTypes.USA){
+          state = this.selectedState.value as string;
+      }
+
+      if(this.selectedAddressType == this.AddressTypes.FOR){
+        state = this.stateOrProvince;
+        country = this.selectedCountryData.text;
+      }
+
+      
+      if(this.selectedAddressType == this.AddressTypes.MIL){
+        state = this.selectedStateCode.value as string;
+        city = this.selectedMilitaryPO.value as string;
+      }
 
        const data:OrganizationDTO = {
              disa_organization: this.selectedDisaOrg.value || "",
@@ -282,13 +300,11 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
              address_type : this.selectedAddressType,
              street_address_1: this.streetAddress1,
              street_address_2: this.streetAddress2,
-             city: this.city,
+             city,
              zip_code: this.zipCode,
              state,
-             country: this.selectedCountry
+             country
        }
-
-       console.log(data);
 
        return data;
   }
@@ -320,17 +336,17 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     {
       id: "USAddress",
       label: "U.S. address",
-      value: "US",
+      value: this.AddressTypes.USA,
     },
     {
       id: "MilitaryAddress",
-      label: "Military",
-      value: "MILITARY",
+      label: "Military (APO or FPO)",
+      value: this.AddressTypes.MIL,
     },
     {
       id: "ForeignAddress",
       label: "Foreign address",
-      value: "FOREIGN",
+      value: this.AddressTypes.FOR,
     },
   ];
 
@@ -357,6 +373,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private stateListData: SelectData[] = AcquisitionPackage.stateListData;
 
   private selectedCountry = this.AddressTypes.USA;
+  private selectedCountryData: SelectData= {text: "", value:""};
   
   public countryListData: SelectData[] = [{ text: "", value: "" }]; 
   public async mounted(): Promise<void> {
@@ -382,7 +399,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage.loadOrganization();
 
     if (storeData) {
-       debugger;
+       
         const selectedAgencyIndex = 
         this.serviceOrAgencyData.findIndex(svc=> svc.value === storeData.service_agency);
 
@@ -393,7 +410,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
         const selectedDisaOrgIndx = this.disaOrgData.findIndex(org=> org.value 
         === storeData.disa_organization);
 
-        if(selectedDisaOrgIndx){
+        if(selectedDisaOrgIndx > -1){
           this.selectedDisaOrg =this.disaOrgData[selectedDisaOrgIndx];
         }
 
@@ -404,20 +421,26 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
        findIndex(options=> options.value === storeData.address_type);
 
         this.selectedAddressType = selectedAddressTypeIndx > -1  ?  
-        this.addressTypeOptions[selectedAddressTypeIndx].value : "";
+        this.addressTypeOptions[selectedAddressTypeIndx].value : this.AddressTypes.USA;
         this.streetAddress1 = storeData.street_address_1;
         this.streetAddress2 = storeData.street_address_2;
         this.city = storeData.city;
+        
 
         if(this.selectedAddressType === this.AddressTypes.USA){
-          const selectedStateIndex = this.stateListData.findIndex(state=> state.text === storeData.state);
+          const selectedStateIndex = this.stateListData.findIndex(state=> state.value === storeData.state);
           if(selectedStateIndex > -1){
-            this.selectedState = this.stateCodeListData[selectedStateIndex];
+            this.selectedState = this.stateListData[selectedStateIndex];
           }
         }
 
         if(this.selectedAddressType === this.AddressTypes.MIL){
-          const selectedStateCodeIndx = this.stateCodeListData.findIndex(state=> state.text == storeData.state);
+
+         const selectedMilitaryPoIndx = this.militaryPostOfficeOptions.findIndex(po=> po.value === this.city);
+         if(selectedMilitaryPoIndx > -1){
+           this.selectedMilitaryPO = this.militaryPostOfficeOptions[selectedMilitaryPoIndx];
+         }
+          const selectedStateCodeIndx = this.stateCodeListData.findIndex(state=> state.value == storeData.state);
           if(selectedStateCodeIndx > -1)
           {
               this.selectedStateCode = this.stateCodeListData[selectedStateCodeIndx];
@@ -426,10 +449,13 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
 
         if(this.selectedAddressType === this.AddressTypes.FOR){
+          debugger;
            const selectedCountryIndx = this.countryListData.findIndex(country=> country.text === storeData.country);
            if(selectedCountryIndx > -1){
-             this.selectedCountry = this.countryListData[selectedCountryIndx].value || '';
+             this.selectedCountryData = this.countryListData[selectedCountryIndx];
+             this.selectedCountry = this.selectedCountryData.text;
            }
+           this.stateOrProvince = storeData.state;
         }
 
         this.zipCode = storeData.zip_code;        

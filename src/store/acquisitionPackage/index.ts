@@ -144,6 +144,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.acquisitionPackage = sessionData.acquisitionPackage;
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
+    this.contactInfo = sessionData.contactInfo;
   }
 
   @Action({ rawError: true })
