@@ -78,7 +78,7 @@ import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import Inputmask from "inputmask";
+import Inputmask from "inputmask/";
 import {CountryObj} from "../../types/Global";
 
 
