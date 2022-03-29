@@ -9,7 +9,7 @@
       :close-on-content-click="false"
       min-width="auto"
       nudge-bottom="getMenuTop"
-      :return-value.sync="date"
+  
       :attach="'#' + id + 'DatePickerContainer'"
       absolute
       :nudge-top="0"
@@ -50,7 +50,6 @@
           @blur="onBlur"  
           @update:error="setErrorMessage"
         >
-          <!--    -->
           <template slot="append-outer">
             <v-btn
               icon
@@ -143,19 +142,14 @@ export default class ATATDatePicker extends Vue {
    * EVENTS
    */
 
-  private onBlur(event: Event) : void {
-    console.log(event);
-    // if (!this.menu) {
-      if (isValid(new Date(this.dateFormatted))){
-        this.date = this.reformatDate(this.dateFormatted)
-        this.updateDateProperty();
-      }
-      Vue.nextTick(()=>{
-        this.setErrorMessage();
-      })
-    // } else {
-
-    // }
+  private onBlur() : void {
+    if (isValid(new Date(this.dateFormatted))){
+      this.date = this.reformatDate(this.dateFormatted)
+      this.updateDateProperty();
+    }
+    Vue.nextTick(()=>{
+      this.setErrorMessage();
+    })
 }
 
   /**
@@ -241,7 +235,7 @@ private datePickerClicked(selectedDate: string){
 
   private async setErrorMessage(): Promise<void> {
     this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
-    // this.menu = this.errorMessages.length === 0;
+    //this.menu = this.errorMessages.length === 0;
     console.log(this.errorMessages)
   }
 
