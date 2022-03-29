@@ -33,10 +33,10 @@
     padding-top: 0px;
     min-width: 416px !important;
     width: 420px;
-    .v-divider + ._suggested {
+    ._dropdown-text-field + ._suggested {
       .v-list-item__content {
         overflow: visible;
-        margin-top: 26px;
+        //margin-top: 26px;
         position: relative;
         &:before {
           content: "SUGGESTED";
@@ -71,6 +71,7 @@
       padding-right: 12px;
       padding-left: 12px;
       margin-top: 0;
+      margin-bottom: 20px;
       color: $primary;
       border-bottom: 1px solid $base-lighter;
       .v-input__icon {
@@ -95,11 +96,6 @@
       :after, :before {
         border: none;
       }
-    }
-    .v-divider {
-      display: none;
-      margin: 0px;
-      margin-bottom: 10px
     }
   }
 

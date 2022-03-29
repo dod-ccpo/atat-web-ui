@@ -34,7 +34,7 @@
             append-icon="search"
             id="DropdownTextField"
           />
-          <v-divider class="search-divider"/>
+
         </template>
         <template v-slot:item="{ item, on }">
           <v-list-item class="_country-list" :class="[item.suggested ? '_suggested' : '']" v-on="on">
