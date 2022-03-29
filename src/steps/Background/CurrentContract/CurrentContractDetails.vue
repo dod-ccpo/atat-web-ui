@@ -5,7 +5,7 @@
     <ATATDatePicker id="Expiration" 
       label="Contract/Order Expiration Date"
       placeHolder="MM/DD/YYYY"
-      :date.sync="expiredDate" 
+      :value.sync="expiredDate" 
       :rules="[
         $validators.required('Please enter a valid date'),
         $validators.isDateValid('Please enter a valid date 002')

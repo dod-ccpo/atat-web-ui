@@ -1,20 +1,16 @@
 
 <template>
-  <div 
-    :id="id + 'DatePickerContainer'" 
-    class="atat-date-picker">
+  <div :id="id + 'DatePickerContainer'" class="atat-date-picker">
     <v-menu
       ref="atatDatePickerMenu"
       v-model="menu"
       :close-on-content-click="false"
       min-width="auto"
       nudge-bottom="getMenuTop"
-  
       :attach="'#' + id + 'DatePickerContainer'"
       absolute
       :nudge-top="0"
       :nudge-left="0"
-      
     >
       <template v-slot:activator="{ on, attrs }">
         <div class="d-flex align-center" v-if="label">
@@ -41,14 +37,15 @@
           class="text-primary input-max-width d-flex align-center"
           :hide-details="true"
           outlined
+          @input="onInput"
           v-model="dateFormatted"
           :style="'width: ' + width"
           dense
           v-bind="attrs"
           v-on="on"
           :rules="rules"
-          @blur="onBlur"  
-          @update:error="setErrorMessage"
+          @blur="onBlur"
+          :validate-on-blur="validateOnBlur"
         >
           <template slot="append-outer">
             <v-btn
@@ -73,20 +70,22 @@
         v-model="date"
         :show-adjacent-months="showAdjacentMonths"
         no-title
+        active-picker="date"
         :min="min"
         :max="max"
+        :allowed-dates="allowedDates"
         @click:date="datePickerClicked"
         scrollable
       ></v-date-picker>
     </v-menu>
-     <ATATErrorValidation :errorMessages="errorMessages" />
+    <ATATErrorValidation v-if="menu === false" :errorMessages="errorMessages" />
   </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import Inputmask from "inputmask";
-import { add, format, isValid } from "date-fns";
+import { add, format, isAfter, isBefore, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
@@ -100,14 +99,11 @@ export default class ATATDatePicker extends Vue {
   // refs
   $refs!: {
     atatDatePicker: Vue & { errorBucket: string[]; errorCount: number };
-    atatDatePickerMenu: Vue & {save: ((selectedDate: string )=>Record<string, never>)};
+    atatDatePickerMenu: Vue & {
+      save: (selectedDate: string) => Record<string, never>;
+    };
   };
-/**
- * key in/tab off no error only red outlined
- * clicking date works
- */
-
-
+ 
   /**
    * DATA
    */
@@ -115,9 +111,11 @@ export default class ATATDatePicker extends Vue {
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
+  private validateOnBlur = false;
 
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
+  @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: true }) private showAdjacentMonths!: boolean;
@@ -142,41 +140,77 @@ export default class ATATDatePicker extends Vue {
    * EVENTS
    */
 
-  private onBlur() : void {
-    if (isValid(new Date(this.dateFormatted))){
-      this.date = this.reformatDate(this.dateFormatted)
-      this.updateDateProperty();
+  /**
+   * onBlur event of the textbox.
+   * 
+   * if textbox value is a valid date
+   * [x] reformat textbox value date for datepicker 
+   * [x] update date value property
+   * [x] remove any errors
+   */
+
+  private onBlur(): void {
+    if (isValid(new Date(this.dateFormatted))) {
+      this.date = this.reformatDate(this.dateFormatted);
+      this.updateDateValueProperty();
+      this.removeErrors();
     }
-    Vue.nextTick(()=>{
+    Vue.nextTick(() => {
       this.setErrorMessage();
+    });
+  }
+
+  /**
+   * sets validateOnBlur to true while user is typing
+   * so as validation occurs only onBlur
+   * 
+   * if textbox is cleared manually, resets necessary 
+   * date attribs
+   */
+  private onInput(date: string): void {
+    this.validateOnBlur = true;
+    if (date === "") {
+      this.dateFormatted = "";
+      this.date = "";
+      this.menu = false;
+    }
+  }
+
+  /**
+   * @param selectedDate (string) - selected Datepicker date
+   */
+  private datePickerClicked(selectedDate: string): void {
+    //must be set to false to prevent unnecessary validation
+    this.validateOnBlur = false;
+
+    this.removeErrors();
+
+    // saves selectedDate to necessary atatDatePickerMenu attribs
+    this.$refs.atatDatePickerMenu.save(selectedDate);
+
+    Vue.nextTick(()=>{
+      this.updateDateValueProperty();
     })
-}
+  }
 
   /**
    * emits 'update:date' value when dp is clicked or
    * textbox value is changed
    */
-  private updateDateProperty(): void {
-    if (isValid(this.dateFormatted)) {
-      this.$emit("update:date", this.dateFormatted);
+  private updateDateValueProperty(): void {
+    if (isValid(new Date(this.dateFormatted))) {
+      this.$emit("update:value", this.dateFormatted);
     }
   }
 
-
-private datePickerClicked(selectedDate: string){
-    this.$refs.atatDatePickerMenu.save(selectedDate); 
-    this.updateDateProperty();
-}
-
-  // private datePickerClick(selectedDate: string){
-    // debugger;
-    // this.dateFormatted = this.reformatDate(selectedDate);
-    // this.date = selectedDate;
-    // this.updateDateProperty();
-    // Vue.nextTick(()=>{
-    //   this.setErrorMessage();
-    // }) 
-  // }
+  /**
+   * utility function that removes errors from 
+   * Vuetify's errorBucket & this.errorMessages
+   */
+  private removeErrors(): void {
+    this.$refs.atatDatePicker.errorBucket = [];
+    this.errorMessages = [];
+  }
 
   /**
    * FUNCTIONS
@@ -201,17 +235,33 @@ private datePickerClicked(selectedDate: string){
   }
 
   /**
+   * @param date (string) - passed in when user advances/retreats month(s)
+   * 
+   * returns boolean if date is after this.min and before this.max
+   * if true = date is clickable
+   * if false = date is disabled
+   */
+  public allowedDates(date: string): boolean {
+    return (
+      isBefore(new Date(date), new Date(this.max)) &&
+      isAfter(new Date(date), new Date(this.min))
+    );
+  }
+
+  /**
    * @date (string)
    * returns formatted date as yyyy-MM-dd if date isValid
    */
   private reformatDate(date: string): string {
     let formattedDate = "";
     if (isValid(new Date(date))) {
-      let month="", day="", year="";
-      if (date.indexOf('-') > 0) {
+      let month = "",
+        day = "",
+        year = "";
+      if (date.indexOf("-") > 0) {
         [year, month, day] = date.split("-");
         formattedDate = `${month}/${day}/${year}`;
-      }else if (date.indexOf('/') > 0) {
+      } else if (date.indexOf("/") > 0) {
         [month, day, year] = date.split("/");
         formattedDate = `${year}-${month}-${day}`;
       }
@@ -235,8 +285,6 @@ private datePickerClicked(selectedDate: string){
 
   private async setErrorMessage(): Promise<void> {
     this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
-    //this.menu = this.errorMessages.length === 0;
-    console.log(this.errorMessages)
   }
 
   /**
@@ -244,7 +292,7 @@ private datePickerClicked(selectedDate: string){
    */
   private mounted(): void {
     this.addMasks();
-    this.$refs.atatDatePicker.errorBucket =[];
+    this.removeErrors();
   }
 }
 </script>
