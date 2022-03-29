@@ -95,8 +95,8 @@
                   label="Unit, suite, etc."
                   :optional="true"
                   :class="inputClass"
-                  width="160px"
-                   :value.sync="streetAddress2"
+                  :value.sync="streetAddress2"
+                  width="160"
                 />
               </v-col>
             </v-row>
@@ -162,8 +162,8 @@
                   id="ZIP"
                   :label="zipLabel"
                   :class="inputClass"
-                  width="160px"
                   :value.sync="zipCode"
+                  width="160"
                 />
               </v-col>
             </v-row>
@@ -193,7 +193,7 @@
       persistent
       no-click-animation
       okText="Send Request"
-      width="632px"
+      width="632"
       :disabled="true"
     >
       <template #content>

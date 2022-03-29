@@ -9,6 +9,62 @@ on:
       - develop
 
 jobs:
+  lint:
+    name: Run linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+          cache: npm
+      - name: Install project dependencies
+        run: npm ci
+      - name: Run linter
+        run: npm run lint
+  buildTestScan:
+    name: Build, test, and run SonarCloud scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # Sonar Scanner requires full history for blame information
+          fetch-depth: 0
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+          cache: npm
+      - name: Install project dependencies
+        run: npm ci
+      - name: Build the project
+        run: npm run build
+        env:
+          testURL: "${{ secrets.VUE_BASE_API_URL }}/test"
+          BASE_API_URL: "${{ secrets.VUE_BASE_API_URL }}"
+          SNOWUSER: "${{ secrets.VUE_SNOW_USER }}"
+          SNOWPASS: ""
+      - name: Test the project
+        run: npm run test
+      - name: Trigger SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Preserve build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist/
+          name: atat-web-ui
+      - name: Preserve test coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          path: coverage/lcov-report/
+          name: lcov-report
+
   secretScan:
     name: Scan for secrets
     runs-on: ubuntu-latest
