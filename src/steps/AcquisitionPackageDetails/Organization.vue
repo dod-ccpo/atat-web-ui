@@ -271,6 +271,57 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private country="";
   private showDialog = false;
 
+  private addressTypeOptions: RadioButton[] = [
+    {
+      id: "USAddress",
+      label: "U.S. address",
+      value: this.AddressTypes.USA,
+    },
+    {
+      id: "MilitaryAddress",
+      label: "Military (APO or FPO)",
+      value: this.AddressTypes.MIL,
+    },
+    {
+      id: "ForeignAddress",
+      label: "Foreign address",
+      value: this.AddressTypes.FOR,
+    },
+  ];
+
+  private selectedMilitaryPO: SelectData = { text: "", value: "" };
+  private militaryPostOfficeOptions: SelectData[] = [
+    { text: "Army Post Office (APO)", value: "APO" },
+    { text: "Fleet Post Office (FPO)", value: "FPO" },
+  ];
+
+  private selectedDisaOrg: SelectData = { text: "", value: "" };
+  private disaOrgData: SelectData[] = AcquisitionPackage.disaOrgData;
+
+  private selectedServiceOrAgency: SelectData = { text: "", value: "" };
+  private serviceOrAgencyData: SelectData[] = AcquisitionPackage.serviceOrAgencyData;
+
+  private selectedStateCode: SelectData = { text: "", value: "" };
+  private stateCodeListData: SelectData[] = [
+    { text: "AA - Armed Forces Americas", value: "AA" },
+    { text: "AE - Armed Forces Europe", value: "AE" },
+    { text: "AP - Armed Forces Pacific", value: "AP" },
+  ];
+
+  private selectedState: SelectData = { text: "", value: "" };
+  private stateListData: SelectData[] = AcquisitionPackage.stateListData;
+
+  private selectedCountry = this.AddressTypes.USA;
+  private selectedCountryData: SelectData= {text: "", value:""};
+  
+  public countryListData: SelectData[] = [{ text: "", value: "" }]; 
+  public async mounted(): Promise<void> {
+    this.countryListData = await AcquisitionPackage.getCountryListData(["US"]);
+     await this.loadOnEnter();
+  }
+
+  
+  // getters
   private get current():OrganizationDTO {
 
       let state = "";
@@ -330,70 +381,16 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     }
   }
 
-
-
-  private addressTypeOptions: RadioButton[] = [
-    {
-      id: "USAddress",
-      label: "U.S. address",
-      value: this.AddressTypes.USA,
-    },
-    {
-      id: "MilitaryAddress",
-      label: "Military (APO or FPO)",
-      value: this.AddressTypes.MIL,
-    },
-    {
-      id: "ForeignAddress",
-      label: "Foreign address",
-      value: this.AddressTypes.FOR,
-    },
-  ];
-
-  private selectedMilitaryPO: SelectData = { text: "", value: "" };
-  private militaryPostOfficeOptions: SelectData[] = [
-    { text: "Army Post Office (APO)", value: "APO" },
-    { text: "Fleet Post Office (FPO)", value: "FPO" },
-  ];
-
-  private selectedDisaOrg: SelectData = { text: "", value: "" };
-  private disaOrgData: SelectData[] = AcquisitionPackage.disaOrgData;
-
-  private selectedServiceOrAgency: SelectData = { text: "", value: "" };
-  private serviceOrAgencyData: SelectData[] = AcquisitionPackage.serviceOrAgencyData;
-
-  private selectedStateCode: SelectData = { text: "", value: "" };
-  private stateCodeListData: SelectData[] = [
-    { text: "AA - Armed Forces Americas", value: "AA" },
-    { text: "AE - Armed Forces Europe", value: "AE" },
-    { text: "AP - Armed Forces Pacific", value: "AP" },
-  ];
-
-  private selectedState: SelectData = { text: "", value: "" };
-  private stateListData: SelectData[] = AcquisitionPackage.stateListData;
-
-  private selectedCountry = this.AddressTypes.USA;
-  private selectedCountryData: SelectData= {text: "", value:""};
-  
-  public countryListData: SelectData[] = [{ text: "", value: "" }]; 
-  public async mounted(): Promise<void> {
-    this.countryListData = await AcquisitionPackage.getCountryListData(["US"]);
-     await this.loadOnEnter();
-  }
-
-  // methods 
-
-  private addressTypeChange(addressType: string): void {
-    this.selectedCountry = addressType === this.AddressTypes.FOR ? "" : this.AddressTypes.USA;
-  }
-
   // watchers
-  
   @Watch("selectedServiceOrAgency")
   protected serviceOrAgencyChanged(newVal: SelectData): void {
     AcquisitionPackage.setSelectedServiceOrAgency(newVal);
   }
 
+  // methods 
+  private addressTypeChange(addressType: string): void {
+    this.selectedCountry = addressType === this.AddressTypes.FOR ? "" : this.AddressTypes.USA;
+  }
 
     public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadOrganization();
@@ -428,7 +425,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
         
 
         if(this.selectedAddressType === this.AddressTypes.USA){
-          const selectedStateIndex = this.stateListData.findIndex(state=> state.value === storeData.state);
+          const selectedStateIndex = this.stateListData.
+          findIndex(state=> state.value === storeData.state);
           if(selectedStateIndex > -1){
             this.selectedState = this.stateListData[selectedStateIndex];
           }
@@ -436,7 +434,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
         if(this.selectedAddressType === this.AddressTypes.MIL){
 
-         const selectedMilitaryPoIndx = this.militaryPostOfficeOptions.findIndex(po=> po.value === this.city);
+         const selectedMilitaryPoIndx = this.militaryPostOfficeOptions.
+         findIndex(po=> po.value === this.city);
          if(selectedMilitaryPoIndx > -1){
            this.selectedMilitaryPO = this.militaryPostOfficeOptions[selectedMilitaryPoIndx];
          }
@@ -449,8 +448,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
 
         if(this.selectedAddressType === this.AddressTypes.FOR){
-          debugger;
-           const selectedCountryIndx = this.countryListData.findIndex(country=> country.text === storeData.country);
+           const selectedCountryIndx = this.countryListData.
+           findIndex(country=> country.text === storeData.country);
            if(selectedCountryIndx > -1){
              this.selectedCountryData = this.countryListData[selectedCountryIndx];
              this.selectedCountry = this.selectedCountryData.text;
@@ -467,11 +466,12 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     return hasChanges(this.current, this.saved);
   }
 
-
   protected async saveOnLeave(): Promise<boolean> {
 
       try {
-         await AcquisitionPackage.saveOrganization(this.current);        
+         if(this.hasChanged()){
+         await AcquisitionPackage.saveOrganization(this.current);   
+         }     
       } catch (error) {
       console.log(error);
     }
