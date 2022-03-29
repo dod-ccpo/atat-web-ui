@@ -107,6 +107,7 @@
         &.v-input__icon--append {
           i.v-icon {
             transform: none !important;
+            color: $base-dark !important;
           }
         }
       }
@@ -115,6 +116,7 @@
           &.v-input__icon--append {
             i.v-icon {
               transform: none !important;
+              color: $base-dark !important;
             }
           }
         }
