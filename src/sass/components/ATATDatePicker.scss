@@ -4,6 +4,7 @@
 }
 
 .atat-date-picker{
+
   .v-input__append-outer{
     margin: 0px !important;
   }
@@ -69,19 +70,29 @@
                   }
                 }
                 &.v-btn--active.accent,
-                &.v-btn--active.accent:hover {
+                &.v-btn--active.accent:hover,
+                &.v-btn--active.accent:focus {
                   background-color: $primary !important;
                   border-color: $primary !important;
                   color: $white !important;
+                  ::before{
+                    opacity: 1 !important;
+                  }
                 }
-                &.v-date-picker-table__current.accent--text,
-                &.v-date-picker-table__current.accent--text:hover {
+                &.v-date-picker-table__current.accent--text{
                   color: $base-darkest !important;
+                  border-color: $base-darkest !important;
+                  border-width: 1px !important;
+                  &:hover,
+                  &:focus{
+                    border: solid 2px $primary !important;
+                  }
                 }
                 &.v-btn--active.accent:hover::before{
                   opacity: 0;
                 }
-                &:hover{
+                &:hover,
+                &:focus{
                   border: solid 2px $primary !important;
                 }
               }

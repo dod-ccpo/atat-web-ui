@@ -1,20 +1,22 @@
 
 <template>
-   <div :id="id + 'DatePickerContainer'" class="atat-date-picker">
-
-        <v-menu
-          ref="date-picker-menu"
-          v-model="menu"
-          :close-on-content-click="false"
-          min-width="auto"
-          nudge-bottom="getMenuTop"
-          :attach="'#' + id + 'DatePickerContainer'"
-          absolute
-          :nudge-top="0"
-          :nudge-left="0"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <div class="d-flex align-center" v-if="label">
+  <div 
+    :id="id + 'DatePickerContainer'" 
+    class="atat-date-picker">
+    <v-menu
+      ref="date-picker-menu"
+      v-model="menu"
+      :close-on-content-click="false"
+      min-width="auto"
+      nudge-bottom="getMenuTop"
+      :attach="'#' + id + 'DatePickerContainer'"
+      absolute
+      :nudge-top="0"
+      :nudge-left="0"
+      @blur="onBlur"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <div class="d-flex align-center" v-if="label">
           <label
             :id="id + 'DatePickerLabel'"
             class="form-field-label mb-2 mr-2"
@@ -30,23 +32,25 @@
             :label="label"
           />
         </div>
-            <v-text-field
-              ref="atat-date-picker"
-              :id="id + 'DatePickerTextField'"
-              :height="42"
-               :placeholder="placeHolder"
-              class="text-primary input-max-width d-flex align-center"
-              :hide-details="true"
-              v-model="dateFormatted"
-              
-              outlined
-              :style="'width: ' + width + 'px'"
-              dense
-              v-bind="attrs"
-              @blur="onBlur"
-              v-on="on"
-            >
-            <template slot="append-outer">
+        <v-text-field
+          ref="atatDatePicker"
+          :id="id + 'DatePickerTextField'"
+          :height="42"
+          :placeholder="placeHolder"
+          class="text-primary input-max-width d-flex align-center"
+          :hide-details="true"
+          v-model="dateFormatted"
+          outlined
+          :style="'width: ' + width"
+          dense
+          v-bind="attrs"
+          v-on="on"
+          :rules="rules"
+          @update:error="setErrorMessage"
+        >
+        <!-- todo:  validate-on-blur -->
+
+          <template slot="append-outer">
             <v-btn
               icon
               :id="id + 'DatePickerButton'"
@@ -54,104 +58,122 @@
               @click="toggleMenu"
               class="pa-0 icon-28 ml-2"
             >
-              <v-icon 
-                :id="id + 'DatePickerButtonIcon'" 
-                class="icon-28 text-base-darkest">
+              <v-icon
+                :id="id + 'DatePickerButtonIcon'"
+                class="icon-28 text-base-darkest"
+              >
                 calendar_today
               </v-icon>
             </v-btn>
-          </template></v-text-field>
           </template>
-          <v-date-picker
-            :id="id + 'DatePicker'"
-            v-model="date"
-            :show-adjacent-months="showAdjacentMonths"
-            no-title
-            @click:date="updateDateProperty"
-            @input="menu = false"
-            scrollable
-          ></v-date-picker>
-        </v-menu>
-   </div>
+        </v-text-field>
+      </template>
+      <v-date-picker
+        :id="id + 'DatePicker'"
+        v-model="date"
+        :show-adjacent-months="showAdjacentMonths"
+        no-title
+        :min="min"
+        :max="max"
+        @click:date="datePickerClick"
+        
+        scrollable
+      ></v-date-picker>
+    </v-menu>
+     <ATATErrorValidation :errorMessages="errorMessages" />
+  </div>
 </template>
 <script lang="ts">
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import Inputmask from "inputmask";
-import { format, isValid, parse, parseISO } from "date-fns";
+import { add, format, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 @Component({
   components: {
     ATATTooltip,
+    ATATErrorValidation,
   },
 })
 export default class ATATDatePicker extends Vue {
-  private date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
-  private dateFormatted = this.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10));
+  // refs
+  $refs!: {
+    atatDatePicker: Vue & { errorBucket: string[]; errorCount: number };
+  };
+/**
+ * key in/tab off no error only red outlined
+ * clicking date works
+ */
+
+
+  /**
+   * DATA
+   */
+  private date = "";
+  private dateFormatted = "";
   private menu = false;
   private vuetifyDatePickerFormat = "yyyy-MM-dd";
+  private errorMessages: string[] = [];
 
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: true }) private showAdjacentMonths!: boolean;
-  @Prop({ default: "" }) private width!: string;
-  
+  @Prop({ default: "220px" }) private width!: string;
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
-  
+  @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
+  @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
+  private max!: Date;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
 
-  get computedDateFormatted (): string {
-    return this.formatDate(this.date)
-  }
-
-    // watch: {
-  @Watch("date")
-  protected formatDateWatcher(newVal: string): void {
-    this.dateFormatted = this.formatDate(this.date)
-  }
-    
-
-  
-  private formatDate (date: string): string {
-    // if (!date) return ''
-    // const [year, month, day] = date.split('-')
-    // return `${month}/${day}/${year}`
-    return format(new Date( isValid(new Date(date)) ? date : ""), "MM/dd/yyyy");
-  }
-
-  private parseDate (date: string): string {
-    return format(new Date( isValid(new Date(date)) ? date : ""), this.vuetifyDatePickerFormat);
-  }
-
-   //functions
   /**
-   * toggle menus based on value of this.menu
+   * WATCHERS
    */
-  private toggleMenu(): void {
-    this.menu = !this.menu;
+  @Watch("date")
+  protected formatDateWatcher(): void {
+    this.dateFormatted = this.formatMMDDYYYY(this.date);
   }
 
-   get getMenutop(): string{
-    return this.label !== "" ? "80" : "40";
+  /**
+   * EVENTS
+   */
+
+  private onBlur() : void {
+    //  this.setErrorMessage();
+    if (isValid(new Date(this.dateFormatted))){
+       this.date = this.formatYYYYMMDD(this.dateFormatted)
+       this.updateDateProperty();
+    } 
   }
 
-  private onBlur(){
-    console.log(this.dateFormatted);
-    console.log(isValid(new Date(this.dateFormatted)));
-    this.date = isValid(new Date(this.dateFormatted)) ? this.parseDate(this.dateFormatted) : this.parseDate(format(new Date(), "MM/dd/yyyy"));
-    this.updateDateProperty();
-    
-  }
-
+  /**
+   * emits 'update:date' value when dp is clicked or
+   * textbox value is changed
+   */
   private updateDateProperty(): void {
-    if (isValid(this.dateFormatted)){
+    if (isValid(this.dateFormatted)) {
       this.$emit("update:date", this.dateFormatted);
     }
   }
+
+  private datePickerClick(selectedDate: string){
+    // this.menu = false;
+   
+
+    this.dateFormatted = this.formatMMDDYYYY(selectedDate);
+    this.date = this.formatYYYYMMDD(selectedDate);
+    this.updateDateProperty();
+    this.setErrorMessage();
+  }
+
+  /**
+   * FUNCTIONS
+   */
 
   /**
    * mask input date text boxes with MM/DD/YYYY
@@ -164,14 +186,65 @@ export default class ATATDatePicker extends Vue {
         placeholder: "MM/DD/YYYY",
         outputFormat: "MM/DD/YYYY",
         nullable: true,
+        min: format(new Date(this.min), "MM/dd/yyyy"),
+        max: format(new Date(this.max), "MM/dd/yyyy"),
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
+    // todo add min and max
   }
 
-    //lifecycle hooks
+  /**
+   * @date (string)
+   * returns formatted date as mm/dd/yyyy if date isValid
+   */
+  private formatMMDDYYYY(date: string): string {
+    if (isValid(new Date(date))) {
+      const [year, month, day] = date.split("-");
+      return `${month}/${day}/${year}`;
+    }
+    return "";
+  }
+
+  /**
+   * @date (string)
+   * returns formatted date as yyyy-MM-dd if date isValid
+   */
+  private formatYYYYMMDD(date: string): string {
+    if (isValid(new Date(date))) {
+      const [year, month, day] = date.split("-");
+      return `${year}-${month}-${day}`;
+    }
+    return "";
+    // return format(
+    //   new Date(isValid(new Date(date)) ? date : ""),
+    //   this.vuetifyDatePickerFormat
+    // );
+  }
+
+  /**
+   * toggle menus based on value of this.menu
+   */
+  private toggleMenu(): void {
+    this.menu = !this.menu;
+  }
+
+  /**
+   * returns menutop based on if label
+   */
+  get getMenutop(): string {
+    return this.label !== "" ? "80" : "40";
+  }
+
+  private async setErrorMessage(): Promise<void> {
+    this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
+    console.log(this.errorMessages)
+  }
+
+  /**
+   * LIFECYCLE HOOKS
+   */
   private mounted(): void {
     this.addMasks();
   }
-    
-  }
+}
 </script>
