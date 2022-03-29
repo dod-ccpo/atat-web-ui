@@ -37,8 +37,9 @@
 
         </template>
         <template v-slot:item="{ item, on }">
-          <v-list-item class="_country-list"
-                       :class="[item.suggested ? '_suggested' : '', item.active ? '_active' : '']" v-on="on">
+          <v-list-item
+            class="_country-list"
+            :class="[item.suggested ? '_suggested' : '', item.active ? '_active' : '']" v-on="on">
             <v-list-item-content
               :id="id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/ig, '')"
               :item-value=item.name
@@ -80,7 +81,6 @@ import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
 import {CountryObj} from "../../types/Global";
-import Instance = Inputmask.Instance;
 
 
 @Component({
