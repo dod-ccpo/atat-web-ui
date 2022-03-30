@@ -249,7 +249,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   get zipLabel(): string {
-    return this.selectedAddressType !== this.AddressTypes.FOR ? "ZIP code" : "Postal Code";
+    return this.selectedAddressType !== this.AddressTypes.FOR ? "ZIP code" : "Postal code";
   }
 
   // data
