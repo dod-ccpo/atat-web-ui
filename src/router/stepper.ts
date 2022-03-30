@@ -23,6 +23,10 @@ import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequir
 import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
 import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
 
+// step 7 - Other Contract Considerations
+import OtherContractConsiderations from "../steps/OtherContractConsiderations/index.vue"
+import PII from "../steps/OtherContractConsiderations/PII.vue"
+
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
@@ -43,7 +47,8 @@ export const routeNames = {
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
-  Property_Custodian: "Property_Custodian", 
+  Property_Custodian: "Property_Custodian",
+  PII: "PII"
 };
 
 /**
@@ -232,9 +237,18 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "07",
     completePercentageWeight: 7,
-    name: "Financial_Details",
-    menuText: "Financial Details",
-    path: "/financial-details",
+    name: "Other_Contract_Considerations",
+    menuText: "Other Contract Considerations",
+    path: "/personally-identifiable-information",
+    component: PII,
+    children : [
+      {
+        menuText: "Personally Identifiable Information",
+        path: "/personally-identifiable-information",
+        name: routeNames.PII,
+        completePercentageWeight: 2,
+      },
+    ]
   },
   {
     stepNumber: "08",
@@ -254,11 +268,10 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "10",
-
     completePercentageWeight: 7,
-    name: "Supply_Chain_Risk_Management",
-    menuText: "Supply Chain Risk Management",
-    path: "/supply-chain-risk-management",
+    name: "Financial_Details",
+    menuText: "Financial Details",
+    path: "/financial-details",
   },
   {
     stepNumber: "11",
