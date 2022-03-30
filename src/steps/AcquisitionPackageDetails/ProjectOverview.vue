@@ -79,6 +79,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import { RadioButton } from "types/Global";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { hasChanges } from "@/helpers";
+import store from "@/store";
 
 @Component({
   components: {
@@ -157,8 +158,10 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
-      this.emergencyDeclaration =
-        storeData.emergency_declaration === "true" ? "yes" : "no";
+      if(storeData.emergency_declaration && storeData.emergency_declaration.length > 0)
+      {
+        this.emergencyDeclaration = storeData.emergency_declaration === "true" ? "yes" : "no";
+      }
     }
   }
 
