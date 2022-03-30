@@ -94,7 +94,7 @@ export default class ATATAlert extends Vue {
       return "_callout";
     }
     let alertClasses = "_" + this.type + "-alert";
-    alertClasses += this.borderLeft ? "_border-left " : "";
+    alertClasses = this.borderLeft ? alertClasses + " _border-left-thick " : alertClasses;
     return alertClasses;
   }
 
