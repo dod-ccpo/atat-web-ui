@@ -44,13 +44,13 @@
                 include the following clauses in the solicitation:
               </p>
               <ul>
-                <li>
+                <li class="pb-2">
                   Privacy Act Notification,
                   <a class="text-link" href="https://www.acquisition.gov/far/52.224-1" target="_blank">
                     FAR 52.224-1
                   </a>
                 </li>
-                <li>
+                <li class="pb-4">
                   Privacy Act,
                   <a class="text-link" href="https://www.acquisition.gov/far/52.224-2" target="_blank">
                     FAR 52.224-2

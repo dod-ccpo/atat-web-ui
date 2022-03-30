@@ -24,8 +24,7 @@ import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEq
 import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
 
 // step 7 - Other Contract Considerations
-import OtherContractConsiderations from "../steps/OtherContractConsiderations/index.vue"
-import PII from "../steps/OtherContractConsiderations/PII.vue"
+import PII from "../steps/OtherContractConsiderations/PII.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
@@ -48,7 +47,7 @@ export const routeNames = {
   Property_Requirements: "Property_Requirements",
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
   Property_Custodian: "Property_Custodian",
-  PII: "PII"
+  PII: "PII",
 };
 
 /**

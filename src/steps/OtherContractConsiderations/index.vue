@@ -6,10 +6,8 @@ import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 
-@Component({
-})
+@Component({})
 
-export default class OtherContractConsiderations extends Vue {
-}
+export default class OtherContractConsiderations extends Vue {}
 
 </script>
