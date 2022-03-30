@@ -1,14 +1,66 @@
 
 <template>
-  <div>Current Contract</div>
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header mb-3">
+           Do you have a current contract for this effort?
+          </h1>
+          <div class="copy-max-width">
+            <p class="mb-10">
+              If your acquisition is a follow-on requirement, 
+              we’ll gather some details about your contract next.
+            </p>
+            <ATATRadioGroup                                  
+              class="copy-max-width mb-10 max-width-740"
+              id="currentContractOptions"
+              :card="true"
+              :items="currentContractOptions" 
+              :value.sync="currentContractOption"
+            />
+          </div>
+
+        </v-col>
+      </v-row>
+    </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
-
 import { Component } from "vue-property-decorator";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
+import { RadioButton } from "../../../../types/Global";
+import Background from "@/store/background";
+
 @Component({
+  components: {
+    ATATRadioGroup,
+  },
 })
 export default class CurrentContract extends Vue {
+  private currentContractOptions: RadioButton[] = [
+    {
+      id: "Yes",
+      label: "Yes. There is a current contract for this effort.",
+      value: "Yes",
+    },
+    {
+      id: "No",
+      label: "No. This is a new requirement.",
+      value: "No",
+    },
+  ];
+
+  public get currentContractOption(): string {
+    const hasCurrentContract = Background.hasCurrentContract;
+    if (hasCurrentContract !== null) {
+      return hasCurrentContract ? "Yes" : "No";
+    }
+    return "";
+  }
+
+  public set currentContractOption(value: string) {
+    Background.setHasCurrentContract(value === "Yes");
+  }
 }
 </script>
 
