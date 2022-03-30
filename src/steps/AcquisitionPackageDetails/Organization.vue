@@ -106,7 +106,7 @@
                 :class="[selectedAddressType !== AddressTypes.FOR ? 'col-lg-5' : 'col-lg-4']"
               >
                 <ATATTextField
-                  v-show="selectedAddressType == AddressTypes.USA"
+                  v-show="selectedAddressType != AddressTypes.MIL"
                   id="City"
                   label="City"
                   :class="inputClass"
@@ -249,7 +249,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   get zipLabel(): string {
-    return this.selectedAddressType !== "FOR" ? "ZIP code" : "Postal Code";
+    return this.selectedAddressType !== this.AddressTypes.FOR ? "ZIP code" : "Postal Code";
   }
 
   // data
