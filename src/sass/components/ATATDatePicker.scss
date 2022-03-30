@@ -15,7 +15,7 @@
       .v-picker__body {
         width: 308px !important;
         height: 346px !important;
-        @extend %text-base-darkest;
+        color: $base-darkest !important;
         padding: 12px 0px;
 
         .v-date-picker-header {
@@ -31,7 +31,7 @@
           .v-date-picker-header__value {
             .accent--text {
               @extend %body;
-              @extend %text-base-darkest;
+              color: $base-darkest !important;
             }
             button{
               pointer-events: none;
@@ -42,17 +42,14 @@
               }
             }
           }
-
           button {
             padding: 0px;
             height: 24px;
           }
         }
-
         .v-date-picker-table {
           margin: 0px 4px 8px 4px;
           padding: 0px;
-
           thead {
             th {
               @extend %body;
