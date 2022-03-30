@@ -36,7 +36,7 @@
             <ATATAutoComplete
               id="DisaOrg"
               v-show="selectedServiceOrAgency && selectedServiceOrAgency.value 
-              === 'DEFENSE_INFORMATION_SYSTEMS_AGENCY'"
+              === this.DisaOrgName"
               class="input-max-width mb-10"
               label="DISA Organization"
               :label-sr-only="false"
@@ -50,7 +50,7 @@
 
             <ATATTextField
               id="OrgName"
-              v-show="selectedServiceOrAgency && selectedServiceOrAgency.value !== 'DISA'"
+              v-show="selectedServiceOrAgency && selectedServiceOrAgency.value !== this.DisaOrgName"
               label="Organization name"
               class="input-max-width mb-10"
               :value.sync="organizationName"
@@ -253,6 +253,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   // data
+
+  private DisaOrgName = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
+
       private AddressTypes = {
 
       USA : "US",
