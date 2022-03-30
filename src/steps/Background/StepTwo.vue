@@ -49,6 +49,7 @@
       </v-row>
       <v-row>
         <v-col>
+          <ATATPhoneInput :value.sync="phone"/>
           <ATATRadioGroup
             id="DummyATATRadio"
             label="Custom Radio"
@@ -84,7 +85,9 @@
             name="checkbox-card"
             :card="true"
           />
-
+          <div class="flag">
+            <span class="flag-icon flag-icon-gr">Hello</span>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -104,20 +107,22 @@
 
 
 <script lang="ts">
-import ATATAutoComplete from "../../components/ATATAutoComplete.vue";
-import ATATTextField from "../../components/ATATTextField.vue";
-import ATATSelect from "../../components/ATATSelect.vue";
+import ATATAutoComplete from "../components/ATATAutoComplete.vue";
+import ATATTextField from "../components/ATATTextField.vue";
+import ATATSelect from "../components/ATATSelect.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue"
 import Vue from "vue";
 import {Component} from "vue-property-decorator";
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 @Component({
   components: {
     ATATAutoComplete,
     ATATTextField,
     ATATSelect,
     ATATRadioGroup,
-    ATATCheckboxGroup
+    ATATCheckboxGroup,
+    ATATPhoneInput
   },
 })
 export default class StepTwo extends Vue {
@@ -178,6 +183,7 @@ export default class StepTwo extends Vue {
   private customTextValue = '';
   private radioValue = '';
   private ATATCheckboxValue = []
+  private phone = ''
   get contactIsSelected(): boolean {
     return (
       this.selectedContact &&
