@@ -9,25 +9,25 @@
           <div class="copy-max-width">
   
             <ATATTextField 
-              label="Incumbent Contractor Name" 
+              label="Incumbent contractor name" 
               id="IncumbentContractorName" 
               class="input-max-width mb-10" 
             />
 
             <ATATTextField 
-              label="Contract Number" 
+              label="Contract number" 
               id="ContractNumber" 
               class="input-max-width mb-10" 
             />
             
             <ATATTextField 
-              label="Task/Delivery Order Number" 
+              label="Task/Delivery order number" 
               id="TaskDeliveryOrderNumber" 
               class="input-max-width mb-10" 
             />
 
             <ATATDatePicker id="Expiration" 
-              label="Contract/Order Expiration Date"
+              label="Contract/Order expiration date"
               placeHolder="MM/DD/YYYY"
               :value.sync="expiredDate" 
               :rules="[
