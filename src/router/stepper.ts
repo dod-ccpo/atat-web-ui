@@ -29,13 +29,15 @@ import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEq
 import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
 
 // step 7 - Other Contract Considerations
+import OtherContractConsiderations from "../steps/OtherContractConsiderations/Index.vue";
 import PII from "../steps/OtherContractConsiderations/PII.vue";
+import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
-import { AcorsRouteResolver, CustodianRouteResolver } from "./resolvers";
+import { AcorsRouteResolver, CustodianRouteResolver, PIIRecordResolver } from "./resolvers";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
@@ -53,6 +55,7 @@ export const routeNames = {
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
   Property_Custodian: "Property_Custodian",
   PII: "PII",
+  PIIRecord: "PIIRecord",
 };
 
 /**
@@ -247,13 +250,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     name: "Other_Contract_Considerations",
     menuText: "Other Contract Considerations",
     path: "/personally-identifiable-information",
-    component: PII,
+    component: OtherContractConsiderations,
     children : [
       {
         menuText: "Personally Identifiable Information",
         path: "/personally-identifiable-information",
         name: routeNames.PII,
         completePercentageWeight: 2,
+        component: PII,
+      },
+      {
+        menuText: "system of record",
+        path: "/system-of-record",
+        name: routeNames.PIIRecord,
+        completePercentageWeight: 2,
+        component: PIIRecord,
+        routeResolver: PIIRecordResolver
       },
     ]
   },

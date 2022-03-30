@@ -94,7 +94,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import {RadioButton} from "../../../types/Global";
-
+import PIIRecord from "@/store/PIIRecordStore";
 @Component({
   components: {
     ATATAlert,
@@ -104,11 +104,10 @@ import {RadioButton} from "../../../types/Global";
 })
 
 export default class PII extends Vue {
-  private selectedPIIOption = "";
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",
-      label: "Yes. This contract action will include a system of records with PII.",
+      label: "Yes. This contract action will include a system of records with PIIRecordStore.",
       value: "Yes",
     },
     {
@@ -117,5 +116,17 @@ export default class PII extends Vue {
       value: "No",
     },
   ];
+
+  public get selectedPIIOption(): string {
+    const ifNeeded = PIIRecord.PIIRecordIncluded;
+    if (ifNeeded !== null) {
+      return ifNeeded ? "Yes" : "No";
+    }
+    return "";
+  }
+
+  public set selectedEquipmentProvidedOption(value: string) {
+    PIIRecord.setPIIRecord(value === "Yes" ? true : false);
+  }
 }
 </script>

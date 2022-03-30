@@ -1,5 +1,6 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
+import PIIRecord from "@/store/PIIRecordStore";
 
 import { routeNames } from "../stepper";
 
@@ -34,4 +35,14 @@ export const CustodianRouteResolver = (current: string): string => {
     "Custodian has been completed. Select \"Yes\" to continue to Property Custodian page.");
   // todo - change this routeName when page after Property Custodian is completed
   return routeNames.Will_Govt_Equip_Be_Furnished; 
+};
+
+export const PIIRecordResolver = (current: string): string => {
+  const systemOfRecord = PIIRecord.PIIRecordIncluded;
+
+  // if system of record will be included, route to system of records page
+  if (current === routeNames.PII && systemOfRecord) {
+    return routeNames.PIIRecord;
+  }
+  return routeNames.PIIRecord;
 };
