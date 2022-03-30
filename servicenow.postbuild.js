@@ -14,10 +14,11 @@ const scriptTagRegEx = /<script\b[^>]*>[\s\S/]*?<\/script\b[^>]*>/g
 const metaTagRegEx = /<\s*meta[^>]*(.*?)>/g
 const materialIconsRegEx = /\s*other_assets\/MaterialIcons/g
 const robotoFontsRegex = /\s*other_assets\/roboto-/g
-
+const imgRegex =/\s*img\//g
 decorateIndexHTML(PATH_TO_DIST_HTML)
 updateAppAssetPaths()
 updateVendorAssetPaths()
+updateAppImgPaths()
 outputResults()
 
 /**
@@ -244,6 +245,32 @@ function updateAppAssetPaths() {
     let appJs = appJsContent;
     appJs = appJsContent.replace(robotoFontsRegex,
       `${servicenowConfig.ASSETS_API_PATH}roboto-`);
+
+    fs.writeFileSync(appJSPath, appJs, 'utf-8');
+  } else {
+
+    console.error("unable to locate app js file");
+  }
+}
+
+function updateAppImgPaths() {
+
+  clear();
+
+  console.log('\n');
+  console.log("update img paths");
+
+  const files = fs.readdirSync('./dist/js');
+  const appJsFile = files.find(file => file.includes('app'));
+
+  if (appJsFile) {
+
+    //replace all material icon paths with asset api path
+    const appJSPath = `./dist/js/${appJsFile}`;
+    const appJsContent = fs.readFileSync(appJSPath, 'utf-8');
+    let appJs = appJsContent;
+    appJs = appJsContent.replace(imgRegex,
+      `${servicenowConfig.IMG_API_PATH}`);
 
     fs.writeFileSync(appJSPath, appJs, 'utf-8');
   } else {

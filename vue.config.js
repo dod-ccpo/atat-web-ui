@@ -82,6 +82,14 @@ module.exports = {
 
         }));
 
+        config.module
+        .rule("svg")
+        .use("file-loader")
+        .loader("file-loader")
+        .tap(options => Object.assign(options, {
+              name: 'img/[name]-[hash:6]-[ext]',
+        }));
+
       config.module
         .rule("fonts")
         .use("url-loader")
