@@ -1,4 +1,4 @@
-import { StepperRouteConfig, StepperStep } from "../../types/Global";
+import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
@@ -38,11 +38,10 @@ import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
-
 import {
   AcorsRouteResolver,
-  CustodianRouteResolver,
   CurrentContractRouteResolver,
+  CustodianRouteResolver,
   PIIRecordResolver
 } from "./resolvers";
 
@@ -52,7 +51,7 @@ export const routeNames = {
   Organization_Info: "Organization_Info",
   Contact_Information: "Contact_Information",
   Cor_Information: "Cor_Information",
-  Alternate_Cor:"Alternate_Cor",
+  Alternate_Cor: "Alternate_Cor",
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
@@ -69,7 +68,7 @@ export const routeNames = {
   PII: "PII",
   BAA: "BAA",
   PIIRecord: "PIIRecord",
-  Public_Disclosure_of_Information:"Public_Disclosure_of_Information",
+  Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
 };
 
 /**
@@ -280,14 +279,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
     ]
   },
-{
+  {
     stepNumber: "07",
     completePercentageWeight: 7,
-    name: routeNames.Other_Contract_Considerations,
+    name: routeNames.PII,
     menuText: "Other Contract Considerations",
     path: "/personally-identifiable-information",
     component: OtherContractConsiderations,
-    children : [
+    children: [
       {
         menuText: "Personally Identifiable Information",
         path: "/personally-identifiable-information",
@@ -369,7 +368,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
  * @returns StepperStep
  */
 const mapStepRouteToStepperData = (
-  stepperRouteConfig: StepperRouteConfig
+    stepperRouteConfig: StepperRouteConfig
 ): StepperStep => {
   const {
     completePercentageWeight,
@@ -382,7 +381,7 @@ const mapStepRouteToStepperData = (
     backButtonText,
   } = stepperRouteConfig;
 
-  let { name } = stepperRouteConfig;
+  let {name} = stepperRouteConfig;
   name = name || "";
 
   const stepperStep: StepperStep = {
@@ -394,7 +393,7 @@ const mapStepRouteToStepperData = (
     completePercentageWeight,
     route: path,
     subSteps: stepperRouteConfig.children?.map((child) =>
-      mapStepRouteToStepperData(child)
+        mapStepRouteToStepperData(child)
     ),
     additionalButtons,
     backButtonText,
@@ -404,4 +403,4 @@ const mapStepRouteToStepperData = (
 };
 
 export const buildStepperData = (): StepperStep[] =>
-  stepperRoutes.map((step) => mapStepRouteToStepperData(step));
+    stepperRoutes.map((step) => mapStepRouteToStepperData(step));
