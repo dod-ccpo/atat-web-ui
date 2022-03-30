@@ -36,7 +36,7 @@
             <ATATAutoComplete
               id="DisaOrg"
               v-show="selectedServiceOrAgency && selectedServiceOrAgency.value 
-              === 'DEFENSE_INFORMATION_SYSTEMS_AGENCY'"
+              === this.DisaOrgName"
               class="input-max-width mb-10"
               label="DISA Organization"
               :label-sr-only="false"
@@ -50,7 +50,7 @@
 
             <ATATTextField
               id="OrgName"
-              v-show="selectedServiceOrAgency && selectedServiceOrAgency.value !== 'DISA'"
+              v-show="selectedServiceOrAgency && selectedServiceOrAgency.value !== this.DisaOrgName"
               label="Organization name"
               class="input-max-width mb-10"
               :value.sync="organizationName"
@@ -106,7 +106,7 @@
                 :class="[selectedAddressType !== AddressTypes.FOR ? 'col-lg-5' : 'col-lg-4']"
               >
                 <ATATTextField
-                  v-show="selectedAddressType == AddressTypes.USA"
+                  v-show="selectedAddressType !== AddressTypes.MIL"
                   id="City"
                   label="City"
                   :class="inputClass"
@@ -249,10 +249,13 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   get zipLabel(): string {
-    return this.selectedAddressType !== "FOR" ? "ZIP code" : "Postal Code";
+    return this.selectedAddressType !== this.AddressTypes.FOR ? "ZIP code" : "Postal code";
   }
 
   // data
+
+  private DisaOrgName = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
+
       private AddressTypes = {
 
       USA : "US",

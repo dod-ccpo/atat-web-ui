@@ -1,6 +1,7 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
 import PIIRecord from "@/store/PIIRecordStore";
+import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
 
@@ -36,6 +37,22 @@ export const CustodianRouteResolver = (current: string): string => {
   // todo - change this routeName when page after Property Custodian is completed
   return routeNames.Will_Govt_Equip_Be_Furnished; 
 };
+
+export const CurrentContractRouteResolver = (current: string): string => {
+  const hasCurrentContract = Background.hasCurrentContract;
+
+  // if hasCurrentContract, advance to Current_Contract_Details page
+  if (current === routeNames.Current_Contract && hasCurrentContract) {
+    return routeNames.Current_Contract_Details;
+  } else if (current === routeNames.Performance_Requirements && hasCurrentContract){
+    return routeNames.Current_Contract_Details;
+  } else if (current === routeNames.Performance_Requirements){
+    return routeNames.Current_Contract;
+  }
+
+  return routeNames.Performance_Requirements;
+};
+
 
 export const PIIRecordResolver = (current: string): string => {
   const systemOfRecord = PIIRecord.PIIRecordIncluded;

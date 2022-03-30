@@ -1,6 +1,10 @@
 import { Component } from "vue";
-import { RouteConfigMultipleViews,
-    RouteConfigSingleView } from "vue-router/types/router";
+import { 
+  RouteConfigMultipleViews,
+  RouteConfigSingleView 
+} from "vue-router/types/router";
+
+import { AdditionalButton } from "@/store/steps/types";
 
 export interface StepperRouteHandlerParams {
   previous: string;
@@ -16,6 +20,8 @@ export interface StepperStep {
   menuText?: string;
   route: string;
   subSteps?: StepperStep[];
+  additionalButtons?: AdditionalButton[];
+  backButtonText?: string;
 }
 
 /**
@@ -42,26 +48,27 @@ export interface AutoCompleteItemGroups {
  */
 interface StepperRouteBase {
 
-  stepNumber?: string;
-  completePercentageWeight?: number;
-  menuText?: string;
-  completed?: boolean;
-  /**
-   * Setting this flag to true will prevent item from being
-   * rendered in menu but will still include it in the route record
-   */
-  excludeFromMenu?: boolean;
-  /**
-   * A handler to
-   */
-  routeResolver?: (currentRoute: string) => string
+    stepNumber?: string;
+    completePercentageWeight?: number;
+    menuText?: string;
+    completed?: boolean;
+    /**
+     * Setting this flag to true will prevent item from being 
+     * rendered in menu but will still include it in the route record
+     */
+    excludeFromMenu?: boolean;
+    /**
+     * A handler to 
+     */
+    routeResolver?: (currentRoute: string) => string;
+    additionalButtons?: AdditionalButton[];
+    backButtonText?: string;
 }
 
 /**
  * Stepper Route Single Extends Route Single View
  */
 export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigSingleView {
-
   children?: StepperRouteConfig[]
 }
 
@@ -70,7 +77,6 @@ export interface StepperRouteSingleConfig extends StepperRouteBase, RouteConfigS
  */
 export interface StepperRouteMultipleConfig extends StepperRouteBase, RouteConfigMultipleViews {
   children?: StepperRouteConfig[]
-
 }
 
 /**
@@ -94,8 +100,8 @@ export interface Checkbox {
 }
 
 export interface SlideoutPanelContent {
-    component: Component;
-    title: string;
+  component: Component;
+  title: string;
 }
 
 export interface CountryObj {
