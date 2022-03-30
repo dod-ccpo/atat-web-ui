@@ -118,14 +118,14 @@ export default class PII extends Vue {
   ];
 
   public get selectedPIIOption(): string {
-    const ifNeeded = PIIRecord.PIIRecordIncluded;
-    if (ifNeeded !== null) {
-      return ifNeeded ? "Yes" : "No";
+    const included = PIIRecord.PIIRecordIncluded;
+    if (included !== null) {
+      return included ? "Yes" : "No";
     }
     return "";
   }
 
-  public set selectedEquipmentProvidedOption(value: string) {
+  public set selectedPIIOption(value: string) {
     PIIRecord.setPIIRecord(value === "Yes" ? true : false);
   }
 }

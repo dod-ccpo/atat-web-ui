@@ -39,10 +39,10 @@ export const CustodianRouteResolver = (current: string): string => {
 
 export const PIIRecordResolver = (current: string): string => {
   const systemOfRecord = PIIRecord.PIIRecordIncluded;
-
+  console.log(systemOfRecord)
   // if system of record will be included, route to system of records page
   if (current === routeNames.PII && systemOfRecord) {
     return routeNames.PIIRecord;
   }
-  return routeNames.PIIRecord;
+  return 'Public_Disclosure_of_Information';
 };
