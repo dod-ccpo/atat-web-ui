@@ -29,6 +29,7 @@ import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEq
 import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
 
 // step 7 - Other Contract Considerations
+import OtherContractConsiderations from "../steps/OtherContractConsiderations/Index.vue";
 import PII from "../steps/OtherContractConsiderations/PII.vue";
 import BAA from "../steps/OtherContractConsiderations/BAA.vue";
 
@@ -246,16 +247,24 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
 {
     stepNumber: "07",
     completePercentageWeight: 7,
-    name: "Other_Contract_Considerations",
+    name: routeNames.PII,
     menuText: "Other Contract Considerations",
     path: "/personally-identifiable-information",
-    component: PII,
+    component: OtherContractConsiderations,
     children : [
       {
+        name: routeNames.PII,
         menuText: "Personally Identifiable Information",
         path: "/personally-identifiable-information",
-        name: routeNames.PII,
         completePercentageWeight: 2,
+        component: PII,
+      },
+      {
+        menuText: "Business Associate Agreement (BAA)",
+        path: "/business-associate-agreement",
+        name: routeNames.BAA,
+        completePercentageWeight: 2,
+        component: BAA,
       },
     ]
   },

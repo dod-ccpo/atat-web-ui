@@ -60,7 +60,7 @@ export default class WillGovtEquipBeFurnished extends Vue {
   }
 
   public set selectedEquipmentProvidedOption(value: string) {
-    GovtFurnishedEquipment.setNeedsPropertyCustodian(value === "Yes" ? true : false);
+    GovtFurnishedEquipment.setNeedsPropertyCustodian(value === "Yes");
   }
 
 }

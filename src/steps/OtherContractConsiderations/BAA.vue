@@ -9,7 +9,7 @@
 
           <ATATAlert 
             id="BAAAlert"
-            type="info" 
+            type="callout" 
             :showIcon="false" 
             class="copy-max-width my-10"
           >
@@ -23,7 +23,7 @@
                 that the business associate will appropriately safeguard PHI when it is transmitted 
                 or maintained in electronic (e-PHI) or any other form. 
                 <a role="button" id="LearnMoreBAA" @click="learnMore">
-                  Learn more about business associates and BAAs.
+                  Learn more about business associates and <span class="external-link">BAAs.</span>
                 </a>
               </p>
             </template>
@@ -46,6 +46,7 @@
             :showIcon="true" 
             icon="info"
             :outlined="true"
+            :closeButton="true"
             class="copy-max-width my-10"
           >
             <template v-slot:content>
@@ -56,7 +57,11 @@
               </p>
               <p class="mb-0">
                 For sample BAA provisions, visit 
-                <a href="" target="_blank" class="text-link">
+                <a 
+                  href="https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html" 
+                  target="_blank" 
+                  class="text-link"
+                >
                   https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html<span 
                   class="external-link">.</span>
                  </a>
@@ -89,7 +94,8 @@
                   class="text-link external-link"
                   target="_blank"
                 >
-                  Business Associate and PHI, CFR title 45 part 160.103
+                  Business Associate and PHI, CFR title 45 part 
+                  <span class="external-link">160.103</span>
                 </a> 
                 and BAA, CFR title 45 part 164.308 (b)(4).        
                 </p>

@@ -2,28 +2,29 @@
   <div
     v-if="show"
     :role="role"
-    class="_atat-alert v-application"
+    class="_atat-alert"
     :class="[
-      getBorderWidth(),
-      type + '_alert',
+      { '_outlined': outlined },
+      { '_border-left-thick': borderLeft },
+      type + '-alert',
     ]"
   >
-    <div class="d-flex justify-start">
+    <div class="d-flex">
       <div
         v-if="icon"
-        class="text-center px-0 pt-1 d-flex flex-column align-start"
+        class="pr-4"
       >
         <i
           aria-hidden="true"
           :class="[
             getIconSize(),
-            'v-icon notranslate material-icons theme--light text-base-darkest',
+            'v-icon notranslate material-icons theme--light',
           ]"
         >
           {{ getIcon() }}
         </i>
       </div>
-      <div class="text-base-darkest">
+      <div>
         <slot name="content"></slot>
       </div>
       <div
@@ -77,7 +78,8 @@ export default class ATATAlert extends Vue {
   @Prop({ default: "Alert" }) private id?: string;
 
   /**
-   * type: 1) info, 2) error, 3) warning
+   * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
+   * type "callout" will never have an icon or border, always light blue background - general info
    */
   @Prop({ default: "error" }) private type?: string;
 
@@ -86,23 +88,17 @@ export default class ATATAlert extends Vue {
    * large size will render a 8px left border and 20px icon
    * small size will render a 4px left border and 16px icon
    */
-  @Prop({ default: "large" }) private size?: string;
+  @Prop({ default: "small" }) private size?: string;
+  @Prop({ default: false }) private borderLeft?: boolean;
   @Prop({ default: false }) private outlined?: boolean;
   @Prop({ default: false }) private closeButton?: boolean;
 
-  private getBorderWidth(): string {
-    return "border-left-" + (this.size === "large" ? "thick" : "slim");
-  }
-
   private getIconSize(): string {
-    return this.size === "large" ? "icon-20" : "icon-16";
+    return this.size === "large" ? "icon-24" : "icon-20";
   }
 
   private getIcon(): string | unknown {
-    if (this.icon === "") {
-      return this.type === "success" ? "check_circle" : this.type;
-    }
-    return this.icon;
+    return (this.type === "success") ? "check_circle" : this.type;
   }
 
   private close(): void {
