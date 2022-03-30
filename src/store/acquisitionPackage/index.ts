@@ -1780,6 +1780,27 @@ export class AcquisitionPackageStore extends VuexModule {
       throw new Error(`error occurred saving project overview ${error}`);
     }
   }
+
+  @Action({ rawError: true })
+  /**
+   * Saves Organization data to backend
+   */
+  async saveContactInfo(data: ContactDTO): Promise<void> {
+    try {
+      const sys_id = this.contactInfo?.sys_id || "";
+      const savedContact =
+        sys_id.length > 0
+          ? await api.contactsTable.update(sys_id, { ...data, sys_id })
+          : await api.contactsTable.create(data);
+      this.setContact(savedContact);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contact: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving contact info ${error}`);
+    }
+  }
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);
