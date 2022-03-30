@@ -292,6 +292,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.PIIRecord,
         completePercentageWeight: 2,
         component: PIIRecord,
+        excludeFromMenu: true,
         routeResolver: PIIRecordResolver
       },
     ]
