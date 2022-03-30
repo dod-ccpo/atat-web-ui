@@ -33,6 +33,7 @@ import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
 import { AcorsRouteResolver, CustodianRouteResolver } from "./resolvers";
+import { RouterLinkStub } from "@vue/test-utils";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
@@ -44,6 +45,9 @@ export const routeNames = {
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
+  Background: "Background",
+  Current_Contract: "Current_Contract",
+  Current_Contract_Details: "Current_Contract_Details",
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
@@ -142,13 +146,12 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     menuText: "Fair Opportunity Process",
     path: "/fair-opportunity-exceptions",
     completePercentageWeight: 10,
-    name: routeNames.Fair_Opportunity_Exceptions,
     component: FairOpportunity_Exceptions,
     children: [
       {
-        name: "Exceptions",
         menuText: "Exceptions",
         path: "/fair-opportunity-exceptions",
+        name: routeNames.Fair_Opportunity_Exceptions,
         completePercentageWeight: 2,
       },
     ],
@@ -156,7 +159,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "03",
     menuText: "Background",
-    path: "/current-contract",
+    path: "/",
+    name: routeNames.Background,
     completePercentageWeight: 10,
     component: Background,
     completed: false,
@@ -164,7 +168,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
        {
         menuText: "Current Contract",
         path: "/current-contract",
-        name: "CurrentContract",
+        name: routeNames.Current_Contract,
         completePercentageWeight: 0,
         component: CurrentContract,
         completed: false,
@@ -172,7 +176,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Details",
         path: "/current-contract-details",
-        name: "CurrentContractDetails",
+        name: routeNames.Current_Contract_Details,
         excludeFromMenu: true,
         completePercentageWeight: 0,
         component: CurrentContractDetails,
