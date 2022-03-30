@@ -1,6 +1,11 @@
 <template>
   <v-app>
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
+
+    <ATATSlideoutPanel v-if="hasSlideoutPanelComponent">
+      <component :is="slideoutPanelComponent"></component>
+    </ATATSlideoutPanel>
+
     <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
       <router-view></router-view>
@@ -30,27 +35,39 @@ import { Component, Watch } from "vue-property-decorator";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue"
 import ATATSideStepper from "./components/ATATSideStepper.vue";
+import ATATSlideoutPanel from "./components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SlideoutPanel from "@/store/slideoutPanel/index";
 import Steps from "@/store/steps";
 
+import { AdditionalButton, StepInfo } from "@/store/steps/types";
 import { buildStepperData } from "./router/stepper";
 import actionHandler from "./action-handlers/index"
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import { AdditionalButton, StepInfo } from "@/store/steps/types";
-
 @Component({
   components: {
-    ATATSideStepper,
-    ATATStepperNavigation,
     ATATFooter,
-    ATATPageHead
+    ATATPageHead,
+    ATATSideStepper,
+    ATATSlideoutPanel,
+    ATATStepperNavigation,
   }
 })
+
 export default class App extends Vue {
   $refs!: {
     sideStepper: ATATSideStepper;
   };
+
+  public slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
+
+  public hasSlideoutPanelComponent = false;
+  @Watch("slideoutPanelComponent")
+  public onSlideoutPanelComponentChange(c: unknown): void {
+    this.hasSlideoutPanelComponent = c !== undefined ? true : false;
+  }
 
   private stepperData = buildStepperData();
   private additionalButtons: AdditionalButton[] = [];
@@ -67,6 +84,8 @@ export default class App extends Vue {
       this.setNavButtons(step);
     }
     await AcquisitionPackage.initialize();
+    
+    this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
   }
 
   @Watch("$route")
@@ -79,6 +98,9 @@ export default class App extends Vue {
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
+      
+      SlideoutPanel.closeSlideoutPanel();
+      this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
     }
   }
 

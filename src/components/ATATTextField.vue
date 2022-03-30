@@ -30,7 +30,7 @@
       class="text-primary"
       :hide-details="true"
       :suffix="suffix"
-      :style="{ 'max-width': width + 'px' }"
+      :style="'width: ' + width + 'px'"
       :rules="rules"
       @blur="onBlur"
       @update:error="setErrorMessage"

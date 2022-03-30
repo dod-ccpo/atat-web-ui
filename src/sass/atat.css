@@ -3647,6 +3647,1085 @@ hr, .hr {
   height: auto !important;
 }
 
+.fib, .fi {
+  background-size: contain;
+  background-position: 50%;
+  background-repeat: no-repeat;
+}
+
+.fi {
+  position: relative;
+  display: inline-block;
+  width: 1.333333em;
+  line-height: 1em;
+}
+.fi:before {
+  content: " ";
+}
+.fi.fis {
+  width: 1em;
+}
+
+.fi-ad {
+  background-image: url(./assets/icons/flags/ad.svg);
+}
+
+.fi-ae {
+  background-image: url(./assets/icons/flags/ae.svg);
+}
+
+.fi-af {
+  background-image: url(./assets/icons/flags/af.svg);
+}
+
+.fi-ag {
+  background-image: url(./assets/icons/flags/ag.svg);
+}
+
+.fi-ai {
+  background-image: url(./assets/icons/flags/ai.svg);
+}
+
+.fi-al {
+  background-image: url(./assets/icons/flags/al.svg);
+}
+
+.fi-am {
+  background-image: url(./assets/icons/flags/am.svg);
+}
+
+.fi-ao {
+  background-image: url(./assets/icons/flags/ao.svg);
+}
+
+.fi-aq {
+  background-image: url(./assets/icons/flags/aq.svg);
+}
+
+.fi-ar {
+  background-image: url(./assets/icons/flags/ar.svg);
+}
+
+.fi-as {
+  background-image: url(./assets/icons/flags/as.svg);
+}
+
+.fi-at {
+  background-image: url(./assets/icons/flags/at.svg);
+}
+
+.fi-au {
+  background-image: url(./assets/icons/flags/au.svg);
+}
+
+.fi-aw {
+  background-image: url(./assets/icons/flags/aw.svg);
+}
+
+.fi-ax {
+  background-image: url(./assets/icons/flags/ax.svg);
+}
+
+.fi-az {
+  background-image: url(./assets/icons/flags/az.svg);
+}
+
+.fi-ba {
+  background-image: url(./assets/icons/flags/ba.svg);
+}
+
+.fi-bb {
+  background-image: url(./assets/icons/flags/bb.svg);
+}
+
+.fi-bd {
+  background-image: url(./assets/icons/flags/bd.svg);
+}
+
+.fi-be {
+  background-image: url(./assets/icons/flags/be.svg);
+}
+
+.fi-bf {
+  background-image: url(./assets/icons/flags/bf.svg);
+}
+
+.fi-bg {
+  background-image: url(./assets/icons/flags/bg.svg);
+}
+
+.fi-bh {
+  background-image: url(./assets/icons/flags/bh.svg);
+}
+
+.fi-bi {
+  background-image: url(./assets/icons/flags/bi.svg);
+}
+
+.fi-bj {
+  background-image: url(./assets/icons/flags/bj.svg);
+}
+
+.fi-bl {
+  background-image: url(./assets/icons/flags/bl.svg);
+}
+
+.fi-bm {
+  background-image: url(./assets/icons/flags/bm.svg);
+}
+
+.fi-bn {
+  background-image: url(./assets/icons/flags/bn.svg);
+}
+
+.fi-bo {
+  background-image: url(./assets/icons/flags/bo.svg);
+}
+
+.fi-bq {
+  background-image: url(./assets/icons/flags/bq.svg);
+}
+
+.fi-br {
+  background-image: url(./assets/icons/flags/br.svg);
+}
+
+.fi-bs {
+  background-image: url(./assets/icons/flags/bs.svg);
+}
+
+.fi-bt {
+  background-image: url(./assets/icons/flags/bt.svg);
+}
+
+.fi-bv {
+  background-image: url(./assets/icons/flags/bv.svg);
+}
+
+.fi-bw {
+  background-image: url(./assets/icons/flags/bw.svg);
+}
+
+.fi-by {
+  background-image: url(./assets/icons/flags/by.svg);
+}
+
+.fi-bz {
+  background-image: url(./assets/icons/flags/bz.svg);
+}
+
+.fi-ca {
+  background-image: url(./assets/icons/flags/ca.svg);
+}
+
+.fi-cc {
+  background-image: url(./assets/icons/flags/cc.svg);
+}
+
+.fi-cd {
+  background-image: url(./assets/icons/flags/cd.svg);
+}
+
+.fi-cf {
+  background-image: url(./assets/icons/flags/cf.svg);
+}
+
+.fi-cg {
+  background-image: url(./assets/icons/flags/cg.svg);
+}
+
+.fi-ch {
+  background-image: url(./assets/icons/flags/ch.svg);
+}
+
+.fi-ci {
+  background-image: url(./assets/icons/flags/ci.svg);
+}
+
+.fi-ck {
+  background-image: url(./assets/icons/flags/ck.svg);
+}
+
+.fi-cl {
+  background-image: url(./assets/icons/flags/cl.svg);
+}
+
+.fi-cm {
+  background-image: url(./assets/icons/flags/cm.svg);
+}
+
+.fi-cn {
+  background-image: url(./assets/icons/flags/cn.svg);
+}
+
+.fi-co {
+  background-image: url(./assets/icons/flags/co.svg);
+}
+
+.fi-cr {
+  background-image: url(./assets/icons/flags/cr.svg);
+}
+
+.fi-cu {
+  background-image: url(./assets/icons/flags/cu.svg);
+}
+
+.fi-cv {
+  background-image: url(./assets/icons/flags/cv.svg);
+}
+
+.fi-cw {
+  background-image: url(./assets/icons/flags/cw.svg);
+}
+
+.fi-cx {
+  background-image: url(./assets/icons/flags/cx.svg);
+}
+
+.fi-cy {
+  background-image: url(./assets/icons/flags/cy.svg);
+}
+
+.fi-cz {
+  background-image: url(./assets/icons/flags/cz.svg);
+}
+
+.fi-de {
+  background-image: url(./assets/icons/flags/de.svg);
+}
+
+.fi-dj {
+  background-image: url(./assets/icons/flags/dj.svg);
+}
+
+.fi-dk {
+  background-image: url(./assets/icons/flags/dk.svg);
+}
+
+.fi-dm {
+  background-image: url(./assets/icons/flags/dm.svg);
+}
+
+.fi-do {
+  background-image: url(./assets/icons/flags/do.svg);
+}
+
+.fi-dz {
+  background-image: url(./assets/icons/flags/dz.svg);
+}
+
+.fi-ec {
+  background-image: url(./assets/icons/flags/ec.svg);
+}
+
+.fi-ee {
+  background-image: url(./assets/icons/flags/ee.svg);
+}
+
+.fi-eg {
+  background-image: url(./assets/icons/flags/eg.svg);
+}
+
+.fi-eh {
+  background-image: url(./assets/icons/flags/eh.svg);
+}
+
+.fi-er {
+  background-image: url(./assets/icons/flags/er.svg);
+}
+
+.fi-es {
+  background-image: url(./assets/icons/flags/es.svg);
+}
+
+.fi-et {
+  background-image: url(./assets/icons/flags/et.svg);
+}
+
+.fi-fi {
+  background-image: url(./assets/icons/flags/fi.svg);
+}
+
+.fi-fj {
+  background-image: url(./assets/icons/flags/fj.svg);
+}
+
+.fi-fk {
+  background-image: url(./assets/icons/flags/fk.svg);
+}
+
+.fi-fm {
+  background-image: url(./assets/icons/flags/fm.svg);
+}
+
+.fi-fo {
+  background-image: url(./assets/icons/flags/fo.svg);
+}
+
+.fi-fr {
+  background-image: url(./assets/icons/flags/fr.svg);
+}
+
+.fi-ga {
+  background-image: url(./assets/icons/flags/ga.svg);
+}
+
+.fi-gb {
+  background-image: url(./assets/icons/flags/gb.svg);
+}
+
+.fi-gd {
+  background-image: url(./assets/icons/flags/gd.svg);
+}
+
+.fi-ge {
+  background-image: url(./assets/icons/flags/ge.svg);
+}
+
+.fi-gf {
+  background-image: url(./assets/icons/flags/gf.svg);
+}
+
+.fi-gg {
+  background-image: url(./assets/icons/flags/gg.svg);
+}
+
+.fi-gh {
+  background-image: url(./assets/icons/flags/gh.svg);
+}
+
+.fi-gi {
+  background-image: url(./assets/icons/flags/gi.svg);
+}
+
+.fi-gl {
+  background-image: url(./assets/icons/flags/gl.svg);
+}
+
+.fi-gm {
+  background-image: url(./assets/icons/flags/gm.svg);
+}
+
+.fi-gn {
+  background-image: url(./assets/icons/flags/gn.svg);
+}
+
+.fi-gp {
+  background-image: url(./assets/icons/flags/gp.svg);
+}
+
+.fi-gq {
+  background-image: url(./assets/icons/flags/gq.svg);
+}
+
+.fi-gr {
+  background-image: url(./assets/icons/flags/gr.svg);
+}
+
+.fi-gs {
+  background-image: url(./assets/icons/flags/gs.svg);
+}
+
+.fi-gt {
+  background-image: url(./assets/icons/flags/gt.svg);
+}
+
+.fi-gu {
+  background-image: url(./assets/icons/flags/gu.svg);
+}
+
+.fi-gw {
+  background-image: url(./assets/icons/flags/gw.svg);
+}
+
+.fi-gy {
+  background-image: url(./assets/icons/flags/gy.svg);
+}
+
+.fi-hk {
+  background-image: url(./assets/icons/flags/hk.svg);
+}
+
+.fi-hm {
+  background-image: url(./assets/icons/flags/hm.svg);
+}
+
+.fi-hn {
+  background-image: url(./assets/icons/flags/hn.svg);
+}
+
+.fi-hr {
+  background-image: url(./assets/icons/flags/hr.svg);
+}
+
+.fi-ht {
+  background-image: url(./assets/icons/flags/ht.svg);
+}
+
+.fi-hu {
+  background-image: url(./assets/icons/flags/hu.svg);
+}
+
+.fi-id {
+  background-image: url(./assets/icons/flags/id.svg);
+}
+
+.fi-ie {
+  background-image: url(./assets/icons/flags/ie.svg);
+}
+
+.fi-il {
+  background-image: url(./assets/icons/flags/il.svg);
+}
+
+.fi-im {
+  background-image: url(./assets/icons/flags/im.svg);
+}
+
+.fi-in {
+  background-image: url(./assets/icons/flags/in.svg);
+}
+
+.fi-io {
+  background-image: url(./assets/icons/flags/io.svg);
+}
+
+.fi-iq {
+  background-image: url(./assets/icons/flags/iq.svg);
+}
+
+.fi-ir {
+  background-image: url(./assets/icons/flags/ir.svg);
+}
+
+.fi-is {
+  background-image: url(./assets/icons/flags/is.svg);
+}
+
+.fi-it {
+  background-image: url(./assets/icons/flags/it.svg);
+}
+
+.fi-je {
+  background-image: url(./assets/icons/flags/je.svg);
+}
+
+.fi-jm {
+  background-image: url(./assets/icons/flags/jm.svg);
+}
+
+.fi-jo {
+  background-image: url(./assets/icons/flags/jo.svg);
+}
+
+.fi-jp {
+  background-image: url(./assets/icons/flags/jp.svg);
+}
+
+.fi-ke {
+  background-image: url(./assets/icons/flags/ke.svg);
+}
+
+.fi-kg {
+  background-image: url(./assets/icons/flags/kg.svg);
+}
+
+.fi-kh {
+  background-image: url(./assets/icons/flags/kh.svg);
+}
+
+.fi-ki {
+  background-image: url(./assets/icons/flags/ki.svg);
+}
+
+.fi-km {
+  background-image: url(./assets/icons/flags/km.svg);
+}
+
+.fi-kn {
+  background-image: url(./assets/icons/flags/kn.svg);
+}
+
+.fi-kp {
+  background-image: url(./assets/icons/flags/kp.svg);
+}
+
+.fi-kr {
+  background-image: url(./assets/icons/flags/kr.svg);
+}
+
+.fi-kw {
+  background-image: url(./assets/icons/flags/kw.svg);
+}
+
+.fi-ky {
+  background-image: url(./assets/icons/flags/ky.svg);
+}
+
+.fi-kz {
+  background-image: url(./assets/icons/flags/kz.svg);
+}
+
+.fi-la {
+  background-image: url(./assets/icons/flags/la.svg);
+}
+
+.fi-lb {
+  background-image: url(./assets/icons/flags/lb.svg);
+}
+
+.fi-lc {
+  background-image: url(./assets/icons/flags/lc.svg);
+}
+
+.fi-li {
+  background-image: url(./assets/icons/flags/li.svg);
+}
+
+.fi-lk {
+  background-image: url(./assets/icons/flags/lk.svg);
+}
+
+.fi-lr {
+  background-image: url(./assets/icons/flags/lr.svg);
+}
+
+.fi-ls {
+  background-image: url(./assets/icons/flags/ls.svg);
+}
+
+.fi-lt {
+  background-image: url(./assets/icons/flags/lt.svg);
+}
+
+.fi-lu {
+  background-image: url(./assets/icons/flags/lu.svg);
+}
+
+.fi-lv {
+  background-image: url(./assets/icons/flags/lv.svg);
+}
+
+.fi-ly {
+  background-image: url(./assets/icons/flags/ly.svg);
+}
+
+.fi-ma {
+  background-image: url(./assets/icons/flags/ma.svg);
+}
+
+.fi-mc {
+  background-image: url(./assets/icons/flags/mc.svg);
+}
+
+.fi-md {
+  background-image: url(./assets/icons/flags/md.svg);
+}
+
+.fi-me {
+  background-image: url(./assets/icons/flags/me.svg);
+}
+
+.fi-mf {
+  background-image: url(./assets/icons/flags/mf.svg);
+}
+
+.fi-mg {
+  background-image: url(./assets/icons/flags/mg.svg);
+}
+
+.fi-mh {
+  background-image: url(./assets/icons/flags/mh.svg);
+}
+
+.fi-mk {
+  background-image: url(./assets/icons/flags/mk.svg);
+}
+
+.fi-ml {
+  background-image: url(./assets/icons/flags/ml.svg);
+}
+
+.fi-mm {
+  background-image: url(./assets/icons/flags/mm.svg);
+}
+
+.fi-mn {
+  background-image: url(./assets/icons/flags/mn.svg);
+}
+
+.fi-mo {
+  background-image: url(./assets/icons/flags/mo.svg);
+}
+
+.fi-mp {
+  background-image: url(./assets/icons/flags/mp.svg);
+}
+
+.fi-mq {
+  background-image: url(./assets/icons/flags/mq.svg);
+}
+
+.fi-mr {
+  background-image: url(./assets/icons/flags/mr.svg);
+}
+
+.fi-ms {
+  background-image: url(./assets/icons/flags/ms.svg);
+}
+
+.fi-mt {
+  background-image: url(./assets/icons/flags/mt.svg);
+}
+
+.fi-mu {
+  background-image: url(./assets/icons/flags/mu.svg);
+}
+
+.fi-mv {
+  background-image: url(./assets/icons/flags/mv.svg);
+}
+
+.fi-mw {
+  background-image: url(./assets/icons/flags/mw.svg);
+}
+
+.fi-mx {
+  background-image: url(./assets/icons/flags/mx.svg);
+}
+
+.fi-my {
+  background-image: url(./assets/icons/flags/my.svg);
+}
+
+.fi-mz {
+  background-image: url(./assets/icons/flags/mz.svg);
+}
+
+.fi-na {
+  background-image: url(./assets/icons/flags/na.svg);
+}
+
+.fi-nc {
+  background-image: url(./assets/icons/flags/nc.svg);
+}
+
+.fi-ne {
+  background-image: url(./assets/icons/flags/ne.svg);
+}
+
+.fi-nf {
+  background-image: url(./assets/icons/flags/nf.svg);
+}
+
+.fi-ng {
+  background-image: url(./assets/icons/flags/ng.svg);
+}
+
+.fi-ni {
+  background-image: url(./assets/icons/flags/ni.svg);
+}
+
+.fi-nl {
+  background-image: url(./assets/icons/flags/nl.svg);
+}
+
+.fi-no {
+  background-image: url(./assets/icons/flags/no.svg);
+}
+
+.fi-np {
+  background-image: url(./assets/icons/flags/np.svg);
+}
+
+.fi-nr {
+  background-image: url(./assets/icons/flags/nr.svg);
+}
+
+.fi-nu {
+  background-image: url(./assets/icons/flags/nu.svg);
+}
+
+.fi-nz {
+  background-image: url(./assets/icons/flags/nz.svg);
+}
+
+.fi-om {
+  background-image: url(./assets/icons/flags/om.svg);
+}
+
+.fi-pa {
+  background-image: url(./assets/icons/flags/pa.svg);
+}
+
+.fi-pe {
+  background-image: url(./assets/icons/flags/pe.svg);
+}
+
+.fi-pf {
+  background-image: url(./assets/icons/flags/pf.svg);
+}
+
+.fi-pg {
+  background-image: url(./assets/icons/flags/pg.svg);
+}
+
+.fi-ph {
+  background-image: url(./assets/icons/flags/ph.svg);
+}
+
+.fi-pk {
+  background-image: url(./assets/icons/flags/pk.svg);
+}
+
+.fi-pl {
+  background-image: url(./assets/icons/flags/pl.svg);
+}
+
+.fi-pm {
+  background-image: url(./assets/icons/flags/pm.svg);
+}
+
+.fi-pn {
+  background-image: url(./assets/icons/flags/pn.svg);
+}
+
+.fi-pr {
+  background-image: url(./assets/icons/flags/pr.svg);
+}
+
+.fi-ps {
+  background-image: url(./assets/icons/flags/ps.svg);
+}
+
+.fi-pt {
+  background-image: url(./assets/icons/flags/pt.svg);
+}
+
+.fi-pw {
+  background-image: url(./assets/icons/flags/pw.svg);
+}
+
+.fi-py {
+  background-image: url(./assets/icons/flags/py.svg);
+}
+
+.fi-qa {
+  background-image: url(./assets/icons/flags/qa.svg);
+}
+
+.fi-re {
+  background-image: url(./assets/icons/flags/re.svg);
+}
+
+.fi-ro {
+  background-image: url(./assets/icons/flags/ro.svg);
+}
+
+.fi-rs {
+  background-image: url(./assets/icons/flags/rs.svg);
+}
+
+.fi-ru {
+  background-image: url(./assets/icons/flags/ru.svg);
+}
+
+.fi-rw {
+  background-image: url(./assets/icons/flags/rw.svg);
+}
+
+.fi-sa {
+  background-image: url(./assets/icons/flags/sa.svg);
+}
+
+.fi-sb {
+  background-image: url(./assets/icons/flags/sb.svg);
+}
+
+.fi-sc {
+  background-image: url(./assets/icons/flags/sc.svg);
+}
+
+.fi-sd {
+  background-image: url(./assets/icons/flags/sd.svg);
+}
+
+.fi-se {
+  background-image: url(./assets/icons/flags/se.svg);
+}
+
+.fi-sg {
+  background-image: url(./assets/icons/flags/sg.svg);
+}
+
+.fi-sh {
+  background-image: url(./assets/icons/flags/sh.svg);
+}
+
+.fi-si {
+  background-image: url(./assets/icons/flags/si.svg);
+}
+
+.fi-sj {
+  background-image: url(./assets/icons/flags/sj.svg);
+}
+
+.fi-sk {
+  background-image: url(./assets/icons/flags/sk.svg);
+}
+
+.fi-sl {
+  background-image: url(./assets/icons/flags/sl.svg);
+}
+
+.fi-sm {
+  background-image: url(./assets/icons/flags/sm.svg);
+}
+
+.fi-sn {
+  background-image: url(./assets/icons/flags/sn.svg);
+}
+
+.fi-so {
+  background-image: url(./assets/icons/flags/so.svg);
+}
+
+.fi-sr {
+  background-image: url(./assets/icons/flags/sr.svg);
+}
+
+.fi-ss {
+  background-image: url(./assets/icons/flags/ss.svg);
+}
+
+.fi-st {
+  background-image: url(./assets/icons/flags/st.svg);
+}
+
+.fi-sv {
+  background-image: url(./assets/icons/flags/sv.svg);
+}
+
+.fi-sx {
+  background-image: url(./assets/icons/flags/sx.svg);
+}
+
+.fi-sy {
+  background-image: url(./assets/icons/flags/sy.svg);
+}
+
+.fi-sz {
+  background-image: url(./assets/icons/flags/sz.svg);
+}
+
+.fi-tc {
+  background-image: url(./assets/icons/flags/tc.svg);
+}
+
+.fi-td {
+  background-image: url(./assets/icons/flags/td.svg);
+}
+
+.fi-tf {
+  background-image: url(./assets/icons/flags/tf.svg);
+}
+
+.fi-tg {
+  background-image: url(./assets/icons/flags/tg.svg);
+}
+
+.fi-th {
+  background-image: url(./assets/icons/flags/th.svg);
+}
+
+.fi-tj {
+  background-image: url(./assets/icons/flags/tj.svg);
+}
+
+.fi-tk {
+  background-image: url(./assets/icons/flags/tk.svg);
+}
+
+.fi-tl {
+  background-image: url(./assets/icons/flags/tl.svg);
+}
+
+.fi-tm {
+  background-image: url(./assets/icons/flags/tm.svg);
+}
+
+.fi-tn {
+  background-image: url(./assets/icons/flags/tn.svg);
+}
+
+.fi-to {
+  background-image: url(./assets/icons/flags/to.svg);
+}
+
+.fi-tr {
+  background-image: url(./assets/icons/flags/tr.svg);
+}
+
+.fi-tt {
+  background-image: url(./assets/icons/flags/tt.svg);
+}
+
+.fi-tv {
+  background-image: url(./assets/icons/flags/tv.svg);
+}
+
+.fi-tw {
+  background-image: url(./assets/icons/flags/tw.svg);
+}
+
+.fi-tz {
+  background-image: url(./assets/icons/flags/tz.svg);
+}
+
+.fi-ua {
+  background-image: url(./assets/icons/flags/ua.svg);
+}
+
+.fi-ug {
+  background-image: url(./assets/icons/flags/ug.svg);
+}
+
+.fi-um {
+  background-image: url(./assets/icons/flags/um.svg);
+}
+
+.fi-us {
+  background-image: url(./assets/icons/flags/us.svg);
+}
+
+.fi-uy {
+  background-image: url(./assets/icons/flags/uy.svg);
+}
+
+.fi-uz {
+  background-image: url(./assets/icons/flags/uz.svg);
+}
+
+.fi-va {
+  background-image: url(./assets/icons/flags/va.svg);
+}
+
+.fi-vc {
+  background-image: url(./assets/icons/flags/vc.svg);
+}
+
+.fi-ve {
+  background-image: url(./assets/icons/flags/ve.svg);
+}
+
+.fi-vg {
+  background-image: url(./assets/icons/flags/vg.svg);
+}
+
+.fi-vi {
+  background-image: url(./assets/icons/flags/vi.svg);
+}
+
+.fi-vn {
+  background-image: url(./assets/icons/flags/vn.svg);
+}
+
+.fi-vu {
+  background-image: url(./assets/icons/flags/vu.svg);
+}
+
+.fi-wf {
+  background-image: url(./assets/icons/flags/wf.svg);
+}
+
+.fi-ws {
+  background-image: url(./assets/icons/flags/ws.svg);
+}
+
+.fi-ye {
+  background-image: url(./assets/icons/flags/ye.svg);
+}
+
+.fi-yt {
+  background-image: url(./assets/icons/flags/yt.svg);
+}
+
+.fi-za {
+  background-image: url(./assets/icons/flags/za.svg);
+}
+
+.fi-zm {
+  background-image: url(./assets/icons/flags/zm.svg);
+}
+
+.fi-zw {
+  background-image: url(./assets/icons/flags/zw.svg);
+}
+
+.fi-ac {
+  background-image: url(./assets/icons/flags/ac.svg);
+}
+
+.fi-cp {
+  background-image: url(./assets/icons/flags/cp.svg);
+}
+
+.fi-dg {
+  background-image: url(./assets/icons/flags/dg.svg);
+}
+
+.fi-ea {
+  background-image: url(./assets/icons/flags/ea.svg);
+}
+
+.fi-es-ct {
+  background-image: url(./assets/icons/flags/es-ct.svg);
+}
+
+.fi-es-ga {
+  background-image: url(./assets/icons/flags/es-ga.svg);
+}
+
+.fi-eu {
+  background-image: url(./assets/icons/flags/eu.svg);
+}
+
+.fi-gb-eng {
+  background-image: url(./assets/icons/flags/gb-eng.svg);
+}
+
+.fi-gb-nir {
+  background-image: url(./assets/icons/flags/gb-nir.svg);
+}
+
+.fi-gb-sct {
+  background-image: url(./assets/icons/flags/gb-sct.svg);
+}
+
+.fi-gb-wls {
+  background-image: url(./assets/icons/flags/gb-wls.svg);
+}
+
+.fi-ic {
+  background-image: url(./assets/icons/flags/ic.svg);
+}
+
+.fi-ta {
+  background-image: url(./assets/icons/flags/ta.svg);
+}
+
+.fi-un {
+  background-image: url(./assets/icons/flags/un.svg);
+}
+
+.fi-xk {
+  background-image: url(./assets/icons/flags/xk.svg);
+}
+
+.fi-xx {
+  background-image: url(./assets/icons/flags/xx.svg);
+}
+
 .v-alert {
   border-radius: 8px !important;
   box-shadow: none !important;

@@ -584,5 +584,118 @@ describe("Test suite: Acquisition Package ", () => {
         cy.btnExists("#ContinueButton", " Continue ").click();
     });       
 
+    it("TC16: ACOR: Option is Yes: Selected Contact Information", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigate to COR
+        cy.textExists("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ");        
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigates to ACOR option to select yes or no
+        cy.acorOption("#Radio_YesAlternateCOR", "true");
+        cy.checkIfCorOrAcor("h1.page-header", " Let’s gather info about your ACOR ", "Selia");
+        cy.selectedContactInformation(
+            " Selia Wentzel ",
+            "mail sel.wentz@acusage.net ",
+            "phone 444-444-4444",
+            "pentagon HQ567 - Other Organization Name",
+            " To make any changes to your ACOR’s contact information, please send a request to our User Engagement Team. ",
+            " Request changes to ACOR’s contact information ",
+            "Remove ACOR info "
+        );
+        
+        // click on Request Change Contact Information link
+        cy.requestChangeContactInformation(
+            " Request changes to ACOR’s contact information ",
+            " Request change to ACOR's contact information ",
+            " Please let us know what information needs to be updated for this ACOR. ​",
+            "Please change the contact info"
+        );
+        cy.btnExists("#dialog_cancel", "Cancel ").not("to.be.disabled").click();
+        // remove COR info
+        cy.btnExists("#RemoveSelectedContactInfo", "Remove ACOR info ").click();
+        cy.iframe("#atat-app").find("#SelectedContactCard")
+            .and("not.exist");
+
+    });  
+
+    it("TC17: ACOR: Option is Yes: Manually enter Contact information", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigate to COR
+        cy.textExists("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ");        
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigates to ACOR option to select yes or no
+        cy.acorOption("#Radio_YesAlternateCOR", "true");
+
+        //manually enter the information
+        cy.manuallyEnterContactInformation(
+            " Manually enter your ACOR’s contact information ",
+            " Your ACOR’s Contact Information ",
+            " What role best describes your ACOR’s affiliation with the DoD? ",
+            "#Radio_Military",
+            "MIL"
+        );
+
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName,
+            "#MiddleName_text_field",
+            contactInfo.middleName1,
+            "#LastName_text_field",
+            contactInfo.lastName1,
+            "#EmailAddress_text_field",
+            contactInfo.email,
+            "#PhoneNumber_text_field",
+            contactInfo.phoneNumber,
+            "cor",
+            "D0DCCA"
+        );
+
+        //radio butttons        
+        cy.radioBtn("#Radio_AccessToEditYes", "yes").click({ force: true });
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+        
+
+    });
+    it("TC18: ACOR: Option is No", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigate to COR
+        cy.textExists("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ");        
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigates to ACOR option to select yes or no
+        
+        cy.acorOption("#Radio_NoAlternateCOR", "false");
+
+    });  
 
 });      

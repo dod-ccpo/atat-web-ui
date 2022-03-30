@@ -1,7 +1,7 @@
 import { StepperRouteConfig, StepperStep } from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
-import AcquisitionPackageDetails from "../steps/Index.vue";
+import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
 import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
 import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
@@ -14,17 +14,28 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Fair Opportunity Process
 import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
 
+//Step 3 - Background
+import Background from "../steps/Background/Index.vue";
+import CurrentContract from "../steps/Background/CurrentContract/CurrentContract.vue";
+import CurrentContractDetails from "../steps/Background/CurrentContract/CurrentContractDetails.vue";
+
 // Step 5 - Contract Details
 import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
 
 // Step 6 - Government Furnished Equipment
+import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
 import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
+import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
+import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
+
+// step 7 - Other Contract Considerations
+import PII from "../steps/OtherContractConsiderations/PII.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
-import { AcorsRouteResolver } from "./resolvers";
+import { AcorsRouteResolver, CustodianRouteResolver, CurrentContractRouteResolver } from "./resolvers";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
@@ -36,9 +47,16 @@ export const routeNames = {
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
+  Background: "Background",
+  Current_Contract: "Current_Contract",
+  Current_Contract_Details: "Current_Contract_Details",
+  Performance_Requirements: "Performance_Requirements",
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
+  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
+  Property_Custodian: "Property_Custodian",
+  PII: "PII",
 };
 
 /**
@@ -158,44 +176,48 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     menuText: "Fair Opportunity Process",
     path: "/fair-opportunity-exceptions",
     completePercentageWeight: 10,
-    name: routeNames.Fair_Opportunity_Exceptions,
     component: FairOpportunity_Exceptions,
     children: [
       {
-        name: "Exceptions",
         menuText: "Exceptions",
         path: "/fair-opportunity-exceptions",
+        name: routeNames.Fair_Opportunity_Exceptions,
         completePercentageWeight: 2,
       },
     ],
   },
   {
     stepNumber: "03",
-    name: "Order_Type",
-    completePercentageWeight: 5,
-    menuText: "Order Type",
-    path: "/order-type",
+    menuText: "Background",
+    path: "/current-contract",
+    name: routeNames.Current_Contract,
+    completePercentageWeight: 10,
+    component: Background,
+    completed: false,
     children: [
       {
-        name: "Substep_A",
-        menuText: "Substep A",
-        path: "/order-type",
-
-        completePercentageWeight: 3,
+        menuText: "Current Contract",
+        path: "/current-contract",
+        name: routeNames.Current_Contract,
+        completePercentageWeight: 0,
+        component: CurrentContract,
+        completed: false,
       },
       {
-        name: "Substep_B",
-        menuText: "Substep B",
-        path: "stepthree-B",
-
-        completePercentageWeight: 2,
-      },
-    ],
+        menuText: "Details",
+        path: "/current-contract-details",
+        name: routeNames.Current_Contract_Details,
+        excludeFromMenu: true,
+        completePercentageWeight: 0,
+        component: CurrentContractDetails,
+        completed: false,
+        routeResolver: CurrentContractRouteResolver,      
+      }
+    ]
   },
   {
-    name: "Exception_to_Fair_Opportunity",
+    name: routeNames.Performance_Requirements,
     stepNumber: "04",
-
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",
     path: "/exception-to-fair-opportunity",
@@ -209,10 +231,11 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: PeriodOfPerformance,
     children: [
       {
-        name: "PeriodOfPerformance",
+        name: routeNames.Period_Of_Performance,
         menuText: "Period of Performance",
         path: "/period-of-performance",
         completePercentageWeight: 2,
+        component: PeriodOfPerformance,
       },
     ]
   },
@@ -222,22 +245,48 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     name: routeNames.Property_Requirements,
     menuText: "Government Furnished Equipment",
     path: "/property-requirements",
-    component: PropertyRequirements,
+    component: GovtFurnishedEquipment,
     children: [
       {
-        name: "PropertyRequirements",
+        name: routeNames.Property_Requirements,
         menuText: "Property Requirements",
         path: "/property-requirements",
         completePercentageWeight: 2,
+        component: PropertyRequirements,
+      },
+      {
+        menuText: "Will Govt Equip Furnished",
+        path: "/will-govt-equip-be-furnished",
+        name: routeNames.Will_Govt_Equip_Be_Furnished,
+        completePercentageWeight: 2,
+        excludeFromMenu: true,
+        component: WillGovtEquipBeFurnished,
+      },
+      {
+        name: routeNames.Property_Custodian,
+        menuText: "Property Custodian",
+        path: "/property-custodian",
+        completePercentageWeight: 2,
+        component: PropertyCustodian,
+        routeResolver: CustodianRouteResolver,
       },
     ]
   },
   {
     stepNumber: "07",
     completePercentageWeight: 7,
-    name: "Financial_Details",
-    menuText: "Financial Details",
-    path: "/financial-details",
+    name: "Other_Contract_Considerations",
+    menuText: "Other Contract Considerations",
+    path: "/personally-identifiable-information",
+    component: PII,
+    children : [
+      {
+        menuText: "Personally Identifiable Information",
+        path: "/personally-identifiable-information",
+        name: routeNames.PII,
+        completePercentageWeight: 2,
+      },
+    ]
   },
   {
     stepNumber: "08",
@@ -257,11 +306,10 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "10",
-
     completePercentageWeight: 7,
-    name: "Supply_Chain_Risk_Management",
-    menuText: "Supply Chain Risk Management",
-    path: "/supply-chain-risk-management",
+    name: "Financial_Details",
+    menuText: "Financial Details",
+    path: "/financial-details",
   },
   {
     stepNumber: "11",
