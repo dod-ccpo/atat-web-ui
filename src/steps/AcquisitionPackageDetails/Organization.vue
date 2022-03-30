@@ -106,7 +106,7 @@
                 :class="[selectedAddressType !== AddressTypes.FOR ? 'col-lg-5' : 'col-lg-4']"
               >
                 <ATATTextField
-                  v-show="selectedAddressType != AddressTypes.MIL"
+                  v-show="selectedAddressType !== AddressTypes.MIL"
                   id="City"
                   label="City"
                   :class="inputClass"
