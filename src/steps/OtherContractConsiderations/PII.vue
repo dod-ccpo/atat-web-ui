@@ -9,7 +9,7 @@
 
           <ATATAlert
             id="PIIAlert"
-            type="info"
+            type="callout"
             :showIcon="false"
             class="copy-max-width my-10"
           >

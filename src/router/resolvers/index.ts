@@ -60,5 +60,5 @@ export const PIIRecordResolver = (current: string): string => {
   if (current === routeNames.PII && systemOfRecord) {
     return routeNames.PIIRecord;
   }
-  return routeNames.Public_Disclosure_of_Information;
+  return routeNames.BAA;
 };

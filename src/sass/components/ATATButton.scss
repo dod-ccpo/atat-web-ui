@@ -24,12 +24,24 @@
   &:hover::before, &:focus::before {
     opacity: 0 !important;
   }
+}
+  
+.v-btn{
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 7px 20px 8px !important;
+  &.v-btn--icon {
+    padding: 0 !important;
+  }
+  @extend %v-btn-text;
 
-  &.primary.theme--light {
-    background-color: $primary !important;
+  &.primary.theme--light{
+    background-color:  $primary !important;
     color: #fff !important;
-
-    &:hover {
+    &:hover{
       box-shadow: none !important;
       background-color: $primary-dark !important;
     }

@@ -31,6 +31,7 @@ import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian
 // step 7 - Other Contract Considerations
 import OtherContractConsiderations from "../steps/OtherContractConsiderations/Index.vue";
 import PII from "../steps/OtherContractConsiderations/PII.vue";
+import BAA from "../steps/OtherContractConsiderations/BAA.vue";
 import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 
 // other
@@ -66,6 +67,7 @@ export const routeNames = {
   Property_Custodian: "Property_Custodian",
   Other_Contract_Considerations: "Other_Contract_Considerations",
   PII: "PII",
+  BAA: "BAA",
   PIIRecord: "PIIRecord",
   Public_Disclosure_of_Information:"Public_Disclosure_of_Information",
 };
@@ -278,7 +280,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
     ]
   },
-  {
+{
     stepNumber: "07",
     completePercentageWeight: 7,
     name: routeNames.Other_Contract_Considerations,
@@ -301,6 +303,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: PIIRecord,
         excludeFromMenu: true,
         routeResolver: PIIRecordResolver
+      },
+      {
+        menuText: "Business Associate Agreement (BAA)",
+        path: "/business-associate-agreement",
+        name: routeNames.BAA,
+        completePercentageWeight: 2,
+        component: BAA,
       },
     ]
   },
