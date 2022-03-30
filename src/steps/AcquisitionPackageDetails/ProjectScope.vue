@@ -1,6 +1,5 @@
 <template>
-  <div class="mb-7">
-    <v-container fluid class="container-max-width">
+    <v-container fluid class="container-max-width mb-7">
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">Tell us more about the scope of your project</h1>
@@ -40,24 +39,22 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
 </template>
 
 <script lang="ts">
-import ATATAlert from "../../components/ATATAlert.vue";
-import ATATTextField from "../../components/ATATTextField.vue";
-
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+
+import ATATAlert from "../../components/ATATAlert.vue";
+import ATATTextField from "../../components/ATATTextField.vue";
 
 @Component({
   components: {
     ATATAlert,
-    ATATTextField
+    ATATTextField,
   },
 })
 export default class ProjectScope extends Vue {
-
   get contractPricePercentageRules(): unknown[] {
     const validationRules = [];
     validationRules.push(
@@ -69,5 +66,6 @@ export default class ProjectScope extends Vue {
     
     return validationRules; 
   }
+
 }
 </script>
