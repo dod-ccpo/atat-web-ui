@@ -38,7 +38,7 @@
               Why do we need to know about PII?
             </template>
             <template v-slot:content>
-              <p>
+              <p class="mb-4">
                 If this effort provides for the design, development, or operation of a system of
                 records on individuals (in whole or in part), then the contracting officer must
                 include the following clauses in the solicitation:
@@ -47,20 +47,20 @@
                 <li class="pb-2">
                   Privacy Act Notification,
                   <a class="text-link" href="https://www.acquisition.gov/far/52.224-1" target="_blank">
-                    FAR 52.224-1
+                    FAR <span class="external-link">52.224-1</span>
                   </a>
                 </li>
                 <li class="pb-4">
                   Privacy Act,
                   <a class="text-link" href="https://www.acquisition.gov/far/52.224-2" target="_blank">
-                    FAR 52.224-2
+                    <span class="external-link">FAR 52.224-2</span>
                   </a>
                 </li>
               </ul>
               <p>
                 For more information, reference
                 <a class="text-link" href="https://www.acquisition.gov/far/subpart-24.1" target="_blank">
-                   FAR 24.1, Protection of Individual Privacy.
+                  <span class="external-link">FAR 24.1, Protection of Individual Privacy.</span>
                 </a>
               </p>
             </template>
