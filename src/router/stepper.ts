@@ -66,8 +66,8 @@ export const routeNames = {
  * Rules:
  * 1. Parent steps cannot have a name
  * 2. Parent steps need a page component with a router view defined
- * 2. All steps needs to have unique names
- * 3. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
+ * 3. All steps needs to have unique names
+ * 4. If a stepper route isn't meant to be rendered set it's 'excludeFromMenu' value to true
  */
 export const stepperRoutes: Array<StepperRouteConfig> = [
   {
@@ -85,6 +85,17 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
+        additionalButtons: [
+          {
+            name: routeNames.Project_Overview,
+            buttonText: "Cancel",
+            buttonId: "MyButton",
+            buttonClass: "tertirary",
+            emitText: "sampleEmitText", 
+            actionName: "sampleAdditionalButtonAction",
+            actionArgs: ["foo", "bar"],
+          },
+        ],
       },
       {
         menuText: "Project Scope",
@@ -112,7 +123,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ContactInfo,
       },
       {
-        menuText: "Demo Package",
+        menuText: "Cor Info",
         path: "cor-info",
         name: routeNames.Cor_Information,
         excludeFromMenu: true,
@@ -139,9 +150,10 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Summary",
         path: "summary",
         name: routeNames.Summary,
-        excludeFromMenu: false,
+        excludeFromMenu: true,
         completePercentageWeight: 5,
         component: Summary,
+        backButtonText: "Sample different Back text",
       }
     ],
   },
@@ -185,7 +197,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
-        routeResolver: CurrentContractRouteResolver,      
+        routeResolver: CurrentContractRouteResolver,  
+        additionalButtons: [
+          {
+            buttonText: "I don’t have an existing contract",
+            buttonId: "NoExistingContract",
+            buttonClass: "secondary",
+            name: routeNames.Performance_Requirements, 
+          },
+        ],    
       }
     ]
   },
@@ -195,6 +215,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",
     path: "/exception-to-fair-opportunity",
+    completed: false,
   },
   {
     stepNumber: "05",
@@ -327,7 +348,10 @@ const mapStepRouteToStepperData = (
     menuText,
     path,
     stepNumber,
+    additionalButtons,
+    backButtonText,
   } = stepperRouteConfig;
+
   let { name } = stepperRouteConfig;
   name = name || "";
 
@@ -342,6 +366,8 @@ const mapStepRouteToStepperData = (
     subSteps: stepperRouteConfig.children?.map((child) =>
       mapStepRouteToStepperData(child)
     ),
+    additionalButtons,
+    backButtonText,
   };
 
   return stepperStep;
