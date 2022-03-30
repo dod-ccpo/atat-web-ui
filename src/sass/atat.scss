@@ -6,6 +6,7 @@
 @import "./utils/forms.scss";
 @import "./utils/typography.scss";
 @import "./utils/utils.scss";
+@import "./utils/flag-icons/flag-icons.scss";
 
 @import "./components/ATATAlert";
 @import "./components/ATATAutoComplete";
@@ -16,6 +17,7 @@
 @import "./components/ATATExpandableLink";
 @import "./components/ATATFooter";
 @import "./components/ATATPageHead";
+@import "./components/ATATPhoneInput";
 @import "./components/ATATRadioGroup";
 @import "./components/ATATSelect";
 @import "./components/ATATSideStepper";
