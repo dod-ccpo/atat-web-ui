@@ -128,12 +128,6 @@ hr, .hr {
     }
   }
 
-  &.link-sm{
-    font-size: 1.4rem !important;
-    line-height: 1.5rem !important;
-    letter-spacing: .025rem !important;
-  }
-
   .external-link {
     position: relative;
     padding-right: 24px;
@@ -161,6 +155,7 @@ hr, .hr {
 
 $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
 @each $size in $sizes {
+  %icon-#{$size},
   .icon-#{$size} {
     font-size: #{$size}px !important;
     height: #{$size}px !important;
@@ -249,3 +244,4 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
   margin-bottom: 40px !important;
   @extend .copy-max-width;
 }
+
