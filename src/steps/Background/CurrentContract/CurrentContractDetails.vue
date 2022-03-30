@@ -8,7 +8,7 @@
       :value.sync="expiredDate" 
       :rules="[
         $validators.required('Please enter a valid date'),
-        $validators.isDateValid('Please enter a valid date 002')
+        $validators.isDateValid('')
       ]" />
   </div>
 </template>

@@ -39,7 +39,7 @@
           outlined
           @input="onInput"
           v-model="dateFormatted"
-          :style="'width: ' + width"
+          :style="'width: ' + width + 'px'"
           dense
           v-bind="attrs"
           v-on="on"
@@ -118,8 +118,8 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private value!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: true }) private showAdjacentMonths!: boolean;
-  @Prop({ default: "220px" }) private width!: string;
+  @Prop({ default: false }) private showAdjacentMonths!: boolean;
+  @Prop({ default: "220" }) private width!: string;
   @Prop({ default: "" }) private helpText!: string;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
