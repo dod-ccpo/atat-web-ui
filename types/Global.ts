@@ -1,4 +1,6 @@
-import {RouteConfigMultipleViews, RouteConfigSingleView} from "vue-router/types/router";
+import { Component } from "vue";
+import { RouteConfigMultipleViews,
+    RouteConfigSingleView } from "vue-router/types/router";
 
 export interface StepperRouteHandlerParams {
   previous: string;
@@ -89,6 +91,11 @@ export interface Checkbox {
   label: string;
   value: string;
   description?: string;
+}
+
+export interface SlideoutPanelContent {
+    component: Component;
+    title: string;
 }
 
 export interface CountryObj {

@@ -63,7 +63,7 @@
           label="Suffix"
           id="Suffix"
           :optional="true"
-          width="80px"
+          width="80"
         />
       </v-col>
     </v-row>
