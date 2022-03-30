@@ -1,21 +1,21 @@
 
 <template>
-   <div class="mb-7">
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <h1 class="page-header">
+          <h1 class="page-header mb-3">
            Do you have a current contract for this effort?
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              if you acquistion is a follow-on requirement, we'll gather some details about your contract next.
+              If your acquisition is a follow-on requirement, 
+              we’ll gather some details about your contract next.
             </p>
-            <ATATRadioGroup
+            <ATATRadioGroup                                  
               class="copy-max-width mb-10 max-width-740"
               id="currentContractOptions"
               :card="true"
-              :items="currentContractOptions"
+              :items="currentContractOptions" 
               :value.sync="currentContractOption"
             />
           </div>
@@ -23,7 +23,6 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -51,7 +50,7 @@ export default class CurrentContract extends Vue {
     },
   ];
 
-   public get currentContractOption(): string {
+  public get currentContractOption(): string {
     const hasCurrentContract = Background.hasCurrentContract;
     if (hasCurrentContract !== null) {
       return hasCurrentContract ? "Yes" : "No";

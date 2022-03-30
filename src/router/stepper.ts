@@ -36,7 +36,6 @@ import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
 import { AcorsRouteResolver, CustodianRouteResolver, CurrentContractRouteResolver } from "./resolvers";
-import { RouterLinkStub } from "@vue/test-utils";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
@@ -170,7 +169,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: Background,
     completed: false,
     children: [
-       {
+      {
         menuText: "Current Contract",
         path: "/current-contract",
         name: routeNames.Current_Contract,
@@ -186,7 +185,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
-        routeResolver: CurrentContractRouteResolver,      }
+        routeResolver: CurrentContractRouteResolver,      
+      }
     ]
   },
   {

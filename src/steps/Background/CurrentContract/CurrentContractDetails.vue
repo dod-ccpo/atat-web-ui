@@ -1,17 +1,15 @@
 
 <template>
-
-<div class="mb-7">
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Let's gather some details about your current contract
+            Let’s gather some details about your current contract
           </h1>
           <div class="copy-max-width">
   
             <ATATTextField 
-              label="Incumbent contractor name" 
+              label="Incumbent Contractor Name" 
               id="IncumbentContractorName" 
               class="input-max-width mb-10" 
             />
@@ -41,7 +39,6 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
