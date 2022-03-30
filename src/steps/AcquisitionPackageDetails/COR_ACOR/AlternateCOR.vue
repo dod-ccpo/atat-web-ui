@@ -16,7 +16,7 @@
           :items="alternateCoreOptions"
           name="hasAlternateCOR"
           class="mt-3 mb-8"
-          width="180px"
+          width="180"
         />
 
       </v-col>
@@ -53,7 +53,7 @@ export default class AlternateCOR extends Vue {
 
   public get hasAlternateCOR(): string {
     const ACORValue = AcquisitionPackage.hasAlternativeContactRep;
-    if (ACORValue) {
+    if (ACORValue !== null) {
       return ACORValue.toString();
     }
     return "";

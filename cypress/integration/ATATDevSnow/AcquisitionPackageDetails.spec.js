@@ -1,3 +1,5 @@
+import {bootstrapMockApis} from "../../helpers";
+
 describe("Test suite: Acquisition Package ", () => {
     
     let projectDetails;
@@ -5,7 +7,9 @@ describe("Test suite: Acquisition Package ", () => {
     let contactInfo;
 
     beforeEach(() => {
-        
+
+        bootstrapMockApis();
+                
         cy.fixture("projectOverview").then((details) => {
             projectDetails = details;
         });
@@ -165,8 +169,8 @@ describe("Test suite: Acquisition Package ", () => {
         
         //radio buttons        
         cy.radioBtn("#Radio_USAddress", "USA").not("[disabled]");
-        cy.radioBtn("#Radio_MilitaryAddress", "MIL").and("be.disabled");
-        cy.radioBtn("#Radio_ForeignAddress", "FOR").and("be.disabled");
+        cy.radioBtn("#Radio_MilitaryAddress", "MIL").not("[disabled]");
+        cy.radioBtn("#Radio_ForeignAddress", "FOR").not("[disabled]");
 
         //Assert Organization's address labels
         cy.textExists("#StreetAddress_text_field_label", " Street address ");
@@ -233,7 +237,7 @@ describe("Test suite: Acquisition Package ", () => {
 
         // Navigates to "Organization"
         cy.textExists("header.v-toolbar div.h3", projectDetails.projectTitle3);
-        cy.textExists("a.text-link.mb-10.d-inline-block", " Request to have your agency added ").click();
+        cy.textExists("#RequestAgencyAdded", " Request to have your agency added ").click();
         cy.textExists("#modalDialogTitle", " Request to add your agency ").should("exist");
         cy.textExists("#AgencyOrgName_text_field_label", " Agency/Organization Name ");
         
@@ -263,7 +267,7 @@ describe("Test suite: Acquisition Package ", () => {
             });
         
         //select radio button
-        cy.contactRoleRadioBtnOption("#Radio_Civilian");
+        cy.contactRoleRadioBtnOption("#Radio_Civilian","CIV");
 
         //Salutation dropdown
         cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon");
@@ -287,7 +291,18 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists("#ContactPhone_text_field_label", " Your phone number ");
         
          //Enter the Contact Information
-        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName,"#MiddleName_text_field",contactInfo.middleName,"#LastName_text_field",contactInfo.lastName,"#ContactEmail_text_field",contactInfo.email,"#ContactPhone_text_field",contactInfo.phoneNumber );
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName,
+            "#MiddleName_text_field",
+            contactInfo.middleName,
+            "#LastName_text_field",
+            contactInfo.lastName,
+            "#ContactEmail_text_field",
+            contactInfo.email,
+            "#ContactPhone_text_field",
+            contactInfo.phoneNumber
+        );
     });
 
     it("TC10: Contact Information: Role is Military", () => {
@@ -308,16 +323,26 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists("h1.page-header", "Let’s confirm your contact information"); 
         
         //select radio button
-        cy.contactRoleRadioBtnOption("#Radio_Military");           
+        cy.contactRoleRadioBtnOption("#Radio_Military","MIL");           
 
         //Click Rank dropdown
-        cy.dropDownClick("#Rank_dropdown_field_control .v-input__append-inner > .v-icon");            
+        cy.dropDownClick("#Rank");            
     
         //select the value from Rank Dropdown
-        cy.iframe('#atat-app').find("#Rank_dropdown_field_control .v-list-item__title").first().click({ force: true });
+        cy.iframe('#atat-app').find("#Rank_AutoComplete_Wrapper .v-list-item__title").first().click({ force: true });
 
         //enter the ContactInformation
-        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName1,"#MiddleName_text_field",contactInfo.middleName1,"#LastName_text_field",contactInfo.lastName1,"#ContactEmail_text_field",contactInfo.email1,"#ContactPhone_text_field",contactInfo.phoneNumber1 );
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName1,
+            "#MiddleName_text_field",
+            contactInfo.middleName1,
+            "#LastName_text_field",
+            contactInfo.lastName1,
+            "#ContactEmail_text_field",
+            contactInfo.email1,
+            "#ContactPhone_text_field",
+            contactInfo.phoneNumber1);
         
     });
 
@@ -337,7 +362,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists("h1.page-header", "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption("#Radio_Civilian");
+        cy.contactRoleRadioBtnOption("#Radio_Civilian","CIV");
 
         //select the value from salutationDropdownList
         cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon");
@@ -345,7 +370,18 @@ describe("Test suite: Acquisition Package ", () => {
             .should("have.text", "Mrs.").click({ force: true });      
         
          //Enter contact information
-        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName2,"#MiddleName_text_field",contactInfo.middleName2,"#LastName_text_field",contactInfo.lastName2,"#ContactEmail_text_field",contactInfo.email2,"#ContactPhone_text_field",contactInfo.phoneNumber2 );
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName2,
+            "#MiddleName_text_field",
+            contactInfo.middleName2,
+            "#LastName_text_field",
+            contactInfo.lastName2,
+            "#ContactEmail_text_field",
+            contactInfo.email2,
+            "#ContactPhone_text_field",
+            contactInfo.phoneNumber2
+        );
         
         //Select the Grade 
         cy.textExists("#ContactGrade_AutoComplete_Wrapper .mb-2.d-block", " Grade  Optional ");
@@ -361,7 +397,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists("h1.page-header", "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption("#Radio_Contractor")
+        cy.contactRoleRadioBtnOption("#Radio_Contractor","CTR")
     
         //Salutation dropdown
         cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon"); 
@@ -374,7 +410,292 @@ describe("Test suite: Acquisition Package ", () => {
         //select the value from salutationDropdownList
         cy.iframe("#atat-app").find("#Salutation_DropdownListItem_Mr ")
             .should('have.text', 'Mr.').click({ force: true });
-        cy.enterContactInformation("#FirstName_text_field",contactInfo.firstName3,"#MiddleName_text_field",contactInfo.middleName3,"#LastName_text_field",contactInfo.lastName3,"#ContactEmail_text_field",contactInfo.email3,"#ContactPhone_text_field",contactInfo.phoneNumber3 );
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName3,
+            "#MiddleName_text_field",
+            contactInfo.middleName3,
+            "#LastName_text_field",
+            contactInfo.lastName3,
+            "#ContactEmail_text_field",
+            contactInfo.email3,
+            "#ContactPhone_text_field",
+            contactInfo.phoneNumber3
+        );
+    });
+    
+    it("TC13: COR: Selected Contact Information", () => {
+        
+        cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
+        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
+        cy.textExists("h1.page-header", " Next, we’ll gather information about your organization ");
+        cy.serviceOrAgency("Communications");
+        cy.enterTextInTextField("#OrgName_text_field", "TestDepartmentof Defense");
+        cy.enterTextInTextField("#DoDAAC_text_field", "DoDCEC");
+        cy.enterOrganizationAddress(orgAddressType.StreetAddress, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //select radio button
+        cy.contactRoleRadioBtnOption("#Radio_Contractor","CTR")
+    
+        //Salutation dropdown
+        cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon"); 
+        const salutationDropdownList = "Mr.Mrs.MissMs.Dr."
+        cy.iframe("#atat-app").find("#Salutation_dropdown_field_control .v-list-item").then(($el) => {
+            console.log($el.text())
+            expect(Cypress.$($el).text()).to.eq(salutationDropdownList);
+        });
+
+        cy.iframe("#atat-app").find("#Salutation_DropdownListItem_Mr ")
+            .should('have.text', 'Mr.').click({ force: true });
+        
+        // Enter the Contact Information
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName,
+            "#MiddleName_text_field",
+            contactInfo.middleName,
+            "#LastName_text_field",
+            contactInfo.lastName,
+            "#ContactEmail_text_field",
+            contactInfo.email,
+            "#ContactPhone_text_field",
+            contactInfo.phoneNumber);
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+        
+        //navigate to COR
+        cy.checkIfCorOrAcor("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ", "adam");
+
+        //Verify the selected contact info
+        cy.selectedContactInformation(
+            " Adam Adamson ",
+            "mail adam.adamson-civ@mail.mil ",
+            "phone 333-333-3333",
+            "pentagon HQ1234 - Corresponding Organization Name",
+            " To make any changes to your COR’s contact information, please send a request to our User Engagement Team. ",
+            " Request changes to COR’s contact information ",
+            "Remove COR info "
+        );
+        // click on Request Change Contact Information link
+        cy.requestChangeContactInformation(
+            " Request changes to COR’s contact information ",
+            " Request change to COR's contact information ",
+            " Please let us know what information needs to be updated for this COR. ​",
+            "Please change the contact info"
+        );
+        cy.btnExists("#dialog_cancel", "Cancel ").not("to.be.disabled").click();
+        // remove COR info
+        cy.btnExists("#RemoveSelectedContactInfo", "Remove COR info ").click();
+        cy.iframe("#atat-app").find('#SelectedContactCard')
+            .and("not.exist");
+    });
+
+    it("TC14: COR: Search: No results found.", () => {   
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information ");
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");        
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+        
+        //navigate to COR
+        cy.checkIfCorOrAcor(
+            "h1.page-header",
+            " Let’s gather info about your Contracting Officer’s Representative (COR) ",
+            "test",
+            " Manually enter my COR’s contact information ");
+
     });    
+
+    it("TC15: COR: Manually enter Contact information", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //select radio button
+        cy.contactRoleRadioBtnOption("#Radio_Contractor","CTR")
+    
+        //Salutation dropdown
+        cy.dropDownClick("#Salutation_dropdown_field_control .v-input__append-inner > .v-icon");
+        const salutationDropdownList = "Mr.Mrs.MissMs.Dr."
+        cy.iframe("#atat-app").find("#Salutation_dropdown_field_control .v-list-item").then(($el) => {
+            console.log($el.text())
+            expect(Cypress.$($el).text()).to.eq(salutationDropdownList);
+        });
+
+        cy.iframe("#atat-app").find("#Salutation_DropdownListItem_Mr ")
+            .should('have.text', 'Mr.').click({ force: true });
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName,
+            "#MiddleName_text_field",
+            contactInfo.middleName,
+            "#LastName_text_field",
+            contactInfo.lastName,
+            "#ContactEmail_text_field",
+            contactInfo.email,
+            "#ContactPhone_text_field",
+            contactInfo.phoneNumber
+        );
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigate to COR
+        cy.textExists("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ");
+        
+        //manually enter the information
+        cy.manuallyEnterContactInformation(
+            " Manually enter your COR’s contact information ",
+            " Your COR’s Contact Information ",
+            " What role best describes your COR’s affiliation with the DoD? ",
+            "#Radio_Military",
+            "MIL"
+        );
+
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName2,
+            "#MiddleName_text_field",
+            contactInfo.middleName1,
+            "#LastName_text_field",
+            contactInfo.lastName1,
+            "#EmailAddress_text_field",
+            contactInfo.email,
+            "#PhoneNumber_text_field",
+            contactInfo.phoneNumber,
+            "cor",
+            "D0DCCA"
+        );
+
+        //radio butttons        
+        cy.radioBtn("#Radio_AccessToEditYes", "yes").click({ force: true });
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+    });       
+
+    it("TC16: ACOR: Option is Yes: Selected Contact Information", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigate to COR
+        cy.textExists("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ");        
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigates to ACOR option to select yes or no
+        cy.acorOption("#Radio_YesAlternateCOR", "true");
+        cy.checkIfCorOrAcor("h1.page-header", " Let’s gather info about your ACOR ", "Selia");
+        cy.selectedContactInformation(
+            " Selia Wentzel ",
+            "mail sel.wentz@acusage.net ",
+            "phone 444-444-4444",
+            "pentagon HQ567 - Other Organization Name",
+            " To make any changes to your ACOR’s contact information, please send a request to our User Engagement Team. ",
+            " Request changes to ACOR’s contact information ",
+            "Remove ACOR info "
+        );
+        
+        // click on Request Change Contact Information link
+        cy.requestChangeContactInformation(
+            " Request changes to ACOR’s contact information ",
+            " Request change to ACOR's contact information ",
+            " Please let us know what information needs to be updated for this ACOR. ​",
+            "Please change the contact info"
+        );
+        cy.btnExists("#dialog_cancel", "Cancel ").not("to.be.disabled").click();
+        // remove COR info
+        cy.btnExists("#RemoveSelectedContactInfo", "Remove ACOR info ").click();
+        cy.iframe("#atat-app").find("#SelectedContactCard")
+            .and("not.exist");
+
+    });  
+
+    it("TC17: ACOR: Option is Yes: Manually enter Contact information", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigate to COR
+        cy.textExists("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ");        
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigates to ACOR option to select yes or no
+        cy.acorOption("#Radio_YesAlternateCOR", "true");
+
+        //manually enter the information
+        cy.manuallyEnterContactInformation(
+            " Manually enter your ACOR’s contact information ",
+            " Your ACOR’s Contact Information ",
+            " What role best describes your ACOR’s affiliation with the DoD? ",
+            "#Radio_Military",
+            "MIL"
+        );
+
+        cy.enterContactInformation(
+            "#FirstName_text_field",
+            contactInfo.firstName,
+            "#MiddleName_text_field",
+            contactInfo.middleName1,
+            "#LastName_text_field",
+            contactInfo.lastName1,
+            "#EmailAddress_text_field",
+            contactInfo.email,
+            "#PhoneNumber_text_field",
+            contactInfo.phoneNumber,
+            "cor",
+            "D0DCCA"
+        );
+
+        //radio butttons        
+        cy.radioBtn("#Radio_AccessToEditYes", "yes").click({ force: true });
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+        
+
+    });
+    it("TC18: ACOR: Option is No", () => {
+        cy.clickSideStepper("#SubStep_ContactInformation", " Contact Information "); 
+
+        //Navigates to Contact information
+        cy.textExists("h1.page-header", "Let’s confirm your contact information");
+
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigate to COR
+        cy.textExists("h1.page-header", " Let’s gather info about your Contracting Officer’s Representative (COR) ");        
+        
+        //Click on Continue button
+        cy.btnExists("#ContinueButton", " Continue ").click();
+
+        //navigates to ACOR option to select yes or no
+        
+        cy.acorOption("#Radio_NoAlternateCOR", "false");
+
+    });  
 
 });      

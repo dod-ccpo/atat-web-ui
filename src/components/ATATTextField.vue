@@ -29,8 +29,8 @@
       @input="onInput"
       class="text-primary"
       :hide-details="true"
-      :style="'width: ' + width + 'px'"
       :suffix="suffix"
+      :style="{ 'max-width': width + 'px' }"
       :rules="rules"
       @blur="onBlur"
       @update:error="setErrorMessage"
@@ -71,7 +71,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;

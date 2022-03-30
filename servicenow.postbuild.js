@@ -116,11 +116,18 @@ function injectJellyWrappers(inputHTML) {
 
 function injectJellyDoctype(inputHTML) {
   const DOCTYPE_JELLY = `
-   <g:evaluate> var docType = '&lt;!DOCTYPE HTML&gt;'; 
-   </g:evaluate> 
-   <g2:no_escape> 
-       $[docType] 
-   </g2:no_escape>
+  <g:evaluate> var docType = '&lt;!DOCTYPE HTML&gt;';
+  </g:evaluate>
+  <g2:no_escape>
+  $[docType]
+  </g2:no_escape>
+         <g:evaluate object="true">
+          var session = gs.getSession();
+  var token = session.getSessionToken();
+  </g:evaluate> 
+  <script>     
+           window.sessionToken = "$[token]"; 
+  </script>
      `
 
   const headIndex = inputHTML.indexOf('<head')

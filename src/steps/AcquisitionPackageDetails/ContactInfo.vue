@@ -10,6 +10,19 @@
           :value.sync="selectedRole"
           class="mb-6"
         />
+
+        <ATATSelect
+          id="Branch"
+          v-model="selectedBranch"
+          v-show="selectedRole === 'MIL'"
+          class="input-max-width mb-10"
+          label="Service branch"
+          placeholder=""
+          :items="branchData"
+          :selectedValue.sync="selectedBranch"
+          :return-object="true"
+        />
+
         <ATATSelect
           v-show="selectedRole !== 'MIL'"
           id="Salutation"
@@ -20,19 +33,22 @@
           :items="salutationData"
           :selectedValue.sync="selectedSalutation"
         />
-        <ATATSelect
-          v-show="selectedRole === 'MIL'"
+        
+        <ATATAutoComplete
           id="Rank"
-          class="input-max-width"
+          v-show="selectedRole === 'MIL' && showContactInfoFields"
           label="Rank"
-          :optional="true"
-          placeholder=""
-          :items="rankData"
-          :selectedValue.sync="selectedRank"
+          titleKey="rank"
+          :items="selectedBranchRanks"
+          :searchFields="['rank', 'value', 'grade']"
+          :selectedItem.sync="selectedRank"
+          class="input-max-width mb-7"
+          icon="arrow_drop_down"
         />
+
       </v-col>
     </v-row>
-    <v-row class="form-section">
+    <v-row class="form-section" v-show="showContactInfoFields">
       <v-col class="col-12 col-lg-3">
         <ATATTextField label="First name" id="FirstName" class="input-max-width" />
       </v-col>
@@ -47,12 +63,17 @@
           label="Suffix"
           id="Suffix"
           :optional="true"
-          width="80px"
+          width="80"
         />
       </v-col>
     </v-row>
-    <v-row class="form-section mb-0">
+    <v-row class="form-section mb-0" v-show="showContactInfoFields">
       <v-col>
+        <ATATTextField
+          label="Your title"
+          id="ContactTitle"
+          class="input-max-width mb-10"
+        />
         <ATATTextField
           label="Your email"
           id="ContactEmail"
@@ -85,15 +106,22 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
+import { Component, Watch } from "vue-property-decorator";
+
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import Vue from "vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
-import { Component } from "vue-property-decorator";
-import { RadioButton, SelectData } from "../../../types/Global";
+import { 
+  AutoCompleteItem, 
+  AutoCompleteItemGroups, 
+  RadioButton, 
+  SelectData 
+} from "../../../types/Global";
 
 @Component({
   components: {
@@ -103,7 +131,55 @@ import { RadioButton, SelectData } from "../../../types/Global";
     ATATRadioGroup,
   },
 })
+
 export default class ContactInfo extends Vue {
+
+  // computed
+
+  get showContactInfoFields(): boolean {
+    return this.selectedRole !== "MIL" 
+      || (this.selectedRole === "MIL" && this.selectedBranch.value !== "")
+  }
+
+  // methods
+
+  private setRankData(): void {
+    if (this.selectedBranch.value) {
+      this.selectedBranchRanks = this.branchRanksData[this.selectedBranch.value];
+    }
+  }
+
+  // watchers
+
+  @Watch("selectedBranch")
+  protected branchChange(): void {
+    this.setRankData();
+    AcquisitionPackage.setSelectedContactBranch(this.selectedBranch);
+  }  
+
+  @Watch("selectedRole") 
+  protected roleChange(newRole: string): void {
+    if (newRole === "MIL") {
+      const branch = this.branchData.filter((branchObj) => {
+        return branchObj.value === this.selectedServiceOrAgency.value;
+      });
+      if (branch.length) {
+        this.selectedBranch = branch[0];
+      }
+    }
+  }
+
+  // data
+  
+  public selectedServiceOrAgency: SelectData = AcquisitionPackage.selectedServiceOrAgency;
+
+  private selectedBranch: SelectData = { text: "", value: "" };
+  private branchData: SelectData[] = AcquisitionPackage.branchData;
+
+  private selectedRank = "";
+  private selectedBranchRanks: AutoCompleteItem[] = [];
+  private branchRanksData: AutoCompleteItemGroups = AcquisitionPackage.branchRanksData;
+
   private selectedRole = "";
   private contactRoles: RadioButton[] = [
     {
@@ -151,37 +227,6 @@ export default class ContactInfo extends Vue {
     { text: "Ms.", value: "Ms.", },
     { text: "Dr.", value: "Dr.", },
   ];
-  
-  private selectedRank = "";
-  private rankData: SelectData[] = [
-    {
-      text: "Private E-1 (PVT)",
-      value: "PVT",
-    },
-    {
-      text: "Private E-2 (PV2)",
-      value: "PV2",
-    },
-    {
-      text: "Private First Class (PFC)",
-      value: "PFC",
-    },
-    {
-      text: "Corporal (CPL)",
-      value: "CPL",
-    },
-    {
-      text: "Specialist (SPC)",
-      value: "SPC",
-    },
-    {
-      text: "Sergeant (SGT)",
-      value: "SGT",
-    },
-    {
-      text: "Staff Sergeant (SSG)",
-      value: "SSG",
-    },
-  ];
+
 }
 </script>

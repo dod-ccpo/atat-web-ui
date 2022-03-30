@@ -49,25 +49,21 @@ module.exports = {
   },
   chainWebpack: config => {
 
-    let BASE_API_URL = CONFIG.SERVICENOW_INSTANCE;
+    let BASE_API_URL =  process.env.BASE_API_URL;
     BASE_API_URL += BASE_API_URL.endsWith("/") ? "api" : "/api";
+    let SNOWUSER = process.env.NODE_ENV === 'development' ? process.env.SNOWUSER :'';
+    let SNOWPASS = process.env.NODE_ENV === 'development' ? process.env.SNOWPASS : '';
 
     config.plugin('define').tap((definitions) => {
       let _base = definitions[0]["process.env"];
       definitions[0]["process.env"] = {
         ..._base,
         'VUE_APP_BASE_API_URL': JSON.stringify(BASE_API_URL),
+        'VUE_APP_SNOWUSER': JSON.stringify(SNOWUSER),
+        'VUE_APP_SNOWPASS': JSON.stringify(SNOWPASS),
       };
       return definitions;
     });
-
-    if (process.env.NODE_ENV === 'development') {
-      config.plugin('define').tap((definitions) => {
-        definitions[0]['process.env']['VUE_APP_USER'] = JSON.stringify(servicenowConfig.VUE_APP_USER);
-        definitions[0]['process.env']['VUE_APP_PASSWORD'] = JSON.stringify(servicenowConfig.VUE_APP_PASSWORD);
-        return definitions;
-      });
-    }
 
     if (process.env.NODE_ENV === 'production') {
       config.module

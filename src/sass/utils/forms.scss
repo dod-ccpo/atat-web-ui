@@ -5,8 +5,7 @@
     }
 }
 .textarea-max-width {
-  // only used for textareas
-  max-width: 740px !important;
+  @extend .max-width-740;
 }
 
 .optional {
@@ -44,10 +43,4 @@ hr{
 //that is put there by vuetify
 .v-messages{
   min-height: 0px !important;
-}
-
-.ATATRadioGroup {
-  legend {
-    font-weight: 500;
-  }
 }

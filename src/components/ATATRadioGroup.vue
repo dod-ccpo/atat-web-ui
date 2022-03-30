@@ -2,6 +2,7 @@
   <div 
     :id="id+'_radio_group_control'" >
     <v-radio-group
+      class="_atat-radio-group"
       ref="radioButtonGroup"
       :hide-details="false"
       :rules="rules"
@@ -18,23 +19,28 @@
         <v-radio
           v-for="item in items"
           :id="'Radio_' + getIdText(item.id)"
-          :class="[card ? '_radio-button-card' : '_radio-button',
-                    errorMessages.length > 0 ? 'error--text v-input--has-state': '', 'ATATRadioGroup']"
+          :class="radioClasses"
           :key="item.id"
-          :label="item.label"
           :value="item.value"
-          :style="{ width: width }"
+          :style="{ width: width + 'px' }"
           :name="name"
           :disabled="item.disabled || disabled"
           @blur="onBlur"
           @click="onClick"
         >
-          <template v-if="item.description && card" v-slot:label>
+          <template v-if="item.description || card" v-slot:label>
             <div class="d-flex flex-column">
-              <p class="card-label">{{ item.label }}</p>
-              <p class="mb-0">{{ item.description }}</p>
+              <p 
+                :class="[item.description ? 'card-label' : 'mb-0']" 
+                v-html="item.label"
+              ></p>
+              <p class="mb-0" v-html="item.description"></p>
             </div>
           </template>
+          <template v-else v-slot:label>
+            <span v-html="item.label"></span>
+          </template>
+
         </v-radio>
       </fieldset>
     </v-radio-group>
@@ -66,7 +72,7 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "" }) private legend!: string;
   @Prop({ default: [""] }) private items!: RadioButton[];
-  @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
+  @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: false }) private card!: boolean;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private disabled!: boolean;
@@ -76,7 +82,7 @@ export default class ATATRadioGroup extends Vue {
 
   // data
   private errorMessages: string[] = [];
-
+  
   // methods
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
@@ -87,6 +93,13 @@ export default class ATATRadioGroup extends Vue {
 
   private getIdText(string: string) {
     return string.replace(/[^A-Z0-9]/gi, "");
+  }
+
+  // computed
+  get radioClasses(): string {
+    let classes = this.card ? "_radio-button-card" : "_radio-button";
+    classes += this.errorMessages.length > 0 ? ' error--text v-input--has-state' : '';
+    return classes;
   }
 
   // events
