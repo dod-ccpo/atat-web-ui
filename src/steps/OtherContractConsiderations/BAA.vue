@@ -80,8 +80,14 @@
                 agreements from its subcontractors. 
               </p>
               <p>
-                For more information, reference 
-                  Business Associate and PHI, CFR title 45 part 160.103 
+                For more information, reference
+                <a 
+                  href="https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-160/subpart-A/section-160.103"
+                  class="text-link external-link"
+                  target="_blank"
+                >
+                  Business Associate and PHI, CFR title 45 part 160.103
+                </a> 
                 and BAA, CFR title 45 part 164.308 (b)(4).        
                 </p>
             </template>
