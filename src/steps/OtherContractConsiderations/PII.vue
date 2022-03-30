@@ -46,20 +46,32 @@
               <ul>
                 <li class="pb-2">
                   Privacy Act Notification,
-                  <a class="text-link" href="https://www.acquisition.gov/far/52.224-1" target="_blank">
+                  <a
+                    class="text-link"
+                    href="https://www.acquisition.gov/far/52.224-1"
+                    target="_blank"
+                  >
                     FAR <span class="external-link">52.224-1</span>
                   </a>
                 </li>
                 <li class="pb-4">
                   Privacy Act,
-                  <a class="text-link" href="https://www.acquisition.gov/far/52.224-2" target="_blank">
+                  <a
+                    class="text-link"
+                    href="https://www.acquisition.gov/far/52.224-2"
+                    target="_blank"
+                  >
                     <span class="external-link">FAR 52.224-2</span>
                   </a>
                 </li>
               </ul>
               <p>
                 For more information, reference
-                <a class="text-link" href="https://www.acquisition.gov/far/subpart-24.1" target="_blank">
+                <a
+                  class="text-link"
+                  href="https://www.acquisition.gov/far/subpart-24.1"
+                  target="_blank"
+                >
                   <span class="external-link">FAR 24.1, Protection of Individual Privacy.</span>
                 </a>
               </p>
