@@ -105,20 +105,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         excludeFromMenu: true,
         component: ProjectScope,
         completed: true,
-        additionalButtons: [
-          {
-            name: routeNames.Organization_Info,
-            buttonText: "Skip this substep",
-            buttonId: "MyButton2",
-            buttonClass: "secondary",
-          },
-          {
-            name: routeNames.Cor_Information,
-            buttonText: "Skip several substeps",
-            buttonId: "MyButton",
-            buttonClass: "primary",
-          },
-        ],
       },
       {
         menuText: "Organization",
@@ -211,7 +197,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
-        routeResolver: CurrentContractRouteResolver,      
+        routeResolver: CurrentContractRouteResolver,  
+        additionalButtons: [
+          {
+            buttonText: "I don’t have an existing contract",
+            buttonId: "NoExistingContract",
+            buttonClass: "secondary",
+            name: routeNames.Performance_Requirements, 
+          },
+        ],    
       }
     ]
   },
@@ -221,6 +215,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",
     path: "/exception-to-fair-opportunity",
+    completed: false,
   },
   {
     stepNumber: "05",
