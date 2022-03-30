@@ -7,7 +7,7 @@
   >
     <div class="d-flex">
       <div
-        v-if="icon"
+        v-if="type !== 'callout'"
         class="pr-4"
       >
         <i
@@ -69,13 +69,14 @@ import { Component, Prop } from "vue-property-decorator";
 @Component({})
 export default class ATATAlert extends Vue {
   @Prop({ default: "presentation" }) private role?: string;
-  @Prop({ default: "" }) private icon?: string;
   @Prop({ default: true }) private show?: boolean;
   @Prop({ default: "Alert" }) private id?: string;
 
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
+   * NOTE:
    * type "callout" will never have an icon or border, always light blue background - general info
+   * all other types are alerts and will always have an icon and border
    */
   @Prop({ default: "error" }) private type?: string;
 
@@ -86,16 +87,13 @@ export default class ATATAlert extends Vue {
    */
   @Prop({ default: "small" }) private size?: string;
   @Prop({ default: false }) private borderLeft?: boolean;
-  @Prop({ default: false }) private outlined?: boolean;
   @Prop({ default: false }) private closeButton?: boolean;
 
   get getClasses(): string {
     if (this.type === "callout") {
       return "_callout";
     }
-    let alertClasses = "_" + this.type + "-alert ";
-    debugger;
-    alertClasses += this.outlined ? "_outlined " : "";
+    let alertClasses = "_" + this.type + "-alert";
     alertClasses += this.borderLeft ? "_border-left " : "";
     return alertClasses;
   }

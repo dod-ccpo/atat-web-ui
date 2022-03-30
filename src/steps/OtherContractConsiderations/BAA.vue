@@ -22,8 +22,8 @@
                 required between the mission owner and the business associate to provide assurance 
                 that the business associate will appropriately safeguard PHI when it is transmitted 
                 or maintained in electronic (e-PHI) or any other form. 
-                <a role="button" id="LearnMoreBAA" @click="learnMore">
-                  Learn more about business associates and <span class="external-link">BAAs.</span>
+                <a role="button" id="LearnMoreBAA" @click="openSlideoutPanel">
+                  Learn more about business associates and BAAs.
                 </a>
               </p>
             </template>
@@ -42,11 +42,8 @@
 
           <ATATAlert 
             id="BAASampleProvisionsAlert"
+            v-show="selectedBAAOption === 'Yes'"
             type="info" 
-            :showIcon="true" 
-            icon="info"
-            :outlined="true"
-            :closeButton="true"
             class="copy-max-width my-10"
           >
             <template v-slot:content>
@@ -63,7 +60,7 @@
                 >
                   https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html<span 
                   class="external-link">.</span>
-                 </a>
+                </a>
               </p>
             </template>
           </ATATAlert>
@@ -97,7 +94,7 @@
                   <span class="external-link">160.103</span>
                 </a> 
                 and BAA, CFR title 45 part 164.308 (b)(4).        
-                </p>
+              </p>
             </template>
           </ATATExpandableLink>
 
@@ -114,14 +111,17 @@ import { Component } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
+import BAALearnMore from "./BAALearnMore.vue";
 
-import { RadioButton } from "../../../types/Global";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 
 @Component({
   components: {
     ATATAlert,
     ATATRadioGroup,
     ATATExpandableLink,
+    BAALearnMore,
   },
 })
 
@@ -140,8 +140,20 @@ export default class BAA extends Vue {
     },
   ];
 
-  private learnMore(): void {
-    // open slideout panel
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: BAALearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
 }
 </script>
