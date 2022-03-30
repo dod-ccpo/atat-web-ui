@@ -23,6 +23,9 @@ import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequir
 import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
 import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
 
+// Step 7 - 
+import BAA from "../steps/OtherContractConsiderations/BAA.vue";
+
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
@@ -44,6 +47,7 @@ export const routeNames = {
   Property_Requirements: "Property_Requirements",
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
   Property_Custodian: "Property_Custodian", 
+  BAA: "BAA",
 };
 
 /**
@@ -229,12 +233,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
     ]
   },
-  {
+{
     stepNumber: "07",
     completePercentageWeight: 7,
-    name: "Financial_Details",
-    menuText: "Financial Details",
-    path: "/financial-details",
+    name: "Other_Contract_Considerations",
+    menuText: "Other Contract Considerations",
+    path: "/personally-identifiable-information",
+    component: BAA,
+    children : [
+      {
+        menuText: "Business Associate Agreement (BAA)",
+        path: "/business-associate-agreement",
+        name: routeNames.BAA,
+        completePercentageWeight: 2,
+      },
+    ]
   },
   {
     stepNumber: "08",

@@ -44,6 +44,8 @@
             id="BAASampleProvisionsAlert"
             type="info" 
             :showIcon="true" 
+            icon="info"
+            :outlined="true"
             class="copy-max-width my-10"
           >
             <template v-slot:content>
@@ -53,9 +55,10 @@
                 You do not need to provide these agreements in your acquisition package. 
               </p>
               <p class="mb-0">
-                For sample BAA provisions, visit <a href="" target="_blank">
-                  https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html
-                  <span class="external-link">.</span>
+                For sample BAA provisions, visit 
+                <a href="" target="_blank" class="text-link">
+                  https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html<span 
+                  class="external-link">.</span>
                  </a>
               </p>
             </template>

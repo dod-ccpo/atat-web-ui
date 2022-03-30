@@ -2,10 +2,10 @@
   <div
     v-if="show"
     :role="role"
+    class="_atat-alert v-application"
     :class="[
       getBorderWidth(),
       type + '_alert',
-      'v-application d-block atat-alert text-base-darkest',
     ]"
   >
     <div class="d-flex justify-start">
@@ -87,7 +87,7 @@ export default class ATATAlert extends Vue {
    * small size will render a 4px left border and 16px icon
    */
   @Prop({ default: "large" }) private size?: string;
-  @Prop({ default: true }) private outlined?: boolean;
+  @Prop({ default: false }) private outlined?: boolean;
   @Prop({ default: false }) private closeButton?: boolean;
 
   private getBorderWidth(): string {

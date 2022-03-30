@@ -65,14 +65,15 @@
 
 }
 
-
 .v-application .warning_lighter.border {
   border-color: var(--v-warning-base) !important;
   border-width: 2px !important;
   border-style: solid !important;
 }
 
-.atat-alert{
+._atat-alert{
+  color: $base-darkest;
+  display: block;
   border-radius: 5px !important;
   box-shadow: none !important;
   padding: 24px;
