@@ -14,6 +14,11 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Fair Opportunity Process
 import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
 
+//Step 3 - Background
+import Background from "../steps/Background/Index.vue";
+import CurrentContract from "../steps/Background/CurrentContract/CurrentContract.vue";
+import CurrentContractDetails from "../steps/Background/CurrentContract/CurrentContractDetails.vue";
+
 // Step 5 - Contract Details
 import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
 
@@ -150,31 +155,34 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "03",
-    name: "Order_Type",
-    completePercentageWeight: 5,
-    menuText: "Order Type",
-    path: "/order-type",
+    menuText: "Background",
+    path: "/current-contract",
+    completePercentageWeight: 10,
+    component: Background,
+    completed: false,
     children: [
-      {
-        name: "Substep_A",
-        menuText: "Substep A",
-        path: "/order-type",
-
-        completePercentageWeight: 3,
+       {
+        menuText: "Current Contract",
+        path: "/current-contract",
+        name: "CurrentContract",
+        completePercentageWeight: 0,
+        component: CurrentContract,
+        completed: false,
       },
       {
-        name: "Substep_B",
-        menuText: "Substep B",
-        path: "stepthree-B",
-
-        completePercentageWeight: 2,
-      },
-    ],
+        menuText: "Details",
+        path: "/current-contract-details",
+        name: "CurrentContractDetails",
+        excludeFromMenu: true,
+        completePercentageWeight: 0,
+        component: CurrentContractDetails,
+        completed: false,
+      }
+    ]
   },
   {
-    name: "Exception_to_Fair_Opportunity",
+    name: "Performance Requirements",
     stepNumber: "04",
-
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",
     path: "/exception-to-fair-opportunity",

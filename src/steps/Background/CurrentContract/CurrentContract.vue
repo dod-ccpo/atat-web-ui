@@ -1,5 +1,6 @@
+
 <template>
-  <router-view/>
+  <div>Current Contract</div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -7,6 +8,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class AcquisitionPackageDetails extends Vue {
+export default class CurrentContract extends Vue {
 }
 </script>
+
