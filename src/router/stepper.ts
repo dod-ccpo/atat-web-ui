@@ -35,7 +35,7 @@ import PII from "../steps/OtherContractConsiderations/PII.vue";
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
-import { AcorsRouteResolver, CustodianRouteResolver } from "./resolvers";
+import { AcorsRouteResolver, CustodianRouteResolver, CurrentContractRouteResolver } from "./resolvers";
 import { RouterLinkStub } from "@vue/test-utils";
 
 export const routeNames = {
@@ -51,6 +51,7 @@ export const routeNames = {
   Background: "Background",
   Current_Contract: "Current_Contract",
   Current_Contract_Details: "Current_Contract_Details",
+  Performance_Requirements: "Performance_Requirements",
   Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
@@ -163,8 +164,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "03",
     menuText: "Background",
-    path: "/",
-    name: routeNames.Background,
+    path: "/current-contract",
+    name: routeNames.Current_Contract,
     completePercentageWeight: 10,
     component: Background,
     completed: false,
@@ -185,11 +186,11 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
-      }
+        routeResolver: CurrentContractRouteResolver,      }
     ]
   },
   {
-    name: "Performance Requirements",
+    name: routeNames.Performance_Requirements,
     stepNumber: "04",
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",

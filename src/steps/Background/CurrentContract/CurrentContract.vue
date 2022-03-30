@@ -27,11 +27,10 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-
 import { Component } from "vue-property-decorator";
-
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { RadioButton } from "../../../../types/Global";
+import Background from "@/store/background";
 
 @Component({
   components: {
@@ -39,19 +38,30 @@ import { RadioButton } from "../../../../types/Global";
   },
 })
 export default class CurrentContract extends Vue {
-  private currentContractOption = "";
   private currentContractOptions: RadioButton[] = [
     {
-      id: "YesCurrentContract",
+      id: "Yes",
       label: "Yes. There is a current contract for this effort.",
-      value: "YesCurrentContract",
+      value: "Yes",
     },
     {
-      id: "NoCurrentContract",
+      id: "No",
       label: "No. This is a new requirement.",
-      value: "NoCurrentContract",
+      value: "No",
     },
   ];
+
+   public get currentContractOption(): string {
+    const hasCurrentContract = Background.hasCurrentContract;
+    if (hasCurrentContract !== null) {
+      return hasCurrentContract ? "Yes" : "No";
+    }
+    return "";
+  }
+
+  public set currentContractOption(value: string) {
+    Background.setHasCurrentContract(value === "Yes");
+  }
 }
 </script>
 
