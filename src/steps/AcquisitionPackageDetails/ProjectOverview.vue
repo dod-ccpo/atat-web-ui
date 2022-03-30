@@ -76,7 +76,7 @@ import { RadioButton } from "types/Global";
   components: {
     ATATTextField,
     ATATTextArea,
-    ATATRadioGroup
+    ATATRadioGroup,
   },
 })
 export default class ProjectOverview extends Vue {
@@ -121,8 +121,5 @@ export default class ProjectOverview extends Vue {
     this.projectTitle = this.currentTitle;
   }
 
-  public async mounted(): Promise<void> {
-    // await this.validateForm();
-  }
 }
 </script>

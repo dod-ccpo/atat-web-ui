@@ -3,6 +3,7 @@
     &.global-side-nav-bar {
       border-right: 1px solid $base-lighter;
       background-color: $white;
+      z-index: 2;
       .v-navigation-drawer__border {
         display: none;
       }
