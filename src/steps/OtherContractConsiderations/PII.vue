@@ -107,7 +107,7 @@ export default class PII extends Vue {
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",
-      label: "Yes. This contract action will include a system of records with PIIRecordStore.",
+      label: "Yes. This contract action will include a system of records with PII.",
       value: "Yes",
     },
     {
@@ -126,7 +126,7 @@ export default class PII extends Vue {
   }
 
   public set selectedPIIOption(value: string) {
-    PIIRecord.setPIIRecord(value === "Yes" ? true : false);
+    PIIRecord.setPIIRecord(value === "Yes");
   }
 }
 </script>
