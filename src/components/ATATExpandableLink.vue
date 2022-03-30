@@ -4,7 +4,7 @@
       @click="open = !open"
       @keydown.enter="open = !open"
       @keydown.space="open = !open"
-      class="expandable-content-opener"
+      class="expandable-content-opener pb-2"
       :class="open ? 'open' : 'closed'"
       role="button"
       tabindex="0"
