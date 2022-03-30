@@ -47,6 +47,7 @@
                 <li class="pb-2">
                   Privacy Act Notification,
                   <a
+                    id="PrivacyActLink1"
                     class="text-link"
                     href="https://www.acquisition.gov/far/52.224-1"
                     target="_blank"
@@ -57,6 +58,7 @@
                 <li class="pb-4">
                   Privacy Act,
                   <a
+                    id="PrivacyActLink2"
                     class="text-link"
                     href="https://www.acquisition.gov/far/52.224-2"
                     target="_blank"
@@ -68,6 +70,7 @@
               <p>
                 For more information, reference
                 <a
+                  id="PrivacyActLink3"
                   class="text-link"
                   href="https://www.acquisition.gov/far/subpart-24.1"
                   target="_blank"
