@@ -1,4 +1,4 @@
-import { StepperRouteConfig, StepperStep } from "../../types/Global";
+import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
 // Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
@@ -32,12 +32,18 @@ import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian
 import OtherContractConsiderations from "../steps/OtherContractConsiderations/Index.vue";
 import PII from "../steps/OtherContractConsiderations/PII.vue";
 import BAA from "../steps/OtherContractConsiderations/BAA.vue";
+import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
-import { AcorsRouteResolver, CustodianRouteResolver, CurrentContractRouteResolver } from "./resolvers";
+import {
+  AcorsRouteResolver,
+  CurrentContractRouteResolver,
+  CustodianRouteResolver,
+  PIIRecordResolver
+} from "./resolvers";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
@@ -45,7 +51,7 @@ export const routeNames = {
   Organization_Info: "Organization_Info",
   Contact_Information: "Contact_Information",
   Cor_Information: "Cor_Information",
-  Alternate_Cor:"Alternate_Cor",
+  Alternate_Cor: "Alternate_Cor",
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
@@ -58,8 +64,11 @@ export const routeNames = {
   Property_Requirements: "Property_Requirements",
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
   Property_Custodian: "Property_Custodian",
+  Other_Contract_Considerations: "Other_Contract_Considerations",
   PII: "PII",
   BAA: "BAA",
+  PIIRecord: "PIIRecord",
+  Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
 };
 
 /**
@@ -94,7 +103,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "Cancel",
             buttonId: "MyButton",
             buttonClass: "tertirary",
-            emitText: "sampleEmitText", 
+            emitText: "sampleEmitText",
             actionName: "sampleAdditionalButtonAction",
             actionArgs: ["foo", "bar"],
           },
@@ -200,15 +209,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
-        routeResolver: CurrentContractRouteResolver,  
+        routeResolver: CurrentContractRouteResolver,
         additionalButtons: [
           {
             buttonText: "I don’t have an existing contract",
             buttonId: "NoExistingContract",
             buttonClass: "secondary",
-            name: routeNames.Performance_Requirements, 
+            name: routeNames.Performance_Requirements,
           },
-        ],    
+        ],
       }
     ]
   },
@@ -270,20 +279,29 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
     ]
   },
-{
+  {
     stepNumber: "07",
     completePercentageWeight: 7,
     name: routeNames.PII,
     menuText: "Other Contract Considerations",
     path: "/personally-identifiable-information",
     component: OtherContractConsiderations,
-    children : [
+    children: [
       {
-        name: routeNames.PII,
         menuText: "Personally Identifiable Information",
         path: "/personally-identifiable-information",
+        name: routeNames.PII,
         completePercentageWeight: 2,
         component: PII,
+      },
+      {
+        menuText: "system of record",
+        path: "/system-of-record",
+        name: routeNames.PIIRecord,
+        completePercentageWeight: 2,
+        component: PIIRecord,
+        excludeFromMenu: true,
+        routeResolver: PIIRecordResolver
       },
       {
         menuText: "Business Associate Agreement (BAA)",
@@ -298,7 +316,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "08",
 
     completePercentageWeight: 7,
-    name: "Public_Disclosure_of_Information",
+    name: routeNames.Public_Disclosure_of_Information,
     menuText: "Public Disclosure of Information",
     path: "/public-disclosure-of-information",
   },
@@ -350,7 +368,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
  * @returns StepperStep
  */
 const mapStepRouteToStepperData = (
-  stepperRouteConfig: StepperRouteConfig
+    stepperRouteConfig: StepperRouteConfig
 ): StepperStep => {
   const {
     completePercentageWeight,
@@ -363,7 +381,7 @@ const mapStepRouteToStepperData = (
     backButtonText,
   } = stepperRouteConfig;
 
-  let { name } = stepperRouteConfig;
+  let {name} = stepperRouteConfig;
   name = name || "";
 
   const stepperStep: StepperStep = {
@@ -375,7 +393,7 @@ const mapStepRouteToStepperData = (
     completePercentageWeight,
     route: path,
     subSteps: stepperRouteConfig.children?.map((child) =>
-      mapStepRouteToStepperData(child)
+        mapStepRouteToStepperData(child)
     ),
     additionalButtons,
     backButtonText,
@@ -385,4 +403,4 @@ const mapStepRouteToStepperData = (
 };
 
 export const buildStepperData = (): StepperStep[] =>
-  stepperRoutes.map((step) => mapStepRouteToStepperData(step));
+    stepperRoutes.map((step) => mapStepRouteToStepperData(step));

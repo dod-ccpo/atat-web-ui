@@ -1,5 +1,6 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
+import PIIRecord from "@/store/PIIRecordStore";
 import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
@@ -39,7 +40,7 @@ export const CustodianRouteResolver = (current: string): string => {
 
 export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract = Background.hasCurrentContract;
-  
+
   // if hasCurrentContract, advance to Current_Contract_Details page
   if (current === routeNames.Current_Contract && hasCurrentContract) {
     return routeNames.Current_Contract_Details;
@@ -49,6 +50,15 @@ export const CurrentContractRouteResolver = (current: string): string => {
     return routeNames.Current_Contract;
   }
 
-  return routeNames.Performance_Requirements; 
+  return routeNames.Performance_Requirements;
 };
 
+
+export const PIIRecordResolver = (current: string): string => {
+  const systemOfRecord = PIIRecord.PIIRecordIncluded;
+  // if system of record will be included, route to system of records page
+  if (current === routeNames.PII && systemOfRecord) {
+    return routeNames.PIIRecord;
+  }
+  return routeNames.BAA;
+};
