@@ -9,7 +9,7 @@
 
           <ATATAlert 
             id="FairOpportunityAlert"
-            type="info" 
+            type="callout" 
             :showIcon="false" 
             class="copy-max-width my-10"
           >

@@ -3,11 +3,7 @@
     v-if="show"
     :role="role"
     class="_atat-alert"
-    :class="[
-      { '_outlined': outlined },
-      { '_border-left-thick': borderLeft },
-      type + '-alert',
-    ]"
+    :class="getClasses"
   >
     <div class="d-flex">
       <div
@@ -92,6 +88,17 @@ export default class ATATAlert extends Vue {
   @Prop({ default: false }) private borderLeft?: boolean;
   @Prop({ default: false }) private outlined?: boolean;
   @Prop({ default: false }) private closeButton?: boolean;
+
+  get getClasses(): string {
+    if (this.type === "callout") {
+      return "_callout";
+    }
+    let alertClasses = "_" + this.type + "-alert ";
+    debugger;
+    alertClasses += this.outlined ? "_outlined " : "";
+    alertClasses += this.borderLeft ? "_border-left " : "";
+    return alertClasses;
+  }
 
   private getIconSize(): string {
     return this.size === "large" ? "icon-24" : "icon-20";

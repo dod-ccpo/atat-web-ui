@@ -29,22 +29,18 @@ describe("Testing ATATStepperNavigation", () => {
   describe("PROPS", () => {
     it("getIconSize", async () => {
       await wrapper.setProps({size: ''});
-      expect(wrapper.vm.getIconSize()).toBe('icon-16');
+      expect(wrapper.vm.getIconSize()).toBe('icon-20');
     });
     it("getIconSize Large", async () => {
       await wrapper.setProps({size: 'large'});
-      expect(wrapper.vm.getIconSize()).toBe('icon-20');
-    });
-    it("getIcon should return passed icon", async () => {
-      await wrapper.setProps({icon: 'smile'});
-      expect(wrapper.vm.getIcon()).toBe('smile');
+      expect(wrapper.vm.getIconSize()).toBe('icon-24');
     });
     it("getIcon should return success icon", async () => {
-      await wrapper.setProps({icon: '', type: 'success'});
+      await wrapper.setProps({type: 'success'});
       expect(wrapper.vm.getIcon()).toBe('check_circle');
     });
     it("getIcon should return icon type", async () => {
-      await wrapper.setProps({icon: '', type: 'type'});
+      await wrapper.setProps({type: 'type'});
       expect(wrapper.vm.getIcon()).toBe('type');
     });
   });

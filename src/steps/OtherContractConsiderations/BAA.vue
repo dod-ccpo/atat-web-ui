@@ -60,7 +60,6 @@
                 <a 
                   href="https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html" 
                   target="_blank" 
-                  class="text-link"
                 >
                   https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html<span 
                   class="external-link">.</span>
@@ -140,5 +139,9 @@ export default class BAA extends Vue {
       value: "No",
     },
   ];
+
+  private learnMore(): void {
+    // open slideout panel
+  }
 }
 </script>
