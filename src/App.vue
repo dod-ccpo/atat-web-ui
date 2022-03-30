@@ -9,7 +9,16 @@
     <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
       <router-view></router-view>
-      <ATATStepperNavigation @next="navigate('next')" @previous="navigate('previous')"/>
+
+      <ATATStepperNavigation 
+        @next="navigate('next')" 
+        @previous="navigate('previous')"
+        @additionalButtonClick="additionalButtonClick"
+        :additionalButtons="additionalButtons"
+        :backButtonText="backButtonText"
+        :noPrevious="noPrevious"
+      />
+
       <ATATFooter/>
     </v-main>
   </v-app>
@@ -29,11 +38,13 @@ import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATSlideoutPanel from "./components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
 
-import Steps from "@/store/steps";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SlideoutPanel from "@/store/slideoutPanel/index";
+import Steps from "@/store/steps";
 
+import { AdditionalButton, StepInfo } from "@/store/steps/types";
 import { buildStepperData } from "./router/stepper";
+import actionHandler from "./action-handlers/index"
 
 @Component({
   components: {
@@ -59,15 +70,18 @@ export default class App extends Vue {
   }
 
   private stepperData = buildStepperData();
+  private additionalButtons: AdditionalButton[] = [];
+  private noPrevious = false;
+  private backButtonText = "Back";
 
   async mounted(): Promise<void> {
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-
     if (routeName && step) {
       const {stepName} = step;
       Steps.setCurrentStep(stepName);
+      this.setNavButtons(step);
     }
     await AcquisitionPackage.initialize();
     
@@ -82,6 +96,7 @@ export default class App extends Vue {
     if (routeName && step) {
       const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
+      this.setNavButtons(step);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
       
       SlideoutPanel.closeSlideoutPanel();
@@ -91,8 +106,9 @@ export default class App extends Vue {
 
   async navigate(direction: string): Promise<void> {
     const nextStepName =
-      direction === "next" ? await Steps.getNext() :
-        await Steps.getPrevious();
+      direction === "next" 
+        ? await Steps.getNext() 
+        : await Steps.getPrevious();
 
     if (nextStepName) {
       this.$router.push({name: nextStepName});
@@ -104,5 +120,26 @@ export default class App extends Vue {
       ? AcquisitionPackage.projectTitle
       : "New Acquisition";
   }
+
+  private setNavButtons(step: StepInfo): void {
+    this.noPrevious = !step.prev;
+    this.backButtonText = step.backButtonText || "Back";
+    if (step.additionalButtons) {
+      this.additionalButtons = step?.additionalButtons;
+    }
+  }
+
+  private async additionalButtonClick(button: AdditionalButton) {
+    if (button.emitText) {
+      this.$emit('AdditionalButtonClicked', button.emitText);
+    }
+    if (button.actionName) {
+      const actionArgs = button.actionArgs || [];
+      await actionHandler(button.actionName, actionArgs);
+    }
+
+    this.$router.push({name: button.name})
+  }
+
 }
 </script>

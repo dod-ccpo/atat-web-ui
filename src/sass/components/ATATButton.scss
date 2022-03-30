@@ -1,79 +1,105 @@
-.atat-button-hover{
-    background-color: transparent !important;
-    opacity: initial  !important;
-    box-shadow: none !important;
-    -ieVar-❗background-color: none!important;
-  }
+.atat-button-hover {
+  background-color: transparent !important;
+  opacity: initial !important;
+  box-shadow: none !important;
+  -ieVar-❗background-color: none !important;
+}
 
-%v-btn-text{
+%v-btn-text {
   text-transform: none !important;
   font-weight: bold !important;
   @extend %body;
 }
 
-//removes the godawful default darker
-//opacity assigned by vuetify
-.theme--light.v-btn:hover,
-.theme--light.v-btn:focus {
-  &::before{
+.v-btn {
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 7px 20px 8px !important;
+  @extend %v-btn-text;
+
+  // removes the default darker opacity assigned by vuetify
+  &:hover::before, &:focus::before {
     opacity: 0 !important;
   }
 }
   
-
-  
 .v-btn{
-    box-shadow: none !important;
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 7px 20px 8px !important;
-    &.v-btn--icon {
-      padding: 0 !important;
-    }
-    @extend %v-btn-text;
-    &.primary.theme--light{
-      background-color:  $primary !important;
-      color: #fff !important;
-      &:hover{
-        box-shadow: none !important;
-        background-color: $primary-dark !important;
-      }
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 7px 20px 8px !important;
+  &.v-btn--icon {
+    padding: 0 !important;
+  }
+  @extend %v-btn-text;
+
+  &.primary.theme--light{
+    background-color:  $primary !important;
+    color: #fff !important;
+    &:hover{
+      box-shadow: none !important;
+      background-color: $primary-dark !important;
     }
 
+    &:active {
+      background-color: $primary-darker !important;
+    }
+  }
 
-  &.link-button{
+  &.secondary.theme--light {
+    background-color: $white !important;
+    border: 2px solid $primary !important;
+    color: $primary;
+
+    &:hover {
+      background-color: rgba($primary, 10%) !important;
+    }
+
+    &:active {
+      background-color: rgba($primary, 20%) !important;
+    }
+  }
+
+  &.link-button, &.tertirary {
     padding: 6px 12px !important;
+
     &.tooltip-button {
       padding: 12px !important;
     }
+
     background-color: transparent !important;
-    i{
-      margin-right: 4px; 
+
+    i {
+      margin-right: 4px;
     }
-    span{
+
+    span {
       color: $primary !important;
       text-decoration: underline;
       font-weight: normal;
       opacity: 1 !important;
     }
+
     &:hover,
     &:focus,
     &:active {
       background-color: $primary-lighter !important;
-    
+
     }
-    // &:active span {
-    //   color: $primary-darken !important;
-    // }
-    &.no-border{
-      span{
+
+    &.no-border {
+      span {
         text-decoration: none !important;
       }
     }
-    &.font-weight-bold{
-      span{
+
+    &.font-weight-bold {
+      span {
         font-weight: 700 !important;
       }
     }

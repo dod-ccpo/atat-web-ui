@@ -43,7 +43,12 @@ export const CurrentContractRouteResolver = (current: string): string => {
   // if hasCurrentContract, advance to Current_Contract_Details page
   if (current === routeNames.Current_Contract && hasCurrentContract) {
     return routeNames.Current_Contract_Details;
+  } else if (current === routeNames.Performance_Requirements && hasCurrentContract){
+    return routeNames.Current_Contract_Details;
+  } else if (current === routeNames.Performance_Requirements){
+    return routeNames.Current_Contract;
   }
+
   return routeNames.Performance_Requirements; 
 };
 

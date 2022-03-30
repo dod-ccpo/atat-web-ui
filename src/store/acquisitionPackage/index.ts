@@ -6,6 +6,7 @@ import {
   VuexModule,
 } from "vuex-module-decorators";
 import rootStore from "../index";
+import { AdditionalButton } from "../steps/types";
 import api from "@/api";
 import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
@@ -139,6 +140,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectTitle = value;
   }
 
+  @Action
+  public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
+    console.log("in store: actionArgs", actionArgs);
+  }
+  
   @Mutation
   private setDataFromSession(sessionData: SessionData) {
     this.acquisitionPackage = sessionData.acquisitionPackage;
