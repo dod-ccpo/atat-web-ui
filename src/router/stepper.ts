@@ -101,7 +101,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
           {
             name: routeNames.Project_Overview,
             buttonText: "Cancel",
-            buttonId: "MyButton",
+            buttonId: "CancelButton",
             buttonClass: "tertirary",
             emitText: "sampleEmitText",
             actionName: "sampleAdditionalButtonAction",
