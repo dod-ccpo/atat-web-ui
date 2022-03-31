@@ -20,6 +20,6 @@
 
 @mixin flag-icon($country) {
   .fi-#{$country} {
-    background-image: url(#{$flag-icons-path}#{$flag-icons-rect-path}/#{$country}.svg);
+    background-image: url(#{$flag-icons-path}#{$flag-icons-rect-path}/#{$country}.jpg);
   }
 }
