@@ -16,12 +16,13 @@
             <template v-slot:content>
               <h2>Business Associate Agreements (BAA)</h2>
               <p class="mt-2 mb-0">
-                Protected Health Information (PHI) is information which relates to the past, 
-                present, or future physical or mental health or condition of any individual. Per 
-                the Health Insurance Portability and Accountability Act of 1996 (HIPAA), a BAA is 
-                required between the mission owner and the business associate to provide assurance 
-                that the business associate will appropriately safeguard PHI when it is transmitted 
-                or maintained in electronic (e-PHI) or any other form. 
+                <strong>Protected Health Information (PHI)</strong> is information 
+                which relates to the past, present, or future physical or mental 
+                health or condition of any individual. Per the Health Insurance 
+                Portability and Accountability Act of 1996 (HIPAA), a BAA is required 
+                between the mission owner and the business associate to provide assurance 
+                that the business associate will appropriately safeguard PHI when 
+                it is transmitted or maintained in electronic (e-PHI) or any other form. 
                 <a role="button" id="LearnMoreBAA" @click="openSlideoutPanel">
                   Learn more about business associates and BAAs.
                 </a>
