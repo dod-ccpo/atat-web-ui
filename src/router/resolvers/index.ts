@@ -10,12 +10,12 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from alternate cor and the user does not have
   //and alternatative contact rep
-  if (current === routeNames.Alternate_Cor && hasAlternativeContactRep == false) {
+  if (current === routeNames.Alternate_Cor && hasAlternativeContactRep === false) {
     return routeNames.Summary;
   }
 
   //routing from summary and user does not have
-  if (current === routeNames.Summary && hasAlternativeContactRep == false) {
+  if (current === routeNames.Summary && hasAlternativeContactRep === false) {
     return routeNames.Alternate_Cor;
   }
 
@@ -41,24 +41,19 @@ export const CustodianRouteResolver = (current: string): string => {
 export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract = Background.hasCurrentContract;
 
-  // if hasCurrentContract, advance to Current_Contract_Details page
-  if (current === routeNames.Current_Contract && hasCurrentContract) {
+  if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;
-  } else if (current === routeNames.Performance_Requirements && hasCurrentContract){
-    return routeNames.Current_Contract_Details;
-  } else if (current === routeNames.Performance_Requirements){
-    return routeNames.Current_Contract;
   }
-
-  return routeNames.Performance_Requirements;
+  return current === routeNames.Current_Contract 
+    ? routeNames.Performance_Requirements 
+    : routeNames.Current_Contract;
 };
 
-
 export const PIIRecordResolver = (current: string): string => {
-  const systemOfRecord = PIIRecord.PIIRecordIncluded;
+  const hasSystemOfRecord = PIIRecord.PIIRecordIncluded;
   // if system of record will be included, route to system of records page
-  if (current === routeNames.PII && systemOfRecord) {
+  if (hasSystemOfRecord) {
     return routeNames.PIIRecord;
   }
-  return routeNames.BAA;
+  return current === routeNames.PII ? routeNames.BAA : routeNames.PII;
 };
