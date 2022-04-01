@@ -18,11 +18,11 @@ describe("Test suite: Common SPA functionality", () => {
         
         const expectedMenuOptions = [
             "01 Acquisition Package Details",
-            "02 Existing Contract / Background",
-            "03 Order Type",
+            "02 Fair Opportunity Process",
+            "03 Background",
             "04 Exception to Fair Opportunity",
-            "05 Evaluation Criteria",
-            "06 Classification Requirements",
+            "05 Contract Details",
+            "06 Government Furnished Equipment",
             "07 Financial Details",
             "08 Public Disclosure of Information",
             "09 Statutory Compliance",

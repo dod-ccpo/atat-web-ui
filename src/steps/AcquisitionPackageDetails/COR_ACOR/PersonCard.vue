@@ -39,7 +39,7 @@
       :title="'Request change to ' + corOrAcor + '\'s contact information'"
       no-click-animation
       okText="Send Request"
-      width="632px"
+      width="632"
       disabled="true"
     >
       <template #content>

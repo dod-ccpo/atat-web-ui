@@ -3,14 +3,13 @@
     <div class="d-flex align-center" v-if="label">
       <label
           :id="id + '_text_field_label'"
-          class="form-field-label font-weight-medium width-100"
+          class="form-field-label width-100"
           :for="id + '_text_area'"
       >
         {{ label }}
       </label>
       <v-tooltip
           transition="slide-y-reverse-transition"
-          max-width="250px"
           color="rgba(0,0,0,1)"
           top
           v-if="tooltipText"

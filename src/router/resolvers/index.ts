@@ -1,5 +1,7 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
+import PIIRecord from "@/store/PIIRecordStore";
+import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
 
@@ -8,12 +10,12 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from alternate cor and the user does not have
   //and alternatative contact rep
-  if (current === routeNames.Alternate_Cor && hasAlternativeContactRep == false) {
+  if (current === routeNames.Alternate_Cor && hasAlternativeContactRep === false) {
     return routeNames.Summary;
   }
 
   //routing from summary and user does not have
-  if (current === routeNames.Summary && hasAlternativeContactRep == false) {
+  if (current === routeNames.Summary && hasAlternativeContactRep === false) {
     return routeNames.Alternate_Cor;
   }
 
@@ -34,4 +36,24 @@ export const CustodianRouteResolver = (current: string): string => {
     "Custodian has been completed. Select \"Yes\" to continue to Property Custodian page.");
   // todo - change this routeName when page after Property Custodian is completed
   return routeNames.Will_Govt_Equip_Be_Furnished; 
+};
+
+export const CurrentContractRouteResolver = (current: string): string => {
+  const hasCurrentContract = Background.hasCurrentContract;
+
+  if (hasCurrentContract) {
+    return routeNames.Current_Contract_Details;
+  }
+  return current === routeNames.Current_Contract 
+    ? routeNames.Performance_Requirements 
+    : routeNames.Current_Contract;
+};
+
+export const PIIRecordResolver = (current: string): string => {
+  const hasSystemOfRecord = PIIRecord.PIIRecordIncluded;
+  // if system of record will be included, route to system of records page
+  if (hasSystemOfRecord) {
+    return routeNames.PIIRecord;
+  }
+  return current === routeNames.PII ? routeNames.BAA : routeNames.PII;
 };

@@ -66,7 +66,7 @@
             label="Suffix"
             id="Suffix"
             :optional="true"
-            width="80px"
+            width="80"
           />
         </v-col>
       </v-row>
@@ -79,7 +79,7 @@
       />
 
       <div class="d-flex mb-10">
-        <ATATTextField 
+        <ATATPhoneInput
           id="PhoneNumber" 
           label="Phone number" 
           class="input-max-width width-100" 
@@ -87,7 +87,7 @@
         <ATATTextField 
           id="PhoneExtension" 
           label="Extension" 
-          width="140px"
+          width="140"
           :optional="true"
           class="ml-6"
         />
@@ -111,6 +111,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue"
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -124,9 +125,11 @@ import {
   AutoCompleteItemGroups 
 } from "../../../../types/Global";
 
+
 @Component({
   components: {
     ATATAutoComplete,
+    ATATPhoneInput,
     ATATRadioGroup,
     ATATSelect,
     ATATTextField,

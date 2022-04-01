@@ -63,7 +63,7 @@
           label="Suffix"
           id="Suffix"
           :optional="true"
-          width="80px"
+          width="80"
         />
       </v-col>
     </v-row>
@@ -80,7 +80,7 @@
           class="input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
         />
-        <ATATTextField
+        <ATATPhoneInput
           label="Your phone number"
           id="ContactPhone"
           class="input-max-width"
@@ -110,6 +110,7 @@ import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -123,12 +124,14 @@ import {
   SelectData 
 } from "../../../types/Global";
 
+
 @Component({
   components: {
     ATATAutoComplete,
-    ATATTextField,
-    ATATSelect,
+    ATATPhoneInput,
     ATATRadioGroup,
+    ATATSelect,
+    ATATTextField,
   },
 })
 
@@ -228,5 +231,15 @@ export default class ContactInfo extends Vue {
     { text: "Dr.", value: "Dr.", },
   ];
 
+
+  public async loadOnEnter(): Promise<void> {
+
+      throw new Error("not implemented");
+      
+  }
+
+   protected async saveOnLeave(): Promise<boolean> {
+      throw new Error("not implemented");
+   }
 }
 </script>

@@ -22,7 +22,7 @@
           :class="radioClasses"
           :key="item.id"
           :value="item.value"
-          :style="{ width: width }"
+          :style="{ width: width + 'px' }"
           :name="name"
           :disabled="item.disabled || disabled"
           @blur="onBlur"

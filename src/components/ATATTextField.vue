@@ -18,26 +18,24 @@
         :label="label"
       />
     </div>
-    <div :style="'width: ' + width">
-      <v-text-field
-        ref="atatTextField"
-        :id="id + '_text_field'"
-        outlined
-        dense
-        :height="42"
-        :value.sync="_value"
-        :placeholder="placeHolder"
-        @input="onInput"
-        class="text-primary"
-        :hide-details="true"
-        :suffix="suffix"
-        :style="{ 'max-width': width + 'px' }"
-        :rules="rules"
-        @blur="onBlur"
-        @update:error="setErrorMessage"
-      >
-      </v-text-field>
-    </div>
+    <v-text-field
+      ref="atatTextField"
+      :id="id + '_text_field'"
+      outlined
+      dense
+      :height="42"
+      :value.sync="_value"
+      :placeholder="placeHolder"
+      @input="onInput"
+      class="text-primary"
+      :hide-details="true"
+      :suffix="suffix"
+      :style="'width: ' + width + 'px'"
+      :rules="rules"
+      @blur="onBlur"
+      @update:error="setErrorMessage"
+    >
+    </v-text-field>
     <ATATErrorValidation :errorMessages="errorMessages" />
     <div v-if="helpText" class="help-text mt-2">
       {{ helpText }}
