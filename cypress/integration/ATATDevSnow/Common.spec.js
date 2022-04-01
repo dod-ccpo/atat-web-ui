@@ -1,10 +1,10 @@
 import {bootstrapMockApis} from "../../helpers";
 
 describe("Test suite: Common SPA functionality", () => { 
-
+    const isTestingLocally = Cypress.env("isTestingLocally");
     
     beforeEach(() => {
-        const isTestingLocally = Cypress.env("isTestingLocally");
+      
 
         bootstrapMockApis();
        
