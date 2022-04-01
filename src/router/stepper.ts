@@ -326,13 +326,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     name: "Financial_Details",
     menuText: "Financial Details",
     path: "/financial-details",
+    component: ProjectScope,
     children: [
       {
         menuText: "Project Scope",
-        path: "project-scope",
+        path: "/financial-details",
         name: routeNames.Project_Scope,
         completePercentageWeight: 1,
-        component: ProjectScope,
       },
     ]
   },
