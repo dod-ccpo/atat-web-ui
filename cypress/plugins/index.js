@@ -21,7 +21,9 @@
 require("dotenv").config()
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
-  config.env.testUrl = process.env.testURL
+  config.env.testUrl = process.env.testURL;
+  config.env.localTestUrl = process.env.localTestUrl;
+  config.env.isTestingLocally = process.env.isTestingLocally;
   config.env.snowUser = process.env.SNOWUSER;
   config.env.snowPass = process.env.SNOWPASS;
   return config;
