@@ -1,16 +1,27 @@
 <template>
   <v-form ref="form" lazy-validation>
+    
+    <a 
+      class="d-block mb-10" 
+      role="button" 
+      id="SlideoutPanelOpener" 
+      tabindex="0"
+      @click="openSlideoutPanel"
+      aria-label="Example slideout panel trigger"
+    >
+      Open slideout panel
+    </a>
 
-      <a 
-        class="d-block mb-10" 
-        role="button" 
-        id="SlideoutPanelOpener" 
-        tabindex="0" 
-        @click="openSlideoutPanel"
-        aria-label="Example slideout panel trigger"
-      >
-        Open slideout panel
-      </a>
+    <a 
+      class="d-block mb-10" 
+      role="button" 
+      id="ToastOpener" 
+      tabindex="0" 
+      @click="setToast"
+      aria-label="Example toast trigger"
+    >
+      Open toast
+    </a>
 
     <v-row>
       <v-col cols="7"
@@ -59,7 +70,9 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import SampleLearnMore from "./SampleLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { SlideoutPanelContent } from "types/Global";
+import Toast from "@/store/toast";
+
+import { SlideoutPanelContent, ToastObj } from "types/Global";
 
 @Component({
   components: {
@@ -74,6 +87,17 @@ export default class ValidatatorsExample extends Vue {
   private maxValue = "12345678910";
   private requiredValue = "";
   private integerValue = "y";
+
+  private setToast(): void {
+    const toast: ToastObj = {
+      type: "info",
+      message: "My toast message " + Math.floor(Math.random() * 100),
+      isOpen: true,
+      hasUndo: false,
+      hasIcon: true,
+    }
+    Toast.setToast(toast);
+  }
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -97,6 +121,14 @@ export default class ValidatatorsExample extends Vue {
       title: "Learn More 1",
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
+    // const toast: ToastObj = {
+    //   type: "success",
+    //   message: "My default toast message",
+    //   isOpen: false,
+    // }
+    // await Toast.setToast(toast);
+
   }
 
   public openSlideoutPanel(e: Event): void {

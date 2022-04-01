@@ -111,3 +111,11 @@ export interface CountryObj {
   active: boolean;
   suggested?: boolean;
 }
+
+export interface ToastObj {
+  isOpen: boolean;
+  type: string;
+  message: string;
+  hasUndo?: boolean;
+  hasIcon?: boolean;
+}

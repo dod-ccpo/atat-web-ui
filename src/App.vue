@@ -5,6 +5,7 @@
     <ATATSlideoutPanel v-if="hasSlideoutPanelComponent">
       <component :is="slideoutPanelComponent"></component>
     </ATATSlideoutPanel>
+    <ATATToast />
 
     <ATATPageHead :headline="projectTitle"/>
     <v-main id="app">
@@ -37,6 +38,7 @@ import ATATPageHead from "./components/ATATPageHead.vue"
 import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATSlideoutPanel from "./components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
+import ATATToast from "./components/ATATToast.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SlideoutPanel from "@/store/slideoutPanel/index";
@@ -53,6 +55,7 @@ import actionHandler from "./action-handlers/index"
     ATATSideStepper,
     ATATSlideoutPanel,
     ATATStepperNavigation,
+    ATATToast,
   }
 })
 
