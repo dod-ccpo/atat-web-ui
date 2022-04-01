@@ -1,0 +1,25 @@
+module.exports = {
+  app:"#atat-app",
+  title: "title",
+  packageNameHeader:"header.v-toolbar div.h3",
+  header: "h1.page-header",
+  sideBarList: ".global-side-nav-bar .v-list",
+  stepperProgressBarTextPrimary: "._stepper-progress-bar .text-primary",
+  stepperProgressBarText: "._stepper-progress-bar .text-base",
+  progressBar: ".v-progress-linear__determinate",
+  completePercentage:".global-side-nav-bar .completed-check[data-substep-complete-percentage]",
+  stepAcquisitionText: "#Step_AcquisitionPackageDetails >.step-text",
+  stepAcquisitionCircle:"#Step_AcquisitionPackageDetails > .step-circle",
+  subStepProjectOverviewTxt:"#SubStep_ProjectOverview > .step-text",
+  subStepOrganizationTxt: "#SubStep_Organization > .step-text",
+  subStepOrganizationLink:"#SubStep_Organization",
+  subStepContactInformationTxt: "#SubStep_ContactInformation > .step-text",
+  subStepContactInformationLink: "#SubStep_ContactInformation",
+  rightMenuTab: "ul.navbar-nav",
+  portal: "#Portals",
+  userAvatar: ".sub-avatar",
+  footerLinks:".links",
+  continueBtn:"#ContinueButton",
+  backBtn:"#BackButton span span"
+  
+}

@@ -1,4 +1,5 @@
-import {bootstrapMockApis} from "../../helpers";
+import { bootstrapMockApis } from "../../helpers";
+import common from "../../selectors/common.sel";
 
 describe("Test suite: Common SPA functionality", () => { 
 
@@ -9,8 +10,8 @@ describe("Test suite: Common SPA functionality", () => {
 
         cy.visit(Cypress.env("testUrl"));
         cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
-        cy.get("title").should("have.text", "DISA Sandbox home page - DISA Sandbox");
-        cy.frameLoaded("#atat-app");        
+        cy.get(common.title).should("have.text", "DISA Sandbox home page - DISA Sandbox");
+        cy.frameLoaded(common.app);        
         
     })
     
@@ -33,7 +34,7 @@ describe("Test suite: Common SPA functionality", () => {
         ];
         let foundSideMenuItems = 0
         //Verifying the SideNavigation bar
-        cy.iframe("#atat-app").find(".global-side-nav-bar .v-list")
+        cy.findElement(common.sideBarList)
             .children().each(($el) => {
                 const text = $el.text();
                 if (expectedMenuOptions.indexOf(text) > -1) {
@@ -50,16 +51,14 @@ describe("Test suite: Common SPA functionality", () => {
         cy.completePercent()
             .then((returned_value) => {
                 
-                cy.iframe('#atat-app')
-                    .find("._stepper-progress-bar .text-primary").should("contain", returned_value + "%");
+                cy.findElement(common.stepperProgressBarTextPrimary).should("contain", returned_value + "%");
             })
         
         //Verifying the label of the text 
-        cy.textExists("._stepper-progress-bar .text-base", "COMPLETE");
+        cy.textExists(common.stepperProgressBarText, "COMPLETE");
         
         //color of the progressbar completion
-        cy.iframe('#atat-app')
-            .find(".v-progress-linear__determinate")
+        cy.findElement(common.progressBar)
             .should("be.visible")
             .and("have.length", 1)
             .and('have.css', 'color', 'rgba(0, 0, 0, 0.87)');
@@ -71,7 +70,7 @@ describe("Test suite: Common SPA functionality", () => {
         let foundMenuItems = 0
         
         //Verifying the Menu tabs at the top right corner
-        cy.get("ul.navbar-nav").children().each(($el) => {
+        cy.get(common.rightMenuTab).children().each(($el) => {
             const text = $el.text()
             if (expectedMenuItems.indexOf(text) > -1) {
                 foundMenuItems++
@@ -83,10 +82,10 @@ describe("Test suite: Common SPA functionality", () => {
 
     it("TC4: Portal Dropdown", () => {
         //Portal dropdown
-        cy.get("#Portals").should("exist").click({ force: true });          
+        cy.get(common.portal).should("exist").click({ force: true });          
         const expectedValues = ["Global Service Desk", " Mission Partner Portal"]
         let foundValues = 0
-        cy.get("#Portals").children().each(($el) => {
+        cy.get(common.portal).children().each(($el) => {
             const text = $el.text()
             if (expectedValues.indexOf(text) > -1) {
                 foundValues++
@@ -99,7 +98,7 @@ describe("Test suite: Common SPA functionality", () => {
     it("TC5: User Tab", () => {
         
         //Verifying the Usertab tab at the top right corner
-        cy.get(".sub-avatar").then(($loginUserName) => {
+        cy.get(common.userAvatar).then(($loginUserName) => {
             
             const username = $loginUserName.text(); 
             var email =Cypress.env("snowUser");                       
@@ -113,13 +112,12 @@ describe("Test suite: Common SPA functionality", () => {
         })
     })
 
-    it('Testcase5:Footer Components', () => {
+    it("TC6: Footer Components", () => {
 
         //Verifying the footer at the bottom
         const footerItems = ["Security Notice", "Privacy", "Accessibility"];
         let foundItems = 0;
-        cy.iframe('#atat-app')
-            .find('.links')
+        cy.findElement(common.footerLinks)
             .children()
             .each(($el) => {
                 const text = $el.text()
