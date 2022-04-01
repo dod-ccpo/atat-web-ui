@@ -26,11 +26,7 @@ export class ToastStore extends VuexModule {
 
   @Mutation
   public doSetToast(toast: ToastObj): void {
-    this.toast.isOpen = toast.isOpen;
-    this.toast.type = toast.type;
-    this.toast.message = toast.message;
-    this.toast.hasUndo = toast.hasUndo;
-    this.toast.hasIcon = toast.hasIcon;
+    Object.assign(this.toast, toast);
   }
 
   @Action
@@ -42,7 +38,6 @@ export class ToastStore extends VuexModule {
   doSetToastClosed(): void {
     this.toast.isOpen = false;
   }
-
 }
 
 const Toast = getModule(ToastStore);

@@ -96,6 +96,7 @@ export default class ValidatatorsExample extends Vue {
       hasUndo: false,
       hasIcon: true,
     }
+    
     Toast.setToast(toast);
   }
 

@@ -7,7 +7,7 @@
     class="_atat-toast"
     :class="[
       '_toast-' + toast.type, 
-      {'_has-icon': toast.hasIcon}
+      { '_has-icon': toast.hasIcon }
     ]"
     light
     :timeout="getTimeout"
@@ -76,6 +76,5 @@ export default class ATATToast extends Vue {
 
     return timeout * 1000;
   }
-
 }
 </script>
