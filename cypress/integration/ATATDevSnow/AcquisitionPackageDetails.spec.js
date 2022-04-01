@@ -5,11 +5,12 @@ describe("Test suite: Acquisition Package ", () => {
     let projectDetails;
     let orgAddressType;
     let contactInfo;
-
+   
+     
     beforeEach(() => {
-
+        const isTestingLocally = Cypress.env("isTestingLocally");
         bootstrapMockApis();
-                
+           
         cy.fixture("projectOverview").then((details) => {
             projectDetails = details;
         });
@@ -19,12 +20,18 @@ describe("Test suite: Acquisition Package ", () => {
         cy.fixture("contactInfo").then((info) => {
             contactInfo = info;
         });
-        cy.visit(Cypress.env("testUrl"));
-        cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
-        cy.get('title').should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+
+        if (isTestingLocally){
+            cy.visit(Cypress.env("localTestUrl"));    
+        } else {
+            cy.visit(Cypress.env("testUrl"));    
+            cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+            cy.get('title').should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+        }
         cy.frameLoaded("#atat-app");
                 
     });
+
 
     it("TC1: Acquisition Package Substeps on the Vertical Stepper", () => {
         
