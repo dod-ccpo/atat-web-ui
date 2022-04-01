@@ -161,14 +161,6 @@ export default class ValidatatorsExample extends Vue {
       title: "Learn More 1",
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-
-    // const toast: ToastObj = {
-    //   type: "success",
-    //   message: "My default toast message",
-    //   isOpen: false,
-    // }
-    // await Toast.setToast(toast);
-
   }
 
   public openSlideoutPanel(e: Event): void {
