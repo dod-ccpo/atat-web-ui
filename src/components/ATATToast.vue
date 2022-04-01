@@ -7,7 +7,8 @@
     class="_atat-toast"
     :class="[
       '_toast-' + toast.type, 
-      { '_has-icon': toast.hasIcon }
+      { '_has-icon': toast.hasIcon },
+      { '_has-undo': toast.hasUndo },     
     ]"
     light
     :timeout="getTimeout"

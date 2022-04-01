@@ -3,6 +3,13 @@
     @extend .body;
   }
 
+  .v-snack__action  {
+    margin-right: 0;
+    .v-btn {
+      padding-left: 0 !important;
+    }
+  }
+
   &._has-icon {
     .v-snack__content {
       color: $base-darkest;

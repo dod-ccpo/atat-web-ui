@@ -114,7 +114,7 @@ export interface CountryObj {
 
 export interface ToastObj {
   isOpen: boolean;
-  type: string;
+  type: "success" | "info";
   message: string;
   hasUndo?: boolean;
   hasIcon?: boolean;
