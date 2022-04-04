@@ -2,15 +2,21 @@ import { bootstrapMockApis } from "../../helpers";
 import common from "../../selectors/common.sel";
 
 describe("Test suite: Common SPA functionality", () => { 
-
-
+    const isTestingLocally = Cypress.env("isTestingLocally");
+    
     beforeEach(() => {
+        
 
         bootstrapMockApis();
-
-        cy.visit(Cypress.env("testUrl"));
-        cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
-        cy.get(common.title).should("have.text", "DISA Sandbox home page - DISA Sandbox");
+        
+        if (Cypress.env("localTestUrl")){
+            cy.visit(Cypress.env("localTestUrl"));    
+        } else {
+            cy.visit(Cypress.env("testUrl"));    
+            cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+            cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+        };
+        
         cy.frameLoaded(common.app);        
         
     })
@@ -96,7 +102,7 @@ describe("Test suite: Common SPA functionality", () => {
     });                                      
     
     it("TC5: User Tab", () => {
-        
+        if (!isTestingLocally){
         //Verifying the Usertab tab at the top right corner
         cy.get(common.userAvatar).then(($loginUserName) => {
             
@@ -109,7 +115,9 @@ describe("Test suite: Common SPA functionality", () => {
             let firstlastNameChar = lastName.charAt(0);
             expect(username).to.deep.eq(firstNameChar.toUpperCase() + firstlastNameChar.toUpperCase());
             
-        })
+        })} else {
+            cy.log('Test not necessary on localhost')
+        }
     })
 
     it("TC6: Footer Components", () => {
