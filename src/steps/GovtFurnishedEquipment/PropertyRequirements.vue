@@ -10,7 +10,7 @@
           <div class="copy-max-width">
             <a 
               href="https://www.disa.mil/~/media/Files/DISA/About/Publication/Instruction/di2701658.pdf"
-              class="mb-10 d-inline-block text-link"
+              class="mb-10 d-inline-block _text-link"
               target="_blank"
               id="DISAEquipmentInfoLink"
             >

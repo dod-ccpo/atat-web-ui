@@ -239,7 +239,7 @@ Cypress.Commands.add("enterContactInformation", (firstName_selector,firstName, m
 Cypress.Commands.add("checkIfCorOrAcor", (header_selector, headerText, contactName) => {
     cy.textExists(header_selector, headerText);
     cy.iframe("#atat-app")
-        .find(".page-intro .text-link")
+        .find(".page-intro ._text-link")
         .should("exist")
         .and("contain", " https://www.ditco.disa.mil/hq/cor/index.asp.");
     cy.iframe("#atat-app").find("#SearchContact_AutoComplete_Wrapper")

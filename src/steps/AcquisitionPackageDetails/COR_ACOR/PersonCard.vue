@@ -21,13 +21,13 @@
         request to our User Engagement Team.
       </p>
 
-      <a role="button" class="text-link" id="RequestContactChange" @click="showDialog = true">
+      <a role="button" class="_text-link" id="RequestContactChange" @click="showDialog = true">
         Request changes to {{ corOrAcor }}’s contact information
       </a>
     </div>
     <v-icon class="text-primary mr-1" @click="removeCorInfo">delete</v-icon>
     <a 
-      class="text-link" 
+      class="_text-link" 
       role="button" 
       tabindex="0"
       id="RemoveSelectedContactInfo"

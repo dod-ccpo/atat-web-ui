@@ -115,7 +115,7 @@ hr, .hr {
 
 .v-application a {
   color: $primary;
-  &.text-link, &.expandable-content-opener, &.primary-text {
+  &._text-link, &.expandable-content-opener, &.primary-text {
     text-decoration: underline;
     color: $primary !important;
 
@@ -128,7 +128,7 @@ hr, .hr {
     }
   }
 
-  .external-link {
+  ._external-link {
     position: relative;
     padding-right: 24px;
     display: inline-block;
