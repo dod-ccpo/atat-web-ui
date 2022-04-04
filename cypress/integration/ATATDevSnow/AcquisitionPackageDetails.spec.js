@@ -15,6 +15,8 @@ describe("Test suite: Acquisition Package ", () => {
     
     beforeEach(() => {
         const isTestingLocally = Cypress.env("isTestingLocally") === "true";
+        const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+
         bootstrapMockApis();
 
         cy.fixture("projectOverview").then((details) => {
@@ -28,9 +30,16 @@ describe("Test suite: Acquisition Package ", () => {
         });
 
         if (isTestingLocally){
-            cy.visit(Cypress.env("localTestUrl"));    
+            cy.visit(Cypress.env("localTestURL"));    
+            if (runTestsInIframe) {
+                cy.visit(Cypress.env("localTestURLInIframe"));    
+                cy.frameLoaded(common.app);        
+            } else {
+                cy.visit(Cypress.env("localTestURL"));    
+            }
+
         } else {
-            cy.visit(Cypress.env("testUrl"));    
+            cy.visit(Cypress.env("testURL"));    
             cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
             cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
             cy.frameLoaded(common.app);

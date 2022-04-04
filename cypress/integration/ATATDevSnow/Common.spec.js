@@ -3,18 +3,24 @@ import common from "../../selectors/common.sel";
 
 describe("Test suite: Common SPA functionality", () => { 
     const isTestingLocally = Cypress.env("isTestingLocally") === "true";
-    
+    const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+
     beforeEach(() => {
         bootstrapMockApis();
 
         if (isTestingLocally){
-            cy.visit(Cypress.env("localTestUrl"));    
+            if (runTestsInIframe) {
+                cy.visit(Cypress.env("localTestURLInIframe"));    
+                cy.frameLoaded(common.app);        
+            } else {
+                cy.visit(Cypress.env("localTestURL"));    
+            }
         } else {
-            cy.visit(Cypress.env("testUrl"));    
+            cy.visit(Cypress.env("testURL"));    
             cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
             cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
             cy.frameLoaded(common.app);        
-        };
+        }
     });
     
     it("TC1: Vertical Stepper", () => {
@@ -68,8 +74,8 @@ describe("Test suite: Common SPA functionality", () => {
         
     });
 
-    it("TC3: Menu tabs on the rightcorner", () => {
-        if (!isTestingLocally){
+    it.skip("TC3: Menu tabs on the rightcorner", () => {
+        if (runTestsInIframe && !isTestingLocally) {
             const expectedMenuItems = ["Dashboard", "MyPackages", "Resources", "Portals", "UserTab"]
             let foundMenuItems = 0
             
@@ -81,12 +87,14 @@ describe("Test suite: Common SPA functionality", () => {
                 }
             })
             return foundMenuItems === expectedMenuItems.length;
+        } else {
+            cy.log('Test not necessary on localhost')
         }
     });
 
-    it("TC4: Portal Dropdown", () => {
+    it.skip("TC4: Portal Dropdown", () => {
         //Portal dropdown
-        if (!isTestingLocally){
+        if (runTestsInIframe && !isTestingLocally) {
             cy.get(common.portal).should("exist").click({ force: true });          
             const expectedValues = ["Global Service Desk", " Mission Partner Portal"]
             let foundValues = 0
@@ -97,29 +105,32 @@ describe("Test suite: Common SPA functionality", () => {
                 }
             })
             return foundValues === expectedValues.length;
+        } else {
+            cy.log('Test not necessary on localhost')
         }
     });                                      
     
-    it("TC5: User Tab", () => {
-        if (!isTestingLocally){
-        //Verifying the Usertab tab at the top right corner
-        cy.get(common.userAvatar).then(($loginUserName) => {
-            
-            const username = $loginUserName.text(); 
-            var email =Cypress.env("snowUser");                       
-            var names = email.split('-ctr')[0].split('.');
-            var firstName = names[0];
-            let firstNameChar = firstName.charAt(0);
-            var lastName = names[1];
-            let firstlastNameChar = lastName.charAt(0);
-            expect(username).to.deep.eq(firstNameChar.toUpperCase() + firstlastNameChar.toUpperCase());
-            
-        })} else {
+    it.skip("TC5: User Tab", () => {
+        if (runTestsInIframe && !isTestingLocally) {
+            //Verifying the Usertab tab at the top right corner
+            cy.get(common.userAvatar).then(($loginUserName) => {
+                
+                const username = $loginUserName.text(); 
+                var email =Cypress.env("snowUser");                       
+                var names = email.split('-ctr')[0].split('.');
+                var firstName = names[0];
+                let firstNameChar = firstName.charAt(0);
+                var lastName = names[1];
+                let firstlastNameChar = lastName.charAt(0);
+                expect(username).to.deep.eq(firstNameChar.toUpperCase() + firstlastNameChar.toUpperCase());
+                
+            });
+        } else {
             cy.log('Test not necessary on localhost')
         }
     })
 
-    it("TC6: Footer Components", () => {
+    it.skip("TC6: Footer Components", () => {
 
         //Verifying the footer at the bottom
         const footerItems = ["Security Notice", "Privacy", "Accessibility"];

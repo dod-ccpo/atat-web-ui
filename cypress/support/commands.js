@@ -32,18 +32,20 @@ import financialDetail from '../selectors/financialDetails.sel';
 import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 
-Cypress.Commands.add('login', (user, password) => {    
+const isTestingLocally = Cypress.env("isTestingLocally") === "true";
+const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+
+Cypress.Commands.add('login', (user, password) => {  
     cy.get('#username').type(user);
     cy.get('#password').type(password);
     cy.contains('button', 'Log in').click();   
-    
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-    if (Cypress.env("isTestingLocally") === "true") {
-        cy.get(selector);
+    if (runTestsInIframe || !isTestingLocally) {
+        cy.iframe(common.app).find(selector)       
     } else {
-        cy.iframe(common.app).find(selector)
+        cy.get(selector);
     }
 });
 
