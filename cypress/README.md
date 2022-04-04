@@ -18,7 +18,7 @@ npx cypress open
 ### To run Cypress tests on chrome
 
 ```
-npm run test:e2e --browser chrome
+npm run test:e2e
 ```
 
 ### To run Cypress tests on localhost
