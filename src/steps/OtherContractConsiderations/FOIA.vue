@@ -135,7 +135,5 @@ export default class FOIA extends Vue {
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
-
-
 }
 </script>
