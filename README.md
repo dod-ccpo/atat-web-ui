@@ -54,3 +54,25 @@ Open your service now personal developer instance....
 12. Browse to the `atat-web-ui\dist\js` and upload both .js files as attachments. 
 13. Return to the UI page and click the Endpoint link (in the upper hand corner).
 14. A new tab opens displaying the SPA.
+
+
+### To run Cypress tests on localhost
+
+```
+npm run serve
+```
+
+Open another IDE terminal window and run 
+
+```
+npx cypress open
+```
+### Setting Environment Variables for localhost testing
+
+Create a `.env` file in the project's root directory and use the following Environment Variables:
+
+| Environment Variable Name | Description          |
+| ------------------------- | -------------------- |
+| 'localTestUrl'            | http://localhost:8080/testing.html |
+
+```

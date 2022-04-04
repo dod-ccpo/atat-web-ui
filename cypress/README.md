@@ -15,10 +15,22 @@ npx cypress open
 
 ```
 
-### To run Cypress tests using Cypress command line AKA Cypress CLI
+### To run Cypress tests on chrome
 
 ```
 npm run test:e2e
+```
+
+### To run Cypress tests on localhost
+
+```
+npm run serve
+```
+
+Open another terminal window and run 
+
+```
+npx cypress open
 ```
 
 ### To run Cypress tests on edge
@@ -40,6 +52,7 @@ Create a `.env` file in the project's root directory and use the following Envir
 | Environment Variable Name | Description          |
 | ------------------------- | -------------------- |
 | 'testURL'                 | PortalUrl            |
+| 'localTestUrl'            | http://localhost:8080/testing.html |
 | 'SNOWUSER'                | Your username to use |
 | 'SNOWPASS'                | password             |
 
