@@ -14,7 +14,7 @@ describe("Test suite: Acquisition Package ", () => {
     let contactInfo;
     
     beforeEach(() => {
-        const isTestingLocally = Cypress.env("isTestingLocally");
+        const isTestingLocally = Cypress.env("isTestingLocally") === "true";
         bootstrapMockApis();
 
         cy.fixture("projectOverview").then((details) => {
@@ -40,7 +40,7 @@ describe("Test suite: Acquisition Package ", () => {
     it("TC1: Acquisition Package Substeps on the Vertical Stepper", () => {
         
         //Verify the text of Acquistion Package details is visible 
-        cy.textExists("#Step_AcquisitionPackageDetails >.step-text", " Acquisition Package Details ");
+        cy.textExists("#Step_AcquisitionPackageDetails .step-text", " Acquisition Package Details ");
 
         //Verify the Substeps are  visible
         cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");

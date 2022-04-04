@@ -40,12 +40,13 @@ Cypress.Commands.add('login', (user, password) => {
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-    if (!Cypress.env("isTestingLocally")) {
-        cy.iframe(common.app).find(selector);
-    } else {
+    if (Cypress.env("isTestingLocally") === "true") {
         cy.get(selector);
+    } else {
+        cy.iframe(common.app).find(selector)
     }
 });
+
 Cypress.Commands.add('textExists', (selector, textLabel) => {
     cy.findElement(selector)
         .should("be.visible")
