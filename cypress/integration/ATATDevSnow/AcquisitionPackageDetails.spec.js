@@ -34,8 +34,8 @@ describe("Test suite: Acquisition Package ", () => {
             cy.visit(Cypress.env("testUrl"));    
             cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
             cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+            cy.frameLoaded(common.app);
         }
-        cy.frameLoaded(common.app);
                 
     });
 
@@ -109,39 +109,9 @@ describe("Test suite: Acquisition Package ", () => {
         cy.btnExists(projectOverview.cancelBtn, " Cancel ");
     });
 
-    it("TC4: Surge Capabilities-Asserts and Validations Tell us more about the scope of your project", () => {
-
-        cy.fillNewAcquisition(projectDetails.projectTitle + "001", projectDetails.scope)
-        // Navigates to "Tell us more about the scope of your project"
-        cy.textExists(common.header, "Tell us more about the scope of your project");
-        
-        //Label of the view
-        cy.textExists(financialDetails.surgeCapabilitiesTxt, "Surge Capabilities");
-        
-        // ContractPricePercentage text
-        cy.textExists(financialDetails.contractPriceTxt," If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded? ");
-        
-        //Enter the aplha numeric value to validate the error message 
-        cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);   
-        
-        //Enter the value more than 50  to validate the error message
-        cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);    
-        
-        //Enter the value more than 50  to validate the error message
-        cy.fillSurgeCapabilities(projectDetails.invalidLessNumericContractPercentage);
-
-        //buttons that exists on the view
-        cy.btnExists(common.continueBtn, " Continue ");
-        cy.btnExists(common.backBtn, "Back");
-        
-        //Enter the Valid Percentage
-        cy.fillSurgeCapabilities(projectDetails.validContractPercentage,"continue");
-    });
-
-    it("TC5: Organization: Asserts: Next,we'll gather information about your organization", () => {
+    it("TC4: Organization: Asserts: Next,we'll gather information about your organization", () => {
     
         cy.fillNewAcquisition(projectDetails.projectTitle1, projectDetails.scope1);
-        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
         
         // Navigates to "Organization"
         cy.textExists(common.packageNameHeader, projectDetails.projectTitle1);
@@ -199,7 +169,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });  
 
-    it("TC6: Organization: Service Agency selected is DISA", () => {
+    it("TC5: Organization: Service Agency selected is DISA", () => {
         
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
 
@@ -222,7 +192,7 @@ describe("Test suite: Acquisition Package ", () => {
     
     });
 
-    it("TC7: Organization: Service Agency selected is  not DISA", () => {
+    it("TC6: Organization: Service Agency selected is  not DISA", () => {
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
         cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
@@ -245,7 +215,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });
 
-    it("TC8: Organization: Request to add your agency", () => {
+    it("TC7: Organization: Request to add your agency", () => {
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization ");
         // Navigates to "Organization"
         cy.textExists(org.requestAgencyLink,  " Request to have your agency added ").click();
@@ -254,9 +224,8 @@ describe("Test suite: Acquisition Package ", () => {
         
     });    
 
-    it("TC9: Asserts on Let’s confirm your contact information", () => {
+    it("TC8: Asserts on Let’s confirm your contact information", () => {
         cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
-        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
         cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
         //Service Agency is not DISA
@@ -332,7 +301,7 @@ describe("Test suite: Acquisition Package ", () => {
         );
     });
 
-    it("TC10: Contact Information: Role is Military", () => {
+    it("TC9: Contact Information: Role is Military", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
         //Navigates to Contact information
@@ -368,7 +337,7 @@ describe("Test suite: Acquisition Package ", () => {
         
     });
 
-    it("TC11: Contact Information: Role is Civilian", () => {
+    it("TC10: Contact Information: Role is Civilian", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
     
         //Navigates to Contact information
@@ -408,7 +377,7 @@ describe("Test suite: Acquisition Package ", () => {
     
     });
     
-    it("TC12: Contact Information: Role is Contractor", () => {
+    it("TC11: Contact Information: Role is Contractor", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
     
         //Navigates to Contact information
@@ -436,7 +405,7 @@ describe("Test suite: Acquisition Package ", () => {
             "351245121"); 
     });
     
-    it("TC13: COR: Selected Contact Information", () => {        
+    it("TC12: COR: Selected Contact Information", () => {        
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
         //Navigates to Contact information
@@ -498,7 +467,7 @@ describe("Test suite: Acquisition Package ", () => {
             .and("not.exist");
     });
 
-    it("TC14: COR: Search: No results found.", () => {   
+    it("TC13: COR: Search: No results found.", () => {   
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
         //Navigates to Contact information
@@ -516,7 +485,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });    
 
-    it("TC15: COR: Manually enter Contact information", () => {
+    it("TC14: COR: Manually enter Contact information", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
 
         //Navigates to Contact information
@@ -589,7 +558,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.btnExists(common.continueBtn, " Continue ").click();
     });       
 
-    it("TC16: ACOR: Option is Yes: Selected Contact Information", () => {
+    it("TC15: ACOR: Option is Yes: Selected Contact Information", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
 
         //Navigates to Contact information
@@ -631,7 +600,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });  
 
-    it("TC17: ACOR: Option is Yes: Manually enter Contact information", () => {
+    it("TC16: ACOR: Option is Yes: Manually enter Contact information", () => {
         cy.clickSideStepper(common.subStepContactInformationLink," Contact Information "); 
 
         //Navigates to Contact information
@@ -686,7 +655,7 @@ describe("Test suite: Acquisition Package ", () => {
         
 
     });
-    it("TC18: ACOR: Option is No", () => {
+    it("TC17: ACOR: Option is No", () => {
         cy.clickSideStepper(common.subStepContactInformationLink," Contact Information "); 
 
         //Navigates to Contact information
