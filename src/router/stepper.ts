@@ -325,9 +325,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "10",
     completePercentageWeight: 7,
-    name: routeNames.Financial_Details,
+    name: routeNames.Project_Scope,
     menuText: "Financial Details",
-    path: "/financial-details",
+    path: "/project-scope",
     component: FinancialDetails,
     children: [
       {
