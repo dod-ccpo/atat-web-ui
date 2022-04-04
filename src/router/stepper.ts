@@ -34,7 +34,8 @@ import BAA from "../steps/OtherContractConsiderations/BAA.vue";
 import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 
 // step 10 - Financial Details
-import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
+import FinancialDetails from "../steps/FinancialDetails/Index.vue";
+import ProjectScope from "../steps/FinancialDetails/ProjectScope.vue";
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
@@ -70,6 +71,7 @@ export const routeNames = {
   BAA: "BAA",
   PIIRecord: "PIIRecord",
   Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
+  Financial_Details: "Financial_Details",
 };
 
 /**
@@ -323,16 +325,17 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "10",
     completePercentageWeight: 7,
-    name: "Financial_Details",
+    name: routeNames.Financial_Details,
     menuText: "Financial Details",
     path: "/financial-details",
-    component: ProjectScope,
+    component: FinancialDetails,
     children: [
       {
         menuText: "Project Scope",
-        path: "/financial-details",
+        path: "/project-scope",
         name: routeNames.Project_Scope,
         completePercentageWeight: 1,
+        component: ProjectScope,
       },
     ]
   },
