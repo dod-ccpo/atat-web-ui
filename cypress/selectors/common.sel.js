@@ -15,10 +15,10 @@ module.exports = {
   subStepOrganizationLink:"#SubStep_Organization",
   subStepContactInformationTxt: "#SubStep_ContactInformation > .step-text",
   subStepContactInformationLink: "#SubStep_ContactInformation",
-  rightMenuTab: "ul.navbar-nav",
+  rightMenuTab: "header ul.navbar-nav",
   portal: "#Portals",
   userAvatar: ".sub-avatar",
-  footerLinks:".links",
+  footerLinks:".atat-page-footer .links",
   continueBtn:"#ContinueButton",
   backBtn:"#BackButton span span"
   

@@ -168,7 +168,7 @@ Cypress.Commands.add("enterOrganizationAddress", (streetAddress, unit, city, sta
     cy.enterTextInTextField(org.streetTxtBox, streetAddress);
     cy.enterTextInTextField(org.unitTxtBox, unit);
     cy.enterTextInTextField(org.cityTxtBox, city);
-    cy.autoCompleteSelection(org.stateTxtBox, state, "#State_AutoComplete_Wrapper .v-list-item__title");
+    cy.autoCompleteSelection(org.stateTxtBox, state, org.stateAutoCompleteList);
     cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);            
 });  
 
@@ -340,7 +340,7 @@ Cypress.Commands.add("acorOption", (radio_selector, value) => {
             cy.btnExists(common.continueBtn, ' Continue ').click();
             if (selectedOption === "radio_button_checkedYes") {
                 //naviagtes to ACOR
-                cy.textExists("h1.page-header", " Let’s gather info about your ACOR ");
+                cy.textExists(common.header, " Let’s gather info about your ACOR ");
             } else {
                 cy.findElement("div").contains("Summary");
             };
