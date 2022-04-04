@@ -3,9 +3,18 @@
   "Unit": "#201",
   "City": "Herndon",
   "State": "Virg",
-  "Zipcode": 20170,
+  "Zipcode": 20170,  
   "StreetAddress1": "2880 Elden Street",
   "Unit1":"#102",
-  "StreetAddress2": "2802 Elden Street",
-  "Unit2": "#202"  
+  "city1":"Abani",
+  "stateProvince1": "Adrar",
+  "postalCode": 37100,
+  "country1":"Algeria",
+  "StreetAddress2": "2802 Main Street",
+  "Unit2": "#202" , 
+  "city2":"Rome",
+  "stateProvince2": "RM",
+  "postalCode1": 300119,
+  "country":"Italy"
+  
 }

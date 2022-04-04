@@ -164,13 +164,77 @@ Cypress.Commands.add("serviceOrAgency", (inputText) => {
         }); 
 });
 
-Cypress.Commands.add("enterOrganizationAddress", (streetAddress, unit, city, state, zipCode) => {
-    cy.enterTextInTextField(org.streetTxtBox, streetAddress);
-    cy.enterTextInTextField(org.unitTxtBox, unit);
-    cy.enterTextInTextField(org.cityTxtBox, city);
-    cy.autoCompleteSelection(org.stateTxtBox, state, org.stateAutoCompleteList);
-    cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);            
-});  
+Cypress.Commands.add("selectTypeOfMailingAddress", (radio_selector, value) => {
+    cy.radioBtn(radio_selector, value).click({ force: true });
+    cy.findElement(org.addressTypeRadioActive)
+        .then(($radioBtn) => {
+            const selectedOption = $radioBtn.text();
+            cy.log(selectedOption);
+            const commonFields = (() => {
+                cy.textExists(org.streetLabel, " Street address ");
+                cy.textExists(org.unitLabel, " Unit, suite, etc.  Optional ");
+            });
+            if (selectedOption === "radio_button_checkedU.S. address") {
+                commonFields();
+                cy.textExists(org.cityLabel, " City ");
+                cy.textExists(org.stateLabel, " State ");
+                cy.textExists(org.zipCodeLabel, " ZIP code ");
+            } else if (selectedOption === "radio_button_checkedMilitary") {
+                commonFields();
+                cy.textExists(org.zipCodeLabel, " ZIP code ");
+                cy.textExists(org.stateCodeDropDownLabel, " State code ");
+                cy.textExists(org.apoFpoDropDownLabel, " APO/FPO ");
+            } else if (selectedOption === "radio_button_checkedForeign address") {
+                commonFields();
+                cy.textExists(org.stateProvinceLabel, " State or Province ​");
+                cy.textExists(org.zipCodeLabel, " Postal code ");
+                cy.textExists(org.countryLabel, " Country ");
+            };
+        });            
+});
+
+Cypress.Commands.add("enterOrganizationAddress", (
+    streetAddress,
+    unit,
+    city,
+    state,
+    zipCode,
+    apoFPO_selector,
+    statecode_selector,
+    stateProvince,
+    inputCountryName
+    
+) => {
+    cy.findElement(org.addressTypeRadioActive)
+        .then(($radioBtn) => {
+            const selectedOption = $radioBtn.text();
+            cy.log(selectedOption);
+            const enterCommonFields = (() => {
+                cy.enterTextInTextField(org.streetTxtBox, streetAddress);
+                cy.enterTextInTextField(org.unitTxtBox, unit);
+            });
+            if (selectedOption === "radio_button_checkedU.S. address") {
+                //Assert Organization's address labels
+                enterCommonFields();
+                cy.enterTextInTextField(org.cityTxtBox, city);
+                cy.autoCompleteSelection(org.stateTxtBox, state, org.stateAutoCompleteList);
+                cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);
+            } else if (selectedOption === "radio_button_checkedMilitary (APO or FPO)") {
+                //Assert Organization's address labels
+                enterCommonFields();
+                cy.findElement(org.apoFpoDropDown).click({ force: true });
+                cy.findElement(apoFPO_selector).click({ force: true });
+                cy.findElement(org.stateCodeDropDown).click({ force: true });
+                cy.findElement(statecode_selector).click();
+                cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);
+            } else if (selectedOption === "radio_button_checkedForeign address") {
+                enterCommonFields();
+                cy.enterTextInTextField(org.stateProvinceTxtBox, stateProvince);
+                cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);
+                cy.autoCompleteSelection(org.countryInput, inputCountryName, org.countryListItems);
+            };
+        });
+});
 
 Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
     cy.radioBtn(selector, value).click({ force: true });

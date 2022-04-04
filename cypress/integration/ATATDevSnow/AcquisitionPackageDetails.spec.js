@@ -12,12 +12,11 @@ describe("Test suite: Acquisition Package ", () => {
     let projectDetails;
     let orgAddressType;
     let contactInfo;
-   
-     
+    
     beforeEach(() => {
-        const isTestingLocally = Cypress.env("isTestingLocally");
+        const isTestingLocally = Cypress.env("isTestingLocally")=== "true";
         bootstrapMockApis();
-           
+        
         cy.fixture("projectOverview").then((details) => {
             projectDetails = details;
         });
@@ -138,7 +137,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.fillSurgeCapabilities(projectDetails.validContractPercentage,"continue");
     });
 
-    it("TC5: Organization: Asserts: Next,we'll gather information about your organization", () => {
+    it("TC5: Organization: Next,we'll gather information about your organization & Address Type is Foreign", () => {
     
         cy.fillNewAcquisition(projectDetails.projectTitle1, projectDetails.scope1);
         cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
@@ -183,15 +182,22 @@ describe("Test suite: Acquisition Package ", () => {
         cy.radioBtn(org.militaryradioBtn, "MILITARY").not("[disabled]");
         cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
 
-        //Assert Organization's address labels
-        cy.textExists(org.streetLabel, " Street address ");
-        cy.textExists(org.unitLabel, " Unit, suite, etc.  Optional ");
-        cy.textExists(org.cityLabel, " City ");
-        cy.textExists(org.stateLabel,  " State ");
-        cy.textExists(org.zipCodeLabel, " ZIP code ");
-
+        //verify the labels when the radio butotn is selected
+        cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US")
+        cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY")
+        cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN")
         //enter the text in the text fields
-        cy.enterOrganizationAddress(orgAddressType.StreetAddress, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
+        cy.enterOrganizationAddress(           
+            orgAddressType.StreetAddress2,
+            orgAddressType.Unit2,            
+            orgAddressType.City2,
+            "",
+            orgAddressType.postalCode1,
+            "",
+            "",
+            orgAddressType.stateProvince2,
+            orgAddressType.country
+        );
 
         //Assert buttons
         cy.btnExists(common.continueBtn, " Continue ");
@@ -199,7 +205,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });  
 
-    it("TC6: Organization: Service Agency selected is DISA", () => {
+    it("TC6: Organization: Service Agency selected is DISA & Address Type is Military", () => {
         
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
 
@@ -212,7 +218,17 @@ describe("Test suite: Acquisition Package ", () => {
         cy.autoCompleteSelection(org.disaOrgInput, "Assistan",org.disaAutoComplete);
         cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDD");
-        cy.enterOrganizationAddress(orgAddressType.StreetAddress1, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
+        //select Address type as Military
+        cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
+        cy.enterOrganizationAddress(
+            orgAddressType.StreetAddress1,
+            orgAddressType.Unit,
+            "",
+            "",
+            orgAddressType.Zipcode,
+            org.apoFpoDropDownListItemsArmy,
+            org.stateCodeAmerica
+        );
 
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();
@@ -222,7 +238,7 @@ describe("Test suite: Acquisition Package ", () => {
     
     });
 
-    it("TC7: Organization: Service Agency selected is  not DISA", () => {
+    it("TC7: Organization: Service Agency selected is  not DISA & Address Type is US", () => {
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
         cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
@@ -230,6 +246,8 @@ describe("Test suite: Acquisition Package ", () => {
         cy.serviceOrAgency("Communications");
         cy.enterTextInTextField(org.orgNameTxtBox, "TestDepartmentof Defense");
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDCEC");
+        cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
+        //Enter the Orgranization address details
         cy.enterOrganizationAddress(
             orgAddressType.StreetAddress2,
             orgAddressType.Unit,

@@ -2,14 +2,14 @@ import { bootstrapMockApis } from "../../helpers";
 import common from "../../selectors/common.sel";
 
 describe("Test suite: Common SPA functionality", () => { 
-    const isTestingLocally = Cypress.env("isTestingLocally");
+    const isTestingLocally = Cypress.env("isTestingLocally") === "true";
     
     beforeEach(() => {
         
 
         bootstrapMockApis();
         
-        if (Cypress.env("localTestUrl")){
+        if (isTestingLocally){
             cy.visit(Cypress.env("localTestUrl"));    
         } else {
             cy.visit(Cypress.env("testUrl"));    
