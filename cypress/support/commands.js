@@ -174,18 +174,19 @@ Cypress.Commands.add("selectTypeOfMailingAddress", (radio_selector, value) => {
                 cy.textExists(org.streetLabel, " Street address ");
                 cy.textExists(org.unitLabel, " Unit, suite, etc.  Optional ");
             });
-            if (selectedOption === "radio_button_checkedU.S. address") {
-                commonFields();
+            commonFields();
+            if (selectedOption === "radio_button_checkedU.S. address") {                
                 cy.textExists(org.cityLabel, " City ");
                 cy.textExists(org.stateLabel, " State ");
                 cy.textExists(org.zipCodeLabel, " ZIP code ");
-            } else if (selectedOption === "radio_button_checkedMilitary") {
-                commonFields();
+            }
+            if (selectedOption === "radio_button_checkedMilitary") {                
                 cy.textExists(org.zipCodeLabel, " ZIP code ");
                 cy.textExists(org.stateCodeDropDownLabel, " State code ");
                 cy.textExists(org.apoFpoDropDownLabel, " APO/FPO ");
-            } else if (selectedOption === "radio_button_checkedForeign address") {
-                commonFields();
+            }
+            if (selectedOption === "radio_button_checkedForeign address") {
+                cy.textExists(org.cityLabel, " City ");
                 cy.textExists(org.stateProvinceLabel, " State or Province ​");
                 cy.textExists(org.zipCodeLabel, " Postal code ");
                 cy.textExists(org.countryLabel, " Country ");
@@ -193,46 +194,37 @@ Cypress.Commands.add("selectTypeOfMailingAddress", (radio_selector, value) => {
         });            
 });
 
-Cypress.Commands.add("enterOrganizationAddress", (
-    streetAddress,
-    unit,
-    city,
-    state,
-    zipCode,
-    apoFPO_selector,
-    statecode_selector,
-    stateProvince,
-    inputCountryName
-    
-) => {
+Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
     cy.findElement(org.addressTypeRadioActive)
         .then(($radioBtn) => {
             const selectedOption = $radioBtn.text();
             cy.log(selectedOption);
             const enterCommonFields = (() => {
-                cy.enterTextInTextField(org.streetTxtBox, streetAddress);
-                cy.enterTextInTextField(org.unitTxtBox, unit);
+                cy.enterTextInTextField(org.streetTxtBox, orgAddress.streetAddress);
+                cy.enterTextInTextField(org.unitTxtBox, orgAddress.unit);
             });
-            if (selectedOption === "radio_button_checkedU.S. address") {
+            enterCommonFields();
+            if (selectedOption === "radio_button_checkedU.S. address") {                
                 //Assert Organization's address labels
-                enterCommonFields();
-                cy.enterTextInTextField(org.cityTxtBox, city);
-                cy.autoCompleteSelection(org.stateTxtBox, state, org.stateAutoCompleteList);
-                cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);
-            } else if (selectedOption === "radio_button_checkedMilitary (APO or FPO)") {
+                cy.enterTextInTextField(org.cityTxtBox, orgAddress.city);
+                cy.autoCompleteSelection(org.stateTxtBox, orgAddress.state, org.stateAutoCompleteList);
+                cy.enterTextInTextField(org.zipCodeTxtBox,orgAddress.zipCode);
+            }
+            if (selectedOption === "radio_button_checkedMilitary (APO or FPO)") {
                 //Assert Organization's address labels
-                enterCommonFields();
+                
                 cy.findElement(org.apoFpoDropDown).click({ force: true });
-                cy.findElement(apoFPO_selector).click({ force: true });
+                cy.findElement(orgAddress.apoFPO_selector).click({ force: true });
                 cy.findElement(org.stateCodeDropDown).click({ force: true });
-                cy.findElement(statecode_selector).click();
-                cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);
-            } else if (selectedOption === "radio_button_checkedForeign address") {
-                enterCommonFields();
-                cy.enterTextInTextField(org.stateProvinceTxtBox, stateProvince);
-                cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);
-                cy.autoCompleteSelection(org.countryInput, inputCountryName, org.countryListItems);
-            };
+                cy.findElement(orgAddress.statecode_selector).click();
+                cy.enterTextInTextField(org.zipCodeTxtBox, orgAddress.zipCode);
+            }
+            if (selectedOption === "radio_button_checkedForeign address") {  
+                cy.enterTextInTextField(org.cityTxtBox, orgAddress.city);
+                cy.enterTextInTextField(org.stateProvinceTxtBox, orgAddress.stateProvince);
+                cy.enterTextInTextField(org.zipCodeTxtBox, orgAddress.zipCode);
+                cy.autoCompleteSelection(org.countryInput, orgAddress.inputCountryName, org.countryListItems);
+            }
         });
 });
 
@@ -256,7 +248,8 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
                 cy.findElement(contact.gradeAutoCompleteWrapper)
                     .should("exist")
                     .and("not.visible");
-            } else if (selectedOption === "radio_button_checkedContractor") {
+            }
+            if (selectedOption === "radio_button_checkedContractor") {
                 cy.findElement(contact.salutationDropDownLabel)
                     .should("exist")
                     .and("be.visible")
@@ -264,7 +257,8 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
                 cy.findElement(contact.gradeAutoCompleteWrapper)
                     .should("exist")
                     .and("not.visible");
-            } else if (selectedOption === "radio_button_checkedCivilian") {
+            }
+            if (selectedOption === "radio_button_checkedCivilian") {
                 cy.findElement(contact.gradeAutoCompleteWrapper)
                     .should("exist")
                     .and("be.visible")
@@ -276,7 +270,7 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
                 cy.findElement(contact.serviceBranchControl)
                     .should("exist")
                     .and("not.visible");
-            };
+            }
     });  
 });
 
@@ -296,7 +290,7 @@ Cypress.Commands.add("enterContactInformation", (firstName_selector,firstName, m
         //radio buttons
         cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes");
         cy.radioBtn(commonCorAcor.accessNoRadioBtn, "no");
-    };
+    }
 });
 
 Cypress.Commands.add("enterPhoneNumber", (icon_selector, country_selector, countryText, option_selector, number_selector, numberValue) => {
@@ -334,7 +328,7 @@ Cypress.Commands.add("checkIfCorOrAcor", (header_selector, headerText, contactNa
                 cy.findElement(commonCorAcor.contactFormToggle)
                     .should("exist")
                     .and("not.visible");
-            };
+            }
         });
 });
 
@@ -370,7 +364,7 @@ Cypress.Commands.add("manuallyEnterContactInformation", (manualEnterText, nameTe
                 cy.findElement(commonCorAcor.rankAutoWrapper)
                     .should("exist")
                     .and("not.visible");
-            };
+            }
         });
 });
 
@@ -407,7 +401,7 @@ Cypress.Commands.add("acorOption", (radio_selector, value) => {
                 cy.textExists(common.header, " Let’s gather info about your ACOR ");
             } else {
                 cy.findElement("div").contains("Summary");
-            };
+            }
         });
 
 });

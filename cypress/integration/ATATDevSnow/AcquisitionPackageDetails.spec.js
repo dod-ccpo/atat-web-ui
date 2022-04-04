@@ -183,22 +183,23 @@ describe("Test suite: Acquisition Package ", () => {
         cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
 
         //verify the labels when the radio butotn is selected
-        cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US")
-        cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY")
-        cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN")
+        cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
+        cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
+        cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
+        const orgAddress = {
+        streetAddress : orgAddressType.StreetAddress,
+        unit : orgAddressType.Unit2,            
+        city : orgAddressType.city2,
+        state:   "",
+        zipCode: orgAddressType.postalCode1,
+        apoFPO_selector :    "",
+        statecode_selector :    "",
+        stateProvince :    orgAddressType.stateProvince2,
+        inputCountryName :    orgAddressType.country
+        
+    }
         //enter the text in the text fields
-        cy.enterOrganizationAddress(           
-            orgAddressType.StreetAddress2,
-            orgAddressType.Unit2,            
-            orgAddressType.City2,
-            "",
-            orgAddressType.postalCode1,
-            "",
-            "",
-            orgAddressType.stateProvince2,
-            orgAddressType.country
-        );
-
+        cy.enterOrganizationAddress(orgAddress);
         //Assert buttons
         cy.btnExists(common.continueBtn, " Continue ");
         cy.btnExists(common.backBtn, "Back");
@@ -220,15 +221,19 @@ describe("Test suite: Acquisition Package ", () => {
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDD");
         //select Address type as Military
         cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
-        cy.enterOrganizationAddress(
-            orgAddressType.StreetAddress1,
-            orgAddressType.Unit,
-            "",
-            "",
-            orgAddressType.Zipcode,
-            org.apoFpoDropDownListItemsArmy,
-            org.stateCodeAmerica
-        );
+        const orgAddress = {
+            streetAddress: orgAddressType.StreetAddress1,
+            unit : orgAddressType.Unit,            
+            city : "",
+            state:   "",
+            zipCode: orgAddressType.Zipcode,
+            apoFPO_selector : org.apoFpoDropDownListItemsArmy,
+            statecode_selector : org.stateCodeAmerica,
+            stateProvince :orgAddressType.stateProvince2,
+            inputCountryName : orgAddressType.country
+            
+        }
+        cy.enterOrganizationAddress(orgAddress);
 
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();
@@ -248,13 +253,15 @@ describe("Test suite: Acquisition Package ", () => {
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDCEC");
         cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
         //Enter the Orgranization address details
-        cy.enterOrganizationAddress(
-            orgAddressType.StreetAddress2,
-            orgAddressType.Unit,
-            orgAddressType.City,
-            orgAddressType.State,
-            orgAddressType.Zipcode
-        );
+        const orgAddress = {
+            streetAddress: orgAddressType.StreetAddress2,
+            unit : orgAddressType.Unit,            
+            city : orgAddressType.City,
+            state:   orgAddressType.State,
+            zipCode: orgAddressType.Zipcode,
+            
+        }
+        cy.enterOrganizationAddress(orgAddress);
         
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();
@@ -281,13 +288,15 @@ describe("Test suite: Acquisition Package ", () => {
         cy.serviceOrAgency("Communications");
         cy.enterTextInTextField(org.orgNameTxtBox,  "TestDepartmentof Defense");
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDCEC");
-        cy.enterOrganizationAddress(
-            orgAddressType.StreetAddress,
-            orgAddressType.Unit,
-            orgAddressType.City,
-            orgAddressType.State,
-            orgAddressType.Zipcode
-        );
+        const orgAddress= {
+            streetAddress: orgAddressType.StreetAddress,
+            unit : orgAddressType.Unit1,            
+            city : orgAddressType.City,
+            state:   orgAddressType.State,
+            zipCode: orgAddressType.Zipcode,
+            
+        }
+        cy.enterOrganizationAddress(orgAddress);
 
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();       
