@@ -5,8 +5,6 @@ describe("Test suite: Common SPA functionality", () => {
     const isTestingLocally = Cypress.env("isTestingLocally");
     
     beforeEach(() => {
-        
-
         bootstrapMockApis();
         
         if (Cypress.env("localTestUrl")){
@@ -15,11 +13,9 @@ describe("Test suite: Common SPA functionality", () => {
             cy.visit(Cypress.env("testUrl"));    
             cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
             cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+            cy.frameLoaded(common.app);        
         };
-        
-        cy.frameLoaded(common.app);        
-        
-    })
+    });
     
     it("TC1: Vertical Stepper", () => {
         
@@ -57,7 +53,8 @@ describe("Test suite: Common SPA functionality", () => {
         cy.completePercent()
             .then((returned_value) => {
                 
-                cy.findElement(common.stepperProgressBarTextPrimary).should("contain", returned_value + "%");
+                cy.findElement(common.stepperProgressBarTextPrimary)
+                    .should("contain", returned_value + "%");
             })
         
         //Verifying the label of the text 
@@ -72,33 +69,35 @@ describe("Test suite: Common SPA functionality", () => {
     });
 
     it("TC3: Menu tabs on the rightcorner", () => {
-        const expectedMenuItems = ["Dashboard", "MyPackages", "Resources", "Portals", "UserTab"]
-        let foundMenuItems = 0
-        
-        //Verifying the Menu tabs at the top right corner
-        cy.get(common.rightMenuTab).children().each(($el) => {
-            const text = $el.text()
-            if (expectedMenuItems.indexOf(text) > -1) {
-                foundMenuItems++
-            }
-        })
-        return foundMenuItems === expectedMenuItems.length;
-        
+        if (!isTestingLocally){
+            const expectedMenuItems = ["Dashboard", "MyPackages", "Resources", "Portals", "UserTab"]
+            let foundMenuItems = 0
+            
+            //Verifying the Menu tabs at the top right corner
+            cy.get(common.rightMenuTab).children().each(($el) => {
+                const text = $el.text()
+                if (expectedMenuItems.indexOf(text) > -1) {
+                    foundMenuItems++
+                }
+            })
+            return foundMenuItems === expectedMenuItems.length;
+        }
     });
 
     it("TC4: Portal Dropdown", () => {
         //Portal dropdown
-        cy.get(common.portal).should("exist").click({ force: true });          
-        const expectedValues = ["Global Service Desk", " Mission Partner Portal"]
-        let foundValues = 0
-        cy.get(common.portal).children().each(($el) => {
-            const text = $el.text()
-            if (expectedValues.indexOf(text) > -1) {
-                foundValues++
-            }
-        })
-        return foundValues === expectedValues.length;
-        
+        if (!isTestingLocally){
+            cy.get(common.portal).should("exist").click({ force: true });          
+            const expectedValues = ["Global Service Desk", " Mission Partner Portal"]
+            let foundValues = 0
+            cy.get(common.portal).children().each(($el) => {
+                const text = $el.text()
+                if (expectedValues.indexOf(text) > -1) {
+                    foundValues++
+                }
+            })
+            return foundValues === expectedValues.length;
+        }
     });                                      
     
     it("TC5: User Tab", () => {

@@ -12,12 +12,11 @@ describe("Test suite: Acquisition Package ", () => {
     let projectDetails;
     let orgAddressType;
     let contactInfo;
-   
-     
+    
     beforeEach(() => {
         const isTestingLocally = Cypress.env("isTestingLocally");
         bootstrapMockApis();
-           
+
         cy.fixture("projectOverview").then((details) => {
             projectDetails = details;
         });
@@ -36,9 +35,7 @@ describe("Test suite: Acquisition Package ", () => {
             cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
             cy.frameLoaded(common.app);
         }
-                
     });
-
 
     it("TC1: Acquisition Package Substeps on the Vertical Stepper", () => {
         
