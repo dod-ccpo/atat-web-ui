@@ -22,7 +22,9 @@ npm run test:e2e
 ```
 
 ### To run Cypress tests on localhost
+Change the .env variable 'isTestingLocally' to true
 
+Run app locally
 ```
 npm run serve
 ```
@@ -53,6 +55,7 @@ Create a `.env` file in the project's root directory and use the following Envir
 | ------------------------- | -------------------- |
 | 'testURL'                 | PortalUrl            |
 | 'localTestUrl'            | http://localhost:8080/testing.html |
+| 'isTestingLocally'        | false  (set true to test locally)  |
 | 'SNOWUSER'                | Your username to use |
 | 'SNOWPASS'                | password             |
 
