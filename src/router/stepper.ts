@@ -1,4 +1,5 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
+import BlankPage from "../steps/BlankPage.vue"
 
 // Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
@@ -57,11 +58,13 @@ export const routeNames = {
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
+  Fair_Opportunity: "Fair_Opportunity",
+  Exceptions: "Exceptions",
+  Justification_and_Approval: "Justification_and_Approval",
   Background: "Background",
   Current_Contract: "Current_Contract",
   Current_Contract_Details: "Current_Contract_Details",
   Performance_Requirements: "Performance_Requirements",
-  Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
@@ -168,13 +171,25 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     menuText: "Fair Opportunity Process",
     path: "/fair-opportunity-exceptions",
     completePercentageWeight: 10,
+    name: routeNames.Exceptions,
     component: FairOpportunity_Exceptions,
+    completed: false,
     children: [
+      // {
+      //   menuText: "Exceptions",
+      //   path: "/fair-opportunity-exceptions",
+      //   name: routeNames.Exceptions,
+      //   component: FairOpportunity_Exceptions,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      // },
       {
-        menuText: "Exceptions",
-        path: "/fair-opportunity-exceptions",
-        name: routeNames.Fair_Opportunity_Exceptions,
-        completePercentageWeight: 2,
+        menuText: "Justification and Approval",
+        path: "/justification-and-approval",
+        name: routeNames.Justification_and_Approval,
+        component: BlankPage,
+        completePercentageWeight: 5,
+        completed: false,
       },
     ],
   },
@@ -218,9 +233,10 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     name: routeNames.Performance_Requirements,
     stepNumber: "04",
+    component: BlankPage,
     completePercentageWeight: 7,
-    menuText: "Exception to Fair Opportunity",
-    path: "/exception-to-fair-opportunity",
+    menuText: "Performance Requirements",
+    path: "/performance_requirements",
     completed: false,
   },
   {
@@ -316,7 +332,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "09",
-
     completePercentageWeight: 7,
     name: "Statutory_Compliance",
     menuText: "Statutory Compliance",

@@ -95,8 +95,9 @@ export default class App extends Vue {
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-
+    
     if (routeName && step) {
+      console.log(step);
       const {stepName, stepNumber} = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
@@ -112,7 +113,7 @@ export default class App extends Vue {
       direction === "next" 
         ? await Steps.getNext() 
         : await Steps.getPrevious();
-
+   
     if (nextStepName) {
       this.$router.push({name: nextStepName});
     }
