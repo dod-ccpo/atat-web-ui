@@ -32,16 +32,40 @@ import financialDetail from '../selectors/financialDetails.sel';
 import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 
-Cypress.Commands.add('login', (user, password) => {    
+const isTestingLocally = Cypress.env("isTestingLocally") === "true";
+const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+
+Cypress.Commands.add("launchATAT", () => {
+    if (isTestingLocally){
+        cy.visit(Cypress.env("localTestURL"));    
+        if (runTestsInIframe) {
+            cy.visit(Cypress.env("localTestURLInIframe"));    
+            cy.frameLoaded(common.app);        
+        } else {
+            cy.visit(Cypress.env("localTestURL"));    
+        }
+    } else {
+        cy.visit(Cypress.env("testURL"));    
+        cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+        cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+        cy.frameLoaded(common.app);
+    }
+});
+
+Cypress.Commands.add('login', (user, password) => {  
     cy.get('#username').type(user);
     cy.get('#password').type(password);
     cy.contains('button', 'Log in').click();   
-    
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-    cy.iframe(common.app).find(selector)
+    if (runTestsInIframe || !isTestingLocally) {
+        cy.iframe(common.app).find(selector)       
+    } else {
+        cy.get(selector);
+    }
 });
+
 Cypress.Commands.add('textExists', (selector, textLabel) => {
     cy.findElement(selector)
         .should("be.visible")

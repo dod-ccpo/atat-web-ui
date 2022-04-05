@@ -89,7 +89,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "01",
     menuText: "Acquisition Package Details",
     path: "/", // should be same as first substep route
-    completePercentageWeight: 15,
+    completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
     completed: true,
     children: [
