@@ -60,7 +60,8 @@ export const PIIRecordResolver = (current: string): string => {
 
 export const FOIARecordResolver = (current: string): string => {
   const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
-  // if system of record will be included, route to system of records page
+  // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
+  // then need to collect information about the FOIA Coordinator
   if (needsFOIACoordinator) {
     return routeNames.FOIA_Coordinator;
   }
