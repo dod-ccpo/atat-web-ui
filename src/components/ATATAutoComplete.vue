@@ -44,7 +44,7 @@
             <a 
               v-if="noResultsText" 
               @click="noResultsAction" 
-              class="text-link"
+              class="_text-link"
               role="button"
               tabindex="0"
               :id="'NoResults_' + id"

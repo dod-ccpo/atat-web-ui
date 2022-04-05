@@ -22,7 +22,7 @@
         <a
           role="button"
           id="RequestAgencyAdded"
-          class="text-link"
+          class="_text-link"
           :class="{ 'mb-10 d-inline-block': !selectedServiceOrAgency}"
           @click="showDialog = true"
         >

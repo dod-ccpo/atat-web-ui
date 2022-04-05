@@ -32,6 +32,7 @@ import OtherContractConsiderations from "../steps/OtherContractConsiderations/In
 import PII from "../steps/OtherContractConsiderations/PII.vue";
 import BAA from "../steps/OtherContractConsiderations/BAA.vue";
 import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
+import FOIA from "../steps/OtherContractConsiderations/FOIA.vue";
 
 // step 10 - Financial Details
 import FinancialDetails from "../steps/FinancialDetails/Index.vue";
@@ -71,6 +72,7 @@ export const routeNames = {
   BAA: "BAA",
   PIIRecord: "PIIRecord",
   Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
+  FOIA: "FOIA",
   Financial_Details: "Financial_Details",
 };
 
@@ -303,6 +305,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.BAA,
         completePercentageWeight: 2,
         component: BAA,
+      },
+      {
+        menuText: "Public Disclosure of Information",
+        path: "/foia",
+        name: routeNames.FOIA,
+        completePercentageWeight: 2,
+        component: FOIA,
       },
     ]
   },

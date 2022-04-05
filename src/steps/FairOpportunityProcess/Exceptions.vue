@@ -23,10 +23,10 @@
                   <a 
                     href="https://www.acquisition.gov/far/16.505" 
                     target="_blank" 
-                    class="text-link" 
+                    class="_text-link" 
                     id="ExceptionExternalLink"
                   >
-                    <span class="external-link">FAR 16.505(b)(2)</span>
+                    <span class="_external-link">FAR 16.505(b)(2)</span>
                   </a>.
                 We will help you complete justification documentation, if needed.
               </p>

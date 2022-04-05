@@ -10,8 +10,8 @@
           approval process. We will fill out your COR’s contact information on any necessary forms
           and will send your COR an email when documents are ready to be signed. Search for your COR
           below or manually enter their contact information. For more guidance about CORs, visit
-          <a href="https://www.ditco.disa.mil/hq/cor/index.asp" class="text-link" target="_blank">
-            https://www.ditco.disa.mil/hq/cor/index.asp<span class="external-link">.</span>
+          <a href="https://www.ditco.disa.mil/hq/cor/index.asp" class="_text-link" target="_blank">
+            https://www.ditco.disa.mil/hq/cor/index.asp<span class="_external-link">.</span>
           </a>
         </p>
 
