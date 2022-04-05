@@ -27,7 +27,7 @@
           When you update your contact information on the
           <a href="https://idco.dmdc.osd.mil/idco/" target="_blank"
             >ID Card Office Online (IDCO)
-            <span class="external-link">website</span></a
+            <span class="_external-link">website</span></a
           >, it is automatically updated anywhere you use your CAC, saving you
           the time and hassle of updating your information on multiple DoD
           websites.

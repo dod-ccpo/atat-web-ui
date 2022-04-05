@@ -60,7 +60,7 @@
                   target="_blank" 
                 >
                   https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html<span 
-                  class="external-link">.</span>
+                  class="_external-link">.</span>
                 </a>
               </p>
             </template>
@@ -88,11 +88,11 @@
                 For more information, reference
                 <a 
                   href="https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-160/subpart-A/section-160.103"
-                  class="text-link external-link"
+                  class="_text-link _external-link"
                   target="_blank"
                 >
                   Business Associate and PHI, CFR title 45 part 
-                  <span class="external-link">160.103</span>
+                  <span class="_external-link">160.103</span>
                 </a> 
                 and BAA, CFR title 45 part 164.308 (b)(4).        
               </p>
