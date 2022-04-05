@@ -1,6 +1,6 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
-import PIIRecord from "@/store/PIIRecordStore";
+import OtherContractConsiderations from "@/store/otherContractConsiderations";
 import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
@@ -50,10 +50,22 @@ export const CurrentContractRouteResolver = (current: string): string => {
 };
 
 export const PIIRecordResolver = (current: string): string => {
-  const hasSystemOfRecord = PIIRecord.PIIRecordIncluded;
+  const hasSystemOfRecord = OtherContractConsiderations.PIIRecordIncluded;
   // if system of record will be included, route to system of records page
   if (hasSystemOfRecord) {
     return routeNames.PIIRecord;
   }
   return current === routeNames.PII ? routeNames.BAA : routeNames.PII;
+};
+
+export const FOIARecordResolver = (current: string): string => {
+  const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
+  // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
+  // then need to collect information about the FOIA Coordinator
+  if (needsFOIACoordinator) {
+    return routeNames.FOIA_Coordinator;
+  }
+  return current === routeNames.FOIA 
+    ? routeNames.Public_Disclosure_of_Information 
+    : routeNames.FOIA;
 };

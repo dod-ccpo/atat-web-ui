@@ -119,3 +119,10 @@ export interface ToastObj {
   hasUndo?: boolean;
   hasIcon?: boolean;
 }
+
+/**
+ * interface for basic/generic objects
+ */
+ export interface stringObj {
+  [key: string]: string;
+}

@@ -1,5 +1,5 @@
 module.exports = {
-  ditcoLink: ".page-intro .text-link",
+  ditcoLink: ".page-intro ._text-link",
   searchContactWrapper: "#SearchContact_AutoComplete_Wrapper",
   searchContactInput: "#SearchContact",
   searchContactActive: "#SearchContact_AutoComplete_Wrapper .menuable__content__active.v-autocomplete__content",
