@@ -39,7 +39,6 @@ export const CustodianRouteResolver = (current: string): string => {
 };
 
 export const CurrentContractRouteResolver = (current: string): string => {
-  debugger;
   const hasCurrentContract = Background.hasCurrentContract;
 
   if (hasCurrentContract) {
@@ -61,7 +60,6 @@ export const PIIRecordResolver = (current: string): string => {
 
 export const FOIARecordResolver = (current: string): string => {
   const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
-  debugger;
   // if system of record will be included, route to system of records page
   if (needsFOIACoordinator) {
     return routeNames.FOIA_Coordinator;
