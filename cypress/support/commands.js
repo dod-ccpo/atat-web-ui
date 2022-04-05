@@ -69,7 +69,7 @@ Cypress.Commands.add("findElement", (selector) => {
 Cypress.Commands.add('textExists', (selector, textLabel) => {
     cy.findElement(selector)
         .should("be.visible")
-        .and("have.text", textLabel);
+        .and("contain.text", textLabel);
 });
 
 Cypress.Commands.add('enterTextInTextField', (selector, text) => {
