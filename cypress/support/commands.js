@@ -35,6 +35,23 @@ import acor from '../selectors/acor.sel';
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
 
+Cypress.Commands.add("launchATAT", () => {
+    if (isTestingLocally){
+        cy.visit(Cypress.env("localTestURL"));    
+        if (runTestsInIframe) {
+            cy.visit(Cypress.env("localTestURLInIframe"));    
+            cy.frameLoaded(common.app);        
+        } else {
+            cy.visit(Cypress.env("localTestURL"));    
+        }
+    } else {
+        cy.visit(Cypress.env("testURL"));    
+        cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+        cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+        cy.frameLoaded(common.app);
+    }
+});
+
 Cypress.Commands.add('login', (user, password) => {  
     cy.get('#username').type(user);
     cy.get('#password').type(password);

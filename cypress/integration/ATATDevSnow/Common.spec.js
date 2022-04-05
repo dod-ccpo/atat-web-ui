@@ -7,20 +7,7 @@ describe("Test suite: Common SPA functionality", () => {
     
     beforeEach(() => {
         bootstrapMockApis();
-
-        if (isTestingLocally){
-            if (runTestsInIframe) {
-                cy.visit(Cypress.env("localTestURLInIframe"));    
-                cy.frameLoaded(common.app);        
-            } else {
-                cy.visit(Cypress.env("localTestURL"));    
-            }
-        } else {
-            cy.visit(Cypress.env("testURL"));    
-            cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
-            cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
-            cy.frameLoaded(common.app);        
-        }
+        cy.launchATAT();
     });
     
     it("TC1: Vertical Stepper", () => {
