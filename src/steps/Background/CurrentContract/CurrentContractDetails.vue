@@ -11,19 +11,19 @@
             <ATATTextField 
               label="Incumbent contractor name" 
               id="IncumbentContractorName" 
-              class="input-max-width mb-10" 
+              class="_input-max-width mb-10" 
             />
 
             <ATATTextField 
               label="Contract number" 
               id="ContractNumber" 
-              class="input-max-width mb-10" 
+              class="_input-max-width mb-10" 
             />
             
             <ATATTextField 
               label="Task/Delivery order number" 
               id="TaskDeliveryOrderNumber" 
-              class="input-max-width mb-10" 
+              class="_input-max-width mb-10" 
             />
 
             <ATATDatePicker id="Expiration" 

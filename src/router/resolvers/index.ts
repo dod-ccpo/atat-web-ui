@@ -39,6 +39,7 @@ export const CustodianRouteResolver = (current: string): string => {
 };
 
 export const CurrentContractRouteResolver = (current: string): string => {
+  debugger;
   const hasCurrentContract = Background.hasCurrentContract;
 
   if (hasCurrentContract) {

@@ -34,7 +34,7 @@
           :id="id + 'DatePickerTextField'"
           :height="42"
           :placeholder="placeHolder"
-          class="text-primary input-max-width d-flex align-center"
+          class="text-primary _input-max-width d-flex align-center"
           :hide-details="true"
           outlined
           @input="onInput"

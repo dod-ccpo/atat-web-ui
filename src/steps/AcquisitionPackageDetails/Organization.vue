@@ -8,7 +8,7 @@
 
         <ATATAutoComplete
           id="ServiceOrAgency"
-          class="input-max-width mb-2"
+          class="_input-max-width mb-2"
           label="What service or agency do you work for?"
           :label-sr-only="false"
           titleKey="text"
@@ -37,7 +37,7 @@
               id="DisaOrg"
               v-show="selectedServiceOrAgency && selectedServiceOrAgency.value 
               === this.DisaOrgName"
-              class="input-max-width mb-10"
+              class="_input-max-width mb-10"
               label="DISA Organization"
               :label-sr-only="false"
               titleKey="text"
@@ -52,14 +52,14 @@
               id="OrgName"
               v-show="selectedServiceOrAgency && selectedServiceOrAgency.value !== this.DisaOrgName"
               label="Organization name"
-              class="input-max-width mb-10"
+              class="_input-max-width mb-10"
               :value.sync="organizationName"
             />
 
             <ATATTextField
               id="DoDAAC"
               label="DoD Activity Address Code (DoDAAC)"
-              class="input-max-width"
+              class="_input-max-width"
               tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, activity, or organization that has the authority to requisition, contract for, or fund/pay bills for materials and services."
               :value.sync="dodAddressCode"
             />
@@ -245,7 +245,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // computed
 
   get inputClass(): string {
-    return this.$vuetify.breakpoint.mdAndDown ? "input-max-width my-2" : "my-2";
+    return this.$vuetify.breakpoint.mdAndDown ? "_input-max-width my-2" : "my-2";
   }
 
   get zipLabel(): string {

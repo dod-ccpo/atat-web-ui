@@ -33,6 +33,7 @@ import PII from "../steps/OtherContractConsiderations/PII.vue";
 import BAA from "../steps/OtherContractConsiderations/BAA.vue";
 import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 import FOIA from "../steps/OtherContractConsiderations/FOIA.vue";
+import FOIACoordinator from "../steps/OtherContractConsiderations/FOIACoordinator.vue";
 
 // step 10 - Financial Details
 import FinancialDetails from "../steps/FinancialDetails/Index.vue";
@@ -73,7 +74,8 @@ export const routeNames = {
   PIIRecord: "PIIRecord",
   Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
   Financial_Details: "Financial_Details",
-  FOIA: "FOIA"
+  FOIA: "FOIA",
+  FOIA_Coordinator: "FOIA_Coordinator"
 };
 
 /**
@@ -312,6 +314,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FOIA,
         completePercentageWeight: 2,
         component: FOIA,
+      },
+      {
+        menuText: "FOIA Coordinator",
+        path: "/foia-coordinator",
+        name: routeNames.FOIA_Coordinator,
+        completePercentageWeight: 2,
+        excludeFromMenu: true,
+        component: FOIACoordinator,
+        routeResolver: FOIARecordResolver
       },
     ]
   },
