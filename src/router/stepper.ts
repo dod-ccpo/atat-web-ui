@@ -46,7 +46,8 @@ import {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
   CustodianRouteResolver,
-  PIIRecordResolver
+  PIIRecordResolver,
+  FOIARecordResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -220,8 +221,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    name: routeNames.Performance_Requirements,
     stepNumber: "04",
+    name: routeNames.Performance_Requirements,
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",
     path: "/exception-to-fair-opportunity",

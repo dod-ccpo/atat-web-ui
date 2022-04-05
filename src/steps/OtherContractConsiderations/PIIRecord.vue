@@ -43,7 +43,6 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 export default class PIIRecord extends Vue {
   private systemName = "";
-  private operationToBePerformed = ""
-
+  private operationToBePerformed = "";
 }
 </script>
