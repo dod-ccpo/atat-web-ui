@@ -76,7 +76,7 @@ export const routeNames = {
   Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
   Financial_Details: "Financial_Details",
   FOIA: "FOIA",
-  FOIA_Coordinator: "FOIA_Coordinator"
+  FOIA_Coordinator: "FOIA_Coordinator",
 };
 
 /**
