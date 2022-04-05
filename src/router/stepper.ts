@@ -8,7 +8,6 @@ import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vu
 import CorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
 import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
 import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
-import ProjectScope from "../steps/AcquisitionPackageDetails/ProjectScope.vue";
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
@@ -35,6 +34,9 @@ import BAA from "../steps/OtherContractConsiderations/BAA.vue";
 import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 import FOIA from "../steps/OtherContractConsiderations/FOIA.vue";
 
+// step 10 - Financial Details
+import FinancialDetails from "../steps/FinancialDetails/Index.vue";
+import ProjectScope from "../steps/FinancialDetails/ProjectScope.vue";
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
@@ -70,7 +72,8 @@ export const routeNames = {
   BAA: "BAA",
   PIIRecord: "PIIRecord",
   Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
-  FOIA: "FOIA"
+  FOIA: "FOIA",
+  Financial_Details: "Financial_Details",
 };
 
 /**
@@ -88,7 +91,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "01",
     menuText: "Acquisition Package Details",
     path: "/", // should be same as first substep route
-    completePercentageWeight: 15,
+    completePercentageWeight: 14,
     component: AcquisitionPackageDetails,
     completed: true,
     children: [
@@ -110,15 +113,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             actionArgs: ["foo", "bar"],
           },
         ],
-      },
-      {
-        menuText: "Project Scope",
-        path: "project-scope",
-        name: routeNames.Project_Scope,
-        completePercentageWeight: 1,
-        excludeFromMenu: true,
-        component: ProjectScope,
-        completed: true,
       },
       {
         menuText: "Organization",
@@ -340,9 +334,19 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "10",
     completePercentageWeight: 7,
-    name: "Financial_Details",
+    name: routeNames.Project_Scope,
     menuText: "Financial Details",
-    path: "/financial-details",
+    path: "/project-scope",
+    component: FinancialDetails,
+    children: [
+      {
+        menuText: "Project Scope",
+        path: "/project-scope",
+        name: routeNames.Project_Scope,
+        completePercentageWeight: 1,
+        component: ProjectScope,
+      },
+    ]
   },
   {
     stepNumber: "11",

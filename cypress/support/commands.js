@@ -32,16 +32,40 @@ import financialDetail from '../selectors/financialDetails.sel';
 import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 
-Cypress.Commands.add('login', (user, password) => {    
+const isTestingLocally = Cypress.env("isTestingLocally") === "true";
+const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+
+Cypress.Commands.add("launchATAT", () => {
+    if (isTestingLocally){
+        cy.visit(Cypress.env("localTestURL"));    
+        if (runTestsInIframe) {
+            cy.visit(Cypress.env("localTestURLInIframe"));    
+            cy.frameLoaded(common.app);        
+        } else {
+            cy.visit(Cypress.env("localTestURL"));    
+        }
+    } else {
+        cy.visit(Cypress.env("testURL"));    
+        cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+        cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
+        cy.frameLoaded(common.app);
+    }
+});
+
+Cypress.Commands.add('login', (user, password) => {  
     cy.get('#username').type(user);
     cy.get('#password').type(password);
     cy.contains('button', 'Log in').click();   
-    
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-    cy.iframe(common.app).find(selector)
+    if (runTestsInIframe || !isTestingLocally) {
+        cy.iframe(common.app).find(selector)       
+    } else {
+        cy.get(selector);
+    }
 });
+
 Cypress.Commands.add('textExists', (selector, textLabel) => {
     cy.findElement(selector)
         .should("be.visible")
@@ -164,13 +188,69 @@ Cypress.Commands.add("serviceOrAgency", (inputText) => {
         }); 
 });
 
-Cypress.Commands.add("enterOrganizationAddress", (streetAddress, unit, city, state, zipCode) => {
-    cy.enterTextInTextField(org.streetTxtBox, streetAddress);
-    cy.enterTextInTextField(org.unitTxtBox, unit);
-    cy.enterTextInTextField(org.cityTxtBox, city);
-    cy.autoCompleteSelection(org.stateTxtBox, state, org.stateAutoCompleteList);
-    cy.enterTextInTextField(org.zipCodeTxtBox, zipCode);            
-});  
+Cypress.Commands.add("selectTypeOfMailingAddress", (radio_selector, value) => {
+    cy.radioBtn(radio_selector, value).click({ force: true });
+    cy.findElement(org.addressTypeRadioActive)
+        .then(($radioBtn) => {
+            const selectedOption = $radioBtn.text();
+            cy.log(selectedOption);
+            const commonFields = (() => {
+                cy.textExists(org.streetLabel, " Street address ");
+                cy.textExists(org.unitLabel, " Unit, suite, etc.  Optional ");
+            });
+            commonFields();
+            if (selectedOption === "radio_button_checkedU.S. address") {                
+                cy.textExists(org.cityLabel, " City ");
+                cy.textExists(org.stateLabel, " State ");
+                cy.textExists(org.zipCodeLabel, " ZIP code ");
+            }
+            if (selectedOption === "radio_button_checkedMilitary") {                
+                cy.textExists(org.zipCodeLabel, " ZIP code ");
+                cy.textExists(org.stateCodeDropDownLabel, " State code ");
+                cy.textExists(org.apoFpoDropDownLabel, " APO/FPO ");
+            }
+            if (selectedOption === "radio_button_checkedForeign address") {
+                cy.textExists(org.cityLabel, " City ");
+                cy.textExists(org.stateProvinceLabel, " State or Province ​");
+                cy.textExists(org.zipCodeLabel, " Postal code ");
+                cy.textExists(org.countryLabel, " Country ");
+            };
+        });            
+});
+
+Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
+    cy.findElement(org.addressTypeRadioActive)
+        .then(($radioBtn) => {
+            const selectedOption = $radioBtn.text();
+            cy.log(selectedOption);
+            const enterCommonFields = (() => {
+                cy.enterTextInTextField(org.streetTxtBox, orgAddress.streetAddress);
+                cy.enterTextInTextField(org.unitTxtBox, orgAddress.unit);
+            });
+            enterCommonFields();
+            if (selectedOption === "radio_button_checkedU.S. address") {                
+                //Assert Organization's address labels
+                cy.enterTextInTextField(org.cityTxtBox, orgAddress.city);
+                cy.autoCompleteSelection(org.stateTxtBox, orgAddress.state, org.stateAutoCompleteList);
+                cy.enterTextInTextField(org.zipCodeTxtBox,orgAddress.zipCode);
+            }
+            if (selectedOption === "radio_button_checkedMilitary (APO or FPO)") {
+                //Assert Organization's address labels
+                
+                cy.findElement(org.apoFpoDropDown).click({ force: true });
+                cy.findElement(orgAddress.apoFPO_selector).click({ force: true });
+                cy.findElement(org.stateCodeDropDown).click({ force: true });
+                cy.findElement(orgAddress.statecode_selector).click();
+                cy.enterTextInTextField(org.zipCodeTxtBox, orgAddress.zipCode);
+            }
+            if (selectedOption === "radio_button_checkedForeign address") {  
+                cy.enterTextInTextField(org.cityTxtBox, orgAddress.city);
+                cy.enterTextInTextField(org.stateProvinceTxtBox, orgAddress.stateProvince);
+                cy.enterTextInTextField(org.zipCodeTxtBox, orgAddress.zipCode);
+                cy.autoCompleteSelection(org.countryInput, orgAddress.inputCountryName, org.countryListItems);
+            }
+        });
+});
 
 Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
     cy.radioBtn(selector, value).click({ force: true });
@@ -192,7 +272,8 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
                 cy.findElement(contact.gradeAutoCompleteWrapper)
                     .should("exist")
                     .and("not.visible");
-            } else if (selectedOption === "radio_button_checkedContractor") {
+            }
+            if (selectedOption === "radio_button_checkedContractor") {
                 cy.findElement(contact.salutationDropDownLabel)
                     .should("exist")
                     .and("be.visible")
@@ -200,7 +281,8 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
                 cy.findElement(contact.gradeAutoCompleteWrapper)
                     .should("exist")
                     .and("not.visible");
-            } else if (selectedOption === "radio_button_checkedCivilian") {
+            }
+            if (selectedOption === "radio_button_checkedCivilian") {
                 cy.findElement(contact.gradeAutoCompleteWrapper)
                     .should("exist")
                     .and("be.visible")
@@ -212,7 +294,7 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
                 cy.findElement(contact.serviceBranchControl)
                     .should("exist")
                     .and("not.visible");
-            };
+            }
     });  
 });
 
@@ -232,7 +314,7 @@ Cypress.Commands.add("enterContactInformation", (firstName_selector,firstName, m
         //radio buttons
         cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes");
         cy.radioBtn(commonCorAcor.accessNoRadioBtn, "no");
-    };
+    }
 });
 
 Cypress.Commands.add("enterPhoneNumber", (icon_selector, country_selector, countryText, option_selector, number_selector, numberValue) => {
@@ -270,7 +352,7 @@ Cypress.Commands.add("checkIfCorOrAcor", (header_selector, headerText, contactNa
                 cy.findElement(commonCorAcor.contactFormToggle)
                     .should("exist")
                     .and("not.visible");
-            };
+            }
         });
 });
 
@@ -306,7 +388,7 @@ Cypress.Commands.add("manuallyEnterContactInformation", (manualEnterText, nameTe
                 cy.findElement(commonCorAcor.rankAutoWrapper)
                     .should("exist")
                     .and("not.visible");
-            };
+            }
         });
 });
 
@@ -343,7 +425,7 @@ Cypress.Commands.add("acorOption", (radio_selector, value) => {
                 cy.textExists(common.header, " Let’s gather info about your ACOR ");
             } else {
                 cy.findElement("div").contains("Summary");
-            };
+            }
         });
 
 });

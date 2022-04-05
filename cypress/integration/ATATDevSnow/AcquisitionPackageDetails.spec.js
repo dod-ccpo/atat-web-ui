@@ -12,12 +12,10 @@ describe("Test suite: Acquisition Package ", () => {
     let projectDetails;
     let orgAddressType;
     let contactInfo;
-   
-     
+    
     beforeEach(() => {
-        const isTestingLocally = Cypress.env("isTestingLocally");
         bootstrapMockApis();
-           
+
         cy.fixture("projectOverview").then((details) => {
             projectDetails = details;
         });
@@ -28,22 +26,13 @@ describe("Test suite: Acquisition Package ", () => {
             contactInfo = info;
         });
 
-        if (isTestingLocally){
-            cy.visit(Cypress.env("localTestUrl"));    
-        } else {
-            cy.visit(Cypress.env("testUrl"));    
-            cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
-            cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
-        }
-        cy.frameLoaded(common.app);
-                
+        cy.launchATAT();
     });
-
 
     it("TC1: Acquisition Package Substeps on the Vertical Stepper", () => {
         
         //Verify the text of Acquistion Package details is visible 
-        cy.textExists("#Step_AcquisitionPackageDetails >.step-text", " Acquisition Package Details ");
+        cy.textExists("#Step_AcquisitionPackageDetails .step-text", " Acquisition Package Details ");
 
         //Verify the Substeps are  visible
         cy.textExists(common.subStepProjectOverviewTxt, " Project Overview ");
@@ -109,39 +98,9 @@ describe("Test suite: Acquisition Package ", () => {
         cy.btnExists(projectOverview.cancelBtn, " Cancel ");
     });
 
-    it("TC4: Surge Capabilities-Asserts and Validations Tell us more about the scope of your project", () => {
-
-        cy.fillNewAcquisition(projectDetails.projectTitle + "001", projectDetails.scope)
-        // Navigates to "Tell us more about the scope of your project"
-        cy.textExists(common.header, "Tell us more about the scope of your project");
-        
-        //Label of the view
-        cy.textExists(financialDetails.surgeCapabilitiesTxt, "Surge Capabilities");
-        
-        // ContractPricePercentage text
-        cy.textExists(financialDetails.contractPriceTxt," If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded? ");
-        
-        //Enter the aplha numeric value to validate the error message 
-        cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);   
-        
-        //Enter the value more than 50  to validate the error message
-        cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);    
-        
-        //Enter the value more than 50  to validate the error message
-        cy.fillSurgeCapabilities(projectDetails.invalidLessNumericContractPercentage);
-
-        //buttons that exists on the view
-        cy.btnExists(common.continueBtn, " Continue ");
-        cy.btnExists(common.backBtn, "Back");
-        
-        //Enter the Valid Percentage
-        cy.fillSurgeCapabilities(projectDetails.validContractPercentage,"continue");
-    });
-
-    it("TC5: Organization: Asserts: Next,we'll gather information about your organization", () => {
+    it("TC4: Organization: Next,we'll gather information about your organization & Address Type is Foreign", () => {
     
         cy.fillNewAcquisition(projectDetails.projectTitle1, projectDetails.scope1);
-        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
         
         // Navigates to "Organization"
         cy.textExists(common.packageNameHeader, projectDetails.projectTitle1);
@@ -183,23 +142,31 @@ describe("Test suite: Acquisition Package ", () => {
         cy.radioBtn(org.militaryradioBtn, "MILITARY").not("[disabled]");
         cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
 
-        //Assert Organization's address labels
-        cy.textExists(org.streetLabel, " Street address ");
-        cy.textExists(org.unitLabel, " Unit, suite, etc.  Optional ");
-        cy.textExists(org.cityLabel, " City ");
-        cy.textExists(org.stateLabel,  " State ");
-        cy.textExists(org.zipCodeLabel, " ZIP code ");
-
+        //verify the labels when the radio butotn is selected
+        cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
+        cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
+        cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
+        const orgAddress = {
+        streetAddress : orgAddressType.StreetAddress,
+        unit : orgAddressType.Unit2,            
+        city : orgAddressType.city2,
+        state:   "",
+        zipCode: orgAddressType.postalCode1,
+        apoFPO_selector :    "",
+        statecode_selector :    "",
+        stateProvince :    orgAddressType.stateProvince2,
+        inputCountryName :    orgAddressType.country
+        
+    }
         //enter the text in the text fields
-        cy.enterOrganizationAddress(orgAddressType.StreetAddress, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
-
+        cy.enterOrganizationAddress(orgAddress);
         //Assert buttons
         cy.btnExists(common.continueBtn, " Continue ");
         cy.btnExists(common.backBtn, "Back");
 
     });  
 
-    it("TC6: Organization: Service Agency selected is DISA", () => {
+    it("TC5: Organization: Service Agency selected is DISA & Address Type is Military", () => {
         
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
 
@@ -212,7 +179,21 @@ describe("Test suite: Acquisition Package ", () => {
         cy.autoCompleteSelection(org.disaOrgInput, "Assistan",org.disaAutoComplete);
         cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDD");
-        cy.enterOrganizationAddress(orgAddressType.StreetAddress1, orgAddressType.Unit, orgAddressType.City, orgAddressType.State, orgAddressType.Zipcode);
+        //select Address type as Military
+        cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
+        const orgAddress = {
+            streetAddress: orgAddressType.StreetAddress1,
+            unit : orgAddressType.Unit,            
+            city : "",
+            state:   "",
+            zipCode: orgAddressType.Zipcode,
+            apoFPO_selector : org.apoFpoDropDownListItemsArmy,
+            statecode_selector : org.stateCodeAmerica,
+            stateProvince :orgAddressType.stateProvince2,
+            inputCountryName : orgAddressType.country
+            
+        }
+        cy.enterOrganizationAddress(orgAddress);
 
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();
@@ -222,7 +203,7 @@ describe("Test suite: Acquisition Package ", () => {
     
     });
 
-    it("TC7: Organization: Service Agency selected is  not DISA", () => {
+    it("TC6: Organization: Service Agency selected is  not DISA & Address Type is US", () => {
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
         cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
@@ -230,13 +211,17 @@ describe("Test suite: Acquisition Package ", () => {
         cy.serviceOrAgency("Communications");
         cy.enterTextInTextField(org.orgNameTxtBox, "TestDepartmentof Defense");
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDCEC");
-        cy.enterOrganizationAddress(
-            orgAddressType.StreetAddress2,
-            orgAddressType.Unit,
-            orgAddressType.City,
-            orgAddressType.State,
-            orgAddressType.Zipcode
-        );
+        cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
+        //Enter the Orgranization address details
+        const orgAddress = {
+            streetAddress: orgAddressType.StreetAddress2,
+            unit : orgAddressType.Unit,            
+            city : orgAddressType.City,
+            state:   orgAddressType.State,
+            zipCode: orgAddressType.Zipcode,
+            
+        }
+        cy.enterOrganizationAddress(orgAddress);
         
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();
@@ -256,20 +241,21 @@ describe("Test suite: Acquisition Package ", () => {
 
     it("TC9: Asserts on Let’s confirm your contact information", () => {
         cy.fillNewAcquisition(projectDetails.projectTitle3, projectDetails.scope3);
-        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
         cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
         //Service Agency is not DISA
         cy.serviceOrAgency("Communications");
         cy.enterTextInTextField(org.orgNameTxtBox,  "TestDepartmentof Defense");
         cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDCEC");
-        cy.enterOrganizationAddress(
-            orgAddressType.StreetAddress,
-            orgAddressType.Unit,
-            orgAddressType.City,
-            orgAddressType.State,
-            orgAddressType.Zipcode
-        );
+        const orgAddress= {
+            streetAddress: orgAddressType.StreetAddress,
+            unit : orgAddressType.Unit1,            
+            city : orgAddressType.City,
+            state:   orgAddressType.State,
+            zipCode: orgAddressType.Zipcode,
+            
+        }
+        cy.enterOrganizationAddress(orgAddress);
 
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();       
