@@ -167,7 +167,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
     this.currentContractExists = sessionData.CurrentContractExists;
-    this.CurrentContractDetails = sessionData.CurrentContractDetails;
+    this.currentContractDetails = sessionData.CurrentContractDetails;
   }
 
   @Action({ rawError: true })
@@ -1856,7 +1856,7 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       await this.ensureInitialized();
 
-      const sys_id = this.currentContractDetails?.sys_id || "";
+      const sys_id = this.currentContractExists?.sys_id || "";
 
       if (sys_id.length > 0) {
         const currentContractDetailsData = await api.currentContractDetailsTable.retrieve(
@@ -1866,7 +1866,7 @@ export class AcquisitionPackageStore extends VuexModule {
         debugger;
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          current_contract_exists: sys_id,
+          current_contract_details: sys_id,
         } as AcquisitionPackageDTO);
       }
       return this.currentContractDetails as CurrentContractDetailsDTO;
@@ -1882,7 +1882,7 @@ export class AcquisitionPackageStore extends VuexModule {
   async saveCurrentContractDetails(data: CurrentContractDetailsDTO): Promise<void> {
     debugger;
     try {
-      const sys_id = this.currentContractDetails?.sys_id || "";
+      const sys_id = this.currentContractExists?.sys_id || "";
       const savedCurrentContractDetails =
         sys_id.length > 0
           ? await api.currentContractDetailsTable.update(sys_id, { ...data, sys_id })
@@ -1891,7 +1891,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setCurrentContractDetails(savedCurrentContractDetails);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        current_contract_exists: sys_id,
+        current_contract_details: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving project overview ${error}`);
