@@ -12,4 +12,5 @@ export interface AcquisitionPackageDTO{
     project_overview: string;
     organization: string;
     contact:string;
+    current_contract_exists: string;
 }

@@ -1,7 +1,6 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
-import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
 
@@ -38,8 +37,9 @@ export const CustodianRouteResolver = (current: string): string => {
   return routeNames.Will_Govt_Equip_Be_Furnished; 
 };
 
-export const CurrentContractRouteResolver = (current: string): string => {
-  const hasCurrentContract = Background.hasCurrentContract;
+export const CurrentContractRouteResolver = async (current: string): Promise<string> => {
+  const hasCurrentContract 
+    = AcquisitionPackage.currentContractExists?.current_contract_exists === "true";
 
   if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;

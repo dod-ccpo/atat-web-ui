@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-           Do you have a current contract for this effort?
+            Do you have a current contract for this effort?
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
@@ -16,51 +16,93 @@
               id="currentContractOptions"
               :card="true"
               :items="currentContractOptions" 
-              :value.sync="currentContractOption"
+              :value.sync="currentContractExists"
             />
           </div>
-
         </v-col>
       </v-row>
     </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
+
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
+
 import { RadioButton } from "../../../../types/Global";
-import Background from "@/store/background";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { CurrentContractExistsDTO } from "@/models/CurrentContractExistsDTO";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
     ATATRadioGroup,
   },
 })
-export default class CurrentContract extends Vue {
+export default class CurrentContract extends Mixins(SaveOnLeave) {
   private currentContractOptions: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes. There is a current contract for this effort.",
-      value: "Yes",
+      value: "true",
     },
     {
       id: "No",
       label: "No. This is a new requirement.",
-      value: "No",
+      value: "false",
     },
   ];
 
-  public get currentContractOption(): string {
-    const hasCurrentContract = Background.hasCurrentContract;
-    if (hasCurrentContract !== null) {
-      return hasCurrentContract ? "Yes" : "No";
-    }
-    return "";
+  public get currentContractExists(): string {
+    const exists = AcquisitionPackage.currentContractExists?.current_contract_exists;
+    return exists || "";
   }
 
-  public set currentContractOption(value: string) {
-    Background.setHasCurrentContract(value === "Yes");
+  public set currentContractExists(value: string) {
+    debugger;
+    AcquisitionPackage.setCurrentContractExists({ current_contract_exists: value });
   }
+
+  private get currentData(): CurrentContractExistsDTO {
+    return {
+      current_contract_exists: this.currentContractExists,
+    };
+  }
+
+  private storeData: CurrentContractExistsDTO = { current_contract_exists: "" };
+
+  public async mounted(): Promise<void> {
+      await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    debugger;
+    this.storeData = await AcquisitionPackage.loadCurrentContractExists();
+    if (this.storeData) {
+      if (this.storeData.current_contract_exists && this.storeData.current_contract_exists.length) {
+        this.currentContractExists = this.storeData.current_contract_exists;
+      }
+    } else {
+      AcquisitionPackage.setCurrentContractExists(this.currentData);
+    }
+  }
+
+  private hasChanged(): boolean {
+    debugger;
+    return hasChanges(this.currentData, this.storeData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveCurrentContractExists(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
 }
 </script>
-

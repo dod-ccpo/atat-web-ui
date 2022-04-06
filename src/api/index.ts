@@ -3,7 +3,7 @@ import { AcquisitionPackagesApi } from "./acquisitionPackages";
 import { ProjectOverviewApi } from "./projectOverview";
 import { OrganizationApi } from "./organization";
 import { ContactsApi } from "./contacts";
-import { BackgroundApi } from "./background";
+import { CurrentContractExistsApi } from "./background/currentContractExists";
 
 export default {
    users: new UsersApi(),
@@ -11,5 +11,5 @@ export default {
    projectOverviewTable: new ProjectOverviewApi(),
    organizationTable: new OrganizationApi(),
    contactsTable: new ContactsApi(),
-   backgroundTable: new BackgroundApi(),
+   currentContractExistsTable: new CurrentContractExistsApi(),
 }

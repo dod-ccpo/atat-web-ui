@@ -68,14 +68,15 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
+import { Component, Mixins } from "vue-property-decorator";
+
 import ATATTextField from "../../components/ATATTextField.vue";
 import ATATTextArea from "../../components/ATATTextArea.vue";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import Vue from "vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Component, Mixins } from "vue-property-decorator";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { hasChanges } from "@/helpers";
