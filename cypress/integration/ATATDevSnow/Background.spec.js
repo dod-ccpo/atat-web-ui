@@ -58,7 +58,7 @@ describe("Test suite: BackGround", () => {
         
   });
 
-  it.only("TC4: Click on I don't have an existing contract button ", () => {
+  it("TC4: Click on I don't have an existing contract button ", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.contractOption(background.yesRadioOption, "Yes");
     cy.btnExists(background.noExistingContractBtn, " I don’t have an existing contract ").not("[disabled]").click();
