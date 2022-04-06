@@ -2,6 +2,7 @@ import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
 import { ContactDTO } from "@/models/ContactDTO";
 import { OrganizationDTO } from "@/models/OrganizationDTO";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
+import { BackgroundDTO } from "@/models/BackgroundDTO";
 
 export interface SessionData {
 
@@ -9,4 +10,5 @@ export interface SessionData {
      projectOverview: ProjectOverviewDTO,
      organization: OrganizationDTO,
      contactInfo: ContactDTO,
+     background: BackgroundDTO,
 }

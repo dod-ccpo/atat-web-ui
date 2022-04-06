@@ -14,6 +14,8 @@ import { SessionData } from "./models";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { OrganizationDTO } from "@/models/OrganizationDTO";
 import { ContactDTO } from "@/models/ContactDTO";
+import { BackgroundDTO } from "@/models/BackgroundDTO";
+
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 const initialProjectOverview = () => {
@@ -97,6 +99,7 @@ export class AcquisitionPackageStore extends VuexModule {
   organization: OrganizationDTO | null = null;
   contactInfo:ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
+  background: BackgroundDTO | null = null;
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
@@ -151,6 +154,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
+    this.background = sessionData.background;
   }
 
   @Action({ rawError: true })
