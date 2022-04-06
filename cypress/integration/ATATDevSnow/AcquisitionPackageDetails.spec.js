@@ -1,7 +1,6 @@
 import { bootstrapMockApis } from "../../helpers";
 import projectOverview from "../../selectors/projectOverview.sel";
 import common from "../../selectors/common.sel";
-import financialDetails from "../../selectors/financialDetails.sel";
 import org from "../../selectors/org.sel";
 import contact from "../../selectors/contact.sel";
 import commonCorAcor from "../../selectors/commonCorAcor.sel";
@@ -61,7 +60,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(projectOverview.projectTitleLabel, " Project/Requirement Title ");
 
         //tooltip
-        const expectedText = " Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms. "
+        const expectedText = "Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
         cy.hoverToolTip(projectOverview.toolTipBtn, projectOverview.toolTipTxt, expectedText);
         
         //Enter the Value
@@ -295,18 +294,20 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(contact.emailLabel, " Your email ");
         cy.textExists(contact.emailMessage, " Enter a .mil or .gov email address. ");
         cy.textExists(contact.phoneNumberLabel, " Your phone number ");
+        const contactInformation = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName,
+            email_selector: contact.emailTxtBox,
+            email: contactInfo.email
+            
+        };
         
          //Enter the Contact Information
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName,
-            contact.mNameTxtBox,
-            contactInfo.middleName,
-            contact.lNameTxtBox,
-            contactInfo.lastName,
-            contact.emailTxtBox,
-            contactInfo.email
-        );
+        cy.enterContactInformation(contactInformation);
         //select the country and enter phonenumber
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
@@ -334,16 +335,18 @@ describe("Test suite: Acquisition Package ", () => {
         cy.findElement(contact.rankAutoCompleteList).first().click({ force: true });
 
         //enter the ContactInformation
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName1,
-            contact.mNameTxtBox,
-            contactInfo.middleName1,
-            contact.lNameTxtBox,
-            contactInfo.lastName1,
-            contact.emailTxtBox,
-            contactInfo.email1,
-        );
+        const contactInformation = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName1,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName1,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName1,
+            email_selector: contact.emailTxtBox,
+            email: contactInfo.email1,
+            
+        };
+        cy.enterContactInformation(contactInformation);
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
             contact.phoneDropdown,
@@ -366,19 +369,21 @@ describe("Test suite: Acquisition Package ", () => {
         //select the value from salutationDropdownList
         cy.dropDownClick(contact.salutationDropDownIcon);
         cy.findElement(contact.salutationDropdownListItemMrs)
-            .should("have.text", "Mrs.").click({ force: true });      
+            .should("have.text", "Mrs.").click({ force: true });  
         
+        const contactInformation = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName2,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName2,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName2,
+            email_selector: contact.emailTxtBox,
+            email: contactInfo.email2,
+            
+        };
          //Enter contact information
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName2,
-            contact.mNameTxtBox,
-            contactInfo.middleName2,
-            contact.lNameTxtBox,
-            contactInfo.lastName2,
-            contact.emailTxtBox,
-            contactInfo.email2,            
-        );
+        cy.enterContactInformation(contactInformation);
         //select the country and enter phoneNumber
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
@@ -401,17 +406,19 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CTR");    
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName3,
-            contact.mNameTxtBox,
-            contactInfo.middleName3,
-            contact.lNameTxtBox,
-            contactInfo.lastName3,
-            contact.emailTxtBox,
-            contactInfo.email3,
-        );
+        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CTR");  
+        const contactInformation = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName3,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName3,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName3,
+            email_selector: contact.emailTxtBox,
+            email: contactInfo.email3
+            
+        };
+        cy.enterContactInformation(contactInformation);
 
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
@@ -437,16 +444,18 @@ describe("Test suite: Acquisition Package ", () => {
             .should('have.text', 'Mr.').click({ force: true });
         
         // Enter the Contact Information
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName,
-            contact.mNameTxtBox,
-            contactInfo.middleName,
-            contact.lNameTxtBox,
-            contactInfo.lastName,
-            contact.emailTxtBox,
-            contactInfo.email,
-            );
+        const contactInformation = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName,
+            email_selector: contact.emailTxtBox,
+            email: contactInfo.email
+            
+        };
+        cy.enterContactInformation(contactInformation);
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
             contact.phoneDropdown,
@@ -515,16 +524,18 @@ describe("Test suite: Acquisition Package ", () => {
         cy.dropDownClick(contact.salutationDropDownIcon);
         cy.findElement(contact.salutationDropdownListItemMr)
             .should('have.text', 'Mr.').click({ force: true });
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName,
-            contact.mNameTxtBox,
-            contactInfo.middleName,
-            contact.lNameTxtBox,
-            contactInfo.lastName,
-            contact.emailTxtBox,
-            contactInfo.email            
-        );
+        const contactInformation = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName,
+            email_selector: contact.emailTxtBox,
+            email: contactInfo.email
+            
+        };
+        cy.enterContactInformation(contactInformation);
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
             contact.phoneDropdown,
@@ -546,19 +557,19 @@ describe("Test suite: Acquisition Package ", () => {
             contact.militaryRadioBtn,
             "MIL"
         );
-
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName2,
-            contact.mNameTxtBox,
-            contactInfo.middleName1,
-            contact.lNameTxtBox,
-            contactInfo.lastName1,
-            commonCorAcor.emailTxtBox,
-            contactInfo.email,            
-            "cor",
-            "D0DCCA"
-        );
+        const contactDetails = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName2,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName1,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName1,
+            email_selector: commonCorAcor.emailTxtBox,
+            email: contactInfo.email,
+            cor: "cor",
+            dodText:"D0DCCA"
+        };
+        cy.enterContactInformation(contactDetails);
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
             contact.phoneDropdown,
@@ -643,19 +654,19 @@ describe("Test suite: Acquisition Package ", () => {
             "#Radio_Military",
             "MIL"
         );
-
-        cy.enterContactInformation(
-            contact.fNameTxtBox,
-            contactInfo.firstName,
-            contact.mNameTxtBox,
-            contactInfo.middleName1,
-            contact.lNameTxtBox,
-            contactInfo.lastName1,
-            commonCorAcor.emailTxtBox,
-            contactInfo.email,            
-            "cor",
-            "D0DCCA"
-        );
+        const contactDetails = {
+            firstName_selector: contact.fNameTxtBox,
+            firstName: contactInfo.firstName2,
+            mName_selector: contact.mNameTxtBox,
+            mName: contactInfo.middleName2,
+            lastName_selector: contact.lNameTxtBox,
+            lastName: contactInfo.lastName1,
+            email_selector:commonCorAcor.emailTxtBox,
+            email: contactInfo.email,
+            cor: "cor",
+            dodText:"D0DCCA"
+        };
+        cy.enterContactInformation(contactDetails);
         cy.enterPhoneNumber(
             contact.phoneControlIcon,
             contact.phoneDropdown,
