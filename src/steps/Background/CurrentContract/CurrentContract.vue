@@ -23,6 +23,7 @@
       </v-row>
     </v-container>
 </template>
+
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 
@@ -31,7 +32,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { RadioButton } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractExistsDTO } from "@/models/CurrentContractExistsDTO";
+import { CurrentContractExistsDTO } from "@/models/BackgroundDTOs";
 import { hasChanges } from "@/helpers";
 
 @Component({

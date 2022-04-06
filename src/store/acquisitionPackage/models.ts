@@ -2,7 +2,10 @@ import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
 import { ContactDTO } from "@/models/ContactDTO";
 import { OrganizationDTO } from "@/models/OrganizationDTO";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
-import { CurrentContractExistsDTO } from "@/models/CurrentContractExistsDTO";
+import { 
+     CurrentContractExistsDTO, 
+     CurrentContractDetailsDTO 
+} from "@/models/BackgroundDTOs";
 
 export interface SessionData {
      acquisitionPackage: AcquisitionPackageDTO,
@@ -10,4 +13,5 @@ export interface SessionData {
      organization: OrganizationDTO,
      contactInfo: ContactDTO,
      CurrentContractExists: CurrentContractExistsDTO,
+     CurrentContractDetails: CurrentContractDetailsDTO,
 }
