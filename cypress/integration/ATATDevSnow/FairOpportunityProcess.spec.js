@@ -2,7 +2,7 @@ import { bootstrapMockApis, cleanText,colors } from "../../helpers";
 import fairOpportunity from "../../selectors/fairOpportunityProcess.sel";
 import common from "../../selectors/common.sel";
 
-describe("Test suite:Fair Opportunnity Process", () => {
+describe("Test suite: Fair Opportunnity Process", () => {
 
 
     beforeEach(() => {

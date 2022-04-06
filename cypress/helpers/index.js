@@ -29,3 +29,23 @@ export const cleanText = (text) => {
 export const colors = {
     primary:"rgb(84, 68, 150)"
 }
+
+export function randomAlphaNumeric(lengthString) {
+    let text = "";
+    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < lengthString; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
+export function randomNumber(length) {
+    let number = "";
+    let possible = "0123456789";
+
+    for (var i = 0; i < length; i++)
+    number += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return number;
+}
