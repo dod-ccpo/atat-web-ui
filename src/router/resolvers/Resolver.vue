@@ -1,0 +1,52 @@
+<template>
+  <div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
+import { Route } from "vue-router";
+
+// route resolvers
+import {
+    InvokeResolver
+  } from "./index";
+
+Component.registerHooks(["beforeRouteEnter"]);
+@Component({
+    template:'<div></div>'
+})
+export default class Resolver extends Vue {
+
+  
+
+  private resolveRoute(current: string): void{
+
+         const routeResolver = this.$route.params.resolver;
+
+         if(!routeResolver){
+             throw new Error("could not obtain step and resolver");
+         }
+
+         const routeName = InvokeResolver(routeResolver,current);
+         this.$router.push({name: routeName});
+
+  }
+
+  public async beforeRouteEnter(
+    to: Route,
+    from: Route,
+    next: (n: unknown) => void
+  ): Promise<void> {
+    next(async (vm: {resolveRoute: (current:string)=> void} ) => {
+          const current = from.name;
+          if(!current){
+              throw new Error('from route name undefined');
+          }
+
+          vm.resolveRoute(current);
+    });
+  }
+}
+</script>

@@ -4,6 +4,7 @@ import OtherContractConsiderations from "@/store/otherContractConsiderations";
 import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
+import { StepRouteResolver } from "@/store/steps/types";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -69,3 +70,18 @@ export const FOIARecordResolver = (current: string): string => {
     ? routeNames.Public_Disclosure_of_Information 
     : routeNames.FOIA;
 };
+
+
+const resolvers: Record<string,  StepRouteResolver> = {
+ 
+  "AcorsRouteResolver": AcorsRouteResolver,
+  "CurrentContractRouteResolver":CurrentContractRouteResolver,
+  "CustodianRouteResolver": CustodianRouteResolver,
+  "PIIRecordResolver": PIIRecordResolver,
+  "FOIARecordResolver": FOIARecordResolver
+    
+}
+
+export const InvokeResolver = (resolverName: string, currentStep: string): string => resolvers[resolverName](currentStep);
+
+
