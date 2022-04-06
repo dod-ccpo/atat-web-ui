@@ -20,6 +20,16 @@ module.exports = {
   userAvatar: ".sub-avatar",
   footerLinks:".atat-page-footer .links",
   continueBtn:"#ContinueButton",
-  backBtn:"#BackButton span span"
+  backBtn:"#BackButton span span",
+  stepFairOppLink:"#Step_FairOpportunityProcess",
+  stepFairOppText: "#Step_FairOpportunityProcess .step-text",
+  stepFairOppTextCircle: "#Step_FairOpportunityProcess .step-circle",  
+  subStepExceptionsLink: "#SubStep_Exceptions",
+  subStepExceptionsText: "#SubStep_Exceptions .step-text",
+  stepFinancialDetailsLink:"#Step_FinancialDetails",
+  stepFinancialDetailsText: "#Step_FinancialDetails .step-text",
+  stepFinancialDetailsCircle: "#Step_FinancialDetails .step-circle",  
+  subStepProjectScopeLink: "#SubStep_ProjectScope",
+  subStepProjectScopeText: "#SubStep_ProjectScope .step-text",
   
 }
