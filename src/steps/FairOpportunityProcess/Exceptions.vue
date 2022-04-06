@@ -64,7 +64,7 @@ import { RadioButton } from "../../../types/Global";
   },
 })
 
-export default class FairOpportunity_Exceptions extends Vue {
+export default class Exceptions extends Vue {
   private selectedException = "";
   private exceptionOptions: RadioButton[] = [
     {

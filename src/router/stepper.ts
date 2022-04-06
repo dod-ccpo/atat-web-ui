@@ -12,12 +12,16 @@ import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/Alternate
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
-import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
+import FairOpportunity from "../steps/FairOpportunityProcess/Index.vue"
+import Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
 
 //Step 3 - Background
 import Background from "../steps/Background/Index.vue";
 import CurrentContract from "../steps/Background/CurrentContract/CurrentContract.vue";
 import CurrentContractDetails from "../steps/Background/CurrentContract/CurrentContractDetails.vue";
+
+// Step 4 - Performance requirements
+import PerformanceRequirements from "../steps/PerformanceRequirements/Index.vue"
 
 // Step 5 - Contract Details
 import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
@@ -64,7 +68,11 @@ export const routeNames = {
   Background: "Background",
   Current_Contract: "Current_Contract",
   Current_Contract_Details: "Current_Contract_Details",
+  Current_Environment:"Current_Environment",
   Performance_Requirements: "Performance_Requirements",
+  Optimize_Current_Environment: "Optimize_Current_Environment",
+  Anything_as_a_Service_Xaas:"Anything_as_a_Service_Xaas",
+  Cloud_Support_Packages: "Cloud_Support_Packages",
   Period_Of_Performance: "Period_Of_Performance",
   Property_Requirements: "Property_Requirements",
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
@@ -169,23 +177,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "02",
     menuText: "Fair Opportunity Process",
-    path: "/fair-opportunity-exceptions",
+    path: "/exceptions",
     completePercentageWeight: 10,
-    name: routeNames.Exceptions,
-    component: FairOpportunity_Exceptions,
+   
+    component: Exceptions,
     completed: false,
     children: [
-      // {
-      //   menuText: "Exceptions",
-      //   path: "/fair-opportunity-exceptions",
-      //   name: routeNames.Exceptions,
-      //   component: FairOpportunity_Exceptions,
-      //   completePercentageWeight: 5,
-      //   completed: false,
-      // },
+      {
+        menuText: "Exceptions",
+        path: "exceptions",
+        name: routeNames.Exceptions,
+        component: Exceptions,
+        completePercentageWeight: 5,
+        completed: false,
+      },
       {
         menuText: "Justification and Approval",
-        path: "/justification-and-approval",
+        path: "justification-and-approval",
         name: routeNames.Justification_and_Approval,
         component: BlankPage,
         completePercentageWeight: 5,
@@ -196,15 +204,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "03",
     menuText: "Background",
-    path: "/current-contract",
-    name: routeNames.Current_Contract,
+    path: "/background/current-contract",
+    name: routeNames.Background,
     completePercentageWeight: 10,
-    component: Background,
+    component: CurrentContract,
     completed: false,
     children: [
       {
         menuText: "Current Contract",
-        path: "/current-contract",
+        path: "/background/current-contract",
         name: routeNames.Current_Contract,
         completePercentageWeight: 0,
         component: CurrentContract,
@@ -212,7 +220,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Details",
-        path: "/current-contract-details",
+        path: "current-contract-details",
         name: routeNames.Current_Contract_Details,
         excludeFromMenu: true,
         completePercentageWeight: 0,
@@ -227,17 +235,51 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             name: routeNames.Performance_Requirements,
           },
         ],
-      }
+      },
+      {
+        menuText: "Current Environment",
+        path: "current-environment",
+        name: routeNames.Current_Environment,
+        component: BlankPage,
+        completePercentageWeight: 5,
+        completed: false,
+      },
     ]
   },
   {
     name: routeNames.Performance_Requirements,
     stepNumber: "04",
-    component: BlankPage,
+    component: PerformanceRequirements,
     completePercentageWeight: 7,
     menuText: "Performance Requirements",
-    path: "/performance_requirements",
+    path: "/optimize_current_environment",
     completed: false,
+    children: [
+      {
+        menuText: "Optimize Current Environment?",
+        path: "optimize_current_environment",
+        name: routeNames.Optimize_Current_Environment,
+        component: BlankPage,
+        completePercentageWeight: 0,
+        completed: false,
+      },
+      {
+        menuText: "Anything as a Service (Xaas)",
+        path: "anything_as_a_service_xaas",
+        name: routeNames.Anything_as_a_Service_Xaas,
+        component: BlankPage,
+        completePercentageWeight: 0,
+        completed: false,
+      },
+      {
+        menuText: "Cloud Support Packages",
+        path: "cloud-support-packages",
+        name: routeNames.Cloud_Support_Packages,
+        component: BlankPage,
+        completePercentageWeight: 0,
+        completed: false,
+      },
+    ],
   },
   {
     stepNumber: "05",
@@ -417,7 +459,6 @@ const mapStepRouteToStepperData = (
     additionalButtons,
     backButtonText,
   };
-
   return stepperStep;
 };
 

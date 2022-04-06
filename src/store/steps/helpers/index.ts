@@ -4,9 +4,10 @@ import { StepInfo, StepRouteResolver } from "../types";
 export const mapStepConfigs = (
   config: StepperRouteConfig[]
 ): Map<string, StepInfo> => {
+  
   const map = new Map<string, StepInfo>();
   let last = "";
-  const mapStep = (routeConfig: StepperRouteConfig) => {
+  const mapStep = (routeConfig: StepperRouteConfig, config?: StepperRouteConfig[]) => {
     const stepInfo: StepInfo = {
       stepNumber: routeConfig.stepNumber || "",
       stepName: routeConfig.name || "",
@@ -17,7 +18,7 @@ export const mapStepConfigs = (
       additionalButtons: routeConfig.additionalButtons || [],
       backButtonText: routeConfig.backButtonText || "Back",
     };
-
+   
     const lastStep = map?.get(last || "");
 
     if (lastStep) {
@@ -29,15 +30,26 @@ export const mapStepConfigs = (
     last = stepInfo.stepName;
 
     routeConfig.children?.forEach((childConfig) =>
-      mapStep({
-        ...childConfig,
-        stepNumber: stepInfo.stepNumber,
-      })
+      {
+        // debugger;
+        mapStep({
+          ...childConfig,
+          stepNumber: stepInfo.stepNumber,
+        })
+      }
     );
   };
-
+  // config.forEach((routeConfig, index) => 
+  // {
+  //   let lastStepName = "";
+  //   if(index>0){
+  //     let lastStep: StepperRouteConfig = config[index-1];
+  //     const lastStepHasChildren = lastStep.children && lastStep.children?.length>0 ;
+  //     lastStep = lastStepHasChildren ? lastStep.children?.slice(-1) : lastStep;
+  //   }
   config.forEach((routeConfig) => mapStep(routeConfig));
 
+    console.log(map);
   return map;
 };
 
