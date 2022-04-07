@@ -76,7 +76,7 @@ export default class FairOpportunity_Exceptions extends Mixins(SaveOnLeave) {
       label: `Only one CSP is capable of providing the supplies or services required at the level 
         of quality required because the supplies or services ordered are unique or highly 
         specialized. <span class="text-base">FAR 16.505(b)(2)(i)(B)</span>`,
-      value: "OnlyOneCSPCapable",
+      value: "YES_FAR_16_505_B_2_I_B",
     },
     {
       id: "AllFair",
@@ -84,12 +84,12 @@ export default class FairOpportunity_Exceptions extends Mixins(SaveOnLeave) {
         efficiency because it is a logical follow-on to an order already issued under the JWCC 
         contracts, provided that all awardees were given a fair opportunity to be considered for 
         the original order. <span class="text-base">FAR 16.505(b)(2)(i)(C)</span>`,
-      value: "AllFair",
+      value: "YES_FAR_16_505_B_2_I_C",
     },
     {
       id: "NoneApply",
       label: "None of these exceptions apply to this acquisition.",
-      value: "NoneApply",
+      value: "NO_NONE",
     },
   ];
   private get currentData(): FairOpportunityDTO {
@@ -103,20 +103,21 @@ export default class FairOpportunity_Exceptions extends Mixins(SaveOnLeave) {
       exception_to_fair_opportunity: AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "",
     };
   }
+
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
+
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadFairOpportunity();
-    console.log('here', storeData)
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
   }
+
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        console.log('here', this.currentData)
         await AcquisitionPackage.saveFairOpportunity(this.currentData);
       }
     } catch (error) {
