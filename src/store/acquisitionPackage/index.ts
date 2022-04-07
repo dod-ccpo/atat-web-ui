@@ -11,7 +11,6 @@ import { ContactDTO } from "@/models/ContactDTO";
 import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
 import { CurrentContractDTO } from "@/models/BackgroundDTOs";
 
-
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 const initialProjectOverview = () => {
@@ -100,8 +99,8 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
-  fairOpportunity: FairOpportunityDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
+  fairOpportunity: FairOpportunityDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
 
   public getTitle(): string {
@@ -169,8 +168,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
-    this.currentContract = sessionData.CurrentContract;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.currentContract = sessionData.CurrentContract;
   }
 
   @Action({rawError: true})
