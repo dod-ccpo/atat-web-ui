@@ -33,6 +33,7 @@ import PII from "../steps/OtherContractConsiderations/PII.vue";
 import BAA from "../steps/OtherContractConsiderations/BAA.vue";
 import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
 import FOIA from "../steps/OtherContractConsiderations/FOIA.vue";
+import FOIACoordinator from "../steps/OtherContractConsiderations/FOIACoordinator.vue";
 
 // step 10 - Financial Details
 import FinancialDetails from "../steps/FinancialDetails/Index.vue";
@@ -45,7 +46,8 @@ import {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
   CustodianRouteResolver,
-  PIIRecordResolver
+  PIIRecordResolver,
+  FOIARecordResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -72,8 +74,9 @@ export const routeNames = {
   BAA: "BAA",
   PIIRecord: "PIIRecord",
   Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
-  FOIA: "FOIA",
   Financial_Details: "Financial_Details",
+  FOIA: "FOIA",
+  FOIA_Coordinator: "FOIA_Coordinator",
 };
 
 /**
@@ -184,7 +187,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "03",
     menuText: "Background",
     path: "/current-contract",
-    name: routeNames.Current_Contract,
     completePercentageWeight: 10,
     component: Background,
     completed: false,
@@ -218,8 +220,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     ]
   },
   {
-    name: routeNames.Performance_Requirements,
     stepNumber: "04",
+    name: routeNames.Performance_Requirements,
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",
     path: "/exception-to-fair-opportunity",
@@ -228,7 +230,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "05",
     completePercentageWeight: 7,
-    name: routeNames.Period_Of_Performance,
     menuText: "Contract Details",
     path: "/period-of-performance",
     component: PeriodOfPerformance,
@@ -245,7 +246,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "06",
     completePercentageWeight: 7,
-    name: routeNames.Property_Requirements,
     menuText: "Government Furnished Equipment",
     path: "/property-requirements",
     component: GovtFurnishedEquipment,
@@ -278,7 +278,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "07",
     completePercentageWeight: 7,
-    name: routeNames.PII,
     menuText: "Other Contract Considerations",
     path: "/personally-identifiable-information",
     component: OtherContractConsiderations,
@@ -313,6 +312,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         component: FOIA,
       },
+      {
+        menuText: "FOIA Coordinator",
+        path: "/foia-coordinator",
+        name: routeNames.FOIA_Coordinator,
+        completePercentageWeight: 2,
+        excludeFromMenu: true,
+        component: FOIACoordinator,
+        routeResolver: FOIARecordResolver
+      },
     ]
   },
   {
@@ -334,7 +342,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "10",
     completePercentageWeight: 7,
-    name: routeNames.Project_Scope,
     menuText: "Financial Details",
     path: "/project-scope",
     component: FinancialDetails,
@@ -350,7 +357,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "11",
-
     completePercentageWeight: 7,
     name: "Government_Furnished_Equipment",
     menuText: "Government Furnished Equipment",

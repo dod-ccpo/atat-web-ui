@@ -11,21 +11,21 @@
             <ATATTextField 
               label="Full name" 
               id="FullName" 
-              class="input-max-width mb-10" 
+              class="_input-max-width mb-10" 
               helpText="Include rank, if applicable"  
             />
 
             <ATATTextField 
               label="DPAS Unit Identification Code (UICs)" 
               id="UICs" 
-              class="input-max-width mb-10" 
+              class="_input-max-width mb-10" 
               tooltipText="Lorem ipsum - awaiting tooltip text"
             />
             
             <ATATTextField 
               label="DPAS Custodian number" 
               id="DPASCustodianNumber" 
-              class="input-max-width mb-10" 
+              class="_input-max-width mb-10" 
               tooltipText="This is a one-to-six character unique code used to identify an 
                 individual responsible for assigned assets in all property functions. "
             />

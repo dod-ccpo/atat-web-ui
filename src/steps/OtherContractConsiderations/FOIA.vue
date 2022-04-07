@@ -95,6 +95,8 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import FOIALearnMore from "./FOIALearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
+import OtherContractConsiderations from "@/store/otherContractConsiderations";
+
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 
 @Component({
@@ -107,15 +109,26 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 })
 
 export default class FOIA extends Vue {
-  private selectedFOIAOption = "";
+  public get selectedFOIAOption(): string {
+    const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
+    if (needsFOIACoordinator !== null) {
+      return needsFOIACoordinator ? "Yes" : "No";
+    }
+    return "";
+  }
+
+  public set selectedFOIAOption(value: string) {
+    OtherContractConsiderations.setNeedsFOIACoordinator(value === "Yes");
+  }
+
   private fOIAOptions: RadioButton[] = [
     {
-      id: "YesFOIA",
+      id: "Yes",
       label: "Yes.",
       value: "Yes",
     },
     {
-      id: "NoFOIA",
+      id: "No",
       label: "No.",
       value: "No",
     },
@@ -135,5 +148,18 @@ export default class FOIA extends Vue {
       SlideoutPanel.openSlideoutPanel(opener.id);
     }
   }
+
+  public get selectedPIIOption(): string {
+    const included = OtherContractConsiderations.PIIRecordIncluded;
+    if (included !== null) {
+      return included ? "Yes" : "No";
+    }
+    return "";
+  }
+
+  public set selectedPIIOption(value: string) {
+    OtherContractConsiderations.setPIIRecord(value === "Yes");
+  }
+
 }
 </script>

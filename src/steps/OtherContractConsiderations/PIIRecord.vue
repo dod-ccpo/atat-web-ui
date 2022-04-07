@@ -10,7 +10,7 @@
             <ATATTextField
               id="SystemName"
               label="System name"
-              class="input-max-width"
+              class="_input-max-width"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
@@ -43,7 +43,6 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 export default class PIIRecord extends Vue {
   private systemName = "";
-  private operationToBePerformed = ""
-
+  private operationToBePerformed = "";
 }
 </script>

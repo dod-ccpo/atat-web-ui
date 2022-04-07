@@ -93,8 +93,11 @@ import {Component} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+
+import OtherContractConsiderations from "@/store/otherContractConsiderations";
+
 import {RadioButton} from "../../../types/Global";
-import PIIRecord from "@/store/PIIRecordStore";
+
 @Component({
   components: {
     ATATAlert,
@@ -118,7 +121,7 @@ export default class PII extends Vue {
   ];
 
   public get selectedPIIOption(): string {
-    const included = PIIRecord.PIIRecordIncluded;
+    const included = OtherContractConsiderations.PIIRecordIncluded;
     if (included !== null) {
       return included ? "Yes" : "No";
     }
@@ -126,7 +129,7 @@ export default class PII extends Vue {
   }
 
   public set selectedPIIOption(value: string) {
-    PIIRecord.setPIIRecord(value === "Yes");
+    OtherContractConsiderations.setPIIRecord(value === "Yes");
   }
 }
 </script>

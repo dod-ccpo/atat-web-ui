@@ -2,7 +2,7 @@
 import Vuex, { Store } from 'vuex';
 import { createLocalVue } from '@vue/test-utils';
 import  {StepsStore} from "@/store/steps"
-import { StepsState } from '../types';
+import { StepRouteResolver, StepsState } from '../types';
 import { getModule } from 'vuex-module-decorators';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -92,7 +92,7 @@ describe('Steps Store', ()=> {
     expect(prev).toBe(step.name);
   })
 
-  test('step resolver returns correct step name', async ()=> {
+  test('step return resolver', async ()=> {
 
     const startingStep = "CHILD_STEP_TWO";
     const nextStep = "CHILD_STEP_FOUR";
@@ -102,7 +102,9 @@ describe('Steps Store', ()=> {
     expect(stepsStore.currentStep?.stepName).toBe(startingStep);
 
     const nextStepName = await stepsStore.getNext();
-    expect(nextStepName).toBe(nextStep);
+    expect(nextStepName).toBeDefined();
+    const resolverName = (nextStepName as StepRouteResolver).name;
+    expect(resolverName).toBe(testRouteResolver.name);
       
   });
   
