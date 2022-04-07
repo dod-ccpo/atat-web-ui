@@ -79,6 +79,8 @@ export const FOIARecordResolver = (current: string): string => {
     : routeNames.FOIA;
 };
 
+
+// add resolver here so that it can be found by invoker
 const resolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
