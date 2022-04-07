@@ -76,7 +76,7 @@ export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
     };
   }
 
-  private storeData: CurrentContractDetailsDTO = { 
+  private savedData: CurrentContractDetailsDTO = { 
       incumbent_contractor_name: "",
       contract_number: "",
       task_delivery_order_number: "",
@@ -90,19 +90,23 @@ export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     debugger;
-    this.storeData = await AcquisitionPackage.loadCurrentContractDetails();
-    if (this.storeData) {
-      if (Object.prototype.hasOwnProperty.call(this.storeData, 'incumbent_contractor_name')) {
-        this.incumbentContractorName = this.storeData.incumbent_contractor_name;
+    const storeData = await AcquisitionPackage.loadCurrentContractDetails();
+    if (storeData) {
+      if (Object.prototype.hasOwnProperty.call(storeData, 'incumbent_contractor_name')) {
+        this.incumbentContractorName = storeData.incumbent_contractor_name;
+        this.savedData.incumbent_contractor_name = storeData.incumbent_contractor_name;
       }
-      if (Object.prototype.hasOwnProperty.call(this.storeData, 'contract_number')) {
-        this.contractNumber = this.storeData.contract_number;
+      if (Object.prototype.hasOwnProperty.call(storeData, 'contract_number')) {
+        this.contractNumber = storeData.contract_number;
+        this.savedData.contract_number = storeData.contract_number;
       }
-      if (Object.prototype.hasOwnProperty.call(this.storeData, 'task_delivery_order_number')) {
-        this.taskDeliveryOrderNumber = this.storeData.task_delivery_order_number;
+      if (Object.prototype.hasOwnProperty.call(storeData, 'task_delivery_order_number')) {
+        this.taskDeliveryOrderNumber = storeData.task_delivery_order_number;
+        this.savedData.task_delivery_order_number = storeData.task_delivery_order_number;
       }
-      if (Object.prototype.hasOwnProperty.call(this.storeData, 'contract_order_expiration_date')) {
-        this.contractOrderExpirationDate = this.storeData.contract_order_expiration_date;
+      if (Object.prototype.hasOwnProperty.call(storeData, 'contract_order_expiration_date')) {
+        this.contractOrderExpirationDate = storeData.contract_order_expiration_date;
+        this.savedData.contract_order_expiration_date = storeData.contract_order_expiration_date;
       }
     } else {
       AcquisitionPackage.setCurrentContractDetails(this.currentData);
@@ -111,7 +115,7 @@ export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
 
   private hasChanged(): boolean {
     debugger;
-    return hasChanges(this.currentData, this.storeData);
+    return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {

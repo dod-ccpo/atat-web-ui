@@ -70,7 +70,9 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     };
   }
 
-  private storeData: CurrentContractExistsDTO = { current_contract_exists: "" };
+  private savedData: CurrentContractExistsDTO = { 
+    current_contract_exists: "" 
+  };
 
   public async mounted(): Promise<void> {
       await this.loadOnEnter();
@@ -78,10 +80,13 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     debugger;
-    this.storeData = await AcquisitionPackage.loadCurrentContractExists();
-    if (this.storeData) {
-      if (this.storeData.current_contract_exists && this.storeData.current_contract_exists.length) {
-        this.currentContractExists = this.storeData.current_contract_exists;
+    const storeData = await AcquisitionPackage.loadCurrentContractExists();
+    if (storeData) {
+      if (storeData.current_contract_exists && storeData.current_contract_exists.length) {
+        this.currentContractExists = storeData.current_contract_exists;
+        this.savedData = {
+          current_contract_exists: storeData.current_contract_exists,
+        }
       }
     } else {
       AcquisitionPackage.setCurrentContractExists(this.currentData);
@@ -90,7 +95,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private hasChanged(): boolean {
     debugger;
-    return hasChanges(this.currentData, this.storeData);
+    return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
