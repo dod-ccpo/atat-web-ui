@@ -1867,7 +1867,7 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setFairOpportunity(savedFairOpportunity);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        fairOpportunity: sys_id,
+        fair_opportunity: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving project overview ${error}`);
@@ -1888,7 +1888,7 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setFairOpportunity(fairOpportunityData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          fairOpportunity: sys_id,
+          fair_opportunity: sys_id,
         } as AcquisitionPackageDTO);
       }
       return this.fairOpportunity as FairOpportunityDTO;
