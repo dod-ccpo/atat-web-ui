@@ -14,10 +14,7 @@ import { SessionData } from "./models";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { OrganizationDTO } from "@/models/OrganizationDTO";
 import { ContactDTO } from "@/models/ContactDTO";
-import { 
-  CurrentContractExistsDTO,
-  CurrentContractDetailsDTO 
-} from "@/models/BackgroundDTOs";
+import { CurrentContractDTO } from "@/models/BackgroundDTOs";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -102,8 +99,7 @@ export class AcquisitionPackageStore extends VuexModule {
   organization: OrganizationDTO | null = null;
   contactInfo:ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
-  currentContractExists: CurrentContractExistsDTO | null = null;
-  currentContractDetails: CurrentContractDetailsDTO | null = null;
+  currentContract: CurrentContractDTO | null = null;
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
@@ -141,13 +137,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setCurrentContractExists(value: CurrentContractExistsDTO): void {
-    this.currentContractExists = value;
-  }
-
-  @Mutation
-  public setCurrentContractDetails(value: CurrentContractDetailsDTO): void {
-    this.currentContractDetails = value;
+  public setCurrentContract(value: CurrentContractDTO): void {
+    if (this.currentContract) {
+      this.currentContract = Object.assign(this.currentContract, value);
+    } else {
+      this.currentContract = value;
+    }
   }
 
   @Mutation
@@ -166,8 +161,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
-    this.currentContractExists = sessionData.CurrentContractExists;
-    this.currentContractDetails = sessionData.CurrentContractDetails;
+    this.currentContract = sessionData.CurrentContract;
   }
 
   @Action({ rawError: true })
@@ -1804,25 +1798,25 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  async loadCurrentContractExists(): Promise<CurrentContractExistsDTO> {
+  async loadCurrentContract(): Promise<CurrentContractDTO> {
     debugger;
     try {
       await this.ensureInitialized();
 
-      const sys_id = this.currentContractExists?.sys_id || "";
+      const sys_id = this.currentContract?.sys_id || "";
 
       if (sys_id.length > 0) {
-        const currentContractExistsData = await api.currentContractExistsTable.retrieve(
+        const currentContractData = await api.currentContractTable.retrieve(
           sys_id as string
         );
-        this.setCurrentContractExists(currentContractExistsData);
+        this.setCurrentContract(currentContractData);
         debugger;
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          current_contract_exists: sys_id,
+          current_contract: sys_id,
         } as AcquisitionPackageDTO);
       }
-      return this.currentContractExists as CurrentContractExistsDTO;
+      return this.currentContract as CurrentContractDTO;
     } catch (error) {
       throw new Error(`error occurred loading current contract info ${error}`);
     } 
@@ -1830,74 +1824,25 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({ rawError: true })
   /**
-   * Saves Current Contract Exists data to backend
+   * Saves Current Contract data to backend
    */
-  async saveCurrentContractExists(data: CurrentContractExistsDTO): Promise<void> {
+  async saveCurrentContract(data: CurrentContractDTO): Promise<void> {
     debugger;
     try {
-      const sys_id = this.currentContractExists?.sys_id || "";
-      const savedCurrentContractExists =
+      const sys_id = this.currentContract?.sys_id || "";
+      const savedCurrentContract =
         sys_id.length > 0
-          ? await api.currentContractExistsTable.update(sys_id, { ...data, sys_id })
-          : await api.currentContractExistsTable.create(data);
-      this.setCurrentContractExists(savedCurrentContractExists);
+          ? await api.currentContractTable.update(sys_id, { ...data, sys_id })
+          : await api.currentContractTable.create(data);
+      this.setCurrentContract(savedCurrentContract);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        current_contract_exists: sys_id,
+        current_contract: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving project overview ${error}`);
     }
   }
-
-  @Action({rawError: true})
-  async loadCurrentContractDetails(): Promise<CurrentContractDetailsDTO> {
-    debugger;
-    try {
-      await this.ensureInitialized();
-
-      const sys_id = this.currentContractExists?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const currentContractDetailsData = await api.currentContractDetailsTable.retrieve(
-          sys_id as string
-        );
-        this.setCurrentContractDetails(currentContractDetailsData);
-        debugger;
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          current_contract_details: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.currentContractDetails as CurrentContractDetailsDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading current contract details ${error}`);
-    } 
-  }
-
-  @Action({ rawError: true })
-  /**
-   * Saves Current Contract Details data to backend
-   */
-  async saveCurrentContractDetails(data: CurrentContractDetailsDTO): Promise<void> {
-    debugger;
-    try {
-      const sys_id = this.currentContractExists?.sys_id || "";
-      const savedCurrentContractDetails =
-        sys_id.length > 0
-          ? await api.currentContractDetailsTable.update(sys_id, { ...data, sys_id })
-          : await api.currentContractDetailsTable.create(data);
-      debugger;
-      this.setCurrentContractDetails(savedCurrentContractDetails);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        current_contract_details: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
-    }
-  }
-
 
 
 }

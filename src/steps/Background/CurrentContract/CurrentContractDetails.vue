@@ -52,7 +52,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractDetailsDTO } from "@/models/BackgroundDTOs";
+import { CurrentContractDTO } from "@/models/BackgroundDTOs";
 import { hasChanges } from "@/helpers";
 
 @Component({
@@ -61,13 +61,21 @@ import { hasChanges } from "@/helpers";
     ATATTextField,
   },
 })
-export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
-  private incumbentContractorName = "";
-  private contractNumber = "";
-  private taskDeliveryOrderNumber = "";
-  private contractOrderExpirationDate = "";
 
-  private get currentData(): CurrentContractDetailsDTO {
+export default class CurrentContract extends Mixins(SaveOnLeave) {
+  private incumbentContractorName 
+    = AcquisitionPackage.currentContract?.incumbent_contractor_name || "";
+  
+  private contractNumber 
+    = AcquisitionPackage.currentContract?.contract_number || "";
+  
+  private taskDeliveryOrderNumber 
+    = AcquisitionPackage.currentContract?.task_delivery_order_number || "";
+  
+  private contractOrderExpirationDate 
+    = AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
+
+  private get currentData(): CurrentContractDTO {
     return {
       incumbent_contractor_name: this.incumbentContractorName,
       contract_number: this.contractNumber,
@@ -76,13 +84,12 @@ export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
     };
   }
 
-  private savedData: CurrentContractDetailsDTO = { 
+  private savedData = { 
       incumbent_contractor_name: "",
       contract_number: "",
       task_delivery_order_number: "",
       contract_order_expiration_date: "",
-  };
-
+  } as Record<string, string>;
 
   public async mounted(): Promise<void> {
       await this.loadOnEnter();
@@ -90,26 +97,23 @@ export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     debugger;
-    const storeData = await AcquisitionPackage.loadCurrentContractDetails();
+    const storeData 
+      = await AcquisitionPackage.loadCurrentContract() as Record<string, string>;
+
     if (storeData) {
-      if (Object.prototype.hasOwnProperty.call(storeData, 'incumbent_contractor_name')) {
-        this.incumbentContractorName = storeData.incumbent_contractor_name;
-        this.savedData.incumbent_contractor_name = storeData.incumbent_contractor_name;
-      }
-      if (Object.prototype.hasOwnProperty.call(storeData, 'contract_number')) {
-        this.contractNumber = storeData.contract_number;
-        this.savedData.contract_number = storeData.contract_number;
-      }
-      if (Object.prototype.hasOwnProperty.call(storeData, 'task_delivery_order_number')) {
-        this.taskDeliveryOrderNumber = storeData.task_delivery_order_number;
-        this.savedData.task_delivery_order_number = storeData.task_delivery_order_number;
-      }
-      if (Object.prototype.hasOwnProperty.call(storeData, 'contract_order_expiration_date')) {
-        this.contractOrderExpirationDate = storeData.contract_order_expiration_date;
-        this.savedData.contract_order_expiration_date = storeData.contract_order_expiration_date;
-      }
+      const keys: string[] = [
+        "incumbent_contractor_name",
+        "contract_number",
+        "task_delivery_order_number",
+        "contract_order_expiration_date"
+      ];
+      keys.forEach((key: string) => {
+        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
+          this.savedData[key] = storeData[key];
+        }
+      });
     } else {
-      AcquisitionPackage.setCurrentContractDetails(this.currentData);
+      AcquisitionPackage.setCurrentContract(this.currentData);
     }
   }
 
@@ -122,7 +126,7 @@ export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
     debugger;
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveCurrentContractDetails(this.currentData);
+        await AcquisitionPackage.saveCurrentContract(this.currentData);
       }
     } catch (error) {
       console.log(error);
@@ -131,7 +135,5 @@ export default class CurrentContractDetails extends Mixins(SaveOnLeave) {
     return true;
   }
 
-
 }
 </script>
-

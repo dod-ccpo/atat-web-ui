@@ -46,10 +46,10 @@ export const CustodianRouteResolver = (current: string): string => {
   return routeNames.Will_Govt_Equip_Be_Furnished;
 };
 
-export const CurrentContractRouteResolver = async (current: string): Promise<string> => {
+export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract 
-    = AcquisitionPackage.currentContractExists?.current_contract_exists === "true";
-
+    = AcquisitionPackage.currentContract?.current_contract_exists === "true";
+  debugger;
   if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;
   }

@@ -32,7 +32,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { RadioButton } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractExistsDTO } from "@/models/BackgroundDTOs";
+import { CurrentContractDTO } from "@/models/BackgroundDTOs";
 import { hasChanges } from "@/helpers";
 
 @Component({
@@ -54,23 +54,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     },
   ];
 
-  public get currentContractExists(): string {
-    const exists = AcquisitionPackage.currentContractExists?.current_contract_exists;
-    return exists || "";
-  }
+  public currentContractExists 
+    = AcquisitionPackage.currentContract?.current_contract_exists || "";
 
-  public set currentContractExists(value: string) {
-    debugger;
-    AcquisitionPackage.setCurrentContractExists({ current_contract_exists: value });
-  }
-
-  private get currentData(): CurrentContractExistsDTO {
+  private get currentData(): CurrentContractDTO {
     return {
       current_contract_exists: this.currentContractExists,
     };
   }
 
-  private savedData: CurrentContractExistsDTO = { 
+  private savedData: CurrentContractDTO = { 
     current_contract_exists: "" 
   };
 
@@ -79,29 +72,26 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger;
-    const storeData = await AcquisitionPackage.loadCurrentContractExists();
+    const storeData = await AcquisitionPackage.loadCurrentContract();
     if (storeData) {
-      if (storeData.current_contract_exists && storeData.current_contract_exists.length) {
-        this.currentContractExists = storeData.current_contract_exists;
+      if (Object.prototype.hasOwnProperty.call(storeData, 'current_contract_exists')) {
         this.savedData = {
           current_contract_exists: storeData.current_contract_exists,
         }
       }
     } else {
-      AcquisitionPackage.setCurrentContractExists(this.currentData);
+      AcquisitionPackage.setCurrentContract(this.currentData);
     }
   }
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveCurrentContractExists(this.currentData);
+        await AcquisitionPackage.saveCurrentContract(this.currentData);
       }
     } catch (error) {
       console.log(error);
