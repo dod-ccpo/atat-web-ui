@@ -85,18 +85,17 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   private savedData = { 
-      incumbent_contractor_name: "",
-      contract_number: "",
-      task_delivery_order_number: "",
-      contract_order_expiration_date: "",
+    incumbent_contractor_name: "",
+    contract_number: "",
+    task_delivery_order_number: "",
+    contract_order_expiration_date: "",
   } as Record<string, string>;
 
   public async mounted(): Promise<void> {
-      await this.loadOnEnter();
+    await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
-    debugger;
     const storeData 
       = await AcquisitionPackage.loadCurrentContract() as Record<string, string>;
 
@@ -118,12 +117,10 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger;
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveCurrentContract(this.currentData);

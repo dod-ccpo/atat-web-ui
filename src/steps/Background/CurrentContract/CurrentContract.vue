@@ -40,6 +40,7 @@ import { hasChanges } from "@/helpers";
     ATATRadioGroup,
   },
 })
+
 export default class CurrentContract extends Mixins(SaveOnLeave) {
   private currentContractOptions: RadioButton[] = [
     {

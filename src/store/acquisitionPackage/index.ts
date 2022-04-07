@@ -1811,7 +1811,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   async loadCurrentContract(): Promise<CurrentContractDTO> {
-    debugger;
     try {
       await this.ensureInitialized();
 
@@ -1822,7 +1821,6 @@ export class AcquisitionPackageStore extends VuexModule {
           sys_id as string
         );
         this.setCurrentContract(currentContractData);
-        debugger;
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
           current_contract: sys_id,
@@ -1839,7 +1837,6 @@ export class AcquisitionPackageStore extends VuexModule {
    * Saves Current Contract data to backend
    */
   async saveCurrentContract(data: CurrentContractDTO): Promise<void> {
-    debugger;
     try {
       const sys_id = this.currentContract?.sys_id || "";
       const savedCurrentContract =
@@ -1855,7 +1852,7 @@ export class AcquisitionPackageStore extends VuexModule {
       throw new Error(`error occurred saving project overview ${error}`);
     }
   }
-  
+
   @Action({rawError: true})
     /**
    * Saves Fair Opportunity data to backend

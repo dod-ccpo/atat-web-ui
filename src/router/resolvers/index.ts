@@ -49,7 +49,6 @@ export const CustodianRouteResolver = (current: string): string => {
 export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "true";
-  debugger;
   if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;
   }
