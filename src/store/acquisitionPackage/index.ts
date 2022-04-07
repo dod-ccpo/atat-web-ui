@@ -14,6 +14,7 @@ import { SessionData } from "./models";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { OrganizationDTO } from "@/models/OrganizationDTO";
 import { ContactDTO } from "@/models/ContactDTO";
+import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
 const initialProjectOverview = () => {
@@ -62,6 +63,11 @@ const initialContact=()=>{
      }
 }
 
+const initialFairOpportunity = () => {
+  return {
+    exception_to_fair_opportunity: "",
+  };
+};
 
 const saveSessionData = (
     store:AcquisitionPackageStore) => {
@@ -72,6 +78,7 @@ const saveSessionData = (
       projectOverview: store.projectOverview,
       organization: store.organization,
       contactInfo: store.contactInfo,
+      fairOpportunity: store.fairOpportunity,
     })
   );
 };
@@ -96,6 +103,7 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo:ContactDTO | null = null;
+  fairOpportunity: FairOpportunityDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
 
   public getTitle(): string {
@@ -139,6 +147,10 @@ export class AcquisitionPackageStore extends VuexModule {
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
+  @Mutation
+  public setFairOpportunity(value: FairOpportunityDTO): void {
+    this.fairOpportunity = value;
+  }
 
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
@@ -151,6 +163,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
+    this.fairOpportunity = sessionData.fairOpportunity;
   }
 
   @Action({ rawError: true })
@@ -175,6 +188,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setOrganization(initialOrganization());
           this.setContact(initialContact());
           this.setAcquisitionPackage(acquisitionPackage);
+          this.setFairOpportunity(initialFairOpportunity())
           this.setInitialized(true);
         }
       } catch (error) {
@@ -1782,6 +1796,49 @@ export class AcquisitionPackageStore extends VuexModule {
 
       }
       return this.contactInfo as ContactDTO;
+    } catch (error) {
+      throw new Error(`error occurred saving project overview ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  /**
+   * Saves Fair Opportunity data to backend
+   */
+  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
+    try {
+      const sys_id = this.fairOpportunity?.sys_id || "";
+      const savedFairOpportunity =
+          sys_id.length > 0
+              ? await api.fairOpportunityTable.update(sys_id, { ...data, sys_id })
+              : await api.fairOpportunityTable.create(data);
+      this.setFairOpportunity(savedFairOpportunity);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        fairOpportunity: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving project overview ${error}`);
+    }
+  }
+  @Action({ rawError: true })
+  async loadFairOpportunity(): Promise<FairOpportunityDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.fairOpportunity?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const fairOpportunityData = await api.fairOpportunityTable.retrieve(
+            sys_id as string
+        );
+        this.setFairOpportunity(fairOpportunityData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          fairOpportunity: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.fairOpportunity as FairOpportunityDTO;
     } catch (error) {
       throw new Error(`error occurred saving project overview ${error}`);
     }
