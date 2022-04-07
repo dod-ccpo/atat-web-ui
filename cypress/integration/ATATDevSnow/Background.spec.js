@@ -33,7 +33,7 @@ describe("Test suite: BackGround", () => {
             
   });
   
-  it.only("TC3: Background: Option Yes: Asserts on Let’s gather some details about your current contract", () => {
+  it("TC3: Background: Option Yes: Asserts on Let’s gather some details about your current contract", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     //assert radio button options    
     cy.contractOption(background.yesRadioOption, "Yes");
@@ -52,12 +52,12 @@ describe("Test suite: BackGround", () => {
     cy.enterTextInTextField(background.contractNoTxtBox, contractNoValue);
     const taskOrderNo = randomNumber(10);
     cy.enterTextInTextField(background.taskDeliveryOrderNoTxtBox, taskOrderNo);
+    //click on Calendar icon
     cy.findElement(background.expirationDatePickerIcon).should("exist").click();
-    //cy.findElement(background.navigateNextMonth).click();
-    const dateButton = document.querySelector(background.navigateNextMonth);
-    dateButton.click();
-    document.querySelector(".v-date-picker-table button").click() 
-    cy.findElement(background.selectDate).click();
+    //select the date from calendar picker
+    cy.findElement(background.navigateNextMonth).click({force: true}).then(() => {
+      cy.findElement(background.selectDate).first().click({force: true});
+    });
     cy.btnExists(background.noExistingContractBtn, " I don’t have an existing contract ").not("[disabled]");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
         

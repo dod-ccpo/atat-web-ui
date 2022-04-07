@@ -15,7 +15,7 @@ module.exports = {
   calendarHeader: "div.accent--text",
   navigateCalendar: ".v-date-picker-header i",
   navigateNextMonth: "button[aria-label='Next month']",
-  selectDate:".v-date-picker-table button",
+  selectDate:".v-date-picker-table button:not(.v-btn--disabled)",
   noExistingContractBtn: "#NoExistingContract"  
 
 }
