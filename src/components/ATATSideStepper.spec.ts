@@ -103,8 +103,8 @@ describe("Testing ATATTextField Component", () => {
     it("renders successfully", async () => {
       expect(wrapper.exists()).toBe(true);
       const active = wrapper.find(".active-step");
-        expect(active.exists()).toBe(true);
-        expect(wrapper.vm.activeStep).toBe("1");
+      expect(active.exists()).toBe(true);
+      expect(wrapper.vm.activeStep).toBe("1");
     });
   });
 
@@ -183,10 +183,10 @@ describe("Testing ATATTextField Component", () => {
 
     it("It should return the correct step name", async ()=> {
 
-            const step2 = steps[1];
-            const step2Name = step2.name;
-            const routeName = wrapper.vm.getRouteName(step2);
-            expect(routeName).toEqual(step2Name);
+      const step2 = steps[1];
+      const step2Name = step2.name;
+      const routeName = wrapper.vm.getRouteName(step2);
+      expect(routeName).toEqual(step2Name);
 
     });
 

@@ -5,9 +5,9 @@ import { OrganizationApi } from "./organization";
 import { ContactsApi } from "./contacts";
 
 export default {
-   users: new UsersApi(),
-   acquisitionPackageTable: new AcquisitionPackagesApi(),
-   projectOverviewTable: new ProjectOverviewApi(),
-   organizationTable: new OrganizationApi(),
-   contactsTable: new ContactsApi()
+  users: new UsersApi(),
+  acquisitionPackageTable: new AcquisitionPackagesApi(),
+  projectOverviewTable: new ProjectOverviewApi(),
+  organizationTable: new OrganizationApi(),
+  contactsTable: new ContactsApi()
 }

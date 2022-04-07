@@ -55,8 +55,8 @@ describe("Testing ATATAutoComplete Component", () => {
     });
   });
   describe("INITIALIZATION", () => { 
-      it("renders successfully", async () => {
-        expect(wrapper.exists()).toBe(true);
+    it("renders successfully", async () => {
+      expect(wrapper.exists()).toBe(true);
     });
   });
 
@@ -126,13 +126,13 @@ describe("Testing ATATAutoComplete Component", () => {
       const autoComplete = wrapper.find('.v-autocomplete');
       await wrapper.setProps({icon: iconName});
       expect(autoComplete.classes()).toContain("is-" + iconName + "-icon");
-     });
-     it("inputClass() > 'search'", async () => {
+    });
+    it("inputClass() > 'search'", async () => {
       const iconName = "search";
       const autoComplete = wrapper.find('.v-autocomplete');
       await wrapper.setProps({icon: iconName});
       expect(autoComplete.classes()).toContain("icon-no-rotate");
-     });
+    });
   })
 
 });

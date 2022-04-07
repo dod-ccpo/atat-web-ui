@@ -2,7 +2,7 @@ import VueRouter from "vue-router";
 import {stepperRoutes} from "./stepper";
 
 const routes = [
-   ...stepperRoutes,
+  ...stepperRoutes,
 ];
 
 const router = new VueRouter({

@@ -11,7 +11,7 @@ import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/Alternate
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
-import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
+import FairOpportunityExceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
 
 //Step 3 - Background
 import Background from "../steps/Background/Index.vue";
@@ -51,32 +51,32 @@ import {
 } from "./resolvers";
 
 export const routeNames = {
-  Project_Overview: "Project_Overview",
-  Project_Scope: "Project_Scope",
-  Organization_Info: "Organization_Info",
-  Contact_Information: "Contact_Information",
-  Cor_Information: "Cor_Information",
-  Alternate_Cor: "Alternate_Cor",
-  Acor_Information: "Acor_Information",
-  Existing_Contract_Background: "Existing_Contract_Background",
+  ProjectOverview: "Project_Overview",
+  ProjectScope: "Project_Scope",
+  OrganizationInfo: "Organization_Info",
+  ContactInformation: "Contact_Information",
+  CorInformation: "Cor_Information",
+  AlternateCor: "Alternate_Cor",
+  AcorInformation: "Acor_Information",
+  ExistingContractBackground: "Existing_Contract_Background",
   Summary: "Summary",
   Background: "Background",
-  Current_Contract: "Current_Contract",
-  Current_Contract_Details: "Current_Contract_Details",
-  Performance_Requirements: "Performance_Requirements",
-  Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
-  Period_Of_Performance: "Period_Of_Performance",
-  Property_Requirements: "Property_Requirements",
-  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
-  Property_Custodian: "Property_Custodian",
-  Other_Contract_Considerations: "Other_Contract_Considerations",
+  CurrentContract: "Current_Contract",
+  CurrentContractDetails: "Current_Contract_Details",
+  PerformanceRequirements: "Performance_Requirements",
+  FairOpportunityExceptions: "Fair_Opportunity_Exceptions",
+  PeriodOfPerformance: "Period_Of_Performance",
+  PropertyRequirements: "Property_Requirements",
+  WillGovtEquipBeFurnished: "Will_Govt_Equip_Be_Furnished",
+  PropertyCustodian: "Property_Custodian",
+  OtherContractConsiderations: "Other_Contract_Considerations",
   PII: "PII",
   BAA: "BAA",
   PIIRecord: "PIIRecord",
-  Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
-  Financial_Details: "Financial_Details",
+  PublicDisclosureofInformation: "Public_Disclosure_of_Information",
+  FinancialDetails: "Financial_Details",
   FOIA: "FOIA",
-  FOIA_Coordinator: "FOIA_Coordinator",
+  FOIACoordinator: "FOIA_Coordinator",
 };
 
 /**
@@ -101,13 +101,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Project Overview",
         path: "/", // should be same as parent route
-        name: routeNames.Project_Overview,
+        name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
         additionalButtons: [
           {
-            name: routeNames.Project_Overview,
+            name: routeNames.ProjectOverview,
             buttonText: "Cancel",
             buttonId: "CancelButton",
             buttonClass: "tertirary",
@@ -120,7 +120,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Organization",
         path: "organization-info",
-        name: routeNames.Organization_Info,
+        name: routeNames.OrganizationInfo,
         completed: true,
         completePercentageWeight: 5,
         component: OrganizationInfo,
@@ -128,7 +128,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Contact Information",
         path: "contact-info",
-        name: routeNames.Contact_Information,
+        name: routeNames.ContactInformation,
         completePercentageWeight: 5,
         completed: true,
         component: ContactInfo,
@@ -136,7 +136,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Cor Info",
         path: "cor-info",
-        name: routeNames.Cor_Information,
+        name: routeNames.CorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: CorInfo,
@@ -144,14 +144,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Alternate COR",
         path: "alt-cor",
-        name: routeNames.Alternate_Cor,
+        name: routeNames.AlternateCor,
         excludeFromMenu: true,
         component: AlternateCOR,
       },
       {
         menuText: "Acors",
         path: "acor-info",
-        name: routeNames.Acor_Information,
+        name: routeNames.AcorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: AcorInfo,
@@ -173,12 +173,12 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     menuText: "Fair Opportunity Process",
     path: "/fair-opportunity-exceptions",
     completePercentageWeight: 10,
-    component: FairOpportunity_Exceptions,
+    component: FairOpportunityExceptions,
     children: [
       {
         menuText: "Exceptions",
         path: "/fair-opportunity-exceptions",
-        name: routeNames.Fair_Opportunity_Exceptions,
+        name: routeNames.FairOpportunityExceptions,
         completePercentageWeight: 2,
       },
     ],
@@ -187,7 +187,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "03",
     menuText: "Background",
     path: "/current-contract",
-    name: routeNames.Current_Contract,
+    name: routeNames.CurrentContract,
     completePercentageWeight: 10,
     component: Background,
     completed: false,
@@ -195,7 +195,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Current Contract",
         path: "/current-contract",
-        name: routeNames.Current_Contract,
+        name: routeNames.CurrentContract,
         completePercentageWeight: 0,
         component: CurrentContract,
         completed: false,
@@ -203,7 +203,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Details",
         path: "/current-contract-details",
-        name: routeNames.Current_Contract_Details,
+        name: routeNames.CurrentContractDetails,
         excludeFromMenu: true,
         completePercentageWeight: 0,
         component: CurrentContractDetails,
@@ -214,7 +214,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t have an existing contract",
             buttonId: "NoExistingContract",
             buttonClass: "secondary",
-            name: routeNames.Performance_Requirements,
+            name: routeNames.PerformanceRequirements,
           },
         ],
       }
@@ -222,7 +222,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "04",
-    name: routeNames.Performance_Requirements,
+    name: routeNames.PerformanceRequirements,
     completePercentageWeight: 7,
     menuText: "Exception to Fair Opportunity",
     path: "/exception-to-fair-opportunity",
@@ -231,13 +231,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "05",
     completePercentageWeight: 7,
-    name: routeNames.Period_Of_Performance,
+    name: routeNames.PeriodOfPerformance,
     menuText: "Contract Details",
     path: "/period-of-performance",
     component: PeriodOfPerformance,
     children: [
       {
-        name: routeNames.Period_Of_Performance,
+        name: routeNames.PeriodOfPerformance,
         menuText: "Period of Performance",
         path: "/period-of-performance",
         completePercentageWeight: 2,
@@ -248,13 +248,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "06",
     completePercentageWeight: 7,
-    name: routeNames.Property_Requirements,
+    name: routeNames.PropertyRequirements,
     menuText: "Government Furnished Equipment",
     path: "/property-requirements",
     component: GovtFurnishedEquipment,
     children: [
       {
-        name: routeNames.Property_Requirements,
+        name: routeNames.PropertyRequirements,
         menuText: "Property Requirements",
         path: "/property-requirements",
         completePercentageWeight: 2,
@@ -263,13 +263,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Will Govt Equip Furnished",
         path: "/will-govt-equip-be-furnished",
-        name: routeNames.Will_Govt_Equip_Be_Furnished,
+        name: routeNames.WillGovtEquipBeFurnished,
         completePercentageWeight: 2,
         excludeFromMenu: true,
         component: WillGovtEquipBeFurnished,
       },
       {
-        name: routeNames.Property_Custodian,
+        name: routeNames.PropertyCustodian,
         menuText: "Property Custodian",
         path: "/property-custodian",
         completePercentageWeight: 2,
@@ -319,7 +319,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "FOIA Coordinator",
         path: "/foia-coordinator",
-        name: routeNames.FOIA_Coordinator,
+        name: routeNames.FOIACoordinator,
         completePercentageWeight: 2,
         excludeFromMenu: true,
         component: FOIACoordinator,
@@ -331,7 +331,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "08",
 
     completePercentageWeight: 7,
-    name: routeNames.Public_Disclosure_of_Information,
+    name: routeNames.PublicDisclosureofInformation,
     menuText: "Public Disclosure of Information",
     path: "/public-disclosure-of-information",
   },
@@ -346,7 +346,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "10",
     completePercentageWeight: 7,
-    name: routeNames.Project_Scope,
+    name: routeNames.ProjectScope,
     menuText: "Financial Details",
     path: "/project-scope",
     component: FinancialDetails,
@@ -354,7 +354,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Project Scope",
         path: "/project-scope",
-        name: routeNames.Project_Scope,
+        name: routeNames.ProjectScope,
         completePercentageWeight: 1,
         component: ProjectScope,
       },
@@ -393,7 +393,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
  * @returns StepperStep
  */
 const mapStepRouteToStepperData = (
-    stepperRouteConfig: StepperRouteConfig
+  stepperRouteConfig: StepperRouteConfig
 ): StepperStep => {
   const {
     completePercentageWeight,
@@ -418,7 +418,7 @@ const mapStepRouteToStepperData = (
     completePercentageWeight,
     route: path,
     subSteps: stepperRouteConfig.children?.map((child) =>
-        mapStepRouteToStepperData(child)
+      mapStepRouteToStepperData(child)
     ),
     additionalButtons,
     backButtonText,
@@ -428,4 +428,4 @@ const mapStepRouteToStepperData = (
 };
 
 export const buildStepperData = (): StepperStep[] =>
-    stepperRoutes.map((step) => mapStepRouteToStepperData(step));
+  stepperRoutes.map((step) => mapStepRouteToStepperData(step));

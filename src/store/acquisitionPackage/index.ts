@@ -44,27 +44,27 @@ const initialOrganization = () => {
 
 const initialContact=()=>{
 
-     return {
-      type: "",
-      can_access_package: "",
-      phone: "",
-      rank: "",
-      salutation: "",
-      first_name: "",
-      email: "",
-      grade_civ: "",
-      grade_mil: "",
-      role: "",
-      dodaac: "",
-      last_name: "",
-      middle_name: "",
-      suffix: "",
-     }
+  return {
+    type: "",
+    can_access_package: "",
+    phone: "",
+    rank: "",
+    salutation: "",
+    first_name: "",
+    email: "",
+    grade_civ: "",
+    grade_mil: "",
+    role: "",
+    dodaac: "",
+    last_name: "",
+    middle_name: "",
+    suffix: "",
+  }
 }
 
 
 const saveSessionData = (
-    store:AcquisitionPackageStore) => {
+  store:AcquisitionPackageStore) => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
     JSON.stringify({
@@ -1704,9 +1704,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const savedProjectOverview =
         projectSysId.length > 0
           ? await api.projectOverviewTable.update(projectSysId, {
-              ...data,
-              sys_id: projectSysId,
-            })
+            ...data,
+            sys_id: projectSysId,
+          })
           : await api.projectOverviewTable.create(data);
       this.setProjectOverview(savedProjectOverview);
       this.setAcquisitionPackage({

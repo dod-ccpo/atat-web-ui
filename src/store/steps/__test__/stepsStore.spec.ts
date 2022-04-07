@@ -7,13 +7,13 @@ import { getModule } from 'vuex-module-decorators';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const testRouteResolver = (current: string): string => {
-    return "CHILD_STEP_FOUR";
+  return "CHILD_STEP_FOUR";
     
 }
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
- const stepperRoutes= [
+const stepperRoutes= [
   {
     path: "/",
     stepNumber: "01",
