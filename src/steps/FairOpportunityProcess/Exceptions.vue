@@ -49,7 +49,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import {Component, Mixins} from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
