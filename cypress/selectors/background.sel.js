@@ -14,6 +14,8 @@ module.exports = {
   expirationDatePickerIcon: "#ExpirationDatePickerButtonIcon",
   calendarHeader: "div.accent--text",
   navigateCalendar: ".v-date-picker-header i",
+  navigateNextMonth: "button[aria-label='Next month']",
+  selectDate:".v-date-picker-table button",
   noExistingContractBtn: "#NoExistingContract"  
 
 }
