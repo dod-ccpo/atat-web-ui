@@ -1756,7 +1756,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       return this.organization as OrganizationDTO;
     } catch (error) {
-      throw new Error(`error occurred loading project overview ${error}`);
+      throw new Error(`error occurred loading organization info ${error}`);
     }
   }
 
@@ -1777,7 +1777,7 @@ export class AcquisitionPackageStore extends VuexModule {
         organization: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred saving organization info ${error}`);
     }
   }
 
@@ -1802,7 +1802,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       return this.contactInfo as ContactDTO;
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred loading contact info ${error}`);
     }
   }
 
@@ -1846,28 +1846,7 @@ export class AcquisitionPackageStore extends VuexModule {
         current_contract: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
-    }
-  }
-
-  @Action({rawError: true})
-    /**
-   * Saves Fair Opportunity data to backend
-   */
-  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
-    try {
-      const sys_id = this.fairOpportunity?.sys_id || "";
-      const savedFairOpportunity =
-          sys_id.length > 0
-              ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
-              : await api.fairOpportunityTable.create(data);
-      this.setFairOpportunity(savedFairOpportunity);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        fair_opportunity: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred saving current contract info ${error}`);
     }
   }
 
@@ -1890,7 +1869,28 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       return this.fairOpportunity as FairOpportunityDTO;
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred loading fair opportunity info ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  /**
+  * Saves Fair Opportunity data to backend
+  */
+  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
+    try {
+      const sys_id = this.fairOpportunity?.sys_id || "";
+      const savedFairOpportunity =
+          sys_id.length > 0
+              ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
+              : await api.fairOpportunityTable.create(data);
+      this.setFairOpportunity(savedFairOpportunity);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        fair_opportunity: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving fair opportunity info ${error}`);
     }
   }
 
