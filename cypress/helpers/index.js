@@ -30,22 +30,22 @@ export const colors = {
     primary:"rgb(84, 68, 150)"
 }
 
-export function randomAlphaNumeric(lengthString) {
-    let text = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz0123456789";//`pragma: allowlist secret`
-
-    for (var i = 0; i < lengthString; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
+function randomStringFromSet(characters, length) {
+  return [...Array(length)].map(() => characters.charAt(Math.floor(Math.random() * characters.length))).join("");
 }
 
-export function randomNumber(length) {
-    let number = "";
-    let possible = "0123456789";
+export function randomAlphaNumeric(length) {
+    // The string is not a secret as it is just a list of alphanumeric characters
+    return randomStringFromSet(
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz0123456789", // pragma: allowlist secret
+    length
+    );
+}
 
-    for (var i = 0; i < length; i++) {
-        number += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return number;
+export function randomNumber(digits) {
+    // The string is not a secret as it is just a list of alphanumeric characters
+    return randomStringFromSet(
+        "0123456789", // pragma: allowlist secret
+        digits
+    );
 }
