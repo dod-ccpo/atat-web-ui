@@ -1,18 +1,18 @@
 <template>
   <v-app>
-    <ATATSideStepper ref="sideStepper" :stepperData="stepperData"/>
+    <ATATSideStepper ref="sideStepper" :stepperData="stepperData" />
 
     <ATATSlideoutPanel v-if="hasSlideoutPanelComponent">
       <component :is="slideoutPanelComponent"></component>
     </ATATSlideoutPanel>
     <ATATToast />
 
-    <ATATPageHead :headline="projectTitle"/>
+    <ATATPageHead :headline="projectTitle" />
     <v-main id="app">
       <router-view></router-view>
 
-      <ATATStepperNavigation 
-        @next="navigate('next')" 
+      <ATATStepperNavigation
+        @next="navigate('next')"
         @previous="navigate('previous')"
         @additionalButtonClick="additionalButtonClick"
         :additionalButtons="additionalButtons"
@@ -20,7 +20,7 @@
         :noPrevious="noPrevious"
       />
 
-      <ATATFooter/>
+      <ATATFooter />
     </v-main>
   </v-app>
 </template>
@@ -34,7 +34,7 @@ import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
 import ATATFooter from "./components/ATATFooter.vue";
-import ATATPageHead from "./components/ATATPageHead.vue"
+import ATATPageHead from "./components/ATATPageHead.vue";
 import ATATSideStepper from "./components/ATATSideStepper.vue";
 import ATATSlideoutPanel from "./components/ATATSlideoutPanel.vue";
 import ATATStepperNavigation from "./components/ATATStepperNavigation.vue";
@@ -44,9 +44,13 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import Steps from "@/store/steps";
 
-import { AdditionalButton, StepInfo } from "@/store/steps/types";
+import {
+  AdditionalButton,
+  StepInfo,
+  StepRouteResolver,
+} from "@/store/steps/types";
 import { buildStepperData } from "./router/stepper";
-import actionHandler from "./action-handlers/index"
+import actionHandler from "./action-handlers/index";
 
 @Component({
   components: {
@@ -56,9 +60,8 @@ import actionHandler from "./action-handlers/index"
     ATATSlideoutPanel,
     ATATStepperNavigation,
     ATATToast,
-  }
+  },
 })
-
 export default class App extends Vue {
   $refs!: {
     sideStepper: ATATSideStepper;
@@ -82,12 +85,12 @@ export default class App extends Vue {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
     if (routeName && step) {
-      const {stepName} = step;
+      const { stepName } = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
     }
     await AcquisitionPackage.initialize();
-    
+
     this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
   }
 
@@ -97,11 +100,11 @@ export default class App extends Vue {
     const step = await Steps.findRoute(routeName || "");
 
     if (routeName && step) {
-      const {stepName, stepNumber} = step;
+      const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
       this.$refs.sideStepper.setCurrentStep(stepNumber);
-      
+
       SlideoutPanel.closeSlideoutPanel();
       this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
     }
@@ -109,12 +112,23 @@ export default class App extends Vue {
 
   async navigate(direction: string): Promise<void> {
     const nextStepName =
-      direction === "next" 
-        ? await Steps.getNext() 
-        : await Steps.getPrevious();
+      direction === "next" ? await Steps.getNext() : await Steps.getPrevious();
 
     if (nextStepName) {
-      this.$router.push({name: nextStepName});
+      const isRouteResolver =
+        (nextStepName as StepRouteResolver).name !== undefined;
+
+      if (isRouteResolver) {
+        const routeResolver = nextStepName as StepRouteResolver;
+        this.$router.push({
+          name: "resolver",
+          params: {
+            resolver: routeResolver.name,
+          },
+        });
+      } else {
+        this.$router.push({ name: nextStepName as string });
+      }
     }
   }
 
@@ -134,15 +148,14 @@ export default class App extends Vue {
 
   private async additionalButtonClick(button: AdditionalButton) {
     if (button.emitText) {
-      this.$emit('AdditionalButtonClicked', button.emitText);
+      this.$emit("AdditionalButtonClicked", button.emitText);
     }
     if (button.actionName) {
       const actionArgs = button.actionArgs || [];
       await actionHandler(button.actionName, actionArgs);
     }
 
-    this.$router.push({name: button.name})
+    this.$router.push({ name: button.name });
   }
-
 }
 </script>

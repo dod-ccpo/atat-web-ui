@@ -1,9 +1,10 @@
 import { VuexModule, Module, Action, Mutation, getModule } from "vuex-module-decorators";
 import rootStore from "../index";
-import { Mutations, RouteDirection, StepInfo, StepsState } from "./types";
+import { Mutations, RouteDirection, StepInfo, StepRouteResolver, StepsState } from "./types";
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
+import VueRouter from "vue-router";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
@@ -45,7 +46,7 @@ export class StepsStore extends VuexModule implements StepsState {
     }
 
     @Action({ rawError: true })
-    public async resolveRoute(direction: RouteDirection): Promise<string | undefined> {
+    public async resolveRoute(direction: RouteDirection): Promise<string | StepRouteResolver | undefined> {
 
         const nextStepName = direction === RouteDirection.NEXT 
             ? (this.currentStep?.next || '') 
@@ -61,19 +62,19 @@ export class StepsStore extends VuexModule implements StepsState {
         const stepResolver = nextStep?.resolver;
 
         if (stepResolver) {
-            return stepResolver(currentStepName);
+            return stepResolver;
         }
 
         return nextStep?.stepName;
     }
 
     @Action({ rawError: true })
-    public async getNext(): Promise<string | undefined> {
+    public async getNext(): Promise<string | StepRouteResolver | undefined> {
         return this.resolveRoute(RouteDirection.NEXT);
     }
 
     @Action({ rawError: true })
-    public async getPrevious(): Promise<string | undefined> {
+    public async getPrevious(): Promise<string | StepRouteResolver | undefined> {
         return this.resolveRoute(RouteDirection.PREVIOUS)
     }
 }
