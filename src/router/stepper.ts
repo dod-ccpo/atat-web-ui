@@ -179,7 +179,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     menuText: "Fair Opportunity Process",
     path: "/exceptions",
     completePercentageWeight: 10,
-   
+    name: routeNames.Fair_Opportunity,
     component: Exceptions,
     completed: false,
     children: [
@@ -205,14 +205,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "03",
     menuText: "Background",
     path: "/background/current-contract",
-    name: routeNames.Background,
     completePercentageWeight: 10,
     component: CurrentContract,
+    name: routeNames.Background,
     completed: false,
     children: [
       {
         menuText: "Current Contract",
-        path: "/background/current-contract",
+        path: "background/current-contract",
         name: routeNames.Current_Contract,
         completePercentageWeight: 0,
         component: CurrentContract,
@@ -221,7 +221,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Details",
         path: "current-contract-details",
-        name: routeNames.Current_Contract_Details,
         excludeFromMenu: true,
         completePercentageWeight: 0,
         component: CurrentContractDetails,
