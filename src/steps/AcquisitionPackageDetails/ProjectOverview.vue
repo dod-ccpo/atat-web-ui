@@ -154,7 +154,6 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadProjectOverview();
-
     if (storeData) {
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
