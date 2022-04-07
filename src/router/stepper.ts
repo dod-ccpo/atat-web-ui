@@ -1,6 +1,8 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 import BlankPage from "../steps/BlankPage.vue"
 
+// todo 03 routeResolver does not work
+
 // Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
@@ -12,25 +14,34 @@ import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/Alternate
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
-import FairOpportunity from "../steps/FairOpportunityProcess/Index.vue"
+import FairOpportunityProcess from "../steps/FairOpportunityProcess/Index.vue"
 import Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
+import JustificationAndApproval from "../steps/FairOpportunityProcess/JustificationAndApproval.vue";
 
 //Step 3 - Background
 import Background from "../steps/Background/Index.vue";
 import CurrentContract from "../steps/Background/CurrentContract/CurrentContract.vue";
 import CurrentContractDetails from "../steps/Background/CurrentContract/CurrentContractDetails.vue";
+import CurrentEnvironment from "../steps/Background/CurrentEnvironment/CurrentEnvironment.vue";
 
 // Step 4 - Performance requirements
 import PerformanceRequirements from "../steps/PerformanceRequirements/Index.vue"
+import OptimizeCurrentEnvironment from "../steps/PerformanceRequirements/OptimizeCurrentEnvironment.vue";
+import AnythingAsAServiceXaas from "../steps/PerformanceRequirements/AnythingAsAServiceXaas.vue";
+import CloudSupportPackages from "../steps/PerformanceRequirements/CloudSupportPackages.vue";
 
 // Step 5 - Contract Details
+import ContractDetails from "../steps/ContractDetails/Index.vue";
 import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
+import ConflictOfInterest from "../steps/ContractDetails/ConflictOfInterest.vue";
+import PackagingPackingAndShipping from "../steps/ContractDetails/PackagingPackingAndShipping.vue";
+import Training from "../steps/ContractDetails/Training.vue";
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
-import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
+import PropertyDetails from "../steps/GovtFurnishedEquipment/PropertyDetails.vue";
 import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
-import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
+import Justification from "../steps/GovtFurnishedEquipment/Justification.vue";
 
 // step 7 - Other Contract Considerations
 import OtherContractConsiderations from "../steps/OtherContractConsiderations/Index.vue";
@@ -77,9 +88,12 @@ export const routeNames = {
   Anything_as_a_Service_Xaas:"Anything_as_a_Service_Xaas",
   Cloud_Support_Packages: "Cloud_Support_Packages",
   Period_Of_Performance: "Period_Of_Performance",
-  Property_Requirements: "Property_Requirements",
+  Conflict_of_Interest: "Conflict_of_Interest",
+  Packaging_Packing_and_Shipping: "Packaging_Packing_and_Shipping",
+  Training: "Training",
+  Property_Details: "Property_Details",
   Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
-  Property_Custodian: "Property_Custodian",
+  Justification: "Justification",
   Other_Contract_Considerations: "Other_Contract_Considerations",
   PII: "PII",
   BAA: "BAA",
@@ -184,8 +198,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     menuText: "Fair Opportunity Process",
     path: "/exceptions",
     completePercentageWeight: 10,
-    name: routeNames.Fair_Opportunity,
-    component: Exceptions,
+    component: FairOpportunityProcess,
     completed: false,
     children: [
       {
@@ -200,7 +213,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Justification and Approval",
         path: "justification-and-approval",
         name: routeNames.Justification_and_Approval,
-        component: BlankPage,
+        component: JustificationAndApproval,
         completePercentageWeight: 5,
         completed: false,
       },
@@ -209,15 +222,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "03",
     menuText: "Background",
-    path: "/background/current-contract",
+    path: "/current-contract",
     completePercentageWeight: 10,
     component: CurrentContract,
-    name: routeNames.Background,
     completed: false,
     children: [
       {
         menuText: "Current Contract",
-        path: "background/current-contract",
+        path: "current-contract",
         name: routeNames.Current_Contract,
         completePercentageWeight: 0,
         component: CurrentContract,
@@ -244,7 +256,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Current Environment",
         path: "current-environment",
         name: routeNames.Current_Environment,
-        component: BlankPage,
+        component: CurrentEnvironment,
         completePercentageWeight: 5,
         completed: false,
       },
@@ -253,7 +265,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "04",
     component: PerformanceRequirements,
-    name: routeNames.Performance_Requirements,
     completePercentageWeight: 7,
     menuText: "Performance Requirements",
     path: "/optimize_current_environment",
@@ -263,7 +274,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Optimize Current Environment?",
         path: "optimize_current_environment",
         name: routeNames.Optimize_Current_Environment,
-        component: BlankPage,
+        component: OptimizeCurrentEnvironment,
         completePercentageWeight: 0,
         completed: false,
       },
@@ -271,7 +282,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Anything as a Service (Xaas)",
         path: "anything_as_a_service_xaas",
         name: routeNames.Anything_as_a_Service_Xaas,
-        component: BlankPage,
+        component: AnythingAsAServiceXaas,
         completePercentageWeight: 0,
         completed: false,
       },
@@ -279,7 +290,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Cloud Support Packages",
         path: "cloud-support-packages",
         name: routeNames.Cloud_Support_Packages,
-        component: BlankPage,
+        component: CloudSupportPackages,
         completePercentageWeight: 0,
         completed: false,
       },
@@ -290,14 +301,35 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     completePercentageWeight: 7,
     menuText: "Contract Details",
     path: "/period-of-performance",
-    component: PeriodOfPerformance,
+    component: ContractDetails,
     children: [
       {
         name: routeNames.Period_Of_Performance,
         menuText: "Period of Performance",
-        path: "/period-of-performance",
+        path: "period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
+      },
+      {
+        name: routeNames.Conflict_of_Interest,
+        menuText: "Conflict of Interest",
+        path: "conflict-of-interest",
+        completePercentageWeight: 2,
+        component: ConflictOfInterest,
+      },
+      {
+        name: routeNames.Packaging_Packing_and_Shipping,
+        menuText: "Packaging, Packing, and Shipping",
+        path: "packaging-packing-and-shipping",
+        completePercentageWeight: 2,
+        component: PackagingPackingAndShipping,
+      },
+      {
+        name: routeNames.Training,
+        menuText: "Training",
+        path: "training",
+        completePercentageWeight: 2,
+        component: Training,
       },
     ]
   },
@@ -309,11 +341,11 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: GovtFurnishedEquipment,
     children: [
       {
-        name: routeNames.Property_Requirements,
-        menuText: "Property Requirements",
-        path: "/property-requirements",
+        name: routeNames.Property_Details,
+        menuText: "Property Details",
+        path: "/property-details",
         completePercentageWeight: 2,
-        component: PropertyRequirements,
+        component: PropertyDetails,
       },
       {
         menuText: "Will Govt Equip Furnished",
@@ -324,11 +356,11 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: WillGovtEquipBeFurnished,
       },
       {
-        name: routeNames.Property_Custodian,
-        menuText: "Property Custodian",
+        name: routeNames.Justification,
+        menuText: "Justification",
         path: "/property-custodian",
         completePercentageWeight: 2,
-        component: PropertyCustodian,
+        component: Justification,
         routeResolver: CustodianRouteResolver,
       },
     ]

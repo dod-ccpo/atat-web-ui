@@ -44,7 +44,7 @@ import { RadioButton } from "../../../types/Global";
   },
 })
 
-export default class PropertyRequirements extends Vue {
+export default class PropertyDetails extends Vue {
   private selectedPropertyOption = "";
   private propertyOptions: RadioButton[] = [
     {

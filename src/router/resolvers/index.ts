@@ -31,10 +31,9 @@ export const CustodianRouteResolver = (current: string): string => {
 
   // if government equipment will be furnished, route to Property Custodian page
   if (
-    current === routeNames.Will_Govt_Equip_Be_Furnished &&
-    needsPropertyCustodian
+    current === routeNames.Will_Govt_Equip_Be_Furnished
   ) {
-    return routeNames.Property_Custodian;
+    return routeNames.Justification;
   }
 
   // else stay on same page until next step after Property Custodian is completed
