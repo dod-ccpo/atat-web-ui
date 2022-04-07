@@ -116,7 +116,7 @@ export default class App extends Vue {
 
     if (nextStepName) {
       const isRouteResolver =
-        (nextStepName as StepRouteResolver).name != undefined;
+        (nextStepName as StepRouteResolver).name !== undefined;
 
       if (isRouteResolver) {
         const routeResolver = nextStepName as StepRouteResolver;

@@ -26,7 +26,7 @@ export const mapStepConfigs = (
     }
         
     //we use step name for dynamic routing
-    //sense by convention the parent route configs
+    //since by convention the parent route configs
     //don't have a name we will fall through to child routes
     if(stepInfo.stepName.length > 0){
       map?.set(stepInfo.stepName, stepInfo);
