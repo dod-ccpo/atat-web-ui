@@ -140,11 +140,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setCurrentContract(value: CurrentContractDTO): void {
-    if (this.currentContract) {
-      this.currentContract = Object.assign(this.currentContract, value);
-    } else {
-      this.currentContract = value;
-    }
+    this.currentContract = this.currentContract 
+      ? Object.assign(this.currentContract, value)
+      : value;
   }
 
   @Mutation
