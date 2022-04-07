@@ -39,9 +39,9 @@
       <a 
         href="https://www.hhs.gov/hipaa/for-professionals/security/index.html" 
         target="_blank"
-        class="text-link"
+        class="_text-link"
       >
-        HIPAA Security <span class="external-link">Rule.</span>
+        HIPAA Security <span class="_external-link">Rule.</span>
       </a>
     </p>
     <p>
@@ -51,7 +51,7 @@
           <a 
             href="https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html"
             target="_blank"
-            class="text-link"
+            class="_text-link"
           >
             https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html
           </a>
@@ -60,7 +60,7 @@
           <a 
             href="https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-160/subpart-A/section-160.103" 
             target="_blank"
-            class="text-link"
+            class="_text-link"
           >
             Business Associate and PHI, CFR title 45 part 160.103
           </a>

@@ -31,6 +31,7 @@ import org from '../selectors/org.sel';
 import financialDetail from '../selectors/financialDetails.sel';
 import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
+import {cleanText} from "../helpers";
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -69,7 +70,7 @@ Cypress.Commands.add("findElement", (selector) => {
 Cypress.Commands.add('textExists', (selector, textLabel) => {
     cy.findElement(selector)
         .should("be.visible")
-        .and("have.text", textLabel);
+        .and("contain.text", textLabel);
 });
 
 Cypress.Commands.add('enterTextInTextField', (selector, text) => {
@@ -90,11 +91,17 @@ Cypress.Commands.add('radioBtn', (selector,value) => {
     cy.findElement(selector).should("have.value", value);  
 });
 
-Cypress.Commands.add( "hoverToolTip", (selector, selector1, expectedText) => {
+Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
     cy.findElement(selector)
-        .should("be.visible")        
-        .realHover();
-    cy.textExists(selector1, expectedText);  
+            .should("be.visible")        
+            .realHover();
+    cy.findElement(selector1).then(($el) => {
+            let actualTxt = $el.text();            
+            const formattedTxt = cleanText(actualTxt);
+            cy.log(formattedTxt);
+            expect(formattedTxt).equal(expectedText);
+            
+        }) 
 });
 
 Cypress.Commands.add("clickSideStepper", (stepper_Selector,stepperText) => {
@@ -298,19 +305,20 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
     });  
 });
 
-Cypress.Commands.add("enterContactInformation", (firstName_selector,firstName, mName_selector,mName,lastName_selector,lastName, email_selector,email,cor,dodText ) => {    
-    cy.enterTextInTextField(firstName_selector, firstName);
-    cy.enterTextInTextField(mName_selector, mName);
-    cy.enterTextInTextField(lastName_selector, lastName);    
-    cy.enterTextInTextField(email_selector, email);
-    if (cor) {
-        const expectedText = (" A DoDAAC is a 6-character code that uniquely identifies a \n        unit, activity, or organization that has the authority to requisition, \n        contract for, or fund/pay bills for materials and services. ");
+Cypress.Commands.add("enterContactInformation", (contactInformation ) => {    
+    cy.enterTextInTextField(contactInformation.firstName_selector,contactInformation.firstName);
+    cy.enterTextInTextField(contactInformation.mName_selector,contactInformation.mName);
+    cy.enterTextInTextField(contactInformation.lastName_selector,contactInformation.lastName);    
+    cy.enterTextInTextField(contactInformation.email_selector,contactInformation.email);
+    if (contactInformation.cor) {
+        
+        const expectedText = "A DoDAAC is a 6-character code that uniquely identifies a unit, activity, or organization that has the authority to requisition, contract for, or fund/pay bills for materials and services.";
         cy.hoverToolTip(commonCorAcor.toolTipBtnDodaac, commonCorAcor.toolTipTxtDodaac, expectedText);
         //Assert the labels
         cy.textExists(commonCorAcor.dodaacLabel, " DoD Activity Address Code (DoDAAC) ");
         cy.textExists(commonCorAcor.accessRadioGroup, " Does this individual need access to help you create this acquisition package in ATAT? ");
         //enter DoDAAC
-        cy.enterTextInTextField(commonCorAcor.dodaacTxtBox, dodText);
+        cy.enterTextInTextField(commonCorAcor.dodaacTxtBox, contactInformation.dodText);
         //radio buttons
         cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes");
         cy.radioBtn(commonCorAcor.accessNoRadioBtn, "no");

@@ -48,22 +48,22 @@
                   Privacy Act Notification,
                   <a
                     id="PrivacyActLink1"
-                    class="text-link"
+                    class="_text-link"
                     href="https://www.acquisition.gov/far/52.224-1"
                     target="_blank"
                   >
-                    FAR <span class="external-link">52.224-1</span>
+                    FAR <span class="_external-link">52.224-1</span>
                   </a>
                 </li>
                 <li class="pb-4">
                   Privacy Act,
                   <a
                     id="PrivacyActLink2"
-                    class="text-link"
+                    class="_text-link"
                     href="https://www.acquisition.gov/far/52.224-2"
                     target="_blank"
                   >
-                    <span class="external-link">FAR 52.224-2</span>
+                    <span class="_external-link">FAR 52.224-2</span>
                   </a>
                 </li>
               </ul>
@@ -71,11 +71,11 @@
                 For more information, reference
                 <a
                   id="PrivacyActLink3"
-                  class="text-link"
+                  class="_text-link"
                   href="https://www.acquisition.gov/far/subpart-24.1"
                   target="_blank"
                 >
-                  <span class="external-link">FAR 24.1, Protection of Individual Privacy.</span>
+                  <span class="_external-link">FAR 24.1, Protection of Individual Privacy.</span>
                 </a>
               </p>
             </template>
@@ -93,8 +93,11 @@ import {Component} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+
+import OtherContractConsiderations from "@/store/otherContractConsiderations";
+
 import {RadioButton} from "../../../types/Global";
-import PIIRecord from "@/store/PIIRecordStore";
+
 @Component({
   components: {
     ATATAlert,
@@ -118,7 +121,7 @@ export default class PII extends Vue {
   ];
 
   public get selectedPIIOption(): string {
-    const included = PIIRecord.PIIRecordIncluded;
+    const included = OtherContractConsiderations.PIIRecordIncluded;
     if (included !== null) {
       return included ? "Yes" : "No";
     }
@@ -126,7 +129,7 @@ export default class PII extends Vue {
   }
 
   public set selectedPIIOption(value: string) {
-    PIIRecord.setPIIRecord(value === "Yes");
+    OtherContractConsiderations.setPIIRecord(value === "Yes");
   }
 }
 </script>
