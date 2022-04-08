@@ -15,10 +15,24 @@ npx cypress open
 
 ```
 
-### To run Cypress tests using Cypress command line AKA Cypress CLI
+### To run Cypress tests on chrome
 
 ```
 npm run test:e2e
+```
+
+### To run Cypress tests on localhost
+Change the .env variable 'isTestingLocally' to true
+
+Run app locally
+```
+npm run serve
+```
+
+Open another terminal window and run 
+
+```
+npx cypress open
 ```
 
 ### To run Cypress tests on edge
@@ -37,11 +51,15 @@ npm run test:e2e --browser chrome
 
 Create a `.env` file in the project's root directory and use the following Environment Variables:
 
-| Environment Variable Name | Description          |
-| ------------------------- | -------------------- |
-| 'testURL'                 | PortalUrl            |
-| 'SNOWUSER'                | Your username to use |
-| 'SNOWPASS'                | password             |
+| Environment Variable Name   | Description                                       |
+| --------------------------- | ------------------------------------------------- |
+| 'testURL'                   | PortalUrl                                         |
+| 'localTestURL'              | http://localhost:8080                             |
+| 'localTestURLInIframe'      | http://localhost:8080/testing.html                |
+| 'isTestingLocally'          | false (set true to test locally)                  |
+| 'isTestingInIframe'         | true (set to false for local to see snapshots)    |
+| 'SNOWUSER'                  | Your username                                     |
+| 'SNOWPASS'                  | Your password                                     |
 
 ```
 

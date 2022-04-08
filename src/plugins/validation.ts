@@ -1,3 +1,5 @@
+import { isValid } from "date-fns";
+
 /**
  * Validator that validates input meets a minimum length
  * Returns the error message otherwise.
@@ -6,13 +8,13 @@
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
- const minLength = (
+const minLength = (
   length: number,
   message?: string
-): ((v: string ) => string | true | undefined) => {
+): ((v: string) => string | true | undefined) => {
   message = message || `Min ${length} characters allowed.`;
 
-  return (v: string ) => {
+  return (v: string) => {
     return v && v.length < length ? message : true;
   };
 };
@@ -47,7 +49,7 @@ const required = (
   message = message || "This field is required.";
 
   return (v: string) => {
-    return !v || (v.length && v.length < 1) ? message : true;
+    return (v && (v.length && v.length > 0)) || message;
   };
 };
 
@@ -72,13 +74,13 @@ const integer = (message?: string): ((v: string) => string | true | undefined) =
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
- const lessThan = (
+const lessThan = (
   max: number,
   message?: string
 ): ((v: number) => string | true | undefined) => {
   message = message || `Value must be less than ${max}`;
   return (v: number) => {
-    return v && v < max || message ;
+    return v && v < max || message;
   };
 };
 
@@ -90,13 +92,13 @@ const integer = (message?: string): ((v: string) => string | true | undefined) =
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
- const greaterThan = (
+const greaterThan = (
   min: number,
   message?: string
 ): ((v: number) => string | true | undefined) => {
   message = message || `Value must be greater than ${min}`;
   return (v: number) => {
-    return v && v > min ||  message;
+    return v && v > min || message;
   };
 };
 
@@ -110,16 +112,35 @@ const integer = (message?: string): ((v: string) => string | true | undefined) =
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
- const isBetween = (
+const isBetween = (
   min: number,
   max: number,
   message?: string
 ): ((v: number) => string | true | undefined) => {
   message = message || `Value must be between ${min} and ${max}`;
   return (v: number) => {
-    return v && (v >= min && v <= max) ||  message;
+    return v && (v >= min && v <= max) || message;
   };
 };
+
+/**
+ * Validator that validates if input is a valid Date
+ * Returns the error message otherwise.
+ *
+ * @param (string) date as "MM/dd/yyyy"
+ * @param {string} message
+ * @returns {function(*): (boolean|string)}
+ */
+const isDateValid = (
+  message?: string
+): ((v: string) => string | true | undefined) => {
+  message = message || `Invalid Date`;
+  // validate date isn't something like 12/DD/YYYY
+  return (v: string) => {
+    return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
+  };
+};
+
 
 export default {
   install(Vue: any, options: any): void {
@@ -131,7 +152,8 @@ export default {
       required,
       lessThan,
       greaterThan,
-      isBetween
+      isBetween,
+      isDateValid
     };
   },
 };

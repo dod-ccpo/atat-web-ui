@@ -18,7 +18,7 @@
       id="Branch"
       v-show="selectedContactAffiliation === 'MIL'"
       v-model="selectedBranch"
-      class="input-max-width mb-10"
+      class="_input-max-width mb-10"
       label="Service Branch"
       placeholder=""
       :items="branchData"
@@ -36,14 +36,14 @@
         :items="selectedBranchRanks"
         :searchFields="['rank', 'value']"
         :selectedItem.sync="selectedRank"
-        class="input-max-width mb-7"
+        class="_input-max-width mb-7"
         icon="arrow_drop_down"
       />
 
       <ATATSelect
         id="Salutation"
         v-show="selectedContactAffiliation === 'CIV'"
-        class="input-max-width mb-7"
+        class="_input-max-width mb-7"
         label="Salutation"
         :optional="true"
         placeholder=""
@@ -53,13 +53,13 @@
 
       <v-row class="form-section mb-7">
         <v-col class="col-12 col-lg-3">
-          <ATATTextField label="First name" id="FirstName" class="input-max-width" />
+          <ATATTextField label="First name" id="FirstName" class="_input-max-width" />
         </v-col>
         <v-col class="col-12 col-lg-3">
-          <ATATTextField label="Middle name" id="MiddleName" :optional="true" class="input-max-width" />
+          <ATATTextField label="Middle name" id="MiddleName" :optional="true" class="_input-max-width" />
         </v-col>
         <v-col class="col-12 col-lg-3">
-          <ATATTextField label="Last name" id="LastName" class="input-max-width" />
+          <ATATTextField label="Last name" id="LastName" class="_input-max-width" />
         </v-col>
         <v-col class="col-12 col-lg-3">
           <ATATTextField
@@ -74,15 +74,15 @@
       <ATATTextField 
         id="EmailAddress" 
         label="Email address" 
-        class="input-max-width mb-10" 
+        class="_input-max-width mb-10" 
         helpText="Enter a .mil or .gov email address."
       />
 
       <div class="d-flex mb-10">
-        <ATATTextField 
+        <ATATPhoneInput
           id="PhoneNumber" 
           label="Phone number" 
-          class="input-max-width width-100" 
+          class="_input-max-width width-100" 
         />
         <ATATTextField 
           id="PhoneExtension" 
@@ -96,7 +96,7 @@
       <ATATTextField 
         id="DoDAAC" 
         label="DoD Activity Address Code (DoDAAC)" 
-        class="input-max-width"
+        class="_input-max-width"
         tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
           unit, activity, or organization that has the authority to requisition, 
           contract for, or fund/pay bills for materials and services." 
@@ -111,6 +111,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue"
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -124,9 +125,11 @@ import {
   AutoCompleteItemGroups 
 } from "../../../../types/Global";
 
+
 @Component({
   components: {
     ATATAutoComplete,
+    ATATPhoneInput,
     ATATRadioGroup,
     ATATSelect,
     ATATTextField,

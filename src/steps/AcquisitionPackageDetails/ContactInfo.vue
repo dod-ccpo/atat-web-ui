@@ -15,7 +15,7 @@
           id="Branch"
           v-model="selectedBranch"
           v-show="selectedRole === 'MIL'"
-          class="input-max-width mb-10"
+          class="_input-max-width mb-10"
           label="Service branch"
           placeholder=""
           :items="branchData"
@@ -26,7 +26,7 @@
         <ATATSelect
           v-show="selectedRole !== 'MIL'"
           id="Salutation"
-          class="input-max-width"
+          class="_input-max-width"
           label="Salutation"
           :optional="true"
           placeholder=""
@@ -42,7 +42,7 @@
           :items="selectedBranchRanks"
           :searchFields="['rank', 'value', 'grade']"
           :selectedItem.sync="selectedRank"
-          class="input-max-width mb-7"
+          class="_input-max-width mb-7"
           icon="arrow_drop_down"
         />
 
@@ -50,13 +50,13 @@
     </v-row>
     <v-row class="form-section" v-show="showContactInfoFields">
       <v-col class="col-12 col-lg-3">
-        <ATATTextField label="First name" id="FirstName" class="input-max-width" />
+        <ATATTextField label="First name" id="FirstName" class="_input-max-width" />
       </v-col>
       <v-col class="col-12 col-lg-3">
-        <ATATTextField label="Middle name" id="MiddleName" :optional="true" class="input-max-width" />
+        <ATATTextField label="Middle name" id="MiddleName" :optional="true" class="_input-max-width" />
       </v-col>
       <v-col class="col-12 col-lg-3">
-        <ATATTextField label="Last name" id="LastName" class="input-max-width" />
+        <ATATTextField label="Last name" id="LastName" class="_input-max-width" />
       </v-col>
       <v-col class="col-12 col-lg-3">
         <ATATTextField
@@ -72,25 +72,25 @@
         <ATATTextField
           label="Your title"
           id="ContactTitle"
-          class="input-max-width mb-10"
+          class="_input-max-width mb-10"
         />
         <ATATTextField
           label="Your email"
           id="ContactEmail"
-          class="input-max-width mb-10"
+          class="_input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
         />
-        <ATATTextField
+        <ATATPhoneInput
           label="Your phone number"
           id="ContactPhone"
-          class="input-max-width"
+          class="_input-max-width"
           :class="{'mb-10' : selectedRole === 'CIV'}"
         />
         <ATATAutoComplete
           v-show="selectedRole === 'CIV'"
           id="ContactGrade"
           :optional="true"
-          class="input-max-width"
+          class="_input-max-width"
           label="Grade"
           :label-sr-only="false"
           titleKey="grade"
@@ -110,6 +110,7 @@ import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
+import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -123,12 +124,14 @@ import {
   SelectData 
 } from "../../../types/Global";
 
+
 @Component({
   components: {
     ATATAutoComplete,
-    ATATTextField,
-    ATATSelect,
+    ATATPhoneInput,
     ATATRadioGroup,
+    ATATSelect,
+    ATATTextField,
   },
 })
 

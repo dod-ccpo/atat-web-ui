@@ -21,7 +21,7 @@
                 $validators.required('Please enter your project title'),
                 $validators.maxLength(60, 'Title cannot exceed 60 characters'),
               ]"
-              class="input-max-width"
+              class="_input-max-width"
               tooltipText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
               :value.sync="currentTitle"
               @blur="onTitleChanged"
@@ -68,17 +68,19 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
+import { Component, Mixins } from "vue-property-decorator";
+
 import ATATTextField from "../../components/ATATTextField.vue";
 import ATATTextArea from "../../components/ATATTextArea.vue";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import Vue from "vue";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 
-import { Component, Mixins } from "vue-property-decorator";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { hasChanges } from "@/helpers";
+import store from "@/store";
 
 @Component({
   components: {
@@ -153,12 +155,13 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadProjectOverview();
-
     if (storeData) {
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
-      this.emergencyDeclaration =
-        storeData.emergency_declaration === "true" ? "yes" : "no";
+      if(storeData.emergency_declaration && storeData.emergency_declaration.length > 0)
+      {
+        this.emergencyDeclaration = storeData.emergency_declaration === "true" ? "yes" : "no";
+      }
     }
   }
 

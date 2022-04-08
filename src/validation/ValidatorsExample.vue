@@ -1,5 +1,57 @@
 <template>
   <v-form ref="form" lazy-validation>
+    
+    <a 
+      class="d-block mb-10" 
+      role="button" 
+      id="SlideoutPanelOpener" 
+      tabindex="0"
+      @click="openSlideoutPanel"
+      aria-label="Example slideout panel trigger"
+    >
+      Open slideout panel
+    </a>
+
+    <a 
+      class="d-block mb-2" role="button" id="ToastOpener" tabindex="0" 
+      @click="setToast('success', false, false, false)"
+    >
+      Open toast: success, no icon, no undo, short message
+    </a>
+    <a 
+      class="d-block mb-2" role="button" id="ToastOpener" tabindex="0" 
+      @click="setToast('success', true, true, false)"
+    >
+      Open toast: success, has icon, has undo, short message
+    </a>
+    <a 
+      class="d-block mb-6" role="button" id="ToastOpener" tabindex="0" 
+      @click="setToast('success', false, true, true)"
+    >
+      Open toast: success, no icon, has undo, long message
+    </a>
+
+    <a 
+      class="d-block mb-2" role="button" id="ToastOpener" tabindex="0" 
+      @click="setToast('info', false, false, false)"
+    >
+      Open toast: info, no icon, no undo, short message
+    </a>
+    <a 
+      class="d-block mb-2" role="button" id="ToastOpener" tabindex="0" 
+      @click="setToast('info', true, true, false)"
+    >
+      Open toast: info, has icon, has undo, short message
+    </a>
+    <a 
+      class="d-block mb-10" role="button" id="ToastOpener" tabindex="0" 
+      @click="setToast('info', false, true, true)"
+    >
+      Open toast: info, no icon, has undo, long message
+    </a>
+
+
+
     <v-row>
       <v-col cols="7"
         ><ATATTextField
@@ -45,17 +97,47 @@ import { Component } from "vue-property-decorator";
 import Vue from "vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
+import SampleLearnMore from "./SampleLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import Toast from "@/store/toast";
+
+import { SlideoutPanelContent, ToastObj } from "types/Global";
+
 @Component({
   components: {
     ATATTextField,
+    SampleLearnMore,
   },
 })
+
 export default class ValidatatorsExample extends Vue {
   private minValue = "a";
   private minValueCustom = "a";
   private maxValue = "12345678910";
   private requiredValue = "";
   private integerValue = "y";
+
+  private setToast(
+    type: "success" | "info", 
+    hasIcon: boolean, 
+    hasUndo: boolean, 
+    longMessage: boolean,
+  ): void {
+    let message = longMessage 
+      ? `My toast with a long message to check the timing of the toast - one extra 
+        second for every 120 characters so this message should add one second. `
+      : "My toast message ";
+
+    const toast: ToastObj = {
+      type,
+      message,
+      isOpen: true,
+      hasUndo,
+      hasIcon,
+    }
+
+    Toast.setToast(toast);
+  }
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.form as Vue & { validate: () => boolean };
@@ -73,6 +155,20 @@ export default class ValidatatorsExample extends Vue {
 
   public async mounted(): Promise<void> {
     await this.validateForm();
+
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: SampleLearnMore,
+      title: "Learn More 1",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
 }
 </script>
