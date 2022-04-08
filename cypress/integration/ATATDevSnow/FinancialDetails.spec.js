@@ -16,7 +16,7 @@ describe("Test suite:Financial Details", () => {
     it("TC1: Financial Details step is active on the Vertical Stepper", () => {
         cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
         //Verify the Substeps are  visible
-        cy.textExists(common.subStepProjectScopeText, " Project Scope ");        
+        cy.textExists(common.subStepRequirementsCostEstimateText, " Requirements Cost Estimate ");        
         cy.findElement(common.stepFinancialDetailsCircle)
             .should("be.visible")
             .and("have.css", "color", colors.primary)
