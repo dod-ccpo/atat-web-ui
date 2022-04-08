@@ -98,6 +98,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
 
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -109,6 +110,12 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 })
 
 export default class FOIA extends Vue {
+
+  // use this instead of selectedFOIAOption below get/set
+  public potentialToBeHarmful 
+    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful;
+
+
   public get selectedFOIAOption(): string {
     const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
     if (needsFOIACoordinator !== null) {

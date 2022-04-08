@@ -67,6 +67,7 @@ export const PIIRecordResolver = (current: string): string => {
 };
 
 export const FOIARecordResolver = (current: string): string => {
+  // EJY change the logic for needsFOIACoordinator
   const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
   // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
   // then need to collect information about the FOIA Coordinator

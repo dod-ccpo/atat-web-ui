@@ -4,6 +4,7 @@ import { OrganizationDTO } from "@/models/OrganizationDTO";
 import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
 import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
 import { CurrentContractDTO } from "@/models/BackgroundDTOs";
+import { SensitiveInformationDTO } from "@/models/OtherContractConsiderationsDTOs";
 
 export interface SessionData {
      acquisitionPackage: AcquisitionPackageDTO,
@@ -12,4 +13,5 @@ export interface SessionData {
      contactInfo: ContactDTO,
      fairOpportunity: FairOpportunityDTO,
      CurrentContract: CurrentContractDTO,
+     SensitiveInformation: SensitiveInformationDTO,
 }

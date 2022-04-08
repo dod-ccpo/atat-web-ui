@@ -14,4 +14,5 @@ export interface AcquisitionPackageDTO{
     contact:string;
     fair_opportunity: string;
     current_contract: string;
+    sensitive_information: string;
 }
