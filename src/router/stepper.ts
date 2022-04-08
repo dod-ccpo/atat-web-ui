@@ -50,9 +50,11 @@ import FOIACoordinator from "../steps/07-OtherContractConsiderations/FOIACoordin
 import FiveZeroEightStandards from "../steps/07-OtherContractConsiderations/FiveZeroEightStandards.vue";
 
 // step 8 - Evaluation Criteria
+import EvaluationCriteria from "../steps/08-EvaluationCriteria/Index.vue"
 import EvaluationCriteriaStepOne from "../steps/08-EvaluationCriteria/EvaluationCriteriaStepOne.vue"
 
 // step 9 - Classification Requirements
+import ClassificationRequirements from "../steps/09-ClassificationRequirements/Index.vue"
 import ClassificationRequirementsStepOne from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
 
 // step 10 - Financial Details
@@ -67,8 +69,6 @@ import ReviewRequiredFormsStepOne from "../steps/11-ReviewRequiredForms/ReviewRe
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
-// route resolves
-// todo remove CustodianRouteResolver
 import {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
@@ -112,11 +112,14 @@ export const routeNames = {
   FOIA_Coordinator: "FOIA_Coordinator",
   Five_Zero_Eight_Standards: "Five_Zero_Eight_Standards",
   Evaluation_Criteria: "Evaluation_Criteria",
+  Evaluation_Criteria_Step_One: "Evaluation_Criteria_Step_One",
   Classification_Requirements: "Classification_Requirements",
+  Classification_Requirements_Step_One: "Classification_Requirements_Step_One",
   Requirements_Cost_Estimate: "Requirements_Cost_Estimate",
   Funding_Plan: "Funding_Plan",
   Severability_And_Incremental_Funding: "Severability_And_Incremental_Funding",
-  Review_Required_Forms: "Review_Required_Forms"
+  Review_Required_Forms: "Review_Required_Forms",
+  Review_Required_Forms_Step_One: "Review_Required_Forms_Step_One"
 };
 
 /**
@@ -431,18 +434,36 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "08",
     completePercentageWeight: 7,
-    name: routeNames.Evaluation_Criteria,
     menuText: "Evaluation Criteria",
     path: "/evaluation-criteria",
-    component: EvaluationCriteriaStepOne,
+    component: EvaluationCriteria,
+    children: [
+      {
+        menuText: "Evaluation Criteria",
+        path: "evaluation-criteria",
+        excludeFromMenu: true,
+        name: routeNames.Evaluation_Criteria_Step_One,
+        completePercentageWeight: 1,
+        component: EvaluationCriteriaStepOne,
+      },
+    ],
   },
   {
     stepNumber: "09",
     completePercentageWeight: 7,
-    name: routeNames.Classification_Requirements,
     menuText: "Classification Requirements",
     path: "/classification-requirements",
-    component: ClassificationRequirementsStepOne
+    component: ClassificationRequirements,
+    children: [
+      {
+        menuText: "Classification Requirements",
+        path:"classification-requirements",
+        excludeFromMenu: true,
+        name: routeNames.Classification_Requirements_Step_One,
+        completePercentageWeight: 1,
+        component: ClassificationRequirementsStepOne,
+      },
+    ],
   },
   {
     stepNumber: "10",
@@ -477,10 +498,19 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "11",
     completePercentageWeight: 7,
-    name: routeNames.Review_Required_Forms,
     menuText: "Review Required Forms",
     path: "/review-required-forms",
-    component: ReviewRequiredFormsStepOne
+    component: ReviewRequiredForms,
+    children: [
+      {
+        menuText: "Step One",
+        path:"review-required-forms",
+        excludeFromMenu: true,
+        name: routeNames.Review_Required_Forms_Step_One,
+        completePercentageWeight: 1,
+        component: ReviewRequiredFormsStepOne,
+      },
+    ],
   },
 ];
 

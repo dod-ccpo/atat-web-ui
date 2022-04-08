@@ -8,7 +8,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class EvaluationCriteria extends Vue {
+export default class ClassificationRequirements extends Vue {
 }
 </script>
 

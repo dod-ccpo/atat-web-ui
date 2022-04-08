@@ -29,7 +29,6 @@ export const AcorsRouteResolver = (current: string): string => {
 
 export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract = Background.hasCurrentContract;
-  debugger;
   if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;
   }

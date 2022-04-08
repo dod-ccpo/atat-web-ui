@@ -4,7 +4,6 @@ import { StepInfo, StepRouteResolver } from "../types";
 export const mapStepConfigs = (
   config: StepperRouteConfig[]
 ): Map<string, StepInfo> => {
-  
   const map = new Map<string, StepInfo>();
   let last = "";
   const mapStep = (routeConfig: StepperRouteConfig, config?: StepperRouteConfig[]) => {
@@ -36,7 +35,6 @@ export const mapStepConfigs = (
 
     routeConfig.children?.forEach((childConfig) =>
       {
-        // debugger;
         mapStep({
           ...childConfig,
           stepNumber: stepInfo.stepNumber,
