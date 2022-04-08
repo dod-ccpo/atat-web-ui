@@ -304,9 +304,6 @@ export default class ATATPhoneInput extends Vue {
   private selectedValue: CountryObj = {name: '', countryCode: '', abbreviation: '',active: false};
   private errorMessages: string[] = [];
 
-  private inputActions(v: string) {
-    this._value = v;
-  };
 
   private searchCountries() {
     if (!this.searchTerm) {
@@ -336,10 +333,10 @@ export default class ATATPhoneInput extends Vue {
           .mask(document.getElementById(this.id + '_textField') as HTMLElement);
       case 'dsn':
         this._value = this.selectedValue.countryCode + val;
-        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+        return Inputmask({'mask':['999-9999', '999-999-9999'],placeholder:'', jitMasking: true})
           .mask(document.getElementById(this.id + '_textField') as HTMLElement);
       default:
-        return Inputmask('*{20}',{placeholder:'', jitMasking: true})
+        return Inputmask('*{15}',{placeholder:'', jitMasking: true})
           .mask(document.getElementById(this.id + '_textField') as HTMLElement)
     };
   };
