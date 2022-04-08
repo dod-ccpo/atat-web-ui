@@ -44,17 +44,8 @@ export const mapStepConfigs = (
       }
     );
   };
-  // config.forEach((routeConfig, index) => 
-  // {
-  //   let lastStepName = "";
-  //   if(index>0){
-  //     let lastStep: StepperRouteConfig = config[index-1];
-  //     const lastStepHasChildren = lastStep.children && lastStep.children?.length>0 ;
-  //     lastStep = lastStepHasChildren ? lastStep.children?.slice(-1) : lastStep;
-  //   }
   config.forEach((routeConfig) => mapStep(routeConfig));
 
-    console.log(map);
   return map;
 };
 

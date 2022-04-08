@@ -26,29 +26,10 @@ export const AcorsRouteResolver = (current: string): string => {
   return routeNames.Acor_Information;
 };
 
-export const CustodianRouteResolver = (current: string): string => {
-  const needsPropertyCustodian = GovtFurnishedEquipment.needsPropertyCustodian;
-
-  // if government equipment will be furnished, route to Property Custodian page
-  if (
-    current === routeNames.Will_Govt_Equip_Be_Furnished
-  ) {
-    return routeNames.Justification;
-  }
-
-  // else stay on same page until next step after Property Custodian is completed
-  alert(
-    'Business rule is to skip Property Custodian page if answer is "No" (or unanswered) here. ' +
-      "Navigation will temporarily stay on this page until the substep after Property " +
-      'Custodian has been completed. Select "Yes" to continue to Property Custodian page.'
-  );
-  // todo - change this routeName when page after Property Custodian is completed
-  return routeNames.Will_Govt_Equip_Be_Furnished;
-};
 
 export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract = Background.hasCurrentContract;
-
+  debugger;
   if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;
   }
@@ -74,7 +55,7 @@ export const FOIARecordResolver = (current: string): string => {
     return routeNames.FOIA_Coordinator;
   }
   return current === routeNames.FOIA
-    ? routeNames.Public_Disclosure_of_Information
+    ? routeNames.Five_Zero_Eight_Standards
     : routeNames.FOIA;
 };
 
@@ -83,7 +64,6 @@ export const FOIARecordResolver = (current: string): string => {
 const resolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
-  CustodianRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
 };

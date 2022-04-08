@@ -4,71 +4,83 @@ import BlankPage from "../steps/BlankPage.vue"
 // todo 03 routeResolver does not work
 
 // Step 1 - Acquisition Package Details
-import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
-import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
-import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
-import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
-import CorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
-import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
-import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
+import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
+import ProjectOverview from "../steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
+import ContactInfo from "../steps/01-AcquisitionPackageDetails/ContactInfo.vue";
+import OrganizationInfo from "../steps/01-AcquisitionPackageDetails/Organization.vue";
+import CorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
+import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
+import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
-import FairOpportunityProcess from "../steps/FairOpportunityProcess/Index.vue"
-import Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
-import JustificationAndApproval from "../steps/FairOpportunityProcess/JustificationAndApproval.vue";
+import FairOpportunityProcess from "../steps/02-FairOpportunityProcess/Index.vue"
+import Exceptions from "../steps/02-FairOpportunityProcess/Exceptions.vue";
+import JustificationAndApproval from "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
 
 //Step 3 - Background
-import Background from "../steps/Background/Index.vue";
-import CurrentContract from "../steps/Background/CurrentContract/CurrentContract.vue";
-import CurrentContractDetails from "../steps/Background/CurrentContract/CurrentContractDetails.vue";
-import CurrentEnvironment from "../steps/Background/CurrentEnvironment/CurrentEnvironment.vue";
+import Background from "../steps/03-Background/Index.vue";
+import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
+import CurrentContractDetails from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
+import CurrentEnvironment from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 
 // Step 4 - Performance requirements
-import PerformanceRequirements from "../steps/PerformanceRequirements/Index.vue"
-import OptimizeCurrentEnvironment from "../steps/PerformanceRequirements/OptimizeCurrentEnvironment.vue";
-import AnythingAsAServiceXaas from "../steps/PerformanceRequirements/AnythingAsAServiceXaas.vue";
-import CloudSupportPackages from "../steps/PerformanceRequirements/CloudSupportPackages.vue";
+import PerformanceRequirements from "../steps/04-PerformanceRequirements/Index.vue"
+import OptimizeCurrentEnvironment from "../steps/04-PerformanceRequirements/OptimizeCurrentEnvironment.vue";
+import AnythingAsAServiceXaas from "../steps/04-PerformanceRequirements/AnythingAsAServiceXaas.vue";
+import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSupportPackages.vue";
 
 // Step 5 - Contract Details
-import ContractDetails from "../steps/ContractDetails/Index.vue";
-import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
-import ConflictOfInterest from "../steps/ContractDetails/ConflictOfInterest.vue";
-import PackagingPackingAndShipping from "../steps/ContractDetails/PackagingPackingAndShipping.vue";
-import Training from "../steps/ContractDetails/Training.vue";
+import ContractDetails from "../steps/05-ContractDetails/Index.vue";
+import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance.vue";
+import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
+import PackagingPackingAndShipping from "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
+import Training from "../steps/05-ContractDetails/Training.vue";
 
 // Step 6 - Government Furnished Equipment
-import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
-import PropertyDetails from "../steps/GovtFurnishedEquipment/PropertyDetails.vue";
-import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
-import Justification from "../steps/GovtFurnishedEquipment/Justification.vue";
+import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
+import PropertyDetails from "../steps/06-GovtFurnishedEquipment/PropertyDetails.vue";
+import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue";
 
 // step 7 - Other Contract Considerations
-import OtherContractConsiderations from "../steps/OtherContractConsiderations/Index.vue";
-import PII from "../steps/OtherContractConsiderations/PII.vue";
-import BAA from "../steps/OtherContractConsiderations/BAA.vue";
-import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
-import FOIA from "../steps/OtherContractConsiderations/FOIA.vue";
-import FOIACoordinator from "../steps/OtherContractConsiderations/FOIACoordinator.vue";
+import OtherContractConsiderations from "../steps/07-OtherContractConsiderations/Index.vue";
+import PII from "../steps/07-OtherContractConsiderations/PII.vue";
+import BAA from "../steps/07-OtherContractConsiderations/BAA.vue";
+import PIIRecord from "../steps/07-OtherContractConsiderations/PIIRecord.vue";
+import FOIA from "../steps/07-OtherContractConsiderations/FOIA.vue";
+import FOIACoordinator from "../steps/07-OtherContractConsiderations/FOIACoordinator.vue";
+import FiveZeroEightStandards from "../steps/07-OtherContractConsiderations/FiveZeroEightStandards.vue";
+
+// step 8 - Evaluation Criteria
+import EvaluationCriteriaStepOne from "../steps/08-EvaluationCriteria/EvaluationCriteriaStepOne.vue"
+
+// step 9 - Classification Requirements
+import ClassificationRequirementsStepOne from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
 
 // step 10 - Financial Details
-import FinancialDetails from "../steps/FinancialDetails/Index.vue";
-import ProjectScope from "../steps/FinancialDetails/ProjectScope.vue";
+import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
+import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
+import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
+import SeverabilityAndIncrementalFunding from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
+
+import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
+import ReviewRequiredFormsStepOne from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
 // route resolves
+// todo remove CustodianRouteResolver
 import {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
-  CustodianRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
 } from "./resolvers";
+import { BackgroundStore } from "@/store/background";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
-  Project_Scope: "Project_Scope",
   Organization_Info: "Organization_Info",
   Contact_Information: "Contact_Information",
   Cor_Information: "Cor_Information",
@@ -92,16 +104,21 @@ export const routeNames = {
   Packaging_Packing_and_Shipping: "Packaging_Packing_and_Shipping",
   Training: "Training",
   Property_Details: "Property_Details",
-  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
   Justification: "Justification",
   Other_Contract_Considerations: "Other_Contract_Considerations",
   PII: "PII",
   BAA: "BAA",
   PIIRecord: "PIIRecord",
-  Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
   Financial_Details: "Financial_Details",
   FOIA: "FOIA",
   FOIA_Coordinator: "FOIA_Coordinator",
+  Five_Zero_Eight_Standards: "Five_Zero_Eight_Standards",
+  Evaluation_Criteria: "Evaluation_Criteria",
+  Classification_Requirements: "Classification_Requirements",
+  Requirements_Cost_Estimate: "Requirements_Cost_Estimate",
+  Funding_Plan: "Funding_Plan",
+  Severability_And_Incremental_Funding: "Severability_And_Incremental_Funding",
+  Review_Required_Forms: "Review_Required_Forms"
 };
 
 /**
@@ -224,7 +241,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     menuText: "Background",
     path: "/current-contract",
     completePercentageWeight: 10,
-    component: CurrentContract,
+    component: Background,
     completed: false,
     children: [
       {
@@ -239,6 +256,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Details",
         path: "current-contract-details",
         excludeFromMenu: true,
+        name: routeNames.Current_Contract_Details,
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
@@ -337,31 +355,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "06",
     completePercentageWeight: 7,
     menuText: "Government Furnished Equipment",
-    path: "/property-requirements",
+    path: "/property-details",
     component: GovtFurnishedEquipment,
     children: [
       {
         name: routeNames.Property_Details,
         menuText: "Property Details",
-        path: "/property-details",
+        path: "property-details",
         completePercentageWeight: 2,
         component: PropertyDetails,
       },
       {
-        menuText: "Will Govt Equip Furnished",
-        path: "/will-govt-equip-be-furnished",
-        name: routeNames.Will_Govt_Equip_Be_Furnished,
-        completePercentageWeight: 2,
-        excludeFromMenu: true,
-        component: WillGovtEquipBeFurnished,
-      },
-      {
         name: routeNames.Justification,
         menuText: "Justification",
-        path: "/property-custodian",
+        path: "justification",
         completePercentageWeight: 2,
         component: Justification,
-        routeResolver: CustodianRouteResolver,
       },
     ]
   },
@@ -411,61 +420,69 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: FOIACoordinator,
         routeResolver: FOIARecordResolver
       },
+      {
+        menuText: "508 Standards",
+        path: "/508-standards",
+        name: routeNames.Five_Zero_Eight_Standards,
+        completePercentageWeight: 2,
+        component: FiveZeroEightStandards,
+      },
+      
     ]
   },
   {
     stepNumber: "08",
-
     completePercentageWeight: 7,
-    name: routeNames.Public_Disclosure_of_Information,
-    menuText: "Public Disclosure of Information",
-    path: "/public-disclosure-of-information",
+    name: routeNames.Evaluation_Criteria,
+    menuText: "Evaluation Criteria",
+    path: "/evaluation-criteria",
+    component: EvaluationCriteriaStepOne,
   },
   {
     stepNumber: "09",
     completePercentageWeight: 7,
-    name: "Statutory_Compliance",
-    menuText: "Statutory Compliance",
-    path: "/statutory-compliance",
+    name: routeNames.Classification_Requirements,
+    menuText: "Classification Requirements",
+    path: "/classification-requirements",
+    component: ClassificationRequirementsStepOne
   },
   {
     stepNumber: "10",
     completePercentageWeight: 7,
     menuText: "Financial Details",
-    path: "/project-scope",
+    path: "/requirements-cost-estimate",
     component: FinancialDetails,
     children: [
       {
-        menuText: "Project Scope",
-        path: "/project-scope",
-        name: routeNames.Project_Scope,
+        menuText: "Requirements Cost Estimate",
+        path: "requirements-cost-estimate",
+        name: routeNames.Requirements_Cost_Estimate,
         completePercentageWeight: 1,
-        component: ProjectScope,
+        component: RequirementsCostEstimate,
+      },
+      {
+        menuText: "Funding Plan",
+        path: "funding-plan",
+        name: routeNames.Funding_Plan,
+        completePercentageWeight: 1,
+        component: FundingPlan,
+      },
+      {
+        menuText: "Severability and Incremental Funding",
+        path: "severability-and-incremental-funding",
+        name: routeNames.Severability_And_Incremental_Funding,
+        completePercentageWeight: 1,
+        component: SeverabilityAndIncrementalFunding,
       },
     ]
   },
   {
     stepNumber: "11",
     completePercentageWeight: 7,
-    name: "Government_Furnished_Equipment",
-    menuText: "Government Furnished Equipment",
-    path: "/government-furnished-equipment",
-  },
-  {
-    stepNumber: "12",
-
-    completePercentageWeight: 7,
-    name: "Section_508",
-    menuText: "Section 508",
-    path: "/section-508",
-  },
-  {
-    stepNumber: "13",
-    completePercentageWeight: 7,
-    name: "Review_Required_Forms",
+    name: routeNames.Review_Required_Forms,
     menuText: "Review Required Forms",
     path: "/review-required-forms",
-    component: ValidatorsExample,
+    component: ReviewRequiredFormsStepOne
   },
 ];
 

@@ -84,8 +84,6 @@ export default class App extends Vue {
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-    console.log("****step*****");
-    console.log(step);
     if (routeName && step) {
       const { stepName } = step;
       Steps.setCurrentStep(stepName);
@@ -120,7 +118,6 @@ export default class App extends Vue {
     if (nextStepName) {
       const isRouteResolver =
         (nextStepName as StepRouteResolver).name !== undefined;
-
       if (isRouteResolver) {
         const routeResolver = nextStepName as StepRouteResolver;
         this.$router.push({

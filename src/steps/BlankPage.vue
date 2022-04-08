@@ -1,5 +1,5 @@
 <template>
-  <div>tony{{ pageTitle }} </div>
+  <div>{{ pageTitle }} </div>
 </template>
 
 <script lang="ts">
@@ -10,10 +10,12 @@ import {Component, Watch} from "vue-property-decorator";
 export default class BlankPage extends Vue {
   public pageTitle = "";
 
-  // private mounted() : void{
-  //   console.log(this.$route.name)
-  //   debugger;
-  // }
+  private mounted() : void{
+    const stepLabel  = this.$route.name?.replaceAll("_", " ");
+    this.pageTitle = stepLabel !== "" ? "Future " + stepLabel + " page" : "Blank Page";
+ 
+    debugger;
+  }
 
   @Watch("$route")
   async routeChange(): Promise<void> {

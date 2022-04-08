@@ -54,7 +54,7 @@ import ATATTextField from "../../components/ATATTextField.vue";
     ATATTextField,
   },
 })
-export default class ProjectScope extends Vue {
+export default class RequirementsCostEstimate extends Vue {
   get contractPricePercentageRules(): unknown[] {
     const validationRules = [];
     validationRules.push(
