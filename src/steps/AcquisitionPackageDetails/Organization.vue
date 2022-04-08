@@ -225,7 +225,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private selectedState: SelectData = { text: "", value: "" };
   private stateListData: SelectData[] = AcquisitionPackage.stateListData;
 
-  private selectedCountry = this.addressTypes.USA;
+  // EJY todo - remove this, rename selectedCountryData to selectedCountry 
+  // - now returning an obj from ATATAddress.vue
+  private selectedCountry = this.addressTypes.USA; 
   private selectedCountryData: SelectData = { text: "", value: "" };
 
   public countryListData: SelectData[] = [{ text: "", value: "" }];

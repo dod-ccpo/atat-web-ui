@@ -149,7 +149,6 @@ export default class FOIA extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadSensitiveInformation();
-    debugger;
     if (storeData) {
       if (Object.prototype.hasOwnProperty.call(storeData, 'potential_to_be_harmful')) {
         this.savedData = {
@@ -167,7 +166,6 @@ export default class FOIA extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      debugger;
       if (this.hasChanged()) {
         await AcquisitionPackage.saveSensitiveInformation(this.currentData);
       }
