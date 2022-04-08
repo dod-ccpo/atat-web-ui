@@ -12,9 +12,18 @@
               id="RecurringOptions"
               :card="true"
               :items="equipmentProvidedOptions"
-              :value.sync="selectedEquipmentProvidedOption"
+              :value.sync="showAlert"
             />
           </div>
+          <ATATAlert v-if="showAlert.toLowerCase() === 'yes'" type="callout" :showIcon="true" class="copy-max-width mt-10">
+            <template v-slot:content>
+              <p>
+                As a DISA mission owner, your GFP must be reviewed and approved by the Workforce Services
+                Directorate (WSD) Property Office. Once you are ready to submit your acquisition package, 
+                we’ll take care of sending your GFP documents for review.
+              </p>
+            </template>
+          </ATATAlert>
         </v-col>
       </v-row>
     </v-container>
@@ -25,19 +34,22 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
-
-import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 import { RadioButton } from "../../../types/Global";
 
 @Component({
   components: {
     ATATRadioGroup,
+    ATATAlert
   },
 })
 
 export default class WillGovtEquipBeFurnished extends Vue {
+   private showAlert = "No";
+
+
   private equipmentProvidedOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -50,18 +62,6 @@ export default class WillGovtEquipBeFurnished extends Vue {
       value: "No",
     },
   ];
-
-  public get selectedEquipmentProvidedOption(): string {
-    const ifNeeded = GovtFurnishedEquipment.needsPropertyCustodian;
-    if (ifNeeded !== null) {
-      return ifNeeded ? "Yes" : "No";
-    }
-    return "";
-  }
-
-  public set selectedEquipmentProvidedOption(value: string) {
-    GovtFurnishedEquipment.setNeedsPropertyCustodian(value === "Yes");
-  }
 
 }
 </script>
