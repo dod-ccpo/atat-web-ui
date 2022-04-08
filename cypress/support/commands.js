@@ -105,6 +105,10 @@ Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
         }) 
 });
 
+Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
+    cy.findElement(selector).should("contain.text", errorMessage);  
+});
+
 Cypress.Commands.add("clickSideStepper", (stepper_Selector,stepperText) => {
         cy.findElement(stepper_Selector)
             .should("be.visible")
