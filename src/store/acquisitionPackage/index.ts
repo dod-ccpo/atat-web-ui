@@ -1,13 +1,15 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import {AcquisitionPackageDTO} from "@/models/AcquisitionPackageDTO";
-import {AutoCompleteItemGroups, SelectData} from "types/Global";
-import {SessionData} from "./models";
-import {ProjectOverviewDTO} from "@/models/ProjectOverviewDTO";
-import {OrganizationDTO} from "@/models/OrganizationDTO";
-import {ContactDTO} from "@/models/ContactDTO";
-import {FairOpportunityDTO} from "@/models/FairOpportunityDTO";
+
+import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
+import { AutoCompleteItemGroups, SelectData } from "types/Global";
+import { SessionData } from "./models";
+import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
+import { OrganizationDTO } from "@/models/OrganizationDTO";
+import { ContactDTO } from "@/models/ContactDTO";
+import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
+import { CurrentContractDTO } from "@/models/BackgroundDTOs";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -97,8 +99,9 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
-  fairOpportunity: FairOpportunityDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
+  fairOpportunity: FairOpportunityDTO | null = null;
+  currentContract: CurrentContractDTO | null = null;
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
@@ -109,13 +112,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.initialized = value;
   }
 
-  // EJY needs an action. shouldn't call mutations directly
   @Mutation
   public setHasAlternateCOR(value: boolean): void {
     this.hasAlternativeContactRep = value;
   }
 
-  // EJY needs an action. shouldn't call mutations directly
   @Mutation
   public setAcquisitionPackage(value: AcquisitionPackageDTO): void {
     this.acquisitionPackage = value;
@@ -135,6 +136,13 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setContact(value: ContactDTO): void {
     this.contactInfo = value;
+  }
+
+  @Mutation
+  public setCurrentContract(value: CurrentContractDTO): void {
+    this.currentContract = this.currentContract 
+      ? Object.assign(this.currentContract, value)
+      : value;
   }
 
   @Mutation
@@ -159,6 +167,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.currentContract = sessionData.CurrentContract;
   }
 
   @Action({rawError: true})
@@ -1735,7 +1744,6 @@ export class AcquisitionPackageStore extends VuexModule {
       await this.ensureInitialized();
 
       const sys_id = this.organization?.sys_id || "";
-
       if (sys_id.length > 0) {
         const organizationData = await api.organizationTable.retrieve(
             sys_id as string
@@ -1748,7 +1756,7 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       return this.organization as OrganizationDTO;
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred loading organization info ${error}`);
     }
   }
 
@@ -1769,7 +1777,7 @@ export class AcquisitionPackageStore extends VuexModule {
         organization: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred saving organization info ${error}`);
     }
   }
 
@@ -1794,28 +1802,51 @@ export class AcquisitionPackageStore extends VuexModule {
       }
       return this.contactInfo as ContactDTO;
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred loading contact info ${error}`);
     }
   }
 
   @Action({rawError: true})
-  /**
-   * Saves Fair Opportunity data to backend
-   */
-  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
+  async loadCurrentContract(): Promise<CurrentContractDTO> {
     try {
-      const sys_id = this.fairOpportunity?.sys_id || "";
-      const savedFairOpportunity =
-          sys_id.length > 0
-              ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
-              : await api.fairOpportunityTable.create(data);
-      this.setFairOpportunity(savedFairOpportunity);
+      await this.ensureInitialized();
+
+      const sys_id = this.currentContract?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const currentContractData = await api.currentContractTable.retrieve(
+          sys_id as string
+        );
+        this.setCurrentContract(currentContractData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          current_contract: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.currentContract as CurrentContractDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading current contract info ${error}`);
+    } 
+  }
+
+  @Action({ rawError: true })
+  /**
+   * Saves Current Contract data to backend
+   */
+  async saveCurrentContract(data: CurrentContractDTO): Promise<void> {
+    try {
+      const sys_id = this.currentContract?.sys_id || "";
+      const savedCurrentContract =
+        sys_id.length > 0
+          ? await api.currentContractTable.update(sys_id, { ...data, sys_id })
+          : await api.currentContractTable.create(data);
+      this.setCurrentContract(savedCurrentContract);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        fairOpportunity: sys_id,
+        current_contract: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred saving current contract info ${error}`);
     }
   }
 
@@ -1833,14 +1864,36 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setFairOpportunity(fairOpportunityData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          fairOpportunity: sys_id,
+          fair_opportunity: sys_id,
         } as AcquisitionPackageDTO);
       }
       return this.fairOpportunity as FairOpportunityDTO;
     } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
+      throw new Error(`error occurred loading fair opportunity info ${error}`);
     }
   }
+
+  @Action({rawError: true})
+  /**
+  * Saves Fair Opportunity data to backend
+  */
+  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
+    try {
+      const sys_id = this.fairOpportunity?.sys_id || "";
+      const savedFairOpportunity =
+          sys_id.length > 0
+              ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
+              : await api.fairOpportunityTable.create(data);
+      this.setFairOpportunity(savedFairOpportunity);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        fair_opportunity: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving fair opportunity info ${error}`);
+    }
+  }
+
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);
