@@ -1,7 +1,6 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
-import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
 import { StepRouteResolver } from "@/store/steps/types";
@@ -28,7 +27,8 @@ export const AcorsRouteResolver = (current: string): string => {
 
 
 export const CurrentContractRouteResolver = (current: string): string => {
-  const hasCurrentContract = Background.hasCurrentContract;
+  const hasCurrentContract 
+    = AcquisitionPackage.currentContract?.current_contract_exists === "true";
   if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;
   }

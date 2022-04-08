@@ -2,7 +2,7 @@ import { bootstrapMockApis,colors} from "../../helpers";
 import common from "../../selectors/common.sel";
 import financialDetails from "../../selectors/financialDetails.sel";
 
-describe("Test suite:Financial Details", () => {
+describe("Test suite: Financial Details", () => {
 
     let projectDetails;
     beforeEach(() => {

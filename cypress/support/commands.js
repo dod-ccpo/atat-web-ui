@@ -31,7 +31,8 @@ import org from '../selectors/org.sel';
 import financialDetail from '../selectors/financialDetails.sel';
 import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
-import {cleanText} from "../helpers";
+import background from '../selectors/background.sel';
+import {cleanText,colors} from "../helpers";
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -436,4 +437,23 @@ Cypress.Commands.add("acorOption", (radio_selector, value) => {
             }
         });
 
+});
+
+
+Cypress.Commands.add("contractOption", (radio_selector, value) => {
+    cy.textExists(common.header, " Do you have a current contract for this effort? ");
+    cy.radioBtn(radio_selector, value).click({ force: true });
+    cy.findElement(background.activeRadioOption).then(($radioBtn) => {
+        const selectedOption = $radioBtn.text();
+        cy.log(selectedOption);
+        cy.btnExists(common.continueBtn, ' Continue ').click();
+        if (selectedOption === "radio_button_checkedYes. There is a current contract for this effort.") {
+            //naviagtes to ACOR
+            cy.textExists(common.header, " Let’s gather some details about your current contract ");
+        }
+        else {
+            cy.findElement(common.stepExceptionToFpText).contains("Exception to Fair Opportunity")
+                .and('have.css', 'color', colors.primary);
+        }          
+    })
 });
