@@ -1,7 +1,5 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
-import BlankPage from "../steps/BlankPage.vue"
 
-// todo 03 routeResolver does not work
 
 // Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
