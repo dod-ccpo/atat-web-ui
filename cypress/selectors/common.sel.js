@@ -40,4 +40,5 @@ module.exports = {
   stepContractDetailsText: "#Step_ContractDetails .step-text",
   subStepPopLink: "#SubStep_PeriodofPerformance",
   subStepPopText: "#SubStep_PeriodofPerformance .step-text",
+  subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text"
 }
