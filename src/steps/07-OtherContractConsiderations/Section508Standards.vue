@@ -10,7 +10,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class FiveZeroEightStandards extends Vue {
+export default class Section508Standards extends Vue {
 }
 </script>
 
