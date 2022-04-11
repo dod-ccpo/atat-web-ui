@@ -147,6 +147,13 @@ export default class FOIA extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadSensitiveInformation();
     if (storeData) {
@@ -174,14 +181,6 @@ export default class FOIA extends Mixins(SaveOnLeave) {
     }
 
     return true;
-  }
-
-
-  public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
-    }
   }
 
 }

@@ -241,11 +241,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
           this.stateCodeListData.find((s) => s.value === this.stateOrProvince)
           || this.emptySelectData;
         
-        if (this.militaryPostOfficeOptions) {
-          this.selectedMilitaryPO = 
-            this.militaryPostOfficeOptions.find((p) => p.value === this.city)
-            || this.emptySelectData;
-        }
+        this.selectedMilitaryPO = 
+          this.militaryPostOfficeOptions.find((p) => p.value === this.city)
+          || this.emptySelectData;
 
       // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {

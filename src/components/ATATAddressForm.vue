@@ -167,14 +167,12 @@ export default class ATATAddressForm extends Vue {
   @Prop() public stateCodeListData?: SelectData[]; 
   @Prop() public countryListData?: SelectData[];
 
-
-  private emptySelectData: SelectData = { text: "", value: "" };
-
   // methods
+
   private addressTypeChange(addressType: string): void {
       this._selectedCountry =
         addressType === this.addressTypes?.FOR 
-        ? this.emptySelectData
+        ? { text: "", value: "" }
         : { text: "United States of America", value: "US" };
   }
 

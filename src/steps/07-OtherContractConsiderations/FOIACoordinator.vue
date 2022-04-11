@@ -82,29 +82,29 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   
   private emptySelectData: SelectData = { text: "", value: "" };
 
-  private fullName 
-    = AcquisitionPackage.sensitiveInformation?.foia_full_name || "";
+  private fullName = 
+    AcquisitionPackage.sensitiveInformation?.foia_full_name || "";
 
-  private emailAddress 
-    = AcquisitionPackage.sensitiveInformation?.foia_email || "";
+  private emailAddress =
+    AcquisitionPackage.sensitiveInformation?.foia_email || "";
 
-  private selectedAddressType 
-    = AcquisitionPackage.sensitiveInformation?.foia_address_type || this.addressTypes.USA;
+  private selectedAddressType = 
+    AcquisitionPackage.sensitiveInformation?.foia_address_type || this.addressTypes.USA;
   
-  public streetAddress1 
-    = AcquisitionPackage.sensitiveInformation?.foia_street_address_1 || "";
+  public streetAddress1 = 
+    AcquisitionPackage.sensitiveInformation?.foia_street_address_1 || "";
 
-  public streetAddress2
-    = AcquisitionPackage.sensitiveInformation?.foia_street_address_2 || "";
+  public streetAddress2 = 
+    AcquisitionPackage.sensitiveInformation?.foia_street_address_2 || "";
 
-  public city 
-    = AcquisitionPackage.sensitiveInformation?.foia_city_apo_fpo || "";
+  public city =
+    AcquisitionPackage.sensitiveInformation?.foia_city_apo_fpo || "";
 
-  public stateOrProvince
-    = AcquisitionPackage.sensitiveInformation?.foia_state_province_state_code || "";
+  public stateOrProvince = 
+    AcquisitionPackage.sensitiveInformation?.foia_state_province_state_code || "";
 
-  public zipCode
-    = AcquisitionPackage.sensitiveInformation?.foia_zip_postal_code || "";
+  public zipCode =
+    AcquisitionPackage.sensitiveInformation?.foia_zip_postal_code || "";
 
   private addressTypeOptions: RadioButton[] = [
     {
@@ -158,11 +158,9 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
           this.stateCodeListData.find((s) => s.value === this.stateOrProvince)
           || this.emptySelectData;
         
-        if (this.militaryPostOfficeOptions) {
-          this.selectedMilitaryPO = 
-            this.militaryPostOfficeOptions.find((p) => p.value === this.city)
-            || this.emptySelectData;
-        }
+        this.selectedMilitaryPO = 
+          this.militaryPostOfficeOptions.find((p) => p.value === this.city)
+          || this.emptySelectData;
 
       // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
@@ -172,17 +170,6 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       }
     }
   }
-
-  // private findSelectedStateObj(): SelectData {
-  //   let foundStateObj;
-  //   const stateData = this.selectedAddressType === this.addressTypes.MIL
-  //     ? this.stateCodeListData
-  //     : this.stateListData;
-  //   foundStateObj = stateData.find((stateObj) => {
-  //     return stateObj.text === this.stateOrProvince;
-  //   });
-  //   return foundStateObj || this.emptySelectData;
-  // }
 
   private selectedState: SelectData = this.emptySelectData;
 
@@ -234,8 +221,8 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData 
-      = await AcquisitionPackage.loadSensitiveInformation() as Record<string, string>;
+    const storeData = 
+      await AcquisitionPackage.loadSensitiveInformation() as Record<string, string>;
 
     if (storeData) {
       const keys: string[] = [
