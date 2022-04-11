@@ -17,9 +17,9 @@
           </div>
           <ATATAlert v-if="showAlert.toLowerCase() === 'yes'" 
             type="info" :showIcon="true" 
-            class="copy-max-width mt-10">
+            class="copy-max-width mt-16">
             <template v-slot:content>
-              <p>
+              <p class="ma-0">
                 As a DISA mission owner, your GFP must be reviewed and approved by the Workforce Services
                 Directorate (WSD) Property Office. Once you are ready to submit your acquisition package, 
                 we’ll take care of sending your GFP documents for review.

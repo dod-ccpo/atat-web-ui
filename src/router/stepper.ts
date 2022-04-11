@@ -75,7 +75,6 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
 } from "./resolvers";
-import { BackgroundStore } from "@/store/background";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
