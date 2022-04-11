@@ -37,5 +37,9 @@ module.exports = {
   substepCurrentContractLink: "#SubStep_CurrentContract",
   substepCurrentContractText: "#SubStep_CurrentContract .step-text",
   stepExceptionToFpLink: "#Step_ExceptiontoFairOpportunity",
-  stepExceptionToFpText:"#Step_ExceptiontoFairOpportunity .step-text"
+  stepExceptionToFpText: "#Step_ExceptiontoFairOpportunity .step-text",
+  stepContractDetailsLink: "#Step_ContractDetails",
+  stepContractDetailsText: "#Step_ContractDetails .step-text",
+  subStepPopLink: "#SubStep_PeriodofPerformance",
+  subStepPopText: "#SubStep_PeriodofPerformance .step-text",
 }
