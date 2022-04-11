@@ -28,15 +28,15 @@ describe("Test suite: BackGround", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.textExists(common.header, " Do you have a current contract for this effort? ");
     //assert radio button options
-    cy.radioBtn(background.yesRadioOption, "Yes").not("[disabled]");
-    cy.radioBtn(background.noRadioOpion, "No").not("[disabled]");
+    cy.radioBtn(background.yesRadioOption, "true").not("[disabled]");
+    cy.radioBtn(background.noRadioOpion, "false").not("[disabled]");
             
   });
   
   it("TC3: Background: Option Yes: Asserts on Let’s gather some details about your current contract", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     //assert radio button options    
-    cy.contractOption(background.yesRadioOption, "Yes");
+    cy.contractOption(background.yesRadioOption, "true");
     cy.textExists(common.header, "Let’s gather some details about your current contract");
 
     //assert all the field labels
@@ -65,7 +65,7 @@ describe("Test suite: BackGround", () => {
 
   it("TC4: Click on I don't have an existing contract button ", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
-    cy.contractOption(background.yesRadioOption, "Yes");
+    cy.contractOption(background.yesRadioOption, "true");
     cy.btnExists(background.noExistingContractBtn, " I don’t have an existing contract ").not("[disabled]").click();
     cy.findElement(common.stepExceptionToFpText).contains("Exception to Fair Opportunity")
       .and('have.css', 'color', colors.primary);
@@ -74,7 +74,7 @@ describe("Test suite: BackGround", () => {
         
   it("TC5: Background: Option No", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
-    cy.contractOption(background.noRadioOpion, "No");
+    cy.contractOption(background.noRadioOpion, "false");
     
   });
 
