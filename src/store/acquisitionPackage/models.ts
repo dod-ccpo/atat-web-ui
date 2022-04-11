@@ -5,6 +5,7 @@ import {
   ProjectOverviewDTO,
   FairOpportunityDTO,
   CurrentContractDTO,
+  SensitiveInformationDTO,
 } from "@/api/models";
 
 export interface SessionData {
@@ -14,4 +15,5 @@ export interface SessionData {
   contactInfo: ContactDTO;
   fairOpportunity: FairOpportunityDTO;
   CurrentContract: CurrentContractDTO;
+  SensitiveInformation: SensitiveInformationDTO
 }

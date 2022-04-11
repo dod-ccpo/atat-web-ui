@@ -47,7 +47,8 @@ export const PIIRecordResolver = (current: string): string => {
 };
 
 export const FOIARecordResolver = (current: string): string => {
-  const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
+  const needsFOIACoordinator 
+    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "true";
   // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
   // then need to collect information about the FOIA Coordinator
   if (needsFOIACoordinator) {
