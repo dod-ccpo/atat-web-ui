@@ -29,8 +29,6 @@ module.exports = {
   stepFinancialDetailsLink:"#Step_FinancialDetails",
   stepFinancialDetailsText: "#Step_FinancialDetails .step-text",
   stepFinancialDetailsCircle: "#Step_FinancialDetails .step-circle",  
-  subStepProjectScopeLink: "#SubStep_ProjectScope",
-  subStepProjectScopeText: "#SubStep_ProjectScope .step-text",
   stepBackgroundLink: "#Step_Background",
   stepBackgroundText: "#Step_Background .step-text",
   stepBackgroundCircle: "#Step_Background .step-circle",
