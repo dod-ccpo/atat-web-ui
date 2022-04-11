@@ -38,7 +38,7 @@
             </div>
             <ATATAlert
               id="RequestDateAlert"
-              class="content-max-width"
+              class="copy-max-width"
               v-if="selectedRequestDateOption ==='Not later than'"
               type="warning"
             >
