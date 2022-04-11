@@ -90,7 +90,6 @@
               :stateOrProvince.sync="stateOrProvince"
               :zipCode.sync="zipCode"
               :selectedCountry.sync="selectedCountry"
-              :selectedCountryData.sync="selectedCountryData"
 
               :addressTypeOptions="addressTypeOptions"
               :addressTypes="addressTypes"
@@ -225,10 +224,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private selectedState: SelectData = { text: "", value: "" };
   private stateListData: SelectData[] = AcquisitionPackage.stateListData;
 
-  // EJY todo - remove this, rename selectedCountryData to selectedCountry 
-  // - now returning an obj from ATATAddress.vue
-  private selectedCountry = this.addressTypes.USA; 
-  private selectedCountryData: SelectData = { text: "", value: "" };
+  private selectedCountry: SelectData = { text: "", value: "" };
 
   public countryListData: SelectData[] = [{ text: "", value: "" }];
   public async mounted(): Promise<void> {
@@ -240,7 +236,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private get current(): OrganizationDTO {
     let state = "";
     let city = this.city;
-    let country = this.country;
+    let country = this.selectedCountry.text;
 
     if (this.selectedAddressType == this.addressTypes.USA) {
       state = this.selectedState.value as string;
@@ -248,7 +244,6 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
     if (this.selectedAddressType == this.addressTypes.FOR) {
       state = this.stateOrProvince;
-      country = this.selectedCountryData.text;
     }
 
     if (this.selectedAddressType == this.addressTypes.MIL) {
@@ -374,12 +369,12 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       }
 
       if (this.selectedAddressType === this.addressTypes.FOR) {
+        debugger;
         const selectedCountryIndx = this.countryListData.findIndex(
           (country) => country.text === storeData.country
         );
         if (selectedCountryIndx > -1) {
-          this.selectedCountryData = this.countryListData[selectedCountryIndx];
-          this.selectedCountry = this.selectedCountryData.text;
+          this.selectedCountry = this.countryListData[selectedCountryIndx];
         }
         this.stateOrProvince = storeData.state;
       }
@@ -394,6 +389,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+      debugger;
       if (this.hasChanged()) {
         await AcquisitionPackage.saveOrganization(this.current);
       }
