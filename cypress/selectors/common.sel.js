@@ -29,13 +29,15 @@ module.exports = {
   stepFinancialDetailsLink:"#Step_FinancialDetails",
   stepFinancialDetailsText: "#Step_FinancialDetails .step-text",
   stepFinancialDetailsCircle: "#Step_FinancialDetails .step-circle",  
-  subStepRequirementsCostEstimateLink: "#SubStep_RequirementsCostEstimate",
-  subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text",,
   stepBackgroundLink: "#Step_Background",
   stepBackgroundText: "#Step_Background .step-text",
   stepBackgroundCircle: "#Step_Background .step-circle",
   substepCurrentContractLink: "#SubStep_CurrentContract",
   substepCurrentContractText: "#SubStep_CurrentContract .step-text",
   stepExceptionToFpLink: "#Step_ExceptiontoFairOpportunity",
-  stepExceptionToFpText:"#Step_ExceptiontoFairOpportunity .step-text"
+  stepExceptionToFpText: "#Step_ExceptiontoFairOpportunity .step-text",
+  stepContractDetailsLink: "#Step_ContractDetails",
+  stepContractDetailsText: "#Step_ContractDetails .step-text",
+  subStepPopLink: "#SubStep_PeriodofPerformance",
+  subStepPopText: "#SubStep_PeriodofPerformance .step-text",
 }

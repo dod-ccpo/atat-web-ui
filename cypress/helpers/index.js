@@ -43,7 +43,7 @@ export function randomAlphaNumeric(length) {
 }
 
 export function randomNumber(digits) {
-    // The string is not a secret as it is just a list of alphanumeric characters
+    // The string is not a secret as it is just a list of numeric characters
     return randomStringFromSet(
         "0123456789", // pragma: allowlist secret
         digits

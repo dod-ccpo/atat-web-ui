@@ -2,7 +2,7 @@ import { bootstrapMockApis, cleanText,colors } from "../../helpers";
 import fairOpportunity from "../../selectors/fairOpportunityProcess.sel";
 import common from "../../selectors/common.sel";
 
-describe("Test suite: Fair Opportunnity Process", () => {
+describe("Test suite: Fair Opportunity Process", () => {
 
 
     beforeEach(() => {
@@ -35,9 +35,9 @@ describe("Test suite: Fair Opportunnity Process", () => {
             expect(formattedTxt).equal(expectedTxt);
         });
         //assert radio buttons
-        cy.radioBtn(fairOpportunity.radioOneCSP, "OnlyOneCSPCapable").not("[disabled]").click({force: true});
-        cy.radioBtn(fairOpportunity.radioAllFair, "AllFair").not("[disabled]").click({force: true});
-        cy.radioBtn(fairOpportunity.radioNoneApply, "NoneApply").not("[disabled]").click({force: true});
+        cy.radioBtn(fairOpportunity.radioOneCSP, "YES_FAR_16_505_B_2_I_B").not("[disabled]").click({force: true});
+        cy.radioBtn(fairOpportunity.radioAllFair, "YES_FAR_16_505_B_2_I_C").not("[disabled]").click({force: true});
+        cy.radioBtn(fairOpportunity.radioNoneApply, "NO_NONE").not("[disabled]").click({force: true});
         //click on navigation buttons
         cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
         //Navigates to "Do you have a current contract for this effort?" page

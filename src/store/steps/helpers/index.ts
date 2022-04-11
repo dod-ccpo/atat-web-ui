@@ -6,7 +6,7 @@ export const mapStepConfigs = (
 ): Map<string, StepInfo> => {
   const map = new Map<string, StepInfo>();
   let last = "";
-  const mapStep = (routeConfig: StepperRouteConfig, config?: StepperRouteConfig[]) => {
+  const mapStep = (routeConfig: StepperRouteConfig) => {
     const stepInfo: StepInfo = {
       stepNumber: routeConfig.stepNumber || "",
       stepName: routeConfig.name || "",

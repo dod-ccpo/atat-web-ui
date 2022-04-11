@@ -47,7 +47,7 @@ import BAA from "../steps/07-OtherContractConsiderations/BAA.vue";
 import PIIRecord from "../steps/07-OtherContractConsiderations/PIIRecord.vue";
 import FOIA from "../steps/07-OtherContractConsiderations/FOIA.vue";
 import FOIACoordinator from "../steps/07-OtherContractConsiderations/FOIACoordinator.vue";
-import FiveZeroEightStandards from "../steps/07-OtherContractConsiderations/FiveZeroEightStandards.vue";
+import Section508Standards from "../steps/07-OtherContractConsiderations/Section508Standards.vue";
 
 // step 8 - Evaluation Criteria
 import EvaluationCriteria from "../steps/08-EvaluationCriteria/Index.vue"
@@ -109,7 +109,7 @@ export const routeNames = {
   Financial_Details: "Financial_Details",
   FOIA: "FOIA",
   FOIA_Coordinator: "FOIA_Coordinator",
-  Five_Zero_Eight_Standards: "Five_Zero_Eight_Standards",
+  Section_508_Standards: "Section_508_Standards",
   Evaluation_Criteria: "Evaluation_Criteria",
   Evaluation_Criteria_Step_One: "Evaluation_Criteria_Step_One",
   Classification_Requirements: "Classification_Requirements",
@@ -382,7 +382,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: OtherContractConsiderations,
     children: [
       {
-        menuText: "Personally Identifiable Information",
+        menuText: "Personally Identifiable Information (PII)",
         path: "/personally-identifiable-information",
         name: routeNames.PII,
         completePercentageWeight: 2,
@@ -421,11 +421,11 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: FOIARecordResolver
       },
       {
-        menuText: "508 Standards",
+        menuText: "Section 508 Standards",
         path: "/508-standards",
-        name: routeNames.Five_Zero_Eight_Standards,
+        name: routeNames.Section_508_Standards,
         completePercentageWeight: 2,
-        component: FiveZeroEightStandards,
+        component: Section508Standards,
       },
       
     ]

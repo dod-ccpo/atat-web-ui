@@ -67,7 +67,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class Exceptions extends Vue {
+export default class Exceptions extends Mixins(SaveOnLeave) {
   private selectedException = "";
   private exceptionOptions: RadioButton[] = [
     {

@@ -54,7 +54,7 @@ export const FOIARecordResolver = (current: string): string => {
     return routeNames.FOIA_Coordinator;
   }
   return current === routeNames.FOIA
-    ? routeNames.Five_Zero_Eight_Standards
+    ? routeNames.Section_508_Standards
     : routeNames.FOIA;
 };
 
