@@ -15,7 +15,9 @@
               :value.sync="showAlert"
             />
           </div>
-          <ATATAlert v-if="showAlert.toLowerCase() === 'yes'" type="callout" :showIcon="true" class="copy-max-width mt-10">
+          <ATATAlert v-if="showAlert.toLowerCase() === 'yes'" 
+            type="info" :showIcon="true" 
+            class="copy-max-width mt-10">
             <template v-slot:content>
               <p>
                 As a DISA mission owner, your GFP must be reviewed and approved by the Workforce Services
