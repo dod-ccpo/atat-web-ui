@@ -4,20 +4,21 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Will this be a future recurring requirement?
+            Let’s gather some details about the duration of your task order
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              DISA has developed a tracking system for expiring contracts. Responding YES to this 
-              question will enable contract specialists to populate the tracking system.
+              Your Period of Performance (PoP) will begin based upon the execution 
+              date of your task order or on your requested start date, if applicable. 
+              It will extend through the length of the base period, plus any subsequent 
+              option periods. In the fields below, specify the length of time that 
+              each period will remain in effect. Add, duplicate or remove option 
+              periods as needed, up to 5 years total. 
+              <a role="button" id="PoPLearnMore" @click="openSlideoutPanel">
+                Learn more about PoPs on the JWCC contract.
+              </a>
             </p>
-            <ATATRadioGroup
-              class="copy-max-width mb-10 max-width-740"
-              id="RecurringOptions"
-              :card="true"
-              :items="recurringOptions"
-              :value.sync="selectedRecurringOption"
-            />
+
           </div>
 
         </v-col>
@@ -30,29 +31,37 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import PoPLearnMore from "./PopLearnMore.vue";
 
-import { RadioButton } from "../../../types/Global";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+
+import { SlideoutPanelContent } from "../../../types/Global";
 
 @Component({
   components: {
     ATATRadioGroup,
+    PoPLearnMore,
   },
 })
 
 export default class PeriodOfPerformance extends Vue {
-  private selectedRecurringOption = "";
-  private recurringOptions: RadioButton[] = [
-    {
-      id: "YesRecurring",
-      label: "Yes. This requirement should be tracked for similar efforts in the future.",
-      value: "YesRecurring",
-    },
-    {
-      id: "NoRecurring",
-      label: "No. This is a temporary requirement.",
-      value: "NoRecurring",
-    },
-  ];
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: PoPLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
+
+
 }
 </script>
