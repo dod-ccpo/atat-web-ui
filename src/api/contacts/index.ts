@@ -1,4 +1,4 @@
-import { ContactDTO as ContactDTO } from "@/models/ContactDTO";
+import { ContactDTO as ContactDTO } from "../models";
 import { TableApiBase } from "../tableApiBase";
 
 const TABLENAME = "x_g_dis_atat_contacts";
