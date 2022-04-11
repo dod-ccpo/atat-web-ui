@@ -37,6 +37,7 @@
               <ATATDatePicker id="RequestDatePicker" class="mt-2"/>
             </div>
             <ATATAlert
+              id="RequestDateAlert"
               class="content-max-width"
               v-if="selectedRequestDateOption ==='Not later than'"
               type="warning"
