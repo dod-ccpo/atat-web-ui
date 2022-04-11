@@ -60,7 +60,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { SensitiveInformationDTO } from "@/models/OtherContractConsiderationsDTOs"
+import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 import { RadioButton, SelectData } from "../../../types/Global";

@@ -98,7 +98,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { SensitiveInformationDTO } from "@/models/OtherContractConsiderationsDTOs"
+import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
 
 @Component({
