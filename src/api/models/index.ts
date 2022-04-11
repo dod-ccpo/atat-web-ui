@@ -42,6 +42,7 @@ export interface ContactDTO extends BaseTableDTO {
   salutation: string;
   first_name: string;
   email: string;
+  title: string;
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {

@@ -280,6 +280,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const phone = this.selectedPhoneNumber ? parsePhoneNumber(this.selectedPhoneNumber, countryCode)?.number.toString() : "";
     const email = this.email;
     const grade_civ = this.selectedGrade.grade;
+    const title = this.title;
 
     return {
       first_name,
@@ -295,6 +296,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       dodaac: "",
       can_access_package: "true",
       grade_civ,
+      title,
     };
   }
 
@@ -312,6 +314,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     dodaac: "",
     can_access_package: "true",
     grade_civ: "",
+    title: "",
   };
 
   // methods
@@ -388,9 +391,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
       this.suffix = storeData.suffix;
-
-      //todo: we need to update table to inject title
-      //this.title = storeData.
+      
+      this.title = storeData.title;
       this.email = storeData.email;
 
       if(storeData.phone.length > 0){

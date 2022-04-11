@@ -55,6 +55,7 @@ const initialContact= () => {
     salutation: "",
     first_name: "",
     email: "",
+    title: "",
   }
 }
 
