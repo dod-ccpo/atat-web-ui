@@ -1,4 +1,4 @@
-import { bootstrapMockApis } from "../../helpers";
+import { bootstrapMockApis,randomAlphaNumeric } from "../../helpers";
 import projectOverview from "../../selectors/projectOverview.sel";
 import common from "../../selectors/common.sel";
 import org from "../../selectors/org.sel";
@@ -97,7 +97,35 @@ describe("Test suite: Acquisition Package ", () => {
         cy.btnExists(projectOverview.cancelBtn, " Cancel ");
     });
 
-    it("TC4: Organization: Next,we'll gather information about your organization & Address Type is Foreign", () => {
+    it("TC4: Validations on ProjectOverView", () => {
+        //ProjectTitle is blank
+        cy.findElement(projectOverview.projectTitleTxtBox).should("be.visible").clear()
+            .focus().blur({ force: true }).then(() => {
+                cy.checkErrorMessage(projectOverview.projectTitleError, "Please enter your project title");
+            });
+        const projectTitle = randomAlphaNumeric(61);
+        //enter morethan 60 characters
+        cy.findElement(projectOverview.projectTitleTxtBox).should("be.visible").clear()
+            .type(projectTitle).blur({ force: true }).then(() => {
+                cy.checkErrorMessage(projectOverview.projectTitleError, "Title cannot exceed 60 characters");
+            });
+        //scope is blank      
+        cy.findElement(projectOverview.scopeTxtBox).should("be.visible").clear()
+            .focus().blur({ force: true }).then(() => {
+                cy.checkErrorMessage(projectOverview.scopeError, "Please describe the scope of your requirement");
+            })
+        //morethan 300 
+        const scope = randomAlphaNumeric(301);
+        cy.findElement(projectOverview.scopeTxtBox).should("be.visible").clear().type(scope)
+            .blur({ force: true }).then(() => {
+                cy.checkErrorMessage(projectOverview.scopeError, "Please limit your description to 300 characters or less");
+            });
+        cy.findElement(projectOverview.scopeTxtBox).tab().tab().tab().then(() => {
+            cy.checkErrorMessage(projectOverview.emergencyDeclarationControl, "Please select an option");
+        });
+    });
+
+    it("TC5: Organization: Next,we'll gather information about your organization & Address Type is Foreign", () => {
     
         cy.fillNewAcquisition(projectDetails.projectTitle1, projectDetails.scope1);
         
@@ -165,7 +193,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });  
 
-    it("TC5: Organization: Service Agency selected is DISA & Address Type is Military", () => {
+    it("TC6: Organization: Service Agency selected is DISA & Address Type is Military", () => {
         
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
 
@@ -202,7 +230,7 @@ describe("Test suite: Acquisition Package ", () => {
     
     });
 
-    it("TC6: Organization: Service Agency selected is  not DISA & Address Type is US", () => {
+    it("TC7: Organization: Service Agency selected is  not DISA & Address Type is US", () => {
         cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
         cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
