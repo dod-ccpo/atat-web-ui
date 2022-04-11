@@ -10,6 +10,7 @@ import { OrganizationDTO } from  "@/api/models";
 import { ContactDTO } from  "@/api/models";
 import { FairOpportunityDTO } from  "@/api/models";
 import { CurrentContractDTO } from  "@/api/models";
+import { SensitiveInformationDTO } from "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -65,8 +66,7 @@ const initialFairOpportunity = () => {
   };
 };
 
-const saveSessionData = (
-    store: AcquisitionPackageStore) => {
+const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
       ATAT_ACQUISTION_PACKAGE_KEY,
       JSON.stringify({
@@ -102,6 +102,7 @@ export class AcquisitionPackageStore extends VuexModule {
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
+  sensitiveInformation: SensitiveInformationDTO | null = null;
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
@@ -146,6 +147,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setSensitiveInformation(value: SensitiveInformationDTO): void {
+    this.sensitiveInformation = this.sensitiveInformation 
+      ? Object.assign(this.sensitiveInformation, value)
+      : value;
+  }
+
+  @Mutation
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
@@ -168,6 +176,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.contactInfo = sessionData.contactInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
     this.currentContract = sessionData.CurrentContract;
+    this.sensitiveInformation = sessionData.SensitiveInformation;
   }
 
   @Action({rawError: true})
@@ -1891,6 +1900,53 @@ export class AcquisitionPackageStore extends VuexModule {
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving fair opportunity info ${error}`);
+    }
+  }
+
+  /**
+  * Loads Sensitive Information (FOIA) data from backend
+  */
+   @Action({rawError: true})
+  async loadSensitiveInformation(): Promise<SensitiveInformationDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.sensitiveInformation?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const sensitiveInformationData = await api.sensitiveInformationTable.retrieve(
+          sys_id as string
+        );
+        this.setSensitiveInformation(sensitiveInformationData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          sensitive_information: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.sensitiveInformation as SensitiveInformationDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading sensitive info data ${error}`);
+    } 
+  }
+
+  /**
+  * Saves Sensitive Information (FOIA) data to backend
+  */
+  @Action({ rawError: true })
+  async saveSensitiveInformation(data: SensitiveInformationDTO): Promise<void> {
+    try {
+      const sys_id = this.sensitiveInformation?.sys_id || "";
+      const savedSensitiveInformation =
+        sys_id.length > 0
+          ? await api.sensitiveInformationTable.update(sys_id, { ...data, sys_id })
+          : await api.sensitiveInformationTable.create(data);
+      this.setSensitiveInformation(savedSensitiveInformation);
+      this.setAcquisitionPackage({
+        ...this.sensitiveInformation,
+        sensitive_information: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving sensitive info data ${error}`);
     }
   }
 
