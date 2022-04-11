@@ -78,9 +78,8 @@ import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
-import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
+import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import store from "@/store";
 
 @Component({
   components: {

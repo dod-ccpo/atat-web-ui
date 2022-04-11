@@ -56,7 +56,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 
 import { RadioButton } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
+import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 

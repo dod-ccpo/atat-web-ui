@@ -2,14 +2,14 @@ import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-deco
 import rootStore from "../index";
 import api from "@/api";
 
-import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
+import { AcquisitionPackageDTO } from "@/api/models";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
 import { SessionData } from "./models";
-import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
-import { OrganizationDTO } from "@/models/OrganizationDTO";
-import { ContactDTO } from "@/models/ContactDTO";
-import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
-import { CurrentContractDTO } from "@/models/BackgroundDTOs";
+import { ProjectOverviewDTO } from  "@/api/models";
+import { OrganizationDTO } from  "@/api/models";
+import { ContactDTO } from  "@/api/models";
+import { FairOpportunityDTO } from  "@/api/models";
+import { CurrentContractDTO } from  "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -39,23 +39,22 @@ const initialOrganization = () => {
   };
 };
 
-const initialContact = () => {
+const initialContact= () => {
 
   return {
-    type: "",
-    can_access_package: "",
-    phone: "",
-    rank: "",
-    salutation: "",
-    first_name: "",
-    email: "",
     grade_civ: "",
-    grade_mil: "",
     role: "",
     dodaac: "",
     last_name: "",
     middle_name: "",
     suffix: "",
+    type: "",
+    can_access_package: "",
+    phone: "",
+    rank_components: "",
+    salutation: "",
+    first_name: "",
+    email: "",
   }
 }
 

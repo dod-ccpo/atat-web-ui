@@ -32,7 +32,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { RadioButton } from "../../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractDTO } from "@/models/BackgroundDTOs";
+import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 @Component({

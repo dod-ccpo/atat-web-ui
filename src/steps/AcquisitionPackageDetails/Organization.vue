@@ -142,7 +142,7 @@ import ATATTextField from "../../components/ATATTextField.vue";
 import { RadioButton, SelectData } from "types/Global";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { OrganizationDTO } from "@/models/OrganizationDTO";
+import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 @Component({

@@ -27,6 +27,10 @@ export  class TableApiBase<TableDTO> extends baseApi  {
           return this.instance.get(this.urlWithSysId(sys_id), config);
      }
 
+     private async getAll(config?:AxiosRequestConfig):Promise<AxiosResponse>{
+      return this.instance.get(this.endPoint, config);
+     }
+
      private async put<TData>(sys_id: string, data?: TData, config?:AxiosRequestConfig):Promise<AxiosResponse>{
           return this.instance.put(this.urlWithSysId(sys_id),this.endPoint, config);
      }
@@ -96,6 +100,21 @@ export  class TableApiBase<TableDTO> extends baseApi  {
               throw new Error(`unable to retrieve ${this.tableName} : ${error}`);
             }
         }
+
+      async all(config?:AxiosRequestConfig):Promise<TableDTO[]>{
+
+        try{
+          const response = await this.getAll(config);
+          if (response.status === 200) {
+            const { result } = response.data;
+            return result as TableDTO[];
+          } else {
+            throw new Error(`unable to retrieve ${this.tableName}`);
+          }
+        } catch (error) {
+          throw new Error(`unable to retrieve ${this.tableName} : ${error}`);
+        }
+      }
 
 
   }
