@@ -234,12 +234,12 @@ export default class ContactInfo extends Vue {
 
   public async loadOnEnter(): Promise<void> {
 
-      throw new Error("not implemented");
+    throw new Error("not implemented");
       
   }
 
-   protected async saveOnLeave(): Promise<boolean> {
-      throw new Error("not implemented");
-   }
+  protected async saveOnLeave(): Promise<boolean> {
+    throw new Error("not implemented");
+  }
 }
 </script>

@@ -69,7 +69,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   };
 
   public async mounted(): Promise<void> {
-      await this.loadOnEnter();
+    await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {

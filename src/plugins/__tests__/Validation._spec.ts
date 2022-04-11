@@ -31,7 +31,7 @@ describe("Testing Validators", () => {
     atatField = wrapper.findComponent({ ref: fieldName});
     errorMessage = atatField.find('.error--text');
     expect(errorMessage.exists()).toBe(false);
-}
+  }
 
   beforeEach(()=> {
 
@@ -51,7 +51,7 @@ describe("Testing Validators", () => {
 
     it("validates successfully", async () => {
        
-         buildValidationTest(fieldName, errorText, validValue);
+      buildValidationTest(fieldName, errorText, validValue);
       
     });
   });
@@ -62,7 +62,7 @@ describe("Testing Validators", () => {
     const validValue = "123";
 
     it("validates successfully", async () => {
-       buildValidationTest(fieldName, errorText, validValue);
+      buildValidationTest(fieldName, errorText, validValue);
       
     });
   });
@@ -74,7 +74,7 @@ describe("Testing Validators", () => {
     const validValue = "123";
 
     it("validates successfully", async () => {
-        buildValidationTest(fieldName, errorText, validValue);
+      buildValidationTest(fieldName, errorText, validValue);
     });
   });
 
@@ -90,9 +90,9 @@ describe("Testing Validators", () => {
   });
 
   describe("Integer Validator", () => {
-      const fieldName = "integerField";
-      const errorText ="The value must be an integer number";
-      const validValue = "123";
+    const fieldName = "integerField";
+    const errorText ="The value must be an integer number";
+    const validValue = "123";
 
     it("validates successfully", async () => {
       buildValidationTest(fieldName, errorText, validValue);

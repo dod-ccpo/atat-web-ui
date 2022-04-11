@@ -387,7 +387,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
  * @returns StepperStep
  */
 const mapStepRouteToStepperData = (
-    stepperRouteConfig: StepperRouteConfig
+  stepperRouteConfig: StepperRouteConfig
 ): StepperStep => {
   const {
     completePercentageWeight,
@@ -412,7 +412,7 @@ const mapStepRouteToStepperData = (
     completePercentageWeight,
     route: path,
     subSteps: stepperRouteConfig.children?.map((child) =>
-        mapStepRouteToStepperData(child)
+      mapStepRouteToStepperData(child)
     ),
     additionalButtons,
     backButtonText,
@@ -422,4 +422,4 @@ const mapStepRouteToStepperData = (
 };
 
 export const buildStepperData = (): StepperStep[] =>
-    stepperRoutes.map((step) => mapStepRouteToStepperData(step));
+  stepperRoutes.map((step) => mapStepRouteToStepperData(step));

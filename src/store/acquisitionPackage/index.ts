@@ -66,16 +66,16 @@ const initialFairOpportunity = () => {
 };
 
 const saveSessionData = (
-    store: AcquisitionPackageStore) => {
+  store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
-      ATAT_ACQUISTION_PACKAGE_KEY,
-      JSON.stringify({
-        acquisitionPackage: store.acquisitionPackage,
-        projectOverview: store.projectOverview,
-        organization: store.organization,
-        contactInfo: store.contactInfo,
-        fairOpportunity: store.fairOpportunity,
-      })
+    ATAT_ACQUISTION_PACKAGE_KEY,
+    JSON.stringify({
+      acquisitionPackage: store.acquisitionPackage,
+      projectOverview: store.projectOverview,
+      organization: store.organization,
+      contactInfo: store.contactInfo,
+      fairOpportunity: store.fairOpportunity,
+    })
   );
 };
 
@@ -177,7 +177,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
 
     const storedSessionData = sessionStorage.getItem(
-        ATAT_ACQUISTION_PACKAGE_KEY
+      ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
 
     if (storedSessionData && storedSessionData.length > 0) {
@@ -1723,11 +1723,11 @@ export class AcquisitionPackageStore extends VuexModule {
       const projectSysId = this.projectOverview?.sys_id || "";
       const savedProjectOverview =
           projectSysId.length > 0
-              ? await api.projectOverviewTable.update(projectSysId, {
-                ...data,
-                sys_id: projectSysId,
-              })
-              : await api.projectOverviewTable.create(data);
+            ? await api.projectOverviewTable.update(projectSysId, {
+              ...data,
+              sys_id: projectSysId,
+            })
+            : await api.projectOverviewTable.create(data);
       this.setProjectOverview(savedProjectOverview);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1769,8 +1769,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const sys_id = this.organization?.sys_id || "";
       const savedOrganization =
           sys_id.length > 0
-              ? await api.organizationTable.update(sys_id, {...data, sys_id})
-              : await api.organizationTable.create(data);
+            ? await api.organizationTable.update(sys_id, {...data, sys_id})
+            : await api.organizationTable.create(data);
       this.setOrganization(savedOrganization);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1882,8 +1882,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const sys_id = this.fairOpportunity?.sys_id || "";
       const savedFairOpportunity =
           sys_id.length > 0
-              ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
-              : await api.fairOpportunityTable.create(data);
+            ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
+            : await api.fairOpportunityTable.create(data);
       this.setFairOpportunity(savedFairOpportunity);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,

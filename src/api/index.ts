@@ -7,11 +7,11 @@ import { FairOpportunityApi } from "./fairOpportunity";
 import { CurrentContractApi } from "./background";
 
 export default {
-   users: new UsersApi(),
-   acquisitionPackageTable: new AcquisitionPackagesApi(),
-   projectOverviewTable: new ProjectOverviewApi(),
-   organizationTable: new OrganizationApi(),
-   contactsTable: new ContactsApi(),
-   fairOpportunityTable: new FairOpportunityApi(),
-   currentContractTable: new CurrentContractApi(),
+  users: new UsersApi(),
+  acquisitionPackageTable: new AcquisitionPackagesApi(),
+  projectOverviewTable: new ProjectOverviewApi(),
+  organizationTable: new OrganizationApi(),
+  contactsTable: new ContactsApi(),
+  fairOpportunityTable: new FairOpportunityApi(),
+  currentContractTable: new CurrentContractApi(),
 }

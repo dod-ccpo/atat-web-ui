@@ -16,7 +16,7 @@ export default class SaveOnLeave extends Vue {
     next: (n: unknown) => void
   ): Promise<void> {
     next(async (vm: {loadOnEnter: ()=> Promise<void>} ) => {
-         await vm.loadOnEnter();
+      await vm.loadOnEnter();
     });
   }
 

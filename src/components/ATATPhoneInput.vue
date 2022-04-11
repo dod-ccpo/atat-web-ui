@@ -317,7 +317,7 @@ export default class ATATPhoneInput extends Vue {
     });
   };
 
-//@Events
+  //@Events
   private onChange(val: CountryObj): void {
     this.selectedValue.active = true
     this.selectedValue = val;
@@ -331,16 +331,16 @@ export default class ATATPhoneInput extends Vue {
   private phoneMask(val: string): Inputmask.Instance {
     this._value = val;
     switch (this.selectedValue.abbreviation) {
-      case "us":
-        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
-          .mask(document.getElementById(this.id + '_textField') as HTMLElement);
-      case 'dsn':
-        this._value = this.selectedValue.countryCode + val;
-        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
-          .mask(document.getElementById(this.id + '_textField') as HTMLElement);
-      default:
-        return Inputmask('*{20}',{placeholder:'', jitMasking: true})
-          .mask(document.getElementById(this.id + '_textField') as HTMLElement)
+    case "us":
+      return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+        .mask(document.getElementById(this.id + '_textField') as HTMLElement);
+    case 'dsn':
+      this._value = this.selectedValue.countryCode + val;
+      return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+        .mask(document.getElementById(this.id + '_textField') as HTMLElement);
+    default:
+      return Inputmask('*{20}',{placeholder:'', jitMasking: true})
+        .mask(document.getElementById(this.id + '_textField') as HTMLElement)
     };
   };
 

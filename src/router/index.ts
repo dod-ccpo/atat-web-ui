@@ -3,12 +3,12 @@ import {stepperRoutes} from "./stepper";
 import Resolver from "./resolvers/Resolver.vue";
 
 const routes = [
-   ...stepperRoutes,
-   {
-     name: 'resolver',
-     component: Resolver,
-     path: '/resolver'
-   },
+  ...stepperRoutes,
+  {
+    name: 'resolver',
+    component: Resolver,
+    path: '/resolver'
+  },
 ];
 
 const router = new VueRouter({
