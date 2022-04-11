@@ -143,36 +143,32 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   private stateListData: SelectData[] = AcquisitionPackage.stateListData;
 
   private setSelectedData(): void {
-    let foundSelectObj;
-
     // Foreign addresses set country obj
     if (this.selectedAddressType === this.addressTypes.FOR) {
       this.selectedCountry = 
         this.countryListData.find((c) => c.text === this.savedData?.foia_country)
         || this.emptySelectData;
-      // this.selectedCountry = foundSelectObj || this.emptySelectData;
     } else {
       // US or Military addreses - set country obj to USA
       this.selectedCountry = { text: "United States of America", value: "US" };
 
       // Military addresses - set selectedStateCode and selectedMilitaryPO
       if (this.selectedAddressType === this.addressTypes.MIL && this.stateCodeListData) {
-        foundSelectObj = this.stateCodeListData.find((stateCodeObj) => 
-          stateCodeObj.value === this.stateOrProvince);
-        this.selectedStateCode = foundSelectObj || this.emptySelectData
+        this.selectedStateCode = 
+          this.stateCodeListData.find((s) => s.value === this.stateOrProvince)
+          || this.emptySelectData;
         
         if (this.militaryPostOfficeOptions) {
-          foundSelectObj = this.militaryPostOfficeOptions.find((POObj) =>
-            POObj.value === this.city);
-          this.selectedMilitaryPO = foundSelectObj || this.emptySelectData;
+          this.selectedMilitaryPO = 
+            this.militaryPostOfficeOptions.find((p) => p.value === this.city)
+            || this.emptySelectData;
         }
 
       // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
-        foundSelectObj = 
+        this.selectedState = 
           this.stateListData.find((stateObj) => stateObj.text === this.stateOrProvince) 
           || this.emptySelectData;
-        // this.selectedState = foundSelectObj || this.emptySelectData      
       }
     }
   }
