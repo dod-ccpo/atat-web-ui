@@ -46,6 +46,7 @@
           :rules="rules"
           @blur="onBlur"
           :validate-on-blur="validateOnBlur"
+          autocomplete="off"
         >
           <template slot="append-outer">
             <v-btn
@@ -291,6 +292,7 @@ export default class ATATDatePicker extends Vue {
    * LIFECYCLE HOOKS
    */
   private mounted(): void {
+    this.date = this.value;
     this.addMasks();
     this.removeErrors();
   }

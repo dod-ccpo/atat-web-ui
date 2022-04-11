@@ -187,7 +187,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "03",
     menuText: "Background",
     path: "/current-contract",
-    name: routeNames.CurrentContract,
     completePercentageWeight: 10,
     component: Background,
     completed: false,
@@ -231,7 +230,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "05",
     completePercentageWeight: 7,
-    name: routeNames.PeriodOfPerformance,
     menuText: "Contract Details",
     path: "/period-of-performance",
     component: PeriodOfPerformance,
@@ -248,7 +246,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "06",
     completePercentageWeight: 7,
-    name: routeNames.PropertyRequirements,
     menuText: "Government Furnished Equipment",
     path: "/property-requirements",
     component: GovtFurnishedEquipment,
@@ -281,7 +278,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "07",
     completePercentageWeight: 7,
-    name: routeNames.PII,
     menuText: "Other Contract Considerations",
     path: "/personally-identifiable-information",
     component: OtherContractConsiderations,
@@ -362,7 +358,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "11",
-
     completePercentageWeight: 7,
     name: "Government_Furnished_Equipment",
     menuText: "Government Furnished Equipment",

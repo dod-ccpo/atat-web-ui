@@ -31,5 +31,11 @@ module.exports = {
   stepFinancialDetailsCircle: "#Step_FinancialDetails .step-circle",  
   subStepProjectScopeLink: "#SubStep_ProjectScope",
   subStepProjectScopeText: "#SubStep_ProjectScope .step-text",
-  
+  stepBackgroundLink: "#Step_Background",
+  stepBackgroundText: "#Step_Background .step-text",
+  stepBackgroundCircle: "#Step_Background .step-circle",
+  substepCurrentContractLink: "#SubStep_CurrentContract",
+  substepCurrentContractText: "#SubStep_CurrentContract .step-text",
+  stepExceptionToFpLink: "#Step_ExceptiontoFairOpportunity",
+  stepExceptionToFpText:"#Step_ExceptiontoFairOpportunity .step-text"
 }
