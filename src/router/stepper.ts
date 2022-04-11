@@ -1,58 +1,84 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
+
 // Step 1 - Acquisition Package Details
-import AcquisitionPackageDetails from "../steps/AcquisitionPackageDetails/Index.vue";
-import ProjectOverview from "../steps/AcquisitionPackageDetails/ProjectOverview.vue";
-import ContactInfo from "../steps/AcquisitionPackageDetails/ContactInfo.vue";
-import OrganizationInfo from "../steps/AcquisitionPackageDetails/Organization.vue";
-import CorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
-import AcorInfo from "../steps/AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
-import AlternateCOR from "../steps//AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
+import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
+import ProjectOverview from "../steps/01-AcquisitionPackageDetails/ProjectOverview.vue";
+import ContactInfo from "../steps/01-AcquisitionPackageDetails/ContactInfo.vue";
+import OrganizationInfo from "../steps/01-AcquisitionPackageDetails/Organization.vue";
+import CorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/CorInfo.vue";
+import AcorInfo from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AcorInfo.vue";
+import AlternateCOR from "../steps/01-AcquisitionPackageDetails/COR_ACOR/AlternateCOR.vue";
 import Summary from "../steps/Summary.vue";
 
 // Step 2 - Fair Opportunity Process
-import FairOpportunity_Exceptions from "../steps/FairOpportunityProcess/Exceptions.vue";
+import FairOpportunityProcess from "../steps/02-FairOpportunityProcess/Index.vue"
+import Exceptions from "../steps/02-FairOpportunityProcess/Exceptions.vue";
+import JustificationAndApproval from "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
 
 //Step 3 - Background
-import Background from "../steps/Background/Index.vue";
-import CurrentContract from "../steps/Background/CurrentContract/CurrentContract.vue";
-import CurrentContractDetails from "../steps/Background/CurrentContract/CurrentContractDetails.vue";
+import Background from "../steps/03-Background/Index.vue";
+import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
+import CurrentContractDetails from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
+import CurrentEnvironment from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
+
+// Step 4 - Performance requirements
+import PerformanceRequirements from "../steps/04-PerformanceRequirements/Index.vue"
+import OptimizeCurrentEnvironment from "../steps/04-PerformanceRequirements/OptimizeCurrentEnvironment.vue";
+import AnythingAsAServiceXaas from "../steps/04-PerformanceRequirements/AnythingAsAServiceXaas.vue";
+import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSupportPackages.vue";
 
 // Step 5 - Contract Details
-import PeriodOfPerformance from "../steps/ContractDetails/PeriodOfPerformance.vue";
+import ContractDetails from "../steps/05-ContractDetails/Index.vue";
+import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance.vue";
+import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
+import PackagingPackingAndShipping from "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
+import Training from "../steps/05-ContractDetails/Training.vue";
 
 // Step 6 - Government Furnished Equipment
-import GovtFurnishedEquipment from "../steps/GovtFurnishedEquipment/Index.vue"
-import PropertyRequirements from "../steps/GovtFurnishedEquipment/PropertyRequirements.vue";
-import WillGovtEquipBeFurnished from "../steps/GovtFurnishedEquipment/WillGovtEquipBeFurnished.vue";
-import PropertyCustodian from "../steps/GovtFurnishedEquipment/PropertyCustodian.vue";
+import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
+import PropertyDetails from "../steps/06-GovtFurnishedEquipment/PropertyDetails.vue";
+import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue";
 
 // step 7 - Other Contract Considerations
-import OtherContractConsiderations from "../steps/OtherContractConsiderations/Index.vue";
-import PII from "../steps/OtherContractConsiderations/PII.vue";
-import BAA from "../steps/OtherContractConsiderations/BAA.vue";
-import PIIRecord from "../steps/OtherContractConsiderations/PIIRecord.vue";
-import FOIA from "../steps/OtherContractConsiderations/FOIA.vue";
-import FOIACoordinator from "../steps/OtherContractConsiderations/FOIACoordinator.vue";
+import OtherContractConsiderations from "../steps/07-OtherContractConsiderations/Index.vue";
+import PII from "../steps/07-OtherContractConsiderations/PII.vue";
+import BAA from "../steps/07-OtherContractConsiderations/BAA.vue";
+import PIIRecord from "../steps/07-OtherContractConsiderations/PIIRecord.vue";
+import FOIA from "../steps/07-OtherContractConsiderations/FOIA.vue";
+import FOIACoordinator from "../steps/07-OtherContractConsiderations/FOIACoordinator.vue";
+import FiveZeroEightStandards from "../steps/07-OtherContractConsiderations/FiveZeroEightStandards.vue";
+
+// step 8 - Evaluation Criteria
+import EvaluationCriteria from "../steps/08-EvaluationCriteria/Index.vue"
+import EvaluationCriteriaStepOne from "../steps/08-EvaluationCriteria/EvaluationCriteriaStepOne.vue"
+
+// step 9 - Classification Requirements
+import ClassificationRequirements from "../steps/09-ClassificationRequirements/Index.vue"
+import ClassificationRequirementsStepOne from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
 
 // step 10 - Financial Details
-import FinancialDetails from "../steps/FinancialDetails/Index.vue";
-import ProjectScope from "../steps/FinancialDetails/ProjectScope.vue";
+import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
+import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
+import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
+import SeverabilityAndIncrementalFunding from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
+
+import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
+import ReviewRequiredFormsStepOne from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+
 // other
 import ValidatorsExample from "../validation/ValidatorsExample.vue";
 
-// route resolves
 import {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
-  CustodianRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
 } from "./resolvers";
+import { BackgroundStore } from "@/store/background";
 
 export const routeNames = {
   Project_Overview: "Project_Overview",
-  Project_Scope: "Project_Scope",
   Organization_Info: "Organization_Info",
   Contact_Information: "Contact_Information",
   Cor_Information: "Cor_Information",
@@ -60,23 +86,40 @@ export const routeNames = {
   Acor_Information: "Acor_Information",
   Existing_Contract_Background: "Existing_Contract_Background",
   Summary: "Summary",
+  Fair_Opportunity: "Fair_Opportunity",
+  Exceptions: "Exceptions",
+  Justification_and_Approval: "Justification_and_Approval",
   Background: "Background",
   Current_Contract: "Current_Contract",
   Current_Contract_Details: "Current_Contract_Details",
+  Current_Environment:"Current_Environment",
   Performance_Requirements: "Performance_Requirements",
-  Fair_Opportunity_Exceptions: "Fair_Opportunity_Exceptions",
+  Optimize_Current_Environment: "Optimize_Current_Environment",
+  Anything_as_a_Service_Xaas:"Anything_as_a_Service_Xaas",
+  Cloud_Support_Packages: "Cloud_Support_Packages",
   Period_Of_Performance: "Period_Of_Performance",
-  Property_Requirements: "Property_Requirements",
-  Will_Govt_Equip_Be_Furnished: "Will_Govt_Equip_Be_Furnished",
-  Property_Custodian: "Property_Custodian",
+  Conflict_of_Interest: "Conflict_of_Interest",
+  Packaging_Packing_and_Shipping: "Packaging_Packing_and_Shipping",
+  Training: "Training",
+  Property_Details: "Property_Details",
+  Justification: "Justification",
   Other_Contract_Considerations: "Other_Contract_Considerations",
   PII: "PII",
   BAA: "BAA",
   PIIRecord: "PIIRecord",
-  Public_Disclosure_of_Information: "Public_Disclosure_of_Information",
   Financial_Details: "Financial_Details",
   FOIA: "FOIA",
   FOIA_Coordinator: "FOIA_Coordinator",
+  Five_Zero_Eight_Standards: "Five_Zero_Eight_Standards",
+  Evaluation_Criteria: "Evaluation_Criteria",
+  Evaluation_Criteria_Step_One: "Evaluation_Criteria_Step_One",
+  Classification_Requirements: "Classification_Requirements",
+  Classification_Requirements_Step_One: "Classification_Requirements_Step_One",
+  Requirements_Cost_Estimate: "Requirements_Cost_Estimate",
+  Funding_Plan: "Funding_Plan",
+  Severability_And_Incremental_Funding: "Severability_And_Incremental_Funding",
+  Review_Required_Forms: "Review_Required_Forms",
+  Review_Required_Forms_Step_One: "Review_Required_Forms_Step_One"
 };
 
 /**
@@ -171,15 +214,26 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "02",
     menuText: "Fair Opportunity Process",
-    path: "/fair-opportunity-exceptions",
+    path: "/exceptions",
     completePercentageWeight: 10,
-    component: FairOpportunity_Exceptions,
+    component: FairOpportunityProcess,
+    completed: false,
     children: [
       {
         menuText: "Exceptions",
-        path: "/fair-opportunity-exceptions",
-        name: routeNames.Fair_Opportunity_Exceptions,
-        completePercentageWeight: 2,
+        path: "exceptions",
+        name: routeNames.Exceptions,
+        component: Exceptions,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+      {
+        menuText: "Justification and Approval",
+        path: "justification-and-approval",
+        name: routeNames.Justification_and_Approval,
+        component: JustificationAndApproval,
+        completePercentageWeight: 5,
+        completed: false,
       },
     ],
   },
@@ -193,7 +247,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Current Contract",
-        path: "/current-contract",
+        path: "current-contract",
         name: routeNames.Current_Contract,
         completePercentageWeight: 0,
         component: CurrentContract,
@@ -201,9 +255,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Details",
-        path: "/current-contract-details",
-        name: routeNames.Current_Contract_Details,
+        path: "current-contract-details",
         excludeFromMenu: true,
+        name: routeNames.Current_Contract_Details,
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
@@ -216,30 +270,85 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             name: routeNames.Performance_Requirements,
           },
         ],
-      }
+      },
+      {
+        menuText: "Current Environment",
+        path: "current-environment",
+        name: routeNames.Current_Environment,
+        component: CurrentEnvironment,
+        completePercentageWeight: 5,
+        completed: false,
+      },
     ]
   },
   {
     stepNumber: "04",
-    name: routeNames.Performance_Requirements,
+    component: PerformanceRequirements,
     completePercentageWeight: 7,
-    menuText: "Exception to Fair Opportunity",
-    path: "/exception-to-fair-opportunity",
+    menuText: "Performance Requirements",
+    path: "/optimize_current_environment",
     completed: false,
+    children: [
+      {
+        menuText: "Optimize Current Environment?",
+        path: "optimize_current_environment",
+        name: routeNames.Optimize_Current_Environment,
+        component: OptimizeCurrentEnvironment,
+        completePercentageWeight: 0,
+        completed: false,
+      },
+      {
+        menuText: "Anything as a Service (Xaas)",
+        path: "anything_as_a_service_xaas",
+        name: routeNames.Anything_as_a_Service_Xaas,
+        component: AnythingAsAServiceXaas,
+        completePercentageWeight: 0,
+        completed: false,
+      },
+      {
+        menuText: "Cloud Support Packages",
+        path: "cloud-support-packages",
+        name: routeNames.Cloud_Support_Packages,
+        component: CloudSupportPackages,
+        completePercentageWeight: 0,
+        completed: false,
+      },
+    ],
   },
   {
     stepNumber: "05",
     completePercentageWeight: 7,
     menuText: "Contract Details",
     path: "/period-of-performance",
-    component: PeriodOfPerformance,
+    component: ContractDetails,
     children: [
       {
         name: routeNames.Period_Of_Performance,
         menuText: "Period of Performance",
-        path: "/period-of-performance",
+        path: "period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
+      },
+      {
+        name: routeNames.Conflict_of_Interest,
+        menuText: "Conflict of Interest",
+        path: "conflict-of-interest",
+        completePercentageWeight: 2,
+        component: ConflictOfInterest,
+      },
+      {
+        name: routeNames.Packaging_Packing_and_Shipping,
+        menuText: "Packaging, Packing, and Shipping",
+        path: "packaging-packing-and-shipping",
+        completePercentageWeight: 2,
+        component: PackagingPackingAndShipping,
+      },
+      {
+        name: routeNames.Training,
+        menuText: "Training",
+        path: "training",
+        completePercentageWeight: 2,
+        component: Training,
       },
     ]
   },
@@ -247,31 +356,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "06",
     completePercentageWeight: 7,
     menuText: "Government Furnished Equipment",
-    path: "/property-requirements",
+    path: "/property-details",
     component: GovtFurnishedEquipment,
     children: [
       {
-        name: routeNames.Property_Requirements,
-        menuText: "Property Requirements",
-        path: "/property-requirements",
+        name: routeNames.Property_Details,
+        menuText: "Property Details",
+        path: "property-details",
         completePercentageWeight: 2,
-        component: PropertyRequirements,
+        component: PropertyDetails,
       },
       {
-        menuText: "Will Govt Equip Furnished",
-        path: "/will-govt-equip-be-furnished",
-        name: routeNames.Will_Govt_Equip_Be_Furnished,
+        name: routeNames.Justification,
+        menuText: "Justification",
+        path: "justification",
         completePercentageWeight: 2,
-        excludeFromMenu: true,
-        component: WillGovtEquipBeFurnished,
-      },
-      {
-        name: routeNames.Property_Custodian,
-        menuText: "Property Custodian",
-        path: "/property-custodian",
-        completePercentageWeight: 2,
-        component: PropertyCustodian,
-        routeResolver: CustodianRouteResolver,
+        component: Justification,
       },
     ]
   },
@@ -321,62 +421,96 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: FOIACoordinator,
         routeResolver: FOIARecordResolver
       },
+      {
+        menuText: "508 Standards",
+        path: "/508-standards",
+        name: routeNames.Five_Zero_Eight_Standards,
+        completePercentageWeight: 2,
+        component: FiveZeroEightStandards,
+      },
+      
     ]
   },
   {
     stepNumber: "08",
-
     completePercentageWeight: 7,
-    name: routeNames.Public_Disclosure_of_Information,
-    menuText: "Public Disclosure of Information",
-    path: "/public-disclosure-of-information",
+    menuText: "Evaluation Criteria",
+    path: "/evaluation-criteria",
+    component: EvaluationCriteria,
+    children: [
+      {
+        menuText: "Evaluation Criteria",
+        path: "evaluation-criteria",
+        excludeFromMenu: true,
+        name: routeNames.Evaluation_Criteria_Step_One,
+        completePercentageWeight: 1,
+        component: EvaluationCriteriaStepOne,
+      },
+    ],
   },
   {
     stepNumber: "09",
-
     completePercentageWeight: 7,
-    name: "Statutory_Compliance",
-    menuText: "Statutory Compliance",
-    path: "/statutory-compliance",
+    menuText: "Classification Requirements",
+    path: "/classification-requirements",
+    component: ClassificationRequirements,
+    children: [
+      {
+        menuText: "Classification Requirements",
+        path:"classification-requirements",
+        excludeFromMenu: true,
+        name: routeNames.Classification_Requirements_Step_One,
+        completePercentageWeight: 1,
+        component: ClassificationRequirementsStepOne,
+      },
+    ],
   },
   {
     stepNumber: "10",
     completePercentageWeight: 7,
     menuText: "Financial Details",
-    path: "/project-scope",
+    path: "/requirements-cost-estimate",
     component: FinancialDetails,
     children: [
       {
-        menuText: "Project Scope",
-        path: "/project-scope",
-        name: routeNames.Project_Scope,
+        menuText: "Requirements Cost Estimate",
+        path: "requirements-cost-estimate",
+        name: routeNames.Requirements_Cost_Estimate,
         completePercentageWeight: 1,
-        component: ProjectScope,
+        component: RequirementsCostEstimate,
+      },
+      {
+        menuText: "Funding Plan",
+        path: "funding-plan",
+        name: routeNames.Funding_Plan,
+        completePercentageWeight: 1,
+        component: FundingPlan,
+      },
+      {
+        menuText: "Severability and Incremental Funding",
+        path: "severability-and-incremental-funding",
+        name: routeNames.Severability_And_Incremental_Funding,
+        completePercentageWeight: 1,
+        component: SeverabilityAndIncrementalFunding,
       },
     ]
   },
   {
     stepNumber: "11",
     completePercentageWeight: 7,
-    name: "Government_Furnished_Equipment",
-    menuText: "Government Furnished Equipment",
-    path: "/government-furnished-equipment",
-  },
-  {
-    stepNumber: "12",
-
-    completePercentageWeight: 7,
-    name: "Section_508",
-    menuText: "Section 508",
-    path: "/section-508",
-  },
-  {
-    stepNumber: "13",
-    completePercentageWeight: 7,
-    name: "Review_Required_Forms",
     menuText: "Review Required Forms",
     path: "/review-required-forms",
-    component: ValidatorsExample,
+    component: ReviewRequiredForms,
+    children: [
+      {
+        menuText: "Step One",
+        path:"review-required-forms",
+        excludeFromMenu: true,
+        name: routeNames.Review_Required_Forms_Step_One,
+        completePercentageWeight: 1,
+        component: ReviewRequiredFormsStepOne,
+      },
+    ],
   },
 ];
 
@@ -417,7 +551,6 @@ const mapStepRouteToStepperData = (
     additionalButtons,
     backButtonText,
   };
-
   return stepperStep;
 };
 

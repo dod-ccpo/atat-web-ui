@@ -38,7 +38,6 @@ import { Component } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-
 import { RadioButton } from "../../../types/Global";
 
 @Component({

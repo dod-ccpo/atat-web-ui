@@ -16,16 +16,14 @@ describe("Test suite: Common SPA functionality", () => {
             "01 Acquisition Package Details",
             "02 Fair Opportunity Process",
             "03 Background",
-            "04 Exception to Fair Opportunity",
+            "04 Performance Requirements",
             "05 Contract Details",
             "06 Government Furnished Equipment",
-            "07 Financial Details",
-            "08 Public Disclosure of Information",
-            "09 Statutory Compliance",
-            "10 Supply Chain Risk Management",
-            "11 Government Furnished Equipment",
-            "12 Section 508",
-            "13 Review Required Forms",
+            "07 Other Contract Considerations",
+            "08 Evaluation Criteria",
+            "09 Classification Requirements",
+            "10 Financial Details",
+            "11 Review Required Forms",
         ];
         let foundSideMenuItems = 0
         //Verifying the SideNavigation bar

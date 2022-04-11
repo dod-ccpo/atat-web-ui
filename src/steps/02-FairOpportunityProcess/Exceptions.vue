@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import {Component, Mixins} from "vue-property-decorator";
-
+import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 
@@ -67,7 +67,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 
-export default class FairOpportunity_Exceptions extends Mixins(SaveOnLeave) {
+export default class Exceptions extends Vue {
   private selectedException = "";
   private exceptionOptions: RadioButton[] = [
     {
