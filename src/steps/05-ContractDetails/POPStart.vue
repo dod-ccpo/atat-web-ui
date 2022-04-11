@@ -36,9 +36,13 @@
               />
               <ATATDatePicker id="RequestDatePicker" class="mt-2"/>
             </div>
-            <ATATAlert v-if="selectedRequestDateOption === 'Not later than' " type="warning">
+            <ATATAlert
+              class="content-max-width"
+              v-if="selectedRequestDateOption ==='Not later than'"
+              type="warning"
+            >
               <template slot="content">
-                <p>All efforts will be made to accommodate your requested period of performance
+                <p class="mb-0">All efforts will be made to accommodate your requested period of performance
                   start date. However, there is no guarantee that the award will be made by said
                   date. Normal contracting lead times and/or complexity of requirements may prevent
                   meeting the requested date.
