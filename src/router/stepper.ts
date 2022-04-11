@@ -34,6 +34,7 @@ import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance
 import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
 import PackagingPackingAndShipping from "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
 import Training from "../steps/05-ContractDetails/Training.vue";
+import POPStart from "@/steps/05-ContractDetails/POPStart.vue";
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -118,7 +119,8 @@ export const routeNames = {
   Funding_Plan: "Funding_Plan",
   Severability_And_Incremental_Funding: "Severability_And_Incremental_Funding",
   Review_Required_Forms: "Review_Required_Forms",
-  Review_Required_Forms_Step_One: "Review_Required_Forms_Step_One"
+  Review_Required_Forms_Step_One: "Review_Required_Forms_Step_One",
+  POP_Start: "POP_Start",
 };
 
 /**
@@ -327,6 +329,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
+      },
+      {
+        name: routeNames.POP_Start,
+        menuText: "Period of Performance Start Date",
+        path: "period-of-performance-start-date",
+        excludeFromMenu: true,
+        completePercentageWeight: 2,
+        component: POPStart,
       },
       {
         name: routeNames.Conflict_of_Interest,
