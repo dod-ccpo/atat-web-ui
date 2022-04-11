@@ -31,6 +31,7 @@ import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSuppo
 // Step 5 - Contract Details
 import ContractDetails from "../steps/05-ContractDetails/Index.vue";
 import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance.vue";
+import RecurringRequirement from "../steps/05-ContractDetails/RecurringRequirement.vue";
 import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
 import PackagingPackingAndShipping from "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
 import Training from "../steps/05-ContractDetails/Training.vue";
@@ -97,6 +98,7 @@ export const routeNames = {
   Anything_as_a_Service_Xaas:"Anything_as_a_Service_Xaas",
   Cloud_Support_Packages: "Cloud_Support_Packages",
   Period_Of_Performance: "Period_Of_Performance",
+  Recurring_Requirement: "Recurring_Requirement",
   Conflict_of_Interest: "Conflict_of_Interest",
   Packaging_Packing_and_Shipping: "Packaging_Packing_and_Shipping",
   Training: "Training",
@@ -327,6 +329,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
+      },
+      {
+        name: routeNames.Recurring_Requirement,
+        menuText: "Recurring Requirement",
+        excludeFromMenu: true,
+        path: "recurring-requirement",
+        completePercentageWeight: 2,
+        component: RecurringRequirement,
       },
       {
         name: routeNames.Conflict_of_Interest,

@@ -40,7 +40,7 @@ import { RadioButton } from "../../../types/Global";
   },
 })
 
-export default class PeriodOfPerformance extends Vue {
+export default class RecurringRequirement extends Vue {
   private selectedRecurringOption = "";
   private recurringOptions: RadioButton[] = [
     {
