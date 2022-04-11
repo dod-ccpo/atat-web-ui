@@ -138,7 +138,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     { text: "AP - Armed Forces Pacific", value: "AP" },
   ];
 
-  private selectedCountry = this.emptySelectData;
+  private selectedCountry: SelectData = this.emptySelectData;
 
   private stateListData: SelectData[] = AcquisitionPackage.stateListData;
 
@@ -147,48 +147,46 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
 
     // Foreign addresses set country obj
     if (this.selectedAddressType === this.addressTypes.FOR) {
-      foundSelectObj = this.countryListData.find((countryObj) => {
-        return countryObj.text === this.savedData?.foia_country;
-      });
-      this.selectedCountry = foundSelectObj || this.emptySelectData;
+      this.selectedCountry = 
+        this.countryListData.find((c) => c.text === this.savedData?.foia_country)
+        || this.emptySelectData;
+      // this.selectedCountry = foundSelectObj || this.emptySelectData;
     } else {
       // US or Military addreses - set country obj to USA
       this.selectedCountry = { text: "United States of America", value: "US" };
 
       // Military addresses - set selectedStateCode and selectedMilitaryPO
       if (this.selectedAddressType === this.addressTypes.MIL && this.stateCodeListData) {
-        foundSelectObj = this.stateCodeListData.find((stateCodeObj) => {
-          return stateCodeObj.value === this.stateOrProvince;
-        });
+        foundSelectObj = this.stateCodeListData.find((stateCodeObj) => 
+          stateCodeObj.value === this.stateOrProvince);
         this.selectedStateCode = foundSelectObj || this.emptySelectData
         
         if (this.militaryPostOfficeOptions) {
-          foundSelectObj = this.militaryPostOfficeOptions.find((POObj) => {
-            return POObj.value === this.city;
-          });
+          foundSelectObj = this.militaryPostOfficeOptions.find((POObj) =>
+            POObj.value === this.city);
           this.selectedMilitaryPO = foundSelectObj || this.emptySelectData;
         }
 
       // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
-        foundSelectObj = this.stateListData.find((stateObj) => {
-          return stateObj.text === this.stateOrProvince;
-        });
-        this.selectedState = foundSelectObj || this.emptySelectData      
+        foundSelectObj = 
+          this.stateListData.find((stateObj) => stateObj.text === this.stateOrProvince) 
+          || this.emptySelectData;
+        // this.selectedState = foundSelectObj || this.emptySelectData      
       }
     }
   }
 
-  private findSelectedStateObj(): SelectData {
-    let foundStateObj;
-    const stateData = this.selectedAddressType === this.addressTypes.MIL
-      ? this.stateCodeListData
-      : this.stateListData;
-    foundStateObj = stateData.find((stateObj) => {
-      return stateObj.text === this.stateOrProvince;
-    });
-    return foundStateObj || this.emptySelectData;
-  }
+  // private findSelectedStateObj(): SelectData {
+  //   let foundStateObj;
+  //   const stateData = this.selectedAddressType === this.addressTypes.MIL
+  //     ? this.stateCodeListData
+  //     : this.stateListData;
+  //   foundStateObj = stateData.find((stateObj) => {
+  //     return stateObj.text === this.stateOrProvince;
+  //   });
+  //   return foundStateObj || this.emptySelectData;
+  // }
 
   private selectedState: SelectData = this.emptySelectData;
 
