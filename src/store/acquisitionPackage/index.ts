@@ -2,14 +2,14 @@ import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-deco
 import rootStore from "../index";
 import api from "@/api";
 
-import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
+import { AcquisitionPackageDTO } from "@/api/models";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
 import { SessionData } from "./models";
-import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
-import { OrganizationDTO } from "@/models/OrganizationDTO";
-import { ContactDTO } from "@/models/ContactDTO";
-import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
-import { CurrentContractDTO } from "@/models/BackgroundDTOs";
+import { ProjectOverviewDTO } from  "@/api/models";
+import { OrganizationDTO } from  "@/api/models";
+import { ContactDTO } from  "@/api/models";
+import { FairOpportunityDTO } from  "@/api/models";
+import { CurrentContractDTO } from  "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -39,23 +39,23 @@ const initialOrganization = () => {
   };
 };
 
-const initialContact = () => {
+const initialContact= () => {
 
   return {
-    type: "",
-    can_access_package: "",
-    phone: "",
-    rank: "",
-    salutation: "",
-    first_name: "",
-    email: "",
     grade_civ: "",
-    grade_mil: "",
     role: "",
     dodaac: "",
     last_name: "",
     middle_name: "",
     suffix: "",
+    type: "",
+    can_access_package: "",
+    phone: "",
+    rank_components: "",
+    salutation: "",
+    first_name: "",
+    email: "",
+    title: "",
   }
 }
 
@@ -1894,6 +1894,26 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  @Action({ rawError: true })
+  /**
+   * Saves Organization data to backend
+   */
+  async saveContactInfo(data: ContactDTO): Promise<void> {
+    try {
+      const sys_id = this.contactInfo?.sys_id || "";
+      const savedContact =
+        sys_id.length > 0
+          ? await api.contactsTable.update(sys_id, { ...data, sys_id })
+          : await api.contactsTable.create(data);
+      this.setContact(savedContact);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contact: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving contact info ${error}`);
+    }
+  }
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);

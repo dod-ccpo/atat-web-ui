@@ -52,7 +52,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractDTO } from "@/models/BackgroundDTOs";
+import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 @Component({
