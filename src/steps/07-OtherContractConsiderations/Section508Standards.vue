@@ -167,16 +167,16 @@
             />
 
             <ATATExpandableLink aria-id="AboutBusinessAssociates">
-            <template v-slot:header>
-              How do I determine which Section 508 accessibility requirements apply 
-              to my acquisition?
-            </template>
-            <template v-slot:content>
-              <p>
-                (To be completed in next milestone)
-              </p>
-            </template>
-          </ATATExpandableLink>
+              <template v-slot:header>
+                How do I determine which Section 508 accessibility requirements apply 
+                to my acquisition?
+              </template>
+              <template v-slot:content>
+                <p>
+                  (To be completed in next milestone)
+                </p>
+              </template>
+            </ATATExpandableLink>
 
           </div>
         </v-col>
