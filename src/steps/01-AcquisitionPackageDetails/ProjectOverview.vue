@@ -47,6 +47,7 @@
               outcomes for this particular requirement (e.g., move DITCO’s contract
               writing system to a cloud environment)."
               :value.sync="projectScope"
+              maxChars="300"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10">
