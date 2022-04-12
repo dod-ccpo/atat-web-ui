@@ -165,10 +165,9 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
   }
 }
 
-$fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
-@each $size in $fontSizes {
-  .font-size-#{$size} {
-    font-size: #{$size}px !important;
+@for $i from 10 through 30 {
+  .font-size-#{$i}{
+      font-size: #{$i}px !important;
   }
 }
 
@@ -243,5 +242,9 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
   margin-top: -28px;
   margin-bottom: 40px !important;
   @extend .copy-max-width;
+}
+
+._semibold {
+  font-weight: 500 !important;
 }
 
