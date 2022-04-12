@@ -53,6 +53,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import { RadioButton } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -92,7 +93,7 @@ export default class ATATRadioGroup extends Vue {
   } 
 
   private getIdText(string: string) {
-    return string.replace(/[^A-Z0-9]/gi, "");
+    return getIdText(string);
   }
 
   // computed

@@ -77,6 +77,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import { StepperStep } from "../../types/Global";
+import { getIdText } from "@/helpers";
 
 @Component({})
 export default class ATATSideStepper extends Vue {
@@ -94,7 +95,7 @@ export default class ATATSideStepper extends Vue {
   }
 
   private getIdText(string: string) {
-    return string.replace(/[^A-Z0-9]/gi, "");
+    return getIdText(string);
   }
 
   private getRouteName(step: StepperStep) {

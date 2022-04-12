@@ -27,6 +27,7 @@ import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 
 import {Checkbox} from "../../types/Global";
+import { getIdText } from "@/helpers";
 
 @Component({})
 
@@ -40,7 +41,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private name!: string;
 
   private getIdText(string: string) {
-    return string.replace(/[^A-Z0-9]/ig, "");
+    return getIdText(string);
   }
 }
 </script>

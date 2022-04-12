@@ -22,7 +22,7 @@
 
           <div 
             v-for="(optionPeriod, index) in optionPeriods"
-            :key="optionPeriod.name"
+            :key="getIdText(getOptionPeriodLabel(index))"
             class="d-flex mb-5"
             :id="getIdText(getOptionPeriodLabel(index)) + 'Row'"
           >
@@ -53,6 +53,7 @@
               />
             </div>
             <div :id="getIdText(getOptionPeriodLabel(index)) + 'Buttons'" class="d-flex align-center">
+              <!-- copy button disabled - will be implemented in future ticket -->
               <v-btn 
                 icon
                 class="mr-1"
@@ -76,7 +77,6 @@
                 </v-icon>
               </v-btn>
             </div>
-
           </div>
 
           <v-btn
@@ -107,7 +107,6 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import PoPLearnMore from "./PopLearnMore.vue";
@@ -119,7 +118,6 @@ import { getIdText } from "@/helpers";
 
 @Component({
   components: {
-    ATATRadioGroup,
     ATATTextField,
     ATATSelect,
     PoPLearnMore,
@@ -129,7 +127,6 @@ import { getIdText } from "@/helpers";
 export default class PeriodOfPerformance extends Vue {
 
   public maxTotalPoPDuration = 365 * 5;
-
 
   public optionPeriods: PoP[] = [
     {
@@ -164,12 +161,7 @@ export default class PeriodOfPerformance extends Vue {
       debugger;
       if (duration !== currentDuration) {
         this.optionPeriods[index].duration = duration;
-        const exceedsMaxTotalPoPDuration = this.setTotalPoP();
-        if (exceedsMaxTotalPoPDuration) {
-          // show some kind of message about 5 yr max
-          // disable "Continue" button?
-        }
-        this.optionPeriods[index].duration = input.value;
+        this.setTotalPoP();
       }
     }
   }
@@ -180,16 +172,12 @@ export default class PeriodOfPerformance extends Vue {
       this.optionPeriods[index].timePeriod = timePeriod;
       const duration = this.optionPeriods[index].duration;
       if (duration) {
-        const exceedsMaxTotalPoPDuration = this.setTotalPoP();
-        if (exceedsMaxTotalPoPDuration) {
-          // show some kind of message about 5 yr max
-          // disable "Continue" button?
-        }
+        this.setTotalPoP();
       }
     }
   }
 
-  public setTotalPoP(): boolean {
+  public setTotalPoP(): void {
     this.totalPoPDuration = 0;
     debugger;
     this.optionPeriods.forEach((optionPeriod) => {
@@ -212,17 +200,11 @@ export default class PeriodOfPerformance extends Vue {
         this.totalPoPDuration += thisDays;
       }
     });
-    return this.totalPoPDuration > this.maxTotalPoPDuration;
   }
 
   public deleteOptionPeriod(index: number): void {
     this.optionPeriods.splice(index, 1);
-    const exceedsMaxTotalPoPDuration = this.setTotalPoP();
-    if (exceedsMaxTotalPoPDuration) {
-      // show some kind of message about 5 yr max
-      // disable "Continue" button?
-    }
-
+    this.setTotalPoP();
   }
 
   public getOptionPeriodLabel(index:number): string {
@@ -247,7 +229,6 @@ export default class PeriodOfPerformance extends Vue {
   private getIdText(string: string) {
     return getIdText(string);
   }
-
 
 }
 </script>
