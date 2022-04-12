@@ -15,7 +15,7 @@
               :value.sync="showAlert"
             />
           </div>
-          <ATATAlert v-if="showAlert.toLowerCase() === 'yes'" 
+          <ATATAlert v-if="isDISA" 
             type="info" :showIcon="true" 
             class="copy-max-width mt-16">
             <template v-slot:content>
@@ -39,6 +39,7 @@ import { Component } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { RadioButton } from "../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -48,7 +49,7 @@ import { RadioButton } from "../../../types/Global";
 })
 
 export default class WillGovtEquipBeFurnished extends Vue {
-   private showAlert = "No";
+  private showAlert = "No";
 
 
   private equipmentProvidedOptions: RadioButton[] = [
@@ -63,6 +64,11 @@ export default class WillGovtEquipBeFurnished extends Vue {
       value: "No",
     },
   ];
+
+  public get isDISA(): boolean {
+    return AcquisitionPackage.selectedServiceOrAgency.value?.toUpperCase() 
+              === "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
+  }
 
 }
 </script>
