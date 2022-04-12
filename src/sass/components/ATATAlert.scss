@@ -8,18 +8,27 @@
   padding: 16px 20px;
   position: relative;
   
-  &:after {
+  &:before, &:after {
     content: "";
     position: absolute;
     z-index: 1;
-    pointer-events: none;
     left: 0;
     right: 0;
+    background: rgb(230,245,252);
+  }
+
+  &:before {
+    top: 0;
+    height: 24px;
+    background: linear-gradient(180deg, rgba(230,245,252,1) 0%, rgba(230,245,252,0) 100%);    
+  }
+  
+  &:after {
     bottom: 0;
     height: 60px;
-    background: rgb(230,245,252);
     background: linear-gradient(180deg, rgba(230,245,252,0) 0%, rgba(230,245,252,1) 100%);    
   }
+  
   ._content {
     overflow-x: hidden;
     overflow-y: scroll;

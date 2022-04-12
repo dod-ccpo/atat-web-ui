@@ -265,5 +265,20 @@ ul._atat-ul {
   padding-bottom: 12px;
   li {
     padding-bottom: 8px;
+    ul {
+      li {
+        position: relative;
+        &::marker {
+          content: "";
+        }
+        &:before {
+          content: "•";
+          font-size: 2.5rem;
+          position: absolute;
+          left: -18px;
+          top: 0;
+        }
+      }
+    }
   }
 }

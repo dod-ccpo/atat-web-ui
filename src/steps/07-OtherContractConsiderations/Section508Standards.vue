@@ -3,11 +3,11 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <h1 class="page-header">
+          <h1 class="page-header mb-3">
             Let’s look into your Section 508 Accessibility requirements
           </h1>
           <div class="copy-max-width">
-            <p>
+            <p id="IntroP" class="mb-10">
               The overarching JWCC Contract provides the following language to
               ensure CSPs comply with the government’s Section 508 Accessibility
               Standards for Cloud Computing. If your project requires different
@@ -18,6 +18,7 @@
               id="Section508Callout" 
               type="callout"
               maxHeight="460"
+              class="mb-10"
             >
               <template slot="content">
                 <h2>
@@ -28,43 +29,43 @@
                   Requirements Statement per the Revised Section 508 of the
                   Rehabiliation Act
                 </p>
-                <h3 class="mb-3">Electronic Content Technical Criteria:</h3>
+
+                <span class="font-size-20 _semibold mb-4 d-block">
+                  Electronic Content Technical Criteria:
+                </span>
                 <ul class="_atat-ul">
                   <li>
-                    <span class="_semibold">E205.1 General</span> - Electronic
+                    <strong>E205.1 General</strong> - Electronic
                     content shall comply with E205.
                   </li>
                   <li>
-                    <span class="_semibold">E205.2 Public Facing</span> -
+                    <strong>E205.2 Public Facing</strong> -
                     Electronic content that is public facing shall conform to
                     the accessibility requirements specified in E205.4.
                   </li>
                   <li>
-                    <span class="_semibold">602 Support Documentation</span>
+                    <strong>602 Support Documentation</strong>
                   </li>
                   <li>
-                    <span class="_semibold">603 Support Services</span>
+                    <strong>603 Support Services</strong>
                   </li>
                   <li>
-                    <span class="_semibold"
-                      >302 Functional Performance Criteria</span
-                    >
+                    <strong>302 Functional Performance Criteria</strong>
                   </li>
                 </ul>
 
-                <span class="font-size-16 _semibold mb-3">Software Exceptions:</span>
+                <span class="font-size-20 _semibold mb-4 d-block">
+                  Software Exceptions:
+                </span>
                 <ul class="_atat-ul">
                   <li>
-                    <span class="_semibold">E207.1 General</span> - Software
+                    <strong>E207.1 General</strong> - Software
                     that is assistive technology and that supports the
                     accessibility services of the platform shall not be required
                     to conform to the requirements in Chapter 5.
                   </li>
                   <li>
-                    <span class="_semibold">E207.2 WCAG Conformance -</span>
-                  </li>
-
-                  <li>
+                    <strong class="mb-2 d-block">E207.2 WCAG Conformance -</strong>
                     <ul class="_atat-ul">
                       <li>
                         Software that is assistive technology and that supports
@@ -77,7 +78,7 @@
                         Bypass Blocks; 2.4.5 Multiple Ways; 3.2.3 Consistent
                         Navigation; and 3.2.4 Consistent Identification.
                       </li>
-                      <li>
+                      <li class="pb-0">
                         Non-Web software shall not be required to conform to
                         Conformance Requirement 3 Complete Processes in WCAG
                         2.0.
@@ -86,10 +87,12 @@
                   </li>
                 </ul>
 
-                <h3 class="mb-3">Functional Performance Criteria:</h3>
+                <span class="font-size-20 _semibold mb-4 d-block">
+                  Functional Performance Criteria:
+                </span>
                 <ul class="_atat-ul">
                   <li>
-                    <span class="_semibold">301.1 Scope</span> - The
+                    <strong>301.1 Scope</strong> - The
                     requirements of Chapter 3 shall apply to ICT where required
                     by 508 Chapter 2 (Scoping Requirements), 255 Chapter 2
                     (Scoping Requirements), and where otherwise referenced in
@@ -97,56 +100,56 @@
                     255 Guidelines.
                   </li>
                   <li>
-                    <span class="_semibold">302.1 Without Vision</span> - Where
+                    <strong>302.1 Without Vision</strong> - Where
                     a visual mode of operation is provided, ICT shall provide at
                     least one mode of operation that does not require user
                     vision.
                   </li>
                   <li>
-                    <span class="_semibold">302.2 With Limited Vision</span> -
+                    <strong>302.2 With Limited Vision</strong> -
                     Where a visual mode of operation is provided, ICT shall
                     provide at least one mode of operation that enables users to
                     make use of limited vision.
                   </li>
                   <li>
-                    <span class="_semibold">302.3 Without Perception of Color</span> 
+                    <strong>302.3 Without Perception of Color</strong> 
                     - Where a visual mode of operation is provided, ICT shall
                     provide at least one visual mode of operation that does not
                     require user perception of color.
                   </li>
                   <li>
-                    <span class="_semibold">302.4 Without Hearing</span> - Where
+                    <strong>302.4 Without Hearing</strong> - Where
                     an audible mode of operation is provided, ICT shall provide
                     at least one mode of operation that does not require user
                     hearing.
                   </li>
                   <li>
-                    <span class="_semibold">302.5 With Limited Hearing</span> -
+                    <strong>302.5 With Limited Hearing</strong> -
                     Where an audible mode of operation is provided, ICT shall
                     provide at least one mode of operation that enables users to
                     make use of limited hearing.
                   </li>
                   <li>
-                    <span class="_semibold">302.6 Without Speech</span> - Where
+                    <strong>302.6 Without Speech</strong> - Where
                     speech is used for input, control, or operation, ICT shall
                     provide at least one mode of operation that does not require
                     user speech.
                   </li>
                   <li>
-                    <span class="_semibold">302.7 With Limited Manipulation</span>
+                    <strong>302.7 With Limited Manipulation</strong>
                     - Where a manual mode of operation is provided, ICT shall
                     provide at least one mode of operation that does not require
                     fine motor control or simultaneous manual operations.
                   </li>
                   <li>
-                    <span class="_semibold">302.8 With Limited Reach and Strength</span>
+                    <strong>302.8 With Limited Reach and Strength</strong>
                     - Where a manual mode of operation is provided, ICT shall
                     provide at least one mode of operation that is operable with
                     limited reach and limited strength.
                   </li>
                   <li>
-                    <span class="_semibold">302.9 With Limited Language, Cognitive, 
-                    and Learning Abilities</span> - ICT shall provide features 
+                    <strong>302.9 With Limited Language, Cognitive, 
+                    and Learning Abilities</strong> - ICT shall provide features 
                     making its use by individuals with limited cognitive, language, 
                     and learning abilities simpler and easier.
                   </li>
