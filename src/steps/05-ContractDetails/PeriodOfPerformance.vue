@@ -20,6 +20,9 @@
             </p>
           </div>
 
+          <div class="mb-4 _semibold" style="padding-left: 101px;">
+            Period of Performance length
+          </div>
           <div 
             v-for="(optionPeriod, index) in optionPeriods"
             :key="getIdText(getOptionPeriodLabel(index))"
@@ -167,7 +170,6 @@ export default class PeriodOfPerformance extends Vue {
       const input = e.currentTarget as HTMLFormElement;
       const duration = input.value;
       const currentDuration = this.optionPeriods[index].duration;
-      debugger;
       if (duration !== currentDuration) {
         this.optionPeriods[index].duration = duration;
         this.setTotalPoP();
@@ -176,7 +178,6 @@ export default class PeriodOfPerformance extends Vue {
   }
 
   public setTimePeriod(timePeriod: string, index: number): void {
-    debugger;
     if (timePeriod) {
       this.optionPeriods[index].timePeriod = timePeriod;
       const duration = this.optionPeriods[index].duration;
@@ -188,7 +189,6 @@ export default class PeriodOfPerformance extends Vue {
 
   public setTotalPoP(): void {
     this.totalPoPDuration = 0;
-    debugger;
     this.optionPeriods.forEach((optionPeriod) => {
       if (optionPeriod.duration) {
         let multiplier = 1;
