@@ -73,8 +73,8 @@ export default class PIIRecord extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadSensitiveInformation();
     if (storeData) {
-      this.systemName = storeData.system_of_record_name;
-      this.operationToBePerformed = storeData.work_to_be_performed;
+      this.systemName = storeData.system_of_record_name || '';
+      this.operationToBePerformed = storeData.work_to_be_performed || '';
     }
   }
 
