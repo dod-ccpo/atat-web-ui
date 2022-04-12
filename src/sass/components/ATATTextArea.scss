@@ -7,4 +7,11 @@
   textarea{
       @extend %body;
   }
+  .v-messages.error--text {
+    display: none;
+  }
+  .v-text-field__details {
+    display: flex;
+    justify-content: flex-end;
+  }
 }

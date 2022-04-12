@@ -2,26 +2,26 @@
   <div :id="id + '_text_field_control'" class="atat-text-field">
     <div class="d-flex align-center" v-if="label">
       <label
-          :id="id + '_text_field_label'"
-          class="form-field-label width-100"
-          :for="id + '_text_area'"
+        :id="id + '_text_field_label'"
+        class="form-field-label width-100"
+        :for="id + '_text_area'"
+        v-html="label"
       >
-        {{ label }}
       </label>
       <v-tooltip
-          transition="slide-y-reverse-transition"
-          color="rgba(0,0,0,1)"
-          top
-          v-if="tooltipText"
+        transition="slide-y-reverse-transition"
+        color="rgba(0,0,0,1)"
+        top
+        v-if="tooltipText"
       >
         <template v-slot:activator="{ on }">
           <v-btn
-              class="mb-2 ml-1 pa-0 link-button no-border"
-              icon
-              x-small
-              v-on="on"
-              :ripple="false"
-              :aria-label="'Help for ' + label"
+            class="mb-2 ml-1 pa-0 link-button no-border"
+            icon
+            x-small
+            v-on="on"
+            :ripple="false"
+            :aria-label="'Help for ' + label"
           >
             <v-icon class="icon-16 ma-0 pa-0" small color="#544496"
             >help_outline
@@ -31,25 +31,30 @@
         <span>{{ tooltipText }}</span>
       </v-tooltip>
     </div>
-    <div class="width-100 mb-2 help-text">{{ helpText }}</div>
+    <div class="width-100 mb-2 help-text" v-html="helpText"></div>
     <div class="d-flex flex-column width-100">
-        <v-textarea
-            ref="atatTextArea"
-            :id="id + '_text_area'"
-            outlined
-            :value.sync="_value"
-            :placeholder="placeHolder"
-            @input="onInput"
-            class="text-primary"
-            :hide-details="true"
-            :rules="rules"
-            :rows="rows"
-            :readonly="readOnly"
-            :no-resize="noResize"
-            @blur="onBlur"
-            @update:error="setErrorMessage"
-        ></v-textarea>
-      <ATATErrorValidation :errorMessages="errorMessages" />
+      <v-textarea
+        ref="atatTextArea"
+        :id="id + '_text_area'"
+        outlined
+        :value.sync="_value"
+        :placeholder="placeHolder"
+        @input="onInput"
+        class="text-primary"
+        :rules="rules"
+        :rows="rows"
+        :readonly="readOnly"
+        :no-resize="noResize"
+        @blur="onBlur"
+        @update:error="setErrorMessage"
+        :hide-details="maxChars === ''"
+        :counter="maxChars"
+      >
+      </v-textarea>
+      <ATATErrorValidation 
+        :errorMessages="errorMessages" 
+        :textAreaWithCounter="maxChars !== ''"
+      />
     </div>
   </div>
 </template>
@@ -82,6 +87,7 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: false }) private readOnly!: boolean;
   @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
   @Prop({ default: true }) private noResize!: boolean;
+  @Prop({ default: "" }) private maxChars!: string;
 
 
   //data
