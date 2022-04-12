@@ -120,8 +120,8 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 @Component({
   components: {
     ATATAlert,
-    ATATRadioGroup,
     ATATExpandableLink,
+    ATATRadioGroup,
     BAALearnMore,
   },
 })

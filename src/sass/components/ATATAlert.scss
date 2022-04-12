@@ -1,4 +1,4 @@
-._atat-alert{
+._atat-alert {
   display: block;
   color: $base-darkest;
   border-radius: 4px;
@@ -6,6 +6,25 @@
   padding: 24px;
   border: 1px solid transparent;
   padding: 16px 20px;
+  position: relative;
+  
+  &:after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 60px;
+    background: rgb(230,245,252);
+    background: linear-gradient(180deg, rgba(230,245,252,0) 0%, rgba(230,245,252,1) 100%);    
+  }
+  ._content {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: relative;
+  }
 
   a {
     text-decoration: underline;
