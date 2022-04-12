@@ -80,7 +80,7 @@
           </div>
 
           <v-btn
-            id="addClinButton"
+            id="addOptionPeriodButton"
             v-if="totalPoPDuration < maxTotalPoPDuration"
             plain
             text
