@@ -126,3 +126,8 @@ export interface ToastObj {
  export interface stringObj {
   [key: string]: string;
 }
+
+export interface PoP {
+  duration: number | null;
+  timePeriod: string;
+}

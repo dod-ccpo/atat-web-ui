@@ -104,5 +104,16 @@
       }
     }
   }
-
+  &.v-btn--text.theme--light {
+    .v-icon {
+      color: $primary !important;
+    }
+    .v-btn__content {
+      opacity: 1 !important;
+      font-weight: normal !important;
+      span {
+        color: $primary !important;
+      }      
+    }
+  }
 }

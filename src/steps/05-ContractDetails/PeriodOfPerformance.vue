@@ -18,11 +18,87 @@
                 Learn more about PoPs on the JWCC contract.
               </a>
             </p>
+          </div>
 
+          <div 
+            v-for="(optionPeriod, index) in optionPeriods"
+            :key="optionPeriod.name"
+            class="d-flex mb-5"
+            :id="getIdText(getOptionPeriodLabel(index)) + 'Row'"
+          >
+            <div 
+              class="d-flex align-center justify-end mr-4 font-size-14 _text-base"
+              style="width: 85px;"  
+            >
+              {{ getOptionPeriodLabel(index) }}
+            </div>
+            <div>
+              <ATATTextField
+                :id="getIdText(getOptionPeriodLabel(index))"
+                class="mr-4"
+                width="178"
+                :rules="[$validators.integer()]"
+                :value="optionPeriod.duration"
+                @blur="setDuration($event, index)"
+              />
+            </div>
+            <div>
+              <ATATSelect
+                :id="getIdText(getOptionPeriodLabel(index))"
+                :items="timePeriods"
+                width="178"
+                :selectedValue="optionPeriod.timePeriod"
+                class="mr-4"
+                @onChange="setTimePeriod($event, index)"
+              />
+            </div>
+            <div :id="getIdText(getOptionPeriodLabel(index)) + 'Buttons'" class="d-flex align-center">
+              <v-btn 
+                icon
+                class="mr-1"
+                :disabled="true"
+                @click="copyOptionPeriod()"
+                aria-label="Duplicate this option period"
+              >
+                <v-icon>
+                  content_copy
+                </v-icon>
+              </v-btn>
+
+              <v-btn 
+                icon
+                :disabled="optionPeriods.length === 1"
+                @click="deleteOptionPeriod(index)"
+                aria-label="Delete this option period"
+              >
+                <v-icon>
+                  delete
+                </v-icon>
+              </v-btn>
+            </div>
+
+          </div>
+
+          <v-btn
+            id="addClinButton"
+            v-if="totalPoPDuration < maxTotalPoPDuration"
+            plain
+            text
+            class="_text-link"
+            :ripple="false"
+            @click="addOptionPeriod()"
+          >
+            <v-icon color="primary" class="mr-2">control_point</v-icon>
+            <span>Add an option period</span>
+          </v-btn>
+
+          <div class="mt-10" v-show="totalPoPDuration > maxTotalPoPDuration">
+            Cannot exceed 5 years total.
           </div>
 
         </v-col>
       </v-row>
+
     </v-container>
   </div>
 </template>
@@ -32,20 +108,126 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+import ATATSelect from "@/components/ATATSelect.vue";
 import PoPLearnMore from "./PopLearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { SlideoutPanelContent } from "../../../types/Global";
+import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
     ATATRadioGroup,
+    ATATTextField,
+    ATATSelect,
     PoPLearnMore,
   },
 })
 
 export default class PeriodOfPerformance extends Vue {
+
+  public maxTotalPoPDuration = 365 * 5;
+
+
+  public optionPeriods: PoP[] = [
+    {
+      duration: null,
+      timePeriod: "Year",
+    },
+  ];
+  
+  public totalPoPDuration = 0;
+
+  public selectedTimePeriod = "Year"
+  public timePeriods: SelectData[] = [
+    { text: "Year", value: "Year" },
+    { text: "Month(s)", value: "Month(s)" },
+    { text: "Week(s)", value: "Week(s)" },
+    { text: "Day(s)", value: "Day(s)" },
+  ];
+
+  public addOptionPeriod(): void {
+    const newOptionPeriod = {
+      duration: null,
+      timePeriod: "Year",
+    };
+    this.optionPeriods.push(newOptionPeriod);
+  }
+
+  public setDuration(e: Event, index: number): void {
+    if (e && e.currentTarget) {
+      const input = e.currentTarget as HTMLFormElement;
+      const duration = input.value;
+      const currentDuration = this.optionPeriods[index].duration;
+      debugger;
+      if (duration !== currentDuration) {
+        this.optionPeriods[index].duration = duration;
+        const exceedsMaxTotalPoPDuration = this.setTotalPoP();
+        if (exceedsMaxTotalPoPDuration) {
+          // show some kind of message about 5 yr max
+          // disable "Continue" button?
+        }
+        this.optionPeriods[index].duration = input.value;
+      }
+    }
+  }
+
+  public setTimePeriod(timePeriod: string, index: number): void {
+    debugger;
+    if (timePeriod) {
+      this.optionPeriods[index].timePeriod = timePeriod;
+      const duration = this.optionPeriods[index].duration;
+      if (duration) {
+        const exceedsMaxTotalPoPDuration = this.setTotalPoP();
+        if (exceedsMaxTotalPoPDuration) {
+          // show some kind of message about 5 yr max
+          // disable "Continue" button?
+        }
+      }
+    }
+  }
+
+  public setTotalPoP(): boolean {
+    this.totalPoPDuration = 0;
+    debugger;
+    this.optionPeriods.forEach((optionPeriod) => {
+      if (optionPeriod.duration) {
+        let multiplier = 1;
+        switch(optionPeriod.timePeriod) {
+          case "Week(s)":
+            multiplier = 7;
+            break;
+          case "Month(s)":
+            multiplier = 30;
+            break;
+          case "Year":
+            multiplier = 365;
+            break;
+          default:
+            multiplier = 1;
+        }
+        const thisDays = optionPeriod.duration * multiplier;
+        this.totalPoPDuration += thisDays;
+      }
+    });
+    return this.totalPoPDuration > this.maxTotalPoPDuration;
+  }
+
+  public deleteOptionPeriod(index: number): void {
+    this.optionPeriods.splice(index, 1);
+    const exceedsMaxTotalPoPDuration = this.setTotalPoP();
+    if (exceedsMaxTotalPoPDuration) {
+      // show some kind of message about 5 yr max
+      // disable "Continue" button?
+    }
+
+  }
+
+  public getOptionPeriodLabel(index:number): string {
+    return index === 0 ? "Base" : "Option " + index;
+  }
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -60,6 +242,10 @@ export default class PeriodOfPerformance extends Vue {
       title: "Learn More",
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
+
+  private getIdText(string: string) {
+    return getIdText(string);
   }
 
 
