@@ -7,7 +7,7 @@
             Which contract type applies to this acquisition?
           </h1>
           <div class="copy-max-width">
-            <p class="mb-10">
+            <p class="mb-10" id="IntroP">
               Firm-Fixed-Price (FFP) is the standard contract type for JWCC task orders. 
               You must provide justification for a time-and-materials (T&amp;M) or 
               hybrid contract, in accordance with 
@@ -21,11 +21,11 @@
               If you are considering a T&amp;M contract, we suggest contacting the
               DITCO Contracting Office for further guidance.            
             </p>
-            <p>
+            <p id="SelectMessage">
               Select all that apply to your contracting effort.
             </p>
           <ATATCheckboxGroup
-            id="checkbox card"
+            id="ContractTypesCheckboxes"
             :value.sync="selectedContractTypes"
             :items="checkboxItems"
             name="checkbox-card"
@@ -34,7 +34,7 @@
           />
           </div>
 
-          <div v-show="hasTM" class="max-width-740">
+          <div v-show="hasTM" id="JustificationEntry" class="max-width-740">
             <hr />
             <ATATTextArea
               id="JustificationForTM"
@@ -43,8 +43,7 @@
               helpText="Briefly describe why the duration of work and/or costs cannot 
                 be reasonably estimated and what control measures will be taken to 
                 monitor contractor performance and costs in labor. 
-                <a role='button' id='JustificationLearnMore' 
-                  @click='openSlideoutPanel()'>Learn more</a>"
+                <a role='button' id='JustificationLearnMore'>Learn more</a>"
               maxChars="2000"
             />
           </div>
@@ -62,6 +61,8 @@ import {Component} from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
+import { Checkbox } from "../../../types/Global";
+
 @Component({
   components: {
     ATATCheckboxGroup,
@@ -77,7 +78,7 @@ export default class ContractType extends Vue {
   }
 
   private justification = "";
-  private checkboxItems = [
+  private checkboxItems: Checkbox[] = [
     {
       id: "FFPCheckbox",
       label: "Firm-fixed-price (FFP)",
@@ -91,7 +92,6 @@ export default class ContractType extends Vue {
       value: "T&M",
       description: "This applies to any contract line items other than travel.",
     }
-
   ];
 
 }
