@@ -304,22 +304,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     };
   }
 
-  public savedData: ContactDTO = {
-    first_name: "",
-    last_name: "",
-    middle_name: "",
-    role: "",
-    rank_components: "",
-    suffix: "",
-    salutation: "",
-    phone: "",
-    email: "",
-    type: "",
-    dodaac: "",
-    can_access_package: "true",
-    grade_civ: "",
-    title: "",
-  };
+  public savedData: ContactDTO = AcquisitionPackage.initContact;
 
   // methods
 
@@ -332,6 +317,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
 
   public async loadOnEnter(): Promise<void> {
+    this.savedData.can_access_package = "true";
     const branches = await ContactData.LoadMilitaryBranches();
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
@@ -374,9 +360,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
           : { grade: "", name: "", sysId: "" };
       }
 
-      if (
-        this.selectedRole === this.contactRoles[this.roleIndices.CIVILIAN].value
-      ) {
+      if (this.selectedRole === this.contactRoles[this.roleIndices.CIVILIAN].value) {
         const gradeValue = this.gradeData.find(value=> value.grade === storeData.grade_civ);
         this.selectedGrade = {
           grade : gradeValue?.grade || "",

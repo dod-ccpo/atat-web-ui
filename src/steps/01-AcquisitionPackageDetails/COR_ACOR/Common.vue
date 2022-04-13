@@ -76,9 +76,9 @@
   </div>
 </template>
 <script lang="ts">
-// import Vue from "vue";
+import Vue from "vue";
 
-import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import parsePhoneNumber, {CountryCode} from 'libphonenumber-js'
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -89,8 +89,6 @@ import PersonCard from "./PersonCard.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ContactData from "@/store/contactData";
 import { ContactDTO } from "@/api/models";
-import { hasChanges } from "@/helpers";
-import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import { 
   AutoCompleteItem, 
@@ -110,12 +108,14 @@ import {
   }
 })
 
-export default class COR_ACOR extends Mixins(SaveOnLeave) {
+export default class COR_ACOR extends Vue {
   // props
 
   @Prop({default: false}) private isACOR!: boolean;
+  @PropSync("currentContactData") private _currentContactData!: ContactDTO;
+  @PropSync("savedContactData") private _savedContactData!: ContactDTO;
 
-  // computed
+// computed
   
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
@@ -247,22 +247,7 @@ export default class COR_ACOR extends Mixins(SaveOnLeave) {
     };
   }
 
-  public savedData: ContactDTO = {
-    first_name: "",
-    last_name: "",
-    middle_name: "",
-    role: "",
-    rank_components: "",
-    suffix: "",
-    salutation: "",
-    phone: "",
-    email: "",
-    type: "",
-    dodaac: "",
-    can_access_package: "",
-    grade_civ: "",
-    title: "",
-  };
+  public savedData: ContactDTO = AcquisitionPackage.initContact;
 
   // watchers
 
@@ -281,6 +266,16 @@ export default class COR_ACOR extends Mixins(SaveOnLeave) {
     } else {
       this.selectedBranch = { text: "", value: "" };
     }
+  }
+
+  @Watch("currentData")
+  protected currentDataChange(): void {
+    this._currentContactData = this.currentData;
+  }
+
+  @Watch("savedData")
+  protected savedDataChange(): void {
+    this._savedContactData = this.savedData;
   }
 
   // methods
@@ -367,23 +362,6 @@ export default class COR_ACOR extends Mixins(SaveOnLeave) {
         this.savedData.phone =  parsedPhone?.number.toString() ||  "";
       }
     }
-  }
-
-
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
-
-  protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.hasChanged()) {
-        await AcquisitionPackage.saveContactInfo(this.currentData);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    return true;
   }
 
   public async mounted(): Promise<void> {

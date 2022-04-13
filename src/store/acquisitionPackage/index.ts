@@ -41,8 +41,7 @@ const initialOrganization = () => {
   };
 };
 
-const initialContact= () => {
-
+const initialContact = () => {
   return {
     grade_civ: "",
     role: "",
@@ -110,6 +109,8 @@ export class AcquisitionPackageStore extends VuexModule {
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
 
+  public initContact: ContactDTO = initialContact();
+
   public getTitle(): string {
     return this.projectOverview?.title || "";
   }
@@ -141,8 +142,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setContact(value: ContactDTO): void {
-    this.contactInfo = value;
+  public setContact(saveData: { data: ContactDTO, type: string }): void {
+    const isCor = saveData.type === "COR";
+    const dataKey = saveData.type === "Mission Owner"
+      ? "contactInfo"
+      : isCor ? "corInfo" : "acorInfo";
+
+    this[dataKey] = saveData.data;
   }
 
   @Mutation
@@ -214,7 +220,9 @@ export class AcquisitionPackageStore extends VuexModule {
         if (acquisitionPackage) {
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
-          this.setContact(initialContact());
+          this.setContact({ data: initialContact(), type: "Mission Owner" });
+          this.setContact({ data: initialContact(), type: "COR" });
+          this.setContact({ data: initialContact(), type: "ACOR" });
           this.setAcquisitionPackage(acquisitionPackage);
           this.setFairOpportunity(initialFairOpportunity())
           this.setInitialized(true);
@@ -1815,14 +1823,13 @@ export class AcquisitionPackageStore extends VuexModule {
         ? "contactInfo"
         : isCor ? "corInfo" : "acorInfo";
       
-        // const sys_id = this.contactInfo?.sys_id || "";
-        const sys_id = this[dataKey]?.sys_id || "";
+      const sys_id = this[dataKey]?.sys_id || "";
 
       if (sys_id.length > 0) {
         const contactInfo = await api.contactsTable.retrieve(
             sys_id as string
         );
-        this.setContact(contactInfo);
+        this.setContact({ data: contactInfo, type: contactType });
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
           contact: sys_id,
@@ -1830,7 +1837,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
       }
       return this[dataKey] as ContactDTO;
-      // return this.contactInfo as ContactDTO;
     } catch (error) {
       throw new Error(`error occurred loading contact info ${error}`);
     }
@@ -1840,14 +1846,20 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Organization data to backend
    */
-  async saveContactInfo(data: ContactDTO): Promise<void> {
+  async saveContactInfo(saveData: { data: ContactDTO, type: string }): Promise<void> {
     try {
-      const sys_id = this.contactInfo?.sys_id || "";
+      const isCor = saveData.type === "COR";
+      debugger;
+      const dataKey = saveData.type === "Mission Owner"
+        ? "contactInfo"
+        : isCor ? "corInfo" : "acorInfo";
+
+      const sys_id = this[dataKey]?.sys_id || "";
       const savedContact =
         sys_id.length > 0
-          ? await api.contactsTable.update(sys_id, { ...data, sys_id })
-          : await api.contactsTable.create(data);
-      this.setContact(savedContact);
+          ? await api.contactsTable.update(sys_id, { ...saveData.data, sys_id })
+          : await api.contactsTable.create(saveData.data);
+      this.setContact({ data: savedContact, type: saveData.type });
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
         contact: sys_id,
