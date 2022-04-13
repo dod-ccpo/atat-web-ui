@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import {Component, Mixins} from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -116,6 +116,10 @@ import BAALearnMore from "./BAALearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import {SensitiveInformationDTO} from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import {hasChanges} from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -126,7 +130,7 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
   },
 })
 
-export default class BAA extends Vue {
+export default class BAA extends Mixins(SaveOnLeave) {
   private selectedBAAOption = "";
   private bAAOptions: RadioButton[] = [
     {
@@ -142,6 +146,7 @@ export default class BAA extends Vue {
   ];
 
   public async mounted(): Promise<void> {
+    await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: BAALearnMore,
       title: "Learn More",
@@ -156,5 +161,41 @@ export default class BAA extends Vue {
     }
   }
 
+
+
+  private get currentData(): SensitiveInformationDTO {
+    return {
+      baa_required: this.selectedBAAOption === "Yes" ? "true" : "false",
+    };
+  }
+
+  private get savedData(): SensitiveInformationDTO {
+    return {
+      baa_required: AcquisitionPackage.sensitiveInformation?.baa_required || "false",
+    };
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    if (storeData) {
+      this.selectedBAAOption = storeData.baa_required === "true" ? "Yes" : "No";
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
 }
 </script>
