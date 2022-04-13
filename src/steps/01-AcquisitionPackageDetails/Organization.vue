@@ -206,6 +206,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private militaryPostOfficeOptions: SelectData[] = [
     { text: "Army Post Office (APO)", value: "APO" },
     { text: "Fleet Post Office (FPO)", value: "FPO" },
+    { text: "Diplomatic Post Office (DPO)", value: "DPO" },
   ];
 
   private selectedDisaOrg: SelectData = this.emptySelectData;

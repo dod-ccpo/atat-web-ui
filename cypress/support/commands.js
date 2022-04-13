@@ -219,7 +219,7 @@ Cypress.Commands.add("selectTypeOfMailingAddress", (radio_selector, value) => {
             if (selectedOption === "radio_button_checkedMilitary") {                
                 cy.textExists(org.zipCodeLabel, " ZIP code ");
                 cy.textExists(org.stateCodeDropDownLabel, " State code ");
-                cy.textExists(org.apoFpoDropDownLabel, " APO/FPO ");
+                cy.textExists(org.apoFpoDropDownLabel, " APO/FPO/DPO ");
             }
             if (selectedOption === "radio_button_checkedForeign address") {
                 cy.textExists(org.cityLabel, " City ");

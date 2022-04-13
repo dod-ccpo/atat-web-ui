@@ -49,8 +49,8 @@
         />
         <ATATSelect
           v-show="selectedAddressType === addressTypes.MIL"
-          id="APO_FPO"
-          label="APO/FPO"
+          id="APO_FPO_DPO"
+          label="APO/FPO/DPO"
           :class="inputClass"
           :items="militaryPostOfficeOptions"
           :selectedValue.sync="_selectedMilitaryPO"
@@ -81,7 +81,7 @@
         <ATATSelect
           v-show="selectedAddressType === addressTypes.MIL"
           id="StateCode"
-          label="State code"
+          label="AA/AE/AP"
           :class="inputClass"
           :items="stateCodeListData"
           :selectedValue.sync="_selectedStateCode"
