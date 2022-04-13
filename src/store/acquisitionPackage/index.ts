@@ -74,6 +74,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
         projectOverview: store.projectOverview,
         organization: store.organization,
         contactInfo: store.contactInfo,
+        corInfo: store.corInfo,
+        acorInfo: store.acorInfo,
         fairOpportunity: store.fairOpportunity,
       })
   );
@@ -99,6 +101,8 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
+  corInfo: ContactDTO | null = null;
+  acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
@@ -174,6 +178,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
+    this.corInfo = sessionData.corInfo;
+    this.acorInfo = sessionData.acorInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
     this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
@@ -1791,12 +1797,17 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  async loadContactInfo(): Promise<ContactDTO> {
-
+  async loadContactInfo(contactType: string): Promise<ContactDTO> {
+    debugger;
     try {
       await this.ensureInitialized();
-
-      const sys_id = this.contactInfo?.sys_id || "";
+      const isCor = contactType === "COR";
+      const dataKey = contactType === "Mission Owner"
+        ? "contactInfo"
+        : isCor ? "corInfo" : "acorInfo";
+      
+        // const sys_id = this.contactInfo?.sys_id || "";
+        const sys_id = this[dataKey]?.sys_id || "";
 
       if (sys_id.length > 0) {
         const contactInfo = await api.contactsTable.retrieve(
@@ -1809,7 +1820,8 @@ export class AcquisitionPackageStore extends VuexModule {
         } as AcquisitionPackageDTO);
 
       }
-      return this.contactInfo as ContactDTO;
+      return this[dataKey] as ContactDTO;
+      // return this.contactInfo as ContactDTO;
     } catch (error) {
       throw new Error(`error occurred loading contact info ${error}`);
     }
@@ -1819,7 +1831,6 @@ export class AcquisitionPackageStore extends VuexModule {
   async loadCurrentContract(): Promise<CurrentContractDTO> {
     try {
       await this.ensureInitialized();
-
       const sys_id = this.currentContract?.sys_id || "";
 
       if (sys_id.length > 0) {

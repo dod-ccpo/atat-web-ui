@@ -131,3 +131,9 @@ export interface PoP {
   duration: number | null;
   timePeriod: string;
 }
+
+export interface RankData {
+  grade: string; 
+  name: string; 
+  sysId: string;
+}

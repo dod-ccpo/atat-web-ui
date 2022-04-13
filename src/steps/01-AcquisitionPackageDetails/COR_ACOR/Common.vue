@@ -39,9 +39,26 @@
     </a>
 
     <ContactInfoForm 
-      :isACOR="isACOR" 
+      :corOrAcor="corOrAcor"
       v-show="showContactForm && !haveSelectedContact"
       :showAccessRadioButtons.sync="showAccessRadioButtons"
+      :selectedRole.sync="selectedRole"
+      :selectedBranch.sync="selectedBranch"
+      :selectedRank.sync="selectedRank"
+      :salutation.sync="salutation"
+      :firstName.sync="firstName"
+      :middleName.sync="middleName"
+      :lastName.sync="lastName"
+      :suffix.sync="suffix"
+      :email.sync="email"
+      :phone.sync="phone"
+      :selectedPhoneCountry.sync="selectedPhoneCountry"
+      :phoneExt.sync="phoneExt"
+      :dodaac.sync="dodaac"
+
+      :contactRoles="contactRoles"
+      :branchData="branchData"
+      :selectedBranchRanksData="selectedBranchRanksData"
     />
     
     <section 
@@ -59,16 +76,30 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
+// import Vue from "vue";
 
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
+import parsePhoneNumber, {CountryCode} from 'libphonenumber-js'
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ContactInfoForm from "./ContactInfoForm.vue";
 import PersonCard from "./PersonCard.vue";
 
-import { RadioButton } from "../../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import ContactData from "@/store/contactData";
+import { ContactDTO } from "@/api/models";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+
+import { 
+  AutoCompleteItem, 
+  AutoCompleteItemGroups,
+  CountryObj, 
+  RadioButton, 
+  RankData,
+  SelectData,
+} from "../../../../types/Global";
 
 @Component({
   components: {
@@ -79,7 +110,7 @@ import { RadioButton } from "../../../../types/Global";
   }
 })
 
-export default class COR_ACOR extends Vue {
+export default class COR_ACOR extends Mixins(SaveOnLeave) {
   // props
 
   @Prop({default: false}) private isACOR!: boolean;
@@ -103,12 +134,12 @@ export default class COR_ACOR extends Vue {
     {
       id: "AccessToEdit_Yes",
       label: "Yes. I would like to invite this individual to edit my acquisition.",
-      value: "yes",
+      value: "true",
     },
     {
       id: "AccessToEdit_No",
       label: "No.",
-      value: "no",
+      value: "false",
     },
   ];
   
@@ -116,28 +147,155 @@ export default class COR_ACOR extends Vue {
   private contactList = [
     {
       Id: 1,
-      FullName: "Adam Adamson",
-      Email: "adam.adamson-civ@mail.mil",
+      FullName: "Test Adamson",
+      Email: "test.adamson-civ@mail.mil",
       Phone: "333-333-3333",
       OrgName: "HQ1234 - Corresponding Organization Name"
     },
     {
       Id: 2,
-      FullName: "Carl Contractingofficerep",
-      Email: "carl.contractingofficerrep-civ@mail.mil",
+      FullName: "Test Contractingofficerep",
+      Email: "test.contractingofficerrep-civ@mail.mil",
       Phone: "555-555-5555",
       OrgName: "HQ1234 - Corresponding Organization Name"
     },
     {
       Id: 3,
-      FullName: "Selia Wentzel",
-      Email: "sel.wentz@acusage.net",
+      FullName: "Test Wentzel",
+      Email: "test.wentz@acusage.net",
       Phone: "444-444-4444",
       OrgName: "HQ567 - Other Organization Name"
     },
   ];
 
+  private branchData: SelectData[] = [];
+  private selectedBranch: SelectData = { text: "", value: "" };
+  private selectedRank: RankData = {
+    grade: "",
+    name: "",
+    sysId: "",
+  };
+  private selectedBranchRanksData: AutoCompleteItem[] = [];
+  private branchRanksData: AutoCompleteItemGroups = {};
+
+  private roleIndices = {
+    MILITARY: 0,
+    CIVILIAN: 1,
+    CONTRACTOR: 3,
+  };
+
+  private contactRoles: RadioButton[] = [
+    {
+      id: "Military",
+      label: "Military",
+      value: "MILITARY",
+    },
+    {
+      id: "Civilian",
+      label: "Civilian",
+      value: "CIVILIAN",
+    },
+  ];
+
+
+  private selectedRole = "";
+  private salutation = "";
+  private firstName = "";
+  private middleName = "";
+  private lastName = "";
+  private suffix = "";
+  private email = "";
+  private phone = "";
+  private phoneExt = "";
+  private dodaac = "";
+  private selectedPhoneCountry: CountryObj = {name: '', countryCode: '', abbreviation: '',active: false};
+
+  public get currentData(): ContactDTO {
+    const type = this.corOrAcor;
+    const role = this.selectedRole;
+    const rank_components = this.selectedRank.sysId;
+    const first_name = this.firstName;
+    const middle_name = this.middleName;
+    const last_name = this.lastName;
+    const suffix = this.suffix;
+    const salutation = this.salutation;
+    const countryCode = this.selectedPhoneCountry 
+      ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode 
+      : undefined;
+    const phone = this.phone
+      ? parsePhoneNumber(this.phone, countryCode)?.number.toString() 
+      : "";
+    const email = this.email;
+    const dodaac = this.dodaac;
+    const can_access_package = this.selectedAccessToEdit;
+
+    return {
+      type, // COR, ACOR
+      role, // Military, Civilian
+      rank_components,
+      salutation,
+      first_name,
+      middle_name,
+      last_name,
+      suffix,
+      title: "",     // not used on COR/ACOR form
+      phone: phone || "",
+      email,
+      grade_civ: "", // not used on COR/ACOR form
+      dodaac,  
+      can_access_package,
+    };
+  }
+
+  public savedData: ContactDTO = {
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    role: "",
+    rank_components: "",
+    suffix: "",
+    salutation: "",
+    phone: "",
+    email: "",
+    type: "",
+    dodaac: "",
+    can_access_package: "",
+    grade_civ: "",
+    title: "",
+  };
+
+  // watchers
+
+  @Watch("selectedBranch")
+  protected branchChange(): void {
+    this.setShowAccessRadioButtons();
+    this.setRankData();
+  }
+
+  @Watch("selectedRole")
+  protected selectedRoleChange(newRole: string): void {
+    this.setShowAccessRadioButtons();
+
+    if (newRole === "MILITARY") {
+      this.selectedBranch = AcquisitionPackage.selectedContactBranch;
+    } else {
+      this.selectedBranch = { text: "", value: "" };
+    }
+  }
+
   // methods
+
+  private setShowAccessRadioButtons(): void {
+    this.showAccessRadioButtons = this.selectedRole === "CIVILIAN" 
+      || this.selectedBranch.value !== "";
+  }
+
+  private setRankData(): void {
+    if (this.selectedBranch.value) {
+      this.selectedBranchRanksData =
+        this.branchRanksData[this.selectedBranch.value];
+    }
+  }
 
   private toggleContactForm(): void {
     this.showContactForm = !this.showContactForm;
@@ -145,6 +303,91 @@ export default class COR_ACOR extends Vue {
 
   private autocompleteInputUpdate(isReset: boolean): void {
     this.showContactForm = isReset;
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const branches = await ContactData.LoadMilitaryBranches();
+    this.branchData = branches.map((choice) => {
+      const text = `U.S. ${choice.label}`;
+      const { value } = choice;
+      return {
+        text,
+        value,
+      };
+    });
+
+    this.branchRanksData = ContactData.militaryAutoCompleteGroups;
+
+    const storeData = await AcquisitionPackage.loadContactInfo(this.corOrAcor);
+    this.savedData = storeData;
+
+    if (storeData) {
+      this.selectedRole = storeData.role;
+
+      if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
+        const rankComp = (storeData.rank_components as unknown) as { link: string, value: string};
+        if(rankComp) {
+          this.savedData.rank_components = rankComp.value;
+        }
+        
+        const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
+
+        //retrieve selected Military Rank from rank component
+        const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
+        
+        this.selectedBranch = rank !== undefined
+          ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
+          : emptyBranch;
+
+        this.selectedRank = rank !== undefined
+          ? {
+              name: rank.name || "",
+              grade: rank.grade || "",
+              sysId: rank.sys_id || "",
+            }
+          : { grade: "", name: "", sysId: "" };
+      }
+
+      this.salutation = storeData.salutation;
+
+      this.firstName = storeData.first_name;
+      this.middleName = storeData.middle_name;
+      this.lastName = storeData.last_name;
+      this.suffix = storeData.suffix;
+      
+      this.email = storeData.email;
+
+      if(storeData.phone.length > 0){
+        const parsedPhone = parsePhoneNumber(storeData.phone);
+        const country = ContactData.countries.find(country => 
+          country.countryCode === `+${parsedPhone?.countryCallingCode}`)
+
+        this.selectedPhoneCountry = country || {name: '', countryCode: '', abbreviation: '',active: false};
+        this.phone = parsedPhone?.nationalNumber.toString() ||  "";
+        this.savedData.phone =  parsedPhone?.number.toString() ||  "";
+      }
+    }
+  }
+
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveContactInfo(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 
 }
