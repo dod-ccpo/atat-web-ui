@@ -18,6 +18,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   current_contract: string;
   docusign_envelope_id: string;
   sensitive_information: string;
+  period_of_performance: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -94,21 +95,13 @@ export interface MilitaryRankDTO extends BaseTableDTO {
   branch: string;
 }
 
-export interface SystemChoiceDTO extends BaseTableDTO{
+export interface SystemChoiceDTO extends BaseTableDTO {
     name: string;
     label: string;
     value: string;
 }
 
-export interface SensitiveInformationDTO {
-  sys_mod_count?: string;
-  sys_updated_on?: string;
-  sys_tags?: string;
-  sys_id?: string;
-  sys_updated_by?: string;
-  sys_created_on?: string;
-  sys_created_by?: string;
-
+export interface SensitiveInformationDTO extends BaseTableDTO {
   pii_present?: string;
   system_of_record_name?: string;
   work_to_be_performed?: string;
@@ -126,4 +119,11 @@ export interface SensitiveInformationDTO {
   foia_state_province_state_code?: string;
   foia_zip_postal_code?: string;
   foia_country?: string;
+}
+
+export interface PeriodOfPerformanceDTO extends BaseTableDTO {
+  pop_start_request?: string;
+  requested_pop_start_date?: string;
+  time_frame?: string;
+  recurring_requirement?: string;
 }

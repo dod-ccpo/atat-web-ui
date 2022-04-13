@@ -11,6 +11,7 @@ import { ContactDTO } from  "@/api/models";
 import { FairOpportunityDTO } from  "@/api/models";
 import { CurrentContractDTO } from  "@/api/models";
 import { SensitiveInformationDTO } from "@/api/models";
+import { PeriodOfPerformanceDTO } from "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -107,6 +108,7 @@ export class AcquisitionPackageStore extends VuexModule {
   fairOpportunity: FairOpportunityDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
+  periodOfPerformance: PeriodOfPerformanceDTO | null = null;
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
@@ -154,6 +156,13 @@ export class AcquisitionPackageStore extends VuexModule {
   public setSensitiveInformation(value: SensitiveInformationDTO): void {
     this.sensitiveInformation = this.sensitiveInformation 
       ? Object.assign(this.sensitiveInformation, value)
+      : value;
+  }
+
+  @Mutation
+  public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
+    this.periodOfPerformance = this.periodOfPerformance 
+      ? Object.assign(this.periodOfPerformance, value)
       : value;
   }
 
@@ -1827,6 +1836,27 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  @Action({ rawError: true })
+  /**
+   * Saves Organization data to backend
+   */
+  async saveContactInfo(data: ContactDTO): Promise<void> {
+    try {
+      const sys_id = this.contactInfo?.sys_id || "";
+      const savedContact =
+        sys_id.length > 0
+          ? await api.contactsTable.update(sys_id, { ...data, sys_id })
+          : await api.contactsTable.create(data);
+      this.setContact(savedContact);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contact: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving contact info ${error}`);
+    }
+  }
+
   @Action({rawError: true})
   async loadCurrentContract(): Promise<CurrentContractDTO> {
     try {
@@ -1961,26 +1991,53 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
   /**
-   * Saves Organization data to backend
-   */
-  async saveContactInfo(data: ContactDTO): Promise<void> {
+  * Loads Period of Performance data from backend
+  */
+   @Action({rawError: true})
+  async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
     try {
-      const sys_id = this.contactInfo?.sys_id || "";
-      const savedContact =
+      await this.ensureInitialized();
+
+      const sys_id = this.periodOfPerformance?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const periodOfPerformanceData = await api.periodOfPerformanceTable.retrieve(
+          sys_id as string
+        );
+        this.setPeriodOfPerformance(periodOfPerformanceData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          period_of_performance: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.periodOfPerformance as PeriodOfPerformanceDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading PoP info data ${error}`);
+    } 
+  }
+
+  /**
+  * Saves Period of Performance Information (FOIA) data to backend
+  */
+  @Action({ rawError: true })
+  async savePeriodOfPerformance(data: PeriodOfPerformanceDTO): Promise<void> {
+    try {
+      const sys_id = this.periodOfPerformance?.sys_id || "";
+      const savedPeriodOfPerformance =
         sys_id.length > 0
-          ? await api.contactsTable.update(sys_id, { ...data, sys_id })
-          : await api.contactsTable.create(data);
-      this.setContact(savedContact);
+          ? await api.periodOfPerformanceTable.update(sys_id, { ...data, sys_id })
+          : await api.periodOfPerformanceTable.create(data);
+      this.setPeriodOfPerformance(savedPeriodOfPerformance);
       this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        contact: sys_id,
+        ...this.periodOfPerformance,
+        period_of_performance: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving contact info ${error}`);
+      throw new Error(`error occurred saving PoP data ${error}`);
     }
   }
+
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);

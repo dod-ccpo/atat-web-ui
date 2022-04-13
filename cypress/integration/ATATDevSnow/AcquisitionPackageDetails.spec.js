@@ -76,7 +76,7 @@ describe("Test suite: Acquisition Package ", () => {
             });
         
         //label of the "Projectscope" text
-        cy.textExists(projectOverview.scopeLabel, " What is the scope of your requirement? ");
+        cy.textExists(projectOverview.scopeLabel, "What is the scope of your requirement?");
         
         //Enter What the scope requirement
         cy.enterTextInTextField(projectOverview.scopeTxtBox, projectDetails.scope).click();
@@ -296,12 +296,12 @@ describe("Test suite: Acquisition Package ", () => {
             });
         
         //Assert radio options
-        cy.radioBtn(contact.militaryRadioBtn, "MIL").not("[disabled]");
-        cy.radioBtn(contact.civilianRadioBtn,"CIV").not("[disabled]");
-        cy.radioBtn(contact.contractorRadioBtn,"CTR").not("[disabled]");
+        cy.radioBtn(contact.militaryRadioBtn, "MILITARY").not("[disabled]");
+        cy.radioBtn(contact.civilianRadioBtn,"CIVILIAN").not("[disabled]");
+        cy.radioBtn(contact.contractorRadioBtn,"CONTRACTOR").not("[disabled]");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIV");
+        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");
 
         //Salutation dropdown
         cy.dropDownClick(contact.salutationDropDownIcon);
@@ -320,7 +320,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(contact.lNameLabel, " Last name ");        
         cy.textExists(contact.mNameLabel, " Middle name  Optional ");  
         cy.textExists(contact.emailLabel, " Your email ");
-        cy.textExists(contact.emailMessage, " Enter a .mil or .gov email address. ");
+        cy.textExists(contact.emailMessage, " Enter a .MILITARY or .gov email address.");
         cy.textExists(contact.phoneNumberLabel, " Your phone number ");
         const contactInformation = {
             firstName_selector: contact.fNameTxtBox,
@@ -354,7 +354,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information"); 
         
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.militaryRadioBtn,"MIL");           
+        cy.contactRoleRadioBtnOption(contact.militaryRadioBtn,"MILITARY");           
 
         //Click Rank dropdown
         cy.dropDownClick(contact.rankInput);            
@@ -392,7 +392,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIV");
+        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");
 
         //select the value from salutationDropdownList
         cy.dropDownClick(contact.salutationDropDownIcon);
@@ -434,7 +434,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CTR");  
+        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CONTRACTOR");  
         const contactInformation = {
             firstName_selector: contact.fNameTxtBox,
             firstName: contactInfo.firstName3,
@@ -464,7 +464,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CTR");
+        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CONTRACTOR");
     
         //Salutation dropdown
         cy.dropDownClick(contact.salutationDropDownIcon); 
@@ -546,7 +546,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn,"CTR")
+        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn,"CONTRACTOR")
     
         //Salutation dropdown
         cy.dropDownClick(contact.salutationDropDownIcon);

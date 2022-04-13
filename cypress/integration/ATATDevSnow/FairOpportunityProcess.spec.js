@@ -41,7 +41,7 @@ describe("Test suite: Fair Opportunity Process", () => {
         //click on navigation buttons
         cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
         //Navigates to "Do you have a current contract for this effort?" page
-        cy.textExists(common.header," Do you have a current contract for this effort? ")
+        cy.textExists("div"," Future Justification and Approval page ")
         
     })  
 

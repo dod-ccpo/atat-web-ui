@@ -24,6 +24,8 @@ describe("Test suite: Contract Details Step", () => {
 
   it("TC2: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Will this be a future recurring requirement? ");
     const expectedRecuringReqText="DISA has developed a tracking system for expiring contracts. Responding YES to this question will enable contract specialists to populate the tracking system."
     cy.findElement(contractDetails.recurringReqText).then(($e) => {
@@ -34,8 +36,8 @@ describe("Test suite: Contract Details Step", () => {
 
     });
     //assert radio button options
-    cy.radioBtn(contractDetails.yesRadioOption, "YesRecurring").not("[disabled]").click({force: true});
-    cy.radioBtn(contractDetails.noRadioOption, "NoRecurring").not("[disabled]").click({force: true});
+    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
+    cy.radioBtn(contractDetails.noRadioOption, "false").not("[disabled]").click({force: true});
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });

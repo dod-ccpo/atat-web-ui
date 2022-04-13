@@ -27,10 +27,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { PeriodOfPerformanceDTO } from "@/api/models"
+import { hasChanges } from "@/helpers";
 
 import { RadioButton } from "../../../types/Global";
 
@@ -40,19 +44,64 @@ import { RadioButton } from "../../../types/Global";
   },
 })
 
-export default class RecurringRequirement extends Vue {
-  private selectedRecurringOption = "";
+export default class RecurringRequirement extends Mixins(SaveOnLeave) {
+
+  public selectedRecurringOption 
+    = AcquisitionPackage.periodOfPerformance?.recurring_requirement || "";
+
   private recurringOptions: RadioButton[] = [
     {
       id: "YesRecurring",
       label: "Yes. This requirement should be tracked for similar efforts in the future.",
-      value: "YesRecurring",
+      value: "true",
     },
     {
       id: "NoRecurring",
       label: "No. This is a temporary requirement.",
-      value: "NoRecurring",
+      value: "false",
     },
   ];
+  private get currentData(): PeriodOfPerformanceDTO {
+    return {
+      recurring_requirement: this.selectedRecurringOption,
+    };
+  }
+
+  private savedData: PeriodOfPerformanceDTO = { 
+    recurring_requirement: "" 
+  };
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadPeriodOfPerformance();
+    if (storeData) {
+      if (Object.prototype.hasOwnProperty.call(storeData, 'recurring_requirement')) {
+        this.savedData = {
+          recurring_requirement: storeData.recurring_requirement,
+        }
+      }
+    } else {
+      AcquisitionPackage.setPeriodOfPerformance(this.currentData);
+    }
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.savePeriodOfPerformance(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
 }
 </script>

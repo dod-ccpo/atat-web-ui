@@ -456,7 +456,7 @@ Cypress.Commands.add("contractOption", (radio_selector, value) => {
             cy.textExists(common.header, " Let’s gather some details about your current contract ");
         }
         else {
-            cy.findElement(common.stepExceptionToFpText).contains("Exception to Fair Opportunity")
+            cy.findElement(common.stepBackgroundLink).contains(" Background ")
                 .and('have.css', 'color', colors.primary);
         }          
     })
