@@ -5,7 +5,11 @@
     class="_atat-alert"
     :class="getClasses"
   >
-    <div class="d-flex">
+    <div 
+      class="_content d-flex"
+      :style="{ 'max-height': maxHeight + 'px' }"
+      :class="{ 'pt-6 pr-6': maxHeight }"
+    >
       <div
         v-if="type !== 'callout'"
         class="pr-4"
@@ -22,6 +26,11 @@
       </div>
       <div>
         <slot name="content"></slot>
+        <div 
+          v-if="maxHeight"
+          style="height: 60px; display: block; width: 100%"
+        >
+        </div>
       </div>
       <div
         v-if="closeButton"
@@ -71,6 +80,7 @@ export default class ATATAlert extends Vue {
   @Prop({ default: "presentation" }) private role?: string;
   @Prop({ default: true }) private show?: boolean;
   @Prop({ default: "Alert" }) private id?: string;
+  @Prop({ default: "" }) private maxHeight?: string;
 
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
@@ -89,12 +99,13 @@ export default class ATATAlert extends Vue {
   @Prop({ default: false }) private borderLeft?: boolean;
   @Prop({ default: false }) private closeButton?: boolean;
 
-  get getClasses(): string {
+  public get getClasses(): string {
     if (this.type === "callout") {
-      return "_callout";
+      return this.maxHeight ? "_callout _scrollable py-0 pr-0 " : "_callout";
     }
     let alertClasses = "_" + this.type + "-alert";
     alertClasses = this.borderLeft ? alertClasses + " _border-left-thick " : alertClasses;
+    alertClasses = this.maxHeight ? alertClasses + " py-0 pr-0 " : alertClasses;
     return alertClasses;
   }
 

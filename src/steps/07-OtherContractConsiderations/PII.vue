@@ -87,13 +87,17 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component} from "vue-property-decorator";
+
+import {Component, Mixins} from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { SensitiveInformationDTO} from "@/api/models"
+import { hasChanges } from "@/helpers";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
 
 import {RadioButton} from "../../../types/Global";
@@ -106,7 +110,7 @@ import {RadioButton} from "../../../types/Global";
   },
 })
 
-export default class PII extends Vue {
+export default class PII extends  Mixins(SaveOnLeave) {
   private pIIOptions: RadioButton[] = [
     {
       id: "YesPII",
@@ -131,5 +135,44 @@ export default class PII extends Vue {
   public set selectedPIIOption(value: string) {
     OtherContractConsiderations.setPIIRecord(value === "Yes");
   }
+
+  private get currentData(): SensitiveInformationDTO {
+    return {
+      pii_present: this.selectedPIIOption === "Yes" ? "true" : "false",
+    };
+  }
+
+  private get savedData(): SensitiveInformationDTO {
+    return {
+      pii_present: AcquisitionPackage.sensitiveInformation?.pii_present || "false",
+    };
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    if (storeData) {
+      this.selectedPIIOption = storeData.pii_present === "true" ? "Yes" : "No";
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
 }
 </script>
