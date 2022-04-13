@@ -34,6 +34,8 @@ module.exports = {
   stepBackgroundCircle: "#Step_Background .step-circle",
   substepCurrentContractLink: "#SubStep_CurrentContract",
   substepCurrentContractText: "#SubStep_CurrentContract .step-text",
+  substepCurrentEnvironmentLink: "#SubStep_CurrentEnvironment",
+  substepCurrentEnvironmentText: "#SubStep_CurrentEnvironment .step-text",
   stepExceptionToFpLink: "#Step_ExceptiontoFairOpportunity",
   stepExceptionToFpText: "#Step_ExceptiontoFairOpportunity .step-text",
   stepContractDetailsLink: "#Step_ContractDetails",
