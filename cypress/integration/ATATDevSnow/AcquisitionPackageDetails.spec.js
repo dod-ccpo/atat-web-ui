@@ -457,7 +457,7 @@ describe("Test suite: Acquisition Package ", () => {
             "351245121"); 
     });
     
-    it("TC13: COR: Selected Contact Information", () => {        
+    it.only("TC13: COR: Selected Contact Information", () => {        
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
         //Navigates to Contact information
@@ -499,8 +499,8 @@ describe("Test suite: Acquisition Package ", () => {
 
         //Verify the selected contact info
         cy.selectedContactInformation(
-            " Adam Adamson ",
-            "mail adam.adamson-civ@mail.mil ",
+            " Test0 Adamson ",
+            "mail test.adamson-civ@mail.mil ",
             "phone 333-333-3333",
             "pentagon HQ1234 - Corresponding Organization Name",
             " To make any changes to your COR’s contact information, please send a request to our User Engagement Team. ",
@@ -614,7 +614,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.btnExists(common.continueBtn, " Continue ").click();
     });       
 
-    it("TC16: ACOR: Option is Yes: Selected Contact Information", () => {
+    it.only("TC16: ACOR: Option is Yes: Selected Contact Information", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
 
         //Navigates to Contact information
@@ -631,10 +631,10 @@ describe("Test suite: Acquisition Package ", () => {
 
         //navigates to ACOR option to select yes or no
         cy.acorOption(acor.yesRadioBtn, "true");
-        cy.checkIfCorOrAcor(common.header, " Let’s gather info about your ACOR ", "Selia");
+        cy.checkIfCorOrAcor(common.header, " Let’s gather info about your ACOR ", "Test2");
         cy.selectedContactInformation(
-            " Selia Wentzel ",
-            "mail sel.wentz@acusage.net ",
+            " Test2 Wentzel ",
+            "mail test.wentz@acusage.net ",
             "phone 444-444-4444",
             "pentagon HQ567 - Other Organization Name",
             " To make any changes to your ACOR’s contact information, please send a request to our User Engagement Team. ",
@@ -656,7 +656,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });  
 
-    it.only("TC17: ACOR: Option is true: Manually enter Contact information", () => {
+    it("TC17: ACOR: Option is true: Manually enter Contact information", () => {
         cy.clickSideStepper(common.subStepContactInformationLink," Contact Information "); 
 
         //Navigates to Contact information
