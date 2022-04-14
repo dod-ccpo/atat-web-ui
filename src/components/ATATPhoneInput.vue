@@ -164,8 +164,8 @@ export default class ATATPhoneInput extends Vue {
     this.searchResults = [...this.countries]
   };
 
-
   //data
+
   private countries: CountryObj[] = [
     {
       name: "United States",

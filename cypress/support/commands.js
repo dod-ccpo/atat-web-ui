@@ -325,8 +325,8 @@ Cypress.Commands.add("enterContactInformation", (contactInformation ) => {
         //enter DoDAAC
         cy.enterTextInTextField(commonCorAcor.dodaacTxtBox, contactInformation.dodText);
         //radio buttons
-        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes");
-        cy.radioBtn(commonCorAcor.accessNoRadioBtn, "no");
+        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "true");
+        cy.radioBtn(commonCorAcor.accessNoRadioBtn, "false");
     }
 });
 
@@ -426,6 +426,7 @@ Cypress.Commands.add("requestChangeContactInformation", (requestLink, requestTit
 });
 
 Cypress.Commands.add("acorOption", (radio_selector, value) => {
+    debugger;
     cy.textExists(common.header, " Do you have an Alternate Contracting Officer’s Representative (ACOR)? ");
     cy.radioBtn(radio_selector, value).click({ force: true });
     cy.findElement(acor.activeRadioOption)

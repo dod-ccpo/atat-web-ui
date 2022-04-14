@@ -373,11 +373,7 @@ export default class COR_ACOR extends Vue {
           : emptyBranch;
 
         this.selectedRank = rank !== undefined
-          ? {
-              name: rank.name || "",
-              grade: rank.grade || "",
-              sysId: rank.sys_id || "",
-            }
+          ? { name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || "" }
           : { grade: "", name: "", sysId: "" };
       }
 
@@ -390,7 +386,7 @@ export default class COR_ACOR extends Vue {
       
       this.email = storeData.email;
 
-      if(storeData.phone.length > 0) {
+      if (storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
         const country = ContactData.countries.find(country => 
           country.countryCode === `+${parsedPhone?.countryCallingCode}`);

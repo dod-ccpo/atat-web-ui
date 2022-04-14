@@ -355,11 +355,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
           : emptyBranch;
 
         this.selectedRank = rank !== undefined
-          ? {
-              name: rank.name || "",
-              grade: rank.grade || "",
-              sysId: rank.sys_id || "",
-            }
+          ? { name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || ""}
           : { grade: "", name: "", sysId: "" };
       }
 
