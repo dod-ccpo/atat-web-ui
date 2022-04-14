@@ -457,7 +457,7 @@ describe("Test suite: Acquisition Package ", () => {
             "351245121"); 
     });
     
-    it.only("TC13: COR: Selected Contact Information", () => {        
+    it("TC13: COR: Selected Contact Information", () => {        
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
         //Navigates to Contact information
@@ -614,7 +614,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.btnExists(common.continueBtn, " Continue ").click();
     });       
 
-    it.only("TC16: ACOR: Option is Yes: Selected Contact Information", () => {
+    it("TC16: ACOR: Option is Yes: Selected Contact Information", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
 
         //Navigates to Contact information
