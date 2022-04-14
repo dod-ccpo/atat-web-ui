@@ -42,5 +42,12 @@ module.exports = {
   stepContractDetailsText: "#Step_ContractDetails .step-text",
   subStepPopLink: "#SubStep_PeriodofPerformance",
   subStepPopText: "#SubStep_PeriodofPerformance .step-text",
-  subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text"
+  subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text",
+  //Government Furnished Euipment
+  stepGovFurEquipLink: "#Step_GovernmentFurnishedEquipment",
+  stepGovFurEquipText: "#Step_GovernmentFurnishedEquipment .step-text",
+  subStepPropDetailsLink: "#SubStep_PropertyDetails",
+  subStepPropDetailsText: "#SubStep_PropertyDetails .step-text",
+  substepJustificationLink: "#SubStep_Justification",
+  substepJustificationText: "#SubStep_Justification  span.step-text",
 }
