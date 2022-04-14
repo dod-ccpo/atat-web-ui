@@ -372,6 +372,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       this.streetAddress2 = storeData.street_address_2;
       this.city = storeData.city;
       this.zipCode = storeData.zip_code;
+      this.stateOrProvince = storeData.state;
+
     }
   }
 
