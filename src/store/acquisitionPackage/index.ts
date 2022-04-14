@@ -12,6 +12,7 @@ import { FairOpportunityDTO } from  "@/api/models";
 import { CurrentContractDTO } from  "@/api/models";
 import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
+import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -69,6 +70,16 @@ const initialFairOpportunity = () => {
   };
 };
 
+const initialGFE = () => {
+  return {
+    dpas_unit_identification_code: "",
+    gfe_gfp_furnished: "",
+    dpas_custodian_number: "",
+    property_accountable: "",
+    property_custodian_name: "",
+  }
+}
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
       ATAT_ACQUISTION_PACKAGE_KEY,
@@ -81,6 +92,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
         acorInfo: store.acorInfo,
         fairOpportunity: store.fairOpportunity,
         requirementsCostEstimate: store.requirementsCostEstimate,
+        gfeOverview: store.GFEOverview,
       })
   );
 };
@@ -112,6 +124,7 @@ export class AcquisitionPackageStore extends VuexModule {
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
+  GFEOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
@@ -194,6 +207,10 @@ export class AcquisitionPackageStore extends VuexModule {
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
   }
+  @Mutation
+  public setGFEOverview(value: GFEOverviewDTO): void {
+    this.GFEOverview = value;
+  }
 
   @Mutation
   public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
@@ -215,6 +232,9 @@ export class AcquisitionPackageStore extends VuexModule {
     this.acorInfo = sessionData.acorInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
+    this.currentContract = sessionData.CurrentContract;
+    this.sensitiveInformation = sessionData.SensitiveInformation;
+    this.GFEOverview = sessionData.GFEOverview;
   }
 
   @Action({rawError: true})
@@ -243,6 +263,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setAcquisitionPackage(acquisitionPackage);
           this.setFairOpportunity(initialFairOpportunity())
           this.setRequirementsCostEstimate({ surge_capabilities: ""});
+          this.setGFEOverview(initialGFE());
           this.setInitialized(true);
         }
       } catch (error) {
@@ -2066,6 +2087,45 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  @Action({rawError: true})
+  async loadGFEOverview(): Promise<GFEOverviewDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.GFEOverview?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const GFEOverviewData = await api.gfeOverviewTable.retrieve(
+            sys_id as string
+        );
+        this.setGFEOverview(GFEOverviewData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          gfe_overview: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.GFEOverview as GFEOverviewDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading GFE info ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
+    try {
+      const sys_id = this.GFEOverview?.sys_id || "";
+      const savedGFEOverviewData =
+          sys_id.length > 0
+              ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
+              : await api.gfeOverviewTable.create(data);
+      this.setGFEOverview(savedGFEOverviewData);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        gfe_overview: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving GFE data ${error}`);
+    }
+  }
   /**
   * Loads Contract Type data from backend
   */

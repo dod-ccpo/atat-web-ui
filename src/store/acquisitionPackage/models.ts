@@ -1,10 +1,11 @@
 import {
   AcquisitionPackageDTO,
   ContactDTO,
+  CurrentContractDTO,
+  FairOpportunityDTO,
+  GFEOverviewDTO,
   OrganizationDTO,
   ProjectOverviewDTO,
-  FairOpportunityDTO,
-  CurrentContractDTO,
   SensitiveInformationDTO,
   RequirementsCostEstimateDTO,
   PeriodOfPerformanceDTO,
@@ -22,4 +23,5 @@ export interface SessionData {
   CurrentContract: CurrentContractDTO;
   SensitiveInformation: SensitiveInformationDTO;
   requirementsCostEstimate: RequirementsCostEstimateDTO;
+  GFEOverview: GFEOverviewDTO;
 }
