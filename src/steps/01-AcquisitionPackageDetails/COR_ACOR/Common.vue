@@ -6,10 +6,10 @@
         :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
         :label-sr-only="true"
         :label="'Search for your ' + corOrAcor"
-        titleKey="FullName"
-        subtitleKey="Email"
+        titleKey="fullName"
+        subtitleKey="email"
         :items="contactList"
-        :searchFields="['FullName', 'Email']"
+        :searchFields="['fullName', 'email']"
         :selectedItem.sync="selectedContact"
         placeholder="Search by name or email"
         icon="search"
@@ -93,6 +93,7 @@ import { ContactDTO } from "@/api/models";
 import { 
   AutoCompleteItem, 
   AutoCompleteItemGroups,
+  CorAcorSelectData,
   CountryObj, 
   RadioButton, 
   RankData,
@@ -122,7 +123,9 @@ export default class COR_ACOR extends Vue {
   }
 
   get haveSelectedContact(): boolean {
-    return this.selectedContact && Object.keys(this.selectedContact).length > 0;
+    return this.selectedContact 
+      && Object.prototype.hasOwnProperty.call(this.selectedContact, "firstName")
+      && this.selectedContact.firstName !== "";
   }
 
   // data
@@ -143,29 +146,43 @@ export default class COR_ACOR extends Vue {
     },
   ];
   
-  public selectedContact = {};
-  // EJY TODO watch selectedContact, populate currentData when changed
-  private contactList = [
+  public selectedContact: CorAcorSelectData = {
+      id: "",
+      firstName: "",
+      lastName: "",
+      fullName: "",
+      email: "",
+      phone: "",
+      orgName: "",
+  };
+
+  private contactList: CorAcorSelectData[] = [
     {
-      Id: 1,
-      FullName: "Test Adamson",
-      Email: "test.adamson-civ@mail.mil",
-      Phone: "333-333-3333",
-      OrgName: "HQ1234 - Corresponding Organization Name"
+      id: "1",
+      firstName: "Test0",
+      lastName: "Adamson",
+      fullName: "Test Adamson",
+      email: "test.adamson-civ@mail.mil",
+      phone: "333-333-3333",
+      orgName: "HQ1234 - Corresponding Organization Name"
     },
     {
-      Id: 2,
-      FullName: "Test Contractingofficerep",
-      Email: "test.contractingofficerrep-civ@mail.mil",
-      Phone: "555-555-5555",
-      OrgName: "HQ1234 - Corresponding Organization Name"
+      id: "2",
+      firstName: "Test1",
+      lastName: "Contractingofficerep",
+      fullName: "Test1 Contractingofficerep",
+      email: "test.contractingofficerrep-civ@mail.mil",
+      phone: "555-555-5555",
+      orgName: "HQ1234 - Corresponding Organization Name"
     },
     {
-      Id: 3,
-      FullName: "Test Wentzel",
-      Email: "test.wentz@acusage.net",
-      Phone: "444-444-4444",
-      OrgName: "HQ567 - Other Organization Name"
+      id: "3",
+      firstName: "Test2",
+      lastName: "Wentzel",
+      fullName: "Test2 Wentzel",
+      email: "test.wentz@acusage.net",
+      phone: "444-444-4444",
+      orgName: "HQ567 - Other Organization Name"
     },
   ];
 
@@ -270,6 +287,35 @@ export default class COR_ACOR extends Vue {
     this._savedContactData = this.savedData;
   }
 
+  @Watch("selectedContact")
+  protected selectedContactChange(newSelectedContact: CorAcorSelectData): void {
+    this.showContactForm = false;
+    if (newSelectedContact) {
+      this.firstName = newSelectedContact.firstName;
+      this.lastName = newSelectedContact.lastName;
+      this.email = newSelectedContact.email;
+      // TODO phone needs refinement in next milestone when not using dummy data
+      this.phone = "+1" + newSelectedContact.phone; 
+      // TODO set all data i.e., fields in currentData/ContactDTO with real data when avl.
+    } else {
+      this.selectedRole = "";
+      this.selectedSalutation = "";
+      this.firstName = "";
+      this.middleName = "";
+      this.lastName = "";
+      this.suffix = "";
+      this.email = "";
+      this.phone = "";
+      this.phoneExt = "";
+      this.dodaac = "";
+      this.selectedPhoneCountry 
+        = { name: '', countryCode: '', abbreviation: '', active: false };
+      this.selectedBranch = { text: "", value: "" };
+      this.selectedRank = { grade: "", name: "", sysId: "" };
+      this.selectedAccessToEdit = "";
+    }
+  }
+
   // methods
 
   private setShowAccessRadioButtons(): void {
@@ -365,6 +411,13 @@ export default class COR_ACOR extends Vue {
     this.setShowAccessRadioButtons();
     if (this.savedData.manually_entered === "true") {
       this.showContactForm = true;
+    } else {
+      const foundContact = this.contactList.find(val =>
+        val.email === this.savedData.email
+      );
+      if (foundContact) {
+        this.selectedContact = foundContact;
+      }
     }
   }
 
