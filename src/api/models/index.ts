@@ -19,6 +19,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   docusign_envelope_id: string;
   sensitive_information: string;
   period_of_performance: string;
+  gfe_overview: string;
   contract_type: string;
 }
 
@@ -80,9 +81,9 @@ export interface MilitaryRankDTO extends BaseTableDTO {
 }
 
 export interface SystemChoiceDTO extends BaseTableDTO {
-    name: string;
-    label: string;
-    value: string;
+  name: string;
+  label: string;
+  value: string;
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
@@ -118,4 +119,12 @@ export interface ContractTypeDTO extends BaseTableDTO {
   firm_fixed_price: string;
   time_and_materials: string;
   contract_type_justification: string;
+}
+
+export interface GFEOverviewDTO extends BaseTableDTO {
+  dpas_unit_identification_code?: string;
+  gfe_gfp_furnished?: string;
+  dpas_custodian_number?: string;
+  property_accountable?: string;
+  property_custodian_name?: string;
 }
