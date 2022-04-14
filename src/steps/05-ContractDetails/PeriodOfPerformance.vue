@@ -15,7 +15,12 @@
               specify the length of time that each period will remain in effect.
               Add, duplicate or remove option periods as needed, up to 5 years
               total.
-              <a role="button" id="PoPLearnMore" @click="openSlideoutPanel">
+              <a 
+                role="button" 
+                id="PoPLearnMore" 
+                class="_text-link" 
+                @click="openSlideoutPanel"
+              >
                 Learn more about PoPs on the JWCC contract.
               </a>
             </p>
@@ -43,7 +48,8 @@
                 width="178"
                 :rules="[$validators.integer()]"
                 :value="optionPeriod.duration"
-                @blur="setDuration($event, index)"
+                :extraEmitVal="index"
+                @blur="setDuration"
               />
             </div>
             <div>
@@ -51,7 +57,7 @@
                 :id="getIdText(getOptionPeriodLabel(index))"
                 :items="timePeriods"
                 width="178"
-                :selectedValue="optionPeriod.timeUnits"
+                :selectedValue="optionPeriod.unitOfTime"
                 class="mr-4"
                 @onChange="setTimePeriod($event, index)"
               />
@@ -138,7 +144,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public optionPeriods: PoP[] = [
     {
       duration: null,
-      timeUnits: "Year",
+      unitOfTime: "Year",
     },
   ];
 
@@ -155,15 +161,14 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public addOptionPeriod(): void {
     const newOptionPeriod = {
       duration: null,
-      timeUnits: "Year",
+      unitOfTime: "Year",
     };
     this.optionPeriods.push(newOptionPeriod);
   }
 
-  public setDuration(e: Event, index: number): void {
-    if (e && e.currentTarget) {
-      const input = e.currentTarget as HTMLFormElement;
-      const duration = input.value;
+  public setDuration(value: string, index: number): void {
+    if (value && (index || index === 0)) {
+      const duration = parseInt(value);
       const currentDuration = this.optionPeriods[index].duration;
       if (duration !== currentDuration) {
         this.optionPeriods[index].duration = duration;
@@ -172,9 +177,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     }
   }
 
-  public setTimePeriod(timeUnits: string, index: number): void {
-    if (timeUnits) {
-      this.optionPeriods[index].timeUnits = timeUnits;
+  public setTimePeriod(unitOfTime: string, index: number): void {
+    if (unitOfTime) {
+      this.optionPeriods[index].unitOfTime = unitOfTime;
       const duration = this.optionPeriods[index].duration;
       if (duration) {
         this.setTotalPoP();
@@ -187,7 +192,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     this.optionPeriods.forEach((optionPeriod) => {
       if (optionPeriod.duration) {
         let multiplier = 1;
-        switch (optionPeriod.timeUnits) {
+        switch (optionPeriod.unitOfTime) {
           case "Week(s)":
             multiplier = 7;
             break;
@@ -244,10 +249,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       optionPeriodsRecord[this.getOptionPeriodLabel(index).replace(/\s/g, "")] =
         {
           duration: option.duration,
-          timeUnits: option.timeUnits,
+          unitOfTime: option.unitOfTime,
         };
     });
-
     return {
       time_frame,
       pop_start_request,
@@ -278,7 +282,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           this.addOptionPeriod();
           this.optionPeriods[index] = {
             duration: pop.duration,
-            timeUnits: pop.timeUnits,
+            unitOfTime: pop.unitOfTime,
           };
           index += 1;
         }

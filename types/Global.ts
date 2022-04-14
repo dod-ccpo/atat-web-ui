@@ -129,5 +129,5 @@ export interface ToastObj {
 
 export interface PoP {
   duration: number | null;
-  timeUnits: string;
+  unitOfTime: string;
 }
