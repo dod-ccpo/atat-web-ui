@@ -325,8 +325,8 @@ Cypress.Commands.add("enterContactInformation", (contactInformation ) => {
         //enter DoDAAC
         cy.enterTextInTextField(commonCorAcor.dodaacTxtBox, contactInformation.dodText);
         //radio buttons
-        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes");
-        cy.radioBtn(commonCorAcor.accessNoRadioBtn, "no");
+        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "true");
+        cy.radioBtn(commonCorAcor.accessNoRadioBtn, "false");
     }
 });
 

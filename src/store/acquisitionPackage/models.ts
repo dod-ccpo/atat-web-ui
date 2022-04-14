@@ -13,6 +13,8 @@ export interface SessionData {
   projectOverview: ProjectOverviewDTO;
   organization: OrganizationDTO;
   contactInfo: ContactDTO;
+  corInfo: ContactDTO;
+  acorInfo: ContactDTO;
   fairOpportunity: FairOpportunityDTO;
   CurrentContract: CurrentContractDTO;
   SensitiveInformation: SensitiveInformationDTO

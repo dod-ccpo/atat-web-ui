@@ -2,19 +2,19 @@
   <div :id="id">
     <div class="max-width-640 border1 border-base-lighter border-rounded-more pa-8 mb-5">
       <span class="font-size-20 mb-5 d-block" :id="id + '_Name'">
-        {{ selectedContact.FullName }}
+        {{ selectedContact.firstName }} {{ selectedContact.lastName }}
       </span>
       <span class="ml-3 mb-5 d-block" :id="id + '_Email'">
         <v-icon class="mr-2 text-base-light">mail</v-icon> 
-        {{ selectedContact.Email }}
+        {{ selectedContact.email }}
       </span>
       <span class="ml-3 mb-5 d-block" :id="id + '_Phone'">
         <v-icon class="mr-2 text-base-light">phone</v-icon> 
-        {{ selectedContact.Phone }}<br />
+        {{ selectedContact.phone }}<br />
       </span>
       <span class="ml-3 mb-10 d-block" :id="id + '_OrgName'">
         <v-icon class="mr-2 text-base-light">pentagon</v-icon> 
-        {{ selectedContact.OrgName }}<br />
+        {{ selectedContact.orgName }}<br />
       </span>
       <p class="mb-10 text-base" :id="id + '_Message'">
         To make any changes to your {{ corOrAcor }}’s contact information, please send a 

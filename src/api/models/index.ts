@@ -30,21 +30,22 @@ export interface CurrentContractDTO extends BaseTableDTO {
 }
 
 export interface ContactDTO extends BaseTableDTO {
-
-  grade_civ: string;
-  role: string;
-  dodaac: string;
-  last_name: string;
-  middle_name: string;
-  suffix: string;
-  type: string;
-  can_access_package: string;
-  phone: string;
+  type: string; // Mission Owner, COR, ACOR
+  role: string; // Military, Civilian, Contractor
   rank_components: string;
   salutation: string;
   first_name: string;
-  email: string;
+  last_name: string;
+  middle_name: string;
+  suffix: string;
   title: string;
+  phone: string;
+  phone_extension: string;
+  email: string;
+  grade_civ: string;
+  dodaac: string;
+  can_access_package: string;
+  manually_entered: string;
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {

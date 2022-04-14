@@ -131,3 +131,21 @@ export interface PoP {
   duration: number | null;
   timePeriod: string;
 }
+
+export interface RankData {
+  grade: string; 
+  name: string; 
+  sysId: string;
+}
+
+// CorAcorSelectData needs refinement in next milestone
+// currently only dummy data
+export interface CorAcorSelectData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  orgName: string;
+}
