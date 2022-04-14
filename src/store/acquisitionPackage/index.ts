@@ -12,6 +12,7 @@ import { FairOpportunityDTO } from  "@/api/models";
 import { CurrentContractDTO } from  "@/api/models";
 import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
+import { ContractTypeDTO } from "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -41,8 +42,7 @@ const initialOrganization = () => {
   };
 };
 
-const initialContact= () => {
-
+const initialContact = () => {
   return {
     grade_civ: "",
     role: "",
@@ -53,11 +53,13 @@ const initialContact= () => {
     type: "",
     can_access_package: "",
     phone: "",
+    phone_extension: "",
     rank_components: "",
     salutation: "",
     first_name: "",
     email: "",
     title: "",
+    manually_entered: "",
   }
 }
 
@@ -75,6 +77,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
         projectOverview: store.projectOverview,
         organization: store.organization,
         contactInfo: store.contactInfo,
+        corInfo: store.corInfo,
+        acorInfo: store.acorInfo,
         fairOpportunity: store.fairOpportunity,
       })
   );
@@ -100,11 +104,16 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
+  corInfo: ContactDTO | null = null;
+  acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
+  contractType: ContractTypeDTO | null = null;
+
+  public initContact: ContactDTO = initialContact();
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
@@ -137,8 +146,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setContact(value: ContactDTO): void {
-    this.contactInfo = value;
+  public setContact(saveData: { data: ContactDTO, type: string }): void {
+    const isCor = saveData.type === "COR";
+    const dataKey = saveData.type === "Mission Owner"
+      ? "contactInfo"
+      : isCor ? "corInfo" : "acorInfo";
+
+    this[dataKey] = saveData.data;
   }
 
   @Mutation
@@ -163,6 +177,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setContractType(value: ContractTypeDTO): void {
+    this.contractType = this.contractType 
+      ? Object.assign(this.contractType, value)
+      : value;
+  }
+
+  @Mutation
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
@@ -183,6 +204,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
+    this.corInfo = sessionData.corInfo;
+    this.acorInfo = sessionData.acorInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
     this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
@@ -208,7 +231,9 @@ export class AcquisitionPackageStore extends VuexModule {
         if (acquisitionPackage) {
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
-          this.setContact(initialContact());
+          this.setContact({ data: initialContact(), type: "Mission Owner" });
+          this.setContact({ data: initialContact(), type: "COR" });
+          this.setContact({ data: initialContact(), type: "ACOR" });
           this.setAcquisitionPackage(acquisitionPackage);
           this.setFairOpportunity(initialFairOpportunity())
           this.setInitialized(true);
@@ -1800,25 +1825,28 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  async loadContactInfo(): Promise<ContactDTO> {
-
+  async loadContactInfo(contactType: string): Promise<ContactDTO> {
     try {
       await this.ensureInitialized();
-
-      const sys_id = this.contactInfo?.sys_id || "";
+      const isCor = contactType === "COR";
+      const dataKey = contactType === "Mission Owner"
+        ? "contactInfo"
+        : isCor ? "corInfo" : "acorInfo";
+      
+      const sys_id = this[dataKey]?.sys_id || "";
 
       if (sys_id.length > 0) {
         const contactInfo = await api.contactsTable.retrieve(
             sys_id as string
         );
-        this.setContact(contactInfo);
+        this.setContact({ data: contactInfo, type: contactType });
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
           contact: sys_id,
         } as AcquisitionPackageDTO);
 
       }
-      return this.contactInfo as ContactDTO;
+      return this[dataKey] as ContactDTO;
     } catch (error) {
       throw new Error(`error occurred loading contact info ${error}`);
     }
@@ -1828,14 +1856,19 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Organization data to backend
    */
-  async saveContactInfo(data: ContactDTO): Promise<void> {
+  async saveContactInfo(saveData: { data: ContactDTO, type: string }): Promise<void> {
     try {
-      const sys_id = this.contactInfo?.sys_id || "";
+      const isCor = saveData.type === "COR";
+      const dataKey = saveData.type === "Mission Owner"
+        ? "contactInfo"
+        : isCor ? "corInfo" : "acorInfo";
+
+      const sys_id = this[dataKey]?.sys_id || "";
       const savedContact =
         sys_id.length > 0
-          ? await api.contactsTable.update(sys_id, { ...data, sys_id })
-          : await api.contactsTable.create(data);
-      this.setContact(savedContact);
+          ? await api.contactsTable.update(sys_id, { ...saveData.data, sys_id })
+          : await api.contactsTable.create(saveData.data);
+      this.setContact({ data: savedContact, type: saveData.type });
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
         contact: sys_id,
@@ -1849,7 +1882,6 @@ export class AcquisitionPackageStore extends VuexModule {
   async loadCurrentContract(): Promise<CurrentContractDTO> {
     try {
       await this.ensureInitialized();
-
       const sys_id = this.currentContract?.sys_id || "";
 
       if (sys_id.length > 0) {
@@ -1983,7 +2015,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
   * Loads Period of Performance data from backend
   */
-   @Action({rawError: true})
+  @Action({rawError: true})
   async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
     try {
       await this.ensureInitialized();
@@ -2021,6 +2053,52 @@ export class AcquisitionPackageStore extends VuexModule {
       this.setAcquisitionPackage({
         ...this.periodOfPerformance,
         period_of_performance: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving PoP data ${error}`);
+    }
+  }
+
+  /**
+  * Loads Contract Type data from backend
+  */
+  @Action({rawError: true})
+  async loadContractType(): Promise<ContractTypeDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.contractType?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const contractTypeData = await api.contractTypeTable.retrieve(
+          sys_id as string
+        );
+        this.setContractType(contractTypeData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          contract_type: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.contractType as ContractTypeDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading Contract Type data ${error}`);
+    } 
+  }
+
+  /**
+  * Saves Period of Performance Information (FOIA) data to backend
+  */
+  @Action({ rawError: true })
+  async saveContractType(data: ContractTypeDTO): Promise<void> {
+    try {
+      const sys_id = this.contractType?.sys_id || "";
+      const savedContractType =
+        sys_id.length > 0
+          ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
+          : await api.contractTypeTable.create(data);
+      this.setContractType(savedContractType);
+      this.setAcquisitionPackage({
+        ...this.contractType,
+        contract_type: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving PoP data ${error}`);

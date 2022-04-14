@@ -19,6 +19,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   docusign_envelope_id: string;
   sensitive_information: string;
   period_of_performance: string;
+  contract_type: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -30,21 +31,22 @@ export interface CurrentContractDTO extends BaseTableDTO {
 }
 
 export interface ContactDTO extends BaseTableDTO {
-
-  grade_civ: string;
-  role: string;
-  dodaac: string;
-  last_name: string;
-  middle_name: string;
-  suffix: string;
-  type: string;
-  can_access_package: string;
-  phone: string;
+  type: string; // Mission Owner, COR, ACOR
+  role: string; // Military, Civilian, Contractor
   rank_components: string;
   salutation: string;
   first_name: string;
-  email: string;
+  last_name: string;
+  middle_name: string;
+  suffix: string;
   title: string;
+  phone: string;
+  phone_extension: string;
+  email: string;
+  grade_civ: string;
+  dodaac: string;
+  can_access_package: string;
+  manually_entered: string;
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
@@ -101,6 +103,7 @@ export interface SensitiveInformationDTO extends BaseTableDTO {
   foia_state_province_state_code?: string;
   foia_zip_postal_code?: string;
   foia_country?: string;
+  section_508_sufficient?: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
@@ -108,4 +111,10 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
+}
+
+export interface ContractTypeDTO extends BaseTableDTO {
+  firm_fixed_price: string;
+  time_and_materials: string;
+  contract_type_justification: string;
 }

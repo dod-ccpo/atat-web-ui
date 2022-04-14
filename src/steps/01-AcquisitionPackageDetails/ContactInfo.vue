@@ -39,7 +39,7 @@
           v-show="selectedRole === 'MILITARY' && showContactInfoFields"
           label="Rank"
           titleKey="name"
-          :items="selectedBranchRanks"
+          :items="selectedBranchRanksData"
           :searchFields="['name', 'grade']"
           :selectedItem.sync="selectedRank"
           class="_input-max-width mb-7"
@@ -196,7 +196,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
-  private selectedPhoneCountry: CountryObj = {name: '', countryCode: '', abbreviation: '',active: false};
+  private selectedPhoneCountry: CountryObj 
+    = { name: '', countryCode: '', abbreviation: '', active: false };
 
   public selectedServiceOrAgency: SelectData =
     AcquisitionPackage.selectedServiceOrAgency;
@@ -210,7 +211,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     sysId: "",
   };
 
-  private selectedBranchRanks: AutoCompleteItem[] = [];
+  private selectedBranchRanksData: AutoCompleteItem[] = [];
   private branchRanksData: AutoCompleteItemGroups = {};
 
   private selectedRole = "";
@@ -268,7 +269,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     { text: "Dr.", value: "DR" },
   ];
 
-  public get current(): ContactDTO {
+  public get currentData(): ContactDTO {
     const first_name = this.firstName;
     const last_name = this.lastName;
     const middle_name = this.middleName;
@@ -276,8 +277,12 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const rank_components = this.selectedRank.sysId;
     const suffix = this.suffix;
     const salutation = this.selectedSalutation;
-    const countryCode = this.selectedPhoneCountry ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode : undefined;
-    const phone = this.selectedPhoneNumber ? parsePhoneNumber(this.selectedPhoneNumber, countryCode)?.number.toString() : "";
+    const countryCode = this.selectedPhoneCountry 
+      ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode 
+      : undefined;
+    const phone = this.selectedPhoneNumber 
+      ? parsePhoneNumber(this.selectedPhoneNumber, countryCode)?.number.toString() 
+      : "";
     const email = this.email;
     const grade_civ = this.selectedGrade.grade;
     const title = this.title;
@@ -291,43 +296,31 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       suffix,
       salutation,
       phone: phone || "",
+      phone_extension: "", // not used on Mission Owner contact entry form
       email,
-      type: "",
+      type: "Mission Owner",
       dodaac: "",
       can_access_package: "true",
       grade_civ,
       title,
+      manually_entered: "", // not used on Mission Owner contact entry form
     };
   }
 
-  public saved: ContactDTO = {
-    first_name: "",
-    last_name: "",
-    middle_name: "",
-    role: "",
-    rank_components: "",
-    suffix: "",
-    salutation: "",
-    phone: "",
-    email: "",
-    type: "",
-    dodaac: "",
-    can_access_package: "true",
-    grade_civ: "",
-    title: "",
-  };
+  public savedData: ContactDTO = AcquisitionPackage.initContact;
 
   // methods
 
   private setRankData(): void {
     if (this.selectedBranch.value) {
-      this.selectedBranchRanks =
+      this.selectedBranchRanksData =
         this.branchRanksData[this.selectedBranch.value];
     }
   }
 
 
   public async loadOnEnter(): Promise<void> {
+    this.savedData.can_access_package = "true";
     const branches = await ContactData.LoadMilitaryBranches();
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
@@ -340,48 +333,37 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
 
-    const storeData = await AcquisitionPackage.loadContactInfo();
-    this.saved = storeData;
+    const storeData = await AcquisitionPackage.loadContactInfo('Mission Owner');
+    this.savedData = storeData;
 
     if (storeData) {
       this.selectedRole = storeData.role;
 
-      if (
-        this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value
-      ) {
-
+      if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
         const rankComp = (storeData.rank_components as unknown) as { link: string, value: string};
-
-        if(rankComp){
-
-          this.saved.rank_components = rankComp.value;
+        if(rankComp) {
+          this.savedData.rank_components = rankComp.value;
         }
         
         const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
+
         //retrieve selected Military Rank from rank component
         const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
-        this.selectedBranch =
-          rank !== undefined
-            ? this.branchData.find((branch) => branch.value === rank.branch) ||
-              emptyBranch
-            : emptyBranch;
-        this.selectedRank =
-          rank !== undefined
-            ? {
-                name: rank.name || "",
-                grade: rank.grade || "",
-                sysId: rank.sys_id || "",
-              }
-            : { grade: "", name: "", sysId: "" };
+        
+        this.selectedBranch = rank !== undefined
+          ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
+          : emptyBranch;
+
+        this.selectedRank = rank !== undefined
+          ? { name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || ""}
+          : { grade: "", name: "", sysId: "" };
       }
 
-      if (
-        this.selectedRole === this.contactRoles[this.roleIndices.CIVILIAN].value
-      ) {
+      if (this.selectedRole === this.contactRoles[this.roleIndices.CIVILIAN].value) {
         const gradeValue = this.gradeData.find(value=> value.grade === storeData.grade_civ);
         this.selectedGrade = {
-             grade : gradeValue?.grade || "",
-             label : gradeValue?.label || ""
+          grade : gradeValue?.grade || "",
+          label : gradeValue?.label || ""
         };
       }
 
@@ -396,26 +378,29 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       this.email = storeData.email;
 
       if(storeData.phone.length > 0){
-         const parsedPhone = parsePhoneNumber(storeData.phone);
-         const country = ContactData.countries.find(country=> country.countryCode 
-         == `+${parsedPhone?.countryCallingCode}`)
+        const parsedPhone = parsePhoneNumber(storeData.phone);
+        const country = ContactData.countries.find(country => 
+          country.countryCode === `+${parsedPhone?.countryCallingCode}`)
 
-         this.selectedPhoneCountry = country || {name: '', countryCode: '', abbreviation: '',active: false};
-         this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() ||  "";
-         this.saved.phone =  parsedPhone?.number.toString() ||  "";
+        this.selectedPhoneCountry 
+          = country || { name: '', countryCode: '', abbreviation: '', active: false };
+        this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() ||  "";
+        this.savedData.phone =  parsedPhone?.number.toString() ||  "";
       }
       
     }
   }
 
   private hasChanged(): boolean {
-    return hasChanges(this.current, this.saved);
+    return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveContactInfo(this.current);
+        await AcquisitionPackage.saveContactInfo(
+          { data: this.currentData, type: "Mission Owner" }
+        );
       }
     } catch (error) {
       console.log(error);

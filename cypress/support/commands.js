@@ -219,7 +219,7 @@ Cypress.Commands.add("selectTypeOfMailingAddress", (radio_selector, value) => {
             if (selectedOption === "radio_button_checkedMilitary") {                
                 cy.textExists(org.zipCodeLabel, " ZIP code ");
                 cy.textExists(org.stateCodeDropDownLabel, " State code ");
-                cy.textExists(org.apoFpoDropDownLabel, " APO/FPO ");
+                cy.textExists(org.apoFpoDropDownLabel, " APO/FPO/DPO ");
             }
             if (selectedOption === "radio_button_checkedForeign address") {
                 cy.textExists(org.cityLabel, " City ");
@@ -325,8 +325,8 @@ Cypress.Commands.add("enterContactInformation", (contactInformation ) => {
         //enter DoDAAC
         cy.enterTextInTextField(commonCorAcor.dodaacTxtBox, contactInformation.dodText);
         //radio buttons
-        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes");
-        cy.radioBtn(commonCorAcor.accessNoRadioBtn, "no");
+        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "true");
+        cy.radioBtn(commonCorAcor.accessNoRadioBtn, "false");
     }
 });
 

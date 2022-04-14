@@ -206,6 +206,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private militaryPostOfficeOptions: SelectData[] = [
     { text: "Army Post Office (APO)", value: "APO" },
     { text: "Fleet Post Office (FPO)", value: "FPO" },
+    { text: "Diplomatic Post Office (DPO)", value: "DPO" },
   ];
 
   private selectedDisaOrg: SelectData = this.emptySelectData;
@@ -248,7 +249,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
         this.selectedState = 
-          this.stateListData.find((stateObj) => stateObj.text === this.stateOrProvince) 
+          this.stateListData.find((stateObj) => stateObj.value === this.stateOrProvince) 
           || this.emptySelectData;
       }
     }
@@ -371,6 +372,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       this.streetAddress2 = storeData.street_address_2;
       this.city = storeData.city;
       this.zipCode = storeData.zip_code;
+      this.stateOrProvince = storeData.state;
+
     }
   }
 

@@ -156,7 +156,6 @@
                 </ul>
               </template>
             </ATATAlert>
-
             <ATATRadioGroup
               id="Section508RadioGroup"
               legend="Are the above Section 508 requirements sufficient for this acquisition?"
@@ -186,14 +185,18 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+
+import {Component, Mixins} from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
 import { RadioButton } from "../../../types/Global";
+import {SensitiveInformationDTO} from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import {hasChanges} from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -202,7 +205,7 @@ import { RadioButton } from "../../../types/Global";
     ATATRadioGroup,
   },
 })
-export default class Section508Standards extends Vue {
+export default class Section508Standards extends Mixins(SaveOnLeave) {
   private selected508Response = "";
   private section508Options: RadioButton[] = [
     {
@@ -217,5 +220,45 @@ export default class Section508Standards extends Vue {
       value: "false",
     },
   ];
+
+
+  private get currentData(): SensitiveInformationDTO {
+    return {
+      section_508_sufficient: this.selected508Response,
+    };
+  }
+
+  private get savedData(): SensitiveInformationDTO {
+    return {
+      section_508_sufficient: AcquisitionPackage.sensitiveInformation?.section_508_sufficient ,
+    };
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    if (storeData) {
+      this.selected508Response = storeData.section_508_sufficient || '';
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
 }
 </script>
