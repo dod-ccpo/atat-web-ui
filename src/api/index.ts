@@ -8,6 +8,7 @@ import { SensitiveInformationApi } from "./otherContractConsiderations";
 import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
+import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
 
 export default {
    systemChoices: new SystemChoicesApi(),
@@ -21,4 +22,5 @@ export default {
    militaryRankTable: new MilitaryRankApi(),
    periodOfPerformanceTable: new PeriodOfPerformanceApi(),
    contractTypeTable: new ContractTypeApi(),
+   requirementsCostEstimateTable : new RequirementsCostEstimateApi(),
 }

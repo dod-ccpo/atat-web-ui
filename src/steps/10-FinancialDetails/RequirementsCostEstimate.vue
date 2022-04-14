@@ -31,6 +31,7 @@
             placeHolder="1-50" 
             suffix="%"
             width="150"
+            :value.sync="surgeCapabilities"
             :rules="[
               $validators.isBetween(1,50,'Please enter a number between 1-50'),
               $validators.required('Please enter a number between 1-50'), 
@@ -44,7 +45,10 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { RequirementsCostEstimateDTO } from "@/api/models";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATAlert from "../../components/ATATAlert.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
@@ -55,6 +59,9 @@ import ATATTextField from "../../components/ATATTextField.vue";
   },
 })
 export default class RequirementsCostEstimate extends Vue {
+
+  private surgeCapabilities = "";
+
   get contractPricePercentageRules(): unknown[] {
     const validationRules = [];
     validationRules.push(
@@ -65,6 +72,45 @@ export default class RequirementsCostEstimate extends Vue {
     );
     
     return validationRules; 
+  }
+
+   private get currentData():RequirementsCostEstimateDTO {
+
+        return {
+
+             surge_capabilities: this.surgeCapabilities,
+        }
+   }
+
+   private savedData: RequirementsCostEstimateDTO = {
+      surge_capabilities: "",
+   }
+
+    private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadRequirementsCostEstimate();
+    if (storeData) {
+      this.savedData.surge_capabilities= storeData.surge_capabilities;
+      this.surgeCapabilities = storeData.surge_capabilities;
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveRequirementsCostEstimate(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
   }
 
 }

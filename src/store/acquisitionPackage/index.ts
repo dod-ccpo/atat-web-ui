@@ -2,7 +2,7 @@ import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-deco
 import rootStore from "../index";
 import api from "@/api";
 
-import { AcquisitionPackageDTO } from "@/api/models";
+import { AcquisitionPackageDTO, RequirementsCostEstimateDTO } from "@/api/models";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
 import { SessionData } from "./models";
 import { ProjectOverviewDTO } from  "@/api/models";
@@ -80,6 +80,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
         corInfo: store.corInfo,
         acorInfo: store.acorInfo,
         fairOpportunity: store.fairOpportunity,
+        requirementsCostEstimate: store.requirementsCostEstimate,
       })
   );
 };
@@ -112,6 +113,7 @@ export class AcquisitionPackageStore extends VuexModule {
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   contractType: ContractTypeDTO | null = null;
+  requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
   public initContact: ContactDTO = initialContact();
 
@@ -193,6 +195,11 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = value;
   }
 
+  @Mutation
+  public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
+    this.requirementsCostEstimate = value;
+  }
+
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
@@ -207,8 +214,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.corInfo = sessionData.corInfo;
     this.acorInfo = sessionData.acorInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
-    this.currentContract = sessionData.CurrentContract;
-    this.sensitiveInformation = sessionData.SensitiveInformation;
+    this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
   }
 
   @Action({rawError: true})
@@ -236,6 +242,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setAcquisitionPackage(acquisitionPackage);
           this.setFairOpportunity(initialFairOpportunity())
+          this.setRequirementsCostEstimate({ surge_capabilities: ""});
           this.setInitialized(true);
         }
       } catch (error) {
@@ -2088,22 +2095,68 @@ export class AcquisitionPackageStore extends VuexModule {
   * Saves Period of Performance Information (FOIA) data to backend
   */
   @Action({ rawError: true })
-  async saveContractType(data: ContractTypeDTO): Promise<void> {
+  async saveRequirementsCostEstimate(data: RequirementsCostEstimateDTO): Promise<void> {
     try {
-      const sys_id = this.contractType?.sys_id || "";
-      const savedContractType =
+      const sys_id = this.requirementsCostEstimate?.sys_id || "";
+      const savedData =
         sys_id.length > 0
-          ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
-          : await api.contractTypeTable.create(data);
-      this.setContractType(savedContractType);
+          ? await api.requirementsCostEstimateTable.update(sys_id, { ...data, sys_id })
+          : await api.requirementsCostEstimateTable.create(data);
+      this.setRequirementsCostEstimate(savedData);
       this.setAcquisitionPackage({
-        ...this.contractType,
-        contract_type: sys_id,
+        ...this.acquisitionPackage,
+        requirements_cost_estimate: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving PoP data ${error}`);
+      throw new Error(`error occurred saving Requirements Cost Estimate data ${error}`);
     }
   }
+
+   /**
+  * Loads Contract Type data from backend
+  */
+    @Action({rawError: true})
+    async loadRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
+      try {
+        await this.ensureInitialized();
+        const sys_id = this.requirementsCostEstimate?.sys_id || "";
+  
+        if (sys_id.length > 0) {
+          const data = await api.requirementsCostEstimateTable.retrieve(
+            sys_id as string
+          );
+          this.setRequirementsCostEstimate(data);
+          this.setAcquisitionPackage({
+            ...this.acquisitionPackage,
+            requirements_cost_estimate: sys_id,
+          } as AcquisitionPackageDTO);
+        }
+        return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
+      } catch (error) {
+        throw new Error(`error occurred loading Contract Type data ${error}`);
+      } 
+    }
+  
+    /**
+    * Saves Period of Performance Information (FOIA) data to backend
+    */
+    @Action({ rawError: true })
+    async saveContractType(data: ContractTypeDTO): Promise<void> {
+      try {
+        const sys_id = this.contractType?.sys_id || "";
+        const savedContractType =
+          sys_id.length > 0
+            ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
+            : await api.contractTypeTable.create(data);
+        this.setContractType(savedContractType);
+        this.setAcquisitionPackage({
+          ...this.contractType,
+          contract_type: sys_id,
+        } as AcquisitionPackageDTO);
+      } catch (error) {
+        throw new Error(`error occurred saving PoP data ${error}`);
+      }
+    }
 
 }
 

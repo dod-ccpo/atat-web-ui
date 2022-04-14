@@ -20,6 +20,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   sensitive_information: string;
   period_of_performance: string;
   contract_type: string;
+  requirements_const_estimate: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -118,4 +119,8 @@ export interface ContractTypeDTO extends BaseTableDTO {
   firm_fixed_price: string;
   time_and_materials: string;
   contract_type_justification: string;
+}
+
+export interface RequirementsCostEstimateDTO extends BaseTableDTO {
+    surge_capabilities: string;
 }
