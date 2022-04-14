@@ -34,7 +34,7 @@
                 :selectedValue.sync="selectedRequestDateOption"
                 style="max-width: 196px"
               />
-              <ATATDatePicker id="RequestDatePicker" class="mt-2"/>
+              <ATATDatePicker id="RequestDatePicker" :value.sync="requestedPopStartDate" />
             </div>
             <ATATAlert
               id="RequestDateAlert"
@@ -59,12 +59,16 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {Component} from "vue-property-decorator";
+import {Component, Mixins} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import {RadioButton, SelectData} from "../../../types/Global";
+import {PeriodOfPerformanceDTO} from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import {hasChanges} from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -75,7 +79,8 @@ import {RadioButton, SelectData} from "../../../types/Global";
   },
 })
 
-export default class POPStart extends Vue {
+export default class POPStart extends  Mixins(SaveOnLeave) {
+  private requestedPopStartDate = "";
   private selectedPoPStartDateOption = "";
   private startPoPDateOptions: RadioButton[] = [
     {
@@ -100,5 +105,50 @@ export default class POPStart extends Vue {
       value: "Not later than"
     }
   ];
+  private get currentData(): PeriodOfPerformanceDTO {
+
+    return {
+      time_frame: this.selectedRequestDateOption === "No sooner than" ? "NO_SOONER_THAN" : "NO_LATER_THAN",
+      pop_start_request: this.selectedPoPStartDateOption === "YesStartDate" ? "true" : "false",
+      requested_pop_start_date: this.requestedPopStartDate,
+    };
+  }
+
+  private get savedData(): PeriodOfPerformanceDTO {
+    return {
+      time_frame: AcquisitionPackage.periodOfPerformance?.time_frame,
+      pop_start_request: AcquisitionPackage.periodOfPerformance?.pop_start_request,
+      requested_pop_start_date: AcquisitionPackage.periodOfPerformance?.requested_pop_start_date
+    };
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadPeriodOfPerformance();
+    if (storeData) {
+      this.selectedRequestDateOption = storeData.time_frame === "NO_SOONER_THAN" ? "No sooner than" : "Not later than";
+      this.selectedPoPStartDateOption = storeData.pop_start_request === "true" ? "YesStartDate" : "NoStartDate";
+      this.requestedPopStartDate = storeData.requested_pop_start_date  || "";
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.savePeriodOfPerformance(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
 }
 </script>
