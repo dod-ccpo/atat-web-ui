@@ -1,10 +1,11 @@
 import {
   AcquisitionPackageDTO,
   ContactDTO,
+  CurrentContractDTO,
+  FairOpportunityDTO,
+  GFEOverviewDTO,
   OrganizationDTO,
   ProjectOverviewDTO,
-  FairOpportunityDTO,
-  CurrentContractDTO,
   SensitiveInformationDTO,
 } from "@/api/models";
 
@@ -17,5 +18,6 @@ export interface SessionData {
   acorInfo: ContactDTO;
   fairOpportunity: FairOpportunityDTO;
   CurrentContract: CurrentContractDTO;
-  SensitiveInformation: SensitiveInformationDTO
+  SensitiveInformation: SensitiveInformationDTO;
+  GFEOverview: GFEOverviewDTO;
 }

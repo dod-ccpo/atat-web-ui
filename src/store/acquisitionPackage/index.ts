@@ -12,6 +12,8 @@ import { FairOpportunityDTO } from  "@/api/models";
 import { CurrentContractDTO } from  "@/api/models";
 import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
+import { GFEOverviewDTO } from "@/api/models";
+
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -79,6 +81,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
         corInfo: store.corInfo,
         acorInfo: store.acorInfo,
         fairOpportunity: store.fairOpportunity,
+        gfeOverview: store.GFEOverview,
       })
   );
 };
@@ -110,6 +113,8 @@ export class AcquisitionPackageStore extends VuexModule {
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
+  GFEOverview: GFEOverviewDTO | null = null;
+
 
   public initContact: ContactDTO = initialContact();
 
@@ -184,6 +189,10 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = value;
   }
 
+  public setGFEOverview(value: GFEOverviewDTO): void {
+    this.GFEOverview = value;
+  }
+
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
@@ -200,6 +209,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.fairOpportunity = sessionData.fairOpportunity;
     this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
+    this.GFEOverview = sessionData.GFEOverview;
   }
 
   @Action({rawError: true})
@@ -2041,6 +2051,47 @@ export class AcquisitionPackageStore extends VuexModule {
           ? await api.periodOfPerformanceTable.update(sys_id, { ...data, sys_id })
           : await api.periodOfPerformanceTable.create(data);
       this.setPeriodOfPerformance(savedPeriodOfPerformance);
+      this.setAcquisitionPackage({
+        ...this.periodOfPerformance,
+        period_of_performance: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving PoP data ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  async loadGFEOverview(): Promise<GFEOverviewDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.GFEOverview?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const GFEOverviewData = await api.gfeOverviewTable.retrieve(
+            sys_id as string
+        );
+        this.setGFEOverview(GFEOverviewData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          gfe_gfp_furnished: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.GFEOverview as GFEOverviewDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading sensitive info data ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  async saveGFEOverview(data: PeriodOfPerformanceDTO): Promise<void> {
+    try {
+      const sys_id = this.GFEOverview?.sys_id || "";
+      const savedGFEOverviewData =
+          sys_id.length > 0
+              ? await api.periodOfPerformanceTable.update(sys_id, { ...data, sys_id })
+              : await api.periodOfPerformanceTable.create(data);
+      this.setGFEOverview(savedGFEOverviewData);
       this.setAcquisitionPackage({
         ...this.periodOfPerformance,
         period_of_performance: sys_id,

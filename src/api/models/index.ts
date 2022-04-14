@@ -79,9 +79,9 @@ export interface MilitaryRankDTO extends BaseTableDTO {
 }
 
 export interface SystemChoiceDTO extends BaseTableDTO {
-    name: string;
-    label: string;
-    value: string;
+  name: string;
+  label: string;
+  value: string;
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
@@ -110,4 +110,12 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
+}
+
+export interface GFEOverviewDTO extends BaseTableDTO {
+  dpas_unit_identification_code?: string;
+  gfe_gfp_furnished?: string;
+  dpas_custodian_number?: string;
+  property_accountable?: string;
+  property_custodian_name?: string;
 }
