@@ -21,7 +21,7 @@
               :rules="[$validators.required('Please select an option')]"
             />
           </div>
-          <div v-if="selectedPoPStartDateOption ==='YesStartDate'">
+          <div v-if="selectedPoPStartDateOption ==='true'">
             <hr class="my-9"/>
             <p class="mb-2">
               Requested start date
@@ -48,7 +48,7 @@
             <ATATAlert
               id="RequestDateAlert"
               class="copy-max-width"
-              v-if="selectedRequestDateOption ==='Not later than'"
+              v-if="selectedRequestDateOption ==='NOT_LATER_THAN'"
               type="warning"
             >
               <template slot="content">
@@ -89,7 +89,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class POPStart extends  Mixins(SaveOnLeave) {
   private requestedPopStartDate = "";
-  private selectedPoPStartDateOption = "NO_SOONER_THAN";
+  private selectedPoPStartDateOption = "";
   private startPoPDateOptions: RadioButton[] = [
     {
       id: "YesStartDate",
@@ -102,7 +102,7 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
       value: "false",
     },
   ];
-  private selectedRequestDateOption = "";
+  private selectedRequestDateOption = "NO_SOONER_THAN";
   private requestDateOptions: SelectData[] = [
     {
       text: 'No sooner than',
