@@ -21,6 +21,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   period_of_performance: string;
   gfe_overview: string;
   contract_type: string;
+  requirements_const_estimate: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -121,6 +122,9 @@ export interface ContractTypeDTO extends BaseTableDTO {
   contract_type_justification: string;
 }
 
+export interface RequirementsCostEstimateDTO extends BaseTableDTO {
+    surge_capabilities: string;
+}
 export interface GFEOverviewDTO extends BaseTableDTO {
   dpas_unit_identification_code?: string;
   gfe_gfp_furnished?: string;
