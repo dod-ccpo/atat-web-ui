@@ -17,6 +17,7 @@
               :card="true"
               :items="recurringOptions"
               :value.sync="selectedRecurringOption"
+              :rules="[$validators.required('Please select an option')]"
             />
           </div>
 
