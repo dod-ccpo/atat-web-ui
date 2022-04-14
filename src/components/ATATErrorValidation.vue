@@ -20,7 +20,7 @@ export default class ATATErrorValidation extends Vue {
   @Prop({ default: false }) private textAreaWithCounter!: boolean;
 
   get showError(): boolean {
-    return this.errorMessages.length>0;
+    return this.errorMessages.length > 0;
   }
 }
 </script>

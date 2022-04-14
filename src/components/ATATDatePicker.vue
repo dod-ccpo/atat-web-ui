@@ -151,6 +151,7 @@ export default class ATATDatePicker extends Vue {
    */
 
   private onBlur(): void {
+    // debugger;
     if (isValid(new Date(this.dateFormatted))) {
       this.date = this.reformatDate(this.dateFormatted);
       this.updateDateValueProperty();
@@ -285,6 +286,7 @@ export default class ATATDatePicker extends Vue {
   }
 
   private async setErrorMessage(): Promise<void> {
+    debugger;
     this.errorMessages = await this.$refs.atatDatePicker.errorBucket;
   }
 

@@ -72,7 +72,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
-  @Prop({ default: ""}) private suffix!: string;
+  @Prop({ default: "" }) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
   
@@ -85,6 +85,8 @@ export default class ATATTextField extends Vue {
   }
 
    private setErrorMessage(): void {
+    const foo = this.$refs;
+    debugger;
     this.errorMessages = this.$refs.atatTextField.errorBucket;
   }
 

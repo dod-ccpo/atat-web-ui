@@ -18,6 +18,7 @@
               :card="true"
               :items="startPoPDateOptions"
               :value.sync="selectedPoPStartDateOption"
+              :rules="[$validators.required('Please select an option')]"
             />
           </div>
           <div v-if="selectedPoPStartDateOption ==='YesStartDate'">
@@ -33,8 +34,16 @@
                 :items="requestDateOptions"
                 :selectedValue.sync="selectedRequestDateOption"
                 style="max-width: 196px"
+                :rules="[$validators.required('Please select an option')]"
               />
-              <ATATDatePicker id="RequestDatePicker" :value.sync="requestedPopStartDate" />
+              <ATATDatePicker 
+                id="RequestDatePicker" 
+                :value.sync="requestedPopStartDate" 
+                :rules="[
+                  $validators.required('Please enter a valid date'),
+                  $validators.isDateValid('Please enter a valid date')
+                ]"              
+              />
             </div>
             <ATATAlert
               id="RequestDateAlert"
@@ -58,7 +67,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import {Component, Mixins} from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";

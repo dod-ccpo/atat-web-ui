@@ -98,6 +98,8 @@ export default class ATATTextArea extends Vue {
   }
 
   private setErrorMessage(): void {
+    const foo = this.$refs;
+    debugger;
     this.errorMessages = this.$refs.atatTextArea.errorBucket;
   }
 
