@@ -104,7 +104,6 @@ export default class ContractType extends Mixins(SaveOnLeave) {
       value: "FFP",
       description: `<span class='badge badge-blue d-inline-block mr-1'>Recommended</span>
         <span class="font-size-14 text-base">Standard contract type</span>`,
-      
     },
     {
       id: "TMCheckbox",
