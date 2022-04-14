@@ -45,7 +45,7 @@
       :selectedRole.sync="selectedRole"
       :selectedBranch.sync="selectedBranch"
       :selectedRank.sync="selectedRank"
-      :salutation.sync="salutation"
+      :selectedSalutation.sync="selectedSalutation"
       :firstName.sync="firstName"
       :middleName.sync="middleName"
       :lastName.sync="lastName"
@@ -199,7 +199,7 @@ export default class COR_ACOR extends Vue {
 
 
   private selectedRole = "";
-  private salutation = "";
+  private selectedSalutation = "";
   private firstName = "";
   private middleName = "";
   private lastName = "";
@@ -218,7 +218,7 @@ export default class COR_ACOR extends Vue {
     const middle_name = this.middleName;
     const last_name = this.lastName;
     const suffix = this.suffix;
-    const salutation = this.salutation;
+    const salutation = this.selectedSalutation;
     const countryCode = this.selectedPhoneCountry 
       ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode 
       : undefined;
@@ -228,6 +228,8 @@ export default class COR_ACOR extends Vue {
     const email = this.email;
     const dodaac = this.dodaac;
     const can_access_package = this.selectedAccessToEdit;
+    const manually_entered = this.showContactForm ? "true" : "false";
+    const phone_extension = this.phoneExt;
 
     return {
       type, // COR, ACOR
@@ -240,10 +242,12 @@ export default class COR_ACOR extends Vue {
       suffix,
       title: "",     // not used on COR/ACOR form
       phone: phone || "",
+      phone_extension,
       email,
       grade_civ: "", // not used on COR/ACOR form
       dodaac,  
       can_access_package,
+      manually_entered,
     };
   }
 
@@ -343,7 +347,7 @@ export default class COR_ACOR extends Vue {
           : { grade: "", name: "", sysId: "" };
       }
 
-      this.salutation = storeData.salutation;
+      this.selectedSalutation = storeData.salutation;
 
       this.firstName = storeData.first_name;
       this.middleName = storeData.middle_name;
@@ -352,7 +356,7 @@ export default class COR_ACOR extends Vue {
       
       this.email = storeData.email;
 
-      if(storeData.phone.length > 0){
+      if(storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
         const country = ContactData.countries.find(country => 
           country.countryCode === `+${parsedPhone?.countryCallingCode}`)
@@ -361,11 +365,18 @@ export default class COR_ACOR extends Vue {
         this.phone = parsedPhone?.nationalNumber.toString() ||  "";
         this.savedData.phone =  parsedPhone?.number.toString() ||  "";
       }
+      this.phoneExt = storeData.phone_extension;
+      this.dodaac = storeData.dodaac;
+      this.selectedAccessToEdit = storeData.can_access_package;
     }
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.setShowAccessRadioButtons();
+    if (this.savedData.manually_entered === "true") {
+      this.showContactForm = true;
+    }
   }
 
 }

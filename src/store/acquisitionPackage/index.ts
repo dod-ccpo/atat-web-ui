@@ -52,11 +52,13 @@ const initialContact = () => {
     type: "",
     can_access_package: "",
     phone: "",
+    phone_extension: "",
     rank_components: "",
     salutation: "",
     first_name: "",
     email: "",
     title: "",
+    manually_entered: "",
   }
 }
 
@@ -2006,7 +2008,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
   * Loads Period of Performance data from backend
   */
-   @Action({rawError: true})
+  @Action({rawError: true})
   async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
     try {
       await this.ensureInitialized();

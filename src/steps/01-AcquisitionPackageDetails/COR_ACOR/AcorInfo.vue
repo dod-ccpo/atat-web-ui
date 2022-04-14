@@ -16,7 +16,11 @@
           </a>
         </p>
 
-        <common :isACOR="true" />
+        <common 
+          :isACOR="true" 
+          :currentContactData.sync="currentContactData"
+          :savedContactData.sync="savedContactData"
+        />
 
       </v-col>
     </v-row>
@@ -24,10 +28,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import Common from "./Common.vue";
+
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { ContactDTO } from "@/api/models";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -35,6 +42,30 @@ import Common from "./Common.vue";
   }
 })
 
-export default class CorInfo extends Vue {}
+export default class CorInfo extends Mixins(SaveOnLeave) {
+  private currentContactData: ContactDTO = AcquisitionPackage.initContact;
+  private savedContactData: ContactDTO = AcquisitionPackage.initContact;
+
+  private hasChanged(): boolean {
+    debugger;
+    return hasChanges(this.currentContactData, this.savedContactData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      debugger;
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveContactInfo(
+          { data: this.currentContactData, type: "ACOR" }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+}
 
 </script>

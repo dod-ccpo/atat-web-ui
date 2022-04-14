@@ -295,12 +295,14 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       suffix,
       salutation,
       phone: phone || "",
+      phone_extension: "", // not used on Mission Owner contact entry form
       email,
       type: "Mission Owner",
       dodaac: "",
       can_access_package: "true",
       grade_civ,
       title,
+      manually_entered: "", // not used on Mission Owner contact entry form
     };
   }
 
@@ -398,7 +400,9 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveContactInfo(this.currentData);
+        await AcquisitionPackage.saveContactInfo(
+          { data: this.currentData, type: "Mission Owner" }
+        );
       }
     } catch (error) {
       console.log(error);
