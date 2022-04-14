@@ -33,17 +33,16 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+
 import { RadioButton } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { GFEOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import store from "@/store";
 
 @Component({
   components: {
@@ -70,7 +69,7 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
 
   public get isDISA(): boolean {
     return AcquisitionPackage.selectedServiceOrAgency.value?.toUpperCase() 
-              === "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
+      === "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
   }
 
   private get currentData(): GFEOverviewDTO {
@@ -91,7 +90,6 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadGFEOverview();
-    console.log(storeData)
     if (storeData) {
       this.selectedEquipmentProvided = storeData.gfe_gfp_furnished;
     }
