@@ -20,6 +20,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   sensitive_information: string;
   period_of_performance: string;
   gfe_overview: string;
+  contract_type: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -111,6 +112,13 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
+  base_and_options?: string;
+}
+
+export interface ContractTypeDTO extends BaseTableDTO {
+  firm_fixed_price: string;
+  time_and_materials: string;
+  contract_type_justification: string;
 }
 
 export interface GFEOverviewDTO extends BaseTableDTO {

@@ -13,7 +13,7 @@ import { CurrentContractDTO } from  "@/api/models";
 import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { GFEOverviewDTO } from "@/api/models";
-
+import { ContractTypeDTO } from "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -124,7 +124,7 @@ export class AcquisitionPackageStore extends VuexModule {
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   GFEOverview: GFEOverviewDTO | null = null;
-
+  contractType: ContractTypeDTO | null = null;
 
   public initContact: ContactDTO = initialContact();
 
@@ -186,6 +186,13 @@ export class AcquisitionPackageStore extends VuexModule {
   public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
     this.periodOfPerformance = this.periodOfPerformance 
       ? Object.assign(this.periodOfPerformance, value)
+      : value;
+  }
+
+  @Mutation
+  public setContractType(value: ContractTypeDTO): void {
+    this.contractType = this.contractType 
+      ? Object.assign(this.contractType, value)
       : value;
   }
 
@@ -2108,6 +2115,51 @@ export class AcquisitionPackageStore extends VuexModule {
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving GFE data ${error}`);
+    }
+  }
+  /**
+  * Loads Contract Type data from backend
+  */
+  @Action({rawError: true})
+  async loadContractType(): Promise<ContractTypeDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.contractType?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const contractTypeData = await api.contractTypeTable.retrieve(
+          sys_id as string
+        );
+        this.setContractType(contractTypeData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          contract_type: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.contractType as ContractTypeDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading Contract Type data ${error}`);
+    } 
+  }
+
+  /**
+  * Saves Period of Performance Information (FOIA) data to backend
+  */
+  @Action({ rawError: true })
+  async saveContractType(data: ContractTypeDTO): Promise<void> {
+    try {
+      const sys_id = this.contractType?.sys_id || "";
+      const savedContractType =
+        sys_id.length > 0
+          ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
+          : await api.contractTypeTable.create(data);
+      this.setContractType(savedContractType);
+      this.setAcquisitionPackage({
+        ...this.contractType,
+        contract_type: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving PoP data ${error}`);
     }
   }
 

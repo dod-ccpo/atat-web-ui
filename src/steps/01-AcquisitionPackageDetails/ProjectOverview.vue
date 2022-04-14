@@ -50,7 +50,7 @@
               maxChars="300"
             />
           </div>
-          <div class="d-flex align-start flex-column mt-10">
+          <div class="d-flex align-start flex-column mt-6">
             <ATATRadioGroup
               id="emergency-declaration-support-requirement"
               legend="Is this requirement in support of an emergency declaration?"

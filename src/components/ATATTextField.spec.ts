@@ -43,13 +43,13 @@ describe("Testing ATATTextField Component", () => {
       });
     });
 
-    it("onBlur", async () => {
-      const valOnBlur = "newVa";
-      await wrapper.vm.onBlur(valOnBlur);
-      await wrapper.vm.$nextTick(()=>{
-        expect(wrapper.emitted("blur")?.flat()[0]).toMatch(valOnBlur);
-      });
+    // it("onBlur", async () => {
+    //   const valOnBlur = "newVa";
+    //   await wrapper.vm.onBlur(valOnBlur);
+    //   await wrapper.vm.$nextTick(()=>{
+    //     expect(wrapper.emitted("blur")?.flat()[0]).toMatch(valOnBlur);
+    //   });
       
-    });
+    // });
   });
 });

@@ -7,7 +7,7 @@ import { CurrentContractApi } from "./background";
 import { SensitiveInformationApi } from "./otherContractConsiderations";
 import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
-import { PeriodOfPerformanceApi } from "./contractDetails";
+import { ContractTypeApi, PeriodOfPerformanceApi} from "./contractDetails";
 import { GFEOverviewApi } from "./GFEOverview";
 
 export default {
@@ -22,4 +22,5 @@ export default {
   militaryRankTable: new MilitaryRankApi(),
   periodOfPerformanceTable: new PeriodOfPerformanceApi(),
   gfeOverviewTable: new GFEOverviewApi(),
+  contractTypeTable: new ContractTypeApi(),
 }
