@@ -165,7 +165,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
         this.selectedState = 
-          this.stateListData.find((stateObj) => stateObj.text === this.stateOrProvince) 
+          this.stateListData.find((stateObj) => stateObj.value === this.stateOrProvince) 
           || this.emptySelectData;
       }
     }
