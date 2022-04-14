@@ -34,7 +34,7 @@
                 :selectedValue.sync="selectedRequestDateOption"
                 style="max-width: 196px"
               />
-              <ATATDatePicker id="RequestDatePicker" />
+              <ATATDatePicker id="RequestDatePicker" :value.sync="requestedPopStartDate" />
             </div>
             <ATATAlert
               id="RequestDateAlert"
@@ -80,6 +80,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class POPStart extends  Mixins(SaveOnLeave) {
+  private requestedPopStartDate = "";
   private selectedPoPStartDateOption = "";
   private startPoPDateOptions: RadioButton[] = [
     {
@@ -109,6 +110,7 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
     return {
       time_frame: this.selectedRequestDateOption === "No sooner than" ? "NO_SOONER_THAN" : "NO_LATER_THAN",
       pop_start_request: this.selectedPoPStartDateOption === "YesStartDate" ? "true" : "false",
+      requested_pop_start_date: this.requestedPopStartDate,
     };
   }
 
@@ -116,6 +118,7 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
     return {
       time_frame: AcquisitionPackage.periodOfPerformance?.time_frame,
       pop_start_request: AcquisitionPackage.periodOfPerformance?.pop_start_request,
+      requested_pop_start_date: AcquisitionPackage.periodOfPerformance?.requested_pop_start_date
     };
   }
 
@@ -128,7 +131,7 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
     if (storeData) {
       this.selectedRequestDateOption = storeData.time_frame === "NO_SOONER_THAN" ? "No sooner than" : "Not later than";
       this.selectedPoPStartDateOption = storeData.pop_start_request === "true" ? "YesStartDate" : "NoStartDate";
-
+      this.requestedPopStartDate = storeData.requested_pop_start_date  || "";
     }
   }
 

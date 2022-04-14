@@ -127,7 +127,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
   private max!: Date;
-  @Prop({ default: [] }) private rules!: Array<unknown>;
+  @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
 
   /**
    * WATCHERS
