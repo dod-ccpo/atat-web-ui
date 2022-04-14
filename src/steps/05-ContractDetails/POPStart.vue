@@ -89,35 +89,35 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class POPStart extends  Mixins(SaveOnLeave) {
   private requestedPopStartDate = "";
-  private selectedPoPStartDateOption = "";
+  private selectedPoPStartDateOption = "NO_SOONER_THAN";
   private startPoPDateOptions: RadioButton[] = [
     {
       id: "YesStartDate",
       label: "Yes.",
-      value: "YesStartDate",
+      value: "true",
     },
     {
       id: "NoStartDate",
       label: "No. The PoP should start upon execution of the task order.",
-      value: "NoStartDate",
+      value: "false",
     },
   ];
   private selectedRequestDateOption = "";
   private requestDateOptions: SelectData[] = [
     {
       text: 'No sooner than',
-      value: "No sooner than"
+      value: "NO_SOONER_THAN",
     },
     {
       text: 'Not later than',
-      value: "Not later than"
+      value: "NO_LATER_THAN"
     }
   ];
   private get currentData(): PeriodOfPerformanceDTO {
 
     return {
-      time_frame: this.selectedRequestDateOption === "No sooner than" ? "NO_SOONER_THAN" : "NO_LATER_THAN",
-      pop_start_request: this.selectedPoPStartDateOption === "YesStartDate" ? "true" : "false",
+      time_frame: this.selectedRequestDateOption,
+      pop_start_request: this.selectedPoPStartDateOption,
       requested_pop_start_date: this.requestedPopStartDate,
     };
   }
@@ -137,8 +137,8 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadPeriodOfPerformance();
     if (storeData) {
-      this.selectedRequestDateOption = storeData.time_frame === "NO_SOONER_THAN" ? "No sooner than" : "Not later than";
-      this.selectedPoPStartDateOption = storeData.pop_start_request === "true" ? "YesStartDate" : "NoStartDate";
+      this.selectedRequestDateOption = storeData.time_frame || "";
+      this.selectedPoPStartDateOption = storeData.pop_start_request || "NO_SOONER_THAN";
       this.requestedPopStartDate = storeData.requested_pop_start_date  || "";
     }
   }

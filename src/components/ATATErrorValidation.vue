@@ -1,7 +1,7 @@
 <template>
   <div 
     v-if="showError" 
-    class="d-flex justify-start align-center atat-text-field-error"
+    class="d-flex justify-start align-top atat-text-field-error"
     :class="textAreaWithCounter ? 'mt-n5' : 'mt-2'"  
   >
     <div><v-icon class="text-base-error icon-20 ma-1 mt-0">error</v-icon></div>
