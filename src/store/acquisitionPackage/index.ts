@@ -70,6 +70,16 @@ const initialFairOpportunity = () => {
   };
 };
 
+const initialGFE = () => {
+  return {
+    dpas_unit_identification_code: "",
+    gfe_gfp_furnished: "",
+    dpas_custodian_number: "",
+    property_accountable: "",
+    property_custodian_name: "",
+  }
+}
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
       ATAT_ACQUISTION_PACKAGE_KEY,
@@ -236,7 +246,8 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setAcquisitionPackage(acquisitionPackage);
-          this.setFairOpportunity(initialFairOpportunity())
+          this.setFairOpportunity(initialFairOpportunity());
+          this.setGFEOverview(initialGFE());
           this.setInitialized(true);
         }
       } catch (error) {
@@ -2064,7 +2075,6 @@ export class AcquisitionPackageStore extends VuexModule {
   async loadGFEOverview(): Promise<GFEOverviewDTO> {
     try {
       await this.ensureInitialized();
-      debugger
       const sys_id = this.GFEOverview?.sys_id || "";
 
       if (sys_id.length > 0) {
@@ -2086,7 +2096,6 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({ rawError: true })
   async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
     try {
-      debugger
       const sys_id = this.GFEOverview?.sys_id || "";
       const savedGFEOverviewData =
           sys_id.length > 0
