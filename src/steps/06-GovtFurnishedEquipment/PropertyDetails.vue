@@ -43,6 +43,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { GFEOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import store from "@/store";
 
 @Component({
   components: {
@@ -53,7 +54,6 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
   private selectedEquipmentProvided = "";
-
 
   private equipmentProvidedOptions: RadioButton[] = [
     {
@@ -75,13 +75,13 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
 
   private get currentData(): GFEOverviewDTO {
     return {
-      gfe_gfp_furnished: this.selectedEquipmentProvided === "Yes" ? "true" : "false",
+      gfe_gfp_furnished: this.selectedEquipmentProvided,
     };
   }
 
   private get savedData(): GFEOverviewDTO {
     return {
-      gfe_gfp_furnished: AcquisitionPackage.GFEOverview?.gfe_gfp_furnished || "false",
+      gfe_gfp_furnished: AcquisitionPackage.GFEOverview?.gfe_gfp_furnished || "",
     };
   }
 
@@ -93,7 +93,9 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage.loadGFEOverview();
     console.log(storeData)
     if (storeData) {
-      this.selectedEquipmentProvided = storeData.gfe_gfp_furnished === "true" ? "Yes" : "No";
+      this.selectedEquipmentProvided = storeData.gfe_gfp_furnished !== ""
+        ? storeData.gfe_gfp_furnished === "true" ? "Yes" : "No"
+        : ""
     }
   }
 
