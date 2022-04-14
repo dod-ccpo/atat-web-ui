@@ -47,9 +47,7 @@
                 class="mr-4"
                 width="178"
                 :rules="[$validators.integer()]"
-                :value="optionPeriod.duration"
-                :extraEmitVal="index"
-                @blur="setDuration"
+                :value.sync="optionPeriods[index].duration"
               />
             </div>
             <div>
@@ -57,9 +55,8 @@
                 :id="getIdText(getOptionPeriodLabel(index))"
                 :items="timePeriods"
                 width="178"
-                :selectedValue="optionPeriod.unitOfTime"
+                :selectedValue.sync="optionPeriods[index].unitOfTime"
                 class="mr-4"
-                @onChange="setTimePeriod($event, index)"
               />
             </div>
             <div
@@ -119,7 +116,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -148,6 +145,11 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     },
   ];
 
+  @Watch("optionPeriods", {deep: true})
+  protected optionPeriodsChange(): void {
+    this.setTotalPoP();
+  }
+
   public totalPoPDuration = 0;
 
   public selectedTimePeriod = "Year";
@@ -164,27 +166,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       unitOfTime: "Year",
     };
     this.optionPeriods.push(newOptionPeriod);
-  }
-
-  public setDuration(value: string, index: number): void {
-    if (value && (index || index === 0)) {
-      const duration = parseInt(value);
-      const currentDuration = this.optionPeriods[index].duration;
-      if (duration !== currentDuration) {
-        this.optionPeriods[index].duration = duration;
-        this.setTotalPoP();
-      }
-    }
-  }
-
-  public setTimePeriod(unitOfTime: string, index: number): void {
-    if (unitOfTime) {
-      this.optionPeriods[index].unitOfTime = unitOfTime;
-      const duration = this.optionPeriods[index].duration;
-      if (duration) {
-        this.setTotalPoP();
-      }
-    }
   }
 
   public setTotalPoP(): void {
