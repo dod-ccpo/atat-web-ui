@@ -111,6 +111,7 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
+  base_and_options?: string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {

@@ -75,7 +75,8 @@ export default class ATATTextField extends Vue {
   @Prop({ default: "" }) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
-  
+  @Prop() private extraEmitVal!: string;
+
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
@@ -91,9 +92,10 @@ export default class ATATTextField extends Vue {
   }
 
   //@Events
-  private onBlur(value: string) : void{
+  private onBlur(e: FocusEvent) : void{
+    const input = e.target as HTMLInputElement;
     this.setErrorMessage();
-    this.$emit('blur', value);
+    this.$emit('blur', input.value, this.extraEmitVal);
   }
 }
 </script>
