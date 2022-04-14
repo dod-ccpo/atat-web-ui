@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue"
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
@@ -138,16 +138,10 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-// import AcquisitionPackage from "@/store/acquisitionPackage";
-// import ContactData from "@/store/contactData";
-// import { ContactDTO } from "@/api/models";
-
 import { 
   RadioButton, 
   SelectData, 
   RankData
-  // AutoCompleteItem, 
-  // AutoCompleteItemGroups 
 } from "../../../../types/Global";
 
 
