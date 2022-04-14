@@ -1817,7 +1817,6 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({rawError: true})
   async loadContactInfo(contactType: string): Promise<ContactDTO> {
-    debugger;
     try {
       await this.ensureInitialized();
       const isCor = contactType === "COR";
@@ -1851,7 +1850,6 @@ export class AcquisitionPackageStore extends VuexModule {
   async saveContactInfo(saveData: { data: ContactDTO, type: string }): Promise<void> {
     try {
       const isCor = saveData.type === "COR";
-      debugger;
       const dataKey = saveData.type === "Mission Owner"
         ? "contactInfo"
         : isCor ? "corInfo" : "acorInfo";

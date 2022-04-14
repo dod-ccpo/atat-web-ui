@@ -144,6 +144,7 @@ export default class COR_ACOR extends Vue {
   ];
   
   public selectedContact = {};
+  // EJY TODO watch selectedContact, populate currentData when changed
   private contactList = [
     {
       Id: 1,
@@ -197,7 +198,6 @@ export default class COR_ACOR extends Vue {
     },
   ];
 
-
   private selectedRole = "";
   private selectedSalutation = "";
   private firstName = "";
@@ -208,46 +208,34 @@ export default class COR_ACOR extends Vue {
   private phone = "";
   private phoneExt = "";
   private dodaac = "";
-  private selectedPhoneCountry: CountryObj = {name: '', countryCode: '', abbreviation: '',active: false};
+  private selectedPhoneCountry: CountryObj 
+    = { name: '', countryCode: '', abbreviation: '', active: false };
 
   public get currentData(): ContactDTO {
-    const type = this.corOrAcor;
-    const role = this.selectedRole;
-    const rank_components = this.selectedRank.sysId;
-    const first_name = this.firstName;
-    const middle_name = this.middleName;
-    const last_name = this.lastName;
-    const suffix = this.suffix;
-    const salutation = this.selectedSalutation;
     const countryCode = this.selectedPhoneCountry 
       ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode 
       : undefined;
     const phone = this.phone
       ? parsePhoneNumber(this.phone, countryCode)?.number.toString() 
       : "";
-    const email = this.email;
-    const dodaac = this.dodaac;
-    const can_access_package = this.selectedAccessToEdit;
-    const manually_entered = this.showContactForm ? "true" : "false";
-    const phone_extension = this.phoneExt;
 
     return {
-      type, // COR, ACOR
-      role, // Military, Civilian
-      rank_components,
-      salutation,
-      first_name,
-      middle_name,
-      last_name,
-      suffix,
+      type: this.corOrAcor, // COR, ACOR
+      role: this.selectedRole, // Military, Civilian
+      rank_components: this.selectedRank.sysId,
+      salutation: this.selectedSalutation,
+      first_name: this.firstName,
+      middle_name: this.middleName,
+      last_name: this.lastName,
+      suffix: this.suffix,
       title: "",     // not used on COR/ACOR form
       phone: phone || "",
-      phone_extension,
-      email,
+      phone_extension: this.phoneExt,
+      email: this.email,
       grade_civ: "", // not used on COR/ACOR form
-      dodaac,  
-      can_access_package,
-      manually_entered,
+      dodaac: this.dodaac,  
+      can_access_package: this.selectedAccessToEdit,
+      manually_entered: this.showContactForm ? "true" : "false",
     };
   }
 
@@ -359,11 +347,12 @@ export default class COR_ACOR extends Vue {
       if(storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
         const country = ContactData.countries.find(country => 
-          country.countryCode === `+${parsedPhone?.countryCallingCode}`)
+          country.countryCode === `+${parsedPhone?.countryCallingCode}`);
 
-        this.selectedPhoneCountry = country || {name: '', countryCode: '', abbreviation: '',active: false};
+        this.selectedPhoneCountry 
+          = country || { name: '', countryCode: '', abbreviation: '', active: false };
         this.phone = parsedPhone?.nationalNumber.toString() ||  "";
-        this.savedData.phone =  parsedPhone?.number.toString() ||  "";
+        this.savedData.phone = parsedPhone?.number.toString() ||  "";
       }
       this.phoneExt = storeData.phone_extension;
       this.dodaac = storeData.dodaac;

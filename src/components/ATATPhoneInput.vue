@@ -109,7 +109,7 @@ export default class ATATPhoneInput extends Vue {
   @Prop({default: "351"}) private width!: string;
 
   @PropSync("country", {default: ()=> (
-    { name: '', countryCode: '', abbreviation: '',active: false }
+    { name: '', countryCode: '', abbreviation: '', active: false }
   )}) private _selectedCountry!: CountryObj;
   @PropSync("value", {default: ""}) private _value!: string;
 
@@ -136,7 +136,7 @@ export default class ATATPhoneInput extends Vue {
     this._selectedCountry = val;
     this._selectedCountry.active = true
     this.searchTerm = '';
-    this.countries.filter((country) =>  country.name !== val.name).forEach((country) => {
+    this.countries.filter((country) => country.name !== val.name).forEach((country) => {
       country.active = false
     })
     this.searchResults = this.countries;

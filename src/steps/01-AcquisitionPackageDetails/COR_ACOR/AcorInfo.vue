@@ -47,13 +47,11 @@ export default class CorInfo extends Mixins(SaveOnLeave) {
   private savedContactData: ContactDTO = AcquisitionPackage.initContact;
 
   private hasChanged(): boolean {
-    debugger;
     return hasChanges(this.currentContactData, this.savedContactData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      debugger;
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo(
           { data: this.currentContactData, type: "ACOR" }

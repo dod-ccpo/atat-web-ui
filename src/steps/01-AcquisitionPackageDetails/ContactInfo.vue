@@ -196,7 +196,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
-  private selectedPhoneCountry: CountryObj = {name: '', countryCode: '', abbreviation: '',active: false};
+  private selectedPhoneCountry: CountryObj 
+    = { name: '', countryCode: '', abbreviation: '', active: false };
 
   public selectedServiceOrAgency: SelectData =
     AcquisitionPackage.selectedServiceOrAgency;
@@ -385,7 +386,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
         const country = ContactData.countries.find(country => 
           country.countryCode === `+${parsedPhone?.countryCallingCode}`)
 
-        this.selectedPhoneCountry = country || {name: '', countryCode: '', abbreviation: '',active: false};
+        this.selectedPhoneCountry 
+          = country || { name: '', countryCode: '', abbreviation: '', active: false };
         this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() ||  "";
         this.savedData.phone =  parsedPhone?.number.toString() ||  "";
       }
