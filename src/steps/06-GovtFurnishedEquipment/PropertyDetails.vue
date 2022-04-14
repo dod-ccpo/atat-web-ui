@@ -53,18 +53,18 @@ import store from "@/store";
 })
 
 export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
-  private selectedEquipmentProvided = "";
+  private selectedEquipmentProvided: string | undefined = "" ;
 
   private equipmentProvidedOptions: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes.",
-      value: "Yes",
+      value: "true",
     },
     {
       id: "No",
       label: "No. GFP/GFE will NOT be furnished to the contractor.",
-      value: "No",
+      value: "false",
     },
   ];
 
@@ -93,9 +93,7 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage.loadGFEOverview();
     console.log(storeData)
     if (storeData) {
-      this.selectedEquipmentProvided = storeData.gfe_gfp_furnished !== ""
-        ? storeData.gfe_gfp_furnished === "true" ? "Yes" : "No"
-        : ""
+      this.selectedEquipmentProvided = storeData.gfe_gfp_furnished;
     }
   }
 
