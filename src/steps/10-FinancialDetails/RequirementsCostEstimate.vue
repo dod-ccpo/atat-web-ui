@@ -43,8 +43,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -58,7 +57,7 @@ import ATATTextField from "../../components/ATATTextField.vue";
     ATATTextField,
   },
 })
-export default class RequirementsCostEstimate extends Vue {
+export default class RequirementsCostEstimate extends Mixins(SaveOnLeave) {
 
   private surgeCapabilities = "";
 
