@@ -188,7 +188,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
   }
-
+  @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
     this.GFEOverview = value;
   }
@@ -2064,7 +2064,7 @@ export class AcquisitionPackageStore extends VuexModule {
   async loadGFEOverview(): Promise<GFEOverviewDTO> {
     try {
       await this.ensureInitialized();
-
+      debugger
       const sys_id = this.GFEOverview?.sys_id || "";
 
       if (sys_id.length > 0) {
@@ -2074,30 +2074,31 @@ export class AcquisitionPackageStore extends VuexModule {
         this.setGFEOverview(GFEOverviewData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          gfe_gfp_furnished: sys_id,
+          gfe_overview: sys_id,
         } as AcquisitionPackageDTO);
       }
       return this.GFEOverview as GFEOverviewDTO;
     } catch (error) {
-      throw new Error(`error occurred loading sensitive info data ${error}`);
+      throw new Error(`error occurred loading GFE info ${error}`);
     }
   }
 
   @Action({ rawError: true })
-  async saveGFEOverview(data: PeriodOfPerformanceDTO): Promise<void> {
+  async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
     try {
+      debugger
       const sys_id = this.GFEOverview?.sys_id || "";
       const savedGFEOverviewData =
           sys_id.length > 0
-              ? await api.periodOfPerformanceTable.update(sys_id, { ...data, sys_id })
-              : await api.periodOfPerformanceTable.create(data);
+              ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
+              : await api.gfeOverviewTable.create(data);
       this.setGFEOverview(savedGFEOverviewData);
       this.setAcquisitionPackage({
-        ...this.periodOfPerformance,
-        period_of_performance: sys_id,
+        ...this.acquisitionPackage,
+        gfe_overview: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving PoP data ${error}`);
+      throw new Error(`error occurred saving GFE data ${error}`);
     }
   }
 

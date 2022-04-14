@@ -12,7 +12,7 @@
               id="RecurringOptions"
               :card="true"
               :items="equipmentProvidedOptions"
-              :value.sync="showAlert"
+              :value.sync="selectedEquipmentProvided"
             />
           </div>
           <ATATAlert v-if="isDISA" 
@@ -34,12 +34,15 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { RadioButton } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { GFEOverviewDTO } from "@/api/models";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -48,8 +51,8 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
   },
 })
 
-export default class WillGovtEquipBeFurnished extends Vue {
-  private showAlert = "No";
+export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
+  private selectedEquipmentProvided = "";
 
 
   private equipmentProvidedOptions: RadioButton[] = [
@@ -69,6 +72,47 @@ export default class WillGovtEquipBeFurnished extends Vue {
     return AcquisitionPackage.selectedServiceOrAgency.value?.toUpperCase() 
               === "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
   }
+
+  private get currentData(): GFEOverviewDTO {
+    return {
+      gfe_gfp_furnished: this.selectedEquipmentProvided === "Yes" ? "true" : "false",
+    };
+  }
+
+  private get savedData(): GFEOverviewDTO {
+    return {
+      gfe_gfp_furnished: AcquisitionPackage.GFEOverview?.gfe_gfp_furnished || "false",
+    };
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadGFEOverview();
+    console.log(storeData)
+    if (storeData) {
+      this.selectedEquipmentProvided = storeData.gfe_gfp_furnished === "true" ? "Yes" : "No";
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    debugger
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveGFEOverview(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
 
 }
 </script>

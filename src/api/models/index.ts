@@ -19,6 +19,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   docusign_envelope_id: string;
   sensitive_information: string;
   period_of_performance: string;
+  gfe_overview: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {

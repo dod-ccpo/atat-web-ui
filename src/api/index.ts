@@ -8,7 +8,7 @@ import { SensitiveInformationApi } from "./otherContractConsiderations";
 import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
 import { PeriodOfPerformanceApi } from "./contractDetails";
-import { GFEOverviewApi } from "@/api/GFEOverview";
+import { GFEOverviewApi } from "./GFEOverview";
 
 export default {
   systemChoices: new SystemChoicesApi(),
