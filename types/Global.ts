@@ -129,7 +129,7 @@ export interface ToastObj {
 
 export interface PoP {
   duration: number | null;
-  timePeriod: string;
+  unitOfTime: string;
 }
 
 export interface RankData {

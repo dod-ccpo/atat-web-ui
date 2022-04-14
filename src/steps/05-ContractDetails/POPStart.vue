@@ -3,14 +3,13 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <h1 class="page-header">
-            Do you want to request a PoP start date?
-          </h1>
+          <h1 class="page-header">Do you want to request a PoP start date?</h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              Due to project requirements and/or contractual obligations, your PoP may need to start
-              on a specific date. If no date is specified, then your PoP will begin based upon the
-              execution date of your task order.
+              Due to project requirements and/or contractual obligations, your
+              PoP may need to start on a specific date. If no date is specified,
+              then your PoP will begin based upon the execution date of your
+              task order.
             </p>
             <ATATRadioGroup
               class="copy-max-width max-width-740"
@@ -20,11 +19,9 @@
               :value.sync="selectedPoPStartDateOption"
             />
           </div>
-          <div v-if="selectedPoPStartDateOption ==='YesStartDate'">
-            <hr class="my-9"/>
-            <p class="mb-2">
-              Requested start date
-            </p>
+          <div v-if="selectedPoPStartDateOption === 'YesStartDate'">
+            <hr class="my-9" />
+            <p class="mb-2">Requested start date</p>
             <div class="copy-max-width d-flex mb-9">
               <ATATSelect
                 id="RequestDateOption"
@@ -34,19 +31,24 @@
                 :selectedValue.sync="selectedRequestDateOption"
                 style="max-width: 196px"
               />
-              <ATATDatePicker id="RequestDatePicker" :value.sync="requestedPopStartDate" />
+              <ATATDatePicker
+                id="RequestDatePicker"
+                :value.sync="requestedPopStartDate"
+              />
             </div>
             <ATATAlert
               id="RequestDateAlert"
               class="copy-max-width"
-              v-if="selectedRequestDateOption ==='Not later than'"
+              v-if="selectedRequestDateOption === 'Not later than'"
               type="warning"
             >
               <template slot="content">
-                <p class="mb-0">All efforts will be made to accommodate your requested period of performance
-                  start date. However, there is no guarantee that the award will be made by said
-                  date. Normal contracting lead times and/or complexity of requirements may prevent
-                  meeting the requested date.
+                <p class="mb-0">
+                  All efforts will be made to accommodate your requested period
+                  of performance start date. However, there is no guarantee that
+                  the award will be made by said date. Normal contracting lead
+                  times and/or complexity of requirements may prevent meeting
+                  the requested date.
                 </p>
               </template>
             </ATATAlert>
@@ -58,16 +60,15 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component, Mixins} from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
-import {RadioButton, SelectData} from "../../../types/Global";
-import {PeriodOfPerformanceDTO} from "@/api/models";
+import { RadioButton, SelectData } from "../../../types/Global";
+import { PeriodOfPerformanceDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {hasChanges} from "@/helpers";
+import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
@@ -78,8 +79,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
     ATATSelect,
   },
 })
-
-export default class POPStart extends  Mixins(SaveOnLeave) {
+export default class POPStart extends Mixins(SaveOnLeave) {
   private requestedPopStartDate = "";
   private selectedPoPStartDateOption = "";
   private startPoPDateOptions: RadioButton[] = [
@@ -97,19 +97,22 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
   private selectedRequestDateOption = "";
   private requestDateOptions: SelectData[] = [
     {
-      text: 'No sooner than',
-      value: "No sooner than"
+      text: "No sooner than",
+      value: "No sooner than",
     },
     {
-      text: 'Not later than',
-      value: "Not later than"
-    }
+      text: "Not later than",
+      value: "Not later than",
+    },
   ];
   private get currentData(): PeriodOfPerformanceDTO {
-
     return {
-      time_frame: this.selectedRequestDateOption === "No sooner than" ? "NO_SOONER_THAN" : "NO_LATER_THAN",
-      pop_start_request: this.selectedPoPStartDateOption === "YesStartDate" ? "true" : "false",
+      time_frame:
+        this.selectedRequestDateOption === "No sooner than"
+          ? "NO_SOONER_THAN"
+          : "NO_LATER_THAN",
+      pop_start_request:
+        this.selectedPoPStartDateOption === "YesStartDate" ? "true" : "false",
       requested_pop_start_date: this.requestedPopStartDate,
     };
   }
@@ -117,8 +120,10 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
   private get savedData(): PeriodOfPerformanceDTO {
     return {
       time_frame: AcquisitionPackage.periodOfPerformance?.time_frame,
-      pop_start_request: AcquisitionPackage.periodOfPerformance?.pop_start_request,
-      requested_pop_start_date: AcquisitionPackage.periodOfPerformance?.requested_pop_start_date
+      pop_start_request:
+        AcquisitionPackage.periodOfPerformance?.pop_start_request,
+      requested_pop_start_date:
+        AcquisitionPackage.periodOfPerformance?.requested_pop_start_date,
     };
   }
 
@@ -129,9 +134,13 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadPeriodOfPerformance();
     if (storeData) {
-      this.selectedRequestDateOption = storeData.time_frame === "NO_SOONER_THAN" ? "No sooner than" : "Not later than";
-      this.selectedPoPStartDateOption = storeData.pop_start_request === "true" ? "YesStartDate" : "NoStartDate";
-      this.requestedPopStartDate = storeData.requested_pop_start_date  || "";
+      this.selectedRequestDateOption =
+        storeData.time_frame === "NO_SOONER_THAN"
+          ? "No sooner than"
+          : "Not later than";
+      this.selectedPoPStartDateOption =
+        storeData.pop_start_request === "true" ? "YesStartDate" : "NoStartDate";
+      this.requestedPopStartDate = storeData.requested_pop_start_date || "";
     }
   }
 
@@ -149,6 +158,5 @@ export default class POPStart extends  Mixins(SaveOnLeave) {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
 }
 </script>
