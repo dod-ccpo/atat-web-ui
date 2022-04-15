@@ -113,6 +113,10 @@ export default class ATATDatePicker extends Vue {
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
+
+  // Flash of red border on date text field when validateOnBlur is true and user
+  // clicks a date in the picker to be addressed in future milestone.
+  // Leave commented out code for validateOnBlur in place for now.
   private validateOnBlur = true;
 
   @Prop({ default: "" }) private label!: string;

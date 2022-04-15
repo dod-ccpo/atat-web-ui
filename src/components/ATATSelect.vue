@@ -33,9 +33,6 @@
         :style="'width: ' + width + 'px'"
         :rules="rules"
       >
-          <!-- hide-details="auto" -->
-
-
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">
             <v-list-item-content
