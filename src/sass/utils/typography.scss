@@ -165,10 +165,9 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 200;
   }
 }
 
-$fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
-@each $size in $fontSizes {
-  .font-size-#{$size} {
-    font-size: #{$size}px !important;
+@for $i from 10 through 30 {
+  .font-size-#{$i}{
+      font-size: #{$i}px !important;
   }
 }
 
@@ -245,3 +244,41 @@ $fontSizes: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26;
   @extend .copy-max-width;
 }
 
+.badge {
+  border-radius: 2px;
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0 4px;
+  font-size: 1.4rem;
+
+  &.badge-blue {
+    background-color: $info-dark;
+  }
+}
+
+._semibold {
+  font-weight: 500 !important;
+}
+
+ul._atat-ul {
+  padding-bottom: 12px;
+  li {
+    padding-bottom: 8px;
+    ul {
+      li {
+        position: relative;
+        &::marker {
+          content: "";
+        }
+        &:before {
+          content: "•";
+          font-size: 2.5rem;
+          position: absolute;
+          left: -18px;
+          top: 0;
+        }
+      }
+    }
+  }
+}

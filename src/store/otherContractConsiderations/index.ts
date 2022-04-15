@@ -21,17 +21,6 @@ export class OtherContractConsiderationsStore extends VuexModule {
     this.PIIRecordIncluded = included;
   }
 
-  needsFOIACoordinator: boolean | null = null;
-
-  @Action
-  public setNeedsFOIACoordinator(included: boolean): void {
-    this.doSetNeedsFOIACoordinator(included);
-  }
-  @Mutation
-  public doSetNeedsFOIACoordinator(included: boolean): void {
-    this.needsFOIACoordinator = included;
-  }
-
 }
 
 const OtherContractConsiderations = getModule(OtherContractConsiderationsStore);

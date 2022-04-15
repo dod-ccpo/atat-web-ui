@@ -1,0 +1,97 @@
+<template>
+  <div class="mb-7">
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header">
+            Tell us more about your system of records
+          </h1>
+          <div class="mt-10">
+            <ATATTextField
+              id="SystemName"
+              label="System name"
+              class="_input-max-width"
+              :value.sync="systemName"
+            />
+          </div>
+          <div class="d-flex align-start flex-column mt-10 textarea-max-width">
+            <ATATTextArea
+              id="OperationToBePerformed"
+              label="What is the operation of work to be performed?"
+              class="width-100"
+              :rows="7"
+              :value.sync="operationToBePerformed"
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import {Component, Mixins} from "vue-property-decorator";
+
+import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+import {SensitiveInformationDTO} from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import {hasChanges} from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+
+@Component({
+  components: {
+    ATATTextArea,
+    ATATTextField,
+  },
+})
+
+export default class PIIRecord extends Mixins(SaveOnLeave) {
+  private systemName = "";
+  private operationToBePerformed = "";
+
+  private get currentData(): SensitiveInformationDTO {
+    return {
+      system_of_record_name: this.systemName ,
+      work_to_be_performed: this.operationToBePerformed ,
+
+    };
+  }
+
+  private get savedData(): SensitiveInformationDTO {
+    return {
+      system_of_record_name: AcquisitionPackage.sensitiveInformation?.system_of_record_name || "",
+      work_to_be_performed: AcquisitionPackage.sensitiveInformation?.work_to_be_performed || "",
+    };
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    if (storeData) {
+      this.systemName = storeData.system_of_record_name || '';
+      this.operationToBePerformed = storeData.work_to_be_performed || '';
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+}
+
+</script>

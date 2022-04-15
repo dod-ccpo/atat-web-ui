@@ -1,7 +1,6 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
-import Background from "@/store/background";
 
 import { routeNames } from "../stepper";
 import { StepRouteResolver } from "@/store/steps/types";
@@ -26,30 +25,10 @@ export const AcorsRouteResolver = (current: string): string => {
   return routeNames.Acor_Information;
 };
 
-export const CustodianRouteResolver = (current: string): string => {
-  const needsPropertyCustodian = GovtFurnishedEquipment.needsPropertyCustodian;
-
-  // if government equipment will be furnished, route to Property Custodian page
-  if (
-    current === routeNames.Will_Govt_Equip_Be_Furnished &&
-    needsPropertyCustodian
-  ) {
-    return routeNames.Property_Custodian;
-  }
-
-  // else stay on same page until next step after Property Custodian is completed
-  alert(
-    'Business rule is to skip Property Custodian page if answer is "No" (or unanswered) here. ' +
-      "Navigation will temporarily stay on this page until the substep after Property " +
-      'Custodian has been completed. Select "Yes" to continue to Property Custodian page.'
-  );
-  // todo - change this routeName when page after Property Custodian is completed
-  return routeNames.Will_Govt_Equip_Be_Furnished;
-};
 
 export const CurrentContractRouteResolver = (current: string): string => {
-  const hasCurrentContract = Background.hasCurrentContract;
-
+  const hasCurrentContract 
+    = AcquisitionPackage.currentContract?.current_contract_exists === "true";
   if (hasCurrentContract) {
     return routeNames.Current_Contract_Details;
   }
@@ -68,14 +47,15 @@ export const PIIRecordResolver = (current: string): string => {
 };
 
 export const FOIARecordResolver = (current: string): string => {
-  const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
+  const needsFOIACoordinator 
+    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "true";
   // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
   // then need to collect information about the FOIA Coordinator
   if (needsFOIACoordinator) {
     return routeNames.FOIA_Coordinator;
   }
   return current === routeNames.FOIA
-    ? routeNames.Public_Disclosure_of_Information
+    ? routeNames.Section_508_Standards
     : routeNames.FOIA;
 };
 
@@ -84,7 +64,6 @@ export const FOIARecordResolver = (current: string): string => {
 const resolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractRouteResolver,
-  CustodianRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
 };

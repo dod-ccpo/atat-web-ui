@@ -15,7 +15,7 @@
       <template v-if="item.description && card" v-slot:label>
         <div class="d-flex flex-column">
           <p class="card-label">{{ item.label }}</p>
-          <p class="mb-0">{{ item.description }}</p>
+          <p class="mb-0" v-html="item.description"></p>
         </div>
       </template>
     </v-checkbox>
@@ -27,11 +27,12 @@ import Vue from "vue";
 import {Component, Prop, PropSync} from "vue-property-decorator";
 
 import {Checkbox} from "../../types/Global";
+import { getIdText } from "@/helpers";
 
 @Component({})
 
 export default class ATATCheckboxGroup extends Vue {
-  @PropSync("value") private _selected!: string;
+  @PropSync("value") private _selected!: string[];
   @Prop({default: [""], required: true}) private items!: Checkbox[];
   @Prop({default: false}) private card!: boolean;
   @Prop({default: false}) private error!: boolean;
@@ -40,7 +41,9 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private name!: string;
 
   private getIdText(string: string) {
-    return string.replace(/[^A-Z0-9]/ig, "");
+    return getIdText(string);
   }
+
+
 }
 </script>

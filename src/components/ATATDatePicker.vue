@@ -46,6 +46,7 @@
           :rules="rules"
           @blur="onBlur"
           :validate-on-blur="validateOnBlur"
+          autocomplete="off"
         >
           <template slot="append-outer">
             <v-btn
@@ -126,7 +127,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
   private max!: Date;
-  @Prop({ default: [] }) private rules!: Array<unknown>;
+  @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
 
   /**
    * WATCHERS
@@ -291,6 +292,7 @@ export default class ATATDatePicker extends Vue {
    * LIFECYCLE HOOKS
    */
   private mounted(): void {
+    this.date = this.value;
     this.addMasks();
     this.removeErrors();
   }

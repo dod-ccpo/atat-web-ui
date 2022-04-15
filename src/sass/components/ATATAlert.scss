@@ -1,4 +1,4 @@
-._atat-alert{
+._atat-alert {
   display: block;
   color: $base-darkest;
   border-radius: 4px;
@@ -6,6 +6,36 @@
   padding: 24px;
   border: 1px solid transparent;
   padding: 16px 20px;
+  position: relative;
+  
+  &._scrollable {
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      background: rgb(230,245,252);
+    }
+  
+    &:before {
+      top: 0;
+      height: 24px;
+      background: linear-gradient(180deg, rgba(230,245,252,1) 0%, rgba(230,245,252,0) 100%);    
+    }
+    
+    &:after {
+      bottom: 0;
+      height: 60px;
+      background: linear-gradient(180deg, rgba(230,245,252,0) 0%, rgba(230,245,252,1) 100%);    
+    }
+  
+    ._content {
+      overflow-x: hidden;
+      overflow-y: scroll;
+      position: relative;
+    }
+  }
 
   a {
     text-decoration: underline;
@@ -38,10 +68,10 @@
   
   &._warning-alert {
     background-color: $warning_lighter;
-    border-color: $warning-dark;
+    border-color: $warning-dark2;
     
     .v-icon {
-      color: $warning-dark;
+      color: $warning-dark2;
     }
   }
 

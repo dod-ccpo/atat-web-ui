@@ -1,13 +1,21 @@
-import { AcquisitionPackageDTO } from "@/models/AcquisitionPackageDTO";
-import { ContactDTO } from "@/models/ContactDTO";
-import { OrganizationDTO } from "@/models/OrganizationDTO";
-import { ProjectOverviewDTO } from "@/models/ProjectOverviewDTO";
-import { FairOpportunityDTO } from "@/models/FairOpportunityDTO";
+import {
+  AcquisitionPackageDTO,
+  ContactDTO,
+  OrganizationDTO,
+  ProjectOverviewDTO,
+  FairOpportunityDTO,
+  CurrentContractDTO,
+  SensitiveInformationDTO,
+} from "@/api/models";
 
 export interface SessionData {
-  acquisitionPackage: AcquisitionPackageDTO,
-  projectOverview: ProjectOverviewDTO,
-  organization: OrganizationDTO,
-  contactInfo: ContactDTO,
-  fairOpportunity: FairOpportunityDTO
+  acquisitionPackage: AcquisitionPackageDTO;
+  projectOverview: ProjectOverviewDTO;
+  organization: OrganizationDTO;
+  contactInfo: ContactDTO;
+  corInfo: ContactDTO;
+  acorInfo: ContactDTO;
+  fairOpportunity: FairOpportunityDTO;
+  CurrentContract: CurrentContractDTO;
+  SensitiveInformation: SensitiveInformationDTO
 }

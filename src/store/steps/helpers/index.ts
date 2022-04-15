@@ -17,7 +17,7 @@ export const mapStepConfigs = (
       additionalButtons: routeConfig.additionalButtons || [],
       backButtonText: routeConfig.backButtonText || "Back",
     };
-
+   
     const lastStep = map?.get(last || "");
 
     if (lastStep) {
@@ -34,13 +34,14 @@ export const mapStepConfigs = (
     }
 
     routeConfig.children?.forEach((childConfig) =>
-      mapStep({
-        ...childConfig,
-        stepNumber: stepInfo.stepNumber,
-      })
+      {
+        mapStep({
+          ...childConfig,
+          stepNumber: stepInfo.stepNumber,
+        })
+      }
     );
   };
-
   config.forEach((routeConfig) => mapStep(routeConfig));
 
   return map;

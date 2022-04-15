@@ -8,12 +8,6 @@ $total: 20;
     .max-height-#{$i*5} { max-height: ($i * 5%) !important}; 
 }
 
-@for $i from 10 through 30 {
-    .font-size-#{$i}{
-        font-size: #{$i}px !important;
-    }
-}
-
 $total: 900;
 @for $i from 400 through $total{
     .font-weight-#{$i} { font-weight: ($i) !important};
