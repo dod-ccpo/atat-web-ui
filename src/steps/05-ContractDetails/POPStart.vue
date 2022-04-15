@@ -43,7 +43,7 @@
                 :rules="[
                   $validators.required('Please enter a valid date'),
                   $validators.isDateValid('Please enter a valid date')
-                ]"              
+                ]"
               />
 
             </div>

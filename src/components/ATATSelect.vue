@@ -106,10 +106,6 @@ export default class ATATSelect extends Vue {
   private errorMessages: string[] = [];
 
   private setErrorMessage(): void {
-    const foo = this.$refs;
-    
-    debugger;
-
     this.errorMessages = this.$refs.atatSelect.errorBucket;
   }
 

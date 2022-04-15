@@ -12,8 +12,8 @@
               id="RecurringOptions"
               :card="true"
               :items="equipmentProvidedOptions"
-              :rules="[$validators.required('Please select an option')]"
               :value.sync="selectedEquipmentProvided"
+              :rules="[$validators.required('Please select an option')]"
             />
           </div>
           <ATATAlert v-if="isDISA" 
