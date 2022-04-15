@@ -40,6 +40,7 @@
               opportunity apply to your acquisition?"
             :items="exceptionOptions"
             :value.sync="selectedException"
+            :rules="[$validators.required('Please select an option')]"            
           />
 
         </v-col>

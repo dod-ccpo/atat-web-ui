@@ -75,10 +75,10 @@
         active-picker="date"
         :min="min"
         :max="max"
-        :allowed-dates="allowedDates"
         @click:date="datePickerClicked"
         scrollable
       ></v-date-picker>
+
     </v-menu>
     <ATATErrorValidation v-if="menu === false" :errorMessages="errorMessages" />
   </div>
@@ -131,7 +131,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
-  private max!: Date;
+    private max!: Date;
   @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
   @Prop({ default: false }) private isRequired!: boolean;
 
@@ -224,7 +224,7 @@ export default class ATATDatePicker extends Vue {
    */
 
   /**
-   * mask input date text boxes with MM/DD/YYYY
+   * mask input date text boxes with MM/DD/YYYY, min/max
    */
   private addMasks(): void {
     [this.id + "DatePickerTextField"].forEach((tbId) => {
@@ -234,25 +234,10 @@ export default class ATATDatePicker extends Vue {
         placeholder: "MM/DD/YYYY",
         outputFormat: "MM/DD/YYYY",
         nullable: true,
-        min: format(new Date(this.min), "MM/dd/yyyy"),
-        max: format(new Date(this.max), "MM/dd/yyyy"),
+        min: format(add(new Date(this.min), { days: 1 }), "MM/dd/yyyy"),
+        max: format(add(new Date(this.max) , { days: 1 }), "MM/dd/yyyy"),
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
-    // todo add min and max
-  }
-
-  /**
-   * @param date (string) - passed in when user advances/retreats month(s)
-   * 
-   * returns boolean if date is after this.min and before this.max
-   * if true = date is clickable
-   * if false = date is disabled
-   */
-  public allowedDates(date: string): boolean {
-    return (
-      isBefore(new Date(date), new Date(this.max)) &&
-      isAfter(new Date(date), new Date(this.min))
-    );
   }
 
   /**
