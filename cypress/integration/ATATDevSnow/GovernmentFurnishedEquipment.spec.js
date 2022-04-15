@@ -28,9 +28,9 @@ describe("Test suite: Government Furnished Equipment", () => {
     cy.clickSideStepper(common.stepGovFurEquipLink, " Government Furnished Equipment ");
     cy.textExists(common.header, " Will government equipment be furnished, provided or acquired under this acquisition? ");
     //assert radio button options
-    cy.radioBtn(govFurEquip.yesRadioOption, "Yes").not("[disabled]").click({ force: true });
+    cy.radioBtn(govFurEquip.yesRadioOption, "true").not("[disabled]").click({ force: true });
     cy.findElement(govFurEquip.blueInfoMessageText).should("not.exist");
-    cy.radioBtn(govFurEquip.noRadioOption, "No").not("[disabled]").click({force: true});    
+    cy.radioBtn(govFurEquip.noRadioOption, "false").not("[disabled]").click({force: true});    
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(common.substepJustificationText)
@@ -52,7 +52,7 @@ describe("Test suite: Government Furnished Equipment", () => {
     cy.clickSideStepper(common.stepGovFurEquipLink, " Government Furnished Equipment ");
     cy.textExists(common.header, " Will government equipment be furnished, provided or acquired under this acquisition? ");
     //assert radio button options
-    cy.radioBtn(govFurEquip.yesRadioOption, "Yes").not("[disabled]")
+    cy.radioBtn(govFurEquip.yesRadioOption, "true").not("[disabled]")
     cy.findElement(govFurEquip.blueInfoMessageText).should("exist").and("be.visible");
     const alertText = "As a DISA mission owner, your GFP must be reviewed and approved by the Workforce Services Directorate (WSD) Property Office. Once you are ready to submit your acquisition package, we’ll take care of sending your GFP documents for review."
     cy.findElement(govFurEquip.blueInfoMessageText).then(($e) => {
@@ -62,7 +62,7 @@ describe("Test suite: Government Furnished Equipment", () => {
       expect(formattedTxt).equal(alertText);
 
     })
-    cy.radioBtn(govFurEquip.noRadioOption, "No").not("[disabled]");    
+    cy.radioBtn(govFurEquip.noRadioOption, "false").not("[disabled]");    
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(common.substepJustificationText)
