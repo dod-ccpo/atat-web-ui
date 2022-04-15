@@ -3,7 +3,7 @@ import common from "../../selectors/common.sel"
 import { bootstrapMockApis,colors, randomAlphaNumeric, randomNumber} from "../../helpers";
 
 
-describe("Test suite: BackGround", () => {
+describe("Test suite: Background", () => {
 
 
   beforeEach(() => {
