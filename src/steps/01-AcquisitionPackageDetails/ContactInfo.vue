@@ -97,6 +97,9 @@
           class="_input-max-width mb-10"
           helpText="Enter a .MILITARY or .gov email address."
           :value.sync="email"
+           :rules="[
+                $validators.isEmail('Please use standard domain format, like ‘@mail.mil’'),
+              ]"
         />
         <ATATPhoneInput
           label="Your phone number"
@@ -104,7 +107,11 @@
           class="_input-max-width"
           :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
           :value.sync="selectedPhoneNumber"
-          :country.sync="selectedPhoneCountry"
+          :country="selectedPhoneCountry"
+          :rules="[
+            $validators.isPhoneNumberValid(this.country, 'Please use standard domain format, like ‘@mail.mil’'),
+          ]"
+          @country-changed="onChangeCountry"
         />
         <ATATAutoComplete
           v-show="selectedRole === 'CIVILIAN'"
@@ -167,6 +174,9 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     );
   }
 
+  private onChangeCountry(val: CountryObj){
+    this.selectedPhoneCountry = val;
+  }
   // watchers
 
   @Watch("selectedBranch")

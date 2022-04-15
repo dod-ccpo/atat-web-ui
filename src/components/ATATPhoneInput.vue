@@ -12,15 +12,17 @@
     <div class="d-flex">
       <v-select
         attach
-        id="CountryCodeDropdown'"
+        id="CountryCodeDropdown"
         class="_country-select"
         :items="searchResults"
         outlined
         dense
-        v-model="_selectedCountry"
+        item-text="abbreviation"
+        v-model="selectedCountry"
         :height="42"
         :menu-props="{ bottom: true, offsetY: true }"
         @change="onChange"
+        :return-object="true"
       >
         <template v-slot:selection="{ item }">
           <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
@@ -35,20 +37,27 @@
             id="DropdownTextField"
             autocomplete="off"
           />
-
         </template>
         <template v-slot:item="{ item, on }">
           <v-list-item
             class="_country-list"
-            :class="[item.suggested ? '_suggested' : '', item.active ? '_active' : '']" v-on="on">
+            :class="[
+              item.suggested ? '_suggested' : '',
+              item.active ? '_active' : '',
+            ]"
+            v-on="on"
+          >
             <v-list-item-content
-              :id="id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/ig, '')"
-              :item-value=item.name
+              :id="
+                id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/gi, '')
+              "
+              :item-value="item.name"
             >
-              <v-list-item-title class="body _country" >
+              <v-list-item-title class="body _country">
                 <v-row no-gutters align="center">
-                  <span class=" mr-3 fi" :class="[`fi-${item.abbreviation}`]"> </span>
-                  <span class="mr-2 _country-name" >{{ item.name }}</span>
+                  <span class="mr-3 fi" :class="[`fi-${item.abbreviation}`]">
+                  </span>
+                  <span class="mr-2 _country-name">{{ item.name }}</span>
                   <span class="color-base body-sm">{{ item.countryCode }}</span>
                 </v-row>
               </v-list-item-title>
@@ -68,8 +77,9 @@
         class="_phone-number-input"
         :hide-details="true"
         :suffix="suffix"
-        :prefix="this._selectedCountry.countryCode"
+        :prefix="this.selectedCountry.countryCode"
         autocomplete="off"
+        :rules="rules"
       >
       </v-text-field>
     </div>
@@ -77,19 +87,20 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import Vue, { PropType } from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
-import {CountryObj} from "../../types/Global";
-
+import { CountryObj } from "../../types/Global";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 @Component({
   components: {
     ATATTextField,
     ATATAutoComplete,
-  }
+    ATATErrorValidation,
+  },
 })
 export default class ATATPhoneInput extends Vue {
   // refs
@@ -98,71 +109,116 @@ export default class ATATPhoneInput extends Vue {
   };
 
   // props
-  @Prop({default: true}) private dense!: boolean;
-  @Prop({default: true}) private singleLine!: boolean;
-  @Prop({default: "PhoneNumber"}) private id!: string;
-  @Prop({default: ""}) private label!: string;
-  @Prop({default: ""}) private appendIcon!: string;
-  @Prop({default: ""}) private placeHolder!: string;
-  @Prop({default: ""}) private suffix!: string;
-  @Prop({default: ""}) private optional!: boolean;
-  @Prop({default: "351"}) private width!: string;
+  @Prop({ default: true }) private dense!: boolean;
+  @Prop({ default: true }) private singleLine!: boolean;
+  @Prop({ default: "PhoneNumber" }) private id!: string;
+  @Prop({ default: "" }) private label!: string;
+  @Prop({ default: "" }) private appendIcon!: string;
+  @Prop({ default: "" }) private placeHolder!: string;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
+  @Prop({ default: "" }) private suffix!: string;
+  @Prop({ default: "" }) private optional!: boolean;
+  @Prop({ default: "351" }) private width!: string;
 
-  @PropSync("country", {default: ()=> (
-    { name: '', countryCode: '', abbreviation: '', active: false }
-  )}) private _selectedCountry!: CountryObj;
-  @PropSync("value", {default: ""}) private _value!: string;
+// @PropSync("country",{
+//     default: {
+//       "name":"United States",
+//       "countryCode":"+1",
+//       "abbreviation":"us",
+//       "active":true,
+//     },
+//     type: Object as ()=> CountryObj}
+//   ) private selectedCountry!: CountryObj;
+
+  @Prop({
+    default: ()=> ({
+      "name":"United States",
+      "countryCode":"+1",
+      "abbreviation":"us",
+      "active":true,
+    }),
+  }
+  ) private selectedCountry!: CountryObj;
+
+  @PropSync("value", { default: "" }) private _value!: string;
 
   // data
   private searchResults: CountryObj[] = [];
-  private searchTerm = '';
+    
+  private searchTerm = "";
   private errorMessages: string[] = [];
 
   private inputActions(v: string) {
     this._value = v;
-  };
+  }
 
   private searchCountries() {
     if (!this.searchTerm) {
       this.searchResults = this.countries;
-    };
+    }
     this.searchResults = this.countries.filter((country) => {
-      return country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
+      return (
+        country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1
+      );
     });
-  };
+  }
 
-//@Events
+  //ATATErrorValidation
+   private setErrorMessage(): void {
+    this.errorMessages = this.$refs.atatPhoneField.errorBucket;
+  }
+
+  //@Events
+  private onBlur(e: FocusEvent) : void{
+    const input = e.target as HTMLInputElement;
+    this.setErrorMessage();
+    this.$emit('blur', input.value);
+  }
+
+  //@Events
   private onChange(val: CountryObj): void {
-    this._selectedCountry = val;
-    this._selectedCountry.active = true
-    this.searchTerm = '';
-    this.countries.filter((country) => country.name !== val.name).forEach((country) => {
-      country.active = false
-    })
+    this.selectedCountry = val;
+    this.selectedCountry.active = true;
+    this.searchTerm = "";
+    this.countries
+      .filter((country) => country.name !== val.name)
+      .forEach((country) => {
+        country.active = false;
+      });
     this.searchResults = this.countries;
-    this.$emit('country-changed', val);
-  };
+    this.$emit("country-changed", val);
+  }
 
+
+  // mask
   private phoneMask(val: string): Inputmask.Instance {
     this._value = val;
-    const phoneTextField = document.getElementById(this.id + '_textField') as HTMLElement;
-    switch (this._selectedCountry.abbreviation) {
+    const phoneTextField = document.getElementById(
+      this.id + "_textField"
+    ) as HTMLElement;
+    switch (this.selectedCountry.abbreviation) {
       case "us":
-        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
-          .mask(phoneTextField);
-      case 'dsn':
-        this._value = this._selectedCountry.countryCode + val;
-        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
-          .mask(phoneTextField);
+        return Inputmask("999-999-9999", {
+          placeholder: "",
+          jitMasking: true,
+        }).mask(phoneTextField);
+      case "dsn":
+        this._value = this.selectedCountry.countryCode + val;
+        return Inputmask("999-999-9999", {
+          placeholder: "",
+          jitMasking: true,
+        }).mask(phoneTextField);
       default:
-        return Inputmask('*{20}',{placeholder:'', jitMasking: true})
-          .mask(phoneTextField)
-    };
-  };
+        return Inputmask("*{20}", { placeholder: "", jitMasking: true }).mask(
+          phoneTextField
+        );
+    }
+  }
 
-  mounted(): void {
-    this.searchResults = [...this.countries]
-  };
+  private mounted(): void {
+    this.searchResults = [...this.countries];
+    this.$emit("country-changed", this.selectedCountry);
+  }
 
   //data
 
@@ -171,15 +227,15 @@ export default class ATATPhoneInput extends Vue {
       name: "United States",
       countryCode: "+1",
       abbreviation: "us",
-      active: false,
-      suggested: true
+      active: true,
+      suggested: true,
     },
     {
       name: "Defense Switched Network",
       countryCode: "DSN",
       abbreviation: "dsn",
       active: false,
-      suggested: true
+      suggested: true,
     },
     {
       name: "Albania",
@@ -355,7 +411,6 @@ export default class ATATPhoneInput extends Vue {
       abbreviation: "gb",
       active: false,
     },
-  ];  
-
-};
+  ];
+}
 </script>

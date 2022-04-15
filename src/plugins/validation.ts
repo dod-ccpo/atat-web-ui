@@ -141,6 +141,62 @@ const isDateValid = (
   };
 };
 
+/**
+ * todo
+ * Validator that validates if input is a valid Date
+ * Returns the error message otherwise.
+ *
+ * @param (string) date as "MM/dd/yyyy"
+ * @returns {function(*): (boolean|string)}
+ */
+ const isEmail = (
+): ((v: string) => string | true | undefined) => {
+  // validate date isn't something like 12/DD/YYYY
+  return (v: string) => {
+    if (v!==""){  
+      if (/[a-z0-9]+@[a-z]+\.[a-z]{3}/.test(v)) {
+          return "Please use standard domain format, like ‘@mail.mil’"
+        } else if (v.indexOf("@") < 0){
+          return "Please include an '@’ symbol in the email address."
+        } else if (/[a-z0-9]+@[a-z]+\.[ gov,mil ]/.test(v)) {
+          return "Please use your .mil or .gov email address."
+        } 
+    }
+    return true;
+  };
+};
+
+/**
+ * todo
+ * Validator that validates if input is a valid Date
+ * Returns the error message otherwise.
+ *
+ * @param {string} country country Abbreviation 
+ * @returns {function(*): (boolean|string)}
+ */
+ const isPhoneNumberValid = (
+   country: string
+  ): ((v: string) => string | true | undefined) => {
+    // debugger;
+    // validate date isn't something like 12/DD/YYYY
+    return (v: string) => {
+      // `Value must be between ${min} and ${max}`
+      if (v!==""){  
+        // debugger;
+        // const cn = country.toLowerCase();
+        // if (cn === "us"){
+
+        // } else if (cn = "dsn"){
+
+        // } else {
+
+        // }
+      }
+      return true;
+    };
+  };
+  
+
 
 export default {
   install(Vue: any, options: any): void {
@@ -153,7 +209,9 @@ export default {
       lessThan,
       greaterThan,
       isBetween,
-      isDateValid
+      isDateValid,
+      isEmail,
+      isPhoneNumberValid
     };
   },
 };

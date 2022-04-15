@@ -31,6 +31,7 @@
       :hide-details="true"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
+      :validate-on-blur="false"
       :rules="rules"
       @blur="onBlur"
       @update:error="setErrorMessage"
