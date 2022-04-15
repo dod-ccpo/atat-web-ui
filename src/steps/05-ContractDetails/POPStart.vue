@@ -108,11 +108,11 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   private selectedRequestDateOption = "NO_SOONER_THAN";
   private requestDateOptions: SelectData[] = [
     {
-      text: 'No sooner than',
+      text: "No sooner than",
       value: "NO_SOONER_THAN",
     },
     {
-      text: 'Not later than',
+      text: "Not later than",
       value: "NO_LATER_THAN"
     }
   ];
