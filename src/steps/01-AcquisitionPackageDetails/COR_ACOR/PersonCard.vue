@@ -49,8 +49,15 @@
       <template v-slot:content>
         <p class="mb-0">
           This individual is set as your {{ isACOR ? 'primary COR' : 'ACOR' }}. 
-          Please select a different {{ isACOR ? 'ACOR.' : 'primary COR,' }} 
-          <span v-if="!isACOR">or change your ACOR.</span>        
+          Please select a different {{ isACOR ? 'ACOR' : 'primary COR' }}, or
+          <router-link 
+            :to="{ name: isACOR 
+              ? routeNames.Cor_Information 
+              : routeNames.Acor_Information 
+            }"
+          >
+            change your {{ isACOR ? 'COR' : 'ACOR' }}.
+          </router-link>
         </p>
       </template>
     </ATATAlert>
@@ -96,6 +103,7 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { CorAcorSelectData } from "../../../../types/Global";
+import { routeNames } from "../../../router/stepper";
 
 @Component({
   components: {
@@ -117,7 +125,7 @@ export default class PersonCard extends Vue {
   // data
 
   private showDialog = false
-
+  private routeNames = routeNames;
   // computed
 
   private get corOrAcor(): string {
