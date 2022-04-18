@@ -1,4 +1,5 @@
 import { isValid } from "date-fns";
+import { CountryObj } from "types/Global";
 
 /**
  * Validator that validates input meets a minimum length
@@ -175,25 +176,32 @@ const isDateValid = (
  * @returns {function(*): (boolean|string)}
  */
  const isPhoneNumberValid = (
-   country: string
+   country: CountryObj
   ): ((v: string) => string | true | undefined) => {
-    // debugger;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
-      // `Value must be between ${min} and ${max}`
-      if (v!==""){  
-        // debugger;
-        // const cn = country.toLowerCase();
-        // if (cn === "us"){
-
-        // } else if (cn = "dsn"){
-
-        // } else {
-
-        // }
+      if (v!==""){ 
+          const plainPN = v.split("-").join(""); 
+          const plainPNLength = plainPN.length;
+          if (country.abbreviation === "us"){
+            return plainPNLength === 10 || "Phone number must be 10 digits including the area code.";
+          } else if (country.abbreviation === "dsn"){
+            return (
+              (plainPNLength === 7 || plainPNLength === 10) || 
+              "DSN number must be 7 digits for CONUS or 10 digits for OCONUS including the geographical code"
+            );
+          } else {
+            const isLengthValid = (plainPNLength >=7 && plainPNLength <= 20);
+            const isSpecialCharsValid = isNaN(parseInt(v)) ? /^[0-9\s+.()-]*$/.test(plainPN) : true;
+            return (
+              (isLengthValid && isSpecialCharsValid) || 
+              "Phone number must be between 7 and 20 digits. It may contain left and right parentheses, hyphen, " + 
+              "period, plus, and spaces."
+            );
+          }
+        }
+        return true;
       }
-      return true;
-    };
   };
   
 

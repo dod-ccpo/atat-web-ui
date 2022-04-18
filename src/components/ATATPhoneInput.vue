@@ -1,5 +1,5 @@
 <template>
-  <div id="PhoneControl" class="_atat-phone-field">
+  <div id="PhoneControl" class="_atat-phone-field"  @blur="onBlur">
     <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_TextFieldLabel'"
@@ -18,7 +18,9 @@
         outlined
         dense
         item-text="abbreviation"
-        v-model="selectedCountry"
+        hide-details="true"
+        :error="errorMessages.length>0"
+        v-model="_selectedCountry"
         :height="42"
         :menu-props="{ bottom: true, offsetY: true }"
         @change="onChange"
@@ -66,7 +68,7 @@
         </template>
       </v-select>
       <v-text-field
-        ref="atatTextField"
+        ref="atatPhoneTextField"
         :id="id + '_textField'"
         outlined
         dense
@@ -74,20 +76,22 @@
         :value.sync="_value"
         :placeholder="placeHolder"
         @input="phoneMask"
+        :validate-on-blur="false"
         class="_phone-number-input"
         :hide-details="true"
         :suffix="suffix"
-        :prefix="this.selectedCountry.countryCode"
+        :prefix="this._selectedCountry.countryCode"
         autocomplete="off"
         :rules="rules"
       >
       </v-text-field>
     </div>
+     <ATATErrorValidation :errorMessages="errorMessages" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
+import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -105,7 +109,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 export default class ATATPhoneInput extends Vue {
   // refs
   $refs!: {
-    atatPhoneField: Vue & { errorBucket: string[]; errorCount: number };
+    atatPhoneTextField: Vue & { errorBucket: string[]; errorCount: number };
   };
 
   // props
@@ -120,25 +124,18 @@ export default class ATATPhoneInput extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "351" }) private width!: string;
 
-// @PropSync("country",{
-//     default: {
-//       "name":"United States",
-//       "countryCode":"+1",
-//       "abbreviation":"us",
-//       "active":true,
-//     },
-//     type: Object as ()=> CountryObj}
-//   ) private selectedCountry!: CountryObj;
 
-  @Prop({
-    default: ()=> ({
-      "name":"United States",
-      "countryCode":"+1",
-      "abbreviation":"us",
-      "active":true,
-    }),
+  @PropSync("country", {
+    default: {
+      "name": "United States",
+      "countryCode": "+1",
+      "abbreviation": "us",
+      "active": true,
+    },
+    type: Object as () => CountryObj
   }
-  ) private selectedCountry!: CountryObj;
+  )
+  private _selectedCountry!: CountryObj;
 
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -164,12 +161,18 @@ export default class ATATPhoneInput extends Vue {
   }
 
   //ATATErrorValidation
-   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatPhoneField.errorBucket;
+  private setErrorMessage(): void {
+    this.errorMessages = this.$refs.atatPhoneTextField.errorBucket;
+  }
+
+  private clearErrorMessages(): void{
+    this.$refs.atatPhoneTextField.errorBucket = [];
+    this.errorMessages = [];
   }
 
   //@Events
   private onBlur(e: FocusEvent) : void{
+    debugger;
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value);
@@ -177,8 +180,8 @@ export default class ATATPhoneInput extends Vue {
 
   //@Events
   private onChange(val: CountryObj): void {
-    this.selectedCountry = val;
-    this.selectedCountry.active = true;
+    this._selectedCountry = val;
+    this._selectedCountry.active = true;
     this.searchTerm = "";
     this.countries
       .filter((country) => country.name !== val.name)
@@ -186,7 +189,13 @@ export default class ATATPhoneInput extends Vue {
         country.active = false;
       });
     this.searchResults = this.countries;
-    this.$emit("country-changed", val);
+    this.reset();
+  }
+
+  private reset():void{
+    this._value = "";
+    this.clearErrorMessages();
+
   }
 
 
@@ -196,28 +205,28 @@ export default class ATATPhoneInput extends Vue {
     const phoneTextField = document.getElementById(
       this.id + "_textField"
     ) as HTMLElement;
-    switch (this.selectedCountry.abbreviation) {
+    switch (this._selectedCountry.abbreviation) {
       case "us":
         return Inputmask("999-999-9999", {
           placeholder: "",
           jitMasking: true,
         }).mask(phoneTextField);
       case "dsn":
-        this._value = this.selectedCountry.countryCode + val;
+        this._value = this._selectedCountry.countryCode + val;
         return Inputmask("999-999-9999", {
           placeholder: "",
           jitMasking: true,
         }).mask(phoneTextField);
       default:
-        return Inputmask("*{20}", { placeholder: "", jitMasking: true }).mask(
+        return Inputmask("[0-9\\s+.()-]*{20}", { placeholder: "", jitMasking: true }).mask(
           phoneTextField
         );
+        //*{6,20}
     }
   }
 
   private mounted(): void {
     this.searchResults = [...this.countries];
-    this.$emit("country-changed", this.selectedCountry);
   }
 
   //data

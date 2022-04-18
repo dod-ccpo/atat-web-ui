@@ -107,11 +107,11 @@
           class="_input-max-width"
           :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
           :value.sync="selectedPhoneNumber"
-          :country="selectedPhoneCountry"
+          :country.sync="selectedPhoneCountry"
           :rules="[
-            $validators.isPhoneNumberValid(this.country, 'Please use standard domain format, like ‘@mail.mil’'),
+            $validators.isPhoneNumberValid(this.selectedPhoneCountry, 'Please use standard domain format, like ‘@mail.mil’'),
+            $validators.required('Please enter your phone number.'),
           ]"
-          @country-changed="onChangeCountry"
         />
         <ATATAutoComplete
           v-show="selectedRole === 'CIVILIAN'"
@@ -174,9 +174,6 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     );
   }
 
-  private onChangeCountry(val: CountryObj){
-    this.selectedPhoneCountry = val;
-  }
   // watchers
 
   @Watch("selectedBranch")
@@ -206,8 +203,12 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
-  private selectedPhoneCountry: CountryObj 
-    = { name: '', countryCode: '', abbreviation: '', active: false };
+  private selectedPhoneCountry: CountryObj = {
+    name: "United States",
+    countryCode: "+1",
+    abbreviation: "us",
+    active: true
+  };
 
   public selectedServiceOrAgency: SelectData =
     AcquisitionPackage.selectedServiceOrAgency;
@@ -406,6 +407,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo(
