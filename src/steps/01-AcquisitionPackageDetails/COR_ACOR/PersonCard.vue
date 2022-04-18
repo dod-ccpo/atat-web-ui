@@ -51,6 +51,7 @@
           This individual is set as your {{ isACOR ? 'primary COR' : 'ACOR' }}. 
           Please select a different {{ isACOR ? 'ACOR' : 'primary COR' }}, or
           <router-link 
+            :id="'LinkTo' + (isACOR ? 'COR' : 'ACOR')"
             :to="{ name: isACOR 
               ? routeNames.Cor_Information 
               : routeNames.Acor_Information 
