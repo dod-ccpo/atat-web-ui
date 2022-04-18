@@ -3,7 +3,7 @@
     <div 
       class="max-width-640 border1 border-base-lighter border-rounded-more pa-8"
       :class="[
-        { 'square-bottom no-border-bottom mb-0' : isSameContact }, 
+        { '_square-bottom _no-border-bottom mb-0' : isSameContact }, 
         {'mb-5' :!isSameContact }
       ]"
     >
@@ -43,13 +43,12 @@
     <ATATAlert
       id="CorAcorSameErrorAlert"
       type="error"
-      class="max-width-640 mb-5"
-      attach="bottom-of-card"
+      class="max-width-640 mb-5 _attach-to-bottom-of-card"
       v-show="isSameContact"
     >
       <template v-slot:content>
         <p class="mb-0">
-          This individual is set as your {{ isACOR ? 'primary' : 'alternate' }} COR. 
+          This individual is set as your {{ isACOR ? 'primary COR' : 'ACOR' }}. 
           Please select a different {{ isACOR ? 'ACOR.' : 'primary COR,' }} 
           <span v-if="!isACOR">or change your ACOR.</span>        
         </p>
