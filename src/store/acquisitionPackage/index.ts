@@ -137,6 +137,7 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
+
   public initContact: ContactDTO = initialContact();
 
   public getTitle(): string {
@@ -315,6 +316,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   // used on Contact Info and COR/ACOR pages
+  // EJY no longer used
   public branchData: SelectData[] = [
     { text: "U.S. Air Force", value: "USAF" },
     { text: "U.S. Army", value: "ARMY" },
