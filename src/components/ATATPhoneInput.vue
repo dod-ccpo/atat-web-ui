@@ -45,10 +45,10 @@
               :id="id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/ig, '')"
               :item-value=item.name
             >
-              <v-list-item-title class="body _country" >
+              <v-list-item-title class="body _country">
                 <v-row no-gutters align="center">
                   <span class=" mr-3 fi" :class="[`fi-${item.abbreviation}`]"> </span>
-                  <span class="mr-2 _country-name" >{{ item.name }}</span>
+                  <span class="mr-2 _country-name">{{ item.name }}</span>
                   <span class="color-base body-sm">{{ item.countryCode }}</span>
                 </v-row>
               </v-list-item-title>
@@ -69,26 +69,30 @@
         :hide-details="true"
         :suffix="suffix"
         :prefix="this._selectedCountry.countryCode"
+        :rules="rules"
         autocomplete="off"
       >
       </v-text-field>
     </div>
+    <ATATErrorValidation :errorMessages="errorMessages"/>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import {Component, Prop, PropSync} from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import Inputmask from "inputmask/";
-import {CountryObj} from "../../types/Global";
+import { CountryObj } from "../../types/Global";
 
 
 @Component({
   components: {
     ATATTextField,
     ATATAutoComplete,
+    ATATErrorValidation
   }
 })
 export default class ATATPhoneInput extends Vue {
@@ -107,10 +111,13 @@ export default class ATATPhoneInput extends Vue {
   @Prop({default: ""}) private suffix!: string;
   @Prop({default: ""}) private optional!: boolean;
   @Prop({default: "351"}) private width!: string;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
 
-  @PropSync("country", {default: ()=> (
-    { name: '', countryCode: '', abbreviation: '', active: false }
-  )}) private _selectedCountry!: CountryObj;
+  @PropSync("country", {
+    default: () => (
+      {name: '', countryCode: '', abbreviation: '', active: false}
+    )
+  }) private _selectedCountry!: CountryObj;
   @PropSync("value", {default: ""}) private _value!: string;
 
   // data
@@ -125,11 +132,16 @@ export default class ATATPhoneInput extends Vue {
   private searchCountries() {
     if (!this.searchTerm) {
       this.searchResults = this.countries;
-    };
+    }
+    ;
     this.searchResults = this.countries.filter((country) => {
       return country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
     });
   };
+
+  private setErrorMessage(): void {
+    this.errorMessages = this.$refs.atatPhoneField.errorBucket;
+  }
 
 //@Events
   private onChange(val: CountryObj): void {
@@ -147,16 +159,17 @@ export default class ATATPhoneInput extends Vue {
     this._value = val;
     switch (this._selectedCountry.abbreviation) {
       case "us":
-        return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+        return Inputmask('999-999-9999', {placeholder: '', jitMasking: true})
           .mask(document.getElementById(this.id + '_textField') as HTMLElement);
       case 'dsn':
         this._value = this._selectedCountry.countryCode + val;
-        return Inputmask({'mask':['999-9999', '999-999-9999'],placeholder:'', jitMasking: true})
+        return Inputmask({'mask': ['999-9999', '999-999-9999'], placeholder: '', jitMasking: true})
           .mask(document.getElementById(this.id + '_textField') as HTMLElement);
       default:
-        return Inputmask('*{15}',{placeholder:'', jitMasking: true})
+        return Inputmask('*{15}', {placeholder: '', jitMasking: true})
           .mask(document.getElementById(this.id + '_textField') as HTMLElement)
-    };
+    }
+    ;
   };
 
   mounted(): void {

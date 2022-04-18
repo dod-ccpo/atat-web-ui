@@ -11,6 +11,7 @@
       :legend="'What role best describes your ' + corOrAcor + '’s affiliation with the DoD?'"
       :items="contactRoles"
       :value.sync="_selectedRole"
+      :rules="[$validators.required('Please enter your ' + corOrAcor + '’s role.')]"
       class="mb-10"
     />
 
@@ -25,6 +26,7 @@
       :selectedValue.sync="_selectedBranch"
       :showAccessRadioButtons.sync="showAccessRadioButtons"
       :returnObject="true"
+      :rules="[$validators.required('Please select your ' + corOrAcor + '’s service branch.')]"
     />
 
     <div v-show="selectedBranch.value || _selectedRole === 'CIVILIAN'">
@@ -36,6 +38,7 @@
         :items="selectedBranchRanksData"
         :searchFields="['name', 'grade']"
         :selectedItem.sync="_selectedRank"
+        :rules="[$validators.required('Please select your ' + corOrAcor + '’s rank.')]"
         class="_input-max-width mb-7"
         icon="arrow_drop_down"
       />
@@ -58,6 +61,7 @@
             id="FirstName" 
             class="_input-max-width" 
             :value.sync="_firstName"
+            :rules="[$validators.required('Please enter your ' + corOrAcor + '’s first name.')]"
           />
         </v-col>
         <v-col class="col-12 col-lg-3">
@@ -75,6 +79,7 @@
             id="LastName" 
             class="_input-max-width" 
             :value.sync="_lastName"
+            :rules="[$validators.required('Please enter your ' + corOrAcor + '’s last name.')]"
           />
         </v-col>
         <v-col class="col-12 col-lg-3">
@@ -94,6 +99,8 @@
         class="_input-max-width mb-10" 
         helpText="Enter a .mil or .gov email address."
         :value.sync="_email"
+        :rules="[$validators.required('Please enter your ' + corOrAcor + '’s email address.')]"
+
       />
 
       <div class="d-flex mb-10">
@@ -122,6 +129,11 @@
           unit, activity, or organization that has the authority to requisition, 
           contract for, or fund/pay bills for materials and services." 
         :value.sync="_dodaac"
+        :rules="[
+          $validators.required('Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'),
+          $validators.maxLength(6,'The DoDAAC must be 6 characters.'),
+          $validators.minLength(6,'The DoDAAC must be 6 characters.'),
+          ]"
       />
 
     </div>
