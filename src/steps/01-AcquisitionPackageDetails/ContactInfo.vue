@@ -126,6 +126,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import parsePhoneNumber, {CountryCode} from 'libphonenumber-js'
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -196,7 +197,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
-  private selectedPhoneCountry: CountryObj = {name: '', countryCode: '', abbreviation: '',active: false};
+  private selectedPhoneCountry: CountryObj = 
+  {name: '', countryCode: '', abbreviation: '',active: false};
 
   public selectedServiceOrAgency: SelectData =
     AcquisitionPackage.selectedServiceOrAgency;
@@ -276,8 +278,13 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const rank_components = this.selectedRank.sysId;
     const suffix = this.suffix;
     const salutation = this.selectedSalutation;
-    const countryCode = this.selectedPhoneCountry ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode : undefined;
-    const phone = this.selectedPhoneNumber ? parsePhoneNumber(this.selectedPhoneNumber, countryCode)?.number.toString() : "";
+    const countryCode = this.selectedPhoneCountry ? 
+    this.selectedPhoneCountry
+      .abbreviation
+      .toUpperCase() as CountryCode : undefined;
+    const phone = this.selectedPhoneNumber ? 
+    parsePhoneNumber(this.selectedPhoneNumber, countryCode)
+      ?.number.toString() : "";
     const email = this.email;
     const grade_civ = this.selectedGrade.grade;
     const title = this.title;
@@ -398,9 +405,10 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       if(storeData.phone.length > 0){
         const parsedPhone = parsePhoneNumber(storeData.phone);
         const country = ContactData.countries.find(country=> country.countryCode 
-         == `+${parsedPhone?.countryCallingCode}`)
+        == `+${parsedPhone?.countryCallingCode}`)
 
-        this.selectedPhoneCountry = country || {name: '', countryCode: '', abbreviation: '',active: false};
+        this.selectedPhoneCountry = country || 
+        {name: '', countryCode: '', abbreviation: '',active: false};
         this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() ||  "";
         this.saved.phone =  parsedPhone?.number.toString() ||  "";
       }

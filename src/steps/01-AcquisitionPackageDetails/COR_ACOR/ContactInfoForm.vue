@@ -56,7 +56,8 @@
           <ATATTextField label="First name" id="FirstName" class="_input-max-width" />
         </v-col>
         <v-col class="col-12 col-lg-3">
-          <ATATTextField label="Middle name" id="MiddleName" :optional="true" class="_input-max-width" />
+          <ATATTextField label="Middle name" id="MiddleName" 
+          :optional="true" class="_input-max-width" />
         </v-col>
         <v-col class="col-12 col-lg-3">
           <ATATTextField label="Last name" id="LastName" class="_input-max-width" />

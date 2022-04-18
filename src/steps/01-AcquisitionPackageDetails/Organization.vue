@@ -1,3 +1,4 @@
+
 <template>
   <v-container fluid class="container-max-width">
     <v-row>
@@ -67,7 +68,9 @@
               id="DoDAAC"
               label="DoD Activity Address Code (DoDAAC)"
               class="_input-max-width"
-              tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, activity, or organization that has the authority to requisition, contract for, or fund/pay bills for materials and services."
+              tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, 
+              activity, or organization that has the authority to requisition, contract 
+              for, or fund/pay bills for materials and services."
               :value.sync="dodAddressCode"
             />
 
@@ -131,6 +134,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
