@@ -1,5 +1,5 @@
 <template>
-  <div id="PhoneControl" class="_atat-phone-field">
+  <div id="PhoneControl" class="_atat-phone-field ">
     <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_TextFieldLabel'"
@@ -14,6 +14,7 @@
         attach
         id="CountryCodeDropdown'"
         class="_country-select"
+        :class="[errorMessages.length >= 1 ? 'error--text' : '']"
         :items="searchResults"
         outlined
         dense

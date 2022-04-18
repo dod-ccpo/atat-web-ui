@@ -107,7 +107,6 @@
       />
 
       <div class="d-flex mb-10">
-        {{_selectedPhoneCountry.abbreviation}}
         <ATATPhoneInput
           id="PhoneNumber" 
           label="Phone number" 
