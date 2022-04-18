@@ -99,17 +99,25 @@
         class="_input-max-width mb-10" 
         helpText="Enter a .mil or .gov email address."
         :value.sync="_email"
-        :rules="[$validators.required('Please enter your ' + corOrAcor + '’s email address.')]"
+        :rules="[
+          $validators.required('Please enter your ' + corOrAcor + '’s email address.'),
+          $validators.isEmail()
+      ]"
 
       />
 
       <div class="d-flex mb-10">
+        {{_selectedPhoneCountry.abbreviation}}
         <ATATPhoneInput
           id="PhoneNumber" 
           label="Phone number" 
           class="_input-max-width width-100" 
           :value.sync="_phone"
           :country.sync="_selectedPhoneCountry"
+          :rules="[
+            $validators.required('Please enter your ' + corOrAcor + '’s phone number'),
+            $validators.isPhoneValid(_selectedPhoneCountry.abbreviation)
+            ]"
         />
         <ATATTextField 
           id="PhoneExtension" 
@@ -118,6 +126,7 @@
           :optional="true"
           class="ml-6"
           :value.sync="_phoneExt"
+
         />
       </div>
 

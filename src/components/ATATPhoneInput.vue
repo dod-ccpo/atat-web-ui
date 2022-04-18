@@ -57,7 +57,7 @@
         </template>
       </v-select>
       <v-text-field
-        ref="atatTextField"
+        ref="atatPhoneField"
         :id="id + '_textField'"
         outlined
         dense
@@ -70,6 +70,7 @@
         :suffix="suffix"
         :prefix="this._selectedCountry.countryCode"
         :rules="rules"
+        @blur="onBlur"
         autocomplete="off"
       >
       </v-text-field>
@@ -175,6 +176,12 @@ export default class ATATPhoneInput extends Vue {
   mounted(): void {
     this.searchResults = [...this.countries]
   };
+
+  //@Events
+  private onBlur(value: string) : void{
+    this.setErrorMessage();
+    this.$emit('blur', value);
+  }
 
   //data
 
