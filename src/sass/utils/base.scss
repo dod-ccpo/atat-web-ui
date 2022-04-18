@@ -59,3 +59,12 @@ body {
 .border-rounded-more {
   border-radius: 8px !important
 }
+
+.square-bottom {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.no-border-bottom {
+  border-bottom: none !important;
+}

@@ -81,6 +81,7 @@ export default class ATATAlert extends Vue {
   @Prop({ default: true }) private show?: boolean;
   @Prop({ default: "Alert" }) private id?: string;
   @Prop({ default: "" }) private maxHeight?: string;
+  @Prop({ default: "" }) private attach?: string;
 
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
@@ -106,6 +107,9 @@ export default class ATATAlert extends Vue {
     let alertClasses = "_" + this.type + "-alert";
     alertClasses = this.borderLeft ? alertClasses + " _border-left-thick " : alertClasses;
     alertClasses = this.maxHeight ? alertClasses + " py-0 pr-0 " : alertClasses;
+    alertClasses = this.attach === "bottom-of-card" 
+      ? alertClasses + " attach-to-bottom-of-card " 
+      : alertClasses;
     return alertClasses;
   }
 
