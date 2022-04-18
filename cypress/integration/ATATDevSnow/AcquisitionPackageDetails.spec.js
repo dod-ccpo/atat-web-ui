@@ -320,7 +320,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(contact.lNameLabel, " Last name ");        
         cy.textExists(contact.mNameLabel, " Middle name  Optional ");  
         cy.textExists(contact.emailLabel, " Your email ");
-        cy.textExists(contact.emailMessage, " Enter a .MILITARY or .gov email address.");
+        cy.textExists(contact.emailMessage, " Enter a .mil or .gov email address.");
         cy.textExists(contact.phoneNumberLabel, " Your phone number ");
         const contactInformation = {
             firstName_selector: contact.fNameTxtBox,
@@ -360,7 +360,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.dropDownClick(contact.rankInput);            
     
         //select the value from Rank Dropdown
-        cy.findElement(contact.rankAutoCompleteList).first().click({ force: true });
+        cy.findElement(contact.rankAutoCompletePrivate).click({ force: true });
 
         //enter the ContactInformation
         const contactInformation = {

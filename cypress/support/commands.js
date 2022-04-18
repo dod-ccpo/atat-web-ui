@@ -276,7 +276,7 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
                     .and("be.visible")
                     .and("contain", "Service branch");
                 cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
-                cy.findElement(contact.serviceDropDownList).first().click();
+                cy.findElement(contact.serviceBranchArmy).click({ force: true });
                 cy.findElement(contact.rankAutoCompleteWrapper)
                     .should("exist")
                     .and("be.visible")

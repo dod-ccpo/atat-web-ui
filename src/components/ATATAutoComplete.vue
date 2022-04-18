@@ -28,8 +28,8 @@
       @update:search-input="updateSearchInput" 
     >
       <template v-slot:item="{item}">
-        <v-list-item-content>
-          <v-list-item-title 
+        <v-list-item-content :id="getIdText(item.name)">
+          <v-list-item-title
             v-text="item[titleKey]"
             :class="{'font-weight-normal': !subtitleKey}"
           ></v-list-item-title>
@@ -62,9 +62,11 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Component, Prop, PropSync } from "vue-property-decorator";
+
 import { AutoCompleteItem } from "types/Global";
 
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { getIdText } from "@/helpers";
 
 @Component({})
 
@@ -124,6 +126,10 @@ export default class ATATAutoComplete extends Vue {
     this.searchText = null;
     this.isReset = true;
     this.$emit("noAutoCompleteResultsAction");
+  }
+
+  private getIdText(string: string) {
+    return getIdText(string) + "_AutoCompleteOption";
   }
 
 }

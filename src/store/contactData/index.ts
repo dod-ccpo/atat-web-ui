@@ -288,12 +288,6 @@ export class ContactDataStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
-  public async LoadMilitaryBranches(): Promise<SystemChoiceDTO[]> {
-    await this.ensureInitialized();
-    return this.branchChoices;
-  }
-
   @Action({rawError: true})
   public GetMilitaryRank(rankComponentId: string):MilitaryRankDTO | undefined {
       return this.militaryRanks.find(rank=> rank.sys_id === rankComponentId);

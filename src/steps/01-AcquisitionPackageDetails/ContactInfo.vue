@@ -4,6 +4,7 @@
       <v-col>
         <h1 class="page-header">Let’s confirm your contact information</h1>
         <ATATRadioGroup
+          v-show="branchData.length > 0"
           legend="What role best describes your affiliation with the DoD?"
           id="ContactRole"
           :items="contactRoles"
@@ -95,7 +96,7 @@
           label="Your email"
           id="ContactEmail"
           class="_input-max-width mb-10"
-          helpText="Enter a .MILITARY or .gov email address."
+          helpText="Enter a .mil or .gov email address."
           :value.sync="email"
         />
         <ATATPhoneInput
@@ -321,8 +322,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.savedData.can_access_package = "true";
-    const branches = await ContactData.LoadMilitaryBranches();
-    debugger;
+    const branches = ContactData.branchChoices;
+
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
       const { value } = choice;

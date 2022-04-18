@@ -339,7 +339,7 @@ export default class COR_ACOR extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const branches = await ContactData.LoadMilitaryBranches();
+    const branches = ContactData.branchChoices;
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
       const { value } = choice;

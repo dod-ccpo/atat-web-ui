@@ -22,6 +22,7 @@ module.exports = {
   rankInput: "#Rank",
   rankAutoCompleteWrapper:"#Rank_AutoComplete_Wrapper",
   rankAutoCompleteList: "#Rank_AutoComplete_Wrapper .v-list-item__title",
+  rankAutoCompletePrivate: "#Private_AutoCompleteOption",
   gradeAutoCompleteWrapper:"#ContactGrade_AutoComplete_Wrapper",
   gradeLabel: "#ContactGrade_AutoComplete_Wrapper .mb-2.d-block",
   gradeDropDownIcon: "#ContactGrade_AutoComplete_Wrapper .v-input__icon.v-input__icon--append",
