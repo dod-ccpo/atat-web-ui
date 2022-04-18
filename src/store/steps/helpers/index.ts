@@ -34,12 +34,12 @@ export const mapStepConfigs = (
     }
 
     routeConfig.children?.forEach((childConfig) =>
-      {
-        mapStep({
-          ...childConfig,
-          stepNumber: stepInfo.stepNumber,
-        })
-      }
+    {
+      mapStep({
+        ...childConfig,
+        stepNumber: stepInfo.stepNumber,
+      })
+    }
     );
   };
   config.forEach((routeConfig) => mapStep(routeConfig));

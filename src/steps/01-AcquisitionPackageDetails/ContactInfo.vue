@@ -368,10 +368,10 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
         this.selectedRank =
           rank !== undefined
             ? {
-                name: rank.name || "",
-                grade: rank.grade || "",
-                sysId: rank.sys_id || "",
-              }
+              name: rank.name || "",
+              grade: rank.grade || "",
+              sysId: rank.sys_id || "",
+            }
             : { grade: "", name: "", sysId: "" };
       }
 
@@ -380,8 +380,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       ) {
         const gradeValue = this.gradeData.find(value=> value.grade === storeData.grade_civ);
         this.selectedGrade = {
-             grade : gradeValue?.grade || "",
-             label : gradeValue?.label || ""
+          grade : gradeValue?.grade || "",
+          label : gradeValue?.label || ""
         };
       }
 
@@ -396,13 +396,13 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       this.email = storeData.email;
 
       if(storeData.phone.length > 0){
-         const parsedPhone = parsePhoneNumber(storeData.phone);
-         const country = ContactData.countries.find(country=> country.countryCode 
+        const parsedPhone = parsePhoneNumber(storeData.phone);
+        const country = ContactData.countries.find(country=> country.countryCode 
          == `+${parsedPhone?.countryCallingCode}`)
 
-         this.selectedPhoneCountry = country || {name: '', countryCode: '', abbreviation: '',active: false};
-         this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() ||  "";
-         this.saved.phone =  parsedPhone?.number.toString() ||  "";
+        this.selectedPhoneCountry = country || {name: '', countryCode: '', abbreviation: '',active: false};
+        this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() ||  "";
+        this.saved.phone =  parsedPhone?.number.toString() ||  "";
       }
       
     }

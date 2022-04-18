@@ -14,11 +14,11 @@ export class SystemChoicesApi extends TableApiBase<SystemChoiceDTO> {
   public async getChoices(tableName: string, choiceColumnName: string): Promise<SystemChoiceDTO[]>{
 
     try{
-       return await this.all({
+      return await this.all({
         params: {
-         sysparm_fields: 'label,value,name',
-         name: tableName,
-         element: choiceColumnName,
+          sysparm_fields: 'label,value,name',
+          name: tableName,
+          element: choiceColumnName,
         }
       });
 
