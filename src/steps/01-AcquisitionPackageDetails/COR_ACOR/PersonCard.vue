@@ -74,7 +74,7 @@
     </a>
     <ATATDialog
       :showDialog.sync="showDialog"
-      :title="'Request change to ' + corOrAcor + '\'s contact information'"
+      :title="'Request change to ' + corOrAcor + '’s contact information'"
       no-click-animation
       okText="Send Request"
       width="632"
