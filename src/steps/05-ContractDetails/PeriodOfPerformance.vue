@@ -43,7 +43,7 @@
             </div>
             <div>
               <ATATTextField
-                :id="getIdText(getOptionPeriodLabel(index))"
+                :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
                 class="mr-4"
                 width="178"
                 :rules="[$validators.integer()]"
@@ -52,7 +52,7 @@
             </div>
             <div>
               <ATATSelect
-                :id="getIdText(getOptionPeriodLabel(index))"
+                :id="getIdText(getOptionPeriodLabel(index)) + 'Dropdown'"
                 :items="timePeriods"
                 width="178"
                 :selectedValue.sync="optionPeriods[index].unitOfTime"
@@ -70,6 +70,7 @@
                 :disabled="true"
                 @click="copyOptionPeriod()"
                 aria-label="Duplicate this option period"
+                :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
               >
                 <v-icon> content_copy </v-icon>
               </v-btn>
@@ -79,6 +80,7 @@
                 :disabled="optionPeriods.length === 1"
                 @click="deleteOptionPeriod(index)"
                 aria-label="Delete this option period"
+                :id="getIdText(getOptionPeriodLabel(index)) + 'Delete'"
               >
                 <v-icon> delete </v-icon>
               </v-btn>
@@ -86,7 +88,7 @@
           </div>
 
           <v-btn
-            id="addOptionPeriodButton"
+            id="AddOptionPeriodButton"
             v-if="totalPoPDuration < maxTotalPoPDuration"
             plain
             text
