@@ -4,7 +4,7 @@
       class="max-width-640 border1 border-base-lighter border-rounded-more pa-8"
       :class="[
         { '_square-bottom _no-border-bottom mb-0' : isSameContact }, 
-        {'mb-5' :!isSameContact }
+        {'mb-5' : !isSameContact }
       ]"
     >
       <span class="font-size-20 mb-5 d-block" :id="id + '_Name'">
