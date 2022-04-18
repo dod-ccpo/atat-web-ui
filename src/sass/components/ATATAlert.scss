@@ -7,6 +7,13 @@
   border: 1px solid transparent;
   padding: 16px 20px;
   position: relative;
+
+  &._attach-to-bottom-of-card {
+    margin-top: 0 !important;
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
   
   &._scrollable {
     &:before, &:after {

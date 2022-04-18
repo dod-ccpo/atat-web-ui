@@ -503,14 +503,14 @@ describe("Test suite: Acquisition Package ", () => {
             "mail test.adamson-civ@mail.mil ",
             "phone 333-333-3333",
             "pentagon HQ1234 - Corresponding Organization Name",
-            " To make any changes to your COR’s contact information, please send a request to our User Engagement Team. ",
-            " Request changes to COR’s contact information ",
+            " To update your COR’s contact information, please  submit a request to our User Engagement Team. ",
+            " submit a request to our User Engagement Team. ",
             "Remove COR info "
         );
         // click on Request Change Contact Information link
         cy.requestChangeContactInformation(
-            " Request changes to COR’s contact information ",
-            " Request change to COR's contact information ",
+            " submit a request to our User Engagement Team. ",
+            " Request change to COR’s contact information ",
             " Please let us know what information needs to be updated for this COR. ​",
             "Please change the contact info"
         );
@@ -637,15 +637,15 @@ describe("Test suite: Acquisition Package ", () => {
             "mail test.wentz@acusage.net ",
             "phone 444-444-4444",
             "pentagon HQ567 - Other Organization Name",
-            " To make any changes to your ACOR’s contact information, please send a request to our User Engagement Team. ",
-            " Request changes to ACOR’s contact information ",
+            " To update your ACOR’s contact information, please  submit a request to our User Engagement Team. ",
+            " submit a request to our User Engagement Team. ",
             "Remove ACOR info "
         );
         
         // click on Request Change Contact Information link
         cy.requestChangeContactInformation(
-            " Request changes to ACOR’s contact information ",
-            " Request change to ACOR's contact information ",
+            " submit a request to our User Engagement Team. ",
+            " Request change to ACOR’s contact information ",
             " Please let us know what information needs to be updated for this ACOR. ​",
             "Please change the contact info"
         );
