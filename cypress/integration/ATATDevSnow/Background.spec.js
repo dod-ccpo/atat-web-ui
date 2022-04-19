@@ -3,7 +3,7 @@ import common from "../../selectors/common.sel"
 import { bootstrapMockApis,colors, randomAlphaNumeric, randomNumber} from "../../helpers";
 
 
-describe("Test suite: BackGround", () => {
+describe("Test suite: Background", () => {
 
 
   beforeEach(() => {
@@ -16,6 +16,7 @@ describe("Test suite: BackGround", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     //Verify the Substeps are  visible
     cy.textExists(common.substepCurrentContractLink, " Current Contract ");
+    cy.textExists(common.substepCurrentEnvironmentLink, " Current Environment ");
     // step is active
     cy.findElement(common.substepCurrentContractText)
       .should("be.visible")
@@ -67,7 +68,7 @@ describe("Test suite: BackGround", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.contractOption(background.yesRadioOption, "true");
     cy.btnExists(background.noExistingContractBtn, " I don’t have an existing contract ").not("[disabled]").click();
-    cy.findElement(common.stepExceptionToFpText).contains("Exception to Fair Opportunity")
+    cy.findElement(common.stepBackgroundLink).contains(" Background ")
       .and('have.css', 'color', colors.primary);
     
   });

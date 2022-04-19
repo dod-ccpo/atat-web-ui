@@ -20,7 +20,6 @@
     padding-top: 0;
   }
 
-
   label {
     color: $base-darkest !important;
 
@@ -71,7 +70,8 @@
 
   &.v-input--is-label-active {
     background-color: $primary-lighter !important;
-    border: solid 2px $primary;
+    border: solid 1px $primary;
+    outline: solid 1px $primary;
     border-radius: 4px !important;
     &.v-input--is-focused {
       box-shadow:0px 0px 0px 1px $primary, 0px 0px 0px 3px white, 0px 0px 0px 6px $primary !important;
@@ -83,7 +83,7 @@
     color: $primary;
   }
   &.v-input--is-focused {
-    box-shadow: 0px 0px 0px 2px white, 0px 0px 0px 4px $primary !important;
+    box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px $primary !important;
   }
 
   &.v-input--checkbox {

@@ -34,11 +34,20 @@ module.exports = {
   stepBackgroundCircle: "#Step_Background .step-circle",
   substepCurrentContractLink: "#SubStep_CurrentContract",
   substepCurrentContractText: "#SubStep_CurrentContract .step-text",
+  substepCurrentEnvironmentLink: "#SubStep_CurrentEnvironment",
+  substepCurrentEnvironmentText: "#SubStep_CurrentEnvironment .step-text",
   stepExceptionToFpLink: "#Step_ExceptiontoFairOpportunity",
   stepExceptionToFpText: "#Step_ExceptiontoFairOpportunity .step-text",
   stepContractDetailsLink: "#Step_ContractDetails",
   stepContractDetailsText: "#Step_ContractDetails .step-text",
   subStepPopLink: "#SubStep_PeriodofPerformance",
   subStepPopText: "#SubStep_PeriodofPerformance .step-text",
-  subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text"
+  subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text",
+  //Government Furnished Euipment
+  stepGovFurEquipLink: "#Step_GovernmentFurnishedEquipment",
+  stepGovFurEquipText: "#Step_GovernmentFurnishedEquipment .step-text",
+  subStepPropDetailsLink: "#SubStep_PropertyDetails",
+  subStepPropDetailsText: "#SubStep_PropertyDetails .step-text",
+  substepJustificationLink: "#SubStep_Justification",
+  substepJustificationText: "#SubStep_Justification  span.step-text",
 }

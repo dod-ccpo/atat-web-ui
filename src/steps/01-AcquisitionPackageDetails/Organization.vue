@@ -93,7 +93,6 @@
               :stateOrProvince.sync="stateOrProvince"
               :zipCode.sync="zipCode"
               :selectedCountry.sync="selectedCountry"
-              :selectedCountryData.sync="selectedCountryData"
 
               :addressTypeOptions="addressTypeOptions"
               :addressTypes="addressTypes"
@@ -168,6 +167,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   }
 
   // data
+  private emptySelectData: SelectData = { text: "", value: "" };
 
   private DisaOrgName = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
 
@@ -206,59 +206,83 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private selectedMilitaryPO: SelectData = { text: "", value: "" };
+  private selectedMilitaryPO: SelectData = this.emptySelectData;
   private militaryPostOfficeOptions: SelectData[] = [
     { text: "Army Post Office (APO)", value: "APO" },
     { text: "Fleet Post Office (FPO)", value: "FPO" },
+    { text: "Diplomatic Post Office (DPO)", value: "DPO" },
   ];
 
-  private selectedDisaOrg: SelectData = { text: "", value: "" };
+  private selectedDisaOrg: SelectData = this.emptySelectData;
   private disaOrgData: SelectData[] = AcquisitionPackage.disaOrgData;
 
-  private selectedServiceOrAgency: SelectData = { text: "", value: "" };
+  private selectedServiceOrAgency: SelectData = this.emptySelectData;
   private serviceOrAgencyData: SelectData[] =
     AcquisitionPackage.serviceOrAgencyData;
 
-  private selectedStateCode: SelectData = { text: "", value: "" };
+  private selectedStateCode: SelectData = this.emptySelectData;
   private stateCodeListData: SelectData[] = [
     { text: "AA - Armed Forces Americas", value: "AA" },
     { text: "AE - Armed Forces Europe", value: "AE" },
     { text: "AP - Armed Forces Pacific", value: "AP" },
   ];
 
-  private selectedState: SelectData = { text: "", value: "" };
+  private selectedState: SelectData = this.emptySelectData;
   private stateListData: SelectData[] = AcquisitionPackage.stateListData;
 
-  private selectedCountry = this.addressTypes.USA;
-  private selectedCountryData: SelectData = { text: "", value: "" };
+  private setSelectedData(): void {
+    // Foreign addresses set country obj
+    if (this.selectedAddressType === this.addressTypes.FOR) {
+      this.selectedCountry = 
+        this.countryListData.find((c) => c.text === this.savedData?.country)
+        || this.emptySelectData;
+    } else {
+      // US or Military addreses - set country obj to USA
+      this.selectedCountry = { text: "United States of America", value: "US" };
 
-  public countryListData: SelectData[] = [{ text: "", value: "" }];
+      // Military addresses - set selectedStateCode and selectedMilitaryPO
+      if (this.selectedAddressType === this.addressTypes.MIL && this.stateCodeListData) {
+        this.selectedStateCode = 
+          this.stateCodeListData.find((s) => s.value === this.stateOrProvince)
+          || this.emptySelectData;
+        
+        this.selectedMilitaryPO = 
+          this.militaryPostOfficeOptions.find((p) => p.value === this.city)
+          || this.emptySelectData;
+
+      // US addresses - set selectedState
+      } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
+        this.selectedState = 
+          this.stateListData.find((stateObj) => stateObj.value === this.stateOrProvince) 
+          || this.emptySelectData;
+      }
+    }
+  }
+
+  private selectedCountry: SelectData = this.emptySelectData;
+
+  public countryListData: SelectData[] = [this.emptySelectData];
   public async mounted(): Promise<void> {
     this.countryListData = await AcquisitionPackage.getCountryListData(["US"]);
     await this.loadOnEnter();
+    this.setSelectedData();
   }
 
   // getters
-  private get current(): OrganizationDTO {
+  private get currentData(): OrganizationDTO {
     let state = "";
     let city = this.city;
-    let country = this.country;
 
     if (this.selectedAddressType == this.addressTypes.USA) {
       state = this.selectedState.value as string;
-    }
-
-    if (this.selectedAddressType == this.addressTypes.FOR) {
+    } else if (this.selectedAddressType == this.addressTypes.FOR) {
       state = this.stateOrProvince;
-      country = this.selectedCountryData.text;
-    }
-
-    if (this.selectedAddressType == this.addressTypes.MIL) {
+    } else if (this.selectedAddressType == this.addressTypes.MIL) {
       state = this.selectedStateCode.value as string;
       city = this.selectedMilitaryPO.value as string;
     }
 
-    const data: OrganizationDTO = {
+    return {
       disa_organization: this.selectedDisaOrg.value || "",
       organization_name: this.organizationName,
       dodaac: this.dodAddressCode,
@@ -269,41 +293,24 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       city,
       zip_code: this.zipCode,
       state,
-      country,
-    };
-
-    return data;
-  }
-
-  private get saved(): OrganizationDTO {
-    const {
-      disa_organization,
-      organization_name,
-      dodaac,
-      service_agency,
-      address_type,
-      street_address_1,
-      street_address_2,
-      city,
-      zip_code,
-      state,
-      country,
-    } = AcquisitionPackage.organization as OrganizationDTO;
-
-    return {
-      disa_organization,
-      organization_name,
-      dodaac,
-      service_agency,
-      address_type,
-      street_address_1,
-      street_address_2,
-      city,
-      zip_code,
-      state,
-      country,
+      country: this.selectedCountry.text,
     };
   }
+
+  private savedData = {
+    disa_organization: "",
+    organization_name: "",
+    dodaac: "",
+    service_agency: "",
+    address_type: "",
+    street_address_1: "",
+    street_address_2: "",
+    city: "",
+    zip_code: "",
+    state: "",
+    country: "",
+  } as Record<string, string>
+
 
   // watchers
   @Watch("selectedServiceOrAgency")
@@ -314,9 +321,28 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // methods
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadOrganization();
+    const storeData = await AcquisitionPackage.loadOrganization() as Record<string, string>;
 
     if (storeData) {
+      const keys: string[] = [
+        "disa_organization",
+        "organization_name",
+        "dodaac",
+        "service_agency",
+        "address_type",
+        "street_address_1",
+        "street_address_2",
+        "city",
+        "zip_code",
+        "state",
+        "country",        
+      ];
+      keys.forEach((key: string) => {
+        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
+          this.savedData[key] = storeData[key];
+        }
+      });
+
       const selectedAgencyIndex = this.serviceOrAgencyData.findIndex(
         (svc) => svc.value === storeData.service_agency
       );
@@ -345,59 +371,24 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
         selectedAddressTypeIndx > -1
           ? this.addressTypeOptions[selectedAddressTypeIndx].value
           : this.addressTypes.USA;
+          
       this.streetAddress1 = storeData.street_address_1;
       this.streetAddress2 = storeData.street_address_2;
       this.city = storeData.city;
-
-      if (this.selectedAddressType === this.addressTypes.USA) {
-        const selectedStateIndex = this.stateListData.findIndex(
-          (state) => state.value === storeData.state
-        );
-        if (selectedStateIndex > -1) {
-          this.selectedState = this.stateListData[selectedStateIndex];
-        }
-      }
-
-      if (this.selectedAddressType === this.addressTypes.MIL) {
-        const selectedMilitaryPoIndx = this.militaryPostOfficeOptions.findIndex(
-          (po) => po.value === this.city
-        );
-        if (selectedMilitaryPoIndx > -1) {
-          this.selectedMilitaryPO =
-            this.militaryPostOfficeOptions[selectedMilitaryPoIndx];
-        }
-        const selectedStateCodeIndx = this.stateCodeListData.findIndex(
-          (state) => state.value == storeData.state
-        );
-        if (selectedStateCodeIndx > -1) {
-          this.selectedStateCode =
-            this.stateCodeListData[selectedStateCodeIndx];
-        }
-      }
-
-      if (this.selectedAddressType === this.addressTypes.FOR) {
-        const selectedCountryIndx = this.countryListData.findIndex(
-          (country) => country.text === storeData.country
-        );
-        if (selectedCountryIndx > -1) {
-          this.selectedCountryData = this.countryListData[selectedCountryIndx];
-          this.selectedCountry = this.selectedCountryData.text;
-        }
-        this.stateOrProvince = storeData.state;
-      }
-
       this.zipCode = storeData.zip_code;
+      this.stateOrProvince = storeData.state;
+
     }
   }
 
   private hasChanged(): boolean {
-    return hasChanges(this.current, this.saved);
+    return hasChanges(this.currentData, this.savedData);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveOrganization(this.current);
+        await AcquisitionPackage.saveOrganization(this.currentData);
       }
     } catch (error) {
       console.log(error);

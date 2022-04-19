@@ -16,6 +16,7 @@
               :card="true"
               :items="currentContractOptions" 
               :value.sync="currentContractExists"
+              :rules="[$validators.required('Please select an option')]"            
             />
           </div>
         </v-col>

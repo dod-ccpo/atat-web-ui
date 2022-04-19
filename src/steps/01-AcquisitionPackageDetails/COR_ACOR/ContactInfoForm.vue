@@ -9,58 +9,73 @@
     <ATATRadioGroup
       id="ContactAffiliation"
       :legend="'What role best describes your ' + corOrAcor + '’s affiliation with the DoD?'"
-      :items="contactAffiliations"
-      :value.sync="selectedContactAffiliation"
+      :items="contactRoles"
+      :value.sync="_selectedRole"
       class="mb-10"
     />
 
     <ATATSelect
       id="Branch"
-      v-show="selectedContactAffiliation === 'MIL'"
+      v-show="_selectedRole === 'MILITARY'"
       v-model="selectedBranch"
       class="_input-max-width mb-10"
       label="Service Branch"
       placeholder=""
       :items="branchData"
-      :selectedValue.sync="selectedBranch"
+      :selectedValue.sync="_selectedBranch"
       :showAccessRadioButtons.sync="showAccessRadioButtons"
       :returnObject="true"
     />
 
-    <div v-show="selectedBranch.value || selectedContactAffiliation === 'CIV'">
+    <div v-show="selectedBranch.value || _selectedRole === 'CIVILIAN'">
       <ATATAutoComplete
         id="Rank"
-        v-show="selectedContactAffiliation === 'MIL'"
+        v-show="_selectedRole === 'MILITARY'"
         label="Rank"
-        titleKey="rank"
-        :items="selectedBranchRanks"
-        :searchFields="['rank', 'value']"
-        :selectedItem.sync="selectedRank"
+        titleKey="name"
+        :items="selectedBranchRanksData"
+        :searchFields="['name', 'grade']"
+        :selectedItem.sync="_selectedRank"
         class="_input-max-width mb-7"
         icon="arrow_drop_down"
       />
 
       <ATATSelect
         id="Salutation"
-        v-show="selectedContactAffiliation === 'CIV'"
+        v-show="_selectedRole === 'CIVILIAN'"
         class="_input-max-width mb-7"
         label="Salutation"
         :optional="true"
         placeholder=""
         :items="salutationData"
-        :selectedValue.sync="selectedSalutation"
+        :selectedValue.sync="_selectedSalutation"
       />
 
       <v-row class="form-section mb-7">
         <v-col class="col-12 col-lg-3">
-          <ATATTextField label="First name" id="FirstName" class="_input-max-width" />
+          <ATATTextField 
+            label="First name" 
+            id="FirstName" 
+            class="_input-max-width" 
+            :value.sync="_firstName"
+          />
         </v-col>
         <v-col class="col-12 col-lg-3">
-          <ATATTextField label="Middle name" id="MiddleName" 
-          :optional="true" class="_input-max-width" />
+          <ATATTextField 
+            label="Middle name" 
+            id="MiddleName" 
+            :optional="true" 
+            class="_input-max-width" 
+            :value.sync="_middleName"
+          />
         </v-col>
         <v-col class="col-12 col-lg-3">
-          <ATATTextField label="Last name" id="LastName" class="_input-max-width" />
+          <ATATTextField 
+            label="Last name" 
+            id="LastName" 
+            class="_input-max-width" 
+            :value.sync="_lastName"
+          />
         </v-col>
         <v-col class="col-12 col-lg-3">
           <ATATTextField
@@ -68,6 +83,7 @@
             id="Suffix"
             :optional="true"
             width="80"
+            :value.sync="_suffix"
           />
         </v-col>
       </v-row>
@@ -77,6 +93,7 @@
         label="Email address" 
         class="_input-max-width mb-10" 
         helpText="Enter a .mil or .gov email address."
+        :value.sync="_email"
       />
 
       <div class="d-flex mb-10">
@@ -84,6 +101,8 @@
           id="PhoneNumber" 
           label="Phone number" 
           class="_input-max-width width-100" 
+          :value.sync="_phone"
+          :country.sync="_selectedPhoneCountry"
         />
         <ATATTextField 
           id="PhoneExtension" 
@@ -91,6 +110,7 @@
           width="140"
           :optional="true"
           class="ml-6"
+          :value.sync="_phoneExt"
         />
       </div>
 
@@ -101,6 +121,7 @@
         tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 
           unit, activity, or organization that has the authority to requisition, 
           contract for, or fund/pay bills for materials and services." 
+        :value.sync="_dodaac"
       />
 
     </div>
@@ -109,7 +130,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue"
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
@@ -117,13 +138,10 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
-
 import { 
   RadioButton, 
   SelectData, 
-  AutoCompleteItem, 
-  AutoCompleteItemGroups 
+  RankData
 } from "../../../../types/Global";
 
 
@@ -141,78 +159,36 @@ export default class ContactInfoForm extends Vue {
 
   //props
 
-  @Prop({default: true}) private isACOR!: boolean;
+  @Prop() private corOrAcor!: string;
+  @Prop() private branchData!: SelectData[];
+  @Prop() private selectedBranchRanksData!: SelectData[];
+  @Prop() private contactRoles!: RadioButton[];
+
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
+  @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
+
+  @PropSync("selectedRole") private _selectedRole?: string;
+  @PropSync("selectedRank") private _selectedRank?: RankData;
+  @PropSync("selectedBranch") private _selectedBranch?: SelectData;
+  @PropSync("selectedSalutation") private _selectedSalutation?: SelectData;
+  @PropSync("firstName") private _firstName?: string;
+  @PropSync("middleName") private _middleName?: string;
+  @PropSync("lastName") private _lastName?: string;
+  @PropSync("suffix") private _suffix?: string;
+  @PropSync("email") private _email?: string;
+  @PropSync("phone") private _phone?: string;
+  @PropSync("phoneExt") private _phoneExt?: string;
+  @PropSync("dodaac") private _dodaac?: string;
 
   // data
 
-  private selectedSalutation = "";
   private salutationData: SelectData[] = [
-    { text: "Mr.", value: "Mr.", },
-    { text: "Mrs.", value: "Mrs.", },
-    { text: "Miss", value: "Miss", },
-    { text: "Ms.", value: "Ms.", },
-    { text: "Dr.", value: "Dr.", },
+    { text: "Mr.", value: "MR" },
+    { text: "Mrs.", value: "MRS" },
+    { text: "Miss", value: "MISS" },
+    { text: "Ms.", value: "MS" },
+    { text: "Dr.", value: "DR" },
   ];
-
-  private selectedBranch: SelectData = { text: "", value: "" };
-  private branchData: SelectData[] = AcquisitionPackage.branchData;
-
-  private selectedContactAffiliation = "";
-  private contactAffiliations: RadioButton[] = [
-    {
-      id: "Military",
-      label: "Military",
-      value: "MIL",
-    },
-    {
-      id: "Civilian",
-      label: "Civilian",
-      value: "CIV",
-    },
-  ];
-
-  private selectedRank = "";
-  private selectedBranchRanks: AutoCompleteItem[] = [];
-  private branchRanksData: AutoCompleteItemGroups = AcquisitionPackage.branchRanksData;
-
-  // computed
-  
-  get corOrAcor(): string {
-    return this.isACOR ? "ACOR" : "COR";
-  }
-
-  // methods
-
-  private setShowAccessRadioButtons(): void {
-    this._showAccessRadioButtons = this.selectedContactAffiliation === "CIV" 
-      || this.selectedBranch.value !== "";
-  }
-
-  private setRankData(): void {
-    if (this.selectedBranch.value) {
-      this.selectedBranchRanks = this.branchRanksData[this.selectedBranch.value];
-    }
-  }
-
-  // watchers
-
-  @Watch("selectedBranch")
-  protected branchChange(): void {
-    this.setShowAccessRadioButtons();
-    this.setRankData();
-  }
-
-  @Watch("selectedContactAffiliation")
-  protected contactAffiliationChange(newRole: string): void {
-    this.setShowAccessRadioButtons();
-
-    if (newRole === "MIL") {
-      this.selectedBranch = AcquisitionPackage.selectedContactBranch;
-    } else {
-      this.selectedBranch = { text: "", value: "" };
-    }
-  }
 
 }
 </script>

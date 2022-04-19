@@ -18,6 +18,11 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   fair_opportunity: string;
   current_contract: string;
   docusign_envelope_id: string;
+  sensitive_information: string;
+  period_of_performance: string;
+  gfe_overview: string;
+  contract_type: string;
+  requirements_const_estimate: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -29,21 +34,22 @@ export interface CurrentContractDTO extends BaseTableDTO {
 }
 
 export interface ContactDTO extends BaseTableDTO {
-
-  grade_civ: string;
-  role: string;
-  dodaac: string;
-  last_name: string;
-  middle_name: string;
-  suffix: string;
-  type: string;
-  can_access_package: string;
-  phone: string;
+  type: string; // Mission Owner, COR, ACOR
+  role: string; // Military, Civilian, Contractor
   rank_components: string;
   salutation: string;
   first_name: string;
-  email: string;
+  last_name: string;
+  middle_name: string;
+  suffix: string;
   title: string;
+  phone: string;
+  phone_extension: string;
+  email: string;
+  grade_civ: string;
+  dodaac: string;
+  can_access_package: string;
+  manually_entered: string;
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
@@ -51,17 +57,17 @@ export interface FairOpportunityDTO extends BaseTableDTO {
 }
 
 export interface OrganizationDTO extends BaseTableDTO {
-  street_address_1: string;
-  street_address_2: string;
-  organization_name: string;
-  disa_organization: string;
-  service_agency: string;
-  state: string;
-  zip_code: string;
-  country: string;
-  address_type: string;
-  city: string;
-  dodaac: string;
+  street_address_1?: string;
+  street_address_2?: string;
+  organization_name?: string;
+  disa_organization?: string;
+  service_agency?: string;
+  state?: string;
+  zip_code?: string;
+  country?: string;
+  address_type?: string;
+  city?: string;
+  dodaac?: string;
 }
 
 export interface ProjectOverviewDTO extends BaseTableDTO {
@@ -76,8 +82,54 @@ export interface MilitaryRankDTO extends BaseTableDTO {
   branch: string;
 }
 
-export interface SystemChoiceDTO extends BaseTableDTO{
-    name: string;
-    label: string;
-    value: string;
+export interface SystemChoiceDTO extends BaseTableDTO {
+  name: string;
+  label: string;
+  value: string;
+}
+
+export interface SensitiveInformationDTO extends BaseTableDTO {
+  pii_present?: string;
+  system_of_record_name?: string;
+  work_to_be_performed?: string;
+
+  baa_required?: string;
+
+  potential_to_be_harmful?: string;
+
+  foia_full_name?: string;
+  foia_email?: string;
+  foia_address_type?: string;
+  foia_city_apo_fpo?: string;
+  foia_street_address_1?: string;
+  foia_street_address_2?: string;
+  foia_state_province_state_code?: string;
+  foia_zip_postal_code?: string;
+  foia_country?: string;
+  section_508_sufficient?: string;
+}
+
+export interface PeriodOfPerformanceDTO extends BaseTableDTO {
+  pop_start_request?: string;
+  requested_pop_start_date?: string;
+  time_frame?: string;
+  recurring_requirement?: string;
+  base_and_options?: string;
+}
+
+export interface ContractTypeDTO extends BaseTableDTO {
+  firm_fixed_price: string;
+  time_and_materials: string;
+  contract_type_justification: string;
+}
+
+export interface RequirementsCostEstimateDTO extends BaseTableDTO {
+    surge_capabilities: string;
+}
+export interface GFEOverviewDTO extends BaseTableDTO {
+  dpas_unit_identification_code?: string;
+  gfe_gfp_furnished?: string;
+  dpas_custodian_number?: string;
+  property_accountable?: string;
+  property_custodian_name?: string;
 }

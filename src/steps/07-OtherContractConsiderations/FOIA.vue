@@ -39,7 +39,7 @@
             legend="Have you provided any information in this acquisition package that, 
               if released, would be harmful to the government?"
             :items="fOIAOptions"
-            :value.sync="selectedFOIAOption"
+            :value.sync="potentialToBeHarmful"
           />
 
           <ATATExpandableLink aria-id="FOIAFAQ">
@@ -86,8 +86,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component} from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -95,9 +94,12 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import FOIALearnMore from "./FOIALearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import OtherContractConsiderations from "@/store/otherContractConsiderations";
 
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { SensitiveInformationDTO } from "@/api/models"
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -108,31 +110,33 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
   },
 })
 
-export default class FOIA extends Vue {
-  public get selectedFOIAOption(): string {
-    const needsFOIACoordinator = OtherContractConsiderations.needsFOIACoordinator;
-    if (needsFOIACoordinator !== null) {
-      return needsFOIACoordinator ? "Yes" : "No";
-    }
-    return "";
-  }
+export default class FOIA extends Mixins(SaveOnLeave) {
 
-  public set selectedFOIAOption(value: string) {
-    OtherContractConsiderations.setNeedsFOIACoordinator(value === "Yes");
-  }
+  public potentialToBeHarmful 
+    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful || "";
 
   private fOIAOptions: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes.",
-      value: "Yes",
+      value: "true",
     },
     {
       id: "No",
       label: "No.",
-      value: "No",
+      value: "false",
     },
   ];
+
+  private get currentData(): SensitiveInformationDTO {
+    return {
+      potential_to_be_harmful: this.potentialToBeHarmful,
+    };
+  }
+
+  private savedData: SensitiveInformationDTO = { 
+    potential_to_be_harmful: "" 
+  };
 
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
@@ -140,6 +144,7 @@ export default class FOIA extends Vue {
       title: "Learn More",
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter();
   }
 
   public openSlideoutPanel(e: Event): void {
@@ -149,16 +154,33 @@ export default class FOIA extends Vue {
     }
   }
 
-  public get selectedPIIOption(): string {
-    const included = OtherContractConsiderations.PIIRecordIncluded;
-    if (included !== null) {
-      return included ? "Yes" : "No";
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    if (storeData) {
+      if (Object.prototype.hasOwnProperty.call(storeData, 'potential_to_be_harmful')) {
+        this.savedData = {
+          potential_to_be_harmful: storeData.potential_to_be_harmful,
+        }
+      }
+    } else {
+      AcquisitionPackage.setSensitiveInformation(this.currentData);
     }
-    return "";
   }
 
-  public set selectedPIIOption(value: string) {
-    OtherContractConsiderations.setPIIRecord(value === "Yes");
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
   }
 
 }

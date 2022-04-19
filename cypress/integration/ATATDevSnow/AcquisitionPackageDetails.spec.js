@@ -76,7 +76,7 @@ describe("Test suite: Acquisition Package ", () => {
             });
         
         //label of the "Projectscope" text
-        cy.textExists(projectOverview.scopeLabel, " What is the scope of your requirement? ");
+        cy.textExists(projectOverview.scopeLabel, "What is the scope of your requirement?");
         
         //Enter What the scope requirement
         cy.enterTextInTextField(projectOverview.scopeTxtBox, projectDetails.scope).click();
@@ -296,12 +296,12 @@ describe("Test suite: Acquisition Package ", () => {
             });
         
         //Assert radio options
-        cy.radioBtn(contact.militaryRadioBtn, "MIL").not("[disabled]");
-        cy.radioBtn(contact.civilianRadioBtn,"CIV").not("[disabled]");
-        cy.radioBtn(contact.contractorRadioBtn,"CTR").not("[disabled]");
+        cy.radioBtn(contact.militaryRadioBtn, "MILITARY").not("[disabled]");
+        cy.radioBtn(contact.civilianRadioBtn,"CIVILIAN").not("[disabled]");
+        cy.radioBtn(contact.contractorRadioBtn,"CONTRACTOR").not("[disabled]");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIV");
+        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");
 
         //Salutation dropdown
         cy.dropDownClick(contact.salutationDropDownIcon);
@@ -320,7 +320,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(contact.lNameLabel, " Last name ");        
         cy.textExists(contact.mNameLabel, " Middle name  Optional ");  
         cy.textExists(contact.emailLabel, " Your email ");
-        cy.textExists(contact.emailMessage, " Enter a .mil or .gov email address. ");
+        cy.textExists(contact.emailMessage, " Enter a .MILITARY or .gov email address.");
         cy.textExists(contact.phoneNumberLabel, " Your phone number ");
         const contactInformation = {
             firstName_selector: contact.fNameTxtBox,
@@ -354,7 +354,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information"); 
         
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.militaryRadioBtn,"MIL");           
+        cy.contactRoleRadioBtnOption(contact.militaryRadioBtn,"MILITARY");           
 
         //Click Rank dropdown
         cy.dropDownClick(contact.rankInput);            
@@ -392,7 +392,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIV");
+        cy.contactRoleRadioBtnOption(contact.civilianRadioBtn,"CIVILIAN");
 
         //select the value from salutationDropdownList
         cy.dropDownClick(contact.salutationDropDownIcon);
@@ -434,7 +434,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CTR");  
+        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CONTRACTOR");  
         const contactInformation = {
             firstName_selector: contact.fNameTxtBox,
             firstName: contactInfo.firstName3,
@@ -464,7 +464,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CTR");
+        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CONTRACTOR");
     
         //Salutation dropdown
         cy.dropDownClick(contact.salutationDropDownIcon); 
@@ -499,18 +499,18 @@ describe("Test suite: Acquisition Package ", () => {
 
         //Verify the selected contact info
         cy.selectedContactInformation(
-            " Adam Adamson ",
-            "mail adam.adamson-civ@mail.mil ",
+            " Test0 Adamson ",
+            "mail test.adamson-civ@mail.mil ",
             "phone 333-333-3333",
             "pentagon HQ1234 - Corresponding Organization Name",
-            " To make any changes to your COR’s contact information, please send a request to our User Engagement Team. ",
-            " Request changes to COR’s contact information ",
+            " To update your COR’s contact information, please  submit a request to our User Engagement Team. ",
+            " submit a request to our User Engagement Team. ",
             "Remove COR info "
         );
         // click on Request Change Contact Information link
         cy.requestChangeContactInformation(
-            " Request changes to COR’s contact information ",
-            " Request change to COR's contact information ",
+            " submit a request to our User Engagement Team. ",
+            " Request change to COR’s contact information ",
             " Please let us know what information needs to be updated for this COR. ​",
             "Please change the contact info"
         );
@@ -546,7 +546,7 @@ describe("Test suite: Acquisition Package ", () => {
         cy.textExists(common.header, "Let’s confirm your contact information");
 
         //select radio button
-        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn,"CTR")
+        cy.contactRoleRadioBtnOption(contact.contractorRadioBtn,"CONTRACTOR")
     
         //Salutation dropdown
         cy.dropDownClick(contact.salutationDropDownIcon);
@@ -583,7 +583,7 @@ describe("Test suite: Acquisition Package ", () => {
             " Your COR’s Contact Information ",
             " What role best describes your COR’s affiliation with the DoD? ",
             contact.militaryRadioBtn,
-            "MIL"
+            "MILITARY"
         );
         const contactDetails = {
             firstName_selector: contact.fNameTxtBox,
@@ -608,7 +608,7 @@ describe("Test suite: Acquisition Package ", () => {
         );
 
         //radio butttons        
-        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes").click({ force: true });
+        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "true").click({ force: true });
 
         //Click on Continue button
         cy.btnExists(common.continueBtn, " Continue ").click();
@@ -631,21 +631,21 @@ describe("Test suite: Acquisition Package ", () => {
 
         //navigates to ACOR option to select yes or no
         cy.acorOption(acor.yesRadioBtn, "true");
-        cy.checkIfCorOrAcor(common.header, " Let’s gather info about your ACOR ", "Selia");
+        cy.checkIfCorOrAcor(common.header, " Let’s gather info about your ACOR ", "Test2");
         cy.selectedContactInformation(
-            " Selia Wentzel ",
-            "mail sel.wentz@acusage.net ",
+            " Test2 Wentzel ",
+            "mail test.wentz@acusage.net ",
             "phone 444-444-4444",
             "pentagon HQ567 - Other Organization Name",
-            " To make any changes to your ACOR’s contact information, please send a request to our User Engagement Team. ",
-            " Request changes to ACOR’s contact information ",
+            " To update your ACOR’s contact information, please  submit a request to our User Engagement Team. ",
+            " submit a request to our User Engagement Team. ",
             "Remove ACOR info "
         );
         
         // click on Request Change Contact Information link
         cy.requestChangeContactInformation(
-            " Request changes to ACOR’s contact information ",
-            " Request change to ACOR's contact information ",
+            " submit a request to our User Engagement Team. ",
+            " Request change to ACOR’s contact information ",
             " Please let us know what information needs to be updated for this ACOR. ​",
             "Please change the contact info"
         );
@@ -656,7 +656,7 @@ describe("Test suite: Acquisition Package ", () => {
 
     });  
 
-    it("TC17: ACOR: Option is Yes: Manually enter Contact information", () => {
+    it("TC17: ACOR: Option is true: Manually enter Contact information", () => {
         cy.clickSideStepper(common.subStepContactInformationLink," Contact Information "); 
 
         //Navigates to Contact information
@@ -680,7 +680,7 @@ describe("Test suite: Acquisition Package ", () => {
             " Your ACOR’s Contact Information ",
             " What role best describes your ACOR’s affiliation with the DoD? ",
             "#Radio_Military",
-            "MIL"
+            "MILITARY"
         );
         const contactDetails = {
             firstName_selector: contact.fNameTxtBox,
@@ -704,7 +704,7 @@ describe("Test suite: Acquisition Package ", () => {
             "56987412564");
 
         //radio butttons        
-        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "yes").click({ force: true });
+        cy.radioBtn(commonCorAcor.accessYesRadioBtn, "true").click({ force: true });
 
         //Click on Continue button
         cy.btnExists(common.continueBtn,  " Continue ").click();

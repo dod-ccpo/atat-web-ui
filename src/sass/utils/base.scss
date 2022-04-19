@@ -44,6 +44,10 @@ body {
   max-width: 640px !important;
 }
 
+.max-width-500 {
+  max-width: 500px !important;
+}
+
 .border1 {
   border: 1px solid !important
 }
@@ -54,4 +58,13 @@ body {
 
 .border-rounded-more {
   border-radius: 8px !important
+}
+
+._square-bottom {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+._no-border-bottom {
+  border-bottom: none !important;
 }

@@ -35,10 +35,13 @@ import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSuppo
 // Step 5 - Contract Details
 import ContractDetails from "../steps/05-ContractDetails/Index.vue";
 import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance.vue";
+import RecurringRequirement from "../steps/05-ContractDetails/RecurringRequirement.vue";
+import ContractType from "../steps/05-ContractDetails/ContractType.vue";
 import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
 import PackagingPackingAndShipping from 
   "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
 import Training from "../steps/05-ContractDetails/Training.vue";
+import POPStart from "@/steps/05-ContractDetails/POPStart.vue";
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -99,10 +102,12 @@ export const routeNames = {
   CurrentEnvironment:"Current_Environment",
   PerformanceRequirements: "Performance_Requirements",
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
-  AnythingAsAServiceXaas:"Anything_as_a_Service_Xaas",
+  AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
   CloudSupportPackages: "Cloud_Support_Packages",
   PeriodOfPerformance: "Period_Of_Performance",
-  ConflictofInterest: "Conflict_of_Interest",
+  RecurringRequirement: "Recurring_Requirement",
+  ContractType: "Contract_Type",
+  ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
   Training: "Training",
   PropertyDetails: "Property_Details",
@@ -123,7 +128,8 @@ export const routeNames = {
   FundingPlan: "Funding_Plan",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   ReviewRequiredForms: "Review_Required_Forms",
-  ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One"
+  ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
+  POPStart: "POP_Start",
 };
 
 /**
@@ -304,7 +310,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Anything as a Service (Xaas)",
         path: "anything_as_a_service_xaas",
-        name: routeNames.AnythingAsAServiceXaas,
+        name: routeNames.AnythingASAServiceXaas,
         component: AnythingAsAServiceXaas,
         completePercentageWeight: 0,
         completed: false,
@@ -334,7 +340,31 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: PeriodOfPerformance,
       },
       {
-        name: routeNames.ConflictofInterest,
+        name: routeNames.POPStart,
+        menuText: "Period of Performance Start Date",
+        path: "period-of-performance-start-date",
+        excludeFromMenu: true,
+        completePercentageWeight: 2,
+        component: POPStart,
+      },
+      {
+        name: routeNames.RecurringRequirement,
+        menuText: "Recurring Requirement",
+        excludeFromMenu: true,
+        path: "recurring-requirement",
+        completePercentageWeight: 2,
+        component: RecurringRequirement,
+      },
+      {
+        name: routeNames.ContractType,
+        menuText: "Contract Type",
+        excludeFromMenu: true,
+        path: "contract-type",
+        completePercentageWeight: 2,
+        component: ContractType,
+      },
+      {
+        name: routeNames.ConflictOfInterest,
         menuText: "Conflict of Interest",
         path: "conflict-of-interest",
         completePercentageWeight: 2,

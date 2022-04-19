@@ -33,6 +33,7 @@
             @input="searchCountries"
             append-icon="search"
             id="DropdownTextField"
+            autocomplete="off"
           />
         </template>
         <template v-slot:item="{ item, on }">
@@ -75,6 +76,7 @@
         :hide-details="true"
         :suffix="suffix"
         :prefix="this._selectedCountry.countryCode"
+        autocomplete="off"
       >
       </v-text-field>
     </div>
@@ -112,18 +114,64 @@ export default class ATATPhoneInput extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "351" }) private width!: string;
 
-  @PropSync("country", {
-    default: () => ({
-      name: "",
-      countryCode: "",
-      abbreviation: "",
-      active: false,
-    }),
-  })
-  private _selectedCountry!: CountryObj;
-  @PropSync("value", { default: "" }) private _value!: string;
+  @PropSync("country", {default: ()=> (
+    { name: '', countryCode: '', abbreviation: '', active: false }
+  )}) private _selectedCountry!: CountryObj;
+  @PropSync("value", {default: ""}) private _value!: string;
+
+  // data
+  private searchResults: CountryObj[] = [];
+  private searchTerm = '';
+  private errorMessages: string[] = [];
+
+  private inputActions(v: string) {
+    this._value = v;
+  };
+
+  private searchCountries() {
+    if (!this.searchTerm) {
+      this.searchResults = this.countries;
+    };
+    this.searchResults = this.countries.filter((country) => {
+      return country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
+    });
+  };
+
+  //@Events
+  private onChange(val: CountryObj): void {
+    this._selectedCountry = val;
+    this._selectedCountry.active = true
+    this.searchTerm = '';
+    this.countries.filter((country) => country.name !== val.name).forEach((country) => {
+      country.active = false
+    })
+    this.searchResults = this.countries;
+    this.$emit('country-changed', val);
+  };
+
+  private phoneMask(val: string): Inputmask.Instance {
+    this._value = val;
+    const phoneTextField = document.getElementById(this.id + '_textField') as HTMLElement;
+    switch (this._selectedCountry.abbreviation) {
+    case "us":
+      return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+        .mask(phoneTextField);
+    case 'dsn':
+      this._value = this._selectedCountry.countryCode + val;
+      return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+        .mask(phoneTextField);
+    default:
+      return Inputmask('*{20}',{placeholder:'', jitMasking: true})
+        .mask(phoneTextField)
+    };
+  };
+
+  mounted(): void {
+    this.searchResults = [...this.countries]
+  };
 
   //data
+
   private countries: CountryObj[] = [
     {
       name: "United States",
@@ -313,63 +361,7 @@ export default class ATATPhoneInput extends Vue {
       abbreviation: "gb",
       active: false,
     },
-  ];
-  private searchResults: CountryObj[] = [];
-  private searchTerm = "";
-  private errorMessages: string[] = [];
+  ];  
 
-  private inputActions(v: string) {
-    this._value = v;
-  }
-
-  private searchCountries() {
-    if (!this.searchTerm) {
-      this.searchResults = this.countries;
-    }
-    this.searchResults = this.countries.filter((country) => {
-      return (
-        country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1
-      );
-    });
-  }
-
-  //@Events
-  private onChange(val: CountryObj): void {
-    this._selectedCountry = val;
-    this._selectedCountry.active = true;
-    this.searchTerm = "";
-    this.countries
-      .filter((country) => country.name !== val.name)
-      .forEach((country) => {
-        country.active = false;
-      });
-    this.searchResults = this.countries;
-    this.$emit("country-changed", val);
-  }
-
-  private phoneMask(val: string): Inputmask.Instance {
-    this._value = val;
-    switch (this._selectedCountry.abbreviation) {
-    case "us":
-      return Inputmask("999-999-9999", {
-        placeholder: "",
-        jitMasking: true,
-      }).mask(document.getElementById(this.id + "_textField") as HTMLElement);
-    case "dsn":
-      this._value = this._selectedCountry.countryCode + val;
-      return Inputmask("999-999-9999", {
-        placeholder: "",
-        jitMasking: true,
-      }).mask(document.getElementById(this.id + "_textField") as HTMLElement);
-    default:
-      return Inputmask("*{20}", { placeholder: "", jitMasking: true }).mask(
-          document.getElementById(this.id + "_textField") as HTMLElement
-      );
-    }
-  }
-
-  mounted(): void {
-    this.searchResults = [...this.countries];
-  }
-}
+};
 </script>

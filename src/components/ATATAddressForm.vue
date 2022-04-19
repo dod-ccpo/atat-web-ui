@@ -49,8 +49,8 @@
         />
         <ATATSelect
           v-show="selectedAddressType === addressTypes.MIL"
-          id="APO_FPO"
-          label="APO/FPO"
+          id="APO_FPO_DPO"
+          label="APO/FPO/DPO"
           :class="inputClass"
           :items="militaryPostOfficeOptions"
           :selectedValue.sync="_selectedMilitaryPO"
@@ -81,7 +81,7 @@
         <ATATSelect
           v-show="selectedAddressType === addressTypes.MIL"
           id="StateCode"
-          label="State code"
+          label="AA/AE/AP"
           :class="inputClass"
           :items="stateCodeListData"
           :selectedValue.sync="_selectedStateCode"
@@ -115,7 +115,8 @@
           titleKey="text"
           :searchFields="['text', 'value']"
           :items="countryListData"
-          :selectedItem.sync="_selectedCountryData"
+          :selectedItem.sync="_selectedCountry"
+          :returnObject="true"
           placeholder=""
           icon="arrow_drop_down"
         />
@@ -152,13 +153,12 @@ export default class ATATAddressForm extends Vue {
   @PropSync("streetAddress1") public _streetAddress1?: string;
   @PropSync("streetAddress2") public _streetAddress2?: string;
   @PropSync("city") public _city?: string;
-  @PropSync("selectedMilitaryPO") public _selectedMilitaryPO?: string;
-  @PropSync("selectedState") public _selectedState?: string;
+  @PropSync("selectedMilitaryPO") public _selectedMilitaryPO?: SelectData;
+  @PropSync("selectedState") public _selectedState?: SelectData;
   @PropSync("selectedStateCode") public _selectedStateCode?: string;
   @PropSync("stateOrProvince") public _stateOrProvince?: string;
   @PropSync("zipCode") public _zipCode?: string;
-  @PropSync("selectedCountry") public _selectedCountry?: string;
-  @PropSync("selectedCountryData") public _selectedCountryData?: SelectData;
+  @PropSync("selectedCountry") public _selectedCountry?: SelectData;
 
   @Prop({ required: true }) public addressTypeOptions?: RadioButton[];
   @Prop({ required: true }) public addressTypes?: stringObj;
@@ -170,8 +170,10 @@ export default class ATATAddressForm extends Vue {
   // methods
 
   private addressTypeChange(addressType: string): void {
-    this._selectedCountry =
-      addressType === this.addressTypes?.FOR ? "" : this.addressTypes?.USA;
+      this._selectedCountry =
+        addressType === this.addressTypes?.FOR 
+        ? { text: "", value: "" }
+        : { text: "United States of America", value: "US" };
   }
 
   // computed
