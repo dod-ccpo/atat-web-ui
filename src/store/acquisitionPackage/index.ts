@@ -14,15 +14,18 @@ import {
 } from "@/api/models";
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
-import { ProjectOverviewDTO } from "@/api/models";
-import { OrganizationDTO } from "@/api/models";
-import { ContactDTO } from "@/api/models";
-import { FairOpportunityDTO } from "@/api/models";
-import { CurrentContractDTO } from "@/api/models";
-import { SensitiveInformationDTO } from "@/api/models";
-import { PeriodOfPerformanceDTO } from "@/api/models";
-import { GFEOverviewDTO } from "@/api/models";
-import { ContractTypeDTO } from "@/api/models";
+import { 
+  ProjectOverviewDTO,
+  OrganizationDTO,
+  ContactDTO,
+  FairOpportunityDTO,
+  CurrentContractDTO,
+  SensitiveInformationDTO,
+  PeriodOfPerformanceDTO,
+  GFEOverviewDTO,
+  ContractTypeDTO,
+  SystemChoiceDTO 
+} from "@/api/models";
 
 import ContactData from "@/store/contactData";
 
@@ -104,6 +107,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       fairOpportunity: store.fairOpportunity,
       requirementsCostEstimate: store.requirementsCostEstimate,
       gfeOverview: store.GFEOverview,
+      branchOptions: store.branchOptions,
     })
   );
 };
@@ -139,11 +143,19 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
+  public branchOptions: SystemChoiceDTO[] = [
+    { name: "", label: "", value: "" }
+  ];
 
   public initContact: ContactDTO = initialContact();
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
+  }
+
+  @Mutation
+  public setbranchOptions(value: SystemChoiceDTO[]): void {
+    this.branchOptions = value.slice();
   }
 
   @Mutation
@@ -250,6 +262,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
     this.GFEOverview = sessionData.GFEOverview;
+    this.branchOptions = sessionData.branchOptions;
   }
 
   @Action({ rawError: true })
@@ -258,7 +271,8 @@ export class AcquisitionPackageStore extends VuexModule {
       return;
     }
 
-    ContactData.initialize();
+    // ContactData.initialize();
+    this.setbranchOptions(await ContactData.LoadMilitaryBranches())
 
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY

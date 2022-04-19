@@ -319,11 +319,10 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     }
   }
 
-
   public async loadOnEnter(): Promise<void> {
     this.savedData.can_access_package = "true";
-    const branches = ContactData.branchChoices;
-
+    const branches = AcquisitionPackage.branchOptions;
+    
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
       const { value } = choice;

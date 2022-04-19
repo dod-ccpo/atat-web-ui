@@ -9,6 +9,7 @@ import {
   SensitiveInformationDTO,
   RequirementsCostEstimateDTO,
   PeriodOfPerformanceDTO,
+  SystemChoiceDTO,
 } from "@/api/models";
 
 export interface SessionData {
@@ -24,4 +25,5 @@ export interface SessionData {
   SensitiveInformation: SensitiveInformationDTO;
   requirementsCostEstimate: RequirementsCostEstimateDTO;
   GFEOverview: GFEOverviewDTO;
+  branchOptions: SystemChoiceDTO[];
 }
