@@ -12,7 +12,7 @@ import {
   AcquisitionPackageDTO,
   RequirementsCostEstimateDTO,
 } from "@/api/models";
-import { AutoCompleteItemGroups, SelectData } from "types/Global";
+import { SelectData } from "types/Global";
 import { SessionData } from "./models";
 import { ProjectOverviewDTO } from "@/api/models";
 import { OrganizationDTO } from "@/api/models";
