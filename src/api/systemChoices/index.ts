@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { SystemChoiceDTO } from "../models";
 import { TableApiBase } from "../tableApiBase";
 
@@ -23,7 +24,8 @@ export class SystemChoicesApi extends TableApiBase<SystemChoiceDTO> {
       });
 
     } catch (error) {
-      throw new Error(`unable to retrieve system choices for (table:${tableName}, choice: ${choiceColumnName}`);
+      throw new Error(`unable to retrieve system choices for 
+      (table:${tableName}, choice: ${choiceColumnName}`);
     }
 
   }

@@ -4,7 +4,6 @@ import { Mutations, RouteDirection, StepInfo, StepRouteResolver, StepsState } fr
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
-import VueRouter from "vue-router";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
@@ -46,7 +45,8 @@ export class StepsStore extends VuexModule implements StepsState {
     }
 
     @Action({ rawError: true })
-    public async resolveRoute(direction: RouteDirection): Promise<string | StepRouteResolver | undefined> {
+    public async resolveRoute(direction: RouteDirection): Promise<string 
+    | StepRouteResolver | undefined> {
 
       const nextStepName = direction === RouteDirection.NEXT 
         ? (this.currentStep?.next || '') 

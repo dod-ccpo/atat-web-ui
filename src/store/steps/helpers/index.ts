@@ -55,7 +55,8 @@ export const resolveNextRouteName = (current: string, stepInfo: StepInfo): strin
   return stepInfo.stepName;
 }
 
-export const resolvePreviousRouteName = (current: string, stepInfo: StepInfo): string | undefined => {
+export const resolvePreviousRouteName = 
+(current: string, stepInfo: StepInfo): string | undefined => {
   if (!stepInfo.prev)
     return stepInfo.prev;
 

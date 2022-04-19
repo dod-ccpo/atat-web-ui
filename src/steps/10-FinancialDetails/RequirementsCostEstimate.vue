@@ -22,8 +22,9 @@
               </p>
             </template>
           </ATATAlert>
-           <p class="mt-8 mb-2">
-            If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded?
+          <p class="mt-8 mb-2">
+            If surge capabilities are required, what percentage of the contractor’s 
+            total proposed price will not be exceeded?
           </p>
           <ATATTextField 
             label="" 

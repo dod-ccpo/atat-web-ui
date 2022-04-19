@@ -1,5 +1,4 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import GovtFurnishedEquipment from "@/store/govtFurnishedEquipment";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
 
 import { routeNames } from "../stepper";
@@ -11,7 +10,7 @@ export const AcorsRouteResolver = (current: string): string => {
   //routing from alternate cor and the user does not have
   //and alternatative contact rep
   if (
-    current === routeNames.Alternate_Cor &&
+    current === routeNames.AlternateCor &&
     hasAlternativeContactRep === false
   ) {
     return routeNames.Summary;
@@ -19,10 +18,10 @@ export const AcorsRouteResolver = (current: string): string => {
 
   //routing from summary and user does not have
   if (current === routeNames.Summary && hasAlternativeContactRep === false) {
-    return routeNames.Alternate_Cor;
+    return routeNames.AlternateCor;
   }
 
-  return routeNames.Acor_Information;
+  return routeNames.AcorInformation;
 };
 
 
@@ -30,11 +29,11 @@ export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "true";
   if (hasCurrentContract) {
-    return routeNames.Current_Contract_Details;
+    return routeNames.CurrentContractDetails;
   }
-  return current === routeNames.Current_Contract
-    ? routeNames.Performance_Requirements
-    : routeNames.Current_Contract;
+  return current === routeNames.CurrentContract
+    ? routeNames.PerformanceRequirements
+    : routeNames.CurrentContract;
 };
 
 export const PIIRecordResolver = (current: string): string => {
@@ -51,10 +50,10 @@ export const FOIARecordResolver = (current: string): string => {
   // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
   // then need to collect information about the FOIA Coordinator
   if (needsFOIACoordinator) {
-    return routeNames.FOIA_Coordinator;
+    return routeNames.FOIACoordinator;
   }
   return current === routeNames.FOIA
-    ? routeNames.Section_508_Standards
+    ? routeNames.Section508Standards
     : routeNames.FOIA;
 };
 

@@ -14,17 +14,21 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Fair Opportunity Process
 import FairOpportunityProcess from "../steps/02-FairOpportunityProcess/Index.vue"
 import Exceptions from "../steps/02-FairOpportunityProcess/Exceptions.vue";
-import JustificationAndApproval from "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
+import JustificationAndApproval from 
+  "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
 
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
-import CurrentContractDetails from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
-import CurrentEnvironment from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
+import CurrentContractDetails from 
+  "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
+import CurrentEnvironment 
+  from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 
 // Step 4 - Performance requirements
 import PerformanceRequirements from "../steps/04-PerformanceRequirements/Index.vue"
-import OptimizeCurrentEnvironment from "../steps/04-PerformanceRequirements/OptimizeCurrentEnvironment.vue";
+import OptimizeCurrentEnvironment from 
+  "../steps/04-PerformanceRequirements/OptimizeCurrentEnvironment.vue";
 import AnythingAsAServiceXaas from "../steps/04-PerformanceRequirements/AnythingAsAServiceXaas.vue";
 import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSupportPackages.vue";
 
@@ -32,7 +36,8 @@ import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSuppo
 import ContractDetails from "../steps/05-ContractDetails/Index.vue";
 import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance.vue";
 import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
-import PackagingPackingAndShipping from "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
+import PackagingPackingAndShipping from 
+  "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
 import Training from "../steps/05-ContractDetails/Training.vue";
 
 // Step 6 - Government Furnished Equipment
@@ -55,19 +60,19 @@ import EvaluationCriteriaStepOne from "../steps/08-EvaluationCriteria/Evaluation
 
 // step 9 - Classification Requirements
 import ClassificationRequirements from "../steps/09-ClassificationRequirements/Index.vue"
-import ClassificationRequirementsStepOne from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
+import ClassificationRequirementsStepOne 
+  from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
 
 // step 10 - Financial Details
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
 import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
 import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
-import SeverabilityAndIncrementalFunding from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
+import SeverabilityAndIncrementalFunding 
+  from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
 
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
-import ReviewRequiredFormsStepOne from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
-
-// other
-import ValidatorsExample from "../validation/ValidatorsExample.vue";
+import ReviewRequiredFormsStepOne 
+  from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
 
 import {
   AcorsRouteResolver,
@@ -77,48 +82,48 @@ import {
 } from "./resolvers";
 
 export const routeNames = {
-  Project_Overview: "Project_Overview",
-  Organization_Info: "Organization_Info",
-  Contact_Information: "Contact_Information",
-  Cor_Information: "Cor_Information",
-  Alternate_Cor: "Alternate_Cor",
-  Acor_Information: "Acor_Information",
-  Existing_Contract_Background: "Existing_Contract_Background",
+  ProjectOverview: "Project_Overview",
+  OrganizationInfo: "Organization_Info",
+  ContactInformation: "Contact_Information",
+  CorInformation: "Cor_Information",
+  AlternateCor: "Alternate_Cor",
+  AcorInformation: "Acor_Information",
+  ExistingContractBackground: "Existing_Contract_Background",
   Summary: "Summary",
-  Fair_Opportunity: "Fair_Opportunity",
+  FairOpportunity: "Fair_Opportunity",
   Exceptions: "Exceptions",
-  Justification_and_Approval: "Justification_and_Approval",
+  JustificationAndApproval: "Justification_and_Approval",
   Background: "Background",
-  Current_Contract: "Current_Contract",
-  Current_Contract_Details: "Current_Contract_Details",
-  Current_Environment:"Current_Environment",
-  Performance_Requirements: "Performance_Requirements",
-  Optimize_Current_Environment: "Optimize_Current_Environment",
-  Anything_as_a_Service_Xaas:"Anything_as_a_Service_Xaas",
-  Cloud_Support_Packages: "Cloud_Support_Packages",
-  Period_Of_Performance: "Period_Of_Performance",
-  Conflict_of_Interest: "Conflict_of_Interest",
-  Packaging_Packing_and_Shipping: "Packaging_Packing_and_Shipping",
+  CurrentContract: "Current_Contract",
+  CurrentContractDetails: "Current_Contract_Details",
+  CurrentEnvironment:"Current_Environment",
+  PerformanceRequirements: "Performance_Requirements",
+  OptimizeCurrentEnvironment: "Optimize_Current_Environment",
+  AnythingAsAServiceXaas:"Anything_as_a_Service_Xaas",
+  CloudSupportPackages: "Cloud_Support_Packages",
+  PeriodOfPerformance: "Period_Of_Performance",
+  ConflictofInterest: "Conflict_of_Interest",
+  PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
   Training: "Training",
-  Property_Details: "Property_Details",
+  PropertyDetails: "Property_Details",
   Justification: "Justification",
-  Other_Contract_Considerations: "Other_Contract_Considerations",
+  OtherContractConsiderations: "Other_Contract_Considerations",
   PII: "PII",
   BAA: "BAA",
   PIIRecord: "PIIRecord",
-  Financial_Details: "Financial_Details",
+  FinancialDetails: "Financial_Details",
   FOIA: "FOIA",
-  FOIA_Coordinator: "FOIA_Coordinator",
-  Section_508_Standards: "Section_508_Standards",
-  Evaluation_Criteria: "Evaluation_Criteria",
-  Evaluation_Criteria_Step_One: "Evaluation_Criteria_Step_One",
-  Classification_Requirements: "Classification_Requirements",
-  Classification_Requirements_Step_One: "Classification_Requirements_Step_One",
-  Requirements_Cost_Estimate: "Requirements_Cost_Estimate",
-  Funding_Plan: "Funding_Plan",
-  Severability_And_Incremental_Funding: "Severability_And_Incremental_Funding",
-  Review_Required_Forms: "Review_Required_Forms",
-  Review_Required_Forms_Step_One: "Review_Required_Forms_Step_One"
+  FOIACoordinator: "FOIA_Coordinator",
+  Section508Standards: "Section_508_Standards",
+  EvaluationCriteria: "Evaluation_Criteria",
+  EvaluationCriteriaStepOne: "Evaluation_Criteria_Step_One",
+  ClassificationRequirements: "Classification_Requirements",
+  ClassificationRequirementsStepOne: "Classification_Requirements_Step_One",
+  RequirementsCostEstimate: "Requirements_Cost_Estimate",
+  FundingPlan: "Funding_Plan",
+  SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
+  ReviewRequiredForms: "Review_Required_Forms",
+  ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One"
 };
 
 /**
@@ -143,13 +148,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Project Overview",
         path: "/", // should be same as parent route
-        name: routeNames.Project_Overview,
+        name: routeNames.ProjectOverview,
         completePercentageWeight: 4,
         completed: true,
         component: ProjectOverview,
         additionalButtons: [
           {
-            name: routeNames.Project_Overview,
+            name: routeNames.ProjectOverview,
             buttonText: "Cancel",
             buttonId: "CancelButton",
             buttonClass: "tertirary",
@@ -162,7 +167,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Organization",
         path: "organization-info",
-        name: routeNames.Organization_Info,
+        name: routeNames.OrganizationInfo,
         completed: true,
         completePercentageWeight: 5,
         component: OrganizationInfo,
@@ -170,7 +175,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Contact Information",
         path: "contact-info",
-        name: routeNames.Contact_Information,
+        name: routeNames.ContactInformation,
         completePercentageWeight: 5,
         completed: true,
         component: ContactInfo,
@@ -178,7 +183,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Cor Info",
         path: "cor-info",
-        name: routeNames.Cor_Information,
+        name: routeNames.CorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: CorInfo,
@@ -186,14 +191,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Alternate COR",
         path: "alt-cor",
-        name: routeNames.Alternate_Cor,
+        name: routeNames.AlternateCor,
         excludeFromMenu: true,
         component: AlternateCOR,
       },
       {
         menuText: "Acors",
         path: "acor-info",
-        name: routeNames.Acor_Information,
+        name: routeNames.AcorInformation,
         excludeFromMenu: true,
         completePercentageWeight: 5,
         component: AcorInfo,
@@ -229,7 +234,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Justification and Approval",
         path: "justification-and-approval",
-        name: routeNames.Justification_and_Approval,
+        name: routeNames.JustificationAndApproval,
         component: JustificationAndApproval,
         completePercentageWeight: 5,
         completed: false,
@@ -247,7 +252,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Current Contract",
         path: "current-contract",
-        name: routeNames.Current_Contract,
+        name: routeNames.CurrentContract,
         completePercentageWeight: 0,
         component: CurrentContract,
         completed: false,
@@ -256,7 +261,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Details",
         path: "current-contract-details",
         excludeFromMenu: true,
-        name: routeNames.Current_Contract_Details,
+        name: routeNames.CurrentContractDetails,
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
@@ -266,14 +271,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t have an existing contract",
             buttonId: "NoExistingContract",
             buttonClass: "secondary",
-            name: routeNames.Performance_Requirements,
+            name: routeNames.PerformanceRequirements,
           },
         ],
       },
       {
         menuText: "Current Environment",
         path: "current-environment",
-        name: routeNames.Current_Environment,
+        name: routeNames.CurrentEnvironment,
         component: CurrentEnvironment,
         completePercentageWeight: 5,
         completed: false,
@@ -291,7 +296,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Optimize Current Environment?",
         path: "optimize_current_environment",
-        name: routeNames.Optimize_Current_Environment,
+        name: routeNames.OptimizeCurrentEnvironment,
         component: OptimizeCurrentEnvironment,
         completePercentageWeight: 0,
         completed: false,
@@ -299,7 +304,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Anything as a Service (Xaas)",
         path: "anything_as_a_service_xaas",
-        name: routeNames.Anything_as_a_Service_Xaas,
+        name: routeNames.AnythingAsAServiceXaas,
         component: AnythingAsAServiceXaas,
         completePercentageWeight: 0,
         completed: false,
@@ -307,7 +312,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Cloud Support Packages",
         path: "cloud-support-packages",
-        name: routeNames.Cloud_Support_Packages,
+        name: routeNames.CloudSupportPackages,
         component: CloudSupportPackages,
         completePercentageWeight: 0,
         completed: false,
@@ -322,21 +327,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: ContractDetails,
     children: [
       {
-        name: routeNames.Period_Of_Performance,
+        name: routeNames.PeriodOfPerformance,
         menuText: "Period of Performance",
         path: "period-of-performance",
         completePercentageWeight: 2,
         component: PeriodOfPerformance,
       },
       {
-        name: routeNames.Conflict_of_Interest,
+        name: routeNames.ConflictofInterest,
         menuText: "Conflict of Interest",
         path: "conflict-of-interest",
         completePercentageWeight: 2,
         component: ConflictOfInterest,
       },
       {
-        name: routeNames.Packaging_Packing_and_Shipping,
+        name: routeNames.PackagingPackingAndShipping,
         menuText: "Packaging, Packing, and Shipping",
         path: "packaging-packing-and-shipping",
         completePercentageWeight: 2,
@@ -359,7 +364,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     component: GovtFurnishedEquipment,
     children: [
       {
-        name: routeNames.Property_Details,
+        name: routeNames.PropertyDetails,
         menuText: "Property Details",
         path: "property-details",
         completePercentageWeight: 2,
@@ -414,7 +419,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "FOIA Coordinator",
         path: "/foia-coordinator",
-        name: routeNames.FOIA_Coordinator,
+        name: routeNames.FOIACoordinator,
         completePercentageWeight: 2,
         excludeFromMenu: true,
         component: FOIACoordinator,
@@ -423,7 +428,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Section 508 Standards",
         path: "/508-standards",
-        name: routeNames.Section_508_Standards,
+        name: routeNames.Section508Standards,
         completePercentageWeight: 2,
         component: Section508Standards,
       },
@@ -441,7 +446,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Evaluation Criteria",
         path: "evaluation-criteria",
         excludeFromMenu: true,
-        name: routeNames.Evaluation_Criteria_Step_One,
+        name: routeNames.EvaluationCriteriaStepOne,
         completePercentageWeight: 1,
         component: EvaluationCriteriaStepOne,
       },
@@ -458,7 +463,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Classification Requirements",
         path:"classification-requirements",
         excludeFromMenu: true,
-        name: routeNames.Classification_Requirements_Step_One,
+        name: routeNames.ClassificationRequirementsStepOne,
         completePercentageWeight: 1,
         component: ClassificationRequirementsStepOne,
       },
@@ -474,21 +479,21 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Requirements Cost Estimate",
         path: "requirements-cost-estimate",
-        name: routeNames.Requirements_Cost_Estimate,
+        name: routeNames.RequirementsCostEstimate,
         completePercentageWeight: 1,
         component: RequirementsCostEstimate,
       },
       {
         menuText: "Funding Plan",
         path: "funding-plan",
-        name: routeNames.Funding_Plan,
+        name: routeNames.FundingPlan,
         completePercentageWeight: 1,
         component: FundingPlan,
       },
       {
         menuText: "Severability and Incremental Funding",
         path: "severability-and-incremental-funding",
-        name: routeNames.Severability_And_Incremental_Funding,
+        name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
       },
@@ -505,7 +510,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         menuText: "Step One",
         path:"review-required-forms",
         excludeFromMenu: true,
-        name: routeNames.Review_Required_Forms_Step_One,
+        name: routeNames.ReviewRequiredFormsStepOne,
         completePercentageWeight: 1,
         component: ReviewRequiredFormsStepOne,
       },

@@ -33,7 +33,8 @@
             v-text="item[titleKey]"
             :class="{'font-weight-normal': !subtitleKey}"
           ></v-list-item-title>
-          <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]"></v-list-item-subtitle>
+          <v-list-item-subtitle v-if="subtitleKey" 
+          v-text="item[subtitleKey]"></v-list-item-subtitle>
         </v-list-item-content>
       </template>
 

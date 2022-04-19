@@ -50,7 +50,8 @@
     >
       <hr />
       <ATATRadioGroup
-        legend="Does this individual need access to help you create this acquisition package in ATAT?"
+        legend="Does this individual need access to help you create 
+        this acquisition package in ATAT?"
         id="AccessToEdit"
         :items="accessToEditOptions"
         :value.sync="selectedAccessToEdit"

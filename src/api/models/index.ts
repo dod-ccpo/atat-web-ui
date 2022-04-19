@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export interface BaseTableDTO {
   sys_id?: string;
   sys_updated_by?: string;
