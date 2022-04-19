@@ -1,5 +1,5 @@
 <template>
-  <div id="PhoneControl" class="_atat-phone-field"  @blur="onBlur">
+  <div id="PhoneControl" class="_atat-phone-field">
     <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_TextFieldLabel'"
@@ -76,7 +76,7 @@
         :value.sync="_value"
         :placeholder="placeHolder"
         @input="phoneMask"
-        :validate-on-blur="false"
+        validate-on-blur
         class="_phone-number-input"
         :hide-details="true"
         :suffix="suffix"
@@ -136,12 +136,13 @@ export default class ATATPhoneInput extends Vue {
   }
   )
   private _selectedCountry!: CountryObj;
+      //todo remove focus on DropdownTextField
+      //todo show error messages
 
   @PropSync("value", { default: "" }) private _value!: string;
 
   // data
   private searchResults: CountryObj[] = [];
-    
   private searchTerm = "";
   private errorMessages: string[] = [];
 
@@ -166,8 +167,12 @@ export default class ATATPhoneInput extends Vue {
   }
 
   private clearErrorMessages(): void{
-    this.$refs.atatPhoneTextField.errorBucket = [];
-    this.errorMessages = [];
+    Vue.nextTick(()=>{
+      const textBox = document.getElementById(this.id + "_textField") as HTMLInputElement;
+      this.$refs.atatPhoneTextField.errorBucket = [];
+      this.errorMessages = [];
+      textBox.focus();
+    });
   }
 
   //@Events
