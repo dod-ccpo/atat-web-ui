@@ -22,6 +22,44 @@ describe("Test suite: Contract Details Step", () => {
       
   });
 
+  it("TC: Asserts: Do you want to request a PoP start date?", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.textExists(common.header, " Let’s gather some details about the duration of your task order ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, "Do you want to request a PoP start date?");
+    const expectedstartText = "Due to project requirements and/or contractual obligations, your PoP may need to start on a specific date. If no date is specified, then your PoP will begin based upon the execution date of your task order."
+    cy.findElement(contractDetails.popText).then(($e) => {
+      let actualTxt = $e.text();
+      cy.log(actualTxt);
+      const formattedTxt = cleanText(actualTxt)
+      expect(formattedTxt).equal(expectedstartText);
+
+    });
+    //assert radio button options
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YesStartDate").not("[disabled]")
+    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NoStartDate").not("[disabled]")
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
+    cy.btnExists(common.backBtn, "Back").not("[disabled]");
+  });
+  
+  it.only("TC: Do you want to request a PoP start date?: Select Yes Option", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.textExists(common.header, " Let’s gather some details about the duration of your task order ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, "Do you want to request a PoP start date?");
+    //Select Yes radio option
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YesStartDate").click({ force: true });
+    cy.findElement(contractDetails.requestedStartDate).should("exist"); 
+    cy.findElement(contractDetails.requestedStartDropdownIcon).click();
+    cy.findElement(contractDetails.requestedStartDateNosoonerthan).click();
+    cy.findElement(contractDetails.calendarIcon).click();
+    cy.findElement(contractDetails.navigateNextMonth).click({force: true}).then(() => {
+      cy.findElement(contractDetails.selectDate).first().click({ force: true });
+      
+    });   
+    cy.btnExists(common.backBtn, "Back").not("[disabled]");
+  });
+
   it("TC2: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
