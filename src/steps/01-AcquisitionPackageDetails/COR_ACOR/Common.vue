@@ -77,6 +77,7 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
@@ -117,7 +118,7 @@ export default class COR_ACOR extends Vue {
   @PropSync("currentContactData") private _currentContactData!: ContactDTO;
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
 
-// computed
+  // computed
   
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
@@ -148,13 +149,13 @@ export default class COR_ACOR extends Vue {
   ];
   
   public selectedContact: CorAcorSelectData = {
-      id: "",
-      firstName: "",
-      lastName: "",
-      fullName: "",
-      email: "",
-      phone: "",
-      orgName: "",
+    id: "",
+    firstName: "",
+    lastName: "",
+    fullName: "",
+    email: "",
+    phone: "",
+    orgName: "",
   };
 
   private contactList: CorAcorSelectData[] = [

@@ -118,6 +118,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -176,17 +177,17 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       if (optionPeriod.duration) {
         let multiplier = 1;
         switch (optionPeriod.unitOfTime) {
-          case "Week(s)":
-            multiplier = 7;
-            break;
-          case "Month(s)":
-            multiplier = 30;
-            break;
-          case "Year":
-            multiplier = 365;
-            break;
-          default:
-            multiplier = 1;
+        case "Week(s)":
+          multiplier = 7;
+          break;
+        case "Month(s)":
+          multiplier = 30;
+          break;
+        case "Year":
+          multiplier = 365;
+          break;
+        default:
+          multiplier = 1;
         }
         const thisDays = optionPeriod.duration * multiplier;
         this.totalPoPDuration += thisDays;

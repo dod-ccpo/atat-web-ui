@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
