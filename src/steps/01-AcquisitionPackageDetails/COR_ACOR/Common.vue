@@ -187,7 +187,8 @@ export default class COR_ACOR extends Vue {
   ];
 
   private branchData: SelectData[] = [];
-  private selectedBranch: SelectData = { text: "", value: "" };
+  private emptySelectData = { text: "", value: "" }
+  private selectedBranch: SelectData = this.emptySelectData;
   private selectedRank: RankData = {
     grade: "",
     name: "",
@@ -273,7 +274,7 @@ export default class COR_ACOR extends Vue {
     if (newRole === "MILITARY") {
       this.selectedBranch = AcquisitionPackage.selectedContactBranch;
     } else {
-      this.selectedBranch = { text: "", value: "" };
+      this.selectedBranch = this.emptySelectData;
     }
   }
 
@@ -363,14 +364,19 @@ export default class COR_ACOR extends Vue {
           this.savedData.rank_components = rankComp.value;
         }
         
-        const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
-
         //retrieve selected Military Rank from rank component
         const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
+
+        // get military branch from rank data
+        if (rank !== undefined) {
+          const foundBranch = this.branchData.find((branch) => branch.value === rank.branch);
+          this.selectedBranch = foundBranch || this.emptySelectData;
+        } 
         
-        this.selectedBranch = rank !== undefined
-          ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
-          : emptyBranch;
+        // if still no selected branch, use the branch from the Contact Info page as default
+        if (this.selectedBranch.value === "") {
+          this.selectedBranch = AcquisitionPackage.selectedContactBranch;
+        }
 
         this.selectedRank = rank !== undefined
           ? { name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || "" }
