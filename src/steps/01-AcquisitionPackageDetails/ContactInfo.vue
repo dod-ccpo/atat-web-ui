@@ -145,7 +145,7 @@ import {
   RadioButton,
   SelectData,
 } from "../../../types/Global";
-import { ContactDTO } from "@/api/models";
+import { ContactDTO, SystemChoiceDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -169,6 +169,17 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   }
 
   // watchers
+  @Watch("ContactData.militaryAutoCompleteGroups")
+  protected branchRankDataChange(newVal: AutoCompleteItemGroups): void {
+    debugger;
+    this.branchRanksData = newVal;
+  }
+
+  @Watch("ContactData.branchChoices")
+  protected branchDataChange(newVal: SelectData[]): void {
+    debugger;
+    this.branchData = newVal;
+  }
 
   @Watch("selectedBranch")
   protected branchChange(): void {
@@ -321,8 +332,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.savedData.can_access_package = "true";
-    const branches = AcquisitionPackage.branchOptions;
-    
+    const branches = AcquisitionPackage.getBranchOptions();
+    debugger;
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
       const { value } = choice;

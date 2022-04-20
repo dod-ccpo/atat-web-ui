@@ -28,7 +28,7 @@
       @update:search-input="updateSearchInput" 
     >
       <template v-slot:item="{item}">
-        <v-list-item-content :id="getIdText(item.name)">
+        <v-list-item-content :id="getIdText(item)"> 
           <v-list-item-title
             v-text="item[titleKey]"
             :class="{'font-weight-normal': !subtitleKey}"
@@ -90,7 +90,7 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
   @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
-
+  
   // computed
 
   get inputClass(): string {
@@ -107,6 +107,7 @@ export default class ATATAutoComplete extends Vue {
     if (this.isReset) {
       this._selectedItem = {};
       this.searchText = null;
+
       this.$emit("autocompleteInputUpdate", this.isReset);
     }
     this.isReset = false;
@@ -128,8 +129,12 @@ export default class ATATAutoComplete extends Vue {
     this.$emit("noAutoCompleteResultsAction");
   }
 
-  private getIdText(string: string) {
-    return getIdText(string) + "_AutoCompleteOption";
+  private getIdText(item: AutoCompleteItem): string {
+    if (item && Object.prototype.hasOwnProperty.call(item, this.titleKey) ) {
+      const value = item[this.titleKey] + "";
+      return getIdText(value) + "_AutoCompleteOption";
+    }
+    return "";
   }
 
 }

@@ -154,8 +154,14 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setbranchOptions(value: SystemChoiceDTO[]): void {
+  public setBranchOptions(value: SystemChoiceDTO[]): void {
+    debugger;
     this.branchOptions = value.slice();
+  }
+
+  @Action
+  public getBranchOptions(): SystemChoiceDTO[] {
+    return this.branchOptions;
   }
 
   @Mutation
@@ -271,8 +277,9 @@ export class AcquisitionPackageStore extends VuexModule {
       return;
     }
 
-    // ContactData.initialize();
-    this.setbranchOptions(await ContactData.LoadMilitaryBranches())
+    await ContactData.initialize();
+    this.setBranchOptions(ContactData.branchChoices)
+    debugger;
 
     const storedSessionData = sessionStorage.getItem(
       ATAT_ACQUISTION_PACKAGE_KEY
