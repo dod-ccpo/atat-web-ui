@@ -347,7 +347,7 @@ describe("Test suite: Acquisition Package ", () => {
         );
     });
 
-    it("TC10: Contact Information: Role is Military", () => {
+    it.only("TC10: Contact Information: Role is Military", () => {
         cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
         //Navigates to Contact information

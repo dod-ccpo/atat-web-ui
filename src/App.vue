@@ -80,7 +80,15 @@ export default class App extends Vue {
   private noPrevious = false;
   private backButtonText = "Back";
 
+  async beforeMount(): Promise<void> {
+    debugger;
+    await AcquisitionPackage.initialize();
+
+  }
+
   async mounted(): Promise<void> {
+    // await AcquisitionPackage.initialize();
+debugger;
     //get first step and intitialize store to first step;
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
@@ -89,7 +97,7 @@ export default class App extends Vue {
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
     }
-    await AcquisitionPackage.initialize();
+    // await AcquisitionPackage.initialize();
 
     this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
   }

@@ -146,6 +146,8 @@ export class AcquisitionPackageStore extends VuexModule {
   public branchOptions: SystemChoiceDTO[] = [
     { name: "", label: "", value: "" }
   ];
+  
+  public branchSelectData: SelectData[] = [];
 
   public initContact: ContactDTO = initialContact();
 
@@ -155,8 +157,18 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setBranchOptions(value: SystemChoiceDTO[]): void {
+    const foo = value.slice();
     debugger;
     this.branchOptions = value.slice();
+    this.branchSelectData = this.branchOptions.map((choice) => {
+      const text = `U.S. ${choice.label}`;
+      const { value } = choice;
+      return {
+        text,
+        value,
+      };
+    });
+
   }
 
   @Action
@@ -268,7 +280,10 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
     this.GFEOverview = sessionData.GFEOverview;
-    this.branchOptions = sessionData.branchOptions;
+    debugger;
+    if (sessionData.branchOptions && sessionData.branchOptions.length) {
+      this.branchOptions = sessionData.branchOptions;
+    }
   }
 
   @Action({ rawError: true })

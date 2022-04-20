@@ -332,16 +332,17 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.savedData.can_access_package = "true";
-    const branches = AcquisitionPackage.getBranchOptions();
+    // const branches = AcquisitionPackage.getBranchOptions();
+    this.branchData = AcquisitionPackage.branchSelectData;
     debugger;
-    this.branchData = branches.map((choice) => {
-      const text = `U.S. ${choice.label}`;
-      const { value } = choice;
-      return {
-        text,
-        value,
-      };
-    });
+    // this.branchData = branches.map((choice) => {
+    //   const text = `U.S. ${choice.label}`;
+    //   const { value } = choice;
+    //   return {
+    //     text,
+    //     value,
+    //   };
+    // });
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
 
