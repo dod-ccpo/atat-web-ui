@@ -62,11 +62,40 @@ describe("Test suite: Contract Details Step", () => {
     cy.findElement(contractDetails.navigateNextMonth).click({force: true}).then(() => {
       cy.findElement(contractDetails.selectDate).first().click({ force: true });
       
-    });   
+    }); 
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
   });
 
-  it("TC4: Asserts: Will this be a future recurring requirement?", () => {
+  it("TC4: Do you want to request a PoP start date?: Requested Start date is Not later than", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.textExists(common.header, " Let’s gather some details about the duration of your task order ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, "Do you want to request a PoP start date?");
+    //Select Yes radio option
+    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NoStartDate").click({ force: true });
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YesStartDate").click({ force: true });
+    cy.findElement(contractDetails.requestedStartDropdownIcon).click();      
+    // If user select the Requested start date Not later than 
+    cy.findElement(contractDetails.requestedStartDateNotlaterthan).click().then(() => {
+      cy.findElement(contractDetails.warningTextMessage).should("exist");
+    }); 
+    const expectedWarningMessageText="In the event that a JWCC contract option period is not exercised or is terminated/canceled prior to the end of the last anticipated option period in the JWCC contract schedule, any current task orders’ terms and conditions will be unaffected. All efforts will be made to accommodate your requested period of performance start date. However, there is no guarantee that the award will be made by said date. Normal contracting lead times and/or complexity of requirements may prevent meeting the requested date."
+    cy.findElement(contractDetails.warningTextMessage).then(($e) => {
+      let actualTxt = $e.text();
+      cy.log(actualTxt);
+      const formattedTxt = cleanText(actualTxt)
+      expect(formattedTxt).equal(expectedWarningMessageText);
+
+    });
+    cy.findElement(contractDetails.calendarIcon).click();
+    cy.findElement(contractDetails.navigateNextMonth).click({force: true}).then(() => {
+      cy.findElement(contractDetails.selectDate).first().click({ force: true });
+      
+    });
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+  });
+
+  it("TC5: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(contractDetails.popRadioGroup).should("exist");
