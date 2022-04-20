@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+/* eslint-disable camelcase */
 import {Component, Mixins} from "vue-property-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";

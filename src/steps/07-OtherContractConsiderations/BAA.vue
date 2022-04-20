@@ -49,17 +49,18 @@
           >
             <template v-slot:content>
               <p>
-                As a mission owner, it is your responsibility to obtain the appropriate agreements with your 
-                business associate(s). Business associates must also obtain BAAs from their subcontractors. 
+                As a mission owner, it is your responsibility to obtain 
+                the appropriate agreements with your business associate(s). 
+                Business associates must also obtain BAAs from their subcontractors. 
                 You do not need to provide these agreements in your acquisition package. 
               </p>
               <p class="mb-0">
                 For sample BAA provisions, visit 
                 <a 
-                  href="https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html" 
+                  :href="baaHref" 
                   target="_blank" 
                 >
-                  https://www.hhs.gov/hipaa/for-professionals/covered-entities/sample-business-associate-agreement-provisions/index.html<span 
+                  {{baaHref}}<span 
                   class="_external-link">.</span>
                 </a>
               </p>
@@ -78,16 +79,16 @@
               </p>
               <p>
                 DISA strives to protect the confidentiality, integrity, and availability of e-PHI 
-                by permitting a business associate to create, receive, maintain, or transmit e-PHI 
+                by permitting a business associate to create, receive, maintain, or transmit e-PHI
                 on its behalf, only if there is written agreement between DISA and the business 
                 associate that provides assurance that the business associate will appropriately 
-                safeguard such e-PHI. Business associate must also obtain same business associate 
+                safeguard such e-PHI. Business associate must also obtain same business associate
                 agreements from its subcontractors. 
               </p>
               <p>
                 For more information, reference
                 <a 
-                  href="https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-160/subpart-A/section-160.103"
+                  :href="moreInfoHref"
                   class="_text-link _external-link"
                   target="_blank"
                 >
@@ -106,7 +107,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+/* eslint-disable camelcase */
 import {Component, Mixins} from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -131,6 +132,13 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class BAA extends Mixins(SaveOnLeave) {
+  private baaHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/
+  sample-business-associate-agreement-provisions/index.html`;
+
+  private moreInfoHref= `https://www.ecfr.gov/current/title-45/
+  subtitle-A/subchapter-C/part-160/subpart-A/section-160.103`;
+
+
   private selectedBAAOption = "";
   private bAAOptions: RadioButton[] = [
     {

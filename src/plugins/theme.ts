@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export default {
   primary_lighter: "#d9e8f6",
   primary_light: "73b3e7",

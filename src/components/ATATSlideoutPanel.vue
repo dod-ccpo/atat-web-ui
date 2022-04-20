@@ -91,8 +91,8 @@ export default class ATATSlideoutPanel extends Vue {
   }
 
   /* A watcher used to set focus on the opener when the slideout panel is toggled.
-   * When panel is closed, return focus to opener. If opener is no longer in the DOM, focus on first h1.
-   * When panel is opened, set focus to panel title.
+   * When panel is closed, return focus to opener. If opener is no longer in the DOM,
+   * focus on first h1. When panel is opened, set focus to panel title.
    */
   @Watch("isSlideoutPanelOpen")
   slideoutPanelToggle(isOpen: boolean): void {

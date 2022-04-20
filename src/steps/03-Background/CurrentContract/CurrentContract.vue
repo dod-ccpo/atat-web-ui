@@ -1,4 +1,3 @@
-
 <template>
     <v-container fluid class="container-max-width">
       <v-row>
@@ -26,6 +25,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
@@ -70,7 +70,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   };
 
   public async mounted(): Promise<void> {
-      await this.loadOnEnter();
+    await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {

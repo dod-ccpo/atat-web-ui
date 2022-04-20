@@ -170,10 +170,10 @@ export default class ATATAddressForm extends Vue {
   // methods
 
   private addressTypeChange(addressType: string): void {
-      this._selectedCountry =
+    this._selectedCountry =
         addressType === this.addressTypes?.FOR 
-        ? { text: "", value: "" }
-        : { text: "United States of America", value: "US" };
+          ? { text: "", value: "" }
+          : { text: "United States of America", value: "US" };
   }
 
   // computed

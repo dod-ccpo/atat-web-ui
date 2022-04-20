@@ -107,6 +107,7 @@
 
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import ATATAutoComplete from "../components/ATATAutoComplete.vue";
 import ATATTextField from "../components/ATATTextField.vue";
 import ATATSelect from "../components/ATATSelect.vue";
@@ -176,7 +177,9 @@ export default class StepTwo extends Vue {
       id: "Checkbox",
       label: "Cool Stuff",
       value: "Checkbox",
-      description: "We have checkboxes... with text!!!      fhjdkwlhsfuihuipwerhfnjklhewufklhewuifhndjklnsungjkl;nfjik;dsnfjk;nsdfjds;nfjdsnfj",
+      description: `We have checkboxes... with 
+      text!!!fhjdkwlhsfuihuipwerhfnjklhewufklhewuifhndjklnsungjkl
+      ;nfjik;dsnfjk;nsdfjds;nfjdsnfj`,
     }
   ];
   private selectedContact = {};
