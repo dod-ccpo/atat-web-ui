@@ -12,6 +12,7 @@
               label="System name"
               class="_input-max-width"
               :value.sync="systemName"
+              :rules="[$validators.required('Please enter the name of your system of records.')]"
             />
           </div>
           <div class="d-flex align-start flex-column mt-10 textarea-max-width">
@@ -21,6 +22,10 @@
               class="width-100"
               :rows="7"
               :value.sync="operationToBePerformed"
+              :rules="[
+                $validators.required('Please enter a description for the operation of work to be performed.'),
+                ]"
+              maxChars="400"
             />
           </div>
         </v-col>
@@ -30,14 +35,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component, Mixins} from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import {SensitiveInformationDTO} from "@/api/models";
+import { SensitiveInformationDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import {hasChanges} from "@/helpers";
+import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
@@ -53,8 +57,8 @@ export default class PIIRecord extends Mixins(SaveOnLeave) {
 
   private get currentData(): SensitiveInformationDTO {
     return {
-      system_of_record_name: this.systemName ,
-      work_to_be_performed: this.operationToBePerformed ,
+      system_of_record_name: this.systemName,
+      work_to_be_performed: this.operationToBePerformed,
 
     };
   }
@@ -89,6 +93,7 @@ export default class PIIRecord extends Mixins(SaveOnLeave) {
 
     return true;
   }
+
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }

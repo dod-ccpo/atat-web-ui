@@ -10,7 +10,7 @@
       class="mt-3 mb-8"
       @radioButtonSelected="addressTypeChange"
     />
-    
+
     <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
@@ -18,6 +18,7 @@
           label="Street address"
           :class="inputClass"
           :value.sync="_streetAddress1"
+          :rules="getRules('streetAddress1')"
         />
       </v-col>
       <v-col class="col-12 col-lg-3">
@@ -121,8 +122,8 @@
           icon="arrow_drop_down"
         />
       </v-col>
-    </v-row> 
-  
+    </v-row>
+
   </div>
 </template>
 
@@ -160,20 +161,45 @@ export default class ATATAddressForm extends Vue {
   @PropSync("zipCode") public _zipCode?: string;
   @PropSync("selectedCountry") public _selectedCountry?: SelectData;
 
-  @Prop({ required: true }) public addressTypeOptions?: RadioButton[];
-  @Prop({ required: true }) public addressTypes?: stringObj;
+  @Prop({required: true}) public addressTypeOptions?: RadioButton[];
+  @Prop({required: true}) public addressTypes?: stringObj;
   @Prop() public militaryPostOfficeOptions?: SelectData[];
   @Prop() public stateListData?: SelectData[];
-  @Prop() public stateCodeListData?: SelectData[]; 
+  @Prop() public stateCodeListData?: SelectData[];
   @Prop() public countryListData?: SelectData[];
+  @Prop() public requiredFields?: stringObj[];
+  @Prop() public minLength?: stringObj[];
+
 
   // methods
 
   private addressTypeChange(addressType: string): void {
-      this._selectedCountry =
-        addressType === this.addressTypes?.FOR 
-        ? { text: "", value: "" }
-        : { text: "United States of America", value: "US" };
+    this._selectedCountry =
+      addressType === this.addressTypes?.FOR
+        ? {text: "", value: ""}
+        : {text: "United States of America", value: "US"};
+  }
+
+  private getRules(inputName: string): string[] {
+    let rulesArr = []
+    if (this.requiredFields) {
+      var result = this.requiredFields.filter(obj => {
+        return obj.field === inputName
+      })
+      if(result.length) {
+        rulesArr.push(this.$validators.required(result[0].message))
+      }
+    }
+    if (this.minLength) {
+      var result = this.minLength.filter(obj => {
+        return obj.field === inputName
+      })
+      if(result.length) {
+        rulesArr.push(this.$validators.required(result[0].message))
+      }
+    }
+
+    return rulesArr
   }
 
   // computed
