@@ -1,5 +1,5 @@
 module.exports = {
-   // Let’s gather some details about the duration of your task order 
+  // Let’s gather some details about the duration of your task order 
   popLearnMoreLink: "#PoPLearnMore",
   popText: "p.mb-10",
   popLengthLabelText: "div.mb-4._semibold",
@@ -29,7 +29,8 @@ module.exports = {
   popStartDateYesRadioOption: "#Radio_YesStartDate",
   popStartDateNoRadioOption: "#Radio_NoStartDate",
   requestedStartDate: "p.mb-2",
-  requestedStartDropdownIcon: "#RequestDateOption_dropdown_field_control .v-input__control .v-input__append-inner",
+  requestedStartDropdownIcon: "#RequestDateOption_dropdown_field_control" +
+      " .v-input__control .v-input__append-inner",
   requestedStartDropdownList:"#RequestDateOption_dropdown_field_control .v-list",
   requestedStartDateNosoonerthan: "#RequestDateOption_DropdownListItem_Nosoonerthan",
   requestedStartDateNotlaterthan: "#RequestDateOption_DropdownListItem_Notlaterthan",
@@ -43,4 +44,4 @@ module.exports = {
   noRadioOption: "#Radio_NoRecurring",
   activeRadioOption:"#RecurringOptions_radio_group_control .v-item--active",
   popRadioGroup:"#PoPStartDate_radio_group_control"
-  }
+}

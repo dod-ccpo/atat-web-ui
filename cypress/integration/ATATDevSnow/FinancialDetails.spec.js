@@ -4,55 +4,59 @@ import financialDetails from "../../selectors/financialDetails.sel";
 
 describe("Test suite: Financial Details", () => {
 
-    let projectDetails;
-    beforeEach(() => {
-        bootstrapMockApis();
-        cy.fixture("projectOverview").then((details) => {
-            projectDetails = details;
-        });
-        cy.launchATAT();
-        
+  let projectDetails;
+  beforeEach(() => {
+    bootstrapMockApis();
+    cy.fixture("projectOverview").then((details) => {
+      projectDetails = details;
     });
-    it("TC1: Financial Details step is active on the Vertical Stepper", () => {
-        cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
-        //Verify the Substeps are  visible
-        cy.textExists(common.subStepRequirementsCostEstimateText, " Requirements Cost Estimate ");        
-        cy.findElement(common.stepFinancialDetailsCircle)
-            .should("be.visible")
-            .and("have.css", "color", colors.primary)
-            .click();
+    cy.launchATAT();
+        
+  });
+  it("TC1: Financial Details step is active on the Vertical Stepper", () => {
+    cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
+    //Verify the Substeps are  visible
+    cy.textExists(common.subStepRequirementsCostEstimateText,
+      " Requirements Cost Estimate ");        
+    cy.findElement(common.stepFinancialDetailsCircle)
+      .should("be.visible")
+      .and("have.css", "color", colors.primary)
+      .click();
         
         
         
-    });
+  });
 
-    it("TC2: Surge Capabilities-Asserts and Validations Tell us more about the scope of your project", () => {
+  it("TC2: Surge Capabilities-Asserts and Validations Tell us more about the scope of your project",
+    () => {
 
-        cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
-        // Navigates to "Tell us more about the scope of your project"
-        cy.textExists(common.header, "Tell us more about the scope of your project");
+      cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
+      // Navigates to "Tell us more about the scope of your project"
+      cy.textExists(common.header, "Tell us more about the scope of your project");
         
-        //Label of the view
-        cy.textExists(financialDetails.surgeCapabilitiesTxt, "Surge Capabilities");
+      //Label of the view
+      cy.textExists(financialDetails.surgeCapabilitiesTxt, "Surge Capabilities");
         
-        // ContractPricePercentage text
-        cy.textExists(financialDetails.contractPriceTxt, " If surge capabilities are required, what percentage of the contractor’s total proposed price will not be exceeded? ");
+      // ContractPricePercentage text
+      cy.textExists(financialDetails.contractPriceTxt,
+        " If surge capabilities are required, what percentage of the" +
+        " contractor’s total proposed price will not be exceeded? ");
         
-        //Enter the aplha numeric value to validate the error message 
-        cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);
+      //Enter the aplha numeric value to validate the error message 
+      cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);
         
-        //Enter the value more than 50  to validate the error message
-        cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);
+      //Enter the value more than 50  to validate the error message
+      cy.fillSurgeCapabilities(projectDetails.invalidTextContractPercentage);
         
-        //Enter the value more than 50  to validate the error message
-        cy.fillSurgeCapabilities(projectDetails.invalidLessNumericContractPercentage);
+      //Enter the value more than 50  to validate the error message
+      cy.fillSurgeCapabilities(projectDetails.invalidLessNumericContractPercentage);
 
-        //buttons that exists on the view
-        cy.btnExists(common.continueBtn, " Continue ");
-        cy.btnExists(common.backBtn, "Back");
+      //buttons that exists on the view
+      cy.btnExists(common.continueBtn, " Continue ");
+      cy.btnExists(common.backBtn, "Back");
         
-        //Enter the Valid Percentage
-        cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
+      //Enter the Valid Percentage
+      cy.fillSurgeCapabilities(projectDetails.validContractPercentage, "continue");
     });
 
 
