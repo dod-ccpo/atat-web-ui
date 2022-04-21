@@ -183,28 +183,12 @@ export class ValidationPlugin {
  isPhoneNumberValid = (
    country: CountryObj
  ): ((v: string) => string | true | undefined) => {
-   // validate date isn't something like 12/DD/YYYY
    return (v: string) => {
      if (v!==""){ 
-       const plainPN = v.split("-").join(""); 
-       const plainPNLength = plainPN.length;
-       if (country.abbreviation === "us"){
-         return plainPNLength === 10 || "Phone number must be 10 digits including the area code.";
-       } else if (country.abbreviation === "dsn"){
-         return (
-           (plainPNLength === 7 || plainPNLength === 10) || 
-              "DSN number must be 7 digits for CONUS or 10 digits for OCONUS " + 
-              "including the geographical code"
-         );
-       } else {
-         const isLengthValid = (plainPNLength >=7 && plainPNLength <= 20);
-         const isSpecialCharsValid = isNaN(parseInt(v)) ? /^[0-9\s+.()-]*$/.test(plainPN) : true;
-         return (
-           (isLengthValid && isSpecialCharsValid) || 
-              "Phone number must be between 7 and 20 digits. It may contain left and right " +
-              "parentheses, hyphen, period, plus, and spaces."
-         );
-       }
+       const plainPN = v.replace(/() -\^/gi,''); 
+       const plainMask = country?.mask?.replace(/() -\^/gi,'') || ""; 
+       return plainPN.length === plainMask.length || 
+        `Please enter a number using the format for  ${country.name} (e.g., ${country.mask})`;
      }
      return true;
    }

@@ -110,12 +110,11 @@
           :country.sync="selectedPhoneCountry"
           :rules="[
             $validators.isPhoneNumberValid(
-              this.selectedPhoneCountry, 
-              'Please use standard domain format, like ‘@mail.mil’'
-            ),
-            $validators.required('Please enter your phone number.'),
+              this.selectedPhoneCountry),
           ]"
         />
+        <!-- todo reinstate this -->
+         <!-- $validators.required('Please enter your phone number.'), -->
         <ATATAutoComplete
           v-show="selectedRole === 'CIVILIAN'"
           id="ContactGrade"
@@ -208,10 +207,11 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private email = "";
   private selectedPhoneNumber = "";
   private selectedPhoneCountry: CountryObj = {
-    name: "United States",
-    countryCode: "+1",
-    abbreviation: "us",
-    active: true
+    "name": "United States",
+    "countryCode": "+1",
+    "abbreviation": "us",
+    "active": true,
+    "mask": "999-999-9999"
   };
 
   public selectedServiceOrAgency: SelectData =

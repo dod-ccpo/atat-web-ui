@@ -76,7 +76,7 @@
         :value.sync="_value"
         :placeholder="placeHolder"
         @input="phoneMask"
-        validate-on-blur
+        @blur="validate"
         class="_phone-number-input"
         :hide-details="true"
         :suffix="suffix"
@@ -131,6 +131,7 @@ export default class ATATPhoneInput extends Vue {
       "countryCode": "+1",
       "abbreviation": "us",
       "active": true,
+      "mask": "999-999-9999"
     },
     type: Object as () => CountryObj
   }
@@ -176,8 +177,7 @@ export default class ATATPhoneInput extends Vue {
   }
 
   //@Events
-  private onBlur(e: FocusEvent) : void{
-    debugger;
+  private validate(e: FocusEvent) : void{
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value);
@@ -205,31 +205,19 @@ export default class ATATPhoneInput extends Vue {
 
 
   // mask
-  private phoneMask(val: string): Inputmask.Instance {
-    this._value = val;
+  private phoneMask(): Inputmask.Instance {
+    
     const phoneTextField = document.getElementById(
       this.id + "_textField"
     ) as HTMLElement;
-    switch (this._selectedCountry.abbreviation) {
-    case "us":
-      return Inputmask("999-999-9999", {
-        placeholder: "",
-        jitMasking: true,
-      }).mask(phoneTextField);
-    case "dsn":
-      this._value = this._selectedCountry.countryCode + val;
-      return Inputmask("999-999-9999", {
-        placeholder: "",
-        jitMasking: true,
-      }).mask(phoneTextField);
-    default:
-      return Inputmask("[0-9\\s+.()-]*{20}", { placeholder: "", jitMasking: true }).mask(
-        phoneTextField
-      );
-        //*{6,20}
-    }
-  }
+    
+    return Inputmask(this._selectedCountry?.mask || "",{
+      placeholder: "", 
+      jitMasking: true 
+    }).mask(phoneTextField);
 
+  }
+  
   private mounted(): void {
     this.searchResults = [...this.countries];
   }
@@ -243,6 +231,7 @@ export default class ATATPhoneInput extends Vue {
       abbreviation: "us",
       active: false,
       suggested: true,
+      mask: "999-999-9999"
     },
     {
       name: "Defense Switched Network",
@@ -252,73 +241,84 @@ export default class ATATPhoneInput extends Vue {
       suggested: true,
     },
     {
-      name: "Albania",
+      name: "Albania -- missing",
       countryCode: "+355",
       abbreviation: "al",
       active: false,
+      mask: "(999)999-999"
     },
     {
       name: "Belgium",
       countryCode: "+32",
       abbreviation: "be",
       active: false,
+      mask: "99 999 99 99",
     },
     {
       name: "Bulgaria",
       countryCode: "+359",
       abbreviation: "bg",
       active: false,
+      mask: "99 999 9999",
     },
     {
       name: "Canada",
       countryCode: "+1",
       abbreviation: "ca",
       active: false,
+      mask: "(999) 999-9999",
     },
     {
       name: "Croatia",
       countryCode: "+385",
       abbreviation: "hr",
       active: false,
+      mask:"99 9999 999",
     },
     {
       name: "Czech Republic",
       countryCode: "+420",
       abbreviation: "cz",
       active: false,
+      mask:"999 999 999",
     },
     {
       name: "Denmark",
       countryCode: "+45",
       abbreviation: "dk",
       active: false,
+      mask:"99 99 99 99",
     },
     {
       name: "Estonia",
       countryCode: "+372",
       abbreviation: "ee",
       active: false,
+      mask:"999 9999",
     },
     {
       name: "France",
       countryCode: "+33",
       abbreviation: "fr",
       active: false,
+      mask:"99 99 99 99 99"
     },
     {
       name: "Germany",
       countryCode: "+49",
       abbreviation: "de",
       active: false,
+      mask:"999 99999999",
     },
     {
       name: "Greece",
       countryCode: "+30",
       abbreviation: "gr",
       active: false,
+      mask: "99 9999 9999",
     },
     {
-      name: "Greenland",
+      name: "Greenland -- missing",
       countryCode: "+299",
       abbreviation: "gl",
       active: false,
@@ -328,9 +328,10 @@ export default class ATATPhoneInput extends Vue {
       countryCode: "+36",
       abbreviation: "hu",
       active: false,
+      mask: "(9) 999 9999"
     },
     {
-      name: "Iceland",
+      name: "Iceland -- missing",
       countryCode: "+354",
       abbreviation: "is",
       active: false,
@@ -340,27 +341,31 @@ export default class ATATPhoneInput extends Vue {
       countryCode: "+39",
       abbreviation: "it",
       active: false,
+      mask: "99 9999 9999"
     },
     {
       name: "Latvia",
       countryCode: "+371",
       abbreviation: "lv",
       active: false,
+      mask: "99 999 999",
     },
     {
       name: "Lithuania",
       countryCode: "+370",
       abbreviation: "lt",
       active: false,
+      mask:"(9-9) 999 9999"
     },
     {
       name: "Luxembourg",
       countryCode: "+352",
       abbreviation: "lu",
       active: false,
+      mask: "99 99 99 99"
     },
     {
-      name: "Montenegro",
+      name: "Montenegro -- missing",
       countryCode: "+382",
       abbreviation: "me",
       active: false,
@@ -370,51 +375,59 @@ export default class ATATPhoneInput extends Vue {
       countryCode: "+31",
       abbreviation: "nl",
       active: false,
+      mask: "999 999 9999",
     },
     {
       name: "Norway",
       countryCode: "+47",
       abbreviation: "no",
       active: false,
+      mask: "99 99 99 99",
     },
     {
       name: "Poland",
       countryCode: "+48",
       abbreviation: "pl",
       active: false,
+      mask: "99 999 99 99",
     },
     {
       name: "Portugal",
       countryCode: "+351",
       abbreviation: "pt",
       active: false,
+      mask: "999 999 999",
     },
     {
       name: "Romania",
       countryCode: "+40",
       abbreviation: "ro",
       active: false,
+      mask: "999 999 9999",
     },
     {
       name: "Slovakia",
       countryCode: "+421",
       abbreviation: "sk",
       active: false,
+      mask: "99/999 999 99",
     },
     {
       name: "Slovenia",
       countryCode: "+386",
       abbreviation: "si",
       active: false,
+      mask: "(99) 999 99 99"
     },
     {
       name: "Spain",
       countryCode: "+34",
       abbreviation: "es",
       active: false,
+      mask: "999 99 99 99"
     },
     {
-      name: "Turkey",
+      name: "Turkey -- missing",
       countryCode: "+90",
       abbreviation: "tr",
       active: false,
@@ -424,6 +437,7 @@ export default class ATATPhoneInput extends Vue {
       countryCode: "+44",
       abbreviation: "gb",
       active: false,
+      mask: "999 9999 9999"
     },
   ];
 }
