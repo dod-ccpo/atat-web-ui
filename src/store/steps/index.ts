@@ -4,78 +4,78 @@ import { Mutations, RouteDirection, StepInfo, StepRouteResolver, StepsState } fr
 import { mapStepConfigs } from "./helpers";
 import { stepperRoutes } from "@/router/stepper";
 import { StepperRouteConfig } from "types/Global";
-import VueRouter from "vue-router";
 
 @Module({ name: 'Steps', namespaced: true, dynamic: true, store: rootStore })
 export class StepsStore extends VuexModule implements StepsState {
 
     currentStep: StepInfo | undefined = {
-        stepName: '',
-        stepNumber: '',
-        stepLabel: '',
-        prev: undefined,
-        next: undefined,
-        resolver: undefined,
-        additionalButtons: [],
-        backButtonText: '',
+      stepName: '',
+      stepNumber: '',
+      stepLabel: '',
+      prev: undefined,
+      next: undefined,
+      resolver: undefined,
+      additionalButtons: [],
+      backButtonText: '',
     };
     
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
     @Mutation
     [Mutations.SET_CURRENT_STEP](stepName: string): void {
-        const step = this.stepMap.get(stepName);
-        if (step) {
-            this.currentStep = step;
-        }
+      const step = this.stepMap.get(stepName);
+      if (step) {
+        this.currentStep = step;
+      }
     }
 
     @Mutation
     public setSteps(stepperRoutes: StepperRouteConfig[]): void {
-        this.stepMap = mapStepConfigs(stepperRoutes);
+      this.stepMap = mapStepConfigs(stepperRoutes);
     }
 
     @Action({ rawError: true })
     public setCurrentStep(stepName: string): void {
-        this.context.commit(Mutations.SET_CURRENT_STEP, stepName);
+      this.context.commit(Mutations.SET_CURRENT_STEP, stepName);
     }
 
     @Action({ rawError: true })
     public findRoute(name: string): StepInfo | undefined {
-        return this.stepMap.get(name);
+      return this.stepMap.get(name);
     }
 
     @Action({ rawError: true })
-    public async resolveRoute(direction: RouteDirection): Promise<string | StepRouteResolver | undefined> {
+    public async resolveRoute(direction: RouteDirection): Promise<string 
+    | StepRouteResolver | undefined> {
 
-        const nextStepName = direction === RouteDirection.NEXT 
-            ? (this.currentStep?.next || '') 
-            : (this.currentStep?.prev || '');
+      const nextStepName = direction === RouteDirection.NEXT 
+        ? (this.currentStep?.next || '') 
+        : (this.currentStep?.prev || '');
 
-        const currentStepName = this.currentStep?.stepName;
+      const currentStepName = this.currentStep?.stepName;
 
-        if (currentStepName === undefined || nextStepName.length === 0)
-            return undefined;
+      if (currentStepName === undefined || nextStepName.length === 0)
+        return undefined;
 
-        const nextStep = await this.findRoute(nextStepName) || undefined;
+      const nextStep = await this.findRoute(nextStepName) || undefined;
 
-        const stepResolver = nextStep?.resolver;
+      const stepResolver = nextStep?.resolver;
 
-        if (stepResolver) {
-            return stepResolver;
-        }
+      if (stepResolver) {
+        return stepResolver;
+      }
 
-        return nextStep?.stepName;
+      return nextStep?.stepName;
     }
 
     @Action({ rawError: true })
     public async getNext(): Promise<string | StepRouteResolver | undefined> {
-        return this.resolveRoute(RouteDirection.NEXT);
+      return this.resolveRoute(RouteDirection.NEXT);
     }
 
     @Action({ rawError: true })
     public async getPrevious(): Promise<string | StepRouteResolver | undefined> {
-        return this.resolveRoute(RouteDirection.PREVIOUS)
+      return this.resolveRoute(RouteDirection.PREVIOUS)
     }
 }
 

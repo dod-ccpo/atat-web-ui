@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";

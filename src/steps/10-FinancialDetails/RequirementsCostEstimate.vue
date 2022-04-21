@@ -50,6 +50,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { RequirementsCostEstimateDTO } from "@/api/models";

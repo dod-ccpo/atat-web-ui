@@ -1,10 +1,5 @@
-import {
-  Action,
-  getModule,
-  Module,
-  Mutation,
-  VuexModule,
-} from "vuex-module-decorators";
+/* eslint-disable camelcase */
+import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
 
@@ -176,8 +171,8 @@ export class AcquisitionPackageStore extends VuexModule {
       saveData.type === "Mission Owner"
         ? "contactInfo"
         : isCor
-        ? "corInfo"
-        : "acorInfo";
+          ? "corInfo"
+          : "acorInfo";
 
     this[dataKey] = saveData.data;
   }
@@ -1807,9 +1802,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const savedProjectOverview =
         projectSysId.length > 0
           ? await api.projectOverviewTable.update(projectSysId, {
-              ...data,
-              sys_id: projectSysId,
-            })
+            ...data,
+            sys_id: projectSysId,
+          })
           : await api.projectOverviewTable.create(data);
       this.setProjectOverview(savedProjectOverview);
       this.setAcquisitionPackage({
@@ -1873,8 +1868,8 @@ export class AcquisitionPackageStore extends VuexModule {
         contactType === "Mission Owner"
           ? "contactInfo"
           : isCor
-          ? "corInfo"
-          : "acorInfo";
+            ? "corInfo"
+            : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
 
@@ -1906,8 +1901,8 @@ export class AcquisitionPackageStore extends VuexModule {
         saveData.type === "Mission Owner"
           ? "contactInfo"
           : isCor
-          ? "corInfo"
-          : "acorInfo";
+            ? "corInfo"
+            : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
       const savedContact =
@@ -2046,9 +2041,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const savedSensitiveInformation =
         sys_id.length > 0
           ? await api.sensitiveInformationTable.update(sys_id, {
-              ...data,
-              sys_id,
-            })
+            ...data,
+            sys_id,
+          })
           : await api.sensitiveInformationTable.create(data);
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
@@ -2095,9 +2090,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const savedPeriodOfPerformance =
         sys_id.length > 0
           ? await api.periodOfPerformanceTable.update(sys_id, {
-              ...data,
-              sys_id,
-            })
+            ...data,
+            sys_id,
+          })
           : await api.periodOfPerformanceTable.create(data);
       this.setPeriodOfPerformance(savedPeriodOfPerformance);
       this.setAcquisitionPackage({
@@ -2210,9 +2205,9 @@ export class AcquisitionPackageStore extends VuexModule {
       const savedData =
         sys_id.length > 0
           ? await api.requirementsCostEstimateTable.update(sys_id, {
-              ...data,
-              sys_id,
-            })
+            ...data,
+            sys_id,
+          })
           : await api.requirementsCostEstimateTable.create(data);
       this.setRequirementsCostEstimate(savedData);
       this.setAcquisitionPackage({

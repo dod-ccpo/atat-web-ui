@@ -7,13 +7,13 @@ import { getModule } from 'vuex-module-decorators';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const testRouteResolver = (current: string): string => {
-    return "CHILD_STEP_FOUR";
+  return "CHILD_STEP_FOUR";
     
 }
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
- const stepperRoutes= [
+const stepperRoutes= [
   {
     path: "/",
     stepNumber: "01",
@@ -66,7 +66,8 @@ describe('Steps Store', ()=> {
 
   beforeEach(()=> {
 
-    const createStore = (storeOptions: any = {}): Store<{ steps: StepsState}> => new Vuex.Store({ ...storeOptions });
+    const createStore = (storeOptions: any = {}): 
+    Store<{ steps: StepsState}> => new Vuex.Store({ ...storeOptions });
     stepsStore = getModule(StepsStore, createStore());
     stepsStore.setSteps(stepperRoutes);
   });
@@ -95,7 +96,6 @@ describe('Steps Store', ()=> {
   test('step return resolver', async ()=> {
 
     const startingStep = "CHILD_STEP_TWO";
-    const nextStep = "CHILD_STEP_FOUR";
 
     stepsStore.setCurrentStep(startingStep);
     expect(stepsStore.currentStep).toBeDefined();

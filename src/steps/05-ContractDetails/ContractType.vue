@@ -55,6 +55,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -122,9 +123,9 @@ export default class ContractType extends Mixins(SaveOnLeave) {
   }
 
   private savedData: ContractTypeDTO = { 
-      firm_fixed_price: "",
-      time_and_materials: "",
-      contract_type_justification: "",
+    firm_fixed_price: "",
+    time_and_materials: "",
+    contract_type_justification: "",
   };
 
   public async mounted(): Promise<void> {

@@ -50,8 +50,8 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import {Component, Mixins} from "vue-property-decorator";
-import Vue from "vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 
@@ -100,7 +100,8 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
 
   private get savedData(): FairOpportunityDTO {
     return {
-      exception_to_fair_opportunity: AcquisitionPackage.fairOpportunity?.exception_to_fair_opportunity || "",
+      exception_to_fair_opportunity: AcquisitionPackage
+        .fairOpportunity?.exception_to_fair_opportunity || "",
     };
   }
 

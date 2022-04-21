@@ -35,13 +35,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+/* eslint-disable camelcase */
+import {Component, Mixins} from "vue-property-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import { SensitiveInformationDTO } from "@/api/models";
+import {SensitiveInformationDTO} from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { hasChanges } from "@/helpers";
+import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({

@@ -122,8 +122,8 @@
           icon="arrow_drop_down"
         />
       </v-col>
-    </v-row>
-
+    </v-row> 
+  
   </div>
 </template>
 
@@ -175,9 +175,9 @@ export default class ATATAddressForm extends Vue {
 
   private addressTypeChange(addressType: string): void {
     this._selectedCountry =
-      addressType === this.addressTypes?.FOR
-        ? {text: "", value: ""}
-        : {text: "United States of America", value: "US"};
+        addressType === this.addressTypes?.FOR
+          ? { text: "", value: "" }
+          : { text: "United States of America", value: "US" };
   }
 
   private getRules(inputName: string): string[] {
