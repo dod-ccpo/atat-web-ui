@@ -8,7 +8,7 @@ module.exports = {
   baseLabelText: "#BaseRow .d-flex",
   baseInputTxtBox: "#BaseDuration_text_field",
   baseDropdownIcon: "#BaseDropdown_dropdown_field_control .v-input__control .v-input__append-inner",
-  baseDropdownList: "#Base_dropdown_field_control .v-list",
+  baseDropdownList: "#BaseDropdown_dropdown_field_control  .v-list",
   baseDropdownYear: "#Base_DropdownListItem_Year",
   baseDropdownMonth: "#BaseDropdown_DropdownListItem_Months",
   baseDropdownWeek: "#Base_DropdownListItem_Weeks",

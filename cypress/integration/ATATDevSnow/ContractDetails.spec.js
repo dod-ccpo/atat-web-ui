@@ -46,6 +46,23 @@ describe("Test suite: Contract Details Step", () => {
     cy.textExists(contractDetails.baseLabelText, " Base ");
     cy.findElement(contractDetails.baseInputTxtBox).should("exist");
     cy.findElement(contractDetails.baseDropdownIcon).click();
+    const expectedOptions = [
+      "Year",
+      "Month(s)",
+      "Week(s)",
+      "Day(s)",      
+    ];
+    let foundDropdownItems = 0
+    //Verifying the dropdown list
+    cy.findElement(contractDetails.baseDropdownList)
+      .children().each(($el) => {
+        const text = $el.text();
+        if (expectedOptions.indexOf(text) > -1) {
+          foundDropdownItems++
+        }
+        return foundDropdownItems === expectedOptions.length;
+      });
+    
     cy.findElement(contractDetails.baseDropdownMonth).click();
     //Enter the Value for Base
     cy.findElement(contractDetails.baseInputTxtBox).type("12");
