@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Which contract type applies to this acquisition?
+            Which contract type(s) apply to this acquisition?
           </h1>
           <div class="copy-max-width">
             <p class="mb-10" id="IntroP">
