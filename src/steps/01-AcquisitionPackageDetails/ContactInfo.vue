@@ -109,7 +109,10 @@
           :value.sync="selectedPhoneNumber"
           :country.sync="selectedPhoneCountry"
           :rules="[
-            $validators.isPhoneNumberValid(this.selectedPhoneCountry, 'Please use standard domain format, like ‘@mail.mil’'),
+            $validators.isPhoneNumberValid(
+              this.selectedPhoneCountry, 
+              'Please use standard domain format, like ‘@mail.mil’'
+            ),
             $validators.required('Please enter your phone number.'),
           ]"
         />

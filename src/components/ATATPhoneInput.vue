@@ -211,21 +211,21 @@ export default class ATATPhoneInput extends Vue {
       this.id + "_textField"
     ) as HTMLElement;
     switch (this._selectedCountry.abbreviation) {
-      case "us":
-        return Inputmask("999-999-9999", {
-          placeholder: "",
-          jitMasking: true,
-        }).mask(phoneTextField);
-      case "dsn":
-        this._value = this._selectedCountry.countryCode + val;
-        return Inputmask("999-999-9999", {
-          placeholder: "",
-          jitMasking: true,
-        }).mask(phoneTextField);
-      default:
-        return Inputmask("[0-9\\s+.()-]*{20}", { placeholder: "", jitMasking: true }).mask(
-          phoneTextField
-        );
+    case "us":
+      return Inputmask("999-999-9999", {
+        placeholder: "",
+        jitMasking: true,
+      }).mask(phoneTextField);
+    case "dsn":
+      this._value = this._selectedCountry.countryCode + val;
+      return Inputmask("999-999-9999", {
+        placeholder: "",
+        jitMasking: true,
+      }).mask(phoneTextField);
+    default:
+      return Inputmask("[0-9\\s+.()-]*{20}", { placeholder: "", jitMasking: true }).mask(
+        phoneTextField
+      );
         //*{6,20}
     }
   }

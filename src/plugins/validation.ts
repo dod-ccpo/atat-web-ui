@@ -193,15 +193,16 @@ export class ValidationPlugin {
        } else if (country.abbreviation === "dsn"){
          return (
            (plainPNLength === 7 || plainPNLength === 10) || 
-              "DSN number must be 7 digits for CONUS or 10 digits for OCONUS including the geographical code"
+              "DSN number must be 7 digits for CONUS or 10 digits for OCONUS " + 
+              "including the geographical code"
          );
        } else {
          const isLengthValid = (plainPNLength >=7 && plainPNLength <= 20);
          const isSpecialCharsValid = isNaN(parseInt(v)) ? /^[0-9\s+.()-]*$/.test(plainPN) : true;
          return (
            (isLengthValid && isSpecialCharsValid) || 
-              "Phone number must be between 7 and 20 digits. It may contain left and right parentheses, hyphen, " + 
-              "period, plus, and spaces."
+              "Phone number must be between 7 and 20 digits. It may contain left and right " +
+              "parentheses, hyphen, period, plus, and spaces."
          );
        }
      }
