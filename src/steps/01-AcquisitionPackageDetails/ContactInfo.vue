@@ -133,6 +133,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import parsePhoneNumber, {CountryCode} from 'libphonenumber-js'
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";

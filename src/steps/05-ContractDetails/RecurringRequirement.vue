@@ -17,6 +17,7 @@
               :card="true"
               :items="recurringOptions"
               :value.sync="selectedRecurringOption"
+              :rules="[$validators.required('Please select an option')]"
             />
           </div>
 
@@ -27,6 +28,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"

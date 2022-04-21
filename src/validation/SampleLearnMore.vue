@@ -42,13 +42,13 @@
       ball tip. Cupim bresaola swine flank landjaeger ball tip.
     </p>
     <p>
-      Bacon swine filet mignon shankle leberkas cupim fatback spare ribs. Burgdoggen pastrami ham 
-      swine shank pork loin fatback strip steak bresaola. Pork chop tri-tip tenderloin boudin 
+      Bacon swine filet mignon shankle leberkas cupim fatback spare ribs. Burgdoggen pastrami ham
+      swine shank pork loin fatback strip steak bresaola. Pork chop tri-tip tenderloin boudin
       sirloin jowl t-bone shank chislic salami meatball capicola hamburger ball tip short ribs. 
-      Andouille fatback tail sausage, venison pork chop brisket biltong pig strip steak cow shankle. 
-      Landjaeger andouille meatball venison pig. Pork sirloin biltong ham hock flank ham alcatra 
-      jowl fatback short ribs ball tip corned beef brisket leberkas. Spare ribs swine ham flank 
-      t-bone meatball.
+      Andouille fatback tail sausage, venison pork chop brisket biltong pig strip steak cow 
+      shankle. Landjaeger andouille meatball venison pig. Pork sirloin biltong ham hock flank 
+      ham alcatra jowl fatback short ribs ball tip corned beef brisket leberkas. Spare ribs 
+      swine ham flank t-bone meatball.
     </p>
   </div>
 </template>

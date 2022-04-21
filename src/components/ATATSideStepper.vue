@@ -130,8 +130,8 @@ export default class ATATSideStepper extends Vue {
 
   public mounted(): void {
     this.calculatePercentComplete();
-     this.activeStep = this.stepperData && this.stepperData.length > 0 ? 
-     (this.stepperData[0].stepNumber || '') : '';
+    this.activeStep = this.stepperData && this.stepperData.length > 0 ? 
+      (this.stepperData[0].stepNumber || '') : '';
   }
 
   // data

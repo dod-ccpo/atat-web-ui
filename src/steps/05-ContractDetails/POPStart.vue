@@ -17,11 +17,16 @@
               :card="true"
               :items="startPoPDateOptions"
               :value.sync="selectedPoPStartDateOption"
+              :rules="[$validators.required('Please select an option')]"
             />
           </div>
-          <div v-if="selectedPoPStartDateOption === 'YesStartDate'">
-            <hr class="my-9" />
-            <p class="mb-2">Requested start date</p>
+
+          <div v-if="selectedPoPStartDateOption ==='true'">
+            <hr class="my-9"/>
+            <p class="mb-2">
+              Requested start date
+            </p>
+
             <div class="copy-max-width d-flex mb-9">
               <ATATSelect
                 id="RequestDateOption"
@@ -30,16 +35,22 @@
                 :items="requestDateOptions"
                 :selectedValue.sync="selectedRequestDateOption"
                 style="max-width: 196px"
+                :rules="[$validators.required('Please select an option')]"
               />
-              <ATATDatePicker
-                id="RequestDatePicker"
-                :value.sync="requestedPopStartDate"
+              <ATATDatePicker 
+                id="RequestDatePicker" 
+                :value.sync="requestedPopStartDate" 
+                :rules="[
+                  $validators.required('Please enter a valid date'),
+                  $validators.isDateValid('Please enter a valid date')
+                ]"
               />
+
             </div>
             <ATATAlert
               id="RequestDateAlert"
               class="copy-max-width"
-              v-if="selectedRequestDateOption === 'Not later than'"
+              v-if="selectedRequestDateOption === 'NOT_LATER_THAN'"
               type="warning"
             >
               <template slot="content">
@@ -60,6 +71,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
@@ -86,33 +98,29 @@ export default class POPStart extends Mixins(SaveOnLeave) {
     {
       id: "YesStartDate",
       label: "Yes.",
-      value: "YesStartDate",
+      value: "true",
     },
     {
       id: "NoStartDate",
       label: "No. The PoP should start upon execution of the task order.",
-      value: "NoStartDate",
+      value: "false",
     },
   ];
-  private selectedRequestDateOption = "";
+  private selectedRequestDateOption = "NO_SOONER_THAN";
   private requestDateOptions: SelectData[] = [
     {
       text: "No sooner than",
-      value: "No sooner than",
+      value: "NO_SOONER_THAN",
     },
     {
       text: "Not later than",
-      value: "Not later than",
-    },
+      value: "NO_LATER_THAN"
+    }
   ];
   private get currentData(): PeriodOfPerformanceDTO {
     return {
-      time_frame:
-        this.selectedRequestDateOption === "No sooner than"
-          ? "NO_SOONER_THAN"
-          : "NO_LATER_THAN",
-      pop_start_request:
-        this.selectedPoPStartDateOption === "YesStartDate" ? "true" : "false",
+      time_frame: this.selectedRequestDateOption,
+      pop_start_request: this.selectedPoPStartDateOption,
       requested_pop_start_date: this.requestedPopStartDate,
     };
   }
@@ -134,13 +142,9 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadPeriodOfPerformance();
     if (storeData) {
-      this.selectedRequestDateOption =
-        storeData.time_frame === "NO_SOONER_THAN"
-          ? "No sooner than"
-          : "Not later than";
-      this.selectedPoPStartDateOption =
-        storeData.pop_start_request === "true" ? "YesStartDate" : "NoStartDate";
-      this.requestedPopStartDate = storeData.requested_pop_start_date || "";
+      this.selectedRequestDateOption = storeData.time_frame || "";
+      this.selectedPoPStartDateOption = storeData.pop_start_request || "NO_SOONER_THAN";
+      this.requestedPopStartDate = storeData.requested_pop_start_date  || "";
     }
   }
 

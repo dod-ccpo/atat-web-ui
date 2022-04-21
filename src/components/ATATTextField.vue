@@ -86,7 +86,7 @@ export default class ATATTextField extends Vue {
     this._value = v;
   }
 
-   private setErrorMessage(): void {
+  private setErrorMessage(): void {
     this.errorMessages = this.$refs.atatTextField.errorBucket;
   }
 

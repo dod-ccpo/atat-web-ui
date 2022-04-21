@@ -13,6 +13,9 @@
               id="IncumbentContractorName" 
               class="_input-max-width mb-10" 
               :value.sync="incumbentContractorName"
+              :rules="[
+                $validators.required('Please enter the incumbent contractor’s name.')
+              ]"            
             />
 
             <ATATTextField 
@@ -20,6 +23,9 @@
               id="ContractNumber" 
               class="_input-max-width mb-10" 
               :value.sync="contractNumber"
+              :rules="[
+                $validators.required('Please enter your contract number.')
+              ]"            
             />
             
             <ATATTextField 
@@ -29,13 +35,15 @@
               :value.sync="taskDeliveryOrderNumber"
             />
 
+            <!-- max date to be determined -->
             <ATATDatePicker id="Expiration" 
               label="Contract/Order expiration date"
               placeHolder="MM/DD/YYYY"
               :value.sync="contractOrderExpirationDate" 
+              max="2024-01-01"
               :rules="[
-                $validators.required('Please enter a valid date'),
-                $validators.isDateValid('Please enter a valid date')
+                $validators.required('Please enter your contract/order expiration date.'),
+                $validators.isDateValid('Please enter a valid date.')
               ]" />
 
           </div>
@@ -45,6 +53,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
 
 import ATATDatePicker from "@/components/ATATDatePicker.vue";

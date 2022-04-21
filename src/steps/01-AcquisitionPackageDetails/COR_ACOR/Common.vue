@@ -3,7 +3,7 @@
     <div class="max-width-640">
       <ATATAutoComplete
         id="SearchContact"
-        :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
+        :class="haveSelectedContact ? 'mb-2' : 'mb-0'"
         :label-sr-only="true"
         :label="'Search for your ' + corOrAcor"
         titleKey="fullName"
@@ -67,7 +67,8 @@
     >
       <hr />
       <ATATRadioGroup
-        legend="Does this individual need access to help you create this acquisition package in ATAT?"
+        legend="Does this individual need access to help you create 
+        this acquisition package in ATAT?"
         id="AccessToEdit"
         :items="accessToEditOptions"
         :value.sync="selectedAccessToEdit"
@@ -76,6 +77,7 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
@@ -116,7 +118,7 @@ export default class COR_ACOR extends Vue {
   @PropSync("currentContactData") private _currentContactData!: ContactDTO;
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
 
-// computed
+  // computed
   
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
@@ -147,13 +149,13 @@ export default class COR_ACOR extends Vue {
   ];
   
   public selectedContact: CorAcorSelectData = {
-      id: "",
-      firstName: "",
-      lastName: "",
-      fullName: "",
-      email: "",
-      phone: "",
-      orgName: "",
+    id: "",
+    firstName: "",
+    lastName: "",
+    fullName: "",
+    email: "",
+    phone: "",
+    orgName: "",
   };
 
   private contactList: CorAcorSelectData[] = [
@@ -161,7 +163,7 @@ export default class COR_ACOR extends Vue {
       id: "1",
       firstName: "Test0",
       lastName: "Adamson",
-      fullName: "Test Adamson",
+      fullName: "Test0 Adamson",
       email: "test.adamson-civ@mail.mil",
       phone: "333-333-3333",
       orgName: "HQ1234 - Corresponding Organization Name"

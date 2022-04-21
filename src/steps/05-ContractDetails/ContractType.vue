@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Which contract type applies to this acquisition?
+            Which contract type(s) apply to this acquisition?
           </h1>
           <div class="copy-max-width">
             <p class="mb-10" id="IntroP">
@@ -55,6 +55,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -122,9 +123,9 @@ export default class ContractType extends Mixins(SaveOnLeave) {
   }
 
   private savedData: ContractTypeDTO = { 
-      firm_fixed_price: "",
-      time_and_materials: "",
-      contract_type_justification: "",
+    firm_fixed_price: "",
+    time_and_materials: "",
+    contract_type_justification: "",
   };
 
   public async mounted(): Promise<void> {

@@ -136,8 +136,8 @@ export default class ATATPhoneInput extends Vue {
   }
   )
   private _selectedCountry!: CountryObj;
-      //todo remove focus on DropdownTextField
-      //todo show error messages
+  //todo remove focus on DropdownTextField
+  //todo show error messages
 
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -241,7 +241,7 @@ export default class ATATPhoneInput extends Vue {
       name: "United States",
       countryCode: "+1",
       abbreviation: "us",
-      active: true,
+      active: false,
       suggested: true,
     },
     {

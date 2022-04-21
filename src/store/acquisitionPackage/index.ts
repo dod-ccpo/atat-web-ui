@@ -1,17 +1,22 @@
+/* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
 
-import { AcquisitionPackageDTO } from "@/api/models";
+import {
+  AcquisitionPackageDTO,
+  RequirementsCostEstimateDTO,
+} from "@/api/models";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
 import { SessionData } from "./models";
-import { ProjectOverviewDTO } from  "@/api/models";
-import { OrganizationDTO } from  "@/api/models";
-import { ContactDTO } from  "@/api/models";
-import { FairOpportunityDTO } from  "@/api/models";
-import { CurrentContractDTO } from  "@/api/models";
+import { ProjectOverviewDTO } from "@/api/models";
+import { OrganizationDTO } from "@/api/models";
+import { ContactDTO } from "@/api/models";
+import { FairOpportunityDTO } from "@/api/models";
+import { CurrentContractDTO } from "@/api/models";
 import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
+import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -60,8 +65,8 @@ const initialContact = () => {
     email: "",
     title: "",
     manually_entered: "",
-  }
-}
+  };
+};
 
 const initialFairOpportunity = () => {
   return {
@@ -69,18 +74,30 @@ const initialFairOpportunity = () => {
   };
 };
 
+const initialGFE = () => {
+  return {
+    dpas_unit_identification_code: "",
+    gfe_gfp_furnished: "",
+    dpas_custodian_number: "",
+    property_accountable: "",
+    property_custodian_name: "",
+  };
+};
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
-      ATAT_ACQUISTION_PACKAGE_KEY,
-      JSON.stringify({
-        acquisitionPackage: store.acquisitionPackage,
-        projectOverview: store.projectOverview,
-        organization: store.organization,
-        contactInfo: store.contactInfo,
-        corInfo: store.corInfo,
-        acorInfo: store.acorInfo,
-        fairOpportunity: store.fairOpportunity,
-      })
+    ATAT_ACQUISTION_PACKAGE_KEY,
+    JSON.stringify({
+      acquisitionPackage: store.acquisitionPackage,
+      projectOverview: store.projectOverview,
+      organization: store.organization,
+      contactInfo: store.contactInfo,
+      corInfo: store.corInfo,
+      acorInfo: store.acorInfo,
+      fairOpportunity: store.fairOpportunity,
+      requirementsCostEstimate: store.requirementsCostEstimate,
+      gfeOverview: store.GFEOverview,
+    })
   );
 };
 
@@ -111,7 +128,9 @@ export class AcquisitionPackageStore extends VuexModule {
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
+  GFEOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
+  requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
   public initContact: ContactDTO = initialContact();
 
@@ -146,39 +165,42 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setContact(saveData: { data: ContactDTO, type: string }): void {
+  public setContact(saveData: { data: ContactDTO; type: string }): void {
     const isCor = saveData.type === "COR";
-    const dataKey = saveData.type === "Mission Owner"
-      ? "contactInfo"
-      : isCor ? "corInfo" : "acorInfo";
+    const dataKey =
+      saveData.type === "Mission Owner"
+        ? "contactInfo"
+        : isCor
+          ? "corInfo"
+          : "acorInfo";
 
     this[dataKey] = saveData.data;
   }
 
   @Mutation
   public setCurrentContract(value: CurrentContractDTO): void {
-    this.currentContract = this.currentContract 
+    this.currentContract = this.currentContract
       ? Object.assign(this.currentContract, value)
       : value;
   }
 
   @Mutation
   public setSensitiveInformation(value: SensitiveInformationDTO): void {
-    this.sensitiveInformation = this.sensitiveInformation 
+    this.sensitiveInformation = this.sensitiveInformation
       ? Object.assign(this.sensitiveInformation, value)
       : value;
   }
 
   @Mutation
   public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
-    this.periodOfPerformance = this.periodOfPerformance 
+    this.periodOfPerformance = this.periodOfPerformance
       ? Object.assign(this.periodOfPerformance, value)
       : value;
   }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
-    this.contractType = this.contractType 
+    this.contractType = this.contractType
       ? Object.assign(this.contractType, value)
       : value;
   }
@@ -191,6 +213,15 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
+  }
+  @Mutation
+  public setGFEOverview(value: GFEOverviewDTO): void {
+    this.GFEOverview = value;
+  }
+
+  @Mutation
+  public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
+    this.requirementsCostEstimate = value;
   }
 
   @Action
@@ -207,18 +238,20 @@ export class AcquisitionPackageStore extends VuexModule {
     this.corInfo = sessionData.corInfo;
     this.acorInfo = sessionData.acorInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
+    this.GFEOverview = sessionData.GFEOverview;
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   public async initialize(): Promise<void> {
     if (this.initialized) {
       return;
     }
 
     const storedSessionData = sessionStorage.getItem(
-        ATAT_ACQUISTION_PACKAGE_KEY
+      ATAT_ACQUISTION_PACKAGE_KEY
     ) as string;
 
     if (storedSessionData && storedSessionData.length > 0) {
@@ -235,7 +268,9 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setAcquisitionPackage(acquisitionPackage);
-          this.setFairOpportunity(initialFairOpportunity())
+          this.setFairOpportunity(initialFairOpportunity());
+          this.setRequirementsCostEstimate({ surge_capabilities: "" });
+          this.setGFEOverview(initialGFE());
           this.setInitialized(true);
         }
       } catch (error) {
@@ -245,13 +280,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   // service or agency selected on Organiation page
-  selectedServiceOrAgency: SelectData = {text: "", value: ""};
+  selectedServiceOrAgency: SelectData = { text: "", value: "" };
 
   public getSelectedServiceOrAgency(): SelectData {
     return this.selectedServiceOrAgency;
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   public setSelectedServiceOrAgency(value: SelectData): void {
     this.doSetSelectedServiceOrAgency(value);
   }
@@ -262,9 +297,9 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   // military branch selected on Contact Info page
-  public selectedContactBranch: SelectData = {text: "", value: ""};
+  public selectedContactBranch: SelectData = { text: "", value: "" };
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   public setSelectedContactBranch(value: SelectData): void {
     this.doSetSelectedContactBranch(value);
   }
@@ -276,26 +311,26 @@ export class AcquisitionPackageStore extends VuexModule {
 
   // used on Contact Info and COR/ACOR pages
   public branchData: SelectData[] = [
-    {text: "U.S. Air Force", value: "USAF"},
-    {text: "U.S. Army", value: "ARMY"},
-    {text: "U.S. Coast Guard", value: "USCG"},
-    {text: "U.S. Marine Corps", value: "USMC"},
-    {text: "U.S. Navy", value: "NAVY"},
-    {text: "U.S. Space Force", value: "USSF"},
+    { text: "U.S. Air Force", value: "USAF" },
+    { text: "U.S. Army", value: "ARMY" },
+    { text: "U.S. Coast Guard", value: "USCG" },
+    { text: "U.S. Marine Corps", value: "USMC" },
+    { text: "U.S. Navy", value: "NAVY" },
+    { text: "U.S. Space Force", value: "USSF" },
   ];
 
   // used on Contact Info and COR/ACOR pages
   public branchRanksData: AutoCompleteItemGroups = {
     USAF: [
-      {rank: "Airman Basic (AB)", value: "Airman Basic", grade: "E-1"},
-      {rank: "Airman (Amn)", value: "Airman", grade: "E-2"},
+      { rank: "Airman Basic (AB)", value: "Airman Basic", grade: "E-1" },
+      { rank: "Airman (Amn)", value: "Airman", grade: "E-2" },
       {
         rank: "Airman First Class (A1C)",
         value: "Airman First Class",
         grade: "E-3",
       },
-      {rank: "Senior Airman (SrA)", value: "Senior Airman", grade: "E-4"},
-      {rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-5"},
+      { rank: "Senior Airman (SrA)", value: "Senior Airman", grade: "E-4" },
+      { rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-5" },
       {
         rank: "Technical Sergeant (TSgt)",
         value: "Technical Sergeant",
@@ -321,7 +356,7 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "Command Chief Master Sergeant",
         grade: "E-9",
       },
-      {rank: "First Sergeant", value: "First Sergeant", grade: "E-9"},
+      { rank: "First Sergeant", value: "First Sergeant", grade: "E-9" },
       {
         rank: "Second Lieutenant (2d Lt)",
         value: "Second Lieutenant",
@@ -332,47 +367,47 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "First Lieutenant",
         grade: "O-2",
       },
-      {rank: "Captain (Capt)", value: "Captain", grade: "O-3"},
-      {rank: "Major (Maj)", value: "Major", grade: "O-4"},
+      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
+      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
       {
         rank: "Lieutenant Colonel (Lt Co)",
         value: "Lieutenant Colonel",
         grade: "O-5",
       },
-      {rank: "Colonel (Col)", value: "Colonel", grade: "O-6"},
+      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
       {
         rank: "Brigadier General (Brig Gen)",
         value: "Brigadier General",
         grade: "O-7",
       },
-      {rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8"},
+      { rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8" },
       {
         rank: "Lieutenant General (Lt Gen)",
         value: "Lieutenant General",
         grade: "O-9",
       },
-      {rank: "General (Gen)", value: "General", grade: "O-10"},
+      { rank: "General (Gen)", value: "General", grade: "O-10" },
     ],
     ARMY: [
-      {rank: "Private (PVT)", value: "Private", grade: "E-1"},
-      {rank: "Private (PV2)", value: "Private", grade: "E-2"},
+      { rank: "Private (PVT)", value: "Private", grade: "E-1" },
+      { rank: "Private (PV2)", value: "Private", grade: "E-2" },
       {
         rank: "Private First Class (PFC)",
         value: "Private First Class",
         grade: "E-3",
       },
-      {rank: "Corporal (CPL)", value: "Corporal", grade: "E-4"},
-      {rank: "Specialist (SPC)", value: "Specialist", grade: "E-4"},
-      {rank: "Sergeant (SGT)", value: "Sergeant", grade: "E-5"},
-      {rank: "Staff Sergeant (SSG)", value: "Staff Sergeant", grade: "E-6"},
+      { rank: "Corporal (CPL)", value: "Corporal", grade: "E-4" },
+      { rank: "Specialist (SPC)", value: "Specialist", grade: "E-4" },
+      { rank: "Sergeant (SGT)", value: "Sergeant", grade: "E-5" },
+      { rank: "Staff Sergeant (SSG)", value: "Staff Sergeant", grade: "E-6" },
       {
         rank: "Sergeant First Class (SFC)",
         value: "Sergeant First Class",
         grade: "E-7",
       },
-      {rank: "Master Sergeant (MSG)", value: "Master Sergeant", grade: "E-8"},
-      {rank: "First Sergeant (1SG)", value: "First Sergeant", grade: "E-8"},
-      {rank: "Sergeant Major (SGM)", value: "Sergeant Major", grade: "E-9"},
+      { rank: "Master Sergeant (MSG)", value: "Master Sergeant", grade: "E-8" },
+      { rank: "First Sergeant (1SG)", value: "First Sergeant", grade: "E-8" },
+      { rank: "Sergeant Major (SGM)", value: "Sergeant Major", grade: "E-9" },
       {
         rank: "Command Sergeant Major (CSM)",
         value: "Command Sergeant Major",
@@ -413,35 +448,35 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "First Lieutenant",
         grade: "O-2",
       },
-      {rank: "Captain (CPT)", value: "Captain", grade: "O-3"},
-      {rank: "Major (MAJ)", value: "Major", grade: "O-4"},
+      { rank: "Captain (CPT)", value: "Captain", grade: "O-3" },
+      { rank: "Major (MAJ)", value: "Major", grade: "O-4" },
       {
         rank: "Lieutenant Colonel (LTC)",
         value: "Lieutenant Colonel",
         grade: "O-5",
       },
-      {rank: "Colonel (COL)", value: "Colonel", grade: "O-6"},
+      { rank: "Colonel (COL)", value: "Colonel", grade: "O-6" },
       {
         rank: "Brigadier General (BG)",
         value: "Brigadier General",
         grade: "O-7",
       },
-      {rank: "Major General (MG)", value: "Major General", grade: "O-8"},
+      { rank: "Major General (MG)", value: "Major General", grade: "O-8" },
       {
         rank: "Lieutenant General (LTG)",
         value: "Lieutenant General",
         grade: "O-9",
       },
-      {rank: "General (GEN)", value: "General", grade: "O-10"},
+      { rank: "General (GEN)", value: "General", grade: "O-10" },
     ],
     USCG: [
-      {rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1"},
+      { rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1" },
       {
         rank: "Seaman Apprentice (SA)",
         value: "Seaman Apprentice",
         grade: "E-2",
       },
-      {rank: "Seaman (SN)", value: "Seaman", grade: "E-3"},
+      { rank: "Seaman (SN)", value: "Seaman", grade: "E-3" },
       {
         rank: "Petty Officer Third Class (PO3)",
         value: "Petty Officer Third Class",
@@ -502,36 +537,36 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "Chief Warrant Officer 5",
         grade: "W-5",
       },
-      {rank: "Ensign (ENS)", value: "Ensign", grade: "O-1"},
-      {rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2"},
-      {rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3"},
+      { rank: "Ensign (ENS)", value: "Ensign", grade: "O-1" },
+      { rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2" },
+      { rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3" },
       {
         rank: "Lieutenant Commander (LCDR)",
         value: "Lieutenant Commander",
         grade: "O-4",
       },
-      {rank: "Commander (CDR)", value: "Commander", grade: "O-5"},
-      {rank: "Captain (CAPT)", value: "Captain", grade: "O-6"},
+      { rank: "Commander (CDR)", value: "Commander", grade: "O-5" },
+      { rank: "Captain (CAPT)", value: "Captain", grade: "O-6" },
       {
         rank: "Rear Admiral Lower Half (RDML)",
         value: "Rear Admiral Lower Half",
         grade: "O-7",
       },
-      {rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8"},
-      {rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9"},
-      {rank: "Admiral (ADM)", value: "Admiral", grade: "O-10"},
+      { rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8" },
+      { rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9" },
+      { rank: "Admiral (ADM)", value: "Admiral", grade: "O-10" },
     ],
     USMC: [
-      {rank: "Private (Pvt)", value: "Private", grade: "E-1"},
+      { rank: "Private (Pvt)", value: "Private", grade: "E-1" },
       {
         rank: "Private First Class (PFC)",
         value: "Private First Class",
         grade: "E-2",
       },
-      {rank: "Lance Corporal (LCpl)", value: "Lance Corporal", grade: "E-3"},
-      {rank: "Corporal (Cpl)", value: "Corporal", grade: "E-4"},
-      {rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5"},
-      {rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-6"},
+      { rank: "Lance Corporal (LCpl)", value: "Lance Corporal", grade: "E-3" },
+      { rank: "Corporal (Cpl)", value: "Corporal", grade: "E-4" },
+      { rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5" },
+      { rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-6" },
       {
         rank: "Gunnery Sergeant (GySgt)",
         value: "Gunnery Sergeant",
@@ -542,13 +577,13 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "Master Sergeant",
         grade: "E-8",
       },
-      {rank: "First Sergeant (1stSg)", value: "First Sergeant", grade: "E-8"},
+      { rank: "First Sergeant (1stSg)", value: "First Sergeant", grade: "E-8" },
       {
         rank: "Master Gunnery Sergeant (MGySg)",
         value: "Master Gunnery Sergeant",
         grade: "E-9",
       },
-      {rank: "Sergeant Major (SgtMa)", value: "Sergeant Major", grade: "E-9"},
+      { rank: "Sergeant Major (SgtMa)", value: "Sergeant Major", grade: "E-9" },
       {
         rank: "Warrant Officer 1 (WO1)",
         value: "Warrant Officer 1",
@@ -584,35 +619,35 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "First Lieutenant",
         grade: "O-2",
       },
-      {rank: "Captain (Capt)", value: "Captain", grade: "O-3"},
-      {rank: "Major (Maj)", value: "Major", grade: "O-4"},
+      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
+      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
       {
         rank: "Lieutenant Colonel (LtCol)",
         value: "Lieutenant Colonel",
         grade: "O-5",
       },
-      {rank: "Colonel (Col)", value: "Colonel", grade: "O-6"},
+      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
       {
         rank: "Brigadier General (BGen)",
         value: "Brigadier General",
         grade: "O-7",
       },
-      {rank: "Major General (MajGen)", value: "Major General", grade: "O-8"},
+      { rank: "Major General (MajGen)", value: "Major General", grade: "O-8" },
       {
         rank: "Lieutenant General (LtGen)",
         value: "Lieutenant General",
         grade: "O-9",
       },
-      {rank: "General (Gen)", value: "General", grade: "O-10"},
+      { rank: "General (Gen)", value: "General", grade: "O-10" },
     ],
     NAVY: [
-      {rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1"},
+      { rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1" },
       {
         rank: "Seaman Apprentice (SA)",
         value: "Seaman Apprentice",
         grade: "E-2",
       },
-      {rank: "Seaman (SN)", value: "Seaman", grade: "E-3"},
+      { rank: "Seaman (SN)", value: "Seaman", grade: "E-3" },
       {
         rank: "Petty Officer Third Class (PO3)",
         value: "Petty Officer Third Class",
@@ -683,31 +718,31 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "Chief Warrant Officer 5",
         grade: "W-5",
       },
-      {rank: "Ensign (ENS)", value: "Ensign", grade: "O-1"},
-      {rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2"},
-      {rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3"},
+      { rank: "Ensign (ENS)", value: "Ensign", grade: "O-1" },
+      { rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2" },
+      { rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3" },
       {
         rank: "Lieutenant Commander (LCDR)",
         value: "Lieutenant Commander",
         grade: "O-4",
       },
-      {rank: "Commander (CDR)", value: "Commander", grade: "O-5"},
-      {rank: "Captain (CAPT)", value: "Captain", grade: "O-6"},
+      { rank: "Commander (CDR)", value: "Commander", grade: "O-5" },
+      { rank: "Captain (CAPT)", value: "Captain", grade: "O-6" },
       {
         rank: "Rear Admiral Lower Half (RDML)",
         value: "Rear Admiral Lower Half",
         grade: "O-7",
       },
-      {rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8"},
-      {rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9"},
-      {rank: "Admiral (ADM)", value: "Admiral", grade: "O-10"},
+      { rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8" },
+      { rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9" },
+      { rank: "Admiral (ADM)", value: "Admiral", grade: "O-10" },
     ],
     USSF: [
-      {rank: "Specialist 1 (Spc1)", value: "Specialist 1", grade: "E-1"},
-      {rank: "Specialist 2 (Spc2)", value: "Specialist 2", grade: "E-2"},
-      {rank: "Specialist 3 (Spc3)", value: "Specialist 3", grade: "E-3"},
-      {rank: "Specialist 4 (Spc4)", value: "Specialist 4", grade: "E-4"},
-      {rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5"},
+      { rank: "Specialist 1 (Spc1)", value: "Specialist 1", grade: "E-1" },
+      { rank: "Specialist 2 (Spc2)", value: "Specialist 2", grade: "E-2" },
+      { rank: "Specialist 3 (Spc3)", value: "Specialist 3", grade: "E-3" },
+      { rank: "Specialist 4 (Spc4)", value: "Specialist 4", grade: "E-4" },
+      { rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5" },
       {
         rank: "Technical Sergeant (TSgt)",
         value: "Technical Sergeant",
@@ -738,26 +773,26 @@ export class AcquisitionPackageStore extends VuexModule {
         value: "First Lieutenant",
         grade: "O-2",
       },
-      {rank: "Captain (Capt)", value: "Captain", grade: "O-3"},
-      {rank: "Major (Maj)", value: "Major", grade: "O-4"},
+      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
+      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
       {
         rank: "Lieutenant Colonel (Lt Col)",
         value: "Lieutenant Colonel",
         grade: "O-5",
       },
-      {rank: "Colonel (Col)", value: "Colonel", grade: "O-6"},
+      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
       {
         rank: "Brigadier General (Brig Gen)",
         value: "Brigadier General",
         grade: "O-7",
       },
-      {rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8"},
+      { rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8" },
       {
         rank: "Lieutenant General (LT Gen)",
         value: "Lieutenant General",
         grade: "O-9",
       },
-      {rank: "General (Gen)", value: "General", grade: "O-10"},
+      { rank: "General (Gen)", value: "General", grade: "O-10" },
     ],
   };
 
@@ -1197,307 +1232,307 @@ export class AcquisitionPackageStore extends VuexModule {
   ];
 
   public stateListData: SelectData[] = [
-    {text: "Alabama", value: "AL"},
-    {text: "Alaska", value: "AK"},
-    {text: "Arizona", value: "AZ"},
-    {text: "Arkansas", value: "AR"},
-    {text: "California", value: "CA"},
-    {text: "Colorado", value: "CO"},
-    {text: "Connecticut", value: "CT"},
-    {text: "Delaware", value: "DE"},
-    {text: "District of Columbia", value: "DC"},
-    {text: "Florida", value: "FL"},
-    {text: "Georgia", value: "GA"},
-    {text: "Hawaii", value: "HI"},
-    {text: "Idaho", value: "ID"},
-    {text: "Illinois", value: "IL"},
-    {text: "Indiana", value: "IN"},
-    {text: "Iowa", value: "IA"},
-    {text: "Kansas", value: "KS"},
-    {text: "Kentucky", value: "KY"},
-    {text: "Louisiana", value: "LA"},
-    {text: "Maine", value: "ME"},
-    {text: "Maryland", value: "MD"},
-    {text: "Massachusetts", value: "MA"},
-    {text: "Michigan", value: "MI"},
-    {text: "Minnesota", value: "MN"},
-    {text: "Mississippi", value: "MS"},
-    {text: "Missouri", value: "MO"},
-    {text: "Montana", value: "MT"},
-    {text: "Nebraska", value: "NE"},
-    {text: "Nevada", value: "NV"},
-    {text: "New Hampshire", value: "NH"},
-    {text: "New Jersey", value: "NJ"},
-    {text: "New Mexico", value: "NM"},
-    {text: "New York", value: "NY"},
-    {text: "North Carolina", value: "NC"},
-    {text: "North Dakota", value: "ND"},
-    {text: "Ohio", value: "OH"},
-    {text: "Oklahoma", value: "OK"},
-    {text: "Oregon", value: "OR"},
-    {text: "Pennsylvania", value: "PA"},
-    {text: "Rhode Island", value: "RI"},
-    {text: "South Carolina", value: "SC"},
-    {text: "South Dakota", value: "SD"},
-    {text: "Tennessee", value: "TN"},
-    {text: "Texas", value: "TX"},
-    {text: "Utah", value: "UT"},
-    {text: "Vermont", value: "VT"},
-    {text: "Virginia", value: "VA"},
-    {text: "Washington", value: "WA"},
-    {text: "West Virginia", value: "WV"},
-    {text: "Wisconsin", value: "WI"},
-    {text: "Wyoming", value: "WY"},
+    { text: "Alabama", value: "AL" },
+    { text: "Alaska", value: "AK" },
+    { text: "Arizona", value: "AZ" },
+    { text: "Arkansas", value: "AR" },
+    { text: "California", value: "CA" },
+    { text: "Colorado", value: "CO" },
+    { text: "Connecticut", value: "CT" },
+    { text: "Delaware", value: "DE" },
+    { text: "District of Columbia", value: "DC" },
+    { text: "Florida", value: "FL" },
+    { text: "Georgia", value: "GA" },
+    { text: "Hawaii", value: "HI" },
+    { text: "Idaho", value: "ID" },
+    { text: "Illinois", value: "IL" },
+    { text: "Indiana", value: "IN" },
+    { text: "Iowa", value: "IA" },
+    { text: "Kansas", value: "KS" },
+    { text: "Kentucky", value: "KY" },
+    { text: "Louisiana", value: "LA" },
+    { text: "Maine", value: "ME" },
+    { text: "Maryland", value: "MD" },
+    { text: "Massachusetts", value: "MA" },
+    { text: "Michigan", value: "MI" },
+    { text: "Minnesota", value: "MN" },
+    { text: "Mississippi", value: "MS" },
+    { text: "Missouri", value: "MO" },
+    { text: "Montana", value: "MT" },
+    { text: "Nebraska", value: "NE" },
+    { text: "Nevada", value: "NV" },
+    { text: "New Hampshire", value: "NH" },
+    { text: "New Jersey", value: "NJ" },
+    { text: "New Mexico", value: "NM" },
+    { text: "New York", value: "NY" },
+    { text: "North Carolina", value: "NC" },
+    { text: "North Dakota", value: "ND" },
+    { text: "Ohio", value: "OH" },
+    { text: "Oklahoma", value: "OK" },
+    { text: "Oregon", value: "OR" },
+    { text: "Pennsylvania", value: "PA" },
+    { text: "Rhode Island", value: "RI" },
+    { text: "South Carolina", value: "SC" },
+    { text: "South Dakota", value: "SD" },
+    { text: "Tennessee", value: "TN" },
+    { text: "Texas", value: "TX" },
+    { text: "Utah", value: "UT" },
+    { text: "Vermont", value: "VT" },
+    { text: "Virginia", value: "VA" },
+    { text: "Washington", value: "WA" },
+    { text: "West Virginia", value: "WV" },
+    { text: "Wisconsin", value: "WI" },
+    { text: "Wyoming", value: "WY" },
   ];
 
   public countryListData = [
-    {text: "United States of America", value: "US"},
-    {text: "Afghanistan", value: "AF"},
-    {text: "Åland Islands", value: "AX"},
-    {text: "Albania", value: "AL"},
-    {text: "Algeria", value: "DZ"},
-    {text: "American Samoa", value: "AS"},
-    {text: "Andorra", value: "AD"},
-    {text: "Angola", value: "AO"},
-    {text: "Anguilla", value: "AI"},
-    {text: "Antarctica", value: "AQ"},
-    {text: "Antigua and Barbuda", value: "AG"},
-    {text: "Argentina", value: "AR"},
-    {text: "Armenia", value: "AM"},
-    {text: "Aruba", value: "AW"},
-    {text: "Australia", value: "AU"},
-    {text: "Austria", value: "AT"},
-    {text: "Azerbaijan", value: "AZ"},
-    {text: "Bahamas", value: "BS"},
-    {text: "Bahrain", value: "BH"},
-    {text: "Bangladesh", value: "BD"},
-    {text: "Barbados", value: "BB"},
-    {text: "Belarus", value: "BY"},
-    {text: "Belgium", value: "BE"},
-    {text: "Belize", value: "BZ"},
-    {text: "Benin", value: "BJ"},
-    {text: "Bermuda", value: "BM"},
-    {text: "Bhutan", value: "BT"},
-    {text: "Bolivia", value: "BO"},
-    {text: "Bosnia and Herzegovina", value: "BA"},
-    {text: "Botswana", value: "BW"},
-    {text: "Bouvet Island", value: "BV"},
-    {text: "Brazil", value: "BR"},
-    {text: "British Indian Ocean Territory", value: "IO"},
-    {text: "Brunei Darussalam", value: "BN"},
-    {text: "Bulgaria", value: "BG"},
-    {text: "Burkina Faso", value: "BF"},
-    {text: "Burundi", value: "BI"},
-    {text: "Cambodia", value: "KH"},
-    {text: "Cameroon", value: "CM"},
-    {text: "Canada", value: "CA"},
-    {text: "Cape Verde", value: "CV"},
-    {text: "Cayman Islands", value: "KY"},
-    {text: "Central African Republic", value: "CF"},
-    {text: "Chad", value: "TD"},
-    {text: "Chile", value: "CL"},
-    {text: "China", value: "CN"},
-    {text: "Christmas Island", value: "CX"},
-    {text: "Cocos (Keeling) Islands", value: "CC"},
-    {text: "Colombia", value: "CO"},
-    {text: "Comoros", value: "KM"},
-    {text: "Congo", value: "CG"},
-    {text: "Congo, The Democratic Republic of the", value: "CD"},
-    {text: "Cook Islands", value: "CK"},
-    {text: "Costa Rica", value: "CR"},
-    {text: 'Cote D"Ivoire', value: "CI"},
-    {text: "Croatia", value: "HR"},
-    {text: "Cuba", value: "CU"},
-    {text: "Cyprus", value: "CY"},
-    {text: "Czech Republic", value: "CZ"},
-    {text: "Denmark", value: "DK"},
-    {text: "Djibouti", value: "DJ"},
-    {text: "Dominica", value: "DM"},
-    {text: "Dominican Republic", value: "DO"},
-    {text: "Ecuador", value: "EC"},
-    {text: "Egypt", value: "EG"},
-    {text: "El Salvador", value: "SV"},
-    {text: "Equatorial Guinea", value: "GQ"},
-    {text: "Eritrea", value: "ER"},
-    {text: "Estonia", value: "EE"},
-    {text: "Ethiopia", value: "ET"},
-    {text: "Falkland Islands (Malvinas)", value: "FK"},
-    {text: "Faroe Islands", value: "FO"},
-    {text: "Fiji", value: "FJ"},
-    {text: "Finland", value: "FI"},
-    {text: "France", value: "FR"},
-    {text: "French Guiana", value: "GF"},
-    {text: "French Polynesia", value: "PF"},
-    {text: "French Southern Territories", value: "TF"},
-    {text: "Gabon", value: "GA"},
-    {text: "Gambia", value: "GM"},
-    {text: "Georgia", value: "GE"},
-    {text: "Germany", value: "DE"},
-    {text: "Ghana", value: "GH"},
-    {text: "Gibraltar", value: "GI"},
-    {text: "Greece", value: "GR"},
-    {text: "Greenland", value: "GL"},
-    {text: "Grenada", value: "GD"},
-    {text: "Guadeloupe", value: "GP"},
-    {text: "Guam", value: "GU"},
-    {text: "Guatemala", value: "GT"},
-    {text: "Guernsey", value: "GG"},
-    {text: "Guinea", value: "GN"},
-    {text: "Guinea-Bissau", value: "GW"},
-    {text: "Guyana", value: "GY"},
-    {text: "Haiti", value: "HT"},
-    {text: "Heard Island and Mcdonald Islands", value: "HM"},
-    {text: "Holy See (Vatican City State)", value: "VA"},
-    {text: "Honduras", value: "HN"},
-    {text: "Hong Kong", value: "HK"},
-    {text: "Hungary", value: "HU"},
-    {text: "Iceland", value: "IS"},
-    {text: "India", value: "IN"},
-    {text: "Indonesia", value: "ID"},
-    {text: "Iran, Islamic Republic Of", value: "IR"},
-    {text: "Iraq", value: "IQ"},
-    {text: "Ireland", value: "IE"},
-    {text: "Isle of Man", value: "IM"},
-    {text: "Israel", value: "IL"},
-    {text: "Italy", value: "IT"},
-    {text: "Jamaica", value: "JM"},
-    {text: "Japan", value: "JP"},
-    {text: "Jersey", value: "JE"},
-    {text: "Jordan", value: "JO"},
-    {text: "Kazakhstan", value: "KZ"},
-    {text: "Kenya", value: "KE"},
-    {text: "Kiribati", value: "KI"},
-    {text: 'Korea, Democratic People"S Republic of', value: "KP"},
-    {text: "Korea, Republic of", value: "KR"},
-    {text: "Kuwait", value: "KW"},
-    {text: "Kyrgyzstan", value: "KG"},
-    {text: 'Lao People"S Democratic Republic', value: "LA"},
-    {text: "Latvia", value: "LV"},
-    {text: "Lebanon", value: "LB"},
-    {text: "Lesotho", value: "LS"},
-    {text: "Liberia", value: "LR"},
-    {text: "Libyan Arab Jamahiriya", value: "LY"},
-    {text: "Liechtenstein", value: "LI"},
-    {text: "Lithuania", value: "LT"},
-    {text: "Luxembourg", value: "LU"},
-    {text: "Macao", value: "MO"},
-    {text: "Macedonia, The Former Yugoslav Republic of", value: "MK"},
-    {text: "Madagascar", value: "MG"},
-    {text: "Malawi", value: "MW"},
-    {text: "Malaysia", value: "MY"},
-    {text: "Maldives", value: "MV"},
-    {text: "Mali", value: "ML"},
-    {text: "Malta", value: "MT"},
-    {text: "Marshall Islands", value: "MH"},
-    {text: "Martinique", value: "MQ"},
-    {text: "Mauritania", value: "MR"},
-    {text: "Mauritius", value: "MU"},
-    {text: "Mayotte", value: "YT"},
-    {text: "Mexico", value: "MX"},
-    {text: "Micronesia, Federated States of", value: "FM"},
-    {text: "Moldova, Republic of", value: "MD"},
-    {text: "Monaco", value: "MC"},
-    {text: "Mongolia", value: "MN"},
-    {text: "Montserrat", value: "MS"},
-    {text: "Morocco", value: "MA"},
-    {text: "Mozambique", value: "MZ"},
-    {text: "Myanmar", value: "MM"},
-    {text: "Namibia", value: "NA"},
-    {text: "Nauru", value: "NR"},
-    {text: "Nepal", value: "NP"},
-    {text: "Netherlands", value: "NL"},
-    {text: "Netherlands Antilles", value: "AN"},
-    {text: "New Caledonia", value: "NC"},
-    {text: "New Zealand", value: "NZ"},
-    {text: "Nicaragua", value: "NI"},
-    {text: "Niger", value: "NE"},
-    {text: "Nigeria", value: "NG"},
-    {text: "Niue", value: "NU"},
-    {text: "Norfolk Island", value: "NF"},
-    {text: "Northern Mariana Islands", value: "MP"},
-    {text: "Norway", value: "NO"},
-    {text: "Oman", value: "OM"},
-    {text: "Pakistan", value: "PK"},
-    {text: "Palau", value: "PW"},
-    {text: "Palestinian Territory, Occupied", value: "PS"},
-    {text: "Panama", value: "PA"},
-    {text: "Papua New Guinea", value: "PG"},
-    {text: "Paraguay", value: "PY"},
-    {text: "Peru", value: "PE"},
-    {text: "Philippines", value: "PH"},
-    {text: "Pitcairn", value: "PN"},
-    {text: "Poland", value: "PL"},
-    {text: "Portugal", value: "PT"},
-    {text: "Puerto Rico", value: "PR"},
-    {text: "Qatar", value: "QA"},
-    {text: "Reunion", value: "RE"},
-    {text: "Romania", value: "RO"},
-    {text: "Russian Federation", value: "RU"},
-    {text: "Rwanda", value: "RW"},
-    {text: "Saint Helena", value: "SH"},
-    {text: "Saint Kitts and Nevis", value: "KN"},
-    {text: "Saint Lucia", value: "LC"},
-    {text: "Saint Pierre and Miquelon", value: "PM"},
-    {text: "Saint Vincent and the Grenadines", value: "VC"},
-    {text: "Samoa", value: "WS"},
-    {text: "San Marino", value: "SM"},
-    {text: "Sao Tome and Principe", value: "ST"},
-    {text: "Saudi Arabia", value: "SA"},
-    {text: "Senegal", value: "SN"},
-    {text: "Serbia and Montenegro", value: "CS"},
-    {text: "Seychelles", value: "SC"},
-    {text: "Sierra Leone", value: "SL"},
-    {text: "Singapore", value: "SG"},
-    {text: "Slovakia", value: "SK"},
-    {text: "Slovenia", value: "SI"},
-    {text: "Solomon Islands", value: "SB"},
-    {text: "Somalia", value: "SO"},
-    {text: "South Africa", value: "ZA"},
-    {text: "South Georgia and the South Sandwich Islands", value: "GS"},
-    {text: "Spain", value: "ES"},
-    {text: "Sri Lanka", value: "LK"},
-    {text: "Sudan", value: "SD"},
-    {text: "Suriname", value: "SR"},
-    {text: "Svalbard and Jan Mayen", value: "SJ"},
-    {text: "Swaziland", value: "SZ"},
-    {text: "Sweden", value: "SE"},
-    {text: "Switzerland", value: "CH"},
-    {text: "Syrian Arab Republic", value: "SY"},
-    {text: "Taiwan, Province of China", value: "TW"},
-    {text: "Tajikistan", value: "TJ"},
-    {text: "Tanzania, United Republic of", value: "TZ"},
-    {text: "Thailand", value: "TH"},
-    {text: "Timor-Leste", value: "TL"},
-    {text: "Togo", value: "TG"},
-    {text: "Tokelau", value: "TK"},
-    {text: "Tonga", value: "TO"},
-    {text: "Trinidad and Tobago", value: "TT"},
-    {text: "Tunisia", value: "TN"},
-    {text: "Turkey", value: "TR"},
-    {text: "Turkmenistan", value: "TM"},
-    {text: "Turks and Caicos Islands", value: "TC"},
-    {text: "Tuvalu", value: "TV"},
-    {text: "Uganda", value: "UG"},
-    {text: "Ukraine", value: "UA"},
-    {text: "United Arab Emirates", value: "AE"},
-    {text: "United Kingdom", value: "GB"},
-    {text: "United States Minor Outlying Islands", value: "UM"},
-    {text: "United States of America", value: "US"},
-    {text: "Uruguay", value: "UY"},
-    {text: "Uzbekistan", value: "UZ"},
-    {text: "Vanuatu", value: "VU"},
-    {text: "Venezuela", value: "VE"},
-    {text: "Viet Nam", value: "VN"},
-    {text: "Virgin Islands, British", value: "VG"},
-    {text: "Virgin Islands, U.S.", value: "VI"},
-    {text: "Wallis and Futuna", value: "WF"},
-    {text: "Western Sahara", value: "EH"},
-    {text: "Yemen", value: "YE"},
-    {text: "Zambia", value: "ZM"},
-    {text: "Zimbabwe", value: "ZW"},
+    { text: "United States of America", value: "US" },
+    { text: "Afghanistan", value: "AF" },
+    { text: "Åland Islands", value: "AX" },
+    { text: "Albania", value: "AL" },
+    { text: "Algeria", value: "DZ" },
+    { text: "American Samoa", value: "AS" },
+    { text: "Andorra", value: "AD" },
+    { text: "Angola", value: "AO" },
+    { text: "Anguilla", value: "AI" },
+    { text: "Antarctica", value: "AQ" },
+    { text: "Antigua and Barbuda", value: "AG" },
+    { text: "Argentina", value: "AR" },
+    { text: "Armenia", value: "AM" },
+    { text: "Aruba", value: "AW" },
+    { text: "Australia", value: "AU" },
+    { text: "Austria", value: "AT" },
+    { text: "Azerbaijan", value: "AZ" },
+    { text: "Bahamas", value: "BS" },
+    { text: "Bahrain", value: "BH" },
+    { text: "Bangladesh", value: "BD" },
+    { text: "Barbados", value: "BB" },
+    { text: "Belarus", value: "BY" },
+    { text: "Belgium", value: "BE" },
+    { text: "Belize", value: "BZ" },
+    { text: "Benin", value: "BJ" },
+    { text: "Bermuda", value: "BM" },
+    { text: "Bhutan", value: "BT" },
+    { text: "Bolivia", value: "BO" },
+    { text: "Bosnia and Herzegovina", value: "BA" },
+    { text: "Botswana", value: "BW" },
+    { text: "Bouvet Island", value: "BV" },
+    { text: "Brazil", value: "BR" },
+    { text: "British Indian Ocean Territory", value: "IO" },
+    { text: "Brunei Darussalam", value: "BN" },
+    { text: "Bulgaria", value: "BG" },
+    { text: "Burkina Faso", value: "BF" },
+    { text: "Burundi", value: "BI" },
+    { text: "Cambodia", value: "KH" },
+    { text: "Cameroon", value: "CM" },
+    { text: "Canada", value: "CA" },
+    { text: "Cape Verde", value: "CV" },
+    { text: "Cayman Islands", value: "KY" },
+    { text: "Central African Republic", value: "CF" },
+    { text: "Chad", value: "TD" },
+    { text: "Chile", value: "CL" },
+    { text: "China", value: "CN" },
+    { text: "Christmas Island", value: "CX" },
+    { text: "Cocos (Keeling) Islands", value: "CC" },
+    { text: "Colombia", value: "CO" },
+    { text: "Comoros", value: "KM" },
+    { text: "Congo", value: "CG" },
+    { text: "Congo, The Democratic Republic of the", value: "CD" },
+    { text: "Cook Islands", value: "CK" },
+    { text: "Costa Rica", value: "CR" },
+    { text: 'Cote D"Ivoire', value: "CI" },
+    { text: "Croatia", value: "HR" },
+    { text: "Cuba", value: "CU" },
+    { text: "Cyprus", value: "CY" },
+    { text: "Czech Republic", value: "CZ" },
+    { text: "Denmark", value: "DK" },
+    { text: "Djibouti", value: "DJ" },
+    { text: "Dominica", value: "DM" },
+    { text: "Dominican Republic", value: "DO" },
+    { text: "Ecuador", value: "EC" },
+    { text: "Egypt", value: "EG" },
+    { text: "El Salvador", value: "SV" },
+    { text: "Equatorial Guinea", value: "GQ" },
+    { text: "Eritrea", value: "ER" },
+    { text: "Estonia", value: "EE" },
+    { text: "Ethiopia", value: "ET" },
+    { text: "Falkland Islands (Malvinas)", value: "FK" },
+    { text: "Faroe Islands", value: "FO" },
+    { text: "Fiji", value: "FJ" },
+    { text: "Finland", value: "FI" },
+    { text: "France", value: "FR" },
+    { text: "French Guiana", value: "GF" },
+    { text: "French Polynesia", value: "PF" },
+    { text: "French Southern Territories", value: "TF" },
+    { text: "Gabon", value: "GA" },
+    { text: "Gambia", value: "GM" },
+    { text: "Georgia", value: "GE" },
+    { text: "Germany", value: "DE" },
+    { text: "Ghana", value: "GH" },
+    { text: "Gibraltar", value: "GI" },
+    { text: "Greece", value: "GR" },
+    { text: "Greenland", value: "GL" },
+    { text: "Grenada", value: "GD" },
+    { text: "Guadeloupe", value: "GP" },
+    { text: "Guam", value: "GU" },
+    { text: "Guatemala", value: "GT" },
+    { text: "Guernsey", value: "GG" },
+    { text: "Guinea", value: "GN" },
+    { text: "Guinea-Bissau", value: "GW" },
+    { text: "Guyana", value: "GY" },
+    { text: "Haiti", value: "HT" },
+    { text: "Heard Island and Mcdonald Islands", value: "HM" },
+    { text: "Holy See (Vatican City State)", value: "VA" },
+    { text: "Honduras", value: "HN" },
+    { text: "Hong Kong", value: "HK" },
+    { text: "Hungary", value: "HU" },
+    { text: "Iceland", value: "IS" },
+    { text: "India", value: "IN" },
+    { text: "Indonesia", value: "ID" },
+    { text: "Iran, Islamic Republic Of", value: "IR" },
+    { text: "Iraq", value: "IQ" },
+    { text: "Ireland", value: "IE" },
+    { text: "Isle of Man", value: "IM" },
+    { text: "Israel", value: "IL" },
+    { text: "Italy", value: "IT" },
+    { text: "Jamaica", value: "JM" },
+    { text: "Japan", value: "JP" },
+    { text: "Jersey", value: "JE" },
+    { text: "Jordan", value: "JO" },
+    { text: "Kazakhstan", value: "KZ" },
+    { text: "Kenya", value: "KE" },
+    { text: "Kiribati", value: "KI" },
+    { text: 'Korea, Democratic People"S Republic of', value: "KP" },
+    { text: "Korea, Republic of", value: "KR" },
+    { text: "Kuwait", value: "KW" },
+    { text: "Kyrgyzstan", value: "KG" },
+    { text: 'Lao People"S Democratic Republic', value: "LA" },
+    { text: "Latvia", value: "LV" },
+    { text: "Lebanon", value: "LB" },
+    { text: "Lesotho", value: "LS" },
+    { text: "Liberia", value: "LR" },
+    { text: "Libyan Arab Jamahiriya", value: "LY" },
+    { text: "Liechtenstein", value: "LI" },
+    { text: "Lithuania", value: "LT" },
+    { text: "Luxembourg", value: "LU" },
+    { text: "Macao", value: "MO" },
+    { text: "Macedonia, The Former Yugoslav Republic of", value: "MK" },
+    { text: "Madagascar", value: "MG" },
+    { text: "Malawi", value: "MW" },
+    { text: "Malaysia", value: "MY" },
+    { text: "Maldives", value: "MV" },
+    { text: "Mali", value: "ML" },
+    { text: "Malta", value: "MT" },
+    { text: "Marshall Islands", value: "MH" },
+    { text: "Martinique", value: "MQ" },
+    { text: "Mauritania", value: "MR" },
+    { text: "Mauritius", value: "MU" },
+    { text: "Mayotte", value: "YT" },
+    { text: "Mexico", value: "MX" },
+    { text: "Micronesia, Federated States of", value: "FM" },
+    { text: "Moldova, Republic of", value: "MD" },
+    { text: "Monaco", value: "MC" },
+    { text: "Mongolia", value: "MN" },
+    { text: "Montserrat", value: "MS" },
+    { text: "Morocco", value: "MA" },
+    { text: "Mozambique", value: "MZ" },
+    { text: "Myanmar", value: "MM" },
+    { text: "Namibia", value: "NA" },
+    { text: "Nauru", value: "NR" },
+    { text: "Nepal", value: "NP" },
+    { text: "Netherlands", value: "NL" },
+    { text: "Netherlands Antilles", value: "AN" },
+    { text: "New Caledonia", value: "NC" },
+    { text: "New Zealand", value: "NZ" },
+    { text: "Nicaragua", value: "NI" },
+    { text: "Niger", value: "NE" },
+    { text: "Nigeria", value: "NG" },
+    { text: "Niue", value: "NU" },
+    { text: "Norfolk Island", value: "NF" },
+    { text: "Northern Mariana Islands", value: "MP" },
+    { text: "Norway", value: "NO" },
+    { text: "Oman", value: "OM" },
+    { text: "Pakistan", value: "PK" },
+    { text: "Palau", value: "PW" },
+    { text: "Palestinian Territory, Occupied", value: "PS" },
+    { text: "Panama", value: "PA" },
+    { text: "Papua New Guinea", value: "PG" },
+    { text: "Paraguay", value: "PY" },
+    { text: "Peru", value: "PE" },
+    { text: "Philippines", value: "PH" },
+    { text: "Pitcairn", value: "PN" },
+    { text: "Poland", value: "PL" },
+    { text: "Portugal", value: "PT" },
+    { text: "Puerto Rico", value: "PR" },
+    { text: "Qatar", value: "QA" },
+    { text: "Reunion", value: "RE" },
+    { text: "Romania", value: "RO" },
+    { text: "Russian Federation", value: "RU" },
+    { text: "Rwanda", value: "RW" },
+    { text: "Saint Helena", value: "SH" },
+    { text: "Saint Kitts and Nevis", value: "KN" },
+    { text: "Saint Lucia", value: "LC" },
+    { text: "Saint Pierre and Miquelon", value: "PM" },
+    { text: "Saint Vincent and the Grenadines", value: "VC" },
+    { text: "Samoa", value: "WS" },
+    { text: "San Marino", value: "SM" },
+    { text: "Sao Tome and Principe", value: "ST" },
+    { text: "Saudi Arabia", value: "SA" },
+    { text: "Senegal", value: "SN" },
+    { text: "Serbia and Montenegro", value: "CS" },
+    { text: "Seychelles", value: "SC" },
+    { text: "Sierra Leone", value: "SL" },
+    { text: "Singapore", value: "SG" },
+    { text: "Slovakia", value: "SK" },
+    { text: "Slovenia", value: "SI" },
+    { text: "Solomon Islands", value: "SB" },
+    { text: "Somalia", value: "SO" },
+    { text: "South Africa", value: "ZA" },
+    { text: "South Georgia and the South Sandwich Islands", value: "GS" },
+    { text: "Spain", value: "ES" },
+    { text: "Sri Lanka", value: "LK" },
+    { text: "Sudan", value: "SD" },
+    { text: "Suriname", value: "SR" },
+    { text: "Svalbard and Jan Mayen", value: "SJ" },
+    { text: "Swaziland", value: "SZ" },
+    { text: "Sweden", value: "SE" },
+    { text: "Switzerland", value: "CH" },
+    { text: "Syrian Arab Republic", value: "SY" },
+    { text: "Taiwan, Province of China", value: "TW" },
+    { text: "Tajikistan", value: "TJ" },
+    { text: "Tanzania, United Republic of", value: "TZ" },
+    { text: "Thailand", value: "TH" },
+    { text: "Timor-Leste", value: "TL" },
+    { text: "Togo", value: "TG" },
+    { text: "Tokelau", value: "TK" },
+    { text: "Tonga", value: "TO" },
+    { text: "Trinidad and Tobago", value: "TT" },
+    { text: "Tunisia", value: "TN" },
+    { text: "Turkey", value: "TR" },
+    { text: "Turkmenistan", value: "TM" },
+    { text: "Turks and Caicos Islands", value: "TC" },
+    { text: "Tuvalu", value: "TV" },
+    { text: "Uganda", value: "UG" },
+    { text: "Ukraine", value: "UA" },
+    { text: "United Arab Emirates", value: "AE" },
+    { text: "United Kingdom", value: "GB" },
+    { text: "United States Minor Outlying Islands", value: "UM" },
+    { text: "United States of America", value: "US" },
+    { text: "Uruguay", value: "UY" },
+    { text: "Uzbekistan", value: "UZ" },
+    { text: "Vanuatu", value: "VU" },
+    { text: "Venezuela", value: "VE" },
+    { text: "Viet Nam", value: "VN" },
+    { text: "Virgin Islands, British", value: "VG" },
+    { text: "Virgin Islands, U.S.", value: "VI" },
+    { text: "Wallis and Futuna", value: "WF" },
+    { text: "Western Sahara", value: "EH" },
+    { text: "Yemen", value: "YE" },
+    { text: "Zambia", value: "ZM" },
+    { text: "Zimbabwe", value: "ZW" },
   ];
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   public getCountryListData(removeCountries: string[] | null): SelectData[] {
     if (!removeCountries) {
       return this.countryListData;
@@ -1722,14 +1757,14 @@ export class AcquisitionPackageStore extends VuexModule {
     },
   ];
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
       await this.initialize();
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   /**
    * Loads project overview data from back end if a project overview
    * sys_id has been generated.
@@ -1742,7 +1777,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (projectSysId.length > 0) {
         const projectOverviewData = await api.projectOverviewTable.retrieve(
-            projectSysId as string
+          projectSysId as string
         );
         this.setProjectOverview(projectOverviewData);
         this.setProjectTitle(projectOverviewData.title);
@@ -1757,7 +1792,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   /**
    * Saves project overview data to backend
    */
@@ -1765,12 +1800,12 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       const projectSysId = this.projectOverview?.sys_id || "";
       const savedProjectOverview =
-          projectSysId.length > 0
-              ? await api.projectOverviewTable.update(projectSysId, {
-                ...data,
-                sys_id: projectSysId,
-              })
-              : await api.projectOverviewTable.create(data);
+        projectSysId.length > 0
+          ? await api.projectOverviewTable.update(projectSysId, {
+            ...data,
+            sys_id: projectSysId,
+          })
+          : await api.projectOverviewTable.create(data);
       this.setProjectOverview(savedProjectOverview);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1781,7 +1816,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   async loadOrganization(): Promise<OrganizationDTO> {
     try {
       await this.ensureInitialized();
@@ -1789,7 +1824,7 @@ export class AcquisitionPackageStore extends VuexModule {
       const sys_id = this.organization?.sys_id || "";
       if (sys_id.length > 0) {
         const organizationData = await api.organizationTable.retrieve(
-            sys_id as string
+          sys_id as string
         );
         this.setOrganization(organizationData);
         this.setAcquisitionPackage({
@@ -1803,7 +1838,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   /**
    * Saves Organization data to backend
    */
@@ -1811,9 +1846,9 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       const sys_id = this.organization?.sys_id || "";
       const savedOrganization =
-          sys_id.length > 0
-              ? await api.organizationTable.update(sys_id, {...data, sys_id})
-              : await api.organizationTable.create(data);
+        sys_id.length > 0
+          ? await api.organizationTable.update(sys_id, { ...data, sys_id })
+          : await api.organizationTable.create(data);
       this.setOrganization(savedOrganization);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1824,27 +1859,27 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   async loadContactInfo(contactType: string): Promise<ContactDTO> {
     try {
       await this.ensureInitialized();
       const isCor = contactType === "COR";
-      const dataKey = contactType === "Mission Owner"
-        ? "contactInfo"
-        : isCor ? "corInfo" : "acorInfo";
-      
+      const dataKey =
+        contactType === "Mission Owner"
+          ? "contactInfo"
+          : isCor
+            ? "corInfo"
+            : "acorInfo";
+
       const sys_id = this[dataKey]?.sys_id || "";
 
       if (sys_id.length > 0) {
-        const contactInfo = await api.contactsTable.retrieve(
-            sys_id as string
-        );
+        const contactInfo = await api.contactsTable.retrieve(sys_id as string);
         this.setContact({ data: contactInfo, type: contactType });
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
           contact: sys_id,
         } as AcquisitionPackageDTO);
-
       }
       return this[dataKey] as ContactDTO;
     } catch (error) {
@@ -1856,12 +1891,18 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Organization data to backend
    */
-  async saveContactInfo(saveData: { data: ContactDTO, type: string }): Promise<void> {
+  async saveContactInfo(saveData: {
+    data: ContactDTO;
+    type: string;
+  }): Promise<void> {
     try {
       const isCor = saveData.type === "COR";
-      const dataKey = saveData.type === "Mission Owner"
-        ? "contactInfo"
-        : isCor ? "corInfo" : "acorInfo";
+      const dataKey =
+        saveData.type === "Mission Owner"
+          ? "contactInfo"
+          : isCor
+            ? "corInfo"
+            : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
       const savedContact =
@@ -1878,7 +1919,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   async loadCurrentContract(): Promise<CurrentContractDTO> {
     try {
       await this.ensureInitialized();
@@ -1897,7 +1938,7 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.currentContract as CurrentContractDTO;
     } catch (error) {
       throw new Error(`error occurred loading current contract info ${error}`);
-    } 
+    }
   }
 
   @Action({ rawError: true })
@@ -1921,7 +1962,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   async loadFairOpportunity(): Promise<FairOpportunityDTO> {
     try {
       await this.ensureInitialized();
@@ -1930,7 +1971,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const fairOpportunityData = await api.fairOpportunityTable.retrieve(
-            sys_id as string
+          sys_id as string
         );
         this.setFairOpportunity(fairOpportunityData);
         this.setAcquisitionPackage({
@@ -1944,17 +1985,17 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   /**
-  * Saves Fair Opportunity data to backend
-  */
+   * Saves Fair Opportunity data to backend
+   */
   async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
     try {
       const sys_id = this.fairOpportunity?.sys_id || "";
       const savedFairOpportunity =
-          sys_id.length > 0
-              ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
-              : await api.fairOpportunityTable.create(data);
+        sys_id.length > 0
+          ? await api.fairOpportunityTable.update(sys_id, { ...data, sys_id })
+          : await api.fairOpportunityTable.create(data);
       this.setFairOpportunity(savedFairOpportunity);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1966,9 +2007,9 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   /**
-  * Loads Sensitive Information (FOIA) data from backend
-  */
-   @Action({rawError: true})
+   * Loads Sensitive Information (FOIA) data from backend
+   */
+  @Action({ rawError: true })
   async loadSensitiveInformation(): Promise<SensitiveInformationDTO> {
     try {
       await this.ensureInitialized();
@@ -1976,9 +2017,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const sys_id = this.sensitiveInformation?.sys_id || "";
 
       if (sys_id.length > 0) {
-        const sensitiveInformationData = await api.sensitiveInformationTable.retrieve(
-          sys_id as string
-        );
+        const sensitiveInformationData =
+          await api.sensitiveInformationTable.retrieve(sys_id as string);
         this.setSensitiveInformation(sensitiveInformationData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
@@ -1988,19 +2028,22 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.sensitiveInformation as SensitiveInformationDTO;
     } catch (error) {
       throw new Error(`error occurred loading sensitive info data ${error}`);
-    } 
+    }
   }
 
   /**
-  * Saves Sensitive Information (FOIA) data to backend
-  */
+   * Saves Sensitive Information (FOIA) data to backend
+   */
   @Action({ rawError: true })
   async saveSensitiveInformation(data: SensitiveInformationDTO): Promise<void> {
     try {
       const sys_id = this.sensitiveInformation?.sys_id || "";
       const savedSensitiveInformation =
         sys_id.length > 0
-          ? await api.sensitiveInformationTable.update(sys_id, { ...data, sys_id })
+          ? await api.sensitiveInformationTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
           : await api.sensitiveInformationTable.create(data);
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
@@ -2013,9 +2056,9 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   /**
-  * Loads Period of Performance data from backend
-  */
-  @Action({rawError: true})
+   * Loads Period of Performance data from backend
+   */
+  @Action({ rawError: true })
   async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
     try {
       await this.ensureInitialized();
@@ -2023,9 +2066,8 @@ export class AcquisitionPackageStore extends VuexModule {
       const sys_id = this.periodOfPerformance?.sys_id || "";
 
       if (sys_id.length > 0) {
-        const periodOfPerformanceData = await api.periodOfPerformanceTable.retrieve(
-          sys_id as string
-        );
+        const periodOfPerformanceData =
+          await api.periodOfPerformanceTable.retrieve(sys_id as string);
         this.setPeriodOfPerformance(periodOfPerformanceData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
@@ -2035,19 +2077,22 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.periodOfPerformance as PeriodOfPerformanceDTO;
     } catch (error) {
       throw new Error(`error occurred loading PoP info data ${error}`);
-    } 
+    }
   }
 
   /**
-  * Saves Period of Performance Information (FOIA) data to backend
-  */
+   * Saves Period of Performance Information (FOIA) data to backend
+   */
   @Action({ rawError: true })
   async savePeriodOfPerformance(data: PeriodOfPerformanceDTO): Promise<void> {
     try {
       const sys_id = this.periodOfPerformance?.sys_id || "";
       const savedPeriodOfPerformance =
         sys_id.length > 0
-          ? await api.periodOfPerformanceTable.update(sys_id, { ...data, sys_id })
+          ? await api.periodOfPerformanceTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
           : await api.periodOfPerformanceTable.create(data);
       this.setPeriodOfPerformance(savedPeriodOfPerformance);
       this.setAcquisitionPackage({
@@ -2059,10 +2104,49 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  @Action({ rawError: true })
+  async loadGFEOverview(): Promise<GFEOverviewDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.GFEOverview?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const GFEOverviewData = await api.gfeOverviewTable.retrieve(
+          sys_id as string
+        );
+        this.setGFEOverview(GFEOverviewData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          gfe_overview: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.GFEOverview as GFEOverviewDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading GFE info ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
+    try {
+      const sys_id = this.GFEOverview?.sys_id || "";
+      const savedGFEOverviewData =
+        sys_id.length > 0
+          ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
+          : await api.gfeOverviewTable.create(data);
+      this.setGFEOverview(savedGFEOverviewData);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        gfe_overview: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving GFE data ${error}`);
+    }
+  }
   /**
-  * Loads Contract Type data from backend
-  */
-  @Action({rawError: true})
+   * Loads Contract Type data from backend
+   */
+  @Action({ rawError: true })
   async loadContractType(): Promise<ContractTypeDTO> {
     try {
       await this.ensureInitialized();
@@ -2081,12 +2165,65 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.contractType as ContractTypeDTO;
     } catch (error) {
       throw new Error(`error occurred loading Contract Type data ${error}`);
-    } 
+    }
   }
 
   /**
-  * Saves Period of Performance Information (FOIA) data to backend
-  */
+   * Loads Requirements Cost Estimate data from backend
+   */
+  @Action({ rawError: true })
+  async loadRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.requirementsCostEstimate?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const data = await api.requirementsCostEstimateTable.retrieve(
+          sys_id as string
+        );
+        this.setRequirementsCostEstimate(data);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          requirements_cost_estimate: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading Contract Type data ${error}`);
+    }
+  }
+
+  /**
+   * Saves Requirements Cost Estimate data to backend
+   */
+  @Action({ rawError: true })
+  async saveRequirementsCostEstimate(
+    data: RequirementsCostEstimateDTO
+  ): Promise<void> {
+    try {
+      const sys_id = this.requirementsCostEstimate?.sys_id || "";
+      const savedData =
+        sys_id.length > 0
+          ? await api.requirementsCostEstimateTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
+          : await api.requirementsCostEstimateTable.create(data);
+      this.setRequirementsCostEstimate(savedData);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        requirements_cost_estimate: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(
+        `error occurred saving Requirements Cost Estimate data ${error}`
+      );
+    }
+  }
+
+  /**
+   * Saves Contract Type data to backend
+   */
   @Action({ rawError: true })
   async saveContractType(data: ContractTypeDTO): Promise<void> {
     try {
@@ -2104,7 +2241,6 @@ export class AcquisitionPackageStore extends VuexModule {
       throw new Error(`error occurred saving PoP data ${error}`);
     }
   }
-
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);
