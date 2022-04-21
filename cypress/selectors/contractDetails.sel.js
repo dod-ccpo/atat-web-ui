@@ -3,6 +3,7 @@ module.exports = {
   popLearnMoreLink: "#PoPLearnMore",
   popText: "p.mb-10",
   popLengthLabelText: "div.mb-4._semibold",
+  mainWrap:".v-main__wrap",
   baseRow:"#BaseRow.d-flex.mb-5",
   baseLabelText: "#BaseRow .d-flex",
   baseInputTxtBox: "#BaseDuration_text_field",

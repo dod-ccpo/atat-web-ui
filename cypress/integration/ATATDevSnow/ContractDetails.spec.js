@@ -76,7 +76,7 @@ describe("Test suite: Contract Details Step", () => {
       showValidationMessage()
     });
     cy.findElement(contractDetails.baseDeleteButton).click();
-    //enter the base valuemorethan 5 years in months
+    //enter the base value morethan 5 years in months
     cy.findElement(contractDetails.baseDropdownIcon).click();
     cy.findElement(contractDetails.baseDropdownMonth).click();
     cy.findElement(contractDetails.baseInputTxtBox).clear().type("66")
@@ -85,11 +85,8 @@ describe("Test suite: Contract Details Step", () => {
       });
   });
 
-  it("TC4: Delete:Let’s gather some details about the duration of your task order", () => {
+  it("TC4: Delete: Let’s gather some details about the duration of your task order", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.findElement(contractDetails.baseDeleteButton)
-      .should("exist")
-      .and("be.disabled");    
     cy.popLengthOptionYearExists();    
     cy.findElement(contractDetails.addOptionLink).click();
     cy.popLengthOptionYearExists();

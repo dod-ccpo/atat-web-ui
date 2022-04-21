@@ -486,24 +486,23 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
 });
 
 Cypress.Commands.add("popLengthOptionYearExists", () => {
-  
-  const optionYearExists = ()=>cy.findElement(contractDetails.optionRow)
-    .should("exist").and("be.visible");
- 
-  cy.log("optionYearExists:",optionYearExists)
-  if (optionYearExists) {
-    // cy.log("optionYearExists:",optionYearExists.text)
-    cy.findElement(contractDetails.baseDeleteButton)
-      .should("exist")
-      .and("not.be.disabled");
-    cy.findElement(contractDetails.optionDeleteButton)
-      .should("exist")
-      .not("[disabled]");
-                                
-  } else {
-    cy.findElement(contractDetails.baseDeleteButton)
-      .should("exist")
-      .and("be.disabled")
-  };
+  cy.findElement(contractDetails.mainWrap)
+    .then((main) => {
+      console.log("main", main);
+      if (main.find(contractDetails.optionRow).length > 0) {
+        cy.log("Option1Row FOUND!");
+        cy.findElement(contractDetails.baseDeleteButton)
+          .should("exist")
+          .and("not.be.disabled");
+        cy.findElement(contractDetails.optionDeleteButton)
+          .should("exist")
+          .and("not.be.disabled");                                
+      } else {
+        cy.log("Option1Row NOT FOUND!");
+        cy.findElement(contractDetails.baseDeleteButton)
+          .should("exist")
+          .and("be.disabled")
+      }
+    });
 
 });
