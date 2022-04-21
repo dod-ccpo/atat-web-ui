@@ -32,6 +32,7 @@ import financialDetail from '../selectors/financialDetails.sel';
 import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
+import contractDetails from '../selectors/contractDetails.sel';
 import {cleanText,colors} from "../helpers";
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
@@ -482,4 +483,27 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
         .and('have.css', 'color', colors.primary);
     }          
   })
+});
+
+Cypress.Commands.add("popLengthOptionYearExists", () => {
+  
+  const optionYearExists = ()=>cy.findElement(contractDetails.optionRow)
+    .should("exist").and("be.visible");
+ 
+  cy.log("optionYearExists:",optionYearExists)
+  if (optionYearExists) {
+    // cy.log("optionYearExists:",optionYearExists.text)
+    cy.findElement(contractDetails.baseDeleteButton)
+      .should("exist")
+      .and("not.be.disabled");
+    cy.findElement(contractDetails.optionDeleteButton)
+      .should("exist")
+      .not("[disabled]");
+                                
+  } else {
+    cy.findElement(contractDetails.baseDeleteButton)
+      .should("exist")
+      .and("be.disabled")
+  };
+
 });
