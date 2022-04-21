@@ -114,7 +114,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
     },
     {
       text: "Not later than",
-      value: "NO_LATER_THAN"
+      value: "NOT_LATER_THAN"
     }
   ];
   private get currentData(): PeriodOfPerformanceDTO {
