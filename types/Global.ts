@@ -123,7 +123,7 @@ export interface ToastObj {
 /**
  * interface for basic/generic objects
  */
- export interface stringObj {
+export interface stringObj {
   [key: string]: string;
 }
 

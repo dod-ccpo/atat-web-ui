@@ -18,7 +18,7 @@
           label="Street address"
           :class="inputClass"
           :value.sync="_streetAddress1"
-          :rules="getRules('streetAddress1')"
+          :rules="getRules('StreetAddress')"
         />
       </v-col>
       <v-col class="col-12 col-lg-3">
@@ -99,7 +99,7 @@
       </v-col>
       <v-col class="col-12 col-lg-3">
         <ATATTextField
-          id="ZIP"
+          :id="IDLabel"
           :label="zipLabel"
           :class="inputClass"
           :value.sync="_zipCode"
@@ -180,22 +180,23 @@ export default class ATATAddressForm extends Vue {
           : { text: "United States of America", value: "US" };
   }
 
-  private getRules(inputName: string): string[] {
-    let rulesArr = []
+  private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
+    let rulesArr: ((v:string)=>string | true | undefined)[] = [];
     if (this.requiredFields) {
-      var result = this.requiredFields.filter(obj => {
-        return obj.field === inputName
+
+      const result = this.requiredFields.filter(obj => {
+        return obj.field === inputID
       })
       if(result.length) {
         rulesArr.push(this.$validators.required(result[0].message))
       }
     }
     if (this.minLength) {
-      var result = this.minLength.filter(obj => {
-        return obj.field === inputName
+      const lengthResult = this.minLength.filter(obj => {
+        return obj.field === inputID
       })
-      if(result.length) {
-        rulesArr.push(this.$validators.required(result[0].message))
+      if(lengthResult.length) {
+        rulesArr.push(this.$validators.required(lengthResult[0].message))
       }
     }
 
@@ -214,6 +215,11 @@ export default class ATATAddressForm extends Vue {
     return this._selectedAddressType !== this.addressTypes?.FOR
       ? "ZIP code"
       : "Postal code";
+  }
+  get IDLabel(): string {
+    return this._selectedAddressType !== this.addressTypes?.FOR
+      ? "ZIPCode"
+      : "PostalCode";
   }
 
 }

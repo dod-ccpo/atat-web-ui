@@ -27,33 +27,38 @@
           <hr/>
 
           <ATATAddressForm
-            :selectedAddressType.sync="selectedAddressType"
-            :streetAddress1.sync="streetAddress1"
-            :streetAddress2.sync="streetAddress2"
-            :city.sync="city"
-            :selectedMilitaryPO.sync="selectedMilitaryPO"
-            :selectedState.sync="selectedState"
-            :selectedStateCode.sync="selectedStateCode"
-            :stateOrProvince.sync="stateOrProvince"
-            :zipCode.sync="zipCode"
-            :selectedCountry.sync="selectedCountry"
             :addressTypeOptions="addressTypeOptions"
             :addressTypes="addressTypes"
-            :militaryPostOfficeOptions="militaryPostOfficeOptions"
-            :stateListData="stateListData"
-            :stateCodeListData="stateCodeListData"
+            :city.sync="city"
             :countryListData="countryListData"
+            :militaryPostOfficeOptions="militaryPostOfficeOptions"
+            :minLength=[]
+            :postalCode.sync="postalCode"
             :requiredFields='[
-             {field:"streetAddress1", message: "Please enter an address."},
+             {field:"StreetAddress", message: "Please enter an address."},
              {field:"city", message:  "Please enter a city."},
              {field:"selectedState" , message: "Please select a state."},
              {field:"zipCode" , message: "Please enter a ZIP code."},
-             {field:"selectedMilitaryPO" , message: "Please select a military post office (APO or FPO)."},
+             {
+               field:"selectedMilitaryPO",
+               message: "Please select a military post office (APO or FPO)."
+               },
              {field:"selectedStateCode", message:  "Please select a state code."},
              {field:"stateOrProvince", message: "Please enter a state/province."},
              {field:"selectedCountry", message: "Please select a country."},
+             {field:"PostalCode" , message: "Please enter a postal code."},
             ]'
-            :minLength=[]
+            :selectedAddressType.sync="selectedAddressType"
+            :selectedCountry.sync="selectedCountry"
+            :selectedMilitaryPO.sync="selectedMilitaryPO"
+            :selectedState.sync="selectedState"
+            :selectedStateCode.sync="selectedStateCode"
+            :stateCodeListData="stateCodeListData"
+            :stateListData="stateListData"
+            :stateOrProvince.sync="stateOrProvince"
+            :streetAddress1.sync="streetAddress1"
+            :streetAddress2.sync="streetAddress2"
+            :zipCode.sync="zipCode"
           />
 
         </v-col>

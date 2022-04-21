@@ -23,7 +23,9 @@
               :rows="7"
               :value.sync="operationToBePerformed"
               :rules="[
-                $validators.required('Please enter a description for the operation of work to be performed.'),
+                $validators.required(
+                  'Please enter a description for the operation of work to be performed.'
+                  ),
                 ]"
               maxChars="400"
             />
