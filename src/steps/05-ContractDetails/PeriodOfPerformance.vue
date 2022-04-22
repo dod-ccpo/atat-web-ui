@@ -267,7 +267,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
             const row = e as HTMLDivElement;
             if (!row.classList.contains("sortable-chosen")) {
               const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
-              icon.classList.add('hide-icon');
+              icon.classList.add("hide-icon");
             }
           });
 
@@ -283,7 +283,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
           // create a fake drag ghost image to use instead of default and hide it
           var elem = document.createElement("div") as HTMLElement;
-          elem.classList.add('drag-img-hidden');
+          elem.classList.add("drag-img-fake");
           // must include some text or it won't hide
           elem.innerText = "x";
           document.body.appendChild(elem);
@@ -321,7 +321,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           draggableElements.forEach((e) => {
             const row = e as HTMLDivElement;
             const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
-            icon.classList.remove('hide-icon');
+            icon.classList.remove("hide-icon");
           });
           
           draggableEl.classList.remove("dragging");
@@ -334,7 +334,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public showDragImg(show: boolean): void {
-    const dragImg = document.getElementById('DragImg') as HTMLDivElement;
+    const dragImg = document.getElementById("DragImg") as HTMLDivElement;
     dragImg.style.display = show ? "inline-block" : "none";
   }
 

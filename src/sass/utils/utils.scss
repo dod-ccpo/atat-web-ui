@@ -129,6 +129,6 @@ $positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
   @extend #app;
 }
 
-.drag-img-hidden {
+.drag-img-fake {
   opacity: 0 !important;
 }
