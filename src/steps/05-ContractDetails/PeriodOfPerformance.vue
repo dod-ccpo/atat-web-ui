@@ -344,7 +344,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   };
 
   public preDrag(e: MouseEvent, index: number): void {
-    debugger;
     if (index && this.optionPeriods[index]) {
       this.optionPeriodClicked = this.optionPeriods[index];
     }
