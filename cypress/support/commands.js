@@ -110,6 +110,12 @@ Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
   cy.findElement(selector).should("contain.text", errorMessage);  
 });
 
+Cypress.Commands.add("selectCheckBox", (selector,value) => {
+  cy.findElement(selector)
+    .should("have.value", value);
+  
+});
+
 Cypress.Commands.add("clickSideStepper", (stepperSelector,stepperText) => {
   cy.findElement(stepperSelector)
     .should("be.visible")
