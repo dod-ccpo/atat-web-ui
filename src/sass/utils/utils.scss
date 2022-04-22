@@ -87,10 +87,12 @@ $positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
 .ghost {
   border-top: 2px solid #544496 !important;
 }
+
 .draggable {
   border-top: 2px solid transparent;
   background-color: white;
   cursor: ns-resize;
+  
   .drag-icon {
     opacity: 0;
   }
@@ -107,7 +109,7 @@ $positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
 
   &.sortable-chosen {
     .drag-icon {
-      opacity: 1 !important;
+      opacity: 1;
     }
   }
 

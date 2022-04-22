@@ -128,7 +128,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <div id="DragImg" class="drag-img d-none">
+    <div id="DragImg" class="drag-img" style="display: none">
       {{ optionPeriodClicked.duration }} {{ optionPeriodClicked.unitOfTime }}
     </div>
   </div>
@@ -269,7 +269,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
               const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
               icon.classList.add('hide-icon');
             }
-          }) 
+          });
 
           const row = e.currentTarget as HTMLElement;
           row.style.cursor = "ns-resize";
@@ -309,7 +309,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
           // show the div that appears next to pointer when dragging
           this.showDragImg(true);
-        })
+        });
 
         // element has been dropped - drag operation ends
         draggableEl.addEventListener("dragend", () => {
@@ -328,21 +328,14 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
           // hide the div that appears next to pointer when dragging
           this.showDragImg(false);
-
-        })
+        });
       });
     }
   }
 
   public showDragImg(show: boolean): void {
     const dragImg = document.getElementById('DragImg') as HTMLDivElement;
-    if (show) {
-      dragImg.classList.remove("d-none");
-      dragImg.classList.add("d-inline-block");
-    } else {
-      dragImg.classList.remove("d-inline-block");
-      dragImg.classList.add("d-none");
-    }
+    dragImg.style.display = show ? "inline-block" : "none";
   }
 
   public optionPeriodClicked: PoP = {
@@ -350,44 +343,12 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     unitOfTime: "Year",
   };
 
-  // public optionDragDuration = "";
-  // public optionDragUnitOfTime = "";
   public preDrag(e: MouseEvent, index: number): void {
     debugger;
     if (index && this.optionPeriods[index]) {
       this.optionPeriodClicked = this.optionPeriods[index];
-
-      // this.optionDragDuration = this.optionPeriods[index].duration + "";
-      // this.optionDragUnitOfTime = this.optionPeriods[index].unitOfTime;
     }
   }
-
-  //on mouseEvent Properties
-  // public followCursor(e: MouseEvent): void {
-  //   var s = document.getElementById('DragImg') as HTMLDivElement;
-  //   e = e || window.event;
-  //   // console.log(`x ${e.offsetX} y ${e.offsetY}`)
-  //   if (s) {
-  //     s.style.left = (e.clientX + 15 - 320) + 'px';
-  //     s.style.top = (e.clientY - 15 - 60) + 'px';
-  //   }
-  // }
-
-// public followCursor = (
-  //   function() {
-  //     // var s = document.getElementById('DragImg') as HTMLDivElement;
-  //     var s = document.getElementById('DragImg') as HTMLDivElement;
-  //     return {
-  //       run: function(e: MouseEvent) {
-  //         e = e || window.event;
-  //         if (s) {
-  //           s.style.left = (e.clientX + 15) + 'px';
-  //           s.style.top = (e.clientY - 15) + 'px';
-  //         }
-  //       }
-  //     };
-  //   }()
-  // );
 
   private getIdText(string: string) {
     return getIdText(string);
