@@ -91,20 +91,20 @@
           class="_input-max-width mb-10"
           :value.sync="title"
         />
+        <ATATPhoneInput
+          label="Your phone number"
+          id="ContactPhone"
+          :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
+          :value.sync="selectedPhoneNumber"
+          :country.sync="selectedPhoneCountry"
+          :phoneExtension.sync="phoneExtension"
+        />
         <ATATTextField
           label="Your email"
           id="ContactEmail"
           class="_input-max-width mb-10"
-          helpText="Enter a .MILITARY or .gov email address."
+          helpText="Enter a .mil or .gov email address."
           :value.sync="email"
-        />
-        <ATATPhoneInput
-          label="Your phone number"
-          id="ContactPhone"
-          class="_input-max-width"
-          :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
-          :value.sync="selectedPhoneNumber"
-          :country.sync="selectedPhoneCountry"
         />
         <ATATAutoComplete
           v-show="selectedRole === 'CIVILIAN'"
@@ -197,6 +197,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
+  private phoneExtension = "";
   private selectedPhoneCountry: CountryObj 
     = { name: '', countryCode: '', abbreviation: '', active: false };
 

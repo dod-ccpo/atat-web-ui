@@ -1,88 +1,121 @@
 <template>
-  <div id="PhoneControl" class="_atat-phone-field">
-    <div class="d-flex align-center" v-if="label">
-      <label
-        :id="id + '_TextFieldLabel'"
-        class="form-field-label mb-2 mr-2"
-        :for="id + '_TextField'"
-      >
-        {{ label }}
-      </label>
-    </div>
-    <div class="d-flex">
-      <v-select
-        attach
-        id="CountryCodeDropdown'"
-        class="_country-select"
-        :items="searchResults"
-        outlined
-        dense
-        v-model="_selectedCountry"
-        :height="42"
-        :menu-props="{ bottom: true, offsetY: true }"
-        @change="onChange"
-      >
-        <template v-slot:selection="{ item }">
-          <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
-        </template>
-        <template v-slot:prepend-item>
-          <v-text-field
-            v-model="searchTerm"
-            class="_dropdown-text-field"
-            placeholder="Search"
-            @input="searchCountries"
-            append-icon="search"
-            id="DropdownTextField"
-            autocomplete="off"
-          />
-        </template>
-        <template v-slot:item="{ item, on }">
-          <v-list-item
-            class="_country-list"
-            :class="[
+  <v-container>
+    <v-row>
+      <div id="PhoneControl" class="_atat-phone-field ">
+        <div class="d-flex align-center" v-if="label">
+          <label
+            :id="id + '_TextFieldLabel'"
+            class="form-field-label mb-2 mr-2"
+            :for="id + '_TextField'"
+          >
+            {{ label }}
+          </label>
+        </div>
+        <div class="d-flex">
+          <v-select
+            attach
+            id="CountryCodeDropdown'"
+            class="_country-select"
+            :items="searchResults"
+            outlined
+            dense
+            v-model="_selectedCountry"
+            :height="42"
+            :menu-props="{ bottom: true, offsetY: true }"
+            @change="onChange"
+          >
+            <template v-slot:selection="{ item }">
+              <span class="fi" :class="[`fi-${item.abbreviation}`]"> </span>
+            </template>
+            <template v-slot:prepend-item>
+              <v-text-field
+                v-model="searchTerm"
+                class="_dropdown-text-field"
+                placeholder="Search"
+                @input="searchCountries"
+                append-icon="search"
+                id="DropdownTextField"
+                clearable
+                autofocus
+                autocomplete="off"
+              />
+            </template>
+            <template v-slot:item="{ item, on }">
+              <v-list-item
+                class="_country-list"
+                :class="[
               item.suggested ? '_suggested' : '',
               item.active ? '_active' : '',
             ]"
-            v-on="on"
-          >
-            <v-list-item-content
-              :id="
+                v-on="on"
+              >
+                <v-list-item-content
+                  :id="
                 id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/gi, '')
               "
-              :item-value="item.name"
-            >
-              <v-list-item-title class="body _country">
-                <v-row no-gutters align="center">
+                  :item-value="item.name"
+                >
+                  <v-list-item-title class="body _country">
+                    <v-row no-gutters align="center">
                   <span class="mr-3 fi" :class="[`fi-${item.abbreviation}`]">
                   </span>
-                  <span class="mr-2 _country-name">{{ item.name }}</span>
-                  <span class="color-base body-sm">{{ item.countryCode }}</span>
-                </v-row>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-select>
-      <v-text-field
-        ref="atatTextField"
-        :id="id + '_textField'"
-        outlined
-        dense
-        :height="42"
-        :value.sync="_value"
-        :placeholder="placeHolder"
-        @input="phoneMask"
-        class="_phone-number-input"
-        :hide-details="true"
-        :suffix="suffix"
-        :prefix="this._selectedCountry.countryCode"
-        autocomplete="off"
-      >
-      </v-text-field>
-    </div>
-  </div>
-</template>
+                      <span class="mr-2 _country-name">{{ item.name }}</span>
+                      <span class="color-base body-sm">{{ item.countryCode }}</span>
+                    </v-row>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
+          <v-text-field
+            ref="atatTextField"
+            :id="id + '_textField'"
+            outlined
+            dense
+            :height="42"
+            :value.sync="_value"
+            :placeholder="placeHolder"
+            @input="phoneMask"
+            class="_phone-number-input"
+            :hide-details="true"
+            :suffix="suffix"
+            :prefix="this._selectedCountry.countryCode"
+            autocomplete="off"
+          >
+          </v-text-field>
+        </div>
+      </div>
+      <div id="PhoneExtensionControl" class="_atat-phone-extension-field ml-10">
+        <div class="d-flex align-center">
+          <label
+            :id="id + '_ExtensionTextFieldLabel'"
+            class="form-field-label mb-2 mr-2"
+            :for="id + '_ExtensionTextFieldLabel'"
+          >
+            Extension
+            <span class="optional">
+        Optional
+      </span>
+          </label>
+        </div>
 
+        <ATATTextField
+          ref="atatExtensionTextField"
+          :id="id + '_PhoneExtensionField'"
+          outlined
+          dense
+          :height="42"
+          :value.sync="_extension"
+          class="_phone-extension-input"
+          :hide-details="true"
+          @input="inputActions"
+          autocomplete="off"
+        >
+        </ATATTextField>
+      </div>
+    </v-row>
+  </v-container>
+</template>
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
@@ -101,23 +134,28 @@ export default class ATATPhoneInput extends Vue {
   // refs
   $refs!: {
     atatPhoneField: Vue & { errorBucket: string[]; errorCount: number };
+    atatExtensionTextField: Vue & { errorBucket: string[]; errorCount: number };
   };
 
   // props
-  @Prop({ default: true }) private dense!: boolean;
-  @Prop({ default: true }) private singleLine!: boolean;
-  @Prop({ default: "PhoneNumber" }) private id!: string;
-  @Prop({ default: "" }) private label!: string;
-  @Prop({ default: "" }) private appendIcon!: string;
-  @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: "" }) private suffix!: string;
-  @Prop({ default: "" }) private optional!: boolean;
-  @Prop({ default: "351" }) private width!: string;
+  @Prop({default: true}) private dense!: boolean;
+  @Prop({default: true}) private singleLine!: boolean;
+  @Prop({default: "PhoneNumber"}) private id!: string;
+  @Prop({default: ""}) private label!: string;
+  @Prop({default: ""}) private appendIcon!: string;
+  @Prop({default: ""}) private placeHolder!: string;
+  @Prop({default: ""}) private suffix!: string;
+  @Prop({default: ""}) private optional!: boolean;
+  @Prop({default: "351"}) private width!: string;
 
-  @PropSync("country", {default: ()=> (
-    { name: '', countryCode: '', abbreviation: '', active: false }
-  )}) private _selectedCountry!: CountryObj;
+  @PropSync("country", {
+    default: () => (
+      {name: '', countryCode: '', abbreviation: '', active: false}
+    )
+  }) private _selectedCountry!: CountryObj;
   @PropSync("value", {default: ""}) private _value!: string;
+  @PropSync("phoneExtension", {default: ""}) private _extension!: string;
+
 
   // data
   private searchResults: CountryObj[] = [];
@@ -125,13 +163,14 @@ export default class ATATPhoneInput extends Vue {
   private errorMessages: string[] = [];
 
   private inputActions(v: string) {
-    this._value = v;
+    this._extension = v;
   };
 
   private searchCountries() {
     if (!this.searchTerm) {
       this.searchResults = this.countries;
-    };
+    }
+    ;
     this.searchResults = this.countries.filter((country) => {
       return country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
     });
@@ -154,16 +193,17 @@ export default class ATATPhoneInput extends Vue {
     const phoneTextField = document.getElementById(this.id + '_textField') as HTMLElement;
     switch (this._selectedCountry.abbreviation) {
     case "us":
-      return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+      return Inputmask('999-999-9999', {placeholder: '', jitMasking: true})
         .mask(phoneTextField);
     case 'dsn':
       this._value = this._selectedCountry.countryCode + val;
-      return Inputmask('999-999-9999',{placeholder:'', jitMasking: true})
+      return Inputmask('999-999-9999', {placeholder: '', jitMasking: true})
         .mask(phoneTextField);
     default:
-      return Inputmask('*{20}',{placeholder:'', jitMasking: true})
+      return Inputmask('*{20}', {placeholder: '', jitMasking: true})
         .mask(phoneTextField)
-    };
+    }
+    ;
   };
 
   mounted(): void {
@@ -361,7 +401,7 @@ export default class ATATPhoneInput extends Vue {
       abbreviation: "gb",
       active: false,
     },
-  ];  
+  ];
 
 };
 </script>
