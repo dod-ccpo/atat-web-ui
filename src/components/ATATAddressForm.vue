@@ -18,6 +18,7 @@
           label="Street address"
           :class="inputClass"
           :value.sync="_streetAddress1"
+          :rules="[$validators.required('Please enter an address.')]"
         />
       </v-col>
       <v-col class="col-12 col-lg-3">
@@ -46,6 +47,7 @@
           label="City"
           :class="inputClass"
           :value.sync="_city"
+          :rules="[$validators.required('Please enter a city.')]"
         />
         <ATATSelect
           v-show="selectedAddressType === addressTypes.MIL"
@@ -55,6 +57,7 @@
           :items="militaryPostOfficeOptions"
           :selectedValue.sync="_selectedMilitaryPO"
           :returnObject="true"
+          :rules="[$validators.required('Please select a military post office (APO or FPO).')]"
         />
       </v-col>
       <v-col
@@ -74,6 +77,7 @@
           :searchFields="['text', 'value']"
           :items="stateListData"
           :selectedItem.sync="_selectedState"
+          :rules="[$validators.selectionRequired('Please select a state.')]"
           placeholder=""
           icon="arrow_drop_down"
         />
@@ -86,6 +90,7 @@
           :items="stateCodeListData"
           :selectedValue.sync="_selectedStateCode"
           :returnObject="true"
+          :rules="[$validators.selectionRequired('Please select a state code.')]"
         />
 
         <ATATTextField
@@ -94,6 +99,7 @@
           label="State or Province"
           :value.sync="_stateOrProvince"
           :class="inputClass"
+          :rules="[$validators.required('Please enter a state/province.')]"
         />
       </v-col>
       <v-col class="col-12 col-lg-3">
@@ -101,6 +107,10 @@
           id="ZIP"
           :label="zipLabel"
           :class="inputClass"
+          :rules="[$validators.required('Please enter a postal code.'),
+          $validators
+          .maxLength(10, `Your postal code must be 10 characters or less 
+          and may include spaces and hyphens.`)]"
           :value.sync="_zipCode"
           width="160"
         />
@@ -117,6 +127,7 @@
           :items="countryListData"
           :selectedItem.sync="_selectedCountry"
           :returnObject="true"
+          :rules="[$validators.selectionRequired('Please select a country.')]"
           placeholder=""
           icon="arrow_drop_down"
         />

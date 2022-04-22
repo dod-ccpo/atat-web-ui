@@ -16,6 +16,7 @@
           :searchFields="['text']"
           :items="serviceOrAgencyData"
           :selectedItem.sync="selectedServiceOrAgency"
+          :rules="[$validators.selectionRequired('Please select your service or agency.')]"
           placeholder="Find your service/agency"
           icon="arrow_drop_down"
         />
@@ -49,6 +50,7 @@
               :searchFields="['text']"
               :items="disaOrgData"
               :selectedItem.sync="selectedDisaOrg"
+              :rules="[$validators.selectionRequired('Please select your DISA Organization.')]"
               placeholder="Find your DISA organization"
               icon="arrow_drop_down"
             />
@@ -62,6 +64,8 @@
               label="Organization name"
               class="_input-max-width mb-10"
               :value.sync="organizationName"
+              :rules="[$validator.required('Please enter your organization name.'),
+              $validator.maxLength(80, 'Organization name cannot exceed 80 characters.')]"
             />
 
             <ATATTextField
@@ -72,6 +76,9 @@
               activity, or organization that has the authority to requisition, contract 
               for, or fund/pay bills for materials and services."
               :value.sync="dodAddressCode"
+              :rules="[$validators.required('Please enter your 6-character DoDAAC.'), 
+              $validators.minLength(6, 'Your DoDAAC must be 6 characters.'),
+              $validators.maxLength(6, 'Your DoDAAC must be 6 characters.')]"
             />
 
             <hr />
@@ -147,6 +154,7 @@ import { RadioButton, SelectData } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+
 
 @Component({
   components: {

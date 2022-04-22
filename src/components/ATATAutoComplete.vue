@@ -1,14 +1,8 @@
 <template>
   <div :id="id + '_AutoComplete_Wrapper'">
-    <label
-      :for="id"
-      :class="{ 'd-sr-only': labelSrOnly }"
-      class="mb-2 d-block"
-    >
+    <label :for="id" :class="{ 'd-sr-only': labelSrOnly }" class="mb-2 d-block">
       {{ label }}
-      <span v-if="optional" class="optional">
-        Optional
-      </span>
+      <span v-if="optional" class="optional"> Optional </span>
     </label>
     <v-autocomplete
       :id="id"
@@ -20,21 +14,24 @@
       :append-icon="icon"
       :item-text="titleKey"
       :filter="customFilter"
+      :rules="rules"
       return-object
       clearable
       outlined
       attach
       dense
-      @update:search-input="updateSearchInput" 
+      @update:search-input="updateSearchInput"
     >
-      <template v-slot:item="{item}">
+      <template v-slot:item="{ item }">
         <v-list-item-content>
-          <v-list-item-title 
+          <v-list-item-title
             v-text="item[titleKey]"
-            :class="{'font-weight-normal': !subtitleKey}"
+            :class="{ 'font-weight-normal': !subtitleKey }"
           ></v-list-item-title>
-          <v-list-item-subtitle v-if="subtitleKey" 
-          v-text="item[subtitleKey]"></v-list-item-subtitle>
+          <v-list-item-subtitle
+            v-if="subtitleKey"
+            v-text="item[subtitleKey]"
+          ></v-list-item-subtitle>
         </v-list-item-content>
       </template>
 
@@ -42,9 +39,9 @@
         <v-list-item v-show="searchText !== null" class="no-results">
           <v-list-item-title>
             No results found.
-            <a 
-              v-if="noResultsText" 
-              @click="noResultsAction" 
+            <a
+              v-if="noResultsText"
+              @click="noResultsAction"
               class="_text-link"
               role="button"
               tabindex="0"
@@ -55,10 +52,8 @@
           </v-list-item-title>
         </v-list-item>
       </template>
-
     </v-autocomplete>
   </div>
-
 </template>
 
 <script lang="ts">
@@ -68,7 +63,6 @@ import { AutoCompleteItem } from "types/Global";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
 @Component({})
-
 export default class ATATAutoComplete extends Vue {
   // data
 
@@ -81,6 +75,7 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "", required: true }) private label!: string;
   @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: [], required: true }) private searchFields!: [];
@@ -126,6 +121,5 @@ export default class ATATAutoComplete extends Vue {
     this.isReset = true;
     this.$emit("noAutoCompleteResultsAction");
   }
-
 }
 </script>

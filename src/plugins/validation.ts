@@ -1,6 +1,7 @@
 import Vue from "vue"
 
 import { isValid } from "date-fns";
+import { SelectData } from "types/Global";
 
 export class ValidationPlugin {
 
@@ -143,6 +144,20 @@ export class ValidationPlugin {
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
+    };
+  };
+
+  /**
+   * Validator that handles required values for autocomplete fields
+   * @param message 
+   * @returns {function(*): (boolean|string)}
+   */
+  selectionRequired(
+    message?: string
+  ): ((v: SelectData) => string | true | undefined){
+    message = message || "This field is required.";
+    return (v: SelectData) => {
+      return (v && (v.text.length && v.text.length > 0)) || message;
     };
   };
 
