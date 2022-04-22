@@ -11,6 +11,7 @@
     </div>
     <div class="d-flex">
       <v-select
+        ref="atatPhoneDropdown"
         attach
         id="CountryCodeDropdown"
         class="_country-select"
@@ -75,7 +76,6 @@
         :height="42"
         :value.sync="_value"
         :placeholder="placeHolder"
-        @input="phoneMask"
         @blur="validate"
         class="_phone-number-input"
         :hide-details="true"
@@ -109,7 +109,19 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 export default class ATATPhoneInput extends Vue {
   // refs
   $refs!: {
-    atatPhoneTextField: Vue & { errorBucket: string[]; errorCount: number };
+    atatPhoneTextField: Vue & 
+    { 
+      errorBucket: string[]; 
+      errorCount: number; 
+      reset: ()=> void; 
+      blur: ()=> void;
+      focus: ()=> void;
+    };
+    atatPhoneDropdown: Vue & 
+    { 
+      blur: ()=> void;
+      focus: ()=> void;
+    };
   };
 
   // props
@@ -133,23 +145,17 @@ export default class ATATPhoneInput extends Vue {
       "active": true,
       "mask": "999-999-9999"
     },
-    type: Object as () => CountryObj
-  }
+    type: Object as () => CountryObj } 
   )
-  private _selectedCountry!: CountryObj;
-  //todo remove focus on DropdownTextField
-  //todo show error messages
 
-  @PropSync("value", { default: "" }) private _value!: string;
+  private _selectedCountry!: CountryObj;
+
+  @PropSync("value", { default: "" }) private _value!: string | null;
 
   // data
   private searchResults: CountryObj[] = [];
   private searchTerm = "";
   private errorMessages: string[] = [];
-
-  private inputActions(v: string) {
-    this._value = v;
-  }
 
   private searchCountries() {
     if (!this.searchTerm) {
@@ -167,14 +173,6 @@ export default class ATATPhoneInput extends Vue {
     this.errorMessages = this.$refs.atatPhoneTextField.errorBucket;
   }
 
-  private clearErrorMessages(): void{
-    Vue.nextTick(()=>{
-      const textBox = document.getElementById(this.id + "_textField") as HTMLInputElement;
-      this.$refs.atatPhoneTextField.errorBucket = [];
-      this.errorMessages = [];
-      textBox.focus();
-    });
-  }
 
   //@Events
   private validate(e: FocusEvent) : void{
@@ -185,6 +183,15 @@ export default class ATATPhoneInput extends Vue {
 
   //@Events
   private onChange(val: CountryObj): void {
+    this.setDropdownValue(val);
+    this.resetTextBox();
+    this.clearErrorMessages();
+    this.blurDropDown();
+    this.focusTextBox();
+    this.setPhoneMask();
+  }
+
+  private setDropdownValue(val: CountryObj): void{
     this._selectedCountry = val;
     this._selectedCountry.active = true;
     this.searchTerm = "";
@@ -194,32 +201,49 @@ export default class ATATPhoneInput extends Vue {
         country.active = false;
       });
     this.searchResults = this.countries;
-    this.reset();
   }
 
-  private reset():void{
-    this._value = "";
-    this.clearErrorMessages();
-
+  private resetTextBox():void{
+    this.$refs.atatPhoneTextField.reset();
   }
 
+  private clearErrorMessages(): void{
+    Vue.nextTick(()=>{
+      this.$refs.atatPhoneTextField.errorBucket = [];
+      this.errorMessages = [];
+    });
+  }
+
+  private blurDropDown(): void{
+    Vue.nextTick(()=>{
+      this.$refs.atatPhoneDropdown.blur();
+    });
+  }
+
+  private focusTextBox():void{
+    Vue.nextTick(()=>{
+      this.$refs.atatPhoneTextField.focus();
+    });
+  }
 
   // mask
-  private phoneMask(): Inputmask.Instance {
+  private setPhoneMask(): void{
+    Vue.nextTick(()=>{
+      const phoneTextField = document.getElementById(
+        this.id + "_textField"
+      ) as HTMLElement;
     
-    const phoneTextField = document.getElementById(
-      this.id + "_textField"
-    ) as HTMLElement;
-    
-    return Inputmask(this._selectedCountry?.mask || "",{
-      placeholder: "", 
-      jitMasking: true 
-    }).mask(phoneTextField);
-
+      return Inputmask({ 
+        mask: this._selectedCountry?.mask || [],
+        placeholder: "", 
+        jitMasking: true 
+      }).mask(phoneTextField);
+    });
   }
   
   private mounted(): void {
     this.searchResults = [...this.countries];
+    this.setPhoneMask();
   }
 
   //data
@@ -231,7 +255,7 @@ export default class ATATPhoneInput extends Vue {
       abbreviation: "us",
       active: false,
       suggested: true,
-      mask: "999-999-9999"
+      mask: ["999-999-9999"],
     },
     {
       name: "Defense Switched Network",
@@ -239,205 +263,210 @@ export default class ATATPhoneInput extends Vue {
       abbreviation: "dsn",
       active: false,
       suggested: true,
+      mask: ["999-9999", "999-999-9999"],
     },
     {
-      name: "Albania -- missing",
-      countryCode: "+355",
+      name: "Albania",
+      countryCode: "+355 4",
       abbreviation: "al",
       active: false,
-      mask: "(999)999-999"
+      mask: ["999 999"],
     },
     {
       name: "Belgium",
       countryCode: "+32",
       abbreviation: "be",
       active: false,
-      mask: "99 999 99 99",
+      mask: ["99 999 99 99"],
     },
     {
       name: "Bulgaria",
       countryCode: "+359",
       abbreviation: "bg",
       active: false,
-      mask: "99 999 9999",
+      mask: ["99 999 9999"],
     },
     {
       name: "Canada",
       countryCode: "+1",
       abbreviation: "ca",
       active: false,
-      mask: "(999) 999-9999",
+      mask: ["999-999-9999"],
     },
     {
       name: "Croatia",
       countryCode: "+385",
       abbreviation: "hr",
       active: false,
-      mask:"99 9999 999",
+      mask:["99 9999 999"],
     },
     {
       name: "Czech Republic",
       countryCode: "+420",
       abbreviation: "cz",
       active: false,
-      mask:"999 999 999",
+      mask:["999 999 999"],
     },
     {
       name: "Denmark",
       countryCode: "+45",
       abbreviation: "dk",
       active: false,
-      mask:"99 99 99 99",
+      mask:["99 99 99 99"],
     },
     {
       name: "Estonia",
       countryCode: "+372",
       abbreviation: "ee",
       active: false,
-      mask:"999 9999",
+      mask:["999 9999"],
     },
     {
       name: "France",
       countryCode: "+33",
       abbreviation: "fr",
       active: false,
-      mask:"99 99 99 99 99"
+      mask:["99 99 99 99 99"],
     },
     {
       name: "Germany",
       countryCode: "+49",
       abbreviation: "de",
       active: false,
-      mask:"999 99999999",
+      mask:["999 99999999"],
     },
     {
       name: "Greece",
       countryCode: "+30",
       abbreviation: "gr",
       active: false,
-      mask: "99 9999 9999",
+      mask: ["99 9999 9999"],
     },
     {
-      name: "Greenland -- missing",
+      name: "Greenland",
       countryCode: "+299",
       abbreviation: "gl",
       active: false,
+      mask: ["99 99 99"]
     },
     {
       name: "Hungary",
       countryCode: "+36",
       abbreviation: "hu",
       active: false,
-      mask: "(9) 999 9999"
+      mask: ["(9) 999 9999"]
     },
     {
       name: "Iceland -- missing",
       countryCode: "+354",
       abbreviation: "is",
       active: false,
+      mask: ["999-9999"]
     },
     {
       name: "Italy",
       countryCode: "+39",
       abbreviation: "it",
       active: false,
-      mask: "99 9999 9999"
+      mask: ["99 9999 9999"]
     },
     {
       name: "Latvia",
       countryCode: "+371",
       abbreviation: "lv",
       active: false,
-      mask: "99 999 999",
+      mask: ["99 999 999"],
     },
     {
       name: "Lithuania",
       countryCode: "+370",
       abbreviation: "lt",
       active: false,
-      mask:"(9-9) 999 9999"
+      mask:["(9-9) 999 9999"]
     },
     {
       name: "Luxembourg",
       countryCode: "+352",
       abbreviation: "lu",
       active: false,
-      mask: "99 99 99 99"
+      mask: ["99 99 99 99"],
     },
     {
-      name: "Montenegro -- missing",
-      countryCode: "+382",
+      name: "Montenegro",
+      countryCode: "+382 0",
       abbreviation: "me",
       active: false,
+      mask: ["99 999 999"]
     },
     {
       name: "Netherlands",
       countryCode: "+31",
       abbreviation: "nl",
       active: false,
-      mask: "999 999 9999",
+      mask: ["999 999 9999"],
     },
     {
       name: "Norway",
       countryCode: "+47",
       abbreviation: "no",
       active: false,
-      mask: "99 99 99 99",
+      mask: ["99 99 99 99"],
     },
     {
       name: "Poland",
       countryCode: "+48",
       abbreviation: "pl",
       active: false,
-      mask: "99 999 99 99",
+      mask: ["99 999 99 99"],
     },
     {
       name: "Portugal",
       countryCode: "+351",
       abbreviation: "pt",
       active: false,
-      mask: "999 999 999",
+      mask: ["999 999 999"],
     },
     {
       name: "Romania",
       countryCode: "+40",
       abbreviation: "ro",
       active: false,
-      mask: "999 999 9999",
+      mask: ["999 999 9999"],
     },
     {
       name: "Slovakia",
       countryCode: "+421",
       abbreviation: "sk",
       active: false,
-      mask: "99/999 999 99",
+      mask: ["99/999 999 99"],
     },
     {
       name: "Slovenia",
       countryCode: "+386",
       abbreviation: "si",
       active: false,
-      mask: "(99) 999 99 99"
+      mask: ["(99) 999 99 99"],
     },
     {
       name: "Spain",
       countryCode: "+34",
       abbreviation: "es",
       active: false,
-      mask: "999 99 99 99"
+      mask: ["999 99 99 99"],
     },
     {
-      name: "Turkey -- missing",
+      name: "Turkey",
       countryCode: "+90",
       abbreviation: "tr",
       active: false,
+      mask: ["999 999 9999"],
     },
     {
       name: "United Kingdom",
       countryCode: "+44",
       abbreviation: "gb",
       active: false,
-      mask: "999 9999 9999"
+      mask: ["999 9999 9999"],
     },
   ];
 }

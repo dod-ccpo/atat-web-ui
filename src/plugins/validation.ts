@@ -149,22 +149,18 @@ export class ValidationPlugin {
 
   /**
  * todo
- * Validator that validates if input is a valid Date
+ * Validator that validates if input is a valid email
  * Returns the error message otherwise.
  *
- * @param (string) date as "MM/dd/yyyy"
  * @returns {function(*): (boolean|string)}
  */
  isEmail = (
  ): ((v: string) => string | true | undefined) => {
-   // validate date isn't something like 12/DD/YYYY
    return (v: string) => {
-     if (v!==""){  
-       if (/[a-z0-9]+@[a-z]+\.[a-z]{3}/.test(v)) {
+     if (v && v!==""){  
+       if (/[a-z0-9]+@[a-z]+\.[a-z]{3}/.test(v) === false) {
          return "Please use standard domain format, like ‘@mail.mil’"
-       } else if (v.indexOf("@") < 0){
-         return "Please include an '@’ symbol in the email address."
-       } else if (/[a-z0-9]+@[a-z]+\.[ gov,mil ]/.test(v)) {
+       } else if (/[a-z0-9]+@[a-z]+\.[gov|mil]/.test(v) === false) {
          return "Please use your .mil or .gov email address."
        } 
      }
@@ -174,7 +170,7 @@ export class ValidationPlugin {
 
  /**
  * todo
- * Validator that validates if input is a valid Date
+ * Validator that validates if input is a phoneNumber
  * Returns the error message otherwise.
  *
  * @param {string} country country Abbreviation 
@@ -184,11 +180,17 @@ export class ValidationPlugin {
    country: CountryObj
  ): ((v: string) => string | true | undefined) => {
    return (v: string) => {
-     if (v!==""){ 
-       const plainPN = v.replace(/() -\^/gi,''); 
-       const plainMask = country?.mask?.replace(/() -\^/gi,'') || ""; 
-       return plainPN.length === plainMask.length || 
-        `Please enter a number using the format for  ${country.name} (e.g., ${country.mask})`;
+     if (v && v!==""){ 
+       const plainPN = v.replace(/[() -]/gi,'') || '';
+       const isValid = country?.mask?.some((mask) =>{
+         return mask.replace(/[() -]/gi,'').length === plainPN.length;
+       });
+       return isValid || 
+        `Please enter a number using the format ` +
+        `for  ${country.name} (e.g., ${country.mask?.join(", ")}).`;
+     }
+     else {
+       return "Please enter your phone number."
      }
      return true;
    }
