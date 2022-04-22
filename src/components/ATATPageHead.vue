@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app flat class="_atat-page-header">
+  <v-app-bar id="PageHeader" app flat class="_atat-page-header">
     <div class="d-flex justify-space-between width-100">
       <div id="PackageNameHeader" class="h3">{{ headline }}</div>
       <div class="d-flex justify-end">
