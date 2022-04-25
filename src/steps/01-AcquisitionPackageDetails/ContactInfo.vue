@@ -121,7 +121,7 @@
           v-show="selectedRole === 'CIVILIAN'"
           id="ContactGrade"
           :optional="true"
-          class="_input-max-width"
+          class="_input-max-width mb-10"
           label="Grade"
           :label-sr-only="false"
           titleKey="label"
@@ -134,8 +134,7 @@
         <ATATPhoneInput
           label="Your phone number"
           id="ContactPhone"
-          class="_input-max-width"
-          :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
+          class="_input-max-width mb-10"
           :value.sync="selectedPhoneNumber"
           :country.sync="selectedPhoneCountry"
           :rules="[

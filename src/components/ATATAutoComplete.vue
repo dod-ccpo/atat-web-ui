@@ -11,6 +11,7 @@
       </span>
     </label>
     <v-autocomplete
+      ref="atatAutoComplete"
       :id="id"
       v-model="_selectedItem"
       :class="inputClass"
@@ -19,12 +20,15 @@
       :placeholder="placeholder"
       :append-icon="icon"
       :item-text="titleKey"
+      :hide-details="true"
       :filter="customFilter"
+      :rules="rules"
       return-object
       clearable
       outlined
       attach
       dense
+      @blur="onBlur"
       @update:search-input="updateSearchInput" 
     >
       <template v-slot:item="{item}">
@@ -33,8 +37,9 @@
             v-text="item[titleKey]"
             :class="{'font-weight-normal': !subtitleKey}"
           ></v-list-item-title>
-          <v-list-item-subtitle v-if="subtitleKey" 
-          v-text="item[subtitleKey]"></v-list-item-subtitle>
+          <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]">
+
+          </v-list-item-subtitle>
         </v-list-item-content>
       </template>
 
@@ -57,6 +62,7 @@
       </template>
 
     </v-autocomplete>
+    <ATATErrorValidation :errorMessages="errorMessages" />
   </div>
 
 </template>
@@ -66,12 +72,27 @@ import Vue from "vue";
 import { AutoCompleteItem } from "types/Global";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
-@Component({})
+@Component({
+  components: {
+    ATATErrorValidation
+  }
+})
 
 export default class ATATAutoComplete extends Vue {
+  // refs
+  $refs!: {
+    atatAutoComplete: Vue & 
+    { 
+      errorBucket: string[]; 
+      errorCount: number;
+      blur: ()=> void;
+      focus: ()=> void;
+    };
+  };
   // data
-
+  private errorMessages: string[] = [];
   private searchText = null;
   private isReset = false;
 
@@ -88,6 +109,7 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
 
   // computed
@@ -101,15 +123,6 @@ export default class ATATAutoComplete extends Vue {
   }
 
   // methods
-
-  private updateSearchInput(): void {
-    if (this.isReset) {
-      this._selectedItem = {};
-      this.searchText = null;
-      this.$emit("autocompleteInputUpdate", this.isReset);
-    }
-    this.isReset = false;
-  }
 
   private customFilter(item: AutoCompleteItem, queryText: string) {
     let text = "";
@@ -127,5 +140,25 @@ export default class ATATAutoComplete extends Vue {
     this.$emit("noAutoCompleteResultsAction");
   }
 
+  private setErrorMessage(): void {
+    Vue.nextTick(()=>{
+      this.errorMessages = this.$refs.atatAutoComplete.errorBucket;
+    });
+  }
+  //@Events
+  private onBlur(value: string) : void{
+    this.setErrorMessage();
+    this.$emit('blur', value);
+  }
+  
+  private updateSearchInput(): void {
+    if (this.isReset) {
+      this._selectedItem = {};
+      this.searchText = null;
+      this.$emit("autocompleteInputUpdate", this.isReset);
+    }
+    this.setErrorMessage();
+    this.isReset = false;
+  }
 }
 </script>
