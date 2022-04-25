@@ -33,7 +33,8 @@ import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
-import {cleanText,colors} from "../helpers";
+import { cleanText, colors } from "../helpers";
+import occ from '../selectors/occ.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -511,4 +512,22 @@ Cypress.Commands.add("popLengthOptionYearExists", () => {
       }
     });
 
+});
+
+Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(occ.piiRadioOtionActive)
+    .then(($radioBtn) => {      
+      const selectedOption = $radioBtn.text();
+      cy.log(selectedOption);
+      cy.btnExists(common.continueBtn, ' Continue ').click();
+      if (selectedOption === "radio_button_checkedYes." +
+        " This contract action will include a system of records with PII.") {
+        //naviagtes to 
+        cy.textExists(common.header, " Tell us more about your system of records " );
+      } else {
+        cy.textExists(common.header,"Let’s find out if you need a Business Associates Agreement");
+      }
+          
+    })
 });
