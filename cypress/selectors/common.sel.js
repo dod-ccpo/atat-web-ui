@@ -62,4 +62,15 @@ module.exports = {
   subStepPropDetailsText: "#SubStep_PropertyDetails .step-text",
   substepJustificationLink: "#SubStep_Justification",
   substepJustificationText: "#SubStep_Justification  span.step-text",
+  //Other Contract Considerations
+  stepOCCLink: "#Step_OtherContractConsiderations",
+  stepOCCText: "#Step_OtherContractConsiderations .step-text",
+  subStepPIILink: "#SubStep_PersonallyIdentifiableInformationPII",
+  subStepPIIText: "#SubStep_PersonallyIdentifiableInformationPII .step-text",
+  subStepBAALink: "#SubStep_BusinessAssociateAgreementBAA",
+  subStepBAAText: "#SubStep_BusinessAssociateAgreementBAA .step-text",
+  substepPDOILink: "#SubStep_PublicDisclosureofInformation",
+  substepPDOIText: "#SubStep_PublicDisclosureofInformation .step-text",
+  substepSection508Link: "#SubStep_Section508Standards",
+  substepSection508Text: "#SubStep_Section508Standards .step-text",
 }
