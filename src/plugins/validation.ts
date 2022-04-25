@@ -154,9 +154,6 @@ export class ValidationPlugin {
   };
 
   /**
- * todo
- * Validator that validates if input is a valid email
- * Returns the error message otherwise.
  *
  * @returns {function(*): (boolean|string)}
  */
