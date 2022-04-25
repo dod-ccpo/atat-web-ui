@@ -523,7 +523,7 @@ Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
       cy.btnExists(common.continueBtn, ' Continue ').click();
       if (selectedOption === "radio_button_checkedYes." +
         " This contract action will include a system of records with PII.") {
-        //naviagtes to 
+        //naviagtes to "Tell us more about your system of records screen"
         cy.textExists(common.header, " Tell us more about your system of records " );
       } else {
         cy.textExists(common.header,"Let’s find out if you need a Business Associates Agreement");

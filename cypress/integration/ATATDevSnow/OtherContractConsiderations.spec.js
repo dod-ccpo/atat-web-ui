@@ -57,23 +57,23 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.radioBtn(occ.yesPIIRadioOption, "Yes").not("[disabled]");
     cy.radioBtn(occ.noPIIRadioOption, "No").not("[disabled]");
     //Links Exists
-    cy.textExists(occ.piiLink,
-      " Why do we need to know about PII? ").click({ force: true }).then(() => {
-      const piiFAQTxt = "If this effort provides for the design," +
+    cy.textExists(occ.piiLink, " Why do we need to know about PII? ")
+      .click({ force: true }).then(() => {
+        const piiFAQTxt = "If this effort provides for the design," +
           " development, or operation of a system of records on" +
           " individuals (in whole or in part), then the contracting" +
           " officer must include the following clauses in the solicitation:"
-      cy.findElement(occ.piiFAQText).then(($el) => {
-        let actualTxt = $el.text();
-        cy.log(actualTxt);
-        const formattedTxt = cleanText(actualTxt);
-        expect(formattedTxt).equal(piiFAQTxt);
-        cy.textExists(occ.patLink, "FAR 52.224-1");
-        cy.textExists(occ.paLink, "FAR 52.224-2");
-        cy.textExists(occ.moreInfoLink, "FAR 24.1, Protection of Individual Privacy.");
-      })
+        cy.findElement(occ.piiFAQText).then(($el) => {
+          let actualTxt = $el.text();
+          cy.log(actualTxt);
+          const formattedTxt = cleanText(actualTxt);
+          expect(formattedTxt).equal(piiFAQTxt);
+          cy.textExists(occ.patLink, "FAR 52.224-1");
+          cy.textExists(occ.paLink, "FAR 52.224-2");
+          cy.textExists(occ.moreInfoLink, "FAR 24.1, Protection of Individual Privacy.");
+        })
       
-    });
+      });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
