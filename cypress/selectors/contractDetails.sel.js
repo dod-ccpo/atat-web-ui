@@ -4,8 +4,8 @@ module.exports = {
   popText: "p.mb-10",
   popLengthLabelText: "div.mb-4._semibold",
   mainWrap:".v-main__wrap",
-  baseRow:"#BaseRow.d-flex.mb-5",
-  baseLabelText: "#BaseRow .d-flex",
+  baseRow:"#BaseRow",
+  baseLabelText: "#BaseRow .duration",
   baseInputTxtBox: "#BaseDuration_text_field",
   baseDropdownIcon: "#BaseDropdown_dropdown_field_control .v-input__control .v-input__append-inner",
   baseDropdownList: "#BaseDropdown_dropdown_field_control  .v-list",
@@ -17,7 +17,7 @@ module.exports = {
   baseDuplicateButton:"#BaseCopy",
   baseDeleteButton: "#BaseDelete",
   addOptionLink:"#AddOptionPeriodButton",
-  optionRow:"#Option1Row.d-flex.mb-5",
+  optionRow:"#Option1Row",
   optionalTextBox: "#Option1Duration_text_field",
   optionDropdownIcon: "#Option1_dropdown_field_control .v-input__control .v-input__append-inner",
   optionDropdownList: "#Option1_dropdown_field_control .v-list",
@@ -46,5 +46,14 @@ module.exports = {
   yesRadioOption: "#Radio_YesRecurring",
   noRadioOption: "#Radio_NoRecurring",
   activeRadioOption:"#RecurringOptions_radio_group_control .v-item--active",
-  popRadioGroup:"#PoPStartDate_radio_group_control"
+  popRadioGroup: "#PoPStartDate_radio_group_control",
+  //which Contract type applies to this acquistion?
+  introPText: "#IntroP",
+  farLink: "._text-link",
+  selectMessageText: "#SelectMessage",
+  ffpCheckBox: "#Checkbox_FFPCheckbox",
+  tmCheckBox: "#Checkbox_TMCheckbox",
+  tmTextFieldLabel:"#JustificationForTM_text_field_label",
+  tmTextFieldInputBox: "#JustificationForTM_text_area",
+  tmLearnMoreLink:"#JustificationLearnMore"
 }
