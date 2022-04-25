@@ -70,6 +70,7 @@ Cypress.Commands.add("findElement", (selector) => {
 });
 
 Cypress.Commands.add('textExists', (selector, textLabel) => {
+  textLabel = textLabel.trim();
   cy.findElement(selector)
     .should("be.visible")
     .and("contain.text", textLabel);
