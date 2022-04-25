@@ -46,5 +46,14 @@ module.exports = {
   yesRadioOption: "#Radio_YesRecurring",
   noRadioOption: "#Radio_NoRecurring",
   activeRadioOption:"#RecurringOptions_radio_group_control .v-item--active",
-  popRadioGroup:"#PoPStartDate_radio_group_control"
+  popRadioGroup: "#PoPStartDate_radio_group_control",
+  //which Contract type applies to this acquistion?
+  introPText: "#IntroP",
+  farLink: "._text-link",
+  selectMessageText: "#SelectMessage",
+  ffpCheckBox: "#Checkbox_FFPCheckbox",
+  tmCheckBox: "#Checkbox_TMCheckbox",
+  tmTextFieldLabel:"#JustificationForTM_text_field_label",
+  tmTextFieldInputBox: "#JustificationForTM_text_area",
+  tmLearnMoreLink:"#JustificationLearnMore"
 }
