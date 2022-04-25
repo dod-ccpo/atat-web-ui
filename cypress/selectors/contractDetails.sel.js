@@ -4,7 +4,7 @@ module.exports = {
   popText: "p.mb-10",
   popLengthLabelText: "div.mb-4._semibold",
   mainWrap:".v-main__wrap",
-  baseRow:"#BaseRow.d-flex",
+  baseRow:"#BaseRow",
   baseLabelText: "#BaseRow .duration",
   baseInputTxtBox: "#BaseDuration_text_field",
   baseDropdownIcon: "#BaseDropdown_dropdown_field_control .v-input__control .v-input__append-inner",
