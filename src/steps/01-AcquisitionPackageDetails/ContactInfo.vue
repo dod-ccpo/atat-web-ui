@@ -220,6 +220,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
+
+  //todo replace this from the store after `countries` is stored there
   private selectedPhoneCountry: CountryObj = {
     "name": "United States",
     "countryCode": "+1",

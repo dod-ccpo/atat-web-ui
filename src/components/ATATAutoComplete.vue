@@ -38,7 +38,6 @@
             :class="{'font-weight-normal': !subtitleKey}"
           ></v-list-item-title>
           <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]">
-
           </v-list-item-subtitle>
         </v-list-item-content>
       </template>
@@ -141,9 +140,9 @@ export default class ATATAutoComplete extends Vue {
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(()=>{
+    setTimeout(()=>{
       this.errorMessages = this.$refs.atatAutoComplete.errorBucket;
-    });
+    })
   }
   //@Events
   private onBlur(value: string) : void{

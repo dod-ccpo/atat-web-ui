@@ -101,9 +101,6 @@ export default class ATATSelect extends Vue {
   private onChange(val: string): void {
     this.selected = val;
     this.setErrorMessage();
-    // Vue.nextTick(()=>{
-    //   this.$refs.atatSelect.blur();
-    // });
   }
 
   private onInput(v: string) {
@@ -114,7 +111,7 @@ export default class ATATSelect extends Vue {
   private setErrorMessage(): void {
     setTimeout(()=>{
       this.errorMessages = this.$refs.atatSelect.errorBucket;
-    },100)
+    });
   }
 
   //@Events
