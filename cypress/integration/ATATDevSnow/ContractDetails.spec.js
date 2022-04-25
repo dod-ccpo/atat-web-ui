@@ -43,7 +43,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.findElement(contractDetails.popLearnMoreLink).should("exist");
     //assert the labels
     cy.textExists(contractDetails.popLengthLabelText, " Period of Performance length ");
-    cy.textExists(contractDetails.baseLabelText, " Base ");
+    cy.textExists(contractDetails.baseLabelText, "Base");
     cy.findElement(contractDetails.baseInputTxtBox).should("exist");
     cy.findElement(contractDetails.baseDropdownIcon).click();
     const expectedOptions = [
