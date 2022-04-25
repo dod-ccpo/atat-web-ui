@@ -70,6 +70,7 @@ Cypress.Commands.add("findElement", (selector) => {
 });
 
 Cypress.Commands.add('textExists', (selector, textLabel) => {
+  textLabel = textLabel.trim();
   cy.findElement(selector)
     .should("be.visible")
     .and("contain.text", textLabel);
@@ -494,7 +495,6 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
 Cypress.Commands.add("popLengthOptionYearExists", () => {
   cy.findElement(contractDetails.mainWrap)
     .then((main) => {
-      console.log("main", main);
       if (main.find(contractDetails.optionRow).length > 0) {
         cy.log("Option1Row FOUND!");
         cy.findElement(contractDetails.baseDeleteButton)

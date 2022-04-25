@@ -284,6 +284,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           // create a fake drag ghost image to use instead of default and hide it
           var elem = document.createElement("div") as HTMLElement;
           elem.classList.add("drag-img-fake");
+          elem.setAttribute("id", "DragImgFaker");
           // must include some text or it won't hide
           elem.innerText = "x";
           document.body.appendChild(elem);
@@ -313,6 +314,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
         // element has been dropped - drag operation ends
         draggableEl.addEventListener("dragend", () => {
+          const imgFaker = document.getElementById("DragImgFaker");
+          imgFaker?.parentNode?.removeChild(imgFaker);
           
           // show the base/option label for the dragged element
           this.durationLabelEl.classList.remove("d-none");
