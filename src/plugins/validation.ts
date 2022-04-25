@@ -1,7 +1,7 @@
 import Vue from "vue"
 
 import { isValid } from "date-fns";
-import { CountryObj } from "types/Global";
+import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
 
@@ -49,13 +49,20 @@ export class ValidationPlugin {
  * @param message
  * @returns {function(*=): boolean}
  */
+
+  // todo test this with required fields
   required (
     message?: string
-  ): ((v: string) => string | true | undefined) {
+  ): ((v: string | SelectData ) => string | true | undefined) {
     message = message || "This field is required.";
-
-    return (v: string) => {
-      return (v && (v.length && v.length > 0)) || message;
+    return (v: string | true | SelectData ) => {
+      // if typeof 'selectData'
+      if (typeof(v)==="object" &&  typeof(v.text)==="string"){
+        return (v.text.length > 0) || message;
+      } else if (typeof(v) === "string"){ // else if typeof 'string'
+        return (v.length > 0) || message;
+      }
+      return true;
     };
   };
 
