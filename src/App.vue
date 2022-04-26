@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app  style="overflow: hidden;">
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData" />
 
     <ATATSlideoutPanel v-if="hasSlideoutPanelComponent">
@@ -8,9 +8,10 @@
     <ATATToast />
 
     <ATATPageHead :headline="projectTitle" />
-    <v-main id="app">
-      <router-view></router-view>
-
+    <v-main id="app" >
+      <div style="overflow: auto;">
+        <router-view></router-view>
+      </div>
       <ATATStepperNavigation
         @next="navigate('next')"
         @previous="navigate('previous')"
@@ -19,7 +20,7 @@
         :backButtonText="backButtonText"
         :noPrevious="noPrevious"
       />
-
+      
       <ATATFooter />
     </v-main>
   </v-app>
