@@ -31,6 +31,7 @@
       :hide-details="true"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
+      :validate-on-blur="validateOnBlur"
       :rules="rules"
       @blur="onBlur"
       @update:error="setErrorMessage"
@@ -75,6 +76,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
+  @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop() private extraEmitVal!: string;
 
   @PropSync("value", { default: "" }) private _value!: string;
@@ -86,7 +88,9 @@ export default class ATATTextField extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatTextField.errorBucket;
+    Vue.nextTick(()=>{
+      this.errorMessages = this.$refs.atatTextField.errorBucket;
+    });
   }
 
   //@Events
