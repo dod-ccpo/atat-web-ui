@@ -74,7 +74,12 @@ import { SelectData } from "../../types/Global";
 export default class ATATSelect extends Vue {
   // refs
   $refs!: {
-    atatSelect: Vue & { errorBucket: string[]; errorCount: number };
+    atatSelect: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      blur: ()=> void;
+      focus: ()=> void;
+    };
   }; 
 
   @PropSync("selectedValue") private _selectedValue!: string | SelectData;
@@ -95,6 +100,7 @@ export default class ATATSelect extends Vue {
   @Emit("onChange")
   private onChange(val: string): void {
     this.selected = val;
+    this.setErrorMessage();
   }
 
   private onInput(v: string) {
@@ -103,11 +109,14 @@ export default class ATATSelect extends Vue {
   private errorMessages: string[] = [];
 
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatSelect.errorBucket;
+    setTimeout(()=>{
+      this.errorMessages = this.$refs.atatSelect.errorBucket;
+    });
   }
 
   //@Events
   private onBlur(value: string) : void {
+   
     this.setErrorMessage();
     this.$emit('blur', value);
   }
