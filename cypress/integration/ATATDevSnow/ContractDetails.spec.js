@@ -1,4 +1,4 @@
-import { bootstrapMockApis,colors,cleanText } from "../../helpers";
+import { bootstrapMockApis,colors,cleanText ,randomAlphaNumeric} from "../../helpers";
 import common from "../../selectors/common.sel"
 import contractDetails from "../../selectors/contractDetails.sel";
 
@@ -22,7 +22,96 @@ describe("Test suite: Contract Details Step", () => {
       
   });
 
-  it("TC2: Asserts: Do you want to request a PoP start date?", () => {
+  it("TC2: Asserts: Let’s gather some details about the duration of your task order", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.textExists(common.header,
+      " Let’s gather some details about the duration of your task order ");
+    const expectedPOPText = "Your Period of Performance (PoP) will begin based upon" +
+      " the execution date of your task order or on your requested start date, if applicable." +
+      " It will extend through the length of the base period, plus any subsequent option periods." +
+      " In the fields below, specify the length of time that each period will remain in effect." +
+      " Add, duplicate or remove option periods as needed, up to 5 years total." +
+      " Learn more about PoPs on the JWCC contract."
+    cy.findElement("p.mb-10").then(($el) => {
+      let actualTxt = $el.text();
+      cy.log(actualTxt);
+      const formattedTxt = cleanText(actualTxt)
+      expect(formattedTxt).equal(expectedPOPText);
+
+    });
+
+    cy.findElement(contractDetails.popLearnMoreLink).should("exist");
+    //assert the labels
+    cy.textExists(contractDetails.popLengthLabelText, " Period of Performance length ");
+    cy.textExists(contractDetails.baseLabelText, "Base");
+    cy.findElement(contractDetails.baseInputTxtBox).should("exist");
+    cy.findElement(contractDetails.baseDropdownIcon).click();
+    const expectedOptions = [
+      "Year",
+      "Month(s)",
+      "Week(s)",
+      "Day(s)",      
+    ];
+    let foundDropdownItems = 0
+    //Verifying the dropdown list
+    cy.findElement(contractDetails.baseDropdownList)
+      .children().each(($el) => {
+        const text = $el.text();
+        if (expectedOptions.indexOf(text) > -1) {
+          foundDropdownItems++
+        }
+        return foundDropdownItems === expectedOptions.length;
+      });
+    
+    cy.findElement(contractDetails.baseDropdownMonth).click();
+    //Enter the Value for Base
+    cy.findElement(contractDetails.baseInputTxtBox).type("12");
+    cy.findElement(contractDetails.baseDuplicateButton).should("be.disabled");
+    cy.findElement(contractDetails.baseDeleteButton).should("be.disabled");
+    
+    //Add an Option Link:
+    cy.findElement(contractDetails.addOptionLink).should("exist").click();
+    cy.findElement(contractDetails.optionalTextBox).type("4");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
+    cy.btnExists(common.backBtn, "Back").not("[disabled]");
+  });
+
+  it("TC3: Validations: Pop Length should not be able to exceed 5 years in total", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    const showValidationMessage = (() => {
+      cy.checkErrorMessage(contractDetails.errorMessageText,
+        " The total length of your base and option periods should be 5 years or less.");
+    });
+    //enter the Base value morethan 5 years 
+    cy.findElement(contractDetails.baseInputTxtBox).type("6").then(() => {
+      showValidationMessage()
+    });
+    //enter the base value and Option year more than 5 years
+    cy.findElement(contractDetails.baseInputTxtBox).clear().type("3");
+    cy.findElement(contractDetails.addOptionLink).should("exist").click();
+    cy.findElement(contractDetails.optionalTextBox).type("4").then(() => {      
+      showValidationMessage()
+    });
+    cy.findElement(contractDetails.baseDeleteButton).click();
+    //enter the base value morethan 5 years in months
+    cy.findElement(contractDetails.baseDropdownIcon).click();
+    cy.findElement(contractDetails.baseDropdownMonth).click();
+    cy.findElement(contractDetails.baseInputTxtBox).clear().type("66")
+      .then(() => {
+        showValidationMessage()
+      });
+  });
+
+  it("TC4: Delete: Let’s gather some details about the duration of your task order", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.popLengthOptionYearExists();    
+    cy.findElement(contractDetails.addOptionLink).click();
+    cy.popLengthOptionYearExists();
+    cy.findElement(contractDetails.baseDeleteButton).click();
+    
+  });
+
+  it("TC5: Asserts: Do you want to request a PoP start date?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.header,
       " Let’s gather some details about the duration of your task order ");
@@ -45,7 +134,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
   
-  it("TC3: Do you want to request a PoP start date?: Select Radio Option", () => {
+  it("TC6: Do you want to request a PoP start date?: Select Radio Option", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.header,
       " Let’s gather some details about the duration of your task order ");
@@ -70,7 +159,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
   });
 
-  it("TC4: Do you want to request a PoP start date?: Requested Start date is Not later than",
+  it("TC7: Do you want to request a PoP start date?: Requested Start date is Not later than",
     () => {
       cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
       cy.textExists(common.header,
@@ -108,7 +197,7 @@ describe("Test suite: Contract Details Step", () => {
       cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     });
 
-  it("TC5: Asserts: Will this be a future recurring requirement?", () => {
+  it("TC8: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(contractDetails.popRadioGroup).should("exist");
@@ -129,6 +218,65 @@ describe("Test suite: Contract Details Step", () => {
     cy.radioBtn(contractDetails.noRadioOption, "false").not("[disabled]").click({force: true});
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
+  });
+
+  it("TC9: Asserts: Which contract type(s) applies to this acquisition?", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.findElement(contractDetails.popRadioGroup).should("exist");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, " Will this be a future recurring requirement? ");
+    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
+    const expectedRecuringReqText = "Firm-Fixed-Price (FFP) is the standard contract type" +
+      " for JWCC task orders. You must provide justification for a time-and-materials (T&M)" +
+      " or hybrid contract, in accordance with FAR 12.207. If you are considering a T&M" +
+      " contract, we suggest contacting the DITCO Contracting Office for further guidance."
+    cy.findElement(contractDetails.introPText).then(($e) => {
+      let actualTxt = $e.text();
+      cy.log(actualTxt);
+      const formattedTxt = cleanText(actualTxt)
+      expect(formattedTxt).equal(expectedRecuringReqText);
+
+    });
+    cy.textExists(contractDetails.farLink, "FAR 12.207.");
+    cy.textExists(contractDetails.selectMessageText,
+      "Select all that apply to your contracting effort.")
+    //assert checkbox options
+    cy.selectCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
+      .check({ force: true }).uncheck({ force: true });
+    cy.selectCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
+      .check({ force: true }).uncheck({ force: true });      
+    cy.btnExists(common.backBtn, "Back").not("[disabled]");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
+  });
+
+  it("TC10: ContractType: Select checkbox options", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.findElement(contractDetails.popRadioGroup).should("exist");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, " Will this be a future recurring requirement? ");
+    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
+    //Select the checkbox options
+    cy.selectCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
+      .check({ force: true });
+    cy.selectCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
+      .check({ force: true }).then(() => {
+        cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
+        cy.textExists(contractDetails.tmTextFieldLabel,
+          "Please provide justification for your T&M contract type.");
+        cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should("exist");
+        const inputText = randomAlphaNumeric(8);
+        cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
+      })
+    cy.btnExists(common.backBtn, "Back").not("[disabled]");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.findElement(common.subStepCoIText).contains("Conflict of Interest")
+      .and('have.css', 'color', colors.primary);
   });
 
 });
