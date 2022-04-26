@@ -18,18 +18,18 @@
     <ATATSelect
       id="Branch"
       v-show="_selectedRole === 'MILITARY'"
-      v-model="selectedBranch"
+      v-model="_selectedBranch"
       class="_input-max-width mb-10"
       label="Service Branch"
       placeholder=""
       :items="branchData"
       :selectedValue.sync="_selectedBranch"
-      :showAccessRadioButtons.sync="showAccessRadioButtons"
+      :showAccessRadioButtons.sync="_showAccessRadioButtons"
       :returnObject="true"
       :rules="[$validators.required('Please select your ' + corOrAcor + '’s service branch.')]"
     />
 
-    <div v-show="selectedBranch.value || _selectedRole === 'CIVILIAN'">
+    <div v-show="_selectedBranch.value || _selectedRole === 'CIVILIAN'">
       <ATATAutoComplete
         id="Rank"
         v-show="_selectedRole === 'MILITARY'"
@@ -115,7 +115,9 @@
           :country.sync="_selectedPhoneCountry"
           :rules="[
             $validators.required('Please enter your ' + corOrAcor + '’s phone number'),
-            $validators.isPhoneValid(_selectedPhoneCountry.abbreviation)
+            $validators.isPhoneNumberValid(
+              this._selectedPhoneCountry
+            ),
             ]"
         />
         <ATATTextField 
@@ -151,17 +153,16 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
-
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue"
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { 
-  RadioButton, 
-  SelectData, 
-  RankData
+import {
+  RadioButton,
+  SelectData,
+  AutoCompleteItem
 } from "../../../../types/Global";
 
 
@@ -188,7 +189,7 @@ export default class ContactInfoForm extends Vue {
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
 
   @PropSync("selectedRole") private _selectedRole?: string;
-  @PropSync("selectedRank") private _selectedRank?: RankData;
+  @PropSync("selectedRank") private _selectedRank?: AutoCompleteItem;
   @PropSync("selectedBranch") private _selectedBranch?: SelectData;
   @PropSync("selectedSalutation") private _selectedSalutation?: SelectData;
   @PropSync("firstName") private _firstName?: string;
