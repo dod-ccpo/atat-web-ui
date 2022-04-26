@@ -73,4 +73,7 @@ module.exports = {
   substepPDOIText: "#SubStep_PublicDisclosureofInformation .step-text",
   substepSection508Link: "#SubStep_Section508Standards",
   substepSection508Text: "#SubStep_Section508Standards .step-text",
+  //Evaluation Criteria
+  stepEvaluationCriteriaLink: "#Step_EvaluationCriteria",
+  stepEvaluationCriteriaText: "#Step_EvaluationCriteria .step-text",
 }
