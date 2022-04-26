@@ -112,9 +112,10 @@
           class="_input-max-width mb-10"
           helpText="Enter a .mil or .gov email address."
           :value.sync="email"
+          :validateOnBlur="true"
           :rules="[
+              $validators.required('Please enter your email address.'),
               $validators.isEmail(),
-              $validators.required('Please enter your email address.')
           ]"
         />
         <ATATAutoComplete

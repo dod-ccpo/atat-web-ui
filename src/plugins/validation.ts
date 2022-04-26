@@ -59,9 +59,8 @@ export class ValidationPlugin {
       if (typeof(v)==="object"){ // if typeof 'selectData(dropdown)' or string[]
         return Object.values(v).every((val)=> val !=="") || message;
       } else if (typeof(v) === "string"){ // else if typeof 'string'
-        return (v.length > 0) || message;
+        return (v!=="")|| message;
       }
-      return true;
     };
   };
 
@@ -157,13 +156,12 @@ export class ValidationPlugin {
  *
  * @returns {function(*): (boolean|string)}
  */
- isEmail = (
- ): ((v: string) => string | true | undefined) => {
+ isEmail = (): ((v: string) => string | true | undefined) => {
    return (v: string) => {
      if (v && v!==""){  
-       if (/[a-z0-9]+@[a-z]+\.[a-z]{3}/.test(v) === false) {
+       if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/.test(v) === false) {
          return "Please use standard domain format, like ‘@mail.mil’"
-       } else if (/[a-z0-9]+@[a-z]+\.[gov|mil]/.test(v) === false) {
+       } else if (/^\S[a-z0-9]+@[a-z-]+\.(?:gov|mil)$/.test(v) === false) {
          return "Please use your .mil or .gov email address."
        } 
      }
@@ -172,16 +170,12 @@ export class ValidationPlugin {
  };
 
  /**
- * todo
- * Validator that validates if input is a phoneNumber
  * Returns the error message otherwise.
  *
  * @param {string} country country Abbreviation 
  * @returns {function(*): (boolean|string)}
  */
- isPhoneNumberValid = (
-   country: CountryObj
- ): ((v: string) => string | true | undefined) => {
+ isPhoneNumberValid = ( country: CountryObj): ((v: string) => string | true | undefined) => {
    return (v: string) => {
      if (v && v!==""){ 
        const plainPN = v.replace(/[() -]/gi,'') || '';
