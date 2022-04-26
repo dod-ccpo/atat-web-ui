@@ -110,6 +110,8 @@
           :hide-details="true"
           @input="inputActions"
           autocomplete="off"
+          :rules="[$validators.lessThan(6,'max length of 6')]"
+
         >
         </ATATTextField>
       </div>

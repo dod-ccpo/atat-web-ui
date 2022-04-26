@@ -56,7 +56,7 @@
 
   .v-menu__content.theme--light.menuable__content__active {
     padding-top: 0px;
-    min-width: 416px !important;
+    min-width: 420px !important;
     width: 420px;
     ._dropdown-text-field + ._suggested {
       .v-list-item__content {
@@ -107,6 +107,7 @@
       .v-input__icon {
         &.v-input__icon--append, {
           i.v-icon {
+
             padding-top: 8px;
             transform: none !important;
             color: $base-dark !important;
