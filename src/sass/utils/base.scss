@@ -1,6 +1,6 @@
 html {
   font-size: 10px;
-  border-right: $base-lighter solid 1px !important;
+  overflow-y: hidden;
 }
 body {
   font-size: 1.6rem; 
@@ -14,8 +14,6 @@ body {
 }
 
 #app {
-  font-family: $base-font;
-  color: $base-darker;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @extend .body;
@@ -23,8 +21,13 @@ body {
 
 .v-main__wrap {
   background-color: $white;
-  padding: 28px 56px 120px 44px;
+  padding: 28px 56px 0px 44px;
+  overflow-y: scroll;
+  max-height: calc(100vh - 60px);
 
+  #app-content{
+    height: 100%;
+  }
 }
 
 .container-max-width {

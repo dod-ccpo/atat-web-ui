@@ -9,19 +9,21 @@
 
     <ATATPageHead :headline="projectTitle" />
     <v-main id="app" >
-      <div style="overflow: auto;">
-        <router-view></router-view>
+      <div id="app-content" class="d-flex flex-column align-start">
+        <div>
+          <router-view></router-view>
+        </div>
+        <ATATStepperNavigation
+          @next="navigate('next')"
+          @previous="navigate('previous')"
+          @additionalButtonClick="additionalButtonClick"
+          :additionalButtons="additionalButtons"
+          :backButtonText="backButtonText"
+          :noPrevious="noPrevious"
+          class="mb-8"
+        />
+        <ATATFooter class="mt-auto"/>
       </div>
-      <ATATStepperNavigation
-        @next="navigate('next')"
-        @previous="navigate('previous')"
-        @additionalButtonClick="additionalButtonClick"
-        :additionalButtons="additionalButtons"
-        :backButtonText="backButtonText"
-        :noPrevious="noPrevious"
-      />
-      
-      <ATATFooter />
     </v-main>
   </v-app>
 </template>
