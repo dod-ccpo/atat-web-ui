@@ -34,12 +34,12 @@ export const mapStepConfigs = (
     }
 
     routeConfig.children?.forEach((childConfig) =>
-      {
-        mapStep({
-          ...childConfig,
-          stepNumber: stepInfo.stepNumber,
-        })
-      }
+    {
+      mapStep({
+        ...childConfig,
+        stepNumber: stepInfo.stepNumber,
+      })
+    }
     );
   };
   config.forEach((routeConfig) => mapStep(routeConfig));
@@ -55,7 +55,8 @@ export const resolveNextRouteName = (current: string, stepInfo: StepInfo): strin
   return stepInfo.stepName;
 }
 
-export const resolvePreviousRouteName = (current: string, stepInfo: StepInfo): string | undefined => {
+export const resolvePreviousRouteName = 
+(current: string, stepInfo: StepInfo): string | undefined => {
   if (!stepInfo.prev)
     return stepInfo.prev;
 

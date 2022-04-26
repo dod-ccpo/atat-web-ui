@@ -110,6 +110,7 @@ export interface CountryObj {
   abbreviation: string;
   active: boolean;
   suggested?: boolean;
+  mask?: string[];
 }
 
 export interface ToastObj {
@@ -123,13 +124,13 @@ export interface ToastObj {
 /**
  * interface for basic/generic objects
  */
- export interface stringObj {
+export interface stringObj {
   [key: string]: string;
 }
 
 export interface PoP {
   duration: number | null;
-  timePeriod: string;
+  unitOfTime: string;
 }
 
 export interface RankData {

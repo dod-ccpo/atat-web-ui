@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Which contract type applies to this acquisition?
+            Which contract type(s) apply to this acquisition?
           </h1>
           <div class="copy-max-width">
             <p class="mb-10" id="IntroP">
@@ -55,13 +55,17 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component} from "vue-property-decorator";
+/* eslint-disable camelcase */
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
 import { Checkbox } from "../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { ContractTypeDTO } from "@/api/models"
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -70,9 +74,25 @@ import { Checkbox } from "../../../types/Global";
   },
 })
 
-export default class ContractType extends Vue {
-  private selectedContractTypes: string[] = [];
+export default class ContractType extends Mixins(SaveOnLeave) {
+  private firmFixedPriceSelected = "";
+  private timeAndMaterialsSelected = "";
   
+  private selectedContractTypes: string[] = [];
+
+  @Watch("selectedContractTypes")
+  protected selectedContractTypesChanged(newSelections: string[]): void {
+    this.firmFixedPriceSelected = newSelections.indexOf("FFP") > -1 ? "true" : "false";
+    this.timeAndMaterialsSelected = newSelections.indexOf("T&M") > -1 ? "true" : "false";
+  }
+
+  @Watch("timeAndMaterialsSelected")
+  protected selectedTMChanged(newVal: string): void {
+    if (newVal === "false") {
+      this.justification = "";
+    }
+  }
+
   public get hasTM(): boolean {
     return this.selectedContractTypes.indexOf("T&M") > -1;
   }
@@ -93,6 +113,66 @@ export default class ContractType extends Vue {
       description: "This applies to any contract line items other than travel.",
     }
   ];
+
+  private get currentData(): ContractTypeDTO {
+    return {
+      firm_fixed_price: this.firmFixedPriceSelected,
+      time_and_materials: this.timeAndMaterialsSelected,
+      contract_type_justification: this.justification,
+    };
+  }
+
+  private savedData: ContractTypeDTO = { 
+    firm_fixed_price: "",
+    time_and_materials: "",
+    contract_type_justification: "",
+  };
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadContractType();
+    if (storeData) {
+      if (Object.prototype.hasOwnProperty.call(storeData, 'firm_fixed_price')) {
+        this.savedData = {
+          firm_fixed_price: storeData.firm_fixed_price,
+          time_and_materials: storeData.time_and_materials,
+          contract_type_justification: storeData.contract_type_justification,
+        }
+        this.firmFixedPriceSelected = storeData.firm_fixed_price;
+        this.timeAndMaterialsSelected = storeData.time_and_materials;
+        this.justification = storeData.contract_type_justification;
+
+        if (this.firmFixedPriceSelected === "true") {
+          this.selectedContractTypes.push("FFP");
+        }
+        if (this.timeAndMaterialsSelected === "true") {
+          this.selectedContractTypes.push("T&M");
+        }
+        
+      }
+    } else {
+      AcquisitionPackage.setContractType(this.currentData);
+    }
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveContractType(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
 
 }
 </script>

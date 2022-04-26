@@ -44,13 +44,14 @@
           v-bind="attrs"
           v-on="on"
           :rules="rules"
-          @blur="onBlur"
+          @blur="onBlur($event)"
           :validate-on-blur="validateOnBlur"
           autocomplete="off"
         >
           <template slot="append-outer">
             <v-btn
               icon
+              tabindex="-1"
               :id="id + 'DatePickerButton'"
               aria-label="Open calendar to select date"
               @click="toggleMenu"
@@ -74,10 +75,10 @@
         active-picker="date"
         :min="min"
         :max="max"
-        :allowed-dates="allowedDates"
         @click:date="datePickerClicked"
         scrollable
       ></v-date-picker>
+
     </v-menu>
     <ATATErrorValidation v-if="menu === false" :errorMessages="errorMessages" />
   </div>
@@ -104,7 +105,7 @@ export default class ATATDatePicker extends Vue {
       save: (selectedDate: string) => Record<string, never>;
     };
   };
- 
+
   /**
    * DATA
    */
@@ -112,7 +113,11 @@ export default class ATATDatePicker extends Vue {
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
-  private validateOnBlur = false;
+
+  // Flash of red border on date text field when validateOnBlur is true and user
+  // clicks a date in the picker to be addressed in future milestone.
+  // Leave commented out code for validateOnBlur in place for now.
+  private validateOnBlur = true;
 
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
@@ -126,8 +131,9 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: format(new Date(), "yyyy-MM-dd") }) private min!: Date;
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
-  private max!: Date;
+    private max!: Date;
   @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
+  @Prop({ default: false }) private isRequired!: boolean;
 
   /**
    * WATCHERS
@@ -169,7 +175,7 @@ export default class ATATDatePicker extends Vue {
    * date attribs
    */
   private onInput(date: string): void {
-    this.validateOnBlur = true;
+    // this.validateOnBlur = true;
     if (date === "") {
       this.dateFormatted = "";
       this.date = "";
@@ -182,7 +188,7 @@ export default class ATATDatePicker extends Vue {
    */
   private datePickerClicked(selectedDate: string): void {
     //must be set to false to prevent unnecessary validation
-    this.validateOnBlur = false;
+    // this.validateOnBlur = false;
 
     this.removeErrors();
 
@@ -218,7 +224,7 @@ export default class ATATDatePicker extends Vue {
    */
 
   /**
-   * mask input date text boxes with MM/DD/YYYY
+   * mask input date text boxes with MM/DD/YYYY, min/max
    */
   private addMasks(): void {
     [this.id + "DatePickerTextField"].forEach((tbId) => {
@@ -228,25 +234,10 @@ export default class ATATDatePicker extends Vue {
         placeholder: "MM/DD/YYYY",
         outputFormat: "MM/DD/YYYY",
         nullable: true,
-        min: format(new Date(this.min), "MM/dd/yyyy"),
-        max: format(new Date(this.max), "MM/dd/yyyy"),
+        min: format(add(new Date(this.min), { days: 1 }), "MM/dd/yyyy"),
+        max: format(add(new Date(this.max) , { days: 1 }), "MM/dd/yyyy"),
       }).mask(document.getElementById(tbId) as HTMLElement);
     });
-    // todo add min and max
-  }
-
-  /**
-   * @param date (string) - passed in when user advances/retreats month(s)
-   * 
-   * returns boolean if date is after this.min and before this.max
-   * if true = date is clickable
-   * if false = date is disabled
-   */
-  public allowedDates(date: string): boolean {
-    return (
-      isBefore(new Date(date), new Date(this.max)) &&
-      isAfter(new Date(date), new Date(this.min))
-    );
   }
 
   /**

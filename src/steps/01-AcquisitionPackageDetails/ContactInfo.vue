@@ -21,6 +21,9 @@
           :items="branchData"
           :selectedValue.sync="selectedBranch"
           :return-object="true"
+          :rules="[
+            $validators.required('Please enter your Service Branch.')
+          ]"
         />
 
         <ATATSelect
@@ -44,6 +47,9 @@
           :selectedItem.sync="selectedRank"
           class="_input-max-width mb-7"
           icon="arrow_drop_down"
+          :rules="[
+            $validators.required('Please select your military rank.')
+          ]"
         />
       </v-col>
     </v-row>
@@ -54,6 +60,9 @@
           id="FirstName"
           :value.sync="firstName"
           class="_input-max-width"
+          :rules="[
+            $validators.required('Please enter your first name.')
+          ]"
         />
       </v-col>
       <v-col class="col-12 col-lg-3">
@@ -71,6 +80,9 @@
           id="LastName"
           :value.sync="lastName"
           class="_input-max-width"
+          :rules="[
+            $validators.required('Please enter your last name.')
+          ]"
         />
       </v-col>
       <v-col class="col-12 col-lg-3">
@@ -90,27 +102,27 @@
           id="ContactTitle"
           class="_input-max-width mb-10"
           :value.sync="title"
+          :rules="[
+            $validators.required('Please enter your title.')
+          ]"
         />
         <ATATTextField
           label="Your email"
           id="ContactEmail"
           class="_input-max-width mb-10"
-          helpText="Enter a .MILITARY or .gov email address."
+          helpText="Enter a .mil or .gov email address."
           :value.sync="email"
-        />
-        <ATATPhoneInput
-          label="Your phone number"
-          id="ContactPhone"
-          class="_input-max-width"
-          :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
-          :value.sync="selectedPhoneNumber"
-          :country.sync="selectedPhoneCountry"
+          :validateOnBlur="true"
+          :rules="[
+              $validators.required('Please enter your email address.'),
+              $validators.isEmail(),
+          ]"
         />
         <ATATAutoComplete
           v-show="selectedRole === 'CIVILIAN'"
           id="ContactGrade"
           :optional="true"
-          class="_input-max-width"
+          class="_input-max-width mb-10"
           label="Grade"
           :label-sr-only="false"
           titleKey="label"
@@ -120,12 +132,25 @@
           placeholder=""
           icon="arrow_drop_down"
         />
+        <ATATPhoneInput
+          label="Your phone number"
+          id="ContactPhone"
+          class="_input-max-width mb-10"
+          :value.sync="selectedPhoneNumber"
+          :country.sync="selectedPhoneCountry"
+          :rules="[
+            $validators.isPhoneNumberValid(
+              this.selectedPhoneCountry
+            ),
+          ]"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import parsePhoneNumber, {CountryCode} from 'libphonenumber-js'
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -196,8 +221,15 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
-  private selectedPhoneCountry: CountryObj 
-    = { name: '', countryCode: '', abbreviation: '', active: false };
+
+  //todo replace this from the store after `countries` is stored there
+  private selectedPhoneCountry: CountryObj = {
+    "name": "United States",
+    "countryCode": "+1",
+    "abbreviation": "us",
+    "active": true,
+    "mask": ["999-999-9999"]
+  };
 
   public selectedServiceOrAgency: SelectData =
     AcquisitionPackage.selectedServiceOrAgency;
@@ -396,6 +428,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo(

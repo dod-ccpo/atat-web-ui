@@ -29,7 +29,7 @@
       attach
       dense
       @blur="onBlur"
-      @update:search-input="updateSearchInput" 
+      @update:search-input="updateSearchInput"
     >
       <template v-slot:item="{item}">
         <v-list-item-content>
@@ -37,7 +37,8 @@
             v-text="item[titleKey]"
             :class="{'font-weight-normal': !subtitleKey}"
           ></v-list-item-title>
-          <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]"></v-list-item-subtitle>
+          <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]">
+          </v-list-item-subtitle>
         </v-list-item-content>
       </template>
 
@@ -81,7 +82,13 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 export default class ATATAutoComplete extends Vue {
   // refs
   $refs!: {
-    atatAutoComplete: Vue & { errorBucket: string[]; errorCount: number };
+    atatAutoComplete: Vue &
+    {
+      errorBucket: string[];
+      errorCount: number;
+      blur: ()=> void;
+      focus: ()=> void;
+    };
   };
   // data
   private errorMessages: string[] = [];
@@ -116,15 +123,6 @@ export default class ATATAutoComplete extends Vue {
 
   // methods
 
-  private updateSearchInput(): void {
-    if (this.isReset) {
-      this._selectedItem = {};
-      this.searchText = null;
-      this.$emit("autocompleteInputUpdate", this.isReset);
-    }
-    this.isReset = false;
-  }
-
   private customFilter(item: AutoCompleteItem, queryText: string) {
     let text = "";
     this.searchFields.forEach((key) => {
@@ -142,12 +140,24 @@ export default class ATATAutoComplete extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.errorMessages = this.$refs.atatAutoComplete.errorBucket;
+    setTimeout(()=>{
+      this.errorMessages = this.$refs.atatAutoComplete.errorBucket;
+    })
   }
   //@Events
   private onBlur(value: string) : void{
     this.setErrorMessage();
     this.$emit('blur', value);
+  }
+
+  private updateSearchInput(): void {
+    if (this.isReset) {
+      this._selectedItem = {};
+      this.searchText = null;
+      this.$emit("autocompleteInputUpdate", this.isReset);
+    }
+    this.setErrorMessage();
+    this.isReset = false;
   }
 }
 </script>

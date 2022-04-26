@@ -83,3 +83,52 @@ $positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
 .height-auto {
     height: auto !important;
 }
+
+.ghost {
+  border-top: 2px solid #544496 !important;
+}
+
+.draggable {
+  border-top: 2px solid transparent;
+  background-color: white;
+  cursor: ns-resize;
+  
+  .drag-icon {
+    opacity: 0;
+  }
+
+  &:hover {
+    .drag-icon {
+      opacity: 1;
+    }
+  }
+
+  .drag-icon.hide-icon {
+    opacity: 0;
+  }
+
+  &.sortable-chosen {
+    .drag-icon {
+      opacity: 1;
+    }
+  }
+
+  .v-input__slot {
+    background-color: white !important;
+  }
+}
+
+.drag-img {
+  background-color: $base-lightest;
+  opacity: 0.9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  position: absolute;
+  box-shadow: 0px 1px 8px rgba(27, 27, 27, 0.2);
+  @extend #app;
+}
+
+.drag-img-fake {
+  opacity: 0 !important;
+}

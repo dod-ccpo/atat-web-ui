@@ -22,7 +22,9 @@
                 $validators.maxLength(60, 'Title cannot exceed 60 characters'),
               ]"
               class="_input-max-width"
-              tooltipText="Provide a short, descriptive title of the work to be performed. This will be used to refer to this project within ATAT and across all acquisition forms."
+              tooltipText="Provide a short, descriptive title of the work to
+              be performed. This will be used to refer to this project within 
+              ATAT and across all acquisition forms."
               :value.sync="currentTitle"
               @blur="onTitleChanged"
             />
@@ -50,7 +52,7 @@
               maxChars="300"
             />
           </div>
-          <div class="d-flex align-start flex-column mt-10">
+          <div class="d-flex align-start flex-column mt-6">
             <ATATRadioGroup
               id="emergency-declaration-support-requirement"
               legend="Is this requirement in support of an emergency declaration?"
@@ -69,6 +71,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 
@@ -150,7 +153,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-      await this.loadOnEnter();
+    await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {

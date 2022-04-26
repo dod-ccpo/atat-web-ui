@@ -1,4 +1,11 @@
-/**
+import Vue from "vue"
+
+import { isValid } from "date-fns";
+import { CountryObj, SelectData } from "types/Global";
+
+export class ValidationPlugin {
+
+  /**
  * Validator that validates input meets a minimum length
  * Returns the error message otherwise.
  *
@@ -6,18 +13,18 @@
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-const minLength = (
+  minLength(
     length: number,
     message?: string
-): ((v: string) => string | true | undefined) => {
-  message = message || `Min ${length} characters allowed.`;
+  ): ((v: string) => string | true | undefined) {
+    message = message || `Min ${length} characters allowed.`;
 
-  return (v: string) => {
-    return v && v.length < length ? message : true;
+    return (v: string) => {
+      return v && v.length < length ? message : true;
+    };
   };
-};
 
-/**
+  /**
  * Validator that validates input should not exceed a given length
  * Returns the error message otherwise.
  *
@@ -25,46 +32,52 @@ const minLength = (
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-const maxLength = (
+  maxLength(
     length: number,
     message?: string
-): ((v: string) => string | true | undefined) => {
-  message = message || `Max ${length} characters allowed.`;
-  return (v: string) => {
-    return v && v.length > length ? message : true;
+  ): ((v: string) => string | true | undefined) {
+    message = message || `Max ${length} characters allowed.`;
+    return (v: string) => {
+      return v && v.length > length ? message : true;
+    };
   };
-};
-/**
+
+  /**
  * Validator that ensures the field value is not empty.
  * Returns the error message otherwise.
  *
  * @param message
  * @returns {function(*=): boolean}
  */
-const required = (
+
+  // todo test this with required fields
+  required (
     message?: string
-): ((v: string) => string | true | undefined) => {
-  message = message || "This field is required.";
-
-  return (v: string) => {
-    return (v && (v.length && v.length > 0)) || message;
+  ): ((v: string) => string | true | undefined) {
+    message = message || "This field is required.";
+    return (v: string) => {
+      if (typeof(v)==="object"){ // if typeof 'selectData(dropdown)' or string[]
+        return Object.values(v).every((val)=> val !=="") || message;
+      } else if (typeof(v) === "string"){ // else if typeof 'string'
+        return (v!=="")|| message;
+      }
+    };
   };
-};
 
-/**
+  /**
  * Validator ensures that field only contains integers
  * Returns the error message otherwise.
  *
  * @param message
  * @returns {function(*=): boolean}
  */
-const integer = (message?: string): ((v: string) => string | true | undefined) => {
-  message = message || "The value must be an integer number";
+  integer(message?: string): ((v: string) => string | true | undefined) {
+    message = message || "The value must be an integer number";
 
-  return (v) => Number.isInteger(Number(v)) || message;
-};
+    return (v) => Number.isInteger(Number(v)) || message;
+  };
 
-/**
+  /**
  * Validator that validates input should not exceed a given 'max' number
  * Returns the error message otherwise.
  *
@@ -72,17 +85,17 @@ const integer = (message?: string): ((v: string) => string | true | undefined) =
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-const lessThan = (
+  lessThan(
     max: number,
     message?: string
-): ((v: number) => string | true | undefined) => {
-  message = message || `Value must be less than ${max}`;
-  return (v: number) => {
-    return v && v < max || message;
+  ): ((v: number) => string | true | undefined) {
+    message = message || `Value must be less than ${max}`;
+    return (v: number) => {
+      return v && v < max || message;
+    };
   };
-};
 
-/**
+  /**
  * Validator that validates input should be greater than a given 'min' number
  * Returns the error message otherwise.
  *
@@ -90,17 +103,17 @@ const lessThan = (
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-const greaterThan = (
+  greaterThan(
     min: number,
     message?: string
-): ((v: number) => string | true | undefined) => {
-  message = message || `Value must be greater than ${min}`;
-  return (v: number) => {
-    return v && v > min || message;
+  ): ((v: number) => string | true | undefined) {
+    message = message || `Value must be greater than ${min}`;
+    return (v: number) => {
+      return v && v > min || message;
+    };
   };
-};
 
-/**
+  /**
  * Validator that validates input should be between a given 'min' number
  * and a given 'max' number
  * Returns the error message otherwise.
@@ -110,18 +123,18 @@ const greaterThan = (
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-const isBetween = (
+  isBetween(
     min: number,
     max: number,
     message?: string
-): ((v: number) => string | true | undefined) => {
-  message = message || `Value must be between ${min} and ${max}`;
-  return (v: number) => {
-    return v && (v >= min && v <= max) || message;
+  ): ((v: number) => string | true | undefined) {
+    message = message || `Value must be between ${min} and ${max}`;
+    return (v: number) => {
+      return v && (v >= min && v <= max) || message;
+    };
   };
-};
 
-/**
+  /**
  * Validator that validates if input is a valid Date
  * Returns the error message otherwise.
  *
@@ -129,78 +142,68 @@ const isBetween = (
  * @param {string} message
  * @returns {function(*): (boolean|string)}
  */
-const isDateValid = (
+  isDateValid(
     message?: string
-): ((v: string) => string | true | undefined) => {
-  message = message || `Invalid Date`;
-  // validate date isn't something like 12/DD/YYYY
-  return (v: string) => {
-    return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message
+  ): ((v: string) => string | true | undefined){
+    message = message || `Invalid Date`;
+    // validate date isn't something like 12/DD/YYYY
+    return (v: string) => {
+      return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message
+    };
   };
-};
 
-/**
- * Validator that validates if input is a valid Email
- * Returns the error message otherwise.
+  /**
  *
- * @param (string) email as "test@mail.mil"
  * @returns {function(*): (boolean|string)}
  */
-const isEmail = (): ((v: string) => string | true | undefined) => {
-  return (v: string) => {
-    if (v !== "") {
-      if (/[a-z0-9]+@[a-z]+\.[a-z]{3}/.test(v)) {
-        return "Please use standard domain format, like ‘@mail.mil’"
-      } else if (v.indexOf("@") < 0) {
-        return "Please include an '@’ symbol in the email address."
-      } else if (/[a-z0-9]+@[a-z]+\.[ gov,mil ]/.test(v)) {
-        return "Please use your .mil or .gov email address."
-      }
-    }
-    return true;
-  };
-};
+ isEmail = (): ((v: string) => string | true | undefined) => {
+   return (v: string) => {
+     if (v && v!==""){
+       if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/.test(v) === false) {
+         return "Please use standard domain format, like ‘@mail.mil’"
+       } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/.test(v) === false) {
+         return "Please use your .mil or .gov email address."
+       }
+     }
+     return true;
+   };
+ };
 
-/**
- * Validator that validates if input is a valid Phone Number
+ /**
  * Returns the error message otherwise.
  *
- * @param (string) country code
+ * @param {string} country country Abbreviation
  * @returns {function(*): (boolean|string)}
  */
-const isPhoneValid = (country: string, phoneNumber: string
-): ((v: string) => string | true | undefined) => {
-  return (v: string) => {
-    if (v !== "") {
-      if (country == 'us' && v.length < 10) {
-        return "Phone number must be 10 digits including the area code."
-      } else if (country == 'dsn' && v.length == 7 || country == 'dsn' && v.length == 10) {
-        return `DSN number must be 7 digits for CONUS or 10 digits for OCONUS
-         including the geographical code.`
-      } else if (v.length < 7 || v.length > 20) {
-        return `Phone number must be between 7 and 20 digits. It may contain left 
-        and right parentheses, hyphen, period, plus, and spaces.`
-      }
-    }
-    return true;
-  };
-};
+ isPhoneNumberValid = ( country: CountryObj): ((v: string) => string | true | undefined) => {
+   return (v: string) => {
+     if (v && v!==""){
+       const plainPN = v.replace(/[() -]/gi,'') || '';
+       const isValid = country?.mask?.some((mask) =>{
+         return mask.replace(/[() -]/gi,'').length === plainPN.length;
+       });
+       return isValid ||
+        `Please enter a number using the format ` +
+        `for  ${country.name} (e.g., ${country.mask?.join(", ")}).`;
+     }
+     else {
+       return "Please enter your phone number."
+     }
+     return true;
+   }
+ };
 
+}
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    $validators: ValidationPlugin
+  }
+}
 
 export default {
-  install(Vue: any, options: any): void {
-    Vue.prototype.$validators = {
-      // eslint-disable-next-line no-unused-labels
-      minLength,
-      maxLength,
-      integer,
-      required,
-      lessThan,
-      greaterThan,
-      isBetween,
-      isDateValid,
-      isEmail,
-      isPhoneValid,
-    };
+  install(): void {
+    const validation = new ValidationPlugin();
+    Vue.prototype.$validators = validation;
   },
 };

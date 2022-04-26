@@ -15,7 +15,11 @@
           placeholder="Search by name or email"
           icon="search"
           :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
-          :rules="[$validators.required('Please search for or manually enter your ' + corOrAcor + ' contact information.')]"
+          :rules="[
+            $validators
+            .required('Please search for or manually enter' +
+             ' your ' + corOrAcor + ' contact information.')
+            ]"
           @autocompleteInputUpdate="autocompleteInputUpdate"
         />
 
@@ -69,7 +73,8 @@
       >
         <hr/>
         <ATATRadioGroup
-          legend="Does this individual need access to help you create this acquisition package in ATAT?"
+          legend="Does this individual need access to help you create this
+           acquisition package in ATAT?"
           id="AccessToEdit"
           :items="accessToEditOptions"
           :value.sync="selectedAccessToEdit"
@@ -79,6 +84,7 @@
   </v-form>
 </template>
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
@@ -119,7 +125,7 @@ export default class COR_ACOR extends Vue {
   @PropSync("currentContactData") private _currentContactData!: ContactDTO;
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
 
-// computed
+  // computed
 
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
@@ -177,7 +183,7 @@ export default class COR_ACOR extends Vue {
       id: "1",
       firstName: "Test0",
       lastName: "Adamson",
-      fullName: "Test Adamson",
+      fullName: "Test0 Adamson",
       email: "test.adamson-civ@mail.mil",
       phone: "333-333-3333",
       orgName: "HQ1234 - Corresponding Organization Name"

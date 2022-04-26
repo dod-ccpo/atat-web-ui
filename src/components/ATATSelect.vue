@@ -14,6 +14,7 @@
     </v-flex>
     <v-flex>
       <v-select
+        ref="atatSelect"
         :id="id + '_dropdown'"
         :items="items"
         outlined
@@ -22,13 +23,15 @@
         v-model="_selectedValue"
         :height="42"
         :rounded="rounded"
-        hide-details="auto"
+        :hide-details="true"
         :value.sync="_selectedValue"
         @change="onChange"
+        @blur="onBlur"
         :placeholder="placeholder"
         :class="{ 'mt-2' : label }"
         :return-object="returnObject"
         :style="'width: ' + width + 'px'"
+        :rules="rules"
       >
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">
@@ -48,22 +51,42 @@
           <v-icon>arrow_drop_down</v-icon>
         </template>
       </v-select>
+  
+      <ATATErrorValidation :errorMessages="errorMessages" />
+
     </v-flex>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
-import { SelectData } from "../../types/Global";
 import Vue from "vue";
+import { Component, Emit, Prop, PropSync } from "vue-property-decorator";
 
-@Component({})
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+
+import { SelectData } from "../../types/Global";
+
+@Component({
+  components: {
+    ATATErrorValidation
+  }
+})
 export default class ATATSelect extends Vue {
+  // refs
+  $refs!: {
+    atatSelect: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number;
+      blur: ()=> void;
+      focus: ()=> void;
+    };
+  }; 
+
   @PropSync("selectedValue") private _selectedValue!: string | SelectData;
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: [] }) private items?: SelectData[];
-  @Prop() private rules: unknown;
+  @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: false }) private error!: boolean;
   @Prop({ default: false }) private optional!: boolean;
@@ -77,6 +100,26 @@ export default class ATATSelect extends Vue {
   @Emit("onChange")
   private onChange(val: string): void {
     this.selected = val;
+    this.setErrorMessage();
   }
+
+  private onInput(v: string) {
+    this._selectedValue = v;
+  }
+  private errorMessages: string[] = [];
+
+  private setErrorMessage(): void {
+    setTimeout(()=>{
+      this.errorMessages = this.$refs.atatSelect.errorBucket;
+    });
+  }
+
+  //@Events
+  private onBlur(value: string) : void {
+   
+    this.setErrorMessage();
+    this.$emit('blur', value);
+  }
+
 }
 </script>

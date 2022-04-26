@@ -1,6 +1,7 @@
 module.exports = {
   serviceAgencyLabel: "#ServiceOrAgency_AutoComplete_Wrapper label",
-  serviceAgencyDropDownIcon: "#ServiceOrAgency_AutoComplete_Wrapper .v-input__icon.v-input__icon--append",
+  serviceAgencyDropDownIcon: "#ServiceOrAgency_AutoComplete_Wrapper" +
+    " .v-input__icon.v-input__icon--append",
   serviceAgencyInput: "#ServiceOrAgency",
   serviceAgencyAutoListItems: "#ServiceOrAgency_AutoComplete_Wrapper .v-list-item__title",
   sectionOneHeaderText: "#Section1 h2.form-section-heading",
@@ -23,10 +24,10 @@ module.exports = {
   unitLabel: "#UnitSuite_text_field_label",
   cityLabel: "#City_text_field_label",
   stateLabel: "#State_AutoComplete_Wrapper label",
-  apoFpoDropDownLabel: "#APO_FPO_dropdown_field_label",
-  apoFpoDropDown:"#APO_FPO_dropdown",
-  apoFpoDropDownListItemsArmy: "#APO_FPO_DropdownListItem_ArmyPostOfficeAPO",
-  apoFpoDropDownListItemsFleet:"#APO_FPO_DropdownListItem_FleetPostOfficeFPO",
+  apoFpoDropDownLabel: "#APO_FPO_DPO_dropdown_field_label",
+  apoFpoDropDown:"#APO_FPO_DPO_dropdown",
+  apoFpoDropDownListItemsArmy: "#APO_FPO_DPO_DropdownListItem_ArmyPostOfficeAPO",
+  apoFpoDropDownListItemsFleet:"#APO_FPO_DPO_DropdownListItem_FleetPostOfficeFPO",
   stateCodeDropDownLabel: "#StateCode_dropdown_field_label",
   stateCodeDropDown: "#StateCode_dropdown",
   stateCodeAmerica: "#StateCode_DropdownListItem_AAArmedForcesAmericas",  

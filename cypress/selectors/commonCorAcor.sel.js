@@ -2,7 +2,8 @@ module.exports = {
   ditcoLink: ".page-intro ._text-link",
   searchContactWrapper: "#SearchContact_AutoComplete_Wrapper",
   searchContactInput: "#SearchContact",
-  searchContactActive: "#SearchContact_AutoComplete_Wrapper .menuable__content__active.v-autocomplete__content",
+  searchContactActive: "#SearchContact_AutoComplete_Wrapper" +
+    " .menuable__content__active.v-autocomplete__content",
   searchContactNoResult: "#SearchContact_AutoComplete_Wrapper .no-results",
   searchContactNoResultLink: "a#NoResults_SearchContact",
   searchContactListItems: "#SearchContact_AutoComplete_Wrapper .v-list-item__title",

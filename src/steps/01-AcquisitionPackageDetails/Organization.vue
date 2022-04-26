@@ -1,3 +1,4 @@
+
 <template>
   <v-container fluid class="container-max-width">
     <v-row>
@@ -67,7 +68,9 @@
               id="DoDAAC"
               label="DoD Activity Address Code (DoDAAC)"
               class="_input-max-width"
-              tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, activity, or organization that has the authority to requisition, contract for, or fund/pay bills for materials and services."
+              tooltipText="A DoDAAC is a 6-character code that uniquely identifies a unit, 
+              activity, or organization that has the authority to requisition, contract 
+              for, or fund/pay bills for materials and services."
               :value.sync="dodAddressCode"
             />
 
@@ -130,6 +133,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -206,6 +210,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private militaryPostOfficeOptions: SelectData[] = [
     { text: "Army Post Office (APO)", value: "APO" },
     { text: "Fleet Post Office (FPO)", value: "FPO" },
+    { text: "Diplomatic Post Office (DPO)", value: "DPO" },
   ];
 
   private selectedDisaOrg: SelectData = this.emptySelectData;
@@ -248,7 +253,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       // US addresses - set selectedState
       } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
         this.selectedState = 
-          this.stateListData.find((stateObj) => stateObj.text === this.stateOrProvince) 
+          this.stateListData.find((stateObj) => stateObj.value === this.stateOrProvince) 
           || this.emptySelectData;
       }
     }
@@ -371,6 +376,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       this.streetAddress2 = storeData.street_address_2;
       this.city = storeData.city;
       this.zipCode = storeData.zip_code;
+      this.stateOrProvince = storeData.state;
+
     }
   }
 
