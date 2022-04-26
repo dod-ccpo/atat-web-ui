@@ -64,8 +64,8 @@
               label="Organization name"
               class="_input-max-width mb-10"
               :value.sync="organizationName"
-              :rules="[$validator.required('Please enter your organization name.'),
-              $validator.maxLength(80, 'Organization name cannot exceed 80 characters.')]"
+              :rules="[$validators.required('Please enter your organization name.'),
+              $validators.maxLength(80, 'Organization name cannot exceed 80 characters.')]"
             />
 
             <ATATTextField
