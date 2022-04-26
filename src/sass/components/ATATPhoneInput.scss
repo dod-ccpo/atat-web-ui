@@ -1,6 +1,6 @@
 ._atat-phone-field {
   ._country-select {
-    padding-right: 0px;
+    padding-right: 0;
     max-width: 67px;
     width: 67px;
     .v-input__control > {
@@ -8,20 +8,20 @@
       .v-input__slot {
         padding-top: 22px;
         padding-right: 4px;
-        margin-bottom: 0px;
+        margin-bottom: 0;
       }
 
     }
 
     fieldset {
-      border-radius: 4px 0px 0px 4px;
+      border-radius: 4px 0 0 4px;
     }
 
     .v-select__selections {
       flex-direction: column-reverse;
       input {
-        max-width: 0px;
-        max-height: 0px;
+        max-width: 0;
+        max-height: 0;
       }
       .fi {
         margin-right: 11px;
@@ -45,8 +45,8 @@
       }
     }
     fieldset {
-      border-left-width: 0px;
-      border-radius: 0px 4px 4px 0px;
+      border-left-width: 0;
+      border-radius: 0 4px 4px 0;
     }
     .v-text-field__prefix {
       padding-left: 4px;
@@ -55,7 +55,7 @@
   }
 
   .v-menu__content.theme--light.menuable__content__active {
-    padding-top: 0px;
+    padding-top: 0;
     min-width: 420px !important;
     width: 420px;
     ._dropdown-text-field + ._suggested {
@@ -74,7 +74,7 @@
     }
     .v-input__append-inner {
 
-      margin-top: 0px;
+      margin-top: 0;
     }
     ._country-list {
       padding-top: 6px;
@@ -86,7 +86,7 @@
       }
     }
     .v-select-list {
-      padding-top: 0px;
+      padding-top: 0;
       position: relative;
     }
     ._dropdown-text-field {
@@ -97,7 +97,7 @@
       width: 100%;
       top: 0;
       z-index: 1;
-      padding-top: 0px;
+      padding-top: 0;
       padding-right: 12px;
       padding-left: 12px;
       margin-top: 0;
