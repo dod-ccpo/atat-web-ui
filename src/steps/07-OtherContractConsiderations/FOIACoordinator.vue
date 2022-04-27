@@ -22,6 +22,10 @@
             label="Email address"
             helpText="Enter a .mil or .gov email address."
             :value.sync="emailAddress"
+            :rules="[
+              $validators.required('Please enter your email address.'),
+              $validators.isEmail(),
+          ]"
           />
 
           <hr/>
@@ -33,20 +37,28 @@
             :countryListData="countryListData"
             :militaryPostOfficeOptions="militaryPostOfficeOptions"
             :minLength=[]
-            :postalCode.sync="postalCode"
             :requiredFields='[
              {field:"StreetAddress", message: "Please enter an address."},
              {field:"city", message:  "Please enter a city."},
              {field:"selectedState" , message: "Please select a state."},
-             {field:"zipCode" , message: "Please enter a ZIP code."},
+             {field:"ZIPCode" , message: "Please enter a ZIP code."},
              {
-               field:"selectedMilitaryPO",
+               field:"APO_FPO_DPO",
                message: "Please select a military post office (APO or FPO)."
                },
              {field:"selectedStateCode", message:  "Please select a state code."},
              {field:"stateOrProvince", message: "Please enter a state/province."},
              {field:"selectedCountry", message: "Please select a country."},
              {field:"PostalCode" , message: "Please enter a postal code."},
+            ]'
+            :isBetweenRules='[
+              {field:"ZIPCode", message: "Your ZIP code must be 5 or 9 digits.", min: 5, max: 9},
+              {
+                field:"PostalCode",
+                 message: "Your postal code must be 10 characters or " +
+                 "less and may include spaces and hyphens.",
+                 min: 0,
+                 max: 10},
             ]'
             :selectedAddressType.sync="selectedAddressType"
             :selectedCountry.sync="selectedCountry"

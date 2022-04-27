@@ -47,6 +47,7 @@
           label="City"
           :class="inputClass"
           :value.sync="_city"
+          :rules="getRules('City')"
         />
         <ATATSelect
           v-show="selectedAddressType === addressTypes.MIL"
@@ -56,6 +57,8 @@
           :items="militaryPostOfficeOptions"
           :selectedValue.sync="_selectedMilitaryPO"
           :returnObject="true"
+          :rules="getRules('APO_FPO_DPO')"
+
         />
       </v-col>
       <v-col
@@ -103,6 +106,7 @@
           :label="zipLabel"
           :class="inputClass"
           :value.sync="_zipCode"
+          :rules="getRules(IDLabel)"
           width="160"
         />
       </v-col>
@@ -168,7 +172,7 @@ export default class ATATAddressForm extends Vue {
   @Prop() public stateCodeListData?: SelectData[];
   @Prop() public countryListData?: SelectData[];
   @Prop() public requiredFields?: stringObj[];
-  @Prop() public minLength?: stringObj[];
+  @Prop() public isBetweenRules?: stringObj[];
 
 
   // methods
@@ -191,12 +195,15 @@ export default class ATATAddressForm extends Vue {
         rulesArr.push(this.$validators.required(result[0].message))
       }
     }
-    if (this.minLength) {
-      const lengthResult = this.minLength.filter(obj => {
+    if (this.isBetweenRules) {
+      const lengthResult = this.isBetweenRules.filter(obj => {
         return obj.field === inputID
       })
       if(lengthResult.length) {
-        rulesArr.push(this.$validators.required(lengthResult[0].message))
+        console.log(lengthResult)
+        rulesArr.push(this.$validators.isBetween(
+          lengthResult[0].min, lengthResult[0].max, lengthResult[0].message
+        ))
       }
     }
 
