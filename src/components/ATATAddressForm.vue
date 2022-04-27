@@ -36,13 +36,13 @@
       <v-col
         class="col-12"
         :class="[
-          selectedAddressType !== addressTypes.FOR
+          _selectedAddressType !== addressTypes.FOR
             ? 'col-lg-5'
             : 'col-lg-4',
         ]"
       >
         <ATATTextField
-          v-show="selectedAddressType !== addressTypes.MIL"
+          v-show="_selectedAddressType !== addressTypes.MIL"
           id="City"
           label="City"
           :class="inputClass"
@@ -50,7 +50,7 @@
           :rules="getRules('City')"
         />
         <ATATSelect
-          v-show="selectedAddressType === addressTypes.MIL"
+          v-show="_selectedAddressType === addressTypes.MIL"
           id="APO_FPO_DPO"
           label="APO/FPO/DPO"
           :class="inputClass"
@@ -64,7 +64,7 @@
       <v-col
         class="col-12"
         :class="[
-          selectedAddressType !== addressTypes.FOR
+          _selectedAddressType !== addressTypes.FOR
             ? 'col-lg-3'
             : 'col-lg-4',
         ]"
@@ -72,7 +72,7 @@
         <ATATAutoComplete
           id="State"
           label="State"
-          v-show="selectedAddressType === addressTypes.USA"
+          v-show="_selectedAddressType === addressTypes.USA"
           :class="inputClass"
           titleKey="text"
           :searchFields="['text', 'value']"
@@ -80,24 +80,29 @@
           :selectedItem.sync="_selectedState"
           placeholder=""
           icon="arrow_drop_down"
+          :rules="getRules('State')"
         />
 
         <ATATSelect
-          v-show="selectedAddressType === addressTypes.MIL"
+          v-show="_selectedAddressType === addressTypes.MIL"
           id="StateCode"
           label="AA/AE/AP"
           :class="inputClass"
           :items="stateCodeListData"
           :selectedValue.sync="_selectedStateCode"
           :returnObject="true"
+          :rules="getRules('StateCode')"
+
         />
 
         <ATATTextField
-          v-show="selectedAddressType === addressTypes.FOR"
+          v-show="_selectedAddressType === addressTypes.FOR"
           id="StateProvince"
           label="State or Province"
           :value.sync="_stateOrProvince"
           :class="inputClass"
+          :rules="getRules('StateProvince')"
+
         />
       </v-col>
       <v-col class="col-12 col-lg-3">
@@ -111,7 +116,7 @@
         />
       </v-col>
     </v-row>
-    <v-row v-show="selectedAddressType === addressTypes.FOR">
+    <v-row v-show="_selectedAddressType === addressTypes.FOR">
       <v-col class="col-12 col-lg-4">
         <ATATAutoComplete
           id="Country"
@@ -124,6 +129,7 @@
           :returnObject="true"
           placeholder=""
           icon="arrow_drop_down"
+          :rules="getRules('Country')"
         />
       </v-col>
     </v-row> 
@@ -196,13 +202,12 @@ export default class ATATAddressForm extends Vue {
       }
     }
     if (this.isBetweenRules) {
-      const lengthResult = this.isBetweenRules.filter(obj => {
+      const isBetweenResult = this.isBetweenRules.filter(obj => {
         return obj.field === inputID
       })
-      if(lengthResult.length) {
-        console.log(lengthResult)
+      if(isBetweenResult.length) {
         rulesArr.push(this.$validators.isBetween(
-          lengthResult[0].min, lengthResult[0].max, lengthResult[0].message
+          isBetweenResult[0].min, isBetweenResult[0].max, isBetweenResult[0].message
         ))
       }
     }

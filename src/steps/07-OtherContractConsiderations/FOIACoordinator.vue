@@ -39,16 +39,16 @@
             :minLength=[]
             :requiredFields='[
              {field:"StreetAddress", message: "Please enter an address."},
-             {field:"city", message:  "Please enter a city."},
-             {field:"selectedState" , message: "Please select a state."},
+             {field:"City", message:  "Please enter a city."},
+             {field:"State" , message: "Please select a state."},
              {field:"ZIPCode" , message: "Please enter a ZIP code."},
              {
                field:"APO_FPO_DPO",
                message: "Please select a military post office (APO or FPO)."
                },
-             {field:"selectedStateCode", message:  "Please select a state code."},
-             {field:"stateOrProvince", message: "Please enter a state/province."},
-             {field:"selectedCountry", message: "Please select a country."},
+             {field:"StateCode", message:  "Please select a state code."},
+             {field:"StateProvince", message: "Please enter a state/province."},
+             {field:"Country", message: "Please select a country."},
              {field:"PostalCode" , message: "Please enter a postal code."},
             ]'
             :isBetweenRules='[
