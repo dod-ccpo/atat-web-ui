@@ -102,7 +102,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
 
   it("TC4: PII: Select radio option: No", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ")
-    //select radio option as yes
+    //select radio option as No
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
@@ -110,7 +110,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
   
   it("TC5: Asserts: BAA", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
-    //select radio option as yes
+    //select radio option as No
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
     cy.textExists(occ.baaLabelText, "Business Associate Agreements (BAA)");
     const expectedPHIText = "Protected Health Information (PHI) is information which relates" +
@@ -171,7 +171,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
   
   it("TC6: BAA: Select the radio options", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
-    //select radio option as yes
+    //select radio option as No
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
     //Select radio options
     const infoAlert = "As a mission owner, it is your responsibility to obtain the appropriate" +
@@ -205,7 +205,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
 
   it("TC7: Asserts: Section 508 standards", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
-    //select radio option as yes on PII screen
+    //select radio option as No on PII screen
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
 
     //select radio options
