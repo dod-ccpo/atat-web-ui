@@ -146,8 +146,10 @@ import ATATDialog from "./ATATDialog.vue";
 import ATATRadioGroup from "./ATATRadioGroup.vue";
 import ATATSelect from "./ATATSelect.vue";
 import ATATTextField from "./ATATTextField.vue";
+import Inputmask from "inputmask/";
 
-import { RadioButton, SelectData, stringObj } from "types/Global";
+
+import { isValidObj, RadioButton, SelectData, stringObj } from "types/Global";
 
 @Component({
   components: {
@@ -178,7 +180,7 @@ export default class ATATAddressForm extends Vue {
   @Prop() public stateCodeListData?: SelectData[];
   @Prop() public countryListData?: SelectData[];
   @Prop() public requiredFields?: stringObj[];
-  @Prop() public isBetweenRules?: stringObj[];
+  @Prop() public isValidRules?: isValidObj[];
 
 
   // methods
@@ -191,7 +193,7 @@ export default class ATATAddressForm extends Vue {
   }
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
-    let rulesArr: ((v:string)=>string | true | undefined)[] = [];
+    let rulesArr: ((v:string)=>string | true | undefined)[]  = [];
     if (this.requiredFields) {
 
       const result = this.requiredFields.filter(obj => {
@@ -201,20 +203,36 @@ export default class ATATAddressForm extends Vue {
         rulesArr.push(this.$validators.required(result[0].message))
       }
     }
-    if (this.isBetweenRules) {
-      const isBetweenResult = this.isBetweenRules.filter(obj => {
+
+    if (this.isValidRules) {
+      const isValidResult = this.isValidRules.filter(obj => {
         return obj.field === inputID
       })
-      if(isBetweenResult.length) {
-        rulesArr.push(this.$validators.isBetween(
-          isBetweenResult[0].min, isBetweenResult[0].max, isBetweenResult[0].message
+      if(isValidResult.length) {
+        this.setMask(inputID,isValidResult[0].mask);
+        rulesArr.push(this.$validators.isMaskValid(
+          isValidResult[0].mask,isValidResult[0].message,isValidResult[0].isMaskRegex
         ))
       }
     }
 
     return rulesArr
   }
+  private setMask(inputID:string, mask:string[]): void {
+    Vue.nextTick(()=>{
+      const inputField = document.getElementById(
+        inputID
+      ) as HTMLInputElement;
+      if(inputField !== null) {
+        return Inputmask({
+          mask: mask || [],
+          placeholder: "",
+          jitMasking: true
+        }).mask(inputField);
+      }
 
+    })
+  }
   // computed
 
   get inputClass(): string {

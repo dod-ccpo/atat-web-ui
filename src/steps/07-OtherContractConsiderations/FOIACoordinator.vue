@@ -38,8 +38,8 @@
             :militaryPostOfficeOptions="militaryPostOfficeOptions"
             :minLength=[]
             :requiredFields='[
-             {field:"StreetAddress", message: "Please enter an address."},
-             {field:"City", message:  "Please enter a city."},
+              {field:"StreetAddress", message: "Please enter an address."},
+              {field:"City", message:  "Please enter a city."},
              {field:"State" , message: "Please select a state."},
              {field:"ZIPCode" , message: "Please enter a ZIP code."},
              {
@@ -51,14 +51,19 @@
              {field:"Country", message: "Please select a country."},
              {field:"PostalCode" , message: "Please enter a postal code."},
             ]'
-            :isBetweenRules='[
-              {field:"ZIPCode", message: "Your ZIP code must be 5 or 9 digits.", min: 5, max: 9},
+            :isValidRules='[
+              {
+                field:"ZIPCode",
+                message: "Your ZIP code must be 5 or 9 digits.",
+                mask:["99999", "99999-9999"],
+                },
               {
                 field:"PostalCode",
-                 message: "Your postal code must be 10 characters or " +
-                 "less and may include spaces and hyphens.",
-                 min: 0,
-                 max: 10},
+                message: "Your postal code must be 10 characters or " +
+                "less and may include spaces and hyphens.",
+                mask:["^[A-Za-z0-9- ]{0,10}$"],
+                isMaskRegex: true
+              }
             ]'
             :selectedAddressType.sync="selectedAddressType"
             :selectedCountry.sync="selectedCountry"
