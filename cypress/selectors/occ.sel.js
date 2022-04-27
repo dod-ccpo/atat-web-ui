@@ -17,7 +17,7 @@ module.exports = {
   operationPerformedTextBox:"#OperationToBePerformed_text_area",  
   //BAA
   baaLabelText: "._atat-alert h2",
-  phiTextMessage: "._atat-alert._callout",
+  phiTextMessage: "._atat-alert._callout p",
   learnMoreBAALink: "#LearnMoreBAA",
   baaRadioOptionText: "#BAARadioOptions_radio_group_control legend",
   baaRadioOptionActive: "#BAAOptions_radio_group_control .v-item--active",
