@@ -110,6 +110,7 @@ export interface CountryObj {
   abbreviation: string;
   active: boolean;
   suggested?: boolean;
+  mask?: string[];
 }
 
 export interface ToastObj {

@@ -1,6 +1,7 @@
 module.exports = {
   serviceAgencyLabel: "#ServiceOrAgency_AutoComplete_Wrapper label",
-  serviceAgencyDropDownIcon: "#ServiceOrAgency_AutoComplete_Wrapper .v-input__icon.v-input__icon--append",
+  serviceAgencyDropDownIcon: "#ServiceOrAgency_AutoComplete_Wrapper" +
+    " .v-input__icon.v-input__icon--append",
   serviceAgencyInput: "#ServiceOrAgency",
   serviceAgencyAutoListItems: "#ServiceOrAgency_AutoComplete_Wrapper .v-list-item__title",
   sectionOneHeaderText: "#Section1 h2.form-section-heading",

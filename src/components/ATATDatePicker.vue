@@ -44,13 +44,14 @@
           v-bind="attrs"
           v-on="on"
           :rules="rules"
-          @blur="onBlur"
+          @blur="onBlur($event)"
           :validate-on-blur="validateOnBlur"
           autocomplete="off"
         >
           <template slot="append-outer">
             <v-btn
               icon
+              tabindex="-1"
               :id="id + 'DatePickerButton'"
               aria-label="Open calendar to select date"
               @click="toggleMenu"
@@ -104,7 +105,7 @@ export default class ATATDatePicker extends Vue {
       save: (selectedDate: string) => Record<string, never>;
     };
   };
- 
+
   /**
    * DATA
    */
@@ -112,7 +113,11 @@ export default class ATATDatePicker extends Vue {
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
-  private validateOnBlur = false;
+
+  // Flash of red border on date text field when validateOnBlur is true and user
+  // clicks a date in the picker to be addressed in future milestone.
+  // Leave commented out code for validateOnBlur in place for now.
+  private validateOnBlur = true;
 
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
@@ -128,6 +133,7 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: format(add(new Date(), { years: 1 }), "yyyy-MM-dd") })
     private max!: Date;
   @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
+  @Prop({ default: false }) private isRequired!: boolean;
 
   /**
    * WATCHERS
@@ -169,7 +175,7 @@ export default class ATATDatePicker extends Vue {
    * date attribs
    */
   private onInput(date: string): void {
-    this.validateOnBlur = true;
+    // this.validateOnBlur = true;
     if (date === "") {
       this.dateFormatted = "";
       this.date = "";
@@ -182,7 +188,7 @@ export default class ATATDatePicker extends Vue {
    */
   private datePickerClicked(selectedDate: string): void {
     //must be set to false to prevent unnecessary validation
-    this.validateOnBlur = false;
+    // this.validateOnBlur = false;
 
     this.removeErrors();
 

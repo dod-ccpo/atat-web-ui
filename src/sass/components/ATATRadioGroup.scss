@@ -129,15 +129,8 @@
     color: $base-darkest !important;
     padding-top: 1px;
   }
-}
-
-.error--text {
-  ._radio-button-card {
-    background-color: $base-lightest !important;
-    border: solid 2px $error;
-    border-radius: 4px !important;
-    padding: 12px 0px 12px 12px;
-    align-items: start !important;
+  &.error--text {
+    border-color: $error;
   }
 }
 

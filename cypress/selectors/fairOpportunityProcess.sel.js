@@ -6,4 +6,4 @@ module.exports = {
   radioNoneApply: "#Radio_NoneApply",
   currentContractOptionsTxt: ".copy-max-width p",
   
-  }
+}

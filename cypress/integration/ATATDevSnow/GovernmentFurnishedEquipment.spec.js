@@ -26,7 +26,10 @@ describe("Test suite: Government Furnished Equipment", () => {
 
   it("TC2: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepGovFurEquipLink, " Government Furnished Equipment ");
-    cy.textExists(common.header, " Will government equipment be furnished, provided or acquired under this acquisition? ");
+    cy.textExists(
+      common.header,
+      " Will government equipment be furnished, provided or acquired under this acquisition? "
+    );
     //assert radio button options
     cy.radioBtn(govFurEquip.yesRadioOption, "true").not("[disabled]").click({ force: true });
     cy.findElement(govFurEquip.blueInfoMessageText).should("not.exist");
@@ -39,7 +42,7 @@ describe("Test suite: Government Furnished Equipment", () => {
       
   });
 
-  it("TC3: Blue Info message displays only when user previously select DISA as Service Agency ", () => {
+  it("TC3: Blue Info message displays only when user previously select DISA ServiceAgency", () => {
     cy.clickSideStepper(common.subStepOrganizationLink, " Organization ");
     // Navigates to "Organization"
     cy.textExists(common.header, " Next, we’ll gather information about your organization ");
@@ -50,11 +53,15 @@ describe("Test suite: Government Furnished Equipment", () => {
     cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
     cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDD");
     cy.clickSideStepper(common.stepGovFurEquipLink, " Government Furnished Equipment ");
-    cy.textExists(common.header, " Will government equipment be furnished, provided or acquired under this acquisition? ");
+    cy.textExists(
+      common.header,
+      " Will government equipment be furnished, provided or acquired under this acquisition? ");
     //assert radio button options
     cy.radioBtn(govFurEquip.yesRadioOption, "true").not("[disabled]")
     cy.findElement(govFurEquip.blueInfoMessageText).should("exist").and("be.visible");
-    const alertText = "As a DISA mission owner, your GFP must be reviewed and approved by the Workforce Services Directorate (WSD) Property Office. Once you are ready to submit your acquisition package, we’ll take care of sending your GFP documents for review."
+    const alertText = "As a DISA mission owner, your GFP must be reviewed and approved by the" +
+      " Workforce Services Directorate (WSD) Property Office. Once you are ready to submit" +
+      " your acquisition package, we’ll take care of sending your GFP documents for review."
     cy.findElement(govFurEquip.blueInfoMessageText).then(($e) => {
       let actualTxt = $e.text();
       cy.log(actualTxt);

@@ -11,7 +11,8 @@ module.exports = {
   scopeError:"#ProjectScope_text_field_control .field-error",
   emergencyDeclaration: "#emergency-declaration-support-requirement_radio_group_control legend",
   emergencyDeclarationControl: "#emergency-declaration-support-requirement_radio_group_control",
-  emergencyDeclarationerror:"#emergency-declaration-support-requirement_radio_group_control .field-error",
+  emergencyDeclarationerror: "#emergency-declaration-support-requirement_radio_group_control" +
+    " .field-error",
   radioBtnYes:"#Radio_Yes",
   radioBtnNo: "#Radio_No",  
   cancelBtn:"#CancelButton"
