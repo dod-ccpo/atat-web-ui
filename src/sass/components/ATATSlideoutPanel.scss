@@ -24,5 +24,7 @@
   
   ._panel-content-wrap {
     padding: 16px 24px 24px;
+    overflow-y: scroll;
+    max-height: calc(100vh - 60px);
   }
 }
