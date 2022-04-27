@@ -25,3 +25,8 @@ export interface SessionData {
   requirementsCostEstimate: RequirementsCostEstimateDTO;
   GFEOverview: GFEOverviewDTO;
 }
+
+// export interface StoreData<TableDTO> {
+//     storeProperty: string;
+//     data: TableDTO
+// } 

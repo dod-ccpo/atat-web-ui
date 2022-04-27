@@ -2,13 +2,14 @@
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-
+import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
+  BaseTableDTO,
   RequirementsCostEstimateDTO,
 } from "@/api/models";
-import { AutoCompleteItemGroups, SelectData } from "types/Global";
-import { SessionData } from "./models";
+import { SelectData } from "types/Global";
+import { SessionData} from "./models";
 import { ProjectOverviewDTO } from "@/api/models";
 import { OrganizationDTO } from "@/api/models";
 import { ContactDTO } from "@/api/models";
@@ -18,8 +19,14 @@ import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
+import { data } from "cypress/types/jquery";
+
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
+
+export const StoreProperties = {
+  ProjectOverview: 'projectOverview',
+}
 
 const initialProjectOverview = () => {
   return {
@@ -100,6 +107,19 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
     })
   );
 };
+
+const getStorePropery = (storeProperty: string, store: AcquisitionPackageStore): BaseTableDTO => {
+
+  // get specific property
+  const dataProperty = ((store as unknown) as Record<string, BaseTableDTO>)[storeProperty];
+
+  if(!dataProperty)
+  {
+    throw new Error(`unable to locate store property : ${storeProperty}`);
+  }
+
+  return dataProperty;
+}
 
 @Module({
   name: "AcquisitionPackage",
@@ -318,483 +338,6 @@ export class AcquisitionPackageStore extends VuexModule {
     { text: "U.S. Navy", value: "NAVY" },
     { text: "U.S. Space Force", value: "USSF" },
   ];
-
-  // used on Contact Info and COR/ACOR pages
-  public branchRanksData: AutoCompleteItemGroups = {
-    USAF: [
-      { rank: "Airman Basic (AB)", value: "Airman Basic", grade: "E-1" },
-      { rank: "Airman (Amn)", value: "Airman", grade: "E-2" },
-      {
-        rank: "Airman First Class (A1C)",
-        value: "Airman First Class",
-        grade: "E-3",
-      },
-      { rank: "Senior Airman (SrA)", value: "Senior Airman", grade: "E-4" },
-      { rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-5" },
-      {
-        rank: "Technical Sergeant (TSgt)",
-        value: "Technical Sergeant",
-        grade: "E-6",
-      },
-      {
-        rank: "Master Sergeant (MSgt)",
-        value: "Master Sergeant",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Master Sergeant (SMSgt)",
-        value: "Senior Master Sergeant",
-        grade: "E-8",
-      },
-      {
-        rank: "Chief Master Sergeant (CMSgt)",
-        value: "Chief Master Sergeant",
-        grade: "E-9",
-      },
-      {
-        rank: "Command Chief Master Sergeant (CCM)",
-        value: "Command Chief Master Sergeant",
-        grade: "E-9",
-      },
-      { rank: "First Sergeant", value: "First Sergeant", grade: "E-9" },
-      {
-        rank: "Second Lieutenant (2d Lt)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1st Lt)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
-      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (Lt Co)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (Brig Gen)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (Lt Gen)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (Gen)", value: "General", grade: "O-10" },
-    ],
-    ARMY: [
-      { rank: "Private (PVT)", value: "Private", grade: "E-1" },
-      { rank: "Private (PV2)", value: "Private", grade: "E-2" },
-      {
-        rank: "Private First Class (PFC)",
-        value: "Private First Class",
-        grade: "E-3",
-      },
-      { rank: "Corporal (CPL)", value: "Corporal", grade: "E-4" },
-      { rank: "Specialist (SPC)", value: "Specialist", grade: "E-4" },
-      { rank: "Sergeant (SGT)", value: "Sergeant", grade: "E-5" },
-      { rank: "Staff Sergeant (SSG)", value: "Staff Sergeant", grade: "E-6" },
-      {
-        rank: "Sergeant First Class (SFC)",
-        value: "Sergeant First Class",
-        grade: "E-7",
-      },
-      { rank: "Master Sergeant (MSG)", value: "Master Sergeant", grade: "E-8" },
-      { rank: "First Sergeant (1SG)", value: "First Sergeant", grade: "E-8" },
-      { rank: "Sergeant Major (SGM)", value: "Sergeant Major", grade: "E-9" },
-      {
-        rank: "Command Sergeant Major (CSM)",
-        value: "Command Sergeant Major",
-        grade: "E-9",
-      },
-      {
-        rank: "Warrant Officer 1 (WO1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CW2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CW3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CW4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CW5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      {
-        rank: "Second Lieutenant (2LT)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1LT)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (CPT)", value: "Captain", grade: "O-3" },
-      { rank: "Major (MAJ)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (LTC)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (COL)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (BG)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (MG)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (LTG)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (GEN)", value: "General", grade: "O-10" },
-    ],
-    USCG: [
-      { rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1" },
-      {
-        rank: "Seaman Apprentice (SA)",
-        value: "Seaman Apprentice",
-        grade: "E-2",
-      },
-      { rank: "Seaman (SN)", value: "Seaman", grade: "E-3" },
-      {
-        rank: "Petty Officer Third Class (PO3)",
-        value: "Petty Officer Third Class",
-        grade: "E-4",
-      },
-      {
-        rank: "Petty Officer Second Class (PO2)",
-        value: "Petty Officer Second Class",
-        grade: "E-5",
-      },
-      {
-        rank: "Petty Officer First Class (PO1)",
-        value: "Petty Officer First Class",
-        grade: "E-6",
-      },
-      {
-        rank: "Chief Petty Officer (CPO)",
-        value: "Chief Petty Officer",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Chief Petty Officer (SCPO)",
-        value: "Senior Chief Petty Officer",
-        grade: "E-8",
-      },
-      {
-        rank: "Master Chief Petty Officer (MCPO)",
-        value: "Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Command Master Chief Petty Officer (CMC)",
-        value: "Command Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Warrant Officer 1 (WO-1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CWO-2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CWO-3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CWO-4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CWO-5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      { rank: "Ensign (ENS)", value: "Ensign", grade: "O-1" },
-      { rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2" },
-      { rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3" },
-      {
-        rank: "Lieutenant Commander (LCDR)",
-        value: "Lieutenant Commander",
-        grade: "O-4",
-      },
-      { rank: "Commander (CDR)", value: "Commander", grade: "O-5" },
-      { rank: "Captain (CAPT)", value: "Captain", grade: "O-6" },
-      {
-        rank: "Rear Admiral Lower Half (RDML)",
-        value: "Rear Admiral Lower Half",
-        grade: "O-7",
-      },
-      { rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8" },
-      { rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9" },
-      { rank: "Admiral (ADM)", value: "Admiral", grade: "O-10" },
-    ],
-    USMC: [
-      { rank: "Private (Pvt)", value: "Private", grade: "E-1" },
-      {
-        rank: "Private First Class (PFC)",
-        value: "Private First Class",
-        grade: "E-2",
-      },
-      { rank: "Lance Corporal (LCpl)", value: "Lance Corporal", grade: "E-3" },
-      { rank: "Corporal (Cpl)", value: "Corporal", grade: "E-4" },
-      { rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5" },
-      { rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-6" },
-      {
-        rank: "Gunnery Sergeant (GySgt)",
-        value: "Gunnery Sergeant",
-        grade: "E-7",
-      },
-      {
-        rank: "Master Sergeant (MSgt)",
-        value: "Master Sergeant",
-        grade: "E-8",
-      },
-      { rank: "First Sergeant (1stSg)", value: "First Sergeant", grade: "E-8" },
-      {
-        rank: "Master Gunnery Sergeant (MGySg)",
-        value: "Master Gunnery Sergeant",
-        grade: "E-9",
-      },
-      { rank: "Sergeant Major (SgtMa)", value: "Sergeant Major", grade: "E-9" },
-      {
-        rank: "Warrant Officer 1 (WO1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CW2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CW3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CW4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CW5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      {
-        rank: "Second Lieutenant (2ndLt)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1stLt)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
-      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (LtCol)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (BGen)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (MajGen)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (LtGen)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (Gen)", value: "General", grade: "O-10" },
-    ],
-    NAVY: [
-      { rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1" },
-      {
-        rank: "Seaman Apprentice (SA)",
-        value: "Seaman Apprentice",
-        grade: "E-2",
-      },
-      { rank: "Seaman (SN)", value: "Seaman", grade: "E-3" },
-      {
-        rank: "Petty Officer Third Class (PO3)",
-        value: "Petty Officer Third Class",
-        grade: "E-4",
-      },
-      {
-        rank: "Petty Officer Second Class (PO2)",
-        value: "Petty Officer Second Class",
-        grade: "E-5",
-      },
-      {
-        rank: "Petty Officer First Class (PO1)",
-        value: "Petty Officer First Class",
-        grade: "E-6",
-      },
-      {
-        rank: "Chief Petty Officer (CPO)",
-        value: "Chief Petty Officer",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Chief Petty Officer (SCPO)",
-        value: "Senior Chief Petty Officer",
-        grade: "E-8",
-      },
-      {
-        rank: "Master Chief Petty Officer (MCPO)",
-        value: "Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Command Master Chief Petty Officer (CMDCM)",
-        value: "Command Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Force Master Chief Petty Officer (FORCM)",
-        value: "Force Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Fleet Master Chief Petty Officer (FLTCM)",
-        value: "Fleet Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Warrant Officer 1 (WO-1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CWO-2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CWO-3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CWO-4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CWO-5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      { rank: "Ensign (ENS)", value: "Ensign", grade: "O-1" },
-      { rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2" },
-      { rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3" },
-      {
-        rank: "Lieutenant Commander (LCDR)",
-        value: "Lieutenant Commander",
-        grade: "O-4",
-      },
-      { rank: "Commander (CDR)", value: "Commander", grade: "O-5" },
-      { rank: "Captain (CAPT)", value: "Captain", grade: "O-6" },
-      {
-        rank: "Rear Admiral Lower Half (RDML)",
-        value: "Rear Admiral Lower Half",
-        grade: "O-7",
-      },
-      { rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8" },
-      { rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9" },
-      { rank: "Admiral (ADM)", value: "Admiral", grade: "O-10" },
-    ],
-    USSF: [
-      { rank: "Specialist 1 (Spc1)", value: "Specialist 1", grade: "E-1" },
-      { rank: "Specialist 2 (Spc2)", value: "Specialist 2", grade: "E-2" },
-      { rank: "Specialist 3 (Spc3)", value: "Specialist 3", grade: "E-3" },
-      { rank: "Specialist 4 (Spc4)", value: "Specialist 4", grade: "E-4" },
-      { rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5" },
-      {
-        rank: "Technical Sergeant (TSgt)",
-        value: "Technical Sergeant",
-        grade: "E-6",
-      },
-      {
-        rank: "Master Sergeant (MSgt)",
-        value: "Master Sergeant",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Master Sergeant (SMSgt)",
-        value: "Senior Master Sergeant",
-        grade: "E-8",
-      },
-      {
-        rank: "Chief Master Sergeant (CMSgt)",
-        value: "Chief Master Sergeant",
-        grade: "E-9",
-      },
-      {
-        rank: "Second Lieutenant (2d Lt)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1st Lt)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
-      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (Lt Col)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (Brig Gen)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (LT Gen)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (Gen)", value: "General", grade: "O-10" },
-    ],
-  };
 
   public serviceOrAgencyData: SelectData[] = [
     {
@@ -2241,6 +1784,97 @@ export class AcquisitionPackageStore extends VuexModule {
       throw new Error(`error occurred saving PoP data ${error}`);
     }
   }
+
+
+
+  @Action({ rawError: true })
+  /**
+   * Loads project overview data from back end if a project overview
+   * sys_id has been generated.
+   */
+  // async loadTableData<TableDTO>(storeProperty: string): Promise<TableDTO> {
+  //   try {
+  //     await this.ensureInitialized();
+
+  //     const projectSysId = this.projectOverview?.sys_id || "";
+
+  //     if (projectSysId.length > 0) {
+  //       const projectOverviewData = await api.projectOverviewTable.retrieve(
+  //         projectSysId as string
+  //       );
+  //       this.setProjectOverview(projectOverviewData);
+  //       this.setProjectTitle(projectOverviewData.title);
+  //       this.setAcquisitionPackage({
+  //         ...this.acquisitionPackage,
+  //         project_overview: projectSysId,
+  //       } as AcquisitionPackageDTO);
+  //     }
+  //     return this.projectOverview as ProjectOverviewDTO;
+  //   } catch (error) {
+  //     throw new Error(`error occurred loading project overview ${error}`);
+  //   }
+  // }
+
+
+  @Action({rawError: true})
+  async persistTableData<TableDTO>({data, storeProperty, sysId, api}: {data:TableDTO, 
+    storeProperty: string, sysId: string, api:TableApiBase<TableDTO>})
+  :Promise<void>{
+
+    const savedData =
+      sysId.length > 0
+        ? await api.update(sysId, { ...data, sysId })
+        : await api.create(data);
+    this.setStoreData({data: savedData, storeProperty});
+    this.setAcquisitionPackage({
+      ...this.acquisitionPackage,
+      [storeProperty]: (data as BaseTableDTO).sys_id,
+    } as AcquisitionPackageDTO);
+  }
+
+  @Mutation
+  async setStoreData<TableDTO>({data, storeProperty}: 
+    {data:TableDTO, storeProperty: string}): Promise<void>{
+    const storeAsTableRecord = (this as unknown) as Record<string, TableDTO>;
+    storeAsTableRecord[storeProperty] = data;
+  }
+
+  @Action({rawError: true})
+  async persistData<TableDTO>({data, sysId, storeProperty}: 
+    {data: TableDTO, sysId:string, storeProperty: string}): Promise<void>{
+    
+    let persistAction: Promise<void> | undefined = undefined;
+
+    switch(storeProperty){
+          
+    case StoreProperties.ProjectOverview:
+      persistAction = this.persistTableData({data: (data as unknown) as ProjectOverviewDTO, 
+        storeProperty, sysId, api: api.projectOverviewTable});
+      break;
+    default: 
+      throw new Error(`unable to locate persist action for store property : ${storeProperty}`);
+    }
+  
+    await persistAction;
+  }
+  
+
+   @Action({rawError: true})
+   /**
+    * Saves data for a given TableDTO/store property
+    */
+  async saveTableData<TableDTO>({data, storeProperty}: 
+    {data: TableDTO, storeProperty: string}):Promise<void>{
+
+    try {
+      const storeDataProperty = getStorePropery(storeProperty, this);
+      await this.persistData({data, sysId: storeDataProperty.sys_id || '', storeProperty});
+
+    } catch (error) {
+      throw new Error(`error occurred saving store data ${storeProperty}`);
+    }
+  }
+
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);
