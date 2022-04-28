@@ -32,7 +32,9 @@ import financialDetail from '../selectors/financialDetails.sel';
 import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
-import {cleanText,colors} from "../helpers";
+import contractDetails from '../selectors/contractDetails.sel';
+import { cleanText, colors } from "../helpers";
+import occ from '../selectors/occ.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -69,6 +71,7 @@ Cypress.Commands.add("findElement", (selector) => {
 });
 
 Cypress.Commands.add('textExists', (selector, textLabel) => {
+  textLabel = textLabel.trim();
   cy.findElement(selector)
     .should("be.visible")
     .and("contain.text", textLabel);
@@ -107,6 +110,12 @@ Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
 
 Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
   cy.findElement(selector).should("contain.text", errorMessage);  
+});
+
+Cypress.Commands.add("selectCheckBox", (selector,value) => {
+  cy.findElement(selector)
+    .should("have.value", value);
+  
 });
 
 Cypress.Commands.add("clickSideStepper", (stepperSelector,stepperText) => {
@@ -482,4 +491,43 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
         .and('have.css', 'color', colors.primary);
     }          
   })
+});
+
+Cypress.Commands.add("popLengthOptionYearExists", () => {
+  cy.findElement(contractDetails.mainWrap)
+    .then((main) => {
+      if (main.find(contractDetails.optionRow).length > 0) {
+        cy.log("Option1Row FOUND!");
+        cy.findElement(contractDetails.baseDeleteButton)
+          .should("exist")
+          .and("not.be.disabled");
+        cy.findElement(contractDetails.optionDeleteButton)
+          .should("exist")
+          .and("not.be.disabled");                                
+      } else {
+        cy.log("Option1Row NOT FOUND!");
+        cy.findElement(contractDetails.baseDeleteButton)
+          .should("exist")
+          .and("be.disabled")
+      }
+    });
+
+});
+
+Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(occ.piiRadioOtionActive)
+    .then(($radioBtn) => {      
+      const selectedOption = $radioBtn.text();
+      cy.log(selectedOption);
+      cy.btnExists(common.continueBtn, ' Continue ').click();
+      if (selectedOption === "radio_button_checkedYes." +
+        " This contract action will include a system of records with PII.") {
+        //naviagtes to "Tell us more about your system of records screen"
+        cy.textExists(common.header, " Tell us more about your system of records " );
+      } else {
+        cy.textExists(common.header,"Let’s find out if you need a Business Associates Agreement");
+      }
+          
+    })
 });

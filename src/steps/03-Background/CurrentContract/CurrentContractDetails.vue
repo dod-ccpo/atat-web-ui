@@ -35,11 +35,12 @@
               :value.sync="taskDeliveryOrderNumber"
             />
 
-            <!-- max date to be determined -->
+            <!-- NOTE: max date to be determined -->
             <ATATDatePicker id="Expiration" 
               label="Contract/Order expiration date"
               placeHolder="MM/DD/YYYY"
               :value.sync="contractOrderExpirationDate" 
+              :min="minDate"
               max="2024-01-01"
               :rules="[
                 $validators.required('Please enter your contract/order expiration date.'),
@@ -63,6 +64,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+import { add, format } from "date-fns";
 
 @Component({
   components: {
@@ -83,6 +85,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   
   private contractOrderExpirationDate 
     = AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
+
+  private minDate: string = format(add(new Date(), { days: 1 }), "yyyy-MM-dd");
 
   private get currentData(): CurrentContractDTO {
     return {

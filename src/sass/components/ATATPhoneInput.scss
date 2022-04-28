@@ -3,6 +3,13 @@
     padding-right: 0;
     max-width: 67px;
     width: 67px;
+    &.error--text{
+      fieldset{
+        border-right-width: 0px;
+      }
+    }
+
+
     .v-input__control > {
 
       .v-input__slot {
@@ -130,6 +137,7 @@
             }
           }
         }
+
       }
       .v-input__slot {
         &:after, &:before {

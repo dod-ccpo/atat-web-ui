@@ -338,7 +338,7 @@ describe("Test suite: Acquisition Package ", () => {
     cy.textExists(contact.lNameLabel, " Last name ");        
     cy.textExists(contact.mNameLabel, " Middle name  Optional ");  
     cy.textExists(contact.emailLabel, " Your email ");
-    cy.textExists(contact.emailMessage, " Enter a .MILITARY or .gov email address.");
+    cy.textExists(contact.emailMessage, " Enter a .mil or .gov email address.");
     cy.textExists(contact.phoneNumberLabel, " Your phone number ");
     const contactInformation = {
       firstNameSelector: contact.fNameTxtBox,

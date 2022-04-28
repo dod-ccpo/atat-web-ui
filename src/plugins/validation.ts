@@ -1,6 +1,7 @@
 import Vue from "vue"
 
 import { isValid } from "date-fns";
+import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
 
@@ -48,13 +49,18 @@ export class ValidationPlugin {
  * @param message
  * @returns {function(*=): boolean}
  */
+
+  // todo test this with required fields
   required (
     message?: string
   ): ((v: string) => string | true | undefined) {
     message = message || "This field is required.";
-
     return (v: string) => {
-      return (v && (v.length && v.length > 0)) || message;
+      if (typeof(v)==="object"){ // if typeof 'selectData(dropdown)' or string[]
+        return Object.values(v).every((val)=> val !=="") || message;
+      } else if (typeof(v) === "string"){ // else if typeof 'string'
+        return (v!=="")|| message;
+      }
     };
   };
 
@@ -145,6 +151,65 @@ export class ValidationPlugin {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
     };
   };
+
+  /**
+ *
+ * @returns {function(*): (boolean|string)}
+ */
+ isEmail = (): ((v: string) => string | true | undefined) => {
+   return (v: string) => {
+     if (v && v!==""){  
+       if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/.test(v) === false) {
+         return "Please use standard domain format, like ‘@mail.mil’"
+       } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/.test(v) === false) {
+         return "Please use your .mil or .gov email address."
+       } 
+     }
+     return true;
+   };
+ };
+
+ /**
+ * Returns the error message otherwise.
+ *
+ * @param {string} country country Abbreviation 
+ * @returns {function(*): (boolean|string)}
+ */
+ isPhoneNumberValid = ( country: CountryObj): ((v: string) => string | true | undefined) => {
+   return (v: string) => {
+     if (v && v!==""){ 
+       const plainPN = v.replace(/[() -]/gi,'') || '';
+       const isValid = country?.mask?.some((mask) =>{
+         return mask.replace(/[() -]/gi,'').length === plainPN.length;
+       });
+       return isValid || 
+        `Please enter a number using the format ` +
+        `for  ${country.name} (e.g., ${country.mask?.join(", ")}).`;
+     }
+     else {
+       return "Please enter your phone number."
+     }
+     return true;
+   }
+ };
+
+ /**
+   * Validator that validates input should not exceed a given 'max' number
+   * Returns the error message otherwise.
+   *
+   * @param {number} max Maximum number allowed
+   * @param {string} message
+   * @returns {function(*): (boolean|string)}
+   */
+ lengthLessThan(
+   max: number,
+   message?: string
+ ): ((v: string) => string | true | undefined) {
+   message = message || `Value must be less than ${max}`;
+   return (v: string) => {
+     return v && v.length < max || message;
+   };
+ };
 
 }
 
