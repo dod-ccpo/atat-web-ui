@@ -241,8 +241,8 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.textExists(occ.blueAlertLabel, " Section 508 Accessibility Standards for Cloud Computing ");
       
   });
-  
-  it("TC8: FOIA cordinator: Foreign address", () => {
+
+  it("TC8: FOIA Coordinator: Foreign address", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     //select radio option as yes
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
@@ -288,7 +288,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
       
   });
 
-  it("TC9: FOIA cordinator: Military", () => {
+  it("TC9: FOIA Coordinator: Military", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");
     //select radio option as yes
@@ -316,7 +316,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
       
   });
 
-  it("TC10: FOIA cordinator: U.S Address", () => {
+  it("TC10: FOIA Coordinator: U.S Address", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");
     //select radio option as yes
@@ -343,7 +343,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     //Click on Continue button
     cy.btnExists(common.continueBtn, " Continue ").click();
     //navigates to next substep
-    cy.findElement(".v-main__wrap").scrollTo('top', { easing: 'linear' });
+    cy.findElement(occ.wrap).scrollTo('top', { easing: 'linear' });
     cy.textExists(common.header, "Let’s look into your Section 508 Accessibility requirements");
     
   });

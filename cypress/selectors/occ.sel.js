@@ -47,6 +47,7 @@ module.exports = {
   emailTxtbox: "#Email_text_field",
   emailHelpTxt: "#Email_text_field_control .help-text",
   //508 standards
+  wrap:".v-main__wrap",
   introText: "#IntroP",
   blueAlertLabel: "._atat-alert h2",
   scrollBar: "div._atat-alert.mb-10._callout._scrollable.py-0.pr-0",
