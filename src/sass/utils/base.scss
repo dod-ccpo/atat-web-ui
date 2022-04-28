@@ -1,5 +1,6 @@
 html {
   font-size: 10px;
+  overflow-y: hidden;
 }
 body {
   font-size: 1.6rem; 
@@ -13,16 +14,20 @@ body {
 }
 
 #app {
-  font-family: $base-font;
-  color: $base-darker;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @extend .body
-}
+  @extend .body;
+  }
 
 .v-main__wrap {
   background-color: $white;
-  padding: 28px 56px 120px 44px;
+  padding: 28px 56px 0px 44px;
+  overflow-y: scroll;
+  max-height: calc(100vh - 60px);
+
+  #app-content{
+    height: 100%;
+  }
 }
 
 .container-max-width {
@@ -67,4 +72,33 @@ body {
 
 ._no-border-bottom {
   border-bottom: none !important;
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 14px;
+  height: 5px;
+  margin-right: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fff;
+  border-radius: 50px;
+  border: 3px solid #fff;
+  margin-block: .5em;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #1d1c1d85;
+  border-radius: 50px;
+  border: 3px solid #fff;
+  // border: 1px solid rgb(218, 218, 218);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(146, 146, 146);
 }
