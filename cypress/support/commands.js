@@ -531,3 +531,20 @@ Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
           
     })
 });
+
+Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(occ.foiaRadioOptionActive)
+    .then(($radioBtn) => {
+      const selectedOption = $radioBtn.text();
+      cy.log(selectedOption);
+      cy.btnExists(common.continueBtn, ' Continue ').click();
+      if (selectedOption === "radio_button_checkedYes.") {
+        //naviagtes to "Tell us more about your FOIA Cordinator screen"
+        cy.textExists(common.header, " Tell us about your FOIA Coordinator ");
+      } else {
+        cy.textExists(common.header, "Let’s look into your Section 508 Accessibility requirements");
+      }
+          
+    });
+});
