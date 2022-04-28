@@ -37,6 +37,7 @@
                 v-model="searchTerm"
                 class="_dropdown-text-field"
                 placeholder="Search"
+                persistent-placeholder=""
                 @input="searchCountries"
                 append-icon="search"
                 id="DropdownTextField"
