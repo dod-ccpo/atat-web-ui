@@ -88,6 +88,15 @@
         </v-col>
       </v-row>
 
+        <ATATPhoneInput
+          id="PhoneNumber"
+          label="Phone number"
+          class=" width-100"
+          :value.sync="_phone"
+          :country.sync="_selectedPhoneCountry"
+          :extension.sync="_phoneExt"
+        />
+
       <ATATTextField 
         id="EmailAddress" 
         label="Email address" 
@@ -95,24 +104,6 @@
         helpText="Enter a .mil or .gov email address."
         :value.sync="_email"
       />
-
-      <div class="d-flex mb-10">
-        <ATATPhoneInput
-          id="PhoneNumber" 
-          label="Phone number" 
-          class="_input-max-width width-100" 
-          :value.sync="_phone"
-          :country.sync="_selectedPhoneCountry"
-        />
-        <ATATTextField 
-          id="PhoneExtension" 
-          label="Extension" 
-          width="140"
-          :optional="true"
-          class="ml-6"
-          :value.sync="_phoneExt"
-        />
-      </div>
 
       <ATATTextField 
         id="DoDAAC" 
@@ -138,9 +129,9 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import { 
-  RadioButton, 
-  SelectData, 
+import {
+  RadioButton,
+  SelectData,
   RankData
 } from "../../../../types/Global";
 

@@ -91,7 +91,8 @@
       </v-text-field>
     </div>
   </div>
-      <div id="PhoneExtensionControl" class="_atat-phone-extension-field ml-10">
+      <div v-if="phoneExtension !== false" id="PhoneExtensionControl"
+           class="_atat-phone-extension-field ml-10">
         <div class="d-flex align-center">
           <label
             :id="id + '_ExtensionTextFieldLabel'"
@@ -106,8 +107,8 @@
         </div>
 
         <ATATTextField
-          ref="atatExtensionTextField"
-          :id="id + '_PhoneExtensionField'"
+          ref="atatExtensionText"
+          :id="id + '_PhoneExtension'"
           outlined
           dense
           :height="42"
@@ -115,7 +116,6 @@
           class="_phone-extension-input"
           @input="inputActions"
           autocomplete="off"
-          :rules="[$validators.lengthLessThan(6,'max length of 6')]"
         >
         </ATATTextField>
       </div>
@@ -168,7 +168,9 @@ export default class ATATPhoneInput extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "351" }) private width!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
-
+  @Prop({ default: true }) private phoneExtension!: boolean;
+  @PropSync("value", { default: "" }) private _value!: string | null;
+  @PropSync("extension", {default: ""}) private _extension!: string;
 
   @PropSync("country", {
     default: {
@@ -183,8 +185,7 @@ export default class ATATPhoneInput extends Vue {
 
   private _selectedCountry!: CountryObj;
 
-  @PropSync("value", { default: "" }) private _value!: string | null;
-  @PropSync("phoneExtension", {default: ""}) private _extension!: string;
+
 
   // data
   private searchResults: CountryObj[] = [];
@@ -193,6 +194,7 @@ export default class ATATPhoneInput extends Vue {
 
   private inputActions(v: string) {
     this._extension = v;
+    this.setExtensionMask();
   };
 
   private searchCountries() {
@@ -227,6 +229,7 @@ export default class ATATPhoneInput extends Vue {
     this.blurDropDown();
     this.focusTextBox();
     this.setPhoneMask();
+    this.setExtensionMask()
   }
 
   private setDropdownValue(val: CountryObj): void{
@@ -278,10 +281,22 @@ export default class ATATPhoneInput extends Vue {
       }).mask(phoneTextField);
     });
   }
-
+  private setExtensionMask(): void{
+    Vue.nextTick(()=>{
+      const extensionTextField = document.getElementById(
+        this.id + "_PhoneExtension_text_field"
+      ) as HTMLElement;
+      return Inputmask({
+        regex:"^[0-9]{1,6}?",
+        placeholder: "",
+        jitMasking: true
+      }).mask(extensionTextField);
+    });
+  }
   private mounted(): void {
     this.searchResults = [...this.countries];
     this.setPhoneMask();
+    this.setExtensionMask();
   }
 
   //data

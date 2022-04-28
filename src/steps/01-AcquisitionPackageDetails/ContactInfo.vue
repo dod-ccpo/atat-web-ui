@@ -112,7 +112,7 @@
           :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
           :value.sync="selectedPhoneNumber"
           :country.sync="selectedPhoneCountry"
-          :phoneExtension.sync="phoneExtension"
+          :extension.sync="phoneExtension"
           :rules="[
             $validators.isPhoneNumberValid(
               this.selectedPhoneCountry

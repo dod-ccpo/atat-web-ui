@@ -193,24 +193,6 @@ export class ValidationPlugin {
    }
  };
 
- /**
-   * Validator that validates input should not exceed a given 'max' number
-   * Returns the error message otherwise.
-   *
-   * @param {number} max Maximum number allowed
-   * @param {string} message
-   * @returns {function(*): (boolean|string)}
-   */
- lengthLessThan(
-   max: number,
-   message?: string
- ): ((v: string) => string | true | undefined) {
-   message = message || `Value must be less than ${max}`;
-   return (v: string) => {
-     return v && v.length < max || message;
-   };
- };
-
 }
 
 declare module 'vue/types/vue' {
