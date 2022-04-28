@@ -30,6 +30,7 @@ module.exports = {
   //FOIA
   foiaYesOption: "#Radio_Yes",
   foiaNoOption: "#Radio_No",
+  foiaRadioOptionActive:"#FOIAOptions_radio_group_control .v-item--active",
   foiaLearnLink: "#FOIALearnMore",
   foiaLearnDrawer: ".v-navigation-drawer__content",
   learnMoreDrawerLabel: "#PanelTitle",
@@ -37,8 +38,16 @@ module.exports = {
   learnMoreDrawerClose: "#PanelCloser",
   learnMoreFOIAUrl: "._text-link",
   foiaFAQLink: "#Button_FOIAFAQ",
-  foiaFAQText:"#Content_FOIAFAQ",    
+  foiaFAQText: "#Content_FOIAFAQ",
+  //Tell us about your FOIA cordinator
+  fullNameLabel: "#FullName_text_field_label",
+  fullNameTxtBox: "#FullName_text_field",
+  fullNameHelpTxt: "#FullName_text_field_control .help-text",
+  emailLabel: "#Email_text_field_label",
+  emailTxtbox: "#Email_text_field",
+  emailHelpTxt: "#Email_text_field_control .help-text",
   //508 standards
+  wrap:".v-main__wrap",
   introText: "#IntroP",
   blueAlertLabel: "._atat-alert h2",
   scrollBar: "div._atat-alert.mb-10._callout._scrollable.py-0.pr-0",
