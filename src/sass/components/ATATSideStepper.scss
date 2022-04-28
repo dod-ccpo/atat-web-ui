@@ -4,190 +4,195 @@
       border-right: 1px solid $base-lighter;
       background-color: $white;
       z-index: 2;
-      .v-navigation-drawer__border {
-        display: none;
-      }
-      .v-list {
-        padding: 100px 24px 24px;
-        .v-list-item { 
-          align-items: flex-start;
-          flex-direction: column;
-          min-height: unset;
-          padding: 0;
-          &:last-child {
-            a {
-              &:after {
-                display: none;
-              }
-            }
-          }
-          a {
-            font-size: 1.6rem;
-            text-decoration: none;
-            color: $base-dark;
-            margin-bottom: 20px;
-            position: relative;
-            display: flex;
-            width: 100%;
-            &:focus-visible {
-              .step-text {
-                text-decoration: underline;
-              }
-            }
-            &:after {
-              position: absolute;
-              left: 14px;
-              bottom: -30px;
-              content: "";
-              width: 1px;
-              height: 100%;
-              background-color: $base-light;
-            }
-            &.substep {
-              margin-bottom: 12px;
-              &:last-child {
-                margin-bottom: 20px;
-              }
-              &:after {
-                bottom: -30px;
-                height: calc(100% + 20px);
-                background-color: $primary;
-              }
-              .step-text {
-                margin-left: 9px;
-              }
-              &.step-complete {
+      .v-navigation-drawer__content{
+        overflow-y: hidden;
+        .v-navigation-drawer__border {
+          display: none;
+        }
+        .v-list {
+          padding: 24px 24px 0px 24px;
+          overflow-y: scroll;
+          max-height: calc(100vh - 77px);
+          .v-list-item { 
+            align-items: flex-start;
+            flex-direction: column;
+            min-height: unset;
+            padding: 0;
+            &:last-child {
+              a {
                 &:after {
-                  // vertical line
+                  display: none;
+                }
+              }
+            }
+            a {
+              font-size: 1.6rem;
+              text-decoration: none;
+              color: $base-dark;
+              margin-bottom: 20px;
+              position: relative;
+              display: flex;
+              width: 100%;
+              &:focus-visible {
+                .step-text {
+                  text-decoration: underline;
+                }
+              }
+              &:after {
+                position: absolute;
+                left: 14px;
+                bottom: -30px;
+                content: "";
+                width: 1px;
+                height: 100%;
+                background-color: $base-light;
+              }
+              &.substep {
+                margin-bottom: 12px;
+                &:last-child {
+                  margin-bottom: 20px;
+                }
+                &:after {
+                  bottom: -30px;
+                  height: calc(100% + 20px);
                   background-color: $primary;
                 }
-                .substep-circle {
-                  background-color: $white;
-                  border-color: $white;
-                  .completed-check {
-                    @extend ._completed-check;
-                    .v-icon {
-                      right: -3px !important;
-                      font-size: 13px !important;                    
+                .step-text {
+                  margin-left: 9px;
+                }
+                &.step-complete {
+                  &:after {
+                    // vertical line
+                    background-color: $primary;
+                  }
+                  .substep-circle {
+                    background-color: $white;
+                    border-color: $white;
+                    .completed-check {
+                      @extend ._completed-check;
+                      .v-icon {
+                        right: -3px !important;
+                        font-size: 13px !important;                    
+                      }
                     }
                   }
                 }
               }
-            }
-            .step-text {
-              margin-top: 2px;
-            }
-            .step-circle {
-              flex: 0 0 28px;
-              font-size: 1.2rem;
-              border: 1px solid $base-light;
-              margin-right: 12px;
-              text-align: center;
-              width: 28px;
-              height: 28px;
-              border-radius: 50%;
-              line-height: 26px;
-              background-color: $white;
-              outline: 2px solid $white;
-              z-index: 2;
-            }
-            .substep-circle {
-              flex: 0 0 28px;
-              border: 1px solid $primary;
-              margin: 9px 12px 0 10px;
-              width: 9px;
-              max-width: 9px;
-              height: 9px;
-              border-radius: 50%;
-              line-height: 26px;
-              background-color: $white;
-              z-index: 2;
-              position: relative;
-            }
-            &:hover {
               .step-text {
-                color: $base-darkest;
+                margin-top: 2px;
               }
               .step-circle {
-                background-color: $primary-lighter;
-                border-color: $primary;
+                flex: 0 0 28px;
+                font-size: 1.2rem;
+                border: 1px solid $base-light;
+                margin-right: 12px;
+                text-align: center;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                line-height: 26px;
+                background-color: $white;
+                outline: 2px solid $white;
+                z-index: 2;
               }
               .substep-circle {
-                border-color: $primary;
-                background-color: $primary;
-              }
-              &.step-complete {
-                .step-circle {
-                  background-color: $success-lighter;
-                }
-              }
-            }
-
-            &.step-complete {
-              &:after {
-                background-color: $success !important;
-              }
-              .step-text {
-                color: $base-darkest;
-              }
-              .step-circle {
-                border-color: $success;
+                flex: 0 0 28px;
+                border: 1px solid $primary;
+                margin: 9px 12px 0 10px;
+                width: 9px;
+                max-width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                line-height: 26px;
+                background-color: $white;
+                z-index: 2;
                 position: relative;
-                color: $success-dark;
-                .completed-check {
-                  @extend ._completed-check;
-                }
               }
-            }            
-            &.router-link-exact-active  {
-              .step-text {
-                color: $primary;
-                font-weight: 500;
-              }
-              .step-circle {
-                border-color: $primary;
-                background-color: $primary-lighter;   
-                color: $primary;            
-              }
-              .substep-circle {
-                border-color: $primary;
-                background-color: $primary;
-              }
-              &:after {
-                background-color: $primary;
-              }
-              &:hover {
-                &:not(.substep) {
-                  .step-text {
-                    color: $base-darkest;
-                  }
-                  .step-circle {
-                    background-color: $primary-lighter;   
-                  } 
-                }
-              }
-            }
-          }
-          &.active-step {
-            a.step {
               &:hover {
                 .step-text {
                   color: $base-darkest;
                 }
+                .step-circle {
+                  background-color: $primary-lighter;
+                  border-color: $primary;
+                }
+                .substep-circle {
+                  border-color: $primary;
+                  background-color: $primary;
+                }
+                &.step-complete {
+                  .step-circle {
+                    background-color: $success-lighter;
+                  }
+                }
               }
-              &:after {
-                background-color: $primary;
+
+              &.step-complete {
+                &:after {
+                  background-color: $success !important;
+                }
+                .step-text {
+                  color: $base-darkest;
+                }
+                .step-circle {
+                  border-color: $success;
+                  position: relative;
+                  color: $success-dark;
+                  .completed-check {
+                    @extend ._completed-check;
+                  }
+                }
+              }            
+              &.router-link-exact-active  {
+                .step-text {
+                  color: $primary;
+                  font-weight: 500;
+                }
+                .step-circle {
+                  border-color: $primary;
+                  background-color: $primary-lighter;   
+                  color: $primary;            
+                }
+                .substep-circle {
+                  border-color: $primary;
+                  background-color: $primary;
+                }
+                &:after {
+                  background-color: $primary;
+                }
+                &:hover {
+                  &:not(.substep) {
+                    .step-text {
+                      color: $base-darkest;
+                    }
+                    .step-circle {
+                      background-color: $primary-lighter;   
+                    } 
+                  }
+                }
               }
-              .step-text {
-                font-weight: 500;
-                color: $primary;  
+            }
+            &.active-step {
+              a.step {
+                &:hover {
+                  .step-text {
+                    color: $base-darkest;
+                  }
+                }
+                &:after {
+                  background-color: $primary;
+                }
+                .step-text {
+                  font-weight: 500;
+                  color: $primary;  
+                }
+                .step-circle {
+                  color: $primary !important;
+                  border-color: $primary !important;
+                  background-color: $primary-lighter;
+                }
+    
               }
-              .step-circle {
-                color: $primary !important;
-                border-color: $primary !important;
-                background-color: $primary-lighter;
-              }
-  
             }
           }
         }
@@ -227,7 +232,6 @@
 }
 
 ._stepper-progress-bar {
-  position: absolute;
   width: 100%;
   background-color: $white;
   z-index: 3;

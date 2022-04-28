@@ -3,7 +3,7 @@
     id="GlobalSideNavBar" 
     app 
     permanent 
-    class="global-side-nav-bar" 
+    class="global-side-nav-bar d-flex flex-column align-start " 
     width="320"
   >
     <div class="_stepper-progress-bar">

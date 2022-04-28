@@ -193,6 +193,33 @@ export class ValidationPlugin {
    }
  };
 
+  /**
+   * Returns the error message otherwise.
+   *
+   * @param {string} mask an Array of input mask ['99999',99999-9999]
+   * @param {string} message text to be shown if false
+   * @param {boolean} isMaskRegex true or false
+   * @returns {function(*): (boolean|string)}
+   */
+  isMaskValid = (mask: string[], message: string, isMaskRegex?: boolean):
+      ((v: string) => string | true | undefined) => {
+    return (v: string) => {
+      if (v && v!==""){
+        const plainInput = v.replace(/[() -]/gi,'') || '';
+        if (isMaskRegex && isMaskRegex === true){
+          const maskRegEx = new RegExp(mask[0])
+          return maskRegEx.test(v) || message;
+        } else {
+          const isValid = mask?.some((mask) =>{
+            return mask.replace(/[() -]/gi,'').length === plainInput.length;
+          });
+          return isValid || message;
+        }
+      }
+      return true;
+    }
+  };
+
 }
 
 declare module 'vue/types/vue' {

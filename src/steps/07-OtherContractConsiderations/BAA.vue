@@ -39,6 +39,7 @@
               managing, and disposing of PHI?"
             :items="bAAOptions"
             :value.sync="selectedBAAOption"
+            :rules="[$validators.required('Please select an option')]"
           />
 
           <ATATAlert 

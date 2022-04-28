@@ -150,3 +150,10 @@ export interface CorAcorSelectData {
   phone: string;
   orgName: string;
 }
+
+export interface isValidObj {
+  field: string;
+  message: string;
+  mask: string[];
+  isMaskRegex?: boolean
+}
