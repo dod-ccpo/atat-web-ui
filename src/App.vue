@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app  style="overflow: hidden;">
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData" />
 
     <ATATSlideoutPanel v-if="hasSlideoutPanelComponent">
@@ -8,19 +8,22 @@
     <ATATToast />
 
     <ATATPageHead :headline="projectTitle" />
-    <v-main id="app">
-      <router-view></router-view>
-
-      <ATATStepperNavigation
-        @next="navigate('next')"
-        @previous="navigate('previous')"
-        @additionalButtonClick="additionalButtonClick"
-        :additionalButtons="additionalButtons"
-        :backButtonText="backButtonText"
-        :noPrevious="noPrevious"
-      />
-
-      <ATATFooter />
+    <v-main id="app" >
+      <div id="app-content" class="d-flex flex-column">
+        <div  class="mb-auto">
+          <router-view></router-view>
+        </div>
+        <ATATStepperNavigation
+          @next="navigate('next')"
+          @previous="navigate('previous')"
+          @additionalButtonClick="additionalButtonClick"
+          :additionalButtons="additionalButtons"
+          :backButtonText="backButtonText"
+          :noPrevious="noPrevious"
+          class="mb-8"
+        />
+        <ATATFooter/>
+      </div>
     </v-main>
   </v-app>
 </template>
@@ -98,7 +101,7 @@ export default class App extends Vue {
   async onRouteChanged(): Promise<void> {
     const routeName = this.$route.name;
     const step = await Steps.findRoute(routeName || "");
-    
+
     if (routeName && step) {
       const { stepName, stepNumber } = step;
       Steps.setCurrentStep(stepName);
@@ -111,7 +114,7 @@ export default class App extends Vue {
   }
 
   async navigate(direction: string): Promise<void> {
-   
+
     const nextStepName =
       direction === "next" ? await Steps.getNext() : await Steps.getPrevious();
 
