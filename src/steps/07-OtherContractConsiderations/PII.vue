@@ -31,6 +31,7 @@
               of records on individuals by the contractor (in whole or in part)?"
             :items="pIIOptions"
             :value.sync="selectedPIIOption"
+            :rules="[$validators.required('Please select an option')]"
           />
 
           <ATATExpandableLink aria-id="PIIFAQ">
