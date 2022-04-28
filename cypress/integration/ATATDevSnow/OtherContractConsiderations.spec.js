@@ -241,6 +241,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.textExists(occ.blueAlertLabel, " Section 508 Accessibility Standards for Cloud Computing ");
       
   });
+  
   it("TC8: FOIA cordinator: Foreign address", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     //select radio option as yes
@@ -286,6 +287,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.enterOrganizationAddress(orgAddress);
       
   });
+
   it("TC9: FOIA cordinator: Military", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");
@@ -313,6 +315,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.enterOrganizationAddress(orgAddress);
       
   });
+
   it("TC10: FOIA cordinator: U.S Address", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");
@@ -380,4 +383,5 @@ describe("Test suite: Other Contract Considerations Step", () => {
       .should("be.visible")
       .and('have.css', 'color', colors.primary)
   });
+
 });
