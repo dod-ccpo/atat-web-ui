@@ -193,6 +193,14 @@ export class ValidationPlugin {
    }
  };
 
+  /**
+   * Returns the error message otherwise.
+   *
+   * @param {string} mask an Array of input mask ['99999',99999-9999]
+   * @param {string} message text to be shown if false
+   * @param {boolean} isMaskRegex true or false
+   * @returns {function(*): (boolean|string)}
+   */
   isMaskValid = (mask: string[], message: string, isMaskRegex?: boolean):
       ((v: string) => string | true | undefined) => {
     return (v: string) => {

@@ -221,10 +221,11 @@ export default class ATATAddressForm extends Vue {
   private setMask(inputID:string, mask:string[]): void {
     Vue.nextTick(()=>{
       const inputField = document.getElementById(
-        inputID
+        inputID + "_text_field"
       ) as HTMLInputElement;
+
       if(inputField !== null) {
-        return Inputmask({
+        Inputmask({
           mask: mask || [],
           placeholder: "",
           jitMasking: true
