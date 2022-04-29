@@ -66,7 +66,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.findElement(contractDetails.baseDropdownMonth).click();
     //Enter the Value for Base
     cy.findElement(contractDetails.baseInputTxtBox).type("12");
-    cy.findElement(contractDetails.baseDuplicateButton).should("be.disabled");
+    cy.findElement(contractDetails.baseDuplicateButton).should("not.be.disabled");
     cy.findElement(contractDetails.baseDeleteButton).should("be.disabled");
     
     //Add an Option Link:
