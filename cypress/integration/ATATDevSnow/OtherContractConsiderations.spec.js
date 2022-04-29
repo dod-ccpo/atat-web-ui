@@ -242,7 +242,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
       
   });
 
-  it.only("TC8: FOIA Coordinator: Foreign address", () => {
+  it("TC8: FOIA Coordinator: Foreign address", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     //select radio option as yes
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
