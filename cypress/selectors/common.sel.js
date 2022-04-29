@@ -1,7 +1,8 @@
 module.exports = {
   app:"#atat-app",
   title: "title",
-  packageNameHeader:"header.v-toolbar div.h3",
+  packageNameHeader: "header.v-toolbar div.h3",
+  wrap:".v-main__wrap",
   header: "h1.page-header",
   sideBarList: ".global-side-nav-bar .v-list",
   stepperProgressBarTextPrimary: "._stepper-progress-bar .text-primary",

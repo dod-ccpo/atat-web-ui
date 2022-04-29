@@ -1,4 +1,4 @@
-import { bootstrapMockApis,colors,cleanText ,randomAlphaNumeric} from "../../helpers";
+import { bootstrapMockApis,colors,cleanText ,randomString} from "../../helpers";
 import common from "../../selectors/common.sel";
 import org from "../../selectors/org.sel";
 import occ from "../../selectors/occ.sel";
@@ -92,9 +92,9 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.textExists(occ.systemLabel, " System name ");
     cy.textExists(occ.operationPerformedLabel, "What is the operation of work to be performed?");
     //enter the Values in the Textboxs
-    const systemName = randomAlphaNumeric(9);
+    const systemName = randomString(9);
     cy.enterTextInTextField(occ.systemNameTextBox, systemName);
-    const operationPerformed = randomAlphaNumeric(15);
+    const operationPerformed = randomString(15);
     cy.enterTextInTextField(occ.operationPerformedTextBox, operationPerformed);
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
@@ -170,6 +170,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
         });
       
       });
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
@@ -258,18 +259,15 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.textExists(occ.emailLabel, " Email address ");
     cy.textExists(occ.emailHelpTxt, " Enter a .mil or .gov email address. ");
     //enter the values in the text
-    const fullName = randomAlphaNumeric(5)
+    const fullName = randomString(5)
     cy.enterTextInTextField(occ.fullNameTxtBox, fullName)
-    const email = randomAlphaNumeric(5) + "@test.mil"
+    const email = randomString(5) + "@mail.mil"
     cy.enterTextInTextField(occ.emailTxtbox,email)
     //radio buttons        
     cy.radioBtn(org.usaRadioBtn, "US").not("[disabled]");
     cy.radioBtn(org.militaryradioBtn, "MILITARY").not("[disabled]");
     cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
-
-    //verify the labels when the radio butotn is selected
-    cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
-    cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
+    // radio butotn is selected
     cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
     const orgAddress = {
       streetAddress : orgAddressType.StreetAddress,
@@ -279,13 +277,13 @@ describe("Test suite: Other Contract Considerations Step", () => {
       zipCode: orgAddressType.postalCode1,
       apoFPOSelector :    "",
       statecodeSelector :    "",
-      stateProvince :    orgAddressType.stateProvince2,
+      stateProvince: orgAddressType.stateProvince2,
+      postalCode:orgAddressType.postalCode1,
       inputCountryName :    orgAddressType.country
         
     }
     //enter the text in the text fields
     cy.enterOrganizationAddress(orgAddress);
-      
   });
 
   it("TC9: FOIA Coordinator: Military", () => {
@@ -294,9 +292,9 @@ describe("Test suite: Other Contract Considerations Step", () => {
     //select radio option as yes
     cy.selectFOIAOption(occ.foiaYesOption, "true");
     //enter the values in the text
-    const fullName = randomAlphaNumeric(5)
+    const fullName = randomString(5);
     cy.enterTextInTextField(occ.fullNameTxtBox, fullName)
-    const email = randomAlphaNumeric(5) + "@test.mil"
+    const email = randomString(5) + "@mail.mil"
     cy.enterTextInTextField(occ.emailTxtbox, email);
     //select Address type as Military
     cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
@@ -322,9 +320,9 @@ describe("Test suite: Other Contract Considerations Step", () => {
     //select radio option as yes
     cy.selectFOIAOption(occ.foiaYesOption, "true");
     //enter the values in the text
-    const fullName = randomAlphaNumeric(5)
+    const fullName = randomString(5)
     cy.enterTextInTextField(occ.fullNameTxtBox, fullName)
-    const email = randomAlphaNumeric(5) + "@test.mil"
+    const email = randomString(5) + "@mail.mil"
     cy.enterTextInTextField(occ.emailTxtbox, email);
     //select Address type as Military
     cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
@@ -343,12 +341,12 @@ describe("Test suite: Other Contract Considerations Step", () => {
     //Click on Continue button
     cy.btnExists(common.continueBtn, " Continue ").click();
     //navigates to next substep
-    cy.findElement(occ.wrap).scrollTo('top', { easing: 'linear' });
+    cy.findElement(common.wrap).scrollTo('top', { easing: 'linear' });
     cy.textExists(common.header, "Let’s look into your Section 508 Accessibility requirements");
     
   });
 
-  it("TC7: Asserts: Section 508 standards", () => {
+  it("TC11: Asserts: Section 508 standards", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     //select radio option as No on PII screen
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
@@ -378,6 +376,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.textExists(occ.about508Link,
       " How do I determine which Section 508 accessibility requirements apply to my acquisition? "
     );  
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(common.stepEvaluationCriteriaText)
       .should("be.visible")
