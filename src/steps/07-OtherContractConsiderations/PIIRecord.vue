@@ -28,7 +28,7 @@
                   ),
                   $validators.maxLength(
                   400,
-                  'Please limit your description to 300 characters or less'
+                  'Please limit your description to 400 characters or less'
                 ),
                 ]"
               maxChars="400"
