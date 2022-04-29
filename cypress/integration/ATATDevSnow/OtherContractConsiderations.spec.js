@@ -343,7 +343,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     //Click on Continue button
     cy.btnExists(common.continueBtn, " Continue ").click();
     //navigates to next substep
-    cy.findElement(occ.wrap).scrollTo('top', { easing: 'linear' });
+    cy.findElement(common.wrap).scrollTo('top', { easing: 'linear' });
     cy.textExists(common.header, "Let’s look into your Section 508 Accessibility requirements");
     
   });
