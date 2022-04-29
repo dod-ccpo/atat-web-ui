@@ -11,7 +11,8 @@
       @radioButtonSelected="addressTypeChange"
     />
 
-    <v-row>
+    <v-form ref="atatAddressForm" lazy-validation>
+      <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
           id="StreetAddress"
@@ -133,7 +134,7 @@
         />
       </v-col>
     </v-row> 
-  
+    </v-form>
   </div>
 </template>
 
@@ -162,6 +163,13 @@ import { isValidObj, RadioButton, SelectData, stringObj } from "types/Global";
 })
 
 export default class ATATAddressForm extends Vue {
+   $refs!: {
+    atatAddressForm: Vue & {
+      resetValidation: () => void;
+      reset: () => void;
+    };
+  };
+
   @PropSync("selectedAddressType") public _selectedAddressType?: string;
   @PropSync("streetAddress1") public _streetAddress1?: string;
   @PropSync("streetAddress2") public _streetAddress2?: string;
@@ -181,6 +189,8 @@ export default class ATATAddressForm extends Vue {
   @Prop() public countryListData?: SelectData[];
   @Prop() public requiredFields?: stringObj[];
   @Prop() public isValidRules?: isValidObj[];
+
+  
 
 
   // methods
@@ -234,6 +244,15 @@ export default class ATATAddressForm extends Vue {
 
     })
   }
+
+  public resetData(): void {
+    Vue.nextTick(() => {
+      this.$refs.atatAddressForm.reset();
+      Vue.nextTick(() => {
+        this.$refs.atatAddressForm.resetValidation();
+      });
+    });
+  }
   // computed
 
   get inputClass(): string {
@@ -252,6 +271,8 @@ export default class ATATAddressForm extends Vue {
       ? "ZIPCode"
       : "PostalCode";
   }
+
+
 
 }
 
