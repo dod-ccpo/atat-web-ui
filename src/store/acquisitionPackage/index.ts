@@ -1380,7 +1380,7 @@ export class AcquisitionPackageStore extends VuexModule {
     },
   ];
 
-  //map of api endpoints 
+  //mapping of store properties to api endpoints 
   private apiEndpointMap: Record<string, TableApiBase<BaseTableDTO>> = {
     [StoreProperties.ContractType]: api.contractTypeTable,
     [StoreProperties.CurrentContract]: api.currentContractTable,
@@ -1393,7 +1393,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
   }
 
-  //map of acquisition package properties
+  //mapping store propertties name to acquisition package properties
   private acquisitionPackagePropertyMap: Record<string, string> = {
     [StoreProperties.ContractType]: "contract_type",
     [StoreProperties.CurrentContract]: "current_contract",
@@ -1511,10 +1511,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }): Promise<TableDTO> {
     try {
       await this.ensureInitialized();
+      // retrives Store TableDTO based property using property name as key
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const sysId = storeDataProperty.sys_id || "";
 
       if (sysId.length > 0) {
+        // retrieves endpoint mapped to store property
         const apiEndPoint = await this.getApiEndPoint(storeProperty);
         const loadAction: Promise<TableDTO> | undefined = 
         apiEndPoint.retrieve(sysId) as Promise<TableDTO>;
