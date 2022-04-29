@@ -146,6 +146,9 @@ import { RadioButton, SelectData } from "types/Global";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
+import {ServiceOrAgencyData, DisaOrgData} from "@/data/serviceoragency";
+import {StateListData} from "@/data/regions";
+
 import { hasChanges } from "@/helpers";
 
 @Component({
@@ -214,11 +217,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   ];
 
   private selectedDisaOrg: SelectData = this.emptySelectData;
-  private disaOrgData: SelectData[] = AcquisitionPackage.disaOrgData;
-
+  private disaOrgData: SelectData[] = DisaOrgData;
   private selectedServiceOrAgency: SelectData = this.emptySelectData;
-  private serviceOrAgencyData: SelectData[] =
-    AcquisitionPackage.serviceOrAgencyData;
+  private serviceOrAgencyData: SelectData[] = ServiceOrAgencyData;
 
   private selectedStateCode: SelectData = this.emptySelectData;
   private stateCodeListData: SelectData[] = [
@@ -228,8 +229,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   ];
 
   private selectedState: SelectData = this.emptySelectData;
-  private stateListData: SelectData[] = AcquisitionPackage.stateListData;
-
+  private stateListData: SelectData[] = StateListData;
   private setSelectedData(): void {
     // Foreign addresses set country obj
     if (this.selectedAddressType === this.addressTypes.FOR) {

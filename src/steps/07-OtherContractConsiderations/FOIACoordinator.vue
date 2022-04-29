@@ -95,6 +95,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { SensitiveInformationDTO } from "@/api/models"
+import {StateListData} from "@/data/regions/index";
 import { hasChanges } from "@/helpers";
 
 import { RadioButton, SelectData } from "../../../types/Global";
@@ -174,7 +175,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
 
   private selectedCountry: SelectData = this.emptySelectData;
 
-  private stateListData: SelectData[] = AcquisitionPackage.stateListData;
+  private stateListData: SelectData[] = StateListData;
 
   private setSelectedData(): void {
     // Foreign addresses set country obj

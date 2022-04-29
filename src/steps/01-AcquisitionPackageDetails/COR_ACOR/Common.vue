@@ -90,6 +90,7 @@ import PersonCard from "./PersonCard.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ContactData from "@/store/contactData";
+import {PhoneCountries} from "@/data/regions";
 import { ContactDTO } from "@/api/models";
 
 import { 
@@ -390,7 +391,7 @@ export default class COR_ACOR extends Vue {
 
       if (storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
-        const country = ContactData.countries.find(country => 
+        const country = PhoneCountries.find(country => 
           country.countryCode === `+${parsedPhone?.countryCallingCode}`);
 
         this.selectedPhoneCountry 
