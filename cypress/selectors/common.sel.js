@@ -1,7 +1,8 @@
 module.exports = {
   app:"#atat-app",
   title: "title",
-  packageNameHeader:"header.v-toolbar div.h3",
+  packageNameHeader: "header.v-toolbar div.h3",
+  wrap:".v-main__wrap",
   header: "h1.page-header",
   sideBarList: ".global-side-nav-bar .v-list",
   stepperProgressBarTextPrimary: "._stepper-progress-bar .text-primary",
@@ -73,4 +74,7 @@ module.exports = {
   substepPDOIText: "#SubStep_PublicDisclosureofInformation .step-text",
   substepSection508Link: "#SubStep_Section508Standards",
   substepSection508Text: "#SubStep_Section508Standards .step-text",
+  //Evaluation Criteria
+  stepEvaluationCriteriaLink: "#Step_EvaluationCriteria",
+  stepEvaluationCriteriaText: "#Step_EvaluationCriteria .step-text",
 }
