@@ -40,6 +40,7 @@
               if released, would be harmful to the government?"
             :items="fOIAOptions"
             :value.sync="potentialToBeHarmful"
+            :rules="[$validators.required('Please select an option')]"
           />
 
           <ATATExpandableLink aria-id="FOIAFAQ">
