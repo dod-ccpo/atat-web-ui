@@ -221,6 +221,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   private title = "";
   private email = "";
   private selectedPhoneNumber = "";
+  private phoneExtension = "";
 
   //todo replace this from the store after `countries` is stored there
   private selectedPhoneCountry: CountryObj = {
@@ -315,6 +316,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const phone = this.selectedPhoneNumber 
       ? parsePhoneNumber(this.selectedPhoneNumber, countryCode)?.number.toString() 
       : "";
+    const phoneExt = this.phoneExtension;
     const email = this.email;
     const grade_civ = this.selectedGrade.grade;
     const title = this.title;
@@ -408,7 +410,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       
       this.title = storeData.title;
       this.email = storeData.email;
-
+      this.phoneExtension = storeData.phone_extension
       if(storeData.phone.length > 0){
         const parsedPhone = parsePhoneNumber(storeData.phone);
         const country = ContactData.countries.find(country => 
