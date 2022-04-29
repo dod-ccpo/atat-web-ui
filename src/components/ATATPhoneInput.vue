@@ -209,12 +209,15 @@ export default class ATATPhoneInput extends Vue {
   private searchCountries() {
     if (!this.searchTerm) {
       this.searchResults = this.countries;
+    }else{
+      this.searchResults = this.countries.filter((country) => {
+        if(country.name) {
+          return (
+            country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1
+          );
+        }
+      });
     }
-    this.searchResults = this.countries.filter((country) => {
-      return (
-        country.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1
-      );
-    });
   }
 
   //ATATErrorValidation
