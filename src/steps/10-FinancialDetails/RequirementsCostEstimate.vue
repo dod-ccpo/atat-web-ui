@@ -52,7 +52,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -95,7 +95,9 @@ export default class RequirementsCostEstimate extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadRequirementsCostEstimate();
+    const storeData = await AcquisitionPackage.
+      loadData<RequirementsCostEstimateDTO>({storeProperty: 
+      StoreProperties.RequirementsCostEstimate});
     if (storeData) {
       this.savedData.surge_capabilities = storeData.surge_capabilities;
       this.surgeCapabilities = storeData.surge_capabilities;
@@ -105,7 +107,9 @@ export default class RequirementsCostEstimate extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveRequirementsCostEstimate(this.currentData);
+        await AcquisitionPackage
+          .saveTableData<RequirementsCostEstimateDTO>({data: this.currentData, 
+            storeProperty: StoreProperties.RequirementsCostEstimate});
       }
     } catch (error) {
       console.log(error);

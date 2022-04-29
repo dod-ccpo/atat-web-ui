@@ -9,24 +9,21 @@ import {
   SensitiveInformationDTO,
   RequirementsCostEstimateDTO,
   PeriodOfPerformanceDTO,
+  ContractTypeDTO,
 } from "@/api/models";
 
 export interface SessionData {
   acquisitionPackage: AcquisitionPackageDTO;
-  projectOverview: ProjectOverviewDTO;
-  organization: OrganizationDTO;
+  acorInfo: ContactDTO;
   contactInfo: ContactDTO;
   corInfo: ContactDTO;
-  acorInfo: ContactDTO;
+  contractType: ContractTypeDTO;
+  currentContract: CurrentContractDTO;
   fairOpportunity: FairOpportunityDTO;
+  gFEOverview: GFEOverviewDTO;
+  organization: OrganizationDTO;
   periodOfPerformance: PeriodOfPerformanceDTO;
-  CurrentContract: CurrentContractDTO;
-  SensitiveInformation: SensitiveInformationDTO;
+  projectOverview: ProjectOverviewDTO;
   requirementsCostEstimate: RequirementsCostEstimateDTO;
-  GFEOverview: GFEOverviewDTO;
+  SensitiveInformation: SensitiveInformationDTO;
 }
-
-// export interface StoreData<TableDTO> {
-//     storeProperty: string;
-//     data: TableDTO
-// } 

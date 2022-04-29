@@ -144,7 +144,7 @@ import ATATTextField from "../../components/ATATTextField.vue";
 
 import { RadioButton, SelectData } from "types/Global";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
@@ -321,7 +321,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // methods
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadOrganization() as Record<string, string>;
+    const storeData = await AcquisitionPackage
+      .loadData<OrganizationDTO>({storeProperty: 
+      StoreProperties.Organization}) as Record<string, string>;
 
     if (storeData) {
       const keys: string[] = [
@@ -388,7 +390,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveOrganization(this.currentData);
+        await AcquisitionPackage.saveTableData( {data: this.currentData, 
+          storeProperty: StoreProperties.Organization});
       }
     } catch (error) {
       console.log(error);

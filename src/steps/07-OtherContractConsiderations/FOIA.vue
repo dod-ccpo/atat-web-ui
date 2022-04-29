@@ -97,7 +97,7 @@ import FOIALearnMore from "./FOIALearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
@@ -156,7 +156,8 @@ export default class FOIA extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    const storeData = await AcquisitionPackage
+      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
     if (storeData) {
       if (Object.prototype.hasOwnProperty.call(storeData, 'potential_to_be_harmful')) {
         this.savedData = {
@@ -175,7 +176,9 @@ export default class FOIA extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+        await AcquisitionPackage
+          .saveTableData<SensitiveInformationDTO>( {data: this.currentData, 
+            storeProperty: StoreProperties.SensitiveInformation});
       }
     } catch (error) {
       console.log(error);

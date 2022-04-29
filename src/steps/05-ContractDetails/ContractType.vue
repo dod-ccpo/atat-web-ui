@@ -62,7 +62,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 
 import { Checkbox } from "../../../types/Global";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { ContractTypeDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
@@ -133,7 +133,9 @@ export default class ContractType extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadContractType();
+    const storeData = await AcquisitionPackage
+      .loadData<ContractTypeDTO>({storeProperty: StoreProperties.ContractType});
+
     if (storeData) {
       if (Object.prototype.hasOwnProperty.call(storeData, 'firm_fixed_price')) {
         this.savedData = {
@@ -165,7 +167,8 @@ export default class ContractType extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveContractType(this.currentData);
+        await AcquisitionPackage.saveTableData<ContractTypeDTO>({data: this.currentData, 
+          storeProperty: StoreProperties.ContractType});
       }
     } catch (error) {
       console.log(error);

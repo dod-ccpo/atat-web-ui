@@ -56,7 +56,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 
 import { RadioButton } from "../../../types/Global";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { FairOpportunityDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -110,7 +110,8 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadFairOpportunity();
+    const storeData = await AcquisitionPackage
+      .loadData<FairOpportunityDTO>({storeProperty: StoreProperties.FairOpportunity});
     if (storeData) {
       this.selectedException = storeData.exception_to_fair_opportunity;
     }
@@ -119,7 +120,9 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveFairOpportunity(this.currentData);
+        await AcquisitionPackage
+          .saveTableData<FairOpportunityDTO>({data: this.currentData,
+            storeProperty: StoreProperties.FairOpportunity});
       }
     } catch (error) {
       console.log(error);

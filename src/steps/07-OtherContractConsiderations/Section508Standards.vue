@@ -194,7 +194,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
 import { RadioButton } from "../../../types/Global";
 import {SensitiveInformationDTO} from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -239,7 +239,8 @@ export default class Section508Standards extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    const storeData = await AcquisitionPackage
+      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
     if (storeData) {
       this.selected508Response = storeData.section_508_sufficient || '';
     }
@@ -248,7 +249,9 @@ export default class Section508Standards extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+        await AcquisitionPackage
+          .saveTableData<SensitiveInformationDTO>( {data: this.currentData, 
+            storeProperty: StoreProperties.SensitiveInformation});
       }
     } catch (error) {
       console.log(error);

@@ -79,7 +79,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import { RadioButton, SelectData } from "../../../types/Global";
 import { PeriodOfPerformanceDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -113,8 +113,8 @@ export default class POPStart extends Mixins(SaveOnLeave) {
       value: "NO_SOONER_THAN",
     },
     {
-      text: "Not later than",
-      value: "NOT_LATER_THAN"
+      text: "No later than",
+      value: "NO_LATER_THAN"
     }
   ];
   private get currentData(): PeriodOfPerformanceDTO {
@@ -140,10 +140,12 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadPeriodOfPerformance();
+    const storeData = await AcquisitionPackage
+      .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
+
     if (storeData) {
       this.selectedRequestDateOption = storeData.time_frame || "";
-      this.selectedPoPStartDateOption = storeData.pop_start_request || "NO_SOONER_THAN";
+      this.selectedPoPStartDateOption = storeData.pop_start_request || "";
       this.requestedPopStartDate = storeData.requested_pop_start_date  || "";
     }
   }
@@ -151,7 +153,9 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.savePeriodOfPerformance(this.currentData);
+        await AcquisitionPackage.saveTableData<PeriodOfPerformanceDTO>(
+          {data: this.currentData, 
+            storeProperty: StoreProperties.PeriodOfPerformance});
       }
     } catch (error) {
       console.log(error);
