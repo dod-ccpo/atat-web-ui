@@ -78,8 +78,7 @@
                       <v-btn
                         icon
                         class="mr-1"
-                        :disabled="true"
-                        @click="copyOptionPeriod()"
+                        @click="copyOptionPeriod(index)"
                         aria-label="Duplicate this option period"
                         :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
                       >
@@ -225,6 +224,11 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public deleteOptionPeriod(index: number): void {
     this.optionPeriods.splice(index, 1);
+    this.setTotalPoP();
+  }
+  public copyOptionPeriod(index: number): void {
+    const duplicateObj = JSON.parse(JSON.stringify(this.optionPeriods[index]))
+    this.optionPeriods.splice(index + 1,0,duplicateObj)
     this.setTotalPoP();
   }
 
