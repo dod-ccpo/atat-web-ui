@@ -94,7 +94,7 @@
           class=" width-100"
           :value.sync="_phone"
           :country.sync="_selectedPhoneCountry"
-          :extension.sync="_phoneExt"
+          :extensionValue.sync="_phoneExt"
         />
 
       <ATATTextField 

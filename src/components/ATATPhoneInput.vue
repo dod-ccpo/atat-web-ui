@@ -1,7 +1,7 @@
 <template>
   <v-container class="mb-10">
     <v-row>
-      <div id="PhoneControl" class="_atat-phone-field ">
+      <v-col id="PhoneControl" class="_atat-phone-field pa-0">
         <div class="d-flex align-center" v-if="label">
           <label
             :id="id + '_TextFieldLabel'"
@@ -22,7 +22,7 @@
             dense
             item-text="abbreviation"
             :hide-details="true"
-            :error="errorMessages.length>0"
+            :error="errorMessages.length > 0"
             v-model="_selectedCountry"
             :height="42"
             :menu-props="{ bottom: true, offsetY: true }"
@@ -50,50 +50,61 @@
               <v-list-item
                 class="_country-list"
                 :class="[
-              item.suggested ? '_suggested' : '',
-              item.active ? '_active' : '',
-            ]"
+                  item.suggested ? '_suggested' : '',
+                  item.active ? '_active' : '',
+                ]"
                 v-on="on"
               >
                 <v-list-item-content
                   :id="
-                id + '_DropdownListItem_' + item.name.replace(/[^A-Z0-9]/gi, '')
-              "
+                    id +
+                    '_DropdownListItem_' +
+                    item.name.replace(/[^A-Z0-9]/gi, '')
+                  "
                   :item-value="item.name"
                 >
                   <v-list-item-title class="body _country">
                     <v-row no-gutters align="center">
-                  <span class="mr-3 fi" :class="[`fi-${item.abbreviation}`]">
-                  </span>
-                  <span class="mr-2 _country-name">{{ item.name }}</span>
-                  <span class="color-base body-sm">{{ item.countryCode }}</span>
-                </v-row>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-select>
-      <v-text-field
-        ref="atatPhoneTextField"
-        :id="id + '_textField'"
-        outlined
-        dense
-        :height="42"
-        :value.sync="_value"
-        :placeholder="placeHolder"
-        @blur="validate"
-        class="_phone-number-input"
-        :hide-details="true"
-        :suffix="suffix"
-        :prefix="this._selectedCountry.countryCode"
-        autocomplete="off"
-        :rules="rules"
+                      <span
+                        class="mr-3 fi"
+                        :class="[`fi-${item.abbreviation}`]"
+                      >
+                      </span>
+                      <span class="mr-2 _country-name">{{ item.name }}</span>
+                      <span class="color-base body-sm">{{
+                          item.countryCode
+                        }}</span>
+                    </v-row>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
+          <v-text-field
+            ref="atatPhoneTextField"
+            :id="id + '_textField'"
+            outlined
+            dense
+            :height="42"
+            :value.sync="_value"
+            :placeholder="placeHolder"
+            @blur="validate"
+            class="_phone-number-input"
+            :hide-details="true"
+            :suffix="suffix"
+            :prefix="this._selectedCountry.countryCode"
+            autocomplete="off"
+            :rules="rules"
+          >
+          </v-text-field>
+        </div>
+        <ATATErrorValidation :errorMessages="errorMessages" />
+      </v-col>
+      <v-col
+        v-if="isPhoneExtensionVisible !== false"
+        id="PhoneExtensionControl"
+        class="_atat-phone-extension-field pa-0"
       >
-      </v-text-field>
-    </div>
-  </div>
-      <div v-if="phoneExtension !== false" id="PhoneExtensionControl"
-           class="_atat-phone-extension-field ml-10">
         <div class="d-flex align-center">
           <label
             :id="id + '_ExtensionTextFieldLabel'"
@@ -101,9 +112,7 @@
             :for="id + '_ExtensionTextFieldLabel'"
           >
             Extension
-            <span class="optional">
-        Optional
-      </span>
+            <span class="optional"> Optional </span>
           </label>
         </div>
 
@@ -119,8 +128,7 @@
           autocomplete="off"
         >
         </ATATTextField>
-      </div>
-      <ATATErrorValidation :errorMessages="errorMessages" />
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -169,9 +177,9 @@ export default class ATATPhoneInput extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "351" }) private width!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
-  @Prop({ default: true }) private phoneExtension!: boolean;
+  @Prop({ default: true }) private isPhoneExtensionVisible!: boolean;
   @PropSync("value", { default: "" }) private _value!: string | null;
-  @PropSync("extension", {default: ""}) private _extension!: string;
+  @PropSync("extensionValue", {default: ""}) private _extension!: string;
 
   @PropSync("country", {
     default: {
@@ -283,16 +291,19 @@ export default class ATATPhoneInput extends Vue {
     });
   }
   private setExtensionMask(): void{
-    Vue.nextTick(()=>{
-      const extensionTextField = document.getElementById(
-        this.id + "_PhoneExtension_text_field"
-      ) as HTMLElement;
-      return Inputmask({
-        regex:"^[0-9]{1,6}?",
-        placeholder: "",
-        jitMasking: true
-      }).mask(extensionTextField);
-    });
+    if(this.isPhoneExtensionVisible === true) {
+      Vue.nextTick(()=>{
+        const extensionTextField = document.getElementById(
+          this.id + "_PhoneExtension_text_field"
+        ) as HTMLElement;
+        return Inputmask({
+          regex:"^[0-9]{1,6}?",
+          placeholder: "",
+          jitMasking: true
+        }).mask(extensionTextField);
+      });
+    }
+    return
   }
   private mounted(): void {
     this.searchResults = [...this.countries];
