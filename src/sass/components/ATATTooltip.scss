@@ -1,6 +1,7 @@
 .v-tooltip__content {
   display: block !important;
   background-color: transparent !important;
+  opacity: 1 !important;
   ._tooltip-content-wrap {
     opacity: 0 !important;
     transition: opacity 0.25s !important;
