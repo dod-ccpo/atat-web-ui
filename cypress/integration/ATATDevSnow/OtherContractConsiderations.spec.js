@@ -170,6 +170,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
         });
       
       });
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
@@ -345,7 +346,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     
   });
 
-  it("TC7: Asserts: Section 508 standards", () => {
+  it("TC11: Asserts: Section 508 standards", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     //select radio option as No on PII screen
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
@@ -375,6 +376,7 @@ describe("Test suite: Other Contract Considerations Step", () => {
     cy.textExists(occ.about508Link,
       " How do I determine which Section 508 accessibility requirements apply to my acquisition? "
     );  
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(common.stepEvaluationCriteriaText)
       .should("be.visible")
