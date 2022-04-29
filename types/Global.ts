@@ -157,3 +157,10 @@ export interface isValidObj {
   mask: string[];
   isMaskRegex?: boolean
 }
+
+export interface mask {
+  placeholder: string;
+  jitMasking: boolean;
+  regex?: string;
+  mask?: string[];
+}

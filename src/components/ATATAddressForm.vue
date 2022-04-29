@@ -112,6 +112,7 @@
           :class="inputClass"
           :value.sync="_zipCode"
           :rules="getRules(IDLabel)"
+          :validateOnBlur="true"
           width="160"
         />
       </v-col>
@@ -149,7 +150,7 @@ import ATATTextField from "./ATATTextField.vue";
 import Inputmask from "inputmask/";
 
 
-import { isValidObj, RadioButton, SelectData, stringObj } from "types/Global";
+import { isValidObj, mask, RadioButton, SelectData, stringObj } from "types/Global";
 
 @Component({
   components: {
@@ -209,29 +210,33 @@ export default class ATATAddressForm extends Vue {
         return obj.field === inputID
       })
       if(isValidResult.length) {
-        this.setMask(inputID,isValidResult[0].mask);
+        const rule = isValidResult[0];
+        this.setMask(inputID, rule);
         rulesArr.push(this.$validators.isMaskValid(
-          isValidResult[0].mask,isValidResult[0].message,isValidResult[0].isMaskRegex
+          rule.mask,rule.message,rule.isMaskRegex
         ))
       }
     }
 
     return rulesArr
   }
-  private setMask(inputID:string, mask:string[]): void {
+  private setMask(inputID:string, rule: isValidObj): void {
     Vue.nextTick(()=>{
       const inputField = document.getElementById(
         inputID + "_text_field"
       ) as HTMLInputElement;
-
       if(inputField !== null) {
-        Inputmask({
-          mask: mask || [],
+        const maskObj: mask ={
           placeholder: "",
           jitMasking: true
-        }).mask(inputField);
+        }
+        if (rule.isMaskRegex && rule.isMaskRegex===true){
+          maskObj.regex =  rule.mask[0] || "";
+        } else {
+          maskObj.mask = rule.mask || [];
+        }
+        Inputmask(maskObj).mask(inputField);
       }
-
     })
   }
   // computed

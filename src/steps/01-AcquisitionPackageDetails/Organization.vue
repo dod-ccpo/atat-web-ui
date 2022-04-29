@@ -16,7 +16,7 @@
           :searchFields="['text']"
           :items="serviceOrAgencyData"
           :selectedItem.sync="selectedServiceOrAgency"
-          :rules="[$validators.selectionRequired('Please select your service or agency.')]"
+          :rules="[$validators.required('Please select your service or agency.')]"
           placeholder="Find your service/agency"
           icon="arrow_drop_down"
         />
@@ -50,7 +50,7 @@
               :searchFields="['text']"
               :items="disaOrgData"
               :selectedItem.sync="selectedDisaOrg"
-              :rules="[$validators.selectionRequired('Please select your DISA Organization.')]"
+              :rules="[$validators.required('Please select your DISA Organization.')]"
               placeholder="Find your DISA organization"
               icon="arrow_drop_down"
             />
@@ -124,7 +124,7 @@
                 field:"PostalCode",
                 message: "Your postal code must be 10 characters or " +
                 "less and may include spaces and hyphens.",
-                mask:["^[A-Za-z0-9- ]{0,10}$"],
+                mask:["^[0-9A-Za-z\\s\\-]{1,10}$"],
                 isMaskRegex: true
               }
             ]'
@@ -135,7 +135,6 @@
               :stateCodeListData="stateCodeListData"
               :countryListData="countryListData"
             />
-
           </section>
         </div>
       </v-col>

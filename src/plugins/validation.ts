@@ -151,20 +151,6 @@ export class ValidationPlugin {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
     };
   };
-
-  /**
-   * Validator that handles required values for autocomplete fields
-   * @param message 
-   * @returns {function(*): (boolean|string)}
-   */
-  selectionRequired(
-    message?: string
-  ): ((v: SelectData) => string | true | undefined){
-    message = message || "This field is required.";
-    return (v: SelectData) => {
-      return (v && (v.text.length && v.text.length > 0)) || message;
-    };
-  };
   
  /**
  * @returns {function(*): (boolean|string)}
