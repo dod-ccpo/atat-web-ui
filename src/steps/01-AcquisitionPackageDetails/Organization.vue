@@ -390,7 +390,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveTableData( {data: this.currentData, 
+        await AcquisitionPackage.saveData( {data: this.currentData, 
           storeProperty: StoreProperties.Organization});
       }
     } catch (error) {

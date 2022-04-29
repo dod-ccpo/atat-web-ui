@@ -161,7 +161,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     const storeData = 
     await AcquisitionPackage
       .loadData<ProjectOverviewDTO>({storeProperty: StoreProperties.ProjectOverview });
-      
+
     if (storeData) {
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
@@ -180,7 +180,7 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         // await AcquisitionPackage.saveProjectOverview(this.currentData);
-        await AcquisitionPackage.saveTableData({ data: this.currentData, 
+        await AcquisitionPackage.saveData({ data: this.currentData, 
           storeProperty: StoreProperties.ProjectOverview});
       }
     } catch (error) {

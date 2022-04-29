@@ -138,7 +138,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage
-          .saveTableData<CurrentContractDTO>({data: this.currentData, 
+          .saveData<CurrentContractDTO>({data: this.currentData, 
             storeProperty: StoreProperties.CurrentContract });
       }
     } catch (error) {

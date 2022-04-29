@@ -108,7 +108,7 @@ export default class RequirementsCostEstimate extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage
-          .saveTableData<RequirementsCostEstimateDTO>({data: this.currentData, 
+          .saveData<RequirementsCostEstimateDTO>({data: this.currentData, 
             storeProperty: StoreProperties.RequirementsCostEstimate});
       }
     } catch (error) {

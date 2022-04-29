@@ -411,7 +411,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.currentData !== this.savedData) {
-        await AcquisitionPackage.saveTableData<PeriodOfPerformanceDTO>(
+        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
           {data: this.currentData, 
             storeProperty: StoreProperties.PeriodOfPerformance});
       }

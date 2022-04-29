@@ -153,7 +153,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveTableData<PeriodOfPerformanceDTO>(
+        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
           {data: this.currentData, 
             storeProperty: StoreProperties.PeriodOfPerformance});
       }

@@ -1542,7 +1542,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves data for a given TableDTO/store property
    */
-  async saveTableData<TableDTO>({
+  async saveData<TableDTO>({
     data,
     storeProperty,
   }: {

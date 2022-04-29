@@ -279,7 +279,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       });
 
     } else {
-      AcquisitionPackage.saveTableData<SensitiveInformationDTO>({data: this.currentData, 
+      AcquisitionPackage.saveData<SensitiveInformationDTO>({data: this.currentData, 
         storeProperty: StoreProperties.SensitiveInformation });
     }
   }
@@ -292,7 +292,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage
-          .saveTableData<SensitiveInformationDTO>( {data: this.currentData, 
+          .saveData<SensitiveInformationDTO>( {data: this.currentData, 
             storeProperty: StoreProperties.SensitiveInformation});
       }
     } catch (error) {

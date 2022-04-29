@@ -102,7 +102,7 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveTableData<GFEOverviewDTO>({data: this.currentData, 
+        await AcquisitionPackage.saveData<GFEOverviewDTO>({data: this.currentData, 
           storeProperty: StoreProperties.GFEOverview});
       }
     } catch (error) {

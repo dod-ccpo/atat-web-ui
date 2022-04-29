@@ -121,7 +121,7 @@ export default class Exceptions extends Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage
-          .saveTableData<FairOpportunityDTO>({data: this.currentData,
+          .saveData<FairOpportunityDTO>({data: this.currentData,
             storeProperty: StoreProperties.FairOpportunity});
       }
     } catch (error) {

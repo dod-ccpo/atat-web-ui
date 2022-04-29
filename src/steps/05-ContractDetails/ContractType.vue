@@ -167,7 +167,7 @@ export default class ContractType extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveTableData<ContractTypeDTO>({data: this.currentData, 
+        await AcquisitionPackage.saveData<ContractTypeDTO>({data: this.currentData, 
           storeProperty: StoreProperties.ContractType});
       }
     } catch (error) {
