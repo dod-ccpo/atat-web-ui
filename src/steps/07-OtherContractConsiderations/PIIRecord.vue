@@ -26,6 +26,10 @@
                 $validators.required(
                   'Please enter a description for the operation of work to be performed.'
                   ),
+                  $validators.maxLength(
+                  400,
+                  'Please limit your description to 300 characters or less'
+                ),
                 ]"
               maxChars="400"
             />
