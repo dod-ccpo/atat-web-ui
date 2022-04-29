@@ -28,11 +28,12 @@
       :placeholder="placeHolder"
       @input="onInput"
       class="text-primary"
-      :hide-details="true"
+      :hide-details="counter === ''"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
       :validate-on-blur="validateOnBlur"
       :rules="rules"
+      :counter="counter"
       @blur="onBlur"
       @update:error="setErrorMessage"
     >
@@ -76,6 +77,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
+  @Prop({ default: "" }) private counter!: number;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop() private extraEmitVal!: string;
 
