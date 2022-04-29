@@ -3,7 +3,7 @@
     <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label mb-2 mr-2"
+        class="form-field-label mb-2 mr-1"
         :for="id + '_text_field'"
       >
         {{ label }}
