@@ -3,7 +3,7 @@
     <div class="max-width-640">
       <ATATAutoComplete
         id="SearchContact"
-        :class="haveSelectedContact ? 'mb-2' : 'mb-0'"
+        :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
         :label-sr-only="true"
         :label="'Search for your ' + corOrAcor"
         titleKey="fullName"

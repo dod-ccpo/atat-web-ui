@@ -14,6 +14,8 @@ body {
 }
 
 #app {
+  font-family: $base-font;
+  color: $base-darker;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @extend .body;
@@ -88,7 +90,14 @@ body {
   border-radius: 50px;
   border: 3px solid #fff;
   margin-block: .5em;
+
+  ._callout & {
+    background: $info-lighter;
+    border-color: $info-lighter;
+  }
 }
+
+
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
@@ -96,6 +105,10 @@ body {
   border-radius: 50px;
   border: 3px solid #fff;
   // border: 1px solid rgb(218, 218, 218);
+  ._callout & {
+    border-color: $info-lighter;
+  }
+
 }
 
 /* Handle on hover */
