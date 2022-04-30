@@ -11,9 +11,11 @@
       @radioButtonSelected="addressTypeChange"
     />
 
-    <v-row>
+    <v-form ref="atatAddressForm" lazy-validation>
+      <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
+          
           id="StreetAddress"
           label="Street address"
           :class="inputClass"
@@ -133,7 +135,7 @@
         />
       </v-col>
     </v-row> 
-  
+    </v-form>
   </div>
 </template>
 
@@ -162,6 +164,13 @@ import { isValidObj, RadioButton, SelectData, stringObj } from "types/Global";
 })
 
 export default class ATATAddressForm extends Vue {
+   $refs!: {
+    atatAddressForm: Vue & {
+      resetValidation: () => void;
+      reset: () => void;
+    };
+  };
+
   @PropSync("selectedAddressType") public _selectedAddressType?: string;
   @PropSync("streetAddress1") public _streetAddress1?: string;
   @PropSync("streetAddress2") public _streetAddress2?: string;
@@ -182,6 +191,8 @@ export default class ATATAddressForm extends Vue {
   @Prop() public requiredFields?: stringObj[];
   @Prop() public isValidRules?: isValidObj[];
 
+  
+
 
   // methods
 
@@ -190,6 +201,8 @@ export default class ATATAddressForm extends Vue {
         addressType === this.addressTypes?.FOR
           ? { text: "", value: "" }
           : { text: "United States of America", value: "US" };
+
+    this.resetData();
   }
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
@@ -234,6 +247,19 @@ export default class ATATAddressForm extends Vue {
 
     })
   }
+
+  public resetData(): void {
+    Vue.nextTick(() => {
+     
+      //iterate over the forms children ref manually set their 'errorMessages' array to empty
+      const formChildren = this.$refs.atatAddressForm.$children;
+      formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
+      this.$refs.atatAddressForm.reset();
+      Vue.nextTick(() => {
+        this.$refs.atatAddressForm.resetValidation();
+      });
+    });
+  }
   // computed
 
   get inputClass(): string {
@@ -252,6 +278,8 @@ export default class ATATAddressForm extends Vue {
       ? "ZIPCode"
       : "PostalCode";
   }
+
+
 
 }
 

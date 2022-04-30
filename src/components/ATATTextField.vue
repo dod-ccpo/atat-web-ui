@@ -55,12 +55,16 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
   components: {
     ATATTooltip,
     ATATErrorValidation
-  }
+  },
 })
-export default class ATATTextField extends Vue {
+export default class ATATTextField extends Vue  {
   // refs
   $refs!: {
-    atatTextField: Vue & { errorBucket: string[]; errorCount: number };
+    atatTextField: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number 
+      resetValidation(): void
+  };
   }; 
 
   // props
@@ -100,6 +104,13 @@ export default class ATATTextField extends Vue {
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value, this.extraEmitVal);
+  }
+
+  
+  public resetValidation(): void {
+    debugger;
+    this.$refs.atatTextField.errorBucket = [];
+    this.$refs.atatTextField.resetValidation();
   }
 }
 </script>
