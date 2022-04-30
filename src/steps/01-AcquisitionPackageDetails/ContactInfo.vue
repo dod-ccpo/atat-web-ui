@@ -106,6 +106,19 @@
             $validators.required('Please enter your title.')
           ]"
         />
+        <ATATPhoneInput
+          label="Your phone number"
+          id="ContactPhone"
+          :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
+          :value.sync="selectedPhoneNumber"
+          :country.sync="selectedPhoneCountry"
+          :extensionValue.sync="phoneExtension"
+          :rules="[
+            $validators.isPhoneNumberValid(
+              this.selectedPhoneCountry
+            ),
+          ]"
+        />
         <ATATTextField
           label="Your email"
           id="ContactEmail"
@@ -131,18 +144,6 @@
           :selectedItem.sync="selectedGrade"
           placeholder=""
           icon="arrow_drop_down"
-        />
-        <ATATPhoneInput
-          label="Your phone number"
-          id="ContactPhone"
-          class="_input-max-width mb-10"
-          :value.sync="selectedPhoneNumber"
-          :country.sync="selectedPhoneCountry"
-          :rules="[
-            $validators.isPhoneNumberValid(
-              this.selectedPhoneCountry
-            ),
-          ]"
         />
       </v-col>
     </v-row>

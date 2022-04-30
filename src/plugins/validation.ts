@@ -1,6 +1,6 @@
 import Vue from "vue"
 
-import { isValid } from "date-fns";
+import { isValid } from "date-fns"
 import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
@@ -57,7 +57,7 @@ export class ValidationPlugin {
     message = message || "This field is required.";
     return (v: string) => {
       if (typeof(v)==="object"){ // if typeof 'selectData(dropdown)' or string[]
-        return Object.values(v).every((val)=> val !=="") || message;
+        return v && Object.values(v).every((val)=> val !=="") || message;
       } else if (typeof(v) === "string"){ // else if typeof 'string'
         return (v!=="")|| message;
       }
@@ -151,17 +151,16 @@ export class ValidationPlugin {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
     };
   };
-
-  /**
- *
+  
+ /**
  * @returns {function(*): (boolean|string)}
  */
  isEmail = (): ((v: string) => string | true | undefined) => {
    return (v: string) => {
      if (v && v!==""){  
-       if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/.test(v) === false) {
+       if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
          return "Please use standard domain format, like ‘@mail.mil’"
-       } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/.test(v) === false) {
+       } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
          return "Please use your .mil or .gov email address."
        } 
      }

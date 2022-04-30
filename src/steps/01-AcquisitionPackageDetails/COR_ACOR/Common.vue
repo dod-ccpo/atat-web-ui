@@ -3,7 +3,7 @@
     <div class="max-width-640">
       <ATATAutoComplete
         id="SearchContact"
-        :class="haveSelectedContact ? 'mb-2' : 'mb-0'"
+        :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
         :label-sr-only="true"
         :label="'Search for your ' + corOrAcor"
         titleKey="fullName"
@@ -227,8 +227,13 @@ export default class COR_ACOR extends Vue {
   private phone = "";
   private phoneExt = "";
   private dodaac = "";
-  private selectedPhoneCountry: CountryObj 
-    = { name: '', countryCode: '', abbreviation: '', active: false };
+  private selectedPhoneCountry: CountryObj = {
+    "name": "United States",
+    "countryCode": "+1",
+    "abbreviation": "us",
+    "active": true,
+    "mask": ["999-999-9999"]
+  };
 
   public get currentData(): ContactDTO {
     const countryCode = this.selectedPhoneCountry 
