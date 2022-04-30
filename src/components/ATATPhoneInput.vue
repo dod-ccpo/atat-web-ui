@@ -194,8 +194,7 @@ export default class ATATPhoneInput extends Vue {
 
   private _selectedCountry!: CountryObj;
 
-  @PropSync("value", { default: "" }) private _value!: string | null;
-
+  
   // data
   private searchResults: CountryObj[] = [];
   private searchTerm = "";
