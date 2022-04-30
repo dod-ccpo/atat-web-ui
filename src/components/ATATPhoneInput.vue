@@ -227,8 +227,9 @@ export default class ATATPhoneInput extends Vue {
 
 
   //@Events
-  private validate(e: FocusEvent) : void{
+  private validate(e: FocusEvent,) : void{
     const input = e.target as HTMLInputElement;
+    this._value = input.value
     this.setErrorMessage();
     this.$emit('blur', input.value);
   }
