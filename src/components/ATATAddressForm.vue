@@ -15,6 +15,7 @@
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField
+          
           id="StreetAddress"
           label="Street address"
           :class="inputClass"
@@ -200,6 +201,8 @@ export default class ATATAddressForm extends Vue {
         addressType === this.addressTypes?.FOR
           ? { text: "", value: "" }
           : { text: "United States of America", value: "US" };
+
+    this.resetData();
   }
 
   private getRules(inputID: string): ((v:string)=> string | true | undefined)[] {
@@ -247,6 +250,10 @@ export default class ATATAddressForm extends Vue {
 
   public resetData(): void {
     Vue.nextTick(() => {
+     
+      //iterate over the forms children ref manually set their 'errorMessages' array to empty
+      const formChildren = this.$refs.atatAddressForm.$children;
+      formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
       this.$refs.atatAddressForm.reset();
       Vue.nextTick(() => {
         this.$refs.atatAddressForm.resetValidation();
