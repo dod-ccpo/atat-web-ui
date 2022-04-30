@@ -1,6 +1,6 @@
 import Vue from "vue"
 
-import { isValid } from "date-fns";
+import { isValid } from "date-fns"
 import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
@@ -57,7 +57,7 @@ export class ValidationPlugin {
     message = message || "This field is required.";
     return (v: string) => {
       if (typeof(v)==="object"){ // if typeof 'selectData(dropdown)' or string[]
-        return Object.values(v).every((val)=> val !=="") || message;
+        return v && Object.values(v).every((val)=> val !=="") || message;
       } else if (typeof(v) === "string"){ // else if typeof 'string'
         return (v!=="")|| message;
       }
@@ -151,9 +151,8 @@ export class ValidationPlugin {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message
     };
   };
-
-  /**
- *
+  
+ /**
  * @returns {function(*): (boolean|string)}
  */
  isEmail = (): ((v: string) => string | true | undefined) => {

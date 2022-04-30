@@ -3,7 +3,7 @@
     <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label mb-2 mr-2"
+        class="form-field-label mb-2 mr-1"
         :for="id + '_text_field'"
       >
         {{ label }}
@@ -28,11 +28,12 @@
       :placeholder="placeHolder"
       @input="onInput"
       class="text-primary"
-      :hide-details="true"
+      :hide-details="counter === ''"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
       :validate-on-blur="validateOnBlur"
       :rules="rules"
+      :counter="counter"
       @blur="onBlur"
       @update:error="setErrorMessage"
     >
@@ -54,12 +55,16 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
   components: {
     ATATTooltip,
     ATATErrorValidation
-  }
+  },
 })
-export default class ATATTextField extends Vue {
+export default class ATATTextField extends Vue  {
   // refs
   $refs!: {
-    atatTextField: Vue & { errorBucket: string[]; errorCount: number };
+    atatTextField: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number 
+      resetValidation(): void
+  };
   }; 
 
   // props
@@ -76,6 +81,7 @@ export default class ATATTextField extends Vue {
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
+  @Prop({ default: "" }) private counter!: number;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop() private extraEmitVal!: string;
 
@@ -98,6 +104,13 @@ export default class ATATTextField extends Vue {
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value, this.extraEmitVal);
+  }
+
+  
+  public resetValidation(): void {
+    debugger;
+    this.$refs.atatTextField.errorBucket = [];
+    this.$refs.atatTextField.resetValidation();
   }
 }
 </script>

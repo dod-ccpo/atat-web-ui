@@ -78,9 +78,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       cy.radioBtn(org.militaryradioBtn, "MILITARY").not("[disabled]");
       cy.radioBtn(org.foreignradioBtn, "FOREIGN").not("[disabled]");
 
-      //verify the labels when the radio butotn is selected
-      cy.selectTypeOfMailingAddress(org.usaRadioBtn, "US");
-      cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
+      //Select the radio button      
       cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
       const orgAddress = {
         streetAddress : orgAddressType.StreetAddress,

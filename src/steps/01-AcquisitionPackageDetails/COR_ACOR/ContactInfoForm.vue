@@ -93,7 +93,22 @@
         </v-col>
       </v-row>
 
-      <ATATTextField 
+        <ATATPhoneInput
+          id="PhoneNumber"
+          label="Phone number"
+          class=" width-100"
+          :value.sync="_phone"
+          :country.sync="_selectedPhoneCountry"
+          :extensionValue.sync="_phoneExt"
+          :rules="[
+            $validators.required('Please enter your ' + corOrAcor + '’s phone number'),
+            $validators.isPhoneNumberValid(
+              this._selectedPhoneCountry
+            ),
+            ]"
+        />
+
+      <ATATTextField
         id="EmailAddress" 
         label="Email address" 
         class="_input-max-width mb-10" 
@@ -105,31 +120,6 @@
       ]"
 
       />
-
-      <div class="d-flex mb-10">
-        <ATATPhoneInput
-          id="PhoneNumber" 
-          label="Phone number" 
-          class="_input-max-width width-100" 
-          :value.sync="_phone"
-          :country.sync="_selectedPhoneCountry"
-          :rules="[
-            $validators.required('Please enter your ' + corOrAcor + '’s phone number'),
-            $validators.isPhoneNumberValid(
-              this._selectedPhoneCountry
-            ),
-            ]"
-        />
-        <ATATTextField 
-          id="PhoneExtension" 
-          label="Extension" 
-          width="140"
-          :optional="true"
-          class="ml-6"
-          :value.sync="_phoneExt"
-
-        />
-      </div>
 
       <ATATTextField 
         id="DoDAAC" 
@@ -162,7 +152,7 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import {
   RadioButton,
   SelectData,
-  AutoCompleteItem
+  RankData
 } from "../../../../types/Global";
 
 
@@ -189,7 +179,7 @@ export default class ContactInfoForm extends Vue {
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
 
   @PropSync("selectedRole") private _selectedRole?: string;
-  @PropSync("selectedRank") private _selectedRank?: AutoCompleteItem;
+  @PropSync("selectedRank") private _selectedRank?: RankData;
   @PropSync("selectedBranch") private _selectedBranch?: SelectData;
   @PropSync("selectedSalutation") private _selectedSalutation?: SelectData;
   @PropSync("firstName") private _firstName?: string;

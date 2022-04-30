@@ -1,14 +1,8 @@
 <template>
   <div :id="id + '_AutoComplete_Wrapper'">
-    <label
-      :for="id"
-      :class="{ 'd-sr-only': labelSrOnly }"
-      class="mb-2 d-block"
-    >
+    <label :for="id" :class="{ 'd-sr-only': labelSrOnly }" class="mb-2 d-block">
       {{ label }}
-      <span v-if="optional" class="optional">
-        Optional
-      </span>
+      <span v-if="optional" class="optional"> Optional </span>
     </label>
     <v-autocomplete
       ref="atatAutoComplete"
@@ -31,11 +25,11 @@
       @blur="onBlur"
       @update:search-input="updateSearchInput"
     >
-      <template v-slot:item="{item}">
+      <template v-slot:item="{ item }">
         <v-list-item-content>
-          <v-list-item-title 
+          <v-list-item-title
             v-text="item[titleKey]"
-            :class="{'font-weight-normal': !subtitleKey}"
+            :class="{ 'font-weight-normal': !subtitleKey }"
           ></v-list-item-title>
           <v-list-item-subtitle v-if="subtitleKey" v-text="item[subtitleKey]">
           </v-list-item-subtitle>
@@ -46,9 +40,9 @@
         <v-list-item v-show="searchText !== null" class="no-results">
           <v-list-item-title>
             No results found.
-            <a 
-              v-if="noResultsText" 
-              @click="noResultsAction" 
+            <a
+              v-if="noResultsText"
+              @click="noResultsAction"
               class="_text-link"
               role="button"
               tabindex="0"
@@ -59,11 +53,9 @@
           </v-list-item-title>
         </v-list-item>
       </template>
-
     </v-autocomplete>
     <ATATErrorValidation :errorMessages="errorMessages" />
   </div>
-
 </template>
 
 <script lang="ts">
@@ -101,6 +93,7 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "", required: true }) private label!: string;
   @Prop({ default: false }) private labelSrOnly!: string;
   @Prop({ default: "" }) private icon!: string;
+  @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: [], required: true }) private searchFields!: [];
@@ -108,7 +101,6 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
-  @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
 
   // computed

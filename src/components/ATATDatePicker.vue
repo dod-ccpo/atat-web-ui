@@ -16,7 +16,7 @@
         <div class="d-flex align-center" v-if="label">
           <label
             :id="id + 'DatePickerLabel'"
-            class="form-field-label mb-2 mr-2"
+            class="form-field-label mb-2 mr-1"
             :for="id + 'DatePickerTextField'"
           >
             {{ label }}

@@ -247,8 +247,13 @@ export default class COR_ACOR extends Vue {
   private phone = "";
   private phoneExt = "";
   private dodaac = "";
-  private selectedPhoneCountry: CountryObj
-    = {name: '', countryCode: '', abbreviation: '', active: false};
+  private selectedPhoneCountry: CountryObj = {
+    "name": "United States",
+    "countryCode": "+1",
+    "abbreviation": "us",
+    "active": true,
+    "mask": ["999-999-9999"]
+  };
 
   public get currentData(): ContactDTO {
     const countryCode = this.selectedPhoneCountry

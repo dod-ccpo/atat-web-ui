@@ -16,6 +16,7 @@
           :searchFields="['text']"
           :items="serviceOrAgencyData"
           :selectedItem.sync="selectedServiceOrAgency"
+          :rules="[$validators.required('Please select your service or agency.')]"
           placeholder="Find your service/agency"
           icon="arrow_drop_down"
         />
@@ -49,6 +50,7 @@
               :searchFields="['text']"
               :items="disaOrgData"
               :selectedItem.sync="selectedDisaOrg"
+              :rules="[$validators.required('Please select your DISA Organization.')]"
               placeholder="Find your DISA organization"
               icon="arrow_drop_down"
             />
@@ -62,6 +64,8 @@
               label="Organization name"
               class="_input-max-width mb-10"
               :value.sync="organizationName"
+              :rules="[$validators.required('Please enter your organization name.'),
+              $validators.maxLength(80, 'Organization name cannot exceed 80 characters.')]"
             />
 
             <ATATTextField
@@ -72,6 +76,9 @@
               activity, or organization that has the authority to requisition, contract 
               for, or fund/pay bills for materials and services."
               :value.sync="dodAddressCode"
+              :rules="[$validators.required('Please enter your 6-character DoDAAC.'), 
+              $validators.minLength(6, 'Your DoDAAC must be 6 characters.'),
+              $validators.maxLength(6, 'Your DoDAAC must be 6 characters.')]"
             />
 
             <hr />
@@ -93,7 +100,34 @@
               :stateOrProvince.sync="stateOrProvince"
               :zipCode.sync="zipCode"
               :selectedCountry.sync="selectedCountry"
-
+              :requiredFields='[
+              {field:"StreetAddress", message: "Please enter an address."},
+              {field:"City", message:  "Please enter a city."},
+             {field:"State" , message: "Please select a state."},
+             {field:"ZIPCode" , message: "Please enter a ZIP code."},
+             {
+               field:"APO_FPO_DPO",
+               message: "Please select a military post office (APO or FPO)."
+               },
+             {field:"StateCode", message:  "Please select a state code."},
+             {field:"StateProvince", message: "Please enter a state/province."},
+             {field:"Country", message: "Please select a country."},
+             {field:"PostalCode" , message: "Please enter a postal code."},
+            ]'
+            :isValidRules='[
+              {
+                field:"ZIPCode",
+                message: "Your ZIP code must be 5 or 9 digits.",
+                mask:["99999", "99999-9999"],
+                },
+              {
+                field:"PostalCode",
+                message: "Your postal code must be 10 characters or " +
+                "less and may include spaces and hyphens.",
+                mask:["^[0-9A-Za-z\\s\\-]{1,10}$"],
+                isMaskRegex: true
+              }
+            ]'
               :addressTypeOptions="addressTypeOptions"
               :addressTypes="addressTypes"
               :militaryPostOfficeOptions="militaryPostOfficeOptions"
@@ -101,7 +135,6 @@
               :stateCodeListData="stateCodeListData"
               :countryListData="countryListData"
             />
-
           </section>
         </div>
       </v-col>
@@ -147,6 +180,7 @@ import { RadioButton, SelectData } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+
 
 @Component({
   components: {
