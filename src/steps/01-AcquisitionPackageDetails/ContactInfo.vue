@@ -317,10 +317,11 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const phone = this.selectedPhoneNumber 
       ? parsePhoneNumber(this.selectedPhoneNumber, countryCode)?.number.toString() 
       : "";
+    const phoneExt = this.phoneExtension;
     const email = this.email;
     const grade_civ = this.selectedGrade.grade;
     const title = this.title;
-
+    console.log(phoneExt)
     return {
       first_name,
       last_name,
@@ -330,7 +331,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       suffix,
       salutation,
       phone: phone || "",
-      phone_extension: "", // not used on Mission Owner contact entry form
+      phone_extension: phoneExt || "", // not used on Mission Owner contact entry form
       email,
       type: "Mission Owner",
       dodaac: "",
@@ -410,7 +411,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       
       this.title = storeData.title;
       this.email = storeData.email;
-
+      this.phoneExtension = storeData.phone_extension
       if(storeData.phone.length > 0){
         const parsedPhone = parsePhoneNumber(storeData.phone);
         const country = ContactData.countries.find(country => 
@@ -426,11 +427,13 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
+    console.log(this.savedData)
     return hasChanges(this.currentData, this.savedData);
+
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-
+    console.log(this.currentData)
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage.saveContactInfo(
