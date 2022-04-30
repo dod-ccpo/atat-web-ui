@@ -194,8 +194,7 @@ export default class ATATPhoneInput extends Vue {
 
   private _selectedCountry!: CountryObj;
 
-
-
+  
   // data
   private searchResults: CountryObj[] = [];
   private searchTerm = "";

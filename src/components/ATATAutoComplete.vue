@@ -23,7 +23,7 @@
       attach
       dense
       @blur="onBlur"
-      @update:search-input="updateSearchInput" 
+      @update:search-input="updateSearchInput"
     >
       <template v-slot:item="{ item }">
         <v-list-item-content>
@@ -74,9 +74,9 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 export default class ATATAutoComplete extends Vue {
   // refs
   $refs!: {
-    atatAutoComplete: Vue & 
-    { 
-      errorBucket: string[]; 
+    atatAutoComplete: Vue &
+    {
+      errorBucket: string[];
       errorCount: number;
       blur: ()=> void;
       focus: ()=> void;
@@ -141,7 +141,7 @@ export default class ATATAutoComplete extends Vue {
     this.setErrorMessage();
     this.$emit('blur', value);
   }
-  
+
   private updateSearchInput(): void {
     if (this.isReset) {
       this._selectedItem = {};

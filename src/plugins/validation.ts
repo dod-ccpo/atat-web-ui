@@ -148,7 +148,7 @@ export class ValidationPlugin {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
-      return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
+      return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message
     };
   };
   
@@ -171,17 +171,17 @@ export class ValidationPlugin {
  /**
  * Returns the error message otherwise.
  *
- * @param {string} country country Abbreviation 
+ * @param {string} country country Abbreviation
  * @returns {function(*): (boolean|string)}
  */
  isPhoneNumberValid = ( country: CountryObj): ((v: string) => string | true | undefined) => {
    return (v: string) => {
-     if (v && v!==""){ 
+     if (v && v!==""){
        const plainPN = v.replace(/[() -]/gi,'') || '';
        const isValid = country?.mask?.some((mask) =>{
          return mask.replace(/[() -]/gi,'').length === plainPN.length;
        });
-       return isValid || 
+       return isValid ||
         `Please enter a number using the format ` +
         `for  ${country.name} (e.g., ${country.mask?.join(", ")}).`;
      }
