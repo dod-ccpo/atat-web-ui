@@ -100,7 +100,7 @@
               :stateOrProvince.sync="stateOrProvince"
               :zipCode.sync="zipCode"
               :selectedCountry.sync="selectedCountry"
-               :requiredFields='[
+              :requiredFields='[
               {field:"StreetAddress", message: "Please enter an address."},
               {field:"City", message:  "Please enter a city."},
              {field:"State" , message: "Please select a state."},

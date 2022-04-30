@@ -14,9 +14,11 @@
     >
       <slot name="header"></slot>
     </a>
-    <div v-show="open" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
-      <slot name="content"></slot>
-    </div>
+    <v-expand-transition>
+      <div v-show="open" :id="'Content_' + ariaId" :aria-hidden="!open + ''">
+        <slot name="content"></slot>
+      </div>
+    </v-expand-transition>  
   </div>
 </template>
 
