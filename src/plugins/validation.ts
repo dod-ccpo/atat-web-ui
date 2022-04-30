@@ -1,6 +1,6 @@
 import Vue from "vue"
 
-import { isValid } from "date-fns";
+import { isValid } from "date-fns"
 import { CountryObj, SelectData } from "types/Global";
 
 export class ValidationPlugin {
@@ -151,9 +151,8 @@ export class ValidationPlugin {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message 
     };
   };
-
-  /**
- *
+  
+ /**
  * @returns {function(*): (boolean|string)}
  */
  isEmail = (): ((v: string) => string | true | undefined) => {
