@@ -97,7 +97,7 @@ export default class ATATAutoComplete extends Vue {
   @Prop({ default: "", required: true }) private titleKey!: string;
   @Prop({ default: "" }) private subtitleKey!: string;
   @Prop({ default: [], required: true }) private searchFields!: [];
-  @Prop({ default: [], required: true }) private items!: [];
+  @Prop({  default: () => [] , required: true }) private items!: [];
   @Prop({ default: "" }) private placeholder!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
