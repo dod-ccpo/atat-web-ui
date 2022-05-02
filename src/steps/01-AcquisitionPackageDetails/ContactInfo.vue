@@ -157,9 +157,10 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
-import parsePhoneNumber, { CountryCode } from "libphonenumber-js";
+import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
+
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
-import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
+import ATATPhoneInput, {Countries} from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -230,7 +231,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   }
 
   // data
-
+  private loaded = false;
   private firstName = "";
   private middleName = "";
   private lastName = "";
@@ -327,21 +328,36 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const last_name = this.lastName;
     const middle_name = this.middleName;
     const role = this.selectedRole;
-    const rank_components = this.selectedRank.sysId;
+    const rank_components = this?.selectedRank ? this.selectedRank?.sysId: "";
     const suffix = this.suffix;
     const salutation = this.selectedSalutation;
     const countryCode = this.selectedPhoneCountry
       ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
-    const phone = this.selectedPhoneNumber
+
+    const parsedPhone = parsePhoneNumber(
+      this.selectedPhoneNumber,
+      countryCode
+    );
+
+    let phone = this.selectedPhoneNumber
       ? parsePhoneNumber(
         this.selectedPhoneNumber,
         countryCode
-      )?.number.toString()
+      )?.format("INTERNATIONAL")
       : "";
+
+    if(countryCode){
+      
+      const asyoutype= new AsYouType(countryCode);
+      const formatted = asyoutype.input(this.selectedPhoneNumber);
+      phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
+    }
+
+  
     const phoneExt = this.phoneExtension;
     const email = this.email;
-    const grade_civ = this.selectedGrade.grade;
+    const grade_civ = this.selectedGrade ?  this.selectedGrade.grade : "";
     const title = this.title;
     return {
       first_name,
@@ -450,7 +466,7 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       this.phoneExtension = storeData.phone_extension;
       if (storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
-        const country = ContactData.countries.find(
+        const country = Countries.find(
           (country) =>
             country.countryCode === `+${parsedPhone?.countryCallingCode}`
         );
@@ -460,10 +476,22 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
           abbreviation: "",
           active: false,
         };
-        this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() || "";
-        this.savedData.phone = parsedPhone?.number.toString() || "";
+
+        const phoneNumber = parsedPhone ? parsedPhone?.
+          nationalNumber.toString().replace(/\D/g,'') : "";
+        // if(phoneNumber.length > 0 && country){
+        //   phoneNumber = Inputmask({
+        //     mask: country?.mask || [],
+        //     placeholder: "",
+        //     jitMasking: true
+        //   }).mask(phoneTextField);
+        // }
+        this.selectedPhoneNumber = phoneNumber;
+        this.savedData.phone = phoneNumber;
       }
     }
+
+    this.$nextTick(()=> this.loaded = true);
   }
 
   private hasChanged(): boolean {
@@ -471,7 +499,9 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
   }
   
   private contactTypeChange(): void {
-    this.resetData();
+    if(this.loaded){
+      this.resetData();
+    }
   }
 
   public resetData(): void {

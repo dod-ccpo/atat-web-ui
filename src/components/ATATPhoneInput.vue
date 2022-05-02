@@ -134,12 +134,234 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import Inputmask from "inputmask/";
 import { CountryObj } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+
+export const Countries: CountryObj[] = [
+  {
+    name: "United States",
+    countryCode: "+1",
+    abbreviation: "us",
+    active: false,
+    suggested: true,
+    mask: ["999-999-9999"],
+  },
+  {
+    name: "Defense Switched Network",
+    countryCode: "DSN",
+    abbreviation: "dsn",
+    active: false,
+    suggested: true,
+    mask: ["999-9999", "999-999-9999"],
+  },
+  {
+    name: "Albania",
+    countryCode: "+355 4",
+    abbreviation: "al",
+    active: false,
+    mask: ["999 999"],
+  },
+  {
+    name: "Belgium",
+    countryCode: "+32",
+    abbreviation: "be",
+    active: false,
+    mask: ["99 999 99 99"],
+  },
+  {
+    name: "Bulgaria",
+    countryCode: "+359",
+    abbreviation: "bg",
+    active: false,
+    mask: ["99 999 9999"],
+  },
+  {
+    name: "Canada",
+    countryCode: "+1",
+    abbreviation: "ca",
+    active: false,
+    mask: ["999-999-9999"],
+  },
+  {
+    name: "Croatia",
+    countryCode: "+385",
+    abbreviation: "hr",
+    active: false,
+    mask:["99 9999 999"],
+  },
+  {
+    name: "Czech Republic",
+    countryCode: "+420",
+    abbreviation: "cz",
+    active: false,
+    mask:["999 999 999"],
+  },
+  {
+    name: "Denmark",
+    countryCode: "+45",
+    abbreviation: "dk",
+    active: false,
+    mask:["99 99 99 99"],
+  },
+  {
+    name: "Estonia",
+    countryCode: "+372",
+    abbreviation: "ee",
+    active: false,
+    mask:["999 9999"],
+  },
+  {
+    name: "France",
+    countryCode: "+33",
+    abbreviation: "fr",
+    active: false,
+    mask:["99 99 99 99 99"],
+  },
+  {
+    name: "Germany",
+    countryCode: "+49",
+    abbreviation: "de",
+    active: false,
+    mask:["999 99999999"],
+  },
+  {
+    name: "Greece",
+    countryCode: "+30",
+    abbreviation: "gr",
+    active: false,
+    mask: ["99 9999 9999"],
+  },
+  {
+    name: "Greenland",
+    countryCode: "+299",
+    abbreviation: "gl",
+    active: false,
+    mask: ["99 99 99"]
+  },
+  {
+    name: "Hungary",
+    countryCode: "+36",
+    abbreviation: "hu",
+    active: false,
+    mask: ["(9) 999 9999"]
+  },
+  {
+    name: "Iceland -- missing",
+    countryCode: "+354",
+    abbreviation: "is",
+    active: false,
+    mask: ["999-9999"]
+  },
+  {
+    name: "Italy",
+    countryCode: "+39",
+    abbreviation: "it",
+    active: false,
+    mask: ["99 9999 9999"]
+  },
+  {
+    name: "Latvia",
+    countryCode: "+371",
+    abbreviation: "lv",
+    active: false,
+    mask: ["99 999 999"],
+  },
+  {
+    name: "Lithuania",
+    countryCode: "+370",
+    abbreviation: "lt",
+    active: false,
+    mask:["(9-9) 999 9999"]
+  },
+  {
+    name: "Luxembourg",
+    countryCode: "+352",
+    abbreviation: "lu",
+    active: false,
+    mask: ["99 99 99 99"],
+  },
+  {
+    name: "Montenegro",
+    countryCode: "+382 0",
+    abbreviation: "me",
+    active: false,
+    mask: ["99 999 999"]
+  },
+  {
+    name: "Netherlands",
+    countryCode: "+31",
+    abbreviation: "nl",
+    active: false,
+    mask: ["999 999 9999"],
+  },
+  {
+    name: "Norway",
+    countryCode: "+47",
+    abbreviation: "no",
+    active: false,
+    mask: ["99 99 99 99"],
+  },
+  {
+    name: "Poland",
+    countryCode: "+48",
+    abbreviation: "pl",
+    active: false,
+    mask: ["99 999 99 99"],
+  },
+  {
+    name: "Portugal",
+    countryCode: "+351",
+    abbreviation: "pt",
+    active: false,
+    mask: ["999 999 999"],
+  },
+  {
+    name: "Romania",
+    countryCode: "+40",
+    abbreviation: "ro",
+    active: false,
+    mask: ["999 999 9999"],
+  },
+  {
+    name: "Slovakia",
+    countryCode: "+421",
+    abbreviation: "sk",
+    active: false,
+    mask: ["99/999 999 99"],
+  },
+  {
+    name: "Slovenia",
+    countryCode: "+386",
+    abbreviation: "si",
+    active: false,
+    mask: ["(99) 999 99 99"],
+  },
+  {
+    name: "Spain",
+    countryCode: "+34",
+    abbreviation: "es",
+    active: false,
+    mask: ["999 99 99 99"],
+  },
+  {
+    name: "Turkey",
+    countryCode: "+90",
+    abbreviation: "tr",
+    active: false,
+    mask: ["999 999 9999"],
+  },
+  {
+    name: "United Kingdom",
+    countryCode: "+44",
+    abbreviation: "gb",
+    active: false,
+    mask: ["999 9999 9999"],
+  },
+];
 
 @Component({
   components: {
@@ -192,13 +414,13 @@ export default class ATATPhoneInput extends Vue {
     },
     type: Object as () => CountryObj
   }) private _selectedCountry!: CountryObj;
-  private prefix = this._selectedCountry?.countryCode || "+1";
 
   
   // data
   private searchResults: CountryObj[] = [];
   private searchTerm = "";
   private errorMessages: string[] = [];
+  private countries = Countries;
 
   private inputActions(v: string) {
     this._extension = v;
@@ -219,12 +441,22 @@ export default class ATATPhoneInput extends Vue {
     }
   }
 
+  //getters 
+
+  private get prefix():string {
+    return this._selectedCountry?.countryCode || "+1";
+  }
+
   //ATATErrorValidation
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.atatPhoneTextField.errorBucket;
   }
 
 
+  @Watch("_value")
+  private onValueChange(): void{
+    this.setPhoneMask();
+  }
   //@Events
   private validate(e: FocusEvent,) : void{
     const input = e.target as HTMLInputElement;
@@ -331,226 +563,6 @@ export default class ATATPhoneInput extends Vue {
 
   //data
 
-  private countries: CountryObj[] = [
-    {
-      name: "United States",
-      countryCode: "+1",
-      abbreviation: "us",
-      active: false,
-      suggested: true,
-      mask: ["999-999-9999"],
-    },
-    {
-      name: "Defense Switched Network",
-      countryCode: "DSN",
-      abbreviation: "dsn",
-      active: false,
-      suggested: true,
-      mask: ["999-9999", "999-999-9999"],
-    },
-    {
-      name: "Albania",
-      countryCode: "+355 4",
-      abbreviation: "al",
-      active: false,
-      mask: ["999 999"],
-    },
-    {
-      name: "Belgium",
-      countryCode: "+32",
-      abbreviation: "be",
-      active: false,
-      mask: ["99 999 99 99"],
-    },
-    {
-      name: "Bulgaria",
-      countryCode: "+359",
-      abbreviation: "bg",
-      active: false,
-      mask: ["99 999 9999"],
-    },
-    {
-      name: "Canada",
-      countryCode: "+1",
-      abbreviation: "ca",
-      active: false,
-      mask: ["999-999-9999"],
-    },
-    {
-      name: "Croatia",
-      countryCode: "+385",
-      abbreviation: "hr",
-      active: false,
-      mask:["99 9999 999"],
-    },
-    {
-      name: "Czech Republic",
-      countryCode: "+420",
-      abbreviation: "cz",
-      active: false,
-      mask:["999 999 999"],
-    },
-    {
-      name: "Denmark",
-      countryCode: "+45",
-      abbreviation: "dk",
-      active: false,
-      mask:["99 99 99 99"],
-    },
-    {
-      name: "Estonia",
-      countryCode: "+372",
-      abbreviation: "ee",
-      active: false,
-      mask:["999 9999"],
-    },
-    {
-      name: "France",
-      countryCode: "+33",
-      abbreviation: "fr",
-      active: false,
-      mask:["99 99 99 99 99"],
-    },
-    {
-      name: "Germany",
-      countryCode: "+49",
-      abbreviation: "de",
-      active: false,
-      mask:["999 99999999"],
-    },
-    {
-      name: "Greece",
-      countryCode: "+30",
-      abbreviation: "gr",
-      active: false,
-      mask: ["99 9999 9999"],
-    },
-    {
-      name: "Greenland",
-      countryCode: "+299",
-      abbreviation: "gl",
-      active: false,
-      mask: ["99 99 99"]
-    },
-    {
-      name: "Hungary",
-      countryCode: "+36",
-      abbreviation: "hu",
-      active: false,
-      mask: ["(9) 999 9999"]
-    },
-    {
-      name: "Iceland -- missing",
-      countryCode: "+354",
-      abbreviation: "is",
-      active: false,
-      mask: ["999-9999"]
-    },
-    {
-      name: "Italy",
-      countryCode: "+39",
-      abbreviation: "it",
-      active: false,
-      mask: ["99 9999 9999"]
-    },
-    {
-      name: "Latvia",
-      countryCode: "+371",
-      abbreviation: "lv",
-      active: false,
-      mask: ["99 999 999"],
-    },
-    {
-      name: "Lithuania",
-      countryCode: "+370",
-      abbreviation: "lt",
-      active: false,
-      mask:["(9-9) 999 9999"]
-    },
-    {
-      name: "Luxembourg",
-      countryCode: "+352",
-      abbreviation: "lu",
-      active: false,
-      mask: ["99 99 99 99"],
-    },
-    {
-      name: "Montenegro",
-      countryCode: "+382 0",
-      abbreviation: "me",
-      active: false,
-      mask: ["99 999 999"]
-    },
-    {
-      name: "Netherlands",
-      countryCode: "+31",
-      abbreviation: "nl",
-      active: false,
-      mask: ["999 999 9999"],
-    },
-    {
-      name: "Norway",
-      countryCode: "+47",
-      abbreviation: "no",
-      active: false,
-      mask: ["99 99 99 99"],
-    },
-    {
-      name: "Poland",
-      countryCode: "+48",
-      abbreviation: "pl",
-      active: false,
-      mask: ["99 999 99 99"],
-    },
-    {
-      name: "Portugal",
-      countryCode: "+351",
-      abbreviation: "pt",
-      active: false,
-      mask: ["999 999 999"],
-    },
-    {
-      name: "Romania",
-      countryCode: "+40",
-      abbreviation: "ro",
-      active: false,
-      mask: ["999 999 9999"],
-    },
-    {
-      name: "Slovakia",
-      countryCode: "+421",
-      abbreviation: "sk",
-      active: false,
-      mask: ["99/999 999 99"],
-    },
-    {
-      name: "Slovenia",
-      countryCode: "+386",
-      abbreviation: "si",
-      active: false,
-      mask: ["(99) 999 99 99"],
-    },
-    {
-      name: "Spain",
-      countryCode: "+34",
-      abbreviation: "es",
-      active: false,
-      mask: ["999 99 99 99"],
-    },
-    {
-      name: "Turkey",
-      countryCode: "+90",
-      abbreviation: "tr",
-      active: false,
-      mask: ["999 999 9999"],
-    },
-    {
-      name: "United Kingdom",
-      countryCode: "+44",
-      abbreviation: "gb",
-      active: false,
-      mask: ["999 9999 9999"],
-    },
-  ];
+  
 }
 </script>
