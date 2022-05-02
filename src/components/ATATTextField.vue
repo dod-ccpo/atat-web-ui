@@ -131,7 +131,6 @@ export default class ATATTextField extends Vue  {
         } else {
           maskObj.mask = this.mask || [];
         }
-        console.log(maskObj)
         Inputmask(maskObj).mask(inputField);
         
       })
