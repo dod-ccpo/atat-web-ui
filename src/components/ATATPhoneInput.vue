@@ -1,7 +1,7 @@
 <template>
-  <v-container class="mb-10">
-    <v-row>
-      <v-col id="PhoneControl" class="_atat-phone-field pa-0">
+  <div id="PhoneControl" class="_atat-phone-field">
+    <div :class="wrapperClass">
+      <div>
         <div class="d-flex align-center" v-if="label">
           <label
             :id="id + '_TextFieldLabel'"
@@ -11,6 +11,7 @@
             {{ label }}
           </label>
         </div>
+
         <div class="d-flex">
           <v-select
             ref="atatPhoneDropdown"
@@ -98,12 +99,16 @@
           >
           </v-text-field>
         </div>
+        
         <ATATErrorValidation :errorMessages="errorMessages" />
-      </v-col>
-      <v-col
+
+      </div>
+
+      <div
         v-if="isPhoneExtensionVisible !== false"
         id="PhoneExtensionControl"
-        class="_atat-phone-extension-field pa-0"
+        class="_atat-phone-extension-field"
+        :class="extensionClass"
       >
         <div class="d-flex align-center">
           <label
@@ -128,10 +133,12 @@
           autocomplete="off"
         >
         </ATATTextField>
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
+    </div>
+  
+  </div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
@@ -396,7 +403,7 @@ export default class ATATPhoneInput extends Vue {
   @Prop({ default: "" }) private appendIcon!: string;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: "" }) private suffix!: string;
-  @Prop({ default: "" }) private optional!: boolean;
+  @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "351" }) private width!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: true }) private isPhoneExtensionVisible!: boolean;
@@ -561,8 +568,13 @@ export default class ATATPhoneInput extends Vue {
     }
   }
 
-  //data
+  get wrapperClass(): string {
+    return this.$vuetify.breakpoint.mdAndDown ? "d-block" : "d-flex";
+  }
 
+  get extensionClass(): string {
+    return this.$vuetify.breakpoint.mdAndDown ? "mt-6" : "ml-6";
+  }
   
 }
 </script>

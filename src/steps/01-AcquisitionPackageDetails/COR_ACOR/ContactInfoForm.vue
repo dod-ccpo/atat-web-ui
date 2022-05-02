@@ -120,7 +120,7 @@
         <ATATPhoneInput
           id="PhoneNumber"
           label="Phone number"
-          class="width-100"
+          class="width-100 mb-10"
           :value.sync="_phone"
           :country.sync="_selectedPhoneCountry"
           :extensionValue.sync="_phoneExt"
@@ -229,15 +229,19 @@ export default class ContactInfoForm extends Vue {
     { text: "Dr.", value: "DR" },
   ];
 
+  private loaded = false;
   private contactTypeChange(): void {
-    this.resetData();
+    if (this.loaded) {
+      this.resetData();
+    }
+    this.loaded = true;
   }
 
   public resetData(): void {
     Vue.nextTick(() => {
       //iterate over the forms children ref manually set their 'errorMessages' array to empty
       const formChildren = this.$refs.CORACORContactForm.$children;
-     
+
       formChildren.forEach((ref)=> {
         ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
       });
