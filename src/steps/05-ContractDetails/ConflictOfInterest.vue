@@ -14,7 +14,6 @@
               or advice to the government, (2) cannot objectively perform 
               contract work, or (3) has an unfair competitive advantage. 
               Learn more about COI            
-            
             </p>
             <ATATRadioGroup                                  
               class="copy-max-width max-width-760"
@@ -85,4 +84,3 @@ export default class ConflictOfInterest extends Vue {
 
 }
 </script>
-
