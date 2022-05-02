@@ -13,7 +13,14 @@
               (1) is unable or potentially unable to render impartial assistance 
               or advice to the government, (2) cannot objectively perform 
               contract work, or (3) has an unfair competitive advantage. 
-              Learn more about COI            
+              <a 
+                role="button" 
+                id="CoILearnMore" 
+                class="_text-link" 
+                @click="openSlideoutPanel"
+              >
+                Learn more about COI.      
+              </a> 
             </p>
             <ATATRadioGroup                                  
               class="copy-max-width max-width-760"
@@ -55,13 +62,16 @@ import { Component } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import CoILearnMore from "./CoILearnMore.vue";
 
-import { RadioButton } from "../../../types/Global";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 
 @Component({
   components: {
     ATATRadioGroup,
     ATATTextArea,
+    CoILearnMore,
   }
 })
 
@@ -81,6 +91,21 @@ export default class ConflictOfInterest extends Vue {
       value: "false",
     },
   ];
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: CoILearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
 
 }
 </script>
