@@ -5,7 +5,6 @@
     max-width="250px"
     :open-delay="500"
     top
-    attach
     eager
     v-if="tooltipText"
   >
