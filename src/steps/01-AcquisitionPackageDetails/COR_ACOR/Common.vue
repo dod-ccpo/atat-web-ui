@@ -74,7 +74,7 @@
         <hr/>
         <ATATRadioGroup
           legend="Does this individual need access to help you create this
-           acquisition package in ATAT?"
+            acquisition package in ATAT?"
           id="AccessToEdit"
           :items="accessToEditOptions"
           :value.sync="selectedAccessToEdit"
@@ -88,7 +88,7 @@
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import parsePhoneNumber, { CountryCode } from 'libphonenumber-js'
+import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -98,6 +98,7 @@ import PersonCard from "./PersonCard.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ContactData from "@/store/contactData";
 import { ContactDTO } from "@/api/models";
+import { Countries } from "@/components/ATATPhoneInput.vue";
 
 import {
   AutoCompleteItem,
@@ -257,11 +258,26 @@ export default class COR_ACOR extends Vue {
 
   public get currentData(): ContactDTO {
     const countryCode = this.selectedPhoneCountry
-      ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode
+      ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
-    const phone = this.phone
-      ? parsePhoneNumber(this.phone, countryCode)?.number.toString()
+
+    const parsedPhone = parsePhoneNumber(
+      this.phone,
+      countryCode
+    );
+
+    let phone = this.phone
+      ? parsePhoneNumber(
+        this.phone,
+        countryCode
+      )?.format("INTERNATIONAL")
       : "";
+
+    if (countryCode) {
+      const asyoutype= new AsYouType(countryCode);
+      const formatted = asyoutype.input(this.phone);
+      phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
+    }
 
     return {
       type: this.corOrAcor, // COR, ACOR
@@ -415,14 +431,23 @@ export default class COR_ACOR extends Vue {
 
       if (storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
-        const country = ContactData.countries.find(country =>
-          country.countryCode === `+${parsedPhone?.countryCallingCode}`);
+        const country = Countries.find(
+          (country) =>
+            country.countryCode === `+${parsedPhone?.countryCallingCode}`
+        );
+        this.selectedPhoneCountry = country || {
+          name: "",
+          countryCode: "",
+          abbreviation: "",
+          active: false,
+        };
 
-        this.selectedPhoneCountry
-          = country || {name: '', countryCode: '', abbreviation: '', active: false};
-        this.phone = parsedPhone?.nationalNumber.toString() || "";
-        this.savedData.phone = parsedPhone?.number.toString() || "";
+        const phoneNumber = parsedPhone ? parsedPhone?.
+          nationalNumber.toString().replace(/\D/g,'') : "";
+        this.phone = phoneNumber;
+        this.savedData.phone = phoneNumber;
       }
+
       this.phoneExt = storeData.phone_extension;
       this.dodaac = storeData.dodaac;
       this.selectedAccessToEdit = storeData.can_access_package;
