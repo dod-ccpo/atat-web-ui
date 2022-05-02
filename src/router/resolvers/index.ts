@@ -57,6 +57,18 @@ export const FOIARecordResolver = (current: string): string => {
     ? routeNames.Section508Standards
     : routeNames.FOIA;
 };
+export const A11yRequirementResolver = (current: string): string => {
+  const needsA11yReqs
+      = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "false";
+  // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
+  // then need to collect information about the FOIA Coordinator
+  if (needsA11yReqs) {
+    return routeNames.Section508AccessibilityRequirements;
+  }
+  return current === routeNames.Section508Standards
+    ? routeNames.EvaluationCriteriaStepOne
+    : routeNames.Section508Standards;
+};
 
 
 // add resolver here so that it can be found by invoker
@@ -65,6 +77,7 @@ const resolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
+  A11yRequirementResolver,
 };
 
 export const InvokeResolver = (

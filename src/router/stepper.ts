@@ -56,6 +56,8 @@ import PIIRecord from "../steps/07-OtherContractConsiderations/PIIRecord.vue";
 import FOIA from "../steps/07-OtherContractConsiderations/FOIA.vue";
 import FOIACoordinator from "../steps/07-OtherContractConsiderations/FOIACoordinator.vue";
 import Section508Standards from "../steps/07-OtherContractConsiderations/Section508Standards.vue";
+import Section508AccessibilityRequirements
+  from "../steps/07-OtherContractConsiderations/Section508AccessibilityRequirements.vue"
 
 // step 8 - Evaluation Criteria
 import EvaluationCriteria from "../steps/08-EvaluationCriteria/Index.vue"
@@ -82,6 +84,7 @@ import {
   CurrentContractRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
+  A11yRequirementResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -130,6 +133,7 @@ export const routeNames = {
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
+  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements"
 };
 
 /**
@@ -462,7 +466,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         component: Section508Standards,
       },
-      
+      {
+        menuText: "Section 508 Accessibility Requirements",
+        path: "/508-accessibility-reqs",
+        name: routeNames.Section508AccessibilityRequirements,
+        excludeFromMenu: true,
+        completePercentageWeight: 2,
+        component: Section508AccessibilityRequirements,
+        routeResolver: A11yRequirementResolver
+      },
+
     ]
   },
   {
