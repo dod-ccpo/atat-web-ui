@@ -1,16 +1,19 @@
 <template>
   <v-container fluid class="container-max-width">
-    <v-row class="form-section">
-      <v-col>
-        <h1 class="page-header">Let’s confirm your contact information</h1>
-        <ATATRadioGroup
-          legend="What role best describes your affiliation with the DoD?"
-          id="ContactRole"
-          :items="contactRoles"
-          :value.sync="selectedRole"
-          class="mb-6"
-        />
+    
+    <h1 class="page-header">Let’s confirm your contact information</h1>
+    <ATATRadioGroup
+      legend="What role best describes your affiliation with the DoD?"
+      id="ContactRole"
+      :items="contactRoles"
+      :value.sync="selectedRole"
+      class="mb-6"
+      @radioButtonSelected="contactTypeChange"
+    />
 
+    <v-form ref="atatContactForm">
+      <v-row class="form-section">
+      <v-col>
         <ATATSelect
           id="Branch"
           v-model="selectedBranch"
@@ -52,108 +55,109 @@
           ]"
         />
       </v-col>
-    </v-row>
-    <v-row class="form-section" v-show="showContactInfoFields">
-      <v-col class="col-12 col-lg-3">
-        <ATATTextField
-          label="First name"
-          id="FirstName"
+      </v-row>
+      <v-row class="form-section" v-show="showContactInfoFields">
+        <v-col class="col-12 col-lg-3">
+          <ATATTextField
+            label="First name"
+            id="FirstName"
           :value.sync="firstName"
           class="_input-max-width"
           :rules="[
             $validators.required('Please enter your first name.')
           ]"
-        />
-      </v-col>
-      <v-col class="col-12 col-lg-3">
-        <ATATTextField
-          label="Middle name"
-          id="MiddleName"
-          :value.sync="middleName"
-          :optional="true"
-          class="_input-max-width"
-        />
-      </v-col>
-      <v-col class="col-12 col-lg-3">
-        <ATATTextField
-          label="Last name"
-          id="LastName"
-          :value.sync="lastName"
-          class="_input-max-width"
-          :rules="[
-            $validators.required('Please enter your last name.')
-          ]"
-        />
-      </v-col>
-      <v-col class="col-12 col-lg-3">
-        <ATATTextField
-          label="Suffix"
-          id="Suffix"
-          :optional="true"
-          width="80"
-          :value.sync="suffix"
-        />
-      </v-col>
-    </v-row>
-    <v-row class="form-section mb-0" v-show="showContactInfoFields">
-      <v-col>
-        <ATATTextField
-          label="Your title"
-          id="ContactTitle"
-          class="_input-max-width mb-10"
-          :value.sync="title"
-          :rules="[
-            $validators.required('Please enter your title.')
-          ]"
-        />
-        <ATATPhoneInput
-          label="Your phone number"
-          id="ContactPhone"
-          :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
-          :value.sync="selectedPhoneNumber"
-          :country.sync="selectedPhoneCountry"
-          :extensionValue.sync="phoneExtension"
-          :rules="[
-            $validators.isPhoneNumberValid(
-              this.selectedPhoneCountry
-            ),
-          ]"
-        />
-        <ATATTextField
-          label="Your email"
-          id="ContactEmail"
-          class="_input-max-width mb-10"
-          helpText="Enter a .mil or .gov email address."
-          :value.sync="email"
-          :validateOnBlur="true"
-          :rules="[
-              $validators.required('Please enter your email address.'),
-              $validators.isEmail(),
-          ]"
-        />
-        <ATATAutoComplete
-          v-show="selectedRole === 'CIVILIAN'"
-          id="ContactGrade"
-          :optional="true"
-          class="_input-max-width mb-10"
-          label="Grade"
-          :label-sr-only="false"
-          titleKey="label"
-          :searchFields="['label']"
-          :items="gradeData"
-          :selectedItem.sync="selectedGrade"
-          placeholder=""
-          icon="arrow_drop_down"
-        />
-      </v-col>
-    </v-row>
+          />
+        </v-col>
+        <v-col class="col-12 col-lg-3">
+          <ATATTextField
+            label="Middle name"
+            id="MiddleName"
+            :value.sync="middleName"
+            :optional="true"
+            class="_input-max-width"
+          />
+        </v-col>
+        <v-col class="col-12 col-lg-3">
+          <ATATTextField
+            label="Last name"
+            id="LastName"
+            :value.sync="lastName"
+            class="_input-max-width"
+            :rules="[
+              $validators.required('Please enter your last name.')
+            ]"
+          />
+        </v-col>
+        <v-col class="col-12 col-lg-3">
+          <ATATTextField
+            label="Suffix"
+            id="Suffix"
+            :optional="true"
+            width="80"
+            :value.sync="suffix"
+          />
+        </v-col>
+      </v-row>
+      <v-row class="form-section mb-0" v-show="showContactInfoFields">
+        <v-col>
+          <ATATTextField
+            label="Your title"
+            id="ContactTitle"
+            class="_input-max-width mb-10"
+            :value.sync="title"
+            :rules="[
+              $validators.required('Please enter your title.')
+            ]"
+          />
+          <ATATPhoneInput
+            label="Your phone number"
+            id="ContactPhone"
+            :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
+            :value.sync="selectedPhoneNumber"
+            :country.sync="selectedPhoneCountry"
+            :extensionValue.sync="phoneExtension"
+            :rules="[
+              $validators.isPhoneNumberValid(
+                this.selectedPhoneCountry
+              ),
+            ]"
+          />
+          <ATATTextField
+            label="Your email"
+            id="ContactEmail"
+            class="_input-max-width mb-10"
+            helpText="Enter a .mil or .gov email address."
+            :value.sync="email"
+            :validateOnBlur="true"
+            :rules="[
+                $validators.required('Please enter your email address.'),
+                $validators.isEmail(),
+            ]"
+          />
+          <ATATAutoComplete
+            v-show="selectedRole === 'CIVILIAN'"
+            id="ContactGrade"
+            :optional="true"
+            class="_input-max-width mb-10"
+            label="Grade"
+            :label-sr-only="false"
+            titleKey="label"
+            :searchFields="['label']"
+            :items="gradeData"
+            :selectedItem.sync="selectedGrade"
+            placeholder=""
+            icon="arrow_drop_down"
+          />
+        </v-col>
+      </v-row>
+    </v-form>
   </v-container>
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
-import parsePhoneNumber, {CountryCode} from 'libphonenumber-js'
+import parsePhoneNumber, { CountryCode } from "libphonenumber-js";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -173,6 +177,7 @@ import {
 import { ContactDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import Vue from "vue";
 
 @Component({
   components: {
@@ -184,21 +189,32 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 export default class ContactInfo extends Mixins(SaveOnLeave) {
+  $refs!: {
+    atatContactForm: Vue & {
+      resetValidation: () => void;
+      reset: () => void;
+    };
+  };
+  
+  
   // computed
 
   get showContactInfoFields(): boolean {
     return (
       this.selectedRole !== "MILITARY" ||
-      (this.selectedRole === "MILITARY" && this.selectedBranch.value !== "")
+      (this.selectedRole === "MILITARY" && 
+        (this.selectedBranch && this.selectedBranch.value !== ""))
     );
   }
 
   // watchers
 
   @Watch("selectedBranch")
-  protected branchChange(): void {
-    this.setRankData();
-    AcquisitionPackage.setSelectedContactBranch(this.selectedBranch);
+  protected branchChange(newVal: string): void {
+    if (newVal !== null){
+      this.setRankData();
+      AcquisitionPackage.setSelectedContactBranch(this.selectedBranch);
+    }
   }
 
   @Watch("selectedRole")
@@ -226,11 +242,11 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
   //todo replace this from the store after `countries` is stored there
   private selectedPhoneCountry: CountryObj = {
-    "name": "United States",
-    "countryCode": "+1",
-    "abbreviation": "us",
-    "active": true,
-    "mask": ["999-999-9999"]
+    name: "United States",
+    countryCode: "+1",
+    abbreviation: "us",
+    active: true,
+    mask: ["999-999-9999"],
   };
 
   public selectedServiceOrAgency: SelectData =
@@ -274,7 +290,10 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private selectedGrade: {grade: string, label: string} = {grade: "", label: ""};
+  private selectedGrade: { grade: string; label: string } = {
+    grade: "",
+    label: "",
+  };
   private gradeData = [
     { label: "GS-01", grade: "GS_01" },
     { label: "GS-02", grade: "GS_02" },
@@ -308,20 +327,24 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const last_name = this.lastName;
     const middle_name = this.middleName;
     const role = this.selectedRole;
-    const rank_components = this.selectedRank.sysId;
+    const rank_components = this.selectedRank && this.selectedRank.sysId 
+      ? this.selectedRank.sysId : "";
     const suffix = this.suffix;
     const salutation = this.selectedSalutation;
-    const countryCode = this.selectedPhoneCountry 
-      ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode 
+    const countryCode = this.selectedPhoneCountry
+      ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
-    const phone = this.selectedPhoneNumber 
-      ? parsePhoneNumber(this.selectedPhoneNumber, countryCode)?.number.toString() 
+    const phone = this.selectedPhoneNumber
+      ? parsePhoneNumber(
+        this.selectedPhoneNumber,
+        countryCode
+      )?.number.toString()
       : "";
     const phoneExt = this.phoneExtension;
     const email = this.email;
-    const grade_civ = this.selectedGrade.grade;
+    const grade_civ = this.selectedGrade && this.selectedGrade.grade 
+      ? this.selectedGrade.grade : "" ;
     const title = this.title;
-    console.log(phoneExt)
     return {
       first_name,
       last_name,
@@ -353,7 +376,6 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     }
   }
 
-
   public async loadOnEnter(): Promise<void> {
     this.savedData.can_access_package = "true";
     const branches = await ContactData.LoadMilitaryBranches();
@@ -368,37 +390,53 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
 
-    const storeData = await AcquisitionPackage.loadContactInfo('Mission Owner');
+    const storeData = await AcquisitionPackage.loadContactInfo("Mission Owner");
     this.savedData = storeData;
 
     if (storeData) {
       this.selectedRole = storeData.role;
 
-      if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
-        const rankComp = (storeData.rank_components as unknown) as { link: string, value: string};
-        if(rankComp) {
+      if (
+        this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value
+      ) {
+        const rankComp = storeData.rank_components as unknown as {
+          link: string;
+          value: string;
+        };
+        if (rankComp) {
           this.savedData.rank_components = rankComp.value;
         }
-        
+
         const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
 
         //retrieve selected Military Rank from rank component
         const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
-        
-        this.selectedBranch = rank !== undefined
-          ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
-          : emptyBranch;
 
-        this.selectedRank = rank !== undefined
-          ? { name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || ""}
-          : { grade: "", name: "", sysId: "" };
+        this.selectedBranch =
+          rank !== undefined
+            ? this.branchData.find((branch) => branch.value === rank.branch) ||
+              emptyBranch
+            : emptyBranch;
+
+        this.selectedRank =
+          rank !== undefined
+            ? {
+              name: rank.name || "",
+              grade: rank.grade || "",
+              sysId: rank.sys_id || "",
+            }
+            : { grade: "", name: "", sysId: "" };
       }
 
-      if (this.selectedRole === this.contactRoles[this.roleIndices.CIVILIAN].value) {
-        const gradeValue = this.gradeData.find(value=> value.grade === storeData.grade_civ);
+      if (
+        this.selectedRole === this.contactRoles[this.roleIndices.CIVILIAN].value
+      ) {
+        const gradeValue = this.gradeData.find(
+          (value) => value.grade === storeData.grade_civ
+        );
         this.selectedGrade = {
-          grade : gradeValue?.grade || "",
-          label : gradeValue?.label || ""
+          grade: gradeValue?.grade || "",
+          label: gradeValue?.label || "",
         };
       }
 
@@ -408,37 +446,58 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
       this.suffix = storeData.suffix;
-      
+
       this.title = storeData.title;
       this.email = storeData.email;
-      this.phoneExtension = storeData.phone_extension
-      if(storeData.phone.length > 0){
+      this.phoneExtension = storeData.phone_extension;
+      if (storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
-        const country = ContactData.countries.find(country => 
-          country.countryCode === `+${parsedPhone?.countryCallingCode}`)
-
-        this.selectedPhoneCountry 
-          = country || { name: '', countryCode: '', abbreviation: '', active: false };
-        this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() ||  "";
-        this.savedData.phone =  parsedPhone?.number.toString() ||  "";
+        const country = ContactData.countries.find(
+          (country) =>
+            country.countryCode === `+${parsedPhone?.countryCallingCode}`
+        );
+        this.selectedPhoneCountry = country || {
+          name: "",
+          countryCode: "",
+          abbreviation: "",
+          active: false,
+        };
+        this.selectedPhoneNumber = parsedPhone?.nationalNumber.toString() || "";
+        this.savedData.phone = parsedPhone?.number.toString() || "";
       }
-      
     }
   }
 
   private hasChanged(): boolean {
-    console.log(this.savedData)
     return hasChanges(this.currentData, this.savedData);
+  }
+  
+  private contactTypeChange(): void {
+    this.resetData();
+  }
 
+  public resetData(): void {
+    Vue.nextTick(() => {
+      //iterate over the forms children ref manually set their 'errorMessages' array to empty
+      const formChildren = this.$refs.atatContactForm.$children;
+     
+      formChildren.forEach((ref)=> {
+        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+      });
+      Vue.nextTick(() => {
+        this.$refs.atatContactForm.reset();
+        this.$refs.atatContactForm.resetValidation();
+      });
+    });
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    console.log(this.currentData)
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveContactInfo(
-          { data: this.currentData, type: "Mission Owner" }
-        );
+        await AcquisitionPackage.saveContactInfo({
+          data: this.currentData,
+          type: "Mission Owner",
+        });
       }
     } catch (error) {
       console.log(error);

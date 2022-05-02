@@ -92,7 +92,7 @@
             class="_phone-number-input"
             :hide-details="true"
             :suffix="suffix"
-            :prefix="this._selectedCountry.countryCode"
+            :prefix="prefix"
             autocomplete="off"
             :rules="rules"
           >
@@ -187,12 +187,12 @@ export default class ATATPhoneInput extends Vue {
       "countryCode": "+1",
       "abbreviation": "us",
       "active": true,
-      "mask": "999-999-9999"
+      "mask": ["999-999-9999"],
+      "suggested": true,
     },
-    type: Object as () => CountryObj }
-  )
-
-  private _selectedCountry!: CountryObj;
+    type: Object as () => CountryObj
+  }) private _selectedCountry!: CountryObj;
+  private prefix = this._selectedCountry?.countryCode || "+1";
 
   
   // data
@@ -308,10 +308,25 @@ export default class ATATPhoneInput extends Vue {
     }
     return
   }
+
+  /** life cycle hooks  */
   private mounted(): void {
     this.searchResults = [...this.countries];
     this.setPhoneMask();
     this.setExtensionMask();
+  }
+
+
+  /**
+   * when parent forms methods (.reset() and .resetValidation()) are called  
+   * this._selectedCountry is set to null.
+   * 
+   * updated method sets default value
+  */
+  private updated(): void{
+    if (this._selectedCountry === null){
+      this._selectedCountry = this.countries[0];
+    }
   }
 
   //data

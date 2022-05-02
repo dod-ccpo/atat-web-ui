@@ -266,7 +266,7 @@ export default class COR_ACOR extends Vue {
     return {
       type: this.corOrAcor, // COR, ACOR
       role: this.selectedRole, // Military, Civilian
-      rank_components: this.selectedRank.sysId,
+      rank_components: this.selectedRank && this.selectedRank.sysId,
       salutation: this.selectedSalutation,
       first_name: this.firstName,
       middle_name: this.middleName,
@@ -347,13 +347,13 @@ export default class COR_ACOR extends Vue {
 
   private setShowAccessRadioButtons(): void {
     this.showAccessRadioButtons = this.selectedRole === "CIVILIAN"
-      || this.selectedBranch.value !== "";
+      || (this.selectedBranch && this.selectedBranch.value !== "");
   }
 
   private setRankData(): void {
-    if (this.selectedBranch.value) {
+    if (this.selectedBranch !== null) {
       this.selectedBranchRanksData =
-        this.branchRanksData[this.selectedBranch.value];
+        this.branchRanksData[this.selectedBranch.value || ''];
     }
   }
 
