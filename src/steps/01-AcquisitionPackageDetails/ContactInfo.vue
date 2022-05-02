@@ -327,7 +327,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     const last_name = this.lastName;
     const middle_name = this.middleName;
     const role = this.selectedRole;
-    const rank_components = this.selectedRank.sysId;
+    const rank_components = this.selectedRank && this.selectedRank.sysId 
+      ? this.selectedRank.sysId : "";
     const suffix = this.suffix;
     const salutation = this.selectedSalutation;
     const countryCode = this.selectedPhoneCountry
@@ -341,7 +342,8 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       : "";
     const phoneExt = this.phoneExtension;
     const email = this.email;
-    const grade_civ = this.selectedGrade.grade;
+    const grade_civ = this.selectedGrade && this.selectedGrade.grade 
+      ? this.selectedGrade.grade : "" ;
     const title = this.title;
     return {
       first_name,
