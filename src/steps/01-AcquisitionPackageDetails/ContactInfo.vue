@@ -112,7 +112,7 @@
           <ATATPhoneInput
             label="Your phone number"
             id="ContactPhone"
-            :class="{ 'mb-10': selectedRole === 'CIVILIAN' }"
+            class="mb-10"
             :value.sync="selectedPhoneNumber"
             :country.sync="selectedPhoneCountry"
             :extensionValue.sync="phoneExtension"
