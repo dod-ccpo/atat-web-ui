@@ -60,8 +60,8 @@ export const FOIARecordResolver = (current: string): string => {
 export const A11yRequirementResolver = (current: string): string => {
   const needsA11yReqs
       = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "false";
-  // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
-  // then need to collect information about the FOIA Coordinator
+  // if user selects "No" on Section 508 standards page,
+  // then need to collect information about 508 accessibility requirements
   if (needsA11yReqs) {
     return routeNames.Section508AccessibilityRequirements;
   }
