@@ -112,7 +112,7 @@
       color: $primary;
       border-bottom: 1px solid $base-lighter;
       .v-input__icon {
-        &.v-input__icon--append, {
+        &.v-input__icon--append {
           i.v-icon {
 
             padding-top: 8px;
@@ -156,7 +156,6 @@
 }
 
 ._atat-phone-extension-field {
-  margin-left: 24px;
   ._phone-extension-input {
     width: 140px;
   }

@@ -120,7 +120,7 @@
         <ATATPhoneInput
           id="PhoneNumber"
           label="Phone number"
-          class="width-100"
+          class="width-100 mb-10"
           :value.sync="_phone"
           :country.sync="_selectedPhoneCountry"
           :extensionValue.sync="_phoneExt"
