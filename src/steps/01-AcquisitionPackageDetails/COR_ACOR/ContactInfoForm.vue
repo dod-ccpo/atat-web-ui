@@ -231,10 +231,11 @@ export default class ContactInfoForm extends Vue {
 
   private loaded = false;
   private contactTypeChange(): void {
+    debugger;
     if (this.loaded) {
       this.resetData();
     }
-    this.loaded = false;
+    this.loaded = true;
   }
 
   public resetData(): void {
