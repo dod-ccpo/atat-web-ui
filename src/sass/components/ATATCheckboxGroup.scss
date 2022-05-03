@@ -58,6 +58,7 @@
       z-index: 1;
     }
   }
+
   .v-input__slot {
     align-items: start;
     margin-bottom: 16px;
@@ -75,6 +76,7 @@
       width: 100%;
     }
   }
+  
   .atat-text-field-error {
     .v-icon, .field-error {
       color: $error !important;

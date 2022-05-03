@@ -52,7 +52,7 @@ import { Checkbox } from "../../../types/Global";
 export default class PackagingPackingAndShipping extends Vue {
   @Watch("selectedPackagingEtcOptions")
   protected selectedPackagingEtcChanged(newVal: string[]): void {
-    // debugger;
+    // EJY is any of this necessary?
     if (newVal.indexOf(this.noneApplyValue) > -1) {
       const noneApplyIndex = this.prevSelectedPackagingEtcOptions.indexOf(this.noneApplyValue);
       if (newVal.length > 1 && noneApplyIndex === -1) {
@@ -99,11 +99,7 @@ export default class PackagingPackingAndShipping extends Vue {
       value: this.noneApplyValue,
       description: "",
     },    
-
-    
   ];
-
 
 }
 </script>
-

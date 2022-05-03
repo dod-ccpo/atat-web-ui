@@ -35,17 +35,17 @@
           ></div>
         </div>
       </template>
-        <template v-slot:append v-if="showOtherTextarea(item.label)">
-          <ATATTextArea
-            ref="atatTextArea"
-            v-show="showOtherTextarea(item.label)"
-            id="OtherEntry"
-            class="width-100 ml-5 mb-6"
-            :rows="3"
-            :validateItOnBlur="validateOtherOnBlur"
-            :value.sync="_otherValue"
-            :rules="textareaRequiredRule"
-          />
+      <template v-slot:append v-if="showOtherTextarea(item.label)">
+        <ATATTextArea
+          ref="atatTextArea"
+          v-show="showOtherTextarea(item.label)"
+          id="OtherEntry"
+          class="width-100 ml-5 mb-6"
+          :rows="3"
+          :validateItOnBlur="validateOtherOnBlur"
+          :value.sync="_otherValue"
+          :rules="textareaRequiredRule"
+        />
       </template>
 
     </v-checkbox>
@@ -68,20 +68,15 @@ import { getIdText } from "@/helpers";
 })
 
 export default class ATATCheckboxGroup extends Vue {
-  // refs
-  $refs!: {
-    atatTextArea: Vue & { errorBucket: string[]; errorCount: number };
-  };
-
   // props
   @PropSync("value") private _selected!: string[];
   @PropSync("otherValue") private _otherValue!: string;
 
-  @Prop({default: [""], required: true}) private items!: Checkbox[];
-  @Prop({default: false}) private card!: boolean;
-  @Prop({default: false}) private error!: boolean;
-  @Prop({default: false}) private disabled!: boolean;
-  @Prop({default: false}) private hasOtherValue!: boolean;
+  @Prop({ default: [""], required: true }) private items!: Checkbox[];
+  @Prop({ default: false }) private card!: boolean;
+  @Prop({ default: false }) private error!: boolean;
+  @Prop({ default: false }) private disabled!: boolean;
+  @Prop({ default: false }) private hasOtherValue!: boolean;
   @Prop({ default: "" }) private otherValueRequiredMessage!: string;
   @Prop({ default: "" }) private noneValue!: string;
   @Prop() private name!: string;
