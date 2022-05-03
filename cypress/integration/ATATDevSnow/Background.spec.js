@@ -25,7 +25,7 @@ describe("Test suite: Background", () => {
         
   });
 
-  it("TC2: Background:Asserts on Do you have a current contract for this effort?", () => {
+  it("TC2: Current Contract: Asserts on Do you have a current contract for this effort?", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.textExists(common.header, " Do you have a current contract for this effort? ");
     //assert radio button options
@@ -33,8 +33,38 @@ describe("Test suite: Background", () => {
     cy.radioBtn(background.noRadioOpion, "false").not("[disabled]");
             
   });
+
+  it("TC3: Current Contract: Validations", () => {
+    cy.clickSideStepper(common.stepBackgroundLink, " Background ");
+    //validation message for the radio options
+    cy.findElement(background.yesRadioOption).focus().tab().tab().then(() => {
+      cy.checkErrorMessage(background.radioOptionError, "Please select an option");
+    });
+    cy.contractOption(background.yesRadioOption, "true");
+
+    //Navigates to the current contract substep
+    cy.textExists(common.header, "Let’s gather some details about your current contract"); 
+    
+    //validation error for incumbent text box
+    cy.verifyRequiredInput(background.incumbentTxtBox, background.incumbentError,
+      "Please enter the incumbent contractor’s name.");
+    
+    //validation error for contract number text box
+    cy.verifyRequiredInput(background.contractNoTxtBox, background.contractNoTxtError,
+      "Please enter your contract number.");
+    
+    //validation error for expiration date picker
+    cy.findElement(background.expirationDatePickerInputbox).should("be.visible").clear()
+      .click().blur({ force: true }).then(() => {
+        cy.checkErrorMessage(
+          background.expirationDatePickerError,
+          "Please enter your contract/order expiration date."
+        );
+      });
+    
+  });
   
-  it("TC3: Background: Option Yes: Asserts: Let’s gather some details about your current contract",
+  it("TC4: CurrentContract: Option Yes: Let’s gather some details about your current contract",
     () => {
       cy.clickSideStepper(common.stepBackgroundLink, " Background ");
       //assert radio button options    
@@ -67,7 +97,7 @@ describe("Test suite: Background", () => {
         
     });
 
-  it("TC4: Click on I don't have an existing contract button ", () => {
+  it("TC5: Click on I don't have an existing contract button ", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.contractOption(background.yesRadioOption, "true");
     cy.btnExists(background.noExistingContractBtn, " I don’t have an existing contract ")
@@ -77,10 +107,10 @@ describe("Test suite: Background", () => {
     
   });
         
-  it("TC5: Background: Option No", () => {
+  it("TC6: CurrentContract: Option No", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.contractOption(background.noRadioOpion, "false");
     
   });
-
+  
 });

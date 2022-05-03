@@ -1,21 +1,25 @@
 module.exports = {
   yesRadioOption:"#Radio_Yes",
   noRadioOpion: "#Radio_No",
-  activeRadioOption:"#currentContractOptions_radio_group_control .v-item--active",
+  activeRadioOption: "#currentContractOptions_radio_group_control .v-item--active",
+  radioOptionError: "#currentContractOptions_radio_group_control .field-error",
   currentContractOptionsTxt: ".copy-max-width p",
   incumbentLabel: "#IncumbentContractorName_text_field_label",
   incumbentTxtBox: "#IncumbentContractorName_text_field",
+  incumbentError:"#IncumbentContractorName_text_field_control .field-error",
   contractNoLabel: "#ContractNumber_text_field_label",
   contractNoTxtBox: "#ContractNumber_text_field",
+  contractNoTxtError: "#ContractNumber_text_field_control .field-error",
   taskDeliveryOrderNoLabel: "#TaskDeliveryOrderNumber_text_field_label",
   taskDeliveryOrderNoTxtBox: "#TaskDeliveryOrderNumber_text_field",
   expirationDatePickerLabel: "#ExpirationDatePickerLabel",
   expirationDatePickerInputbox: "#ExpirationDatePickerTextField",
+  expirationDatePickerError:"#ExpirationDatePickerContainer.atat-date-picker .field-error",
   expirationDatePickerIcon: "#ExpirationDatePickerButtonIcon",
   calendarHeader: "div.accent--text",
   navigateCalendar: ".v-date-picker-header i",
   navigateNextMonth: "button[aria-label='Next month']",
   selectDate:".v-date-picker-table button:not(.v-btn--disabled)",
-  noExistingContractBtn: "#NoExistingContract"  
+  noExistingContractBtn: "#NoExistingContract" , 
 
 }
