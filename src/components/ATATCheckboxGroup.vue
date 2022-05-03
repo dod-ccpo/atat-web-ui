@@ -7,7 +7,7 @@
       :class="[
         card ? '_checkbox-card' : '_checkbox',
         { 'flex-column _has-other': item.value === otherValue },
-        { '_other-selected': showOtherTextarea(item.label) }
+        { '_other-selected': showOtherTextarea(item.value) }
       ]"
       :key="item.value"
       :label="item.label"
@@ -34,10 +34,10 @@
           ></div>
         </div>
       </template>
-      <template v-slot:append v-if="showOtherTextarea(item.label)">
+      <template v-slot:append v-if="showOtherTextarea(item.value)">
         <ATATTextArea
           ref="atatTextArea"
-          v-show="showOtherTextarea(item.label)"
+          v-show="showOtherTextarea(item.value)"
           id="OtherEntry"
           class="width-100 ml-5 mb-6"
           :rows="3"
@@ -108,9 +108,9 @@ export default class ATATCheckboxGroup extends Vue {
     return getIdText(string);
   }
 
-  private showOtherTextarea(label: string): boolean {
+  private showOtherTextarea(value: string): boolean {
     return this.hasOtherValue 
-      && label === this.otherValue
+      && value === this.otherValue
       && this._selected.indexOf(this.otherValue) > -1
       && !this.hideOtherTextarea;
   }
