@@ -1,0 +1,37 @@
+.atat-file-upload,
+.atat-file-upload.v-input--is-focused.primary--text{
+    background-color: $offwhite;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23FBFCFD' stroke='%23544496' stroke-width='2' stroke-dasharray='10' stroke-dashoffset='2' stroke-linecap='square'/%3e%3c/svg%3e") !important;
+
+    // border: $base 1px solid;
+    color: $base !important;
+    // border-radius: 8px;
+    margin: 0px;
+    padding: 0px;
+    .v-input__control{
+      .v-input__slot{
+        &::before,
+        &::after{
+          border: none;
+          transition: none !important;
+        }
+        margin: 0px;
+        .v-input__prepend-inner{
+          margin: 0px;
+          transition: none !important;
+          width: 100%;
+          .content{
+            width: 100%;
+           
+          }
+        }
+      }
+    }
+  
+}
+
+//v-input atat-file-upload v-input--is-focused theme--light v-text-field v-text-field--is-booted v-file-input primary--text
+
+// .theme--light.v-text-field:not(.v-input--has-state):hover > .v-input__control > .v-input__slot:before {
+//   border-color: rgba(0, 0, 0, 0.87);
+// }
