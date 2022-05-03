@@ -102,8 +102,12 @@ export default class ATATTextArea extends Vue {
   }
 
   //@Events
-  private onBlur() : void{
+  private onBlur(e: FocusEvent) : void{
+    debugger;
+    const textarea = e.currentTarget as HTMLTextAreaElement;
+    const val = textarea.value;
     this.setErrorMessage();
+    this.$emit("blur", val);
   }
 }
 </script>
