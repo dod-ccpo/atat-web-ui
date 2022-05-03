@@ -64,7 +64,7 @@ describe("Test suite: Background", () => {
     
   });
   
-  it("TC4: CurrentContract: Option Yes: Let’s gather some details about your current contract",
+  it("TC4: Current Contract: Option Yes: Let’s gather some details about your current contract",
     () => {
       cy.clickSideStepper(common.stepBackgroundLink, " Background ");
       //assert radio button options    
@@ -107,7 +107,7 @@ describe("Test suite: Background", () => {
     
   });
         
-  it("TC6: CurrentContract: Option No", () => {
+  it("TC6: Current Contract: Option No", () => {
     cy.clickSideStepper(common.stepBackgroundLink, " Background ");
     cy.contractOption(background.noRadioOpion, "false");
     
