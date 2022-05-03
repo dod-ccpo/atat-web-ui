@@ -1,4 +1,4 @@
-import { bootstrapMockApis} from "../../../helpers";
+import { bootstrapMockApis,randomNumber,randomString} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import contact from "../../../selectors/contact.sel";
 import commonCorAcor from "../../../selectors/commonCorAcor.sel";
@@ -55,6 +55,7 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
       contact.phoneInputBox,
       "5124365211");
     //Click on Continue button
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
     cy.btnExists(common.continueBtn, " Continue ").click();
         
     //navigate to COR
@@ -95,6 +96,7 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
     cy.textExists(common.header, "Let’s confirm your contact information");        
         
     //Click on Continue button
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
     cy.btnExists(common.continueBtn, " Continue ").click();
         
     //navigate to COR
@@ -104,8 +106,8 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
       "test",
       " Manually enter my COR’s contact information ");
 
-  });    
-
+  });   
+  
   it("TC3: COR: Manually enter Contact information", () => {
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
 
@@ -139,6 +141,7 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
       contact.phoneInputBox,
       "5124365211");
     //Click on Continue button
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
     cy.btnExists(common.continueBtn, " Continue ").click();
 
     //navigate to COR
@@ -183,5 +186,103 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
     //Click on Continue button
     cy.btnExists(common.continueBtn, " Continue ").click();
   });      
+  
+  it("TC4: COR: Field Validations", () => {
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
+    //Navigates to Contact information
+    cy.textExists(common.header, "Let’s confirm your contact information");
+
+    //select radio button
+    cy.contactRoleRadioBtnOption(contact.contractorRadioBtn, "CONTRACTOR");
+    cy.findElement(common.wrap).scrollTo('bottom', { easing: 'linear' });
+    
+    //Click on Continue button
+    cy.btnExists(common.continueBtn, " Continue ").click();
+
+    //navigate to COR
+    cy.textExists(
+      common.header,
+      " Let’s gather info about your Contracting Officer’s Representative (COR) "
+    );
+    //Validation message for search
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.findElement(commonCorAcor.searchContactInput).focus()
+      .tab()
+      .wait(1000).then(() => {
+        cy.checkErrorMessage(
+          commonCorAcor.searchError,
+          "Please search for or manually enter your COR contact information."
+        );
+      });
+    cy.btnExists(commonCorAcor.contactFormToggle, " Manually enter your COR’s contact information ")
+      .click();
+    //Validation message for  COR’s role
+    cy.findElement(contact.militaryRadioBtn).tab().tab()
+      .then(() => {
+        cy.checkErrorMessage(commonCorAcor.contactRoleError, "Please enter your COR’s role.");
+      });
+    cy.findElement(contact.militaryRadioBtn).click({ force: true });
+    //Validation message for Service Agency
+    cy.findElement(commonCorAcor.serviceBranchDropdown).focus()
+      .tab().then(() => {
+        cy.checkErrorMessage(
+          commonCorAcor.serviceBranchError,
+          "Please select your COR’s service branch.");
+      })
+    cy.findElement(commonCorAcor.serviceBranchDropdown).click({ force: true });
+    cy.findElement(commonCorAcor.serviceBranchDropdownList).first().click();
+    //Validation message for Rank
+    cy.verifyRequiredDropdown(
+      commonCorAcor.rankInput,
+      commonCorAcor.rankError,
+      "Please select your COR’s rank."
+    );
+    // FirstName is blank
+    cy.verifyRequiredInput(
+      contact.fNameTxtBox,
+      contact.fNameError,
+      "Please enter your COR’s first name."
+    );
+    //LastName is blank
+    cy.verifyRequiredInput(
+      contact.lNameTxtBox,
+      contact.lNameError,
+      "Please enter your COR’s last name."
+    );
+    //Phone Number field is blank
+    cy.findElement(contact.lNameTxtBox).tab().tab().tab().tab().then(() => {
+      cy.checkErrorMessage(contact.phoneError, "Please enter your COR’s phone number");
+    });
+    //US phone Number is not in standard format
+    const phoneNumber = randomNumber(8)
+    cy.findElement(contact.lNameTxtBox).tab().tab().tab().type(phoneNumber)
+      .focus().blur({ force: true })
+      .then(() => {
+        cy.checkErrorMessage(
+          contact.phoneError,
+          "Please enter a number using the format for  United States (e.g., 999-999-9999).");
+      });
+    //email address is blank
+    cy.verifyRequiredInput(
+      commonCorAcor.emailTxtBox,
+      commonCorAcor.emailError,
+      "Please enter your COR’s email address."
+    );
+    //email in standard email format
+    const email = randomString(5) + "@test.com"
+    cy.findElement(commonCorAcor.emailTxtBox).should("be.visible").clear()
+      .type(email).blur({ force: true }).then(() => {
+        cy.checkErrorMessage(
+          commonCorAcor.emailError,
+          "Please use your .mil or .gov email address."
+        );
+      });
+    //DoDAAC field is blank 
+    cy.verifyRequiredInput(
+      commonCorAcor.dodaacTxtBox,
+      commonCorAcor.dodaacError,
+      "Please enter your COR’s 6-character DoDAAC."
+    );
+  });
 });      
