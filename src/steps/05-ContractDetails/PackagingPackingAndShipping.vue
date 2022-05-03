@@ -22,6 +22,8 @@
             :value.sync="selectedPackagingEtcOptions"
             :hasOtherValue="true"
             :otherValue.sync="otherValue"
+            :otherValueRequiredMessage="otherValueRequiredMessage"
+            :noneValue="noneApplyValue"
             :items="checkboxItems"
             name="checkboxes"
             :card="false"
@@ -46,6 +48,7 @@ import { Checkbox } from "../../../types/Global";
     ATATCheckboxGroup,
   }
 })
+
 export default class PackagingPackingAndShipping extends Vue {
   @Watch("selectedPackagingEtcOptions")
   protected selectedPackagingEtcChanged(newVal: string[]): void {
@@ -68,6 +71,9 @@ export default class PackagingPackingAndShipping extends Vue {
   public prevSelectedPackagingEtcOptions: string[] = [];
 
   public otherValue = "";
+  public otherValueRequiredMessage 
+    = "Please enter your packaging, packing and shipping instructions."
+
   public noneApplyValue = "None Apply";
   private checkboxItems: Checkbox[] = [
     {
@@ -89,10 +95,11 @@ export default class PackagingPackingAndShipping extends Vue {
     },
     {
       id: "NoneApply",
-      label: "None of these apply to my acquisition",
+      label: "None of these apply to my acquisition.",
       value: this.noneApplyValue,
       description: "",
-    },
+    },    
+
     
   ];
 
