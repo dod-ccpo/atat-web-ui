@@ -112,6 +112,19 @@ Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
   cy.findElement(selector).should("contain.text", errorMessage);  
 });
 
+Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,errorMessage) => {
+  cy.findElement(textboxSelector).should("be.visible").clear()
+    .focus().blur({ force: true }).then(() => {
+      cy.checkErrorMessage(errorSelector, errorMessage);
+    }); 
+});
+
+Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
+  cy.findElement(textboxSelector).focus().tab().then(() => {
+    cy.checkErrorMessage(errorSelector, errorMessage);
+  })
+});
+
 Cypress.Commands.add("selectCheckBox", (selector,value) => {
   cy.findElement(selector)
     .should("have.value", value);
