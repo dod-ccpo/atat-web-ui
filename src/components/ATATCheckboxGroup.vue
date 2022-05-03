@@ -110,12 +110,13 @@ export default class ATATCheckboxGroup extends Vue {
 
   private showOtherTextarea(label: string): boolean {
     return this.hasOtherValue 
-      && label === 'Other'
+      && label === this.otherValue
       && this._selected.indexOf(this.otherValue) > -1
       && !this.hideOtherTextarea;
   }
 
   private hideOtherTextarea = false;
+
   private checkBoxClicked(value: string): void {
     if (value === this.noneValue) {
       this.validateOtherOnBlur = false;

@@ -72,10 +72,10 @@ export default class PackagingPackingAndShipping extends Vue {
   public prevSelectedPackagingEtcOptions: string[] = [];
 
   public otherValueEntered = "";
-  public otherValue = "OTHER"
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."
 
+  public otherValue = "OTHER";
   public noneApplyValue = "NONE";
   private checkboxItems: Checkbox[] = [
     {
