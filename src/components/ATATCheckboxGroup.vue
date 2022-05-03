@@ -6,7 +6,7 @@
       :id="'Checkbox_' + getIdText(item.id)"
       :class="[
         card ? '_checkbox-card' : '_checkbox',
-        { 'flex-column _has-other': item.label === 'Other' },
+        { 'flex-column _has-other': item.value === otherValue },
         { '_other-selected': showOtherTextarea(item.label) }
       ]"
       :key="item.value"
@@ -17,14 +17,13 @@
       :disabled="disabled"
       @mousedown="checkBoxClicked(item.value)"
     >
-      <!--  -->
-      <template v-if="card || item.label === 'Other' " v-slot:label>
+      <template v-if="card || item.value === otherValue" v-slot:label>
         <div class="d-flex flex-column width-100" tabindex="0">
           <div 
             v-if="item.label" 
             :class="[
               {'card-label': item.label}, 
-              {'mb-0': item.label === 'Other'}
+              {'mb-0': item.label === otherValue }
             ]"
           >
             {{ item.label }}
@@ -43,7 +42,7 @@
           class="width-100 ml-5 mb-6"
           :rows="3"
           :validateItOnBlur="validateOtherOnBlur"
-          :value.sync="_otherValue"
+          :value.sync="_otherValueEntered"
           :rules="textareaRequiredRule"
         />
       </template>
@@ -70,7 +69,7 @@ import { getIdText } from "@/helpers";
 export default class ATATCheckboxGroup extends Vue {
   // props
   @PropSync("value") private _selected!: string[];
-  @PropSync("otherValue") private _otherValue!: string;
+  @PropSync("otherValueEntered") private _otherValueEntered!: string;
 
   @Prop({ default: [""], required: true }) private items!: Checkbox[];
   @Prop({ default: false }) private card!: boolean;
@@ -79,6 +78,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private hasOtherValue!: boolean;
   @Prop({ default: "" }) private otherValueRequiredMessage!: string;
   @Prop({ default: "" }) private noneValue!: string;
+  @Prop({ default: "" }) private otherValue!: string;
   @Prop() private name!: string;
 
   // data, methods, watchers, etc.
@@ -92,8 +92,8 @@ export default class ATATCheckboxGroup extends Vue {
 
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[]): void {
-    const otherIndex = newVal.indexOf("Other") > -1;
-    const otherPrevSelectedIndex = this.prevSelected.indexOf("Other") > -1;
+    const otherIndex = newVal.indexOf(this.otherValue) > -1;
+    const otherPrevSelectedIndex = this.prevSelected.indexOf(this.otherValue) > -1;
     if (otherIndex && !otherPrevSelectedIndex) {
       Vue.nextTick(() => {
         document.getElementById("OtherEntry_text_area")?.focus();
@@ -111,7 +111,7 @@ export default class ATATCheckboxGroup extends Vue {
   private showOtherTextarea(label: string): boolean {
     return this.hasOtherValue 
       && label === 'Other'
-      && this._selected.indexOf("Other") > -1
+      && this._selected.indexOf(this.otherValue) > -1
       && !this.hideOtherTextarea;
   }
 
@@ -120,11 +120,11 @@ export default class ATATCheckboxGroup extends Vue {
     if (value === this.noneValue) {
       this.validateOtherOnBlur = false;
       this.hideOtherTextarea = true;
-      if (this._selected.indexOf("Other") > -1) {
+      if (this._selected.indexOf(this.otherValue) > -1) {
         this._selected = [this.noneValue];
       }
     } else {
-      if (value === "Other" && this._selected.indexOf("Other") > -1) {
+      if (value === this.otherValue && this._selected.indexOf(this.otherValue) > -1) {
         this.validateOtherOnBlur = false;
         this.hideOtherTextarea = true;
       } else {

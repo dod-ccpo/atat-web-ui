@@ -21,7 +21,8 @@
             id="PackagingEtcCheckboxes"
             :value.sync="selectedPackagingEtcOptions"
             :hasOtherValue="true"
-            :otherValue.sync="otherValue"
+            :otherValue="otherValue"
+            :otherValueEntered.sync="otherValueEntered"
             :otherValueRequiredMessage="otherValueRequiredMessage"
             :noneValue="noneApplyValue"
             :items="checkboxItems"
@@ -58,7 +59,7 @@ export default class PackagingPackingAndShipping extends Vue {
       if (newVal.length > 1 && noneApplyIndex === -1) {
         // uncheck the other options
         this.selectedPackagingEtcOptions = [this.noneApplyValue];
-        this.otherValue = "";
+        this.otherValueEntered = "";
       } else if (newVal.length > 1) {
         // remove "None Apply"
         this.selectedPackagingEtcOptions.splice(noneApplyIndex, 1);
@@ -70,11 +71,12 @@ export default class PackagingPackingAndShipping extends Vue {
   public selectedPackagingEtcOptions: string[] = [];
   public prevSelectedPackagingEtcOptions: string[] = [];
 
-  public otherValue = "";
+  public otherValueEntered = "";
+  public otherValue = "OTHER"
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."
 
-  public noneApplyValue = "None Apply";
+  public noneApplyValue = "NONE";
   private checkboxItems: Checkbox[] = [
     {
       id: "YesCheckbox",
@@ -90,7 +92,7 @@ export default class PackagingPackingAndShipping extends Vue {
     {
       id: "OtherCheckbox",
       label: "Other",
-      value: "Other",
+      value: this.otherValue,
       description: "",
     },
     {
