@@ -64,11 +64,13 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import { SensitiveInformationDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -77,8 +79,44 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
   },
 })
 
-export default class AccessibilityReq extends Vue {
+export default class AccessibilityReq extends Mixins(SaveOnLeave) {
   private accessibilityReqs = "";
+  private get currentData(): SensitiveInformationDTO {
+    return {
+      accessibility_reqs_508: this.accessibilityReqs,
+    };
+  }
 
+  private get savedData(): SensitiveInformationDTO {
+    return {
+      accessibility_reqs_508: AcquisitionPackage.sensitiveInformation?.accessibility_reqs_508 ,
+    };
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    if (storeData) {
+      this.accessibilityReqs = storeData.accessibility_reqs_508 || '';
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
 }
 </script>
