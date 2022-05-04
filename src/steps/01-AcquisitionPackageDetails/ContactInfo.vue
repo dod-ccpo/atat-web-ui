@@ -167,7 +167,6 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ContactData from "@/store/contactData";
-import {PhoneCountries} from "@/data/regions";
 
 import {
   AutoCompleteItem,

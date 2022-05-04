@@ -97,7 +97,6 @@ import PersonCard from "./PersonCard.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ContactData from "@/store/contactData";
-import {PhoneCountries} from "@/data/regions";
 import { ContactDTO } from "@/api/models";
 import { Countries } from "@/components/ATATPhoneInput.vue";
 

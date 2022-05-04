@@ -22,7 +22,7 @@ export class OrganizationDataStore extends VuexModule {
   //has the store been initialized
   initialized = false;
   //keeps track of project title for global display
-  private service_agency_data: SystemChoiceDTO[] = [];
+  public service_agency_data: SystemChoiceDTO[] = [];
 
 
   @Mutation

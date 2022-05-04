@@ -183,6 +183,7 @@ import {ServiceOrAgencyData, DisaOrgData} from "@/data/serviceoragency";
 import {StateListData} from "@/data/regions";
 
 import { hasChanges } from "@/helpers";
+import OrganiationData from "@/store/organizationData";
 
 
 @Component({
@@ -253,7 +254,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   private selectedDisaOrg: SelectData = this.emptySelectData;
   private disaOrgData: SelectData[] = DisaOrgData;
   private selectedServiceOrAgency: SelectData = this.emptySelectData;
-  private serviceOrAgencyData: SelectData[] = ServiceOrAgencyData;
+  private serviceOrAgencyData: SelectData[] = [];
 
   private selectedStateCode: SelectData = this.emptySelectData;
   private stateCodeListData: SelectData[] = [
@@ -355,7 +356,19 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // methods
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadOrganization() as Record<string, string>;
+    const storeData = await AcquisitionPackage.loadOrganization() as Record<string, string>
+
+    this.serviceOrAgencyData = OrganiationData.service_agency_data.map(choice=> {
+
+      const {value} = choice;
+       
+      return {
+
+        text: choice.label,
+        value,
+      }
+
+    });
 
     if (storeData) {
       const keys: string[] = [
