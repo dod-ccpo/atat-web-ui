@@ -1,8 +1,10 @@
 /* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
-import api from "@/api";
 
+import api from "@/api";
+import ContactData from "@/store/contactData";
+import OrganiationData from "../organizationData";
 import {
   AcquisitionPackageDTO,
   RequirementsCostEstimateDTO,
@@ -262,6 +264,8 @@ export class AcquisitionPackageStore extends VuexModule {
     } else {
       try {
         const acquisitionPackage = await api.acquisitionPackageTable.create();
+        await ContactData.initialize();
+        await OrganiationData.initialize();
         if (acquisitionPackage) {
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());

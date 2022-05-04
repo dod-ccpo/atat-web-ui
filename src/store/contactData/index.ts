@@ -8,8 +8,9 @@ import {
 import rootStore from "../index";
 import { MilitaryRankDTO, SystemChoiceDTO } from "@/api/models";
 import api from "@/api";
+import {TABLENAME as ContactsTable} from "@/api/contacts";
 import { TABLENAME as MilitaryRanksTable } from "@/api/militaryRanks";
-import { AutoCompleteItem, AutoCompleteItemGroups, CountryObj } from "types/Global";
+import { AutoCompleteItem, AutoCompleteItemGroups,  } from "types/Global";
 
 const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
   if (a.grade.startsWith("O") && b.grade.startsWith("O")) {
@@ -33,9 +34,14 @@ const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
 })
 export class ContactDataStore extends VuexModule {
   private initialized = false;
-  public militaryRanks: MilitaryRankDTO[] = [];
   public branchChoices: SystemChoiceDTO[] = [];
+  public civilianGradeChoices :SystemChoiceDTO[] = [];
+  public militaryRanks: MilitaryRankDTO[] = [];
   public militaryAutoCompleteGroups: AutoCompleteItemGroups = {};
+  private roleChoices: SystemChoiceDTO[]= [];
+  private salutationChoices: SystemChoiceDTO[] = [];
+
+
 
 
   @Mutation
@@ -52,6 +58,17 @@ export class ContactDataStore extends VuexModule {
   public setBranches(value: SystemChoiceDTO[]): void {
     this.branchChoices = value;
   }
+
+  @Mutation
+  public setRoles(value: SystemChoiceDTO[]): void {
+    this.roleChoices = value;
+  }
+
+  @Mutation
+  public setCivilianGrades(value: SystemChoiceDTO[]): void {
+    this.civilianGradeChoices = value;
+  }
+
 
   @Mutation
   public setMilitaryAutoCompleteGroups(): void {
@@ -72,6 +89,11 @@ export class ContactDataStore extends VuexModule {
     });
     this.militaryAutoCompleteGroups = autoCompleteItemGroups;
   }
+  
+  @Mutation
+  public setContactSalutations(value: SystemChoiceDTO[]): void{
+    this.salutationChoices = value;
+  } 
 
   @Action({ rawError: true })
   public async ensureInitialized(): Promise<void> {
@@ -80,14 +102,59 @@ export class ContactDataStore extends VuexModule {
     }
   }
 
+  @Action({rawError: true})
+  private async getBranchChoices():Promise<void>
+  {
+    const branches = await api.systemChoices.getChoices(
+      MilitaryRanksTable,
+      "branch"
+    );
+    this.setBranches(branches);
+  }
+
+  @Action({rawError: true})
+  private async getCivilianGradeChoices():Promise<void>
+  {
+    const grades = await api.systemChoices.getChoices(
+      ContactsTable,
+      "grade_civ"
+    );
+    this.setCivilianGrades(grades);
+  }
+
+
+  @Action({rawError: true})
+  private async getContactRoleChoices():Promise<void>
+  {
+    const contactRoles = await api.systemChoices.getChoices(
+      ContactsTable,
+      "role"
+    );
+    
+    this.setRoles(contactRoles);
+  }
+  
+
+  
+  @Action({rawError: true})
+  private async getContactSalutationChoices():Promise<void>
+  {
+    const salutations = await api.systemChoices.getChoices(
+      ContactsTable,
+      "salutation"
+    );
+    this.setContactSalutations(salutations);
+  }
+
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
-      const branches = await api.systemChoices.getChoices(
-        MilitaryRanksTable,
-        "branch"
-      );
-      this.setBranches(branches);
+     
+      await Promise.all([this.getBranchChoices(), 
+        this.getCivilianGradeChoices(), 
+        this.getContactRoleChoices(),
+        this.getContactSalutationChoices()]);
+    
       const ranks = await api.militaryRankTable.all();
       this.setRanks(ranks);
       this.setMilitaryAutoCompleteGroups();
