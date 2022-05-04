@@ -36,6 +36,7 @@
       :counter="counter"
       @blur="onBlur"
       @update:error="setErrorMessage"
+      autocomplete="off"
     >
     </v-text-field>
     <ATATErrorValidation :errorMessages="errorMessages" />
