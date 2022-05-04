@@ -1,11 +1,15 @@
+#file-upload-base{
+  width: 740px;
+  color: $base !important;
+  margin: 0px;
+  padding: 0px;
+  // border: 1px solid $base-light !important;
+}
+
 .atat-file-upload,
 .atat-file-upload.v-input--is-focused.primary--text{
     background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25'  height='100%25' fill='%23fbfbfb' stroke='%23544496' stroke-width='2' stroke-dasharray='10' stroke-dashoffset='2' stroke-linecap='square'/%3e%3c/svg%3e") !important;
-    width: 740px;
-    border-radius: 8px;
-    color: $base !important;
-    margin: 0px;
-    padding: 0px;
+    @extend #file-upload-base; 
     .v-input__control{
       .v-input__slot{
         &::before,
@@ -20,7 +24,6 @@
           width: 100%;
           .content{
             width: 100%;
-           
           }
         }
       }
@@ -29,4 +32,14 @@
 
 .v-text-field--is-hovering {
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect rx='8' ry='8' width='100%25' height='100%25' fill='%235444961a' stroke='%23544496' stroke-width='4' stroke-dasharray='4' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e") !important;
+}
+
+.file-loading-div{
+  @extend #file-upload-base;
+  border-radius: 8px;
+  background-color: $offwhite !important;
+
+  .pdf-file-icon{
+
+  }
 }
