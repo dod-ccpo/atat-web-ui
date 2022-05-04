@@ -107,6 +107,8 @@ export interface SensitiveInformationDTO extends BaseTableDTO {
   foia_zip_postal_code?: string;
   foia_country?: string;
   section_508_sufficient?: string;
+  accessibility_reqs_508?: string;
+
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
