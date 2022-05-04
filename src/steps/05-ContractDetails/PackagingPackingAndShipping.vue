@@ -67,7 +67,7 @@ export default class PackagingPackingAndShipping extends Vue {
         moved to and from a defined, secured off-site storage location. The 
         contractor shall provide flexibility in courier pick-up and delivery 
         time.`,
-      value: "Yes", // EJY - what should this value be? the entire string?
+      value: "Yes", // EJY - when saving to SNOW, check what the value should be
       description: "",
     },
     {
