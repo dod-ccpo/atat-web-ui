@@ -1,7 +1,9 @@
 
 <template>
   <div>
-    <ATATFileUpload id="FundingPlan"/>
+    <ATATFileUpload 
+    :validFileFormats="['xlsx', 'xls','pdf']"
+    id="FundingPlan"/>
   </div>
 </template>
 <script lang="ts">
