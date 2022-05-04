@@ -19,7 +19,7 @@
           </div>
           <ATATCheckboxGroup
             id="PackagingEtcCheckboxes"
-            :value.sync="selectedPackagingEtcOptions"
+            :value.sync="selectedOptions"
             :hasOtherValue="true"
             :otherValue="otherValue"
             :otherValueEntered.sync="otherValueEntered"
@@ -51,26 +51,7 @@ import { Checkbox } from "../../../types/Global";
 })
 
 export default class PackagingPackingAndShipping extends Vue {
-  @Watch("selectedPackagingEtcOptions")
-  protected selectedPackagingEtcChanged(newVal: string[]): void {
-    // EJY is any of this necessary?
-    if (newVal.indexOf(this.noneApplyValue) > -1) {
-      const noneApplyIndex = this.prevSelectedPackagingEtcOptions.indexOf(this.noneApplyValue);
-      if (newVal.length > 1 && noneApplyIndex === -1) {
-        // uncheck the other options
-        this.selectedPackagingEtcOptions = [this.noneApplyValue];
-        this.otherValueEntered = "";
-      } else if (newVal.length > 1) {
-        // remove "None Apply"
-        this.selectedPackagingEtcOptions.splice(noneApplyIndex, 1);
-      }
-    }
-    this.prevSelectedPackagingEtcOptions = this.selectedPackagingEtcOptions;
-  }
-
-  public selectedPackagingEtcOptions: string[] = [];
-  public prevSelectedPackagingEtcOptions: string[] = [];
-
+  public selectedOptions: string[] = [];
   public otherValueEntered = "";
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."

@@ -99,6 +99,16 @@ export default class ATATCheckboxGroup extends Vue {
         document.getElementById("OtherEntry_text_area")?.focus();
       });
     }
+    if (newVal.indexOf(this.noneValue) > -1) {
+      const noneApplyIndex = this.prevSelected.indexOf(this.noneValue);
+      if (newVal.length > 1 && noneApplyIndex === -1) {
+        // uncheck the other options
+        this._selected = [this.noneValue];
+      } else if (newVal.length > 1) {
+        // remove "None Apply"
+        this._selected.splice(noneApplyIndex, 1);
+      }
+    }
     Vue.nextTick(() => {
       this.prevSelected = [...this._selected];
     })
