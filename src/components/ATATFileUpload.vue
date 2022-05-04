@@ -52,7 +52,14 @@
       :v-else="isLoading === true">
         <v-card-title class="h2 pa-6">{{ fileLoadingDivTitle }}</v-card-title>
         <div class="v-flex align-center">
-          <ATATPDFIcon :height="72" :width="72" color="61686c" />
+          <ATATPDFIcon />
+
+          <br />
+          <ATATPDFIcon :height="40" />
+
+          <br />
+          <ATATPDFIcon :height="25" color="c60634" />
+
         </div>
     </v-card>
   </div>
