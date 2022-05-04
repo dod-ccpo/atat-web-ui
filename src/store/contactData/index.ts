@@ -38,8 +38,8 @@ export class ContactDataStore extends VuexModule {
   public civilianGradeChoices :SystemChoiceDTO[] = [];
   public militaryRanks: MilitaryRankDTO[] = [];
   public militaryAutoCompleteGroups: AutoCompleteItemGroups = {};
-  private roleChoices: SystemChoiceDTO[]= [];
-  private salutationChoices: SystemChoiceDTO[] = [];
+  public roleChoices: SystemChoiceDTO[]= [];
+  public salutationChoices: SystemChoiceDTO[] = [];
 
 
 
@@ -175,6 +175,7 @@ export class ContactDataStore extends VuexModule {
   public GetMilitaryRank(rankComponentId: string):MilitaryRankDTO | undefined {
     return this.militaryRanks.find(rank=> rank.sys_id === rankComponentId);
   }
+
 }
 
 const ContactData = getModule(ContactDataStore);
