@@ -1,87 +1,94 @@
 <template>
-  <div class="pt-0">
-    <div class="max-width-640">
-      <ATATAutoComplete
-        id="SearchContact"
-        :class="haveSelectedContact ? 'mb-2' : 'mb-0'"
-        :label-sr-only="true"
-        :label="'Search for your ' + corOrAcor"
-        titleKey="fullName"
-        subtitleKey="email"
-        :items="contactList"
-        :searchFields="['fullName', 'email']"
-        :selectedItem.sync="selectedContact"
-        placeholder="Search by name or email"
-        icon="search"
-        :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
-        @autocompleteInputUpdate="autocompleteInputUpdate"
+  <v-form ref="form" lazy-validation>
+    <div class="pt-0">
+      <div class="max-width-640">
+        <ATATAutoComplete
+          id="SearchContact"
+          :class="haveSelectedContact ? 'mb-10' : 'mb-8'"
+          :label-sr-only="true"
+          :label="'Search for your ' + corOrAcor"
+          titleKey="fullName"
+          subtitleKey="email"
+          :items="contactList"
+          :searchFields="['fullName', 'email']"
+          :selectedItem.sync="selectedContact"
+          placeholder="Search by name or email"
+          icon="search"
+          :noResultsText="'Manually enter my ' + corOrAcor + '’s contact information'"
+          :rules="[
+            $validators
+            .required('Please search for or manually enter' +
+             ' your ' + corOrAcor + ' contact information.')
+            ]"
+          @autocompleteInputUpdate="autocompleteInputUpdate"
+        />
+
+        <PersonCard
+          v-if="haveSelectedContact"
+          :isACOR="isACOR"
+          :selectedContact.sync="selectedContact"
+          :showContactForm.sync="showContactForm"
+          id="SelectedContactCard"
+        />
+      </div>
+
+      <a
+        id="ContactFormToggle"
+        v-show="!haveSelectedContact"
+        role="button"
+        class="expandable-content-opener"
+        :class="showContactForm ? 'open' : 'closed'"
+        tabindex="0"
+        @click="toggleContactForm"
+      >
+        Manually enter your {{ corOrAcor }}’s contact information
+      </a>
+
+      <ContactInfoForm
+        :corOrAcor="corOrAcor"
+        v-show="showContactForm && !haveSelectedContact"
+        :showAccessRadioButtons.sync="showAccessRadioButtons"
+        :selectedRole.sync="selectedRole"
+        :selectedBranch.sync="selectedBranch"
+        :selectedRank.sync="selectedRank"
+        :selectedSalutation.sync="selectedSalutation"
+        :firstName.sync="firstName"
+        :middleName.sync="middleName"
+        :lastName.sync="lastName"
+        :suffix.sync="suffix"
+        :email.sync="email"
+        :phone.sync="phone"
+        :selectedPhoneCountry.sync="selectedPhoneCountry"
+        :phoneExt.sync="phoneExt"
+        :dodaac.sync="dodaac"
+
+        :contactRoles="contactRoles"
+        :branchData="branchData"
+        :selectedBranchRanksData="selectedBranchRanksData"
       />
 
-      <PersonCard 
-        v-if="haveSelectedContact" 
-        :isACOR="isACOR"
-        :selectedContact.sync="selectedContact"
-        :showContactForm.sync="showContactForm"
-        id="SelectedContactCard"
-      />
+      <section
+        id="AccessRadioButtons"
+        v-show="(showContactForm && showAccessRadioButtons) || haveSelectedContact"
+      >
+        <hr/>
+        <ATATRadioGroup
+          legend="Does this individual need access to help you create this
+            acquisition package in ATAT?"
+          id="AccessToEdit"
+          :items="accessToEditOptions"
+          :value.sync="selectedAccessToEdit"
+        />
+      </section>
     </div>
-
-    <a 
-      id="ContactFormToggle"
-      v-show="!haveSelectedContact"
-      role="button" 
-      class="expandable-content-opener"
-      :class="showContactForm ? 'open' : 'closed'"
-      tabindex="0"
-      @click="toggleContactForm"
-    >
-      Manually enter your {{ corOrAcor }}’s contact information
-    </a>
-
-    <ContactInfoForm 
-      :corOrAcor="corOrAcor"
-      v-show="showContactForm && !haveSelectedContact"
-      :showAccessRadioButtons.sync="showAccessRadioButtons"
-      :selectedRole.sync="selectedRole"
-      :selectedBranch.sync="selectedBranch"
-      :selectedRank.sync="selectedRank"
-      :selectedSalutation.sync="selectedSalutation"
-      :firstName.sync="firstName"
-      :middleName.sync="middleName"
-      :lastName.sync="lastName"
-      :suffix.sync="suffix"
-      :email.sync="email"
-      :phone.sync="phone"
-      :selectedPhoneCountry.sync="selectedPhoneCountry"
-      :phoneExt.sync="phoneExt"
-      :dodaac.sync="dodaac"
-
-      :contactRoles="contactRoles"
-      :branchData="branchData"
-      :selectedBranchRanksData="selectedBranchRanksData"
-    />
-    
-    <section 
-      id="AccessRadioButtons" 
-      v-show="(showContactForm && showAccessRadioButtons) || haveSelectedContact"
-    >
-      <hr />
-      <ATATRadioGroup
-        legend="Does this individual need access to help you create 
-        this acquisition package in ATAT?"
-        id="AccessToEdit"
-        :items="accessToEditOptions"
-        :value.sync="selectedAccessToEdit"
-      />
-    </section>
-  </div>
+  </v-form>
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
 
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import parsePhoneNumber, {CountryCode} from 'libphonenumber-js'
+import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -92,13 +99,14 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import ContactData from "@/store/contactData";
 import {PhoneCountries} from "@/data/regions";
 import { ContactDTO } from "@/api/models";
+import { Countries } from "@/components/ATATPhoneInput.vue";
 
-import { 
-  AutoCompleteItem, 
+import {
+  AutoCompleteItem,
   AutoCompleteItemGroups,
   CorAcorSelectData,
-  CountryObj, 
-  RadioButton, 
+  CountryObj,
+  RadioButton,
   RankData,
   SelectData,
 } from "../../../../types/Global";
@@ -120,15 +128,28 @@ export default class COR_ACOR extends Vue {
   @PropSync("savedContactData") private _savedContactData!: ContactDTO;
 
   // computed
-  
+
   get corOrAcor(): string {
     return this.isACOR ? "ACOR" : "COR";
   }
 
   get haveSelectedContact(): boolean {
-    return this.selectedContact 
+    return this.selectedContact
       && Object.prototype.hasOwnProperty.call(this.selectedContact, "firstName")
       && this.selectedContact.firstName !== "";
+  }
+
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.form as Vue & { validate: () => boolean };
+  }
+
+  public async validateForm(): Promise<boolean> {
+    let valid = false;
+
+    await this.$nextTick(() => {
+      valid = this.Form.validate();
+    });
+    return valid;
   }
 
   // data
@@ -148,7 +169,7 @@ export default class COR_ACOR extends Vue {
       value: "false",
     },
   ];
-  
+
   public selectedContact: CorAcorSelectData = {
     id: "",
     firstName: "",
@@ -190,7 +211,7 @@ export default class COR_ACOR extends Vue {
   ];
 
   private branchData: SelectData[] = [];
-  private selectedBranch: SelectData = { text: "", value: "" };
+  private selectedBranch: SelectData = {text: "", value: ""};
   private selectedRank: RankData = {
     grade: "",
     name: "",
@@ -228,21 +249,41 @@ export default class COR_ACOR extends Vue {
   private phone = "";
   private phoneExt = "";
   private dodaac = "";
-  private selectedPhoneCountry: CountryObj 
-    = { name: '', countryCode: '', abbreviation: '', active: false };
+  private selectedPhoneCountry: CountryObj = {
+    "name": "United States",
+    "countryCode": "+1",
+    "abbreviation": "us",
+    "active": true,
+    "mask": ["999-999-9999"]
+  };
 
   public get currentData(): ContactDTO {
-    const countryCode = this.selectedPhoneCountry 
-      ? this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode 
+    const countryCode = this.selectedPhoneCountry
+      ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
-    const phone = this.phone
-      ? parsePhoneNumber(this.phone, countryCode)?.number.toString() 
+
+    const parsedPhone = parsePhoneNumber(
+      this.phone,
+      countryCode
+    );
+
+    let phone = this.phone
+      ? parsePhoneNumber(
+        this.phone,
+        countryCode
+      )?.format("INTERNATIONAL")
       : "";
+
+    if (countryCode) {
+      const asyoutype= new AsYouType(countryCode);
+      const formatted = asyoutype.input(this.phone);
+      phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
+    }
 
     return {
       type: this.corOrAcor, // COR, ACOR
       role: this.selectedRole, // Military, Civilian
-      rank_components: this.selectedRank.sysId,
+      rank_components: this.selectedRank && this.selectedRank.sysId,
       salutation: this.selectedSalutation,
       first_name: this.firstName,
       middle_name: this.middleName,
@@ -253,7 +294,7 @@ export default class COR_ACOR extends Vue {
       phone_extension: this.phoneExt,
       email: this.email,
       grade_civ: "", // not used on COR/ACOR form
-      dodaac: this.dodaac,  
+      dodaac: this.dodaac,
       can_access_package: this.selectedAccessToEdit,
       manually_entered: this.showContactForm ? "true" : "false",
     };
@@ -276,7 +317,7 @@ export default class COR_ACOR extends Vue {
     if (newRole === "MILITARY") {
       this.selectedBranch = AcquisitionPackage.selectedContactBranch;
     } else {
-      this.selectedBranch = { text: "", value: "" };
+      this.selectedBranch = {text: "", value: ""};
     }
   }
 
@@ -298,7 +339,7 @@ export default class COR_ACOR extends Vue {
       this.lastName = newSelectedContact.lastName;
       this.email = newSelectedContact.email;
       // TODO phone needs refinement in next milestone when not using dummy data
-      this.phone = "+1" + newSelectedContact.phone; 
+      this.phone = "+1" + newSelectedContact.phone;
       // TODO set all data i.e., fields in currentData/ContactDTO with real data when avl.
     } else {
       this.selectedRole = "";
@@ -311,10 +352,10 @@ export default class COR_ACOR extends Vue {
       this.phone = "";
       this.phoneExt = "";
       this.dodaac = "";
-      this.selectedPhoneCountry 
-        = { name: '', countryCode: '', abbreviation: '', active: false };
-      this.selectedBranch = { text: "", value: "" };
-      this.selectedRank = { grade: "", name: "", sysId: "" };
+      this.selectedPhoneCountry
+        = {name: '', countryCode: '', abbreviation: '', active: false};
+      this.selectedBranch = {text: "", value: ""};
+      this.selectedRank = {grade: "", name: "", sysId: ""};
       this.selectedAccessToEdit = "";
     }
   }
@@ -322,14 +363,14 @@ export default class COR_ACOR extends Vue {
   // methods
 
   private setShowAccessRadioButtons(): void {
-    this.showAccessRadioButtons = this.selectedRole === "CIVILIAN" 
-      || this.selectedBranch.value !== "";
+    this.showAccessRadioButtons = this.selectedRole === "CIVILIAN"
+      || (this.selectedBranch && this.selectedBranch.value !== "");
   }
 
   private setRankData(): void {
-    if (this.selectedBranch.value) {
+    if (this.selectedBranch !== null) {
       this.selectedBranchRanksData =
-        this.branchRanksData[this.selectedBranch.value];
+        this.branchRanksData[this.selectedBranch.value || ''];
     }
   }
 
@@ -345,7 +386,7 @@ export default class COR_ACOR extends Vue {
     const branches = await ContactData.LoadMilitaryBranches();
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
-      const { value } = choice;
+      const {value} = choice;
       return {
         text,
         value,
@@ -361,23 +402,23 @@ export default class COR_ACOR extends Vue {
       this.selectedRole = storeData.role;
 
       if (this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value) {
-        const rankComp = (storeData.rank_components as unknown) as { link: string, value: string};
-        if(rankComp) {
+        const rankComp = (storeData.rank_components as unknown) as { link: string, value: string };
+        if (rankComp) {
           this.savedData.rank_components = rankComp.value;
         }
-        
-        const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
+
+        const emptyBranch: { text: ""; value: "" } = {text: "", value: ""};
 
         //retrieve selected Military Rank from rank component
         const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
-        
+
         this.selectedBranch = rank !== undefined
           ? this.branchData.find((branch) => branch.value === rank.branch) || emptyBranch
           : emptyBranch;
 
         this.selectedRank = rank !== undefined
-          ? { name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || "" }
-          : { grade: "", name: "", sysId: "" };
+          ? {name: rank.name || "", grade: rank.grade || "", sysId: rank.sys_id || ""}
+          : {grade: "", name: "", sysId: ""};
       }
 
       this.selectedSalutation = storeData.salutation;
@@ -386,19 +427,28 @@ export default class COR_ACOR extends Vue {
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
       this.suffix = storeData.suffix;
-      
+
       this.email = storeData.email;
 
       if (storeData.phone.length > 0) {
         const parsedPhone = parsePhoneNumber(storeData.phone);
-        const country = PhoneCountries.find(country => 
-          country.countryCode === `+${parsedPhone?.countryCallingCode}`);
+        const country = Countries.find(
+          (country) =>
+            country.countryCode === `+${parsedPhone?.countryCallingCode}`
+        );
+        this.selectedPhoneCountry = country || {
+          name: "",
+          countryCode: "",
+          abbreviation: "",
+          active: false,
+        };
 
-        this.selectedPhoneCountry 
-          = country || { name: '', countryCode: '', abbreviation: '', active: false };
-        this.phone = parsedPhone?.nationalNumber.toString() ||  "";
-        this.savedData.phone = parsedPhone?.number.toString() ||  "";
+        const phoneNumber = parsedPhone ? parsedPhone?.
+          nationalNumber.toString().replace(/\D/g,'') : "";
+        this.phone = phoneNumber;
+        this.savedData.phone = phoneNumber;
       }
+
       this.phoneExt = storeData.phone_extension;
       this.dodaac = storeData.dodaac;
       this.selectedAccessToEdit = storeData.can_access_package;

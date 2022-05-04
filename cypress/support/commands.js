@@ -112,6 +112,19 @@ Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
   cy.findElement(selector).should("contain.text", errorMessage);  
 });
 
+Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,errorMessage) => {
+  cy.findElement(textboxSelector).should("be.visible").clear()
+    .focus().blur({ force: true }).then(() => {
+      cy.checkErrorMessage(errorSelector, errorMessage);
+    }); 
+});
+
+Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
+  cy.findElement(textboxSelector).focus().tab().then(() => {
+    cy.checkErrorMessage(errorSelector, errorMessage);
+  })
+});
+
 Cypress.Commands.add("selectCheckBox", (selector,value) => {
   cy.findElement(selector)
     .should("have.value", value);
@@ -233,7 +246,7 @@ Cypress.Commands.add("selectTypeOfMailingAddress", (radioSelector, value) => {
       if (selectedOption === "radio_button_checkedForeign address") {
         cy.textExists(org.cityLabel, " City ");
         cy.textExists(org.stateProvinceLabel, " State or Province ​");
-        cy.textExists(org.zipCodeLabel, " Postal code ");
+        cy.textExists(org.postalCodeLabel, " Postal code ");
         cy.textExists(org.countryLabel, " Country ");
       };
     });            
@@ -267,7 +280,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
       if (selectedOption === "radio_button_checkedForeign address") {  
         cy.enterTextInTextField(org.cityTxtBox, orgAddress.city);
         cy.enterTextInTextField(org.stateProvinceTxtBox, orgAddress.stateProvince);
-        cy.enterTextInTextField(org.zipCodeTxtBox, orgAddress.zipCode);
+        cy.enterTextInTextField(org.postalCodeTxtBox, orgAddress.zipCode);
         cy.autoCompleteSelection(
           org.countryInput,
           orgAddress.inputCountryName,
