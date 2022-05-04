@@ -23,6 +23,7 @@ export class OrganizationDataStore extends VuexModule {
   initialized = false;
   //keeps track of project title for global display
   public service_agency_data: SystemChoiceDTO[] = [];
+  public disa_org_data: SystemChoiceDTO[] = [];
 
 
   @Mutation
@@ -47,12 +48,32 @@ export class OrganizationDataStore extends VuexModule {
     this.setServiceAgencyData(service_agency_data);
   }
 
+  @Mutation
+  public setDisOrgData(value: SystemChoiceDTO[]): void {
+
+    this.disa_org_data = value;
+
+  }
+
+  @Action({rawError: true})
+  private async getDisaOrgData():Promise<void>
+  {
+    const disa_org_data = await api.systemChoices.getChoices(
+      OrganizationTable,
+      "disa_organization"
+    );
+    this.setDisOrgData(disa_org_data);
+  }
+
+
+
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
 
       await this.getServiceAgencyData();
+      await this.getDisaOrgData();
       this.setInitialized(true);
         
     } catch (error) {

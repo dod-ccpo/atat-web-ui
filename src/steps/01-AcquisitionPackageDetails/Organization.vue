@@ -169,6 +169,7 @@
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import {convertSystemChoiceToSelect} from "@/helpers";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -179,7 +180,6 @@ import { RadioButton, SelectData } from "types/Global";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
-import {ServiceOrAgencyData, DisaOrgData} from "@/data/serviceoragency";
 import {StateListData} from "@/data/regions";
 
 import { hasChanges } from "@/helpers";
@@ -252,7 +252,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   ];
 
   private selectedDisaOrg: SelectData = this.emptySelectData;
-  private disaOrgData: SelectData[] = DisaOrgData;
+  private disaOrgData: SelectData[] = [];
   private selectedServiceOrAgency: SelectData = this.emptySelectData;
   private serviceOrAgencyData: SelectData[] = [];
 
@@ -357,18 +357,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadOrganization() as Record<string, string>
-
-    this.serviceOrAgencyData = OrganiationData.service_agency_data.map(choice=> {
-
-      const {value} = choice;
-       
-      return {
-
-        text: choice.label,
-        value,
-      }
-
-    });
+    this.serviceOrAgencyData = convertSystemChoiceToSelect(OrganiationData.service_agency_data);
+    this.disaOrgData = convertSystemChoiceToSelect(OrganiationData.disa_org_data);
 
     if (storeData) {
       const keys: string[] = [

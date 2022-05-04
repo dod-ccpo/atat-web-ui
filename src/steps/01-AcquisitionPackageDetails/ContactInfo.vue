@@ -157,6 +157,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
+import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -380,20 +381,12 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
 
     this.gradeData = ContactData.civilianGradeChoices.map(choice=> {
       return {
-
         label: choice.label,
-        grade: choice.value,
+        grade: choice.value
       }
     });
 
-    this.salutationData = ContactData.salutationChoices.map(choice=> {
-      const {value} = choice;
-      return {
-
-        text: choice.label,
-        value,
-      }
-    });
+    this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
 
     const storeData = await AcquisitionPackage.loadContactInfo("Mission Owner");
     this.savedData = storeData;
