@@ -39,7 +39,22 @@
 }
 
 .file-loading-div{
-  @extend #file-upload-base;
-  border-radius: 8px;
+  @extend #file-upload-base; 
+  padding:  24px 0 26px 32px;
+  border-radius: 8px !important;
   background-color: $offwhite !important;
+  border: 1px solid $base-light !important;
+
+  .content-div{
+    height: 46px;
+    .filename-and-progress-bar-div{
+      height: 46px;
+      .v-progress-linear{
+        width: 464px;
+        .v-progress-linear__background{
+          background-color: $primary !important;
+        }
+      }
+    }
+  }
 }
