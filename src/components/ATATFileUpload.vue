@@ -13,19 +13,23 @@
       :truncate-length="truncateLength"
       :clearable="false"
       @change="fileUploadChanged"
+      :hide-details="true"       
     >
       <template v-slot:prepend-inner>
         <div class="content text-center">
-          <v-icon class="icon-60 mt-10 mb-5">upload_file</v-icon>
+          <v-icon class="icon-59 mt-9 mb-4">upload_file</v-icon>
           <h2>Drag and Drop</h2>
-          <p class="mt-1 mb-4 d-flex justify-center">your file here or 
-            <v-btn 
-              class="link-button inline-text" 
-              @mousedown="fileUploadClicked">
-                browse to upload
-              </v-btn>
+          <p class="mt-1 mb-3 d-flex justify-center text-base-darkest ">your file here or 
+              <a
+                role="button"
+                id="BrowseToUpload"
+                class="_text-link ml-1" 
+                @mousedown="fileUploadClicked"
+              >
+                  browse to upload
+            </a>
           </p>
-          <p class="mb-9">Use a PDF file with a max size of 10 MB.</p>
+          <p class="mt-6 mb-9">Use a PDF file with a max size of 10 MB.</p>
         </div>
       </template>
     </v-file-input>
@@ -39,7 +43,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATFileUpload extends Vue {
@@ -83,7 +87,6 @@ export default class ATATFileUpload extends Vue {
       //upload (eg. '2 files')
       const vuetifyFileUploadStatus = 
         document.getElementsByClassName("v-file-input__text")[0] as HTMLDivElement;
-      console.log(vuetifyFileUploadStatus);
       vuetifyFileUploadStatus.innerHTML = "";
     });
   }
@@ -131,7 +134,6 @@ export default class ATATFileUpload extends Vue {
    * 
    */
   private removeInvalidFiles(files: FileList): void {
-    debugger;
     this.uploadedFiles = Array.from(files || []).filter(
       (file)=>{
         const thisFileFormat = file.name.substring(file.name.lastIndexOf(".") + 1);
