@@ -1,4 +1,13 @@
+._checkbox, ._checkbox-card {
+  .v-label {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 ._checkbox {
+  margin-bottom: 16px;
+
   &.v-input--is-label-active {
     .v-icon {
       color: $primary !important;
