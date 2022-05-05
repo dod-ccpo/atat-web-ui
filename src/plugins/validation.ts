@@ -55,6 +55,7 @@ export class ValidationPlugin {
     message?: string
   ): ((v: string) => string | true | undefined) {
     message = message || "This field is required.";
+    debugger;
     return (v: string) => {
       if (typeof(v)==="object"){ // if typeof 'selectData(dropdown)' or string[]
         return v && Object.values(v).every((val)=> val !=="") || message;

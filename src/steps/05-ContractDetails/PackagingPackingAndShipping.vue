@@ -29,6 +29,10 @@
             name="checkboxes"
             :card="false"
             class="copy-max-width"
+            :rules="[
+              $validators.required('Please select an option.')
+            ]"
+
           />
         </v-col>
       </v-row>

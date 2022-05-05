@@ -15,10 +15,16 @@
       :name="name"
       :error="error"
       :disabled="disabled"
+      :rules="rules"
       @mousedown="checkBoxClicked(item.value)"
+      @blur="onBlur"
+      @click="onClick"
+      multiple
+      :hide-details="index !== items.length - 1"
+
     >
       <template v-if="card || item.value === otherValue" v-slot:label>
-        <div class="d-flex flex-column width-100" tabindex="0">
+        <div class="d-flex flex-column width-100">
           <div 
             v-if="item.label" 
             :class="[
@@ -67,6 +73,11 @@ import { getIdText } from "@/helpers";
 })
 
 export default class ATATCheckboxGroup extends Vue {
+  // refs
+  $refs!: {
+    checkboxGroup: Vue & { errorBucket: string[]; errorCount: number };
+  }; 
+
   // props
   @PropSync("value") private _selected!: string[];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
@@ -80,6 +91,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "" }) private noneValue!: string;
   @Prop({ default: "" }) private otherValue!: string;
   @Prop() private name!: string;
+  @Prop({ default: () => []}) private rules!: Array<unknown>;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -144,5 +156,22 @@ export default class ATATCheckboxGroup extends Vue {
       }
     }
   }
+
+  // events
+  private onClick(): void {
+    this.clearErrorMessage();
+  }
+
+  private onBlur(val: string): void {
+    this.setErrorMessage();
+  }
+
+  // methods
+  private setErrorMessage(): void {
+    this.errorMessages = this.$refs.checkboxGroup.errorBucket;
+  } 
+  private clearErrorMessage(): void {
+    this.errorMessages = [];
+  } 
 }
 </script>
