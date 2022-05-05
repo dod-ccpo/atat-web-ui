@@ -1,73 +1,44 @@
 <template>
-  <div>
-    <div
-      v-cloak
-      v-if="isLoading"
-      @dragenter="onDragEnter"
-      @drop.prevent="addDropFile"
-      @dragover.prevent
+  <div v-cloak 
+    @dragenter="onDragEnter" 
+    @drop.prevent="addDropFile" 
+    @dragover.prevent>
+     <v-file-input
+      ref="atatFileUpload"
+      :id = "id + 'FileUpload'"
+      :class="[{'v-text-field--is-hovering' : isHovering},'atat-file-upload']"
+      multiple
+      prepend-icon=""
+      accept="application/pdf,application/vnd.ms-excel"
+      :truncate-length="truncateLength"
+      :clearable="false"
+      @change="fileUploadChanged"
+      :hide-details="true"       
     >
-      <v-file-input
-        ref="atatFileUpload"
-        :id="id + 'FileUpload'"
-        :class="[
-          { 'v-text-field--is-hovering': isHovering },
-          'atat-file-upload',
-        ]"
-        multiple
-        prepend-icon=""
-        accept="application/pdf,application/vnd.ms-excel"
-        :truncate-length="truncateLength"
-        :clearable="false"
-        @change="fileUploadChanged"
-      >
-        <template v-slot:prepend-inner>
-          <div class="content text-center">
-            <v-icon class="icon-60 mt-10 mb-5">upload_file</v-icon>
-            <h2>Drag and Drop</h2>
-            <p class="mt-1 mb-4 d-flex justify-center">
-              your file here or
-              <v-btn
-                class="link-button inline-text"
+      <template v-slot:prepend-inner>
+        <div class="content text-center">
+          <v-icon class="icon-59 mt-9 mb-4">upload_file</v-icon>
+          <h2>Drag and Drop</h2>
+          <p class="mt-1 mb-3 d-flex justify-center text-base-darkest ">your file here or 
+              <a
+                role="button"
+                id="BrowseToUpload"
+                class="_text-link ml-1" 
                 @mousedown="fileUploadClicked"
               >
-                browse to upload
-              </v-btn>
-            </p>
-            <p class="mb-9">Use a PDF file with a max size of 10 MB.</p>
-          </div>
-        </template>
-      </v-file-input>
-
-      
-
-      <h2 class="mt-5" v-if="uploadedFiles.length > 0">Files Uploaded</h2>
-      <ul v-for="(file, idx) in uploadedFiles" :key="idx">
-        <li>{{ file.name }}</li>
-      </ul>
-    </div>
-    <v-card 
-      flat
-      class="file-loading-div" 
-      :v-else="isLoading === true">
-        <v-card-title class="h2 pa-6">{{ fileLoadingDivTitle }}</v-card-title>
-        <div class="v-flex align-center">
-          <ATATPDFIcon />
-
-          <br />
-          <ATATPDFIcon :height="40" />
-
-          <br />
-          <ATATPDFIcon :height="25" color="c60634" />
-
+                  browse to upload
+            </a>
+          </p>
+          <p class="mt-6 mb-9">Use a PDF file with a max size of 10 MB.</p>
         </div>
-    </v-card>
+      </template>
+    </v-file-input>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import ATATPDFIcon from "@/components/icons/ATATPDFIcon.vue"
 
 @Component({
@@ -115,10 +86,8 @@ export default class ATATFileUpload extends Vue {
     Vue.nextTick(() => {
       //remove default vuetify status that displays after
       //upload (eg. '2 files')
-      const vuetifyFileUploadStatus = document.getElementsByClassName(
-        "v-file-input__text"
-      )[0] as HTMLDivElement;
-      console.log(vuetifyFileUploadStatus);
+      const vuetifyFileUploadStatus = 
+        document.getElementsByClassName("v-file-input__text")[0] as HTMLDivElement;
       vuetifyFileUploadStatus.innerHTML = "";
     });
   }
@@ -167,12 +136,11 @@ export default class ATATFileUpload extends Vue {
    *
    */
   private removeInvalidFiles(files: FileList): void {
-    this.uploadedFiles = Array.from(files || []).filter((file) => {
-      const thisFileFormat = file.name.substring(
-        file.name.lastIndexOf(".") + 1
-      );
-      return this.validFileFormats.some((format) => thisFileFormat === format);
-    });
+    this.uploadedFiles = Array.from(files || []).filter(
+      (file)=>{
+        const thisFileFormat = file.name.substring(file.name.lastIndexOf(".") + 1);
+        return this.validFileFormats.some((format)=> thisFileFormat === format);   
+      });
   }
 
   //life cycle hooks
