@@ -7,7 +7,7 @@
   >
      <v-file-input
       ref="atatFileUpload"
-      v-if="isLoading === false"
+      v-if="isLoading === false && validFiles.length === 0"
       :id = "id + 'FileUpload'"
       :class="[{'v-text-field--is-hovering' : isHovering},'atat-file-upload']"
       multiple
@@ -37,45 +37,25 @@
       </template>
     </v-file-input>
   </div>
-  <v-card 
-    flat
-    class="file-loading-div" 
-    v-if="isLoading === true">
-      <v-card-title class="h2 pa-0 pb-6">{{ fileLoadingDivTitle }}</v-card-title>
-      <div class="content-div d-flex align-center">
-        <ATATSVGIcon name="pdf" color="base" :width="32" :height="40" />
-        <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
-          <div class="filename">{{ validFiles[fileNameArrayIndex].name }}</div>
-          <div class="d-flex align-center mt-auto  ">
-            <v-progress-linear
-                class="progress-bar mr-5"
-                v-model="uploadingStatus"
-                height="16"
-              >
-            </v-progress-linear>
-            <ATATSVGIcon name="close" color="base" :width="11" />
-          </div>
-        </div>
-      </div>
-  </v-card>
-  <div v-if="validFiles.length>0">
-    <h2 class="mt-5">Files Uploaded</h2>
-    {{ fileNameArrayIndex }} 
-    <ul v-for="(file, idx) in validFiles" :key="idx">
-      <li v-show="fileNameArrayIndex >= idx"> [{{ idx }}]{{ file.name }}</li>
-    </ul>
-  </div>
+ 
+  <ATATFileList 
+    :files="validFiles" 
+    :indexToDisplay="fileNameArrayIndex" 
+    :isLoading="isLoading"
+    :uploadingStatus="uploadingStatus" />
 </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue"
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATFileList from "@/components/ATATFileList.vue";
 
 @Component({
   components: {
     ATATSVGIcon,
+    ATATFileList,
   },
 })
 export default class ATATFileUpload extends Vue {
@@ -91,7 +71,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
-  @Prop({ default: "Your Upload"}) private fileLoadingDivTitle!: string;
+  
 
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
@@ -103,7 +83,8 @@ export default class ATATFileUpload extends Vue {
   private uploadingStatus = 0;
   private uploadingStatusInterval = 0;
   private uploadingFileName = "";
-  private fileNameArrayIndex = 0;
+  private fileNameArrayIndex = -1;
+  private filesUploaded = false;
 
   
   //Events
@@ -180,7 +161,6 @@ export default class ATATFileUpload extends Vue {
         const thisFileFormat = file.name.substring(file.name.lastIndexOf(".") + 1);
         return this.validFileFormats.some((format)=> thisFileFormat === format);   
       });
-    
   }
 
   /**
@@ -192,13 +172,13 @@ export default class ATATFileUpload extends Vue {
         Math.floor(100/this.validFiles.length);
     this.isLoading = true;
     this.uploadingStatusInterval = setInterval(()=>{
-     
       if (this.uploadingStatus<100){
         if (this.uploadingStatus > 0 && this.uploadingStatus % fileNameChangeInterval === 0){
           this.fileNameArrayIndex++;
         }
         this.uploadingStatus += 1; 
       } else {
+        this.filesUploaded = true;
         this.isLoading = false;
         clearInterval(this.uploadingStatusInterval);
       }
