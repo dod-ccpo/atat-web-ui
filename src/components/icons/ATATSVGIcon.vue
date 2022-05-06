@@ -16,12 +16,16 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import Pdf from "@/components/icons/Pdf.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 import Close from "@/components/icons/Close.vue";
+import Remove from "@/components/icons/Remove.vue";
+import FilePresent from "@/components/icons/FilePresent.vue"
 
 @Component({
   components:{
     Pdf,
     UploadFile,
-    Close
+    Close,
+    Remove,
+    FilePresent,
   }
 })
 

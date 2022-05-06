@@ -49,11 +49,29 @@
     height: 46px;
     .filename-and-progress-bar-div{
       height: 46px;
+      max-width: 475px;
+      .filename-and-extension{
+        max-width: 440px;
+        overflow: hidden !important;
+        .name{
+          // text-overflow: ellipsis;
+          max-width: 440px;
+          white-space: nowrap; 
+          overflow: hidden;
+        }
+        .ext{
+          white-space: nowrap;
+        }
+      }
       .v-progress-linear{
         width: 464px;
         .v-progress-linear__background{
           background-color: $primary !important;
         }
+      }
+      
+      ._external-link{
+        display: inherit;
       }
     }
   }
