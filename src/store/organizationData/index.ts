@@ -1,11 +1,14 @@
 /* eslint-disable camelcase */
-import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
+import {Action, getModule, Module, Mutation, VuexModule, } from "vuex-module-decorators";
 import rootStore from "../index";
 
 import api from "@/api";
 import {TABLENAME as OrganizationTable} from "@/api/organization";
 import { SystemChoiceDTO } from "@/api/models";
+import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
+import Vue from "vue";
 
+const ATAT_ORGANIZATION_DATA_KEY = 'ATAT_ORGANIZATION_DATA_KEY';
 
 @Module({
   name: "OrganizationData",
@@ -25,11 +28,18 @@ export class OrganizationDataStore extends VuexModule {
   public service_agency_data: SystemChoiceDTO[] = [];
   public disa_org_data: SystemChoiceDTO[] = [];
 
+    // store session properties
+    protected sessionProperties: string[] = [
+      nameofProperty(this,x=> x.service_agency_data),
+      nameofProperty(this, x=> x.disa_org_data),
+    ];
+  
+
 
   @Mutation
-  public setInitialized(value: boolean): void {
-    this.initialized = value;
-  }
+    public setInitialized(value: boolean): void {
+      this.initialized = value;
+    }
 
   @Mutation
   public setServiceAgencyData(value: SystemChoiceDTO[]): void {
@@ -64,17 +74,38 @@ export class OrganizationDataStore extends VuexModule {
     );
     this.setDisOrgData(disa_org_data);
   }
+  @Mutation
+  public setStoreData(sessionData: string):void{
+    try {
+      const sessionDataObject = JSON.parse(sessionData);
+      Object.keys(sessionDataObject).forEach((property) => {
+        Vue.set(this, property, sessionDataObject[property]);
+      });
 
+    } catch (error) {
+      throw new Error('error restoring session for organization data store');
+    }
+    
 
-
-
+  }
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
 
-      await this.getServiceAgencyData();
-      await this.getDisaOrgData();
-      this.setInitialized(true);
+      const sessionRestored= retrieveSession(ATAT_ORGANIZATION_DATA_KEY);
+
+      if(sessionRestored){
+        this.setStoreData(sessionRestored);
+      }
+      else{
+
+        await this.getServiceAgencyData();
+        await this.getDisaOrgData();
+        this.setInitialized(true);
+        storeDataToSession(this, this.sessionProperties, ATAT_ORGANIZATION_DATA_KEY);
+      }
+
+    
         
     } catch (error) {
       console.log(`error occurred loading organization data ${error}`)

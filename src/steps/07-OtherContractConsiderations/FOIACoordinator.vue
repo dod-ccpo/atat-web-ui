@@ -3,9 +3,7 @@
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
-          <h1 class="page-header">
-            Tell us about your FOIA Coordinator
-          </h1>
+          <h1 class="page-header">Tell us about your FOIA Coordinator</h1>
 
           <ATATTextField
             id="FullName"
@@ -13,7 +11,11 @@
             label="Full name"
             helpText="Include rank, if applicable"
             :value.sync="fullName"
-            :rules="[$validators.required('Please enter your FOIA coordinator’s full name.')]"
+            :rules="[
+              $validators.required(
+                'Please enter your FOIA coordinator’s full name.'
+              ),
+            ]"
           />
 
           <ATATTextField
@@ -25,10 +27,10 @@
             :rules="[
               $validators.required('Please enter your email address.'),
               $validators.isEmail(),
-          ]"
+            ]"
           />
 
-          <hr/>
+          <hr />
 
           <ATATAddressForm
             :addressTypeOptions="addressTypeOptions"
@@ -36,35 +38,39 @@
             :city.sync="city"
             :countryListData="countryListData"
             :militaryPostOfficeOptions="militaryPostOfficeOptions"
-            :minLength=[]
-            :requiredFields='[
-              {field:"StreetAddress", message: "Please enter an address."},
-              {field:"City", message:  "Please enter a city."},
-             {field:"State" , message: "Please select a state."},
-             {field:"ZIPCode" , message: "Please enter a ZIP code."},
-             {
-               field:"APO_FPO_DPO",
-               message: "Please select a military post office (APO or FPO)."
-               },
-             {field:"StateCode", message:  "Please select a state code."},
-             {field:"StateProvince", message: "Please enter a state/province."},
-             {field:"Country", message: "Please select a country."},
-             {field:"PostalCode" , message: "Please enter a postal code."},
-            ]'
-            :isValidRules='[
+            :minLength="[]"
+            :requiredFields="[
+              { field: 'StreetAddress', message: 'Please enter an address.' },
+              { field: 'City', message: 'Please enter a city.' },
+              { field: 'State', message: 'Please select a state.' },
+              { field: 'ZIPCode', message: 'Please enter a ZIP code.' },
               {
-                field:"ZIPCode",
-                message: "Your ZIP code must be 5 or 9 digits.",
-                mask:["99999", "99999-9999"],
-                },
+                field: 'APO_FPO_DPO',
+                message: 'Please select a military post office (APO or FPO).',
+              },
+              { field: 'StateCode', message: 'Please select a state code.' },
               {
-                field:"PostalCode",
-                message: "Your postal code must be 10 characters or " +
-                "less and may include spaces and hyphens.",
-                mask:["^[A-Za-z0-9- ]{0,10}$"],
-                isMaskRegex: true
-              }
-            ]'
+                field: 'StateProvince',
+                message: 'Please enter a state/province.',
+              },
+              { field: 'Country', message: 'Please select a country.' },
+              { field: 'PostalCode', message: 'Please enter a postal code.' },
+            ]"
+            :isValidRules="[
+              {
+                field: 'ZIPCode',
+                message: 'Your ZIP code must be 5 or 9 digits.',
+                mask: ['99999', '99999-9999'],
+              },
+              {
+                field: 'PostalCode',
+                message:
+                  'Your postal code must be 10 characters or ' +
+                  'less and may include spaces and hyphens.',
+                mask: ['^[A-Za-z0-9- ]{0,10}$'],
+                isMaskRegex: true,
+              },
+            ]"
             :selectedAddressType.sync="selectedAddressType"
             :selectedCountry.sync="selectedCountry"
             :selectedMilitaryPO.sync="selectedMilitaryPO"
@@ -77,7 +83,6 @@
             :streetAddress2.sync="streetAddress2"
             :zipCode.sync="zipCode"
           />
-
         </v-col>
       </v-row>
     </v-container>
@@ -94,11 +99,11 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { SensitiveInformationDTO } from "@/api/models"
-import {StateListData} from "@/data/regions/index";
+import { SensitiveInformationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 import { RadioButton, SelectData } from "../../../types/Global";
+import ContactData from "@/store/contactData";
 
 @Component({
   components: {
@@ -107,7 +112,6 @@ import { RadioButton, SelectData } from "../../../types/Global";
     ATATTextField,
   },
 })
-
 export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   private addressTypes = {
     USA: "US",
@@ -115,7 +119,7 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     FOR: "FOREIGN",
   };
 
-  private emptySelectData: SelectData = {text: "", value: ""};
+  private emptySelectData: SelectData = { text: "", value: "" };
 
   private fullName =
     AcquisitionPackage.sensitiveInformation?.foia_full_name || "";
@@ -124,7 +128,8 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     AcquisitionPackage.sensitiveInformation?.foia_email || "";
 
   private selectedAddressType =
-    AcquisitionPackage.sensitiveInformation?.foia_address_type || this.addressTypes.USA;
+    AcquisitionPackage.sensitiveInformation?.foia_address_type ||
+    this.addressTypes.USA;
 
   public streetAddress1 =
     AcquisitionPackage.sensitiveInformation?.foia_street_address_1 || "";
@@ -136,7 +141,8 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     AcquisitionPackage.sensitiveInformation?.foia_city_apo_fpo || "";
 
   public stateOrProvince =
-    AcquisitionPackage.sensitiveInformation?.foia_state_province_state_code || "";
+    AcquisitionPackage.sensitiveInformation?.foia_state_province_state_code ||
+    "";
 
   public zipCode =
     AcquisitionPackage.sensitiveInformation?.foia_zip_postal_code || "";
@@ -161,47 +167,56 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
 
   private selectedMilitaryPO: SelectData = this.emptySelectData;
   private militaryPostOfficeOptions: SelectData[] = [
-    {text: "Army Post Office (APO)", value: "APO"},
-    {text: "Fleet Post Office (FPO)", value: "FPO"},
-    {text: "Diplomatic Post Office (DPO)", value: "DPO"},
+    { text: "Army Post Office (APO)", value: "APO" },
+    { text: "Fleet Post Office (FPO)", value: "FPO" },
+    { text: "Diplomatic Post Office (DPO)", value: "DPO" },
   ];
 
   private selectedStateCode: SelectData = this.emptySelectData;
   private stateCodeListData: SelectData[] = [
-    {text: "AA - Armed Forces Americas", value: "AA"},
-    {text: "AE - Armed Forces Europe", value: "AE"},
-    {text: "AP - Armed Forces Pacific", value: "AP"},
+    { text: "AA - Armed Forces Americas", value: "AA" },
+    { text: "AE - Armed Forces Europe", value: "AE" },
+    { text: "AP - Armed Forces Pacific", value: "AP" },
   ];
 
   private selectedCountry: SelectData = this.emptySelectData;
 
-  private stateListData: SelectData[] = StateListData;
+  private stateListData: SelectData[] = [];
 
   private setSelectedData(): void {
     // Foreign addresses set country obj
     if (this.selectedAddressType === this.addressTypes.FOR) {
       this.selectedCountry =
-        this.countryListData.find((c) => c.text === this.savedData?.foia_country)
-        || this.emptySelectData;
+        this.countryListData.find(
+          (c) => c.text === this.savedData?.foia_country
+        ) || this.emptySelectData;
     } else {
       // US or Military addreses - set country obj to USA
-      this.selectedCountry = {text: "United States of America", value: "US"};
+      this.selectedCountry = { text: "United States of America", value: "US" };
 
       // Military addresses - set selectedStateCode and selectedMilitaryPO
-      if (this.selectedAddressType === this.addressTypes.MIL && this.stateCodeListData) {
+      if (
+        this.selectedAddressType === this.addressTypes.MIL &&
+        this.stateCodeListData
+      ) {
         this.selectedStateCode =
-          this.stateCodeListData.find((s) => s.value === this.stateOrProvince)
-          || this.emptySelectData;
+          this.stateCodeListData.find(
+            (s) => s.value === this.stateOrProvince
+          ) || this.emptySelectData;
 
         this.selectedMilitaryPO =
-          this.militaryPostOfficeOptions.find((p) => p.value === this.city)
-          || this.emptySelectData;
+          this.militaryPostOfficeOptions.find((p) => p.value === this.city) ||
+          this.emptySelectData;
 
         // US addresses - set selectedState
-      } else if (this.selectedAddressType === this.addressTypes.USA && this.stateListData) {
+      } else if (
+        this.selectedAddressType === this.addressTypes.USA &&
+        this.stateListData
+      ) {
         this.selectedState =
-          this.stateListData.find((stateObj) => stateObj.value === this.stateOrProvince)
-          || this.emptySelectData;
+          this.stateListData.find(
+            (stateObj) => stateObj.value === this.stateOrProvince
+          ) || this.emptySelectData;
       }
     }
   }
@@ -244,20 +259,23 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
     foia_state_province_state_code: "",
     foia_zip_postal_code: "",
     foia_country: "",
-  } as Record<string, string>
-
+  } as Record<string, string>;
 
   public countryListData: SelectData[] = [this.emptySelectData];
 
   public async mounted(): Promise<void> {
-    this.countryListData = await AcquisitionPackage.getCountryListData(["US"]);
     await this.loadOnEnter();
     this.setSelectedData();
   }
 
   public async loadOnEnter(): Promise<void> {
     const storeData =
-      await AcquisitionPackage.loadSensitiveInformation() as Record<string, string>;
+      (await AcquisitionPackage.loadSensitiveInformation()) as Record<
+        string,
+        string
+      >;
+    this.stateListData = ContactData.stateChoices;
+    this.countryListData = ContactData.countryListData(["US"]);
 
     if (storeData) {
       const keys: string[] = [
@@ -276,7 +294,6 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
           this.savedData[key] = storeData[key];
         }
       });
-
     } else {
       AcquisitionPackage.setSensitiveInformation(this.currentData);
     }
@@ -297,7 +314,5 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
 
     return true;
   }
-
-
 }
 </script>

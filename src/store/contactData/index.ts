@@ -6,11 +6,16 @@ import {
   VuexModule,
 } from "vuex-module-decorators";
 import rootStore from "../index";
-import { MilitaryRankDTO, SystemChoiceDTO } from "@/api/models";
+import { CountryDTO, MilitaryRankDTO, StateDTO, SystemChoiceDTO } from "@/api/models";
 import api from "@/api";
 import {TABLENAME as ContactsTable} from "@/api/contacts";
 import { TABLENAME as MilitaryRanksTable } from "@/api/militaryRanks";
-import { AutoCompleteItem, AutoCompleteItemGroups,  } from "types/Global";
+import { AutoCompleteItem, AutoCompleteItemGroups, SelectData,  } from "types/Global";
+import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
+import Vue from "vue";
+import { property } from "cypress/types/lodash";
+
+const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
 const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
   if (a.grade.startsWith("O") && b.grade.startsWith("O")) {
@@ -26,6 +31,7 @@ const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
   }};
 
 
+
 @Module({
   name: "ContactData",
   namespaced: true,
@@ -36,13 +42,60 @@ export class ContactDataStore extends VuexModule {
   private initialized = false;
   public branchChoices: SystemChoiceDTO[] = [];
   public civilianGradeChoices :SystemChoiceDTO[] = [];
+  public countries:CountryDTO[] = [];
   public militaryRanks: MilitaryRankDTO[] = [];
   public militaryAutoCompleteGroups: AutoCompleteItemGroups = {};
   public roleChoices: SystemChoiceDTO[]= [];
   public salutationChoices: SystemChoiceDTO[] = [];
+  public states:StateDTO[] = [];
 
+  // store session properties
+  protected sessionProperties: string[] = [
+    nameofProperty(this,x=> x.branchChoices),
+    nameofProperty(this, x=>x.countries),
+    nameofProperty(this, x=> x.civilianGradeChoices),
+    nameofProperty(this, x=>x.militaryRanks),
+    nameofProperty(this, x=>x.roleChoices),
+    nameofProperty(this, x=>x.salutationChoices),
+    nameofProperty(this, x=>x.states)
+  ];
 
+  public get stateChoices(): SelectData[] {
 
+    return this.states.filter(state=>state.key !== 'us').map(state=> {
+      return  {
+
+        text: state.name,
+        value: state.key.replace('us-', '').toUpperCase()
+      }
+    });
+  }
+
+  public get countryChoices(): SelectData[] {
+
+    return this.countries.map(country=> {
+      return  {
+
+        text: country.name,
+        value: country.iso3166_2,
+      }
+    })
+  }
+
+  @Mutation
+  public setStoreData(sessionData: string):void{
+    try {
+      const sessionDataObject = JSON.parse(sessionData);
+      Object.keys(sessionDataObject).forEach((property) => {
+        Vue.set(this, property, sessionDataObject[property]);
+      });
+
+    } catch (error) {
+      throw new Error('error restoring session for contact data store');
+    }
+    
+
+  }
 
   @Mutation
   public setInitialized(value: boolean): void {
@@ -95,6 +148,18 @@ export class ContactDataStore extends VuexModule {
     this.salutationChoices = value;
   } 
 
+
+  @Mutation
+  public setStates(value: StateDTO[]):void {
+    this.states = value;
+  }
+
+  @Mutation
+  public setCountries(value: CountryDTO[]):void {
+    this.countries = value;
+  }
+
+
   @Action({ rawError: true })
   public async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
@@ -146,19 +211,33 @@ export class ContactDataStore extends VuexModule {
     this.setContactSalutations(salutations);
   }
 
+  
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
-     
-      await Promise.all([this.getBranchChoices(), 
-        this.getCivilianGradeChoices(), 
-        this.getContactRoleChoices(),
-        this.getContactSalutationChoices()]);
+
+      const sessionRestored= retrieveSession(ATAT_CONTACT_DATA_KEY);
+
+      if(sessionRestored){
+        this.setStoreData(sessionRestored);
+        this.setMilitaryAutoCompleteGroups();
+      }
+      else{
+
+        await Promise.all([this.getBranchChoices(), 
+          this.getCountries(),
+          this.getCivilianGradeChoices(), 
+          this.getContactRoleChoices(),
+          this.getContactSalutationChoices(),
+          this.getStates()]);
     
-      const ranks = await api.militaryRankTable.all();
-      this.setRanks(ranks);
-      this.setMilitaryAutoCompleteGroups();
-      this.setInitialized(true);
+        const ranks = await api.militaryRankTable.all();
+        this.setRanks(ranks);
+        this.setMilitaryAutoCompleteGroups();
+        this.setInitialized(true);
+        storeDataToSession(this, this.sessionProperties, ATAT_CONTACT_DATA_KEY);
+      }
+
     } catch (error) {
       console.log(error);
       console.log("error loading military rank data");
@@ -176,6 +255,38 @@ export class ContactDataStore extends VuexModule {
     return this.militaryRanks.find(rank=> rank.sys_id === rankComponentId);
   }
 
+  @Action({rawError: true})
+  public async getStates():Promise<void>{
+
+    const states = await api.statesTable.all();
+    this.setStates(states);
+
+  }
+
+  @Action({rawError: true})
+  public async getCountries():Promise<void>{
+
+    const countries = await api.countriesTable.all();
+    this.setCountries(countries);
+
+  }
+
+
+  public get countryListData(){
+
+    return (removeCountries: string[] | null): SelectData[]=> {
+      if (!removeCountries) {
+        return this.countryChoices;
+      }
+      let filteredCountries =this.countryChoices;
+      removeCountries.filter(function (countryCode) {
+        filteredCountries = filteredCountries.filter(function (countryObj) {
+          return countryObj.value !== countryCode;
+        });
+      });
+      return filteredCountries;
+    }
+  }
 }
 
 const ContactData = getModule(ContactDataStore);

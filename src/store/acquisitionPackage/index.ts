@@ -20,7 +20,6 @@ import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
-import { CountryListData } from "@/data/regions";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -249,6 +248,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
+    await ContactData.initialize();
+    await OrganiationData.initialize();
+
     if (this.initialized) {
       return;
     }
@@ -264,8 +266,6 @@ export class AcquisitionPackageStore extends VuexModule {
     } else {
       try {
         const acquisitionPackage = await api.acquisitionPackageTable.create();
-        await ContactData.initialize();
-        await OrganiationData.initialize();
         if (acquisitionPackage) {
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
@@ -314,19 +314,19 @@ export class AcquisitionPackageStore extends VuexModule {
     this.selectedContactBranch = value;
   }
 
-  @Action({ rawError: true })
-  public getCountryListData(removeCountries: string[] | null): SelectData[] {
-    if (!removeCountries) {
-      return CountryListData;
-    }
-    let filteredCountries = CountryListData;
-    removeCountries.filter(function (countryCode) {
-      filteredCountries = filteredCountries.filter(function (countryObj) {
-        return countryObj.value !== countryCode;
-      });
-    });
-    return filteredCountries;
-  }
+  // @Action({ rawError: true })
+  // public getCountryListData(removeCountries: string[] | null): SelectData[] {
+  //   if (!removeCountries) {
+  //     return ContactData.countryChoices;
+  //   }
+  //   let filteredCountries = ContactData.countryChoices;
+  //   removeCountries.filter(function (countryCode) {
+  //     filteredCountries = filteredCountries.filter(function (countryObj) {
+  //       return countryObj.value !== countryCode;
+  //     });
+  //   });
+  //   return filteredCountries;
+  // }
 
 
   @Action({ rawError: true })

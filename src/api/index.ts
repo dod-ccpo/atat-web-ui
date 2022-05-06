@@ -10,6 +10,8 @@ import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
 import { GFEOverviewApi } from "./GFEOverview";
 import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
+import {StatesApi} from "./states";
+import {CountriesApi} from "./countries";
 
 export default {
   systemChoices: new SystemChoicesApi(),
@@ -25,4 +27,6 @@ export default {
   gfeOverviewTable: new GFEOverviewApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
+  statesTable: new StatesApi(),
+  countriesTable: new CountriesApi(),
 };
