@@ -141,6 +141,13 @@ Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,er
   })
 });
 
+Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  cy.findElement(common.header).scrollIntoView().then(() => {
+    cy.textExists(common.header,headerText );
+  });
+  
+});
+
 Cypress.Commands.add("selectCheckBox", (selector,value) => {
   cy.findElement(selector)
     .should("have.value", value);
