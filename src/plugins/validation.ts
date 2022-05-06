@@ -58,10 +58,7 @@ export class ValidationPlugin {
       if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
         if (v && Object.keys(v)[0] !== "0" && Object.keys(v)[0] !== undefined) {
           // array of objects
-          return v && Object.values(v).every(function(val) {
-            console.log(val);
-            return val !== "";
-          } ) || message;
+          return v && Object.values(v).every((val) => val !== "") || message;
         } 
         // array of strings
         return v && Object.values(v).length > 0 || message;
