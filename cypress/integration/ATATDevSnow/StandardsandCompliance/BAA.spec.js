@@ -1,6 +1,6 @@
 import { bootstrapMockApis,colors,cleanText} from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import occ from "../../../selectors/occ.sel";
+import occ from "../../../selectors/standComp.sel";
 
 describe("Test suite: SAC step: BAA", () => {
   

@@ -1,6 +1,6 @@
 import {bootstrapMockApis,colors,randomString} from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import occ from "../../../selectors/occ.sel";
+import occ from "../../../selectors/standComp.sel";
 import org from "../../../selectors/org.sel";
 
 describe("Test suite:SAC Step: FOIA sub step", () => {
