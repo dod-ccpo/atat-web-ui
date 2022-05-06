@@ -41,6 +41,7 @@ const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
 
 Cypress.Commands.add("launchATAT", () => {
   if (isTestingLocally){
+    cy.clearSession();
     cy.visit(Cypress.env("localTestURL"));    
     if (runTestsInIframe) {
       cy.visit(Cypress.env("localTestURLInIframe"));    
@@ -51,8 +52,23 @@ Cypress.Commands.add("launchATAT", () => {
   } else {
     cy.visit(Cypress.env("testURL"));    
     cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+    cy.clearSession();
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
+  }
+});
+
+Cypress.Commands.add("clearSession", () => {
+  if (isTestingLocally) {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });      
+  } else {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+      const iframe = win.document.querySelector('iframe');
+      iframe.contentWindow.sessionStorage.clear();
+    });
   }
 });
 
@@ -123,6 +139,13 @@ Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,er
   cy.findElement(textboxSelector).focus().tab().then(() => {
     cy.checkErrorMessage(errorSelector, errorMessage);
   })
+});
+
+Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  cy.findElement(common.header).scrollIntoView().then(() => {
+    cy.textExists(common.header,headerText );
+  });
+  
 });
 
 Cypress.Commands.add("selectCheckBox", (selector,value) => {

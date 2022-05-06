@@ -11,6 +11,12 @@
 
 ._radio-button {
   align-items: flex-start;
+
+  .v-label {
+    transition: none !important;
+    animation: none !important;
+  }
+
   &.v-item--active {
     .v-icon {
       color: $primary !important;
