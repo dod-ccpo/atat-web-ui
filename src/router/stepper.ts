@@ -25,48 +25,55 @@ import CurrentContractDetails from
 import CurrentEnvironment 
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 
-// Step 4 - Performance requirements
-import PerformanceRequirements from "../steps/04-PerformanceRequirements/Index.vue"
-import OptimizeCurrentEnvironment from 
-  "../steps/04-PerformanceRequirements/OptimizeCurrentEnvironment.vue";
-import AnythingAsAServiceXaas from "../steps/04-PerformanceRequirements/AnythingAsAServiceXaas.vue";
-import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSupportPackages.vue";
+// NEW Step 4 - Contract Details
+/* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
+/* 4.1.1 */ import PeriodOfPerformance from "../steps/04-ContractDetails/PeriodOfPerformance.vue";
+/* 4.1.2 */ import POPStart from "@/steps/04-ContractDetails/POPStart.vue";
+/* 4.1.2 */ import RecurringRequirement from "../steps/04-ContractDetails/RecurringRequirement.vue";
+/* 4.2 */   import ContractType from "../steps/04-ContractDetails/ContractType.vue";
+/* 4.3 */   import ClassificationRequirements 
+  from "../steps/04-ContractDetails/ClassificationRequirements.vue";
 
-// Step 5 - Contract Details
-import ContractDetails from "../steps/05-ContractDetails/Index.vue";
-import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance.vue";
-import RecurringRequirement from "../steps/05-ContractDetails/RecurringRequirement.vue";
-import ContractType from "../steps/05-ContractDetails/ContractType.vue";
-import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
-import PackagingPackingAndShipping from 
-  "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
-import Training from "../steps/05-ContractDetails/Training.vue";
-import POPStart from "@/steps/05-ContractDetails/POPStart.vue";
+
+// NEW Step 5 - Performance Requirements
+import PerformanceRequirements from "../steps/05-PerformanceRequirements/Index.vue"
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
 import PropertyDetails from "../steps/06-GovtFurnishedEquipment/PropertyDetails.vue";
 import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue";
 
-// step 7 - Other Contract Considerations
-import OtherContractConsiderations from "../steps/07-OtherContractConsiderations/Index.vue";
-import PII from "../steps/07-OtherContractConsiderations/PII.vue";
-import BAA from "../steps/07-OtherContractConsiderations/BAA.vue";
-import PIIRecord from "../steps/07-OtherContractConsiderations/PIIRecord.vue";
-import FOIA from "../steps/07-OtherContractConsiderations/FOIA.vue";
-import FOIACoordinator from "../steps/07-OtherContractConsiderations/FOIACoordinator.vue";
-import Section508Standards from "../steps/07-OtherContractConsiderations/Section508Standards.vue";
+
+// OLD import RecurringRequirement from "../steps/04-ContractDetails/RecurringRequirement.vue";
+// OLD import ConflictOfInterest from "../steps/04-ContractDetails/ConflictOfInterest.vue";
+import PackagingPackingAndShipping from 
+  "../steps/04-ContractDetails/PackagingPackingAndShipping.vue";
+import Training from "../steps/04-ContractDetails/Training.vue";
+
+
+// Step 7 - Standards and Compliance
+import ConflictOfInterest from "../steps/04-ContractDetails/ConflictOfInterest.vue";
+
+
+// step 8 - Standards and Compliance
+import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
+import PII from "../steps/08-StandardsAndCompliance/PII.vue";
+import BAA from "../steps/08-StandardsAndCompliance/BAA.vue";
+import PIIRecord from "../steps/08-StandardsAndCompliance/PIIRecord.vue";
+import FOIA from "../steps/08-StandardsAndCompliance/FOIA.vue";
+import FOIACoordinator from "../steps/08-StandardsAndCompliance/FOIACoordinator.vue";
+import Section508Standards from "../steps/08-StandardsAndCompliance/Section508Standards.vue";
 import Section508AccessibilityRequirements
-  from "../steps/07-OtherContractConsiderations/Section508AccessibilityRequirements.vue"
+  from "../steps/08-StandardsAndCompliance/Section508AccessibilityRequirements.vue"
 
 // step 8 - Evaluation Criteria
 import EvaluationCriteria from "../steps/08-EvaluationCriteria/Index.vue"
 import EvaluationCriteriaStepOne from "../steps/08-EvaluationCriteria/EvaluationCriteriaStepOne.vue"
 
-// step 9 - Classification Requirements
-import ClassificationRequirements from "../steps/09-ClassificationRequirements/Index.vue"
-import ClassificationRequirementsStepOne 
-  from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
+// OLD step 9 - Classification Requirements
+// OLD import ClassificationRequirements from "../steps/09-ClassificationRequirements/Index.vue"
+// OLD import ClassificationRequirementsStepOne 
+//   from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
 
 // step 10 - Financial Details
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
