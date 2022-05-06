@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-checkbox
-      v-for="item in items"
+      v-for="(item, index) in items"
       v-model="_selected"
       :id="'Checkbox_' + getIdText(item.id)"
       :class="[
@@ -15,10 +15,14 @@
       :name="name"
       :error="error"
       :disabled="disabled"
+      :rules="checkboxRules"
       @mousedown="checkBoxClicked(item.value)"
+      multiple
+      :hide-details="true"
+      :ref="index === 0 ? 'checkboxGroup' : ''"
     >
       <template v-if="card || item.value === otherValue" v-slot:label>
-        <div class="d-flex flex-column width-100" tabindex="0">
+        <div class="d-flex flex-column width-100">
           <div 
             v-if="item.label" 
             :class="[
@@ -48,6 +52,8 @@
       </template>
 
     </v-checkbox>
+    <ATATErrorValidation :errorMessages="errorMessages" />
+
   </div>
 </template>
 
@@ -56,6 +62,7 @@ import Vue from "vue";
 import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 import {Checkbox} from "../../types/Global";
 import { getIdText } from "@/helpers";
@@ -63,10 +70,16 @@ import { getIdText } from "@/helpers";
 @Component({
   components: {
     ATATTextArea,
+    ATATErrorValidation,
   }
 })
 
 export default class ATATCheckboxGroup extends Vue {
+  // refs
+  $refs!: {
+    checkboxGroup: (Vue & { errorBucket: string[]; errorCount: number })[];
+  }; 
+
   // props
   @PropSync("value") private _selected!: string[];
   @PropSync("otherValueEntered") private _otherValueEntered!: string;
@@ -80,11 +93,23 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "" }) private noneValue!: string;
   @Prop({ default: "" }) private otherValue!: string;
   @Prop() private name!: string;
+  @Prop({ default: () => []}) private rules!: Array<unknown>;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
   private prevSelected: string[] = [];
   private errorMessages: string[] = [];
+  public blurredCheckboxes: string[] = [];
+  private validateCheckboxes = false;
+
+  public checkboxRules = this.validateCheckboxes
+    ? this.rules
+    : [];
+
+  @Watch("validateCheckboxes")
+  protected setCheckboxValidation(): void {
+    this.checkboxRules = this.rules;
+  }
 
   private textareaRequiredRule = this.otherValueRequiredMessage 
     ? [this.$validators.required(this.otherValueRequiredMessage)]
@@ -111,7 +136,9 @@ export default class ATATCheckboxGroup extends Vue {
     }
     Vue.nextTick(() => {
       this.prevSelected = [...this._selected];
-    })
+    });
+    
+    this.setErrorMessage();
   }
 
   private getIdText(string: string) {
@@ -128,6 +155,9 @@ export default class ATATCheckboxGroup extends Vue {
   private hideOtherTextarea = false;
 
   private checkBoxClicked(value: string): void {
+    if (this.checkboxRules.length === 0) {
+      this.validateCheckboxes = true;;
+    }
     if (value === this.noneValue) {
       this.validateOtherOnBlur = false;
       this.hideOtherTextarea = true;
@@ -144,5 +174,47 @@ export default class ATATCheckboxGroup extends Vue {
       }
     }
   }
+
+  // methods
+  private setErrorMessage(): void {
+    if (this._selected.length) {
+      this.clearErrorMessage();
+    } else {
+      setTimeout(() => {
+        const checkbox = this.$refs.checkboxGroup;
+        this.errorMessages = checkbox[0].errorBucket;
+      }, 0)
+    }
+  } 
+  private clearErrorMessage(): void {
+    this.errorMessages = [];
+  } 
+
+  public mounted(): void {
+    document.querySelectorAll('input[type="checkbox"]').forEach((elem) => {
+      const checkbox = elem as HTMLInputElement;
+      checkbox.addEventListener("blur", this.setCheckboxEventListeners);
+    });  
+  }
+
+  public setCheckboxEventListeners(event: FocusEvent): void {
+    const thisCheckbox = event.currentTarget as HTMLInputElement;
+    const id = thisCheckbox.id;
+    if (this.blurredCheckboxes.indexOf(id) === -1) {
+      // only clear if validation hasn't been set yet
+      if (!this.validateCheckboxes) {
+        this.clearErrorMessage();
+      }
+      this.blurredCheckboxes.push(id);
+    }
+
+    if (this.blurredCheckboxes.length === this.items.length) {
+      if (this.checkboxRules.length === 0) {
+        this.validateCheckboxes = true;
+      }
+      this.setErrorMessage();
+    }
+  }
+
 }
 </script>

@@ -40,6 +40,7 @@
         :class="showContactForm ? 'open' : 'closed'"
         tabindex="0"
         @click="toggleContactForm"
+        @keypress="toggleContactForm"
       >
         Manually enter your {{ corOrAcor }}’s contact information
       </a>
