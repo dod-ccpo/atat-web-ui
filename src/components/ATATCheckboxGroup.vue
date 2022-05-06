@@ -210,7 +210,7 @@ export default class ATATCheckboxGroup extends Vue {
 
     if (this.blurredCheckboxes.length === this.items.length) {
       if (this.checkboxRules.length === 0) {
-        this.validateCheckboxes = true;;
+        this.validateCheckboxes = true;
       }
       this.setErrorMessage();
     }
