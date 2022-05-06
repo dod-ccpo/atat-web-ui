@@ -217,6 +217,7 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
       });
     cy.btnExists(commonCorAcor.contactFormToggle, " Manually enter your COR’s contact information ")
       .click();
+    cy.findElement(commonCorAcor.contactAffRadioGroupTxt).scrollIntoView();
     //Validation message for  COR’s role
     cy.findElement(contact.militaryRadioBtn).tab().tab()
       .then(() => {

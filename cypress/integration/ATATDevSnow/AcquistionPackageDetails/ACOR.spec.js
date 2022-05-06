@@ -180,6 +180,7 @@ describe("Test suite: Acquisition Package: Contact Information: ACOR ", () => {
     cy.btnExists(commonCorAcor.contactFormToggle,
       " Manually enter your ACOR’s contact information ")
       .click();
+    cy.findElement(commonCorAcor.contactAffRadioGroupTxt).scrollIntoView();
     //Validation message for  COR’s role
     cy.findElement(contact.militaryRadioBtn).tab().tab()
       .then(() => {
