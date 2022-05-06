@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    Future Anything as a Service (Xaas) page
+    Future Performance Requirements page
   </div>
 </template>
 <script lang="ts">

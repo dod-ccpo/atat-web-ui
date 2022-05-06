@@ -16,10 +16,10 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });    
     
   it("TC1: SAC: PDoI is active on Vertical stepper", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");  
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");  
     //Verify the Substep is active
     cy.textExists(common.substepPDOIText, " Public Disclosure of Information ").click();
-    cy.findElement(common.stepOCCText)
+    cy.findElement(common.stepStandCompText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary);
     cy.findElement(common.substepPDOIText)
@@ -30,7 +30,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });
 
   it("TC2: Asserts: FOIA", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");    
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
     //select radio option as yes
     cy.selectPiiOption(occ.noPIIRadioOption, "No");    
     //select radio options
@@ -63,7 +63,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });
 
   it("TC3: FOIA Coordinator: Foreign address", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");    
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
     //select radio option as yes
     cy.selectPiiOption(occ.noPIIRadioOption, "No");    
     //select radio options
@@ -106,7 +106,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });
 
   it("TC4: FOIA Coordinator: Military", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");    
     //select radio option as yes
     cy.selectFOIAOption(occ.foiaYesOption, "true");    
@@ -134,7 +134,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });
 
   it("TC5: FOIA Coordinator: U.S Address", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     cy.clickSideStepper(common.substepPDOIText, " Public Disclosure of Information ");    
     //select radio option as yes
     cy.selectFOIAOption(occ.foiaYesOption, "true");    
@@ -164,7 +164,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });
 
   it("TC6: Validations: FOIA", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");    
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
     //select radio option as yes on PII screen
     cy.selectPiiOption(occ.noPIIRadioOption, "No");    
     //select radio options on BAA screen
@@ -174,13 +174,16 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
     // radio option  is not selected 
     cy.radioBtn(occ.foiaYesOption, "true").focus().tab()
       .then(() => {
-        cy.checkErrorMessage(occ.foiaRadioError, "Please select an option");
+        cy.radioBtn(occ.foiaNoOption, "false").focus().tab()
+          .then(() => {
+            cy.checkErrorMessage(occ.foiaRadioError, "Please select an option");
+          })
       });
     cy.selectFOIAOption(occ.foiaYesOption, "true");
   });
 
   it("TC7: Military: Validations", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");    
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
     //select radio option as yes on PII
     cy.selectPiiOption(occ.noPIIRadioOption, "No");    
     //select radio option as no on BAA
@@ -208,7 +211,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });
 
   it("TC8: US: Validations", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");    
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
     //select radio option as yes on PII
     cy.selectPiiOption(occ.noPIIRadioOption, "No");    
     //select radio option as no on BAA 
@@ -264,7 +267,7 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
   });
 
   it("TC9: Foreign address: Validations", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");    
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");    
     //select radio option as yes on PII
     cy.selectPiiOption(occ.noPIIRadioOption, "No");    
     //select radio option as no on BAA

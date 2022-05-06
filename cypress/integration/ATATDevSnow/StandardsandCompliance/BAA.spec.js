@@ -12,10 +12,10 @@ describe("Test suite: SAC step: BAA", () => {
   });
     
   it("TC1: SAC: BAA is active on the Vertical Stepper", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //Verify the Substep is active
     cy.textExists(common.subStepBAAText, " Business Associate Agreement (BAA) ").click();
-    cy.findElement(common.stepOCCText)
+    cy.findElement(common.stepStandCompText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary);
     cy.findElement(common.subStepBAAText)
@@ -26,7 +26,7 @@ describe("Test suite: SAC step: BAA", () => {
   }); 
 
   it("TC2: Asserts: BAA", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
     cy.textExists(occ.baaLabelText, "Business Associate Agreements (BAA)");
@@ -90,7 +90,7 @@ describe("Test suite: SAC step: BAA", () => {
   });
   
   it("TC3: BAA: Select the radio options", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
     //Select radio options
@@ -124,7 +124,7 @@ describe("Test suite: SAC step: BAA", () => {
   });
 
   it("TC4: BAA: Validations", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
     // radio options error

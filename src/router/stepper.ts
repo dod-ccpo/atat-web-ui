@@ -36,7 +36,10 @@ import CurrentEnvironment
 
 
 // Step 5 - Performance Requirements
-import PerformanceRequirements from "../steps/05-PerformanceRequirements/Index.vue"
+
+import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
+import PerformanceRequirements 
+  from "../steps/05-PerformanceRequirements/PerformanceRequirements.vue";
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -342,7 +345,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     completePercentageWeight: 7,
     menuText: "Performance Requirements",
     path: "/performance-requirements",
-    component: PerformanceRequirements,
+    component: PerformanceRequirementsIndex,
     children: [
       {
         menuText: "Performance Requirements",
