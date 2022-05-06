@@ -19,7 +19,8 @@
       :hide-details="true"       
     >
       <template v-slot:prepend-inner>
-        <div class="content d-flex flex-column align-center pt-9">
+
+        <div v-if="isFullSize" class="content d-flex flex-column align-center pt-9">
           <ATATSVGIcon name="uploadFile" :width="40" :height="50"  />
           <h2 class="mt-5">Drag and Drop</h2>
           <p class="mb-3 d-flex justify-center text-base-darkest ">your file here or 
@@ -33,6 +34,9 @@
             </a>
           </p>
           <p class="mt-3 mb-9">Use a PDF file with a max size of 10 MB.</p>
+        </div>
+        <div v-else>
+          
         </div>
       </template>
     </v-file-input>
@@ -85,6 +89,7 @@ export default class ATATFileUpload extends Vue {
   private uploadingFileName = "";
   private fileNameArrayIndex = -1;
   private filesUploaded = false;
+  private isFullSize = true;
 
   
   //Events
