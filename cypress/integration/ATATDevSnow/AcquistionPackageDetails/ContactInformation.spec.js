@@ -229,7 +229,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       "351245121"); 
   });    
 
-  it.only("TC6: Contact Information: Field Validations", () => {
+  it("TC6: Contact Information: Field Validations", () => {
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
     
     //Navigates to Contact information
@@ -291,7 +291,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
               
   });   
   
-  it.only("TC7: Military: Field Validations", () => {
+  it("TC7: Military: Field Validations", () => {
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
     //Navigates to Contact information
