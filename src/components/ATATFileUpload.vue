@@ -45,7 +45,7 @@
       <div class="content-div d-flex align-center">
         <ATATSVGIcon name="pdf" color="base" :width="32" :height="40" />
         <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
-          <div class="filename">{{ uploadingFileName }}</div>
+          <div class="filename">{{ validFiles[fileNameArrayIndex].name }}</div>
           <div class="d-flex align-center mt-auto  ">
             <v-progress-linear
                 class="progress-bar mr-5"
@@ -58,10 +58,11 @@
         </div>
       </div>
   </v-card>
-  <div v-if="uploadedFiles.length>0 && this.isLoading === false">
+  <div v-if="validFiles.length>0">
     <h2 class="mt-5">Files Uploaded</h2>
-    <ul v-for="(file, idx) in uploadedFiles" :key="idx">
-      <li>{{ file.name }}</li>
+    {{ fileNameArrayIndex }} 
+    <ul v-for="(file, idx) in validFiles" :key="idx">
+      <li v-show="fileNameArrayIndex >= idx"> [{{ idx }}]{{ file.name }}</li>
     </ul>
   </div>
 </div>
@@ -94,7 +95,7 @@ export default class ATATFileUpload extends Vue {
 
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
-  private uploadedFiles: File[] = [];
+  private validFiles: File[] = [];
   private uploadedFileNames: string[] = [];
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
@@ -102,6 +103,7 @@ export default class ATATFileUpload extends Vue {
   private uploadingStatus = 0;
   private uploadingStatusInterval = 0;
   private uploadingFileName = "";
+  private fileNameArrayIndex = 0;
 
   
   //Events
@@ -117,9 +119,9 @@ export default class ATATFileUpload extends Vue {
    * 2. removes unnecessary vuetify status msg
    */
   private fileUploadChanged(): void {
-    this.initProgressBar();
     this.removeInvalidFiles(this.fileUploadControl.files as FileList);
     Vue.nextTick(() => {
+      this.initProgressBar();
       //remove default vuetify status that displays after
       //upload (eg. '2 files')
       const vuetifyFileUploadStatus = 
@@ -173,12 +175,12 @@ export default class ATATFileUpload extends Vue {
    *
    */
   private removeInvalidFiles(files: FileList): void {
-    this.uploadedFiles = Array.from(files || []).filter(
+    this.validFiles = Array.from(files || []).filter(
       (file)=>{
         const thisFileFormat = file.name.substring(file.name.lastIndexOf(".") + 1);
         return this.validFileFormats.some((format)=> thisFileFormat === format);   
       });
-    this.uploadedFileNames = this.uploadedFiles.map(({name}) => name);
+    
   }
 
   /**
@@ -187,22 +189,20 @@ export default class ATATFileUpload extends Vue {
    */
   private initProgressBar(): void {
     const fileNameChangeInterval = 
-        Math.floor(100/this.uploadedFileNames.length);
-    let fileNameArrayIndex = 0;
+        Math.floor(100/this.validFiles.length);
     this.isLoading = true;
     this.uploadingStatusInterval = setInterval(()=>{
+     
       if (this.uploadingStatus<100){
-        this.uploadingFileName = this.uploadedFileNames[fileNameArrayIndex];
-        console.log(this.uploadingFileName);
         if (this.uploadingStatus > 0 && this.uploadingStatus % fileNameChangeInterval === 0){
-          fileNameArrayIndex++;
+          this.fileNameArrayIndex++;
         }
         this.uploadingStatus += 1; 
       } else {
         this.isLoading = false;
         clearInterval(this.uploadingStatusInterval);
       }
-    }, 100, fileNameChangeInterval, fileNameArrayIndex);
+    }, 100, fileNameChangeInterval);
   }
 
   get progressStopped(): boolean{
@@ -219,7 +219,6 @@ export default class ATATFileUpload extends Vue {
     this.fileUploadControl = document.getElementById(
       this.id + "FileUpload"
     ) as HTMLInputElement;
-
     //prevents Browser from downloading the file if file is accidentally
     //dropped outside of dropzone
     window.addEventListener("drop", this.preventDrop, false);
