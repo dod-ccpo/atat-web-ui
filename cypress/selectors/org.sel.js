@@ -49,5 +49,14 @@ module.exports = {
   zipCodeTxtBox: "#ZIPCode_text_field",
   requestModalTitle: "#modalDialogTitle",
   requestAgencyLink: "#RequestAgencyAdded",
-  agencyOrgNameTxtLabel:"#AgencyOrgName_text_field_label"
+  agencyOrgNameTxtLabel: "#AgencyOrgName_text_field_label",
+  streetError: "#StreetAddress_text_field_control .field-error",
+  cityError: "#City_text_field_control .field-error",
+  stateError: "#State_AutoComplete_Wrapper .field-error",
+  zipError: "#ZIPCode_text_field_control .field-error",
+  apoFpoDropDownError: "#APO_FPO_DPO_dropdown_field_control .field-error",
+  aaAEError: "#StateCode_dropdown_field_control .field-error",
+  stateProvinceError: "#StateProvince_text_field_control .field-error",
+  postalCodeError: "#PostalCode_text_field_control .field-error",
+  countryError:"#Country_AutoComplete_Wrapper .field-error"
 }
