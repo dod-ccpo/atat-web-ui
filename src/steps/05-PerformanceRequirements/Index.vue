@@ -8,7 +8,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class PerformanceRequirements extends Vue {
+export default class PerformanceRequirementsIndex extends Vue {
 }
 </script>
 

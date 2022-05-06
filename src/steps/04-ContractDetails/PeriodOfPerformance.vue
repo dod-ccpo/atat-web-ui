@@ -141,7 +141,7 @@ import draggable from "vuedraggable";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
-import PoPLearnMore from "./PopLearnMore.vue";
+import PoPLearnMore from "./PoPLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
