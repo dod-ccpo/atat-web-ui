@@ -1,4 +1,4 @@
-import { bootstrapMockApis} from "../../../helpers";
+import { bootstrapMockApis,randomNumber,randomString} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import org from "../../../selectors/org.sel";
 import contact from "../../../selectors/contact.sel";
@@ -228,5 +228,98 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       contact.phoneInputBox,
       "351245121"); 
   });    
+
+  it.only("TC6: Contact Information: Field Validations", () => {
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information "); 
+    
+    //Navigates to Contact information
+    cy.verifyPageHeader("Let’s confirm your contact information");
+
+    // FirstName is blank
+    cy.verifyRequiredInput(
+      contact.fNameTxtBox,
+      contact.fNameError,
+      "Please enter your first name."
+    );
+    //LastName is blank
+    cy.verifyRequiredInput(
+      contact.lNameTxtBox,
+      contact.lNameError,
+      "Please enter your last name."
+    );
+    //Title is blank
+    cy.verifyRequiredInput(
+      contact.titleTxtBox,
+      contact.titleError,
+      "Please enter your title."
+    );
+
+    //Phone Number field is blank
+    cy.verifyRequiredInput(
+      contact.phoneTxtBox,
+      contact.phoneError,
+      "Please enter your phone number"
+    );
+
+    //US phone Number is not in standard format
+    const phoneNumber = randomNumber(8)
+    cy.findElement(contact.phoneTxtBox).type(phoneNumber)
+      .focus().blur({ force: true })
+      .then(() => {
+        cy.checkErrorMessage(
+          contact.phoneError,
+          "Please enter a number using the format for  United States (e.g., 999-999-9999)."
+        );
+      });
+    
+    //email address is blank
+    cy.verifyRequiredInput(
+      contact.emailTxtBox,
+      contact.emailError,
+      "Please enter your email address."
+    );
+
+    //email isn't standard email format
+    const email = randomString(5)+"@test.com"
+    cy.findElement(contact.emailTxtBox).should("be.visible").clear()
+      .type(email).blur({ force: true }).then(() => {
+        cy.checkErrorMessage(
+          contact.emailError,
+          "Please use your .mil or .gov email address."
+        );
+      });
+              
+  });   
+  
+  it.only("TC7: Military: Field Validations", () => {
+    cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
+
+    //Navigates to Contact information
+    cy.verifyPageHeader("Let’s confirm your contact information");
+    
+    //service Agency is blank
+    cy.findElement(contact.militaryRadioBtn).click({ force: true });
+
+    //Validation message for Service Agency
+    cy.findElement(contact.serviceBranchDropdown).focus()
+      .blur().then(() => {
+        cy.checkErrorMessage(
+          contact.serviceBranchError,
+          "Please enter your Service Branch.");
+        
+      });
+    
+    cy.findElement(contact.serviceBranchDropdown).focus().then(()=>{
+      cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
+      cy.findElement(contact.serviceDropDownList).first().click();
+    });
+    //Validation message for Rank
+    cy.verifyRequiredDropdown(
+      contact.rankInput,
+      contact.rankError,
+      "Please enter your Please select your military rank."
+    );
+        
+  });  
   
 });      
