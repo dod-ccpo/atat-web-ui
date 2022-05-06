@@ -181,7 +181,7 @@ import { RadioButton, SelectData } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
-import OrganiationData from "@/store/organizationData";
+import OrganizationData from "@/store/organizationData";
 import ContactData from "@/store/contactData";
 
 
@@ -356,8 +356,8 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadOrganization() as Record<string, string>
-    this.serviceOrAgencyData = convertSystemChoiceToSelect(OrganiationData.service_agency_data);
-    this.disaOrgData = convertSystemChoiceToSelect(OrganiationData.disa_org_data);
+    this.serviceOrAgencyData = convertSystemChoiceToSelect(OrganizationData.service_agency_data);
+    this.disaOrgData = convertSystemChoiceToSelect(OrganizationData.disa_org_data);
     this.stateListData = ContactData.stateChoices;
 
     if (storeData) {
