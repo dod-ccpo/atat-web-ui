@@ -40,7 +40,7 @@ import ContractType from "../steps/05-ContractDetails/ContractType.vue";
 import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
 import PackagingPackingAndShipping from 
   "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
-import Training from "../steps/05-ContractDetails/Training.vue";
+import Training from "../steps/05-ContractDetails/TrainingCourses.vue";
 import POPStart from "@/steps/05-ContractDetails/POPStart.vue";
 
 // Step 6 - Government Furnished Equipment
