@@ -1,6 +1,6 @@
 <template>
   <svg
-    :viewBox="'0 0 ' + width + ' ' + height"
+    viewBox="0 0 12 12"
     xmlns="http://www.w3.org/2000/svg"
   >
     <!-- eslint-disable -->
@@ -20,7 +20,5 @@ import { Component, Prop } from "vue-property-decorator";
 @Component({})
 export default class Close extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
-  @Prop({ default: 0, required: true }) private width!: number;
-  @Prop({ default: 0, required: true }) private height!: number;
 }
 </script>

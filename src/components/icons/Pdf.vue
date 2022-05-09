@@ -1,5 +1,5 @@
 <template>
-  <svg :viewBox="'0 0 ' + width + ' ' + height" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox='0 0 32 40' xmlns="http://www.w3.org/2000/svg">
     <!-- eslint-disable -->
       <path
         d="M20 0.03125H4C1.8 0.03125 0.0200005 1.83125 0.0200005 4.03125L0 36.0313C0 38.2313 1.78 40.0313 3.98 40.0313H28C30.2 40.0313 32 38.2313 32 36.0313V12.0313L20 0.03125ZM28 36.0313H4V4.03125H18V14.0313H28V36.0313Z"
@@ -20,7 +20,5 @@ import { Component, Prop } from "vue-property-decorator";
 @Component({})
 export default class Pdf extends Vue {
   @Prop({ default: "61686c", required: true }) private color!: string;
-  @Prop({default: 0, required: true}) private width!: number;
-  @Prop({default: 0, required: true}) private height!: number;
 }
 </script>

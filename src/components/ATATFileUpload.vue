@@ -1,53 +1,80 @@
 <template>
-<div>
-  <div v-cloak 
-    @dragenter="onDragEnter" 
-    @drop.prevent="addDropFile" 
-    @dragover.prevent
-  >
-     <v-file-input
-      ref="atatFileUpload"
-      v-if="isLoading === false && validFiles.length === 0"
-      :id = "id + 'FileUpload'"
-      :class="[{'v-text-field--is-hovering' : isHovering},'atat-file-upload']"
-      multiple
-      prepend-icon=""
-      accept="application/pdf,application/vnd.ms-excel"
-      :truncate-length="truncateLength"
-      :clearable="false"
-      @change="fileUploadChanged"
-      :hide-details="true"       
+  <div>
+    <div
+      v-cloak
+      @dragenter="onDragEnter"
+      @drop.prevent="addDropFile"
+      @dragover.prevent
     >
-      <template v-slot:prepend-inner>
-
-        <div v-if="isFullSize" class="content d-flex flex-column align-center pt-9">
-          <ATATSVGIcon name="uploadFile" :width="40" :height="50"  />
-          <h2 class="mt-5">Drag and Drop</h2>
-          <p class="mb-3 d-flex justify-center text-base-darkest ">your file here or 
+      <v-file-input
+        ref="atatFileUpload"
+        v-show="this.validFiles.length !== 1"
+        :id="id + 'FileUpload'"
+        :class="[{'v-text-field--is-hovering' : isHovering},'atat-file-upload']"
+        multiple
+        prepend-icon=""
+        accept="application/pdf,application/vnd.ms-excel, .xlsx"
+        :truncate-length="truncateLength"
+        :clearable="false"
+        @change="fileUploadChanged"
+        :hide-details="true"
+      >
+        <template v-slot:prepend-inner>
+          <div
+            v-if="isFullSize"
+            class="content d-flex flex-column align-center pt-9"
+            @click="fileUploadClicked"
+          >
+            <ATATSVGIcon name="uploadFile" :width="40" :height="50" />
+            <h2 class="mt-5">Drag and Drop</h2>
+            <p class="mb-3 d-flex justify-center text-base-darkest">
+              your file here or
               <a
                 role="button"
                 id="BrowseToUpload"
-                class="_text-link ml-1" 
+                class="_text-link ml-1"
                 @mousedown="fileUploadClicked"
               >
+                browse to upload
+              </a>
+            </p>
+            <p class="mt-3 mb-9">Use a PDF file with a max size of 10 MB.</p>
+          </div>
+          <div v-else 
+            class="content-mini d-flex align-center width-100"
+            @click="fileUploadClicked">
+            <div>
+              <ATATSVGIcon name="uploadFile" :width="40" :height="50" />
+            </div>
+            <div class="d-flex flex-column justify-center ml-6">
+              <h2>Drag and Drop</h2>
+              <p class="mb-0 mt-1 d-flex justify-center text-base-darkest">
+                your file here or
+                <a
+                  role="button"
+                  id="BrowseToUpload"
+                  class="_text-link ml-1"
+                  @mousedown="fileUploadClicked"
+                >
                   browse to upload
-            </a>
-          </p>
-          <p class="mt-3 mb-9">Use a PDF file with a max size of 10 MB.</p>
-        </div>
-        <div v-else>
-          
-        </div>
-      </template>
-    </v-file-input>
+                </a>
+              </p>
+            </div>
+            <p class="ml-auto mb-0">
+              Use a PDF file with a max size of 10 MB.
+            </p>
+          </div>
+        </template>
+      </v-file-input>
+    </div>
+
+    <ATATFileList
+      :files="validFiles"
+      :indexToDisplay="fileNameArrayIndex"
+      :uploadingStatus="uploadingStatus"
+      :class="[{ 'mt-10': !isFullSize }]"
+    />
   </div>
- 
-  <ATATFileList 
-    :files="validFiles" 
-    :indexToDisplay="fileNameArrayIndex" 
-    :isLoading="isLoading"
-    :uploadingStatus="uploadingStatus" />
-</div>
 </template>
 
 <script lang="ts">
@@ -75,7 +102,6 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
-  
 
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
@@ -83,7 +109,6 @@ export default class ATATFileUpload extends Vue {
   private uploadedFileNames: string[] = [];
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
-  private isLoading = false;
   private uploadingStatus = 0;
   private uploadingStatusInterval = 0;
   private uploadingFileName = "";
@@ -91,12 +116,12 @@ export default class ATATFileUpload extends Vue {
   private filesUploaded = false;
   private isFullSize = true;
 
-  
   //Events
   /**
    * triggers html file upload click
    */
   private fileUploadClicked(): void {
+    console.log('hi');
     this.fileUploadControl.click();
   }
 
@@ -107,12 +132,14 @@ export default class ATATFileUpload extends Vue {
   private fileUploadChanged(): void {
     this.removeInvalidFiles(this.fileUploadControl.files as FileList);
     Vue.nextTick(() => {
-      this.initProgressBar();
       //remove default vuetify status that displays after
       //upload (eg. '2 files')
-      const vuetifyFileUploadStatus = 
-        document.getElementsByClassName("v-file-input__text")[0] as HTMLDivElement;
-      vuetifyFileUploadStatus.innerHTML = "";
+      const vuetifyFileUploadStatus = document.getElementsByClassName(
+        "v-file-input__text"
+      )[0] as HTMLDivElement;
+      if (vuetifyFileUploadStatus){
+        vuetifyFileUploadStatus.innerHTML = "";
+      }
     });
   }
 
@@ -146,11 +173,9 @@ export default class ATATFileUpload extends Vue {
    *
    */
   private addDropFile(e: DragEvent): void {
-    this.isLoading = true;
     this.isHovering = false;
     const dt = e.dataTransfer as DataTransfer;
     this.removeInvalidFiles(dt.files as FileList);
-    this.initProgressBar();
   }
 
   /**
@@ -161,53 +186,66 @@ export default class ATATFileUpload extends Vue {
    *
    */
   private removeInvalidFiles(files: FileList): void {
-    this.validFiles = Array.from(files || []).filter(
-      (file)=>{
-        const thisFileFormat = file.name.substring(file.name.lastIndexOf(".") + 1);
-        return this.validFileFormats.some((format)=> thisFileFormat === format);   
-      });
+    const _validFiles = Array.from(files || []).filter((file) => {
+      const thisFileFormat = file.name.substring(
+        file.name.lastIndexOf(".") + 1
+      );
+      return this.validFileFormats.some((format) => thisFileFormat === format);
+    });
+
+    // if (this.validFiles.length>0){
+    this.validFiles.push(..._validFiles);
+    // } else {
+    //   this.validFiles = _validFiles;
+    // }
+    // debugger;
+    
+    this.isFullSize = this.validFiles.length === 0;
   }
 
   /**
-   *  start the progress bar.  Temp for now until we can tie into 
+   *  start the progress bar.  Temp for now until we can tie into
    *  the API call.
    */
-  private initProgressBar(): void {
-    const fileNameChangeInterval = 
-        Math.floor(100/this.validFiles.length);
-    this.isLoading = true;
-    this.uploadingStatusInterval = setInterval(()=>{
-      if (this.uploadingStatus<100){
-        if (this.uploadingStatus > 0 && this.uploadingStatus % fileNameChangeInterval === 0){
-          this.fileNameArrayIndex++;
-        }
-        this.uploadingStatus += 1; 
-      } else {
-        this.filesUploaded = true;
-        this.isLoading = false;
-        clearInterval(this.uploadingStatusInterval);
-      }
-    }, 100, fileNameChangeInterval);
-  }
-
-  get progressStopped(): boolean{
-    const progressDone = this.uploadingStatus === 100;
-    if (progressDone){
-      this.isLoading = false;
-    }
-    return progressDone;
-  }
+  // private initProgressBar(): void {
+  //   const fileNameChangeInterval = Math.floor(100 / this.validFiles.length);
+  //   this.isLoading = true;
+  //   this.uploadingStatus = 0;
+  //   this.uploadingStatusInterval = setInterval(
+  //     () => {
+  //       if (this.uploadingStatus < 100) {
+  //         if (
+  //           this.uploadingStatus > 0 &&
+  //           this.uploadingStatus % fileNameChangeInterval === 0
+  //         ) {
+  //           this.fileNameArrayIndex++;
+  //         }
+  //         this.uploadingStatus += 4;
+  //       } else {
+  //         this.filesUploaded = true;
+  //         this.isLoading = false;
+  //         clearInterval(this.uploadingStatusInterval);
+  //       }
+  //     },
+  //     100,
+  //     fileNameChangeInterval
+  //   );
+  // }
 
   //life cycle hooks
   private mounted(): void {
-   
     this.fileUploadControl = document.getElementById(
       this.id + "FileUpload"
     ) as HTMLInputElement;
+
     //prevents Browser from downloading the file if file is accidentally
     //dropped outside of dropzone
     window.addEventListener("drop", this.preventDrop, false);
     window.addEventListener("dragover", this.preventDrop, false);
+  }
+
+  private updated(): void{
+    this.isFullSize = this.validFiles.length === 0;
   }
 }
 </script>

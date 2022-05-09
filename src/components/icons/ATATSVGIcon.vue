@@ -32,14 +32,18 @@ import FilePresent from "@/components/icons/FilePresent.vue"
 export default class ATATSVGIcon extends Vue {
   // props
   @Prop({default: "base"}) private color!: string; // DISA Base
-  @PropSync("width", {default: 0}) private _width!: number;
-  @PropSync("height",{default: 0}) private _height!: number;
+  @PropSync("width", {default: 0, required: true}) private _width!: number;
+  @PropSync("height",{default: 0, required: true}) private _height!: number;
   @Prop({default: "", required: true}) private name!: string;
   
-  get divStyle(): string{
-    return "width: " + this._width + "px;" +
+  private divStyle = "";
+
+  private setDivStyle(): void {
+    Vue.nextTick(()=>{
+      this.divStyle =  "width: " + this._width + "px;" +
             "height: " + this._height + "px;" +
             "line-height: 0px";
+    });
   }
   
   private getColor(): string {
@@ -57,12 +61,7 @@ export default class ATATSVGIcon extends Vue {
   ]
 
   private mounted(): void{
-
-    // in case only one prop is passed
-    // assume the icon is proportional and 
-    // assign same value to both height/width
-    this._height = this._height > 0 ? this._height : this._width;
-    this._width = this._width > 0 ? this._width : this._height;
+    this.setDivStyle();
   }
 
 }
