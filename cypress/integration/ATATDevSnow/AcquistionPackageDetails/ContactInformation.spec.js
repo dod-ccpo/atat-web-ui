@@ -291,7 +291,8 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
               
   });   
   
-  it("TC7: Military: Field Validations", () => {
+  // Skipping this test,blocked due to AT-7300. 
+  it.skip("TC7: Military: Field Validations", () => {
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
     //Navigates to Contact information
