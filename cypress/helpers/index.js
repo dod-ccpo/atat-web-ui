@@ -58,3 +58,8 @@ export function randomString(length) {
     length
   );
 }
+
+export function randomNumberBetween(min, max) {
+  // The string is not a secret as it is just a list of min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min) // pragma: allowlist secret
+}

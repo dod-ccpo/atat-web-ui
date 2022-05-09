@@ -1,8 +1,9 @@
-import { bootstrapMockApis,colors,cleanText ,randomAlphaNumeric} from "../../helpers";
-import common from "../../selectors/common.sel"
-import contractDetails from "../../selectors/contractDetails.sel";
+import { bootstrapMockApis, colors, cleanText, randomAlphaNumeric, randomNumberBetween }
+  from "../../../helpers";
+import common from "../../../selectors/common.sel"
+import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: Contract Details Step", () => {
+describe("Test suite: Contract Details Step:Period of Performance substep", () => {
 
 
   beforeEach(() => {
@@ -11,11 +12,14 @@ describe("Test suite: Contract Details Step", () => {
         
   });
     
-  it("TC1: Contract Details on the Vertical Stepper", () => {
+  it("TC1: Period of Perfomance on the Vertical Stepper is active", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepPopText, " Period of Performance ");
     cy.findElement(common.stepContractDetailsText)
+      .should("be.visible")
+      .and('have.css', 'color', colors.primary);
+    cy.findElement(common.subStepPopText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary)
       .click();     
@@ -111,7 +115,33 @@ describe("Test suite: Contract Details Step", () => {
     
   });
 
-  it("TC5: Asserts: Do you want to request a PoP start date?", () => {
+  it("TC5: Duplicate: Drag and Drop", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.findElement(contractDetails.baseDropdownIcon).click();
+    cy.findElement(contractDetails.baseDropdownMonth).click();
+    //Enter the Value for Base
+    const base = randomNumberBetween(1,12);
+    cy.findElement(contractDetails.baseInputTxtBox).type(base);
+    cy.findElement(contractDetails.baseDuplicateButton).click({force: true})
+      .then(() => {
+        cy.findElement(contractDetails.optionalTextBox).should("exist")
+          .and  ("have.value", base)
+        cy.findElement(contractDetails.optionOneDropdownSelected).should("exist")
+          .and("have.text","Month(s)")
+      });
+    cy.findElement(contractDetails.addOptionLink).should("exist").click();
+    const option2 =randomNumberBetween(1,4);
+    cy.findElement(contractDetails.optionalTwoTextBox).type(option2);
+    cy.findElement(contractDetails.sourceItem).drag(contractDetails.targetItem).then((success) => {
+      assert.isTrue(success)
+      cy.findElement(contractDetails.sourceItem).trigger("dragend");
+    });
+    //After Drag and Drop,'Base' textbox has 'Option#2' value &'Option#2' textbox has 'Base' value
+    cy.findElement(contractDetails.optionalTwoTextBox).should("have.value", base);
+    cy.findElement(contractDetails.baseInputTxtBox).should("have.value", option2);
+  });
+
+  it("TC6: Asserts: Do you want to request a PoP start date?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.header,
       " Let’s gather some details about the duration of your task order ");
@@ -134,7 +164,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
   
-  it("TC6: Do you want to request a PoP start date?: Select Radio Option", () => {
+  it("TC7: Do you want to request a PoP start date?: Select Radio Option", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.header,
       " Let’s gather some details about the duration of your task order ");
@@ -159,7 +189,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
   });
 
-  it("TC7: Do you want to request a PoP start date?: Requested Start date is Not later than",
+  it("TC8: Do you want to request a PoP start date?: Requested Start date is Not later than",
     () => {
       cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
       cy.textExists(common.header,
@@ -197,7 +227,7 @@ describe("Test suite: Contract Details Step", () => {
       cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     });
 
-  it("TC8: Asserts: Will this be a future recurring requirement?", () => {
+  it("TC9: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(contractDetails.popRadioGroup).should("exist");
@@ -220,7 +250,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
 
-  it("TC9: Asserts: Which contract type(s) applies to this acquisition?", () => {
+  it("TC10: Asserts: Which contract type(s) applies to this acquisition?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(contractDetails.popRadioGroup).should("exist");
@@ -252,7 +282,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
   });
 
-  it("TC10: ContractType: Select checkbox options", () => {
+  it("TC11: ContractType: Select checkbox options", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(contractDetails.popRadioGroup).should("exist");
