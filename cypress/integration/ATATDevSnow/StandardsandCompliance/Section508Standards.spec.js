@@ -1,6 +1,6 @@
 import { bootstrapMockApis,colors,cleanText,} from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import occ from "../../../selectors/occ.sel";
+import occ from "../../../selectors/standComp.sel";
 
 describe("Test suite: SAC: Section 508 Standards", () => {
   
@@ -11,10 +11,10 @@ describe("Test suite: SAC: Section 508 Standards", () => {
   });    
     
   it("TC1: SAC: Section508 Standards is active on the Vertical Stepper", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //Verify the Substepis active
     cy.textExists(common.substepSection508Text, " Section 508 Standards ").click(); 
-    cy.findElement(common.stepOCCText)
+    cy.findElement(common.stepStandCompText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary);
     cy.findElement(common.substepSection508Text)
@@ -24,7 +24,7 @@ describe("Test suite: SAC: Section 508 Standards", () => {
   });
 
   it("TC2: Asserts: Section 508 standards", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No on PII screen
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
 
