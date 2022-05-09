@@ -42,6 +42,8 @@ import PackagingPackingAndShipping from
   "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
 import Training from "../steps/05-ContractDetails/Training.vue";
 import POPStart from "@/steps/05-ContractDetails/POPStart.vue";
+import TrainingPage1 from "@/steps/05-ContractDetails/TainingPage1.vue";
+
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -133,7 +135,8 @@ export const routeNames = {
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
-  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements"
+  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
+  TrainingPage1: "Training_Page_1"
 };
 
 /**
@@ -382,12 +385,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: PackagingPackingAndShipping,
       },
       {
-        name: routeNames.Training,
+        name: routeNames.TrainingPage1,
         menuText: "Training",
         path: "training",
         completePercentageWeight: 2,
-        component: Training,
+        component: TrainingPage1,
       },
+
     ]
   },
   {
