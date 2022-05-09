@@ -302,10 +302,10 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
         cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should("exist");
         const inputText = randomAlphaNumeric(8);
         cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
-      })
+      });
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.findElement(common.subStepCoIText).contains("Conflict of Interest")
+    cy.findElement(common.subStepClassReqsLink).contains("Classification Requirements")
       .and('have.css', 'color', colors.primary);
   });
 
