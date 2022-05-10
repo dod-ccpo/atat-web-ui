@@ -70,10 +70,10 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
-export const ContractTrainigReq = (current: string): string => {
-  const contractTrainig
+export const ContractTrainingReq = (current: string): string => {
+  const contractTraining
       = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
-  if (contractTrainig) {
+  if (contractTraining) {
     return routeNames.TrainingCourses;
   }
   return current === routeNames.Training
@@ -88,7 +88,7 @@ const resolvers: Record<string, StepRouteResolver> = {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
-  ContractTrainigReq,
+  ContractTrainingReq,
 };
 
 export const InvokeResolver = (
