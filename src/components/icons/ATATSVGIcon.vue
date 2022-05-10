@@ -17,7 +17,8 @@ import Pdf from "@/components/icons/Pdf.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 import Close from "@/components/icons/Close.vue";
 import Remove from "@/components/icons/Remove.vue";
-import FilePresent from "@/components/icons/FilePresent.vue"
+import FilePresent from "@/components/icons/FilePresent.vue";
+import ExternalLink from "@/components/icons/ExternalLink.vue";
 
 @Component({
   components:{
@@ -26,6 +27,7 @@ import FilePresent from "@/components/icons/FilePresent.vue"
     Close,
     Remove,
     FilePresent,
+    ExternalLink,
   }
 })
 

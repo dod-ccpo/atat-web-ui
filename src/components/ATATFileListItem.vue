@@ -1,18 +1,23 @@
 <template>
-  <div
-    class="content-div d-flex align-center mb-5"
-  >
+  <div class="content-div d-flex align-center mb-5">
     <ATATSVGIcon
-      :name="isPDF(file.name) ? 'pdf' :'filePresent'"
+      :name="isPDF(file.name) ? 'pdf' : 'filePresent'"
       :width="32"
       :height="50"
     />
 
     <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
       <div v-if="isLoading">
-        <div class="filename-and-extension d-flex align-start">
-          <div :id="'File0' + index">
-            {{ getTruncatedFileName(file.name) }}
+        <div class="filename-and-extension d-flex align-start width-100">
+          <div :id="'File0' + index" v-if="file.name.length < 50">
+            {{ file.name }}
+          </div>
+          <div :id="'File0' + index" class="d-flex align-center justify-space-between" v-else>
+            <div class="truncated-file-name">
+              {{ file.name }}
+            </div>
+            <div class="ml-n1 mr-n1">...</div>
+            <div class="truncated-ext">{{ getExtension(file.name) }}</div>
           </div>
         </div>
         <div class="d-flex align-center mt-auto">
@@ -27,25 +32,38 @@
             :id="'StopLoadingFile0' + index"
             @click="removeFile(index)"
           >
-            <ATATSVGIcon
-              name="close"
-              color="base"
-              :width="11"
-              :height="11"
-            />
+            <ATATSVGIcon name="close" color="base" :width="11" :height="11" />
           </a>
         </div>
       </div>
       <div v-else>
-        <div>
+        <div class="width-100">
           <a
             role="button"
             :id="'FileLink0' + index"
             target="_blank"
-            class="_text-link"
+            class="_text-link d-flex align-center justify-start"
           >
-            {{ getTruncatedFileName(file.name) }}
-            <span class="_external-link"></span>
+            <div :id="'File0' + index" v-if="file.name.length < 50">
+              {{ file.name }}
+            </div>
+            <div :id="'File0' + index" class="d-flex align-center" v-else>
+              <div class="truncated-file-name">
+                {{ file.name }}
+              </div>
+              <div class="ml-n3">...</div>
+              <div class="truncated-ext">{{ getExtension(file.name) }}</div>
+            </div>
+            <div>
+              <ATATSVGIcon
+                :id="'viewIcon0' + index"
+                name="externalLink"
+                color="primary"
+                :width="15"
+                :height="15"
+                class="ml-2"
+              />
+            </div>
           </a>
         </div>
         <div>
@@ -71,6 +89,22 @@
   </div>
 </template>
 
+<style>
+.file-link{
+  width: 
+}
+.truncated-file-name {
+  overflow: hidden;
+  height: 24px;
+  word-break: break-all;
+  text-overflow: clip;
+  width: calc(100% - 32px);
+}
+.truncated-ext {
+  
+}
+</style>
+
 <script lang='ts'>
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
@@ -84,7 +118,6 @@ import { formatInTimeZone } from "date-fns-tz";
   },
 })
 export default class ATATFileListItem extends Vue {
-
   /** PROPS */
   @Prop({ default: () => [] }) private file!: File;
   @Prop({ default: 0 }) private index!: number;
@@ -119,6 +152,10 @@ export default class ATATFileListItem extends Vue {
     return filename;
   }
 
+  private getExtension(filename: string): string {
+    return filename.substr(filename.lastIndexOf(".") + 1);
+  }
+
   /**
    * @param fileName: string
    * returns if file is PDF
@@ -132,40 +169,37 @@ export default class ATATFileListItem extends Vue {
 
   /**
    * @param idx: number
-   * 
-   * removes file at index 
+   *
+   * removes file at index
    */
 
   private removeFile(idx: number): void {
-    Vue.nextTick(()=>{
-      this.$emit("removeFiles", idx)
+    Vue.nextTick(() => {
+      this.$emit("removeFiles", idx);
     });
   }
-  
+
   /**
    *  start the progress bar.  Temp for now until we can tie into
    *  the API call.
    */
-  private uploadFile(): void{
-    const progressInterval = Math.random() *(5);
+  private uploadFile(): void {
+    const progressInterval = Math.random() * 5;
     console.log(progressInterval);
-    this.uploadingStatusInterval = setInterval(
-      () => {
-        if (this.uploadingStatus < 100) {
-          this.uploadingStatus += progressInterval;
-        } else {
-          this.isLoading = false;
-          clearInterval(this.uploadingStatusInterval);
-        }
-      }, 50
-    );
+    this.uploadingStatusInterval = setInterval(() => {
+      if (this.uploadingStatus < 100) {
+        this.uploadingStatus += progressInterval;
+      } else {
+        this.isLoading = false;
+        clearInterval(this.uploadingStatusInterval);
+      }
+    }, 50);
   }
-
 
   /**
    * uploads file when mounted
    */
-  private mounted(): void{
+  private mounted(): void {
     this.uploadFile();
   }
 }
