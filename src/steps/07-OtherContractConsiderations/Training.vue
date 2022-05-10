@@ -12,7 +12,6 @@
             required by statute, regulation, DoD, or local (e.g. DISA) policy. If your project
             requires specific training, we’ll gather details about these courses next.
           </p>
-          {{selectedOption}}
           <ATATRadioGroup
             class="copy-max-width mb-10 max-width-740"
             id="TrainingOptions"
@@ -54,12 +53,12 @@ export default class Training extends Mixins(SaveOnLeave) {
     {
       id: "Yes",
       label: "Yes",
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: "No.",
-      value: "false",
+      value: "NO",
     },
   ];
 
@@ -72,10 +71,10 @@ export default class Training extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadContractConsiderations();
     this.saved = {
-      contractor_required_training: storeData.contractor_required_training || 'UNSELECTED',
+      contractor_required_training: storeData.contractor_required_training || '',
     }
     if (storeData) {
-      this.selectedOption = storeData.contractor_required_training || 'UNSELECTED';
+      this.selectedOption = storeData.contractor_required_training || '';
     }
   }
 

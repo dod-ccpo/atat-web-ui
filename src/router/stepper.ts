@@ -86,7 +86,7 @@ import {
   CurrentContractRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
-  A11yRequirementResolver,
+  A11yRequirementResolver, ContractTrainigReq,
 } from "./resolvers";
 
 export const routeNames = {
@@ -418,6 +418,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "training",
         completePercentageWeight: 2,
         component: TrainingCourses,
+        routeResolver: ContractTrainigReq
+
       },
     ]
   },
