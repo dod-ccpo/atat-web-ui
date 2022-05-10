@@ -17,7 +17,7 @@
 
 <script lang='ts'>
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATFileListItem from "@/components/ATATFileListItem.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
@@ -29,15 +29,51 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 })
 export default class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
-  @Prop({ default: () => [] }) private files!: File[];
-  @Prop({ default: -1 }) private indexToDisplay!: number;
+  @Prop({ default: () => [] }) private validFiles!: File[];
+  @PropSync("isFullSize", {default: true}) private _isFullSize!: boolean;
 
+  private files: File[] = [];
+
+  /**
+   * sets title to plural when necessary
+   */
   private getFileUploadsDivTitle(): string {
     return "Your Upload" + (this.files.length > 1 ? "s" : "");
   }
 
+  /**
+   * @param idx: number
+   * removes file from both file arrays at index 
+   */
   private removeFiles(idx: number): void {
-    this.files.splice(idx, 1);
+    Vue.nextTick(()=>{
+      this.files.splice(idx, 1);
+      this.validFiles.splice(idx,1);
+      this._isFullSize = this.validFiles.length === 0;
+    })
+  }
+
+  /**
+   * add files to this.files when necessary
+   * preventing the same file from being displayed
+   * multiple times
+   */
+  @Watch("validFiles")
+  protected setFilesToDisplay(): void{
+    if (this.files.length<this.validFiles.length){
+      this.validFiles.forEach((vFile)=>{
+  
+        //check to see if file exists
+        const doesFileExist = this.files.some(
+          (file) => {
+            return vFile.name === file.name}
+        )
+
+        if (!doesFileExist){
+          this.files.push(vFile);
+        }
+      });
+    }
   }
 }
 </script>

@@ -8,7 +8,6 @@
     >
       <v-file-input
         ref="atatFileUpload"
-        v-show="this.validFiles.length !== 1"
         :id="id + 'FileUpload'"
         :class="[{'v-text-field--is-hovering' : isHovering},'atat-file-upload']"
         multiple
@@ -69,10 +68,9 @@
     </div>
 
     <ATATFileList
-      :files="validFiles"
-      :indexToDisplay="fileNameArrayIndex"
-      :uploadingStatus="uploadingStatus"
+      :validFiles="validFiles"
       :class="[{ 'mt-10': !isFullSize }]"
+      :isFullSize.sync = "isFullSize"
     />
   </div>
 </template>
@@ -109,11 +107,6 @@ export default class ATATFileUpload extends Vue {
   private uploadedFileNames: string[] = [];
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
-  private uploadingStatus = 0;
-  private uploadingStatusInterval = 0;
-  private uploadingFileName = "";
-  private fileNameArrayIndex = -1;
-  private filesUploaded = false;
   private isFullSize = true;
 
   //Events
@@ -121,7 +114,6 @@ export default class ATATFileUpload extends Vue {
    * triggers html file upload click
    */
   private fileUploadClicked(): void {
-    console.log('hi');
     this.fileUploadControl.click();
   }
 
@@ -186,51 +178,19 @@ export default class ATATFileUpload extends Vue {
    *
    */
   private removeInvalidFiles(files: FileList): void {
-    const _validFiles = Array.from(files || []).filter((file) => {
-      const thisFileFormat = file.name.substring(
-        file.name.lastIndexOf(".") + 1
+    const _validFiles = Array.from(files || []).filter((vFile) => {
+      const thisFileFormat = vFile.name.substring(
+        vFile.name.lastIndexOf(".") + 1
       );
-      return this.validFileFormats.some((format) => thisFileFormat === format);
+      const isValidFormat = this.validFileFormats.some((format) => thisFileFormat === format);
+      const doesFileExist = this.validFiles.some(
+        (file) => {
+          return vFile.name === file.name})
+      return isValidFormat && !doesFileExist;
     });
-
-    // if (this.validFiles.length>0){
     this.validFiles.push(..._validFiles);
-    // } else {
-    //   this.validFiles = _validFiles;
-    // }
-    // debugger;
-    
     this.isFullSize = this.validFiles.length === 0;
   }
-
-  /**
-   *  start the progress bar.  Temp for now until we can tie into
-   *  the API call.
-   */
-  // private initProgressBar(): void {
-  //   const fileNameChangeInterval = Math.floor(100 / this.validFiles.length);
-  //   this.isLoading = true;
-  //   this.uploadingStatus = 0;
-  //   this.uploadingStatusInterval = setInterval(
-  //     () => {
-  //       if (this.uploadingStatus < 100) {
-  //         if (
-  //           this.uploadingStatus > 0 &&
-  //           this.uploadingStatus % fileNameChangeInterval === 0
-  //         ) {
-  //           this.fileNameArrayIndex++;
-  //         }
-  //         this.uploadingStatus += 4;
-  //       } else {
-  //         this.filesUploaded = true;
-  //         this.isLoading = false;
-  //         clearInterval(this.uploadingStatusInterval);
-  //       }
-  //     },
-  //     100,
-  //     fileNameChangeInterval
-  //   );
-  // }
 
   //life cycle hooks
   private mounted(): void {

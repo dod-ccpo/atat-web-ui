@@ -3,7 +3,7 @@
     class="content-div d-flex align-center mb-5"
   >
     <ATATSVGIcon
-      :name="isPDF(file) ? 'pdf' :'filePresent'"
+      :name="isPDF(file.name) ? 'pdf' :'filePresent'"
       :width="32"
       :height="50"
     />
@@ -25,7 +25,7 @@
           <a
             role="button"
             :id="'StopLoadingFile0' + index"
-            @click="removeFile(file)"
+            @click="removeFile(index)"
           >
             <ATATSVGIcon
               name="close"
@@ -85,11 +85,18 @@ import { formatInTimeZone } from "date-fns-tz";
 })
 export default class ATATFileListItem extends Vue {
 
+  /** PROPS */
   @Prop({ default: () => [] }) private file!: File;
   @Prop({ default: 0 }) private index!: number;
+
+  /** DATA */
   private uploadingStatus = 0;
   private uploadingStatusInterval = 0;
   private isLoading = true;
+
+  /**
+   * formats lastModifiedDate w/timezone
+   */
 
   private getLastModifiedDate(): string {
     return (
@@ -98,6 +105,10 @@ export default class ATATFileListItem extends Vue {
       formatInTimeZone(new Date(), "America/New_York", "zzz")
     );
   }
+
+  /**
+   * formats truncated filename
+   */
 
   private getTruncatedFileName(filename: string): string {
     let ext = "";
@@ -108,31 +119,52 @@ export default class ATATFileListItem extends Vue {
     return filename;
   }
 
-  private isPDF(file: File): boolean {
+  /**
+   * @param fileName: string
+   * returns if file is PDF
+   */
+
+  private isPDF(fileName: string): boolean {
     return (
-      file.name.substr(file.name.lastIndexOf(".") + 1).toLowerCase() === "pdf"
+      fileName.substr(fileName.lastIndexOf(".") + 1).toLowerCase() === "pdf"
     );
   }
 
-  private removeFile(idx: number): void {
-    this.$emit("removeFiles", idx)
-  }
+  /**
+   * @param idx: number
+   * 
+   * removes file at index 
+   */
 
+  private removeFile(idx: number): void {
+    Vue.nextTick(()=>{
+      this.$emit("removeFiles", idx)
+    });
+  }
+  
+  /**
+   *  start the progress bar.  Temp for now until we can tie into
+   *  the API call.
+   */
   private uploadFile(): void{
-    console.log(this.file.size);
-    const progressInterval = Math.ceil((this.file.size/100));
+    const progressInterval = Math.random() *(5);
+    console.log(progressInterval);
     this.uploadingStatusInterval = setInterval(
       () => {
-        if (this.uploadingStatus < this.file.size) {
+        if (this.uploadingStatus < 100) {
           this.uploadingStatus += progressInterval;
         } else {
           this.isLoading = false;
           clearInterval(this.uploadingStatusInterval);
         }
-      }
+      }, 50
     );
   }
 
+
+  /**
+   * uploads file when mounted
+   */
   private mounted(): void{
     this.uploadFile();
   }
