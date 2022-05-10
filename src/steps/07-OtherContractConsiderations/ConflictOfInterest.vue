@@ -56,7 +56,7 @@
 </template>
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -140,9 +140,15 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
     return hasChanges(this.saved, this.current);
   }
 
+  @Watch('hasConflict')
+  private onHasConflictChanged(value: string):void {
+    if(value ===  "NO"){
+      this.explanation = "";
+    }
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      debugger;
       if (this.isChanged()) {
         await AcquisitionPackage.saveContractConsiderations(this.current);
       }

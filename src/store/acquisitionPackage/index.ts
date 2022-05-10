@@ -2222,7 +2222,6 @@ export class AcquisitionPackageStore extends VuexModule {
   async saveContractConsiderations(data: ContractConsiderationsDTO): Promise<void>{
 
     try {
-      debugger;
 
       const sys_id = this.contractConsiderations?.sys_id || "";
       const savedData =
