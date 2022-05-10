@@ -3,7 +3,7 @@ import { AxiosRequestConfig, AxiosResponse } from "axios";
 import baseApi from "./base";
 
 export class TableApiBase<TableDTO> extends baseApi {
-  private tableName: string;
+  protected tableName: string;
 
   constructor(tableName: string) {
     super();

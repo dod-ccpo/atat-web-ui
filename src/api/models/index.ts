@@ -152,3 +152,10 @@ export interface AttachmentDTO extends BaseTableDTO {
   chunk_size_bytes?: string;
   hash?: string;
 }
+
+export interface FundingPlanDTO extends BaseTableDTO {
+  //file attachment id from sys attachments table
+  attachment: string;
+  extension: string;
+  file_name: string;
+}

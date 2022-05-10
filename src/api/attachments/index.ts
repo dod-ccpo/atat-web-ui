@@ -1,10 +1,14 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { ApiBase } from "../apiBase";
 import { AttachmentDTO } from "../models";
-const ENDPOINTNAME = "attachment/file";
-export class AttachmentApi extends ApiBase<AttachmentDTO> {
+import { TableApiBase } from "../tableApiBase";
+const TABLENAME = "attachment";
+export class AttachmentApi extends TableApiBase<AttachmentDTO> {
   constructor() {
-    super(ENDPOINTNAME);
+    super(TABLENAME);
+  }
+
+  protected get endPoint(): string {
+    return `/now/${this.tableName}`;
   }
 
   private async upload<AttachmentDTO>(
