@@ -72,7 +72,7 @@ export const A11yRequirementResolver = (current: string): string => {
 
 export const ContractTrainigReq = (current: string): string => {
   const contractTrainig
-      = AcquisitionPackage.contractConsiderations?.contractor_required_training === "NO";
+      = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
   if (contractTrainig) {
     return routeNames.TrainingCourses;
   }
