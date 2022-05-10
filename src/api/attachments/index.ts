@@ -1,7 +1,17 @@
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ApiBase } from "../apiBase";
-import baseApi from "../base";
-export class AttachmentApi extends ApiBase {
-  constructor(endpointName: string) {
-    super(endpointName);
+import { AttachmentDTO } from "../models";
+const ENDPOINTNAME = "attachment/file";
+export class AttachmentApi extends ApiBase<AttachmentDTO> {
+  constructor() {
+    super(ENDPOINTNAME);
   }
+
+  private async upload<AttachmentDTO>(
+    data: AttachmentDTO,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse> {
+    return this.instance.post(`${this.endPoint}/file`, data, config);
+  }
+
 }

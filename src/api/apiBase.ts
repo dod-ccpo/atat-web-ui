@@ -60,45 +60,6 @@ export class ApiBase<TData> extends baseApi {
   }
 
   /**
-   * Creates a TData object
-   * @param data TData
-   * @returns TData
-   */
-  async create(data?: TData): Promise<TData> {
-    try {
-      const response = await this.post<TData>(data);
-      if (response.status === 201) {
-        const { result } = response.data;
-        return result as TData;
-      } else {
-        throw new Error(`unable to create ${this.endpointName}`);
-      }
-    } catch (error) {
-      throw new Error(`unable to create ${this.endpointName} : ${error}`);
-    }
-  }
-
-  /**
-   * Updates a TData object
-   * @param sys_id the system id of the TData object
-   * @param data TData
-   * @returns updated TData object
-   */
-  async update(sys_id: string, data: TData): Promise<TData> {
-    try {
-      const response = await this.patch(sys_id, data);
-      if (response.status === 200) {
-        const { result } = response.data;
-        return result as TData;
-      } else {
-        throw new Error(`unable to update ${this.endpointName}`);
-      }
-    } catch (error) {
-      throw new Error(`unable to update ${this.endpointName} : ${error}`);
-    }
-  }
-
-  /**
    * Retrieves TData object from stored Table data
    * @param sys_id the system id of the Table DTO object to retrieve
    * @returns the retrieved TData object

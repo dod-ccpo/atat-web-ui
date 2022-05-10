@@ -135,3 +135,20 @@ export interface GFEOverviewDTO extends BaseTableDTO {
   property_accountable?: string;
   property_custodian_name?: string;
 }
+
+export interface AttachmentDTO extends BaseTableDTO {
+  size_bytes?: string;
+  file_name: string;
+  average_image_color?: string;
+  image_width?: string;
+  table_name: string;
+  image_height?: string;
+  download_link?: string;
+  content_type: string;
+  size_compressed?: string;
+  compressed?: string;
+  state?: string;
+  table_sys_id: string;
+  chunk_size_bytes?: string;
+  hash?: string;
+}
