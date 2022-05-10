@@ -1,64 +1,64 @@
-
 <template>
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header mb-3">
-            Do you have a potential conflict of interest?
-          </h1>
-          <div class="copy-max-width">
-            <p class="mb-10">
-              An organizational conflict of interest (COI) is a situation where, 
-              because of other relationships or activities, a person or company 
-              (1) is unable or potentially unable to render impartial assistance 
-              or advice to the government, (2) cannot objectively perform 
-              contract work, or (3) has an unfair competitive advantage. 
-              <a 
-                role="button" 
-                id="CoILearnMore" 
-                class="_text-link" 
-                @click="openSlideoutPanel"
-              >
-                Learn more about COI.      
-              </a> 
-            </p>
-            <ATATRadioGroup                                  
-              class="copy-max-width max-width-760"
-              id="COIOptions"
-              :card="true"
-              :items="conflictOfInterestOptions" 
-              :value.sync="hasConflict"
-              :rules="[$validators.required('Please select an option')]"            
-            />
-          </div>
-          <div v-show="hasConflict === 'true'">
-            <hr class="mt-5" />
-            <ATATTextArea
-              id="Explanation"
-              label="Please provide an explanation of your conflict of interest."
-              class="width-100"
-              :rows="7"
-              :rules="[
-                $validators.required(
-                  'Please provide an explanation of your COI.'
-                ),
-                $validators.maxLength(
-                  1600,
-                  'Please limit your description to 1600 characters or less'
-                ),
-              ]"
-              :value.sync="explanation"
-              maxChars="1600"
-            />
-
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
+  <v-container fluid class="container-max-width">
+    <v-row>
+      <v-col class="col-12">
+        <h1 class="page-header mb-3">
+          Do you have a potential conflict of interest?
+        </h1>
+        <div class="copy-max-width">
+          <p class="mb-10">
+            An organizational conflict of interest (COI) is a situation where,
+            because of other relationships or activities, a person or company
+            (1) is unable or potentially unable to render impartial assistance
+            or advice to the government, (2) cannot objectively perform contract
+            work, or (3) has an unfair competitive advantage.
+            <a
+              role="button"
+              id="CoILearnMore"
+              class="_text-link"
+              @click="openSlideoutPanel"
+            >
+              Learn more about COI.
+            </a>
+          </p>
+          <ATATRadioGroup
+            class="copy-max-width max-width-760"
+            id="COIOptions"
+            :card="true"
+            :items="conflictOfInterestOptions"
+            :value.sync="hasConflict"
+            :rules="[$validators.required('Please select an option')]"
+          />
+        </div>
+        <div v-show="hasConflict === 'YES'">
+          <hr class="mt-5" />
+          <ATATTextArea
+            id="Explanation"
+            label="Please provide an explanation of your conflict of interest."
+            class="width-100"
+            :rows="7"
+            :rules="[
+              $validators.required(
+                'Please provide an explanation of your COI.'
+              ),
+              $validators.maxLength(
+                1600,
+                'Please limit your description to 1600 characters or less'
+              ),
+            ]"
+            :value.sync="explanation"
+            maxChars="1600"
+          />
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+/* eslint-disable camelcase */
+import { Component, Mixins } from "vue-property-decorator";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
@@ -66,29 +66,31 @@ import CoILearnMore from "./CoILearnMore.vue";
 
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { ContractConsiderationsDTO } from "@/api/models";
 
 @Component({
   components: {
     ATATRadioGroup,
     ATATTextArea,
     CoILearnMore,
-  }
+  },
 })
-
-export default class ConflictOfInterest extends Vue {
+export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
   private explanation = "";
-  private hasConflict = null;
+  private saved: ContractConsiderationsDTO = {};
+  private hasConflict= "";
   private conflictOfInterestOptions: RadioButton[] = [
     {
       id: "Yes",
       label: `Yes. There is a potential COI that may influence which CSP should 
         be awarded this task order.`,
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: "No. This is a new requirement.",
-      value: "false",
+      value: "NO",
     },
   ];
 
@@ -99,13 +101,56 @@ export default class ConflictOfInterest extends Vue {
     }
   }
 
+  public get current(): ContractConsiderationsDTO {
+    return {
+      potential_conflict_of_interest: this.hasConflict || "",
+      conflict_of_interest_explanation: this.explanation,
+    };
+  }
+
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
       component: CoILearnMore,
       title: "Learn More",
     };
+    await this.loadOnEnter();
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
 
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadContractConsiderations();
+
+
+    this.saved = {
+      potential_conflict_of_interest: storeData.potential_conflict_of_interest || 'UNSELECTED',
+      conflict_of_interest_explanation : storeData.conflict_of_interest_explanation ||'',
+    }
+
+    if (storeData) {
+
+      const hasConflictOfInterest = storeData.potential_conflict_of_interest || 'UNSELECTED';
+      this.hasConflict =
+        hasConflictOfInterest?.length  ? 
+          storeData.potential_conflict_of_interest || "UNSELECTED" : "UNSELECTED";
+      this.explanation = storeData.conflict_of_interest_explanation || "";
+    }
+  }
+
+  public isChanged(): boolean {
+    return hasChanges(this.saved, this.current);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      debugger;
+      if (this.isChanged()) {
+        await AcquisitionPackage.saveContractConsiderations(this.current);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
 }
 </script>

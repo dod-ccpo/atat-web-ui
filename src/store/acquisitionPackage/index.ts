@@ -5,6 +5,7 @@ import api from "@/api";
 
 import {
   AcquisitionPackageDTO,
+  ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
 } from "@/api/models";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
@@ -68,6 +69,21 @@ const initialContact = () => {
   };
 };
 
+const initialContractConsiderations = ()=> {
+
+  return {
+
+    packaging_shipping_other: "false",
+    contractor_required_training: "UNSELECTED",
+    packaging_shipping_other_explanation: "",
+    conflict_of_interest_explanation: "",
+    potential_conflict_of_interest: "UNSELECTED",
+    required_training_courses: "",
+    packaging_shipping_none_apply: "false",
+    contractor_provided_transfer: "false",
+  }
+}
+
 const initialFairOpportunity = () => {
   return {
     exception_to_fair_opportunity: "",
@@ -92,6 +108,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       projectOverview: store.projectOverview,
       organization: store.organization,
       contactInfo: store.contactInfo,
+      contractConsiderations: store.contractConsiderations,
       corInfo: store.corInfo,
       acorInfo: store.acorInfo,
       fairOpportunity: store.fairOpportunity,
@@ -121,6 +138,7 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
+  contractConsiderations: ContractConsiderationsDTO | null = null;
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
@@ -206,6 +224,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setContractConsiderations(value: ContractConsiderationsDTO): void {
+    this.contractConsiderations = this.contractConsiderations ?
+      Object.assign(this.contractConsiderations, value) : value;
+  }
+
+  @Mutation
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
@@ -235,6 +259,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.organization = sessionData.organization;
     this.contactInfo = sessionData.contactInfo;
+    this.contractConsiderations = sessionData.contractConsiderations;
     this.corInfo = sessionData.corInfo;
     this.acorInfo = sessionData.acorInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
@@ -267,6 +292,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "Mission Owner" });
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
+          this.setContractConsiderations(initialContractConsiderations());
           this.setAcquisitionPackage(acquisitionPackage);
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "" });
@@ -2165,6 +2191,58 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.contractType as ContractTypeDTO;
     } catch (error) {
       throw new Error(`error occurred loading Contract Type data ${error}`);
+    }
+  }
+
+
+  @Action({rawError: true})
+  async loadContractConsiderations():Promise<ContractConsiderationsDTO> {
+
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.contractConsiderations?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const contractConsiderationsData = await api.contractConsiderationsTable.retrieve(
+          sys_id as string
+        );
+        this.setContractConsiderations(contractConsiderationsData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          contract_considerations: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.contractConsiderations as ContractConsiderationsDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading Contract Type data ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  async saveContractConsiderations(data: ContractConsiderationsDTO): Promise<void>{
+
+    try {
+      debugger;
+
+      const sys_id = this.contractConsiderations?.sys_id || "";
+      const savedData =
+        sys_id.length > 0
+          ? await api.contractConsiderationsTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
+          : await api.contractConsiderationsTable.create({
+            ...initialContractConsiderations(),
+            ...data});
+      this.setContractConsiderations(savedData);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contract_considerations: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(
+        `error occurred saving Contract Considerations data ${error}`
+      );
     }
   }
 
