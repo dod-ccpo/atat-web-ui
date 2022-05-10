@@ -50,15 +50,19 @@ export class ValidationPlugin {
  * @returns {function(*=): boolean}
  */
 
-  // todo test this with required fields
   required (
     message?: string
   ): ((v: string) => string | true | undefined) {
     message = message || "This field is required.";
     return (v: string) => {
-      if (typeof(v)==="object"){ // if typeof 'selectData(dropdown)' or string[]
-        return v && Object.values(v).every((val)=> val !=="") || message;
-      } else if (typeof(v) === "string"){ // else if typeof 'string'
+      if (typeof v === "object") { // if typeof 'selectData(dropdown)' or string[]
+        if (v && Array.isArray(v) === false) {
+          // array of objects
+          return v && Object.values(v).every((val) => val !== "") || message;
+        } 
+        // array of strings
+        return v && Object.values(v).length > 0 || message;
+      } else if (typeof(v) === "string") { 
         return (v!=="")|| message;
       }
     };

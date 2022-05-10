@@ -1,8 +1,6 @@
 
 <template>
-  <div>
-    Future Anything as a Service (Xaas) page
-  </div>
+  <router-view/>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -10,7 +8,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class AnythingAsAServiceXaas extends Vue {
+export default class PerformanceRequirementsIndex extends Vue {
 }
 </script>
 

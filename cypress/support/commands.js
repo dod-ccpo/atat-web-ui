@@ -34,13 +34,14 @@ import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
 import { cleanText, colors } from "../helpers";
-import occ from '../selectors/occ.sel';
+import sac from '../selectors/standComp.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
 
 Cypress.Commands.add("launchATAT", () => {
   if (isTestingLocally){
+    cy.clearSession();
     cy.visit(Cypress.env("localTestURL"));    
     if (runTestsInIframe) {
       cy.visit(Cypress.env("localTestURLInIframe"));    
@@ -51,8 +52,23 @@ Cypress.Commands.add("launchATAT", () => {
   } else {
     cy.visit(Cypress.env("testURL"));    
     cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+    cy.clearSession();
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
+  }
+});
+
+Cypress.Commands.add("clearSession", () => {
+  if (isTestingLocally) {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });      
+  } else {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+      const iframe = win.document.querySelector('iframe');
+      iframe.contentWindow.sessionStorage.clear();
+    });
   }
 });
 
@@ -123,6 +139,13 @@ Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,er
   cy.findElement(textboxSelector).focus().tab().then(() => {
     cy.checkErrorMessage(errorSelector, errorMessage);
   })
+});
+
+Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  cy.findElement(common.header).scrollIntoView().then(() => {
+    cy.textExists(common.header,headerText );
+  });
+  
 });
 
 Cypress.Commands.add("selectCheckBox", (selector,value) => {
@@ -529,7 +552,7 @@ Cypress.Commands.add("popLengthOptionYearExists", () => {
 
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.piiRadioOtionActive)
+  cy.findElement(sac.piiRadioOtionActive)
     .then(($radioBtn) => {      
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
@@ -547,7 +570,7 @@ Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
 
 Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.foiaRadioOptionActive)
+  cy.findElement(sac.foiaRadioOptionActive)
     .then(($radioBtn) => {
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
