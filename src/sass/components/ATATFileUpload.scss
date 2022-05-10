@@ -3,7 +3,6 @@
   color: $base !important;
   margin: 0px;
   padding: 0px;
-  // border: 1px solid $base-light !important;
 }
 
 #v-text-field--is-hovering{
@@ -65,15 +64,6 @@
       .filename-and-extension{
         max-width: 455px;
         overflow: hidden !important;
-        .name{
-          // text-overflow: ellipsis;
-          max-width: 440px;
-          white-space: nowrap; 
-          overflow: hidden;
-        }
-        .ext{
-          white-space: nowrap;
-        }
       }
       .v-progress-linear{
         width: 464px;
@@ -88,4 +78,12 @@
       }
     }
   }
+}
+
+.truncated-file-name {
+  overflow: hidden;
+  height: 24px;
+  word-break: break-all;
+  text-overflow: clip;
+  width: calc(100% - 32px);
 }
