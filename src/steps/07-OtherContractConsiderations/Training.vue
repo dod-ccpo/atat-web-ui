@@ -12,7 +12,6 @@
             required by statute, regulation, DoD, or local (e.g. DISA) policy. If your project
             requires specific training, we’ll gather details about these courses next.
           </p>
-          {{selectedOption}}
           <ATATRadioGroup
             class="copy-max-width mb-10 max-width-740"
             id="TrainingOptions"
