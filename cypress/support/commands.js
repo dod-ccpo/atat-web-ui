@@ -34,7 +34,7 @@ import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
 import { cleanText, colors } from "../helpers";
-import occ from '../selectors/occ.sel';
+import sac from '../selectors/standComp.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -552,7 +552,7 @@ Cypress.Commands.add("popLengthOptionYearExists", () => {
 
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.piiRadioOtionActive)
+  cy.findElement(sac.piiRadioOtionActive)
     .then(($radioBtn) => {      
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
@@ -570,7 +570,7 @@ Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
 
 Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.foiaRadioOptionActive)
+  cy.findElement(sac.foiaRadioOptionActive)
     .then(($radioBtn) => {
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
