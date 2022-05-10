@@ -39,7 +39,6 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
-
 @Component({
   components: {
     ATATRadioGroup,
