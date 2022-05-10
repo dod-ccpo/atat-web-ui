@@ -17,7 +17,7 @@
               total.
               <a 
                 role="button" 
-                id="PoPLearnMore" 
+                id="PopLearnMore" 
                 class="_text-link" 
                 @click="openSlideoutPanel"
               >
@@ -141,7 +141,7 @@ import draggable from "vuedraggable";
 
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
-import PoPLearnMore from "./PopLearnMore.vue";
+import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
@@ -153,7 +153,7 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
     ATATTextField,
     ATATSelect,
     draggable,
-    PoPLearnMore,
+    PopLearnMore,
   },
 })
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
@@ -246,7 +246,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
-      component: PoPLearnMore,
+      component: PopLearnMore,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);

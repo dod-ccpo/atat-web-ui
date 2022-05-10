@@ -1,6 +1,6 @@
 module.exports = {
   // Let’s gather some details about the duration of your task order 
-  popLearnMoreLink: "#PoPLearnMore",
+  popLearnMoreLink: "#PopLearnMore",
   popText: "p.mb-10",
   popLengthLabelText: "div.mb-4._semibold",
   mainWrap:".v-main__wrap",
