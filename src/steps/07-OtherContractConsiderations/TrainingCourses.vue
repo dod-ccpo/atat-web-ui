@@ -93,7 +93,6 @@ import { stringObj } from "../../../types/Global";
   },
 })
 export default class TrainingCourses extends Vue {
-  public trainingCertCount = 1;
 
   public trainingCerts: stringObj[] = [
     {name: ""}

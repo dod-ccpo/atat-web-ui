@@ -1,6 +1,8 @@
 
 <template>
-  <router-view/>
+  <div>
+    Future Classification Requirements page
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -8,7 +10,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 @Component({
 })
-export default class PerformanceRequirements extends Vue {
+export default class ClassificationRequirements extends Vue {
 }
 </script>
 

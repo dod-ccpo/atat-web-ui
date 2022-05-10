@@ -1,6 +1,6 @@
 import {bootstrapMockApis,colors,cleanText,randomAlphaNumeric,randomString} from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import occ from "../../../selectors/occ.sel";
+import occ from "../../../selectors/standComp.sel";
 
 describe("Test suite:SAC Step: PII sub step ", () => {
   
@@ -12,13 +12,13 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   });    
     
   it("TC1: SAC: PII Substep is active", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepPIIText, " Personally Identifiable Information (PII) ");
     cy.textExists(common.subStepBAAText, " Business Associate Agreement (BAA) ");
     cy.textExists(common.substepPDOIText, " Public Disclosure of Information ");
     cy.textExists(common.substepSection508Text, " Section 508 Standards "); 
-    cy.findElement(common.stepOCCText)
+    cy.findElement(common.stepStandCompText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary);
     cy.findElement(common.subStepPIIText)
@@ -29,7 +29,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   });
 
   it("TC2: Asserts: PII", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ")
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ")
     cy.textExists(common.header,
       " Let's find out if your effort provides for Personally Identifiable Information ");
     const expectedPIIText = "Personally Identifiable Information (PII)" +
@@ -80,7 +80,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   });
 
   it("TC3: PII: Select radio option: Yes", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as yes
     cy.selectPiiOption(occ.yesPIIRadioOption, "Yes");
     cy.textExists(common.header, "Tell us more about your system of records");
@@ -102,7 +102,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   });
 
   it("TC4: PII: Select radio option: No", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ")
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ")
     //select radio option as No
     cy.selectPiiOption(occ.noPIIRadioOption, "No");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
@@ -110,7 +110,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   }); 
 
   it("TC5: PII: Validations", () => {
-    cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
+    cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     // if radio option is not selected
     cy.findElement(occ.yesPIIRadioOption).focus().tab()
       .then(() => {
