@@ -32,7 +32,7 @@ export const CurrentContractRouteResolver = (current: string): string => {
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.PerformanceRequirements
+    ? routeNames.PeriodOfPerformance
     : routeNames.CurrentContract;
 };
 
