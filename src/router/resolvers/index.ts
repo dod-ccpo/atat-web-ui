@@ -70,6 +70,16 @@ export const A11yRequirementResolver = (current: string): string => {
     : routeNames.Section508Standards;
 };
 
+export const ContractTrainigReq = (current: string): string => {
+  const contractTrainig
+      = AcquisitionPackage.contractConsiderations?.contractor_required_training === "NO";
+  if (contractTrainig) {
+    return routeNames.TrainingCourses;
+  }
+  return current === routeNames.Training
+    ? routeNames.PII
+    : routeNames.Training;
+};
 
 // add resolver here so that it can be found by invoker
 const resolvers: Record<string, StepRouteResolver> = {
@@ -78,6 +88,7 @@ const resolvers: Record<string, StepRouteResolver> = {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
+  ContractTrainigReq,
 };
 
 export const InvokeResolver = (

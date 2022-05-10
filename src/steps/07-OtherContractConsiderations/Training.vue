@@ -12,12 +12,13 @@
             required by statute, regulation, DoD, or local (e.g. DISA) policy. If your project
             requires specific training, we’ll gather details about these courses next.
           </p>
+          {{selectedOption}}
           <ATATRadioGroup
             class="copy-max-width mb-10 max-width-740"
             id="TrainingOptions"
             :card="true"
             :items="TrainingOptions"
-            :value.sync="TrainingOptions"
+            :value.sync="selectedOption"
             :rules="[$validators.required('Please select an option')]"
             width="180"
 
@@ -30,10 +31,14 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import vue from 'vue';
 import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import { RadioButton } from "../../../types/Global";
+import { ContractConsiderationsDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { hasChanges } from "@/helpers";
+
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
@@ -42,7 +47,9 @@ import { RadioButton } from "../../../types/Global";
   },
 })
 
-export default class TrainingPage1 extends vue {
+export default class Training extends Mixins(SaveOnLeave) {
+  private saved: ContractConsiderationsDTO = {};
+  private selectedOption = ''
   private TrainingOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -56,6 +63,41 @@ export default class TrainingPage1 extends vue {
     },
   ];
 
+
+  public get current(): ContractConsiderationsDTO {
+    return {
+      contractor_required_training: this.selectedOption || "",
+    };
+  }
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadContractConsiderations();
+    this.saved = {
+      contractor_required_training: storeData.contractor_required_training || 'UNSELECTED',
+    }
+    if (storeData) {
+      const hasConflictOfInterest = storeData.contractor_required_training || 'UNSELECTED';
+    }
+  }
+
+  public isChanged(): boolean {
+    return hasChanges(this.saved, this.current);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.isChanged()) {
+        await AcquisitionPackage.saveContractConsiderations(this.current);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
 
 }
 </script>
