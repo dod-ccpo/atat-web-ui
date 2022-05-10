@@ -12,6 +12,7 @@
             required by statute, regulation, DoD, or local (e.g. DISA) policy. If your project
             requires specific training, we’ll gather details about these courses next.
           </p>
+          {{selectedOption}}
           <ATATRadioGroup
             class="copy-max-width mb-10 max-width-740"
             id="TrainingOptions"
@@ -36,7 +37,6 @@ import { RadioButton } from "../../../types/Global";
 import { ContractConsiderationsDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
-
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
@@ -52,7 +52,7 @@ export default class Training extends Mixins(SaveOnLeave) {
   private TrainingOptions: RadioButton[] = [
     {
       id: "Yes",
-      label: "Yes",
+      label: "Yes.",
       value: "YES",
     },
     {
@@ -62,19 +62,22 @@ export default class Training extends Mixins(SaveOnLeave) {
     },
   ];
 
-
   public get current(): ContractConsiderationsDTO {
     return {
-      contractor_required_training: this.selectedOption || "",
+      contractor_required_training: this.selectedOption || "UNSELECTED",
     };
   }
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadContractConsiderations();
     this.saved = {
-      contractor_required_training: storeData.contractor_required_training || '',
+      contractor_required_training: storeData.contractor_required_training || 'UNSELECTED',
     }
     if (storeData) {
-      this.selectedOption = storeData.contractor_required_training || '';
+      if(storeData.contractor_required_training == 'UNSELECTED') {
+        this.selectedOption ='';
+      }
+      this.selectedOption = storeData.contractor_required_training === "UNSELECTED" ? ""
+        : storeData.contractor_required_training || "UNSELECTED"
     }
   }
 
@@ -96,6 +99,7 @@ export default class Training extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+
   }
 
 }

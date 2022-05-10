@@ -74,7 +74,7 @@ const initialContractConsiderations = ()=> {
   return {
 
     packaging_shipping_other: "false",
-    contractor_required_training: "",
+    contractor_required_training: "UNSELECTED",
     packaging_shipping_other_explanation: "",
     conflict_of_interest_explanation: "",
     potential_conflict_of_interest: "UNSELECTED",
