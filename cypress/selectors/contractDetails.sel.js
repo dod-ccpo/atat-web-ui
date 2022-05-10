@@ -28,8 +28,8 @@ module.exports = {
   optionOneDropdownSelected:"#Option1Dropdown_dropdown_field_control .v-select__selection--comma",
   errorMessageText: ".field-error.ml-2",
   optionDeleteButton: "#Option1Delete",
-  sourceItem: "div#Option2Row.d-inline-block.py-2.draggable",
-  targetItem: "div#BaseRow.d-inline-block.py-2.draggable",
+  sourceItem: "#Option2Row",
+  targetItem: "#BaseRow",
   optionalTwoTextBox:"#Option2Duration_text_field",
   //Do you want to request a PoP start date?
   popStartDateYesRadioOption: "#Radio_YesStartDate",

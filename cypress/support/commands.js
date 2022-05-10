@@ -39,11 +39,35 @@ import sac from '../selectors/standComp.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+let hopOutOfIframe = false;
+
+Cypress.Commands.add("visitURL", () => {
+  if (isTestingLocally) {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("localTestURLInIframe"));    
+    } else {
+      cy.visit(Cypress.env("localTestURL"));    
+    }
+  } else {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("testURL"));    
+    } else {
+      cy.visit(Cypress.env("disaNoIframeUrl"));    
+    }
+  }
+})
+
+Cypress.Commands.add("hopOutOfIframe", (hopOut, navigate) => {
+  hopOutOfIframe = hopOut || false;
+  if (navigate) {
+    cy.visitURL();
+  }
+});
 
 Cypress.Commands.add("launchATAT", () => {
+  cy.hopOutOfIframe(false);
   if (isTestingLocally){
     cy.clearSession();
-    cy.visit(Cypress.env("localTestURL"));    
     if (runTestsInIframe) {
       cy.visit(Cypress.env("localTestURLInIframe"));    
       cy.frameLoaded(common.app);        
@@ -80,7 +104,7 @@ Cypress.Commands.add('login', (user, password) => {
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-  if (runTestsInIframe || !isTestingLocally) {
+  if (runTestsInIframe && !hopOutOfIframe) {
     cy.iframe(common.app).find(selector)       
   } else {
     cy.get(selector);

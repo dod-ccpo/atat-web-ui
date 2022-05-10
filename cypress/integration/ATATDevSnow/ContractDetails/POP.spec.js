@@ -2,13 +2,13 @@ import { bootstrapMockApis,colors,cleanText,randomNumberBetween}from "../../../h
 import common from "../../../selectors/common.sel"
 import contractDetails from "../../../selectors/contractDetails.sel";
 
+
 describe("Test suite: Contract Details Step:Period of Performance substep", () => {
 
 
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-        
   });
     
   it("TC1: Period of Perfomance on the Vertical Stepper is active", () => {
@@ -115,6 +115,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
   });
 
   it("TC5: Duplicate: Drag and Drop", () => {
+    cy.hopOutOfIframe(true, true);
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.findElement(contractDetails.baseDropdownIcon).click();
     cy.findElement(contractDetails.baseDropdownMonth).click();
@@ -131,10 +132,13 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.findElement(contractDetails.addOptionLink).should("exist").click();
     const option2 =randomNumberBetween(1,4);
     cy.findElement(contractDetails.optionalTwoTextBox).type(option2);
-    cy.findElement(contractDetails.sourceItem).drag(contractDetails.targetItem).then((success) => {
-      assert.isTrue(success)
-      cy.findElement(contractDetails.sourceItem).trigger("dragend");
-    });
+    cy.findElement(contractDetails.sourceItem)
+      .drag(contractDetails.targetItem)
+      .then((success) => {
+        assert.isTrue(success)
+        cy.findElement(contractDetails.sourceItem).trigger("dragend");
+      });
+
     //After Drag and Drop,'Base' textbox has 'Option#2' value &'Option#2' textbox has 'Base' value
     cy.findElement(contractDetails.optionalTwoTextBox).should("have.value", base);
     cy.findElement(contractDetails.baseInputTxtBox).should("have.value", option2);
