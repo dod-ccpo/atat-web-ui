@@ -225,8 +225,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    this.contractConsiderations = this.contractConsiderations ?
-      Object.assign(this.contractConsiderations, value) : value;
+    this.contractConsiderations = this.contractConsiderations 
+      ? Object.assign(this.contractConsiderations, value) 
+      : value;
   }
 
   @Mutation
