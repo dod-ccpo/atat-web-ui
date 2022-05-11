@@ -28,5 +28,6 @@ module.exports = (on, config) => {
   config.env.localTestURLInIframe = process.env.localTestURLInIframe;
   config.env.snowUser = process.env.SNOWUSER;
   config.env.snowPass = process.env.SNOWPASS;
+  config.env.disaNoIframeUrl = process.env.disaNoIframeUrl;
   return config;
 }
