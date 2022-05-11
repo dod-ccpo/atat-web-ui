@@ -22,48 +22,46 @@
                 v-for="(trainingCert, index) in trainingCerts"
                 :key="'TrainingCourse' + index"
                 class="d-inline-block py-2 "
-                :id="'TrainingCourse ' + index + ' Row'"
+                :id="'TrainingCourse' + index + 'Row'"
                 :data-index="index"
               >
-                <v-expand-transition>
-                  <div class="d-flex">
-                    <div
-                      class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
-                    >
-                      <span class="duration">{{ index + 1 }}</span>
-                    </div>
-                    <div>
-                      <ATATTextField
-                        :key="'TrainingCourse ' + index "
-                        :id="'TrainingCourse ' + index "
-                        class="mr-4"
-                        width="424"
-                        :rules="[
+                <div class="d-flex">
+                  <div
+                    class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
+                  >
+                    <span class="duration">{{ index + 1 }}</span>
+                  </div>
+                  <div>
+                    <ATATTextField
+                      :key="'TrainingCourse ' + index "
+                      :id="'TrainingCourse' + index "
+                      class="mr-4"
+                      width="424"
+                      :rules="[
                         $validators.required(
                         'Please enter the name of your training course.'
                         ),
                         $validators
                         .maxLength(300,'please limit your name to 300 characters or less')
                       ]"
-                        :value.sync="trainingCerts[index].name"
-                      />
-                    </div>
-                    <div
-                      :key="'TrainingCourse ' + index + ' Button'"
-                      class="d-flex"
-                    >
-                      <v-btn
-                        icon
-                        :disabled="trainingCerts.length === 1"
-                        @click="deletetrainingCert(index)"
-                        aria-label="Delete this training course"
-                        :id="'TrainingCourse ' + index + ' Delete'"
-                      >
-                        <v-icon> delete</v-icon>
-                      </v-btn>
-                    </div>
+                      :value.sync="trainingCerts[index].name"
+                    />
                   </div>
-                </v-expand-transition>
+                  <div
+                    :key="'TrainingCourse ' + index + ' Button'"
+                    class="d-flex"
+                  >
+                    <v-btn
+                      icon
+                      :disabled="trainingCerts.length === 1"
+                      @click="deletetrainingCert(index)"
+                      aria-label="Delete this training course"
+                      :id="'TrainingCourse' + index + 'Delete'"
+                    >
+                      <v-icon> delete</v-icon>
+                    </v-btn>
+                  </div>
+                </div>
               </div>
           </div>
           <v-btn
