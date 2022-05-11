@@ -57,7 +57,29 @@ export const FOIARecordResolver = (current: string): string => {
     ? routeNames.Section508Standards
     : routeNames.FOIA;
 };
+export const A11yRequirementResolver = (current: string): string => {
+  const needsA11yReqs
+      = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "false";
+  // if user selects "No" on Section 508 standards page,
+  // then need to collect information about 508 accessibility requirements
+  if (needsA11yReqs) {
+    return routeNames.Section508AccessibilityRequirements;
+  }
+  return current === routeNames.Section508Standards
+    ? routeNames.EvaluationCriteria
+    : routeNames.Section508Standards;
+};
 
+export const ContractTrainingReq = (current: string): string => {
+  const contractTraining
+      = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
+  if (contractTraining) {
+    return routeNames.TrainingCourses;
+  }
+  return current === routeNames.Training
+    ? routeNames.PII
+    : routeNames.Training;
+};
 
 // add resolver here so that it can be found by invoker
 const resolvers: Record<string, StepRouteResolver> = {
@@ -65,6 +87,8 @@ const resolvers: Record<string, StepRouteResolver> = {
   CurrentContractRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
+  A11yRequirementResolver,
+  ContractTrainingReq,
 };
 
 export const InvokeResolver = (

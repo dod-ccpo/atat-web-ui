@@ -5,29 +5,29 @@
     max-width="250px"
     :open-delay="500"
     top
-    attach
+    eager
     v-if="tooltipText"
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        class="mb-2 ml-1 pa-0 link-button tooltip-button no-border"
+        class="mb-2 pa-0 tooltip-button no-border"
         icon
         :id="'TooltipButton_' + id" 
         x-small
         v-on="on"
         :ripple="false"
         :aria-label="'Help for ' + label"
-        ><v-icon class="icon-16 ma-0 pa-0" small color="#544496"
+        ><v-icon class="icon-20 ma-0 pa-0" small color="#544496"
           >help_outline
         </v-icon>
       </v-btn>
     </template>
-    <span :id="'TooltipText_' + id">
+    <div :id="'TooltipText_' + id" class="_tooltip-content-wrap">
       <span v-if="tooltipTitle" class="font-weight-bold d-block mb-1">
         {{ tooltipTitle }}
       </span>
       {{ tooltipText }}
-    </span>
+    </div>
   </v-tooltip>
 </template>
 

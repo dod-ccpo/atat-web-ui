@@ -88,7 +88,7 @@ export default class ATATTextArea extends Vue {
   @Prop({ default: ()=>[]}) private rules!: Array<unknown>;
   @Prop({ default: true }) private noResize!: boolean;
   @Prop({ default: "" }) private maxChars!: string;
-
+  @Prop({ default: true }) private validateItOnBlur!: boolean;
 
   //data
   private placeHolder = "";
@@ -103,7 +103,11 @@ export default class ATATTextArea extends Vue {
 
   //@Events
   private onBlur() : void{
-    this.setErrorMessage();
+    if (this.validateItOnBlur) {
+      Vue.nextTick(() => {
+        this.setErrorMessage();
+      })
+    }
   }
 }
 </script>

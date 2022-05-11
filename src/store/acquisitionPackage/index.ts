@@ -12,6 +12,7 @@ import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
   BaseTableDTO,
+  ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
 } from "@/api/models";
 import { SelectData } from "types/Global";
@@ -106,6 +107,21 @@ const initialContact = () => {
   };
 };
 
+const initialContractConsiderations = ()=> {
+
+  return {
+
+    packaging_shipping_other: "false",
+    contractor_required_training: "UNSELECTED",
+    packaging_shipping_other_explanation: "",
+    conflict_of_interest_explanation: "",
+    potential_conflict_of_interest: "UNSELECTED",
+    required_training_courses: "",
+    packaging_shipping_none_apply: "false",
+    contractor_provided_transfer: "false",
+  }
+}
+
 const initialFairOpportunity = () => {
   return {
     exception_to_fair_opportunity: "",
@@ -163,16 +179,17 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
     ATAT_ACQUISTION_PACKAGE_KEY,
     JSON.stringify({
       acquisitionPackage: store.acquisitionPackage,
+      projectOverview: store.projectOverview,
+      organization: store.organization,
+      contactInfo: store.contactInfo,
+      contractConsiderations: store.contractConsiderations,
+      corInfo: store.corInfo,
       acorInfo: store.acorInfo,
       contractType: store.contractType,
-      contactInfo: store.contactInfo,
       currentContract: store.currentContract,
-      corInfo: store.corInfo,
       fairOpportunity: store.fairOpportunity,
       gfeOverview: store.gfeOverview,
-      organization: store.organization,
       periodOfPerformance: store.periodOfPerformance,
-      projectOverview: store.projectOverview,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensativeInformation: store.sensitiveInformation,
     })
@@ -215,6 +232,7 @@ export class AcquisitionPackageStore extends VuexModule {
   projectOverview: ProjectOverviewDTO | null = null;
   organization: OrganizationDTO | null = null;
   contactInfo: ContactDTO | null = null;
+  contractConsiderations: ContractConsiderationsDTO | null = null;
   corInfo: ContactDTO | null = null;
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
@@ -300,6 +318,12 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setContractConsiderations(value: ContractConsiderationsDTO): void {
+    this.contractConsiderations = this.contractConsiderations ?
+      Object.assign(this.contractConsiderations, value) : value;
+  }
+
+  @Mutation
   public setProjectTitle(value: string): void {
     this.projectTitle = value;
   }
@@ -328,6 +352,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.acquisitionPackage = sessionData.acquisitionPackage;
     this.acorInfo = sessionData.acorInfo;
     this.contactInfo = sessionData.contactInfo;
+    this.contractConsiderations = sessionData.contractConsiderations;
     this.corInfo = sessionData.corInfo;
     this.contractType = sessionData.contractType;
     this.currentContract = sessionData.currentContract;
@@ -364,6 +389,8 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setCurrentContract(initialCurrentContract());
+          this.setContractConsiderations(initialContractConsiderations());
+          this.setAcquisitionPackage(acquisitionPackage);
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "" });
           this.setGFEOverview(initialGFE());
@@ -1570,6 +1597,337 @@ export class AcquisitionPackageStore extends VuexModule {
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving store data ${storeProperty}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  async loadFairOpportunity(): Promise<FairOpportunityDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.fairOpportunity?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const fairOpportunityData = await api.fairOpportunityTable.retrieve(
+          sys_id as string
+        );
+        this.setFairOpportunity(fairOpportunityData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          fair_opportunity: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.fairOpportunity as FairOpportunityDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading fair opportunity info ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  /**
+   * Saves Fair Opportunity data to backend
+   */
+  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
+    try {
+      const sys_id = this.fairOpportunity?.sys_id || "";
+      const savedFairOpportunity =
+        sys_id.length > 0
+          ? await api.fairOpportunityTable.update(sys_id, { ...data, sys_id })
+          : await api.fairOpportunityTable.create(data);
+      this.setFairOpportunity(savedFairOpportunity);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        fair_opportunity: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving fair opportunity info ${error}`);
+    }
+  }
+
+  /**
+   * Loads Sensitive Information (FOIA) data from backend
+   */
+  @Action({ rawError: true })
+  async loadSensitiveInformation(): Promise<SensitiveInformationDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.sensitiveInformation?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const sensitiveInformationData =
+          await api.sensitiveInformationTable.retrieve(sys_id as string);
+        this.setSensitiveInformation(sensitiveInformationData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          sensitive_information: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.sensitiveInformation as SensitiveInformationDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading sensitive info data ${error}`);
+    }
+  }
+
+  /**
+   * Saves Sensitive Information (FOIA) data to backend
+   */
+  @Action({ rawError: true })
+  async saveSensitiveInformation(data: SensitiveInformationDTO): Promise<void> {
+    try {
+      const sys_id = this.sensitiveInformation?.sys_id || "";
+      const savedSensitiveInformation =
+        sys_id.length > 0
+          ? await api.sensitiveInformationTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
+          : await api.sensitiveInformationTable.create(data);
+      this.setSensitiveInformation(savedSensitiveInformation);
+      this.setAcquisitionPackage({
+        ...this.sensitiveInformation,
+        sensitive_information: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving sensitive info data ${error}`);
+    }
+  }
+
+  /**
+   * Loads Period of Performance data from backend
+   */
+  @Action({ rawError: true })
+  async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.periodOfPerformance?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const periodOfPerformanceData =
+          await api.periodOfPerformanceTable.retrieve(sys_id as string);
+        this.setPeriodOfPerformance(periodOfPerformanceData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          period_of_performance: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.periodOfPerformance as PeriodOfPerformanceDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading PoP info data ${error}`);
+    }
+  }
+
+  /**
+   * Saves Period of Performance Information (FOIA) data to backend
+   */
+  @Action({ rawError: true })
+  async savePeriodOfPerformance(data: PeriodOfPerformanceDTO): Promise<void> {
+    try {
+      const sys_id = this.periodOfPerformance?.sys_id || "";
+      const savedPeriodOfPerformance =
+        sys_id.length > 0
+          ? await api.periodOfPerformanceTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
+          : await api.periodOfPerformanceTable.create(data);
+      this.setPeriodOfPerformance(savedPeriodOfPerformance);
+      this.setAcquisitionPackage({
+        ...this.periodOfPerformance,
+        period_of_performance: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving PoP data ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  async loadGFEOverview(): Promise<GFEOverviewDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.GFEOverview?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const GFEOverviewData = await api.gfeOverviewTable.retrieve(
+          sys_id as string
+        );
+        this.setGFEOverview(GFEOverviewData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          gfe_overview: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.GFEOverview as GFEOverviewDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading GFE info ${error}`);
+    }
+  }
+
+  @Action({ rawError: true })
+  async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
+    try {
+      const sys_id = this.GFEOverview?.sys_id || "";
+      const savedGFEOverviewData =
+        sys_id.length > 0
+          ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
+          : await api.gfeOverviewTable.create(data);
+      this.setGFEOverview(savedGFEOverviewData);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        gfe_overview: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving GFE data ${error}`);
+    }
+  }
+  /**
+   * Loads Contract Type data from backend
+   */
+  @Action({ rawError: true })
+  async loadContractType(): Promise<ContractTypeDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.contractType?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const contractTypeData = await api.contractTypeTable.retrieve(
+          sys_id as string
+        );
+        this.setContractType(contractTypeData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          contract_type: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.contractType as ContractTypeDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading Contract Type data ${error}`);
+    }
+  }
+
+
+  @Action({rawError: true})
+  async loadContractConsiderations():Promise<ContractConsiderationsDTO> {
+
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.contractConsiderations?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const contractConsiderationsData = await api.contractConsiderationsTable.retrieve(
+          sys_id as string
+        );
+        this.setContractConsiderations(contractConsiderationsData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          contract_considerations: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.contractConsiderations as ContractConsiderationsDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading Contract Type data ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  async saveContractConsiderations(data: ContractConsiderationsDTO): Promise<void>{
+
+    try {
+
+      const sys_id = this.contractConsiderations?.sys_id || "";
+      const savedData =
+        sys_id.length > 0
+          ? await api.contractConsiderationsTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
+          : await api.contractConsiderationsTable.create({
+            ...initialContractConsiderations(),
+            ...data});
+      this.setContractConsiderations(savedData);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        contract_considerations: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(
+        `error occurred saving Contract Considerations data ${error}`
+      );
+    }
+  }
+
+  /**
+   * Loads Requirements Cost Estimate data from backend
+   */
+  @Action({ rawError: true })
+  async loadRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
+    try {
+      await this.ensureInitialized();
+      const sys_id = this.requirementsCostEstimate?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const data = await api.requirementsCostEstimateTable.retrieve(
+          sys_id as string
+        );
+        this.setRequirementsCostEstimate(data);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          requirements_cost_estimate: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading Contract Type data ${error}`);
+    }
+  }
+
+  /**
+   * Saves Requirements Cost Estimate data to backend
+   */
+  @Action({ rawError: true })
+  async saveRequirementsCostEstimate(
+    data: RequirementsCostEstimateDTO
+  ): Promise<void> {
+    try {
+      const sys_id = this.requirementsCostEstimate?.sys_id || "";
+      const savedData =
+        sys_id.length > 0
+          ? await api.requirementsCostEstimateTable.update(sys_id, {
+            ...data,
+            sys_id,
+          })
+          : await api.requirementsCostEstimateTable.create(data);
+      this.setRequirementsCostEstimate(savedData);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        requirements_cost_estimate: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(
+        `error occurred saving Requirements Cost Estimate data ${error}`
+      );
+    }
+  }
+
+  /**
+   * Saves Contract Type data to backend
+   */
+  @Action({ rawError: true })
+  async saveContractType(data: ContractTypeDTO): Promise<void> {
+    try {
+      const sys_id = this.contractType?.sys_id || "";
+      const savedContractType =
+        sys_id.length > 0
+          ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
+          : await api.contractTypeTable.create(data);
+      this.setContractType(savedContractType);
+      this.setAcquisitionPackage({
+        ...this.contractType,
+        contract_type: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving PoP data ${error}`);
     }
   }
 }

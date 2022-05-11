@@ -3,7 +3,7 @@
     <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label mb-2 mr-2"
+        class="form-field-label mb-2 mr-1"
         :for="id + '_text_field'"
       >
         {{ label }}
@@ -28,13 +28,15 @@
       :placeholder="placeHolder"
       @input="onInput"
       class="text-primary"
-      :hide-details="true"
+      :hide-details="counter === ''"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
       :validate-on-blur="validateOnBlur"
       :rules="rules"
+      :counter="counter"
       @blur="onBlur"
       @update:error="setErrorMessage"
+      autocomplete="off"
     >
     </v-text-field>
     <ATATErrorValidation :errorMessages="errorMessages" />
@@ -49,17 +51,23 @@ import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import { mask } from "types/Global";
+import Inputmask from "inputmask/";
 
 @Component({
   components: {
     ATATTooltip,
     ATATErrorValidation
-  }
+  },
 })
-export default class ATATTextField extends Vue {
+export default class ATATTextField extends Vue  {
   // refs
   $refs!: {
-    atatTextField: Vue & { errorBucket: string[]; errorCount: number };
+    atatTextField: Vue & { 
+      errorBucket: string[]; 
+      errorCount: number 
+      resetValidation(): void
+  };
   }; 
 
   // props
@@ -76,9 +84,12 @@ export default class ATATTextField extends Vue {
   @Prop({ default: ""}) private suffix!: string;
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private width!: string;
+  @Prop({ default: "" }) private counter!: number;
   @Prop({ default: false }) private validateOnBlur!: boolean;
   @Prop() private extraEmitVal!: string;
-
+  @Prop({ default: ()=>[] }) private mask!: string[];
+  @Prop({ default: false }) private isMaskRegex!: boolean;
+  
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
@@ -99,5 +110,38 @@ export default class ATATTextField extends Vue {
     this.setErrorMessage();
     this.$emit('blur', input.value, this.extraEmitVal);
   }
+
+  public resetValidation(): void {
+    this.$refs.atatTextField.errorBucket = [];
+    this.$refs.atatTextField.resetValidation();
+  }
+
+  private setMasks(): void {
+    if (this.mask.length > 0){
+      Vue.nextTick(()=>{
+        const inputField = document.getElementById(
+          this.id + '_text_field'
+        ) as HTMLInputElement;
+
+        const maskObj: mask ={
+          placeholder: "",
+          jitMasking: true
+        }
+        if (this.isMaskRegex){
+          maskObj.regex = this.mask[0] || "";
+        } else {
+          maskObj.mask = this.mask || [];
+        }
+        Inputmask(maskObj).mask(inputField);
+        
+      })
+    }
+    
+  }
+
+  private mounted(): void{
+    this.setMasks();
+  }
+
 }
 </script>

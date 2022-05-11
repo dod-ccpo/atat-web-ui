@@ -5,5 +5,5 @@ module.exports = {
   radioAllFair: "#Radio_AllFair",
   radioNoneApply: "#Radio_NoneApply",
   currentContractOptionsTxt: ".copy-max-width p",
-  
+  exceptionRadioOptError:"#ExceptionRadioOptions_radio_group_control .field-error",
 }

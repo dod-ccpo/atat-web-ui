@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import 'cypress-iframe';
+import '@4tw/cypress-drag-drop';
 import common from '../selectors/common.sel';
 import projectOverview from '../selectors/projectOverview.sel.js';
 import contact from '../selectors/contact.sel';
@@ -34,14 +35,39 @@ import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
 import { cleanText, colors } from "../helpers";
-import occ from '../selectors/occ.sel';
+import sac from '../selectors/standComp.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+let hopOutOfIframe = false;
+
+Cypress.Commands.add("visitURL", () => {
+  if (isTestingLocally) {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("localTestURLInIframe"));    
+    } else {
+      cy.visit(Cypress.env("localTestURL"));    
+    }
+  } else {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("testURL"));    
+    } else {
+      cy.visit(Cypress.env("disaNoIframeUrl"));    
+    }
+  }
+})
+
+Cypress.Commands.add("hopOutOfIframe", (hopOut, navigate) => {
+  hopOutOfIframe = hopOut || false;
+  if (navigate) {
+    cy.visitURL();
+  }
+});
 
 Cypress.Commands.add("launchATAT", () => {
+  cy.hopOutOfIframe(false);
   if (isTestingLocally){
-    cy.visit(Cypress.env("localTestURL"));    
+    cy.clearSession();
     if (runTestsInIframe) {
       cy.visit(Cypress.env("localTestURLInIframe"));    
       cy.frameLoaded(common.app);        
@@ -51,8 +77,23 @@ Cypress.Commands.add("launchATAT", () => {
   } else {
     cy.visit(Cypress.env("testURL"));    
     cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+    cy.clearSession();
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
+  }
+});
+
+Cypress.Commands.add("clearSession", () => {
+  if (isTestingLocally) {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });      
+  } else {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+      const iframe = win.document.querySelector('iframe');
+      iframe.contentWindow.sessionStorage.clear();
+    });
   }
 });
 
@@ -63,7 +104,7 @@ Cypress.Commands.add('login', (user, password) => {
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-  if (runTestsInIframe || !isTestingLocally) {
+  if (runTestsInIframe && !hopOutOfIframe) {
     cy.iframe(common.app).find(selector)       
   } else {
     cy.get(selector);
@@ -110,6 +151,26 @@ Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
 
 Cypress.Commands.add("checkErrorMessage", (selector, errorMessage) => {
   cy.findElement(selector).should("contain.text", errorMessage);  
+});
+
+Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,errorMessage) => {
+  cy.findElement(textboxSelector).should("be.visible").clear()
+    .focus().blur({ force: true }).then(() => {
+      cy.checkErrorMessage(errorSelector, errorMessage);
+    }); 
+});
+
+Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
+  cy.findElement(textboxSelector).focus().tab().then(() => {
+    cy.checkErrorMessage(errorSelector, errorMessage);
+  })
+});
+
+Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  cy.findElement(common.header).scrollIntoView().then(() => {
+    cy.textExists(common.header,headerText );
+  });
+  
 });
 
 Cypress.Commands.add("selectCheckBox", (selector,value) => {
@@ -233,7 +294,7 @@ Cypress.Commands.add("selectTypeOfMailingAddress", (radioSelector, value) => {
       if (selectedOption === "radio_button_checkedForeign address") {
         cy.textExists(org.cityLabel, " City ");
         cy.textExists(org.stateProvinceLabel, " State or Province ​");
-        cy.textExists(org.zipCodeLabel, " Postal code ");
+        cy.textExists(org.postalCodeLabel, " Postal code ");
         cy.textExists(org.countryLabel, " Country ");
       };
     });            
@@ -267,7 +328,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
       if (selectedOption === "radio_button_checkedForeign address") {  
         cy.enterTextInTextField(org.cityTxtBox, orgAddress.city);
         cy.enterTextInTextField(org.stateProvinceTxtBox, orgAddress.stateProvince);
-        cy.enterTextInTextField(org.zipCodeTxtBox, orgAddress.zipCode);
+        cy.enterTextInTextField(org.postalCodeTxtBox, orgAddress.zipCode);
         cy.autoCompleteSelection(
           org.countryInput,
           orgAddress.inputCountryName,
@@ -516,7 +577,7 @@ Cypress.Commands.add("popLengthOptionYearExists", () => {
 
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.piiRadioOtionActive)
+  cy.findElement(sac.piiRadioOtionActive)
     .then(($radioBtn) => {      
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
@@ -534,7 +595,7 @@ Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
 
 Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.foiaRadioOptionActive)
+  cy.findElement(sac.foiaRadioOptionActive)
     .then(($radioBtn) => {
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);

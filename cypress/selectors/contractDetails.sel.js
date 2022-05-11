@@ -1,6 +1,6 @@
 module.exports = {
   // Let’s gather some details about the duration of your task order 
-  popLearnMoreLink: "#PoPLearnMore",
+  popLearnMoreLink: "#PopLearnMore",
   popText: "p.mb-10",
   popLengthLabelText: "div.mb-4._semibold",
   mainWrap:".v-main__wrap",
@@ -24,9 +24,13 @@ module.exports = {
   optionDropdownYear: "#Option1_DropdownListItem_Year",
   optionDropdownMonth: "#Option1_DropdownListItem_Months",
   optionDropdownWeek: "#Option1_DropdownListItem_Weeks",
-  optioneDropdownDays:"#Option1_DropdownListItem_Days",
+  optioneDropdownDays: "#Option1_DropdownListItem_Days",
+  optionOneDropdownSelected:"#Option1Dropdown_dropdown_field_control .v-select__selection--comma",
   errorMessageText: ".field-error.ml-2",
-  optionDeleteButton:"#Option1Delete",
+  optionDeleteButton: "#Option1Delete",
+  sourceItem: "#Option2Row",
+  targetItem: "#BaseRow",
+  optionalTwoTextBox:"#Option2Duration_text_field",
   //Do you want to request a PoP start date?
   popStartDateYesRadioOption: "#Radio_YesStartDate",
   popStartDateNoRadioOption: "#Radio_NoStartDate",

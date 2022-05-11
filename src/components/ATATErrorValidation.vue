@@ -16,7 +16,7 @@ import { Component, Prop } from "vue-property-decorator";
 @Component({})
 export default class ATATErrorValidation extends Vue {
   // props
-  @Prop({ default: [] }) private errorMessages!: string[];
+  @Prop({ default: () => [] }) private errorMessages!: string[];
   @Prop({ default: false }) private textAreaWithCounter!: boolean;
 
   get showError(): boolean {

@@ -1,0 +1,429 @@
+<template>
+  <div class="mb-7">
+    <v-container fluid class="container-max-width">
+      <v-row>
+        <v-col class="col-12">
+          <h1 class="page-header">
+            Let’s gather some details about the duration of your task order
+          </h1>
+          <div class="copy-max-width">
+            <p class="mb-10">
+              Your Period of Performance (PoP) will begin based upon the
+              execution date of your task order or on your requested start date,
+              if applicable. It will extend through the length of the base
+              period, plus any subsequent option periods. In the fields below,
+              specify the length of time that each period will remain in effect.
+              Add, duplicate or remove option periods as needed, up to 5 years
+              total.
+              <a 
+                role="button" 
+                id="PopLearnMore" 
+                class="_text-link" 
+                @click="openSlideoutPanel"
+              >
+                Learn more about PoPs on the JWCC contract.
+              </a>
+            </p>
+          </div>
+
+          <div class="mb-4 _semibold" style="padding-left: 101px">
+            Period of Performance length
+          </div>
+          <div id="BaseAndOptionWrapper">
+            <draggable 
+              v-model="optionPeriods"
+              ghost-class="ghost"
+            >
+                <div
+                  v-for="(optionPeriod, index) in optionPeriods"
+                  :key="getIdText(getOptionPeriodLabel(index))"
+                  class="d-inline-block py-2 draggable"
+                  :id="getIdText(getOptionPeriodLabel(index)) + 'Row'"
+                  @click="preDrag($event, index)"
+                  :data-index="index"
+                >
+                  <div class="d-flex">
+                    <div class="d-flex align-center">
+                      <v-icon class="drag-icon">drag_indicator</v-icon>
+                    </div>
+                    <div
+                      class="d-flex align-center justify-end mr-4 font-size-14 _text-base"
+                      style="width: 65px"
+                    >
+                      <span class="duration">{{ getOptionPeriodLabel(index) }}</span>
+                    </div>
+                    <div>
+                      <ATATTextField
+                        :id="getIdText(getOptionPeriodLabel(index)) + 'Duration'"
+                        class="mr-4"
+                        width="178"
+                        :rules="[$validators.integer()]"
+                        :value.sync="optionPeriods[index].duration"
+                      />
+                    </div>
+                    <div>
+                      <ATATSelect
+                        :id="getIdText(getOptionPeriodLabel(index)) + 'Dropdown'"
+                        :items="timePeriods"
+                        width="178"
+                        :selectedValue.sync="optionPeriods[index].unitOfTime"
+                        class="mr-4"
+                      />
+                    </div>
+                    <div
+                      :id="getIdText(getOptionPeriodLabel(index)) + 'Buttons'"
+                      class="d-flex align-center"
+                    >
+                      <!-- copy button disabled - will be implemented in future ticket -->
+                      <v-btn
+                        icon
+                        class="mr-1"
+                        @click="copyOptionPeriod(index)"
+                        aria-label="Duplicate this option period"
+                        :id="getIdText(getOptionPeriodLabel(index)) + 'Copy'"
+                      >
+                        <v-icon> content_copy </v-icon>
+                      </v-btn>
+
+                      <v-btn
+                        icon
+                        :disabled="optionPeriods.length === 1"
+                        @click="deleteOptionPeriod(index)"
+                        aria-label="Delete this option period"
+                        :id="getIdText(getOptionPeriodLabel(index)) + 'Delete'"
+                      >
+                        <v-icon> delete </v-icon>
+                      </v-btn>
+                    </div>
+                  </div>
+                </div>
+            </draggable>
+          </div>
+
+          <v-btn
+            id="AddOptionPeriodButton"
+            v-if="totalPoPDuration < maxTotalPoPDuration"
+            plain
+            text
+            class="_text-link mt-5"
+            :ripple="false"
+            @click="addOptionPeriod()"
+          >
+            <v-icon color="primary" class="mr-2">control_point</v-icon>
+            <span>Add an option period</span>
+          </v-btn>
+
+          <div
+            class="justify-start align-center atat-text-field-error mt-2"
+            :class="{ 'd-flex': totalPoPDuration > maxTotalPoPDuration }"
+            v-show="totalPoPDuration > maxTotalPoPDuration"
+          >
+            <v-icon class="text-base-error icon-20"> error </v-icon>
+            <div class="field-error ml-2">
+              The total length of your base and option periods should be 5 years
+              or less.
+            </div>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <div id="DragImg" class="drag-img" style="display: none">
+      {{ optionPeriodClicked.duration }} {{ optionPeriodClicked.unitOfTime }}
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+/* eslint-disable camelcase */
+import { Component, Mixins, Watch } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import draggable from "vuedraggable";
+
+import ATATTextField from "@/components/ATATTextField.vue";
+import ATATSelect from "@/components/ATATSelect.vue";
+import PopLearnMore from "./PopLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
+import { getIdText } from "@/helpers";
+import { PeriodOfPerformanceDTO } from "@/api/models";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+
+@Component({
+  components: {
+    ATATTextField,
+    ATATSelect,
+    draggable,
+    PopLearnMore,
+  },
+})
+export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
+  public maxTotalPoPDuration = 365 * 5;
+  public optionPeriodCount = 1;
+
+  public optionPeriods: PoP[] = [
+    {
+      duration: null,
+      unitOfTime: "Year",
+    },
+  ];
+
+  @Watch("optionPeriods", {deep: true})
+  protected optionPeriodsChange(): void {
+    this.setTotalPoP();
+    this.$nextTick(() => {
+      if (this.optionPeriodCount !== this.optionPeriods.length) {
+        this.optionPeriodCount = this.optionPeriods.length;
+
+        //  reset drag listeners for rows since option periods count changed
+        this.setDragEventListeners();
+      }
+    });
+  }
+
+  public totalPoPDuration = 0;
+
+  public selectedTimePeriod = "Year";
+  public timePeriods: SelectData[] = [
+    { text: "Year", value: "Year" },
+    { text: "Month(s)", value: "Month(s)" },
+    { text: "Week(s)", value: "Week(s)" },
+    { text: "Day(s)", value: "Day(s)" },
+  ];
+
+  public addOptionPeriod(): void {
+    const newOptionPeriod = {
+      duration: null,
+      unitOfTime: "Year",
+    };
+    this.optionPeriods.push(newOptionPeriod);
+  }
+
+  public setTotalPoP(): void {
+    this.totalPoPDuration = 0;
+    this.optionPeriods.forEach((optionPeriod) => {
+      if (optionPeriod.duration) {
+        let multiplier = 1;
+        switch (optionPeriod.unitOfTime) {
+        case "Week(s)":
+          multiplier = 7;
+          break;
+        case "Month(s)":
+          multiplier = 30;
+          break;
+        case "Year":
+          multiplier = 365;
+          break;
+        default:
+          multiplier = 1;
+        }
+        const thisDays = optionPeriod.duration * multiplier;
+        this.totalPoPDuration += thisDays;
+      }
+    });
+  }
+
+  public deleteOptionPeriod(index: number): void {
+    this.optionPeriods.splice(index, 1);
+    this.setTotalPoP();
+  }
+  public copyOptionPeriod(index: number): void {
+    const duplicateObj = JSON.parse(JSON.stringify(this.optionPeriods[index]))
+    this.optionPeriods.splice(index + 1,0,duplicateObj)
+    this.setTotalPoP();
+  }
+
+  public getOptionPeriodLabel(index: number): string {
+    return index === 0 ? "Base" : "Option " + index;
+  }
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: PopLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    this.setDragEventListeners();
+  }
+
+  public durationLabelEl = document.getElementsByClassName("duration")[0] as HTMLElement;
+
+  private setDragEventListeners(): void {
+
+    // get all draggable elements
+    const draggableElements = document.querySelectorAll(".draggable") as NodeList;
+    if (draggableElements.length) {
+      draggableElements.forEach((e) => {
+        const draggableEl = e as HTMLDivElement;
+
+        // drag has started
+        draggableEl.addEventListener("dragstart", (e: DragEvent) => {
+
+          // hide drag icons for all rows except the row being dragged
+          draggableElements.forEach((e) => {
+            const row = e as HTMLDivElement;
+            if (!row.classList.contains("sortable-chosen")) {
+              const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
+              icon.classList.add("hide-icon");
+            }
+          });
+
+          const row = e.currentTarget as HTMLElement;
+          row.style.cursor = "ns-resize";
+
+          // hide base/option label of row being dragged
+          const i = row.dataset.index || "0";
+          const index: number = parseInt(i);
+          this.optionPeriodClicked = this.optionPeriods[index];
+          this.durationLabelEl = row.getElementsByClassName("duration")[0] as HTMLElement;
+          this.durationLabelEl.classList.add("d-none");
+
+          // create a fake drag ghost image to use instead of default and hide it
+          var elem = document.createElement("div") as HTMLElement;
+          elem.classList.add("drag-img-fake");
+          elem.setAttribute("id", "DragImgFaker");
+          // must include some text or it won't hide
+          elem.innerText = "x";
+          document.body.appendChild(elem);
+          e.dataTransfer?.setDragImage(elem, 0, 0);
+        });
+
+        // element is being dragged
+        draggableEl.addEventListener("drag", (e: DragEvent) => {
+          const row = e.currentTarget as HTMLElement;
+          row.style.cursor = "ns-resize";
+          draggableEl.classList.add("dragging");
+
+          // position the div indicating what's being dragged next to the mouse
+          // account for x offset to include width of left menu
+          // account for y offset to include width of header
+          const dragImg = document.getElementById("DragImg") as HTMLDivElement;
+          const leftMenu = document.getElementById("GlobalSideNavBar") as HTMLDivElement;
+          const leftMenuWidth = leftMenu.clientWidth;
+          const pageHeader = document.getElementById("PageHeader") as HTMLDivElement;
+          const pageHeaderHeight = pageHeader.clientHeight;
+          dragImg.style.left = (e.clientX + 20 - leftMenuWidth) + "px";
+          dragImg.style.top = (e.clientY - 15 - pageHeaderHeight) + "px";
+
+          // show the div that appears next to pointer when dragging
+          this.showDragImg(true);
+        });
+
+        // element has been dropped - drag operation ends
+        draggableEl.addEventListener("dragend", () => {
+          const imgFaker = document.getElementById("DragImgFaker");
+          imgFaker?.parentNode?.removeChild(imgFaker);
+          
+          // show the base/option label for the dragged element
+          this.durationLabelEl.classList.remove("d-none");
+
+          // remove class "hide-icon" from all rows
+          draggableElements.forEach((e) => {
+            const row = e as HTMLDivElement;
+            const icon = row.getElementsByClassName("drag-icon")[0] as HTMLElement;
+            icon.classList.remove("hide-icon");
+          });
+          
+          draggableEl.classList.remove("dragging");
+
+          // hide the div that appears next to pointer when dragging
+          this.showDragImg(false);
+        });
+      });
+    }
+  }
+
+  public showDragImg(show: boolean): void {
+    const dragImg = document.getElementById("DragImg") as HTMLDivElement;
+    dragImg.style.display = show ? "inline-block" : "none";
+  }
+
+  public optionPeriodClicked: PoP = {
+    duration: null,
+    unitOfTime: "Year",
+  };
+
+  public preDrag(e: MouseEvent, index: number): void {
+    if (index && this.optionPeriods[index]) {
+      this.optionPeriodClicked = this.optionPeriods[index];
+    }
+  }
+
+  private getIdText(string: string) {
+    return getIdText(string);
+  }
+
+  private get currentData(): PeriodOfPerformanceDTO {
+    const { time_frame, pop_start_request, requested_pop_start_date } =
+      this.savedData;
+
+    const optionPeriodsRecord: {[key:string]:PoP }= {};
+    this.optionPeriods.forEach((option, index) => {
+      optionPeriodsRecord[this.getOptionPeriodLabel(index).replace(/\s/g, "")] =
+        {
+          duration: option.duration,
+          unitOfTime: option.unitOfTime,
+        };
+    });
+    return {
+      time_frame,
+      pop_start_request,
+      requested_pop_start_date,
+      base_and_options: JSON.stringify(optionPeriodsRecord),
+    };
+  }
+
+  private savedData: PeriodOfPerformanceDTO = {};
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage
+      .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
+
+    if (storeData) {
+      this.savedData.time_frame = storeData.time_frame;
+      this.savedData.pop_start_request = storeData.pop_start_request;
+      this.savedData.requested_pop_start_date = storeData.requested_pop_start_date ;
+      this.savedData.base_and_options = storeData.base_and_options || "";
+
+      if (this.savedData.base_and_options.length > 0) {
+        this.optionPeriods = [];
+        const optionPeriodsRecord = JSON.parse(this.savedData.base_and_options);
+        let index = 0;
+        for (const [, value] of Object.entries(
+          optionPeriodsRecord as { [key: string]: string }
+        )) {
+          const pop = JSON.parse(value) as PoP;
+          this.addOptionPeriod();
+          this.optionPeriods[index] = {
+            duration: pop.duration,
+            unitOfTime: pop.unitOfTime,
+          };
+          index += 1;
+        }
+        this.setTotalPoP();
+      }
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.currentData !== this.savedData) {
+        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
+          {data: this.currentData, 
+            storeProperty: StoreProperties.PeriodOfPerformance});
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+}
+</script>
