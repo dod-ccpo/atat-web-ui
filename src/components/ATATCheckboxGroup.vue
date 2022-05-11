@@ -20,7 +20,6 @@
       multiple
       :hide-details="true"
       :ref="index === 0 ? 'checkboxGroup' : ''"
-      :checked="item.checked"
     >
       <template v-if="card || item.value === otherValue" v-slot:label>
         <div class="d-flex flex-column width-100">

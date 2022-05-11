@@ -104,16 +104,6 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
       = newVal.indexOf(this.contractorProvidedTransportValue) > -1 ? "true" : "false";
   }
 
-  public setSelectedCheckboxes(): void {
-    this.savedData.contractor_provided_transfer === "true" 
-      ? this.selectedOptions.push(this.contractorProvidedTransportValue) : null; 
-    this.savedData.packaging_shipping_other === "true" 
-      ? this.selectedOptions.push(this.otherValue) : null; 
-    this.savedData.packaging_shipping_none_apply === "true" 
-      ? this.selectedOptions.push(this.noneApplyValue) : null; 
-    this.otherValueEntered = this.savedData.packaging_shipping_other_explanation;
-  }
-
   public get currentData(): ContractConsiderationsDTO {
     return {
       contractor_provided_transfer: this.contractorProvidedTransportSelected,
@@ -146,7 +136,13 @@ export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
           this.savedData[key] = storeData[key];
         }
       });
-      this.setSelectedCheckboxes();
+      this.savedData.contractor_provided_transfer === "true" 
+        ? this.selectedOptions.push(this.contractorProvidedTransportValue) : null; 
+      this.savedData.packaging_shipping_other === "true" 
+        ? this.selectedOptions.push(this.otherValue) : null; 
+      this.savedData.packaging_shipping_none_apply === "true" 
+        ? this.selectedOptions.push(this.noneApplyValue) : null; 
+      this.otherValueEntered = this.savedData.packaging_shipping_other_explanation;
     } else {
       AcquisitionPackage.setCurrentContract(this.currentData);
     }
