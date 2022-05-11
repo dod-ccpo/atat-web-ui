@@ -1,21 +1,24 @@
-import { bootstrapMockApis,colors,cleanText ,randomAlphaNumeric} from "../../helpers";
-import common from "../../selectors/common.sel"
-import contractDetails from "../../selectors/contractDetails.sel";
+import { bootstrapMockApis,colors,cleanText,randomNumberBetween}from "../../../helpers";
+import common from "../../../selectors/common.sel"
+import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: Contract Details Step", () => {
+
+describe("Test suite: Contract Details Step:Period of Performance substep", () => {
 
 
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
-        
   });
     
-  it("TC1: Contract Details on the Vertical Stepper", () => {
+  it("TC1: Period of Perfomance on the Vertical Stepper is active", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepPopText, " Period of Performance ");
     cy.findElement(common.stepContractDetailsText)
+      .should("be.visible")
+      .and('have.css', 'color', colors.primary);
+    cy.findElement(common.subStepPopText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary)
       .click();     
@@ -111,7 +114,37 @@ describe("Test suite: Contract Details Step", () => {
     
   });
 
-  it("TC5: Asserts: Do you want to request a PoP start date?", () => {
+  it("TC5: Duplicate: Drag and Drop", () => {
+    cy.hopOutOfIframe(true, true);
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.findElement(contractDetails.baseDropdownIcon).click();
+    cy.findElement(contractDetails.baseDropdownMonth).click();
+    //Enter the Value for Base
+    const base = randomNumberBetween(1,12);
+    cy.findElement(contractDetails.baseInputTxtBox).type(base);
+    cy.findElement(contractDetails.baseDuplicateButton).click({force: true})
+      .then(() => {
+        cy.findElement(contractDetails.optionalTextBox).should("exist")
+          .and  ("have.value", base)
+        cy.findElement(contractDetails.optionOneDropdownSelected).should("exist")
+          .and("have.text","Month(s)")
+      });
+    cy.findElement(contractDetails.addOptionLink).should("exist").click();
+    const option2 =randomNumberBetween(1,4);
+    cy.findElement(contractDetails.optionalTwoTextBox).type(option2);
+    cy.findElement(contractDetails.sourceItem)
+      .drag(contractDetails.targetItem)
+      .then((success) => {
+        assert.isTrue(success)
+        cy.findElement(contractDetails.sourceItem).trigger("dragend");
+      });
+
+    //After Drag and Drop,'Base' textbox has 'Option#2' value &'Option#2' textbox has 'Base' value
+    cy.findElement(contractDetails.optionalTwoTextBox).should("have.value", base);
+    cy.findElement(contractDetails.baseInputTxtBox).should("have.value", option2);
+  });
+
+  it("TC6: Asserts: Do you want to request a PoP start date?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.header,
       " Let’s gather some details about the duration of your task order ");
@@ -134,7 +167,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
   
-  it("TC6: Do you want to request a PoP start date?: Select Radio Option", () => {
+  it("TC7: Do you want to request a PoP start date?: Select Radio Option", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.header,
       " Let’s gather some details about the duration of your task order ");
@@ -159,7 +192,7 @@ describe("Test suite: Contract Details Step", () => {
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
   });
 
-  it("TC7: Do you want to request a PoP start date?: Requested Start date is Not later than",
+  it("TC8: Do you want to request a PoP start date?: Requested Start date is Not later than",
     () => {
       cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
       cy.textExists(common.header,
@@ -197,7 +230,7 @@ describe("Test suite: Contract Details Step", () => {
       cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     });
 
-  it("TC8: Asserts: Will this be a future recurring requirement?", () => {
+  it("TC9: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(contractDetails.popRadioGroup).should("exist");
@@ -218,65 +251,6 @@ describe("Test suite: Contract Details Step", () => {
     cy.radioBtn(contractDetails.noRadioOption, "false").not("[disabled]").click({force: true});
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
-  });
-
-  it("TC9: Asserts: Which contract type(s) applies to this acquisition?", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.findElement(contractDetails.popRadioGroup).should("exist");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, " Will this be a future recurring requirement? ");
-    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
-    const expectedRecuringReqText = "Firm-Fixed-Price (FFP) is the standard contract type" +
-      " for JWCC task orders. You must provide justification for a time-and-materials (T&M)" +
-      " or hybrid contract, in accordance with FAR 12.207. If you are considering a T&M" +
-      " contract, we suggest contacting the DITCO Contracting Office for further guidance."
-    cy.findElement(contractDetails.introPText).then(($e) => {
-      let actualTxt = $e.text();
-      cy.log(actualTxt);
-      const formattedTxt = cleanText(actualTxt)
-      expect(formattedTxt).equal(expectedRecuringReqText);
-
-    });
-    cy.textExists(contractDetails.farLink, "FAR 12.207.");
-    cy.textExists(contractDetails.selectMessageText,
-      "Select all that apply to your contracting effort.")
-    //assert checkbox options
-    cy.selectCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
-      .check({ force: true }).uncheck({ force: true });
-    cy.selectCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
-      .check({ force: true }).uncheck({ force: true });      
-    cy.btnExists(common.backBtn, "Back").not("[disabled]");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
-  });
-
-  it("TC10: ContractType: Select checkbox options", () => {
-    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.findElement(contractDetails.popRadioGroup).should("exist");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, " Will this be a future recurring requirement? ");
-    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
-    //Select the checkbox options
-    cy.selectCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
-      .check({ force: true });
-    cy.selectCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
-      .check({ force: true }).then(() => {
-        cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
-        cy.textExists(contractDetails.tmTextFieldLabel,
-          "Please provide justification for your T&M contract type.");
-        cy.textExists(contractDetails.tmLearnMoreLink, "Learn more").should("exist");
-        const inputText = randomAlphaNumeric(8);
-        cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
-      });
-    cy.btnExists(common.backBtn, "Back").not("[disabled]");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.findElement(common.subStepClassReqsLink).contains("Classification Requirements")
-      .and('have.css', 'color', colors.primary);
-  });
+  });  
 
 });

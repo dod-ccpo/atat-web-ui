@@ -4,7 +4,8 @@ import { OrganizationApi } from "./organization";
 import { ContactsApi } from "./contacts";
 import { FairOpportunityApi } from "./fairOpportunity";
 import { CurrentContractApi } from "./background";
-import { SensitiveInformationApi } from "./otherContractConsiderations";
+import { ContractConsiderationsApi } from "./contractConsiderations";
+import { SensitiveInformationApi } from "./sensativeInformation";
 import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
@@ -20,6 +21,7 @@ export default {
   projectOverviewTable: new ProjectOverviewApi(),
   organizationTable: new OrganizationApi(),
   contactsTable: new ContactsApi(),
+  contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
   fundingPlanTable :new FundingPlanApi(),
   currentContractTable: new CurrentContractApi(),

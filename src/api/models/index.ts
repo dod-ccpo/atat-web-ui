@@ -23,6 +23,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   gfe_overview: string;
   contract_type: string;
   requirements_const_estimate: string;
+  contract_considerations: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -50,6 +51,25 @@ export interface ContactDTO extends BaseTableDTO {
   dodaac: string;
   can_access_package: string;
   manually_entered: string;
+}
+
+export interface ContractConsiderationsDTO extends BaseTableDTO{
+
+  packaging_shipping_other?: string;
+  contractor_required_training?: string;
+  packaging_shipping_other_explanation?: string;
+  conflict_of_interest_explanation?: string;
+  potential_conflict_of_interest?: string;
+  sys_mod_count?: string;
+  sys_updated_on?: string;
+  sys_tags?: string;
+  sys_id?: string;
+  sys_updated_by?: string;
+  required_training_courses?: string;
+  sys_created_on?: string;
+  packaging_shipping_none_apply?: string;
+  contractor_provided_transfer?: string;
+  sys_created_by?: string;
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
