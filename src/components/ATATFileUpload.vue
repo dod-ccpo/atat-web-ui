@@ -76,6 +76,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -198,8 +199,17 @@ export default class ATATFileUpload extends Vue {
     this.fileAttachentService?.upload(file, (total, current)=>{
         
       //set the progress here
+      //total is the total file size
+      //current is the current upload size
 
-    }).then().catch(error=> {
+    }).then(result=>{
+
+      //download link - link to the file download
+      //sys_id the unique id of the attachment in the attachment table
+      //table_sys_id the unique id of the table/record 
+      const { download_link, sys_id, table_sys_id}   = result.attachment;
+
+    }).catch(error=> {
       //file upload error occurred
     });
 
