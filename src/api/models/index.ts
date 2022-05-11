@@ -176,6 +176,8 @@ export interface AttachmentDTO extends BaseTableDTO {
 
 export interface Attachable extends BaseTableDTO {
   attachment: string;
+  extension: string;
+  file_name: string;
 }
 
 export interface FundingPlanDTO extends BaseTableDTO {

@@ -80,6 +80,8 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
+import { FileAttachmentService, FileAttachmentServiceFactory } from "@/services/attachment";
+
 
 @Component({
   components: {
@@ -100,6 +102,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
+  @Prop({ default: "", required:true }) private attachmentServiceName!: string;
 
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
@@ -108,6 +111,7 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
+  private fileAttachentService?: FileAttachmentService;
 
   //Events
   /**
@@ -189,6 +193,16 @@ export default class ATATFileUpload extends Vue {
       return isValidFormat && !doesFileExist;
     });
     this.validFiles.push(..._validFiles);
+
+    //wire up file upload here
+    this.fileAttachentService?.upload(file, (total, current)=>{
+        
+      //set the progress here
+
+    }).then().catch(error=> {
+      //file upload error occurred
+    });
+
     this.isFullSize = this.validFiles.length === 0;
   }
 
@@ -198,10 +212,15 @@ export default class ATATFileUpload extends Vue {
       this.id + "FileUpload"
     ) as HTMLInputElement;
 
+
     //prevents Browser from downloading the file if file is accidentally
     //dropped outside of dropzone
     window.addEventListener("drop", this.preventDrop, false);
     window.addEventListener("dragover", this.preventDrop, false);
+
+    //try to grab the attachment service via the service factory
+    this.fileAttachentService = FileAttachmentServiceFactory(this.attachmentServiceName);
+
   }
 
   private updated(): void{

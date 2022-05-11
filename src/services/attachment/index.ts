@@ -15,7 +15,7 @@ interface TableAttachment<TModel extends Attachable>{
 //https://masteringjs.io/tutorials/axios/axios-multi-form-data
 //https://stackoverflow.com/questions/17798047/streams-with-percentage-complete
 
-export class attachmentService<TTableApi extends TableApiBase<TModel>, TModel extends Attachable> {
+class FileAttachmentServiceBase<TTableApi extends TableApiBase<TModel>, TModel extends Attachable> {
     attachmentApi = new AttachmentApi();
     tableName: string;
     tableApi:  TTableApi;
@@ -24,7 +24,11 @@ export class attachmentService<TTableApi extends TableApiBase<TModel>, TModel ex
       this.tableApi = tableApi;
     }
 
-    async upload(fileName:string, fileExtension: string, file:File, 
+    private getExtension(filename: string): string {
+      return filename.substr(filename.lastIndexOf(".") + 1);
+    }
+
+    async upload(file:File, 
       onProgress?:(total:number, current: number)=> void):Promise<TableAttachment<TModel>>{
            
       try {
@@ -34,6 +38,9 @@ export class attachmentService<TTableApi extends TableApiBase<TModel>, TModel ex
         if(!record){
           throw new Error('failed to create record to associate attachment with');
         }
+
+        const fileName = file.name;
+        const fileExtension = this.getExtension(fileName);
 
         const attachment:AttachmentDTO = {
           file_name: fileName,
@@ -46,9 +53,11 @@ export class attachmentService<TTableApi extends TableApiBase<TModel>, TModel ex
         const updatedAttachment  = await this.attachmentApi.upload(attachment,file, onProgress);
 
         const attachmentSysId = updatedAttachment?.sys_id || "";
-        // update record with attachment sys id  
+        // update record with attachment sys id, file name, and extension
         //(this will point the attachment column to the attachment)
         record.attachment = attachmentSysId;
+        record.file_name = fileName;
+        record.extension = fileExtension;
         const updatedRecord = await this.tableApi.update(record.sys_id || "", record);
 
         //return the attachment and table data
@@ -61,17 +70,25 @@ export class attachmentService<TTableApi extends TableApiBase<TModel>, TModel ex
         throw new Error(`error occurred uploading file ${error}`)
             
       }
-         
     }
+}
 
-    export const Factory = (tableApi: string): attachmentService<TTableApi extends TableApiBase<TModel>, TModel extends Attachable> =>{
+export class FileAttachmentService extends 
+  FileAttachmentServiceBase<TableApiBase<Attachable>, Attachable>{}
 
-       switch(tableApi){
+export const AttachmentServiceTypes = {
 
-         case 'FundingPlanApi': 
-            return new attachmentService<FundingPlanApi, FundingPlanDTO>(FundingPlanTableName, api.fundingPlanTable);
-         default: 
-            throw new Error(`unable to create service instance for api ${tableApi}`);
-       }
-    }
+  FundingPlan: "FundingPlan",
+}
+
+export const FileAttachmentServiceFactory = (attachmentServiceType: string): 
+FileAttachmentService =>{
+  switch(attachmentServiceType){
+
+  case AttachmentServiceTypes.FundingPlan: 
+    return new FileAttachmentServiceBase<FundingPlanApi,FundingPlanDTO>
+    (FundingPlanTableName, api.fundingPlanTable) as FileAttachmentService;
+  default: 
+    throw new Error(`unable to create service instance for api ${attachmentServiceType}`);
+  }
 }

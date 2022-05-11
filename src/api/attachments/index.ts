@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosRequestConfig } from "axios";
 import { AttachmentDTO } from "../models";
 import { TableApiBase } from "../tableApiBase";
 import FormData from "form-data";
@@ -10,6 +10,7 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     super(TABLENAME);
   }
 
+
   protected get endPoint(): string {
     return `/now/${this.tableName}`;
   }
@@ -18,7 +19,6 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     onProgress?:(total:number, current: number)=>void): Promise<AttachmentDTO> {
     
     try {
-
           
       const formData = new FormData();
       formData.append('file', file);
