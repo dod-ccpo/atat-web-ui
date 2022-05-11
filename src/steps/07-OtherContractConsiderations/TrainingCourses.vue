@@ -53,7 +53,7 @@
                 <v-btn
                   icon
                   :disabled="trainingCerts.length === 1"
-                  @click="deleteTrainingCert(index)"
+                  @click="deletetrainingCert(index)"
                   aria-label="Delete this training course"
                   :id="'TrainingCourse ' + index + ' Delete'"
                 >
@@ -85,9 +85,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { stringObj } from "../../../types/Global";
-import { ContractConsiderationsDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import { hasChanges } from "@/helpers";
 
 
 @Component({
@@ -107,48 +104,8 @@ export default class TrainingCourses extends Vue {
     this.trainingCerts.push(newTrainingCert);
   }
 
-  public deleteTrainingCert(index: number): void {
+  public deletetrainingCert(index: number): void {
     this.trainingCerts.splice(index, 1);
-
-  }
-
-  public get current(): ContractConsiderationsDTO {
-    return {
-      contractor_required_training: this.selectedOption || "UNSELECTED",
-    };
-  }
-  public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadContractConsiderations();
-    this.saved = {
-      contractor_required_training: storeData.contractor_required_training || 'UNSELECTED',
-    }
-    if (storeData) {
-      if(storeData.contractor_required_training == 'UNSELECTED') {
-        this.selectedOption ='';
-      }
-      this.selectedOption = storeData.contractor_required_training === "UNSELECTED" ? ""
-        : storeData.contractor_required_training || "UNSELECTED"
-    }
-  }
-
-  public isChanged(): boolean {
-    return hasChanges(this.saved, this.current);
-  }
-
-  protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.isChanged()) {
-        await AcquisitionPackage.saveContractConsiderations(this.current);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    return true;
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
 
   }
 }
