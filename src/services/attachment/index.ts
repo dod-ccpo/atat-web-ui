@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 import { TableApiBase } from "@/api/tableApiBase";
 import { AttachmentApi } from "@/api/attachments";
-import { Attachable, AttachmentDTO } from "@/api/models";
+import { Attachable, AttachmentDTO, FundingPlanDTO } from "@/api/models";
+import api from "@/api";
+import { FundingPlanApi, TABLENAME as FundingPlanTableName } from "@/api/fundingPlan";
 
 
 interface TableAttachment<TModel extends Attachable>{
@@ -60,5 +62,16 @@ export class attachmentService<TTableApi extends TableApiBase<TModel>, TModel ex
             
       }
          
+    }
+
+    export const Factory = (tableApi: string): attachmentService<TTableApi extends TableApiBase<TModel>, TModel extends Attachable> =>{
+
+       switch(tableApi){
+
+         case 'FundingPlanApi': 
+            return new attachmentService<FundingPlanApi, FundingPlanDTO>(FundingPlanTableName, api.fundingPlanTable);
+         default: 
+            throw new Error(`unable to create service instance for api ${tableApi}`);
+       }
     }
 }
