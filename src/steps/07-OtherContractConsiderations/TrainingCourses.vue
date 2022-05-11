@@ -53,7 +53,7 @@
                 <v-btn
                   icon
                   :disabled="trainingCerts.length === 1"
-                  @click="deletetrainingCert(index)"
+                  @click="deleteTrainingCert(index)"
                   aria-label="Delete this training course"
                   :id="'TrainingCourse ' + index + ' Delete'"
                 >
@@ -85,6 +85,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { stringObj } from "../../../types/Global";
+import { ContractConsiderationsDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { hasChanges } from "@/helpers";
 
 
 @Component({
@@ -93,20 +96,56 @@ import { stringObj } from "../../../types/Global";
   },
 })
 export default class TrainingCourses extends Vue {
-
+  private saved: ContractConsiderationsDTO = {};
   public trainingCerts: stringObj[] = [
     {name: ""}
   ];
+private stringifyTraining = JSON.stringify(this.trainingCerts)
 
+public addTrainingCert(): void {
+  const newTrainingCert = {};
+  this.trainingCerts.push(newTrainingCert);
+}
 
-  public addTrainingCert(): void {
-    const newTrainingCert = {};
-    this.trainingCerts.push(newTrainingCert);
+public deleteTrainingCert(index: number): void {
+  this.trainingCerts.splice(index, 1);
+
+}
+public get current(): ContractConsiderationsDTO {
+
+  return {
+    required_training_courses: JSON.stringify(this.trainingCerts) || "",
+  };
+}
+public async loadOnEnter(): Promise<void> {
+  const storeData = await AcquisitionPackage.loadContractConsiderations();
+  this.saved = {
+    required_training_courses: storeData.required_training_courses || '',
+  }
+  if (storeData && storeData.required_training_courses) {
+    this.trainingCerts = JSON.parse(storeData.required_training_courses) || ""
+  }
+}
+
+public isChanged(): boolean {
+  return hasChanges(this.saved, this.current);
+}
+
+protected async saveOnLeave(): Promise<boolean> {
+  try {
+    if (this.isChanged()) {
+      await AcquisitionPackage.saveContractConsiderations(this.current);
+    }
+  } catch (error) {
+    console.log(error);
   }
 
-  public deletetrainingCert(index: number): void {
-    this.trainingCerts.splice(index, 1);
+  return true;
+}
 
-  }
+public async mounted(): Promise<void> {
+  await this.loadOnEnter();
+
+}
 }
 </script>
