@@ -1,6 +1,9 @@
+/* eslint-disable camelcase */
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { AttachmentDTO } from "../models";
 import { TableApiBase } from "../tableApiBase";
+import FormData from "form-data";
+
 const TABLENAME = "attachment";
 export class AttachmentApi extends TableApiBase<AttachmentDTO> {
   constructor() {
@@ -11,11 +14,43 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
     return `/now/${this.tableName}`;
   }
 
-  private async upload<AttachmentDTO>(
-    data: AttachmentDTO,
-    config?: AxiosRequestConfig
-  ): Promise<AxiosResponse> {
-    return this.instance.post(`${this.endPoint}/file`, data, config);
+  public async upload(data: AttachmentDTO, file:File,
+    onProgress?:(total:number, current: number)=>void): Promise<AttachmentDTO> {
+    
+    try {
+
+          
+      const formData = new FormData();
+      formData.append('file', file);
+    
+      const {table_name, table_sys_id, file_name} = data;
+
+      const config:AxiosRequestConfig ={
+        headers:{
+          'Content-Type': '*/*',
+        },
+        params:{
+          file_name,
+          table_name,
+          table_sys_id
+        },
+        onUploadProgress:(progressEvent: ProgressEvent)=> {
+
+          const { loaded, total } = progressEvent;
+          if(onProgress){
+            onProgress(total, loaded);
+          }
+        }
+      }
+      const response =  await this.instance.post(`${this.endPoint}/file`, formData, config);
+      if(response.status !== 200){
+        throw new Error(response.statusText);
+      }
+      return response.data as AttachmentDTO;
+          
+    } catch (error) {
+      throw new Error(`file upload error ${error}`);
+    }
   }
 
 }

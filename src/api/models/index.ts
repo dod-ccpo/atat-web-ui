@@ -153,6 +153,11 @@ export interface AttachmentDTO extends BaseTableDTO {
   hash?: string;
 }
 
+
+export interface Attachable extends BaseTableDTO {
+  attachment: string;
+}
+
 export interface FundingPlanDTO extends BaseTableDTO {
   //file attachment id from sys attachments table
   attachment: string;
