@@ -39,13 +39,14 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins} from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
+import { ContractConsiderationsDTO } from "@/api/models";
 import { Checkbox } from "../../../types/Global";
-
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -53,7 +54,8 @@ import { Checkbox } from "../../../types/Global";
   }
 })
 
-export default class PackagingPackingAndShipping extends Vue {
+export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
+  private saved: ContractConsiderationsDTO = {};
   public selectedOptions: string[] = [];
   public otherValueEntered = "";
   public otherValueRequiredMessage 
@@ -70,7 +72,7 @@ export default class PackagingPackingAndShipping extends Vue {
         moved to and from a defined, secured off-site storage location. The 
         contractor shall provide flexibility in courier pick-up and delivery 
         time.`,
-      value: "Yes", // EJY - when saving to SNOW, check what the value should be
+      value: "CONTRACTOR_PROVIDED", 
       description: "",
     },
     {
@@ -86,6 +88,48 @@ export default class PackagingPackingAndShipping extends Vue {
       description: "",
     },    
   ];
+
+
+  public get current(): ContractConsiderationsDTO {
+    return {
+      contractor_required_training: this.selectedOption || "UNSELECTED",
+    };
+  }
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadContractConsiderations();
+    this.saved = {
+      contractor_required_training: storeData.contractor_required_training || 'UNSELECTED',
+    }
+    if (storeData) {
+      if(storeData.contractor_required_training == 'UNSELECTED') {
+        this.selectedOption ='';
+      }
+      this.selectedOption = storeData.contractor_required_training === "UNSELECTED" ? ""
+        : storeData.contractor_required_training || "UNSELECTED"
+    }
+  }
+
+  public isChanged(): boolean {
+    return hasChanges(this.saved, this.current);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.isChanged()) {
+        await AcquisitionPackage.saveContractConsiderations(this.current);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+
+  }
+
 
 }
 </script>
