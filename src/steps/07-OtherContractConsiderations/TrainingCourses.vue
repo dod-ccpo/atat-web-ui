@@ -14,64 +14,67 @@
             </p>
           </div>
 
-          <div class="mb-4 _semibold" style="padding-left: 20px">
+          <div class="mb-4 _semibold" style="padding-left: 25px">
             Required Training Courses
           </div>
-          <div
-            v-for="(trainingCert, index) in trainingCerts"
-            :key="'TrainingCourse' + index"
-            class="d-inline-block py-2"
-            :id="'TrainingCourse ' + index + ' Row'"
-            :data-index="index"
-          >
-            <div class="d-flex">
+          <div class="d-flex flex-column ">
               <div
-                class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
+                v-for="(trainingCert, index) in trainingCerts"
+                :key="'TrainingCourse' + index"
+                class="d-inline-block py-2 "
+                :id="'TrainingCourse ' + index + ' Row'"
+                :data-index="index"
               >
-                <span class="duration">{{ index + 1 }}</span>
-              </div>
-              <div>
-                <ATATTextField
-                  :key="'TrainingCourse ' + index "
-                  :id="'TrainingCourse ' + index "
-                  class="mr-4"
-                  width="424"
-                  :rules="[
+                <v-expand-transition>
+                  <div class="d-flex">
+                    <div
+                      class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
+                    >
+                      <span class="duration">{{ index + 1 }}</span>
+                    </div>
+                    <div>
+                      <ATATTextField
+                        :key="'TrainingCourse ' + index "
+                        :id="'TrainingCourse ' + index "
+                        class="mr-4"
+                        width="424"
+                        :rules="[
                         $validators.required(
                         'Please enter the name of your training course.'
                         ),
                         $validators
                         .maxLength(300,'please limit your name to 300 characters or less')
                       ]"
-                  :value.sync="trainingCerts[index].name"
-                />
+                        :value.sync="trainingCerts[index].name"
+                      />
+                    </div>
+                    <div
+                      :key="'TrainingCourse ' + index + ' Button'"
+                      class="d-flex"
+                    >
+                      <v-btn
+                        icon
+                        :disabled="trainingCerts.length === 1"
+                        @click="deletetrainingCert(index)"
+                        aria-label="Delete this training course"
+                        :id="'TrainingCourse ' + index + ' Delete'"
+                      >
+                        <v-icon> delete</v-icon>
+                      </v-btn>
+                    </div>
+                  </div>
+                </v-expand-transition>
               </div>
-              <div
-                :key="'TrainingCourse ' + index + ' Button'"
-                class="d-flex"
-              >
-                <v-btn
-                  icon
-                  :disabled="trainingCerts.length === 1"
-                  @click="deletetrainingCert(index)"
-                  aria-label="Delete this training course"
-                  :id="'TrainingCourse ' + index + ' Delete'"
-                >
-                  <v-icon> delete</v-icon>
-                </v-btn>
-              </div>
-            </div>
           </div>
-
           <v-btn
             id="addTrainingCertButton"
             plain
             text
-            class="_text-link mt-5"
+            class="_text-link mt-5 pl-0"
             :ripple="false"
             @click="addTrainingCert()"
           >
-            <v-icon color="primary" class="mr-2">control_point</v-icon>
+            <v-icon color="primary" class="mr-1">control_point</v-icon>
             <span>Add another training course</span>
           </v-btn>
         </v-col>
