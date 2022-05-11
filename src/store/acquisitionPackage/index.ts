@@ -1746,7 +1746,7 @@ export class AcquisitionPackageStore extends VuexModule {
   async loadGFEOverview(): Promise<GFEOverviewDTO> {
     try {
       await this.ensureInitialized();
-      const sys_id = this.GFEOverview?.sys_id || "";
+      const sys_id = this.gfeOverview?.sys_id || "";
 
       if (sys_id.length > 0) {
         const GFEOverviewData = await api.gfeOverviewTable.retrieve(
@@ -1758,7 +1758,7 @@ export class AcquisitionPackageStore extends VuexModule {
           gfe_overview: sys_id,
         } as AcquisitionPackageDTO);
       }
-      return this.GFEOverview as GFEOverviewDTO;
+      return this.gfeOverview as GFEOverviewDTO;
     } catch (error) {
       throw new Error(`error occurred loading GFE info ${error}`);
     }
@@ -1767,7 +1767,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({ rawError: true })
   async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
     try {
-      const sys_id = this.GFEOverview?.sys_id || "";
+      const sys_id = this.gfeOverview?.sys_id || "";
       const savedGFEOverviewData =
         sys_id.length > 0
           ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
