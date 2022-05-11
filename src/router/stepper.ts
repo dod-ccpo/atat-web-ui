@@ -14,13 +14,13 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Fair Opportunity Process
 import FairOpportunityProcess from "../steps/02-FairOpportunityProcess/Index.vue"
 import Exceptions from "../steps/02-FairOpportunityProcess/Exceptions.vue";
-import JustificationAndApproval 
+import JustificationAndApproval
   from "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
 
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
-import CurrentContractDetails 
+import CurrentContractDetails
   from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
 import CurrentEnvironment 
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
@@ -31,14 +31,14 @@ import CurrentEnvironment
 /* 4.1.2 */ import POPStart from "@/steps/04-ContractDetails/POPStart.vue";
 /* 4.1.2 */ import RecurringRequirement from "../steps/04-ContractDetails/RecurringRequirement.vue";
 /* 4.2 */   import ContractType from "../steps/04-ContractDetails/ContractType.vue";
-/* 4.3 */   import ClassificationRequirements 
+/* 4.3 */   import ClassificationRequirements
   from "../steps/04-ContractDetails/ClassificationRequirements.vue";
 
 
 // Step 5 - Performance Requirements
 
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
-import PerformanceRequirements 
+import PerformanceRequirements
   from "../steps/05-PerformanceRequirements/PerformanceRequirements.vue";
 
 // Step 6 - Government Furnished Equipment
@@ -48,9 +48,11 @@ import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue"
 
 // Step 7 - Other Contract Considerations
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
-import PackagingPackingAndShipping 
+import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
 import Training from "../steps/07-OtherContractConsiderations/Training.vue";
+import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
+
 
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
@@ -65,7 +67,7 @@ import Section508AccessibilityRequirements
 
 // Step 9 - Evaluation Criteria
 import EvaluationCriteriaIndex from "../steps/09-EvaluationCriteria/Index.vue";
-import EvaluationCriteria 
+import EvaluationCriteria
   from "../steps/09-EvaluationCriteria/EvaluationCriteria.vue";
 
 // step 10 - Financial Details
@@ -85,6 +87,7 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
+  ContractTrainingReq,
 } from "./resolvers";
 
 export const routeNames = {
@@ -113,6 +116,7 @@ export const routeNames = {
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
   Training: "Training",
+  TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
   Justification: "Justification",
   OtherContractConsiderations: "Other_Contract_Considerations",
@@ -132,7 +136,7 @@ export const routeNames = {
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
-  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements"
+  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
 };
 
 /**
@@ -408,6 +412,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 2,
         component: Training,
       },
+      {
+        name: routeNames.TrainingCourses,
+        menuText: "Training",
+        excludeFromMenu: true,
+        path: "training",
+        completePercentageWeight: 2,
+        component: TrainingCourses,
+        routeResolver: ContractTrainingReq
+
+      },
     ]
   },
 
@@ -474,7 +488,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         routeResolver: A11yRequirementResolver
       },
     ]
-  },  
+  },
   {
     stepNumber: "09",
     completePercentageWeight: 7,
