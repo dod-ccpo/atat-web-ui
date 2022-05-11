@@ -50,7 +50,9 @@ import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue"
 import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
 import PackagingPackingAndShipping
   from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
-import Training from "../steps/07-OtherContractConsiderations/TrainingCourses.vue";
+import Training from "../steps/07-OtherContractConsiderations/Training.vue";
+import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
+
 
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
@@ -85,6 +87,7 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
+  ContractTrainingReq,
 } from "./resolvers";
 
 export const routeNames = {
@@ -113,6 +116,7 @@ export const routeNames = {
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
   Training: "Training",
+  TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
   Justification: "Justification",
   OtherContractConsiderations: "Other_Contract_Considerations",
@@ -132,7 +136,7 @@ export const routeNames = {
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
-  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements"
+  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
 };
 
 /**
@@ -407,6 +411,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         path: "training",
         completePercentageWeight: 2,
         component: Training,
+      },
+      {
+        name: routeNames.TrainingCourses,
+        menuText: "Training",
+        excludeFromMenu: true,
+        path: "training",
+        completePercentageWeight: 2,
+        component: TrainingCourses,
+        routeResolver: ContractTrainingReq
+
       },
     ]
   },
