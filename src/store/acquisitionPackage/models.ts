@@ -10,6 +10,7 @@ import {
   RequirementsCostEstimateDTO,
   PeriodOfPerformanceDTO,
   ContractConsiderationsDTO,
+  FundingPlanDTO,
 } from "@/api/models";
 
 export interface SessionData {
@@ -21,6 +22,7 @@ export interface SessionData {
   corInfo: ContactDTO;
   acorInfo: ContactDTO;
   fairOpportunity: FairOpportunityDTO;
+  fundingPlans: string;
   periodOfPerformance: PeriodOfPerformanceDTO;
   CurrentContract: CurrentContractDTO;
   SensitiveInformation: SensitiveInformationDTO;

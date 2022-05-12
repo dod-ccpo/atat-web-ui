@@ -24,6 +24,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contract_type: string;
   requirements_const_estimate: string;
   contract_considerations: string;
+  funding_plans: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -174,7 +175,7 @@ export interface AttachmentDTO extends BaseTableDTO {
 }
 
 
-export interface Attachable extends BaseTableDTO {
+export interface AttachableDTO extends BaseTableDTO {
   attachment: string;
   extension: string;
   file_name: string;

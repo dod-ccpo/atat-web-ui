@@ -1,12 +1,14 @@
 /* eslint-disable camelcase */
 import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
 import rootStore from "../index";
-import api from "@/api";
+import api, { AttachmentTableApiFactory } from "@/api";
 
 import {
   AcquisitionPackageDTO,
   ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
+  AttachableDTO,
+  AttachmentDTO
 } from "@/api/models";
 import { AutoCompleteItemGroups, SelectData } from "types/Global";
 import { SessionData } from "./models";
@@ -112,6 +114,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       corInfo: store.corInfo,
       acorInfo: store.acorInfo,
       fairOpportunity: store.fairOpportunity,
+      fundingPlans: store.fundingPlans,
       requirementsCostEstimate: store.requirementsCostEstimate,
       gfeOverview: store.GFEOverview,
     })
@@ -143,6 +146,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  fundingPlans: string | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
@@ -263,6 +267,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.corInfo = sessionData.corInfo;
     this.acorInfo = sessionData.acorInfo;
     this.fairOpportunity = sessionData.fairOpportunity;
+    this.fundingPlans = sessionData.fundingPlans;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
@@ -2311,13 +2316,50 @@ export class AcquisitionPackageStore extends VuexModule {
           : await api.contractTypeTable.create(data);
       this.setContractType(savedContractType);
       this.setAcquisitionPackage({
-        ...this.contractType,
+        ...this.acquisitionPackage,
         contract_type: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving PoP data ${error}`);
     }
   }
+
+/**
+ * A method to retrieve data from tables that are used strictrly for attaching files
+ * @param key string
+ * @returns attachment table data
+ */
+@Action({rawError: true})
+  async loadAttachments(key: string): Promise<AttachmentDTO[] | undefined>{
+    const storeData = (this as unknown) as Record<string, unknown>;
+
+    try{
+      //attachment table data is stored as a comma seperated 
+      // string list on the acquisition package object and in the store
+      const tableIdList = storeData[key] as string;
+      const tableIds = tableIdList.length ?  tableIdList.split(","): [];
+
+      if(tableIds.length == 0){
+        return [];
+      }
+
+      const requests = tableIds.map(id=> api.attachments.getByRecordId(id));
+      const data = await Promise.all(requests);
+      return data;
+
+    }
+    catch(error){  
+      console.error(`error ocurred loading attachment data for ${key} error: ${error}`);
+    }
+  }
+
+@Action({rawError: true})
+async updatePackageUpdate<TData>({key, data}:{key: string, data:TData}): Promise<void> {
+  this.setAcquisitionPackage({
+    ...this.acquisitionPackage,
+    [key]: data,
+  } as AcquisitionPackageDTO)
+}
 }
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);

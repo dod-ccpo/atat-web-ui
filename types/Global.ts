@@ -166,7 +166,7 @@ export interface mask {
 }
 
 export interface uploadingFile{
-  file: File;
+  file:  File;
   progressStatus: number;
   link: string;
   attachmentId: string,
