@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Tell us about your mandatory training.
+            Tell us about your mandatory training
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
@@ -15,7 +15,7 @@
           </div>
 
           <div class="mb-4 _semibold" style="padding-left: 25px">
-            Required Training Courses
+            Required training courses
           </div>
           <div class="d-flex flex-column ">
               <div
@@ -29,7 +29,7 @@
                   <div
                     class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
                   >
-                    <span class="duration">{{ index + 1 }}</span>
+                    <span class="course-number">{{ index + 1 }}</span>
                   </div>
                   <div>
                     <ATATTextField
@@ -42,7 +42,7 @@
                         'Please enter the name of your training course.'
                         ),
                         $validators
-                        .maxLength(300,'please limit your name to 300 characters or less')
+                        .maxLength(300,'Course name cannot exceed 300 characters.')
                       ]"
                       :value.sync="trainingCerts[index].name"
                     />
@@ -54,7 +54,7 @@
                     <v-btn
                       icon
                       :disabled="trainingCerts.length === 1"
-                      @click="deletetrainingCert(index)"
+                      @click="deleteTrainingCert(index)"
                       aria-label="Delete this training course"
                       :id="'TrainingCourse' + index + 'Delete'"
                     >
@@ -65,7 +65,7 @@
               </div>
           </div>
           <v-btn
-            id="addTrainingCertButton"
+            id="AddTrainingCertButton"
             plain
             text
             class="_text-link mt-5 pl-0"
@@ -105,7 +105,7 @@ export default class TrainingCourses extends Vue {
     this.trainingCerts.push(newTrainingCert);
   }
 
-  public deletetrainingCert(index: number): void {
+  public deleteTrainingCert(index: number): void {
     this.trainingCerts.splice(index, 1);
 
   }
