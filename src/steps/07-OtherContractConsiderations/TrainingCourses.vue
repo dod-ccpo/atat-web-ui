@@ -120,8 +120,6 @@ export default class TrainingCourses extends Mixins(SaveOnLeave) {
     return arr
   }
 
-  private stringifyTraining = JSON.stringify(this.trainingCerts)
-
   public addTrainingCert(): void {
     const newTrainingCert = {};
     this.trainingCerts.push(newTrainingCert);
