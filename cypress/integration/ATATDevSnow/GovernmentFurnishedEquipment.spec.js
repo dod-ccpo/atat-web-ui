@@ -78,7 +78,7 @@ describe("Test suite: Government Furnished Equipment", () => {
       
   });
 
-  it("TC4: Validations: Will this be a future recurring requirement?", () => {
+  it("TC4: Validations: Property Details", () => {
     cy.clickSideStepper(common.stepGovFurEquipLink, " Government Furnished Equipment ");
     cy.textExists(
       common.header,
