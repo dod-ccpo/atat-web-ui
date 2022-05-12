@@ -18,51 +18,51 @@
             Required training courses
           </div>
           <div class="d-flex flex-column ">
-              <div
-                v-for="(trainingCert, index) in trainingCerts"
-                :key="'TrainingCourse' + index"
-                class="d-inline-block py-2 "
-                :id="'TrainingCourse' + index + 'Row'"
-                :data-index="index"
-              >
-                <div class="d-flex">
-                  <div
-                    class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
-                  >
-                    <span class="course-number">{{ index + 1 }}</span>
-                  </div>
-                  <div>
-                    <ATATTextField
-                      :key="'TrainingCourse ' + index "
-                      :id="'TrainingCourse' + index "
-                      class="mr-4"
-                      width="424"
-                      :rules="[
+            <div
+              v-for="(trainingCert, index) in trainingCerts"
+              :key="'TrainingCourse' + index"
+              class="d-inline-block py-2 "
+              :id="'TrainingCourse' + index + 'Row'"
+              :data-index="index"
+            >
+              <div class="d-flex">
+                <div
+                  class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
+                >
+                  <span class="course-number">{{ index + 1 }}</span>
+                </div>
+                <div>
+                  <ATATTextField
+                    :key="'TrainingCourse ' + index "
+                    :id="'TrainingCourse' + index "
+                    class="mr-4"
+                    width="424"
+                    :rules="[
                         $validators.required(
                         'Please enter the name of your training course.'
                         ),
                         $validators
                         .maxLength(300,'Course name cannot exceed 300 characters.')
                       ]"
-                      :value.sync="trainingCerts[index].name"
-                    />
-                  </div>
-                  <div
-                    :key="'TrainingCourse ' + index + ' Button'"
-                    class="d-flex"
+                    :value.sync="trainingCerts[index].name"
+                  />
+                </div>
+                <div
+                  :key="'TrainingCourse ' + index + ' Button'"
+                  class="d-flex"
+                >
+                  <v-btn
+                    icon
+                    :disabled="trainingCerts.length === 1"
+                    @click="deleteTrainingCert(index)"
+                    aria-label="Delete this training course"
+                    :id="'TrainingCourse' + index + 'Delete'"
                   >
-                    <v-btn
-                      icon
-                      :disabled="trainingCerts.length === 1"
-                      @click="deleteTrainingCert(index)"
-                      aria-label="Delete this training course"
-                      :id="'TrainingCourse' + index + 'Delete'"
-                    >
-                      <v-icon> delete</v-icon>
-                    </v-btn>
-                  </div>
+                    <v-icon> delete</v-icon>
+                  </v-btn>
                 </div>
               </div>
+            </div>
           </div>
           <v-btn
             id="AddTrainingCertButton"
@@ -83,9 +83,13 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { stringObj } from "../../../types/Global";
+import { ContractConsiderationsDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
@@ -93,12 +97,28 @@ import { stringObj } from "../../../types/Global";
     ATATTextField,
   },
 })
-export default class TrainingCourses extends Vue {
-
+export default class TrainingCourses extends Mixins(SaveOnLeave) {
+  private saved: ContractConsiderationsDTO = {};
   public trainingCerts: stringObj[] = [
     {name: ""}
   ];
 
+  private transformTrainingCerts(certs: stringObj[]): string {
+    const trainingObj: stringObj = {}
+    certs.forEach((cert, index) => {
+      trainingObj[index] = cert.name
+    })
+    return JSON.stringify(trainingObj)
+  }
+
+  private parseTrainingCerts(certs: string): stringObj[] {
+    const arr = []
+    const parsedCerts = JSON.parse(certs)
+    for (const cert in parsedCerts) {
+      arr.push({'name': parsedCerts[cert]})
+    }
+    return arr
+  }
 
   public addTrainingCert(): void {
     const newTrainingCert = {};
@@ -107,6 +127,43 @@ export default class TrainingCourses extends Vue {
 
   public deleteTrainingCert(index: number): void {
     this.trainingCerts.splice(index, 1);
+
+  }
+
+  public get current(): ContractConsiderationsDTO {
+    return {
+      required_training_courses: this.transformTrainingCerts(this.trainingCerts) || "",
+    };
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadContractConsiderations();
+    this.saved = {
+      required_training_courses: storeData.required_training_courses || '',
+    }
+    if (storeData && storeData.required_training_courses) {
+      this.trainingCerts = this.parseTrainingCerts(storeData.required_training_courses) || ""
+    }
+  }
+
+  public isChanged(): boolean {
+    return hasChanges(this.saved, this.current);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.isChanged()) {
+        await AcquisitionPackage.saveContractConsiderations(this.current);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
 
   }
 }
