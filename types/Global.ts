@@ -172,4 +172,5 @@ export interface uploadingFile{
   attachmentId: string,
   recordId: string,
   isErrored: boolean;
+  isUploaded: boolean;
 }

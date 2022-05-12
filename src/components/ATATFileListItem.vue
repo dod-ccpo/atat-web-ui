@@ -1,29 +1,30 @@
 <template>
   <div class="content-div d-flex align-center mb-5">
     <ATATSVGIcon
-      :name="isPDF(file.name) ? 'pdf' : 'filePresent'"
+      :color="uploadingFileObj.isErrored ? 'error' : 'base'"
+      :name="isPDF(uploadingFileObj.file.name) ? 'pdf' : 'filePresent'"
       :width="32"
       :height="50"
     />
 
     <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
-      <div v-if="isLoading">
+      <div v-if="uploadFile">
         <div class="filename-and-extension d-flex align-start width-100">
-          <div :id="'File0' + index" v-if="file.name.length < 50">
-            {{ file.name }}
+          <div :id="'File0' + index" v-if="uploadingFileObj.file.name.length < 50">
+            {{ uploadingFileObj.file.name }}
           </div>
           <div :id="'File0' + index" class="d-flex align-center justify-space-between" v-else>
             <div class="truncated-file-name">
-              {{ file.name }}
+              {{ uploadingFileObj.file.name }}
             </div>
             <div class="ml-n1 mr-n1">...</div>
-            <div class="truncated-ext">{{ getExtension(file.name) }}</div>
+            <div class="truncated-ext">{{ getExtension(uploadingFileObj.file.name) }}</div>
           </div>
         </div>
         <div class="d-flex align-center mt-auto">
           <v-progress-linear
             class="progress-bar mr-5"
-            v-model="uploadingStatus"
+            v-model="uploadingFileObj.progressStatus"
             height="16"
           >
           </v-progress-linear>
@@ -42,17 +43,18 @@
             role="button"
             :id="'FileLink0' + index"
             target="_blank"
+            :href="uploadingFileObj.link"
             class="_text-link d-flex align-center justify-start"
           >
-            <div :id="'File0' + index" v-if="file.name.length < 50">
-              {{ file.name }}
+            <div :id="'File0' + index" v-if="uploadingFileObj.file.name.length < 50">
+              {{ uploadingFileObj.file.name }}
             </div>
             <div :id="'File0' + index" class="d-flex align-center" v-else>
               <div class="truncated-file-name">
-                {{ file.name }}
+                {{ uploadingFileObj.file.name }}
               </div>
               <div class="ml-n3">...</div>
-              <div class="truncated-ext">{{ getExtension(file.name) }}</div>
+              <div class="truncated-ext">{{ getExtension(uploadingFileObj.file.name) }}</div>
             </div>
             <div>
               <ATATSVGIcon
@@ -89,28 +91,13 @@
   </div>
 </template>
 
-<style>
-.file-link{
-  width: 
-}
-.truncated-file-name {
-  overflow: hidden;
-  height: 24px;
-  word-break: break-all;
-  text-overflow: clip;
-  width: calc(100% - 32px);
-}
-.truncated-ext {
-  
-}
-</style>
-
 <script lang='ts'>
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
+import { uploadingFile } from "types/Global";
 
 @Component({
   components: {
@@ -119,14 +106,19 @@ import { formatInTimeZone } from "date-fns-tz";
 })
 export default class ATATFileListItem extends Vue {
   /** PROPS */
-  @Prop({ default: () => [] }) private file!: File;
   @Prop({ default: 0 }) private index!: number;
+  @Prop({ default: ()=>({})}) private uploadingFileObj!: uploadingFile;
 
   /** DATA */
-  private uploadingStatus = 0;
-  private uploadingStatusInterval =0;
   private isLoading = true;
 
+  get uploadFile(): boolean{
+    // setTimeout(()=>{
+    this.isLoading = this.uploadingFileObj.progressStatus<100;
+    return this.isLoading;
+    // }, 100)
+  }
+ 
   /**
    * formats lastModifiedDate w/timezone
    */
@@ -180,27 +172,11 @@ export default class ATATFileListItem extends Vue {
   }
 
   /**
-   *  start the progress bar.  Temp for now until we can tie into
-   *  the API call.
-   */
-  private uploadFile(): void {
-    const progressInterval = Math.random() * 5;
-    console.log(progressInterval);
-    this.uploadingStatusInterval = window.setInterval(() => {
-      if (this.uploadingStatus < 100) {
-        this.uploadingStatus += progressInterval;
-      } else {
-        this.isLoading = false;
-        clearInterval(this.uploadingStatusInterval);
-      }
-    }, 50);
-  }
-
-  /**
    * uploads file when mounted
    */
   private mounted(): void {
-    this.uploadFile();
+    // console.log(this.uploadingFileObj)
+    // this.uploadFile();
   }
 }
 </script>

@@ -197,13 +197,15 @@ export default class ATATFileUpload extends Vue {
         (format) => thisFileFormat === format
       );
 
-      //todo check to see if file exists
-      //use file.name/size/lastmodified
-      // const doesFileExist = this.validFiles.some((file) => {
-      //   return vFile.name === file.name;
-      // });
+      const doesFileExist = this.validFiles.some((fileObj) => {
+        return (
+          vFile.name === fileObj.file.name &&
+          vFile.lastModified === fileObj.file.lastModified &&
+          vFile.size === fileObj.file.size
+        );
+      });
 
-      return isValidFormat;// && !doesFileExist;
+      return isValidFormat && !doesFileExist;
     });
 
     this.createFileObjects(_validFiles);
@@ -211,54 +213,63 @@ export default class ATATFileUpload extends Vue {
   }
 
   private createFileObjects(_validFiles: File[]): void {
-    _validFiles.forEach((vFile)=>{
+    _validFiles.forEach((vFile) => {
       this.validFiles.push({
         file: vFile,
         progressStatus: 0,
-        link: '',
-        attachmentId: '',
-        recordId: '',
-        isErrored: false
-      })
+        link: "",
+        attachmentId: "",
+        recordId: "",
+        isErrored: false,
+        isUploaded: false,
+      });
     });
     this.uploadFiles();
   }
 
-
-  private uploadFiles(): void{
-    this.validFiles.forEach((uploadingFile) => {
+  private uploadFiles(): void {
+    // this.validFiles.forEach((uploadingFile) => {
+    for (let i = 0; i < this.validFiles.length; i++) {
       //wire up file upload here
-      
+      let uploadingFileObj = this.validFiles[i];
 
-      // this.validFiles.push(vFile);
-      this.fileAttachentService?.upload(uploadingFile.file, (total, current) => {
-        //set the progress here
-        uploadingFile.progressStatus = current/total * 100;
-        //total is the total file size
-        //current is the current upload size
-      })
-        .then((result) => {
-          //download link - link to the file download
-          //sys_id the unique id of the attachment in the attachment table
-          //table_sys_id the unique id of the table/record
-          
-          const { download_link, sys_id, table_sys_id } = result.attachment;
-          uploadingFile.link = download_link || "";
-          uploadingFile.attachmentId = sys_id || "";
-          uploadingFile.recordId = table_sys_id;
-          
-        })
-        .catch((error) => {
-          // uploadingFile.isErrored === error.
-          //file upload error occurred
+      // only new files are uploaded
+      if (!uploadingFileObj.isUploaded) {
+        // this.validFiles.push(vFile);
+        window.setTimeout(() => {
+          this.fileAttachentService
+            ?.upload(uploadingFileObj.file, (total, current) => {
+              Vue.nextTick(()=>{
+                uploadingFileObj.progressStatus = (current / total) * 100;
+              });
+              // console.log(uploadingFileObj.progressStatus);
+              //total is the total file size
+              //current is the current upload size
+            })
+            .then((result) => {
+              //download link - link to the file download
+              //sys_id the unique id of the attachment in the attachment table
+              //table_sys_id the unique id of the table/record
 
-          //todo: do more granular handling here
-          uploadingFile.isErrored = true;
-          console.log(`file upload error ${error}`);
-        });
-    });
+              const { download_link, sys_id, table_sys_id } = result.attachment;
+              uploadingFileObj.link = download_link || "";
+              uploadingFileObj.attachmentId = sys_id || "";
+              uploadingFileObj.recordId = table_sys_id;
+            })
+            .catch((error) => {
+              // uploadingFile.isErrored === error.
+              //file upload error occurred
+
+              //todo: do more granular handling here
+              uploadingFileObj.isErrored = true;
+              console.log(`file upload error ${error}`);
+            });
+        }, i * 1000);
+
+        // });
+      }
+    }
   }
-  
 
   //life cycle hooks
   private mounted(): void {
@@ -270,9 +281,7 @@ export default class ATATFileUpload extends Vue {
     //dropped outside of dropzone
     window.addEventListener("drop", this.preventDrop, false);
     window.addEventListener("dragover", this.preventDrop, false);
-    
-    debugger;
-    
+
     //try to grab the attachment service via the service factory
     this.fileAttachentService = FileAttachmentServiceFactory(
       this.attachmentServiceName
