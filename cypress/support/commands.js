@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import 'cypress-iframe';
+import '@4tw/cypress-drag-drop';
 import common from '../selectors/common.sel';
 import projectOverview from '../selectors/projectOverview.sel.js';
 import contact from '../selectors/contact.sel';
@@ -38,11 +39,35 @@ import sac from '../selectors/standComp.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+let hopOutOfIframe = false;
+
+Cypress.Commands.add("visitURL", () => {
+  if (isTestingLocally) {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("localTestURLInIframe"));    
+    } else {
+      cy.visit(Cypress.env("localTestURL"));    
+    }
+  } else {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("testURL"));    
+    } else {
+      cy.visit(Cypress.env("disaNoIframeUrl"));    
+    }
+  }
+})
+
+Cypress.Commands.add("hopOutOfIframe", (hopOut, navigate) => {
+  hopOutOfIframe = hopOut || false;
+  if (navigate) {
+    cy.visitURL();
+  }
+});
 
 Cypress.Commands.add("launchATAT", () => {
+  cy.hopOutOfIframe(false);
   if (isTestingLocally){
     cy.clearSession();
-    cy.visit(Cypress.env("localTestURL"));    
     if (runTestsInIframe) {
       cy.visit(Cypress.env("localTestURLInIframe"));    
       cy.frameLoaded(common.app);        
@@ -79,7 +104,7 @@ Cypress.Commands.add('login', (user, password) => {
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-  if (runTestsInIframe || !isTestingLocally) {
+  if (runTestsInIframe && !hopOutOfIframe) {
     cy.iframe(common.app).find(selector)       
   } else {
     cy.get(selector);
@@ -523,7 +548,7 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
       cy.textExists(common.header, " Let’s gather some details about your current contract ");
     }
     else {
-      cy.findElement(common.stepBackgroundLink).contains(" Background ")
+      cy.findElement(common.stepContractDetailsText).contains(" Contract Details ")
         .and('have.css', 'color', colors.primary);
     }          
   })

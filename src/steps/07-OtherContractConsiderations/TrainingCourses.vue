@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header mb-3">
-            Tell us about your mandatory training.
+            Tell us about your mandatory training
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
@@ -14,64 +14,65 @@
             </p>
           </div>
 
-          <div class="mb-4 _semibold" style="padding-left: 20px">
-            Required Training Courses
+          <div class="mb-4 _semibold" style="padding-left: 25px">
+            Required training courses
           </div>
-          <div
-            v-for="(trainingCert, index) in trainingCerts"
-            :key="'TrainingCourse' + index"
-            class="d-inline-block py-2"
-            :id="'TrainingCourse ' + index + ' Row'"
-            :data-index="index"
-          >
-            <div class="d-flex">
-              <div
-                class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
-              >
-                <span class="duration">{{ index + 1 }}</span>
-              </div>
-              <div>
-                <ATATTextField
-                  :key="'TrainingCourse ' + index "
-                  :id="'TrainingCourse ' + index "
-                  class="mr-4"
-                  width="424"
-                  :rules="[
+          <div class="d-flex flex-column ">
+            <div
+              v-for="(trainingCert, index) in trainingCerts"
+              :key="'TrainingCourse' + index"
+              class="d-inline-block py-2 "
+              :id="'TrainingCourse' + index + 'Row'"
+              :data-index="index"
+            >
+              <div class="d-flex">
+                <div
+                  class="d-flex pt-2 justify-end mr-4 font-size-14 _text-base"
+                >
+                  <span class="course-number">{{ index + 1 }}</span>
+                </div>
+                <div>
+                  <ATATTextField
+                    :key="'TrainingCourse ' + index "
+                    :id="'TrainingCourse' + index "
+                    class="mr-4"
+                    width="424"
+                    :rules="[
                         $validators.required(
                         'Please enter the name of your training course.'
                         ),
                         $validators
-                        .maxLength(300,'please limit your name to 300 characters or less')
+                        .maxLength(300,'Course name cannot exceed 300 characters.')
                       ]"
-                  :value.sync="trainingCerts[index].name"
-                />
-              </div>
-              <div
-                :key="'TrainingCourse ' + index + ' Button'"
-                class="d-flex"
-              >
-                <v-btn
-                  icon
-                  :disabled="trainingCerts.length === 1"
-                  @click="deleteTrainingCert(index)"
-                  aria-label="Delete this training course"
-                  :id="'TrainingCourse ' + index + ' Delete'"
+                    :value.sync="trainingCerts[index].name"
+                  />
+                </div>
+                <div
+                  :key="'TrainingCourse ' + index + ' Button'"
+                  class="d-flex"
                 >
-                  <v-icon> delete</v-icon>
-                </v-btn>
+                  <v-btn
+                    icon
+                    :disabled="trainingCerts.length === 1"
+                    @click="deleteTrainingCert(index)"
+                    aria-label="Delete this training course"
+                    :id="'TrainingCourse' + index + 'Delete'"
+                  >
+                    <v-icon> delete</v-icon>
+                  </v-btn>
+                </div>
               </div>
             </div>
           </div>
-
           <v-btn
-            id="addTrainingCertButton"
+            id="AddTrainingCertButton"
             plain
             text
-            class="_text-link mt-5"
+            class="_text-link mt-5 pl-0"
             :ripple="false"
             @click="addTrainingCert()"
           >
-            <v-icon color="primary" class="mr-2">control_point</v-icon>
+            <v-icon color="primary" class="mr-1">control_point</v-icon>
             <span>Add another training course</span>
           </v-btn>
         </v-col>
@@ -82,7 +83,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins, Vue } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { stringObj } from "../../../types/Global";
 import { ContractConsiderationsDTO } from "@/api/models";
@@ -101,67 +102,71 @@ export default class TrainingCourses extends Mixins(SaveOnLeave) {
   public trainingCerts: stringObj[] = [
     {name: ""}
   ];
-  private transformTrainingCerts(certs:stringObj[]): string {
-    const trainingObj:stringObj = {}
-    certs.forEach((cert,index) => {
+
+  private transformTrainingCerts(certs: stringObj[]): string {
+    const trainingObj: stringObj = {}
+    certs.forEach((cert, index) => {
       trainingObj[index] = cert.name
     })
     return JSON.stringify(trainingObj)
   }
 
-  private parseTrainingCerts(certs:string): stringObj[] {
+  private parseTrainingCerts(certs: string): stringObj[] {
     const arr = []
     const parsedCerts = JSON.parse(certs)
-    for(const cert in parsedCerts) {
-      arr.push({'name':parsedCerts[cert]})
+    for (const cert in parsedCerts) {
+      arr.push({'name': parsedCerts[cert]})
     }
     return arr
   }
-private stringifyTraining = JSON.stringify(this.trainingCerts)
 
-public addTrainingCert(): void {
-  const newTrainingCert = {};
-  this.trainingCerts.push(newTrainingCert);
-}
+  private stringifyTraining = JSON.stringify(this.trainingCerts)
 
-public deleteTrainingCert(index: number): void {
-  this.trainingCerts.splice(index, 1);
-
-}
-public get current(): ContractConsiderationsDTO {
-  return {
-    required_training_courses: this.transformTrainingCerts(this.trainingCerts) || "",
-  };
-}
-public async loadOnEnter(): Promise<void> {
-  const storeData = await AcquisitionPackage.loadContractConsiderations();
-  this.saved = {
-    required_training_courses: storeData.required_training_courses || '',
+  public addTrainingCert(): void {
+    const newTrainingCert = {};
+    this.trainingCerts.push(newTrainingCert);
   }
-  if (storeData && storeData.required_training_courses) {
-    this.trainingCerts = this.parseTrainingCerts(storeData.required_training_courses) || ""
+
+  public deleteTrainingCert(index: number): void {
+    this.trainingCerts.splice(index, 1);
+
   }
-}
 
-public isChanged(): boolean {
-  return hasChanges(this.saved, this.current);
-}
+  public get current(): ContractConsiderationsDTO {
+    return {
+      required_training_courses: this.transformTrainingCerts(this.trainingCerts) || "",
+    };
+  }
 
-protected async saveOnLeave(): Promise<boolean> {
-  try {
-    if (this.isChanged()) {
-      await AcquisitionPackage.saveContractConsiderations(this.current);
+  public async loadOnEnter(): Promise<void> {
+    const storeData = await AcquisitionPackage.loadContractConsiderations();
+    this.saved = {
+      required_training_courses: storeData.required_training_courses || '',
     }
-  } catch (error) {
-    console.log(error);
+    if (storeData && storeData.required_training_courses) {
+      this.trainingCerts = this.parseTrainingCerts(storeData.required_training_courses) || ""
+    }
   }
 
-  return true;
-}
+  public isChanged(): boolean {
+    return hasChanges(this.saved, this.current);
+  }
 
-public async mounted(): Promise<void> {
-  await this.loadOnEnter();
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.isChanged()) {
+        await AcquisitionPackage.saveContractConsiderations(this.current);
+      }
+    } catch (error) {
+      console.log(error);
+    }
 
-}
+    return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+
+  }
 }
 </script>

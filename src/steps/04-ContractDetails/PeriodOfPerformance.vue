@@ -146,7 +146,7 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodOfPerformanceDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -383,7 +383,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   private savedData: PeriodOfPerformanceDTO = {};
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadPeriodOfPerformance();
+    const storeData = await AcquisitionPackage
+      .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
 
     if (storeData) {
       this.savedData.time_frame = storeData.time_frame;
@@ -414,7 +415,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.currentData !== this.savedData) {
-        await AcquisitionPackage.savePeriodOfPerformance(this.currentData);
+        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
+          {data: this.currentData, 
+            storeProperty: StoreProperties.PeriodOfPerformance});
       }
     } catch (error) {
       console.log(error);
