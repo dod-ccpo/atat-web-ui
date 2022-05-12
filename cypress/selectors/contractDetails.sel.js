@@ -30,7 +30,8 @@ module.exports = {
   optionDeleteButton: "#Option1Delete",
   sourceItem: "#Option2Row",
   targetItem: "#BaseRow",
-  optionalTwoTextBox:"#Option2Duration_text_field",
+  optionalTwoTextBox: "#Option2Duration_text_field",
+  
   //Do you want to request a PoP start date?
   popStartDateYesRadioOption: "#Radio_YesStartDate",
   popStartDateNoRadioOption: "#Radio_NoStartDate",
@@ -45,12 +46,16 @@ module.exports = {
   navigateCalendar: ".v-date-picker-header i",
   navigateNextMonth: "button[aria-label='Next month']",
   selectDate: ".v-date-picker-table button:not(.v-btn--disabled)",
+  popStartRadioError:"#PoPStartDate_radio_group_control .field-error",
+
   //will this be a future recurring requirement?
   recurringReqText: "p.mb-10",
   yesRadioOption: "#Radio_YesRecurring",
   noRadioOption: "#Radio_NoRecurring",
   activeRadioOption:"#RecurringOptions_radio_group_control .v-item--active",
   popRadioGroup: "#PoPStartDate_radio_group_control",
+  futureRecurringRadioError: "#RecurringOptions_radio_group_control .field-error",
+  
   //which Contract type applies to this acquistion?
   introPText: "#IntroP",
   farLink: "._text-link",
