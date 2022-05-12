@@ -548,7 +548,7 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
       cy.textExists(common.header, " Let’s gather some details about your current contract ");
     }
     else {
-      cy.findElement(common.stepBackgroundLink).contains(" Background ")
+      cy.findElement(common.stepContractDetailsText).contains(" Contract Details ")
         .and('have.css', 'color', colors.primary);
     }          
   })
