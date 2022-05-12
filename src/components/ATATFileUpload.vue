@@ -9,7 +9,10 @@
       <v-file-input
         ref="atatFileUpload"
         :id="id + 'FileUpload'"
-        :class="[{'v-text-field--is-hovering' : isHovering},'atat-file-upload']"
+        :class="[
+          { 'v-text-field--is-hovering': isHovering },
+          'atat-file-upload',
+        ]"
         multiple
         prepend-icon=""
         accept="application/pdf,application/vnd.ms-excel, .xlsx"
@@ -39,9 +42,11 @@
             </p>
             <p class="mt-3 mb-9">Use a PDF file with a max size of 10 MB.</p>
           </div>
-          <div v-else 
+          <div
+            v-else
             class="content-mini d-flex align-center width-100"
-            @click="fileUploadClicked">
+            @click="fileUploadClicked"
+          >
             <div>
               <ATATSVGIcon name="uploadFile" :width="40" :height="50" />
             </div>
@@ -59,9 +64,7 @@
                 </a>
               </p>
             </div>
-            <p class="ml-auto mb-0">
-              Use a PDF file with a max size of 10 MB.
-            </p>
+            <p class="ml-auto mb-0">Use a PDF file with a max size of 10 MB.</p>
           </div>
         </template>
       </v-file-input>
@@ -70,7 +73,7 @@
     <ATATFileList
       :validFiles="validFiles"
       :class="[{ 'mt-10': !isFullSize }]"
-      :isFullSize.sync = "isFullSize"
+      :isFullSize.sync="isFullSize"
     />
   </div>
 </template>
@@ -81,8 +84,11 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
-import { FileAttachmentService, FileAttachmentServiceFactory } from "@/services/attachment";
-
+import {
+  FileAttachmentService,
+  FileAttachmentServiceFactory,
+} from "@/services/attachment";
+import { uploadingFile } from "types/Global";
 
 @Component({
   components: {
@@ -103,11 +109,11 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
-  @Prop({ default: "", required:true }) private attachmentServiceName!: string;
+  @Prop({ default: "", required: true }) private attachmentServiceName!: string;
 
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
-  private validFiles: File[] = [];
+  private validFiles: uploadingFile[] = [];
   private uploadedFileNames: string[] = [];
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
@@ -134,7 +140,7 @@ export default class ATATFileUpload extends Vue {
       const vuetifyFileUploadStatus = document.getElementsByClassName(
         "v-file-input__text"
       )[0] as HTMLDivElement;
-      if (vuetifyFileUploadStatus){
+      if (vuetifyFileUploadStatus) {
         vuetifyFileUploadStatus.innerHTML = "";
       }
     });
@@ -187,34 +193,65 @@ export default class ATATFileUpload extends Vue {
       const thisFileFormat = vFile.name.substring(
         vFile.name.lastIndexOf(".") + 1
       );
-      const isValidFormat = this.validFileFormats.some((format) => thisFileFormat === format);
-      const doesFileExist = this.validFiles.some(
-        (file) => {
-          return vFile.name === file.name})
-      return isValidFormat && !doesFileExist;
-    });
-    this.validFiles.push(..._validFiles);
+      const isValidFormat = this.validFileFormats.some(
+        (format) => thisFileFormat === format
+      );
 
-    //wire up file upload here
-    this.fileAttachentService?.upload(file, (total, current)=>{
-        
-      //set the progress here
-      //total is the total file size
-      //current is the current upload size
+      //todo check to see if file exists
+      //use file.name/size/lastmodified
+      // const doesFileExist = this.validFiles.some((file) => {
+      //   return vFile.name === file.name;
+      // });
 
-    }).then(result=>{
-
-      //download link - link to the file download
-      //sys_id the unique id of the attachment in the attachment table
-      //table_sys_id the unique id of the table/record 
-      const { download_link, sys_id, table_sys_id}   = result.attachment;
-
-    }).catch(error=> {
-      //file upload error occurred
+      return isValidFormat;// && !doesFileExist;
     });
 
+    this.createFileObjects(_validFiles);
     this.isFullSize = this.validFiles.length === 0;
   }
+
+  private createFileObjects(_validFiles: File[]): void {
+    _validFiles.forEach((vFile)=>{
+      this.validFiles.push({
+        file: vFile,
+        progressStatus: 0,
+        link: '',
+        id: 0,
+        isErrored: false
+      })
+    });
+    this.uploadFiles();
+  }
+
+
+  private uploadFiles(): void{
+    this.validFiles.forEach((uploadingFile) => {
+      //wire up file upload here
+      
+
+      // this.validFiles.push(vFile);
+      this.fileAttachentService?.upload(uploadingFile, (total, current) => {
+        //set the progress here
+        uploadingFile.progressStatus = current/total * 100;
+        //total is the total file size
+        //current is the current upload size
+      })
+        .then((result) => {
+          //download link - link to the file download
+          //sys_id the unique id of the attachment in the attachment table
+          //table_sys_id the unique id of the table/record
+          
+          const { download_link, sys_id, table_sys_id } = result.attachment;
+          //uploadingFile.link = download_link;
+          
+        })
+        .catch((error) => {
+          // uploadingFile.isErrored === error.
+          //file upload error occurred
+        });
+    });
+  }
+  
 
   //life cycle hooks
   private mounted(): void {
@@ -222,18 +259,18 @@ export default class ATATFileUpload extends Vue {
       this.id + "FileUpload"
     ) as HTMLInputElement;
 
-
     //prevents Browser from downloading the file if file is accidentally
     //dropped outside of dropzone
     window.addEventListener("drop", this.preventDrop, false);
     window.addEventListener("dragover", this.preventDrop, false);
 
     //try to grab the attachment service via the service factory
-    this.fileAttachentService = FileAttachmentServiceFactory(this.attachmentServiceName);
-
+    this.fileAttachentService = FileAttachmentServiceFactory(
+      this.attachmentServiceName
+    );
   }
 
-  private updated(): void{
+  private updated(): void {
     this.isFullSize = this.validFiles.length === 0;
   }
 }

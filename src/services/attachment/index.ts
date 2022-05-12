@@ -4,6 +4,7 @@ import { AttachmentApi } from "@/api/attachments";
 import { Attachable, AttachmentDTO, FundingPlanDTO } from "@/api/models";
 import api from "@/api";
 import { FundingPlanApi, TABLENAME as FundingPlanTableName } from "@/api/fundingPlan";
+import { uploadingFile } from "types/Global";
 
 
 interface TableAttachment<TModel extends Attachable>{
@@ -28,7 +29,7 @@ class FileAttachmentServiceBase<TTableApi extends TableApiBase<TModel>, TModel e
       return filename.substr(filename.lastIndexOf(".") + 1);
     }
 
-    async upload(file:File, 
+    async upload(uploadingFile: uploadingFile, 
       onProgress?:(total:number, current: number)=> void):Promise<TableAttachment<TModel>>{
            
       try {
@@ -39,7 +40,7 @@ class FileAttachmentServiceBase<TTableApi extends TableApiBase<TModel>, TModel e
           throw new Error('failed to create record to associate attachment with');
         }
 
-        const fileName = file.name;
+        const fileName = uploadingFile.file.name;
         const fileExtension = this.getExtension(fileName);
 
         const attachment:AttachmentDTO = {
@@ -50,7 +51,7 @@ class FileAttachmentServiceBase<TTableApi extends TableApiBase<TModel>, TModel e
         };
           
         //get the uploaded Attachment meta data
-        const updatedAttachment  = await this.attachmentApi.upload(attachment,file, onProgress);
+        const updatedAttachment  = await this.attachmentApi.upload(attachment,uploadingFile.file, onProgress);
 
         const attachmentSysId = updatedAttachment?.sys_id || "";
         // update record with attachment sys id, file name, and extension
