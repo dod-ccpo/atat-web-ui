@@ -32,7 +32,7 @@ export default class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
   @Prop({ default: () => [] }) private validFiles!: uploadingFile[];
   @PropSync("isFullSize", {default: true}) private _isFullSize!: boolean;
-
+  @PropSync("fileToBeDeleted", {default: ()=>({})}) _fileToBeDeleted!: uploadingFile;
   private uploadingFiles: uploadingFile[] = [];
 
   /**
@@ -48,6 +48,7 @@ export default class ATATFileList extends Vue {
    */
   private removeFiles(idx: number): void {
     Vue.nextTick(()=>{
+      this._fileToBeDeleted = this.uploadingFiles[idx]
       this.uploadingFiles.splice(idx, 1);
       this.validFiles.splice(idx,1);
       this._isFullSize = this.validFiles.length === 0;

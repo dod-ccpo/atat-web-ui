@@ -74,6 +74,7 @@
       :validFiles="validFiles"
       :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
+      :fileToBeDeleted.sync="fileToBeDeleted"
     />
   </div>
 </template>
@@ -119,6 +120,17 @@ export default class ATATFileUpload extends Vue {
   private isHovering = false;
   private isFullSize = true;
   private fileAttachentService?: FileAttachmentService;
+  private fileToBeDeleted: uploadingFile = {
+    file: {} as File,
+    fileName: "",
+    created: new Date().getDate(),
+    progressStatus: 0,
+    link: "",
+    attachmentId: "",
+    recordId: "",
+    isErrored: false,
+    isUploaded: false,
+  }; 
 
   //Events
   /**
@@ -199,7 +211,7 @@ export default class ATATFileUpload extends Vue {
 
       const doesFileExist = this.validFiles.some((fileObj) => {
         return (
-          vFile.name === fileObj.file.name &&
+          vFile.name === fileObj.file?.name &&
           vFile.lastModified === fileObj.file.lastModified &&
           vFile.size === fileObj.file.size
         );
@@ -216,6 +228,8 @@ export default class ATATFileUpload extends Vue {
     _validFiles.forEach((vFile) => {
       this.validFiles.push({
         file: vFile,
+        fileName: vFile.name,
+        created: vFile.lastModified,
         progressStatus: 0,
         link: "",
         attachmentId: "",
@@ -231,7 +245,7 @@ export default class ATATFileUpload extends Vue {
     // this.validFiles.forEach((uploadingFile) => {
     for (let i = 0; i < this.validFiles.length; i++) {
       //wire up file upload here
-      let uploadingFileObj = this.validFiles[i];
+      let uploadingFileObj = this.validFiles[i] as uploadingFile;
 
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
