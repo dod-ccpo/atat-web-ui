@@ -50,7 +50,7 @@
             <ATATAlert
               id="RequestDateAlert"
               class="copy-max-width"
-              v-if="selectedRequestDateOption === 'NOT_LATER_THAN'"
+              v-if="selectedRequestDateOption === 'NO_LATER_THAN'"
               type="warning"
             >
               <template slot="content">
@@ -113,7 +113,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
       value: "NO_SOONER_THAN",
     },
     {
-      text: "No later than",
+      text: "Not later than",
       value: "NO_LATER_THAN"
     }
   ];
