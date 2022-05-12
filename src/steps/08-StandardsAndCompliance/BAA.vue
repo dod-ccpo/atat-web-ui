@@ -155,12 +155,12 @@ export default class BAA extends Mixins(SaveOnLeave) {
   ];
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: BAALearnMore,
       title: "Learn More",
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter();
   }
 
   public openSlideoutPanel(e: Event): void {

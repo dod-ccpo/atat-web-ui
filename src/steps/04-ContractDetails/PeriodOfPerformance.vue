@@ -244,13 +244,13 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: PopLearnMore,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     this.setDragEventListeners();
+    await this.loadOnEnter();
   }
 
   public durationLabelEl = document.getElementsByClassName("duration")[0] as HTMLElement;
