@@ -84,7 +84,7 @@ describe("Test suite: Government Furnished Equipment", () => {
       common.header,
       " Will government equipment be furnished, provided or acquired under this acquisition? ");
     //No radio button option is selected
-    cy.radioBtn(govFurEquip.yesRadioOption, "true").focus().tab().blur().then(() => {
+    cy.radioBtn(govFurEquip.yesRadioOption, "true").focus().tab().tab().then(() => {
       cy.checkErrorMessage(govFurEquip.govEquipRadioError, "Please select an option");
     });
       
