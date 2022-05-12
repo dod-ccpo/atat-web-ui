@@ -216,7 +216,8 @@ export default class ATATFileUpload extends Vue {
         file: vFile,
         progressStatus: 0,
         link: '',
-        id: 0,
+        attachmentId: '',
+        recordId: '',
         isErrored: false
       })
     });
@@ -230,7 +231,7 @@ export default class ATATFileUpload extends Vue {
       
 
       // this.validFiles.push(vFile);
-      this.fileAttachentService?.upload(uploadingFile, (total, current) => {
+      this.fileAttachentService?.upload(uploadingFile.file, (total, current) => {
         //set the progress here
         uploadingFile.progressStatus = current/total * 100;
         //total is the total file size
@@ -242,12 +243,18 @@ export default class ATATFileUpload extends Vue {
           //table_sys_id the unique id of the table/record
           
           const { download_link, sys_id, table_sys_id } = result.attachment;
-          //uploadingFile.link = download_link;
+          uploadingFile.link = download_link || "";
+          uploadingFile.attachmentId = sys_id || "";
+          uploadingFile.recordId = table_sys_id;
           
         })
         .catch((error) => {
           // uploadingFile.isErrored === error.
           //file upload error occurred
+
+          //todo: do more granular handling here
+          uploadingFile.isErrored = true;
+          console.log(`file upload error ${error}`);
         });
     });
   }
@@ -263,7 +270,9 @@ export default class ATATFileUpload extends Vue {
     //dropped outside of dropzone
     window.addEventListener("drop", this.preventDrop, false);
     window.addEventListener("dragover", this.preventDrop, false);
-
+    
+    debugger;
+    
     //try to grab the attachment service via the service factory
     this.fileAttachentService = FileAttachmentServiceFactory(
       this.attachmentServiceName

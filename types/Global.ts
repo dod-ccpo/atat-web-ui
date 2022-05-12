@@ -169,6 +169,7 @@ export interface uploadingFile{
   file: File;
   progressStatus: number;
   link: string;
-  id: number,
+  attachmentId: string,
+  recordId: string,
   isErrored: boolean;
 }

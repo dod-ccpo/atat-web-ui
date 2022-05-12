@@ -14,6 +14,7 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
   protected get endPoint(): string {
     return `/now/${this.tableName}`;
   }
+  
 
   public async upload(data: AttachmentDTO, file:File,
     onProgress?:(total:number, current: number)=>void): Promise<AttachmentDTO> {
@@ -43,12 +44,15 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
         }
       }
       const response =  await this.instance.post(`${this.endPoint}/file`, formData, config);
-      if(response.status !== 200){
+
+      if(response.status !== 201){
         throw new Error(response.statusText);
       }
-      return response.data as AttachmentDTO;
+      return response.data.result as AttachmentDTO;
           
     } catch (error) {
+
+      debugger;
       throw new Error(`file upload error ${error}`);
     }
   }

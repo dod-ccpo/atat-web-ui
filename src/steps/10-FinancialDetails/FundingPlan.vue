@@ -6,6 +6,7 @@
         <h1 class="page-header">Upload your MIPR</h1>
         <ATATFileUpload
           :validFileFormats="['xlsx', 'xls', 'pdf']"
+          attachmentServiceName="FundingPlan"
           id="FundingPlan"
         />
       </v-col>

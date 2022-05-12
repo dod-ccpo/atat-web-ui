@@ -124,7 +124,7 @@ export default class ATATFileListItem extends Vue {
 
   /** DATA */
   private uploadingStatus = 0;
-  private uploadingStatusInterval = 0;
+  private uploadingStatusInterval =0;
   private isLoading = true;
 
   /**
@@ -186,7 +186,7 @@ export default class ATATFileListItem extends Vue {
   private uploadFile(): void {
     const progressInterval = Math.random() * 5;
     console.log(progressInterval);
-    this.uploadingStatusInterval = setInterval(() => {
+    this.uploadingStatusInterval = window.setInterval(() => {
       if (this.uploadingStatus < 100) {
         this.uploadingStatus += progressInterval;
       } else {

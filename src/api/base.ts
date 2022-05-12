@@ -14,8 +14,8 @@ function configureDefaults(){
   if (process.env.NODE_ENV === "development") {
   // use username and password defined in .env file
   // for local development
-    const username = process.env.VUE_APP_SNOWUSER;
-    const password = process.env.VUE_APP_SNOWPASS;
+    const username = process.env.VUE_APP_SNOWUSER || "";
+    const password = process.env.VUE_APP_SNOWPASS || "";
 
     axios.defaults.auth = {
       username,
