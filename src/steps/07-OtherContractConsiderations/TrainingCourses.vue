@@ -82,12 +82,13 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Mixins, Vue } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import { stringObj } from "../../../types/Global";
 import { ContractConsiderationsDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 
 @Component({
@@ -95,11 +96,27 @@ import { hasChanges } from "@/helpers";
     ATATTextField,
   },
 })
-export default class TrainingCourses extends Vue {
+export default class TrainingCourses extends Mixins(SaveOnLeave) {
   private saved: ContractConsiderationsDTO = {};
   public trainingCerts: stringObj[] = [
     {name: ""}
   ];
+  private transformTrainingCerts(certs:stringObj[]): string {
+    const trainingObj:stringObj = {}
+    certs.forEach((cert,index) => {
+      trainingObj[index] = cert.name
+    })
+    return JSON.stringify(trainingObj)
+  }
+
+  private parseTrainingCerts(certs:string): stringObj[] {
+    const arr = []
+    const parsedCerts = JSON.parse(certs)
+    for(const cert in parsedCerts) {
+      arr.push({'name':parsedCerts[cert]})
+    }
+    return arr
+  }
 private stringifyTraining = JSON.stringify(this.trainingCerts)
 
 public addTrainingCert(): void {
@@ -112,9 +129,8 @@ public deleteTrainingCert(index: number): void {
 
 }
 public get current(): ContractConsiderationsDTO {
-
   return {
-    required_training_courses: JSON.stringify(this.trainingCerts) || "",
+    required_training_courses: this.transformTrainingCerts(this.trainingCerts) || "",
   };
 }
 public async loadOnEnter(): Promise<void> {
@@ -123,7 +139,7 @@ public async loadOnEnter(): Promise<void> {
     required_training_courses: storeData.required_training_courses || '',
   }
   if (storeData && storeData.required_training_courses) {
-    this.trainingCerts = JSON.parse(storeData.required_training_courses) || ""
+    this.trainingCerts = this.parseTrainingCerts(storeData.required_training_courses) || ""
   }
 }
 
