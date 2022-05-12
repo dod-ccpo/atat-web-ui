@@ -77,4 +77,16 @@ describe("Test suite: Government Furnished Equipment", () => {
       .and('have.css', 'color', colors.primary);
       
   });
+
+  it("TC4: Validations: Will this be a future recurring requirement?", () => {
+    cy.clickSideStepper(common.stepGovFurEquipLink, " Government Furnished Equipment ");
+    cy.textExists(
+      common.header,
+      " Will government equipment be furnished, provided or acquired under this acquisition? ");
+    //No radio button option is selected
+    cy.radioBtn(govFurEquip.yesRadioOption, "true").focus().tab().blur().then(() => {
+      cy.checkErrorMessage(govFurEquip.govEquipRadioError, "Please select an option");
+    });
+      
+  });
 });
