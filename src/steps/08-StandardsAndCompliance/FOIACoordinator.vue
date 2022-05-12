@@ -92,7 +92,7 @@ import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { SensitiveInformationDTO } from "@/api/models"
 import { hasChanges } from "@/helpers";
@@ -255,8 +255,10 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData =
-      await AcquisitionPackage.loadSensitiveInformation() as Record<string, string>;
+    const storeData = 
+      await AcquisitionPackage
+        .loadData<SensitiveInformationDTO>({storeProperty: 
+        StoreProperties.SensitiveInformation}) as Record<string, string>;
 
     if (storeData) {
       const keys: string[] = [
@@ -277,7 +279,8 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
       });
 
     } else {
-      AcquisitionPackage.setSensitiveInformation(this.currentData);
+      AcquisitionPackage.saveData<SensitiveInformationDTO>({data: this.currentData, 
+        storeProperty: StoreProperties.SensitiveInformation });
     }
   }
 
@@ -288,7 +291,9 @@ export default class FOIACoordinator extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+        await AcquisitionPackage
+          .saveData<SensitiveInformationDTO>( {data: this.currentData, 
+            storeProperty: StoreProperties.SensitiveInformation});
       }
     } catch (error) {
       console.log(error);

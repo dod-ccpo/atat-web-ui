@@ -42,7 +42,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 import { RadioButton } from "../../../types/Global";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { GFEOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -83,7 +83,7 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
 
   private get savedData(): GFEOverviewDTO {
     return {
-      gfe_gfp_furnished: AcquisitionPackage.GFEOverview?.gfe_gfp_furnished || "",
+      gfe_gfp_furnished: AcquisitionPackage.gfeOverview?.gfe_gfp_furnished || "",
     };
   }
 
@@ -92,7 +92,8 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadGFEOverview();
+    const storeData = await AcquisitionPackage.
+      loadData<GFEOverviewDTO>({storeProperty: StoreProperties.GFEOverview});
     if (storeData) {
       this.selectedEquipmentProvided = storeData.gfe_gfp_furnished;
     }
@@ -101,7 +102,8 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveGFEOverview(this.currentData);
+        await AcquisitionPackage.saveData<GFEOverviewDTO>({data: this.currentData, 
+          storeProperty: StoreProperties.GFEOverview});
       }
     } catch (error) {
       console.log(error);

@@ -95,7 +95,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { SensitiveInformationDTO} from "@/api/models"
 import { hasChanges } from "@/helpers";
@@ -154,7 +154,8 @@ export default class PII extends  Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    const storeData = await AcquisitionPackage
+      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
     if (storeData) {
       this.selectedPIIOption = storeData.pii_present === "true" ? "Yes" : "No";
     }
@@ -163,7 +164,9 @@ export default class PII extends  Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+        await AcquisitionPackage
+          .saveData<SensitiveInformationDTO>( {data: this.currentData, 
+            storeProperty: StoreProperties.SensitiveInformation});
       }
     } catch (error) {
       console.log(error);
