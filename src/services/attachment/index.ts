@@ -30,7 +30,7 @@ class FileAttachmentServiceBase<
   }
 
   private getExtension(filename: string): string {
-    return filename.substr(filename.lastIndexOf(".") + 1);
+    return filename.substring(filename.lastIndexOf(".") + 1);
   }
 
   async upload(
@@ -56,7 +56,7 @@ class FileAttachmentServiceBase<
         table_sys_id: record.sys_id || "",
       };
 
-      //get the upload the Attachment and get the meta data
+      //upload the Attachment and get the meta data
       const updatedAttachment = await this.attachmentApi.upload(
         attachment,
         file,
