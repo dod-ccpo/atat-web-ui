@@ -164,3 +164,15 @@ export interface mask {
   regex?: string;
   mask?: string[];
 }
+
+export interface uploadingFile{
+  file: File;
+  fileName?: string;
+  created?: number;
+  progressStatus: number;
+  link: string;
+  attachmentId: string,
+  recordId: string,
+  isErrored: boolean;
+  isUploaded: boolean;
+}

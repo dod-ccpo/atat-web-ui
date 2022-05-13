@@ -11,6 +11,7 @@ import {
   PeriodOfPerformanceDTO,
   ContractTypeDTO,
   ContractConsiderationsDTO,
+  FundingPlanDTO,
 } from "@/api/models";
 
 export interface SessionData {

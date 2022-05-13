@@ -14,6 +14,7 @@ import {
   BaseTableDTO,
   ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
+  AttachmentDTO
 } from "@/api/models";
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
@@ -26,6 +27,7 @@ import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
+import { FileAttachmentServiceFactory } from "@/services/attachment";
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -237,6 +239,7 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
+  fundingPlans: string | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
@@ -319,8 +322,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    this.contractConsiderations = this.contractConsiderations 
-      ? Object.assign(this.contractConsiderations, value) 
+    this.contractConsiderations = this.contractConsiderations
+      ? Object.assign(this.contractConsiderations, value)
       : value;
   }
 
@@ -333,6 +336,12 @@ export class AcquisitionPackageStore extends VuexModule {
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
   }
+
+  @Mutation
+  public setFundingPlans(value: string): void {
+    this.fundingPlans = value;
+  }
+
   @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
     this.gfeOverview = value;
@@ -391,7 +400,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
-          this.setAcquisitionPackage(acquisitionPackage);
+          this.setFundingPlans("");
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "" });
           this.setGFEOverview(initialGFE());
@@ -1807,18 +1816,15 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-
-  @Action({rawError: true})
-  async loadContractConsiderations():Promise<ContractConsiderationsDTO> {
-
+  @Action({ rawError: true })
+  async loadContractConsiderations(): Promise<ContractConsiderationsDTO> {
     try {
       await this.ensureInitialized();
       const sys_id = this.contractConsiderations?.sys_id || "";
 
       if (sys_id.length > 0) {
-        const contractConsiderationsData = await api.contractConsiderationsTable.retrieve(
-          sys_id as string
-        );
+        const contractConsiderationsData =
+          await api.contractConsiderationsTable.retrieve(sys_id as string);
         this.setContractConsiderations(contractConsiderationsData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
@@ -1831,11 +1837,11 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
-  async saveContractConsiderations(data: ContractConsiderationsDTO): Promise<void>{
-
+  @Action({ rawError: true })
+  async saveContractConsiderations(
+    data: ContractConsiderationsDTO
+  ): Promise<void> {
     try {
-
       const sys_id = this.contractConsiderations?.sys_id || "";
       const savedData =
         sys_id.length > 0
@@ -1845,7 +1851,8 @@ export class AcquisitionPackageStore extends VuexModule {
           })
           : await api.contractConsiderationsTable.create({
             ...initialContractConsiderations(),
-            ...data});
+            ...data,
+          });
       this.setContractConsiderations(savedData);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1924,12 +1931,97 @@ export class AcquisitionPackageStore extends VuexModule {
           : await api.contractTypeTable.create(data);
       this.setContractType(savedContractType);
       this.setAcquisitionPackage({
-        ...this.contractType,
+        ...this.acquisitionPackage,
         contract_type: sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving PoP data ${error}`);
     }
+  }
+
+  /**
+   * A method to retrieve data from tables that are used strictly for attaching files
+   * @param key string
+   * @returns attachment table data
+   */
+  @Action({ rawError: true })
+  async loadAttachments(key: string): Promise<AttachmentDTO[] | undefined> {
+    const storeData = this as unknown as Record<string, unknown>;
+
+    try {
+      //attachment table data is stored as a comma seperated
+      // string list on the acquisition package object and in the store
+      const tableIdList = storeData[key] as string;
+      const tableIds = tableIdList.length ? tableIdList.split(",") : [];
+
+      if (tableIds.length === 0) {
+        return [];
+      }
+
+      const requests = tableIds.map((id) => api.attachments.getByRecordId(id));
+      const data = await Promise.all(requests);
+      return data;
+    } catch (error) {
+      console.error(
+        `error ocurred loading attachment data for ${key} error: ${error}`
+      );
+    }
+  }
+
+  @Action({ rawError: true })
+  async removeAttachment({
+    key,
+    attachmentId,
+    recordId,
+  }: {
+    key: string;
+    attachmentId: string;
+    recordId: string;
+  }): Promise<void> {
+    const storeData = this as unknown as Record<string, unknown>;
+
+    try {
+      // attachment table data is stored as a comma separated
+      // string list on the acquisition package object and in the store
+      const tableIdList = storeData[key] as string;
+      const tableIds = tableIdList.length ? tableIdList.split(",") : [];
+
+      // convert first letter of key to uppercase because the file attachment
+      // service factory expects keys in CamelCased upper case starting letters
+      const convertedKey = key[0].toUpperCase() + key.substring(1);
+      // locate attachment service
+      const attachmentService = FileAttachmentServiceFactory(convertedKey);
+
+      // remove attachment
+      await attachmentService.remove({
+        sys_id: attachmentId,
+        table_sys_id: recordId,
+      } as AttachmentDTO);
+
+      //remove attachment record from
+      const recordIndex = tableIds.findIndex((record) => record === recordId);
+      if (recordIndex > -1) {
+        tableIds.splice(recordIndex, 1);
+        //update store data
+        const data = tableIds.join(",");
+        this.updatePackageUpdate({ key, data });
+      }
+    } catch (error) {
+      console.error(
+        `error ocurred removing attachment data for ${key} error: ${error}`
+      );
+    }
+  }
+
+  @Action({ rawError: true })
+  async updatePackageUpdate<TData>({
+    key, data}: { key: string; data: TData;}): Promise<void> {
+    const storeData = this as unknown as Record<string, unknown>;
+    storeData[key] = data;
+    this.setAcquisitionPackage({
+      ...this.acquisitionPackage,
+      [key]: data,
+    } as AcquisitionPackageDTO);
   }
 }
 

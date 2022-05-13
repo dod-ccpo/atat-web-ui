@@ -24,6 +24,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contract_type: string;
   requirements_const_estimate: string;
   contract_considerations: string;
+  funding_plans: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -146,4 +147,35 @@ export interface GFEOverviewDTO extends BaseTableDTO {
   dpas_custodian_number?: string;
   property_accountable?: string;
   property_custodian_name?: string;
+}
+
+export interface AttachmentDTO extends BaseTableDTO {
+  size_bytes?: string;
+  file_name: string;
+  average_image_color?: string;
+  image_width?: string;
+  table_name?: string;
+  image_height?: string;
+  download_link?: string;
+  content_type?: string;
+  size_compressed?: string;
+  compressed?: string;
+  state?: string;
+  table_sys_id: string;
+  chunk_size_bytes?: string;
+  hash?: string;
+}
+
+
+export interface AttachableDTO extends BaseTableDTO {
+  attachment: string;
+  extension: string;
+  file_name: string;
+}
+
+export interface FundingPlanDTO extends BaseTableDTO {
+  //file attachment id from sys attachments table
+  attachment: string;
+  extension: string;
+  file_name: string;
 }

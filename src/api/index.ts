@@ -11,8 +11,14 @@ import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
 import { GFEOverviewApi } from "./GFEOverview";
 import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
+import { FundingPlanApi } from "./fundingPlan";
+import { AttachmentApi } from "./attachments";
+import { TableApiBase } from "./tableApiBase";
+import { AttachableDTO } from "./models";
 
-export default {
+export const api = {
+
+  attachments: new AttachmentApi(),
   systemChoices: new SystemChoicesApi(),
   acquisitionPackageTable: new AcquisitionPackagesApi(),
   projectOverviewTable: new ProjectOverviewApi(),
@@ -20,6 +26,7 @@ export default {
   contactsTable: new ContactsApi(),
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
+  fundingPlanTable :new FundingPlanApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   militaryRankTable: new MilitaryRankApi(),
@@ -27,4 +34,23 @@ export default {
   gfeOverviewTable: new GFEOverviewApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
+}
+
+export default {
+  ...api
 };
+
+
+export const AttachmentTables = {
+
+  FundingPlans: "fundingPlans"
+}
+
+export const AttachmentTableApiFactory = (key: string): TableApiBase<AttachableDTO>=> {
+  switch(key){
+  case AttachmentTables.FundingPlans:
+    return api.fundingPlanTable
+  default:
+    throw new Error(`unable to locate api with key ${key}`);
+  }
+}
