@@ -14,16 +14,47 @@
   </v-container>
 </template>
 <script lang="ts">
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
+import {AttachmentTables} from "@/api"
+import { AttachableDTO } from "@/api/models";
+import { uploadingFile } from "types/Global";
 
 @Component({
   components: {
     ATATFileUpload,
   },
 })
-export default class FundingPlan extends Vue {}
+export default class FundingPlan extends Vue {
+
+  private uploadedFiles: uploadingFile[] = [];
+
+  async loadOnEnter():Promise<void> {
+
+    try {
+      const data = await AcquisitionPackage
+        .loadAttachments(AttachmentTables.FundingPlans) || [];
+      this.uploadedFiles = data.map(attachment=> {
+        return {
+          file: new File([], attachment.file_name),
+          attachmentId: attachment.sys_id,
+          recordId: attachment.table_sys_id,
+          link: attachment.download_link,
+          isUploaded: true,
+          isErrored: false,
+          progressStatus: 100,
+                
+        }
+      }) as uploadingFile[];
+
+    } catch (error) {
+      throw new Error('an error occurred loading funding plans data');
+    }
+  }
+
+}
 </script>
 

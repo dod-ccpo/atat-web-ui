@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
 import { TableApiBase } from "@/api/tableApiBase";
 import { AttachmentApi } from "@/api/attachments";
-import { Attachable, AttachmentDTO, FundingPlanDTO } from "@/api/models";
+import { AttachableDTO, AttachmentDTO, FundingPlanDTO } from "@/api/models";
 import api from "@/api";
 import {
   FundingPlanApi,
   TABLENAME as FundingPlanTableName,
 } from "@/api/fundingPlan";
 
-interface TableAttachment<TModel extends Attachable> {
+interface TableAttachment<TModel extends AttachableDTO> {
   data: TModel;
   attachment: AttachmentDTO;
 }
@@ -19,7 +19,7 @@ interface TableAttachment<TModel extends Attachable> {
 
 class FileAttachmentServiceBase<
   TTableApi extends TableApiBase<TModel>,
-  TModel extends Attachable
+  TModel extends AttachableDTO
 > {
   attachmentApi = new AttachmentApi();
   tableName: string;
@@ -84,11 +84,24 @@ class FileAttachmentServiceBase<
       throw new Error(`error occurred uploading file ${error}`);
     }
   }
+
+
+  async remove(attachment:AttachmentDTO): Promise<void>{
+
+    if(!attachment){
+
+      throw new Error('invalid request, attachment required');
+    }
+    //first delete the attachment
+    await this.attachmentApi.remove(attachment.sys_id || "");
+    //then delete the record
+    await this.tableApi.remove(attachment.table_sys_id);
+  }
 }
 
 export class FileAttachmentService extends FileAttachmentServiceBase<
-  TableApiBase<Attachable>,
-  Attachable
+  TableApiBase<AttachableDTO>,
+  AttachableDTO
 > {}
 
 export const AttachmentServiceTypes = {
