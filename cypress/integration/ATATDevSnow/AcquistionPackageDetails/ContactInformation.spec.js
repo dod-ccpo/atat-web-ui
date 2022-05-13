@@ -126,7 +126,11 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     cy.textExists(common.header, "Let’s confirm your contact information"); 
         
     //select radio button
-    cy.contactRoleRadioBtnOption(contact.militaryRadioBtn,"MILITARY");           
+    cy.contactRoleRadioBtnOption(
+      contact.militaryRadioBtn,
+      "MILITARY",
+      contact.serviceBranchAirForce
+    );           
 
     //Click Rank dropdown
     cy.dropDownClick(contact.rankInput);            
