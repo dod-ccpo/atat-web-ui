@@ -39,13 +39,16 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+/* eslint-disable camelcase */
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { ContractConsiderationsDTO } from "@/api/models";
 import { Checkbox } from "../../../types/Global";
-
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -53,28 +56,34 @@ import { Checkbox } from "../../../types/Global";
   }
 })
 
-export default class PackagingPackingAndShipping extends Vue {
-  public selectedOptions: string[] = [];
-  public otherValueEntered = "";
+export default class PackagingPackingAndShipping extends Mixins(SaveOnLeave) {
   public otherValueRequiredMessage 
     = "Please enter your packaging, packing and shipping instructions."
-
+  
+  public contractorProvidedTransportValue = "CONTRACTOR_PROVIDED";
   public otherValue = "OTHER";
   public noneApplyValue = "NONE";
+
+  public selectedOptions: string[] = [];
+  public otherValueEntered = "";
+  public contractorProvidedTransportSelected = "";
+  public otherSelected = "";
+  public noneApplySelected = "";
+
   private checkboxItems: Checkbox[] = [
     {
-      id: "YesCheckbox",
+      id: "ContractorProvided",
       label: `When transferring physical media between locations, the 
         contractor shall provide a certified courier or other method of 
         maintaining a secure chain of custody over tapes and other media being 
         moved to and from a defined, secured off-site storage location. The 
         contractor shall provide flexibility in courier pick-up and delivery 
         time.`,
-      value: "Yes", // EJY - when saving to SNOW, check what the value should be
+      value: this.contractorProvidedTransportValue, 
       description: "",
     },
     {
-      id: "OtherCheckbox",
+      id: "Other",
       label: "Other",
       value: this.otherValue,
       description: "",
@@ -86,6 +95,81 @@ export default class PackagingPackingAndShipping extends Vue {
       description: "",
     },    
   ];
+
+  @Watch("selectedOptions")
+  public selectedOptionsChange(newVal: string[]): void {
+    this.noneApplySelected = newVal.indexOf(this.noneApplyValue) > -1 ? "true" : "false";
+    this.otherSelected = newVal.indexOf(this.otherValue) > -1 ? "true" : "false";
+    this.contractorProvidedTransportSelected 
+      = newVal.indexOf(this.contractorProvidedTransportValue) > -1 ? "true" : "false";
+  }
+
+  public get currentData(): ContractConsiderationsDTO {
+    return {
+      contractor_provided_transfer: this.contractorProvidedTransportSelected,
+      packaging_shipping_other: this.otherSelected,
+      packaging_shipping_other_explanation: this.otherValueEntered,
+      packaging_shipping_none_apply: this.noneApplySelected,
+    };
+  }
+  
+  private savedData = {
+    contractor_provided_transfer: "",
+    packaging_shipping_other: "",
+    packaging_shipping_other_explanation: "",
+    packaging_shipping_none_apply: "",
+  } as Record<string, string>;
+
+  public async loadOnEnter(): Promise<void> {
+    const storeData 
+      = await AcquisitionPackage.loadContractConsiderations() as Record<string, string>;
+    
+    if (storeData) {
+      const keys: string[] = [
+        "contractor_provided_transfer",
+        "packaging_shipping_other",
+        "packaging_shipping_other_explanation",
+        "packaging_shipping_none_apply"
+      ];
+      keys.forEach((key: string) => {
+        if (Object.prototype.hasOwnProperty.call(storeData, key)) {
+          this.savedData[key] = storeData[key];
+        }
+      });
+      this.savedData.contractor_provided_transfer === "true" 
+        ? this.selectedOptions.push(this.contractorProvidedTransportValue) : null; 
+      this.savedData.packaging_shipping_other === "true" 
+        ? this.selectedOptions.push(this.otherValue) : null; 
+      this.savedData.packaging_shipping_none_apply === "true" 
+        ? this.selectedOptions.push(this.noneApplyValue) : null; 
+      this.otherValueEntered = this.savedData.packaging_shipping_other_explanation;
+    } else {
+      AcquisitionPackage.setCurrentContract(this.currentData);
+    }
+  }
+
+  public isChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    if (this.noneApplySelected === "true" || this.otherSelected !== "true") {
+      this.otherValueEntered = "";
+    }
+    try {
+      if (this.isChanged()) {
+        await AcquisitionPackage.saveContractConsiderations(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
 
 }
 </script>
