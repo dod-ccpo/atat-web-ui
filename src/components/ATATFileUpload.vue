@@ -231,14 +231,14 @@ export default class ATATFileUpload extends Vue {
   }
 
   private uploadFiles(): void {
-    // this.validFiles.forEach((uploadingFile) => {
+   
     for (let i = 0; i < this.validFiles.length; i++) {
       //wire up file upload here
       let uploadingFileObj = this.validFiles[i] as uploadingFile;
 
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
-        // this.validFiles.push(vFile);
+       
         window.setTimeout(() => {
           this.fileAttachentService
             ?.upload(uploadingFileObj.file, (total, current) => {
@@ -265,7 +265,7 @@ export default class ATATFileUpload extends Vue {
               uploadingFileObj.isUploaded = true;
             })
             .catch((error) => {
-              // uploadingFile.isErrored === error.
+            
               //file upload error occurred
 
               uploadingFileObj.isErrored = true;
@@ -273,7 +273,7 @@ export default class ATATFileUpload extends Vue {
             });
         }, i * 1000);
 
-        // });
+       
       }
     }
   }

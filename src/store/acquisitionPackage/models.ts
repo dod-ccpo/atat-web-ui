@@ -10,7 +10,8 @@ import {
   RequirementsCostEstimateDTO,
   PeriodOfPerformanceDTO,
   ContractTypeDTO,
-  ContractConsiderationsDTO
+  ContractConsiderationsDTO,
+  FundingPlanDTO,
 } from "@/api/models";
 
 export interface SessionData {
@@ -22,7 +23,6 @@ export interface SessionData {
   contractType: ContractTypeDTO;
   currentContract: CurrentContractDTO;
   fairOpportunity: FairOpportunityDTO;
-  fundingPlans: string;
   gFEOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
   periodOfPerformance: PeriodOfPerformanceDTO;

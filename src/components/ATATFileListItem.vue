@@ -55,7 +55,7 @@
             :href="uploadingFileObj.link"
             :class="[
               uploadingFileObj.isErrored ? 'error--text' : '_text-link',
-              ' d-flex align-center justify-start]',
+              ' d-flex align-center justify-start',
             ]"
           >
             <div

@@ -190,7 +190,6 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       contractType: store.contractType,
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
-      fundingPlans: store.fundingPlans,
       gfeOverview: store.gfeOverview,
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
@@ -323,8 +322,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    this.contractConsiderations = this.contractConsiderations 
-      ? Object.assign(this.contractConsiderations, value) 
+    this.contractConsiderations = this.contractConsiderations
+      ? Object.assign(this.contractConsiderations, value)
       : value;
   }
 
@@ -1941,7 +1940,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   /**
-   * A method to retrieve data from tables that are used strictrly for attaching files
+   * A method to retrieve data from tables that are used strictly for attaching files
    * @param key string
    * @returns attachment table data
    */
@@ -1955,13 +1954,10 @@ export class AcquisitionPackageStore extends VuexModule {
       const tableIdList = storeData[key] as string;
       const tableIds = tableIdList.length ? tableIdList.split(",") : [];
 
-      if (tableIds.length == 0) {
+      if (tableIds.length === 0) {
         return [];
       }
 
-      //todo: do we really need to make a trip to the db to get the file meta data?
-      //todo: we can store the uploaded file meta data in the session but 
-      //todo: we can't account for potentially multiple edits to the same data acquisition package
       const requests = tableIds.map((id) => api.attachments.getByRecordId(id));
       const data = await Promise.all(requests);
       return data;
@@ -1972,10 +1968,6 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  /**
-   * Removes uploaded attachments in service now
-   * @param param0 
-   */
   @Action({ rawError: true })
   async removeAttachment({
     key,
@@ -1989,13 +1981,13 @@ export class AcquisitionPackageStore extends VuexModule {
     const storeData = this as unknown as Record<string, unknown>;
 
     try {
-      //attachment table data is stored as a comma seperated
+      // attachment table data is stored as a comma separated
       // string list on the acquisition package object and in the store
       const tableIdList = storeData[key] as string;
       const tableIds = tableIdList.length ? tableIdList.split(",") : [];
 
       // convert first letter of key to uppercase because the file attachment
-      // service factory expects keys in Camel Case with a capitalized starting letter
+      // service factory expects keys in CamelCased upper case starting letters
       const convertedKey = key[0].toUpperCase() + key.substring(1);
       // locate attachment service
       const attachmentService = FileAttachmentServiceFactory(convertedKey);
@@ -2006,7 +1998,7 @@ export class AcquisitionPackageStore extends VuexModule {
         table_sys_id: recordId,
       } as AttachmentDTO);
 
-      //remove attachment record id from stored record ids
+      //remove attachment record from
       const recordIndex = tableIds.findIndex((record) => record === recordId);
       if (recordIndex > -1) {
         tableIds.splice(recordIndex, 1);
