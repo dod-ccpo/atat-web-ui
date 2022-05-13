@@ -126,7 +126,11 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     cy.textExists(common.header, "Let’s confirm your contact information"); 
         
     //select radio button
-    cy.contactRoleRadioBtnOption(contact.militaryRadioBtn,"MILITARY");           
+    cy.contactRoleRadioBtnOption(
+      contact.militaryRadioBtn,
+      "MILITARY",
+      contact.serviceBranchAirForce
+    );           
 
     //Click Rank dropdown
     cy.dropDownClick(contact.rankInput);            
@@ -291,7 +295,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
               
   });   
   
-  // Skipping this test,blocked due to AT-7300. 
+  //resolved the issue when uncomment with other task
   it.skip("TC7: Military: Field Validations", () => {
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
@@ -312,7 +316,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     
     cy.findElement(contact.serviceBranchDropdown).focus().then(()=>{
       cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
-      cy.findElement(contact.serviceDropDownList).first().click();
+      cy.findElement(contact.serviceBranchCoastGuard).click();
     });
     //Validation message for Rank
     cy.verifyRequiredDropdown(

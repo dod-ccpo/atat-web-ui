@@ -337,7 +337,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
     });
 });
 
-Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
+Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) => {
   cy.radioBtn(selector, value).click({ force: true }, { timeout: 1000 }).should("be.checked");
   cy.findElement(contact.contactRadioBtnActive)
     .then(($radioBtn) => {
@@ -349,14 +349,17 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
           .and("be.visible")
           .and("contain", "Service branch");
         cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
-        cy.findElement(contact.serviceDropDownList).first().click();
-        cy.findElement(contact.rankAutoCompleteWrapper)
-          .should("exist")
-          .and("be.visible")
-          .and("contain", "Rank");
-        cy.findElement(contact.gradeAutoCompleteWrapper)
-          .should("exist")
-          .and("not.visible");
+        cy.findElement(sbSelector)
+          .click()
+          .then(() => {
+            cy.findElement(contact.rankAutoCompleteWrapper)
+              .should("exist")
+              .and("be.visible")
+              .and("contain", "Rank");
+            cy.findElement(contact.gradeAutoCompleteWrapper)
+              .should("exist")
+              .and("not.visible");
+          });        
       }
       if (selectedOption === "radio_button_checkedContractor") {
         cy.findElement(contact.salutationDropDownLabel)
