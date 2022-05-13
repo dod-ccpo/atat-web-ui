@@ -75,6 +75,7 @@
       :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
       :fileToBeDeleted.sync="fileToBeDeleted"
+      @delete="(file)=> $emit('delete', file)"
     />
   </div>
 </template>

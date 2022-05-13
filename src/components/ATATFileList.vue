@@ -48,10 +48,12 @@ export default class ATATFileList extends Vue {
    */
   private removeFiles(idx: number): void {
     Vue.nextTick(()=>{
-      this._fileToBeDeleted = this.uploadingFiles[idx]
+      const fileToDelete = this.uploadingFiles[idx];
+      this._fileToBeDeleted = this.uploadingFiles[idx];
       this.uploadingFiles.splice(idx, 1);
       this.validFiles.splice(idx,1);
       this._isFullSize = this.validFiles.length === 0;
+      this.$emit('delete', fileToDelete);
     })
   }
 

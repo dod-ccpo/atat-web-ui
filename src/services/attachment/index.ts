@@ -105,14 +105,14 @@ export class FileAttachmentService extends FileAttachmentServiceBase<
 > {}
 
 export const AttachmentServiceTypes = {
-  FundingPlan: "FundingPlan",
+  FundingPlans: "FundingPlans",
 };
 
 export const FileAttachmentServiceFactory = (
   attachmentServiceType: string
 ): FileAttachmentService => {
   switch (attachmentServiceType) {
-  case AttachmentServiceTypes.FundingPlan:
+  case AttachmentServiceTypes.FundingPlans:
     return new FileAttachmentServiceBase<FundingPlanApi, FundingPlanDTO>(
       FundingPlanTableName,
       api.fundingPlanTable

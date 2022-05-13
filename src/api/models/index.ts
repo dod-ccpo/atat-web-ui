@@ -162,10 +162,10 @@ export interface AttachmentDTO extends BaseTableDTO {
   file_name: string;
   average_image_color?: string;
   image_width?: string;
-  table_name: string;
+  table_name?: string;
   image_height?: string;
   download_link?: string;
-  content_type: string;
+  content_type?: string;
   size_compressed?: string;
   compressed?: string;
   state?: string;
