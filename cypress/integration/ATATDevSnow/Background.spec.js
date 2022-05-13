@@ -102,7 +102,7 @@ describe("Test suite: Background", () => {
     cy.contractOption(background.yesRadioOption, "true");
     cy.btnExists(background.noExistingContractBtn, " I don’t have an existing contract ")
       .not("[disabled]").click();
-    cy.findElement(common.stepBackgroundLink).contains(" Background ")
+    cy.findElement(common.stepContractDetailsText).contains(" Contract Details ")
       .and('have.css', 'color', colors.primary);
     
   });

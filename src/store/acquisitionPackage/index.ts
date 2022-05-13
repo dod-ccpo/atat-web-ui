@@ -1,15 +1,22 @@
 /* eslint-disable camelcase */
-import {Action, getModule, Module, Mutation, VuexModule,} from "vuex-module-decorators";
+import {
+  Action,
+  getModule,
+  Module,
+  Mutation,
+  VuexModule,
+} from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-
+import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
+  BaseTableDTO,
   ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
   AttachmentDTO
 } from "@/api/models";
-import { AutoCompleteItemGroups, SelectData } from "types/Global";
+import { SelectData } from "types/Global";
 import { SessionData } from "./models";
 import { ProjectOverviewDTO } from "@/api/models";
 import { OrganizationDTO } from "@/api/models";
@@ -22,7 +29,30 @@ import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
 import { FileAttachmentServiceFactory } from "@/services/attachment";
 
+
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
+
+export const StoreProperties = {
+  CurrentContract: "currentContract",
+  ContractType: "contractType",
+  ProjectOverview: "projectOverview",
+  Organization: "organization",
+  FairOpportunity: "fairOpportunity",
+  GFEOverview:"gfeOverview",
+  PeriodOfPerformance: "periodOfPerformance",
+  RequirementsCostEstimate:"requirementsCostEstimate",
+  SensitiveInformation: "sensitiveInformation",
+};
+
+const initialCurrentContract = ()=> {
+  return {
+    current_contract_exists: "",
+    incumbent_contractor_name: "",
+    contract_number: "",
+    task_delivery_order_number: "",
+    contract_order_expiration_date: "",
+  }
+}
 
 const initialProjectOverview = () => {
   return {
@@ -49,6 +79,14 @@ const initialOrganization = () => {
     state: "",
   };
 };
+
+const initialContractType = ()=> {
+  return {
+    firm_fixed_price: "",
+    time_and_materials: "",
+    contract_type_justification: "",
+  }
+}
 
 const initialContact = () => {
   return {
@@ -102,6 +140,42 @@ const initialGFE = () => {
   };
 };
 
+const initialPeriodOfPerformance = ()=> {
+
+  return     { 
+    pop_start_request: "",
+    requested_pop_start_date: "",
+    time_frame: "",
+    recurring_requirement: "",
+    base_and_options: "",
+    
+  }}
+
+const initialSensativeInformation = ()=> {
+
+  return {
+
+    pii_present: "",
+    system_of_record_name: "",
+    work_to_be_performed: "",
+      
+    baa_required: "",
+      
+    potential_to_be_harmful: "",
+      
+    foia_full_name: "",
+    foia_email: "",
+    foia_address_type: "",
+    foia_city_apo_fpo: "",
+    foia_street_address_1: "",
+    foia_street_address_2: "",
+    foia_state_province_state_code: "",
+    foia_zip_postal_code: "",
+    foia_country: "",
+    section_508_sufficient: "",
+  }
+}
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
@@ -113,12 +187,32 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       contractConsiderations: store.contractConsiderations,
       corInfo: store.corInfo,
       acorInfo: store.acorInfo,
+      contractType: store.contractType,
+      currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
       fundingPlans: store.fundingPlans,
+      gfeOverview: store.gfeOverview,
+      periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
-      gfeOverview: store.GFEOverview,
+      sensativeInformation: store.sensitiveInformation,
     })
   );
+};
+
+const getStoreDataTableProperty = (
+  storeProperty: string,
+  store: AcquisitionPackageStore
+): BaseTableDTO => {
+  // get specific property
+  const dataProperty = (store as unknown as Record<string, BaseTableDTO>)[
+    storeProperty
+  ];
+
+  if (!dataProperty) {
+    throw new Error(`unable to locate store property : ${storeProperty}`);
+  }
+
+  return dataProperty;
 };
 
 @Module({
@@ -150,7 +244,7 @@ export class AcquisitionPackageStore extends VuexModule {
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
-  GFEOverview: GFEOverviewDTO | null = null;
+  gfeOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
 
@@ -229,8 +323,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    this.contractConsiderations = this.contractConsiderations
-      ? Object.assign(this.contractConsiderations, value)
+    this.contractConsiderations = this.contractConsiderations 
+      ? Object.assign(this.contractConsiderations, value) 
       : value;
   }
 
@@ -251,7 +345,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
-    this.GFEOverview = value;
+    this.gfeOverview = value;
   }
 
   @Mutation
@@ -267,18 +361,19 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   private setDataFromSession(sessionData: SessionData) {
     this.acquisitionPackage = sessionData.acquisitionPackage;
-    this.projectOverview = sessionData.projectOverview;
-    this.organization = sessionData.organization;
+    this.acorInfo = sessionData.acorInfo;
     this.contactInfo = sessionData.contactInfo;
     this.contractConsiderations = sessionData.contractConsiderations;
     this.corInfo = sessionData.corInfo;
-    this.acorInfo = sessionData.acorInfo;
+    this.contractType = sessionData.contractType;
+    this.currentContract = sessionData.currentContract;
     this.fairOpportunity = sessionData.fairOpportunity;
-    this.fundingPlans = sessionData.fundingPlans;
+    this.organization = sessionData.organization;
+    this.projectOverview = sessionData.projectOverview;
+    this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
-    this.currentContract = sessionData.CurrentContract;
     this.sensitiveInformation = sessionData.SensitiveInformation;
-    this.GFEOverview = sessionData.GFEOverview;
+    this.gfeOverview = sessionData.gFEOverview;
   }
 
   @Action({ rawError: true })
@@ -301,14 +396,18 @@ export class AcquisitionPackageStore extends VuexModule {
         if (acquisitionPackage) {
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
-          this.setContact({ data: initialContact(), type: "Mission Owner" });
+          this.setContractType(initialContractType());
           this.setContact({ data: initialContact(), type: "COR" });
           this.setContact({ data: initialContact(), type: "ACOR" });
+          this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setFundingPlans("");
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "" });
           this.setGFEOverview(initialGFE());
+          this.setPeriodOfPerformance(initialPeriodOfPerformance());
+          this.setSensitiveInformation(initialSensativeInformation());
+          //the should be in the initialization sequence
           this.setAcquisitionPackage(acquisitionPackage);
           this.setInitialized(true);
         }
@@ -357,483 +456,6 @@ export class AcquisitionPackageStore extends VuexModule {
     { text: "U.S. Navy", value: "NAVY" },
     { text: "U.S. Space Force", value: "USSF" },
   ];
-
-  // used on Contact Info and COR/ACOR pages
-  public branchRanksData: AutoCompleteItemGroups = {
-    USAF: [
-      { rank: "Airman Basic (AB)", value: "Airman Basic", grade: "E-1" },
-      { rank: "Airman (Amn)", value: "Airman", grade: "E-2" },
-      {
-        rank: "Airman First Class (A1C)",
-        value: "Airman First Class",
-        grade: "E-3",
-      },
-      { rank: "Senior Airman (SrA)", value: "Senior Airman", grade: "E-4" },
-      { rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-5" },
-      {
-        rank: "Technical Sergeant (TSgt)",
-        value: "Technical Sergeant",
-        grade: "E-6",
-      },
-      {
-        rank: "Master Sergeant (MSgt)",
-        value: "Master Sergeant",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Master Sergeant (SMSgt)",
-        value: "Senior Master Sergeant",
-        grade: "E-8",
-      },
-      {
-        rank: "Chief Master Sergeant (CMSgt)",
-        value: "Chief Master Sergeant",
-        grade: "E-9",
-      },
-      {
-        rank: "Command Chief Master Sergeant (CCM)",
-        value: "Command Chief Master Sergeant",
-        grade: "E-9",
-      },
-      { rank: "First Sergeant", value: "First Sergeant", grade: "E-9" },
-      {
-        rank: "Second Lieutenant (2d Lt)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1st Lt)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
-      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (Lt Co)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (Brig Gen)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (Lt Gen)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (Gen)", value: "General", grade: "O-10" },
-    ],
-    ARMY: [
-      { rank: "Private (PVT)", value: "Private", grade: "E-1" },
-      { rank: "Private (PV2)", value: "Private", grade: "E-2" },
-      {
-        rank: "Private First Class (PFC)",
-        value: "Private First Class",
-        grade: "E-3",
-      },
-      { rank: "Corporal (CPL)", value: "Corporal", grade: "E-4" },
-      { rank: "Specialist (SPC)", value: "Specialist", grade: "E-4" },
-      { rank: "Sergeant (SGT)", value: "Sergeant", grade: "E-5" },
-      { rank: "Staff Sergeant (SSG)", value: "Staff Sergeant", grade: "E-6" },
-      {
-        rank: "Sergeant First Class (SFC)",
-        value: "Sergeant First Class",
-        grade: "E-7",
-      },
-      { rank: "Master Sergeant (MSG)", value: "Master Sergeant", grade: "E-8" },
-      { rank: "First Sergeant (1SG)", value: "First Sergeant", grade: "E-8" },
-      { rank: "Sergeant Major (SGM)", value: "Sergeant Major", grade: "E-9" },
-      {
-        rank: "Command Sergeant Major (CSM)",
-        value: "Command Sergeant Major",
-        grade: "E-9",
-      },
-      {
-        rank: "Warrant Officer 1 (WO1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CW2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CW3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CW4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CW5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      {
-        rank: "Second Lieutenant (2LT)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1LT)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (CPT)", value: "Captain", grade: "O-3" },
-      { rank: "Major (MAJ)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (LTC)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (COL)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (BG)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (MG)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (LTG)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (GEN)", value: "General", grade: "O-10" },
-    ],
-    USCG: [
-      { rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1" },
-      {
-        rank: "Seaman Apprentice (SA)",
-        value: "Seaman Apprentice",
-        grade: "E-2",
-      },
-      { rank: "Seaman (SN)", value: "Seaman", grade: "E-3" },
-      {
-        rank: "Petty Officer Third Class (PO3)",
-        value: "Petty Officer Third Class",
-        grade: "E-4",
-      },
-      {
-        rank: "Petty Officer Second Class (PO2)",
-        value: "Petty Officer Second Class",
-        grade: "E-5",
-      },
-      {
-        rank: "Petty Officer First Class (PO1)",
-        value: "Petty Officer First Class",
-        grade: "E-6",
-      },
-      {
-        rank: "Chief Petty Officer (CPO)",
-        value: "Chief Petty Officer",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Chief Petty Officer (SCPO)",
-        value: "Senior Chief Petty Officer",
-        grade: "E-8",
-      },
-      {
-        rank: "Master Chief Petty Officer (MCPO)",
-        value: "Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Command Master Chief Petty Officer (CMC)",
-        value: "Command Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Warrant Officer 1 (WO-1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CWO-2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CWO-3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CWO-4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CWO-5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      { rank: "Ensign (ENS)", value: "Ensign", grade: "O-1" },
-      { rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2" },
-      { rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3" },
-      {
-        rank: "Lieutenant Commander (LCDR)",
-        value: "Lieutenant Commander",
-        grade: "O-4",
-      },
-      { rank: "Commander (CDR)", value: "Commander", grade: "O-5" },
-      { rank: "Captain (CAPT)", value: "Captain", grade: "O-6" },
-      {
-        rank: "Rear Admiral Lower Half (RDML)",
-        value: "Rear Admiral Lower Half",
-        grade: "O-7",
-      },
-      { rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8" },
-      { rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9" },
-      { rank: "Admiral (ADM)", value: "Admiral", grade: "O-10" },
-    ],
-    USMC: [
-      { rank: "Private (Pvt)", value: "Private", grade: "E-1" },
-      {
-        rank: "Private First Class (PFC)",
-        value: "Private First Class",
-        grade: "E-2",
-      },
-      { rank: "Lance Corporal (LCpl)", value: "Lance Corporal", grade: "E-3" },
-      { rank: "Corporal (Cpl)", value: "Corporal", grade: "E-4" },
-      { rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5" },
-      { rank: "Staff Sergeant (SSgt)", value: "Staff Sergeant", grade: "E-6" },
-      {
-        rank: "Gunnery Sergeant (GySgt)",
-        value: "Gunnery Sergeant",
-        grade: "E-7",
-      },
-      {
-        rank: "Master Sergeant (MSgt)",
-        value: "Master Sergeant",
-        grade: "E-8",
-      },
-      { rank: "First Sergeant (1stSg)", value: "First Sergeant", grade: "E-8" },
-      {
-        rank: "Master Gunnery Sergeant (MGySg)",
-        value: "Master Gunnery Sergeant",
-        grade: "E-9",
-      },
-      { rank: "Sergeant Major (SgtMa)", value: "Sergeant Major", grade: "E-9" },
-      {
-        rank: "Warrant Officer 1 (WO1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CW2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CW3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CW4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CW5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      {
-        rank: "Second Lieutenant (2ndLt)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1stLt)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
-      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (LtCol)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (BGen)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (MajGen)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (LtGen)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (Gen)", value: "General", grade: "O-10" },
-    ],
-    NAVY: [
-      { rank: "Seaman Recruit (SR)", value: "Seaman Recruit", grade: "E-1" },
-      {
-        rank: "Seaman Apprentice (SA)",
-        value: "Seaman Apprentice",
-        grade: "E-2",
-      },
-      { rank: "Seaman (SN)", value: "Seaman", grade: "E-3" },
-      {
-        rank: "Petty Officer Third Class (PO3)",
-        value: "Petty Officer Third Class",
-        grade: "E-4",
-      },
-      {
-        rank: "Petty Officer Second Class (PO2)",
-        value: "Petty Officer Second Class",
-        grade: "E-5",
-      },
-      {
-        rank: "Petty Officer First Class (PO1)",
-        value: "Petty Officer First Class",
-        grade: "E-6",
-      },
-      {
-        rank: "Chief Petty Officer (CPO)",
-        value: "Chief Petty Officer",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Chief Petty Officer (SCPO)",
-        value: "Senior Chief Petty Officer",
-        grade: "E-8",
-      },
-      {
-        rank: "Master Chief Petty Officer (MCPO)",
-        value: "Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Command Master Chief Petty Officer (CMDCM)",
-        value: "Command Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Force Master Chief Petty Officer (FORCM)",
-        value: "Force Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Fleet Master Chief Petty Officer (FLTCM)",
-        value: "Fleet Master Chief Petty Officer",
-        grade: "E-9",
-      },
-      {
-        rank: "Warrant Officer 1 (WO-1)",
-        value: "Warrant Officer 1",
-        grade: "W-1",
-      },
-      {
-        rank: "Chief Warrant Officer 2 (CWO-2)",
-        value: "Chief Warrant Officer 2",
-        grade: "W-2",
-      },
-      {
-        rank: "Chief Warrant Officer 3 (CWO-3)",
-        value: "Chief Warrant Officer 3",
-        grade: "W-3",
-      },
-      {
-        rank: "Chief Warrant Officer 4 (CWO-4)",
-        value: "Chief Warrant Officer 4",
-        grade: "W-4",
-      },
-      {
-        rank: "Chief Warrant Officer 5 (CWO-5)",
-        value: "Chief Warrant Officer 5",
-        grade: "W-5",
-      },
-      { rank: "Ensign (ENS)", value: "Ensign", grade: "O-1" },
-      { rank: "Lieutenant (LTJG)", value: "Lieutenant", grade: "O-2" },
-      { rank: "Lieutenant (LT)", value: "Lieutenant", grade: "O-3" },
-      {
-        rank: "Lieutenant Commander (LCDR)",
-        value: "Lieutenant Commander",
-        grade: "O-4",
-      },
-      { rank: "Commander (CDR)", value: "Commander", grade: "O-5" },
-      { rank: "Captain (CAPT)", value: "Captain", grade: "O-6" },
-      {
-        rank: "Rear Admiral Lower Half (RDML)",
-        value: "Rear Admiral Lower Half",
-        grade: "O-7",
-      },
-      { rank: "Rear Admiral (RADM)", value: "Rear Admiral", grade: "O-8" },
-      { rank: "Vice Admiral (VADM)", value: "Vice Admiral", grade: "O-9" },
-      { rank: "Admiral (ADM)", value: "Admiral", grade: "O-10" },
-    ],
-    USSF: [
-      { rank: "Specialist 1 (Spc1)", value: "Specialist 1", grade: "E-1" },
-      { rank: "Specialist 2 (Spc2)", value: "Specialist 2", grade: "E-2" },
-      { rank: "Specialist 3 (Spc3)", value: "Specialist 3", grade: "E-3" },
-      { rank: "Specialist 4 (Spc4)", value: "Specialist 4", grade: "E-4" },
-      { rank: "Sergeant (Sgt)", value: "Sergeant", grade: "E-5" },
-      {
-        rank: "Technical Sergeant (TSgt)",
-        value: "Technical Sergeant",
-        grade: "E-6",
-      },
-      {
-        rank: "Master Sergeant (MSgt)",
-        value: "Master Sergeant",
-        grade: "E-7",
-      },
-      {
-        rank: "Senior Master Sergeant (SMSgt)",
-        value: "Senior Master Sergeant",
-        grade: "E-8",
-      },
-      {
-        rank: "Chief Master Sergeant (CMSgt)",
-        value: "Chief Master Sergeant",
-        grade: "E-9",
-      },
-      {
-        rank: "Second Lieutenant (2d Lt)",
-        value: "Second Lieutenant",
-        grade: "O-1",
-      },
-      {
-        rank: "First Lieutenant (1st Lt)",
-        value: "First Lieutenant",
-        grade: "O-2",
-      },
-      { rank: "Captain (Capt)", value: "Captain", grade: "O-3" },
-      { rank: "Major (Maj)", value: "Major", grade: "O-4" },
-      {
-        rank: "Lieutenant Colonel (Lt Col)",
-        value: "Lieutenant Colonel",
-        grade: "O-5",
-      },
-      { rank: "Colonel (Col)", value: "Colonel", grade: "O-6" },
-      {
-        rank: "Brigadier General (Brig Gen)",
-        value: "Brigadier General",
-        grade: "O-7",
-      },
-      { rank: "Major General (Maj Gen)", value: "Major General", grade: "O-8" },
-      {
-        rank: "Lieutenant General (LT Gen)",
-        value: "Lieutenant General",
-        grade: "O-9",
-      },
-      { rank: "General (Gen)", value: "General", grade: "O-10" },
-    ],
-  };
 
   public serviceOrAgencyData: SelectData[] = [
     {
@@ -1796,105 +1418,36 @@ export class AcquisitionPackageStore extends VuexModule {
     },
   ];
 
+  //mapping of store properties to api endpoints 
+  private apiEndpointMap: Record<string, TableApiBase<BaseTableDTO>> = {
+    [StoreProperties.ContractType]: api.contractTypeTable,
+    [StoreProperties.CurrentContract]: api.currentContractTable,
+    [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
+    [StoreProperties.GFEOverview]: api.gfeOverviewTable,
+    [StoreProperties.Organization]: api.organizationTable,
+    [StoreProperties.ProjectOverview]: api.projectOverviewTable,
+    [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
+    [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
+    [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
+  }
+
+  //mapping store propertties name to acquisition package properties
+  private acquisitionPackagePropertyMap: Record<string, string> = {
+    [StoreProperties.ContractType]: "contract_type",
+    [StoreProperties.CurrentContract]: "current_contract",
+    [StoreProperties.FairOpportunity]: "fair_opportunity",
+    [StoreProperties.GFEOverview]: "gfe_overview",
+    [StoreProperties.Organization]:  "organization",
+    [StoreProperties.ProjectOverview]: "project_overview",
+    [StoreProperties.PeriodOfPerformance]: "period_of_performance",
+    [StoreProperties.RequirementsCostEstimate]: "requirements_const_estimate",
+    [StoreProperties.SensitiveInformation]: "sensitive_information",
+  }
+
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
       await this.initialize();
-    }
-  }
-
-  @Action({ rawError: true })
-  /**
-   * Loads project overview data from back end if a project overview
-   * sys_id has been generated.
-   */
-  async loadProjectOverview(): Promise<ProjectOverviewDTO> {
-    try {
-      await this.ensureInitialized();
-
-      const projectSysId = this.projectOverview?.sys_id || "";
-
-      if (projectSysId.length > 0) {
-        const projectOverviewData = await api.projectOverviewTable.retrieve(
-          projectSysId as string
-        );
-        this.setProjectOverview(projectOverviewData);
-        this.setProjectTitle(projectOverviewData.title);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          project_overview: projectSysId,
-        } as AcquisitionPackageDTO);
-      }
-      return this.projectOverview as ProjectOverviewDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading project overview ${error}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  /**
-   * Saves project overview data to backend
-   */
-  async saveProjectOverview(data: ProjectOverviewDTO): Promise<void> {
-    try {
-      const projectSysId = this.projectOverview?.sys_id || "";
-      const savedProjectOverview =
-        projectSysId.length > 0
-          ? await api.projectOverviewTable.update(projectSysId, {
-            ...data,
-            sys_id: projectSysId,
-          })
-          : await api.projectOverviewTable.create(data);
-      this.setProjectOverview(savedProjectOverview);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        project_overview: savedProjectOverview.sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving project overview ${error}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  async loadOrganization(): Promise<OrganizationDTO> {
-    try {
-      await this.ensureInitialized();
-
-      const sys_id = this.organization?.sys_id || "";
-      if (sys_id.length > 0) {
-        const organizationData = await api.organizationTable.retrieve(
-          sys_id as string
-        );
-        this.setOrganization(organizationData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          organization: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.organization as OrganizationDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading organization info ${error}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  /**
-   * Saves Organization data to backend
-   */
-  async saveOrganization(data: OrganizationDTO): Promise<void> {
-    try {
-      const sys_id = this.organization?.sys_id || "";
-      const savedOrganization =
-        sys_id.length > 0
-          ? await api.organizationTable.update(sys_id, { ...data, sys_id })
-          : await api.organizationTable.create(data);
-      this.setOrganization(savedOrganization);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        organization: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving organization info ${error}`);
     }
   }
 
@@ -1958,46 +1511,103 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  /**
+   * Helper to retrieve api end point from map
+   * @param apiKey string
+   * @returns 
+   */
+  @Action({rawError: true})
+  getApiEndPoint(apiKey: string): TableApiBase<BaseTableDTO> {
+    const endPoint = this.apiEndpointMap[`${apiKey}`];
+    if(endPoint === undefined){
+      throw new Error(`unable to find api endpoint with key ${apiKey}`);
+    }
+    return endPoint;
+  }
+
+  @Mutation
+  async setStoreData<TableDTO>({
+    data,
+    storeProperty,
+  }: {
+    data: TableDTO;
+    storeProperty: string;
+  }): Promise<void> {
+    const storeAsTableRecord = this as unknown as Record<string, TableDTO>;
+    storeAsTableRecord[storeProperty] = data;
+  }
+
+
+  /**
+   * Loads data for a given store value
+   * @param {storePropery}: string
+   * @returns TableData
+   */
   @Action({ rawError: true })
-  async loadCurrentContract(): Promise<CurrentContractDTO> {
+  async loadData<TableDTO>({ storeProperty }: {
+    storeProperty: string;
+  }): Promise<TableDTO> {
     try {
       await this.ensureInitialized();
-      const sys_id = this.currentContract?.sys_id || "";
+      // retrives Store TableDTO based property using property name as key
+      const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
+      const sysId = storeDataProperty.sys_id || "";
 
-      if (sys_id.length > 0) {
-        const currentContractData = await api.currentContractTable.retrieve(
-          sys_id as string
-        );
-        this.setCurrentContract(currentContractData);
+      if (sysId.length > 0) {
+        // retrieves endpoint mapped to store property
+        const apiEndPoint = await this.getApiEndPoint(storeProperty);
+        const loadAction: Promise<TableDTO> | undefined = 
+        apiEndPoint.retrieve(sysId) as Promise<TableDTO>;
+        const retrievedData = await loadAction;
+        this.setStoreData({ data: retrievedData, storeProperty });
+        const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
+        if(acquisitionPackageProp === undefined)
+        {
+          throw new Error("unable to locate acquisition package property");
+        }
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
-          current_contract: sys_id,
+          [acquisitionPackageProp]: (retrievedData as BaseTableDTO).sys_id,
         } as AcquisitionPackageDTO);
+        return retrievedData;
       }
-      return this.currentContract as CurrentContractDTO;
+      return storeDataProperty as TableDTO;
     } catch (error) {
-      throw new Error(`error occurred loading current contract info ${error}`);
+      throw new Error(`error occurred loading data for ${storeProperty} ${error}`);
     }
   }
 
+
   @Action({ rawError: true })
   /**
-   * Saves Current Contract data to backend
+   * Saves data for a given TableDTO/store property
    */
-  async saveCurrentContract(data: CurrentContractDTO): Promise<void> {
+  async saveData<TableDTO>({
+    data,
+    storeProperty,
+  }: {
+    data: TableDTO;
+    storeProperty: string;
+  }): Promise<void> {
     try {
-      const sys_id = this.currentContract?.sys_id || "";
-      const savedCurrentContract =
-        sys_id.length > 0
-          ? await api.currentContractTable.update(sys_id, { ...data, sys_id })
-          : await api.currentContractTable.create(data);
-      this.setCurrentContract(savedCurrentContract);
+      const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
+      const apiEndPoint = await this.getApiEndPoint(storeProperty);
+      const saveAction = (storeDataProperty.sys_id && storeDataProperty.sys_id.length > 0) ? 
+        apiEndPoint.update(storeDataProperty.sys_id || "", data) :
+        apiEndPoint.create(data);
+      const savedData = await saveAction;
+      this.setStoreData({data: savedData, storeProperty});
+      const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
+      if(acquisitionPackageProp === undefined)
+      {
+        throw new Error("unable to locate acquisition package property");
+      }
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
-        current_contract: sys_id,
+        [acquisitionPackageProp]: (data as BaseTableDTO).sys_id,
       } as AcquisitionPackageDTO);
     } catch (error) {
-      throw new Error(`error occurred saving current contract info ${error}`);
+      throw new Error(`error occurred saving store data ${storeProperty}`);
     }
   }
 
@@ -2147,7 +1757,7 @@ export class AcquisitionPackageStore extends VuexModule {
   async loadGFEOverview(): Promise<GFEOverviewDTO> {
     try {
       await this.ensureInitialized();
-      const sys_id = this.GFEOverview?.sys_id || "";
+      const sys_id = this.gfeOverview?.sys_id || "";
 
       if (sys_id.length > 0) {
         const GFEOverviewData = await api.gfeOverviewTable.retrieve(
@@ -2159,7 +1769,7 @@ export class AcquisitionPackageStore extends VuexModule {
           gfe_overview: sys_id,
         } as AcquisitionPackageDTO);
       }
-      return this.GFEOverview as GFEOverviewDTO;
+      return this.gfeOverview as GFEOverviewDTO;
     } catch (error) {
       throw new Error(`error occurred loading GFE info ${error}`);
     }
@@ -2168,7 +1778,7 @@ export class AcquisitionPackageStore extends VuexModule {
   @Action({ rawError: true })
   async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
     try {
-      const sys_id = this.GFEOverview?.sys_id || "";
+      const sys_id = this.gfeOverview?.sys_id || "";
       const savedGFEOverviewData =
         sys_id.length > 0
           ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
@@ -2418,3 +2028,5 @@ export class AcquisitionPackageStore extends VuexModule {
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);
 export default AcquisitionPackage;
+
+

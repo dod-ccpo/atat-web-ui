@@ -79,11 +79,12 @@ import ATATTextField from "../../components/ATATTextField.vue";
 import ATATTextArea from "../../components/ATATTextArea.vue";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { RadioButton } from "types/Global";
 import { ProjectOverviewDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+
 
 @Component({
   components: {
@@ -157,7 +158,10 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadProjectOverview();
+    const storeData = 
+    await AcquisitionPackage
+      .loadData<ProjectOverviewDTO>({storeProperty: StoreProperties.ProjectOverview });
+
     if (storeData) {
       this.currentTitle = storeData.title;
       this.projectScope = storeData.scope;
@@ -175,7 +179,9 @@ export default class ProjectOverview extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveProjectOverview(this.currentData);
+        // await AcquisitionPackage.saveProjectOverview(this.currentData);
+        await AcquisitionPackage.saveData({ data: this.currentData, 
+          storeProperty: StoreProperties.ProjectOverview});
       }
     } catch (error) {
       console.log(error);

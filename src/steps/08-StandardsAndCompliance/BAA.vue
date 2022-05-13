@@ -119,7 +119,7 @@ import BAALearnMore from "./BAALearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import {SensitiveInformationDTO} from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import {hasChanges} from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -155,12 +155,12 @@ export default class BAA extends Mixins(SaveOnLeave) {
   ];
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: BAALearnMore,
       title: "Learn More",
     }
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter();
   }
 
   public openSlideoutPanel(e: Event): void {
@@ -189,7 +189,8 @@ export default class BAA extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadSensitiveInformation();
+    const storeData = await AcquisitionPackage
+      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
     if (storeData) {
       this.selectedBAAOption = storeData.baa_required === "true" ? "Yes" : "No";
     }
@@ -198,7 +199,9 @@ export default class BAA extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveSensitiveInformation(this.currentData);
+        await AcquisitionPackage
+          .saveData<SensitiveInformationDTO>( {data: this.currentData, 
+            storeProperty: StoreProperties.SensitiveInformation});
       }
     } catch (error) {
       console.log(error);

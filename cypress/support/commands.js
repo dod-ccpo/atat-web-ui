@@ -338,7 +338,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
 });
 
 Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
-  cy.radioBtn(selector, value).click({ force: true });
+  cy.radioBtn(selector, value).click({ force: true }, { timeout: 1000 }).should("be.checked");
   cy.findElement(contact.contactRadioBtnActive)
     .then(($radioBtn) => {
       cy.log($radioBtn.text());
@@ -548,7 +548,7 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
       cy.textExists(common.header, " Let’s gather some details about your current contract ");
     }
     else {
-      cy.findElement(common.stepBackgroundLink).contains(" Background ")
+      cy.findElement(common.stepContractDetailsText).contains(" Contract Details ")
         .and('have.css', 'color', colors.primary);
     }          
   })

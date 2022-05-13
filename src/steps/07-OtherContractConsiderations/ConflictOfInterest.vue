@@ -113,8 +113,8 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
       component: CoILearnMore,
       title: "Learn More",
     };
-    await this.loadOnEnter();
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await this.loadOnEnter();
   }
 
   public async loadOnEnter(): Promise<void> {
