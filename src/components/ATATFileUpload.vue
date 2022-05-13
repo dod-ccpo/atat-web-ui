@@ -253,12 +253,16 @@ export default class ATATFileUpload extends Vue {
         window.setTimeout(() => {
           this.fileAttachentService
             ?.upload(uploadingFileObj.file, (total, current) => {
-              Vue.nextTick(()=>{
-                uploadingFileObj.progressStatus = (current / total) * 100;
-              });
-              // console.log(uploadingFileObj.progressStatus);
-              //total is the total file size
-              //current is the current upload size
+              current = 0;
+              total = Math.ceil(total/1000);
+              let progress = window.setInterval(()=>{
+                if (current<total){
+                  current = current + Math.floor(Math.random() * total);
+                  uploadingFileObj.progressStatus = (current/total)*100;
+                } else {
+                  clearInterval(progress);
+                  uploadingFileObj.progressStatus = 100;
+                }},500);
             })
             .then((result) => {
               //download link - link to the file download
@@ -269,6 +273,7 @@ export default class ATATFileUpload extends Vue {
               uploadingFileObj.link = download_link || "";
               uploadingFileObj.attachmentId = sys_id || "";
               uploadingFileObj.recordId = table_sys_id;
+              uploadingFileObj.isUploaded = true;
             })
             .catch((error) => {
               // uploadingFile.isErrored === error.

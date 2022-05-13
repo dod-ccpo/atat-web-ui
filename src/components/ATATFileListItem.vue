@@ -2,23 +2,23 @@
   <div class="content-div d-flex align-center mb-5">
     <ATATSVGIcon
       :color="uploadingFileObj.isErrored ? 'error' : 'base'"
-      :name="isPDF(uploadingFileObj.file.name) ? 'pdf' : 'filePresent'"
+      :name="isPDF(uploadingFileObj.fileName) ? 'pdf' : 'filePresent'"
       :width="32"
       :height="50"
     />
 
     <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
-      <div v-if="uploadFile">
+      <div v-if="isLoading">
         <div class="filename-and-extension d-flex align-start width-100">
-          <div :id="'File0' + index" v-if="uploadingFileObj.file.name.length < 50">
-            {{ uploadingFileObj.file.name }}
+          <div :id="'File0' + index" v-if="uploadingFileObj.fileName.length < 50">
+            {{ uploadingFileObj.fileName }}
           </div>
           <div :id="'File0' + index" class="d-flex align-center justify-space-between" v-else>
             <div class="truncated-file-name">
-              {{ uploadingFileObj.file.name }}
+              {{ uploadingFileObj.fileName }}
             </div>
             <div class="ml-n1 mr-n1">...</div>
-            <div class="truncated-ext">{{ getExtension(uploadingFileObj.file.name) }}</div>
+            <div class="truncated-ext">{{ getExtension(uploadingFileObj.fileName) }}</div>
           </div>
         </div>
         <div class="d-flex align-center mt-auto">
@@ -46,15 +46,15 @@
             :href="uploadingFileObj.link"
             class="_text-link d-flex align-center justify-start"
           >
-            <div :id="'File0' + index" v-if="uploadingFileObj.file.name.length < 50">
-              {{ uploadingFileObj.file.name }}
+            <div :id="'File0' + index" v-if="uploadingFileObj.fileName.length < 50">
+              {{ uploadingFileObj.fileName }}
             </div>
             <div :id="'File0' + index" class="d-flex align-center" v-else>
               <div class="truncated-file-name">
-                {{ uploadingFileObj.file.name }}
+                {{ uploadingFileObj.fileName }}
               </div>
               <div class="ml-n3">...</div>
-              <div class="truncated-ext">{{ getExtension(uploadingFileObj.file.name) }}</div>
+              <div class="truncated-ext">{{ getExtension(uploadingFileObj.fileName) }}</div>
             </div>
             <div>
               <ATATSVGIcon
@@ -93,7 +93,7 @@
 
 <script lang='ts'>
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
@@ -112,11 +112,9 @@ export default class ATATFileListItem extends Vue {
   /** DATA */
   private isLoading = true;
 
-  get uploadFile(): boolean{
-    // setTimeout(()=>{
-    this.isLoading = this.uploadingFileObj.progressStatus<100;
-    return this.isLoading;
-    // }, 100)
+  @Watch("uploadingFileObj.progressStatus")
+  protected IsFileLoading(newVal: number): void{
+    this.isLoading = newVal<100;
   }
  
   /**
@@ -164,19 +162,11 @@ export default class ATATFileListItem extends Vue {
    *
    * removes file at index
    */
-
   private removeFile(idx: number): void {
     Vue.nextTick(() => {
       this.$emit("removeFiles", idx);
     });
   }
 
-  /**
-   * uploads file when mounted
-   */
-  private mounted(): void {
-    // console.log(this.uploadingFileObj)
-    // this.uploadFile();
-  }
 }
 </script>
