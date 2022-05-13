@@ -74,7 +74,6 @@
       :validFiles="validFiles"
       :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
-      :fileToBeDeleted.sync="fileToBeDeleted"
       @delete="(file)=> $emit('delete', file)"
     />
   </div>
@@ -121,17 +120,6 @@ export default class ATATFileUpload extends Vue {
   private isHovering = false;
   private isFullSize = true;
   private fileAttachentService?: FileAttachmentService;
-  private fileToBeDeleted: uploadingFile = {
-    file: {} as File,
-    fileName: "",
-    created: new Date().getDate(),
-    progressStatus: 0,
-    link: "",
-    attachmentId: "",
-    recordId: "",
-    isErrored: false,
-    isUploaded: false,
-  }; 
 
   //Events
   /**
@@ -280,7 +268,6 @@ export default class ATATFileUpload extends Vue {
               // uploadingFile.isErrored === error.
               //file upload error occurred
 
-              //todo: do more granular handling here
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);
             });

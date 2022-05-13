@@ -51,8 +51,6 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
       return response.data.result as AttachmentDTO;
           
     } catch (error) {
-
-      debugger;
       throw new Error(`file upload error ${error}`);
     }
   }

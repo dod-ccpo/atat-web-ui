@@ -10,15 +10,24 @@
     <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
       <div v-if="isLoading">
         <div class="filename-and-extension d-flex align-start width-100">
-          <div :id="'File0' + index" v-if="uploadingFileObj.fileName.length < 50">
+          <div
+            :id="'File0' + index"
+            v-if="uploadingFileObj.fileName.length < 50"
+          >
             {{ uploadingFileObj.fileName }}
           </div>
-          <div :id="'File0' + index" class="d-flex align-center justify-space-between" v-else>
+          <div
+            :id="'File0' + index"
+            class="d-flex align-center justify-space-between"
+            v-else
+          >
             <div class="truncated-file-name">
               {{ uploadingFileObj.fileName }}
             </div>
             <div class="ml-n1 mr-n1">...</div>
-            <div class="truncated-ext">{{ getExtension(uploadingFileObj.fileName) }}</div>
+            <div class="truncated-ext">
+              {{ getExtension(uploadingFileObj.fileName) }}
+            </div>
           </div>
         </div>
         <div class="d-flex align-center mt-auto">
@@ -44,9 +53,15 @@
             :id="'FileLink0' + index"
             target="_blank"
             :href="uploadingFileObj.link"
-            class="_text-link d-flex align-center justify-start"
+            :class="[
+              uploadingFileObj.isErrored ? 'error--text' : '_text-link',
+              ' d-flex align-center justify-start]',
+            ]"
           >
-            <div :id="'File0' + index" v-if="uploadingFileObj.fileName.length < 50">
+            <div
+              :id="'File0' + index"
+              v-if="uploadingFileObj.fileName.length < 50"
+            >
               {{ uploadingFileObj.fileName }}
             </div>
             <div :id="'File0' + index" class="d-flex align-center" v-else>
@@ -54,10 +69,13 @@
                 {{ uploadingFileObj.fileName }}
               </div>
               <div class="ml-n3">...</div>
-              <div class="truncated-ext">{{ getExtension(uploadingFileObj.fileName) }}</div>
+              <div class="truncated-text">
+                {{ getExtension(uploadingFileObj.fileName) }}
+              </div>
             </div>
             <div>
               <ATATSVGIcon
+                v-if="!uploadingFileObj.isErrored"
                 :id="'viewIcon0' + index"
                 name="externalLink"
                 color="primary"
@@ -69,7 +87,9 @@
           </a>
         </div>
         <div>
-          <span>Uploaded {{ getLastModifiedDate() }}</span>
+          <span :class="[{ 'error--text': uploadingFileObj.isErrored }]"
+            >Uploaded {{ getLastModifiedDate() }}</span
+          >
         </div>
       </div>
     </div>
@@ -107,16 +127,21 @@ import { uploadingFile } from "types/Global";
 export default class ATATFileListItem extends Vue {
   /** PROPS */
   @Prop({ default: 0 }) private index!: number;
-  @Prop({ default: ()=>({})}) private uploadingFileObj!: uploadingFile;
+  @Prop({ default: () => ({}) }) private uploadingFileObj!: uploadingFile;
 
   /** DATA */
   private isLoading = true;
 
   @Watch("uploadingFileObj.progressStatus")
-  protected IsFileLoading(newVal: number): void{
-    this.isLoading = newVal<100;
+  protected IsFileLoading(newVal: number): void {
+    window.setTimeout(
+      () =>
+        (this.isLoading =
+          newVal < 100 && this.uploadingFileObj.isErrored === false),
+      700
+    );
   }
- 
+
   /**
    * formats lastModifiedDate w/timezone
    */
@@ -168,5 +193,15 @@ export default class ATATFileListItem extends Vue {
     });
   }
 
+  /**
+   * Life Cycle hooks - mounted
+   *
+   * if file upload axios call returns an error, don't load
+   */
+  private mounted(): void {
+    if (this.uploadingFileObj.isErrored) {
+      this.isLoading = false;
+    }
+  }
 }
 </script>
