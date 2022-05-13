@@ -14,59 +14,61 @@ import Summary from "../steps/Summary.vue";
 // Step 2 - Fair Opportunity Process
 import FairOpportunityProcess from "../steps/02-FairOpportunityProcess/Index.vue"
 import Exceptions from "../steps/02-FairOpportunityProcess/Exceptions.vue";
-import JustificationAndApproval from 
-  "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
+import JustificationAndApproval
+  from "../steps/02-FairOpportunityProcess/JustificationAndApproval.vue";
 
 //Step 3 - Background
 import Background from "../steps/03-Background/Index.vue";
 import CurrentContract from "../steps/03-Background/CurrentContract/CurrentContract.vue";
-import CurrentContractDetails from 
-  "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
+import CurrentContractDetails
+  from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
 import CurrentEnvironment 
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 
-// Step 4 - Performance requirements
-import PerformanceRequirements from "../steps/04-PerformanceRequirements/Index.vue"
-import OptimizeCurrentEnvironment from 
-  "../steps/04-PerformanceRequirements/OptimizeCurrentEnvironment.vue";
-import AnythingAsAServiceXaas from "../steps/04-PerformanceRequirements/AnythingAsAServiceXaas.vue";
-import CloudSupportPackages from "../steps/04-PerformanceRequirements/CloudSupportPackages.vue";
+// Step 4 - Contract Details
+/* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
+/* 4.1.1 */ import PeriodOfPerformance from "../steps/04-ContractDetails/PeriodOfPerformance.vue";
+/* 4.1.2 */ import POPStart from "@/steps/04-ContractDetails/POPStart.vue";
+/* 4.1.2 */ import RecurringRequirement from "../steps/04-ContractDetails/RecurringRequirement.vue";
+/* 4.2 */   import ContractType from "../steps/04-ContractDetails/ContractType.vue";
+/* 4.3 */   import ClassificationRequirements
+  from "../steps/04-ContractDetails/ClassificationRequirements.vue";
 
-// Step 5 - Contract Details
-import ContractDetails from "../steps/05-ContractDetails/Index.vue";
-import PeriodOfPerformance from "../steps/05-ContractDetails/PeriodOfPerformance.vue";
-import RecurringRequirement from "../steps/05-ContractDetails/RecurringRequirement.vue";
-import ContractType from "../steps/05-ContractDetails/ContractType.vue";
-import ConflictOfInterest from "../steps/05-ContractDetails/ConflictOfInterest.vue";
-import PackagingPackingAndShipping from 
-  "../steps/05-ContractDetails/PackagingPackingAndShipping.vue";
-import Training from "../steps/05-ContractDetails/Training.vue";
-import POPStart from "@/steps/05-ContractDetails/POPStart.vue";
+
+// Step 5 - Performance Requirements
+
+import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
+import PerformanceRequirements
+  from "../steps/05-PerformanceRequirements/PerformanceRequirements.vue";
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
 import PropertyDetails from "../steps/06-GovtFurnishedEquipment/PropertyDetails.vue";
 import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue";
 
-// step 7 - Other Contract Considerations
-import OtherContractConsiderations from "../steps/07-OtherContractConsiderations/Index.vue";
-import PII from "../steps/07-OtherContractConsiderations/PII.vue";
-import BAA from "../steps/07-OtherContractConsiderations/BAA.vue";
-import PIIRecord from "../steps/07-OtherContractConsiderations/PIIRecord.vue";
-import FOIA from "../steps/07-OtherContractConsiderations/FOIA.vue";
-import FOIACoordinator from "../steps/07-OtherContractConsiderations/FOIACoordinator.vue";
-import Section508Standards from "../steps/07-OtherContractConsiderations/Section508Standards.vue";
+// Step 7 - Other Contract Considerations
+import ConflictOfInterest from "../steps/07-OtherContractConsiderations/ConflictOfInterest.vue";
+import PackagingPackingAndShipping
+  from "../steps/07-OtherContractConsiderations/PackagingPackingAndShipping.vue";
+import Training from "../steps/07-OtherContractConsiderations/Training.vue";
+import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
+
+
+// Step 8 - Standards and Compliance
+import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
+import PII from "../steps/08-StandardsAndCompliance/PII.vue";
+import BAA from "../steps/08-StandardsAndCompliance/BAA.vue";
+import PIIRecord from "../steps/08-StandardsAndCompliance/PIIRecord.vue";
+import FOIA from "../steps/08-StandardsAndCompliance/FOIA.vue";
+import FOIACoordinator from "../steps/08-StandardsAndCompliance/FOIACoordinator.vue";
+import Section508Standards from "../steps/08-StandardsAndCompliance/Section508Standards.vue";
 import Section508AccessibilityRequirements
-  from "../steps/07-OtherContractConsiderations/Section508AccessibilityRequirements.vue"
+  from "../steps/08-StandardsAndCompliance/Section508AccessibilityRequirements.vue";
 
-// step 8 - Evaluation Criteria
-import EvaluationCriteria from "../steps/08-EvaluationCriteria/Index.vue"
-import EvaluationCriteriaStepOne from "../steps/08-EvaluationCriteria/EvaluationCriteriaStepOne.vue"
-
-// step 9 - Classification Requirements
-import ClassificationRequirements from "../steps/09-ClassificationRequirements/Index.vue"
-import ClassificationRequirementsStepOne 
-  from "../steps/09-ClassificationRequirements/ClassificationRequirementsStepOne.vue"
+// Step 9 - Evaluation Criteria
+import EvaluationCriteriaIndex from "../steps/09-EvaluationCriteria/Index.vue";
+import EvaluationCriteria
+  from "../steps/09-EvaluationCriteria/EvaluationCriteria.vue";
 
 // step 10 - Financial Details
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
@@ -85,6 +87,7 @@ import {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
+  ContractTrainingReq,
 } from "./resolvers";
 
 export const routeNames = {
@@ -113,6 +116,7 @@ export const routeNames = {
   ConflictOfInterest: "Conflict_of_Interest",
   PackagingPackingAndShipping: "Packaging_Packing_and_Shipping",
   Training: "Training",
+  TrainingCourses: "Training_Courses",
   PropertyDetails: "Property_Details",
   Justification: "Justification",
   OtherContractConsiderations: "Other_Contract_Considerations",
@@ -123,17 +127,16 @@ export const routeNames = {
   FOIA: "FOIA",
   FOIACoordinator: "FOIA_Coordinator",
   Section508Standards: "Section_508_Standards",
+  EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
   EvaluationCriteria: "Evaluation_Criteria",
-  EvaluationCriteriaStepOne: "Evaluation_Criteria_Step_One",
   ClassificationRequirements: "Classification_Requirements",
-  ClassificationRequirementsStepOne: "Classification_Requirements_Step_One",
   RequirementsCostEstimate: "Requirements_Cost_Estimate",
   FundingPlan: "Funding_Plan",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
-  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements"
+  Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
 };
 
 /**
@@ -281,7 +284,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t have an existing contract",
             buttonId: "NoExistingContract",
             buttonClass: "secondary",
-            name: routeNames.PerformanceRequirements,
+            name: routeNames.PeriodOfPerformance,
           },
         ],
       },
@@ -297,40 +300,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   },
   {
     stepNumber: "04",
-    component: PerformanceRequirements,
-    completePercentageWeight: 7,
-    menuText: "Performance Requirements",
-    path: "/optimize_current_environment",
-    completed: false,
-    children: [
-      {
-        menuText: "Optimize Current Environment?",
-        path: "optimize_current_environment",
-        name: routeNames.OptimizeCurrentEnvironment,
-        component: OptimizeCurrentEnvironment,
-        completePercentageWeight: 0,
-        completed: false,
-      },
-      {
-        menuText: "Anything as a Service (Xaas)",
-        path: "anything_as_a_service_xaas",
-        name: routeNames.AnythingASAServiceXaas,
-        component: AnythingAsAServiceXaas,
-        completePercentageWeight: 0,
-        completed: false,
-      },
-      {
-        menuText: "Cloud Support Packages",
-        path: "cloud-support-packages",
-        name: routeNames.CloudSupportPackages,
-        component: CloudSupportPackages,
-        completePercentageWeight: 0,
-        completed: false,
-      },
-    ],
-  },
-  {
-    stepNumber: "05",
     completePercentageWeight: 7,
     menuText: "Contract Details",
     path: "/period-of-performance",
@@ -362,33 +331,35 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         name: routeNames.ContractType,
         menuText: "Contract Type",
-        excludeFromMenu: true,
         path: "contract-type",
         completePercentageWeight: 2,
         component: ContractType,
       },
       {
-        name: routeNames.ConflictOfInterest,
-        menuText: "Conflict of Interest",
-        path: "conflict-of-interest",
-        completePercentageWeight: 2,
-        component: ConflictOfInterest,
-      },
-      {
-        name: routeNames.PackagingPackingAndShipping,
-        menuText: "Packaging, Packing, and Shipping",
-        path: "packaging-packing-and-shipping",
-        completePercentageWeight: 2,
-        component: PackagingPackingAndShipping,
-      },
-      {
-        name: routeNames.Training,
-        menuText: "Training",
-        path: "training",
-        completePercentageWeight: 2,
-        component: Training,
+        menuText: "Classification Requirements",
+        path:"classification-requirements",
+        name: routeNames.ClassificationRequirements,
+        completePercentageWeight: 1,
+        component: ClassificationRequirements,
       },
     ]
+  },
+  {
+    stepNumber: "05",
+    completePercentageWeight: 7,
+    menuText: "Performance Requirements",
+    path: "/performance-requirements",
+    component: PerformanceRequirementsIndex,
+    children: [
+      {
+        menuText: "Performance Requirements",
+        path: "performance-requirements",
+        excludeFromMenu: true,
+        name: routeNames.PerformanceRequirements,
+        completePercentageWeight: 1,
+        component: PerformanceRequirements,
+      },
+    ],
   },
   {
     stepNumber: "06",
@@ -417,6 +388,47 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "07",
     completePercentageWeight: 7,
     menuText: "Other Contract Considerations",
+    path: "/conflict-of-interest",
+    component: OtherContractConsiderations,
+    children: [
+      {
+        name: routeNames.ConflictOfInterest,
+        menuText: "Conflict of Interest",
+        path: "conflict-of-interest",
+        completePercentageWeight: 2,
+        component: ConflictOfInterest,
+      },
+      {
+        name: routeNames.PackagingPackingAndShipping,
+        menuText: "Packaging, Packing, and Shipping",
+        path: "packaging-packing-and-shipping",
+        completePercentageWeight: 2,
+        component: PackagingPackingAndShipping,
+      },
+      {
+        name: routeNames.Training,
+        menuText: "Training",
+        path: "training",
+        completePercentageWeight: 2,
+        component: Training,
+      },
+      {
+        name: routeNames.TrainingCourses,
+        menuText: "Training",
+        excludeFromMenu: true,
+        path: "training",
+        completePercentageWeight: 2,
+        component: TrainingCourses,
+        routeResolver: ContractTrainingReq
+
+      },
+    ]
+  },
+
+  {
+    stepNumber: "08",
+    completePercentageWeight: 7,
+    menuText: "Standards and Compliance",
     path: "/personally-identifiable-information",
     component: OtherContractConsiderations,
     children: [
@@ -475,40 +487,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: Section508AccessibilityRequirements,
         routeResolver: A11yRequirementResolver
       },
-
     ]
   },
   {
-    stepNumber: "08",
+    stepNumber: "09",
     completePercentageWeight: 7,
     menuText: "Evaluation Criteria",
     path: "/evaluation-criteria",
-    component: EvaluationCriteria,
+    component: EvaluationCriteriaIndex,
     children: [
       {
         menuText: "Evaluation Criteria",
         path: "evaluation-criteria",
         excludeFromMenu: true,
-        name: routeNames.EvaluationCriteriaStepOne,
+        name: routeNames.EvaluationCriteria,
         completePercentageWeight: 1,
-        component: EvaluationCriteriaStepOne,
-      },
-    ],
-  },
-  {
-    stepNumber: "09",
-    completePercentageWeight: 7,
-    menuText: "Classification Requirements",
-    path: "/classification-requirements",
-    component: ClassificationRequirements,
-    children: [
-      {
-        menuText: "Classification Requirements",
-        path:"classification-requirements",
-        excludeFromMenu: true,
-        name: routeNames.ClassificationRequirementsStepOne,
-        completePercentageWeight: 1,
-        component: ClassificationRequirementsStepOne,
+        component: EvaluationCriteria,
       },
     ],
   },

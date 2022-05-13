@@ -52,7 +52,7 @@ export default class ATATToast extends Vue {
     clearTimeout(this.timeout);
     this.$nextTick(() => {
       this.isOpen = isOpen;
-      this.timeout = setTimeout(() => {
+      this.timeout = window.setTimeout(() => {
         Toast.doSetToastClosed();
       }, this.getTimeout);
     });

@@ -23,6 +23,8 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   gfe_overview: string;
   contract_type: string;
   requirements_const_estimate: string;
+  contract_considerations: string;
+  funding_plans: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -50,6 +52,17 @@ export interface ContactDTO extends BaseTableDTO {
   dodaac: string;
   can_access_package: string;
   manually_entered: string;
+}
+
+export interface ContractConsiderationsDTO extends BaseTableDTO{
+  packaging_shipping_other?: string;
+  contractor_required_training?: string;
+  packaging_shipping_other_explanation?: string;
+  conflict_of_interest_explanation?: string;
+  potential_conflict_of_interest?: string;
+  required_training_courses?: string;
+  packaging_shipping_none_apply?: string;
+  contractor_provided_transfer?: string;
 }
 
 export interface FairOpportunityDTO extends BaseTableDTO {
@@ -144,4 +157,34 @@ export interface StateDTO extends BaseTableDTO {
 export interface CountryDTO extends BaseTableDTO {
   name: string;
   iso3166_2: string;
+}
+export interface AttachmentDTO extends BaseTableDTO {
+  size_bytes?: string;
+  file_name: string;
+  average_image_color?: string;
+  image_width?: string;
+  table_name?: string;
+  image_height?: string;
+  download_link?: string;
+  content_type?: string;
+  size_compressed?: string;
+  compressed?: string;
+  state?: string;
+  table_sys_id: string;
+  chunk_size_bytes?: string;
+  hash?: string;
+}
+
+
+export interface AttachableDTO extends BaseTableDTO {
+  attachment: string;
+  extension: string;
+  file_name: string;
+}
+
+export interface FundingPlanDTO extends BaseTableDTO {
+  //file attachment id from sys attachments table
+  attachment: string;
+  extension: string;
+  file_name: string;
 }

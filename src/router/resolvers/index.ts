@@ -32,7 +32,7 @@ export const CurrentContractRouteResolver = (current: string): string => {
     return routeNames.CurrentContractDetails;
   }
   return current === routeNames.CurrentContract
-    ? routeNames.PerformanceRequirements
+    ? routeNames.PeriodOfPerformance
     : routeNames.CurrentContract;
 };
 
@@ -66,10 +66,20 @@ export const A11yRequirementResolver = (current: string): string => {
     return routeNames.Section508AccessibilityRequirements;
   }
   return current === routeNames.Section508Standards
-    ? routeNames.EvaluationCriteriaStepOne
+    ? routeNames.EvaluationCriteria
     : routeNames.Section508Standards;
 };
 
+export const ContractTrainingReq = (current: string): string => {
+  const contractTraining
+      = AcquisitionPackage.contractConsiderations?.contractor_required_training === "YES";
+  if (contractTraining) {
+    return routeNames.TrainingCourses;
+  }
+  return current === routeNames.Training
+    ? routeNames.PII
+    : routeNames.Training;
+};
 
 // add resolver here so that it can be found by invoker
 const resolvers: Record<string, StepRouteResolver> = {
@@ -78,6 +88,7 @@ const resolvers: Record<string, StepRouteResolver> = {
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
+  ContractTrainingReq,
 };
 
 export const InvokeResolver = (

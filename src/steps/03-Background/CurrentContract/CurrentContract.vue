@@ -31,9 +31,9 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue"
 
 import { RadioButton } from "../../../../types/Global";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { CurrentContractDTO } from "@/api/models";
+import { ContractTypeDTO, CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 
 @Component({
@@ -74,7 +74,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.loadCurrentContract();
+    const storeData = await AcquisitionPackage.
+      loadData<CurrentContractDTO>({storeProperty: StoreProperties.CurrentContract})
     if (storeData) {
       if (Object.prototype.hasOwnProperty.call(storeData, 'current_contract_exists')) {
         this.savedData = {
@@ -93,7 +94,8 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveCurrentContract(this.currentData);
+        await AcquisitionPackage.saveData<CurrentContractDTO>({data: this.currentData,
+          storeProperty: StoreProperties.CurrentContract});
       }
     } catch (error) {
       console.log(error);

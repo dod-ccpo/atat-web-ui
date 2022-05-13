@@ -24,6 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import 'cypress-iframe';
+import '@4tw/cypress-drag-drop';
 import common from '../selectors/common.sel';
 import projectOverview from '../selectors/projectOverview.sel.js';
 import contact from '../selectors/contact.sel';
@@ -34,14 +35,39 @@ import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
 import { cleanText, colors } from "../helpers";
-import occ from '../selectors/occ.sel';
+import sac from '../selectors/standComp.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+let hopOutOfIframe = false;
+
+Cypress.Commands.add("visitURL", () => {
+  if (isTestingLocally) {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("localTestURLInIframe"));    
+    } else {
+      cy.visit(Cypress.env("localTestURL"));    
+    }
+  } else {
+    if (runTestsInIframe && !hopOutOfIframe) {
+      cy.visit(Cypress.env("testURL"));    
+    } else {
+      cy.visit(Cypress.env("disaNoIframeUrl"));    
+    }
+  }
+})
+
+Cypress.Commands.add("hopOutOfIframe", (hopOut, navigate) => {
+  hopOutOfIframe = hopOut || false;
+  if (navigate) {
+    cy.visitURL();
+  }
+});
 
 Cypress.Commands.add("launchATAT", () => {
+  cy.hopOutOfIframe(false);
   if (isTestingLocally){
-    cy.visit(Cypress.env("localTestURL"));    
+    cy.clearSession();
     if (runTestsInIframe) {
       cy.visit(Cypress.env("localTestURLInIframe"));    
       cy.frameLoaded(common.app);        
@@ -51,8 +77,23 @@ Cypress.Commands.add("launchATAT", () => {
   } else {
     cy.visit(Cypress.env("testURL"));    
     cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
+    cy.clearSession();
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
+  }
+});
+
+Cypress.Commands.add("clearSession", () => {
+  if (isTestingLocally) {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });      
+  } else {
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+      const iframe = win.document.querySelector('iframe');
+      iframe.contentWindow.sessionStorage.clear();
+    });
   }
 });
 
@@ -63,7 +104,7 @@ Cypress.Commands.add('login', (user, password) => {
 });
 
 Cypress.Commands.add("findElement", (selector) => {
-  if (runTestsInIframe || !isTestingLocally) {
+  if (runTestsInIframe && !hopOutOfIframe) {
     cy.iframe(common.app).find(selector)       
   } else {
     cy.get(selector);
@@ -123,6 +164,13 @@ Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,er
   cy.findElement(textboxSelector).focus().tab().then(() => {
     cy.checkErrorMessage(errorSelector, errorMessage);
   })
+});
+
+Cypress.Commands.add("verifyPageHeader", (headerText) => {
+  cy.findElement(common.header).scrollIntoView().then(() => {
+    cy.textExists(common.header,headerText );
+  });
+  
 });
 
 Cypress.Commands.add("selectCheckBox", (selector,value) => {
@@ -289,8 +337,8 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
     });
 });
 
-Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
-  cy.radioBtn(selector, value).click({ force: true });
+Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) => {
+  cy.radioBtn(selector, value).click({ force: true }, { timeout: 1000 }).should("be.checked");
   cy.findElement(contact.contactRadioBtnActive)
     .then(($radioBtn) => {
       cy.log($radioBtn.text());
@@ -301,14 +349,17 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
           .and("be.visible")
           .and("contain", "Service branch");
         cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
-        cy.findElement(contact.serviceDropDownList).first().click();
-        cy.findElement(contact.rankAutoCompleteWrapper)
-          .should("exist")
-          .and("be.visible")
-          .and("contain", "Rank");
-        cy.findElement(contact.gradeAutoCompleteWrapper)
-          .should("exist")
-          .and("not.visible");
+        cy.findElement(sbSelector)
+          .click()
+          .then(() => {
+            cy.findElement(contact.rankAutoCompleteWrapper)
+              .should("exist")
+              .and("be.visible")
+              .and("contain", "Rank");
+            cy.findElement(contact.gradeAutoCompleteWrapper)
+              .should("exist")
+              .and("not.visible");
+          });        
       }
       if (selectedOption === "radio_button_checkedContractor") {
         cy.findElement(contact.salutationDropDownLabel)
@@ -500,7 +551,7 @@ Cypress.Commands.add("contractOption", (radioSelector, value) => {
       cy.textExists(common.header, " Let’s gather some details about your current contract ");
     }
     else {
-      cy.findElement(common.stepBackgroundLink).contains(" Background ")
+      cy.findElement(common.stepContractDetailsText).contains(" Contract Details ")
         .and('have.css', 'color', colors.primary);
     }          
   })
@@ -529,7 +580,7 @@ Cypress.Commands.add("popLengthOptionYearExists", () => {
 
 Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.piiRadioOtionActive)
+  cy.findElement(sac.piiRadioOtionActive)
     .then(($radioBtn) => {      
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
@@ -547,7 +598,7 @@ Cypress.Commands.add("selectPiiOption", (radioSelector, value) => {
 
 Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
   cy.radioBtn(radioSelector, value).click({ force: true });
-  cy.findElement(occ.foiaRadioOptionActive)
+  cy.findElement(sac.foiaRadioOptionActive)
     .then(($radioBtn) => {
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);

@@ -1,4 +1,13 @@
+._checkbox, ._checkbox-card {
+  .v-label {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 ._checkbox {
+  margin-bottom: 16px;
+
   &.v-input--is-label-active {
     .v-icon {
       color: $primary !important;
@@ -59,6 +68,30 @@
     }
   }
 
+  .v-input__slot {
+    align-items: start;
+    margin-bottom: 16px;
+    transition: none;
+  }
+
+  &._has-other {
+    &._other-selected {
+      .v-input__slot {
+        margin-bottom: 0;
+      }
+    }
+
+    .v-input__append-outer {
+      width: 100%;
+    }
+  }
+  
+  .atat-text-field-error {
+    .v-icon, .field-error {
+      color: $error !important;
+    }
+  }
+
 }
 
 ._checkbox-card {
@@ -104,7 +137,7 @@
   }
   .v-input__slot {
     margin-bottom: 0px;
-    align-items:start;
+    align-items: start;
   }
   .card-label {
     font-weight:700 !important;
