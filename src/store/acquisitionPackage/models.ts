@@ -10,8 +10,7 @@ import {
   RequirementsCostEstimateDTO,
   PeriodOfPerformanceDTO,
   ContractTypeDTO,
-  ContractConsiderationsDTO,
-  FundingPlanDTO,
+  ContractConsiderationsDTO
 } from "@/api/models";
 
 export interface SessionData {

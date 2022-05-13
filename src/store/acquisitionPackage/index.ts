@@ -1959,6 +1959,9 @@ export class AcquisitionPackageStore extends VuexModule {
         return [];
       }
 
+      //todo: do we really need to make a trip to the db to get the file meta data?
+      //todo: we can store the uploaded file meta data in the session but 
+      //todo: we can't account for potentially multiple edits to the same data acquisition package
       const requests = tableIds.map((id) => api.attachments.getByRecordId(id));
       const data = await Promise.all(requests);
       return data;
@@ -1969,6 +1972,10 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
+  /**
+   * Removes uploaded attachments in service now
+   * @param param0 
+   */
   @Action({ rawError: true })
   async removeAttachment({
     key,
@@ -1988,7 +1995,7 @@ export class AcquisitionPackageStore extends VuexModule {
       const tableIds = tableIdList.length ? tableIdList.split(",") : [];
 
       // convert first letter of key to uppercase because the file attachment
-      // service factory expects keys in CamelCased upper case starting letters
+      // service factory expects keys in Camel Case with a capitalized starting letter
       const convertedKey = key[0].toUpperCase() + key.substring(1);
       // locate attachment service
       const attachmentService = FileAttachmentServiceFactory(convertedKey);
@@ -1999,7 +2006,7 @@ export class AcquisitionPackageStore extends VuexModule {
         table_sys_id: recordId,
       } as AttachmentDTO);
 
-      //remove attachment record from
+      //remove attachment record id from stored record ids
       const recordIndex = tableIds.findIndex((record) => record === recordId);
       if (recordIndex > -1) {
         tableIds.splice(recordIndex, 1);
