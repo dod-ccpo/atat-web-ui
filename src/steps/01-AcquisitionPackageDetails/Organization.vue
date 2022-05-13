@@ -169,6 +169,7 @@
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import {convertSystemChoiceToSelect} from "@/helpers";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -180,6 +181,8 @@ import { RadioButton, SelectData } from "types/Global";
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { OrganizationDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
+import OrganizationData from "@/store/organizationData";
+import ContactData from "@/store/contactData";
 
 
 @Component({
@@ -248,11 +251,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   ];
 
   private selectedDisaOrg: SelectData = this.emptySelectData;
-  private disaOrgData: SelectData[] = AcquisitionPackage.disaOrgData;
-
+  private disaOrgData: SelectData[] = [];
   private selectedServiceOrAgency: SelectData = this.emptySelectData;
-  private serviceOrAgencyData: SelectData[] =
-    AcquisitionPackage.serviceOrAgencyData;
+  private serviceOrAgencyData: SelectData[] = [];
 
   private selectedStateCode: SelectData = this.emptySelectData;
   private stateCodeListData: SelectData[] = [
@@ -262,8 +263,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   ];
 
   private selectedState: SelectData = this.emptySelectData;
-  private stateListData: SelectData[] = AcquisitionPackage.stateListData;
-
+  private stateListData: SelectData[] = [];
   private setSelectedData(): void {
     // Foreign addresses set country obj
     if (this.selectedAddressType === this.addressTypes.FOR) {
@@ -297,7 +297,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   public countryListData: SelectData[] = [this.emptySelectData];
   public async mounted(): Promise<void> {
-    this.countryListData = await AcquisitionPackage.getCountryListData(["US"]);
+    this.countryListData = ContactData.countryListData(["US"]);
     await this.loadOnEnter();
     this.setSelectedData();
   }
@@ -355,6 +355,9 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
   // methods
 
   public async loadOnEnter(): Promise<void> {
+    this.serviceOrAgencyData = convertSystemChoiceToSelect(OrganizationData.service_agency_data);
+    this.disaOrgData = convertSystemChoiceToSelect(OrganizationData.disa_org_data);
+    this.stateListData = ContactData.stateChoices;
     const storeData = await AcquisitionPackage
       .loadData<OrganizationDTO>({storeProperty: 
       StoreProperties.Organization}) as Record<string, string>;

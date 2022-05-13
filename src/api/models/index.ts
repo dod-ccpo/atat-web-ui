@@ -149,6 +149,15 @@ export interface GFEOverviewDTO extends BaseTableDTO {
   property_custodian_name?: string;
 }
 
+export interface StateDTO extends BaseTableDTO {
+   name: string;
+   key: string;
+}
+
+export interface CountryDTO extends BaseTableDTO {
+  name: string;
+  iso3166_2: string;
+}
 export interface AttachmentDTO extends BaseTableDTO {
   size_bytes?: string;
   file_name: string;

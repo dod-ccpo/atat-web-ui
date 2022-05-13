@@ -6,10 +6,16 @@ import {
   VuexModule,
 } from "vuex-module-decorators";
 import rootStore from "../index";
-import { MilitaryRankDTO, SystemChoiceDTO } from "@/api/models";
+import { CountryDTO, MilitaryRankDTO, StateDTO, SystemChoiceDTO } from "@/api/models";
 import api from "@/api";
+import {TABLENAME as ContactsTable} from "@/api/contacts";
 import { TABLENAME as MilitaryRanksTable } from "@/api/militaryRanks";
-import { AutoCompleteItem, AutoCompleteItemGroups, CountryObj } from "types/Global";
+import { AutoCompleteItem, AutoCompleteItemGroups, SelectData,  } from "types/Global";
+import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
+import Vue from "vue";
+import { property } from "cypress/types/lodash";
+
+const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
 const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
   if (a.grade.startsWith("O") && b.grade.startsWith("O")) {
@@ -25,6 +31,7 @@ const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
   }};
 
 
+
 @Module({
   name: "ContactData",
   namespaced: true,
@@ -33,200 +40,62 @@ const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
 })
 export class ContactDataStore extends VuexModule {
   private initialized = false;
-  public militaryRanks: MilitaryRankDTO[] = [];
   public branchChoices: SystemChoiceDTO[] = [];
+  public civilianGradeChoices :SystemChoiceDTO[] = [];
+  public countries:CountryDTO[] = [];
+  public militaryRanks: MilitaryRankDTO[] = [];
   public militaryAutoCompleteGroups: AutoCompleteItemGroups = {};
+  public roleChoices: SystemChoiceDTO[]= [];
+  public salutationChoices: SystemChoiceDTO[] = [];
+  public states:StateDTO[] = [];
 
-  public countries: CountryObj[] = [
-    {
-      name: "United States",
-      countryCode: "+1",
-      abbreviation: "us",
-      active: false,
-      suggested: true
-    },
-    {
-      name: "Defense Switched Network",
-      countryCode: "DSN",
-      abbreviation: "dsn",
-      active: false,
-      suggested: true
-    },
-    {
-      name: "Albania",
-      countryCode: "+355",
-      abbreviation: "al",
-      active: false,
-    },
-    {
-      name: "Belgium",
-      countryCode: "+32",
-      abbreviation: "be",
-      active: false,
-    },
-    {
-      name: "Bulgaria",
-      countryCode: "+359",
-      abbreviation: "bg",
-      active: false,
-    },
-    {
-      name: "Canada",
-      countryCode: "+1",
-      abbreviation: "ca",
-      active: false,
-    },
-    {
-      name: "Croatia",
-      countryCode: "+385",
-      abbreviation: "hr",
-      active: false,
-    },
-    {
-      name: "Czech Republic",
-      countryCode: "+420",
-      abbreviation: "cz",
-      active: false,
-    },
-    {
-      name: "Denmark",
-      countryCode: "+45",
-      abbreviation: "dk",
-      active: false,
-    },
-    {
-      name: "Estonia",
-      countryCode: "+372",
-      abbreviation: "ee",
-      active: false,
-    },
-    {
-      name: "France",
-      countryCode: "+33",
-      abbreviation: "fr",
-      active: false,
-    },
-    {
-      name: "Germany",
-      countryCode: "+49",
-      abbreviation: "de",
-      active: false,
-    },
-    {
-      name: "Greece",
-      countryCode: "+30",
-      abbreviation: "gr",
-      active: false,
-    },
-    {
-      name: "Greenland",
-      countryCode: "+299",
-      abbreviation: "gl",
-      active: false,
-    },
-    {
-      name: "Hungary",
-      countryCode: "+36",
-      abbreviation: "hu",
-      active: false,
-    },
-    {
-      name: "Iceland",
-      countryCode: "+354",
-      abbreviation: "is",
-      active: false,
-    },
-    {
-      name: "Italy",
-      countryCode: "+39",
-      abbreviation: "it",
-      active: false,
-    },
-    {
-      name: "Latvia",
-      countryCode: "+371",
-      abbreviation: "lv",
-      active: false,
-    },
-    {
-      name: "Lithuania",
-      countryCode: "+370",
-      abbreviation: "lt",
-      active: false,
-    },
-    {
-      name: "Luxembourg",
-      countryCode: "+352",
-      abbreviation: "lu",
-      active: false,
-    },
-    {
-      name: "Montenegro",
-      countryCode: "+382",
-      abbreviation: "me",
-      active: false,
-    },
-    {
-      name: "Netherlands",
-      countryCode: "+31",
-      abbreviation: "nl",
-      active: false,
-    },
-    {
-      name: "Norway",
-      countryCode: "+47",
-      abbreviation: "no",
-      active: false,
-    },
-    {
-      name: "Poland",
-      countryCode: "+48",
-      abbreviation: "pl",
-      active: false,
-    },
-    {
-      name: "Portugal",
-      countryCode: "+351",
-      abbreviation: "pt",
-      active: false,
-    },
-    {
-      name: "Romania",
-      countryCode: "+40",
-      abbreviation: "ro",
-      active: false,
-    },
-    {
-      name: "Slovakia",
-      countryCode: "+421",
-      abbreviation: "sk",
-      active: false,
-    },
-    {
-      name: "Slovenia",
-      countryCode: "+386",
-      abbreviation: "si",
-      active: false,
-    },
-    {
-      name: "Spain",
-      countryCode: "+34",
-      abbreviation: "es",
-      active: false,
-    },
-    {
-      name: "Turkey",
-      countryCode: "+90",
-      abbreviation: "tr",
-      active: false,
-    },
-    {
-      name: "United Kingdom",
-      countryCode: "+44",
-      abbreviation: "gb",
-      active: false,
-    },
+  // store session properties
+  protected sessionProperties: string[] = [
+    nameofProperty(this,x=> x.branchChoices),
+    nameofProperty(this, x=>x.countries),
+    nameofProperty(this, x=> x.civilianGradeChoices),
+    nameofProperty(this, x=>x.militaryRanks),
+    nameofProperty(this, x=>x.roleChoices),
+    nameofProperty(this, x=>x.salutationChoices),
+    nameofProperty(this, x=>x.states)
   ];
+
+  public get stateChoices(): SelectData[] {
+
+    return this.states.filter(state=>state.key !== 'us').map(state=> {
+      return  {
+
+        text: state.name,
+        value: state.key.replace('us-', '').toUpperCase()
+      }
+    });
+  }
+
+  public get countryChoices(): SelectData[] {
+
+    return this.countries.map(country=> {
+      return  {
+
+        text: country.name,
+        value: country.iso3166_2,
+      }
+    })
+  }
+
+  @Mutation
+  public setStoreData(sessionData: string):void{
+    try {
+      const sessionDataObject = JSON.parse(sessionData);
+      Object.keys(sessionDataObject).forEach((property) => {
+        Vue.set(this, property, sessionDataObject[property]);
+      });
+
+    } catch (error) {
+      throw new Error('error restoring session for contact data store');
+    }
+    
+
+  }
 
   @Mutation
   public setInitialized(value: boolean): void {
@@ -242,6 +111,17 @@ export class ContactDataStore extends VuexModule {
   public setBranches(value: SystemChoiceDTO[]): void {
     this.branchChoices = value;
   }
+
+  @Mutation
+  public setRoles(value: SystemChoiceDTO[]): void {
+    this.roleChoices = value;
+  }
+
+  @Mutation
+  public setCivilianGrades(value: SystemChoiceDTO[]): void {
+    this.civilianGradeChoices = value;
+  }
+
 
   @Mutation
   public setMilitaryAutoCompleteGroups(): void {
@@ -262,6 +142,23 @@ export class ContactDataStore extends VuexModule {
     });
     this.militaryAutoCompleteGroups = autoCompleteItemGroups;
   }
+  
+  @Mutation
+  public setContactSalutations(value: SystemChoiceDTO[]): void{
+    this.salutationChoices = value;
+  } 
+
+
+  @Mutation
+  public setStates(value: StateDTO[]):void {
+    this.states = value;
+  }
+
+  @Mutation
+  public setCountries(value: CountryDTO[]):void {
+    this.countries = value;
+  }
+
 
   @Action({ rawError: true })
   public async ensureInitialized(): Promise<void> {
@@ -270,18 +167,77 @@ export class ContactDataStore extends VuexModule {
     }
   }
 
+  @Action({rawError: true})
+  private async getBranchChoices():Promise<void>
+  {
+    const branches = await api.systemChoices.getChoices(
+      MilitaryRanksTable,
+      "branch"
+    );
+    this.setBranches(branches);
+  }
+
+  @Action({rawError: true})
+  private async getCivilianGradeChoices():Promise<void>
+  {
+    const grades = await api.systemChoices.getChoices(
+      ContactsTable,
+      "grade_civ"
+    );
+    this.setCivilianGrades(grades);
+  }
+
+
+  @Action({rawError: true})
+  private async getContactRoleChoices():Promise<void>
+  {
+    const contactRoles = await api.systemChoices.getChoices(
+      ContactsTable,
+      "role"
+    );
+    
+    this.setRoles(contactRoles);
+  }
+  
+
+  
+  @Action({rawError: true})
+  private async getContactSalutationChoices():Promise<void>
+  {
+    const salutations = await api.systemChoices.getChoices(
+      ContactsTable,
+      "salutation"
+    );
+    this.setContactSalutations(salutations);
+  }
+
+  
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     try {
-      const branches = await api.systemChoices.getChoices(
-        MilitaryRanksTable,
-        "branch"
-      );
-      this.setBranches(branches);
-      const ranks = await api.militaryRankTable.all();
-      this.setRanks(ranks);
-      this.setMilitaryAutoCompleteGroups();
-      this.setInitialized(true);
+
+      const sessionRestored= retrieveSession(ATAT_CONTACT_DATA_KEY);
+
+      if(sessionRestored){
+        this.setStoreData(sessionRestored);
+        this.setMilitaryAutoCompleteGroups();
+      }
+      else{
+
+        await Promise.all([this.getBranchChoices(), 
+          this.getCountries(),
+          this.getCivilianGradeChoices(), 
+          this.getContactRoleChoices(),
+          this.getContactSalutationChoices(),
+          this.getStates()]);
+    
+        const ranks = await api.militaryRankTable.all();
+        this.setRanks(ranks);
+        this.setMilitaryAutoCompleteGroups();
+        this.setInitialized(true);
+        storeDataToSession(this, this.sessionProperties, ATAT_CONTACT_DATA_KEY);
+      }
+
     } catch (error) {
       console.log(error);
       console.log("error loading military rank data");
@@ -297,6 +253,39 @@ export class ContactDataStore extends VuexModule {
   @Action({rawError: true})
   public GetMilitaryRank(rankComponentId: string):MilitaryRankDTO | undefined {
     return this.militaryRanks.find(rank=> rank.sys_id === rankComponentId);
+  }
+
+  @Action({rawError: true})
+  public async getStates():Promise<void>{
+
+    const states = await api.statesTable.all();
+    this.setStates(states);
+
+  }
+
+  @Action({rawError: true})
+  public async getCountries():Promise<void>{
+
+    const countries = await api.countriesTable.all();
+    this.setCountries(countries);
+
+  }
+
+
+  public get countryListData(){
+
+    return (removeCountries: string[] | null): SelectData[]=> {
+      if (!removeCountries) {
+        return this.countryChoices;
+      }
+      let filteredCountries =this.countryChoices;
+      removeCountries.filter(function (countryCode) {
+        filteredCountries = filteredCountries.filter(function (countryObj) {
+          return countryObj.value !== countryCode;
+        });
+      });
+      return filteredCountries;
+    }
   }
 }
 

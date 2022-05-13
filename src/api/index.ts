@@ -11,6 +11,8 @@ import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
 import { GFEOverviewApi } from "./GFEOverview";
 import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
+import {StatesApi} from "./states";
+import {CountriesApi} from "./countries";
 import { FundingPlanApi } from "./fundingPlan";
 import { AttachmentApi } from "./attachments";
 import { TableApiBase } from "./tableApiBase";
@@ -34,6 +36,8 @@ export const api = {
   gfeOverviewTable: new GFEOverviewApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
+  statesTable: new StatesApi(),
+  countriesTable: new CountriesApi(),
 }
 
 export default {
