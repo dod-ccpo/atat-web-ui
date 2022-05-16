@@ -22,7 +22,7 @@
       :data-group-id="id + '_Group'"
     >
       <template v-if="card || item.description || item.value === otherValue" v-slot:label>
-        <div class="d-flex flex-column width-100" :class="{ '_not-card' : !card }">
+        <div class="d-flex flex-column width-100">
           <div 
             v-if="item.label" 
             :class="[
