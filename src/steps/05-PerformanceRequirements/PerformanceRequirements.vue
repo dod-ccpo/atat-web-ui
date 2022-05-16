@@ -28,7 +28,7 @@
               :card="false"
               class="copy-max-width"
               :rules="[
-                $validators.required('Please select an option.')
+                $validators.required('Please select at least one option.')
               ]"
             />
 
@@ -45,7 +45,7 @@
               :card="false"
               class="copy-max-width"
               :rules="[
-                $validators.required('Please select an option.')
+                $validators.required('Please select at least one option.')
               ]"
             />
 
