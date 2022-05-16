@@ -68,65 +68,65 @@ import { Checkbox } from "../../../types/Global";
     ATATCheckboxGroup,
   }
 })
+
 export default class PerformanceRequirements extends Vue {
- 
   public xaasSelectedOptions: string[] = [];
   private xaasCheckboxItems: Checkbox[] = [
     {
       id: "Compute",
-      label: `Compute`,
+      label: "Compute",
       value: "Compute", 
     },
     {
       id: "DeveloperToolsAndServices",
-      label: `Developer Tools and Services`,
+      label: "Developer Tools and Services",
       value: "DeveloperToolsAndServices", 
     },
     {
       id: "Applications",
-      label: `Applications`,
+      label: "Applications",
       value: "Applications", 
     },
     {
       id: "MachineLearning",
-      label: `Advanced Technology and Algorithmic techniques (Machine Learning)`,
+      label: "Advanced Technology and Algorithmic techniques (Machine Learning)",
       value: "MachineLearning", 
     },
     {
       id: "Networking",
-      label: `Networking`,
+      label: "Networking",
       value: "Networking", 
     },
     {
       id: "Security",
-      label: `Security`,
+      label: "Security",
       value: "Security", 
     },
     {
       id: "DatabaseWithStorage",
-      label: `Database with Storage`,
+      label: "Database with Storage",
       value: "DatabaseWithStorage", 
     },
     {
       id: "Edge",
-      label: `Edge Computing and Tactical Edge`,
+      label: "Edge Computing and Tactical Edge",
       value: "Edge", 
     },
     {
       id: "IoT",
-      label: `Internet of Things (IoT)`,
+      label: "Internet of Things (IoT)",
       value: "IoT", 
     },
     {
       id: "General_IaaS_PaaS_SaaS",
-      label: `General IaaS, PaaS and SaaS`,
+      label: "General IaaS, PaaS and SaaS",
       value: "General_IaaS_PaaS_SaaS", 
       description: `Including third party marketplace and any other XaaS resources 
         not covered in the categories above`,
     },
     {
       id: "XaaSNoneApply",
-      label: `None of these apply to my acquisition.`,
+      label: "None of these apply to my acquisition.",
       value: "NONE", 
     },
   ];
@@ -135,17 +135,17 @@ export default class PerformanceRequirements extends Vue {
   private cloudSupportCheckboxItems: Checkbox[] = [
     {
       id: "AdvisoryAndAssistance",
-      label: `Advisory and assistance`,
+      label: "Advisory and assistance",
       value: "AdvisoryAndAssistance", 
     },
     {
       id: "Training",
-      label: `Training`,
+      label: "Training",
       value: "Training", 
     },
     {
       id: "CloudSupportNoneApply",
-      label: `None of these apply to my acquisition.`,
+      label: "None of these apply to my acquisition.",
       value: "NONE", 
     },
   ];

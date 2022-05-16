@@ -99,14 +99,8 @@ export default class ATATCheckboxGroup extends Vue {
   private validateOtherOnBlur = true;
   private prevSelected: string[] = [];
   private errorMessages: string[] = [];
-  private validateCheckboxes = false;
-
   public blurredCheckboxes: Record<string, string[]> = {};
-
-  public blurredItems = {
-    "Group1" : [ "foo", "bar", "baz" ],
-    "Group2" : [ "bar", "qux" ]
-  }
+  private validateCheckboxes = false;
 
   public checkboxRules = this.validateCheckboxes
     ? this.rules
