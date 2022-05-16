@@ -1,6 +1,6 @@
 
 <template>
-<div class="mb-7">
+  <div class="mb-7">
     <v-container fluid class="container-max-width">
       <v-row>
         <v-col class="col-12">
