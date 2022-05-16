@@ -3,6 +3,23 @@
     transition: none !important;
     animation: none !important;
   }
+  ._not-card {
+    ._description {
+      font-size: 1.4rem;
+      color: $base;
+    }
+  }
+  &.error--text {
+    ._not-card {
+      ._description {
+        color: $error;
+      }
+    }  
+  }
+}
+
+._checkbox-group-label {
+  font-weight: 500;
 }
 
 ._checkbox {
