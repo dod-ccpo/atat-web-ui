@@ -5,7 +5,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            What type of Developer Tools and Services do you need?
+            What type of {{ requirementName }} do you need?
           </h1>
           <div class="copy-max-width">
             <p id="CheckboxGroupLabel">
@@ -40,7 +40,7 @@ import { Component, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
-import { Checkbox } from "../../../types/Global";
+import { Checkbox } from "../../../../types/Global";
 
 @Component({
   components: {
@@ -49,12 +49,15 @@ import { Checkbox } from "../../../types/Global";
 })
 
 export default class PerformanceRequirements extends Vue {
+  // this will be a prop
+  public requirementName = "Developer Tools and Services";
+
   public requiredMessage = `Please select at least one type of offering. If you 
-    no longer need [Developer Tools and Services], select the ‘I don’t need 
-    these cloud resources’ button below.`;
+    no longer need ${this.requirementName}, select the “I don’t need 
+    these cloud resources” button below.`;
 
   public otherValueRequiredMessage 
-    = "Please enter your Other instructions."
+    = "Please enter a title for this requirement."
 
   public otherValue = "OTHER";
   public otherValueEntered = "";
@@ -66,9 +69,11 @@ export default class PerformanceRequirements extends Vue {
   }
 
   public selectedOptions: string[] = [];
+
+  // this will be a prop
   private checkboxItems: Checkbox[] = [
     {
-      id: "DevSecOPS",
+      id: "DevSecOPS", // may need to create ids (for Cypress) on the fly
       label: "DevSecOPS",
       value: "DevSecOPS", 
     },
@@ -104,13 +109,17 @@ export default class PerformanceRequirements extends Vue {
       value: "DatabaseWithStorage", 
       description: "Requires a waiver from DISA CIO",
     },
-    {
+  ];
+
+  private mounted(): void {
+    // "Other" will be an option for all requirements and may not come from the store
+    const otherObj = {
       id: "Other",
       label: "Other",
       value: this.otherValue, 
-    },
-  ];
-
+    };
+    this.checkboxItems.push(otherObj);
+  }
 
 }
 </script>

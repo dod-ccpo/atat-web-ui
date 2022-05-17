@@ -39,8 +39,8 @@ import CurrentEnvironment
 
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
 import PerformanceRequirements
-  from "../steps/05-PerformanceRequirements/PerformanceRequirements.vue";
-import RequirementCategories from "../steps/05-PerformanceRequirements/Categories.vue"
+  from "../steps/05-PerformanceRequirements/DOW/PerformanceRequirements.vue";
+import RequirementCategories from "../steps/05-PerformanceRequirements/DOW/Categories.vue"
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
