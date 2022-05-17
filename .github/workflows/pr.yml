@@ -21,8 +21,10 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: "lts/*"
+          node-version: 14
           cache: npm
+      - name: Install compatible NPM version
+        run: npm install -g npm@^6
       - name: Install project dependencies
         run: npm ci
       - name: Run linter
@@ -39,8 +41,10 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: "lts/*"
+          node-version: 14
           cache: npm
+      - name: Install compatible NPM version
+        run: npm install -g npm@^6
       - name: Install project dependencies
         run: npm ci
       - name: Build the project
