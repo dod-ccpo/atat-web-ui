@@ -5,8 +5,23 @@
   }
 }
 
+._checkbox-group-label {
+  font-weight: 500;
+}
+
 ._checkbox {
   margin-bottom: 16px;
+
+  ._description {
+    font-size: 1.4rem;
+    color: $base;  
+  }
+  
+  &.error--text {
+    ._description {
+      color: $error !important;
+    }
+  }
 
   &.v-input--is-label-active {
     .v-icon {
@@ -42,7 +57,6 @@
     z-index: 2;
     &.error--text {
       color: $error !important;
-
     }
   }
 
