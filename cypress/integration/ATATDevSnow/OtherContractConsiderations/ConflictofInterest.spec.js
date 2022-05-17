@@ -52,7 +52,7 @@ describe("Test suite: OCC: Conflict of Interest substep", () => {
     
   });
 
-  it("TC3:Learn more about COI", () => {
+  it("TC3: Learn more about COI", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.verifyPageHeader(" Do you have a potential conflict of interest? ");
     cy.textExists(occ.coiLearnMoreLink, " Learn more about COI.")
@@ -73,7 +73,7 @@ describe("Test suite: OCC: Conflict of Interest substep", () => {
     
   });
 
-  it("TC4:Select Option Yes", () => {
+  it("TC4: Select Option Yes", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.verifyPageHeader(" Do you have a potential conflict of interest? ");
     cy.radioBtn(occ.coiYesRadioOption, "YES").click({ force: true })
