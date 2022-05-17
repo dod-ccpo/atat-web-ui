@@ -49,7 +49,7 @@ import { Checkbox } from "../../../../types/Global";
 })
 
 export default class PerformanceRequirements extends Vue {
-  // this will be a prop
+  // requirementName will be pulled from data in future ticket
   public requirementName = "Developer Tools and Services";
 
   public requiredMessage = `Please select at least one type of offering. If you 
@@ -70,7 +70,7 @@ export default class PerformanceRequirements extends Vue {
 
   public selectedOptions: string[] = [];
 
-  // this will be a prop
+  // checkboxItems will be pulled from data in future ticket
   private checkboxItems: Checkbox[] = [
     {
       id: "DevSecOPS", // may need to create ids (for Cypress) on the fly
@@ -109,17 +109,14 @@ export default class PerformanceRequirements extends Vue {
       value: "DatabaseWithStorage", 
       description: "Requires a waiver from DISA CIO",
     },
-  ];
-
-  private mounted(): void {
-    // "Other" will be an option for all requirements and may not come from the store
-    const otherObj = {
+    // "Other" will be an option for all requirements and may not come from the store?
+    // -- to be addressed in future ticket
+    {
       id: "Other",
       label: "Other",
       value: this.otherValue, 
-    };
-    this.checkboxItems.push(otherObj);
-  }
+    }    
+  ];
 
 }
 </script>

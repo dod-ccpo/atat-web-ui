@@ -368,6 +368,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.RequirementCategories,
         completePercentageWeight: 1,
         component: RequirementCategories,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need these cloud resources",
+            buttonId: "DontNeedResources",
+            buttonClass: "secondary",
+            name: routeNames.RequirementCategories, // functionality TBD in future ticket
+          },
+        ],
       },
     ],
   },
