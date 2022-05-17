@@ -40,6 +40,7 @@ import CurrentEnvironment
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
 import PerformanceRequirements
   from "../steps/05-PerformanceRequirements/PerformanceRequirements.vue";
+import RequirementCategories from "../steps/05-PerformanceRequirements/Categories.vue"
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -107,6 +108,7 @@ export const routeNames = {
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
   PerformanceRequirements: "Performance_Requirements",
+  RequirementCategories: "RequirementCategories", // EJY better name
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
   CloudSupportPackages: "Cloud_Support_Packages",
@@ -358,6 +360,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.PerformanceRequirements,
         completePercentageWeight: 1,
         component: PerformanceRequirements,
+      },
+      {
+        menuText: "Requirement Categories",
+        path: "requirement-categories",
+        excludeFromMenu: true,
+        name: routeNames.RequirementCategories,
+        completePercentageWeight: 1,
+        component: RequirementCategories,
       },
     ],
   },

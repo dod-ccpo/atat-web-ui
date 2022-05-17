@@ -114,7 +114,7 @@ hr, .hr {
 }
 
 .v-application a {
-  color: $primary;
+  color: $primary !important; // override vuetify blue
   &._text-link, &.expandable-content-opener, &.primary-text {
     text-decoration: underline;
     color: $primary !important;
