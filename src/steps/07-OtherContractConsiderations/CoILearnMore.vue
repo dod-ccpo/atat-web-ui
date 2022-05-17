@@ -5,6 +5,7 @@
     </h2>
     <p> 
       <a 
+        id="FAR9502Link"
         href="https://www.acquisition.gov/far/9.502" 
         class="_text-link"
         target="_blank"
@@ -48,6 +49,7 @@
     <p>
       For more information, reference 
       <a 
+        id="FAR95Link"
         href="https://www.acquisition.gov/far/subpart-9.5" 
         class="_text-link" 
         target="_blank"

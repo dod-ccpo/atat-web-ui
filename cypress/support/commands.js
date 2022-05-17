@@ -81,6 +81,18 @@ Cypress.Commands.add("launchATAT", () => {
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
   }
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
+    .should("exist");
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
+    .should("exist");
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
+    .should("exist");
 });
 
 Cypress.Commands.add("clearSession", () => {
