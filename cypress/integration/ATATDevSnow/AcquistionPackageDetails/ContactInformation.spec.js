@@ -295,8 +295,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
               
   });   
   
-  //resolved the issue when uncomment with other task
-  it.skip("TC7: Military: Field Validations", () => {
+  it("TC7: Military: Field Validations", () => {
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
     //Navigates to Contact information
@@ -307,7 +306,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
 
     //Validation message for Service Agency
     cy.findElement(contact.serviceBranchDropdown).focus()
-      .blur().then(() => {
+      .tab().then(() => {
         cy.checkErrorMessage(
           contact.serviceBranchError,
           "Please enter your Service Branch.");
@@ -318,11 +317,12 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
       cy.findElement(contact.serviceBranchCoastGuard).click();
     });
+
     //Validation message for Rank
     cy.verifyRequiredDropdown(
       contact.rankInput,
       contact.rankError,
-      "Please enter your Please select your military rank."
+      "Please select your military rank."
     );
         
   });  
