@@ -1,4 +1,3 @@
-
 <template>
   <div class="mb-7">
     <v-container fluid class="container-max-width">
@@ -34,6 +33,7 @@
     </v-container>
   </div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
@@ -56,9 +56,7 @@ export default class PerformanceRequirements extends Vue {
     no longer need ${this.requirementName}, select the “I don’t need 
     these cloud resources” button below.`;
 
-  public otherValueRequiredMessage 
-    = "Please enter a title for this requirement."
-
+  public otherValueRequiredMessage = "Please enter a title for this requirement."
   public otherValue = "OTHER";
   public otherValueEntered = "";
   public otherSelected = "";
@@ -117,7 +115,7 @@ export default class PerformanceRequirements extends Vue {
       value: this.otherValue, 
     }    
   ];
-
+  
 }
-</script>
 
+</script>
