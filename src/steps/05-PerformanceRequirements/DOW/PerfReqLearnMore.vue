@@ -32,7 +32,7 @@
               {{ requirement.description }}
             </p>
             <div v-if="requirement.categories">
-              This category includes the following:
+              <p class="mb-4">This category includes the following:</p>
               <ul>
                 <li 
                   v-for="(category, index) in requirement.categories"

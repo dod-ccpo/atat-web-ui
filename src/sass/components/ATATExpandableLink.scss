@@ -26,6 +26,10 @@
   padding-bottom: 16px;
   border-bottom: 1px solid $base-lighter;
   margin-bottom: 4px;
+  
+  li {
+    margin-bottom: 6px;
+  }
 }
 
 .v-expansion-panel {
