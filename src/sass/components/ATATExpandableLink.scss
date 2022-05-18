@@ -57,7 +57,8 @@
       transform: rotate(-90deg) !important;
     }
   }
-  &:hover, &.v-expansion-panel-header--active {
+  
+  &:hover {
     background-color: $base-lighter;
   }
 
