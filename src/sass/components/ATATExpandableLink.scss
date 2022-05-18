@@ -41,7 +41,7 @@
   font-weight: 700 !important;
   position: relative;
   padding: 4px 8px 4px 32px !important;
-  margin: 12px 0;
+  margin: 8px 0;
   min-height: auto;
   display: inline-block;
   width: auto;
@@ -64,7 +64,7 @@
 
   &.v-expansion-panel-header--active {
     min-height: auto;
-    
+
     .v-expansion-panel-header__icon {
       .v-icon {
         transform: rotate(0deg) !important;

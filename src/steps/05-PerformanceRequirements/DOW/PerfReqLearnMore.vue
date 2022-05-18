@@ -17,7 +17,7 @@
     >
       <hr v-if="index > 0" class="mb-4" />
 
-      <h3>{{ section.sectionTitle }}</h3>
+      <h3 class="mb-3">{{ section.sectionTitle }}</h3>
 
       <v-expansion-panels accordion flat>
         <v-expansion-panel 
