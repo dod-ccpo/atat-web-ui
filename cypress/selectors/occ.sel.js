@@ -15,6 +15,19 @@ module.exports = {
   coiLMDClose: "#PanelCloser",
   coiFARUrl: "#FAR9502Link",
   coiLMDBoldText: "._slideout-panel h3", 
-  coiReferenceURL:"#FAR95Link"
-      
+  coiReferenceURL: "#FAR95Link",
+  
+  //Packaging,Packing and Shipping
+  introText: "#IntroP",
+  selectMessageLabel: "#SelectMessage",
+  contractorProviderCheckBox: "#Checkbox_ContractorProvided",
+  contractorProviderLabelTxt:"#PackagingEtcCheckboxes label",
+  otherCheckBox: "#Checkbox_Other",
+  noneCheckBox: "#Checkbox_NoneApply",
+  otherTextBox:"#OtherEntry_text_area",
+  otherTxtError: "#OtherEntry_text_field_control .field-error",
+  checkBoxError: "#PackagingEtcCheckboxes .field-error",
+  checkBoxActive: "#PackagingEtcCheckboxes .v-input--is-label-active",
+  
+  //Training      
 }

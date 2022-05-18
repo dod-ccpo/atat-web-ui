@@ -36,6 +36,7 @@ import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
 import { cleanText, colors } from "../helpers";
 import sac from '../selectors/standComp.sel';
+import occ from '../selectors/occ.sel'
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -189,6 +190,13 @@ Cypress.Commands.add("selectCheckBox", (selector,value) => {
   cy.findElement(selector)
     .should("have.value", value);
   
+});
+
+Cypress.Commands.add("checkBoxOption", (selector,value) => {
+  cy.findElement(selector)
+    .should('have.value', value)
+    .and('not.checked');
+    
 });
 
 Cypress.Commands.add("clickSideStepper", (stepperSelector,stepperText) => {
@@ -623,4 +631,28 @@ Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
       }
           
     });
+});
+
+Cypress.Commands.add("ppsCheckBoxOptionSelected", (selector,value,otherTxt) => {
+  cy.checkBoxOption(selector,value).check({ force: true });
+  cy.findElement(occ.checkBoxActive)
+    .then(($checkedOption) => {      
+      cy.log($checkedOption.text());
+      const selectedOption = $checkedOption.text(); 
+      cy.log("selectedOption", selectedOption)
+      cy.log(cleanText(selectedOption) === cleanText("check_box Other"))
+      if (selectedOption === " check_box Other ") {
+        cy.log("display Other is selected:",selectedOption)
+        cy.findElement(occ.otherTextBox)
+          .should("exist")
+          .and("be.visible");
+        cy.enterTextInTextField(occ.otherTextBox,otherTxt)
+        
+      }else {        
+        cy.findElement(occ.otherTextBox)
+          .should("exist")
+          .and("not.visible");
+      }
+      
+    });  
 });
