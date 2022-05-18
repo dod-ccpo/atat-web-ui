@@ -637,11 +637,9 @@ Cypress.Commands.add("ppsCheckBoxOptionSelected", (selector,value,otherTxt) => {
   cy.checkBoxOption(selector,value).check({ force: true });
   cy.findElement(occ.checkBoxActive)
     .then(($checkedOption) => {      
-      cy.log($checkedOption.text());
-      const selectedOption = $checkedOption.text(); 
-      cy.log("selectedOption", selectedOption)
-      cy.log(cleanText(selectedOption) === cleanText("check_box Other"))
-      if (selectedOption === " check_box Other ") {
+      const selectedOption = cleanText($checkedOption.text()); 
+      cy.log(selectedOption)
+      if (selectedOption === "check_box Other") {
         cy.log("display Other is selected:",selectedOption)
         cy.findElement(occ.otherTextBox)
           .should("exist")
@@ -650,8 +648,7 @@ Cypress.Commands.add("ppsCheckBoxOptionSelected", (selector,value,otherTxt) => {
         
       }else {        
         cy.findElement(occ.otherTextBox)
-          .should("exist")
-          .and("not.visible");
+          .should("not.exist");
       }
       
     });  

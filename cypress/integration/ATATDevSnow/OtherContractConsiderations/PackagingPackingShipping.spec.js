@@ -67,7 +67,7 @@ describe("Test suite: OCC: PPS substep", () => {
       .should("be.checked");
   });
 
-  it.skip("TC3: Checkbox option is Other", () => {
+  it("TC3: Checkbox option is Other", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.textExists(common.subStepPPSText, " Packaging, Packing, and Shipping ").click();
     cy.verifyPageHeader("Do you need to include packaging, packing, or shipping instructions?");
@@ -85,8 +85,10 @@ describe("Test suite: OCC: PPS substep", () => {
     cy.textExists(common.subStepPPSText, " Packaging, Packing, and Shipping ").click();
     cy.verifyPageHeader("Do you need to include packaging, packing, or shipping instructions?");
     //user can select checkbox one and two at the same time
-    cy.checkBoxOption(occ.contractorProviderCheckBox, "CONTRACTOR_PROVIDED").check({ force: true })
-      .should("be.checked");
+    cy.ppsCheckBoxOptionSelected(
+      occ.contractorProviderCheckBox,
+      "CONTRACTOR_PROVIDED"
+    );
     cy.checkBoxOption(occ.otherCheckBox, "OTHER").check({ force: true })
       .should("be.checked");    
     //if None is checked then Other checkboxes should be unchecked.
