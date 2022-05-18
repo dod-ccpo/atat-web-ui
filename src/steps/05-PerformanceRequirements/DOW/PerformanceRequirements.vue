@@ -13,7 +13,15 @@
               Anything as a Service (XaaS) and Cloud Support Packages. Specify 
               any categories that may apply to your acquisition below, and we’ll 
               walk through each selection to get more details next. 
-              <a role="button" @click="openSlideoutPanel">Learn more about categories.</a>
+              <a 
+                role="button" 
+                @click="openSlideoutPanel"
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel"
+                tabindex="0"
+              >
+                Learn more about categories.
+              </a>
             </p>
 
             <p id="XaaSLabel" class="_checkbox-group-label">
