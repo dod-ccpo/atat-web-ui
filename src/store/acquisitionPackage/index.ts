@@ -26,6 +26,7 @@ import { SensitiveInformationDTO } from "@/api/models";
 import { PeriodOfPerformanceDTO } from "@/api/models";
 import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
+import { ClassificationLevelDTO } from "@/api/models";
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -36,13 +37,14 @@ export const StoreProperties = {
   ProjectOverview: "projectOverview",
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
-  GFEOverview:"gfeOverview",
+  GFEOverview: "gfeOverview",
   PeriodOfPerformance: "periodOfPerformance",
-  RequirementsCostEstimate:"requirementsCostEstimate",
+  RequirementsCostEstimate: "requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
+  ClassificationLevel: "classificationLevel",
 };
 
-const initialCurrentContract = ()=> {
+const initialCurrentContract = () => {
   return {
     current_contract_exists: "",
     incumbent_contractor_name: "",
@@ -78,7 +80,7 @@ const initialOrganization = () => {
   };
 };
 
-const initialContractType = ()=> {
+const initialContractType = () => {
   return {
     firm_fixed_price: "",
     time_and_materials: "",
@@ -107,7 +109,7 @@ const initialContact = () => {
   };
 };
 
-const initialContractConsiderations = ()=> {
+const initialContractConsiderations = () => {
 
   return {
 
@@ -138,29 +140,30 @@ const initialGFE = () => {
   };
 };
 
-const initialPeriodOfPerformance = ()=> {
+const initialPeriodOfPerformance = () => {
 
-  return     { 
+  return {
     pop_start_request: "",
     requested_pop_start_date: "",
     time_frame: "",
     recurring_requirement: "",
     base_and_options: "",
-    
-  }}
 
-const initialSensativeInformation = ()=> {
+  }
+}
+
+const initialSensativeInformation = () => {
 
   return {
 
     pii_present: "",
     system_of_record_name: "",
     work_to_be_performed: "",
-      
+
     baa_required: "",
-      
+
     potential_to_be_harmful: "",
-      
+
     foia_full_name: "",
     foia_email: "",
     foia_address_type: "",
@@ -171,6 +174,13 @@ const initialSensativeInformation = ()=> {
     foia_zip_postal_code: "",
     foia_country: "",
     section_508_sufficient: "",
+  }
+}
+
+const initialClassificationLevel = () => {
+  return {
+    impact_level: "",
+    classification: "",
   }
 }
 
@@ -243,6 +253,7 @@ export class AcquisitionPackageStore extends VuexModule {
   gfeOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
+  classificationLevel: ClassificationLevelDTO | null = null;
 
   public initContact: ContactDTO = initialContact();
 
@@ -280,11 +291,11 @@ export class AcquisitionPackageStore extends VuexModule {
   public setContact(saveData: { data: ContactDTO; type: string }): void {
     const isCor = saveData.type === "COR";
     const dataKey =
-      saveData.type === "Mission Owner"
-        ? "contactInfo"
-        : isCor
-          ? "corInfo"
-          : "acorInfo";
+        saveData.type === "Mission Owner"
+          ? "contactInfo"
+          : isCor
+            ? "corInfo"
+            : "acorInfo";
 
     this[dataKey] = saveData.data;
   }
@@ -304,6 +315,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setClassificationLevel(value: ClassificationLevelDTO): void {
+    this.classificationLevel = this.classificationLevel
+      ? Object.assign(this.classificationLevel, value)
+      : value;
+  }
+
+  @Mutation
   public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
     this.periodOfPerformance = this.periodOfPerformance
       ? Object.assign(this.periodOfPerformance, value)
@@ -319,8 +337,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    this.contractConsiderations = this.contractConsiderations 
-      ? Object.assign(this.contractConsiderations, value) 
+    this.contractConsiderations = this.contractConsiderations
+      ? Object.assign(this.contractConsiderations, value)
       : value;
   }
 
@@ -333,6 +351,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
   }
+
   @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
     this.gfeOverview = value;
@@ -364,9 +383,10 @@ export class AcquisitionPackageStore extends VuexModule {
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.SensitiveInformation;
     this.gfeOverview = sessionData.gFEOverview;
+    this.classificationLevel = sessionData.classificationLevel;
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   public async initialize(): Promise<void> {
     if (this.initialized) {
       return;
@@ -387,16 +407,17 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setProjectOverview(initialProjectOverview());
           this.setOrganization(initialOrganization());
           this.setContractType(initialContractType());
-          this.setContact({ data: initialContact(), type: "COR" });
-          this.setContact({ data: initialContact(), type: "ACOR" });
+          this.setContact({data: initialContact(), type: "COR"});
+          this.setContact({data: initialContact(), type: "ACOR"});
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
           this.setAcquisitionPackage(acquisitionPackage);
           this.setFairOpportunity(initialFairOpportunity());
-          this.setRequirementsCostEstimate({ surge_capabilities: "" });
+          this.setRequirementsCostEstimate({surge_capabilities: ""});
           this.setGFEOverview(initialGFE());
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensativeInformation());
+          this.setClassificationLevel(initialClassificationLevel());
           //the should be in the initialization sequence
           this.setAcquisitionPackage(acquisitionPackage);
           this.setInitialized(true);
@@ -408,13 +429,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   // service or agency selected on Organiation page
-  selectedServiceOrAgency: SelectData = { text: "", value: "" };
+  selectedServiceOrAgency: SelectData = {text: "", value: ""};
 
   public getSelectedServiceOrAgency(): SelectData {
     return this.selectedServiceOrAgency;
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   public setSelectedServiceOrAgency(value: SelectData): void {
     this.doSetSelectedServiceOrAgency(value);
   }
@@ -425,9 +446,9 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   // military branch selected on Contact Info page
-  public selectedContactBranch: SelectData = { text: "", value: "" };
+  public selectedContactBranch: SelectData = {text: "", value: ""};
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   public setSelectedContactBranch(value: SelectData): void {
     this.doSetSelectedContactBranch(value);
   }
@@ -439,12 +460,12 @@ export class AcquisitionPackageStore extends VuexModule {
 
   // used on Contact Info and COR/ACOR pages
   public branchData: SelectData[] = [
-    { text: "U.S. Air Force", value: "USAF" },
-    { text: "U.S. Army", value: "ARMY" },
-    { text: "U.S. Coast Guard", value: "USCG" },
-    { text: "U.S. Marine Corps", value: "USMC" },
-    { text: "U.S. Navy", value: "NAVY" },
-    { text: "U.S. Space Force", value: "USSF" },
+    {text: "U.S. Air Force", value: "USAF"},
+    {text: "U.S. Army", value: "ARMY"},
+    {text: "U.S. Coast Guard", value: "USCG"},
+    {text: "U.S. Marine Corps", value: "USMC"},
+    {text: "U.S. Navy", value: "NAVY"},
+    {text: "U.S. Space Force", value: "USSF"},
   ];
 
   public serviceOrAgencyData: SelectData[] = [
@@ -883,307 +904,307 @@ export class AcquisitionPackageStore extends VuexModule {
   ];
 
   public stateListData: SelectData[] = [
-    { text: "Alabama", value: "AL" },
-    { text: "Alaska", value: "AK" },
-    { text: "Arizona", value: "AZ" },
-    { text: "Arkansas", value: "AR" },
-    { text: "California", value: "CA" },
-    { text: "Colorado", value: "CO" },
-    { text: "Connecticut", value: "CT" },
-    { text: "Delaware", value: "DE" },
-    { text: "District of Columbia", value: "DC" },
-    { text: "Florida", value: "FL" },
-    { text: "Georgia", value: "GA" },
-    { text: "Hawaii", value: "HI" },
-    { text: "Idaho", value: "ID" },
-    { text: "Illinois", value: "IL" },
-    { text: "Indiana", value: "IN" },
-    { text: "Iowa", value: "IA" },
-    { text: "Kansas", value: "KS" },
-    { text: "Kentucky", value: "KY" },
-    { text: "Louisiana", value: "LA" },
-    { text: "Maine", value: "ME" },
-    { text: "Maryland", value: "MD" },
-    { text: "Massachusetts", value: "MA" },
-    { text: "Michigan", value: "MI" },
-    { text: "Minnesota", value: "MN" },
-    { text: "Mississippi", value: "MS" },
-    { text: "Missouri", value: "MO" },
-    { text: "Montana", value: "MT" },
-    { text: "Nebraska", value: "NE" },
-    { text: "Nevada", value: "NV" },
-    { text: "New Hampshire", value: "NH" },
-    { text: "New Jersey", value: "NJ" },
-    { text: "New Mexico", value: "NM" },
-    { text: "New York", value: "NY" },
-    { text: "North Carolina", value: "NC" },
-    { text: "North Dakota", value: "ND" },
-    { text: "Ohio", value: "OH" },
-    { text: "Oklahoma", value: "OK" },
-    { text: "Oregon", value: "OR" },
-    { text: "Pennsylvania", value: "PA" },
-    { text: "Rhode Island", value: "RI" },
-    { text: "South Carolina", value: "SC" },
-    { text: "South Dakota", value: "SD" },
-    { text: "Tennessee", value: "TN" },
-    { text: "Texas", value: "TX" },
-    { text: "Utah", value: "UT" },
-    { text: "Vermont", value: "VT" },
-    { text: "Virginia", value: "VA" },
-    { text: "Washington", value: "WA" },
-    { text: "West Virginia", value: "WV" },
-    { text: "Wisconsin", value: "WI" },
-    { text: "Wyoming", value: "WY" },
+    {text: "Alabama", value: "AL"},
+    {text: "Alaska", value: "AK"},
+    {text: "Arizona", value: "AZ"},
+    {text: "Arkansas", value: "AR"},
+    {text: "California", value: "CA"},
+    {text: "Colorado", value: "CO"},
+    {text: "Connecticut", value: "CT"},
+    {text: "Delaware", value: "DE"},
+    {text: "District of Columbia", value: "DC"},
+    {text: "Florida", value: "FL"},
+    {text: "Georgia", value: "GA"},
+    {text: "Hawaii", value: "HI"},
+    {text: "Idaho", value: "ID"},
+    {text: "Illinois", value: "IL"},
+    {text: "Indiana", value: "IN"},
+    {text: "Iowa", value: "IA"},
+    {text: "Kansas", value: "KS"},
+    {text: "Kentucky", value: "KY"},
+    {text: "Louisiana", value: "LA"},
+    {text: "Maine", value: "ME"},
+    {text: "Maryland", value: "MD"},
+    {text: "Massachusetts", value: "MA"},
+    {text: "Michigan", value: "MI"},
+    {text: "Minnesota", value: "MN"},
+    {text: "Mississippi", value: "MS"},
+    {text: "Missouri", value: "MO"},
+    {text: "Montana", value: "MT"},
+    {text: "Nebraska", value: "NE"},
+    {text: "Nevada", value: "NV"},
+    {text: "New Hampshire", value: "NH"},
+    {text: "New Jersey", value: "NJ"},
+    {text: "New Mexico", value: "NM"},
+    {text: "New York", value: "NY"},
+    {text: "North Carolina", value: "NC"},
+    {text: "North Dakota", value: "ND"},
+    {text: "Ohio", value: "OH"},
+    {text: "Oklahoma", value: "OK"},
+    {text: "Oregon", value: "OR"},
+    {text: "Pennsylvania", value: "PA"},
+    {text: "Rhode Island", value: "RI"},
+    {text: "South Carolina", value: "SC"},
+    {text: "South Dakota", value: "SD"},
+    {text: "Tennessee", value: "TN"},
+    {text: "Texas", value: "TX"},
+    {text: "Utah", value: "UT"},
+    {text: "Vermont", value: "VT"},
+    {text: "Virginia", value: "VA"},
+    {text: "Washington", value: "WA"},
+    {text: "West Virginia", value: "WV"},
+    {text: "Wisconsin", value: "WI"},
+    {text: "Wyoming", value: "WY"},
   ];
 
   public countryListData = [
-    { text: "United States of America", value: "US" },
-    { text: "Afghanistan", value: "AF" },
-    { text: "Åland Islands", value: "AX" },
-    { text: "Albania", value: "AL" },
-    { text: "Algeria", value: "DZ" },
-    { text: "American Samoa", value: "AS" },
-    { text: "Andorra", value: "AD" },
-    { text: "Angola", value: "AO" },
-    { text: "Anguilla", value: "AI" },
-    { text: "Antarctica", value: "AQ" },
-    { text: "Antigua and Barbuda", value: "AG" },
-    { text: "Argentina", value: "AR" },
-    { text: "Armenia", value: "AM" },
-    { text: "Aruba", value: "AW" },
-    { text: "Australia", value: "AU" },
-    { text: "Austria", value: "AT" },
-    { text: "Azerbaijan", value: "AZ" },
-    { text: "Bahamas", value: "BS" },
-    { text: "Bahrain", value: "BH" },
-    { text: "Bangladesh", value: "BD" },
-    { text: "Barbados", value: "BB" },
-    { text: "Belarus", value: "BY" },
-    { text: "Belgium", value: "BE" },
-    { text: "Belize", value: "BZ" },
-    { text: "Benin", value: "BJ" },
-    { text: "Bermuda", value: "BM" },
-    { text: "Bhutan", value: "BT" },
-    { text: "Bolivia", value: "BO" },
-    { text: "Bosnia and Herzegovina", value: "BA" },
-    { text: "Botswana", value: "BW" },
-    { text: "Bouvet Island", value: "BV" },
-    { text: "Brazil", value: "BR" },
-    { text: "British Indian Ocean Territory", value: "IO" },
-    { text: "Brunei Darussalam", value: "BN" },
-    { text: "Bulgaria", value: "BG" },
-    { text: "Burkina Faso", value: "BF" },
-    { text: "Burundi", value: "BI" },
-    { text: "Cambodia", value: "KH" },
-    { text: "Cameroon", value: "CM" },
-    { text: "Canada", value: "CA" },
-    { text: "Cape Verde", value: "CV" },
-    { text: "Cayman Islands", value: "KY" },
-    { text: "Central African Republic", value: "CF" },
-    { text: "Chad", value: "TD" },
-    { text: "Chile", value: "CL" },
-    { text: "China", value: "CN" },
-    { text: "Christmas Island", value: "CX" },
-    { text: "Cocos (Keeling) Islands", value: "CC" },
-    { text: "Colombia", value: "CO" },
-    { text: "Comoros", value: "KM" },
-    { text: "Congo", value: "CG" },
-    { text: "Congo, The Democratic Republic of the", value: "CD" },
-    { text: "Cook Islands", value: "CK" },
-    { text: "Costa Rica", value: "CR" },
-    { text: 'Cote D"Ivoire', value: "CI" },
-    { text: "Croatia", value: "HR" },
-    { text: "Cuba", value: "CU" },
-    { text: "Cyprus", value: "CY" },
-    { text: "Czech Republic", value: "CZ" },
-    { text: "Denmark", value: "DK" },
-    { text: "Djibouti", value: "DJ" },
-    { text: "Dominica", value: "DM" },
-    { text: "Dominican Republic", value: "DO" },
-    { text: "Ecuador", value: "EC" },
-    { text: "Egypt", value: "EG" },
-    { text: "El Salvador", value: "SV" },
-    { text: "Equatorial Guinea", value: "GQ" },
-    { text: "Eritrea", value: "ER" },
-    { text: "Estonia", value: "EE" },
-    { text: "Ethiopia", value: "ET" },
-    { text: "Falkland Islands (Malvinas)", value: "FK" },
-    { text: "Faroe Islands", value: "FO" },
-    { text: "Fiji", value: "FJ" },
-    { text: "Finland", value: "FI" },
-    { text: "France", value: "FR" },
-    { text: "French Guiana", value: "GF" },
-    { text: "French Polynesia", value: "PF" },
-    { text: "French Southern Territories", value: "TF" },
-    { text: "Gabon", value: "GA" },
-    { text: "Gambia", value: "GM" },
-    { text: "Georgia", value: "GE" },
-    { text: "Germany", value: "DE" },
-    { text: "Ghana", value: "GH" },
-    { text: "Gibraltar", value: "GI" },
-    { text: "Greece", value: "GR" },
-    { text: "Greenland", value: "GL" },
-    { text: "Grenada", value: "GD" },
-    { text: "Guadeloupe", value: "GP" },
-    { text: "Guam", value: "GU" },
-    { text: "Guatemala", value: "GT" },
-    { text: "Guernsey", value: "GG" },
-    { text: "Guinea", value: "GN" },
-    { text: "Guinea-Bissau", value: "GW" },
-    { text: "Guyana", value: "GY" },
-    { text: "Haiti", value: "HT" },
-    { text: "Heard Island and Mcdonald Islands", value: "HM" },
-    { text: "Holy See (Vatican City State)", value: "VA" },
-    { text: "Honduras", value: "HN" },
-    { text: "Hong Kong", value: "HK" },
-    { text: "Hungary", value: "HU" },
-    { text: "Iceland", value: "IS" },
-    { text: "India", value: "IN" },
-    { text: "Indonesia", value: "ID" },
-    { text: "Iran, Islamic Republic Of", value: "IR" },
-    { text: "Iraq", value: "IQ" },
-    { text: "Ireland", value: "IE" },
-    { text: "Isle of Man", value: "IM" },
-    { text: "Israel", value: "IL" },
-    { text: "Italy", value: "IT" },
-    { text: "Jamaica", value: "JM" },
-    { text: "Japan", value: "JP" },
-    { text: "Jersey", value: "JE" },
-    { text: "Jordan", value: "JO" },
-    { text: "Kazakhstan", value: "KZ" },
-    { text: "Kenya", value: "KE" },
-    { text: "Kiribati", value: "KI" },
-    { text: 'Korea, Democratic People"S Republic of', value: "KP" },
-    { text: "Korea, Republic of", value: "KR" },
-    { text: "Kuwait", value: "KW" },
-    { text: "Kyrgyzstan", value: "KG" },
-    { text: 'Lao People"S Democratic Republic', value: "LA" },
-    { text: "Latvia", value: "LV" },
-    { text: "Lebanon", value: "LB" },
-    { text: "Lesotho", value: "LS" },
-    { text: "Liberia", value: "LR" },
-    { text: "Libyan Arab Jamahiriya", value: "LY" },
-    { text: "Liechtenstein", value: "LI" },
-    { text: "Lithuania", value: "LT" },
-    { text: "Luxembourg", value: "LU" },
-    { text: "Macao", value: "MO" },
-    { text: "Macedonia, The Former Yugoslav Republic of", value: "MK" },
-    { text: "Madagascar", value: "MG" },
-    { text: "Malawi", value: "MW" },
-    { text: "Malaysia", value: "MY" },
-    { text: "Maldives", value: "MV" },
-    { text: "Mali", value: "ML" },
-    { text: "Malta", value: "MT" },
-    { text: "Marshall Islands", value: "MH" },
-    { text: "Martinique", value: "MQ" },
-    { text: "Mauritania", value: "MR" },
-    { text: "Mauritius", value: "MU" },
-    { text: "Mayotte", value: "YT" },
-    { text: "Mexico", value: "MX" },
-    { text: "Micronesia, Federated States of", value: "FM" },
-    { text: "Moldova, Republic of", value: "MD" },
-    { text: "Monaco", value: "MC" },
-    { text: "Mongolia", value: "MN" },
-    { text: "Montserrat", value: "MS" },
-    { text: "Morocco", value: "MA" },
-    { text: "Mozambique", value: "MZ" },
-    { text: "Myanmar", value: "MM" },
-    { text: "Namibia", value: "NA" },
-    { text: "Nauru", value: "NR" },
-    { text: "Nepal", value: "NP" },
-    { text: "Netherlands", value: "NL" },
-    { text: "Netherlands Antilles", value: "AN" },
-    { text: "New Caledonia", value: "NC" },
-    { text: "New Zealand", value: "NZ" },
-    { text: "Nicaragua", value: "NI" },
-    { text: "Niger", value: "NE" },
-    { text: "Nigeria", value: "NG" },
-    { text: "Niue", value: "NU" },
-    { text: "Norfolk Island", value: "NF" },
-    { text: "Northern Mariana Islands", value: "MP" },
-    { text: "Norway", value: "NO" },
-    { text: "Oman", value: "OM" },
-    { text: "Pakistan", value: "PK" },
-    { text: "Palau", value: "PW" },
-    { text: "Palestinian Territory, Occupied", value: "PS" },
-    { text: "Panama", value: "PA" },
-    { text: "Papua New Guinea", value: "PG" },
-    { text: "Paraguay", value: "PY" },
-    { text: "Peru", value: "PE" },
-    { text: "Philippines", value: "PH" },
-    { text: "Pitcairn", value: "PN" },
-    { text: "Poland", value: "PL" },
-    { text: "Portugal", value: "PT" },
-    { text: "Puerto Rico", value: "PR" },
-    { text: "Qatar", value: "QA" },
-    { text: "Reunion", value: "RE" },
-    { text: "Romania", value: "RO" },
-    { text: "Russian Federation", value: "RU" },
-    { text: "Rwanda", value: "RW" },
-    { text: "Saint Helena", value: "SH" },
-    { text: "Saint Kitts and Nevis", value: "KN" },
-    { text: "Saint Lucia", value: "LC" },
-    { text: "Saint Pierre and Miquelon", value: "PM" },
-    { text: "Saint Vincent and the Grenadines", value: "VC" },
-    { text: "Samoa", value: "WS" },
-    { text: "San Marino", value: "SM" },
-    { text: "Sao Tome and Principe", value: "ST" },
-    { text: "Saudi Arabia", value: "SA" },
-    { text: "Senegal", value: "SN" },
-    { text: "Serbia and Montenegro", value: "CS" },
-    { text: "Seychelles", value: "SC" },
-    { text: "Sierra Leone", value: "SL" },
-    { text: "Singapore", value: "SG" },
-    { text: "Slovakia", value: "SK" },
-    { text: "Slovenia", value: "SI" },
-    { text: "Solomon Islands", value: "SB" },
-    { text: "Somalia", value: "SO" },
-    { text: "South Africa", value: "ZA" },
-    { text: "South Georgia and the South Sandwich Islands", value: "GS" },
-    { text: "Spain", value: "ES" },
-    { text: "Sri Lanka", value: "LK" },
-    { text: "Sudan", value: "SD" },
-    { text: "Suriname", value: "SR" },
-    { text: "Svalbard and Jan Mayen", value: "SJ" },
-    { text: "Swaziland", value: "SZ" },
-    { text: "Sweden", value: "SE" },
-    { text: "Switzerland", value: "CH" },
-    { text: "Syrian Arab Republic", value: "SY" },
-    { text: "Taiwan, Province of China", value: "TW" },
-    { text: "Tajikistan", value: "TJ" },
-    { text: "Tanzania, United Republic of", value: "TZ" },
-    { text: "Thailand", value: "TH" },
-    { text: "Timor-Leste", value: "TL" },
-    { text: "Togo", value: "TG" },
-    { text: "Tokelau", value: "TK" },
-    { text: "Tonga", value: "TO" },
-    { text: "Trinidad and Tobago", value: "TT" },
-    { text: "Tunisia", value: "TN" },
-    { text: "Turkey", value: "TR" },
-    { text: "Turkmenistan", value: "TM" },
-    { text: "Turks and Caicos Islands", value: "TC" },
-    { text: "Tuvalu", value: "TV" },
-    { text: "Uganda", value: "UG" },
-    { text: "Ukraine", value: "UA" },
-    { text: "United Arab Emirates", value: "AE" },
-    { text: "United Kingdom", value: "GB" },
-    { text: "United States Minor Outlying Islands", value: "UM" },
-    { text: "United States of America", value: "US" },
-    { text: "Uruguay", value: "UY" },
-    { text: "Uzbekistan", value: "UZ" },
-    { text: "Vanuatu", value: "VU" },
-    { text: "Venezuela", value: "VE" },
-    { text: "Viet Nam", value: "VN" },
-    { text: "Virgin Islands, British", value: "VG" },
-    { text: "Virgin Islands, U.S.", value: "VI" },
-    { text: "Wallis and Futuna", value: "WF" },
-    { text: "Western Sahara", value: "EH" },
-    { text: "Yemen", value: "YE" },
-    { text: "Zambia", value: "ZM" },
-    { text: "Zimbabwe", value: "ZW" },
+    {text: "United States of America", value: "US"},
+    {text: "Afghanistan", value: "AF"},
+    {text: "Åland Islands", value: "AX"},
+    {text: "Albania", value: "AL"},
+    {text: "Algeria", value: "DZ"},
+    {text: "American Samoa", value: "AS"},
+    {text: "Andorra", value: "AD"},
+    {text: "Angola", value: "AO"},
+    {text: "Anguilla", value: "AI"},
+    {text: "Antarctica", value: "AQ"},
+    {text: "Antigua and Barbuda", value: "AG"},
+    {text: "Argentina", value: "AR"},
+    {text: "Armenia", value: "AM"},
+    {text: "Aruba", value: "AW"},
+    {text: "Australia", value: "AU"},
+    {text: "Austria", value: "AT"},
+    {text: "Azerbaijan", value: "AZ"},
+    {text: "Bahamas", value: "BS"},
+    {text: "Bahrain", value: "BH"},
+    {text: "Bangladesh", value: "BD"},
+    {text: "Barbados", value: "BB"},
+    {text: "Belarus", value: "BY"},
+    {text: "Belgium", value: "BE"},
+    {text: "Belize", value: "BZ"},
+    {text: "Benin", value: "BJ"},
+    {text: "Bermuda", value: "BM"},
+    {text: "Bhutan", value: "BT"},
+    {text: "Bolivia", value: "BO"},
+    {text: "Bosnia and Herzegovina", value: "BA"},
+    {text: "Botswana", value: "BW"},
+    {text: "Bouvet Island", value: "BV"},
+    {text: "Brazil", value: "BR"},
+    {text: "British Indian Ocean Territory", value: "IO"},
+    {text: "Brunei Darussalam", value: "BN"},
+    {text: "Bulgaria", value: "BG"},
+    {text: "Burkina Faso", value: "BF"},
+    {text: "Burundi", value: "BI"},
+    {text: "Cambodia", value: "KH"},
+    {text: "Cameroon", value: "CM"},
+    {text: "Canada", value: "CA"},
+    {text: "Cape Verde", value: "CV"},
+    {text: "Cayman Islands", value: "KY"},
+    {text: "Central African Republic", value: "CF"},
+    {text: "Chad", value: "TD"},
+    {text: "Chile", value: "CL"},
+    {text: "China", value: "CN"},
+    {text: "Christmas Island", value: "CX"},
+    {text: "Cocos (Keeling) Islands", value: "CC"},
+    {text: "Colombia", value: "CO"},
+    {text: "Comoros", value: "KM"},
+    {text: "Congo", value: "CG"},
+    {text: "Congo, The Democratic Republic of the", value: "CD"},
+    {text: "Cook Islands", value: "CK"},
+    {text: "Costa Rica", value: "CR"},
+    {text: 'Cote D"Ivoire', value: "CI"},
+    {text: "Croatia", value: "HR"},
+    {text: "Cuba", value: "CU"},
+    {text: "Cyprus", value: "CY"},
+    {text: "Czech Republic", value: "CZ"},
+    {text: "Denmark", value: "DK"},
+    {text: "Djibouti", value: "DJ"},
+    {text: "Dominica", value: "DM"},
+    {text: "Dominican Republic", value: "DO"},
+    {text: "Ecuador", value: "EC"},
+    {text: "Egypt", value: "EG"},
+    {text: "El Salvador", value: "SV"},
+    {text: "Equatorial Guinea", value: "GQ"},
+    {text: "Eritrea", value: "ER"},
+    {text: "Estonia", value: "EE"},
+    {text: "Ethiopia", value: "ET"},
+    {text: "Falkland Islands (Malvinas)", value: "FK"},
+    {text: "Faroe Islands", value: "FO"},
+    {text: "Fiji", value: "FJ"},
+    {text: "Finland", value: "FI"},
+    {text: "France", value: "FR"},
+    {text: "French Guiana", value: "GF"},
+    {text: "French Polynesia", value: "PF"},
+    {text: "French Southern Territories", value: "TF"},
+    {text: "Gabon", value: "GA"},
+    {text: "Gambia", value: "GM"},
+    {text: "Georgia", value: "GE"},
+    {text: "Germany", value: "DE"},
+    {text: "Ghana", value: "GH"},
+    {text: "Gibraltar", value: "GI"},
+    {text: "Greece", value: "GR"},
+    {text: "Greenland", value: "GL"},
+    {text: "Grenada", value: "GD"},
+    {text: "Guadeloupe", value: "GP"},
+    {text: "Guam", value: "GU"},
+    {text: "Guatemala", value: "GT"},
+    {text: "Guernsey", value: "GG"},
+    {text: "Guinea", value: "GN"},
+    {text: "Guinea-Bissau", value: "GW"},
+    {text: "Guyana", value: "GY"},
+    {text: "Haiti", value: "HT"},
+    {text: "Heard Island and Mcdonald Islands", value: "HM"},
+    {text: "Holy See (Vatican City State)", value: "VA"},
+    {text: "Honduras", value: "HN"},
+    {text: "Hong Kong", value: "HK"},
+    {text: "Hungary", value: "HU"},
+    {text: "Iceland", value: "IS"},
+    {text: "India", value: "IN"},
+    {text: "Indonesia", value: "ID"},
+    {text: "Iran, Islamic Republic Of", value: "IR"},
+    {text: "Iraq", value: "IQ"},
+    {text: "Ireland", value: "IE"},
+    {text: "Isle of Man", value: "IM"},
+    {text: "Israel", value: "IL"},
+    {text: "Italy", value: "IT"},
+    {text: "Jamaica", value: "JM"},
+    {text: "Japan", value: "JP"},
+    {text: "Jersey", value: "JE"},
+    {text: "Jordan", value: "JO"},
+    {text: "Kazakhstan", value: "KZ"},
+    {text: "Kenya", value: "KE"},
+    {text: "Kiribati", value: "KI"},
+    {text: 'Korea, Democratic People"S Republic of', value: "KP"},
+    {text: "Korea, Republic of", value: "KR"},
+    {text: "Kuwait", value: "KW"},
+    {text: "Kyrgyzstan", value: "KG"},
+    {text: 'Lao People"S Democratic Republic', value: "LA"},
+    {text: "Latvia", value: "LV"},
+    {text: "Lebanon", value: "LB"},
+    {text: "Lesotho", value: "LS"},
+    {text: "Liberia", value: "LR"},
+    {text: "Libyan Arab Jamahiriya", value: "LY"},
+    {text: "Liechtenstein", value: "LI"},
+    {text: "Lithuania", value: "LT"},
+    {text: "Luxembourg", value: "LU"},
+    {text: "Macao", value: "MO"},
+    {text: "Macedonia, The Former Yugoslav Republic of", value: "MK"},
+    {text: "Madagascar", value: "MG"},
+    {text: "Malawi", value: "MW"},
+    {text: "Malaysia", value: "MY"},
+    {text: "Maldives", value: "MV"},
+    {text: "Mali", value: "ML"},
+    {text: "Malta", value: "MT"},
+    {text: "Marshall Islands", value: "MH"},
+    {text: "Martinique", value: "MQ"},
+    {text: "Mauritania", value: "MR"},
+    {text: "Mauritius", value: "MU"},
+    {text: "Mayotte", value: "YT"},
+    {text: "Mexico", value: "MX"},
+    {text: "Micronesia, Federated States of", value: "FM"},
+    {text: "Moldova, Republic of", value: "MD"},
+    {text: "Monaco", value: "MC"},
+    {text: "Mongolia", value: "MN"},
+    {text: "Montserrat", value: "MS"},
+    {text: "Morocco", value: "MA"},
+    {text: "Mozambique", value: "MZ"},
+    {text: "Myanmar", value: "MM"},
+    {text: "Namibia", value: "NA"},
+    {text: "Nauru", value: "NR"},
+    {text: "Nepal", value: "NP"},
+    {text: "Netherlands", value: "NL"},
+    {text: "Netherlands Antilles", value: "AN"},
+    {text: "New Caledonia", value: "NC"},
+    {text: "New Zealand", value: "NZ"},
+    {text: "Nicaragua", value: "NI"},
+    {text: "Niger", value: "NE"},
+    {text: "Nigeria", value: "NG"},
+    {text: "Niue", value: "NU"},
+    {text: "Norfolk Island", value: "NF"},
+    {text: "Northern Mariana Islands", value: "MP"},
+    {text: "Norway", value: "NO"},
+    {text: "Oman", value: "OM"},
+    {text: "Pakistan", value: "PK"},
+    {text: "Palau", value: "PW"},
+    {text: "Palestinian Territory, Occupied", value: "PS"},
+    {text: "Panama", value: "PA"},
+    {text: "Papua New Guinea", value: "PG"},
+    {text: "Paraguay", value: "PY"},
+    {text: "Peru", value: "PE"},
+    {text: "Philippines", value: "PH"},
+    {text: "Pitcairn", value: "PN"},
+    {text: "Poland", value: "PL"},
+    {text: "Portugal", value: "PT"},
+    {text: "Puerto Rico", value: "PR"},
+    {text: "Qatar", value: "QA"},
+    {text: "Reunion", value: "RE"},
+    {text: "Romania", value: "RO"},
+    {text: "Russian Federation", value: "RU"},
+    {text: "Rwanda", value: "RW"},
+    {text: "Saint Helena", value: "SH"},
+    {text: "Saint Kitts and Nevis", value: "KN"},
+    {text: "Saint Lucia", value: "LC"},
+    {text: "Saint Pierre and Miquelon", value: "PM"},
+    {text: "Saint Vincent and the Grenadines", value: "VC"},
+    {text: "Samoa", value: "WS"},
+    {text: "San Marino", value: "SM"},
+    {text: "Sao Tome and Principe", value: "ST"},
+    {text: "Saudi Arabia", value: "SA"},
+    {text: "Senegal", value: "SN"},
+    {text: "Serbia and Montenegro", value: "CS"},
+    {text: "Seychelles", value: "SC"},
+    {text: "Sierra Leone", value: "SL"},
+    {text: "Singapore", value: "SG"},
+    {text: "Slovakia", value: "SK"},
+    {text: "Slovenia", value: "SI"},
+    {text: "Solomon Islands", value: "SB"},
+    {text: "Somalia", value: "SO"},
+    {text: "South Africa", value: "ZA"},
+    {text: "South Georgia and the South Sandwich Islands", value: "GS"},
+    {text: "Spain", value: "ES"},
+    {text: "Sri Lanka", value: "LK"},
+    {text: "Sudan", value: "SD"},
+    {text: "Suriname", value: "SR"},
+    {text: "Svalbard and Jan Mayen", value: "SJ"},
+    {text: "Swaziland", value: "SZ"},
+    {text: "Sweden", value: "SE"},
+    {text: "Switzerland", value: "CH"},
+    {text: "Syrian Arab Republic", value: "SY"},
+    {text: "Taiwan, Province of China", value: "TW"},
+    {text: "Tajikistan", value: "TJ"},
+    {text: "Tanzania, United Republic of", value: "TZ"},
+    {text: "Thailand", value: "TH"},
+    {text: "Timor-Leste", value: "TL"},
+    {text: "Togo", value: "TG"},
+    {text: "Tokelau", value: "TK"},
+    {text: "Tonga", value: "TO"},
+    {text: "Trinidad and Tobago", value: "TT"},
+    {text: "Tunisia", value: "TN"},
+    {text: "Turkey", value: "TR"},
+    {text: "Turkmenistan", value: "TM"},
+    {text: "Turks and Caicos Islands", value: "TC"},
+    {text: "Tuvalu", value: "TV"},
+    {text: "Uganda", value: "UG"},
+    {text: "Ukraine", value: "UA"},
+    {text: "United Arab Emirates", value: "AE"},
+    {text: "United Kingdom", value: "GB"},
+    {text: "United States Minor Outlying Islands", value: "UM"},
+    {text: "United States of America", value: "US"},
+    {text: "Uruguay", value: "UY"},
+    {text: "Uzbekistan", value: "UZ"},
+    {text: "Vanuatu", value: "VU"},
+    {text: "Venezuela", value: "VE"},
+    {text: "Viet Nam", value: "VN"},
+    {text: "Virgin Islands, British", value: "VG"},
+    {text: "Virgin Islands, U.S.", value: "VI"},
+    {text: "Wallis and Futuna", value: "WF"},
+    {text: "Western Sahara", value: "EH"},
+    {text: "Yemen", value: "YE"},
+    {text: "Zambia", value: "ZM"},
+    {text: "Zimbabwe", value: "ZW"},
   ];
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   public getCountryListData(removeCountries: string[] | null): SelectData[] {
     if (!removeCountries) {
       return this.countryListData;
@@ -1419,6 +1440,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
+    [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -1427,37 +1449,38 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.CurrentContract]: "current_contract",
     [StoreProperties.FairOpportunity]: "fair_opportunity",
     [StoreProperties.GFEOverview]: "gfe_overview",
-    [StoreProperties.Organization]:  "organization",
+    [StoreProperties.Organization]: "organization",
     [StoreProperties.ProjectOverview]: "project_overview",
     [StoreProperties.PeriodOfPerformance]: "period_of_performance",
     [StoreProperties.RequirementsCostEstimate]: "requirements_const_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
+    [StoreProperties.ClassificationLevel]: "classification_level"
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
       await this.initialize();
     }
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async loadContactInfo(contactType: string): Promise<ContactDTO> {
     try {
       await this.ensureInitialized();
       const isCor = contactType === "COR";
       const dataKey =
-        contactType === "Mission Owner"
-          ? "contactInfo"
-          : isCor
-            ? "corInfo"
-            : "acorInfo";
+          contactType === "Mission Owner"
+            ? "contactInfo"
+            : isCor
+              ? "corInfo"
+              : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
 
       if (sys_id.length > 0) {
         const contactInfo = await api.contactsTable.retrieve(sys_id as string);
-        this.setContact({ data: contactInfo, type: contactType });
+        this.setContact({data: contactInfo, type: contactType});
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
           contact: sys_id,
@@ -1469,7 +1492,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   /**
    * Saves Organization data to backend
    */
@@ -1480,18 +1503,18 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       const isCor = saveData.type === "COR";
       const dataKey =
-        saveData.type === "Mission Owner"
-          ? "contactInfo"
-          : isCor
-            ? "corInfo"
-            : "acorInfo";
+          saveData.type === "Mission Owner"
+            ? "contactInfo"
+            : isCor
+              ? "corInfo"
+              : "acorInfo";
 
       const sys_id = this[dataKey]?.sys_id || "";
       const savedContact =
-        sys_id.length > 0
-          ? await api.contactsTable.update(sys_id, { ...saveData.data, sys_id })
-          : await api.contactsTable.create(saveData.data);
-      this.setContact({ data: savedContact, type: saveData.type });
+          sys_id.length > 0
+            ? await api.contactsTable.update(sys_id, {...saveData.data, sys_id})
+            : await api.contactsTable.create(saveData.data);
+      this.setContact({data: savedContact, type: saveData.type});
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
         contact: sys_id,
@@ -1504,12 +1527,12 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Helper to retrieve api end point from map
    * @param apiKey string
-   * @returns 
+   * @returns
    */
   @Action({rawError: true})
   getApiEndPoint(apiKey: string): TableApiBase<BaseTableDTO> {
     const endPoint = this.apiEndpointMap[`${apiKey}`];
-    if(endPoint === undefined){
+    if (endPoint === undefined) {
       throw new Error(`unable to find api endpoint with key ${apiKey}`);
     }
     return endPoint;
@@ -1533,8 +1556,8 @@ export class AcquisitionPackageStore extends VuexModule {
    * @param {storePropery}: string
    * @returns TableData
    */
-  @Action({ rawError: true })
-  async loadData<TableDTO>({ storeProperty }: {
+  @Action({rawError: true})
+  async loadData<TableDTO>({storeProperty}: {
     storeProperty: string;
   }): Promise<TableDTO> {
     try {
@@ -1546,13 +1569,12 @@ export class AcquisitionPackageStore extends VuexModule {
       if (sysId.length > 0) {
         // retrieves endpoint mapped to store property
         const apiEndPoint = await this.getApiEndPoint(storeProperty);
-        const loadAction: Promise<TableDTO> | undefined = 
-        apiEndPoint.retrieve(sysId) as Promise<TableDTO>;
+        const loadAction: Promise<TableDTO> | undefined =
+            apiEndPoint.retrieve(sysId) as Promise<TableDTO>;
         const retrievedData = await loadAction;
-        this.setStoreData({ data: retrievedData, storeProperty });
+        this.setStoreData({data: retrievedData, storeProperty});
         const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
-        if(acquisitionPackageProp === undefined)
-        {
+        if (acquisitionPackageProp === undefined) {
           throw new Error("unable to locate acquisition package property");
         }
         this.setAcquisitionPackage({
@@ -1568,7 +1590,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   /**
    * Saves data for a given TableDTO/store property
    */
@@ -1582,14 +1604,13 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const apiEndPoint = await this.getApiEndPoint(storeProperty);
-      const saveAction = (storeDataProperty.sys_id && storeDataProperty.sys_id.length > 0) ? 
+      const saveAction = (storeDataProperty.sys_id && storeDataProperty.sys_id.length > 0) ?
         apiEndPoint.update(storeDataProperty.sys_id || "", data) :
         apiEndPoint.create(data);
       const savedData = await saveAction;
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
-      if(acquisitionPackageProp === undefined)
-      {
+      if (acquisitionPackageProp === undefined) {
         throw new Error("unable to locate acquisition package property");
       }
       this.setAcquisitionPackage({
@@ -1601,7 +1622,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async loadFairOpportunity(): Promise<FairOpportunityDTO> {
     try {
       await this.ensureInitialized();
@@ -1610,7 +1631,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const fairOpportunityData = await api.fairOpportunityTable.retrieve(
-          sys_id as string
+            sys_id as string
         );
         this.setFairOpportunity(fairOpportunityData);
         this.setAcquisitionPackage({
@@ -1624,7 +1645,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   /**
    * Saves Fair Opportunity data to backend
    */
@@ -1632,9 +1653,9 @@ export class AcquisitionPackageStore extends VuexModule {
     try {
       const sys_id = this.fairOpportunity?.sys_id || "";
       const savedFairOpportunity =
-        sys_id.length > 0
-          ? await api.fairOpportunityTable.update(sys_id, { ...data, sys_id })
-          : await api.fairOpportunityTable.create(data);
+          sys_id.length > 0
+            ? await api.fairOpportunityTable.update(sys_id, {...data, sys_id})
+            : await api.fairOpportunityTable.create(data);
       this.setFairOpportunity(savedFairOpportunity);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1648,7 +1669,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Loads Sensitive Information (FOIA) data from backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async loadSensitiveInformation(): Promise<SensitiveInformationDTO> {
     try {
       await this.ensureInitialized();
@@ -1657,7 +1678,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const sensitiveInformationData =
-          await api.sensitiveInformationTable.retrieve(sys_id as string);
+            await api.sensitiveInformationTable.retrieve(sys_id as string);
         this.setSensitiveInformation(sensitiveInformationData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
@@ -1673,17 +1694,17 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Sensitive Information (FOIA) data to backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async saveSensitiveInformation(data: SensitiveInformationDTO): Promise<void> {
     try {
       const sys_id = this.sensitiveInformation?.sys_id || "";
       const savedSensitiveInformation =
-        sys_id.length > 0
-          ? await api.sensitiveInformationTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.sensitiveInformationTable.create(data);
+          sys_id.length > 0
+            ? await api.sensitiveInformationTable.update(sys_id, {
+              ...data,
+              sys_id,
+            })
+            : await api.sensitiveInformationTable.create(data);
       this.setSensitiveInformation(savedSensitiveInformation);
       this.setAcquisitionPackage({
         ...this.sensitiveInformation,
@@ -1697,7 +1718,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Loads Period of Performance data from backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
     try {
       await this.ensureInitialized();
@@ -1706,7 +1727,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const periodOfPerformanceData =
-          await api.periodOfPerformanceTable.retrieve(sys_id as string);
+            await api.periodOfPerformanceTable.retrieve(sys_id as string);
         this.setPeriodOfPerformance(periodOfPerformanceData);
         this.setAcquisitionPackage({
           ...this.acquisitionPackage,
@@ -1722,17 +1743,17 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Period of Performance Information (FOIA) data to backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async savePeriodOfPerformance(data: PeriodOfPerformanceDTO): Promise<void> {
     try {
       const sys_id = this.periodOfPerformance?.sys_id || "";
       const savedPeriodOfPerformance =
-        sys_id.length > 0
-          ? await api.periodOfPerformanceTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.periodOfPerformanceTable.create(data);
+          sys_id.length > 0
+            ? await api.periodOfPerformanceTable.update(sys_id, {
+              ...data,
+              sys_id,
+            })
+            : await api.periodOfPerformanceTable.create(data);
       this.setPeriodOfPerformance(savedPeriodOfPerformance);
       this.setAcquisitionPackage({
         ...this.periodOfPerformance,
@@ -1743,7 +1764,7 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async loadGFEOverview(): Promise<GFEOverviewDTO> {
     try {
       await this.ensureInitialized();
@@ -1751,7 +1772,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const GFEOverviewData = await api.gfeOverviewTable.retrieve(
-          sys_id as string
+            sys_id as string
         );
         this.setGFEOverview(GFEOverviewData);
         this.setAcquisitionPackage({
@@ -1765,14 +1786,14 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
     try {
       const sys_id = this.gfeOverview?.sys_id || "";
       const savedGFEOverviewData =
-        sys_id.length > 0
-          ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
-          : await api.gfeOverviewTable.create(data);
+          sys_id.length > 0
+            ? await api.gfeOverviewTable.update(sys_id, {...data, sys_id})
+            : await api.gfeOverviewTable.create(data);
       this.setGFEOverview(savedGFEOverviewData);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1782,10 +1803,11 @@ export class AcquisitionPackageStore extends VuexModule {
       throw new Error(`error occurred saving GFE data ${error}`);
     }
   }
+
   /**
    * Loads Contract Type data from backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async loadContractType(): Promise<ContractTypeDTO> {
     try {
       await this.ensureInitialized();
@@ -1793,7 +1815,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const contractTypeData = await api.contractTypeTable.retrieve(
-          sys_id as string
+            sys_id as string
         );
         this.setContractType(contractTypeData);
         this.setAcquisitionPackage({
@@ -1809,7 +1831,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
 
   @Action({rawError: true})
-  async loadContractConsiderations():Promise<ContractConsiderationsDTO> {
+  async loadContractConsiderations(): Promise<ContractConsiderationsDTO> {
 
     try {
       await this.ensureInitialized();
@@ -1817,7 +1839,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const contractConsiderationsData = await api.contractConsiderationsTable.retrieve(
-          sys_id as string
+            sys_id as string
         );
         this.setContractConsiderations(contractConsiderationsData);
         this.setAcquisitionPackage({
@@ -1832,20 +1854,21 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  async saveContractConsiderations(data: ContractConsiderationsDTO): Promise<void>{
+  async saveContractConsiderations(data: ContractConsiderationsDTO): Promise<void> {
 
     try {
 
       const sys_id = this.contractConsiderations?.sys_id || "";
       const savedData =
-        sys_id.length > 0
-          ? await api.contractConsiderationsTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.contractConsiderationsTable.create({
-            ...initialContractConsiderations(),
-            ...data});
+          sys_id.length > 0
+            ? await api.contractConsiderationsTable.update(sys_id, {
+              ...data,
+              sys_id,
+            })
+            : await api.contractConsiderationsTable.create({
+              ...initialContractConsiderations(),
+              ...data
+            });
       this.setContractConsiderations(savedData);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1861,7 +1884,7 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Loads Requirements Cost Estimate data from backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async loadRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
     try {
       await this.ensureInitialized();
@@ -1869,7 +1892,7 @@ export class AcquisitionPackageStore extends VuexModule {
 
       if (sys_id.length > 0) {
         const data = await api.requirementsCostEstimateTable.retrieve(
-          sys_id as string
+            sys_id as string
         );
         this.setRequirementsCostEstimate(data);
         this.setAcquisitionPackage({
@@ -1886,19 +1909,19 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Requirements Cost Estimate data to backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async saveRequirementsCostEstimate(
     data: RequirementsCostEstimateDTO
   ): Promise<void> {
     try {
       const sys_id = this.requirementsCostEstimate?.sys_id || "";
       const savedData =
-        sys_id.length > 0
-          ? await api.requirementsCostEstimateTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.requirementsCostEstimateTable.create(data);
+          sys_id.length > 0
+            ? await api.requirementsCostEstimateTable.update(sys_id, {
+              ...data,
+              sys_id,
+            })
+            : await api.requirementsCostEstimateTable.create(data);
       this.setRequirementsCostEstimate(savedData);
       this.setAcquisitionPackage({
         ...this.acquisitionPackage,
@@ -1914,14 +1937,14 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Contract Type data to backend
    */
-  @Action({ rawError: true })
+  @Action({rawError: true})
   async saveContractType(data: ContractTypeDTO): Promise<void> {
     try {
       const sys_id = this.contractType?.sys_id || "";
       const savedContractType =
-        sys_id.length > 0
-          ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
-          : await api.contractTypeTable.create(data);
+          sys_id.length > 0
+            ? await api.contractTypeTable.update(sys_id, {...data, sys_id})
+            : await api.contractTypeTable.create(data);
       this.setContractType(savedContractType);
       this.setAcquisitionPackage({
         ...this.contractType,
@@ -1929,6 +1952,55 @@ export class AcquisitionPackageStore extends VuexModule {
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving PoP data ${error}`);
+    }
+  }
+
+  /**
+   * Loads Classification Level data from backend
+   */
+  @Action({rawError: true})
+  async loadClassificationLevel(): Promise<ClassificationLevelDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.classificationLevel?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const classificationLevelData =
+            await api.classificationLevelTable.retrieve(sys_id as string);
+        this.setClassificationLevel(classificationLevelData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          classification_level: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.classificationLevel as ClassificationLevelDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading classification level data ${error}`);
+    }
+  }
+
+  /**
+   * Saves Sensitive Information (FOIA) data to backend
+   */
+  @Action({rawError: true})
+  async saveClassificationLevel(data: ClassificationLevelDTO): Promise<void> {
+    try {
+      const sys_id = this.classificationLevel?.sys_id || "";
+      const savedClassificationLevel =
+          sys_id.length > 0
+            ? await api.classificationLevelTable.update(sys_id, {
+              ...data,
+              sys_id,
+            })
+            : await api.classificationLevelTable.create(data);
+      this.setClassificationLevel(savedClassificationLevel);
+      this.setAcquisitionPackage({
+        ...this.classificationLevel,
+        classification_level: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving classification level data ${error}`);
     }
   }
 }

@@ -11,6 +11,7 @@ import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
 import { GFEOverviewApi } from "./GFEOverview";
 import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
+import { ClassificationLevelApi } from "./classificationLevel";
 
 export default {
   systemChoices: new SystemChoicesApi(),
@@ -27,4 +28,5 @@ export default {
   gfeOverviewTable: new GFEOverviewApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
+  classificationLevelTable: new ClassificationLevelApi(),
 };

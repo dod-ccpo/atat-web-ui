@@ -56,6 +56,9 @@ import { Component, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox } from "../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
+import { ClassificationLevelDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -99,6 +102,39 @@ export default class ClassificationRequirements extends vue {
     this.isIL6Selected
       = newVal.indexOf('IL6') > -1 ? "true" : "false";
   }
+
+
+  public get currentData(): ClassificationLevelDTO {
+    return {
+      impact_level: this.selectedOptions,
+
+    };
+  }
+
+  private savedData = {
+    impact_level: "",
+  } as Record<string, string>;
+
+  public isChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.isChanged()) {
+        await AcquisitionPackage.saveContractConsiderations(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  public async mounted(): Promise<void> {
+    // await this.loadOnEnter();
+  }
+
 }
 </script>
 

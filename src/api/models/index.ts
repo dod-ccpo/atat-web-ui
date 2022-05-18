@@ -24,6 +24,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contract_type: string;
   requirements_const_estimate: string;
   contract_considerations: string;
+  classification_level: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -146,4 +147,9 @@ export interface GFEOverviewDTO extends BaseTableDTO {
   dpas_custodian_number?: string;
   property_accountable?: string;
   property_custodian_name?: string;
+}
+
+export interface ClassificationLevelDTO extends BaseTableDTO  {
+  impact_level?: string[];
+  classification?: string;
 }
