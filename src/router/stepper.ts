@@ -432,7 +432,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         name: routeNames.TrainingCourses,
-        menuText: "Training",
+        menuText: "Training Courses",
         excludeFromMenu: true,
         path: "training",
         completePercentageWeight: 2,
