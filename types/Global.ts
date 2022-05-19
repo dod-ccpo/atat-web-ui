@@ -131,6 +131,8 @@ export interface stringObj {
 export interface PoP {
   duration: number | null;
   unitOfTime: string;
+  id: string | null;
+  order: number;
 }
 
 export interface RankData {

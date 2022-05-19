@@ -17,7 +17,8 @@ import {
   BaseTableDTO,
   ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
-  AttachmentDTO
+  AttachmentDTO,
+  PeriodDTO
 } from "@/api/models";
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
@@ -38,6 +39,7 @@ const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 export const StoreProperties = {
   CurrentContract: "currentContract",
   ContractType: "contractType",
+  Periods: "periods",
   ProjectOverview: "projectOverview",
   Organization: "organization",
   FairOpportunity: "fairOpportunity",
@@ -194,6 +196,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       currentContract: store.currentContract,
       fairOpportunity: store.fairOpportunity,
       gfeOverview: store.gfeOverview,
+      periods: store.periods,
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensativeInformation: store.sensitiveInformation,
@@ -245,6 +248,7 @@ export class AcquisitionPackageStore extends VuexModule {
   fundingPlans: string | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
+  periods: string | null = null;
   periodOfPerformance: PeriodOfPerformanceDTO | null = null;
   gfeOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
@@ -310,6 +314,11 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setPeriods(value: PeriodDTO[]): void {
+    this.periods = value.map(period=> period.sys_id).join(',');
+  }
+
+  @Mutation
   public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
     this.periodOfPerformance = this.periodOfPerformance
       ? Object.assign(this.periodOfPerformance, value)
@@ -371,6 +380,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.currentContract = sessionData.currentContract;
     this.fairOpportunity = sessionData.fairOpportunity;
     this.organization = sessionData.organization;
+    this.periods = sessionData.periods;
     this.projectOverview = sessionData.projectOverview;
     this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
@@ -410,6 +420,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "" });
           this.setGFEOverview(initialGFE());
+          this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensativeInformation());
           //the should be in the initialization sequence
@@ -459,6 +470,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.FairOpportunity]: api.fairOpportunityTable,
     [StoreProperties.GFEOverview]: api.gfeOverviewTable,
     [StoreProperties.Organization]: api.organizationTable,
+    [StoreProperties.Periods]: api.periodTable,
     [StoreProperties.ProjectOverview]: api.projectOverviewTable,
     [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
@@ -474,6 +486,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Organization]:  "organization",
     [StoreProperties.ProjectOverview]: "project_overview",
     [StoreProperties.PeriodOfPerformance]: "period_of_performance",
+    [StoreProperties.Periods]: "periods",
     [StoreProperties.RequirementsCostEstimate]: "requirements_const_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
   }
@@ -1039,7 +1052,7 @@ export class AcquisitionPackageStore extends VuexModule {
         tableIds.splice(recordIndex, 1);
         //update store data
         const data = tableIds.join(",");
-        this.updatePackageUpdate({ key, data });
+        this.updatePackageData({ key, data });
       }
     } catch (error) {
       console.error(
@@ -1049,14 +1062,26 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  async updatePackageUpdate<TData>({
+  async updatePackageData<TData>({
     key, data}: { key: string; data: TData;}): Promise<void> {
-    const storeData = this as unknown as Record<string, unknown>;
-    storeData[key] = data;
+    this.setStoreData({data: data, storeProperty: key});
     this.setAcquisitionPackage({
       ...this.acquisitionPackage,
       [key]: data,
     } as AcquisitionPackageDTO);
+  }
+
+  @Action({rawError: true})
+  async getPackageData<TDataType>({property}: {property: string}): Promise<TDataType>{
+    await this.ensureInitialized();
+    const packageData = (this.acquisitionPackage as unknown) as Record<string, unknown>;
+    return packageData[property] as TDataType;
+  }
+
+  @Action({rawError: true})
+  async saveCollection<TData extends BaseTableDTO>({collection, property}: 
+    {collection: TData[], property: string}): Promise<void> {
+    this.updatePackageData({key: property, data: collection.map(item=>item.sys_id).join(",")});
   }
 }
 

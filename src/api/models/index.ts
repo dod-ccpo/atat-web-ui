@@ -20,6 +20,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   docusign_envelope_id: string;
   sensitive_information: string;
   period_of_performance: string;
+  periods: string;
   gfe_overview: string;
   contract_type: string;
   requirements_const_estimate: string;
@@ -129,7 +130,9 @@ export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
-  base_and_options?: string;
+  base_and_options?: string; //deprecated
+  option_periods?: string;
+  base_period?: string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {
@@ -187,4 +190,16 @@ export interface FundingPlanDTO extends BaseTableDTO {
   attachment: string;
   extension: string;
   file_name: string;
+}
+
+export interface PeriodDTO extends BaseTableDTO {
+    period_unit: string;
+    period_unit_count: string;
+    period_type: string;
+    option_order: string;
+}
+
+export interface ReferenceColumn {
+  link: string;
+  value: string;
 }

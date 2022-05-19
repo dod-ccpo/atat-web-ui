@@ -145,8 +145,22 @@ import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
-import { PeriodOfPerformanceDTO } from "@/api/models";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import { PeriodDTO } from "@/api/models";
+import Periods from "@/store/periods";
+import {hasChanges} from "@/helpers";
+
+
+const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
+
+  return  {
+
+    period_type: pop.order === 1 ? "BASE" : "OPTION",
+    period_unit: pop.unitOfTime,
+    period_unit_count: pop.duration?.toString() || "",
+    option_order: pop.order.toString() || "",
+    sys_id: pop.id || undefined
+  }
+}
 
 @Component({
   components: {
@@ -159,11 +173,14 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public maxTotalPoPDuration = 365 * 5;
   public optionPeriodCount = 1;
+  private removed: PeriodDTO[] = [];
 
   public optionPeriods: PoP[] = [
     {
       duration: null,
       unitOfTime: "Year",
+      id: null,
+      order: 1,
     },
   ];
 
@@ -177,6 +194,10 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
         //  reset drag listeners for rows since option periods count changed
         this.setDragEventListeners();
       }
+
+      this.optionPeriods.forEach((period, index)=> {
+        period.order = index + 1;
+      })
     });
   }
 
@@ -184,16 +205,18 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
   public selectedTimePeriod = "Year";
   public timePeriods: SelectData[] = [
-    { text: "Year", value: "Year" },
-    { text: "Month(s)", value: "Month(s)" },
-    { text: "Week(s)", value: "Week(s)" },
-    { text: "Day(s)", value: "Day(s)" },
+    { text: "Year", value: "YEAR" },
+    { text: "Month(s)", value: "MONTH" },
+    { text: "Week(s)", value: "WEEK" },
+    { text: "Day(s)", value: "DAY" },
   ];
 
   public addOptionPeriod(): void {
     const newOptionPeriod = {
       duration: null,
       unitOfTime: "Year",
+      id: null,
+      order: this.optionPeriods.length + 1,
     };
     this.optionPeriods.push(newOptionPeriod);
   }
@@ -223,11 +246,29 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public deleteOptionPeriod(index: number): void {
+    const optionPeriod = this.optionPeriods[index];
+    if(optionPeriod.id){
+      this.removed.push(convertPoPToPeriod(optionPeriod));
+    }
+
     this.optionPeriods.splice(index, 1);
     this.setTotalPoP();
   }
   public copyOptionPeriod(index: number): void {
-    const duplicateObj = JSON.parse(JSON.stringify(this.optionPeriods[index]))
+
+    const {
+      duration,
+      order,
+      unitOfTime,
+       
+    }= this.optionPeriods[index];
+
+    const duplicateObj: PoP ={
+      duration,
+      id: null,
+      order,
+      unitOfTime,
+    }
     this.optionPeriods.splice(index + 1,0,duplicateObj)
     this.setTotalPoP();
   }
@@ -348,6 +389,8 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   public optionPeriodClicked: PoP = {
     duration: null,
     unitOfTime: "Year",
+    id: null,
+    order: 1,
   };
 
   public preDrag(e: MouseEvent, index: number): void {
@@ -360,67 +403,63 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
     return getIdText(string);
   }
 
-  private get currentData(): PeriodOfPerformanceDTO {
-    const { time_frame, pop_start_request, requested_pop_start_date } =
-      this.savedData;
+  private get currentData(): PeriodDTO[] {
 
-    const optionPeriodsRecord: {[key:string]:PoP }= {};
-    this.optionPeriods.forEach((option, index) => {
-      optionPeriodsRecord[this.getOptionPeriodLabel(index).replace(/\s/g, "")] =
-        {
-          duration: option.duration,
-          unitOfTime: option.unitOfTime,
-        };
-    });
-    return {
-      time_frame,
-      pop_start_request,
-      requested_pop_start_date,
-      base_and_options: JSON.stringify(optionPeriodsRecord),
-    };
+    const periods = this.optionPeriods.map(pop=>convertPoPToPeriod(pop));
+    return periods;
   }
 
-  private savedData: PeriodOfPerformanceDTO = {};
+  private savedData: PeriodDTO[] = [];
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
+    const periods = await Periods.loadPeriods();
+ 
+    this.savedData = periods.map(period=> {
 
-    if (storeData) {
-      this.savedData.time_frame = storeData.time_frame;
-      this.savedData.pop_start_request = storeData.pop_start_request;
-      this.savedData.requested_pop_start_date = storeData.requested_pop_start_date ;
-      this.savedData.base_and_options = storeData.base_and_options || "";
-
-      if (this.savedData.base_and_options.length > 0) {
-        this.optionPeriods = [];
-        const optionPeriodsRecord = JSON.parse(this.savedData.base_and_options);
-        let index = 0;
-        for (const [, value] of Object.entries(
-          optionPeriodsRecord as { [key: string]: string }
-        )) {
-          const pop = JSON.parse(value) as PoP;
-          this.addOptionPeriod();
-          this.optionPeriods[index] = {
-            duration: pop.duration,
-            unitOfTime: pop.unitOfTime,
-          };
-          index += 1;
-        }
-        this.setTotalPoP();
+      return {
+        option_order: period.option_order,
+        period_unit_count: period.period_unit_count,
+        period_unit: period.period_unit,
+        period_type: period.period_type,
+        sys_id: period.sys_id,
       }
-    }
+    });
+  
+    this.optionPeriods = periods.length ? periods.map(period=> {
+
+      const optionPeriod: PoP = {
+            
+        duration: Number(period.period_unit_count || ""),
+        unitOfTime: period.period_unit,
+        id: period.sys_id || "",
+        order: Number(period.option_order),
+      };
+
+      return optionPeriod;
+    }) : [ {
+      duration:null ,
+      unitOfTime: "Year",
+      id: null,
+      order: 1,
+    }];
+
+
+    this.setTotalPoP();
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      if (this.currentData !== this.savedData) {
-        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
-          {data: this.currentData, 
-            storeProperty: StoreProperties.PeriodOfPerformance});
+          
+
+      const valid = this.optionPeriods.every(peroid=>peroid.duration);
+      const hasChanged = valid && hasChanges(this.savedData, this.currentData);
+
+      if (hasChanged) {
+        const removed = this.removed;
+        await Periods.savePeriod({periods: this.currentData, removed});
       }
     } catch (error) {
-      console.log(error);
+      throw new Error('error saving period data');
     }
 
     return true;

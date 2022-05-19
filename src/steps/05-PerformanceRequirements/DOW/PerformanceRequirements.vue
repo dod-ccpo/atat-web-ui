@@ -13,7 +13,15 @@
               Anything as a Service (XaaS) and Cloud Support Packages. Specify 
               any categories that may apply to your acquisition below, and we’ll 
               walk through each selection to get more details next. 
-              <a role="button">Learn more about categories.</a>
+              <a 
+                role="button" 
+                @click="openSlideoutPanel"
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel"
+                tabindex="0"
+              >
+                Learn more about categories.
+              </a>
             </p>
 
             <p id="XaaSLabel" class="_checkbox-group-label">
@@ -60,12 +68,15 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import PerfReqLearnMore from "./PerfReqLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { Checkbox } from "../../../types/Global";
+import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 
 @Component({
   components: {
     ATATCheckboxGroup,
+    PerfReqLearnMore,
   }
 })
 
@@ -149,6 +160,22 @@ export default class PerformanceRequirements extends Vue {
       value: "NONE", 
     },
   ];
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: PerfReqLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
+
 
 }
 </script>
