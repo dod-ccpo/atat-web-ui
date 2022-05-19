@@ -17,7 +17,7 @@
           <div class="mb-4 _semibold" style="padding-left: 25px">
             Required training courses
           </div>
-          <div class="d-flex flex-column ">
+          <div id="TrainingCourseList" class="d-flex flex-column">
             <div
               v-for="(trainingCert, index) in trainingCerts"
               :key="'TrainingCourse' + index"
