@@ -20,6 +20,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   docusign_envelope_id: string;
   sensitive_information: string;
   period_of_performance: string;
+  periods: string;
   gfe_overview: string;
   contract_type: string;
   requirements_const_estimate: string;
@@ -187,4 +188,11 @@ export interface FundingPlanDTO extends BaseTableDTO {
   attachment: string;
   extension: string;
   file_name: string;
+}
+
+export interface PeriodDTO extends BaseTableDTO {
+    period_unit: string;
+    period_unit_count: string;
+    period_type: string;
+    option_order: string;
 }

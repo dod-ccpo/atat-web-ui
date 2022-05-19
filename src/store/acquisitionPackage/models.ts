@@ -25,6 +25,7 @@ export interface SessionData {
   fairOpportunity: FairOpportunityDTO;
   gFEOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
+  periods: string;
   periodOfPerformance: PeriodOfPerformanceDTO;
   projectOverview: ProjectOverviewDTO;
   requirementsCostEstimate: RequirementsCostEstimateDTO;

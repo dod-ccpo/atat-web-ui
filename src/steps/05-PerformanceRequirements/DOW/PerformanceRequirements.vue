@@ -61,7 +61,7 @@ import { Component } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
-import { Checkbox } from "../../../types/Global";
+import { Checkbox } from "../../../../types/Global";
 
 @Component({
   components: {
