@@ -20,6 +20,7 @@
         :clearable="false"
         @change="fileUploadChanged"
         :hide-details="true"
+        :rules="rules"
       >
         <template v-slot:prepend-inner>
           <div
@@ -68,13 +69,14 @@
           </div>
         </template>
       </v-file-input>
+      <ATATErrorValidation class="file-upload-validation-messages" :errorMessages="errorMessages" />
     </div>
 
     <ATATFileList
       :validFiles="validFiles"
       :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
-      @delete="(file)=> $emit('delete', file)"
+      @delete="(file) => $emit('delete', file)"
     />
   </div>
 </template>
@@ -82,19 +84,21 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
   FileAttachmentService,
   FileAttachmentServiceFactory,
 } from "@/services/attachment";
-import { uploadingFile } from "types/Global";
+import { invalidFile, uploadingFile } from "types/Global";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 @Component({
   components: {
     ATATSVGIcon,
     ATATFileList,
+    ATATErrorValidation,
   },
 })
 export default class ATATFileUpload extends Vue {
@@ -110,7 +114,13 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: () => [] }) private validFileFormats!: string[];
+  @PropSync("invalidFiles", { default: () => [] })
+  private _invalidFiles!: invalidFile[];
   @Prop({ default: "", required: true }) private attachmentServiceName!: string;
+  @Prop({ default: () => [] }) private rules!: ((
+    v: string
+  ) => string | true | undefined)[];
+  @Prop({ default: 1024 }) private maxFileSize!: number;
 
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
@@ -119,7 +129,8 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
-  private fileAttachentService?: FileAttachmentService;
+  private fileAttachmentService?: FileAttachmentService;
+  private errorMessages: string[] = [];
 
   //Events
   /**
@@ -129,6 +140,12 @@ export default class ATATFileUpload extends Vue {
     this.fileUploadControl.click();
   }
 
+  //@Events
+  private onBlur(): void {
+    Vue.nextTick(() => {
+      this.setErrorMessage();
+    });
+  }
   /**
    * 1. sets uploadedFiles data
    * 2. removes unnecessary vuetify status msg
@@ -206,6 +223,14 @@ export default class ATATFileUpload extends Vue {
         );
       });
 
+      //log Invalid Files
+      if (!isValidFormat) {
+        this.logInvalidFiles(vFile, doesFileExist);
+      }
+      if (doesFileExist) {
+        this.logInvalidFiles(vFile, doesFileExist);
+      }
+
       return isValidFormat && !doesFileExist;
     });
 
@@ -227,31 +252,33 @@ export default class ATATFileUpload extends Vue {
         isUploaded: false,
       });
     });
+    Vue.nextTick(() => {
+      this.setErrorMessage();
+    });
     this.uploadFiles();
   }
 
   private uploadFiles(): void {
-   
     for (let i = 0; i < this.validFiles.length; i++) {
       //wire up file upload here
       let uploadingFileObj = this.validFiles[i] as uploadingFile;
 
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
-       
         window.setTimeout(() => {
-          this.fileAttachentService
+          this.fileAttachmentService
             ?.upload(uploadingFileObj.file, (total, current) => {
               current = 0;
-              total = Math.ceil(total/1000);
-              let progress = window.setInterval(()=>{
-                if (current<total){
+              total = Math.ceil(total / 1000);
+              let progress = window.setInterval(() => {
+                if (current < total) {
                   current = current + Math.floor(Math.random() * total);
-                  uploadingFileObj.progressStatus = (current/total)*100;
+                  uploadingFileObj.progressStatus = (current / total) * 100;
                 } else {
                   clearInterval(progress);
                   uploadingFileObj.progressStatus = 100;
-                }},500);
+                }
+              }, 500);
             })
             .then((result) => {
               //download link - link to the file download
@@ -265,17 +292,42 @@ export default class ATATFileUpload extends Vue {
               uploadingFileObj.isUploaded = true;
             })
             .catch((error) => {
-            
               //file upload error occurred
 
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);
+              this.logInvalidFiles(
+                uploadingFileObj.file, 
+                false, 
+                "We have encountered unexpected problems uploading your file '" 
+                  + uploadingFileObj.fileName + "'.  " +
+                "Please try again later."
+              );
+              this.setErrorMessage();
             });
         }, i * 1000);
-
-       
       }
     }
+  }
+
+  private logInvalidFiles(file: File, doesFileExist: boolean, SNOWError?: string): void {
+    const doesFileExistInInvalidFiles = this._invalidFiles.some(
+      (iFile) =>
+        iFile.file.name === file.name &&
+        iFile.file.size === file.size &&
+        iFile.file.lastModified === file.lastModified
+    );
+    if (!doesFileExistInInvalidFiles) {
+      this._invalidFiles.push({file, doesFileExist, SNOWError});
+      console.log(this._invalidFiles);
+    }
+  }
+
+  private setErrorMessage(): void {
+    Vue.nextTick(()=>{
+      this.errorMessages = this.$refs.atatFileUpload.errorBucket;
+    })
+    //todo remove next tick around other seterrormessages references
   }
 
   //life cycle hooks
@@ -290,9 +342,11 @@ export default class ATATFileUpload extends Vue {
     window.addEventListener("dragover", this.preventDrop, false);
 
     //try to grab the attachment service via the service factory
-    this.fileAttachentService = FileAttachmentServiceFactory(
+    this.fileAttachmentService = FileAttachmentServiceFactory(
       this.attachmentServiceName
     );
+
+    this._invalidFiles = [];
   }
 
   private updated(): void {

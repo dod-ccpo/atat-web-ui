@@ -176,3 +176,9 @@ export interface uploadingFile{
   isErrored: boolean;
   isUploaded: boolean;
 }
+
+export interface invalidFile{
+  file: File;
+  doesFileExist: boolean;
+  SNOWError?: string;
+}
