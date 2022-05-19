@@ -653,3 +653,26 @@ Cypress.Commands.add("ppsCheckBoxOptionSelected", (selector,value,otherTxt) => {
       
     });  
 });
+
+Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.radioBtn(radioSelector, value).wait(1000).click({ force: true })
+    .should("be.checked");
+  cy.findElement(occ.trainingRadioOptionActive)
+    .then(($radioBtn) => {
+      const selectedOption = $radioBtn.text();
+      cy.log(selectedOption);
+      cy.btnExists(common.continueBtn, ' Continue ').click();
+      if (selectedOption === "radio_button_checkedYes.") {
+        //naviagtes to "Tell us about your mandatory training screen"
+        cy.textExists(common.header, " Tell us about your mandatory training ");
+      } else {
+        cy.verifyPageHeader(
+          "Let's find out if your effort provides for Personally Identifiable Information");
+        cy.findElement(common.stepStandCompText)
+          .should("be.visible")
+          .and('have.css', 'color', colors.primary)
+      }
+          
+    });
+});
