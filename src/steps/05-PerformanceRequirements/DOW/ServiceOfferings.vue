@@ -48,7 +48,7 @@ import { Checkbox } from "../../../../types/Global";
   }
 })
 
-export default class PerformanceRequirements extends Vue {
+export default class ServiceOfferings extends Vue {
   // requirementName will be pulled from data in future ticket
   public requirementName = "Developer Tools and Services";
 
