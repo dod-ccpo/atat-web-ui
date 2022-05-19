@@ -17,6 +17,7 @@ import { FundingPlanApi } from "./fundingPlan";
 import { AttachmentApi } from "./attachments";
 import { TableApiBase } from "./tableApiBase";
 import { AttachableDTO } from "./models";
+import { PeriodApi } from "./period";
 
 export const api = {
 
@@ -32,6 +33,7 @@ export const api = {
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   militaryRankTable: new MilitaryRankApi(),
+  periodTable: new PeriodApi(),
   periodOfPerformanceTable: new PeriodOfPerformanceApi(),
   gfeOverviewTable: new GFEOverviewApi(),
   contractTypeTable: new ContractTypeApi(),
