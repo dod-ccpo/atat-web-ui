@@ -68,13 +68,13 @@ export default class PerfReqLearnMore extends Vue {
         {
           name: "Developer Tools and Services",
           categories: [
-            "DevSecOPS",
-            "Data Management",
-            "Migration Tools",
-            "Transformation Tools",
-            "Cloud Development Tools",
-            "Cloud Audit/monitoring Tools",
-            "Cyber Tools",
+            "DevSecOps",
+            "Data management",
+            "Migration tools",
+            "Transformation tools",
+            "Cloud development tools",
+            "Cloud audit/monitoring tools",
+            "Cyber tools",
           ]
         },
         {
@@ -83,7 +83,7 @@ export default class PerfReqLearnMore extends Vue {
             "Application",
             "Web app",
             "Database",
-            "Monitoring Tools",
+            "Monitoring tools",
             "Discrete PaaS",
             "Discrete SaaS",
           ]
@@ -110,7 +110,7 @@ export default class PerfReqLearnMore extends Vue {
           categories: [
             "Security services",
             "CSP cloud security",
-            "Zero Trust/Permissive Trust Security",
+            "Zero Trust/Permissive Trust security",
             "Custom security",
           ]
         },
