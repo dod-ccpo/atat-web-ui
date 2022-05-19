@@ -83,9 +83,9 @@ export default class PerformanceRequirements extends Vue {
       value: "DeveloperToolsAndServices", 
     },
     {
-      id: "Applications",
-      label: "Applications",
-      value: "Applications", 
+      id: "ApplicationRequirements.vue",
+      label: "ApplicationRequirements.vue",
+      value: "ApplicationRequirements.vue",
     },
     {
       id: "MachineLearning",

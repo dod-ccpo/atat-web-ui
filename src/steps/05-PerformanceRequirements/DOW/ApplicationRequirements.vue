@@ -48,12 +48,12 @@ import { Checkbox } from "../../../../types/Global";
   }
 })
 
-export default class PerformanceRequirements extends Vue {
+export default class ApplicationRequirements extends Vue {
   // requirementName will be pulled from data in future ticket
-  public requirementName = "Developer Tools and Services";
+  public requirementName = "Application Requirements";
 
-  public requiredMessage = `Please select at least one type of offering. If you 
-    no longer need ${this.requirementName}, select the “I don’t need 
+  public requiredMessage = `Please select at least one type of offering. If you
+    no longer need ${this.requirementName}, select the “I don’t need
     these cloud resources” button below.`;
 
   public otherValueRequiredMessage = "Please enter a title for this requirement."
@@ -71,51 +71,45 @@ export default class PerformanceRequirements extends Vue {
   // checkboxItems will be pulled from data in future ticket
   private checkboxItems: Checkbox[] = [
     {
-      id: "DevSecOPS", // may need to create ids (for Cypress) on the fly
-      label: "DevSecOPS",
-      value: "DevSecOPS", 
+      id: "Application", // may need to create ids (for Cypress) on the fly
+      label: "Application",
+      value: "Application",
     },
     {
-      id: "DeveloperToolsAndServices",
-      label: "Data Management",
-      value: "DeveloperToolsAndServices", 
+      id: "WebApp",
+      label: "Web App",
+      value: "Web App",
     },
     {
-      id: "ApplicationRequirements.vue",
-      label: "Migration Tools",
-      value: "ApplicationRequirements.vue",
+      id: "Database",
+      label: "Database",
+      value: "Database",
     },
     {
-      id: "MachineLearning",
-      label: "Transformation Tools",
-      value: "MachineLearning", 
-    },
-    {
-      id: "Networking",
-      label: "Cloud Development Tools",
-      value: "Networking", 
-    },
-    {
-      id: "Security",
-      label: "Cloud Audit/Monitoring Tools",
-      value: "Security", 
+      id: "MonitoringTools",
+      label: "Monitoring Tools",
+      value: "Monitoring Tools",
       description: "Requires a waiver from DISA CIO",
     },
     {
-      id: "DatabaseWithStorage",
-      label: "Cyber Tools",
-      value: "DatabaseWithStorage", 
-      description: "Requires a waiver from DISA CIO",
+      id: "PaaS",
+      label: "Discrete Platform as a Service (PaaS)",
+      value: "Discrete Platform as a Service (PaaS)",
+    },
+    {
+      id: "SaaS",
+      label: "Discrete Software as a Service (SaaS)",
+      value: "Discrete Software as a Service (SaaS)",
     },
     // "Other" will be an option for all requirements and may not come from the store?
     // -- to be addressed in future ticket
     {
       id: "Other",
       label: "Other",
-      value: this.otherValue, 
-    }    
+      value: this.otherValue,
+    }
   ];
-  
+
 }
 
 </script>

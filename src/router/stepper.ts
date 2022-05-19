@@ -41,6 +41,8 @@ import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/In
 import PerformanceRequirements
   from "../steps/05-PerformanceRequirements/DOW/PerformanceRequirements.vue";
 import RequirementCategories from "../steps/05-PerformanceRequirements/DOW/Categories.vue"
+import ApplicationRequirements
+  from "@/steps/05-PerformanceRequirements/DOW/ApplicationRequirements.vue";
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -132,6 +134,7 @@ export const routeNames = {
   EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
   EvaluationCriteria: "Evaluation_Criteria",
   ClassificationRequirements: "Classification_Requirements",
+  ApplicationRequirements: "Application_Requirements",
   RequirementsCostEstimate: "Requirements_Cost_Estimate",
   FundingPlan: "Funding_Plan",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
@@ -374,6 +377,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonId: "DontNeedResources",
             buttonClass: "secondary",
             name: routeNames.RequirementCategories, // functionality TBD in future ticket
+          },
+        ],
+      },
+      {
+        menuText: "Application Requirements",
+        path: "application-requirement",
+        excludeFromMenu: true,
+        name: routeNames.ApplicationRequirements,
+        completePercentageWeight: 1,
+        component: ApplicationRequirements,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need these cloud resources",
+            buttonId: "DontNeedResources",
+            buttonClass: "secondary",
+            name: routeNames.ApplicationRequirements, // functionality TBD in future ticket
           },
         ],
       },
