@@ -20,7 +20,7 @@
         :clearable="false"
         @change="fileUploadChanged"
         :hide-details="true"
-        :rules="rules"
+        :rules="_rules"
       >
         <template v-slot:prepend-inner>
           <div
@@ -117,7 +117,7 @@ export default class ATATFileUpload extends Vue {
   @PropSync("invalidFiles", { default: () => [] })
   private _invalidFiles!: invalidFile[];
   @Prop({ default: "", required: true }) private attachmentServiceName!: string;
-  @Prop({ default: () => [] }) private rules!: ((
+  @PropSync("rules",{ default: () => [] }) private _rules!: ((
     v: string
   ) => string | true | undefined)[];
   @Prop({ default: 1024 }) private maxFileSize!: number;
@@ -140,17 +140,22 @@ export default class ATATFileUpload extends Vue {
     this.fileUploadControl.click();
   }
 
-  //@Events
+  //todo do I need this?
   private onBlur(): void {
     Vue.nextTick(() => {
       this.setErrorMessage();
     });
+  }
+
+  private clearRules(): void {
+    this._rules=[];
   }
   /**
    * 1. sets uploadedFiles data
    * 2. removes unnecessary vuetify status msg
    */
   private fileUploadChanged(): void {
+    this.clearRules();
     this.removeInvalidFiles(this.fileUploadControl.files as FileList);
     Vue.nextTick(() => {
       //remove default vuetify status that displays after
@@ -235,7 +240,6 @@ export default class ATATFileUpload extends Vue {
     });
 
     this.createFileObjects(_validFiles);
-    this.isFullSize = this.validFiles.length === 0;
   }
 
   private createFileObjects(_validFiles: File[]): void {
@@ -265,6 +269,7 @@ export default class ATATFileUpload extends Vue {
 
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
+        this.isFullSize = false;
         window.setTimeout(() => {
           this.fileAttachmentService
             ?.upload(uploadingFileObj.file, (total, current) => {
@@ -293,7 +298,7 @@ export default class ATATFileUpload extends Vue {
             })
             .catch((error) => {
               //file upload error occurred
-
+              this.isFullSize = true;
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);
               this.logInvalidFiles(

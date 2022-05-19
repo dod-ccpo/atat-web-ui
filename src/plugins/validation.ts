@@ -242,7 +242,6 @@ export class ValidationPlugin {
     return () => {
       const fileName = file.name;
       const fileSize = file.size;
-      debugger;
       //validate that file has right extension
       const isValidExtension = validExtensions.some((ext)=>
         fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase() === ext

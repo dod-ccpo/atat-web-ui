@@ -142,6 +142,16 @@ export default class ATATFileListItem extends Vue {
     );
   }
 
+  @Watch("uploadingFileObj.isErrored")
+  protected IsFileErrored(newVal: boolean): void {
+    window.setTimeout(()=>{
+      if (newVal) {
+        this.isLoading = false;
+        this.removeFile(this.index);
+      }
+    }, 1000);
+  }
+
   /**
    * formats lastModifiedDate w/timezone
    */
@@ -193,15 +203,5 @@ export default class ATATFileListItem extends Vue {
     });
   }
 
-  /**
-   * Life Cycle hooks - mounted
-   *
-   * if file upload axios call returns an error, don't load
-   */
-  private mounted(): void {
-    if (this.uploadingFileObj.isErrored) {
-      this.isLoading = false;
-    }
-  }
 }
 </script>
