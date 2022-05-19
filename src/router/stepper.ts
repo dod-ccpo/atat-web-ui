@@ -41,6 +41,8 @@ import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/In
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue"
+import ServiceOfferingDetails 
+  from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue"
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -109,6 +111,7 @@ export const routeNames = {
   CurrentEnvironment:"Current_Environment",
   RequirementCategories: "Requirement_Categories",
   ServiceOfferings: "Service_Offerings",
+  ServiceOfferingDetails: "Service_Offering_Details",
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
   CloudSupportPackages: "Cloud_Support_Packages",
@@ -376,6 +379,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             name: routeNames.ServiceOfferings, // functionality TBD in future ticket
           },
         ],
+      },
+      {
+        menuText: "Service Offering Details",
+        path: "service-offering-details",
+        excludeFromMenu: true,
+        name: routeNames.ServiceOfferingDetails,
+        completePercentageWeight: 1,
+        component: ServiceOfferingDetails,
       },
     ],
   },

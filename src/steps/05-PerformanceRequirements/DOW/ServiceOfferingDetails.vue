@@ -7,9 +7,10 @@
             Next, we’ll gather your requirements for {{ categoryName }}
           </h1>
           <div class="copy-max-width">
-            <div v-if="selectedClassificationsOnLoad.length === 1">
+            <div v-if="selectedClassificationLevelsOnLoad.length === 1">
               <p id="SingleClassificationIntro">
-                In the previous section, you specified [Unclassified/IL2] for the 
+                In the previous section, you specified 
+                <strong>{{ selectedClassificationLevelsOnLoad[0].name }}</strong> for the 
                 classification level of all cloud resources and services. If you 
                 need this within a different level, 
                 <a role="button" id="UpdateClassification">
@@ -17,28 +18,13 @@
                 </a>.
               </p>
             </div>
+            <div v-else>
+              <!-- classification checkboxes -->
+            </div>
 
-            <ATATTextArea
-              id="OfferingDescription"
-              label="What is the scope of your requirement?"
-              class="width-100"
-              :rows="7"
-              :rules="[
-                $validators.required(
-                  'Please describe the scope of your requirement'
-                ),
-                $validators.maxLength(
-                  300,
-                  'Please limit your description to 300 characters or less'
-                ),
-              ]"
-              helpText="Briefly describe the type of resources and services to be
-              acquired, and what is necessary to achieve mission specific
-              outcomes for this particular requirement (e.g., move DITCO’s contract
-              writing system to a cloud environment)."
-              :value.sync="projectScope"
-              maxChars="300"
-            />
+            <div id="">
+              <!-- form component placeholder -->
+            </div>
 
 
           </div>
@@ -50,25 +36,17 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
-import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
-import ATATTextArea from "../../components/ATATTextArea.vue";
-
-import { RadioButton, Checkbox } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 
-@Component({
-  components: {
-    ATATCheckboxGroup,
-    ATATRadioGroup,
-    ATATTextArea,
-  }
-})
+@Component({})
 
 export default class ServiceOfferingDetails extends Vue {
 
+  public categoryName = "";
+
+  // generate from data from backend when implemented
   public instances = [
     {
       classification: {
@@ -78,7 +56,6 @@ export default class ServiceOfferingDetails extends Vue {
       description: "",
       neededForEntireDuration: null,
       periods: []
-
     }
   ]
 
@@ -96,14 +73,13 @@ export default class ServiceOfferingDetails extends Vue {
 
   public mounted(): void {
     // get this from store data when implemented 
+    this.categoryName = "Data Management";
+
+    // get this from store data when implemented 
     this.selectedClassificationLevels = [
       {
         name: "Unclassified / Impact Level 2 (IL2)",
         value: "IL2",
-      },
-      {
-        name: "Unclassified / Impact Level 4 (IL4)",
-        value: "IL4",
       },
     ];
 
@@ -129,13 +105,33 @@ export default class ServiceOfferingDetails extends Vue {
 
     this.selectedClassificationLevelsOnLoad = this.selectedClassificationLevels;
     
+    // get from data from backend when implemented
     this.periods = [
       {
         id: "Base",
-        label: "Base Period",
-        value: "", // sys_id ?
-
-      }
+        label: "Base period",
+        value: "BASE", // sys_id ?
+      },
+      {
+        id: "Opt1",
+        label: "Option period 1",
+        value: "OPT1", // sys_id ?
+      },
+      {
+        id: "Opt2",
+        label: "Option period 2",
+        value: "OPT2", // sys_id ?
+      },
+      {
+        id: "Opt3",
+        label: "Option period 3",
+        value: "OPT3", // sys_id ?
+      },
+      {
+        id: "Opt4",
+        label: "Option period 4",
+        value: "OPT4", // sys_id ?
+      },
     ]
   }
 
