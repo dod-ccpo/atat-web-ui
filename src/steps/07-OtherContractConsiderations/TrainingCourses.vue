@@ -21,7 +21,7 @@
             <div
               v-for="(trainingCert, index) in trainingCerts"
               :key="'TrainingCourse' + index"
-              class="d-inline-block py-2 "
+              class="d-inline-block py-2 _training-course"
               :id="'TrainingCourse' + index + 'Row'"
               :data-index="index"
             >
