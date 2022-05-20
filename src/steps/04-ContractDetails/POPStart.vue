@@ -21,7 +21,7 @@
             />
           </div>
 
-          <div v-if="selectedPoPStartDateOption ==='true'">
+          <div v-if="selectedPoPStartDateOption ==='YES'">
             <hr class="my-9"/>
             <p class="mb-2">
               Requested start date
@@ -32,8 +32,8 @@
                 id="RequestDateOption"
                 class="mr-7"
                 label=""
-                :items="requestDateOptions"
-                :selectedValue.sync="selectedRequestDateOption"
+                :items="timeFrameOptions"
+                :selectedValue.sync="selectedTimeFrameOption"
                 style="max-width: 196px"
                 :rules="[$validators.required('Please select an option')]"
               />
@@ -50,7 +50,7 @@
             <ATATAlert
               id="RequestDateAlert"
               class="copy-max-width"
-              v-if="selectedRequestDateOption === 'NO_LATER_THAN'"
+              v-if="selectedTimeFrameOption === 'NO_LATER_THAN'"
               type="warning"
             >
               <template slot="content">
@@ -72,7 +72,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
@@ -92,22 +92,26 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 export default class POPStart extends Mixins(SaveOnLeave) {
-  private requestedPopStartDate = "";
-  private selectedPoPStartDateOption = "";
+  private requestedPopStartDate 
+    = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";;
+  private selectedPoPStartDateOption 
+    = AcquisitionPackage.periodOfPerformance?.pop_start_request || "";
   private startPoPDateOptions: RadioButton[] = [
     {
       id: "YesStartDate",
       label: "Yes.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "NoStartDate",
       label: "No. The PoP should start upon execution of the task order.",
-      value: "false",
+      value: "NO",
     },
   ];
-  private selectedRequestDateOption = "NO_SOONER_THAN";
-  private requestDateOptions: SelectData[] = [
+
+  private selectedTimeFrameOption 
+    = AcquisitionPackage.periodOfPerformance?.time_frame || "";
+  private timeFrameOptions: SelectData[] = [
     {
       text: "No sooner than",
       value: "NO_SOONER_THAN",
@@ -117,22 +121,29 @@ export default class POPStart extends Mixins(SaveOnLeave) {
       value: "NO_LATER_THAN"
     }
   ];
+
+  @Watch("selectedPoPStartDateOption")
+  protected popStartDateOptionChange(newVal: string): void {
+    if (newVal === "YES") {
+      this.selectedTimeFrameOption = "NO_SOONER_THAN";
+    } else {
+      this.selectedTimeFrameOption = "";
+      this.requestedPopStartDate = "";
+    }
+  }
+
   private get currentData(): PeriodOfPerformanceDTO {
     return {
-      time_frame: this.selectedRequestDateOption,
-      pop_start_request: this.selectedPoPStartDateOption,
+      time_frame: this.selectedTimeFrameOption,
+      pop_start_request: this.selectedPoPStartDateOption || "UNSELECTED",
       requested_pop_start_date: this.requestedPopStartDate,
     };
   }
 
-  private get savedData(): PeriodOfPerformanceDTO {
-    return {
-      time_frame: AcquisitionPackage.periodOfPerformance?.time_frame,
-      pop_start_request:
-        AcquisitionPackage.periodOfPerformance?.pop_start_request,
-      requested_pop_start_date:
-        AcquisitionPackage.periodOfPerformance?.requested_pop_start_date,
-    };
+  private savedData: PeriodOfPerformanceDTO = {
+    time_frame: "",
+    pop_start_request: "",
+    requested_pop_start_date: "",
   }
 
   private hasChanged(): boolean {
@@ -144,9 +155,11 @@ export default class POPStart extends Mixins(SaveOnLeave) {
       .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
 
     if (storeData) {
-      this.selectedRequestDateOption = storeData.time_frame || "";
-      this.selectedPoPStartDateOption = storeData.pop_start_request || "";
-      this.requestedPopStartDate = storeData.requested_pop_start_date  || "";
+      this.savedData = {
+        time_frame: storeData.time_frame || "",
+        pop_start_request: storeData.pop_start_request || "UNSELECTED",
+        requested_pop_start_date: storeData.requested_pop_start_date  || "",
+      }
     }
   }
 

@@ -55,17 +55,17 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
     {
       id: "YesRecurring",
       label: "Yes. This requirement should be tracked for similar efforts in the future.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "NoRecurring",
       label: "No. This is a temporary requirement.",
-      value: "false",
+      value: "NO",
     },
   ];
   private get currentData(): PeriodOfPerformanceDTO {
     return {
-      recurring_requirement: this.selectedRecurringOption,
+      recurring_requirement: this.selectedRecurringOption || "UNSELECTED",
     };
   }
 

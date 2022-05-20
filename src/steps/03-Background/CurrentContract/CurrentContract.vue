@@ -47,12 +47,12 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     {
       id: "Yes",
       label: "Yes. There is a current contract for this effort.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: "No. This is a new requirement.",
-      value: "false",
+      value: "NO",
     },
   ];
 
@@ -61,7 +61,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private get currentData(): CurrentContractDTO {
     return {
-      current_contract_exists: this.currentContractExists,
+      current_contract_exists: this.currentContractExists || "UNSELECTED",
     };
   }
 

@@ -27,7 +27,7 @@ export const AcorsRouteResolver = (current: string): string => {
 
 export const CurrentContractRouteResolver = (current: string): string => {
   const hasCurrentContract 
-    = AcquisitionPackage.currentContract?.current_contract_exists === "true";
+    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
   if (hasCurrentContract) {
     return routeNames.CurrentContractDetails;
   }
