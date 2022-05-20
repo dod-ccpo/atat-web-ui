@@ -145,8 +145,9 @@ Cypress.Commands.add('btnExists', (selector, text) => {
     .and("have.text", text);  
 });
 
-Cypress.Commands.add('radioBtn', (selector,value) => {
-  cy.findElement(selector).should("have.value", value);  
+Cypress.Commands.add('radioBtn', (selector, value) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.findElement(selector).wait(0).should("have.value", value);  
 });
 
 Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
@@ -652,4 +653,26 @@ Cypress.Commands.add("ppsCheckBoxOptionSelected", (selector,value,otherTxt) => {
       }
       
     });  
+});
+
+Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {  
+  cy.radioBtn(radioSelector, value).click({ force: true })
+    .should("be.checked");
+  cy.findElement(occ.trainingRadioOptionActive)
+    .then(($radioBtn) => {
+      const selectedOption = $radioBtn.text();
+      cy.log(selectedOption);
+      cy.btnExists(common.continueBtn, ' Continue ').click();
+      if (selectedOption === "radio_button_checkedYes.") {
+        //naviagtes to "Tell us about your mandatory training screen"
+        cy.textExists(common.header, " Tell us about your mandatory training ");
+      } else {
+        cy.verifyPageHeader(
+          "Let's find out if your effort provides for Personally Identifiable Information");
+        cy.findElement(common.stepStandCompText)
+          .should("be.visible")
+          .and('have.css', 'color', colors.primary)
+      }
+          
+    });
 });

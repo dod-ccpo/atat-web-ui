@@ -29,5 +29,18 @@ module.exports = {
   checkBoxError: "#PackagingEtcCheckboxes .field-error",
   checkBoxActive: "#PackagingEtcCheckboxes .v-input--is-label-active",
   
-  //Training      
+  //Training
+  trainingYesRadioBtn: "#Radio_Yes",
+  trainingNoRadioBtn: "#Radio_No",
+  trainingRadioError:"#TrainingOptions_radio_group_control .field-error",
+  trainingRadioOptionActive: "#TrainingOptions_radio_group_control .v-item--active",
+  
+  //Tell us about your mandatory training
+  reqTrainCoursesLabel: ".mb-4._semibold",
+  trainCourseOneTxtBox:"#TrainingCourse0Row",
+  trainCourseError: "#TrainingCourse0_text_field_control .field-error",
+  trainCourseOneRemovebtn: "#TrainingCourse0Delete",
+  addAnotherBtn: "#AddTrainingCertButton",  
+  trainCourseTwoTxtBox: "#TrainingCourse1Row",
+  trainCourseTwoRemovebtn: "#TrainingCourse1Delete",
 }
