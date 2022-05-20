@@ -65,7 +65,7 @@ export default class Training extends Mixins(SaveOnLeave) {
 
   public get current(): ContractConsiderationsDTO {
     return {
-      contractor_required_training: this.selectedOption || "UNSELECTED",
+      contractor_required_training: this.selectedOption,
     };
   }
   public async loadOnEnter(): Promise<void> {

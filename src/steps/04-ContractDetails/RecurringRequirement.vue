@@ -65,7 +65,7 @@ export default class RecurringRequirement extends Mixins(SaveOnLeave) {
   ];
   private get currentData(): PeriodOfPerformanceDTO {
     return {
-      recurring_requirement: this.selectedRecurringOption || "UNSELECTED",
+      recurring_requirement: this.selectedRecurringOption,
     };
   }
 

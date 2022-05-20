@@ -135,7 +135,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   private get currentData(): PeriodOfPerformanceDTO {
     return {
       time_frame: this.selectedTimeFrameOption,
-      pop_start_request: this.selectedPoPStartDateOption || "UNSELECTED",
+      pop_start_request: this.selectedPoPStartDateOption,
       requested_pop_start_date: this.requestedPopStartDate,
     };
   }
@@ -157,7 +157,7 @@ export default class POPStart extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.savedData = {
         time_frame: storeData.time_frame || "",
-        pop_start_request: storeData.pop_start_request || "UNSELECTED",
+        pop_start_request: storeData.pop_start_request || "",
         requested_pop_start_date: storeData.requested_pop_start_date  || "",
       }
     }

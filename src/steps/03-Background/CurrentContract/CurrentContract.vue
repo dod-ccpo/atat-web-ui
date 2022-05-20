@@ -61,7 +61,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
   private get currentData(): CurrentContractDTO {
     return {
-      current_contract_exists: this.currentContractExists || "UNSELECTED",
+      current_contract_exists: this.currentContractExists,
     };
   }
 

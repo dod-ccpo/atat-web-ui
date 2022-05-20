@@ -119,10 +119,10 @@ const initialContractConsiderations = ()=> {
   return {
 
     packaging_shipping_other: "false",
-    contractor_required_training: "UNSELECTED",
+    contractor_required_training: "",
     packaging_shipping_other_explanation: "",
     conflict_of_interest_explanation: "",
-    potential_conflict_of_interest: "UNSELECTED",
+    potential_conflict_of_interest: "",
     required_training_courses: "",
     packaging_shipping_none_apply: "false",
     contractor_provided_transfer: "false",
@@ -599,12 +599,12 @@ export class AcquisitionPackageStore extends VuexModule {
       // retrives Store TableDTO based property using property name as key
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const sysId = storeDataProperty.sys_id || "";
-
+      debugger;
       if (sysId.length > 0) {
         // retrieves endpoint mapped to store property
         const apiEndPoint = await this.getApiEndPoint(storeProperty);
         const loadAction: Promise<TableDTO> | undefined = 
-        apiEndPoint.retrieve(sysId) as Promise<TableDTO>;
+          apiEndPoint.retrieve(sysId) as Promise<TableDTO>;
         const retrievedData = await loadAction;
         this.setStoreData({ data: retrievedData, storeProperty });
         const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
