@@ -37,10 +37,14 @@ module.exports = {
   
   //Tell us about your mandatory training
   reqTrainCoursesLabel: ".mb-4._semibold",
-  trainCourseOneTxtBox:"#TrainingCourse0Row",
+  trainingCourse:"._training-course",
+  trainCourseOptionOne: "#TrainingCourse0Row",
+  courseNumberOne:"#TrainingCourse0Row .course-number",
+  trainCourseOneTxtBox:"#TrainingCourse0_text_field",
   trainCourseError: "#TrainingCourse0_text_field_control .field-error",
-  trainCourseOneRemovebtn: "#TrainingCourse0Delete",
-  addAnotherBtn: "#AddTrainingCertButton",  
-  trainCourseTwoTxtBox: "#TrainingCourse1Row",
-  trainCourseTwoRemovebtn: "#TrainingCourse1Delete",
+  trainCourseRemovebtn: "#TrainingCourse0Delete",
+  addAnotherTrainingBtn: "#AddTrainingCertButton",
+  trainCourseOptionTwo: "#TrainingCourse1Row",
+  courseNumberTwo: "#TrainingCourse1Row .course-number",
+  trainCourseTwoTxtBox:"#TrainingCourse1_text_field",
 }
