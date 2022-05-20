@@ -121,18 +121,18 @@ export default class FOIA extends Mixins(SaveOnLeave) {
     {
       id: "Yes",
       label: "Yes.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: "No.",
-      value: "false",
+      value: "NO",
     },
   ];
 
   private get currentData(): SensitiveInformationDTO {
     return {
-      potential_to_be_harmful: this.potentialToBeHarmful,
+      potential_to_be_harmful: this.potentialToBeHarmful || "UNSELECTED",
     };
   }
 

@@ -124,7 +124,7 @@ export default class PII extends  Mixins(SaveOnLeave) {
     },
   ];
 
-  public selectedPIIOption = "";
+  public selectedPIIOption = AcquisitionPackage.sensitiveInformation?.pii_present || "";
 
   private get currentData(): SensitiveInformationDTO {
     return {
@@ -132,10 +132,8 @@ export default class PII extends  Mixins(SaveOnLeave) {
     };
   }
 
-  private get savedData(): SensitiveInformationDTO {
-    return {
-      pii_present: AcquisitionPackage.sensitiveInformation?.pii_present || "UNSELECTED",
-    };
+  private savedData: SensitiveInformationDTO = {
+    pii_present: "",
   }
 
   private hasChanged(): boolean {
@@ -148,7 +146,9 @@ export default class PII extends  Mixins(SaveOnLeave) {
         { storeProperty: StoreProperties.SensitiveInformation }
       );
     if (storeData) {
-      this.selectedPIIOption = storeData.pii_present || "";
+      this.savedData = {
+        pii_present: storeData.pii_present,
+      }
     }
   }
 

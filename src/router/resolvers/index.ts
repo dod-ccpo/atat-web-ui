@@ -47,7 +47,7 @@ export const PIIRecordResolver = (current: string): string => {
 
 export const FOIARecordResolver = (current: string): string => {
   const needsFOIACoordinator 
-    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "true";
+    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "YES";
   // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
   // then need to collect information about the FOIA Coordinator
   if (needsFOIACoordinator) {
@@ -59,7 +59,7 @@ export const FOIARecordResolver = (current: string): string => {
 };
 export const A11yRequirementResolver = (current: string): string => {
   const needsA11yReqs
-      = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "false";
+      = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "YES";
   // if user selects "No" on Section 508 standards page,
   // then need to collect information about 508 accessibility requirements
   if (needsA11yReqs) {
