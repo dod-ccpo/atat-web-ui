@@ -676,3 +676,17 @@ Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
           
     });
 });
+
+Cypress.Commands.add("trainingCourseExists", () => {
+  cy.findElement(occ.trainingCourse).then((trainingCourseRows) => {
+    cy.log(trainingCourseRows.length)
+    if ( trainingCourseRows.length === 1) {
+      cy.findElement(occ.trainCourseRemovebtn).should("exist")
+        .and("be.disabled");
+    } else {
+      cy.findElement(occ.trainCourseRemovebtn)
+        .should("exist")
+        .and("not.be.disabled")
+    }
+  });
+});
