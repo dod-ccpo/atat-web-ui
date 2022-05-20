@@ -58,7 +58,7 @@ describe("Test suite: Training substep: Training Course", () => {
     
   });
 
-  it("TC3: Validation", () => {
+  it.only("TC3: Validation", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.textExists(common.subStepTrainingText, " Training ").click({force: true});
     cy.verifyPageHeader("Do you require any specific training courses from your contractors?");
@@ -70,7 +70,15 @@ describe("Test suite: Training substep: Training Course", () => {
       occ.trainCourseError,
       "Please enter the name of your training course."
     );
-        
+    //Training course is morethan 300 characters
+    const email = randomString(301)
+    cy.findElement(occ.trainCourseOneTxtBox).should("be.visible").clear()
+      .type(email).blur({ force: true }).then(() => {
+        cy.checkErrorMessage(
+          occ.trainCourseError,
+          "Course name cannot exceed 300 characters."
+        );
+      });
   });
 
   it("TC4: Delete Training Course", () => {    
