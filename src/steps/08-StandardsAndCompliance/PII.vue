@@ -144,7 +144,9 @@ export default class PII extends  Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage
-      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
+      .loadData<SensitiveInformationDTO>(
+        { storeProperty: StoreProperties.SensitiveInformation }
+      );
     if (storeData) {
       this.selectedPIIOption = storeData.pii_present || "";
     }

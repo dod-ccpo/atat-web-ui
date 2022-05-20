@@ -156,7 +156,7 @@ const initialPeriodOfPerformance = ()=> {
     
   }}
 
-const initialSensativeInformation = ()=> {
+const initialSensitiveInformation = ()=> {
 
   return {
 
@@ -199,7 +199,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       periods: store.periods,
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
-      sensativeInformation: store.sensitiveInformation,
+      sensitiveInformation: store.sensitiveInformation,
     })
   );
 };
@@ -422,7 +422,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
-          this.setSensitiveInformation(initialSensativeInformation());
+          this.setSensitiveInformation(initialSensitiveInformation());
           //the should be in the initialization sequence
           this.setAcquisitionPackage(acquisitionPackage);
           this.setInitialized(true);
