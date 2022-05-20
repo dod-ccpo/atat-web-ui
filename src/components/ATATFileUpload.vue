@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <v-form
+     ref="atatFileUploadForm">
     <div
       v-cloak
       @dragenter="onDragEnter"
@@ -11,6 +12,7 @@
         :id="id + 'FileUpload'"
         :class="[
           { 'v-text-field--is-hovering': isHovering },
+          { 'v-text-field--is-errored': errorMessages.length>0 },
           'atat-file-upload',
         ]"
         multiple
@@ -69,7 +71,10 @@
           </div>
         </template>
       </v-file-input>
-      <ATATErrorValidation class="file-upload-validation-messages" :errorMessages="errorMessages" />
+      <ATATErrorValidation 
+        class="file-upload-validation-messages" 
+        :showAllErrors="true"
+        :errorMessages="errorMessages" />
     </div>
 
     <ATATFileList
@@ -78,7 +83,7 @@
       :isFullSize.sync="isFullSize"
       @delete="(file) => $emit('delete', file)"
     />
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -102,12 +107,19 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
   },
 })
 export default class ATATFileUpload extends Vue {
+//todo complete validation msgs including maxFileSize
+
+
   // refs
   $refs!: {
     atatFileUpload: Vue & {
       errorBucket: string[];
       errorCount: number;
     };
+    atatFileUploadForm: Vue & {
+      resetValidation: ()=> void;
+      reset: ()=> void;
+    }
   };
 
   // props
@@ -125,7 +137,6 @@ export default class ATATFileUpload extends Vue {
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
   private validFiles: uploadingFile[] = [];
-  private uploadedFileNames: string[] = [];
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
@@ -140,22 +151,11 @@ export default class ATATFileUpload extends Vue {
     this.fileUploadControl.click();
   }
 
-  //todo do I need this?
-  private onBlur(): void {
-    Vue.nextTick(() => {
-      this.setErrorMessage();
-    });
-  }
-
-  private clearRules(): void {
-    this._rules=[];
-  }
   /**
    * 1. sets uploadedFiles data
    * 2. removes unnecessary vuetify status msg
    */
   private fileUploadChanged(): void {
-    this.clearRules();
     this.removeInvalidFiles(this.fileUploadControl.files as FileList);
     Vue.nextTick(() => {
       //remove default vuetify status that displays after
@@ -178,6 +178,8 @@ export default class ATATFileUpload extends Vue {
   private onDragEnter(e: DragEvent): void {
     e.preventDefault();
     this.isHovering = true;
+    this.isFullSize = this.validFiles.length === 0;
+    this.reset();
   }
 
   /**
@@ -228,6 +230,8 @@ export default class ATATFileUpload extends Vue {
         );
       });
 
+      const isFileSizeValid = vFile.size < this.maxFileSize;
+
       //log Invalid Files
       if (!isValidFormat) {
         this.logInvalidFiles(vFile, doesFileExist);
@@ -235,8 +239,11 @@ export default class ATATFileUpload extends Vue {
       if (doesFileExist) {
         this.logInvalidFiles(vFile, doesFileExist);
       }
+      if (!isFileSizeValid){
+        this.logInvalidFiles(vFile, doesFileExist);
+      }
 
-      return isValidFormat && !doesFileExist;
+      return isValidFormat && !doesFileExist && isFileSizeValid;
     });
 
     this.createFileObjects(_validFiles);
@@ -256,9 +263,6 @@ export default class ATATFileUpload extends Vue {
         isUploaded: false,
       });
     });
-    Vue.nextTick(() => {
-      this.setErrorMessage();
-    });
     this.uploadFiles();
   }
 
@@ -269,7 +273,6 @@ export default class ATATFileUpload extends Vue {
 
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
-        this.isFullSize = false;
         window.setTimeout(() => {
           this.fileAttachmentService
             ?.upload(uploadingFileObj.file, (total, current) => {
@@ -298,7 +301,6 @@ export default class ATATFileUpload extends Vue {
             })
             .catch((error) => {
               //file upload error occurred
-              this.isFullSize = true;
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);
               this.logInvalidFiles(
@@ -308,8 +310,7 @@ export default class ATATFileUpload extends Vue {
                   + uploadingFileObj.fileName + "'.  " +
                 "Please try again later."
               );
-              this.setErrorMessage();
-            });
+            })
         }, i * 1000);
       }
     }
@@ -324,15 +325,41 @@ export default class ATATFileUpload extends Vue {
     );
     if (!doesFileExistInInvalidFiles) {
       this._invalidFiles.push({file, doesFileExist, SNOWError});
-      console.log(this._invalidFiles);
     }
+    if (this._invalidFiles.length>0){
+      this.setErrorMessage();
+    } 
   }
 
   private setErrorMessage(): void {
     Vue.nextTick(()=>{
       this.errorMessages = this.$refs.atatFileUpload.errorBucket;
+    });
+  }
+
+  private clearErrorMessages(): void {
+    // if (this.errorMessages.length>0){
+    Vue.nextTick(()=>{
+      // const formChildren = this.$refs.atatFileUploadForm.$children;
+      // formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
+      this.$refs.atatFileUploadForm.reset();
+      Vue.nextTick(()=>{
+        this.$refs.atatFileUploadForm.resetValidation();
+      });
     })
-    //todo remove next tick around other seterrormessages references
+    // }
+  }
+
+  private reset(): void {
+    Vue.nextTick(()=>{
+      this._invalidFiles=[];
+      this.clearErrorMessages();
+      this.errorMessages = [];
+
+      // clear out any files 'left over' in the 
+      // HTML file input
+      (document.getElementById("FundingPlanFileUpload") as HTMLInputElement).value="";
+    });
   }
 
   //life cycle hooks

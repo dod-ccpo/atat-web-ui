@@ -255,6 +255,10 @@ export class ValidationPlugin {
       if (doesFileExist){
         return `'${fileName}' was already uploaded.`
       }
+      
+      if (fileSize<maxFileSize){
+        return `Your file is too large. Please upload a file that is 1GB or less.`
+      }
 
       if (SNOWError !== ""){
         return SNOWError;

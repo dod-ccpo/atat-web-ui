@@ -34,7 +34,7 @@ export default class FundingPlan extends Vue {
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
   private validFileFormats = ['xlsx', 'xls', 'pdf'];
-  private maxFileSize = 1024;
+  private maxFileSize = 100;
 
   private getRulesArray():
     ((v:string)=>string | true | undefined)[] {
@@ -46,7 +46,6 @@ export default class FundingPlan extends Vue {
           iFile.file, this.validFileFormats, this.maxFileSize, iFile.doesFileExist, iFile.SNOWError
         )); 
     })
-    console.log(rulesArr);
     return rulesArr;
   }
 

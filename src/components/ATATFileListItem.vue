@@ -1,7 +1,6 @@
 <template>
   <div class="content-div d-flex align-center mb-5">
     <ATATSVGIcon
-      :color="uploadingFileObj.isErrored ? 'error' : 'base'"
       :name="isPDF(uploadingFileObj.fileName) ? 'pdf' : 'filePresent'"
       :width="32"
       :height="50"
@@ -53,10 +52,7 @@
             :id="'FileLink0' + index"
             target="_blank"
             :href="uploadingFileObj.link"
-            :class="[
-              uploadingFileObj.isErrored ? 'error--text' : '_text-link',
-              ' d-flex align-center justify-start',
-            ]"
+            class='_text-link d-flex align-center justify-start'
           >
             <div
               :id="'File0' + index"
@@ -87,8 +83,8 @@
           </a>
         </div>
         <div>
-          <span :class="[{ 'error--text': uploadingFileObj.isErrored }]"
-            >Uploaded {{ getLastModifiedDate() }}</span
+          <span>
+            Uploaded {{ getLastModifiedDate() }}</span
           >
         </div>
       </div>
@@ -144,12 +140,10 @@ export default class ATATFileListItem extends Vue {
 
   @Watch("uploadingFileObj.isErrored")
   protected IsFileErrored(newVal: boolean): void {
-    window.setTimeout(()=>{
-      if (newVal) {
-        this.isLoading = false;
-        this.removeFile(this.index);
-      }
-    }, 1000);
+    if (newVal) {
+      this.isLoading = newVal;
+      this.removeFile(this.index);
+    }
   }
 
   /**
@@ -177,6 +171,10 @@ export default class ATATFileListItem extends Vue {
     return filename;
   }
 
+  /**
+   * @param filename: string
+   * returns extension
+   */
   private getExtension(filename: string): string {
     return filename.substr(filename.lastIndexOf(".") + 1);
   }
