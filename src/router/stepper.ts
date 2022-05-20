@@ -84,7 +84,8 @@ import ReviewRequiredFormsStepOne
 
 import {
   AcorsRouteResolver,
-  CurrentContractRouteResolver,
+  CurrentContractDetailsRouteResolver,
+  CurrentContractEnvRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
@@ -280,7 +281,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 0,
         component: CurrentContractDetails,
         completed: false,
-        routeResolver: CurrentContractRouteResolver,
+        routeResolver: CurrentContractDetailsRouteResolver,
         additionalButtons: [
           {
             buttonText: "I don’t have an existing contract",
@@ -297,6 +298,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CurrentEnvironment,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: CurrentContractEnvRouteResolver,
       },
     ]
   },

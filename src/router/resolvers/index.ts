@@ -25,7 +25,7 @@ export const AcorsRouteResolver = (current: string): string => {
 };
 
 
-export const CurrentContractRouteResolver = (current: string): string => {
+export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
   if (hasCurrentContract) {
@@ -34,6 +34,17 @@ export const CurrentContractRouteResolver = (current: string): string => {
   return current === routeNames.CurrentContract
     ? routeNames.PeriodOfPerformance
     : routeNames.CurrentContract;
+};
+
+export const CurrentContractEnvRouteResolver = (current: string): string => {
+  const hasCurrentContract 
+    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+  if (hasCurrentContract) {
+    return routeNames.CurrentEnvironment;
+  }
+  return current === routeNames.PeriodOfPerformance
+    ? routeNames.CurrentContract
+    : routeNames.PeriodOfPerformance;
 };
 
 export const PIIRecordResolver = (current: string): string => {
@@ -84,7 +95,8 @@ export const ContractTrainingReq = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const resolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
-  CurrentContractRouteResolver,
+  CurrentContractDetailsRouteResolver,
+  CurrentContractEnvRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,
