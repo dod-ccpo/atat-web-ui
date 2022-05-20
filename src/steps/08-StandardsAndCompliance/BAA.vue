@@ -145,12 +145,12 @@ export default class BAA extends Mixins(SaveOnLeave) {
     {
       id: "YesBAA",
       label: "Yes. This contract effort will require a BAA to safeguard e-PHI.",
-      value: "Yes",
+      value: "YES",
     },
     {
       id: "NoBAA",
       label: "No.",
-      value: "No",
+      value: "NO",
     },
   ];
 
@@ -170,17 +170,15 @@ export default class BAA extends Mixins(SaveOnLeave) {
     }
   }
 
-
-
   private get currentData(): SensitiveInformationDTO {
     return {
-      baa_required: this.selectedBAAOption === "Yes" ? "true" : "false",
+      baa_required: this.selectedBAAOption || "UNSELECTED",
     };
   }
 
   private get savedData(): SensitiveInformationDTO {
     return {
-      baa_required: AcquisitionPackage.sensitiveInformation?.baa_required || "false",
+      baa_required: AcquisitionPackage.sensitiveInformation?.baa_required || "UNSELECTED",
     };
   }
 
@@ -192,7 +190,7 @@ export default class BAA extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage
       .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
     if (storeData) {
-      this.selectedBAAOption = storeData.baa_required === "true" ? "Yes" : "No";
+      this.selectedBAAOption = storeData.baa_required || "";
     }
   }
 

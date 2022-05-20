@@ -71,7 +71,7 @@ export default class Training extends Mixins(SaveOnLeave) {
       contractor_required_training: storeData.contractor_required_training || 'UNSELECTED',
     }
     if (storeData) {
-      if(storeData.contractor_required_training == 'UNSELECTED') {
+      if (storeData.contractor_required_training === "UNSELECTED") {
         this.selectedOption ='';
       }
       this.selectedOption = storeData.contractor_required_training === "UNSELECTED" ? ""

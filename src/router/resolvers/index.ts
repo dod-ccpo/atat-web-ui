@@ -37,7 +37,7 @@ export const CurrentContractRouteResolver = (current: string): string => {
 };
 
 export const PIIRecordResolver = (current: string): string => {
-  const hasSystemOfRecord = OtherContractConsiderations.PIIRecordIncluded;
+  const hasSystemOfRecord = AcquisitionPackage.sensitiveInformation?.pii_present === "YES";
   // if system of record will be included, route to system of records page
   if (hasSystemOfRecord) {
     return routeNames.PIIRecord;
