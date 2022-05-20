@@ -58,7 +58,7 @@ describe("Test suite: Training substep: Training Course", () => {
     
   });
 
-  it.only("TC3: Validation", () => {
+  it("TC3: Validation", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.textExists(common.subStepTrainingText, " Training ").click({force: true});
     cy.verifyPageHeader("Do you require any specific training courses from your contractors?");
