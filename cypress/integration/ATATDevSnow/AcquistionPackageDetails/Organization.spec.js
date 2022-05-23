@@ -287,14 +287,10 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       "Please select a military post office (APO or FPO)."
     );
     //AA/AE/AP dropdown is blank   
-    cy.findElement(org.stateCodeDropDown).should("be.visible")
-      .clear({ force: true })
-      .focus().tab().then(() => {
-        cy.checkErrorMessage(
-          org.aaAEError,
-          "Please select a state code.");
-      }); 
-            
+    cy.verifyRequiredDropdown(
+      org.stateCodeDropDown,
+      org.aaAEError,
+      "Please select a state code."); 
   });
 
 });      
