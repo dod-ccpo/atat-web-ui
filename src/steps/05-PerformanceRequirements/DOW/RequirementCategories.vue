@@ -80,7 +80,7 @@ import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
   }
 })
 
-export default class PerformanceRequirements extends Vue {
+export default class RequirementCategories extends Vue {
   public xaasSelectedOptions: string[] = [];
   private xaasCheckboxItems: Checkbox[] = [
     {
