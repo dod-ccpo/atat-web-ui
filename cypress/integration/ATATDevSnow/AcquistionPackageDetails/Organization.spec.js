@@ -55,7 +55,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       cy.textExists(org.orgNameTxtLabel, " Organization name ");
       cy.enterTextInTextField(org.orgNameTxtBox, "TestDepartmentof Defense");
       cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
-      cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDD");
+      cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDDE");
 
       //section Two
       cy.textExists(org.sectionTwoHeaderText, "2. What is your organization’s address?");
@@ -112,7 +112,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     cy.textExists(org.disaDropDownLabel," DISA Organization ");
     cy.autoCompleteSelection(org.disaOrgInput, "Assistan",org.disaAutoComplete);
     cy.textExists(org.activityAddressCodeLabel, " DoD Activity Address Code (DoDAAC) ");
-    cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDD");
+    cy.enterTextInTextField(org.activityAddressCodeTxtBox, "DoDDDA");
 
     //select Address type as Military
     cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
@@ -139,7 +139,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     
   });
 
-  it("TC4: Service Agency selected is  not DISA & Address Type is US", () => {
+  it("TC4: Service Agency selected is not DISA & Address Type is US", () => {
     cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
     cy.textExists(common.header, " Next, we’ll gather information about your organization ");
 
@@ -179,7 +179,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
 
   it("TC6: Validations: DISA & US address", () => {
     cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
-    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+    cy.verifyPageHeader(" Next, we’ll gather information about your organization ");
     //Service Agency is DISA
     cy.verifyRequiredDropdown(
       org.serviceAgencyInput,
@@ -280,12 +280,12 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     //select Address type as Military
     cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
     //APO/FPO/DPO dropdown is blank
-    cy.findElement(org.apoFpoDropDown).scrollIntoView().should("be.visible")
-      .clear({ force: true }).focus().tab().then(() => {
-        cy.checkErrorMessage(
-          org.apoFpoDropDownError,
-          "Please select a military post office (APO or FPO).");
-      }); 
+    cy.findElement(org.apoFpoDropDown).scrollIntoView()
+    cy.verifyRequiredDropdown(
+      org.apoFpoDropDown,
+      org.apoFpoDropDownError,
+      "Please select a military post office (APO or FPO)."
+    );
     //AA/AE/AP dropdown is blank   
     cy.findElement(org.stateCodeDropDown).should("be.visible")
       .clear({ force: true })
