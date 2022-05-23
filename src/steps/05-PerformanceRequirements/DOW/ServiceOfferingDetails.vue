@@ -31,11 +31,11 @@
             </div>
 
             <div v-else id="ClassificationCheckboxes">
-              <!-- classification checkboxes -->
+              <!-- classification checkboxes placeholder -->
             </div>
 
             <div id="OfferingDetailsForms">
-              <!-- form component -->
+              <!-- form component placeholder -->
             </div>
 
           </div>
