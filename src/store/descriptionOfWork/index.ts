@@ -7,7 +7,8 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { ClassificationLevelDTO, ServiceOfferingDTO } from "@/api/models";
+import { ClassificationLevelDTO, ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
   nameofProperty,
   storeDataToSession,
@@ -28,11 +29,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   classificationLevels: ClassificationLevelDTO[] = [];
   initialized = false;
   serviceOfferings: ServiceOfferingDTO[] = [];
+  serviceOfferingGroups: SystemChoiceDTO[] = [];
 
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.classificationLevels),
     nameofProperty(this, (x) => x.serviceOfferings),
+    nameofProperty(this, (x) => x.serviceOfferingGroups),
   ];
 
   @Mutation
@@ -49,6 +52,12 @@ export class DescriptionOfWorkStore extends VuexModule {
   private setServiceOfferings(value: ServiceOfferingDTO[]) {
     this.serviceOfferings = value;
   }
+
+  @Mutation
+  private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
+    this.serviceOfferingGroups = value;
+  }
+
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -74,6 +83,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         await Promise.all([
           this.loadClassificationLevels(),
           this.loadServiceOfferings(),
+          this.LoadServiceOfferingGroups(),
         ]);
         this.setInitialized(true);
         storeDataToSession(
@@ -104,6 +114,17 @@ export class DescriptionOfWorkStore extends VuexModule {
       this.setServiceOfferings(serviceOfferings);
     } catch (error) {
       throw new Error(`error loading Service Offerings ${error}`);
+    }
+  }
+
+  @Action({rawError: true})
+  public async LoadServiceOfferingGroups(): Promise<void> {
+    try {
+      const serviceOfferingGroups = await api.systemChoices
+        .getChoices(ServiceOfferingTableName, "service_offering_group");
+      this.setServiceOfferingGroups(serviceOfferingGroups);  
+    } catch (error) {
+      throw new Error(`error loading Service Offering Groups ${error}`);
     }
   }
 }
