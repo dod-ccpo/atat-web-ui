@@ -25,9 +25,9 @@ export const AcorsRouteResolver = (current: string): string => {
 };
 
 
-export const CurrentContractRouteResolver = (current: string): string => {
+export const CurrentContractDetailsRouteResolver = (current: string): string => {
   const hasCurrentContract 
-    = AcquisitionPackage.currentContract?.current_contract_exists === "true";
+    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
   if (hasCurrentContract) {
     return routeNames.CurrentContractDetails;
   }
@@ -36,8 +36,19 @@ export const CurrentContractRouteResolver = (current: string): string => {
     : routeNames.CurrentContract;
 };
 
+export const CurrentContractEnvRouteResolver = (current: string): string => {
+  const hasCurrentContract 
+    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+  if (hasCurrentContract) {
+    return routeNames.CurrentEnvironment;
+  }
+  return current === routeNames.PeriodOfPerformance
+    ? routeNames.CurrentContract
+    : routeNames.PeriodOfPerformance;
+};
+
 export const PIIRecordResolver = (current: string): string => {
-  const hasSystemOfRecord = OtherContractConsiderations.PIIRecordIncluded;
+  const hasSystemOfRecord = AcquisitionPackage.sensitiveInformation?.pii_present === "YES";
   // if system of record will be included, route to system of records page
   if (hasSystemOfRecord) {
     return routeNames.PIIRecord;
@@ -47,7 +58,7 @@ export const PIIRecordResolver = (current: string): string => {
 
 export const FOIARecordResolver = (current: string): string => {
   const needsFOIACoordinator 
-    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "true";
+    = AcquisitionPackage.sensitiveInformation?.potential_to_be_harmful === "YES";
   // if user selects "Yes" on FOIA (Public Disclosure of Information) page,
   // then need to collect information about the FOIA Coordinator
   if (needsFOIACoordinator) {
@@ -59,7 +70,7 @@ export const FOIARecordResolver = (current: string): string => {
 };
 export const A11yRequirementResolver = (current: string): string => {
   const needsA11yReqs
-      = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "false";
+      = AcquisitionPackage.sensitiveInformation?.section_508_sufficient === "NO";
   // if user selects "No" on Section 508 standards page,
   // then need to collect information about 508 accessibility requirements
   if (needsA11yReqs) {
@@ -84,7 +95,8 @@ export const ContractTrainingReq = (current: string): string => {
 // add resolver here so that it can be found by invoker
 const resolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
-  CurrentContractRouteResolver,
+  CurrentContractDetailsRouteResolver,
+  CurrentContractEnvRouteResolver,
   PIIRecordResolver,
   FOIARecordResolver,
   A11yRequirementResolver,

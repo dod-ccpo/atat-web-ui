@@ -26,13 +26,13 @@ describe("Test suite: SAC: Section 508 Standards", () => {
   it("TC2: Asserts: Section 508 standards", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No on PII screen
-    cy.selectPiiOption(occ.noPIIRadioOption, "No");
+    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
 
     //select radio options
-    cy.radioBtn(occ.noBAARadioOption, "No").click({ force: true });
+    cy.radioBtn(occ.noBAARadioOption, "NO").click({ force: true });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");
-    cy.radioBtn(occ.foiaNoOption, "false").click({ force: true });
+    cy.radioBtn(occ.foiaNoOption, "NO").click({ force: true });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, "Let’s look into your Section 508 Accessibility requirements");
     cy.textExists(occ.blueAlertLabel, " Section 508 Accessibility Standards for Cloud Computing ");
@@ -46,8 +46,8 @@ describe("Test suite: SAC: Section 508 Standards", () => {
       expect(formattedTxt).equal(sectionText);      
     });
     //radio buttons
-    cy.radioBtn(occ.sectionNoRadio, "false").not("[disabled]").click({ force: true });
-    cy.radioBtn(occ.sectionYesRadio, "true").not("[disabled]").click({ force: true });
+    cy.radioBtn(occ.sectionNoRadio, "NO").not("[disabled]").click({ force: true });
+    cy.radioBtn(occ.sectionYesRadio, "YES").not("[disabled]").click({ force: true });
 
     //About 508 FAQ Link
     cy.textExists(occ.about508Link,

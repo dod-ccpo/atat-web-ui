@@ -5,7 +5,7 @@ import { ContactsApi } from "./contacts";
 import { FairOpportunityApi } from "./fairOpportunity";
 import { CurrentContractApi } from "./background";
 import { ContractConsiderationsApi } from "./contractConsiderations";
-import { SensitiveInformationApi } from "./sensativeInformation";
+import { SensitiveInformationApi } from "./sensitiveInformation";
 import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";

@@ -16,7 +16,7 @@
             class="copy-max-width mb-10 max-width-740"
             id="TrainingOptions"
             :card="true"
-            :items="TrainingOptions"
+            :items="trainingOptions"
             :value.sync="selectedOption"
             :rules="[$validators.required('Please select an option')]"
             width="180"
@@ -45,9 +45,12 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class Training extends Mixins(SaveOnLeave) {
-  private saved: ContractConsiderationsDTO = {};
-  private selectedOption = ''
-  private TrainingOptions: RadioButton[] = [
+  private saved: ContractConsiderationsDTO = {
+    contractor_required_training: "",
+  };
+  private selectedOption 
+    = AcquisitionPackage.contractConsiderations?.contractor_required_training || "";
+  private trainingOptions: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes.",
@@ -62,20 +65,15 @@ export default class Training extends Mixins(SaveOnLeave) {
 
   public get current(): ContractConsiderationsDTO {
     return {
-      contractor_required_training: this.selectedOption || "UNSELECTED",
+      contractor_required_training: this.selectedOption,
     };
   }
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadContractConsiderations();
-    this.saved = {
-      contractor_required_training: storeData.contractor_required_training || 'UNSELECTED',
-    }
     if (storeData) {
-      if(storeData.contractor_required_training == 'UNSELECTED') {
-        this.selectedOption ='';
+      this.saved = {
+        contractor_required_training: storeData.contractor_required_training,
       }
-      this.selectedOption = storeData.contractor_required_training === "UNSELECTED" ? ""
-        : storeData.contractor_required_training || "UNSELECTED"
     }
   }
 

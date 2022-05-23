@@ -181,7 +181,7 @@ describe("Test suite: Acquisition Package: Contact Information: COR ", () => {
     );
 
     //radio butttons        
-    cy.radioBtn(commonCorAcor.accessYesRadioBtn, "true").click({ force: true });
+    cy.radioBtn(commonCorAcor.accessYesRadioBtn, "YES").click({ force: true });
 
     //Click on Continue button
     cy.btnExists(common.continueBtn, " Continue ").click();

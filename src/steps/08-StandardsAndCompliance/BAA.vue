@@ -44,7 +44,7 @@
 
           <ATATAlert 
             id="BAASampleProvisionsAlert"
-            v-show="selectedBAAOption === 'Yes'"
+            v-show="selectedBAAOption === 'YES'"
             type="info" 
             class="copy-max-width my-10"
           >
@@ -134,23 +134,23 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 
 export default class BAA extends Mixins(SaveOnLeave) {
   private baaHref = `https://www.hhs.gov/hipaa/for-professionals/covered-entities/
-  sample-business-associate-agreement-provisions/index.html`;
+    sample-business-associate-agreement-provisions/index.html`;
 
   private moreInfoHref= `https://www.ecfr.gov/current/title-45/
-  subtitle-A/subchapter-C/part-160/subpart-A/section-160.103`;
+    subtitle-A/subchapter-C/part-160/subpart-A/section-160.103`;
 
 
-  private selectedBAAOption = "";
+  private selectedBAAOption = AcquisitionPackage.sensitiveInformation?.baa_required || "";
   private bAAOptions: RadioButton[] = [
     {
       id: "YesBAA",
       label: "Yes. This contract effort will require a BAA to safeguard e-PHI.",
-      value: "Yes",
+      value: "YES",
     },
     {
       id: "NoBAA",
       label: "No.",
-      value: "No",
+      value: "NO",
     },
   ];
 
@@ -170,18 +170,14 @@ export default class BAA extends Mixins(SaveOnLeave) {
     }
   }
 
-
-
   private get currentData(): SensitiveInformationDTO {
     return {
-      baa_required: this.selectedBAAOption === "Yes" ? "true" : "false",
+      baa_required: this.selectedBAAOption || "",
     };
   }
 
-  private get savedData(): SensitiveInformationDTO {
-    return {
-      baa_required: AcquisitionPackage.sensitiveInformation?.baa_required || "false",
-    };
+  private savedData: SensitiveInformationDTO = {
+    baa_required: "",
   }
 
   private hasChanged(): boolean {
@@ -192,7 +188,9 @@ export default class BAA extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage
       .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
     if (storeData) {
-      this.selectedBAAOption = storeData.baa_required === "true" ? "Yes" : "No";
+      this.savedData = {
+        baa_required: storeData.baa_required,
+      } 
     }
   }
 
