@@ -1,4 +1,4 @@
-import { bootstrapMockApis} from "../../../helpers";
+import { bootstrapMockApis,randomString} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import org from "../../../selectors/org.sel";
 
@@ -176,5 +176,125 @@ describe("Test suite: Acquisition Package: Organization ", () => {
     cy.textExists(org.agencyOrgNameTxtLabel, " Agency/Organization Name ");
         
   });    
+
+  it("TC6: Validations: DISA & US address", () => {
+    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
+    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+    //Service Agency is DISA
+    cy.verifyRequiredDropdown(
+      org.serviceAgencyInput,
+      org.serviceAgencyError,
+      "Please select your service or agency."
+    );    
+    cy.serviceOrAgency("Defense Information Systems");
+    // DISA dropdown is blank
+    cy.verifyRequiredInput(
+      org.disaOrgInput,
+      org.disaDropdownError,
+      "Please select your DISA Organization."); 
+    cy.autoCompleteSelection(org.disaOrgInput, "Assistan", org.disaAutoComplete);
+    //DoD Activity is blank
+    cy.verifyRequiredInput(
+      org.activityAddressCodeTxtBox,
+      org.activityAddressCodeError,
+      "Please enter your 6-character DoDAAC."
+    );
+    //DoD Activity value more than 6 characters
+    const dodTxt=randomString(7)
+    cy.findElement(org.activityAddressCodeTxtBox).should("be.visible").clear()
+      .type(dodTxt).blur({ force: true }).then(() => {
+        cy.checkErrorMessage(
+          org.activityAddressCodeError,
+          "Your DoDAAC must be 6 characters."
+        );
+      });
+    //Street address is blank
+    cy.verifyRequiredInput(
+      org.streetTxtBox,
+      org.streetError,
+      "Please enter an address."
+    );
+    //City is blank
+    cy.verifyRequiredInput(
+      org.cityTxtBox,
+      org.cityError,
+      "Please enter a city."
+    );
+    //State is blank
+    cy.verifyRequiredDropdown(
+      org.stateTxtBox,
+      org.stateError,
+      "Please select a state."
+    );    
+    //Zip code is blank
+    cy.verifyRequiredInput(
+      org.zipCodeTxtBox,
+      org.zipError,
+      "Please enter a ZIP code."
+    );
+  });
+
+  it("TC7: Validations: Not DISA & Foreign address", () => {
+    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
+    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+    cy.serviceOrAgency("Communications");
+    // Organization Name  is blank
+    cy.verifyRequiredInput(
+      org.orgNameTxtBox,
+      org.orgNameError,
+      "Please enter your organization name."); 
+    //Organization Name is more than 80 characters    
+    const orgNameTxt=randomString(81)
+    cy.findElement(org.orgNameTxtBox,).should("be.visible").clear()
+      .type(orgNameTxt).blur({ force: true }).then(() => {
+        cy.checkErrorMessage(
+          org.orgNameError,
+          "Organization name cannot exceed 80 characters."
+        );
+      });
+    //select Address type as Foreign address
+    cy.selectTypeOfMailingAddress(org.foreignradioBtn, "FOREIGN");
+    //State or Province is blank
+    cy.verifyRequiredInput(
+      org.stateProvinceTxtBox,
+      org.stateProvinceError,
+      "Please enter a state/province."
+    );    
+    //Postal code is blank
+    cy.verifyRequiredInput(
+      org.postalCodeTxtBox,
+      org.postalCodeError,
+      "Please enter a postal code."
+    );      
+    //country dropdown is blank
+    cy.verifyRequiredInput(
+      org.countryInput,
+      org.countryError,
+      "Please select a country.");
+    
+  });
+
+  it("TC8: Validations: Military address", () => {
+    cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
+    cy.textExists(common.header, " Next, we’ll gather information about your organization ");
+    //select Address type as Military
+    cy.selectTypeOfMailingAddress(org.militaryradioBtn, "MILITARY");
+    //APO/FPO/DPO dropdown is blank
+    cy.findElement(org.apoFpoDropDown).scrollIntoView().should("be.visible")
+      .clear({ force: true }).focus().tab().then(() => {
+        cy.checkErrorMessage(
+          org.apoFpoDropDownError,
+          "Please select a military post office (APO or FPO).");
+      }); 
+    //AA/AE/AP dropdown is blank   
+    cy.findElement(org.stateCodeDropDown).should("be.visible")
+      .clear({ force: true })
+      .focus().tab().then(() => {
+        cy.checkErrorMessage(
+          org.aaAEError,
+          "Please select a state code.");
+      }); 
+            
+  });
 
 });      
