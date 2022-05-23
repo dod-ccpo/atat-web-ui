@@ -24,10 +24,6 @@
               </a>
             </p>
 
-            <p id="XaaSLabel" class="_checkbox-group-label">
-              What type of XaaS resources, tools and services do you need?
-            </p>
-
             <ATATCheckboxGroup
               id="XaaSCheckboxes"
               aria-describedby="XaaSLabel"
@@ -38,13 +34,12 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
+              groupLabel="What type of XaaS resources, tools and services do you need?"
+              groupLabelId="XaaSLabel"
             />
 
             <hr />
 
-            <p id="CloudSupportLabel" class="_checkbox-group-label">
-              What type(s) of cloud support packages do you need?
-            </p>
             <ATATCheckboxGroup
               id="CloudSupportCheckboxes"
               aria-describedby="CloudSupportLabel"
@@ -55,6 +50,8 @@
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
+              groupLabel="What type(s) of cloud support packages do you need?"
+              groupLabelId="CloudSupportLabel"
             />
 
           </div>

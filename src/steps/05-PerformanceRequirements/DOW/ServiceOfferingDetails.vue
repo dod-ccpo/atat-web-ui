@@ -28,8 +28,23 @@
               </p>
             </div>
 
-            <div v-else id="ClassificationCheckboxes">
-              <!-- classification checkboxes placeholder -->
+            <div v-else id="ClassificationCheckboxWrapper">
+              <ATATCheckboxGroup
+                id="ClassificationCheckboxes"
+                aria-describedby="ClassificationGroupLabel"
+                :value.sync="selectedClassificationLevels"
+                :items="classificationLevels"
+                :card="false"
+                class="copy-max-width"
+                :rules="[
+                  $validators.required('Please select at least one option.')
+                ]"
+                groupLabel="What classification level(s) do you need?"
+                groupLabelId="ClassificationGroupLabel"
+              />
+
+              <!-- expandable link here -->
+
             </div>
 
             <div id="OfferingDetailsForms">
@@ -47,9 +62,17 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+
+import { Checkbox } from "../../../../types/Global";
+
 import { getIdText } from "@/helpers";
 
-@Component({})
+@Component({
+  components: {
+    ATATCheckboxGroup,
+  }
+})
 
 export default class ServiceOfferingDetails extends Vue {
 
@@ -65,13 +88,22 @@ export default class ServiceOfferingDetails extends Vue {
       description: "",
       neededForEntireDuration: null,
       periods: []
+    },
+    {
+      classification: {
+        name: "Unclassified / Impact Level 4 (IL4)",
+        value: "IL4",
+      },
+      description: "",
+      neededForEntireDuration: null,
+      periods: []
     }
   ]
 
   // create classification level type when get data from backend implemented
   public selectedClassificationLevelsOnLoad = [{}];
   public selectedClassificationLevels = [{}];
-  public classificationLevels = [{}];
+  public classificationLevels: Checkbox | undefined;
 
   // get periods from data when implemented
   public periods = [{}];
@@ -90,25 +122,33 @@ export default class ServiceOfferingDetails extends Vue {
         name: "Unclassified / Impact Level 2 (IL2)",
         value: "IL2",
       },
+      {
+        name: "Unclassified / Impact Level 4 (IL4)",
+        value: "IL4",
+      },
     ];
 
     // get this from store data when implemented 
     this.classificationLevels = [
       {
-        name: "Unclassified / Impact Level 2 (IL2)",
+        id: "IL2",
+        label: "Unclassified / Impact Level 2 (IL2)",
         value: "IL2",
       },
       {
-        name: "Unclassified / Impact Level 4 (IL4)",
+        id: "IL4",
+        label: "Unclassified / Impact Level 4 (IL4)",
         value: "IL4",
       },
       {
-        name: "Unclassified / Impact Level 5 (IL5)",
+        id: "IL5",
+        label: "Unclassified / Impact Level 5 (IL5)",
         value: "IL5",
       },
       {
-        name: "Secret / Impact Level 2 (IL6)",
-        value: "IL6",
+        id: "IL6",
+        label: "Secret / Impact Level 2 (IL6)",
+        value: "S",
       },
     ];    
 
