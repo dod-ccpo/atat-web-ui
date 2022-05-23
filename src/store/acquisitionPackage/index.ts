@@ -32,6 +32,7 @@ import { PeriodOfPerformanceDTO } from "@/api/models";
 import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
 import { FileAttachmentServiceFactory } from "@/services/attachment";
+import DescriptionOfWork from "@/store/descriptionOfWork"
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -392,6 +393,7 @@ export class AcquisitionPackageStore extends VuexModule {
   public async initialize(): Promise<void> {
     await ContactData.initialize();
     await OrganiationData.initialize();
+    await DescriptionOfWork.initialize();
 
     if (this.initialized) {
       return;

@@ -28,6 +28,11 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   funding_plans: string;
 }
 
+export interface ClassificationLevelDTO extends BaseTableDTO {
+  impact_level: string;
+  classification: string;
+}
+
 export interface CurrentContractDTO extends BaseTableDTO {
   current_contract_exists?: string;
   incumbent_contractor_name?: string;
@@ -123,6 +128,11 @@ export interface SensitiveInformationDTO extends BaseTableDTO {
   section_508_sufficient?: string;
   accessibility_reqs_508?: string;
 
+}
+
+export interface ServiceOfferingDTO extends BaseTableDTO {
+  name: string;
+  service_offering_group: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {

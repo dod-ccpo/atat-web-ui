@@ -18,6 +18,8 @@ import { AttachmentApi } from "./attachments";
 import { TableApiBase } from "./tableApiBase";
 import { AttachableDTO } from "./models";
 import { PeriodApi } from "./period";
+import { ClassificationLevelApi } from "./classificationLevels";
+import { ServiceOfferingApi } from "./serviceOffering";
 
 export const api = {
 
@@ -26,12 +28,14 @@ export const api = {
   acquisitionPackageTable: new AcquisitionPackagesApi(),
   projectOverviewTable: new ProjectOverviewApi(),
   organizationTable: new OrganizationApi(),
+  classificationLevelTable: new ClassificationLevelApi(),
   contactsTable: new ContactsApi(),
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
   fundingPlanTable :new FundingPlanApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
+  serviceOfferingTable: new ServiceOfferingApi(),
   militaryRankTable: new MilitaryRankApi(),
   periodTable: new PeriodApi(),
   periodOfPerformanceTable: new PeriodOfPerformanceApi(),
