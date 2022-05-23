@@ -44,7 +44,7 @@
 
           <ATATAlert 
             id="BAASampleProvisionsAlert"
-            v-show="selectedBAAOption === 'Yes'"
+            v-show="selectedBAAOption === 'YES'"
             type="info" 
             class="copy-max-width my-10"
           >

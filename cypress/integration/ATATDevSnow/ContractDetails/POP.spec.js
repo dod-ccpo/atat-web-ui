@@ -161,8 +161,8 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
 
     });
     //assert radio button options
-    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "true").not("[disabled]")
-    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "false").not("[disabled]")
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").not("[disabled]")
+    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").not("[disabled]")
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
@@ -174,9 +174,9 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, "Do you want to request a PoP start date?");
     //Select Yes radio option
-    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "false").click({ force: true });
+    cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").click({ force: true });
     cy.findElement(contractDetails.requestedStartDate).should("not.exist")
-    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "true").click({ force: true });
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({ force: true });
     cy.findElement(contractDetails.requestedStartDate).should("exist"); 
     cy.findElement(contractDetails.requestedStartDropdownIcon).click();
     const listOptions = "No sooner thanNot later than"    
@@ -200,8 +200,8 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
       cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
       cy.textExists(common.header, "Do you want to request a PoP start date?");
       //Select Yes radio option
-      cy.radioBtn(contractDetails.popStartDateNoRadioOption, "false").click({ force: true });
-      cy.radioBtn(contractDetails.popStartDateYesRadioOption, "true")
+      cy.radioBtn(contractDetails.popStartDateNoRadioOption, "NO").click({ force: true });
+      cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES")
         .click({ force: true });
       cy.findElement(contractDetails.requestedStartDropdownIcon).click();      
       // If user select the Requested start date Not later than 
@@ -247,8 +247,8 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
 
     });
     //assert radio button options
-    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
-    cy.radioBtn(contractDetails.noRadioOption, "false").not("[disabled]").click({force: true});
+    cy.radioBtn(contractDetails.yesRadioOption,  "YES").not("[disabled]").click({force: true});
+    cy.radioBtn(contractDetails.noRadioOption, "NO").not("[disabled]").click({force: true});
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });  

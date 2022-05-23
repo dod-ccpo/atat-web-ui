@@ -599,7 +599,6 @@ export class AcquisitionPackageStore extends VuexModule {
       // retrives Store TableDTO based property using property name as key
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const sysId = storeDataProperty.sys_id || "";
-      debugger;
       if (sysId.length > 0) {
         // retrieves endpoint mapped to store property
         const apiEndPoint = await this.getApiEndPoint(storeProperty);
