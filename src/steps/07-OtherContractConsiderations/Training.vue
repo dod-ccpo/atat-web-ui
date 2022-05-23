@@ -16,7 +16,7 @@
             class="copy-max-width mb-10 max-width-740"
             id="TrainingOptions"
             :card="true"
-            :items="TrainingOptions"
+            :items="trainingOptions"
             :value.sync="selectedOption"
             :rules="[$validators.required('Please select an option')]"
             width="180"
@@ -50,7 +50,7 @@ export default class Training extends Mixins(SaveOnLeave) {
   };
   private selectedOption 
     = AcquisitionPackage.contractConsiderations?.contractor_required_training || "";
-  private TrainingOptions: RadioButton[] = [
+  private trainingOptions: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes.",
