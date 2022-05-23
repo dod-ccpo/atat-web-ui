@@ -7,7 +7,11 @@
             Next, we’ll gather your requirements for {{ categoryName }}
           </h1>
           <div class="copy-max-width">
-            <div v-if="selectedClassificationLevelsOnLoad.length === 1">
+
+            <div 
+              v-if="selectedClassificationLevelsOnLoad.length === 1"
+              id="SingleClassificationIntro"  
+            >
               <p id="SingleClassificationIntro">
                 In the previous section, you specified 
                 <strong>{{ selectedClassificationLevelsOnLoad[0].name }}</strong> for the 
@@ -18,14 +22,14 @@
                 </a>.
               </p>
             </div>
-            <div v-else>
+            
+            <div v-else id="ClassificationCheckboxes">
               <!-- classification checkboxes -->
             </div>
 
-            <div id="">
-              <!-- form component placeholder -->
+            <div id="OfferingDetailsForms">
+              <!-- form component -->
             </div>
-
 
           </div>
         </v-col>
