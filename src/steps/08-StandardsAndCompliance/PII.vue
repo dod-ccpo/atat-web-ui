@@ -99,7 +99,6 @@ import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage"
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { SensitiveInformationDTO} from "@/api/models"
 import { hasChanges } from "@/helpers";
-import OtherContractConsiderations from "@/store/otherContractConsiderations";
 
 import {RadioButton} from "../../../types/Global";
 
@@ -116,37 +115,25 @@ export default class PII extends  Mixins(SaveOnLeave) {
     {
       id: "YesPII",
       label: "Yes. This contract action will include a system of records with PII.",
-      value: "Yes",
+      value: "YES",
     },
     {
       id: "NoPII",
       label: "No.",
-      value: "No",
+      value: "NO",
     },
   ];
 
-  public get selectedPIIOption(): string {
-    const included = OtherContractConsiderations.PIIRecordIncluded;
-    if (included !== null) {
-      return included ? "Yes" : "No";
-    }
-    return "";
-  }
-
-  public set selectedPIIOption(value: string) {
-    OtherContractConsiderations.setPIIRecord(value === "Yes");
-  }
+  public selectedPIIOption = AcquisitionPackage.sensitiveInformation?.pii_present || "";
 
   private get currentData(): SensitiveInformationDTO {
     return {
-      pii_present: this.selectedPIIOption === "Yes" ? "true" : "false",
+      pii_present: this.selectedPIIOption || "",
     };
   }
 
-  private get savedData(): SensitiveInformationDTO {
-    return {
-      pii_present: AcquisitionPackage.sensitiveInformation?.pii_present || "false",
-    };
+  private savedData: SensitiveInformationDTO = {
+    pii_present: "",
   }
 
   private hasChanged(): boolean {
@@ -155,9 +142,13 @@ export default class PII extends  Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage
-      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
+      .loadData<SensitiveInformationDTO>(
+        { storeProperty: StoreProperties.SensitiveInformation }
+      );
     if (storeData) {
-      this.selectedPIIOption = storeData.pii_present === "true" ? "Yes" : "No";
+      this.savedData = {
+        pii_present: storeData.pii_present,
+      }
     }
   }
 

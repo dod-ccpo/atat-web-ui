@@ -77,9 +77,11 @@ import { ContractConsiderationsDTO } from "@/api/models";
   },
 })
 export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
-  private explanation = "";
+  private explanation 
+    = AcquisitionPackage.contractConsiderations?.conflict_of_interest_explanation || "";
   private saved: ContractConsiderationsDTO = {};
-  private hasConflict= "";
+  private hasConflict 
+    = AcquisitionPackage.contractConsiderations?.potential_conflict_of_interest || "";
   private conflictOfInterestOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -120,19 +122,11 @@ export default class ConflictOfInterest extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.loadContractConsiderations();
 
-
-    this.saved = {
-      potential_conflict_of_interest: storeData.potential_conflict_of_interest || 'UNSELECTED',
-      conflict_of_interest_explanation : storeData.conflict_of_interest_explanation ||'',
-    }
-
     if (storeData) {
-
-      const hasConflictOfInterest = storeData.potential_conflict_of_interest || 'UNSELECTED';
-      this.hasConflict =
-        hasConflictOfInterest?.length  ? 
-          storeData.potential_conflict_of_interest || "UNSELECTED" : "UNSELECTED";
-      this.explanation = storeData.conflict_of_interest_explanation || "";
+      this.saved = {
+        potential_conflict_of_interest: storeData.potential_conflict_of_interest || "",
+        conflict_of_interest_explanation : storeData.conflict_of_interest_explanation || "",
+      }
     }
   }
 

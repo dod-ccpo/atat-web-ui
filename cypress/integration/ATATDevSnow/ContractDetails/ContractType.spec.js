@@ -31,7 +31,7 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
     cy.findElement(contractDetails.popRadioGroup).should("exist");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Will this be a future recurring requirement? ");
-    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
+    cy.radioBtn(contractDetails.yesRadioOption,  "YES").not("[disabled]").click({force: true});
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
     const expectedRecuringReqText = "Firm-Fixed-Price (FFP) is the standard contract type" +
@@ -63,7 +63,7 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
     cy.findElement(contractDetails.popRadioGroup).should("exist");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Will this be a future recurring requirement? ");
-    cy.radioBtn(contractDetails.yesRadioOption,  "true").not("[disabled]").click({force: true});
+    cy.radioBtn(contractDetails.yesRadioOption,  "YES").not("[disabled]").click({force: true});
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
     //Select the checkbox options

@@ -161,12 +161,12 @@ export default class COR_ACOR extends Vue {
     {
       id: "AccessToEdit_Yes",
       label: "Yes. I would like to invite this individual to edit my acquisition.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "AccessToEdit_No",
       label: "No.",
-      value: "false",
+      value: "NO",
     },
   ];
 

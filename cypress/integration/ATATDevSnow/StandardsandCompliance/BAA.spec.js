@@ -28,7 +28,7 @@ describe("Test suite: SAC step: BAA", () => {
   it("TC2: Asserts: BAA", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "No");
+    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
     cy.textExists(occ.baaLabelText, "Business Associate Agreements (BAA)");
     const expectedPHIText = "Protected Health Information (PHI) is information which relates" +
       " to the past, present, or future physical or mental health or condition of any" +
@@ -57,8 +57,8 @@ describe("Test suite: SAC step: BAA", () => {
       expect(formattedTxt).equal(baaOptionTextLabel);
     });
     //Asserts radio options
-    cy.radioBtn(occ.yesBAARadioOption, "Yes").not("[disabled]");
-    cy.radioBtn(occ.noBAARadioOption, "No").not("[disabled]");
+    cy.radioBtn(occ.yesBAARadioOption, "YES").not("[disabled]");
+    cy.radioBtn(occ.noBAARadioOption, "NO").not("[disabled]");
     //About Business Associates info Link
     cy.textExists(occ.aboutBALink, " Why do we need to know about business associates? ").click()
       .then(() => {
@@ -92,7 +92,7 @@ describe("Test suite: SAC step: BAA", () => {
   it("TC3: BAA: Select the radio options", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "No");
+    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
     //Select radio options
     const infoAlert = "As a mission owner, it is your responsibility to obtain the appropriate" +
         " agreements with your business associate(s). Business associates must also obtain BAAs" +
@@ -100,7 +100,7 @@ describe("Test suite: SAC step: BAA", () => {
         " acquisition package. For sample BAA provisions, visit" +
         " https://www.hhs.gov/hipaa/for-professionals/covered-entities/" +
         " sample-business-associate-agreement-provisions/index.html."
-    cy.radioBtn(occ.yesBAARadioOption, "Yes").click({ force: true })
+    cy.radioBtn(occ.yesBAARadioOption, "YES").click({ force: true })
       .then(() => {
         cy.findElement(occ.infoAlert).should("be.visible").then((el) => {
           let actualTxt = el.text();
@@ -110,7 +110,7 @@ describe("Test suite: SAC step: BAA", () => {
         });
       });
     
-    cy.radioBtn(occ.noBAARadioOption, "No").click({ force: true })
+    cy.radioBtn(occ.noBAARadioOption, "NO").click({ force: true })
       .then(() => {
         cy.findElement(occ.infoAlert).should("not.be.visible")
       });
@@ -126,9 +126,9 @@ describe("Test suite: SAC step: BAA", () => {
   it("TC4: BAA: Validations", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "No");
+    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
     // radio options error
-    cy.radioBtn(occ.yesBAARadioOption, "Yes").focus().tab()
+    cy.radioBtn(occ.yesBAARadioOption, "YES").focus().tab()
       .then(() => {
         cy.checkErrorMessage(occ.baaRadioError, "Please select an option");
       });

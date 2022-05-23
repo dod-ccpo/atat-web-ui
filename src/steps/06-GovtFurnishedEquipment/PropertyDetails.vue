@@ -55,18 +55,19 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 
 export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
-  private selectedEquipmentProvided: string | undefined = "" ;
+  private selectedEquipmentProvided 
+    = AcquisitionPackage.gfeOverview?.gfe_gfp_furnished || "";
 
   private equipmentProvidedOptions: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: "No. GFP/GFE will NOT be furnished to the contractor.",
-      value: "false",
+      value: "NO",
     },
   ];
 
@@ -81,10 +82,8 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
     };
   }
 
-  private get savedData(): GFEOverviewDTO {
-    return {
-      gfe_gfp_furnished: AcquisitionPackage.gfeOverview?.gfe_gfp_furnished || "",
-    };
+  private savedData: GFEOverviewDTO = {
+    gfe_gfp_furnished: "",
   }
 
   private hasChanged(): boolean {
@@ -95,7 +94,9 @@ export default class WillGovtEquipBeFurnished extends Mixins(SaveOnLeave) {
     const storeData = await AcquisitionPackage.
       loadData<GFEOverviewDTO>({storeProperty: StoreProperties.GFEOverview});
     if (storeData) {
-      this.selectedEquipmentProvided = storeData.gfe_gfp_furnished;
+      this.savedData = {
+        gfe_gfp_furnished: storeData.gfe_gfp_furnished,
+      }
     }
   }
 
