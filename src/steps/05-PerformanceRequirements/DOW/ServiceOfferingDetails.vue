@@ -17,12 +17,19 @@
                 <strong>{{ selectedClassificationLevelsOnLoad[0].name }}</strong> for the 
                 classification level of all cloud resources and services. If you 
                 need this within a different level, 
-                <a role="button" id="UpdateClassification">
+                <a 
+                  role="button" 
+                  id="UpdateClassification"
+                  tabindex="0"
+                  @click="openModal"
+                  @keydown.enter="openModal"
+                  @keydown.space="openModal"
+                >
                   update your Classification Requirements
                 </a>.
               </p>
             </div>
-            
+
             <div v-else id="ClassificationCheckboxes">
               <!-- classification checkboxes -->
             </div>
@@ -139,6 +146,9 @@ export default class ServiceOfferingDetails extends Vue {
     ]
   }
 
+  public openModal(): void {
+    // open modal functionality in task 7411
+  }
 
 }
 
