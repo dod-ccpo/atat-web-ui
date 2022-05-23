@@ -128,7 +128,7 @@ export default class PII extends  Mixins(SaveOnLeave) {
 
   private get currentData(): SensitiveInformationDTO {
     return {
-      pii_present: this.selectedPIIOption || "UNSELECTED",
+      pii_present: this.selectedPIIOption || "",
     };
   }
 

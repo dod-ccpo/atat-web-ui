@@ -225,7 +225,7 @@ export default class Section508Standards extends Mixins(SaveOnLeave) {
 
   private get currentData(): SensitiveInformationDTO {
     return {
-      section_508_sufficient: this.selected508Response || "UNSELECTED",
+      section_508_sufficient: this.selected508Response || "",
     };
   }
 

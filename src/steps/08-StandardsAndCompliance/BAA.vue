@@ -172,7 +172,7 @@ export default class BAA extends Mixins(SaveOnLeave) {
 
   private get currentData(): SensitiveInformationDTO {
     return {
-      baa_required: this.selectedBAAOption || "UNSELECTED",
+      baa_required: this.selectedBAAOption || "",
     };
   }
 

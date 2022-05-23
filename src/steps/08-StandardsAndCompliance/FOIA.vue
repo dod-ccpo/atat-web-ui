@@ -132,7 +132,7 @@ export default class FOIA extends Mixins(SaveOnLeave) {
 
   private get currentData(): SensitiveInformationDTO {
     return {
-      potential_to_be_harmful: this.potentialToBeHarmful || "UNSELECTED",
+      potential_to_be_harmful: this.potentialToBeHarmful || "",
     };
   }
 
