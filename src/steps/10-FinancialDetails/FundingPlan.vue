@@ -36,6 +36,9 @@ export default class FundingPlan extends Vue {
   private validFileFormats = ["xlsx", "xls", "pdf"];
   private maxFileSizeInBytes = 1073741824;
 
+  // rules array dynamically created based on the invalid
+  // files returned from the child component
+  // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
 
@@ -46,7 +49,8 @@ export default class FundingPlan extends Vue {
           this.validFileFormats,
           this.maxFileSizeInBytes,
           iFile.doesFileExist,
-          iFile.SNOWError
+          iFile.SNOWError,
+          iFile.statusCode
         )
       );
     });

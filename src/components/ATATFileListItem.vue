@@ -136,6 +136,14 @@ export default class ATATFileListItem extends Vue {
   /** DATA */
   private isLoading = true;
 
+
+  /**
+   * While progressStatus < 100, show progress bar.
+   * 
+   * `setTimeout` was added to display progress bar during
+   * fast uploads.  Without it, the progress bar would never 
+   * display for light uploads
+   */
   @Watch("uploadingFileObj.progressStatus")
   protected IsFileLoading(newVal: number): void {
     window.setTimeout(
@@ -146,11 +154,16 @@ export default class ATATFileListItem extends Vue {
     );
   }
 
+  /**
+   * Watches for `isErrored` to change after
+   * file uploads to SNOW. If `true` remove file
+   * and stop progress bar
+   */
   @Watch("uploadingFileObj.isErrored")
   protected IsFileErrored(newVal: boolean): void {
     if (newVal) {
-      this.isLoading = newVal;
       this.removeFile(this.index);
+      this.isLoading = newVal;
     }
   }
 
@@ -177,7 +190,6 @@ export default class ATATFileListItem extends Vue {
         "..." +
         filename.substr(filename.length - 13, filename.length)
       );
-      // return filename.substr(0, 45) + "..." + ext;
     }
     return filename;
   }

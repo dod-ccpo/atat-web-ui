@@ -183,4 +183,5 @@ export interface invalidFile{
   file: File;
   doesFileExist: boolean;
   SNOWError?: string;
+  statusCode?: number;
 }

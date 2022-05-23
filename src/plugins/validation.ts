@@ -225,11 +225,11 @@ export class ValidationPlugin {
   };
 
   /**
- * Validator that ensures the field value is not empty.
+ * Validator that ensures the file is valid.
  * Returns the error message otherwise.
  *
  * @param message
- * @returns {function(*=): boolean}
+ * @returns {function(*): boolean}
  */
 
   isFileValid = (
@@ -237,7 +237,8 @@ export class ValidationPlugin {
     validExtensions: string[], 
     maxFileSize: number, 
     doesFileExist: boolean,
-    SNOWError?: string
+    SNOWError?: string,
+    statusCode?: number,
   ):((v: string) => string | true | undefined) => {
     return () => {
       const fileName = file.name.length>20 
@@ -254,10 +255,12 @@ export class ValidationPlugin {
                 `.${validExtensions.slice(-1)} file.`
       }
 
+      // does file aleady exist?
       if (doesFileExist){
         return `'${fileName}' was already uploaded.`
       }
       
+      // is file too big?
       if (fileSize>maxFileSize){
         return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
       }
@@ -265,11 +268,16 @@ export class ValidationPlugin {
       if (SNOWError !== "" && SNOWError !== undefined){
         const error = SNOWError.toLowerCase();
         let invalidMessage = "";
+
+        // during upload, did SNOW detect that the 
+        // file type was incorrect (eg, changing .txt to .pdf file)
         if (error.indexOf("invalid file type")>-1){
           invalidMessage = `'${fileName}' is not a valid format or has been corrupted. ` +
             `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
             `.${validExtensions.slice(-1)} file.`
-        } else {
+        } else { 
+          // generic message to accommodate for all other errors 
+          //that are returned from SNOW
           invalidMessage = "We have encountered unexpected problems uploading your file '" +
             fileName +"'. Please try again later."
         }

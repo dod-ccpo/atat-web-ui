@@ -107,7 +107,6 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
   },
 })
 export default class ATATFileUpload extends Vue {
-  //todo complete validation msgs including maxFileSizeInBytes
 
   // refs
   $refs!: {
@@ -131,12 +130,13 @@ export default class ATATFileUpload extends Vue {
   @PropSync("rules", { default: () => [] }) private _rules!: ((
     v: string
   ) => string | true | undefined)[];
+  
+  //1073741824 is 1GB, the most SNOW will allow to upload
   @Prop({ default: 1073741824, required: true })
   private maxFileSizeInBytes!: number;
-  //1073741824 is 1GB, the most SNOW will allow to upload
+  
 
   //data
-  // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
   private validFiles: uploadingFile[] = [];
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
@@ -307,7 +307,8 @@ export default class ATATFileUpload extends Vue {
               this.logInvalidFiles(
                 uploadingFileObj.file,
                 false,
-                error?.response?.data?.error.message || error.message
+                error?.response?.data?.error.message || error.message,
+                error?.response?.status || 0
               );
             });
         }, i * 1000);
@@ -318,7 +319,8 @@ export default class ATATFileUpload extends Vue {
   private logInvalidFiles(
     file: File,
     doesFileExist: boolean,
-    SNOWError?: string
+    SNOWError?: string,
+    statusCode?: number
   ): void {
     const doesFileExistInInvalidFiles = this._invalidFiles.some(
       (iFile) =>
@@ -327,7 +329,7 @@ export default class ATATFileUpload extends Vue {
         iFile.file.lastModified === file.lastModified
     );
     if (!doesFileExistInInvalidFiles) {
-      this._invalidFiles.push({ file, doesFileExist, SNOWError });
+      this._invalidFiles.push({ file, doesFileExist, SNOWError, statusCode });
     }
     if (this._invalidFiles.length > 0) {
       this.setErrorMessage();
