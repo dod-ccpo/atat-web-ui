@@ -24,9 +24,7 @@
                   @click="openModal"
                   @keydown.enter="openModal"
                   @keydown.space="openModal"
-                >
-                  update your Classification Requirements
-                </a>.
+                >update your Classification Requirements</a>.
               </p>
             </div>
 
