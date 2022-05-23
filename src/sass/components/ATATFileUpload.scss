@@ -70,12 +70,9 @@
     .filename-and-progress-bar-div{
       height: 46px;
       max-width: 485px;
-      .filename-and-extension{
-        max-width: 455px;
-        overflow: hidden !important;
-      }
+     
       .v-progress-linear{
-        width: 464px;
+        width: 475px;
         .v-progress-linear__determinate,
         .v-progress-linear__background{
           background-color: $primary !important;
@@ -92,7 +89,14 @@
 .truncated-file-name {
   overflow: hidden;
   height: 24px;
-  word-break: break-all;
+  word-break: inherit;
   text-overflow: clip;
-  width: calc(100% - 32px);
+  // width: calc(100% - 100px);
+  text-align: justify;
+  white-space: nowrap;
+}
+.truncated-extension {
+  text-align: justify;
+  overflow: hidden;
+  height: 24px;
 }

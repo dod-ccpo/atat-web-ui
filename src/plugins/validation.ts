@@ -240,14 +240,17 @@ export class ValidationPlugin {
     SNOWError?: string
   ):((v: string) => string | true | undefined) => {
     return () => {
-      const fileName = file.name;
+      const fileName = file.name.length>20 
+        ? file.name.substring(0, 12) + '...' 
+            + file.name.substring(file.name.length-8, file.name.length)
+        : file.name;
       const fileSize = file.size;
       //validate that file has right extension
       const isValidExtension = validExtensions.some((ext)=>
         fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase() === ext
       )
       if (!isValidExtension){
-        return `Your file '${fileName}' is not a valid format. ` +
+        return `'${fileName}' is not a valid format or has been corrupted. ` +
                 `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
                 `.${validExtensions.slice(-1)} file.`
       }
@@ -256,14 +259,13 @@ export class ValidationPlugin {
         return `'${fileName}' was already uploaded.`
       }
       
-      if (fileSize<maxFileSize){
-        return `Your file is too large. Please upload a file that is 1GB or less.`
+      if (fileSize>maxFileSize){
+        return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
       }
 
       if (SNOWError !== ""){
         return SNOWError;
       }
-
       return true;
     }
   };

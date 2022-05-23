@@ -1,6 +1,5 @@
 <template>
-  <v-form
-     ref="atatFileUploadForm">
+  <v-form ref="atatFileUploadForm">
     <div
       v-cloak
       @dragenter="onDragEnter"
@@ -12,7 +11,7 @@
         :id="id + 'FileUpload'"
         :class="[
           { 'v-text-field--is-hovering': isHovering },
-          { 'v-text-field--is-errored': errorMessages.length>0 },
+          { 'v-text-field--is-errored': errorMessages.length > 0 },
           'atat-file-upload',
         ]"
         multiple
@@ -71,10 +70,11 @@
           </div>
         </template>
       </v-file-input>
-      <ATATErrorValidation 
-        class="file-upload-validation-messages" 
+      <ATATErrorValidation
+        class="file-upload-validation-messages"
         :showAllErrors="true"
-        :errorMessages="errorMessages" />
+        :errorMessages="errorMessages"
+      />
     </div>
 
     <ATATFileList
@@ -107,8 +107,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
   },
 })
 export default class ATATFileUpload extends Vue {
-//todo complete validation msgs including maxFileSize
-
+  //todo complete validation msgs including maxFileSizeInBytes
 
   // refs
   $refs!: {
@@ -117,9 +116,9 @@ export default class ATATFileUpload extends Vue {
       errorCount: number;
     };
     atatFileUploadForm: Vue & {
-      resetValidation: ()=> void;
-      reset: ()=> void;
-    }
+      resetValidation: () => void;
+      reset: () => void;
+    };
   };
 
   // props
@@ -129,10 +128,12 @@ export default class ATATFileUpload extends Vue {
   @PropSync("invalidFiles", { default: () => [] })
   private _invalidFiles!: invalidFile[];
   @Prop({ default: "", required: true }) private attachmentServiceName!: string;
-  @PropSync("rules",{ default: () => [] }) private _rules!: ((
+  @PropSync("rules", { default: () => [] }) private _rules!: ((
     v: string
   ) => string | true | undefined)[];
-  @Prop({ default: 1024 }) private maxFileSize!: number;
+  @Prop({ default: 1073741824, required: true })
+  private maxFileSizeInBytes!: number;
+  //1073741824 is 1GB, the most SNOW will allow to upload
 
   //data
   // @PropSync("files", {default: ()=>[]}) private _files: File[] = [];
@@ -230,7 +231,7 @@ export default class ATATFileUpload extends Vue {
         );
       });
 
-      const isFileSizeValid = vFile.size < this.maxFileSize;
+      const isFileSizeValid = vFile.size < this.maxFileSizeInBytes;
 
       //log Invalid Files
       if (!isValidFormat) {
@@ -239,7 +240,7 @@ export default class ATATFileUpload extends Vue {
       if (doesFileExist) {
         this.logInvalidFiles(vFile, doesFileExist);
       }
-      if (!isFileSizeValid){
+      if (!isFileSizeValid) {
         this.logInvalidFiles(vFile, doesFileExist);
       }
 
@@ -301,22 +302,30 @@ export default class ATATFileUpload extends Vue {
             })
             .catch((error) => {
               //file upload error occurred
+              const fileName = uploadingFileObj.file.name;
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);
               this.logInvalidFiles(
-                uploadingFileObj.file, 
-                false, 
-                "We have encountered unexpected problems uploading your file '" 
-                  + uploadingFileObj.fileName + "'.  " +
-                "Please try again later."
+                uploadingFileObj.file,
+                false,
+                "We have encountered unexpected problems uploading your file '" +
+                  fileName.substring(0, 12) +
+                  "..." +
+                  fileName.substring(fileName.length - 8, fileName.length) +
+                  "'.  " +
+                  "Please try again later."
               );
-            })
+            });
         }, i * 1000);
       }
     }
   }
 
-  private logInvalidFiles(file: File, doesFileExist: boolean, SNOWError?: string): void {
+  private logInvalidFiles(
+    file: File,
+    doesFileExist: boolean,
+    SNOWError?: string
+  ): void {
     const doesFileExistInInvalidFiles = this._invalidFiles.some(
       (iFile) =>
         iFile.file.name === file.name &&
@@ -324,41 +333,43 @@ export default class ATATFileUpload extends Vue {
         iFile.file.lastModified === file.lastModified
     );
     if (!doesFileExistInInvalidFiles) {
-      this._invalidFiles.push({file, doesFileExist, SNOWError});
+      this._invalidFiles.push({ file, doesFileExist, SNOWError });
     }
-    if (this._invalidFiles.length>0){
+    if (this._invalidFiles.length > 0) {
       this.setErrorMessage();
-    } 
+    }
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(()=>{
+    Vue.nextTick(() => {
       this.errorMessages = this.$refs.atatFileUpload.errorBucket;
     });
   }
 
   private clearErrorMessages(): void {
     // if (this.errorMessages.length>0){
-    Vue.nextTick(()=>{
+    Vue.nextTick(() => {
       // const formChildren = this.$refs.atatFileUploadForm.$children;
       // formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
       this.$refs.atatFileUploadForm.reset();
-      Vue.nextTick(()=>{
+      Vue.nextTick(() => {
         this.$refs.atatFileUploadForm.resetValidation();
       });
-    })
+    });
     // }
   }
 
   private reset(): void {
-    Vue.nextTick(()=>{
-      this._invalidFiles=[];
+    Vue.nextTick(() => {
+      this._invalidFiles = [];
       this.clearErrorMessages();
       this.errorMessages = [];
 
-      // clear out any files 'left over' in the 
+      // clear out any files 'left over' in the
       // HTML file input
-      (document.getElementById("FundingPlanFileUpload") as HTMLInputElement).value="";
+      (
+        document.getElementById("FundingPlanFileUpload") as HTMLInputElement
+      ).value = "";
     });
   }
 

@@ -7,8 +7,8 @@
     />
 
     <div class="d-flex flex-column filename-and-progress-bar-div ml-3">
-      <div v-if="isLoading">
-        <div class="filename-and-extension d-flex align-start width-100">
+      <div v-if="isLoading" class="">
+        <div class="-flex align-center justify-start">
           <div
             :id="'File0' + index"
             v-if="uploadingFileObj.fileName.length < 50"
@@ -17,14 +17,13 @@
           </div>
           <div
             :id="'File0' + index"
-            class="d-flex align-center justify-space-between"
+            class="d-flex align-center width-100"
             v-else
           >
-            <div class="truncated-file-name">
+            <div class="truncated-file-name width-70">
               {{ uploadingFileObj.fileName }}
             </div>
-            <div class="ml-n1 mr-n1">...</div>
-            <div class="truncated-ext">
+            <div class="truncated-extension width-30 d-flex align-center">
               {{ getExtension(uploadingFileObj.fileName) }}
             </div>
           </div>
@@ -52,40 +51,49 @@
             :id="'FileLink0' + index"
             target="_blank"
             :href="uploadingFileObj.link"
-            class='_text-link d-flex align-center justify-start'
+            class="_text-link d-flex align-center justify-start"
           >
             <div
               :id="'File0' + index"
               v-if="uploadingFileObj.fileName.length < 50"
+              class="d-flex align-center"
             >
               {{ uploadingFileObj.fileName }}
+              <ATATSVGIcon
+                  class="d-inline-block ml-1"
+                  v-if="!uploadingFileObj.isErrored"
+                  :id="'viewIcon0' + index"
+                  name="externalLink"
+                  color="primary"
+                  :width="15"
+                  :height="15"
+                />
             </div>
-            <div :id="'File0' + index" class="d-flex align-center" v-else>
-              <div class="truncated-file-name">
+            <div
+              :id="'File0' + index"
+              class="d-flex align-center width-100"
+              v-else
+            >
+              <div class="truncated-file-name width-70">
                 {{ uploadingFileObj.fileName }}
               </div>
-              <div class="ml-n3">...</div>
-              <div class="truncated-text">
+              <div class="truncated-extension width-30 d-flex align-center">
                 {{ getExtension(uploadingFileObj.fileName) }}
+                <ATATSVGIcon
+                  class="d-inline-block ml-1"
+                  v-if="!uploadingFileObj.isErrored"
+                  :id="'viewIcon0' + index"
+                  name="externalLink"
+                  color="primary"
+                  :width="15"
+                  :height="15"
+                />
               </div>
-            </div>
-            <div>
-              <ATATSVGIcon
-                v-if="!uploadingFileObj.isErrored"
-                :id="'viewIcon0' + index"
-                name="externalLink"
-                color="primary"
-                :width="15"
-                :height="15"
-                class="ml-2"
-              />
             </div>
           </a>
         </div>
         <div>
-          <span>
-            Uploaded {{ getLastModifiedDate() }}</span
-          >
+          <span> Uploaded {{ getLastModifiedDate() }}</span>
         </div>
       </div>
     </div>
@@ -163,10 +171,13 @@ export default class ATATFileListItem extends Vue {
    */
 
   private getTruncatedFileName(filename: string): string {
-    let ext = "";
     if (filename.length > 45) {
-      ext = filename.substr(filename.lastIndexOf(".") + 1);
-      return filename.substr(0, 45) + "..." + ext;
+      return (
+        filename.substr(0, 45) +
+        "..." +
+        filename.substr(filename.length - 13, filename.length)
+      );
+      // return filename.substr(0, 45) + "..." + ext;
     }
     return filename;
   }
@@ -176,7 +187,7 @@ export default class ATATFileListItem extends Vue {
    * returns extension
    */
   private getExtension(filename: string): string {
-    return filename.substr(filename.lastIndexOf(".") + 1);
+    return "..." + filename.substr(filename.length - 13, filename.length);
   }
 
   /**
@@ -200,6 +211,5 @@ export default class ATATFileListItem extends Vue {
       this.$emit("removeFiles", idx);
     });
   }
-
 }
 </script>

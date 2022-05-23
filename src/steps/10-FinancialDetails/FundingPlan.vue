@@ -6,7 +6,7 @@
         <ATATFileUpload
           :validFileFormats="validFileFormats"
           attachmentServiceName="FundingPlans"
-          :maxFileSize="maxFileSize"
+          :maxFileSizeInBytes="maxFileSizeInBytes"
           id="FundingPlan"
           @delete="onRemoveAttachment"
           :invalidFiles.sync="invalidFiles"
@@ -33,19 +33,23 @@ import { invalidFile, uploadingFile } from "types/Global";
 export default class FundingPlan extends Vue {
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
-  private validFileFormats = ['xlsx', 'xls', 'pdf'];
-  private maxFileSize = 100;
+  private validFileFormats = ["xlsx", "xls", "pdf"];
+  private maxFileSizeInBytes = 1073741824;
 
-  private getRulesArray():
-    ((v:string)=>string | true | undefined)[] {
-    let rulesArr: ((v:string)=>string | true | undefined)[]  = [];
-    
-    this.invalidFiles.forEach((iFile)=>{
+  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+
+    this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
         this.$validators.isFileValid(
-          iFile.file, this.validFileFormats, this.maxFileSize, iFile.doesFileExist, iFile.SNOWError
-        )); 
-    })
+          iFile.file,
+          this.validFileFormats,
+          this.maxFileSizeInBytes,
+          iFile.doesFileExist,
+          iFile.SNOWError
+        )
+      );
+    });
     return rulesArr;
   }
 
