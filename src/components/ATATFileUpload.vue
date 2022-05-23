@@ -302,18 +302,12 @@ export default class ATATFileUpload extends Vue {
             })
             .catch((error) => {
               //file upload error occurred
-              const fileName = uploadingFileObj.file.name;
               uploadingFileObj.isErrored = true;
               console.log(`file upload error ${error}`);
               this.logInvalidFiles(
                 uploadingFileObj.file,
                 false,
-                "We have encountered unexpected problems uploading your file '" +
-                  fileName.substring(0, 12) +
-                  "..." +
-                  fileName.substring(fileName.length - 8, fileName.length) +
-                  "'.  " +
-                  "Please try again later."
+                error?.response?.data?.error.message || error.message
               );
             });
         }, i * 1000);
