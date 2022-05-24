@@ -31,7 +31,7 @@
             <ATATCheckboxGroup
               id="XaaSCheckboxes"
               aria-describedby="XaaSLabel"
-              :value.sync="xaasSelectedOptions"
+              :value.sync="selectedXaasOptions"
               :items="xaasCheckboxItems"
               :card="false"
               class="copy-max-width"
@@ -64,15 +64,15 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import PerfReqLearnMore from "./PerfReqLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
-import { ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+import { SystemChoiceDTO } from "@/api/models";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { getIdText } from "@/helpers";
@@ -84,89 +84,13 @@ import { getIdText } from "@/helpers";
   }
 })
 
-export default class RequirementCategories extends Vue {
-  public xaasSelectedOptions: string[] = [];
-  // get data from store
+export default class RequirementCategories extends Mixins(SaveOnLeave) {
+  public selectedXaasOptions: string[] = [];
   private xaasCheckboxItems: Checkbox[] = [];
   private serviceOfferingGroups: SystemChoiceDTO[] = [];
-  // private xaasCheckboxItems: Checkbox[] = [
-  //   {
-  //     id: "Compute",
-  //     label: "Compute",
-  //     value: "Compute", 
-  //   },
-  //   {
-  //     id: "DeveloperToolsAndServices",
-  //     label: "Developer Tools and Services",
-  //     value: "DeveloperToolsAndServices", 
-  //   },
-  //   {
-  //     id: "Applications",
-  //     label: "Applications",
-  //     value: "Applications", 
-  //   },
-  //   {
-  //     id: "MachineLearning",
-  //     label: "Advanced Technology and Algorithmic techniques (Machine Learning)",
-  //     value: "MachineLearning", 
-  //   },
-  //   {
-  //     id: "Networking",
-  //     label: "Networking",
-  //     value: "Networking", 
-  //   },
-  //   {
-  //     id: "Security",
-  //     label: "Security",
-  //     value: "Security", 
-  //   },
-  //   {
-  //     id: "DatabaseWithStorage",
-  //     label: "Database with Storage",
-  //     value: "DatabaseWithStorage", 
-  //   },
-  //   {
-  //     id: "Edge",
-  //     label: "Edge Computing and Tactical Edge",
-  //     value: "Edge", 
-  //   },
-  //   {
-  //     id: "IoT",
-  //     label: "Internet of Things (IoT)",
-  //     value: "IoT", 
-  //   },
-  //   {
-  //     id: "General_IaaS_PaaS_SaaS",
-  //     label: "General IaaS, PaaS and SaaS",
-  //     value: "General_IaaS_PaaS_SaaS", 
-  //     description: `Including third party marketplace and any other XaaS resources 
-  //       not covered in the categories above`,
-  //   },
-  //   {
-  //     id: "XaaSNoneApply",
-  //     label: "None of these apply to my acquisition.",
-  //     value: "NONE", 
-  //   },
-  // ];
 
   public cloudSupportSelectedOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
-  //   {
-  //     id: "AdvisoryAndAssistance",
-  //     label: "Advisory and assistance",
-  //     value: "AdvisoryAndAssistance", 
-  //   },
-  //   {
-  //     id: "Training",
-  //     label: "Training",
-  //     value: "Training", 
-  //   },
-  //   {
-  //     id: "CloudSupportNoneApply",
-  //     label: "None of these apply to my acquisition.",
-  //     value: "NONE", 
-  //   },
-  // ];
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -204,8 +128,6 @@ export default class RequirementCategories extends Vue {
     }
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
-
-
   }
 
   private getIdText(string: string) {
@@ -221,6 +143,18 @@ export default class RequirementCategories extends Vue {
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
   }
 
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // save to store
+      const selectedOfferings = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
+      await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferings);
+      // todo future ticket - save to SNOW
+    } catch (error) {
+      throw new Error('error saving requirement data');
+    }
+
+    return true;
+  }
 
 }
 </script>

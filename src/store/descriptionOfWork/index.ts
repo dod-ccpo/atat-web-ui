@@ -15,6 +15,7 @@ import {
   retrieveSession,
 } from "../helpers";
 import Vue from "vue";
+import { stringObj } from "../../../types/Global";
 
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
@@ -30,6 +31,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   initialized = false;
   serviceOfferings: ServiceOfferingDTO[] = [];
   serviceOfferingGroups: SystemChoiceDTO[] = [];
+
+  selectedOfferingGroups: stringObj[] = [];
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -58,6 +61,18 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.serviceOfferingGroups = value;
   }
 
+  @Mutation
+  public setSelectedOfferingGroups(selectedOfferings: string[]) {
+    this.selectedOfferingGroups = [];
+    selectedOfferings.forEach((selectedOffering) => {
+      if (!this.selectedOfferingGroups.some(e => e.category === selectedOffering)) {
+        const offering = {
+          category: selectedOffering
+        }
+        this.selectedOfferingGroups.push(offering);
+      }
+    });
+  }
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -90,6 +105,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     return this.serviceOfferingGroups;
   }
 
+  @Action({ rawError: true })
+  public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
+    await this.ensureInitialized();
+    return this.selectedOfferingGroups;
+  }
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
