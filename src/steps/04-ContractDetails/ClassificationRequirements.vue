@@ -54,11 +54,10 @@ import vue from 'vue'
 import { Component, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import { Checkbox } from "../../../types/Global";
+import { Checkbox, stringObj } from "../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { ClassificationLevelDTO } from "@/api/models";
-import AcquisitionPackage from "@/store/acquisitionPackage";
-import { hasChanges } from "@/helpers";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -97,42 +96,58 @@ export default class ClassificationRequirements extends vue {
     },
   ];
 
+  private async loadClassificationData() :Promise<void> {
+    const classifications = await DescriptionOfWork.classificationLevels;
+    console.log(classifications)
+  }
+
+  private createCheckboxItems(value: ClassificationLevelDTO[]) {
+    const arr = [];
+    let obj: any
+    for ( obj in value) {
+      let classification: stringObj = {
+        id:'',
+        value: '',
+        label: '',
+      }
+      classification.id = obj.sys_id;
+      switch (obj.impact_level) {
+      case 'IL4':
+        classification.value = obj.impact_level;
+        classification.label = 'Unclassified / Impact Level 4 (IL4)'
+        break;
+      case 'IL2':
+        classification.value = obj.impact_level;
+        classification.label = 'Unclassified / Impact Level 2 (IL2)'
+        break;
+      case 'IL5':
+        classification.value = obj.impact_level;
+        classification.label = 'Unclassified / Impact Level 5 (IL5)'
+        break;
+      case 'IL6':
+        classification.value = obj.impact_level;
+        classification.label = 'Unclassified / Impact Level 6 (IL6)'
+        break;
+      default:
+        return
+      }
+      arr.push(obj)
+    }
+    return arr
+  }
+
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
     this.isIL6Selected
       = newVal.indexOf('IL6') > -1 ? "true" : "false";
   }
 
-
-  public get currentData(): ClassificationLevelDTO {
-    return {
-      impact_level: this.selectedOptions,
-
-    };
-  }
-
-  private savedData = {
-    impact_level: "",
-  } as Record<string, string>;
-
-  public isChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
-
-  protected async saveOnLeave(): Promise<boolean> {
-    try {
-      if (this.isChanged()) {
-        await AcquisitionPackage.saveContractConsiderations(this.currentData);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    return true;
+  public async loadOnEnter(): Promise<void> {
+    this.loadClassificationData()
   }
 
   public async mounted(): Promise<void> {
-    // await this.loadOnEnter();
+    await this.loadOnEnter();
   }
 
 }

@@ -50,7 +50,7 @@ export const StoreProperties = {
   PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
-  ClassificationLevel: "classificationLevel",
+  ClassificationLevel: "ClassificationRequirements",
 };
 
 const initialCurrentContract = ()=> {
@@ -444,7 +444,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensativeInformation());
-          this.setClassificationLevel(initialClassificationLevel());
           //the should be in the initialization sequence
           this.setAcquisitionPackage(acquisitionPackage);
           this.setInitialized(true);
