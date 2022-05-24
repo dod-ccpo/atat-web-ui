@@ -4,10 +4,13 @@
       <v-col class="col-12">
         <h1 class="page-header">Upload your MIPR</h1>
         <ATATFileUpload
-          :validFileFormats="['xlsx', 'xls', 'pdf']"
+          :validFileFormats="validFileFormats"
           attachmentServiceName="FundingPlans"
+          :maxFileSizeInBytes="maxFileSizeInBytes"
           id="FundingPlan"
           @delete="onRemoveAttachment"
+          :invalidFiles.sync="invalidFiles"
+          :rules="getRulesArray()"
         />
       </v-col>
     </v-row>
@@ -20,7 +23,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { AttachmentTables } from "@/api";
-import { uploadingFile } from "types/Global";
+import { invalidFile, uploadingFile } from "types/Global";
 
 @Component({
   components: {
@@ -29,6 +32,30 @@ import { uploadingFile } from "types/Global";
 })
 export default class FundingPlan extends Vue {
   private uploadedFiles: uploadingFile[] = [];
+  private invalidFiles: invalidFile[] = [];
+  private validFileFormats = ["xlsx", "xls", "pdf"];
+  private maxFileSizeInBytes = 1073741824;
+
+  // rules array dynamically created based on the invalid
+  // files returned from the child component
+  // `ATATFileUpload.vue`
+  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+    let rulesArr: ((v: string) => string | true | undefined)[] = [];
+
+    this.invalidFiles.forEach((iFile) => {
+      rulesArr.push(
+        this.$validators.isFileValid(
+          iFile.file,
+          this.validFileFormats,
+          this.maxFileSizeInBytes,
+          iFile.doesFileExist,
+          iFile.SNOWError,
+          iFile.statusCode
+        )
+      );
+    });
+    return rulesArr;
+  }
 
   async loadOnEnter(): Promise<void> {
     try {
