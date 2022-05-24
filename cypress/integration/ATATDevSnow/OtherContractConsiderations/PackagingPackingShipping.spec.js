@@ -80,7 +80,7 @@ describe("Test suite: OCC: PPS substep", () => {
     
   });
 
-  it("TC4:Checkbox is None", () => {
+  it("TC4: Checkbox is None", () => {
     cy.clickSideStepper(common.stepOCCLink, " Other Contract Considerations ");
     cy.textExists(common.subStepPPSText, " Packaging, Packing, and Shipping ").click();
     cy.verifyPageHeader("Do you need to include packaging, packing, or shipping instructions?");

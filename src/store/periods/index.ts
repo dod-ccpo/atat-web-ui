@@ -9,9 +9,8 @@ import {
 import rootStore from "../index";
   
 import api from "@/api";
-import { PeriodDTO } from "@/api/models";
+import { PeriodDTO, PeriodOfPerformanceDTO, ReferenceColumn } from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "../acquisitionPackage";
-
 
 const savePeriod = async (period: PeriodDTO):Promise<PeriodDTO>=> {
 
@@ -41,38 +40,59 @@ const savePeriod = async (period: PeriodDTO):Promise<PeriodDTO>=> {
   })
 export class PeriodsStore extends VuexModule {
      periods: PeriodDTO[] | null = null;
+     periodOfPerformance: PeriodOfPerformanceDTO | null = null;
 
     @Mutation
      public setPeriods(value: PeriodDTO[]): void{
        this.periods = value;
      }
 
-    @Action({rawError:true})
-    public async loadPeriods():Promise<PeriodDTO[]>{
-      try {
-  
-        const periods = await AcquisitionPackage
-          .getPackageData<string>({property: StoreProperties.Periods}) || "";
-
-        if(!periods.length){
-          return [];
-        }
-        const requests = periods.split(",").map(period=> api.periodTable.retrieve(period));
-        const results = await Promise.all(requests);
-        this.setPeriods(results);
-        return results;
-      } catch (error) {
-        throw new Error(`error occurred loading periods :${error}`);
-          
-      }
-
+     @Mutation
+    public setPeriodOfPerformance(value: PeriodOfPerformanceDTO):void {
+      this.periodOfPerformance = value;
     }
+
+    @Action({rawError:true})
+     public async loadPeriods():Promise<PeriodDTO[]>{
+       try {
+
+
+         const periodOfPerformance = await AcquisitionPackage
+           .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
+
+         this.setPeriodOfPerformance(periodOfPerformance);
+  
+         // we'll build a list of ids from the saved period of performance data
+         let periods = "";
+
+         if(periodOfPerformance.base_period){
+           periods += ((periodOfPerformance.base_period as unknown) as ReferenceColumn).value;
+         }
+
+         if(periodOfPerformance.option_periods){
+           periods += `, ${periodOfPerformance.option_periods}`;
+         }
+        
+         if(!periods.length){
+           return [];
+         }
+         const requests = periods.split(",").map(period=> api.periodTable.retrieve(period));
+         const results = await Promise.all(requests);
+         this.setPeriods(results);
+         return results;
+       } catch (error) {
+         throw new Error(`error occurred loading periods :${error}`);
+          
+       }
+
+     }
 
     @Action({rawError: true})
     public async savePeriod({periods, removed}:{periods: PeriodDTO[], 
         removed: PeriodDTO[]}): Promise<PeriodDTO[]>{
       try {
 
+       
         const removeRequests = removed.map(period=>api.periodTable.remove(period.sys_id || ""));
         if(removeRequests){
           await Promise.all(removeRequests);
@@ -85,6 +105,19 @@ export class PeriodsStore extends VuexModule {
         await AcquisitionPackage.saveCollection({ collection: this.periods || [], 
           property: StoreProperties.Periods});
 
+        
+        const basePeriod = savedPeriods.find(period=>period.period_type ==="BASE");
+        const optionPeriods =  savedPeriods.filter(period=>period.period_type==="OPTION");
+
+        const pop:PeriodOfPerformanceDTO = {
+          sys_id: this.periodOfPerformance?.sys_id,
+          base_period: basePeriod?.sys_id || "",
+          option_periods: optionPeriods.map(period=>period.sys_id).join(",")
+        }
+
+        await AcquisitionPackage.saveData({data: pop, 
+          storeProperty: StoreProperties.PeriodOfPerformance});
+        
         return savedPeriods;
 
 

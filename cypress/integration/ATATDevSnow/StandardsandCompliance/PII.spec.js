@@ -55,8 +55,8 @@ describe("Test suite:SAC Step: PII sub step ", () => {
       expect(formattedTxt).equal(piiOptionTextLabel);
     });
     //Asserts radio options
-    cy.radioBtn(occ.yesPIIRadioOption, "Yes").not("[disabled]");
-    cy.radioBtn(occ.noPIIRadioOption, "No").not("[disabled]");
+    cy.radioBtn(occ.yesPIIRadioOption, "YES").not("[disabled]");
+    cy.radioBtn(occ.noPIIRadioOption, "NO").not("[disabled]");
     //Links Exists
     cy.textExists(occ.piiLink, " Why do we need to know about PII? ")
       .click({ force: true }).then(() => {
@@ -82,7 +82,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   it("TC3: PII: Select radio option: Yes", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as yes
-    cy.selectPiiOption(occ.yesPIIRadioOption, "Yes");
+    cy.selectPiiOption(occ.yesPIIRadioOption, "YES");
     cy.textExists(common.header, "Tell us more about your system of records");
     //Assert textbox labels
     cy.textExists(occ.systemLabel, " System name ");
@@ -104,7 +104,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   it("TC4: PII: Select radio option: No", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ")
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "No");
+    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   }); 
@@ -116,7 +116,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
       .then(() => {
         cy.checkErrorMessage(occ.piiRadioError, "Please select an option");
       })
-    cy.selectPiiOption(occ.yesPIIRadioOption, "Yes");
+    cy.selectPiiOption(occ.yesPIIRadioOption, "YES");
     cy.textExists(common.header, "Tell us more about your system of records");
 
     // system Name is blank

@@ -206,32 +206,31 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 export default class Section508Standards extends Mixins(SaveOnLeave) {
-  private selected508Response = "";
+  private selected508Response 
+    = AcquisitionPackage.sensitiveInformation?.section_508_sufficient || "";
+
   private section508Options: RadioButton[] = [
     {
       id: "Yes",
       label: "Yes.",
-      value: "true",
+      value: "YES",
     },
     {
       id: "No",
       label: `No. I need to customize the Section 508 Accessibility Standards 
         in my Description of Work.`,
-      value: "false",
+      value: "NO",
     },
   ];
 
-
   private get currentData(): SensitiveInformationDTO {
     return {
-      section_508_sufficient: this.selected508Response,
+      section_508_sufficient: this.selected508Response || "",
     };
   }
 
-  private get savedData(): SensitiveInformationDTO {
-    return {
-      section_508_sufficient: AcquisitionPackage.sensitiveInformation?.section_508_sufficient ,
-    };
+  private savedData: SensitiveInformationDTO = {
+    section_508_sufficient: "",
   }
 
   private hasChanged(): boolean {
@@ -240,9 +239,13 @@ export default class Section508Standards extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage
-      .loadData<SensitiveInformationDTO>({storeProperty: StoreProperties.SensitiveInformation});
+      .loadData<SensitiveInformationDTO>(
+        { storeProperty: StoreProperties.SensitiveInformation }
+      );
     if (storeData) {
-      this.selected508Response = storeData.section_508_sufficient || '';
+      this.savedData = {
+        section_508_sufficient: storeData.section_508_sufficient,
+      }
     }
   }
 
