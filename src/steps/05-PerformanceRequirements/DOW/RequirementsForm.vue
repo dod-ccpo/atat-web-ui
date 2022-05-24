@@ -2,19 +2,19 @@
   <div class="mb-7">
     <v-container fluid class="container-max-width">
       <v-row>
-        <v-col class="col-12">
+        <v-col class="col-12 pa-0">
           <div class="copy-max-width">
-            <div v-for="(instance, index) in instances" :key="instance.classification.name">
+            <div v-for="(instance, index) in data" :key="instance.classification.name">
               <p v-if="instanceLength > 1" id="RequirementHeading">
-                <span>{{index + 1}}</span>
-                Tell us about the<span>{{instance.classification.name}}</span>instance
+                <span>{{index + 1}}.</span>
+                Tell us about the <strong>{{instance.classification.name}}</strong> instance
               </p>
 
               <ATATTextArea
                 id="OperationToBePerformed"
                 label="Describe the anticipated need and usage of this requirement"
                 class="width-100"
-                :rows="7"
+                :rows="5"
                 :value.sync="instance.description"
                 maxChars="500"
               />
@@ -25,17 +25,20 @@
                 :items="requirementOptions"
                 :value.sync="instance.neededForEntireDuration"
               />
-              <p id="CloudSupportLabel" class="_checkbox-group-label">
-                Which base and/or option periods do you need this requirement?
-              </p>
-              <ATATCheckboxGroup
-                id="CloudSupportCheckboxes"
-                aria-describedby="CloudSupportLabel"
-                :value.sync="instance.periods"
-                :items="checkboxItems"
-                :card="false"
-                class="copy-max-width"
-              />
+              <div v-if="instance.neededForEntireDuration === 'YES'">
+                <p id="CloudSupportLabel" class="_checkbox-group-label">
+                  Which base and/or option periods do you need this requirement?
+                </p>
+                <ATATCheckboxGroup
+                  id="CloudSupportCheckboxes"
+                  aria-describedby="CloudSupportLabel"
+                  :value.sync="instance.periods"
+                  :items="checkboxItems"
+                  :card="false"
+                  class="copy-max-width"
+                />
+              </div>
+
               <hr />
             </div>
           </div>
@@ -62,7 +65,7 @@ import { Checkbox, RadioButton, stringObj } from "../../../../types/Global";
   }
 })
 
-export default class Form extends Vue {
+export default class RequirementsForm extends Vue {
   // props
   @Prop({default: () => []}) private data!: stringObj;
   public instances = [
@@ -77,7 +80,7 @@ export default class Form extends Vue {
     },
     {
       classification: {
-        name: "Unclassified / Impact Level 2 (IL2)",
+        name: "Unclassified / Impact Level 3 (IL3)",
         value: "IL2",
       },
       description: "",
@@ -125,7 +128,7 @@ export default class Form extends Vue {
     },
   ];
 
-  private instanceLength = this.instances.length
+  private instanceLength = this.data.length
 
 }
 </script>

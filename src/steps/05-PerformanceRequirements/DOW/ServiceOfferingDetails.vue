@@ -34,6 +34,9 @@
 
             <div id="OfferingDetailsForms">
               <!-- form component placeholder -->
+              <RequirementsForm
+              :data="instances"
+              />
             </div>
 
           </div>
@@ -46,10 +49,14 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-
+import RequirementsForm from './RequirementsForm.vue'
 import { getIdText } from "@/helpers";
 
-@Component({})
+@Component({
+  components: {
+    RequirementsForm
+  }
+})
 
 export default class ServiceOfferingDetails extends Vue {
 
@@ -65,7 +72,8 @@ export default class ServiceOfferingDetails extends Vue {
       description: "",
       neededForEntireDuration: null,
       periods: []
-    }
+    },
+
   ]
 
   // create classification level type when get data from backend implemented
