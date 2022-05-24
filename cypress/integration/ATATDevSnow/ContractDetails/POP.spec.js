@@ -167,7 +167,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });
   
-  it("TC7: Do you want to request a PoP start date?: Select Radio Option", () => {
+  it("TC7: POP Start Date: Select Radio Option", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.textExists(common.header,
       " Let’s gather some details about the duration of your task order ");
@@ -192,7 +192,7 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
   });
 
-  it("TC8: Do you want to request a PoP start date?: Requested Start date is Not later than",
+  it("TC8: POP Start Date: Requested Start date is Not later than",
     () => {
       cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
       cy.textExists(common.header,
@@ -229,8 +229,33 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
       });
       cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     });
+  
+  it("TC9: Validations: POP Start Date", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.textExists(common.header,
+      " Let’s gather some details about the duration of your task order ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.textExists(common.header, "Do you want to request a PoP start date?");   
+    //radio button options not selected
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").focus().tab().tab()
+      .then(() => {
+        cy.checkErrorMessage(
+          contractDetails.popStartRadioError,
+          "Please select an option"
+        );
+      });
+    cy.radioBtn(contractDetails.popStartDateYesRadioOption, "YES").click({ force: true });
+    cy.findElement(contractDetails.requestDatePicker).focus().tab()
+      .then(() => {
+        cy.checkErrorMessage(
+          contractDetails.requestDatePickerError,
+          "Please enter a valid date"
+        );
+      })
+    
+  });
 
-  it("TC9: Asserts: Will this be a future recurring requirement?", () => {
+  it("TC10: Asserts: Will this be a future recurring requirement?", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.findElement(contractDetails.popRadioGroup).should("exist");
@@ -252,5 +277,20 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   });  
+
+  it("TC11: Validations: Future Recurring Requirement", () => {
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    cy.findElement(contractDetails.popRadioGroup).should("exist");
+    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
+    //radio button options not selected
+    cy.findElement(contractDetails.yesRadioOption).focus().not("checked").tab()
+      .not("checked").tab().then(() => {
+        cy.checkErrorMessage(
+          contractDetails.futureRecurringRadioError,
+          "Please select an option"
+        );
+      });
+  });
 
 });
