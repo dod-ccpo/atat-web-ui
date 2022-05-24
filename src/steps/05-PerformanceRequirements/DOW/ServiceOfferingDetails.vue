@@ -67,7 +67,9 @@
             </div>
 
             <div id="OfferingDetailsForms">
-              <!-- form component placeholder -->
+              <RequirementsForm
+                :data="instances"
+              />
             </div>
 
           </div>
@@ -83,6 +85,7 @@ import { Component } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
+import RequirementsForm from './RequirementsForm.vue'
 
 import { Checkbox } from "../../../../types/Global";
 
@@ -92,6 +95,7 @@ import { getIdText } from "@/helpers";
   components: {
     ATATCheckboxGroup,
     ATATExpandableLink,
+    RequirementsForm,
   }
 })
 

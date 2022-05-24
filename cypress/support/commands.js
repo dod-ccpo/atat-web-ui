@@ -175,9 +175,11 @@ Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,error
 });
 
 Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
-  cy.findElement(textboxSelector).focus().tab().then(() => {
-    cy.checkErrorMessage(errorSelector, errorMessage);
-  })
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.findElement(textboxSelector).click({ force: true })
+    .tab().wait(0).then(() => {
+      cy.checkErrorMessage(errorSelector, errorMessage);
+    })
 });
 
 Cypress.Commands.add("verifyPageHeader", (headerText) => {
