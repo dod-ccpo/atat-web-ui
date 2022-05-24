@@ -1,6 +1,6 @@
 import {bootstrapMockApis,colors,cleanText,randomAlphaNumeric,randomString} from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import occ from "../../../selectors/standComp.sel";
+import sac from "../../../selectors/standComp.sel";
 
 describe("Test suite:SAC Step: PII sub step ", () => {
   
@@ -37,7 +37,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
       " relates, or is unique to an individual. Examples include social" +
       " security number, age, military rank, civilian grade, etc. that" +
       " can be used to distinguish or track an individual's identity."
-    cy.findElement(occ.blueInfoMessageText).then(($el) => {
+    cy.findElement(sac.blueInfoMessageText).then(($el) => {
       let actualTxt = $el.text();
       cy.log(actualTxt);
       const formattedTxt = cleanText(actualTxt);
@@ -48,30 +48,30 @@ describe("Test suite:SAC Step: PII sub step ", () => {
     const piiOptionTextLabel = "Does this effort provide for the design," +
       " development, or operation of a system of records on individuals" +
       " by the contractor (in whole or in part)?"
-    cy.findElement(occ.piiRadioOptionText).then(($el) => {
+    cy.findElement(sac.piiRadioOptionText).then(($el) => {
       let actualTxt = $el.text();
       cy.log(actualTxt);
       const formattedTxt = cleanText(actualTxt);
       expect(formattedTxt).equal(piiOptionTextLabel);
     });
     //Asserts radio options
-    cy.radioBtn(occ.yesPIIRadioOption, "YES").not("[disabled]");
-    cy.radioBtn(occ.noPIIRadioOption, "NO").not("[disabled]");
+    cy.radioBtn(sac.yesPIIRadioOption, "YES").not("[disabled]");
+    cy.radioBtn(sac.noPIIRadioOption, "NO").not("[disabled]");
     //Links Exists
-    cy.textExists(occ.piiLink, " Why do we need to know about PII? ")
+    cy.textExists(sac.piiLink, " Why do we need to know about PII? ")
       .click({ force: true }).then(() => {
         const piiFAQTxt = "If this effort provides for the design," +
           " development, or operation of a system of records on" +
           " individuals (in whole or in part), then the contracting" +
           " officer must include the following clauses in the solicitation:"
-        cy.findElement(occ.piiFAQText).then(($el) => {
+        cy.findElement(sac.piiFAQText).then(($el) => {
           let actualTxt = $el.text();
           cy.log(actualTxt);
           const formattedTxt = cleanText(actualTxt);
           expect(formattedTxt).equal(piiFAQTxt);
-          cy.textExists(occ.patLink, "FAR 52.224-1");
-          cy.textExists(occ.paLink, "FAR 52.224-2");
-          cy.textExists(occ.moreInfoLink, "FAR 24.1, Protection of Individual Privacy.");
+          cy.textExists(sac.patLink, "FAR 52.224-1");
+          cy.textExists(sac.paLink, "FAR 52.224-2");
+          cy.textExists(sac.moreInfoLink, "FAR 24.1, Protection of Individual Privacy.");
         })
       
       });
@@ -82,20 +82,20 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   it("TC3: PII: Select radio option: Yes", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as yes
-    cy.selectPiiOption(occ.yesPIIRadioOption, "YES");
+    cy.selectPiiOption(sac.yesPIIRadioOption, "YES");
     cy.textExists(common.header, "Tell us more about your system of records");
     //Assert textbox labels
-    cy.textExists(occ.systemLabel, " System name ");
-    cy.textExists(occ.operationPerformedLabel, "What is the operation of work to be performed?");
+    cy.textExists(sac.systemLabel, " System name ");
+    cy.textExists(sac.operationPerformedLabel, "What is the operation of work to be performed?");
     //enter the Values in the Textboxs
     const systemName = randomAlphaNumeric(9);
-    cy.enterTextInTextField(occ.systemNameTextBox, systemName);
+    cy.enterTextInTextField(sac.systemNameTextBox, systemName);
     const operationPerformed = randomAlphaNumeric(15);
-    cy.enterTextInTextField(occ.operationPerformedTextBox, operationPerformed);
+    cy.enterTextInTextField(sac.operationPerformedTextBox, operationPerformed);
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     //navigates to BAA screen
-    cy.textExists(occ.baaLabelText, "Business Associate Agreements (BAA)");
+    cy.textExists(sac.baaLabelText, "Business Associate Agreements (BAA)");
     cy.findElement(common.subStepBAAText)
       .should("be.visible")
       .and('have.css', 'color', colors.primary)
@@ -104,7 +104,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   it("TC4: PII: Select radio option: No", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ")
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
+    cy.selectPiiOption(sac.noPIIRadioOption, "NO");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
   }); 
@@ -112,30 +112,30 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   it("TC5: PII: Validations", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     // if radio option is not selected
-    cy.findElement(occ.yesPIIRadioOption).focus().tab()
+    cy.findElement(sac.yesPIIRadioOption).focus().tab()
       .then(() => {
-        cy.checkErrorMessage(occ.piiRadioError, "Please select an option");
+        cy.checkErrorMessage(sac.piiRadioError, "Please select an option");
       })
-    cy.selectPiiOption(occ.yesPIIRadioOption, "YES");
+    cy.selectPiiOption(sac.yesPIIRadioOption, "YES");
     cy.textExists(common.header, "Tell us more about your system of records");
 
     // system Name is blank
     cy.verifyRequiredInput(
-      occ.systemNameTextBox,
-      occ.systemNameError,
+      sac.systemNameTextBox,
+      sac.systemNameError,
       "Please enter the name of your system of records.");
 
     //Operation of work perfomred is blank
     cy.verifyRequiredInput(
-      occ.operationPerformedTextBox,
-      occ.operationPerformedError,
+      sac.operationPerformedTextBox,
+      sac.operationPerformedError,
       "Please enter a description for the operation of work to be performed.");   
     //Operation of work perfomred is more than 400
     const workDescriptionText = randomString(401);
-    cy.findElement(occ.operationPerformedTextBox).should("be.visible").clear()
+    cy.findElement(sac.operationPerformedTextBox).should("be.visible").clear()
       .type(workDescriptionText).blur({ force: true }).then(() => {
         cy.checkErrorMessage(
-          occ.operationPerformedError,
+          sac.operationPerformedError,
           "Please limit your description to 400 characters or less");
       });
 
