@@ -39,7 +39,8 @@ import CurrentEnvironment
 
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
 import PerformanceRequirements
-  from "../steps/05-PerformanceRequirements/PerformanceRequirements.vue";
+  from "../steps/05-PerformanceRequirements/DOW/PerformanceRequirements.vue";
+import RequirementCategories from "../steps/05-PerformanceRequirements/DOW/Categories.vue"
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -107,6 +108,7 @@ export const routeNames = {
   CurrentContractDetails: "Current_Contract_Details",
   CurrentEnvironment:"Current_Environment",
   PerformanceRequirements: "Performance_Requirements",
+  RequirementCategories: "RequirementCategories", // EJY better name
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
   CloudSupportPackages: "Cloud_Support_Packages",
@@ -359,6 +361,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: PerformanceRequirements,
       },
+      {
+        menuText: "Requirement Categories",
+        path: "requirement-categories",
+        excludeFromMenu: true,
+        name: routeNames.RequirementCategories,
+        completePercentageWeight: 1,
+        component: RequirementCategories,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need these cloud resources",
+            buttonId: "DontNeedResources",
+            buttonClass: "secondary",
+            name: routeNames.RequirementCategories, // functionality TBD in future ticket
+          },
+        ],
+      },
     ],
   },
   {
@@ -414,7 +432,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         name: routeNames.TrainingCourses,
-        menuText: "Training",
+        menuText: "Training Courses",
         excludeFromMenu: true,
         path: "training",
         completePercentageWeight: 2,

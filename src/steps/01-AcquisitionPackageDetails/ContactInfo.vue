@@ -157,6 +157,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Mixins } from "vue-property-decorator";
+import {convertSystemChoiceToSelect} from "@/helpers";
 import parsePhoneNumber,{ AsYouType, CountryCode} from "libphonenumber-js";
 
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
@@ -291,37 +292,11 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     },
   ];
 
-  private selectedGrade: { grade: string; label: string } = {
-    grade: "",
-    label: "",
-  };
-  private gradeData = [
-    { label: "GS-01", grade: "GS_01" },
-    { label: "GS-02", grade: "GS_02" },
-    { label: "GS-03", grade: "GS_03" },
-    { label: "GS-04", grade: "GS_04" },
-    { label: "GS-05", grade: "GS_05" },
-    { label: "GS-06", grade: "GS_06" },
-    { label: "GS-07", grade: "GS_07" },
-    { label: "GS-08", grade: "GS_08" },
-    { label: "GS-09", grade: "GS_09" },
-    { label: "GS-10", grade: "GS_10" },
-    { label: "GS-11", grade: "GS_11" },
-    { label: "GS-12", grade: "GS_12" },
-    { label: "GS-13", grade: "GS_13" },
-    { label: "GS-14", grade: "GS_14" },
-    { label: "GS-15", grade: "GS_15" },
-    { label: "SES", grade: "SES" },
-  ];
+  private selectedGrade: {grade: string, label: string} = {grade: "", label: ""};
+  private gradeData: {grade: string, label: string}[] = [];
 
   private selectedSalutation = "";
-  private salutationData: SelectData[] = [
-    { text: "Mr.", value: "MR" },
-    { text: "Mrs.", value: "MRS" },
-    { text: "Miss", value: "MISS" },
-    { text: "Ms.", value: "MS" },
-    { text: "Dr.", value: "DR" },
-  ];
+  private salutationData: SelectData[] = [];
 
   public get currentData(): ContactDTO {
     const first_name = this.firstName;
@@ -403,6 +378,15 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
     });
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
+
+    this.gradeData = ContactData.civilianGradeChoices.map(choice=> {
+      return {
+        label: choice.label,
+        grade: choice.value
+      }
+    });
+
+    this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
 
     const storeData = await AcquisitionPackage.loadContactInfo("Mission Owner");
     this.savedData = storeData;

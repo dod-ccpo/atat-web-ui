@@ -36,6 +36,7 @@ import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
 import { cleanText, colors } from "../helpers";
 import sac from '../selectors/standComp.sel';
+import occ from '../selectors/occ.sel'
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -81,6 +82,18 @@ Cypress.Commands.add("launchATAT", () => {
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
   }
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
+    .should("exist");
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
+    .should("exist");
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
+    .should("exist");
 });
 
 Cypress.Commands.add("clearSession", () => {
@@ -132,8 +145,9 @@ Cypress.Commands.add('btnExists', (selector, text) => {
     .and("have.text", text);  
 });
 
-Cypress.Commands.add('radioBtn', (selector,value) => {
-  cy.findElement(selector).should("have.value", value);  
+Cypress.Commands.add('radioBtn', (selector, value) => {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.findElement(selector).wait(0).should("have.value", value);  
 });
 
 Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
@@ -177,6 +191,13 @@ Cypress.Commands.add("selectCheckBox", (selector,value) => {
   cy.findElement(selector)
     .should("have.value", value);
   
+});
+
+Cypress.Commands.add("checkBoxOption", (selector,value) => {
+  cy.findElement(selector)
+    .should('have.value', value)
+    .and('not.checked');
+    
 });
 
 Cypress.Commands.add("clickSideStepper", (stepperSelector,stepperText) => {
@@ -337,7 +358,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
     });
 });
 
-Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
+Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value,sbSelector) => {
   cy.radioBtn(selector, value).click({ force: true }, { timeout: 1000 }).should("be.checked");
   cy.findElement(contact.contactRadioBtnActive)
     .then(($radioBtn) => {
@@ -349,14 +370,17 @@ Cypress.Commands.add("contactRoleRadioBtnOption", (selector,value) => {
           .and("be.visible")
           .and("contain", "Service branch");
         cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
-        cy.findElement(contact.serviceDropDownList).first().click();
-        cy.findElement(contact.rankAutoCompleteWrapper)
-          .should("exist")
-          .and("be.visible")
-          .and("contain", "Rank");
-        cy.findElement(contact.gradeAutoCompleteWrapper)
-          .should("exist")
-          .and("not.visible");
+        cy.findElement(sbSelector)
+          .click()
+          .then(() => {
+            cy.findElement(contact.rankAutoCompleteWrapper)
+              .should("exist")
+              .and("be.visible")
+              .and("contain", "Rank");
+            cy.findElement(contact.gradeAutoCompleteWrapper)
+              .should("exist")
+              .and("not.visible");
+          });        
       }
       if (selectedOption === "radio_button_checkedContractor") {
         cy.findElement(contact.salutationDropDownLabel)
@@ -605,6 +629,49 @@ Cypress.Commands.add("selectFOIAOption", (radioSelector, value) => {
         cy.textExists(common.header, " Tell us about your FOIA Coordinator ");
       } else {
         cy.textExists(common.header, "Let’s look into your Section 508 Accessibility requirements");
+      }
+          
+    });
+});
+
+Cypress.Commands.add("ppsCheckBoxOptionSelected", (selector,value,otherTxt) => {
+  cy.checkBoxOption(selector,value).check({ force: true });
+  cy.findElement(occ.checkBoxActive)
+    .then(($checkedOption) => {      
+      const selectedOption = cleanText($checkedOption.text()); 
+      cy.log(selectedOption)
+      if (selectedOption === "check_box Other") {
+        cy.log("display Other is selected:",selectedOption)
+        cy.findElement(occ.otherTextBox)
+          .should("exist")
+          .and("be.visible");
+        cy.enterTextInTextField(occ.otherTextBox,otherTxt)
+        
+      }else {        
+        cy.findElement(occ.otherTextBox)
+          .should("not.exist");
+      }
+      
+    });  
+});
+
+Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {  
+  cy.radioBtn(radioSelector, value).click({ force: true })
+    .should("be.checked");
+  cy.findElement(occ.trainingRadioOptionActive)
+    .then(($radioBtn) => {
+      const selectedOption = $radioBtn.text();
+      cy.log(selectedOption);
+      cy.btnExists(common.continueBtn, ' Continue ').click();
+      if (selectedOption === "radio_button_checkedYes.") {
+        //naviagtes to "Tell us about your mandatory training screen"
+        cy.textExists(common.header, " Tell us about your mandatory training ");
+      } else {
+        cy.verifyPageHeader(
+          "Let's find out if your effort provides for Personally Identifiable Information");
+        cy.findElement(common.stepStandCompText)
+          .should("be.visible")
+          .and('have.css', 'color', colors.primary)
       }
           
     });

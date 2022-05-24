@@ -1,13 +1,13 @@
 <template>
-  <div v-if="files.length > 0">
+  <div v-if="uploadingFiles.length > 0">
     <v-card flat class="file-loading-div pa-6">
       <v-card-title class="h2 pa-0 pb-6">{{
         getFileUploadsDivTitle()
       }}</v-card-title>
-      <div v-for="(file, idx) of files" :key="idx">
+      <div v-for="(uploadingFile, idx) of uploadingFiles" :key="idx">
         <ATATFileListItem
           :index="idx"
-          :file="file"
+          :uploadingFileObj="uploadingFile"
           @removeFiles="removeFiles"
         />
       </div>
@@ -20,6 +20,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATFileListItem from "@/components/ATATFileListItem.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import { uploadingFile } from "types/Global";
 
 @Component({
   components: {
@@ -29,16 +30,15 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 })
 export default class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
-  @Prop({ default: () => [] }) private validFiles!: File[];
+  @Prop({ default: () => [] }) private validFiles!: uploadingFile[];
   @PropSync("isFullSize", {default: true}) private _isFullSize!: boolean;
-
-  private files: File[] = [];
+  private uploadingFiles: uploadingFile[] = [];
 
   /**
    * sets title to plural when necessary
    */
   private getFileUploadsDivTitle(): string {
-    return "Your Upload" + (this.files.length > 1 ? "s" : "");
+    return "Your Upload" + (this.uploadingFiles.length > 1 ? "s" : "");
   }
 
   /**
@@ -47,9 +47,11 @@ export default class ATATFileList extends Vue {
    */
   private removeFiles(idx: number): void {
     Vue.nextTick(()=>{
-      this.files.splice(idx, 1);
+      const fileToDelete = this.uploadingFiles[idx];
+      this.uploadingFiles.splice(idx, 1);
       this.validFiles.splice(idx,1);
       this._isFullSize = this.validFiles.length === 0;
+      this.$emit('delete', fileToDelete);
     })
   }
 
@@ -60,17 +62,17 @@ export default class ATATFileList extends Vue {
    */
   @Watch("validFiles")
   protected setFilesToDisplay(): void{
-    if (this.files.length<this.validFiles.length){
+    if (this.uploadingFiles.length<this.validFiles.length){
       this.validFiles.forEach((vFile)=>{
   
-        //check to see if file exists
-        const doesFileExist = this.files.some(
-          (file) => {
-            return vFile.name === file.name}
-        )
+        const doesFileExist = this.uploadingFiles.some((fileObj) => {
+          return vFile.file.name === fileObj.file.name
+            && vFile.file.lastModified === fileObj.file.lastModified
+            && vFile.file.size === fileObj.file.size;
+        });
 
         if (!doesFileExist){
-          this.files.push(vFile);
+          this.uploadingFiles.push(vFile);
         }
       });
     }

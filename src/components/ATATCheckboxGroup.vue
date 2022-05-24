@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :id="id">
     <v-checkbox
       v-for="(item, index) in items"
       v-model="_selected"
@@ -12,7 +12,6 @@
       :key="item.value"
       :label="item.label"
       :value="item.value"
-      :name="name"
       :error="error"
       :disabled="disabled"
       :rules="checkboxRules"
@@ -20,8 +19,9 @@
       multiple
       :hide-details="true"
       :ref="index === 0 ? 'checkboxGroup' : ''"
+      :data-group-id="id + '_Group'"
     >
-      <template v-if="card || item.value === otherValue" v-slot:label>
+      <template v-if="card || item.description || item.value === otherValue" v-slot:label>
         <div class="d-flex flex-column width-100">
           <div 
             v-if="item.label" 
@@ -34,7 +34,7 @@
           </div>
           <div
             v-if="item.description"
-            class="mb-0" v-html="item.description"
+            class="mb-0 _description" v-html="item.description"
           ></div>
         </div>
       </template>
@@ -90,16 +90,16 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: false }) private disabled!: boolean;
   @Prop({ default: false }) private hasOtherValue!: boolean;
   @Prop({ default: "" }) private otherValueRequiredMessage!: string;
-  @Prop({ default: "" }) private noneValue!: string;
+  @Prop({ default: "NONE" }) private noneValue!: string;
   @Prop({ default: "" }) private otherValue!: string;
-  @Prop() private name!: string;
+  @Prop() private id!: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
   private prevSelected: string[] = [];
   private errorMessages: string[] = [];
-  public blurredCheckboxes: string[] = [];
+  public blurredCheckboxes: Record<string, string[]> = {};
   private validateCheckboxes = false;
 
   public checkboxRules = this.validateCheckboxes
@@ -200,20 +200,27 @@ export default class ATATCheckboxGroup extends Vue {
   public setCheckboxEventListeners(event: FocusEvent): void {
     const thisCheckbox = event.currentTarget as HTMLInputElement;
     const id = thisCheckbox.id;
-    if (this.blurredCheckboxes.indexOf(id) === -1) {
-      // only clear if validation hasn't been set yet
-      if (!this.validateCheckboxes) {
-        this.clearErrorMessage();
+    const groupId: string = thisCheckbox.dataset.groupId || "CheckboxGroup";
+    if (id && groupId && (groupId === this.id + "_Group")) {
+      if (!Object.prototype.hasOwnProperty.call(this.blurredCheckboxes, groupId)) {
+        this.blurredCheckboxes[groupId] = [];
       }
-      this.blurredCheckboxes.push(id);
+      if (this.blurredCheckboxes[groupId].indexOf(id) === -1) {
+        // only clear if validation hasn't been set yet
+        if (!this.validateCheckboxes) {
+          this.clearErrorMessage();
+        }
+        this.blurredCheckboxes[groupId].push(id);
+      }
+
+      if (this.blurredCheckboxes[groupId].length === this.items.length) {
+        if (this.checkboxRules.length === 0) {
+          this.validateCheckboxes = true;
+        }
+        this.setErrorMessage();
+      }
     }
 
-    if (this.blurredCheckboxes.length === this.items.length) {
-      if (this.checkboxRules.length === 0) {
-        this.validateCheckboxes = true;
-      }
-      this.setErrorMessage();
-    }
   }
 
 }

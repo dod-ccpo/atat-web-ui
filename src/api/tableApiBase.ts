@@ -3,7 +3,7 @@ import { AxiosRequestConfig, AxiosResponse } from "axios";
 import baseApi from "./base";
 
 export class TableApiBase<TableDTO> extends baseApi {
-  private tableName: string;
+  protected tableName: string;
 
   constructor(tableName: string) {
     super();
@@ -25,11 +25,15 @@ export class TableApiBase<TableDTO> extends baseApi {
     return this.instance.post(this.endPoint, data, config);
   }
 
-  private async get(
+  private async getById(
     sys_id: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse> {
     return this.instance.get(this.urlWithSysId(sys_id), config);
+  }
+
+  private async get(config:AxiosRequestConfig): Promise<AxiosResponse>{
+    return this.instance.get(this.endPoint, config);
   }
 
   private async getAll(config?: AxiosRequestConfig): Promise<AxiosResponse> {
@@ -103,15 +107,36 @@ export class TableApiBase<TableDTO> extends baseApi {
    * @param sys_id the system id of the Table DTO object to retrieve
    * @returns the retrieved TableDTO object
    */
-  async retrieve(sys_id: string): Promise<TableDTO> {
+  async retrieve(sys_id?: string, config?: AxiosRequestConfig): Promise<TableDTO> {
     try {
-      const response = await this.get(sys_id);
+
+      if(!sys_id && ! config){
+        throw new Error('paramter error,  must past sys_id or request config');
+      }
+
+      config = config ||  { }
+      const request = sys_id?.length ? this.getById(sys_id) : this.get(config);
+      
+      const response = await request;
       if (response.status === 200) {
         const { result } = response.data;
         return result as TableDTO;
       } else {
         throw new Error(
           `unable to retrieve ${this.tableName} with sys_id: ${sys_id}`
+        );
+      }
+    } catch (error) {
+      throw new Error(`unable to retrieve item from ${this.tableName} : ${error}`);
+    }
+  }
+
+  async remove(sys_id: string): Promise<void>{
+    try {
+      const response = await this.delete(sys_id);
+      if (response.status !== 204) {
+        throw new Error(
+          `unable to delete item from ${this.tableName} with sys_id: ${sys_id}`
         );
       }
     } catch (error) {

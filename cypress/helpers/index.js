@@ -23,7 +23,12 @@ export function bootstrapMockApis(){
 }
 
 export const cleanText = (text) => {
-  return text.replace(/\n/g, '').replace(/\s\s+/g, ' ').trim();
+  const encodedText = encodeURIComponent(text);
+  const encodedTextNoZeroWidthWhiteSpace = encodedText.replace(/%E2%80%8B/g, '');
+  let newStr = decodeURIComponent(encodedTextNoZeroWidthWhiteSpace);
+  newStr = newStr.trim();
+  newStr = newStr.replace(/\s\s+/g, ' ');
+  return newStr;
 }
 
 export const colors = {

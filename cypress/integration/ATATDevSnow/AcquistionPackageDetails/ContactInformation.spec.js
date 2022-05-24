@@ -126,7 +126,11 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     cy.textExists(common.header, "Let’s confirm your contact information"); 
         
     //select radio button
-    cy.contactRoleRadioBtnOption(contact.militaryRadioBtn,"MILITARY");           
+    cy.contactRoleRadioBtnOption(
+      contact.militaryRadioBtn,
+      "MILITARY",
+      contact.serviceBranchAirForce
+    );           
 
     //Click Rank dropdown
     cy.dropDownClick(contact.rankInput);            
@@ -291,8 +295,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
               
   });   
   
-  // Skipping this test,blocked due to AT-7300. 
-  it.skip("TC7: Military: Field Validations", () => {
+  it("TC7: Military: Field Validations", () => {
     cy.clickSideStepper(common.subStepContactInformationLink, " Contact Information ");
 
     //Navigates to Contact information
@@ -303,7 +306,7 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
 
     //Validation message for Service Agency
     cy.findElement(contact.serviceBranchDropdown).focus()
-      .blur().then(() => {
+      .tab().then(() => {
         cy.checkErrorMessage(
           contact.serviceBranchError,
           "Please enter your Service Branch.");
@@ -312,13 +315,14 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     
     cy.findElement(contact.serviceBranchDropdown).focus().then(()=>{
       cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
-      cy.findElement(contact.serviceDropDownList).first().click();
+      cy.findElement(contact.serviceBranchCoastGuard).click();
     });
+
     //Validation message for Rank
     cy.verifyRequiredDropdown(
       contact.rankInput,
       contact.rankError,
-      "Please enter your Please select your military rank."
+      "Please select your military rank."
     );
         
   });  

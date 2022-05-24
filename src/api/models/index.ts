@@ -20,11 +20,18 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   docusign_envelope_id: string;
   sensitive_information: string;
   period_of_performance: string;
+  periods: string;
   gfe_overview: string;
   contract_type: string;
   requirements_const_estimate: string;
   contract_considerations: string;
+  funding_plans: string;
   classification_level: string;
+}
+
+export interface ClassificationLevelDTO extends BaseTableDTO {
+  impact_level: string;
+  classification: string;
 }
 
 export interface CurrentContractDTO extends BaseTableDTO {
@@ -124,12 +131,19 @@ export interface SensitiveInformationDTO extends BaseTableDTO {
 
 }
 
+export interface ServiceOfferingDTO extends BaseTableDTO {
+  name: string;
+  service_offering_group: string;
+}
+
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
   pop_start_request?: string;
   requested_pop_start_date?: string;
   time_frame?: string;
   recurring_requirement?: string;
-  base_and_options?: string;
+  base_and_options?: string; //deprecated
+  option_periods?: string;
+  base_period?: string;
 }
 
 export interface ContractTypeDTO extends BaseTableDTO {
@@ -149,7 +163,54 @@ export interface GFEOverviewDTO extends BaseTableDTO {
   property_custodian_name?: string;
 }
 
-export interface ClassificationLevelDTO extends BaseTableDTO  {
-  impact_level?: string[];
-  classification?: string;
+export interface StateDTO extends BaseTableDTO {
+   name: string;
+   key: string;
+}
+
+export interface CountryDTO extends BaseTableDTO {
+  name: string;
+  iso3166_2: string;
+}
+export interface AttachmentDTO extends BaseTableDTO {
+  size_bytes?: string;
+  file_name: string;
+  average_image_color?: string;
+  image_width?: string;
+  table_name?: string;
+  image_height?: string;
+  download_link?: string;
+  content_type?: string;
+  size_compressed?: string;
+  compressed?: string;
+  state?: string;
+  table_sys_id: string;
+  chunk_size_bytes?: string;
+  hash?: string;
+}
+
+
+export interface AttachableDTO extends BaseTableDTO {
+  attachment: string;
+  extension: string;
+  file_name: string;
+}
+
+export interface FundingPlanDTO extends BaseTableDTO {
+  //file attachment id from sys attachments table
+  attachment: string;
+  extension: string;
+  file_name: string;
+}
+
+export interface PeriodDTO extends BaseTableDTO {
+    period_unit: string;
+    period_unit_count: string;
+    period_type: string;
+    option_order: string;
+}
+
+export interface ReferenceColumn {
+  link: string;
+  value: string;
 }
