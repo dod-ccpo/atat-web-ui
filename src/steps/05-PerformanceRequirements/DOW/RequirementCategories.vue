@@ -72,6 +72,10 @@ import PerfReqLearnMore from "./PerfReqLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
+import { ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -83,84 +87,86 @@ import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 export default class RequirementCategories extends Vue {
   public xaasSelectedOptions: string[] = [];
   // get data from store
-  private xaasCheckboxItems: Checkbox[] = [
-    {
-      id: "Compute",
-      label: "Compute",
-      value: "Compute", 
-    },
-    {
-      id: "DeveloperToolsAndServices",
-      label: "Developer Tools and Services",
-      value: "DeveloperToolsAndServices", 
-    },
-    {
-      id: "Applications",
-      label: "Applications",
-      value: "Applications", 
-    },
-    {
-      id: "MachineLearning",
-      label: "Advanced Technology and Algorithmic techniques (Machine Learning)",
-      value: "MachineLearning", 
-    },
-    {
-      id: "Networking",
-      label: "Networking",
-      value: "Networking", 
-    },
-    {
-      id: "Security",
-      label: "Security",
-      value: "Security", 
-    },
-    {
-      id: "DatabaseWithStorage",
-      label: "Database with Storage",
-      value: "DatabaseWithStorage", 
-    },
-    {
-      id: "Edge",
-      label: "Edge Computing and Tactical Edge",
-      value: "Edge", 
-    },
-    {
-      id: "IoT",
-      label: "Internet of Things (IoT)",
-      value: "IoT", 
-    },
-    {
-      id: "General_IaaS_PaaS_SaaS",
-      label: "General IaaS, PaaS and SaaS",
-      value: "General_IaaS_PaaS_SaaS", 
-      description: `Including third party marketplace and any other XaaS resources 
-        not covered in the categories above`,
-    },
-    {
-      id: "XaaSNoneApply",
-      label: "None of these apply to my acquisition.",
-      value: "NONE", 
-    },
-  ];
+  private xaasCheckboxItems: Checkbox[] = [];
+  private serviceOfferingGroups: SystemChoiceDTO[] = [];
+  // private xaasCheckboxItems: Checkbox[] = [
+  //   {
+  //     id: "Compute",
+  //     label: "Compute",
+  //     value: "Compute", 
+  //   },
+  //   {
+  //     id: "DeveloperToolsAndServices",
+  //     label: "Developer Tools and Services",
+  //     value: "DeveloperToolsAndServices", 
+  //   },
+  //   {
+  //     id: "Applications",
+  //     label: "Applications",
+  //     value: "Applications", 
+  //   },
+  //   {
+  //     id: "MachineLearning",
+  //     label: "Advanced Technology and Algorithmic techniques (Machine Learning)",
+  //     value: "MachineLearning", 
+  //   },
+  //   {
+  //     id: "Networking",
+  //     label: "Networking",
+  //     value: "Networking", 
+  //   },
+  //   {
+  //     id: "Security",
+  //     label: "Security",
+  //     value: "Security", 
+  //   },
+  //   {
+  //     id: "DatabaseWithStorage",
+  //     label: "Database with Storage",
+  //     value: "DatabaseWithStorage", 
+  //   },
+  //   {
+  //     id: "Edge",
+  //     label: "Edge Computing and Tactical Edge",
+  //     value: "Edge", 
+  //   },
+  //   {
+  //     id: "IoT",
+  //     label: "Internet of Things (IoT)",
+  //     value: "IoT", 
+  //   },
+  //   {
+  //     id: "General_IaaS_PaaS_SaaS",
+  //     label: "General IaaS, PaaS and SaaS",
+  //     value: "General_IaaS_PaaS_SaaS", 
+  //     description: `Including third party marketplace and any other XaaS resources 
+  //       not covered in the categories above`,
+  //   },
+  //   {
+  //     id: "XaaSNoneApply",
+  //     label: "None of these apply to my acquisition.",
+  //     value: "NONE", 
+  //   },
+  // ];
 
   public cloudSupportSelectedOptions: string[] = [];
-  private cloudSupportCheckboxItems: Checkbox[] = [
-    {
-      id: "AdvisoryAndAssistance",
-      label: "Advisory and assistance",
-      value: "AdvisoryAndAssistance", 
-    },
-    {
-      id: "Training",
-      label: "Training",
-      value: "Training", 
-    },
-    {
-      id: "CloudSupportNoneApply",
-      label: "None of these apply to my acquisition.",
-      value: "NONE", 
-    },
-  ];
+  private cloudSupportCheckboxItems: Checkbox[] = [];
+  //   {
+  //     id: "AdvisoryAndAssistance",
+  //     label: "Advisory and assistance",
+  //     value: "AdvisoryAndAssistance", 
+  //   },
+  //   {
+  //     id: "Training",
+  //     label: "Training",
+  //     value: "Training", 
+  //   },
+  //   {
+  //     id: "CloudSupportNoneApply",
+  //     label: "None of these apply to my acquisition.",
+  //     value: "NONE", 
+  //   },
+  // ];
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -169,7 +175,45 @@ export default class RequirementCategories extends Vue {
     }
   }
 
+  public async loadOnEnter(): Promise<void> {
+    this.serviceOfferingGroups = await DescriptionOfWork.getServiceOfferingGroups();
+    this.serviceOfferingGroups.forEach((serviceOfferingGroup) => {
+      const checkboxItem: Checkbox = {
+        id: this.getIdText(serviceOfferingGroup.value),
+        label: serviceOfferingGroup.label,
+        value: serviceOfferingGroup.value
+      };
+      if (checkboxItem.value !== "advisory" && checkboxItem.value !== "training") {
+        this.xaasCheckboxItems.push(checkboxItem);
+      } else {
+        this.cloudSupportCheckboxItems.push(checkboxItem);
+      }
+    });
+
+    const xaasNone: Checkbox = {
+      id: "XaaSNoneApply",
+      label: "None of these apply to my acquisition.",
+      value: "NONE", 
+    }
+    this.xaasCheckboxItems.push(xaasNone)
+
+    const cloudSupportNone: Checkbox = {
+      id: "CloudSupportNoneApply",
+      label: "None of these apply to my acquisition.",
+      value: "NONE", 
+    }
+    this.cloudSupportCheckboxItems.push(cloudSupportNone)
+
+
+
+  }
+
+  private getIdText(string: string) {
+    return getIdText(string);
+  }
+
   public async mounted(): Promise<void> {
+    await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: PerfReqLearnMore,
       title: "Learn More",
