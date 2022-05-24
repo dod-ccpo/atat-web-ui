@@ -82,6 +82,7 @@ import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 
 export default class RequirementCategories extends Vue {
   public xaasSelectedOptions: string[] = [];
+  // get data from store
   private xaasCheckboxItems: Checkbox[] = [
     {
       id: "Compute",
