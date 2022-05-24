@@ -25,7 +25,7 @@
                 :items="requirementOptions"
                 :value.sync="instance.neededForEntireDuration"
               />
-              <div v-if="instance.neededForEntireDuration === 'YES'">
+              <div v-if="instance.neededForEntireDuration === 'NO'">
                 <p id="CloudSupportLabel" class="_checkbox-group-label">
                   Which base and/or option periods do you need this requirement?
                 </p>
