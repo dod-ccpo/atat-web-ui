@@ -43,7 +43,26 @@
                 groupLabelId="ClassificationGroupLabel"
               />
 
-              <!-- expandable link here -->
+              <ATATExpandableLink aria-id="AboutClassificationLevels" class="mt-10">
+                <template v-slot:header>
+                  I need this requirement within a different classification level. What do I do?
+                </template>
+                <template v-slot:content>
+                  <p>
+                    The levels listed above are based on the classification requirements 
+                    you specified in the previous Contract Details section. If you need 
+                    to make changes to these levels, 
+                    <a 
+                      role="button"
+                      id="UpdateClassification"
+                      tabindex="0"
+                      @click="openModal"
+                      @keydown.enter="openModal"
+                      @keydown.space="openModal"
+                    >update your Classification Requirements</a>.
+                  </p>
+                </template>
+              </ATATExpandableLink>
 
             </div>
 
@@ -63,6 +82,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 
 import { Checkbox } from "../../../../types/Global";
 
@@ -71,6 +91,7 @@ import { getIdText } from "@/helpers";
 @Component({
   components: {
     ATATCheckboxGroup,
+    ATATExpandableLink,
   }
 })
 
@@ -103,7 +124,7 @@ export default class ServiceOfferingDetails extends Vue {
   // create classification level type when get data from backend implemented
   public selectedClassificationLevelsOnLoad = [{}];
   public selectedClassificationLevels = [{}];
-  public classificationLevels: Checkbox | undefined;
+  public classificationLevels: Checkbox[] | undefined;
 
   // get periods from data when implemented
   public periods = [{}];

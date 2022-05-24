@@ -2,22 +2,21 @@
   display: inline-block;
   text-decoration: underline;
   &:after {
-    content: "";
+    content: "chevron_right";
     font-family: "Material Icons";
     -webkit-font-feature-settings: "liga";
     font-size: 24px;
     font-weight: normal;
     display: inline-block;
-    height: 9px;
-    line-height: 0;
+    height: 20px;
+    line-height: 20px;
     text-decoration: none !important;
     vertical-align: text-bottom;
+    transform: rotate(0deg);
+    transition: transform 0.3s;
   }
   &.open:after {
-    content: "expand_less";
-  }
-  &.closed:after {
-    content: "expand_more";
+    transform: rotate(90deg);
   }
 }
 
