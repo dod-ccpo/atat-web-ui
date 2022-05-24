@@ -21,7 +21,7 @@
             id="ClassificationLevelCheckboxes"
             :value.sync="selectedOptions"
             :hasOtherValue="true"
-            :items="checkboxItems"
+            :items="sortedCheckBoxes"
             name="checkboxes"
             :card="false"
             class="copy-max-width"
@@ -68,73 +68,68 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 
 export default class ClassificationRequirements extends vue {
   public selectedOptions: string[] = [];
+  public classifications: ClassificationLevelDTO[] = []
   public isIL6Selected = ''
-  private checkboxItems: Checkbox[] = [
-    {
-      id: "UnclassifiedImpactLevel2",
-      label: `Unclassified / Impact Level 2 (IL2)`,
-      value: 'IL2',
-      description: "",
-    },
-    {
-      id: "UnclassifiedImpactLevel4",
-      label: `Unclassified / Impact Level 4 (IL4)`,
-      value: 'IL4',
-      description: "",
-    },
-    {
-      id: "UnclassifiedImpactLevel5",
-      label: `Unclassified / Impact Level 5 (IL5)`,
-      value: 'IL5',
-      description: "",
-    },
-    {
-      id: "SecretImpactLevel6",
-      label: `Secret / Impact Level 6 (IL6)`,
-      value: 'IL6',
-      description: "",
-    },
-  ];
+  private checkboxItems: Checkbox[] = []
 
   private async loadClassificationData() :Promise<void> {
-    const classifications = await DescriptionOfWork.classificationLevels;
-    console.log(classifications)
+    this.classifications = await DescriptionOfWork.classificationLevels;
+
   }
 
-  private createCheckboxItems(value: ClassificationLevelDTO[]) {
-    const arr = [];
-    let obj: any
-    for ( obj in value) {
-      let classification: stringObj = {
+  private createCheckboxItems(data: ClassificationLevelDTO[]) {
+    const arr :Checkbox[] = [];
+    data.forEach((val)=>{
+      console.log(val)
+      let classification: Checkbox = {
         id:'',
         value: '',
         label: '',
       }
-      classification.id = obj.sys_id;
-      switch (obj.impact_level) {
+      classification.id = val.sys_id || '';
+      switch (val.impact_level) {
       case 'IL4':
-        classification.value = obj.impact_level;
+        classification.value = val.impact_level;
         classification.label = 'Unclassified / Impact Level 4 (IL4)'
         break;
       case 'IL2':
-        classification.value = obj.impact_level;
+        classification.value = val.impact_level;
         classification.label = 'Unclassified / Impact Level 2 (IL2)'
         break;
       case 'IL5':
-        classification.value = obj.impact_level;
+        classification.value = val.impact_level;
         classification.label = 'Unclassified / Impact Level 5 (IL5)'
         break;
       case 'IL6':
-        classification.value = obj.impact_level;
-        classification.label = 'Unclassified / Impact Level 6 (IL6)'
+        classification.value = val.impact_level;
+        classification.label = 'Secret / Impact Level 6 (IL6)'
         break;
       default:
         return
       }
-      arr.push(obj)
-    }
+      arr.push(classification)
+    
+    })
+
+    console.log(arr)
     return arr
   }
+
+  private sortedCheckBoxes(checkboxArr:Checkbox[]) :Checkbox[] {
+    return checkboxArr.sort((a, b) => {
+      if (a.value > b.value) {
+        return 1;
+      }
+
+      if (a.value < b.value) {
+        return -1;
+      }
+      return 0;
+    })
+  }
+
+  // private sortClassifications = this.classifications.sort()
+
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
@@ -143,11 +138,16 @@ export default class ClassificationRequirements extends vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.loadClassificationData()
+    await this.loadClassificationData()
+    this.$nextTick(()=>{
+      this.checkboxItems =this.sortedCheckBoxes(this.createCheckboxItems(this.classifications))
+      console.log(this.checkboxItems)
+    })
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+
   }
 
 }
