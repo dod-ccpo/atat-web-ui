@@ -13,7 +13,6 @@ import { TABLENAME as MilitaryRanksTable } from "@/api/militaryRanks";
 import { AutoCompleteItem, AutoCompleteItemGroups, SelectData,  } from "types/Global";
 import  {nameofProperty, storeDataToSession, retrieveSession} from "../helpers"
 import Vue from "vue";
-import { property } from "cypress/types/lodash";
 
 const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
