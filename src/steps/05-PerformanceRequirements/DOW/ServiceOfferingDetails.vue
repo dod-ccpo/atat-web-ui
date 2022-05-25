@@ -81,7 +81,7 @@ export default class ServiceOfferingDetails extends Vue {
   ]
 
   private createInstanceObjects(data: ClassificationLevelDTO[]) {
-    const arr = []
+    const arr: any = []
     data.forEach((val)=>{
       let instance = {
         classification:{
