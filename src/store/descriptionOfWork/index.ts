@@ -72,6 +72,18 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({ rawError: true })
+  async ensureInitialized(): Promise<void> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+  }
+
+  @Action({ rawError: true })
+  public async getClassificationLevels(): Promise<ClassificationLevelDTO[]> {
+    await this.ensureInitialized();
+    return this.classificationLevels;
+  }
+  @Action({ rawError: true })
   public async initialize(): Promise<void> {
     if (this.initialized) {
       const sessionRestored = retrieveSession(ATAT_DESCRIPTION_OF_WORK_KEY);

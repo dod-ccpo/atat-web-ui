@@ -26,6 +26,11 @@ export class ClassificationRequirementsStore extends VuexModule {
   public async updateClassificationLevels(value: ClassificationLevelDTO[]): Promise<void> {
     this.setSelectedClassificationLevels(value);
   }
+
+  @Action({ rawError: true })
+  public async getClassificationLevels(): Promise<ClassificationLevelDTO[]> {
+    return this.selectedClassificationLevels;
+  }
 }
 const ClassificationRequirements = getModule(ClassificationRequirementsStore);
 export default ClassificationRequirements;

@@ -21,7 +21,7 @@
             id="ClassificationLevelCheckboxes"
             :value.sync="selectedOptions"
             :hasOtherValue="true"
-            :items="sortedCheckBoxes"
+            :items="checkboxItems"
             name="checkboxes"
             :card="false"
             class="copy-max-width"
@@ -51,13 +51,16 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import vue from 'vue'
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox, stringObj } from "../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { ClassificationLevelDTO } from "@/api/models";
+import { ClassificationLevelDTO, ContactDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
+import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
@@ -66,21 +69,16 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
   }
 })
 
-export default class ClassificationRequirements extends vue {
+export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
   public isIL6Selected = ''
   private checkboxItems: Checkbox[] = []
 
-  private async loadClassificationData() :Promise<void> {
-    this.classifications = await DescriptionOfWork.classificationLevels;
-
-  }
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     const arr :Checkbox[] = [];
     data.forEach((val)=>{
-      console.log(val)
       let classification: Checkbox = {
         id:'',
         value: '',
@@ -108,27 +106,20 @@ export default class ClassificationRequirements extends vue {
         return
       }
       arr.push(classification)
-    
     })
+    return arr.sort((a, b) => (a.value > b.value) ? 1 : -1)
+  }
 
-    console.log(arr)
+  private saveSelected() {
+    const arr :ClassificationLevelDTO[] = [];
+    this.selectedOptions.forEach(item => {
+      const value = this.classifications.filter(( data )=>{
+        return item == data.impact_level
+      })
+      arr.push(value[0])
+    })
     return arr
   }
-
-  private sortedCheckBoxes(checkboxArr:Checkbox[]) :Checkbox[] {
-    return checkboxArr.sort((a, b) => {
-      if (a.value > b.value) {
-        return 1;
-      }
-
-      if (a.value < b.value) {
-        return -1;
-      }
-      return 0;
-    })
-  }
-
-  // private sortClassifications = this.classifications.sort()
 
 
   @Watch("selectedOptions")
@@ -136,18 +127,42 @@ export default class ClassificationRequirements extends vue {
     this.isIL6Selected
       = newVal.indexOf('IL6') > -1 ? "true" : "false";
   }
+  public savedData: ClassificationLevelDTO[] = []
+
+  public get currentData(): ClassificationLevelDTO[] {
+    return this.saveSelected()
+  }
+
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        classificationRequirements.setSelectedClassificationLevels(this.currentData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  }
 
   public async loadOnEnter(): Promise<void> {
-    await this.loadClassificationData()
-    this.$nextTick(()=>{
-      this.checkboxItems =this.sortedCheckBoxes(this.createCheckboxItems(this.classifications))
-      console.log(this.checkboxItems)
-    })
+    this.classifications = await DescriptionOfWork.getClassificationLevels();
+    this.checkboxItems =this.createCheckboxItems(this.classifications)
+    const storeData = await classificationRequirements.getClassificationLevels()
+    if(storeData) {
+      this.savedData = storeData
+      storeData.forEach((val) => {
+        this.selectedOptions.push(val.impact_level)
+      })
+    }
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-
   }
 
 }

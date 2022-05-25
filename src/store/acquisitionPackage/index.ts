@@ -34,7 +34,7 @@ import { ContractTypeDTO } from "@/api/models";
 import { FileAttachmentServiceFactory } from "@/services/attachment";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import { ClassificationLevelDTO } from "@/api/models";
-import ClassificationRequirements from "@/store/descriptionOfWork"
+import ClassificationRequirements from "@/store/classificationRequirements"
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
