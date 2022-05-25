@@ -86,8 +86,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   ];
 
-
-
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
