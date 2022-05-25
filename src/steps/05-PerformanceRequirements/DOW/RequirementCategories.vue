@@ -107,7 +107,9 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         label: serviceOfferingGroup.label,
         value: serviceOfferingGroup.value
       };
-      if (checkboxItem.value !== "advisory" && checkboxItem.value !== "training") {
+
+      const cloudServiceCategories = ["advisory", "training"];
+      if (!cloudServiceCategories.includes(checkboxItem.value)) {
         this.xaasCheckboxItems.push(checkboxItem);
       } else {
         this.cloudSupportCheckboxItems.push(checkboxItem);
