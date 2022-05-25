@@ -157,7 +157,6 @@ export default class RequirementsForm extends Vue {
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
-      console.log(periods)
       this.isDisabled = false
       this.checkboxItems = this.createCheckboxItems(periods)
       this.selectedOptions.push(this.checkboxItems[0].value)

@@ -51,6 +51,10 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import RequirementsForm from './RequirementsForm.vue'
 import { getIdText } from "@/helpers";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import classificationRequirements from "@/store/classificationRequirements";
+import { ClassificationLevelDTO } from "@/api/models";
+import Periods from "@/store/periods";
 
 @Component({
   components: {
@@ -59,7 +63,7 @@ import { getIdText } from "@/helpers";
 })
 
 export default class ServiceOfferingDetails extends Vue {
-
+  private classifications: ClassificationLevelDTO[] = []
   public categoryName = "";
 
   // generate from data from backend when implemented
@@ -75,6 +79,43 @@ export default class ServiceOfferingDetails extends Vue {
     },
 
   ]
+
+  private createInstanceObjects(data: ClassificationLevelDTO[]) {
+    const arr = []
+    data.forEach((val)=>{
+      let instance = {
+        classification:{
+          name:'',
+          value:'',
+        },
+        description:'',
+        neededForEntireDuration: null,
+        periods: []
+      }
+      switch (val.impact_level) {
+      case 'IL4':
+        instance.classification.value = val.impact_level;
+        instance.classification.name = 'Unclassified / Impact Level 4 (IL4)'
+        break;
+      case 'IL2':
+        instance.classification.value = val.impact_level;
+        instance.classification.name = 'Unclassified / Impact Level 2 (IL2)'
+        break;
+      case 'IL5':
+        instance.classification.value = val.impact_level;
+        instance.classification.name = 'Unclassified / Impact Level 5 (IL5)'
+        break;
+      case 'IL6':
+        instance.classification.value= val.impact_level;
+        instance.classification.name = 'Secret / Impact Level 6 (IL6)'
+        break;
+      default:
+        return
+      }
+      arr.push(instance)
+    })
+    return arr
+  }
 
   // create classification level type when get data from backend implemented
   public selectedClassificationLevelsOnLoad = [{}];
@@ -150,10 +191,23 @@ export default class ServiceOfferingDetails extends Vue {
         value: "OPT4", // sys_id ?
       },
     ]
+    this.loadOnEnter()
   }
 
   public openModal(): void {
     // open modal functionality in task 7411
+  }
+  public async loadOnEnter(): Promise<void> {
+    this.classifications = await classificationRequirements.getClassificationLevels()
+    if(this.classifications){
+      this.instances = this.createInstanceObjects(this.classifications)
+      console.log(this.instances)
+    }
+    const periods = await Periods.loadPeriods();
+    if (periods && periods.length > 0) {
+      this.periods = periods
+      console.log(this.periods)
+    }
   }
 
 }
