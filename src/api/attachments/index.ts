@@ -19,40 +19,37 @@ export class AttachmentApi extends TableApiBase<AttachmentDTO> {
   public async upload(data: AttachmentDTO, file:File,
     onProgress?:(total:number, current: number)=>void): Promise<AttachmentDTO> {
     
-    try {
           
-      const formData = new FormData();
-      formData.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
     
-      const {table_name, table_sys_id, file_name} = data;
+    const {table_name, table_sys_id, file_name} = data;
 
-      const config:AxiosRequestConfig ={
-        headers:{
-          'Content-Type': '*/*',
-        },
-        params:{
-          file_name,
-          table_name,
-          table_sys_id
-        },
-        onUploadProgress:(progressEvent: ProgressEvent)=> {
+    const config:AxiosRequestConfig ={
+      headers:{
+        'Content-Type': '*/*',
+      },
+      params:{
+        file_name,
+        table_name,
+        table_sys_id
+      },
+      onUploadProgress:(progressEvent: ProgressEvent)=> {
 
-          const { loaded, total } = progressEvent;
-          if(onProgress){
-            onProgress(total, loaded);
-          }
+        const { loaded, total } = progressEvent;
+        if(onProgress){
+          onProgress(total, loaded);
         }
       }
-      const response =  await this.instance.post(`${this.endPoint}/file`, formData, config);
-
-      if(response.status !== 201){
-        throw new Error(response.statusText);
-      }
-      return response.data.result as AttachmentDTO;
-          
-    } catch (error) {
-      throw new Error(`file upload error ${error}`);
     }
+    const response =  await this.instance.post(`${this.endPoint}/file`, formData, config);
+
+    if(response.status !== 201){
+      throw new Error(response.statusText);
+    }
+    return response.data.result as AttachmentDTO;
+          
+    
   }
 
   public async getByRecordId(table_sys_id: string): Promise<AttachmentDTO>{

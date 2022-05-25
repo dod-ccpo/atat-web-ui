@@ -1,6 +1,6 @@
 import { bootstrapMockApis,colors,cleanText} from "../../../helpers";
 import common from "../../../selectors/common.sel";
-import occ from "../../../selectors/standComp.sel";
+import sac from "../../../selectors/standComp.sel";
 
 describe("Test suite: SAC step: BAA", () => {
   
@@ -28,8 +28,8 @@ describe("Test suite: SAC step: BAA", () => {
   it("TC2: Asserts: BAA", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
-    cy.textExists(occ.baaLabelText, "Business Associate Agreements (BAA)");
+    cy.selectPiiOption(sac.noPIIRadioOption, "NO");
+    cy.textExists(sac.baaLabelText, "Business Associate Agreements (BAA)");
     const expectedPHIText = "Protected Health Information (PHI) is information which relates" +
       " to the past, present, or future physical or mental health or condition of any" +
       " individual." +
@@ -38,29 +38,29 @@ describe("Test suite: SAC step: BAA", () => {
         " the business associate will appropriately safeguard PHI when it is transmitted or" +
         " maintained in electronic (e-PHI) or any other form. Learn more about business" +
         " associates and BAAs."
-    cy.findElement(occ.phiTextMessage).then(($el) => {
+    cy.findElement(sac.phiTextMessage).then(($el) => {
       let actualTxt = $el.text();
       cy.log(actualTxt);
       const formattedTxt = cleanText(actualTxt);
       expect(formattedTxt).equal(expectedPHIText);
     });
-    cy.textExists(occ.learnMoreBAALink, "Learn more about business associates and BAAs.");
+    cy.textExists(sac.learnMoreBAALink, "Learn more about business associates and BAAs.");
     //Assert Radio option label
     const baaOptionTextLabel = "Does this effort provide for definition of a" +
         " Business Associate who may be involved in but not limited to design or development" +
         " (in whole or in part) of the system, and/or for creating, receiving, transmitting," +
         " managing, and disposing of PHI?"
-    cy.findElement(occ.baaRadioOptionText).then(($el) => {
+    cy.findElement(sac.baaRadioOptionText).then(($el) => {
       let actualTxt = $el.text();
       cy.log(actualTxt);
       const formattedTxt = cleanText(actualTxt);
       expect(formattedTxt).equal(baaOptionTextLabel);
     });
     //Asserts radio options
-    cy.radioBtn(occ.yesBAARadioOption, "YES").not("[disabled]");
-    cy.radioBtn(occ.noBAARadioOption, "NO").not("[disabled]");
+    cy.radioBtn(sac.yesBAARadioOption, "YES").not("[disabled]");
+    cy.radioBtn(sac.noBAARadioOption, "NO").not("[disabled]");
     //About Business Associates info Link
-    cy.textExists(occ.aboutBALink, " Why do we need to know about business associates? ").click()
+    cy.textExists(sac.aboutBALink, " Why do we need to know about business associates? ").click()
       .then(() => {
         const BAAFAQTxt = "Per HIPAA, a BAA is required when PHI is transmitted" +
             " and maintained in electronic (e-PHI) or any other form or medium and" +
@@ -73,12 +73,12 @@ describe("Test suite: SAC step: BAA", () => {
             " Business associate must also obtain same business associate agreements from" +
             " its subcontractors. For more information, reference Business Associate and PHI," +
             " CFR title 45 part 160.103 and BAA, CFR title 45 part 164.308 (b)(4)."
-        cy.findElement(occ.contentAboutBA).then(($el) => {
+        cy.findElement(sac.contentAboutBA).then(($el) => {
           let actualTxt = $el.text();
           cy.log(actualTxt);
           const formattedTxt = cleanText(actualTxt);
           expect(formattedTxt).equal(BAAFAQTxt);
-          cy.textExists(occ.moreInfoBAALink,
+          cy.textExists(sac.moreInfoBAALink,
             "Business Associate and PHI, CFR title 45 part 160.103");
         });
       
@@ -92,7 +92,7 @@ describe("Test suite: SAC step: BAA", () => {
   it("TC3: BAA: Select the radio options", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
+    cy.selectPiiOption(sac.noPIIRadioOption, "NO");
     //Select radio options
     const infoAlert = "As a mission owner, it is your responsibility to obtain the appropriate" +
         " agreements with your business associate(s). Business associates must also obtain BAAs" +
@@ -100,9 +100,9 @@ describe("Test suite: SAC step: BAA", () => {
         " acquisition package. For sample BAA provisions, visit" +
         " https://www.hhs.gov/hipaa/for-professionals/covered-entities/" +
         " sample-business-associate-agreement-provisions/index.html."
-    cy.radioBtn(occ.yesBAARadioOption, "YES").click({ force: true })
+    cy.radioBtn(sac.yesBAARadioOption, "YES").click({ force: true })
       .then(() => {
-        cy.findElement(occ.infoAlert).should("be.visible").then((el) => {
+        cy.findElement(sac.infoAlert).should("be.visible").then((el) => {
           let actualTxt = el.text();
           cy.log(actualTxt);
           const formattedTxt = cleanText(actualTxt);
@@ -110,9 +110,9 @@ describe("Test suite: SAC step: BAA", () => {
         });
       });
     
-    cy.radioBtn(occ.noBAARadioOption, "NO").click({ force: true })
+    cy.radioBtn(sac.noBAARadioOption, "NO").click({ force: true })
       .then(() => {
-        cy.findElement(occ.infoAlert).should("not.be.visible")
+        cy.findElement(sac.infoAlert).should("not.be.visible")
       });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
 
@@ -126,11 +126,11 @@ describe("Test suite: SAC step: BAA", () => {
   it("TC4: BAA: Validations", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     //select radio option as No
-    cy.selectPiiOption(occ.noPIIRadioOption, "NO");
+    cy.selectPiiOption(sac.noPIIRadioOption, "NO");
     // radio options error
-    cy.radioBtn(occ.yesBAARadioOption, "YES").focus().tab()
+    cy.radioBtn(sac.yesBAARadioOption, "YES").focus().tab()
       .then(() => {
-        cy.checkErrorMessage(occ.baaRadioError, "Please select an option");
+        cy.checkErrorMessage(sac.baaRadioError, "Please select an option");
       });
     
   });

@@ -37,59 +37,56 @@ class FileAttachmentServiceBase<
     file: File,
     onProgress?: (total: number, current: number) => void
   ): Promise<TableAttachment<TModel>> {
-    try {
-      //creates initial record
-      const record = await this.tableApi.create();
+   
+    //creates initial record
+    const record = await this.tableApi.create();
 
-      if (!record) {
-        throw new Error("failed to create record to associate attachment with");
-      }
-
-      const fileName = file.name;
-      const fileExtension = this.getExtension(fileName);
-
-      //build attachment object
-      const attachment: AttachmentDTO = {
-        file_name: fileName,
-        table_name: this.tableName,
-        content_type: "*/*",
-        table_sys_id: record.sys_id || "",
-      };
-
-      //upload the Attachment and get the meta data
-      const updatedAttachment = await this.attachmentApi.upload(
-        attachment,
-        file,
-        onProgress
-      );
-
-      const attachmentSysId = updatedAttachment?.sys_id || "";
-
-      // update record with attachment sys id, file name, and extension
-      // (this will point the attachment column in the record to the attachment)
-      record.attachment = attachmentSysId;
-      record.file_name = fileName;
-      record.extension = fileExtension;
-      const updatedRecord = await this.tableApi.update(
-        record.sys_id || "",
-        record
-      );
-
-      //return the attachment and table data
-      return {
-        data: updatedRecord,
-        attachment: updatedAttachment,
-      };
-    } catch (error) {
-      throw new Error(`error occurred uploading file ${error}`);
+    if (!record) {
+      throw new Error("failed to create record to associate attachment with");
     }
+
+    const fileName = file.name;
+    const fileExtension = this.getExtension(fileName);
+
+    //build attachment object
+    const attachment: AttachmentDTO = {
+      file_name: fileName,
+      table_name: this.tableName,
+      content_type: "*/*",
+      table_sys_id: record.sys_id || "",
+    };
+
+    //upload the Attachment and get the meta data
+    const updatedAttachment = await this.attachmentApi.upload(
+      attachment,
+      file,
+      onProgress
+    );
+
+    const attachmentSysId = updatedAttachment?.sys_id || "";
+
+    // update record with attachment sys id, file name, and extension
+    // (this will point the attachment column in the record to the attachment)
+    record.attachment = attachmentSysId;
+    record.file_name = fileName;
+    record.extension = fileExtension;
+    const updatedRecord = await this.tableApi.update(
+      record.sys_id || "",
+      record
+    );
+
+    //return the attachment and table data
+    return {
+      data: updatedRecord,
+      attachment: updatedAttachment,
+    };
+    
   }
 
 
   async remove(attachment:AttachmentDTO): Promise<void>{
 
     if(!attachment){
-
       throw new Error('invalid request, attachment required');
     }
     //first delete the attachment
