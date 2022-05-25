@@ -113,18 +113,18 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         this.cloudSupportCheckboxItems.push(checkboxItem);
       }
     });
-
+    
     const xaasNone: Checkbox = {
       id: "XaaSNoneApply",
       label: "None of these apply to my acquisition.",
-      value: "NONE", 
+      value: "XaaS_NONE", 
     }
     this.xaasCheckboxItems.push(xaasNone)
 
     const cloudSupportNone: Checkbox = {
       id: "CloudSupportNoneApply",
       label: "None of these apply to my acquisition.",
-      value: "NONE", 
+      value: "Cloud_NONE", 
     }
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
@@ -147,6 +147,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     try {
       // save to store
       const selectedOfferings = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
+
       await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferings);
       // todo future ticket - save to SNOW
     } catch (error) {
