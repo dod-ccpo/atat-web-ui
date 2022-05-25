@@ -43,6 +43,8 @@ import RequirementCategories
 import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue"
 import ServiceOfferingDetails 
   from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue"
+import DOWSummary 
+  from "../steps/05-PerformanceRequirements/DOW/Summary.vue"
 
 // Step 6 - Government Furnished Equipment
 import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
@@ -113,6 +115,7 @@ export const routeNames = {
   RequirementCategories: "Requirement_Categories",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
+  DOWSummary: "DOW_Summary",
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
   CloudSupportPackages: "Cloud_Support_Packages",
@@ -389,6 +392,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,
         component: ServiceOfferingDetails,
+      },
+      {
+        menuText: "DOW Summary",
+        path: "dow-summary",
+        excludeFromMenu: true,
+        name: routeNames.DOWSummary,
+        completePercentageWeight: 1,
+        component: DOWSummary,
       },
     ],
   },
