@@ -188,14 +188,27 @@ export default class ATATCheckboxGroup extends Vue {
   } 
   private clearErrorMessage(): void {
     this.errorMessages = [];
-  } 
-
-  public mounted(): void {
+  }
+  private setEventListeners(): void {
     document.querySelectorAll('input[type="checkbox"]').forEach((elem) => {
       const checkbox = elem as HTMLInputElement;
       checkbox.addEventListener("blur", this.setCheckboxEventListeners);
-    });  
+    });
   }
+
+  @Watch("items")
+  protected checkboxItemsChange(): void {
+    if (this.items.length) {
+      this.$nextTick(() => {
+        this.setEventListeners();
+      })
+    }
+  }
+
+  public mounted(): void {
+    this.setEventListeners();
+  }
+
 
   public setCheckboxEventListeners(event: FocusEvent): void {
     const thisCheckbox = event.currentTarget as HTMLInputElement;
