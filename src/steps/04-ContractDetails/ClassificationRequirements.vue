@@ -120,7 +120,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     this.classifications = await classificationRequirements.getAllClassificationLevels();
-    debugger;
     this.checkboxItems =this.createCheckboxItems(this.classifications)
     const storeData = await classificationRequirements.getSelectedClassificationLevels()
     if(storeData) {

@@ -9,12 +9,12 @@
           <div class="copy-max-width">
 
             <div 
-              v-if="selectedClassificationLevelsOnLoad.length === 1"
+              v-if="classificationLevelOptions.length === 1"
               id="SingleClassificationIntro"  
             >
               <p id="SingleClassificationIntro">
                 In the previous section, you specified 
-                <strong>{{ selectedClassificationLevelsOnLoad[0].name }}</strong> for the 
+                <strong>{{ classificationLevelOptions[0].name }}</strong> for the 
                 classification level of all cloud resources and services. If you 
                 need this within a different level, 
                 <a 
@@ -33,7 +33,7 @@
                 id="ClassificationCheckboxes"
                 aria-describedby="ClassificationGroupLabel"
                 :value.sync="selectedClassificationLevels"
-                :items="classificationLevels"
+                :items="checkboxItems"
                 :card="false"
                 class="copy-max-width"
                 :rules="[
@@ -88,8 +88,9 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import RequirementsForm from './RequirementsForm.vue'
 
 import { Checkbox } from "../../../../types/Global";
-
-import { getIdText } from "@/helpers";
+import ClassificationRequirements from "@/store/classificationRequirements";
+import { ClassificationLevelDTO } from "@/api/models";
+import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 
 @Component({
   components: {
@@ -100,6 +101,7 @@ import { getIdText } from "@/helpers";
 })
 
 export default class ServiceOfferingDetails extends Vue {
+  private checkboxItems: Checkbox[] = []
 
   public categoryName = "";
 
@@ -126,21 +128,22 @@ export default class ServiceOfferingDetails extends Vue {
   ]
 
   // create classification level type when get data from backend implemented
-  public selectedClassificationLevelsOnLoad = [{}];
   public selectedClassificationLevels = [{}];
-  public classificationLevels: Checkbox[] | undefined;
+
+  // used for checkboxes at top of form if multiple 
+  public classificationLevelOptions: ClassificationLevelDTO[] | undefined;
 
   // get periods from data when implemented
   public periods = [{}];
 
-  private getIdText(string: string) {
-    return getIdText(string);
+  private createCheckboxItems(data: ClassificationLevelDTO[]) {
+    return data.length > 1 ? buildClassificationCheckboxList(data) : [];
   }
 
   public async loadOnEnter(): Promise<void> {
-    // this.classifications = await DescriptionOfWork.getClassificationLevels();
-    // this.checkboxItems =this.createCheckboxItems(this.classifications)
-
+    this.classificationLevelOptions 
+      = await ClassificationRequirements.getSelectedClassificationLevels();
+    this.checkboxItems = this.createCheckboxItems(this.classificationLevelOptions)
   }
 
   public mounted(): void {
@@ -160,7 +163,7 @@ export default class ServiceOfferingDetails extends Vue {
     ];
 
     // get this from store data when implemented 
-    this.classificationLevels = [
+    this.classificationLevelOptions = [
       {
         id: "IL2",
         label: "Unclassified / Impact Level 2 (IL2)",
@@ -183,8 +186,6 @@ export default class ServiceOfferingDetails extends Vue {
       },
     ];    
 
-    this.selectedClassificationLevelsOnLoad = this.selectedClassificationLevels;
-    
     // get from data from backend when implemented
     this.periods = [
       {
