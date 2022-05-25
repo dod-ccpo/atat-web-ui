@@ -26,6 +26,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   requirements_const_estimate: string;
   contract_considerations: string;
   funding_plans: string;
+  classification_level: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {

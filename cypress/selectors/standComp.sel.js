@@ -60,5 +60,13 @@ module.exports = {
   secton508Text: "#Section508RadioGroup_radio_group_control legend",
   sectionYesRadio: "#Radio_Yes",
   sectionNoRadio: "#Radio_No",
-  about508Link:"#Button_AboutBusinessAssociates"
+  about508Link: "#Button_AboutBusinessAssociates",
+  sectionradioActive: "#Section508RadioGroup_radio_group_control .v-item--active",
+  sectionradioError: "#Section508RadioGroup_radio_group_control .field-error",
+  //Tell us more about your Section 508 Accessibility Requirements
+  accessibilityLink: "#508AccessibilityExternalLink",
+  accessibilityLabelTxt: "#OperationToBePerformed_text_field_label",
+  accessibilityHelpTxt: "#OperationToBePerformed_text_field_control .help-text",
+  operationTxtBox: "#OperationToBePerformed_text_area",
+  operationTxtError:"#OperationToBePerformed_text_field_control .field-error",
 }
