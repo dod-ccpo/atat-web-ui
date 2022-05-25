@@ -137,6 +137,12 @@ export default class ServiceOfferingDetails extends Vue {
     return getIdText(string);
   }
 
+  public async loadOnEnter(): Promise<void> {
+    // this.classifications = await DescriptionOfWork.getClassificationLevels();
+    // this.checkboxItems =this.createCheckboxItems(this.classifications)
+
+  }
+
   public mounted(): void {
     // get this from store data when implemented 
     this.categoryName = "Data Management";

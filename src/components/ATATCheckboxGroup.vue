@@ -149,7 +149,6 @@ export default class ATATCheckboxGroup extends Vue {
   }
 
   private getIdText(string: string) {
-    debugger;
     return getIdText(string);
   }
 

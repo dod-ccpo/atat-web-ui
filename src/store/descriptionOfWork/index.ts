@@ -7,7 +7,7 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { ClassificationLevelDTO, ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+import { ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
   nameofProperty,
@@ -15,6 +15,7 @@ import {
   retrieveSession,
 } from "../helpers";
 import Vue from "vue";
+import { stringObj } from "../../../types/Global";
 
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
@@ -26,22 +27,17 @@ const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
   store: rootStore,
 })
 export class DescriptionOfWorkStore extends VuexModule {
-  classificationLevels: ClassificationLevelDTO[] = [];
   initialized = false;
   serviceOfferings: ServiceOfferingDTO[] = [];
   serviceOfferingGroups: SystemChoiceDTO[] = [];
 
+  selectedOfferingGroups: stringObj[] = [];
+
   // store session properties
   protected sessionProperties: string[] = [
-    nameofProperty(this, (x) => x.classificationLevels),
     nameofProperty(this, (x) => x.serviceOfferings),
     nameofProperty(this, (x) => x.serviceOfferingGroups),
   ];
-
-  @Mutation
-  private setClassifications(value: ClassificationLevelDTO[]) {
-    this.classificationLevels = value;
-  }
 
   @Mutation
   private setInitialized(value: boolean) {
@@ -58,6 +54,18 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.serviceOfferingGroups = value;
   }
 
+  @Mutation
+  public setSelectedOfferingGroups(selectedOfferingGroups: string[]) {
+    this.selectedOfferingGroups = []; 
+    selectedOfferingGroups.forEach((selectedOfferingGroup) => {
+      if (!this.selectedOfferingGroups.some(e => e.category === selectedOfferingGroup)) {
+        const offering = {
+          category: selectedOfferingGroup
+        }
+        this.selectedOfferingGroups.push(offering);
+      }
+    });
+  }
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -72,17 +80,24 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({ rawError: true })
+  public async getServiceOfferingGroups(): Promise<SystemChoiceDTO[]> {
+    await this.ensureInitialized();
+    return this.serviceOfferingGroups;
+  }
+
+  @Action({ rawError: true })
+  public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
+    await this.ensureInitialized();
+    return this.selectedOfferingGroups;
+  }
+
+  @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
       await this.initialize();
     }
   }
 
-  @Action({ rawError: true })
-  public async getClassificationLevels(): Promise<ClassificationLevelDTO[]> {
-    await this.ensureInitialized();
-    return this.classificationLevels;
-  }
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     if (this.initialized) {
@@ -93,7 +108,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     } else {
       try {
         await Promise.all([
-          this.loadClassificationLevels(),
           this.loadServiceOfferings(),
           this.LoadServiceOfferingGroups(),
         ]);
@@ -106,16 +120,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       } catch (error) {
         console.error(error);
       }
-    }
-  }
-
-  @Action({ rawError: true })
-  public async loadClassificationLevels(): Promise<void> {
-    try {
-      const classificationLevels = await api.classificationLevelTable.all();
-      this.setClassifications(classificationLevels);
-    } catch (error) {
-      throw new Error(`error loading Classification Levels ${error}`);
     }
   }
 

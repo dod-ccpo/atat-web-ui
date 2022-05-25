@@ -57,9 +57,8 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox, stringObj } from "../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { ClassificationLevelDTO, ContactDTO } from "@/api/models";
-import DescriptionOfWork from "@/store/descriptionOfWork";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { hasChanges } from "@/helpers";
+import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
@@ -77,50 +76,19 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    const arr :Checkbox[] = [];
-    data.forEach((val)=>{
-      let classification: Checkbox = {
-        id:'',
-        value: '',
-        label: '',
-      }
-      classification.id = val.sys_id || '';
-      switch (val.impact_level) {
-      case 'IL4':
-        classification.value = val.impact_level;
-        classification.label = 'Unclassified / Impact Level 4 (IL4)'
-        break;
-      case 'IL2':
-        classification.value = val.impact_level;
-        classification.label = 'Unclassified / Impact Level 2 (IL2)'
-        break;
-      case 'IL5':
-        classification.value = val.impact_level;
-        classification.label = 'Unclassified / Impact Level 5 (IL5)'
-        break;
-      case 'IL6':
-        classification.value = val.impact_level;
-        classification.label = 'Secret / Impact Level 6 (IL6)'
-        break;
-      default:
-        return
-      }
-      arr.push(classification)
-    })
-    return arr.sort((a, b) => (a.value > b.value) ? 1 : -1)
+    return buildClassificationCheckboxList(data);
   }
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
     this.selectedOptions.forEach(item => {
       const value = this.classifications.filter(( data )=>{
-        return item == data.impact_level
+        return item == data.sys_id
       })
       arr.push(value[0])
     })
     return arr
   }
-
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
@@ -141,6 +109,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
+        debugger;
         classificationRequirements.setSelectedClassificationLevels(this.currentData)
       }
     } catch (error) {
@@ -150,13 +119,16 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.classifications = await DescriptionOfWork.getClassificationLevels();
+    this.classifications = await classificationRequirements.getAllClassificationLevels();
+    debugger;
     this.checkboxItems =this.createCheckboxItems(this.classifications)
-    const storeData = await classificationRequirements.getClassificationLevels()
+    const storeData = await classificationRequirements.getSelectedClassificationLevels()
     if(storeData) {
       this.savedData = storeData
       storeData.forEach((val) => {
-        this.selectedOptions.push(val.impact_level)
+        if (val.sys_id) {
+          this.selectedOptions.push(val.sys_id)
+        }
       })
     }
   }
