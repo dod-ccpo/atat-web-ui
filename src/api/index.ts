@@ -20,6 +20,7 @@ import { AttachableDTO } from "./models";
 import { PeriodApi } from "./period";
 import { ClassificationLevelApi } from "./classificationLevels";
 import { ServiceOfferingApi } from "./serviceOffering";
+import { RequiredServicesApi } from "./requiredServices";
 
 export const api = {
 
@@ -44,6 +45,7 @@ export const api = {
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),
+  requiredServicesTables: new RequiredServicesApi(),
 }
 
 export default {

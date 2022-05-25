@@ -12,7 +12,8 @@ import {
   ContractTypeDTO,
   ContractConsiderationsDTO,
   FundingPlanDTO,
-  ClassificationLevelDTO
+  ClassificationLevelDTO,
+  RequiredServicesDTO
 } from "@/api/models";
 
 export interface SessionData {
@@ -32,4 +33,5 @@ export interface SessionData {
   requirementsCostEstimate: RequirementsCostEstimateDTO;
   SensitiveInformation: SensitiveInformationDTO;
   classificationLevel: ClassificationLevelDTO;
+  requiredServices: RequiredServicesDTO;
 }
