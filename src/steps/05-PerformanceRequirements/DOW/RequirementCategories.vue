@@ -109,7 +109,11 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       };
 
       const cloudServiceCategories = ["advisory", "training"];
-      if (!cloudServiceCategories.includes(checkboxItem.value)) {
+      if (!cloudServiceCategories.includes(checkboxItem.value.toLowerCase())) {
+        if (serviceOfferingGroup.value.toLowerCase() === "general_xaas") {
+          checkboxItem.description = `Including third party marketplace and any 
+            other XaaS resources not covered in the categories above`;
+        }
         this.xaasCheckboxItems.push(checkboxItem);
       } else {
         this.cloudSupportCheckboxItems.push(checkboxItem);
