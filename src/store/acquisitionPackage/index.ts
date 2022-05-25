@@ -32,6 +32,9 @@ import { PeriodOfPerformanceDTO } from "@/api/models";
 import { GFEOverviewDTO } from "@/api/models";
 import { ContractTypeDTO } from "@/api/models";
 import { FileAttachmentServiceFactory } from "@/services/attachment";
+import DescriptionOfWork from "@/store/descriptionOfWork"
+import { ClassificationLevelDTO } from "@/api/models";
+import ClassificationRequirements from "@/store/classificationRequirements"
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -47,6 +50,7 @@ export const StoreProperties = {
   PeriodOfPerformance: "periodOfPerformance",
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
+  ClassificationLevel: "ClassificationRequirements",
 };
 
 const initialCurrentContract = ()=> {
@@ -181,6 +185,13 @@ const initialSensitiveInformation = ()=> {
   }
 }
 
+const initialClassificationLevel = () => {
+  return {
+    impact_level: "",
+    classification: "",
+  }
+}
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
@@ -253,6 +264,7 @@ export class AcquisitionPackageStore extends VuexModule {
   gfeOverview: GFEOverviewDTO | null = null;
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
+  classificationLevel: ClassificationLevelDTO | null = null;
 
   public initContact: ContactDTO = initialContact();
 
@@ -319,6 +331,13 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
+  public setClassificationLevel(value: ClassificationLevelDTO): void {
+    this.classificationLevel = this.classificationLevel
+      ? Object.assign(this.classificationLevel, value)
+      : value;
+  }
+
+  @Mutation
   public setPeriodOfPerformance(value: PeriodOfPerformanceDTO): void {
     this.periodOfPerformance = this.periodOfPerformance
       ? Object.assign(this.periodOfPerformance, value)
@@ -334,8 +353,8 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setContractConsiderations(value: ContractConsiderationsDTO): void {
-    this.contractConsiderations = this.contractConsiderations
-      ? Object.assign(this.contractConsiderations, value)
+    this.contractConsiderations = this.contractConsiderations 
+      ? Object.assign(this.contractConsiderations, value) 
       : value;
   }
 
@@ -386,12 +405,14 @@ export class AcquisitionPackageStore extends VuexModule {
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.SensitiveInformation;
     this.gfeOverview = sessionData.gFEOverview;
+    this.classificationLevel = sessionData.classificationLevel;
   }
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     await ContactData.initialize();
     await OrganiationData.initialize();
+    await DescriptionOfWork.initialize();
 
     if (this.initialized) {
       return;
@@ -475,6 +496,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
+    [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -489,6 +511,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Periods]: "periods",
     [StoreProperties.RequirementsCostEstimate]: "requirements_const_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
+    [StoreProperties.ClassificationLevel]: "classification_level"
   }
 
   @Action({ rawError: true })
@@ -987,6 +1010,55 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   /**
+   * Loads Classification Level data from backend
+   */
+  @Action({rawError: true})
+  async loadClassificationLevel(): Promise<ClassificationLevelDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.classificationLevel?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const classificationLevelData =
+            await api.classificationLevelTable.retrieve(sys_id as string);
+        this.setClassificationLevel(classificationLevelData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          classification_level: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.classificationLevel as ClassificationLevelDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading classification level data ${error}`);
+    }
+  }
+
+  /**
+   * Saves Sensitive Information (FOIA) data to backend
+   */
+  @Action({rawError: true})
+  async saveClassificationLevel(data: ClassificationLevelDTO): Promise<void> {
+    try {
+      const sys_id = this.classificationLevel?.sys_id || "";
+      const savedClassificationLevel =
+          sys_id.length > 0
+            ? await api.classificationLevelTable.update(sys_id, {
+              ...data,
+              sys_id,
+            })
+            : await api.classificationLevelTable.create(data);
+      this.setClassificationLevel(savedClassificationLevel);
+      this.setAcquisitionPackage({
+        ...this.classificationLevel,
+        classification_level: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving classification level data ${error}`);
+    }
+  }
+
+  /**
    * A method to retrieve data from tables that are used strictly for attaching files
    * @param key string
    * @returns attachment table data
@@ -1078,7 +1150,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  async saveCollection<TData extends BaseTableDTO>({collection, property}: 
+  async saveCollection<TData extends BaseTableDTO>({collection, property}:
     {collection: TData[], property: string}): Promise<void> {
     this.updatePackageData({key: property, data: collection.map(item=>item.sys_id).join(",")});
   }

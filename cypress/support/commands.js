@@ -692,3 +692,25 @@ Cypress.Commands.add("trainingCourseExists", () => {
     }
   });
 });
+
+Cypress.Commands.add("select508Option", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(sac.sectionradioActive)
+    .then(($radioBtn) => {
+      const selectedOption = cleanText($radioBtn.text());
+      cy.log(selectedOption);
+      cy.findElement(common.continueBtn)
+        .scrollIntoView().click();
+      if (selectedOption === "radio_button_checkedNo." +
+        " I need to customize the Section 508 Accessibility Standards in my Description of Work.") {
+        //Tell us more about your Section 508 Accessibility requirements"
+        cy.verifyPageHeader("Tell us more about your Section 508 Accessibility requirements");
+      } else {
+        //navigates to next step in the workflow
+        cy.findElement(common.stepEvaluationCriteriaText)
+          .should("be.visible")
+          .and('have.css', 'color', colors.primary)
+      }
+          
+    });
+});

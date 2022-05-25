@@ -50,7 +50,7 @@ export class ValidationPlugin {
  * @returns {function(*=): boolean}
  */
 
-  required (
+  required(
     message?: string
   ): ((v: string) => string | true | undefined) {
     message = message || "This field is required.";
@@ -59,12 +59,13 @@ export class ValidationPlugin {
         if (v && Array.isArray(v) === false) {
           // array of objects
           return v && Object.values(v).every((val) => val !== "") || message;
-        } 
+        }
         // array of strings
         return v && Object.values(v).length > 0 || message;
-      } else if (typeof(v) === "string") { 
-        return (v!=="")|| message;
+      } else if (typeof (v) === "string") {
+        return (v !== "") || message;
       }
+      return true;
     };
   };
 
@@ -148,53 +149,53 @@ export class ValidationPlugin {
  */
   isDateValid(
     message?: string
-  ): ((v: string) => string | true | undefined){
+  ): ((v: string) => string | true | undefined) {
     message = message || `Invalid Date`;
     // validate date isn't something like 12/DD/YYYY
     return (v: string) => {
       return (/^[0-9]*$/.test(v.replaceAll(/\//g, ""))) || message
     };
   };
-  
- /**
- * @returns {function(*): (boolean|string)}
- */
- isEmail = (): ((v: string) => string | true | undefined) => {
-   return (v: string) => {
-     if (v && v!==""){  
-       if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
-         return "Please use standard domain format, like ‘@mail.mil’"
-       } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
-         return "Please use your .mil or .gov email address."
-       } 
-     }
-     return true;
-   };
- };
 
- /**
- * Returns the error message otherwise.
- *
- * @param {string} country country Abbreviation
- * @returns {function(*): (boolean|string)}
- */
- isPhoneNumberValid = ( country: CountryObj): ((v: string) => string | true | undefined) => {
-   return (v: string) => {
-     if (v && v!==""){
-       const plainPN = v.replace(/[() -]/gi,'') || '';
-       const isValid = country?.mask?.some((mask) =>{
-         return mask.replace(/[() -]/gi,'').length === plainPN.length;
-       });
-       return isValid ||
-        `Please enter a number using the format ` +
-        `for  ${country.name} (e.g., ${country.mask?.join(", ")}).`;
-     }
-     else {
-       return "Please enter your phone number."
-     }
-     return true;
-   }
- };
+  /**
+  * @returns {function(*): (boolean|string)}
+  */
+  isEmail = (): ((v: string) => string | true | undefined) => {
+    return (v: string) => {
+      if (v && v !== "") {
+        if (/[a-z0-9]+@[a-z-]+\.[a-z]{3}/i.test(v) === false) {
+          return "Please use standard domain format, like ‘@mail.mil’"
+        } else if (/^\S[a-z-_.0-9]+@[a-z-]+\.(?:gov|mil)$/i.test(v) === false) {
+          return "Please use your .mil or .gov email address."
+        }
+      }
+      return true;
+    };
+  };
+
+  /**
+  * Returns the error message otherwise.
+  *
+  * @param {string} country country Abbreviation
+  * @returns {function(*): (boolean|string)}
+  */
+  isPhoneNumberValid = (country: CountryObj): ((v: string) => string | true | undefined) => {
+    return (v: string) => {
+      if (v && v !== "") {
+        const plainPN = v.replace(/[() -]/gi, '') || '';
+        const isValid = country?.mask?.some((mask) => {
+          return mask.replace(/[() -]/gi, '').length === plainPN.length;
+        });
+        return isValid ||
+          `Please enter a number using the format ` +
+          `for  ${country.name} (e.g., ${country.mask?.join(", ")}).`;
+      }
+      else {
+        return "Please enter your phone number."
+      }
+      return true;
+    }
+  };
 
   /**
    * Returns the error message otherwise.
@@ -205,16 +206,16 @@ export class ValidationPlugin {
    * @returns {function(*): (boolean|string)}
    */
   isMaskValid = (mask: string[], message: string, isMaskRegex?: boolean):
-      ((v: string) => string | true | undefined) => {
+    ((v: string) => string | true | undefined) => {
     return (v: string) => {
-      if (v && v!==""){
-        const plainInput = v.replace(/[() -]/gi,'') || '';
-        if (isMaskRegex && isMaskRegex === true){
+      if (v && v !== "") {
+        const plainInput = v.replace(/[() -]/gi, '') || '';
+        if (isMaskRegex && isMaskRegex === true) {
           const maskRegEx = new RegExp(mask[0])
           return maskRegEx.test(v) || message;
         } else {
-          const isValid = mask?.some((mask) =>{
-            return mask.replace(/[() -]/gi,'').length === plainInput.length;
+          const isValid = mask?.some((mask) => {
+            return mask.replace(/[() -]/gi, '').length === plainInput.length;
           });
           return isValid || message;
         }
@@ -223,6 +224,68 @@ export class ValidationPlugin {
     }
   };
 
+  /**
+ * Validator that ensures the file is valid.
+ * Returns the error message otherwise.
+ *
+ * @param message
+ * @returns {function(*): boolean}
+ */
+
+  isFileValid = (
+    file: File, 
+    validExtensions: string[], 
+    maxFileSize: number, 
+    doesFileExist: boolean,
+    SNOWError?: string,
+    statusCode?: number,
+  ):((v: string) => string | true | undefined) => {
+    return () => {
+      const fileName = file.name.length>20 
+        ? file.name.substring(0, 12) + '...' 
+            + file.name.substring(file.name.length-8, file.name.length)
+        : file.name;
+      const fileSize = file.size;
+      const isValidExtension = validExtensions.some((ext)=>
+        fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase() === ext
+      )
+      if (!isValidExtension){
+        return `'${fileName}' is not a valid format or has been corrupted. ` +
+                `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
+                `.${validExtensions.slice(-1)} file.`
+      }
+
+      // does file aleady exist?
+      if (doesFileExist){
+        return `'${fileName}' was already uploaded.`
+      }
+      
+      // is file too big?
+      if (fileSize>maxFileSize){
+        return `Your file '${fileName}' is too large. Please upload a file that is 1GB or less.`
+      }
+
+      if (SNOWError !== "" && SNOWError !== undefined){
+        const error = SNOWError.toLowerCase();
+        let invalidMessage = "";
+
+        // during upload, did SNOW detect that the 
+        // file type was incorrect (eg, changing .txt to .pdf file)
+        if (error.indexOf("invalid file type")>-1){
+          invalidMessage = `'${fileName}' is not a valid format or has been corrupted. ` +
+            `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
+            `.${validExtensions.slice(-1)} file.`
+        } else { 
+          // generic message to accommodate for all other errors 
+          //that are returned from SNOW
+          invalidMessage = "We have encountered unexpected problems uploading your file '" +
+            fileName +"'. Please try again later."
+        }
+        return invalidMessage;
+      }
+      return true;
+    }
+  };
 }
 
 declare module 'vue/types/vue' {
