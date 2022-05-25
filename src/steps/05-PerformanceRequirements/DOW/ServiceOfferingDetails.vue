@@ -165,31 +165,6 @@ export default class ServiceOfferingDetails extends Vue {
     
     // get from data from backend when implemented
     this.periods = [
-      {
-        id: "Base",
-        label: "Base period",
-        value: "BASE", // sys_id ?
-      },
-      {
-        id: "Opt1",
-        label: "Option period 1",
-        value: "OPT1", // sys_id ?
-      },
-      {
-        id: "Opt2",
-        label: "Option period 2",
-        value: "OPT2", // sys_id ?
-      },
-      {
-        id: "Opt3",
-        label: "Option period 3",
-        value: "OPT3", // sys_id ?
-      },
-      {
-        id: "Opt4",
-        label: "Option period 4",
-        value: "OPT4", // sys_id ?
-      },
     ]
     this.loadOnEnter()
   }
@@ -201,12 +176,10 @@ export default class ServiceOfferingDetails extends Vue {
     this.classifications = await classificationRequirements.getClassificationLevels()
     if(this.classifications){
       this.instances = this.createInstanceObjects(this.classifications)
-      console.log(this.instances)
     }
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
       this.periods = periods
-      console.log(this.periods)
     }
   }
 

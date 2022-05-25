@@ -5,9 +5,11 @@
         <v-col class="col-12 pa-0">
           <div class="copy-max-width">
             <div v-for="(instance, index) in data" :key="instance.classification.name">
-              <p v-if="instanceLength > 1" id="RequirementHeading">
+              <p v-if="data.length > 1" id="RequirementHeading">
                 <span>{{ index + 1 }}.</span>
-                Tell us about the <strong>{{ instance.classification.name }}</strong> instance
+                Tell us about the
+                <strong>{{ createClassificationLabel(instance.classification.value) }}</strong>
+                instance
               </p>
 
               <ATATTextArea
@@ -113,44 +115,48 @@ export default class RequirementsForm extends Vue {
       value: "BasePeriod",
     },
   ];
+  private createLabel(str: string){
+    return str.toLowerCase()
+      .split(' ')
+      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(' ');
+  }
 
   private createCheckboxItems(data: PeriodDTO[]) {
     const arr: Checkbox[] = [];
-    data.forEach((val) => {
+    const first = data.shift()
+    if(first){
+      arr.push({
+        id: first.period_type,
+        label: `${this.createLabel(first.period_type)} period`,
+        value: first.sys_id || ''})
+    }
+    data.forEach((val, idx) => {
       let options: Checkbox = {
-        id: '',
-        value: '',
-        label: '',
-      }
-      options.id = val.sys_id || '';
-      switch (val.option_order) {
-      case '1':
-        options.value = val.period_unit_count + ' ' + val.period_unit;
-        options.label = 'Base period'
-        break;
-      case '2':
-        options.value = val.period_unit_count + ' ' + val.period_unit;
-        options.label = 'Option period 1'
-        break;
-      case '3':
-        options.value = val.period_unit_count + ' ' + val.period_unit;
-        options.label = 'Option period 2'
-        break;
-      case '4':
-        options.value = val.period_unit_count + ' ' + val.period_unit;
-        options.label = 'Option period 3'
-        break;
-      case '5':
-        options.value = val.period_unit_count + ' ' + val.period_unit;
-        options.label = 'Option period 4'
-        break;
-      default:
-        return
+        id: val.period_type,
+        label: `${this.createLabel(val.period_type)} period ${idx + 1}`,
+        value: val.sys_id || '',
       }
       arr.push(options)
     })
     return arr
   }
+
+  private createClassificationLabel(str:string): string {
+    switch (str) {
+    case 'IL4':
+      return 'Unclassified/(IL4)'
+    case 'IL2':
+      return'Unclassified/(IL2)'
+    case 'IL5':
+      return'Unclassifie /(IL5)'
+    case 'IL6':
+      return'Secret/(IL6)'
+    default:
+      return ''
+    }
+  }
+
 
   private instanceLength = this.data.length
 
