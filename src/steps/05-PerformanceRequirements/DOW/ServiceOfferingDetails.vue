@@ -112,7 +112,7 @@ export default class ServiceOfferingDetails extends Vue {
         name: "Unclassified / Impact Level 2 (IL2)",
         value: "IL2",
       },
-      description: "",
+      anticipatedNeedUsage: "",
       neededForEntireDuration: null,
       periods: []
     },
@@ -121,17 +121,16 @@ export default class ServiceOfferingDetails extends Vue {
         name: "Unclassified / Impact Level 4 (IL4)",
         value: "IL4",
       },
-      description: "",
+      anticipatedNeedUsage: "",
       neededForEntireDuration: null,
       periods: []
     }
   ]
 
-  // create classification level type when get data from backend implemented
-  public selectedClassificationLevels = [{}];
+  public selectedClassificationLevels = [];
 
   // used for checkboxes at top of form if multiple 
-  public classificationLevelOptions: ClassificationLevelDTO[] | undefined;
+  public classificationLevelOptions: ClassificationLevelDTO[] = [];
 
   // get periods from data when implemented
   public periods = [{}];
@@ -150,44 +149,8 @@ export default class ServiceOfferingDetails extends Vue {
     // get this from store data when implemented 
     this.categoryName = "Data Management";
 
-    // get this from store data when implemented 
-    this.selectedClassificationLevels = [
-      {
-        name: "Unclassified / Impact Level 2 (IL2)",
-        value: "IL2",
-      },
-      {
-        name: "Unclassified / Impact Level 4 (IL4)",
-        value: "IL4",
-      },
-    ];
-
-    // get this from store data when implemented 
-    this.classificationLevelOptions = [
-      {
-        id: "IL2",
-        label: "Unclassified / Impact Level 2 (IL2)",
-        value: "IL2",
-      },
-      {
-        id: "IL4",
-        label: "Unclassified / Impact Level 4 (IL4)",
-        value: "IL4",
-      },
-      {
-        id: "IL5",
-        label: "Unclassified / Impact Level 5 (IL5)",
-        value: "IL5",
-      },
-      {
-        id: "IL6",
-        label: "Secret / Impact Level 2 (IL6)",
-        value: "S",
-      },
-    ];    
-
     // get from data from backend when implemented
-    this.periods = [
+    this.allPeriods = [
       {
         id: "Base",
         label: "Base period",

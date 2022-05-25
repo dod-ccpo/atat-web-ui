@@ -56,6 +56,60 @@ export class ClassificationRequirementsStore extends VuexModule {
     }
   }
 
+  // sample data structure for DOWObject
+  public DOWObject = [
+	  {
+      serviceOfferingGroupId: "applications", 
+      sysId: "", // this is NOT the sys_id of the serviceOfferingGroup
+      serviceOfferings: [
+        {
+          serviceOffering: "web_app",
+          sysId: "", // this is NOT the sys_id of the serviceOffering
+          instances: [
+            {
+              sysId: "",
+              classificationLevel: {
+                longLabel: "Unclassified / Impact Level 2 (IL2)",
+                shortLabel: "Unclassified/IL2",
+                sysId: "<sys_id>",
+              },
+              anticipatedNeedUsage: "",
+              entireDuration: null,
+              selectedPeriods: []
+            },
+            {
+              sysId: "",
+              classificationLevel: {
+                longLabel: "Secret / Impact Level 6 (IL6)",
+                shortLabel: "Secret/IL6",
+                sysId: "<sys_id>",
+              },
+              anticipatedNeedUsage: "",
+              entireDuration: null,
+              selectedPeriods: []
+            }
+          ]
+        },
+        {
+          serviceOffering: "other_offering",
+        },
+        {
+          serviceOffering: "and_other_offering",
+        }
+      ]
+    },
+    {
+      serviceOfferingGroupId: "something_else",
+      sysId: "", // this is NOT the sys_id of the serviceOfferingGroup
+    },
+    {
+      serviceOfferingGroupId: "another_thing",
+      sysId: "", // this is NOT the sys_id of the serviceOfferingGroup
+    }
+  ];
+
+
+
   @Action({ rawError: true })
   public async getSelectedClassificationLevels(): Promise<ClassificationLevelDTO[]> {
     return this.selectedClassificationLevels;
