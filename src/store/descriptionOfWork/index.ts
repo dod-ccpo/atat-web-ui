@@ -62,12 +62,12 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setSelectedOfferingGroups(selectedOfferings: string[]) {
-    this.selectedOfferingGroups = [];
-    selectedOfferings.forEach((selectedOffering) => {
-      if (!this.selectedOfferingGroups.some(e => e.category === selectedOffering)) {
+  public setSelectedOfferingGroups(selectedOfferingGroups: string[]) {
+    this.selectedOfferingGroups = []; 
+    selectedOfferingGroups.forEach((selectedOfferingGroup) => {
+      if (!this.selectedOfferingGroups.some(e => e.category === selectedOfferingGroup)) {
         const offering = {
-          category: selectedOffering
+          category: selectedOfferingGroup
         }
         this.selectedOfferingGroups.push(offering);
       }
