@@ -15,7 +15,7 @@ import {
   retrieveSession,
 } from "../helpers";
 import Vue from "vue";
-import { stringObj } from "../../../types/Global";
+import { stringObj, DOWServiceOfferingGroup } from "../../../types/Global";
 
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
@@ -35,10 +35,11 @@ export class DescriptionOfWorkStore extends VuexModule {
 
 
   // sample data structure for DOWObject
-  public DOWObject = [
+  public DOWObject: DOWServiceOfferingGroup[] = [
 	  {
       serviceOfferingGroupId: "applications", 
       sysId: "", // this is NOT the sys_id of the serviceOfferingGroup
+      
       serviceOfferings: [
         {
           serviceOffering: "web_app",
@@ -52,7 +53,7 @@ export class DescriptionOfWorkStore extends VuexModule {
                 sysId: "<sys_id>",
               },
               anticipatedNeedUsage: "",
-              entireDuration: null,
+              entireDuration: "",
               selectedPeriods: []
             },
             {
@@ -63,27 +64,13 @@ export class DescriptionOfWorkStore extends VuexModule {
                 sysId: "<sys_id>",
               },
               anticipatedNeedUsage: "",
-              entireDuration: null,
+              entireDuration: "",
               selectedPeriods: []
             }
           ]
         },
-        {
-          serviceOffering: "other_offering",
-        },
-        {
-          serviceOffering: "and_other_offering",
-        }
       ]
     },
-    {
-      serviceOfferingGroupId: "something_else",
-      sysId: "", // this is NOT the sys_id of the serviceOfferingGroup
-    },
-    {
-      serviceOfferingGroupId: "another_thing",
-      sysId: "", // this is NOT the sys_id of the serviceOfferingGroup
-    }
   ];
 
   // store session properties

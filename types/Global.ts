@@ -185,3 +185,35 @@ export interface invalidFile{
   SNOWError?: string;
   statusCode?: number;
 }
+
+export interface DOWInstanceClassificationLevel {
+  longLabel: string;
+  shortLabel: string;
+  sysId: string;
+}
+
+export interface DOWPoP {
+  label: string;
+  sysId: string
+}
+
+export interface DOWClassificationInstance {
+  sysId: string;
+  classificationLevel: DOWInstanceClassificationLevel;
+  anticipatedNeedUsage: string;
+  entireDuration: string;
+  selectedPeriods: DOWPoP[];
+}
+
+export interface DOWServiceOfferings {
+  serviceOffering: string;
+  sysId: string;
+  classificationInstances: DOWClassificationInstance[];
+}
+
+export interface DOWServiceOfferingGroup {
+  serviceOfferingGroupId: string;
+  sysId: string;
+  serviceOfferings: DOWServiceOfferings[];
+}
+
