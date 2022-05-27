@@ -68,9 +68,9 @@ export default class ATATDialog extends Vue {
   }
 
   get getTitle(): string {
-    if (this.title && this.title.length > 60) {
-      return this.title.substring(0, 60) + "...”?";
-    }
+    // if (this.title && this.title.length > 60) {
+    //   return this.title.substring(0, 60) + "...”?";
+    // }
     return this.title;
   }
 
