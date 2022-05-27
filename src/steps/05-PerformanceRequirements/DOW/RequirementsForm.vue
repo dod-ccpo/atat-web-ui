@@ -15,10 +15,14 @@
               <ATATTextArea
                 id="OperationToBePerformed"
                 label="Describe the anticipated need and usage of this requirement"
-                class="width-100"
+                class="width-100 mb-10"
                 :rows="5"
                 :value.sync="instance.description"
                 maxChars="500"
+                :rules="[
+              $validators.required('Please provide a description for this requirement.'),
+              $validators.maxLength('500', 'Description is to be 500 characters or less.')
+            ]"
               />
               <ATATRadioGroup
                 class="copy-max-width mb-10"
@@ -26,6 +30,9 @@
                 legend="Is this requirement for the entire duration of your task order?"
                 :items="requirementOptions"
                 :value.sync="instance.neededForEntireDuration"
+                :rules="[
+              $validators.required('Please select an option to specify your requirement\'s.')
+            ]"
               />
               <div v-if="instance.neededForEntireDuration === 'NO'">
                 <p id="CloudSupportLabel" class="_checkbox-group-label">
@@ -38,6 +45,10 @@
                   :items="checkboxItems"
                   :card="false"
                   :disabled="isDisabled"
+                  :rules="[
+              $validators.required('Please select at least one base or option period' +
+               ' to specify your requirement\'s duration level.')
+            ]"
                   class="copy-max-width"
                 />
                 <ATATAlert
