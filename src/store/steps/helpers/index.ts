@@ -47,11 +47,13 @@ export const mapStepConfigs = (
   return map;
 };
 
-export const isRouteResolver = (resolver: StepRouteResolver | StepPathResolver) : boolean => {
+export const isRouteResolver = (resolver: StepRouteResolver | StepPathResolver | string) 
+: boolean => {
   const name = (resolver as (current: string)=> string ).name;
   return name !==undefined && ! name.includes('PathResolver');
 }
-export const isPathResolver = (resolver:  StepRouteResolver | StepPathResolver ): boolean => {
+export const isPathResolver = (resolver:  StepRouteResolver | StepPathResolver | string)
+: boolean => {
   const name = (resolver as (current: string, direction: string)=> string ).name;
   return name !== undefined && name.includes('PathResolver');
 }
