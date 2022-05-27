@@ -109,10 +109,9 @@ import { getIdText } from "@/helpers";
 export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   private classificationLevelCheckboxItems: Checkbox[] = []
 
-  public serviceOfferingName = "";
+  public serviceOfferingName = DescriptionOfWork.currentOfferingName;
 
   public buildClassificationInstances(): void {
-    debugger;
     this.classificationLevelOptions.forEach((obj) => {
       const longLabel = buildClassificationLabel(obj, "long");
       const shortLabel = buildClassificationLabel(obj, "short");
@@ -203,8 +202,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     if (periods && periods.length > 0) {
       this.periods = periods
     }
-    this.serviceOfferingName = await DescriptionOfWork.getServiceOfferingName();
-
   }
 
   public async mounted(): Promise<void> {
