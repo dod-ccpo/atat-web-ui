@@ -26,55 +26,6 @@
                   @keydown.space="showDialog = true"
                 >update your Classification Requirements</a>.
               </p>
-              <ATATDialog
-                :showDialog.sync="showDialog"
-                title="What classification level(s)are required for your
-                  cloud resources and/or services?"
-                no-click-animation
-                okText="Change Levels"
-                width="670"
-                :disabled="!hasChanged()"
-                @ok="saveOnLeave"
-
-              >
-                <template #content>
-                  <p class="body">
-                    Changes to the selections below will be reflected in the overall Classification
-                    Requirements section. If you select more than one, we will ask you to specify a
-                    level for each performance requirement.
-                  </p>
-                  <p class="body mb-5">
-                    Select all that apply to your contracting effort.
-                  </p>
-                  <ATATCheckboxGroup
-                    id="ClassificationLevelCheckboxes"
-                    :value.sync="selectedOptions"
-                    :hasOtherValue="true"
-                    :items="checkboxItems"
-                    name="checkboxes"
-                    :card="false"
-                    :truncate="false"
-                    class="copy-max-width"
-                    :rules="[
-                      $validators.required('Please select at least one classification level.')
-                    ]"
-                  />
-                  <ATATAlert
-                    id="ClassificationRequirementsAlert"
-                    v-show="isIL6Selected === 'true'"
-                    type="warning"
-                    class="copy-max-width mt-10"
-                  >
-                    <template v-slot:content>
-                      <p class="mb-0 body">
-                        Contracts requiring access to classified information (IL6 level and above)
-                        must complete a <strong>DD Form 254, DoD Contract Security Classification
-                        Specification.</strong> We will walk you through uploading this form next.
-                      </p>
-                    </template>
-                  </ATATAlert>
-                </template>
-              </ATATDialog>
             </div>
 
             <div v-else id="ClassificationCheckboxWrapper">
@@ -105,9 +56,9 @@
                       role="button"
                       id="UpdateClassification"
                       tabindex="0"
-                      @click="openModal"
-                      @keydown.enter="openModal"
-                      @keydown.space="openModal"
+                      @click="showDialog = true"
+                      @keydown.enter="showDialog = true"
+                      @keydown.space="showDialog = true"
                     >update your Classification Requirements</a>.
                   </p>
                 </template>
@@ -126,11 +77,60 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <ATATDialog
+      :showDialog.sync="showDialog"
+      title="What classification level(s)are required for your
+        cloud resources and/or services?"
+      no-click-animation
+      okText="Change Levels"
+      width="670"
+      :disabled="!hasChangedPackageClassificationLevels()"
+      @ok="classificationOptionsChangedInModal"
+    >
+      <template #content>
+        <p class="body">
+          Changes to the selections below will be reflected in the overall Classification
+          Requirements section. If you select more than one, we will ask you to specify a
+          level for each performance requirement.
+        </p>
+        <p class="body mb-5">
+          Select all that apply to your contracting effort.
+        </p>
+        <ATATCheckboxGroup
+          id="ClassificationLevelCheckboxes"
+          :value.sync="modalSelectedOptions"
+          :hasOtherValue="true"
+          :items="modalCheckboxItems"
+          name="checkboxes"
+          :card="false"
+          :truncate="false"
+          class="copy-max-width"
+          :rules="[
+            $validators.required('Please select at least one classification level.')
+          ]"
+        />
+        <ATATAlert
+          id="ClassificationRequirementsAlert"
+          v-show="isIL6Selected === 'true'"
+          type="warning"
+          class="copy-max-width mt-10"
+        >
+          <template v-slot:content>
+            <p class="mb-0 body">
+              Contracts requiring access to classified information (IL6 level and above)
+              must complete a <strong>DD Form 254, DoD Contract Security Classification
+              Specification.</strong> We will walk you through uploading this form next.
+            </p>
+          </template>
+        </ATATAlert>
+      </template>
+    </ATATDialog>
+
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
@@ -147,7 +147,6 @@ import { ClassificationLevelDTO } from "@/api/models";
 import { 
   buildClassificationCheckboxList, 
   buildClassificationLabel,
-  getIdText,
   hasChanges,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -157,7 +156,7 @@ import _ from "lodash";
 
 @Component({
   components: {
-
+    ATATAlert,
     ATATCheckboxGroup,
     ATATDialog,
     ATATExpandableLink,
@@ -168,13 +167,11 @@ import _ from "lodash";
 export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   private classificationLevelCheckboxItems: Checkbox[] = [];
   private showDialog = false;
-  public selectedOptions: string[] = [];
-  private checkboxItems: Checkbox[] = [];
-  public savedData: ClassificationLevelDTO[] = [];
+  public modalSelectedOptions: string[] = [];
+  private modalCheckboxItems: Checkbox[] = [];
+  public packageClassificationLevels: ClassificationLevelDTO[] = [];
   public isIL6Selected = "";
   public IL6SysId = "";
-  private classifications: ClassificationLevelDTO[] = [];
-  // public selectedClassificationLevels = [];
   public classificationLevels:ClassificationLevelDTO[] = [];
 
   public serviceOfferingName = DescriptionOfWork.currentOfferingName;
@@ -200,7 +197,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     });
   }
 
-  public classificationInstancesToShow: string[] = [];
+  public classificationsInHeader: string[] = [];
   public instancesForForm: DOWClassificationInstance[] = [];
   public selectedClassificationLevels: string[] = [];
 
@@ -210,8 +207,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // add to array of forms to show if selectedOption not in the list
 
     newSelectedOptions.forEach((selectedOption: string) => {
-      if (this.classificationInstancesToShow.indexOf(selectedOption) === -1) {
-        this.classificationInstancesToShow.push(selectedOption);
+      if (this.classificationsInHeader.indexOf(selectedOption) === -1) {
+        this.classificationsInHeader.push(selectedOption);
         const instance = this.classificationInstances.find(e => e.sysId === selectedOption);
         if (instance) {
           this.instancesForForm.push(instance);
@@ -219,12 +216,12 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       }
     });
     // remove options not in new selected options array
-    const instancesToShowClone = this.classificationInstancesToShow;
+    const instancesToShowClone = this.classificationsInHeader;
     instancesToShowClone.forEach((sysId) => {
       if (!newSelectedOptions.includes(sysId)) {
-        const i = this.classificationInstancesToShow.findIndex(e => e === sysId);
+        const i = this.classificationsInHeader.findIndex(e => e === sysId);
         if (i > -1) {
-          this.classificationInstancesToShow.splice(i, 1);
+          this.classificationsInHeader.splice(i, 1);
         }
       }
     });
@@ -248,14 +245,28 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public periods = [{}];
 
 
-  @Watch("selectedOptions")
-  public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
+  @Watch("modalSelectedOptions")
+  public modalSelectedOptionsChange(newVal: string[]): void {
+    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false";
+    debugger;
   };
 
-  private saveSelected() {
+  public classificationOptionsChangedInModal(): void {
     const arr :ClassificationLevelDTO[] = [];
-    this.selectedOptions.forEach(item => {
+    this.modalSelectedOptions.forEach(item => {
+      const value = this.classificationLevels.filter(( data )=>{
+        return item == data.sys_id
+      })
+      arr.push(value[0])
+    })
+    ClassificationRequirements.setSelectedClassificationLevels(arr);
+    this.classificationsInHeader = this.modalSelectedOptions;
+
+  }
+
+  public get currentPackageClassificationLevels(): ClassificationLevelDTO[] {
+    const arr :ClassificationLevelDTO[] = [];
+    this.modalSelectedOptions.forEach(item => {
       const value = this.classificationLevels.filter(( data )=>{
         return item == data.sys_id
       })
@@ -264,19 +275,17 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     return arr
   };
 
-  public get currentData(): ClassificationLevelDTO[] {
-    return this.saveSelected()
-  };
-
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
+  private hasChangedPackageClassificationLevels(): boolean {
+    return hasChanges(
+      this.currentPackageClassificationLevels, 
+      this.packageClassificationLevels
+    );
   };
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      if (this.hasChanged()) {
-        ClassificationRequirements.setSelectedClassificationLevels(this.currentData)
-      }
+      // if (this.hasChanged()) {
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -297,6 +306,11 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.classificationLevelCheckboxItems 
       = this.createCheckboxItems(this.classificationLevelOptions);
 
+    const allClassificationLevles
+      = await ClassificationRequirements.getAllClassificationLevels();
+
+    this.modalCheckboxItems = this.createCheckboxItems(allClassificationLevles);
+
     const IL6Checkbox 
       = this.classificationLevelCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "false";
@@ -316,7 +330,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     if(storeData) {
       this.savedData = storeData
       storeData.forEach((val) => {
-        this.selectedOptions.push(val.sys_id || "")
+        this.modalSelectedOptions.push(val.sys_id || "")
       })
     }
 
