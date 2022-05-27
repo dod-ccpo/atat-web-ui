@@ -201,20 +201,12 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public instancesForForm: DOWClassificationInstance[] = [];
   public selectedClassificationLevels: string[] = [];
 
-  // @Watch("classificationsInHeader")
-  // public classificationsInHeaderChanged(newSysIds: string[]): void {
-
-  // }
-
   @Watch("selectedClassificationLevels")
   public classificationLevelSelectionChange(newSelectedOptions: string[]): void {
-    debugger;
     this.updateHeaderCheckboxOptions(newSelectedOptions);
-
   }
 
   public updateHeaderCheckboxOptions(sysIds: string[]): void {
-    debugger;
     // add to array of forms to show if selectedOption not in the list
     sysIds.forEach((selectedOption: string) => {
       if (this.classificationsInHeader.indexOf(selectedOption) === -1) {
@@ -257,11 +249,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   @Watch("modalSelectedOptions")
   public modalSelectedOptionsChange(newVal: string[]): void {
     this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false";
-    debugger;
   };
 
   public classificationOptionsChangedInModal(): void {
-    debugger;
     const arr :ClassificationLevelDTO[] = [];
     this.modalSelectedOptions.forEach(item => {
       const value = this.allClassificationLevels.filter(( data )=>{
@@ -295,6 +285,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       // if (this.hasChanged()) {
+      // todo in 7507
       // }
     } catch (error) {
       console.log(error);

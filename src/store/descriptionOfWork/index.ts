@@ -112,7 +112,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         }
       });
-      debugger;
       // remove any service offerings previously selected but unchecked this pass
       const currentOfferingsClone = _.cloneDeep(currentOfferings);
       // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
@@ -163,7 +162,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({ rawError: true })
   public async getServiceOfferings(): Promise<DOWServiceOffering[]> {
     await this.ensureInitialized();
-    debugger;
     const serviceOfferingsForGroup = this.serviceOfferings.filter((obj) => {
       return obj.service_offering_group === this.currentGroupId;
     })
@@ -183,7 +181,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const currentGroup = this.serviceOfferingGroups.find((obj) => {
       return obj.value === this.currentGroupId;
     });
-    debugger;
     return currentGroup?.label || "";
   }
 
@@ -192,18 +189,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     return this.currentOfferingName;
   }
   
-
-  // @Action({ rawError: true })
-  // public getClassificationInstances(): {
-  //   // EJY 
-  // }
-
-  // @Action({ rawError: true })
-  // public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
-  //   await this.ensureInitialized();
-  //   return this.selectedOfferingGroups;
-  // }
-
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
