@@ -87,14 +87,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         this.checkboxItems.push(checkboxItem);
       });
       const noOtherOption = ["Advisory and Assistance", "Training"];
-      if (!noOtherOption.includes(this.requirementName)) {
-        const other: Checkbox = {
-          id: "Other",
-          label: "Other",
-          value: "OTHER",
-        };
-        this.checkboxItems.push(other);
-      }
+  
     }
     this.checkboxItems.push({
       id: "Other",
