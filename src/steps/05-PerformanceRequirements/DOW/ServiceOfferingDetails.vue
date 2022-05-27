@@ -28,8 +28,8 @@
               </p>
               <ATATDialog
                 :showDialog.sync="showDialog"
-                title="
-                What classification level(s) are required for your cloud resources and/or services?"
+                title="What classification level(s)
+                  are required for your cloud resources and/or services?"
                 no-click-animation
                 okText="Change Levels"
                 width="670"
@@ -53,10 +53,11 @@
                     :items="checkboxItems"
                     name="checkboxes"
                     :card="false"
+                    :truncate="false"
                     class="copy-max-width"
                     :rules="[
-              $validators.required('Please select at least one classification level.')
-            ]"
+                      $validators.required('Please select at least one classification level.')
+                    ]"
                   />
                   <ATATAlert
                     id="ClassificationRequirementsAlert"
@@ -67,8 +68,7 @@
                     <template v-slot:content>
                       <p class="mb-0 body">
                         Contracts requiring access to classified information (IL6 level and above)
-                        must
-                        complete a <strong>DD Form 254, DoD Contract Security Classification
+                        must complete a <strong>DD Form 254, DoD Contract Security Classification
                         Specification.</strong> We will walk you through uploading this form next.
                       </p>
                     </template>
@@ -99,22 +99,16 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
-
 import RequirementsForm from './RequirementsForm.vue'
 import { getIdText } from "@/helpers";
 import ATATDialog from "@/components/ATATDialog.vue";
 import { Checkbox } from "../../../../types/Global";
-
-
-
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import classificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 import Periods from "@/store/periods";
-
 
 @Component({
   components: {
@@ -201,8 +195,7 @@ export default class ServiceOfferingDetails extends Vue {
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
     this.isIL6Selected
-      = newVal.indexOf('405b52af87970590ec3b777acebb3556') > -1 ?
-        "true" : "false";
+      = newVal.indexOf('405b52af87970590ec3b777acebb3556') > -1 ? "true" : "false";
   }
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
