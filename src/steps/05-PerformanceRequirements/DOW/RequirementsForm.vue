@@ -6,12 +6,12 @@
           <div class="copy-max-width">
             <div 
               v-for="(instance, index) in _instances" 
-              :key="instance.classificationLevels.shortLabel"
+              :key="instance.classificationLevelLabels.shortLabel"
             >
               <p v-if="avlInstancesLength > 1" id="RequirementHeading">
                 <span>{{index + 1}}.</span>
                 Tell us about the 
-                <strong>{{instance.classificationLevels.shortLabel}}</strong> instance
+                <strong>{{instance.classificationLevelLabels.shortLabel}}</strong> instance
               </p>
 
               <ATATTextArea
