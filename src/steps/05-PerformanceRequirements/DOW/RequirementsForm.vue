@@ -4,36 +4,40 @@
       <v-row>
         <v-col class="col-12 pa-0">
           <div class="copy-max-width">
-            <div v-for="(instance, index) in data" :key="instance.classification.name">
-              <p v-if="instanceLength > 1" id="RequirementHeading">
+            <div 
+              v-for="(instance, index) in _instances" 
+              :key="instance.classificationLevelLabels.shortLabel"
+            >
+              <p v-if="avlInstancesLength > 1" id="RequirementHeading">
                 <span>{{index + 1}}.</span>
-                Tell us about the <strong>{{instance.classification.name}}</strong> instance
+                Tell us about the 
+                <strong>{{instance.classificationLevelLabels.shortLabel}}</strong> instance
               </p>
 
               <ATATTextArea
-                id="OperationToBePerformed"
+                id="AnticipatedNeedUsage"
                 label="Describe the anticipated need and usage of this requirement"
                 class="width-100"
                 :rows="5"
-                :value.sync="instance.description"
+                :value.sync="instance.anticipatedNeedUsage"
                 maxChars="500"
               />
               <ATATRadioGroup
                 class="copy-max-width mb-10"
-                id="RequirementRadioOptions"
+                id="EntireDuration"
                 legend="Is this requirement for the entire duration of your task order?"
                 :items="requirementOptions"
-                :value.sync="instance.neededForEntireDuration"
+                :value.sync="instance.entireDuration"
               />
-              <div v-if="instance.neededForEntireDuration === 'NO'">
+              <div v-if="instance.entireDuration === 'NO'">
                 <p id="CloudSupportLabel" class="_checkbox-group-label">
                   Which base and/or option periods do you need this requirement?
                 </p>
                 <ATATCheckboxGroup
                   id="CloudSupportCheckboxes"
                   aria-describedby="CloudSupportLabel"
-                  :value.sync="instance.periods"
-                  :items="checkboxItems"
+                  :value.sync="instance.selectedPeriods"
+                  :items="availablePeriodCheckboxItems"
                   :card="false"
                   class="copy-max-width"
                 />
@@ -49,12 +53,16 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import { Checkbox, RadioButton, stringObj } from "../../../../types/Global";
+import { 
+  Checkbox, 
+  RadioButton, 
+  DOWClassificationInstance 
+} from "../../../../types/Global";
 
 
 @Component({
@@ -67,27 +75,9 @@ import { Checkbox, RadioButton, stringObj } from "../../../../types/Global";
 
 export default class RequirementsForm extends Vue {
   // props
-  @Prop({default: () => []}) private data!: stringObj;
-  public instances = [
-    {
-      classification: {
-        name: "Unclassified / Impact Level 2 (IL2)",
-        value: "IL2",
-      },
-      description: "",
-      neededForEntireDuration: null,
-      periods: []
-    },
-    {
-      classification: {
-        name: "Unclassified / Impact Level 3 (IL3)",
-        value: "IL2",
-      },
-      description: "",
-      neededForEntireDuration: null,
-      periods: []
-    }
-  ]
+  @PropSync("instances") private _instances!: DOWClassificationInstance[];
+  @Prop() private avlInstancesLength!: number;
+
   private requirementOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -100,7 +90,8 @@ export default class RequirementsForm extends Vue {
       value: "NO",
     },
   ];
-  private checkboxItems: Checkbox[] = [
+  
+  private availablePeriodCheckboxItems: Checkbox[] = [
     {
       id: "BasePeriod",
       label: "Base period",
@@ -127,8 +118,6 @@ export default class RequirementsForm extends Vue {
       value: "OptionPeriod4",
     },
   ];
-
-  private instanceLength = this.data.length
 
 }
 </script>

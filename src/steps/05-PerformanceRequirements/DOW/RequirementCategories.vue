@@ -149,9 +149,10 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       // save to store
-      const selectedOfferings = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
+      const selectedOfferingGroupss 
+        = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
 
-      await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferings);
+      await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroupss);
       // todo future ticket - save to SNOW
     } catch (error) {
       throw new Error('error saving requirement data');

@@ -189,31 +189,32 @@ export interface invalidFile{
 export interface DOWInstanceClassificationLevel {
   longLabel: string;
   shortLabel: string;
-  sysId: string;
 }
 
 export interface DOWPoP {
   label: string;
-  sysId: string
+  sysId: string;
 }
 
 export interface DOWClassificationInstance {
-  sysId: string;
-  classificationLevel: DOWInstanceClassificationLevel;
+  sysId?: string;
+  classificationLevelLabels?: DOWInstanceClassificationLevel;
+  classificationLevelSysId: string;
   anticipatedNeedUsage: string;
   entireDuration: string;
-  selectedPeriods: DOWPoP[];
+  selectedPeriods?: DOWPoP[];
 }
 
-export interface DOWServiceOfferings {
-  serviceOffering: string;
-  sysId: string;
-  classificationInstances: DOWClassificationInstance[];
+export interface DOWServiceOffering {
+  name: string;
+  otherOfferingName?: string;
+  "sys_id": string;
+  classificationInstances?: DOWClassificationInstance[];
 }
 
 export interface DOWServiceOfferingGroup {
   serviceOfferingGroupId: string;
-  sysId: string;
-  serviceOfferings: DOWServiceOfferings[];
+  serviceOfferings: DOWServiceOffering[];
 }
+
 

@@ -29,17 +29,11 @@ export const buildClassificationCheckboxList
         && classLevel.classification
         && classLevel.sys_id
       ) {
-        const classificationString = classLevel.classification === "U" 
-          ? "Unclassified" 
-          : "Secret";
-        const IL = classLevel.impact_level;
-        const ILNo = IL.charAt(IL.length - 1);
-        const ILString = "Impact Level " + ILNo + " (" + IL + ")";
-
+        const label = buildClassificationLabel(classLevel, "long");
         const classificationCheckbox: Checkbox = {
           id: classLevel.impact_level,
           value: classLevel.sys_id,
-          label: classificationString + " / " + ILString,
+          label: label,
         }
         arr.push(classificationCheckbox)
       }
@@ -47,3 +41,18 @@ export const buildClassificationCheckboxList
     return arr.sort((a, b) => (a.id > b.id) ? 1 : -1)
   };
 
+export const buildClassificationLabel 
+  = (classLevel: ClassificationLevelDTO, type: string,): string => {
+    type = type || "long";
+    const classificationString = classLevel.classification === "U" 
+      ? "Unclassified" 
+      : "Secret";
+    const IL = classLevel.impact_level;
+    const ILNo = IL.charAt(IL.length - 1);
+    const ILString = "Impact Level " + ILNo + " (" + IL + ")";
+
+    if (type === "long") {
+      return classificationString + " / " + ILString;
+    }
+    return classificationString + "/" + IL;
+  }

@@ -15,7 +15,14 @@ import {
   retrieveSession,
 } from "../helpers";
 import Vue from "vue";
-import { stringObj, DOWServiceOfferingGroup } from "../../../types/Global";
+import { 
+  stringObj, 
+  DOWServiceOfferingGroup, 
+  DOWServiceOffering, 
+  DOWClassificationInstance 
+} from "../../../types/Global";
+
+import _ from "lodash";
 
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
@@ -31,46 +38,91 @@ export class DescriptionOfWorkStore extends VuexModule {
   serviceOfferings: ServiceOfferingDTO[] = [];
   serviceOfferingGroups: SystemChoiceDTO[] = [];
 
-  selectedOfferingGroups: stringObj[] = [];
+  // selectedOfferingGroups: stringObj[] = [];
+  DOWObject: DOWServiceOfferingGroup[] = [];
 
+  currentGroupId = "";
+  currentOffering = "";
 
   // sample data structure for DOWObject
-  public DOWObject: DOWServiceOfferingGroup[] = [
+  public sampleDOWObject: DOWServiceOfferingGroup[] = [
 	  {
       serviceOfferingGroupId: "applications", 
-      sysId: "", // this is NOT the sys_id of the serviceOfferingGroup
-      
       serviceOfferings: [
         {
           serviceOffering: "web_app",
-          sysId: "", // this is NOT the sys_id of the serviceOffering
+          sysId: "",
           classificationInstances: [
             {
               sysId: "",
-              classificationLevel: {
+              classificationLevelLabels: {
                 longLabel: "Unclassified / Impact Level 2 (IL2)",
                 shortLabel: "Unclassified/IL2",
-                sysId: "<sys_id>",
               },
+              classificationLevelSysId: "<sys_id>",
               anticipatedNeedUsage: "",
               entireDuration: "",
               selectedPeriods: []
             },
             {
               sysId: "",
-              classificationLevel: {
+              classificationLevelLabels: {
                 longLabel: "Secret / Impact Level 6 (IL6)",
                 shortLabel: "Secret/IL6",
-                sysId: "<sys_id>",
               },
+              classificationLevelSysId: "<sys_id>",
               anticipatedNeedUsage: "",
               entireDuration: "",
               selectedPeriods: []
             }
           ]
         },
+        {
+          serviceOffering: "other_offering",
+          sysId: "",
+          classificationInstances: []
+        }
       ]
     },
+	  {
+      serviceOfferingGroupId: "other_category", 
+      serviceOfferings: [
+        {
+          name: "some_offering",
+          sysId: "",
+          classificationInstances: [
+            {
+              sysId: "",
+              classificationLevelLabels: {
+                longLabel: "Unclassified / Impact Level 2 (IL2)",
+                shortLabel: "Unclassified/IL2",
+              },
+              classificationLevelSysId: "<sys_id>",
+              anticipatedNeedUsage: "",
+              entireDuration: "",
+              selectedPeriods: []
+            },
+            {
+              sysId: "",
+              classificationLevelLabels: {
+                longLabel: "Secret / Impact Level 6 (IL6)",
+                shortLabel: "Secret/IL6",
+              },
+              classificationLevelSysId: "<sys_id>",
+              anticipatedNeedUsage: "",
+              entireDuration: "",
+              selectedPeriods: []
+            }
+          ]
+        },
+        {
+          name: "other_offering",
+          sysId: "",
+          classificationInstances: []
+        }
+      ]
+    },
+    
   ];
 
   // store session properties
@@ -95,17 +147,79 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setSelectedOfferingGroups(selectedOfferingGroups: string[]) {
-    this.selectedOfferingGroups = []; 
+  public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
+    // this.selectedOfferingGroups = []; 
     selectedOfferingGroups.forEach((selectedOfferingGroup) => {
-      if (!this.selectedOfferingGroups.some(e => e.category === selectedOfferingGroup)) {
-        const offering = {
-          category: selectedOfferingGroup
+      if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
+        const offeringGroup: DOWServiceOfferingGroup = {
+          serviceOfferingGroupId: selectedOfferingGroup,
+          serviceOfferings: []
         }
-        this.selectedOfferingGroups.push(offering);
+        this.DOWObject.push(offeringGroup);
       }
+      // remove any groups that were previously checked
+      this.DOWObject.forEach((offeringGroup, index) => {
+        const groupId = offeringGroup.serviceOfferingGroupId;
+        if (!selectedOfferingGroups.includes(groupId)) {
+          this.DOWObject.splice(index, 1);
+          // todo future ticket - remove from SNOW db
+        }
+      });
+      this.currentGroupId = this.DOWObject[0].serviceOfferingGroupId;
+      this.currentOffering = "";
     });
   }
+
+  @Mutation
+  public async setSelectedOfferings(selectedOfferingSysIds: string[]): Promise<void> {
+    const groupIndex 
+      = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    if (groupIndex >= 0) {
+      const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+      // add selectedOfferings to DOWObject
+      selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
+        if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
+          const foundOffering 
+            = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
+          if (foundOffering) {
+            const offering = {
+              name: foundOffering.name,
+              "sys_id": selectedOfferingSysId,
+              classificationInstances: [],
+            }
+            currentOfferings.push(offering);
+            // todo future ticket - add to SNOW db
+          }
+        }
+      });
+      debugger;
+      // remove any service offerings previously selected but unchecked this pass
+      const currentOfferingsClone = _.cloneDeep(currentOfferings);
+      // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
+      currentOfferingsClone.forEach((offering) => {
+        const sysId = offering.sys_id;
+        if (!selectedOfferingSysIds.includes(sysId)) {
+          const i = currentOfferings.findIndex(e => e.sys_id === sysId);
+          currentOfferings.splice(i, 1);
+          // todo future ticket - remove from SNOW db
+        }
+      });
+      this.currentOffering = currentOfferings[0].name;
+    }
+  }
+
+  @Action({ rawError: true })
+  public async getClassificationInstances(): Promise<DOWClassificationInstance[]> {
+    const currentGroup 
+      = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    const currentOffering
+      = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOffering);
+    if (currentOffering && currentOffering.classificationInstances) {
+      return currentOffering.classificationInstances;
+    }
+    return [];
+  }
+
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -126,10 +240,43 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
+  public async getServiceOfferings(): Promise<DOWServiceOffering[]> {
     await this.ensureInitialized();
-    return this.selectedOfferingGroups;
+    debugger;
+    const serviceOfferingsForGroup = this.serviceOfferings.filter((obj) => {
+      return obj.service_offering_group === this.currentGroupId;
+    })
+    const serviceOfferings: DOWServiceOffering[] = [];
+    serviceOfferingsForGroup.forEach((obj) => {
+      const offering: DOWServiceOffering = {
+        name: obj.name,
+        "sys_id": obj.sys_id || "",
+      };
+      serviceOfferings.push(offering);
+    })
+    return serviceOfferings;
   }
+
+  @Action({ rawError: true })
+  public getOfferingGroupName(): string {
+    debugger;
+    const currentGroup = this.serviceOfferingGroups.find((obj) => {
+      return obj.value === this.currentGroupId;
+    });
+    debugger;
+    return currentGroup?.label || "";
+  }
+
+  // @Action({ rawError: true })
+  // public getClassificationInstances(): {
+  //   // EJY 
+  // }
+
+  // @Action({ rawError: true })
+  // public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
+  //   await this.ensureInitialized();
+  //   return this.selectedOfferingGroups;
+  // }
 
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {

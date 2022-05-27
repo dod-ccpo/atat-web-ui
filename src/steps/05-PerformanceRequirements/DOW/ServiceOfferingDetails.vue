@@ -33,7 +33,7 @@
                 id="ClassificationCheckboxes"
                 aria-describedby="ClassificationGroupLabel"
                 :value.sync="selectedClassificationLevels"
-                :items="checkboxItems"
+                :items="classificationLevelCheckboxItems"
                 :card="false"
                 class="copy-max-width"
                 :rules="[
@@ -68,7 +68,8 @@
 
             <div id="OfferingDetailsForms">
               <RequirementsForm
-                :data="instances"
+                :instances="instancesForForm"
+                :avlInstancesLength="avlInstancesLength"
               />
             </div>
 
@@ -81,16 +82,19 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import RequirementsForm from './RequirementsForm.vue'
 
-import { Checkbox } from "../../../../types/Global";
+import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
-import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
+import { buildClassificationCheckboxList, buildClassificationLabel } from "@/helpers";
+
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -101,37 +105,71 @@ import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 })
 
 export default class ServiceOfferingDetails extends Vue {
-  private checkboxItems: Checkbox[] = []
+  private classificationLevelCheckboxItems: Checkbox[] = []
 
   public categoryName = "";
 
-  // generate from data from backend when implemented
-  public instances = [
-    {
-      classification: {
-        name: "Unclassified / Impact Level 2 (IL2)",
-        value: "IL2",
-      },
-      anticipatedNeedUsage: "",
-      neededForEntireDuration: null,
-      periods: []
-    },
-    {
-      classification: {
-        name: "Unclassified / Impact Level 4 (IL4)",
-        value: "IL4",
-      },
-      anticipatedNeedUsage: "",
-      neededForEntireDuration: null,
-      periods: []
-    }
-  ]
+  public buildClassificationInstances(): void {
+    debugger;
+    this.classificationLevelOptions.forEach((obj) => {
+      const longLabel = buildClassificationLabel(obj, "long");
+      const shortLabel = buildClassificationLabel(obj, "short");
+      const instance: DOWClassificationInstance = {
+        sysId: obj.sys_id,
+        classificationLevelLabels: { longLabel, shortLabel },
+        classificationLevelSysId: obj.sys_id || "",
+        anticipatedNeedUsage: "",
+        entireDuration: "",
+        selectedPeriods: []
+      }
+      this.classificationInstances.push(instance);
+    });
+  }
 
+  public classificationInstancesToShow: string[] = [];
+  public instancesForForm: DOWClassificationInstance[] = [];
   public selectedClassificationLevels = [];
+
+  @Watch("selectedClassificationLevels")
+  public classificationLevelSelectionChange(newSelectedOptions: string[]): void {
+    debugger;
+    // add to array of forms to show if selectedOption not in the list
+
+    newSelectedOptions.forEach((selectedOption: string) => {
+      if (this.classificationInstancesToShow.indexOf(selectedOption) === -1) {
+        this.classificationInstancesToShow.push(selectedOption);
+        const instance = this.classificationInstances.find(e => e.sysId === selectedOption);
+        if (instance) {
+          this.instancesForForm.push(instance);
+        }
+      }
+    });
+    // remove options not in new selected options array
+    const instancesToShowClone = this.classificationInstancesToShow;
+    instancesToShowClone.forEach((sysId) => {
+      if (!newSelectedOptions.includes(sysId)) {
+        const i = this.classificationInstancesToShow.findIndex(e => e === sysId);
+        if (i > -1) {
+          this.classificationInstancesToShow.splice(i, 1);
+        }
+      }
+    });
+
+    const instancesForFormClone = _.cloneDeep(this.instancesForForm);
+    instancesForFormClone.forEach((instance) => {
+      const sysId = instance.sysId || "";
+      if (!newSelectedOptions.includes(sysId)) {
+        const i = this.instancesForForm.findIndex(e => e.sysId === sysId);
+        if (i > -1) {
+          this.instancesForForm.splice(i, 1);
+        }
+      }
+    });
+  }
 
   // used for checkboxes at top of form if multiple 
   public classificationLevelOptions: ClassificationLevelDTO[] = [];
-
+  public avlInstancesLength = 0;
   // get periods from data when implemented
   public periods = [{}];
 
@@ -139,44 +177,30 @@ export default class ServiceOfferingDetails extends Vue {
     return data.length > 1 ? buildClassificationCheckboxList(data) : [];
   }
 
+  public classificationInstances: DOWClassificationInstance[] = [];
+
   public async loadOnEnter(): Promise<void> {
     this.classificationLevelOptions 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-    this.checkboxItems = this.createCheckboxItems(this.classificationLevelOptions)
+    this.avlInstancesLength = this.classificationLevelOptions.length;
+
+    this.classificationLevelCheckboxItems 
+      = this.createCheckboxItems(this.classificationLevelOptions);
+
+    this.classificationInstances 
+      = await DescriptionOfWork.getClassificationInstances();
+    debugger;
+
+    if (this.classificationInstances.length === 0) {
+      this.buildClassificationInstances();
+    }
   }
 
-  public mounted(): void {
+  public async mounted(): Promise<void> {
     // get this from store data when implemented 
-    this.categoryName = "Data Management";
-
-    // get from data from backend when implemented
-    this.allPeriods = [
-      {
-        id: "Base",
-        label: "Base period",
-        value: "BASE", // sys_id ?
-      },
-      {
-        id: "Opt1",
-        label: "Option period 1",
-        value: "OPT1", // sys_id ?
-      },
-      {
-        id: "Opt2",
-        label: "Option period 2",
-        value: "OPT2", // sys_id ?
-      },
-      {
-        id: "Opt3",
-        label: "Option period 3",
-        value: "OPT3", // sys_id ?
-      },
-      {
-        id: "Opt4",
-        label: "Option period 4",
-        value: "OPT4", // sys_id ?
-      },
-    ]
+    await this.loadOnEnter();
+    
+    this.categoryName = "Data Management"; // EJY get from data
   }
 
   public openModal(): void {
