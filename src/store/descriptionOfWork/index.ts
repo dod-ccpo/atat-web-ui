@@ -7,7 +7,7 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { ClassificationLevelDTO, ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+import { ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
   nameofProperty,
@@ -15,7 +15,14 @@ import {
   retrieveSession,
 } from "../helpers";
 import Vue from "vue";
-import { stringObj } from "../../../types/Global";
+import { 
+  stringObj, 
+  DOWServiceOfferingGroup, 
+  DOWServiceOffering, 
+  DOWClassificationInstance 
+} from "../../../types/Global";
+
+import _ from "lodash";
 
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
@@ -27,24 +34,22 @@ const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
   store: rootStore,
 })
 export class DescriptionOfWorkStore extends VuexModule {
-  classificationLevels: ClassificationLevelDTO[] = [];
   initialized = false;
   serviceOfferings: ServiceOfferingDTO[] = [];
   serviceOfferingGroups: SystemChoiceDTO[] = [];
 
-  selectedOfferingGroups: stringObj[] = [];
+  // selectedOfferingGroups: stringObj[] = [];
+  DOWObject: DOWServiceOfferingGroup[] = [];
+
+  currentGroupId = "";
+  currentOfferingName = "";
+  currentOfferingSysId = "";
 
   // store session properties
   protected sessionProperties: string[] = [
-    nameofProperty(this, (x) => x.classificationLevels),
     nameofProperty(this, (x) => x.serviceOfferings),
     nameofProperty(this, (x) => x.serviceOfferingGroups),
   ];
-
-  @Mutation
-  private setClassifications(value: ClassificationLevelDTO[]) {
-    this.classificationLevels = value;
-  }
 
   @Mutation
   private setInitialized(value: boolean) {
@@ -62,17 +67,80 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setSelectedOfferingGroups(selectedOfferingGroups: string[]) {
-    this.selectedOfferingGroups = []; 
+  public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
     selectedOfferingGroups.forEach((selectedOfferingGroup) => {
-      if (!this.selectedOfferingGroups.some(e => e.category === selectedOfferingGroup)) {
-        const offering = {
-          category: selectedOfferingGroup
+      if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
+        const offeringGroup: DOWServiceOfferingGroup = {
+          serviceOfferingGroupId: selectedOfferingGroup,
+          serviceOfferings: []
         }
-        this.selectedOfferingGroups.push(offering);
+        this.DOWObject.push(offeringGroup);
       }
+      // remove any groups that were previously checked
+      this.DOWObject.forEach((offeringGroup, index) => {
+        const groupId = offeringGroup.serviceOfferingGroupId;
+        if (!selectedOfferingGroups.includes(groupId)) {
+          this.DOWObject.splice(index, 1);
+          // todo future ticket - remove from SNOW db
+        }
+      });
+      this.currentGroupId = this.DOWObject[0].serviceOfferingGroupId;
+      this.currentOfferingName = "";
+      this.currentOfferingSysId = "";
     });
   }
+
+  @Mutation
+  public async setSelectedOfferings(selectedOfferingSysIds: string[]): Promise<void> {
+    const groupIndex 
+      = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    if (groupIndex >= 0) {
+      const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+      // add selectedOfferings to DOWObject
+      selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
+        if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
+          const foundOffering 
+            = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
+          if (foundOffering) {
+            const offering = {
+              name: foundOffering.name,
+              "sys_id": selectedOfferingSysId,
+              classificationInstances: [],
+            }
+            currentOfferings.push(offering);
+            // todo future ticket - add to SNOW db
+          }
+        }
+      });
+      debugger;
+      // remove any service offerings previously selected but unchecked this pass
+      const currentOfferingsClone = _.cloneDeep(currentOfferings);
+      // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
+      currentOfferingsClone.forEach((offering) => {
+        const sysId = offering.sys_id;
+        if (!selectedOfferingSysIds.includes(sysId)) {
+          const i = currentOfferings.findIndex(e => e.sys_id === sysId);
+          currentOfferings.splice(i, 1);
+          // todo future ticket - remove from SNOW db
+        }
+      });
+      this.currentOfferingName = currentOfferings[0].name;
+      this.currentOfferingSysId = currentOfferings[0].sys_id;
+    }
+  }
+
+  @Action({ rawError: true })
+  public async getClassificationInstances(): Promise<DOWClassificationInstance[]> {
+    const currentGroup 
+      = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    const currentOffering
+      = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOfferingName);
+    if (currentOffering && currentOffering.classificationInstances) {
+      return currentOffering.classificationInstances;
+    }
+    return [];
+  }
+
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -87,28 +155,60 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  async ensureInitialized(): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-  }
-
-  @Action({ rawError: true })
-  public async getClassificationLevels(): Promise<ClassificationLevelDTO[]> {
-    await this.ensureInitialized();
-    return this.classificationLevels;
-  }
-
-  @Action({ rawError: true })
   public async getServiceOfferingGroups(): Promise<SystemChoiceDTO[]> {
     await this.ensureInitialized();
     return this.serviceOfferingGroups;
   }
 
   @Action({ rawError: true })
-  public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
+  public async getServiceOfferings(): Promise<DOWServiceOffering[]> {
     await this.ensureInitialized();
-    return this.selectedOfferingGroups;
+    debugger;
+    const serviceOfferingsForGroup = this.serviceOfferings.filter((obj) => {
+      return obj.service_offering_group === this.currentGroupId;
+    })
+    const serviceOfferings: DOWServiceOffering[] = [];
+    serviceOfferingsForGroup.forEach((obj) => {
+      const offering: DOWServiceOffering = {
+        name: obj.name,
+        "sys_id": obj.sys_id || "",
+      };
+      serviceOfferings.push(offering);
+    })
+    return serviceOfferings;
+  }
+
+  @Action({ rawError: true })
+  public getOfferingGroupName(): string {
+    const currentGroup = this.serviceOfferingGroups.find((obj) => {
+      return obj.value === this.currentGroupId;
+    });
+    debugger;
+    return currentGroup?.label || "";
+  }
+
+  @Action({ rawError: true })
+  public getServiceOfferingName(): string {
+    return this.currentOfferingName;
+  }
+  
+
+  // @Action({ rawError: true })
+  // public getClassificationInstances(): {
+  //   // EJY 
+  // }
+
+  // @Action({ rawError: true })
+  // public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
+  //   await this.ensureInitialized();
+  //   return this.selectedOfferingGroups;
+  // }
+
+  @Action({ rawError: true })
+  async ensureInitialized(): Promise<void> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
   }
 
   @Action({ rawError: true })
@@ -121,7 +221,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     } else {
       try {
         await Promise.all([
-          this.loadClassificationLevels(),
           this.loadServiceOfferings(),
           this.LoadServiceOfferingGroups(),
         ]);
@@ -134,16 +233,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       } catch (error) {
         console.error(error);
       }
-    }
-  }
-
-  @Action({ rawError: true })
-  public async loadClassificationLevels(): Promise<void> {
-    try {
-      const classificationLevels = await api.classificationLevelTable.all();
-      this.setClassifications(classificationLevels);
-    } catch (error) {
-      throw new Error(`error loading Classification Levels ${error}`);
     }
   }
 

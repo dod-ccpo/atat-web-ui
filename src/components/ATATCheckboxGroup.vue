@@ -1,5 +1,10 @@
 <template>
   <div :id="id">
+
+    <p v-if="groupLabel" :id="groupLabelId" class="_checkbox-group-label">
+      {{ groupLabel }}
+    </p>
+
     <v-checkbox
       v-for="(item, index) in items"
       v-model="_selected"
@@ -92,7 +97,9 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "" }) private otherValueRequiredMessage!: string;
   @Prop({ default: "NONE" }) private noneValue!: string;
   @Prop({ default: "" }) private otherValue!: string;
-  @Prop() private id!: string;
+  @Prop({ default: "CheckboxGroup" }) private id!: string;
+  @Prop({ default: "CheckboxGroupLabel" }) private groupLabelId!: string;
+  @Prop() private groupLabel!: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
 
   // data, methods, watchers, etc.

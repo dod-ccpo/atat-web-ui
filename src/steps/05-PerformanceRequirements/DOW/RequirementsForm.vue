@@ -4,38 +4,40 @@
       <v-row>
         <v-col class="col-12 pa-0">
           <div class="copy-max-width">
-            <div v-for="(instance, index) in data" :key="instance.classification.name">
-              <p v-if="data.length > 1" id="RequirementHeading">
-                <span>{{ index + 1 }}.</span>
-                Tell us about the
-                <strong>{{ createClassificationLabel(instance.classification.value) }}</strong>
-                instance
+            <div 
+              v-for="(instance, index) in _instances" 
+              :key="instance.classificationLevelLabels.shortLabel"
+            >
+              <p v-if="avlInstancesLength > 1" id="RequirementHeading">
+                <span>{{index + 1}}.</span>
+                Tell us about the 
+                <strong>{{instance.classificationLevelLabels.shortLabel}}</strong> instance
               </p>
 
               <ATATTextArea
-                id="OperationToBePerformed"
+                id="AnticipatedNeedUsage"
                 label="Describe the anticipated need and usage of this requirement"
                 class="width-100"
                 :rows="5"
-                :value.sync="instance.description"
+                :value.sync="instance.anticipatedNeedUsage"
                 maxChars="500"
               />
               <ATATRadioGroup
                 class="copy-max-width mb-10"
-                id="RequirementRadioOptions"
+                id="EntireDuration"
                 legend="Is this requirement for the entire duration of your task order?"
                 :items="requirementOptions"
-                :value.sync="instance.neededForEntireDuration"
+                :value.sync="instance.entireDuration"
               />
-              <div v-if="instance.neededForEntireDuration === 'NO'">
+              <div v-if="instance.entireDuration === 'NO'">
                 <p id="CloudSupportLabel" class="_checkbox-group-label">
                   Which base and/or option periods do you need this requirement?
                 </p>
                 <ATATCheckboxGroup
                   id="CloudSupportCheckboxes"
                   aria-describedby="CloudSupportLabel"
-                  :value.sync="selectedOptions"
-                  :items="checkboxItems"
+                  :value.sync="instance.selectedPeriods"
+                  :items="availablePeriodCheckboxItems"
                   :card="false"
                   :disabled="isDisabled"
                   class="copy-max-width"
@@ -70,16 +72,23 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import { routeNames } from "../../../router/stepper"
+import { Component, Prop, PropSync } from "vue-property-decorator";
+
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import { Checkbox, RadioButton, stringObj } from "../../../../types/Global";
+import { 
+  Checkbox, 
+  DOWClassificationInstance,
+  RadioButton, 
+  stringObj
+} from "../../../../types/Global";
+
+import { routeNames } from "../../../router/stepper"
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
-import ATATAlert from "@/components/ATATAlert.vue";
-
+import { toTitleCase } from "@/helpers";
 
 @Component({
   components: {
@@ -92,77 +101,50 @@ import ATATAlert from "@/components/ATATAlert.vue";
 
 export default class RequirementsForm extends Vue {
   // props
-  @Prop({default: () => []}) private data!: stringObj;
+  @PropSync("instances") private _instances!: DOWClassificationInstance[];
+  @Prop() private avlInstancesLength!: number;
+
   private selectedOptions: string[] = []
   private routeNames = routeNames
   private isDisabled = true
   private requirementOptions: RadioButton[] = [
     {
       id: "Yes",
-      label: `Yes`,
+      label: "Yes",
       value: "YES",
     },
     {
       id: "No",
-      label: `No`,
+      label: "No",
       value: "NO",
     },
   ];
-  private checkboxItems: Checkbox[] = [
-    {
-      id: "BasePeriod",
-      label: "Base period",
-      value: "BasePeriod",
-    },
-  ];
-  private createLabel(str: string){
-    return str.toLowerCase()
-      .split(' ')
-      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-      .join(' ');
-  };
 
-  private createCheckboxItems(data: PeriodDTO[]) {
+  private availablePeriodCheckboxItems: Checkbox[] = [];
+
+  private createCheckboxItems(periods: PeriodDTO[]) {
+    // ensure sort order is correct
+    periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
+    
     const arr: Checkbox[] = [];
-    const first = data.shift()
-    if(first){
-      arr.push({
-        id: first.period_type,
-        label: `${this.createLabel(first.period_type)} period`,
-        value: first.sys_id || ''})
-    }
-    data.forEach((val, idx) => {
-      let options: Checkbox = {
-        id: val.period_type,
-        label: `${this.createLabel(val.period_type)} period ${idx + 1}`,
-        value: val.sys_id || '',
+    periods.forEach((period, idx) => {
+      let option: Checkbox = {
+        id: period.period_type,
+        label: `${toTitleCase(period.period_type)} period ${idx + 1}`,
+        value: period.sys_id || "",
       }
-      arr.push(options)
+      arr.push(option)
     })
     return arr
   };
 
-  private createClassificationLabel(str:string): string {
-    switch (str) {
-    case 'IL4':
-      return 'Unclassified/(IL4)'
-    case 'IL2':
-      return'Unclassified/(IL2)'
-    case 'IL5':
-      return'Unclassifie /(IL5)'
-    case 'IL6':
-      return'Secret/(IL6)'
-    default:
-      return ''
-    }
-  }
-
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
+    debugger;
     if (periods && periods.length > 0) {
       this.isDisabled = false
-      this.checkboxItems = this.createCheckboxItems(periods)
-      this.selectedOptions.push(this.checkboxItems[0].value)
+      this.availablePeriodCheckboxItems = this.createCheckboxItems(periods)
+      this.selectedOptions.push(this.availablePeriodCheckboxItems[0].value)
     }
   };
 

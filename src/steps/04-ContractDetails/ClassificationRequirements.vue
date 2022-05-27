@@ -52,13 +52,15 @@
 /* eslint-disable camelcase */
 import vue from 'vue'
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
-import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import { Checkbox } from "../../../types/Global";
+
 import ATATAlert from "@/components/ATATAlert.vue";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+
+import { Checkbox } from "../../../types/Global";
 import { ClassificationLevelDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
@@ -76,7 +78,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   private checkboxItems: Checkbox[] = []
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return data.length > 1 ? buildClassificationCheckboxList(data) : [];
+    return buildClassificationCheckboxList(data);
   }
 
   private saveSelected() {
@@ -89,7 +91,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     })
     return arr
   }
-
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
@@ -109,6 +110,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
+        debugger;
         classificationRequirements.setSelectedClassificationLevels(this.currentData)
       }
     } catch (error) {
@@ -118,17 +120,19 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    this.classifications = await DescriptionOfWork.getClassificationLevels();
+    this.classifications = await classificationRequirements.getAllClassificationLevels();
     this.checkboxItems =this.createCheckboxItems(this.classifications)
 
     const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "false";
 
-    const storeData = await classificationRequirements.getClassificationLevels()
+    const storeData = await classificationRequirements.getSelectedClassificationLevels()
     if(storeData) {
       this.savedData = storeData
       storeData.forEach((val) => {
-        this.selectedOptions.push(val.sys_id || "")
+        if (val.sys_id) {
+          this.selectedOptions.push(val.sys_id)
+        }
       })
     }
   }
