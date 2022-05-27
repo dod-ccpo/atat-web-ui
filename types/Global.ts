@@ -185,3 +185,4 @@ export interface invalidFile{
   SNOWError?: string;
   statusCode?: number;
 }
+
