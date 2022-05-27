@@ -92,9 +92,11 @@ import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 import { buildClassificationCheckboxList, buildClassificationLabel } from "@/helpers";
-
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import Periods from "@/store/periods";
+
 import _ from "lodash";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -175,7 +177,6 @@ export default class ServiceOfferingDetails extends Vue {
   // used for checkboxes at top of form if multiple 
   public classificationLevelOptions: ClassificationLevelDTO[] = [];
   public avlInstancesLength = 0;
-  // get periods from data when implemented
   public periods = [{}];
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
@@ -194,17 +195,18 @@ export default class ServiceOfferingDetails extends Vue {
 
     this.classificationInstances 
       = await DescriptionOfWork.getClassificationInstances();
-    debugger;
 
     if (this.classificationInstances.length === 0) {
       this.buildClassificationInstances();
     }
+    const periods = await Periods.loadPeriods();
+    if (periods && periods.length > 0) {
+      this.periods = periods
+    }
   }
 
   public async mounted(): Promise<void> {
-    // get this from store data when implemented 
     await this.loadOnEnter();
-    
     this.categoryName = "Data Management"; // EJY get from data
   }
 

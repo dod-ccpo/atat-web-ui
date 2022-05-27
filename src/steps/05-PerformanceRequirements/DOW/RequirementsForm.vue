@@ -39,11 +39,30 @@
                   :value.sync="instance.selectedPeriods"
                   :items="availablePeriodCheckboxItems"
                   :card="false"
+                  :disabled="isDisabled"
                   class="copy-max-width"
                 />
+                <ATATAlert
+                  id="ClassificationRequirementsAlert"
+                  v-show="isDisabled === true"
+                  type="warning"
+                  class="copy-max-width mb-10"
+                >
+                  <template v-slot:content>
+                    <p class="mb-0" id="SingleClassificationIntro">
+                      Your period of performance details are missing. To select specific base or
+                      option periods for this requirement,
+                      <router-link
+                        id="Step4Link"
+                        :to="{name: routeNames.PeriodOfPerformance}"
+                      >revisit the Contract Details section
+                      </router-link>
+                    </p>
+                  </template>
+                </ATATAlert>
               </div>
 
-              <hr />
+              <hr/>
             </div>
           </div>
         </v-col>
@@ -55,14 +74,20 @@
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import { 
   Checkbox, 
+  DOWClassificationInstance,
   RadioButton, 
-  DOWClassificationInstance 
+  stringObj
 } from "../../../../types/Global";
+
+import { routeNames } from "../../../router/stepper"
+import Periods from "@/store/periods";
+import { PeriodDTO } from "@/api/models";
 
 
 @Component({
@@ -70,6 +95,7 @@ import {
     ATATCheckboxGroup,
     ATATRadioGroup,
     ATATTextArea,
+    ATATAlert
   }
 })
 
@@ -78,6 +104,9 @@ export default class RequirementsForm extends Vue {
   @PropSync("instances") private _instances!: DOWClassificationInstance[];
   @Prop() private avlInstancesLength!: number;
 
+  private selectedOptions: string[] = []
+  private routeNames = routeNames
+  private isDisabled = true
   private requirementOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -91,33 +120,54 @@ export default class RequirementsForm extends Vue {
     },
   ];
 
+  // EJY need to have value as sys_id for the period in the snow table
   private availablePeriodCheckboxItems: Checkbox[] = [
     {
       id: "BasePeriod",
       label: "Base period",
       value: "BasePeriod",
     },
-    {
-      id: "OptionPeriod1",
-      label: "Option Period 1",
-      value: "OptionPeriod1",
-    },
-    {
-      id: "OptionPeriod2",
-      label: "Option Period 2",
-      value: "OptionPeriod2",
-    },
-    {
-      id: "OptionPeriod3",
-      label: "Option Period 3",
-      value: "OptionPeriod3",
-    },
-    {
-      id: "OptionPeriod4",
-      label: "Option Period 4",
-      value: "OptionPeriod4",
-    },
   ];
+  private createLabel(str: string){
+    return str.toLowerCase()
+      .split(' ')
+      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(' ');
+  }
+
+  private createCheckboxItems(data: PeriodDTO[]) {
+    const arr: Checkbox[] = [];
+    const first = data.shift()
+    if(first){
+      arr.push({
+        id: first.period_type,
+        label: `${this.createLabel(first.period_type)} period`,
+        value: first.sys_id || ''})
+    }
+    data.forEach((val, idx) => {
+      let options: Checkbox = {
+        id: val.period_type,
+        label: `${this.createLabel(val.period_type)} period ${idx + 1}`,
+        value: val.sys_id || '',
+      }
+      arr.push(options)
+    })
+    return arr
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const periods = await Periods.loadPeriods();
+    if (periods && periods.length > 0) {
+      this.isDisabled = false
+      // EJY fix this
+      this.checkboxItems = this.createCheckboxItems(periods)
+      this.selectedOptions.push(this.checkboxItems[0].value)
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter()
+  }
 
 }
 </script>
