@@ -60,7 +60,7 @@ interface StepperRouteBase {
     /**
      * A handler to 
      */
-    routeResolver?: (currentRoute: string) => string;
+    routeResolver?: (currentRoute: string, direction: string) => string;
     additionalButtons?: AdditionalButton[];
     backButtonText?: string;
 }
@@ -210,9 +210,9 @@ export interface DOWServiceOffering {
   name: string;
   otherOfferingName?: string;
   "sys_id": string;
+  description: string;
   classificationInstances?: DOWClassificationInstance[];
   sequence: string;
-  description: string;
 }
 
 export interface DOWServiceOfferingGroup {

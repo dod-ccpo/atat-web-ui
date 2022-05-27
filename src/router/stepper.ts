@@ -94,6 +94,9 @@ import {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
+  OfferGroupOfferingsPathResolver,
+  OfferingDetailsPathResolver,
+  DowSummaryPathResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -363,7 +366,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     children: [
       {
         menuText: "Performance Requirements",
-        path: "performance-requirements",
+        path: "/",
         excludeFromMenu: true,
         name: routeNames.RequirementCategories,
         completePercentageWeight: 1,
@@ -371,11 +374,12 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offerings",
-        path: "service-offerings",
+        path: "service-offerings/:groupName",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferings,
         completePercentageWeight: 1,
         component: ServiceOfferings,
+        routeResolver: OfferGroupOfferingsPathResolver,
         additionalButtons: [
           {
             buttonText: "I don’t need these cloud resources",
@@ -387,11 +391,12 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offering Details",
-        path: "service-offering-details",
+        path: "service-offering-details/:groupName/:serviceOffering",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,
         component: ServiceOfferingDetails,
+        routeResolver: OfferingDetailsPathResolver,
       },
       {
         menuText: "DOW Summary",
@@ -400,6 +405,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.DOWSummary,
         completePercentageWeight: 1,
         component: DOWSummary,
+        routeResolver: DowSummaryPathResolver,
       },
     ],
   },

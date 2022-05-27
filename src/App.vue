@@ -50,8 +50,14 @@ import Steps from "@/store/steps";
 import {
   AdditionalButton,
   StepInfo,
+  StepPathResolver,
   StepRouteResolver,
 } from "@/store/steps/types";
+import {
+  isRouteResolver,
+  isPathResolver
+} from "@/store/steps/helpers";
+
 import { buildStepperData } from "./router/stepper";
 import actionHandler from "./action-handlers/index";
 
@@ -117,23 +123,42 @@ export default class App extends Vue {
 
   async navigate(direction: string): Promise<void> {
 
+    
+
     const nextStepName =
       direction === "next" ? await Steps.getNext() : await Steps.getPrevious();
 
     if (nextStepName) {
-      const isRouteResolver =
-        (nextStepName as StepRouteResolver).name !== undefined;
-      if (isRouteResolver) {
+
+      if(isRouteResolver(nextStepName)){
+
         const routeResolver = nextStepName as StepRouteResolver;
         this.$router.push({
-          name: "resolver",
+          name: "routeResolver",
           params: {
             resolver: routeResolver.name,
+            direction
           },
         });
-      } else {
-        this.$router.push({ name: nextStepName as string });
+
+        return ;
       }
+
+      if(isPathResolver(nextStepName)){
+
+        const pathResolver = nextStepName as StepPathResolver;
+        this.$router.push({
+          name: "pathResolver",
+          params: {
+            resolver: pathResolver.name,
+            direction
+          },
+        });
+
+        return ;
+      }
+    
+      this.$router.push({ name: nextStepName as string });
     }
   }
 
