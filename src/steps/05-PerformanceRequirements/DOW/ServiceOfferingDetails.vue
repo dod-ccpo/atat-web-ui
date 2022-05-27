@@ -116,7 +116,12 @@ export default class ServiceOfferingDetails extends Vue {
       const shortLabel = buildClassificationLabel(obj, "short");
       const instance: DOWClassificationInstance = {
         sysId: obj.sys_id,
-        classificationLevelLabels: { longLabel, shortLabel },
+        classificationLevels: { 
+          longLabel, 
+          shortLabel,
+          classification: obj.classification,
+          impactLevel: obj.impact_level,
+        },
         classificationLevelSysId: obj.sys_id || "",
         anticipatedNeedUsage: "",
         entireDuration: "",
@@ -165,6 +170,7 @@ export default class ServiceOfferingDetails extends Vue {
         }
       }
     });
+    // this.instancesForForm.sort((a,b) => (a.classificationLevels?.impactLevel > b.impactLevel) ? 1 : -1);
   }
 
   // used for checkboxes at top of form if multiple 

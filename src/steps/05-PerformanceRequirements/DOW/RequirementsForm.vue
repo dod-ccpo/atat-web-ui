@@ -6,12 +6,12 @@
           <div class="copy-max-width">
             <div 
               v-for="(instance, index) in _instances" 
-              :key="instance.classificationLevelLabels.shortLabel"
+              :key="instance.classificationLevels.shortLabel"
             >
               <p v-if="avlInstancesLength > 1" id="RequirementHeading">
                 <span>{{index + 1}}.</span>
                 Tell us about the 
-                <strong>{{instance.classificationLevelLabels.shortLabel}}</strong> instance
+                <strong>{{instance.classificationLevels.shortLabel}}</strong> instance
               </p>
 
               <ATATTextArea
@@ -90,7 +90,7 @@ export default class RequirementsForm extends Vue {
       value: "NO",
     },
   ];
-  
+
   private availablePeriodCheckboxItems: Checkbox[] = [
     {
       id: "BasePeriod",

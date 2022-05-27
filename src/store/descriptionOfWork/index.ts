@@ -44,87 +44,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   currentGroupId = "";
   currentOffering = "";
 
-  // sample data structure for DOWObject
-  public sampleDOWObject: DOWServiceOfferingGroup[] = [
-	  {
-      serviceOfferingGroupId: "applications", 
-      serviceOfferings: [
-        {
-          serviceOffering: "web_app",
-          sysId: "",
-          classificationInstances: [
-            {
-              sysId: "",
-              classificationLevelLabels: {
-                longLabel: "Unclassified / Impact Level 2 (IL2)",
-                shortLabel: "Unclassified/IL2",
-              },
-              classificationLevelSysId: "<sys_id>",
-              anticipatedNeedUsage: "",
-              entireDuration: "",
-              selectedPeriods: []
-            },
-            {
-              sysId: "",
-              classificationLevelLabels: {
-                longLabel: "Secret / Impact Level 6 (IL6)",
-                shortLabel: "Secret/IL6",
-              },
-              classificationLevelSysId: "<sys_id>",
-              anticipatedNeedUsage: "",
-              entireDuration: "",
-              selectedPeriods: []
-            }
-          ]
-        },
-        {
-          serviceOffering: "other_offering",
-          sysId: "",
-          classificationInstances: []
-        }
-      ]
-    },
-	  {
-      serviceOfferingGroupId: "other_category", 
-      serviceOfferings: [
-        {
-          name: "some_offering",
-          sysId: "",
-          classificationInstances: [
-            {
-              sysId: "",
-              classificationLevelLabels: {
-                longLabel: "Unclassified / Impact Level 2 (IL2)",
-                shortLabel: "Unclassified/IL2",
-              },
-              classificationLevelSysId: "<sys_id>",
-              anticipatedNeedUsage: "",
-              entireDuration: "",
-              selectedPeriods: []
-            },
-            {
-              sysId: "",
-              classificationLevelLabels: {
-                longLabel: "Secret / Impact Level 6 (IL6)",
-                shortLabel: "Secret/IL6",
-              },
-              classificationLevelSysId: "<sys_id>",
-              anticipatedNeedUsage: "",
-              entireDuration: "",
-              selectedPeriods: []
-            }
-          ]
-        },
-        {
-          name: "other_offering",
-          sysId: "",
-          classificationInstances: []
-        }
-      ]
-    },
-    
-  ];
-
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
@@ -148,7 +67,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
-    // this.selectedOfferingGroups = []; 
     selectedOfferingGroups.forEach((selectedOfferingGroup) => {
       if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
         const offeringGroup: DOWServiceOfferingGroup = {

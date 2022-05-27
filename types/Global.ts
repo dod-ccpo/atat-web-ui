@@ -189,6 +189,8 @@ export interface invalidFile{
 export interface DOWInstanceClassificationLevel {
   longLabel: string;
   shortLabel: string;
+  classification: string;
+  impactLevel: string;
 }
 
 export interface DOWPoP {
@@ -198,7 +200,7 @@ export interface DOWPoP {
 
 export interface DOWClassificationInstance {
   sysId?: string;
-  classificationLevelLabels?: DOWInstanceClassificationLevel;
+  classificationLevels?: DOWInstanceClassificationLevel;
   classificationLevelSysId: string;
   anticipatedNeedUsage: string;
   entireDuration: string;
