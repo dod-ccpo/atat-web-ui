@@ -110,26 +110,28 @@ export default class RequirementsForm extends Vue {
   private requirementOptions: RadioButton[] = [
     {
       id: "Yes",
-      label: `Yes`,
+      label: "Yes",
       value: "YES",
     },
     {
       id: "No",
-      label: `No`,
+      label: "No",
       value: "NO",
     },
   ];
 
-  // EJY need to have value as sys_id for the period in the snow table
   private availablePeriodCheckboxItems: Checkbox[] = [];
 
   private createCheckboxItems(periods: PeriodDTO[]) {
+    // ensure sort order is correct
+    periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
+    
     const arr: Checkbox[] = [];
     periods.forEach((period, idx) => {
       let option: Checkbox = {
         id: period.period_type,
         label: `${toTitleCase(period.period_type)} period ${idx + 1}`,
-        value: period.sys_id || '',
+        value: period.sys_id || "",
       }
       arr.push(option)
     })

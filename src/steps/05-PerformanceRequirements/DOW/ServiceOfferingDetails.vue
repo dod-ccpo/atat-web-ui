@@ -4,7 +4,7 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Next, we’ll gather your requirements for {{ categoryName }}
+            Next, we’ll gather your requirements for {{ serviceOfferingName }}
           </h1>
           <div class="copy-max-width">
 
@@ -81,8 +81,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
@@ -106,10 +106,10 @@ import { getIdText } from "@/helpers";
   }
 })
 
-export default class ServiceOfferingDetails extends Vue {
+export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   private classificationLevelCheckboxItems: Checkbox[] = []
 
-  public categoryName = "";
+  public serviceOfferingName = "";
 
   public buildClassificationInstances(): void {
     debugger;
@@ -203,16 +203,30 @@ export default class ServiceOfferingDetails extends Vue {
     if (periods && periods.length > 0) {
       this.periods = periods
     }
+    this.serviceOfferingName = await DescriptionOfWork.getServiceOfferingName();
+
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    this.categoryName = "Data Management"; // EJY get from data
   }
 
   public openModal(): void {
     // open modal functionality in task 7411
   }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // save to store
+      // await DescriptionOfWork.setSelectedOfferings(this.selectedOptions);
+      // todo future ticket - save to SNOW
+    } catch (error) {
+      throw new Error('error saving requirement data');
+    }
+
+    return true;
+  }
+
 
 }
 

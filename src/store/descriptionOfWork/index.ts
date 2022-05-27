@@ -42,7 +42,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   DOWObject: DOWServiceOfferingGroup[] = [];
 
   currentGroupId = "";
-  currentOffering = "";
+  currentOfferingName = "";
+  currentOfferingSysId = "";
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -84,7 +85,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         }
       });
       this.currentGroupId = this.DOWObject[0].serviceOfferingGroupId;
-      this.currentOffering = "";
+      this.currentOfferingName = "";
+      this.currentOfferingSysId = "";
     });
   }
 
@@ -122,7 +124,8 @@ export class DescriptionOfWorkStore extends VuexModule {
           // todo future ticket - remove from SNOW db
         }
       });
-      this.currentOffering = currentOfferings[0].name;
+      this.currentOfferingName = currentOfferings[0].name;
+      this.currentOfferingSysId = currentOfferings[0].sys_id;
     }
   }
 
@@ -131,7 +134,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     const currentGroup 
       = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     const currentOffering
-      = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOffering);
+      = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOfferingName);
     if (currentOffering && currentOffering.classificationInstances) {
       return currentOffering.classificationInstances;
     }
@@ -177,13 +180,18 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({ rawError: true })
   public getOfferingGroupName(): string {
-    debugger;
     const currentGroup = this.serviceOfferingGroups.find((obj) => {
       return obj.value === this.currentGroupId;
     });
     debugger;
     return currentGroup?.label || "";
   }
+
+  @Action({ rawError: true })
+  public getServiceOfferingName(): string {
+    return this.currentOfferingName;
+  }
+  
 
   // @Action({ rawError: true })
   // public getClassificationInstances(): {
