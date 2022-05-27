@@ -120,7 +120,7 @@ export default class RequirementsForm extends Vue {
       .split(' ')
       .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
       .join(' ');
-  }
+  };
 
   private createCheckboxItems(data: PeriodDTO[]) {
     const arr: Checkbox[] = [];
@@ -140,7 +140,7 @@ export default class RequirementsForm extends Vue {
       arr.push(options)
     })
     return arr
-  }
+  };
 
   private createClassificationLabel(str:string): string {
     switch (str) {
@@ -157,9 +157,6 @@ export default class RequirementsForm extends Vue {
     }
   }
 
-
-  private instanceLength = this.data.length
-
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
@@ -167,11 +164,11 @@ export default class RequirementsForm extends Vue {
       this.checkboxItems = this.createCheckboxItems(periods)
       this.selectedOptions.push(this.checkboxItems[0].value)
     }
-  }
+  };
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter()
-  }
+  };
 
 }
 </script>

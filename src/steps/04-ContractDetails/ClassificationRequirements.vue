@@ -17,7 +17,6 @@
               Select all that apply to your contracting effort.
             </p>
           </div>
-          {{selectedOptions}}
           <ATATCheckboxGroup
             id="ClassificationLevelCheckboxes"
             :value.sync="selectedOptions"
@@ -55,9 +54,9 @@ import vue from 'vue'
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import { Checkbox, stringObj } from "../../../types/Global";
+import { Checkbox } from "../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { ClassificationLevelDTO, ContactDTO } from "@/api/models";
+import { ClassificationLevelDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -72,7 +71,8 @@ import classificationRequirements from "@/store/classificationRequirements";
 export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
-  public isIL6Selected = ''
+  public isIL6Selected = ""
+  public IL6SysId = ""
   private checkboxItems: Checkbox[] = []
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
@@ -87,24 +87,13 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
       })
       arr.push(value[0])
     })
-    console.log(arr)
     return arr
   }
 
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected = 'false'
-    this.selectedOptions.every(item => {
-      const value = this.classifications.find(( data )=>{
-        return item === data.sys_id
-      })
-      if(value && value.impact_level === 'IL6'){
-        this.isIL6Selected = 'true'
-        return false
-      }
-      return true
-    })
+    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
   }
   public savedData: ClassificationLevelDTO[] = []
 
@@ -131,11 +120,15 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     this.classifications = await DescriptionOfWork.getClassificationLevels();
     this.checkboxItems =this.createCheckboxItems(this.classifications)
+
+    const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);
+    this.IL6SysId = IL6Checkbox?.value || "false";
+
     const storeData = await classificationRequirements.getClassificationLevels()
     if(storeData) {
       this.savedData = storeData
       storeData.forEach((val) => {
-        this.selectedOptions.push(val.sys_id || '')
+        this.selectedOptions.push(val.sys_id || "")
       })
     }
   }

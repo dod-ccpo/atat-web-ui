@@ -126,6 +126,7 @@ export default class ServiceOfferingDetails extends Vue {
   private checkboxItems: Checkbox[] = []
   public savedData: ClassificationLevelDTO[] = []
   public isIL6Selected = ''
+  public IL6SysId = ""
   private classifications: ClassificationLevelDTO[] = []
   public categoryName = "";
 
@@ -140,8 +141,7 @@ export default class ServiceOfferingDetails extends Vue {
       neededForEntireDuration: null,
       periods: []
     },
-
-  ]
+  ];
 
   private createInstanceObjects(data: ClassificationLevelDTO[]) {
     const arr: any = []
@@ -178,7 +178,7 @@ export default class ServiceOfferingDetails extends Vue {
       arr.push(instance)
     })
     return arr
-  }
+  };
 
   // create classification level type when get data from backend implemented
   public selectedClassificationLevelsOnLoad = [{}];
@@ -190,26 +190,16 @@ export default class ServiceOfferingDetails extends Vue {
 
   private getIdText(string: string) {
     return getIdText(string);
-  }
+  };
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected = 'false'
-    this.selectedOptions.every(item => {
-      const value = this.classificationLevels.find(( data )=>{
-        return item === data.sys_id
-      })
-      if(value && value.impact_level === 'IL6'){
-        this.isIL6Selected = 'true'
-        return false
-      }
-      return true
-    })
-  }
+    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
+  };
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return data.length > 1 ? buildClassificationCheckboxList(data) : [];
-  }
+  };
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
     this.selectedOptions.forEach(item => {
@@ -219,15 +209,15 @@ export default class ServiceOfferingDetails extends Vue {
       arr.push(value[0])
     })
     return arr
-  }
+  };
 
   public get currentData(): ClassificationLevelDTO[] {
     return this.saveSelected()
-  }
+  };
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
-  }
+  };
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
@@ -238,17 +228,19 @@ export default class ServiceOfferingDetails extends Vue {
       console.log(error);
     }
     return true;
-  }
+  };
 
   public async loadOnEnter(): Promise<void> {
     this.classificationLevels
       = await DescriptionOfWork.getClassificationLevels();
     this.checkboxItems = this.createCheckboxItems(this.classificationLevels)
+    const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);
+    this.IL6SysId = IL6Checkbox?.value || "false";
     const storeData = await classificationRequirements.getClassificationLevels()
     if(storeData) {
       this.savedData = storeData
       storeData.forEach((val) => {
-        this.selectedOptions.push(val.sys_id || '')
+        this.selectedOptions.push(val.sys_id || "")
       })
     }
     this.classifications = await classificationRequirements.getClassificationLevels()
@@ -259,7 +251,7 @@ export default class ServiceOfferingDetails extends Vue {
     if (periods && periods.length > 0) {
       this.periods = periods
     }
-  }
+  };
   public mounted(): void {
     // get this from store data when implemented
     this.categoryName = "Data Management";
@@ -277,7 +269,7 @@ export default class ServiceOfferingDetails extends Vue {
     this.selectedClassificationLevelsOnLoad = this.selectedClassificationLevels;
 
     this.loadOnEnter()
-  }
-}
+  };
+};
 
 </script>
