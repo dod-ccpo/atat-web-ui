@@ -109,7 +109,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        debugger;
+        
         classificationRequirements.setSelectedClassificationLevels(this.currentData)
       }
     } catch (error) {

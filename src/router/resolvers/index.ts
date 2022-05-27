@@ -2,7 +2,9 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
 
 import { routeNames } from "../stepper";
-import { StepRouteResolver } from "@/store/steps/types";
+import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import { group } from "console";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -92,8 +94,139 @@ export const ContractTrainingReq = (current: string): string => {
     : routeNames.Training;
 };
 
+const baseOfferingDetailsPath =  `performance-requirements/service-offering-details/`;
+const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=>
+  `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${serviceName.toLowerCase()}`;
+
+const getOfferingGroupServicesPath = (groupId: string)=>
+  `performance-requirements/service-offerings/${groupId.toLowerCase()}`
+
+export const OfferGroupOfferingsPathResolver = (current: string, 
+  direction: string): string => {
+
+  //handles moving backwards or forwards through service offerings
+  if(current === routeNames.ServiceOfferingDetails &&
+     direction.toUpperCase() === RouteDirection.PREVIOUS)
+  {  
+    const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
+    const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
+
+    if(atBeginningOfSericeOfferings && !atBeginningOfOfferingGroups){
+      //display the service offerings list for group
+      return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
+    }
+
+    if(atBeginningOfSericeOfferings && atBeginningOfOfferingGroups){
+      //there's more service offerings to work backwards towards
+      const previousServiceOffering = DescriptionOfWork.prevOfferingGroup;
+      const groupId = DescriptionOfWork.currentGroupId;
+      if(previousServiceOffering === undefined)
+      {
+        throw new Error('unable to get previous service offering group');
+      }
+      DescriptionOfWork.setCurrentOffering(previousServiceOffering);
+
+      return getServiceOfferingsDetailsPath(groupId, previousServiceOffering);
+    }
+
+    if(!atBeginningOfSericeOfferings && !atBeginningOfOfferingGroups)
+    {
+      const groupId = DescriptionOfWork.currentGroupId;
+
+      //can we get the previous service offering for this group?
+      const canGetPreviousOffering = DescriptionOfWork.canGetPreviousServiceOffering;
+
+      if(canGetPreviousOffering){
+        const serviceOffering = DescriptionOfWork.previousServiceOffering;
+
+        if(serviceOffering === undefined)
+        {
+          throw new Error('unable to get previous service offering');
+        }
+
+        DescriptionOfWork.setCurrentOffering(serviceOffering);
+
+        return getServiceOfferingsDetailsPath(groupId, serviceOffering);
+
+      }
+      else{
+
+        const previousGroup = DescriptionOfWork.prevOfferingGroup;
+        if(previousGroup === undefined)
+        {
+          throw new Error('unable to get previous offering group');
+        }
+  
+        DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+        const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
+  
+        if(lastServiceOfferingForGroup === undefined)
+        {
+          throw new Error(`unable to get last offering for group ${previousGroup}`);
+        }
+        DescriptionOfWork.setCurrentOffering(lastServiceOfferingForGroup);
+        return getServiceOfferingsDetailsPath(previousGroup, lastServiceOfferingForGroup);
+      }
+    }     
+  }
+
+  return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
+}
+
+
+export const OfferingDetailsPathResolver =(): string => {
+
+  const groupId = DescriptionOfWork.currentGroupId
+  const offering = DescriptionOfWork.currentOffering.replace(/ /g, "_");
+
+  return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;
+
+}
+
+export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  
+
+  if(current === routeNames.ServiceOfferingDetails){
+    //we were navigating away from another details page
+    const atOfferingsEnd = DescriptionOfWork.isEndOfServiceOfferings;
+    const atServicesEnd = DescriptionOfWork.isEndOfServiceGroups;
+
+    if(!atOfferingsEnd){
+      const nextServiceOffering = DescriptionOfWork.nextServiceOffering;
+      if(nextServiceOffering === undefined)
+      {
+        throw new Error('unable to retreive next service offering');
+      }
+
+      DescriptionOfWork.setCurrentOffering(nextServiceOffering);
+      return OfferingDetailsPathResolver();
+    }
+    else{
+
+      if(atServicesEnd){
+
+        return "performance-requirements/dow-summary";
+      }
+      else{
+
+        const nextOfferingGroup = DescriptionOfWork.nextOfferingGroup;
+        if(nextOfferingGroup === undefined)
+        {
+          throw new Error('unable to retrive next offering group');
+        }
+        DescriptionOfWork.setCurrentOfferingGroupId(nextOfferingGroup);
+        return OfferGroupOfferingsPathResolver(current , direction);
+
+      }
+    }
+  }
+  else{
+    return OfferingDetailsPathResolver();
+  }
+}
+
 // add resolver here so that it can be found by invoker
-const resolvers: Record<string, StepRouteResolver> = {
+const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
   CurrentContractDetailsRouteResolver,
   CurrentContractEnvRouteResolver,
@@ -103,7 +236,20 @@ const resolvers: Record<string, StepRouteResolver> = {
   ContractTrainingReq,
 };
 
-export const InvokeResolver = (
+// add path resolvers here 
+const pathResolvers: Record<string, StepPathResolver> = {
+  OfferGroupOfferingsPathResolver,
+  OfferingDetailsPathResolver,
+  DowSummaryPathResolver,
+}
+
+export const InvokeRouteResolver = (
   resolverName: string,
   currentStep: string
-): string => resolvers[resolverName](currentStep);
+): string => routeResolvers[resolverName](currentStep);
+
+export const InvokePathResolver = (
+  resolverName: string,
+  currentStep: string,
+  direction: string
+): string => pathResolvers[resolverName](currentStep, direction); 

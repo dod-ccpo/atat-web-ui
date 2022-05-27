@@ -1,5 +1,5 @@
 import { StepperRouteConfig } from "types/Global";
-import { StepInfo, StepRouteResolver } from "../types";
+import { StepInfo, StepPathResolver, StepRouteResolver } from "../types";
 
 export const mapStepConfigs = (
   config: StepperRouteConfig[]
@@ -47,9 +47,20 @@ export const mapStepConfigs = (
   return map;
 };
 
+export const isRouteResolver = (resolver: StepRouteResolver | StepPathResolver) : boolean => {
+  const name = (resolver as (current: string)=> string ).name;
+  return name !==undefined && ! name.includes('PathResolver');
+}
+export const isPathResolver = (resolver:  StepRouteResolver | StepPathResolver ): boolean => {
+  const name = (resolver as (current: string, direction: string)=> string ).name;
+  return name !== undefined && name.includes('PathResolver');
+}
+
 export const resolveNextRouteName = (current: string, stepInfo: StepInfo): string | undefined => {
   if (stepInfo.resolver) {
-    return (stepInfo.resolver(current));
+
+    return isRouteResolver(stepInfo.resolver) ? (stepInfo.resolver as StepRouteResolver)(current) :
+      (stepInfo.resolver as StepPathResolver)(current, "next");
   }
 
   return stepInfo.stepName;
@@ -62,7 +73,9 @@ export const resolvePreviousRouteName =
 
   const prev = (typeof stepInfo.prev === 'string')
     ? stepInfo.prev
-    : (stepInfo.prev as StepRouteResolver)(current);
+    : (isRouteResolver(stepInfo.prev) ? 
+      (stepInfo.prev as StepRouteResolver)(current) : 
+      (stepInfo.prev as StepPathResolver)(current, "previous"));
 
   return prev;
 }

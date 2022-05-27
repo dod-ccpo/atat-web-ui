@@ -112,7 +112,7 @@ export default class ServiceOfferingDetails extends Vue {
   public categoryName = "";
 
   public buildClassificationInstances(): void {
-    debugger;
+    
     this.classificationLevelOptions.forEach((obj) => {
       const longLabel = buildClassificationLabel(obj, "long");
       const shortLabel = buildClassificationLabel(obj, "short");
@@ -138,7 +138,7 @@ export default class ServiceOfferingDetails extends Vue {
 
   @Watch("selectedClassificationLevels")
   public classificationLevelSelectionChange(newSelectedOptions: string[]): void {
-    debugger;
+    
     // add to array of forms to show if selectedOption not in the list
 
     newSelectedOptions.forEach((selectedOption: string) => {

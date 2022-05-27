@@ -81,10 +81,16 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           id: getIdText(offering.name),
           label: offering.name,
           value: offering.sys_id,
+          description: offering.description
         }
         this.checkboxItems.push(checkboxItem);
       });
     }
+    this.checkboxItems.push({
+      id: "Other",
+      label: "Other",
+      value: "Other",
+    })
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
   }
 
