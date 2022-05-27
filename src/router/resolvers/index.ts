@@ -4,7 +4,6 @@ import OtherContractConsiderations from "@/store/otherContractConsiderations";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { group } from "console";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -95,8 +94,12 @@ export const ContractTrainingReq = (current: string): string => {
 };
 
 const baseOfferingDetailsPath =  `performance-requirements/service-offering-details/`;
-const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=>
-  `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${serviceName.toLowerCase()}`;
+const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
+  let path = `${baseOfferingDetailsPath}${groupId.toLowerCase()}/`
+  path += `${serviceName.toLowerCase().replace(/ /g, "_")}`;
+  return path;
+}
+  
 
 const getOfferingGroupServicesPath = (groupId: string)=>
   `performance-requirements/service-offerings/${groupId.toLowerCase()}`
