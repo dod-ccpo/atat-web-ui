@@ -170,9 +170,11 @@ export class DescriptionOfWorkStore extends VuexModule {
       const offering: DOWServiceOffering = {
         name: obj.name,
         "sys_id": obj.sys_id || "",
+        sequence: obj.sequence,
       };
       serviceOfferings.push(offering);
     })
+    serviceOfferings.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     return serviceOfferings;
   }
 
