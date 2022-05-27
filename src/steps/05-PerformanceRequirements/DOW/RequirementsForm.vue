@@ -15,12 +15,13 @@
               <ATATTextArea
                 id="OperationToBePerformed"
                 label="Describe the anticipated need and usage of this requirement"
-                class="width-100"
+                class="width-100 mb-10"
                 :rows="5"
                 :value.sync="instance.description"
                 maxChars="500"
                 :rules="[
-              $validators.required('Please provide a description for this requirement.')
+              $validators.required('Please provide a description for this requirement.'),
+              $validators.maxLength('500', 'Description is to be 500 characters or less.')
             ]"
               />
               <ATATRadioGroup
