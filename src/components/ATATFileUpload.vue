@@ -60,7 +60,7 @@
                   role="button"
                   id="BrowseToUpload"
                   class="_text-link ml-1"
-                  @mousedown="fileUploadClicked"
+                  @click="fileUploadClicked"
                 >
                   browse to upload
                 </a>
@@ -148,7 +148,12 @@ export default class ATATFileUpload extends Vue {
   /**
    * triggers html file upload click
    */
-  private fileUploadClicked(): void {
+  private fileUploadClicked(event: Event): void {
+    const eventSrc = event.target as HTMLElement;
+    if (eventSrc.classList.contains("_text-link")) {
+      event.preventDefault();
+      event.stopPropagation();}
+
     (document.getElementById("FundingPlanFileUpload") as HTMLInputElement).click();
     this.reset();
     this.isFullSize = this.validFiles.length === 0;
