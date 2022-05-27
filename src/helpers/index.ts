@@ -12,6 +12,10 @@ export const getIdText = (string: string): string => {
   return string.replace(/[^A-Z0-9]/ig, "");
 }
 
+export const toTitleCase = (string: string): string => {
+  return _.startCase(_.toLower(string));
+}
+
 export const convertSystemChoiceToSelect = 
 (data:SystemChoiceDTO[]): SelectData[] => data.map(choice=> {
   const {value} = choice;

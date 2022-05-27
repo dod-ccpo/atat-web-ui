@@ -88,7 +88,7 @@ import {
 import { routeNames } from "../../../router/stepper"
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
-
+import { toTitleCase } from "@/helpers";
 
 @Component({
   components: {
@@ -121,47 +121,28 @@ export default class RequirementsForm extends Vue {
   ];
 
   // EJY need to have value as sys_id for the period in the snow table
-  private availablePeriodCheckboxItems: Checkbox[] = [
-    {
-      id: "BasePeriod",
-      label: "Base period",
-      value: "BasePeriod",
-    },
-  ];
-  private createLabel(str: string){
-    return str.toLowerCase()
-      .split(' ')
-      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-      .join(' ');
-  }
+  private availablePeriodCheckboxItems: Checkbox[] = [];
 
-  private createCheckboxItems(data: PeriodDTO[]) {
+  private createCheckboxItems(periods: PeriodDTO[]) {
     const arr: Checkbox[] = [];
-    const first = data.shift()
-    if(first){
-      arr.push({
-        id: first.period_type,
-        label: `${this.createLabel(first.period_type)} period`,
-        value: first.sys_id || ''})
-    }
-    data.forEach((val, idx) => {
-      let options: Checkbox = {
-        id: val.period_type,
-        label: `${this.createLabel(val.period_type)} period ${idx + 1}`,
-        value: val.sys_id || '',
+    periods.forEach((period, idx) => {
+      let option: Checkbox = {
+        id: period.period_type,
+        label: `${toTitleCase(period.period_type)} period ${idx + 1}`,
+        value: period.sys_id || '',
       }
-      arr.push(options)
+      arr.push(option)
     })
     return arr
   }
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
+    debugger;
     if (periods && periods.length > 0) {
       this.isDisabled = false
-      // EJY fix this
-      this.checkboxItems = this.createCheckboxItems(periods)
-      this.selectedOptions.push(this.checkboxItems[0].value)
+      this.availablePeriodCheckboxItems = this.createCheckboxItems(periods)
+      this.selectedOptions.push(this.availablePeriodCheckboxItems[0].value)
     }
   }
 
