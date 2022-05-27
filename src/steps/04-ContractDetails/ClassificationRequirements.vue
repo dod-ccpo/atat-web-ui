@@ -53,10 +53,12 @@
 import vue from 'vue'
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
-import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import { Checkbox, stringObj } from "../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { ClassificationLevelDTO, ContactDTO } from "@/api/models";
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+
+import { Checkbox } from "../../../types/Global";
+import { ClassificationLevelDTO } from "@/api/models";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges, buildClassificationCheckboxList} from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
@@ -71,9 +73,9 @@ import classificationRequirements from "@/store/classificationRequirements";
 export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   public classifications: ClassificationLevelDTO[] = []
-  public isIL6Selected = ''
+  public isIL6Selected = ""
+  public IL6SysId = ""
   private checkboxItems: Checkbox[] = []
-
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return buildClassificationCheckboxList(data);
@@ -92,8 +94,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected
-      = newVal.indexOf('IL6') > -1 ? "true" : "false";
+    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false"
   }
   public savedData: ClassificationLevelDTO[] = []
 
@@ -109,7 +110,6 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        
         classificationRequirements.setSelectedClassificationLevels(this.currentData)
       }
     } catch (error) {
@@ -121,6 +121,10 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     this.classifications = await classificationRequirements.getAllClassificationLevels();
     this.checkboxItems =this.createCheckboxItems(this.classifications)
+
+    const IL6Checkbox = this.checkboxItems.find(e => e.label.indexOf("IL6") > -1);
+    this.IL6SysId = IL6Checkbox?.value || "false";
+
     const storeData = await classificationRequirements.getSelectedClassificationLevels()
     if(storeData) {
       this.savedData = storeData

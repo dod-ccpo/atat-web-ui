@@ -4,26 +4,26 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Next, we’ll gather your requirements for {{ categoryName }}
+            Next, we’ll gather your requirements for {{ serviceOfferingName }}
           </h1>
           <div class="copy-max-width">
 
             <div 
-              v-if="classificationLevelOptions.length === 1"
+              v-if="avlClassificationLevelObjects.length === 1"
               id="SingleClassificationIntro"  
             >
               <p id="SingleClassificationIntro">
                 In the previous section, you specified 
-                <strong>{{ classificationLevelOptions[0].name }}</strong> for the 
+                <strong>{{ avlClassificationLevelObjects[0].name }}</strong> for the 
                 classification level of all cloud resources and services. If you 
                 need this within a different level, 
                 <a 
                   role="button" 
                   id="UpdateClassification"
                   tabindex="0"
-                  @click="openModal"
-                  @keydown.enter="openModal"
-                  @keydown.space="openModal"
+                  @click="showDialog = true"
+                  @keydown.enter="showDialog = true"
+                  @keydown.space="showDialog = true"
                 >update your Classification Requirements</a>.
               </p>
             </div>
@@ -32,8 +32,8 @@
               <ATATCheckboxGroup
                 id="ClassificationCheckboxes"
                 aria-describedby="ClassificationGroupLabel"
-                :value.sync="selectedClassificationLevels"
-                :items="classificationLevelCheckboxItems"
+                :value.sync="selectedHeaderLevelSysIds"
+                :items="headerCheckboxItems"
                 :card="false"
                 class="copy-max-width"
                 :rules="[
@@ -56,9 +56,9 @@
                       role="button"
                       id="UpdateClassification"
                       tabindex="0"
-                      @click="openModal"
-                      @keydown.enter="openModal"
-                      @keydown.space="openModal"
+                      @click="showDialog = true"
+                      @keydown.enter="showDialog = true"
+                      @keydown.space="showDialog = true"
                     >update your Classification Requirements</a>.
                   </p>
                 </template>
@@ -77,43 +77,120 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <ATATDialog
+      :showDialog.sync="showDialog"
+      title="What classification level(s)are required for your
+        cloud resources and/or services?"
+      no-click-animation
+      okText="Change Levels"
+      width="670"
+      :disabled="!hasChangedPackageClassificationLevels()"
+      @ok="classificationOptionsChangedInModal"
+    >
+      <template #content>
+        <p class="body">
+          Changes to the selections below will be reflected in the overall Classification
+          Requirements section. If you select more than one, we will ask you to specify a
+          level for each performance requirement.
+        </p>
+        <p class="body mb-5">
+          Select all that apply to your contracting effort.
+        </p>
+        <ATATCheckboxGroup
+          id="ClassificationLevelCheckboxes"
+          :value.sync="modalSelectedOptions"
+          :hasOtherValue="true"
+          :items="modalCheckboxItems"
+          name="checkboxes"
+          :card="false"
+          :truncate="false"
+          class="copy-max-width"
+          :rules="[
+            $validators.required('Please select at least one classification level.')
+          ]"
+        />
+        <ATATAlert
+          id="ClassificationRequirementsAlert"
+          v-show="isIL6Selected === 'true'"
+          type="warning"
+          class="copy-max-width mt-10"
+        >
+          <template v-slot:content>
+            <p class="mb-0 body">
+              Contracts requiring access to classified information (IL6 level and above)
+              must complete a <strong>DD Form 254, DoD Contract Security Classification
+              Specification.</strong> We will walk you through uploading this form next.
+            </p>
+          </template>
+        </ATATAlert>
+      </template>
+    </ATATDialog>
+
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
-import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import RequirementsForm from './RequirementsForm.vue'
+import ATATDialog from "@/components/ATATDialog.vue";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
-import { buildClassificationCheckboxList, buildClassificationLabel } from "@/helpers";
+import { 
+  buildClassificationCheckboxList, 
+  buildClassificationLabel,
+  hasChanges,
+} from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
 
 import _ from "lodash";
-import { getIdText } from "@/helpers";
 
 @Component({
   components: {
+    ATATAlert,
     ATATCheckboxGroup,
+    ATATDialog,
     ATATExpandableLink,
     RequirementsForm,
   }
 })
 
-export default class ServiceOfferingDetails extends Vue {
-  private classificationLevelCheckboxItems: Checkbox[] = []
+export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
+  public serviceOfferingName = DescriptionOfWork.currentOfferingName;
 
-  public categoryName = "";
+  private showDialog = false;
+  public modalSelectedOptions: string[] = [];
+  private modalCheckboxItems: Checkbox[] = [];
+  public isIL6Selected = "";
+  public IL6SysId = "";
 
-  public buildClassificationInstances(): void {
-    
-    this.classificationLevelOptions.forEach((obj) => {
+  public packageClassificationLevels: ClassificationLevelDTO[] = [];
+  public allClassificationLevels:ClassificationLevelDTO[] = [];
+
+  // used for checkboxes at top of form if multiple 
+  public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
+  public avlInstancesLength = 0;
+  public avlClassificationLevelSysIds: string[] = [];
+
+  private headerCheckboxItems: Checkbox[] = [];
+  public headerCheckboxSelectedSysIds: string[] = [];
+  public selectedHeaderLevelSysIds: string[] = [];
+  public instancesForForm: DOWClassificationInstance[] = [];
+
+  public periods = [{}];
+
+  public async buildClassificationInstances(): Promise<void> {
+    this.classificationInstances = [];
+    this.avlClassificationLevelObjects.forEach((obj) => {
       const longLabel = buildClassificationLabel(obj, "long");
       const shortLabel = buildClassificationLabel(obj, "short");
       const instance: DOWClassificationInstance = {
@@ -130,20 +207,19 @@ export default class ServiceOfferingDetails extends Vue {
       }
       this.classificationInstances.push(instance);
     });
+    await this.clearUnselected();
   }
 
-  public classificationInstancesToShow: string[] = [];
-  public instancesForForm: DOWClassificationInstance[] = [];
-  public selectedClassificationLevels = [];
+  @Watch("selectedHeaderLevelSysIds")
+  public headerSelectionChange(sysIds: string[]): void {
+    this.updateHeaderOptions(sysIds);
+  }
 
-  @Watch("selectedClassificationLevels")
-  public classificationLevelSelectionChange(newSelectedOptions: string[]): void {
-    
+  public updateHeaderOptions(sysIds: string[]): void {
     // add to array of forms to show if selectedOption not in the list
-
-    newSelectedOptions.forEach((selectedOption: string) => {
-      if (this.classificationInstancesToShow.indexOf(selectedOption) === -1) {
-        this.classificationInstancesToShow.push(selectedOption);
+    sysIds.forEach((selectedOption: string) => {
+      if (this.headerCheckboxSelectedSysIds.indexOf(selectedOption) === -1) {
+        this.headerCheckboxSelectedSysIds.push(selectedOption);
         const instance = this.classificationInstances.find(e => e.sysId === selectedOption);
         if (instance) {
           this.instancesForForm.push(instance);
@@ -151,33 +227,101 @@ export default class ServiceOfferingDetails extends Vue {
       }
     });
     // remove options not in new selected options array
-    const instancesToShowClone = this.classificationInstancesToShow;
+    const instancesToShowClone = this.headerCheckboxSelectedSysIds;
     instancesToShowClone.forEach((sysId) => {
-      if (!newSelectedOptions.includes(sysId)) {
-        const i = this.classificationInstancesToShow.findIndex(e => e === sysId);
+      if (!sysIds.includes(sysId)) {
+        const i = this.headerCheckboxSelectedSysIds.findIndex(e => e === sysId);
         if (i > -1) {
-          this.classificationInstancesToShow.splice(i, 1);
+          this.headerCheckboxSelectedSysIds.splice(i, 1);
         }
       }
     });
-
     const instancesForFormClone = _.cloneDeep(this.instancesForForm);
     instancesForFormClone.forEach((instance) => {
       const sysId = instance.sysId || "";
-      if (!newSelectedOptions.includes(sysId)) {
+      if (!sysIds.includes(sysId)) {
         const i = this.instancesForForm.findIndex(e => e.sysId === sysId);
         if (i > -1) {
           this.instancesForForm.splice(i, 1);
         }
       }
     });
-    this.instancesForForm.sort((a,b) => (a.impactLevel > b.impactLevel) ? 1 : -1);
+    this.instancesForForm.sort((a,b) => (a.impactLevel > b.impactLevel) ? 1 : -1);   
   }
 
-  // used for checkboxes at top of form if multiple 
-  public classificationLevelOptions: ClassificationLevelDTO[] = [];
-  public avlInstancesLength = 0;
-  public periods = [{}];
+  @Watch("modalSelectedOptions")
+  public modalSelectedOptionsChange(newVal: string[]): void {
+    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false";
+  };
+
+  public async classificationOptionsChangedInModal(): Promise<void> {
+    const arr: ClassificationLevelDTO[] = [];
+    this.modalSelectedOptions.forEach(item => {
+      const value = this.allClassificationLevels.filter(( data )=>{
+        return item == data.sys_id
+      })
+      arr.push(value[0])
+    })
+    await ClassificationRequirements.setSelectedClassificationLevels(arr);
+  
+    // update header checkboxes and form instances
+    // this.avlClassificationLevelObjects 
+    //   = await ClassificationRequirements.getSelectedClassificationLevels();
+
+    // this.avlInstancesLength = this.avlClassificationLevelObjects.length;
+    // this.avlClassificationLevelSysIds = [];
+    // this.avlClassificationLevelObjects.forEach((e) => {
+    //   if (e.sys_id) {
+    //     this.avlClassificationLevelSysIds.push(e.sys_id);
+    //   }
+    // });
+    // this.headerCheckboxItems 
+    //   = this.createCheckboxItems(this.avlClassificationLevelObjects);
+    await this.setAvailableClassificationLevels();
+    this.buildClassificationInstances();
+  }
+
+  public async clearUnselected(): Promise<void> {
+    const filteredHeaderChecked = this.headerCheckboxSelectedSysIds.filter(
+      sysId => this.avlClassificationLevelSysIds.includes(sysId)
+    );
+    this.headerCheckboxSelectedSysIds = filteredHeaderChecked;
+    const filteredInstances = this.instancesForForm.filter((instance) => {
+      if (instance.sysId) {
+        return this.avlClassificationLevelSysIds.includes(instance.sysId);
+      }
+    });
+    this.instancesForForm = filteredInstances;
+  }
+
+  public get currentPackageClassificationLevels(): ClassificationLevelDTO[] {
+    const arr :ClassificationLevelDTO[] = [];
+    this.modalSelectedOptions.forEach(item => {
+      const value = this.allClassificationLevels.filter(( data )=>{
+        return item == data.sys_id
+      })
+      arr.push(value[0])
+    })
+    return arr
+  };
+
+  private hasChangedPackageClassificationLevels(): boolean {
+    return hasChanges(
+      this.currentPackageClassificationLevels, 
+      this.packageClassificationLevels
+    );
+  };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // if (this.hasChanged()) {
+      // todo in 7507
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  };
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
     return data.length > 1 ? buildClassificationCheckboxList(data) : [];
@@ -185,35 +329,61 @@ export default class ServiceOfferingDetails extends Vue {
 
   public classificationInstances: DOWClassificationInstance[] = [];
 
-  public async loadOnEnter(): Promise<void> {
-    this.classificationLevelOptions 
+  public async setAvailableClassificationLevels(): Promise<void> {
+    this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-    this.avlInstancesLength = this.classificationLevelOptions.length;
+    this.avlInstancesLength = this.avlClassificationLevelObjects.length;
+    this.avlClassificationLevelSysIds = [];
+    this.avlClassificationLevelObjects.forEach((e) => {
+      if (e.sys_id) {
+        this.avlClassificationLevelSysIds.push(e.sys_id);
+      }
+    });
+    this.headerCheckboxItems 
+      = this.createCheckboxItems(this.avlClassificationLevelObjects);
+    
+  }
 
-    this.classificationLevelCheckboxItems 
-      = this.createCheckboxItems(this.classificationLevelOptions);
+  public async loadOnEnter(): Promise<void> {
+    await this.setAvailableClassificationLevels();
 
+    this.allClassificationLevels
+      = await ClassificationRequirements.getAllClassificationLevels();
+
+    this.modalCheckboxItems = this.createCheckboxItems(this.allClassificationLevels);
+
+    const IL6Checkbox 
+      = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
+    this.IL6SysId = IL6Checkbox?.value || "";
+
+    // load existing classification instances for this service offering
     this.classificationInstances 
       = await DescriptionOfWork.getClassificationInstances();
-
+    // if no existing classification instances, build one for each
+    // classification level selected in Contract Details section
     if (this.classificationInstances.length === 0) {
       this.buildClassificationInstances();
     }
+
+    // set up PoP periods if not for entire duration
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
       this.periods = periods
     }
-  }
+
+    const storeData = await ClassificationRequirements.getSelectedClassificationLevels()
+    if(storeData) {
+      this.packageClassificationLevels = storeData
+      storeData.forEach((val) => {
+        this.modalSelectedOptions.push(val.sys_id || "")
+      })
+    }
+
+  };
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-    this.categoryName = "Data Management"; // EJY get from data
-  }
-
-  public openModal(): void {
-    // open modal functionality in task 7411
-  }
-
-}
+    await this.loadOnEnter()
+  };
+};
 
 </script>

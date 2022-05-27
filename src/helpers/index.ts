@@ -1,8 +1,5 @@
-import { SystemChoiceDTO } from "@/api/models";
+import { ClassificationLevelDTO, SystemChoiceDTO } from "@/api/models";
 import { Checkbox, SelectData } from "types/Global";
-
-import { ClassificationLevelDTO } from "@/api/models";
-
 import _ from "lodash";
 
 export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
@@ -10,6 +7,10 @@ export const hasChanges = <TData>(argOne: TData, argTwo: TData): boolean =>
 
 export const getIdText = (string: string): string => {
   return string.replace(/[^A-Z0-9]/ig, "");
+}
+
+export const toTitleCase = (string: string): string => {
+  return _.startCase(_.toLower(string));
 }
 
 export const convertSystemChoiceToSelect = 

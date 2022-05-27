@@ -177,7 +177,7 @@ export const OfferGroupOfferingsPathResolver = (current: string,
 export const OfferingDetailsPathResolver =(): string => {
 
   const groupId = DescriptionOfWork.currentGroupId
-  const offering = DescriptionOfWork.currentOffering.replace(/ /g, "_");
+  const offering = DescriptionOfWork.currentOfferingName.replace(/ /g, "_");
 
   return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;
 

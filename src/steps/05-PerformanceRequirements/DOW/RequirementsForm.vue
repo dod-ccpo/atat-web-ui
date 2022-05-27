@@ -17,10 +17,14 @@
               <ATATTextArea
                 id="AnticipatedNeedUsage"
                 label="Describe the anticipated need and usage of this requirement"
-                class="width-100"
+                class="width-100 mb-10"
                 :rows="5"
                 :value.sync="instance.anticipatedNeedUsage"
                 maxChars="500"
+                :rules="[
+              $validators.required('Please provide a description for this requirement.'),
+              $validators.maxLength('500', 'Description is to be 500 characters or less.')
+            ]"
               />
               <ATATRadioGroup
                 class="copy-max-width mb-10"
@@ -28,6 +32,9 @@
                 legend="Is this requirement for the entire duration of your task order?"
                 :items="requirementOptions"
                 :value.sync="instance.entireDuration"
+                :rules="[
+                  $validators.required('Please select an option to specify your requirement\'s.')
+                ]"
               />
               <div v-if="instance.entireDuration === 'NO'">
                 <p id="CloudSupportLabel" class="_checkbox-group-label">
@@ -40,6 +47,10 @@
                   :items="availablePeriodCheckboxItems"
                   :card="false"
                   :disabled="isDisabled"
+                  :rules="[
+                    $validators.required('Please select at least one base or option period' +
+                      ' to specify your requirement\'s duration level.')
+                  ]"
                   class="copy-max-width"
                 />
                 <ATATAlert
@@ -88,7 +99,7 @@ import {
 import { routeNames } from "../../../router/stepper"
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
-
+import { toTitleCase } from "@/helpers";
 
 @Component({
   components: {
@@ -110,64 +121,46 @@ export default class RequirementsForm extends Vue {
   private requirementOptions: RadioButton[] = [
     {
       id: "Yes",
-      label: `Yes`,
+      label: "Yes",
       value: "YES",
     },
     {
       id: "No",
-      label: `No`,
+      label: "No",
       value: "NO",
     },
   ];
 
-  // EJY need to have value as sys_id for the period in the snow table
-  private availablePeriodCheckboxItems: Checkbox[] = [
-    {
-      id: "BasePeriod",
-      label: "Base period",
-      value: "BasePeriod",
-    },
-  ];
-  private createLabel(str: string){
-    return str.toLowerCase()
-      .split(' ')
-      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-      .join(' ');
-  }
+  private availablePeriodCheckboxItems: Checkbox[] = [];
 
-  private createCheckboxItems(data: PeriodDTO[]) {
+  private createCheckboxItems(periods: PeriodDTO[]) {
+    // ensure sort order is correct
+    periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
+    
     const arr: Checkbox[] = [];
-    const first = data.shift()
-    if(first){
-      arr.push({
-        id: first.period_type,
-        label: `${this.createLabel(first.period_type)} period`,
-        value: first.sys_id || ''})
-    }
-    data.forEach((val, idx) => {
-      let options: Checkbox = {
-        id: val.period_type,
-        label: `${this.createLabel(val.period_type)} period ${idx + 1}`,
-        value: val.sys_id || '',
+    periods.forEach((period, idx) => {
+      let option: Checkbox = {
+        id: period.period_type,
+        label: `${toTitleCase(period.period_type)} period ${idx + 1}`,
+        value: period.sys_id || "",
       }
-      arr.push(options)
+      arr.push(option)
     })
     return arr
-  }
+  };
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
       this.isDisabled = false
-      // EJY fix this
-      this.checkboxItems = this.createCheckboxItems(periods)
-      this.selectedOptions.push(this.checkboxItems[0].value)
+      this.availablePeriodCheckboxItems = this.createCheckboxItems(periods)
+      this.selectedOptions.push(this.availablePeriodCheckboxItems[0].value)
     }
-  }
+  };
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter()
-  }
+  };
 
 }
 </script>

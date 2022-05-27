@@ -43,7 +43,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   DOWObject: DOWServiceOfferingGroup[] = [];
 
   currentGroupId = "";
-  currentOffering = "";
+  currentOfferingName = "";
+  currentOfferingSysId = "";
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -61,7 +62,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     const groupIndex = this.currentOfferingGroupIndex;
     const offeringIndex = this.DOWObject[groupIndex]
-      .serviceOfferings.findIndex(offering=> offering.name === this.currentOffering);
+      .serviceOfferings.findIndex(offering=> offering.name === this.currentOfferingName);
 
     return offeringIndex;
   }
@@ -79,7 +80,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     
     const offerings =  this.serviceOfferingsForGroup;
     const currentOfferingIndex = offerings
-      .findIndex(offering=> offering.name === this.currentOffering);
+      .findIndex(offering=> offering.name === this.currentOfferingName);
     return (currentOfferingIndex + 1) === offerings.length;
   }
 
@@ -92,7 +93,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public get isAtBeginningOfServiceOfferings(): boolean {
     const offerings =  this.serviceOfferingsForGroup;
     const currentOfferingIndex = offerings
-      .findIndex(offering=> offering.name === this.currentOffering);
+      .findIndex(offering=> offering.name === this.currentOfferingName);
     return currentOfferingIndex == 0; 
   }
 
@@ -108,11 +109,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     const serviceOfferings = this.serviceOfferingsForGroup;
 
     const currentServiceIndex = serviceOfferings
-      .findIndex(offering=>offering.name === this.currentOffering);
+      .findIndex(offering=>offering.name === this.currentOfferingName);
 
     if(currentServiceIndex < 0)
     {
-      throw new Error(`unable to get index for current offer ${this.currentOffering}`);
+      throw new Error(`unable to get index for current offer ${this.currentOfferingName}`);
     }
 
     if((currentServiceIndex + 2) <= serviceOfferings.length )
@@ -129,11 +130,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     const serviceOfferings = this.serviceOfferingsForGroup;
 
     const currentServiceIndex = serviceOfferings
-      .findIndex(offering=>offering.name === this.currentOffering);
+      .findIndex(offering=>offering.name === this.currentOfferingName);
 
     if(currentServiceIndex < 0)
     {
-      throw new Error(`unable to get index for current offer ${this.currentOffering}`);
+      throw new Error(`unable to get index for current offer ${this.currentOfferingName}`);
     }
 
     if(currentServiceIndex > -1 )
@@ -243,7 +244,8 @@ export class DescriptionOfWorkStore extends VuexModule {
         }
       });
       this.currentGroupId = this.DOWObject[0].serviceOfferingGroupId;
-      this.currentOffering = "";
+      this.currentOfferingName = "";
+      this.currentOfferingSysId = "";
     });
   }
 
@@ -264,6 +266,7 @@ export class DescriptionOfWorkStore extends VuexModule {
               "sys_id": selectedOfferingSysId,
               classificationInstances: [],
               description: foundOffering.description,
+              sequence: foundOffering.sequence
             }
             currentOfferings.push(offering);
             // todo future ticket - add to SNOW db
@@ -282,13 +285,14 @@ export class DescriptionOfWorkStore extends VuexModule {
           // todo future ticket - remove from SNOW db
         }
       });
-      this.currentOffering = currentOfferings[0].name;
+      this.currentOfferingName = currentOfferings[0].name;
+      this.currentOfferingSysId = currentOfferings[0].sys_id;
     }
   }
 
   @Mutation
   public setCurrentOffering(value: string): void {
-    this.currentOffering = value;
+    this.currentOfferingName = value;
   }
 
   @Mutation
@@ -302,7 +306,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     const currentGroup 
       = this.DOWObject.find((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     const currentOffering
-      = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOffering);
+      = currentGroup?.serviceOfferings.find((obj) => obj.name === this.currentOfferingName);
     if (currentOffering && currentOffering.classificationInstances) {
       return currentOffering.classificationInstances;
     }
@@ -331,7 +335,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({ rawError: true })
   public async getServiceOfferings(): Promise<DOWServiceOffering[]> {
     await this.ensureInitialized();
-    
     const serviceOfferingsForGroup = this.serviceOfferings.filter((obj) => {
       return obj.service_offering_group === this.currentGroupId;
     })
@@ -340,34 +343,28 @@ export class DescriptionOfWorkStore extends VuexModule {
       const offering: DOWServiceOffering = {
         name: obj.name,
         "sys_id": obj.sys_id || "",
+        sequence: obj.sequence,
         description: obj.description,
       };
       serviceOfferings.push(offering);
     })
+    serviceOfferings.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     return serviceOfferings;
   }
 
   @Action({ rawError: true })
   public getOfferingGroupName(): string {
-    
     const currentGroup = this.serviceOfferingGroups.find((obj) => {
       return obj.value === this.currentGroupId;
     });
-    
     return currentGroup?.label || "";
   }
 
-  // @Action({ rawError: true })
-  // public getClassificationInstances(): {
-  //   // EJY 
-  // }
-
-  // @Action({ rawError: true })
-  // public async getSelectedServiceOfferingGroups(): Promise<stringObj[]> {
-  //   await this.ensureInitialized();
-  //   return this.selectedOfferingGroups;
-  // }
-
+  @Action({ rawError: true })
+  public getServiceOfferingName(): string {
+    return this.currentOfferingName;
+  }
+  
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
