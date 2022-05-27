@@ -186,3 +186,38 @@ export interface invalidFile{
   statusCode?: number;
 }
 
+export interface DOWInstanceClassificationLevelLabels {
+  longLabel: string;
+  shortLabel: string;
+}
+
+export interface DOWPoP {
+  label: string;
+  sysId: string;
+}
+
+export interface DOWClassificationInstance {
+  sysId?: string;
+  classificationLevelLabels?: DOWInstanceClassificationLevelLabels;
+  impactLevel: string; // for sorting
+  classificationLevelSysId: string;
+  anticipatedNeedUsage: string;
+  entireDuration: string;
+  selectedPeriods?: DOWPoP[];
+}
+
+export interface DOWServiceOffering {
+  name: string;
+  otherOfferingName?: string;
+  "sys_id": string;
+  classificationInstances?: DOWClassificationInstance[];
+  sequence: string;
+  description: string;
+}
+
+export interface DOWServiceOfferingGroup {
+  serviceOfferingGroupId: string;
+  serviceOfferings: DOWServiceOffering[];
+}
+
+

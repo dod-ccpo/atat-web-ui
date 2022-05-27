@@ -35,12 +35,15 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 
-import { Checkbox } from "../../../../types/Global";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+
+import { Checkbox, DOWServiceOffering } from "../../../../types/Global";
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
@@ -48,9 +51,9 @@ import { Checkbox } from "../../../../types/Global";
   }
 })
 
-export default class ServiceOfferings extends Vue {
+export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   // requirementName will be pulled from data in future ticket
-  public requirementName = "Developer Tools and Services";
+  public requirementName = "";
 
   public requiredMessage = `Please select at least one type of offering. If you 
     no longer need ${this.requirementName}, select the “I don’t need 
@@ -67,55 +70,49 @@ export default class ServiceOfferings extends Vue {
   }
 
   public selectedOptions: string[] = [];
+  private checkboxItems: Checkbox[] = [];
+  public serviceOfferings: DOWServiceOffering[] = [];
 
-  // checkboxItems will be pulled from data in future ticket
-  private checkboxItems: Checkbox[] = [
-    {
-      id: "DevSecOPS", // may need to create ids (for Cypress) on the fly
-      label: "DevSecOPS",
-      value: "DevSecOPS", 
-    },
-    {
-      id: "DeveloperToolsAndServices",
-      label: "Data Management",
-      value: "DeveloperToolsAndServices", 
-    },
-    {
-      id: "Applications",
-      label: "Migration Tools",
-      value: "Applications", 
-    },
-    {
-      id: "MachineLearning",
-      label: "Transformation Tools",
-      value: "MachineLearning", 
-    },
-    {
-      id: "Networking",
-      label: "Cloud Development Tools",
-      value: "Networking", 
-    },
-    {
-      id: "Security",
-      label: "Cloud Audit/Monitoring Tools",
-      value: "Security", 
-      description: "Requires a waiver from DISA CIO",
-    },
-    {
-      id: "DatabaseWithStorage",
-      label: "Cyber Tools",
-      value: "DatabaseWithStorage", 
-      description: "Requires a waiver from DISA CIO",
-    },
-    // "Other" will be an option for all requirements and may not come from the store?
-    // -- to be addressed in future ticket
-    {
-      id: "Other",
-      label: "Other",
-      value: this.otherValue, 
-    }    
-  ];
-  
+  public async loadOnEnter(): Promise<void> {
+    this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
+    if (this.serviceOfferings.length) {
+      this.serviceOfferings.forEach((offering) => {
+        const checkboxItem: Checkbox = {
+          id: getIdText(offering.name),
+          label: offering.name,
+          value: offering.sys_id,
+          description: offering.description,
+        }
+        this.checkboxItems.push(checkboxItem);
+      });
+      const other: Checkbox = {
+        id: "Other",
+        label: "Other",
+        value: "OTHER",
+      };
+      this.checkboxItems.push(other);
+
+    }
+    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // save to store
+      await DescriptionOfWork.setSelectedOfferings(this.selectedOptions);
+      // todo future ticket - save to SNOW
+    } catch (error) {
+      throw new Error('error saving requirement data');
+    }
+
+    return true;
+  }
+
+
 }
 
 </script>

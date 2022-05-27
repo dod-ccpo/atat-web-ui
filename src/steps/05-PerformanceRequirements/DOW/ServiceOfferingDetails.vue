@@ -4,38 +4,72 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Next, we’ll gather your requirements for {{ categoryName }}
+            Next, we’ll gather your requirements for {{ serviceOfferingName }}
           </h1>
           <div class="copy-max-width">
 
             <div 
-              v-if="selectedClassificationLevelsOnLoad.length === 1"
+              v-if="classificationLevelOptions.length === 1"
               id="SingleClassificationIntro"  
             >
               <p id="SingleClassificationIntro">
                 In the previous section, you specified 
-                <strong>{{ selectedClassificationLevelsOnLoad[0].name }}</strong> for the 
+                <strong>{{ classificationLevelOptions[0].name }}</strong> for the 
                 classification level of all cloud resources and services. If you 
                 need this within a different level, 
                 <a 
                   role="button" 
                   id="UpdateClassification"
                   tabindex="0"
-                  @click="openModal"
-                  @keydown.enter="openModal"
-                  @keydown.space="openModal"
+                  @click="showDialog = true"
+                  @keydown.enter="showDialog = true"
+                  @keydown.space="showDialog = true"
                 >update your Classification Requirements</a>.
               </p>
             </div>
 
-            <div v-else id="ClassificationCheckboxes">
-              <!-- classification checkboxes placeholder -->
+            <div v-else id="ClassificationCheckboxWrapper">
+              <ATATCheckboxGroup
+                id="ClassificationCheckboxes"
+                aria-describedby="ClassificationGroupLabel"
+                :value.sync="selectedClassificationLevels"
+                :items="classificationLevelCheckboxItems"
+                :card="false"
+                class="copy-max-width"
+                :rules="[
+                  $validators.required('Please select at least one option.')
+                ]"
+                groupLabel="What classification level(s) do you need?"
+                groupLabelId="ClassificationGroupLabel"
+              />
+
+              <ATATExpandableLink aria-id="AboutClassificationLevels" class="mt-10">
+                <template v-slot:header>
+                  I need this requirement within a different classification level. What do I do?
+                </template>
+                <template v-slot:content>
+                  <p>
+                    The levels listed above are based on the classification requirements 
+                    you specified in the previous Contract Details section. If you need 
+                    to make changes to these levels, 
+                    <a 
+                      role="button"
+                      id="UpdateClassification"
+                      tabindex="0"
+                      @click="showDialog = true"
+                      @keydown.enter="showDialog = true"
+                      @keydown.space="showDialog = true"
+                    >update your Classification Requirements</a>.
+                  </p>
+                </template>
+              </ATATExpandableLink>
+
             </div>
 
             <div id="OfferingDetailsForms">
-              <!-- form component placeholder -->
               <RequirementsForm
-              :data="instances"
+                :instances="instancesForForm"
+                :avlInstancesLength="avlInstancesLength"
               />
             </div>
 
@@ -43,146 +77,269 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <ATATDialog
+      :showDialog.sync="showDialog"
+      title="What classification level(s)are required for your
+        cloud resources and/or services?"
+      no-click-animation
+      okText="Change Levels"
+      width="670"
+      :disabled="!hasChangedPackageClassificationLevels()"
+      @ok="classificationOptionsChangedInModal"
+    >
+      <template #content>
+        <p class="body">
+          Changes to the selections below will be reflected in the overall Classification
+          Requirements section. If you select more than one, we will ask you to specify a
+          level for each performance requirement.
+        </p>
+        <p class="body mb-5">
+          Select all that apply to your contracting effort.
+        </p>
+        <ATATCheckboxGroup
+          id="ClassificationLevelCheckboxes"
+          :value.sync="modalSelectedOptions"
+          :hasOtherValue="true"
+          :items="modalCheckboxItems"
+          name="checkboxes"
+          :card="false"
+          :truncate="false"
+          class="copy-max-width"
+          :rules="[
+            $validators.required('Please select at least one classification level.')
+          ]"
+        />
+        <ATATAlert
+          id="ClassificationRequirementsAlert"
+          v-show="isIL6Selected === 'true'"
+          type="warning"
+          class="copy-max-width mt-10"
+        >
+          <template v-slot:content>
+            <p class="mb-0 body">
+              Contracts requiring access to classified information (IL6 level and above)
+              must complete a <strong>DD Form 254, DoD Contract Security Classification
+              Specification.</strong> We will walk you through uploading this form next.
+            </p>
+          </template>
+        </ATATAlert>
+      </template>
+    </ATATDialog>
+
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
+
 import RequirementsForm from './RequirementsForm.vue'
-import { getIdText } from "@/helpers";
-import DescriptionOfWork from "@/store/descriptionOfWork";
-import classificationRequirements from "@/store/classificationRequirements";
+import ATATDialog from "@/components/ATATDialog.vue";
+import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
+import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
+
+import SaveOnLeave from "@/mixins/saveOnLeave";
+
+import { Checkbox, DOWClassificationInstance } from "../../../../types/Global";
+import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
+import { 
+  buildClassificationCheckboxList, 
+  buildClassificationLabel,
+  hasChanges,
+} from "@/helpers";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
+
+import _ from "lodash";
 
 @Component({
   components: {
-    RequirementsForm
+    ATATAlert,
+    ATATCheckboxGroup,
+    ATATDialog,
+    ATATExpandableLink,
+    RequirementsForm,
   }
 })
 
-export default class ServiceOfferingDetails extends Vue {
-  private classifications: ClassificationLevelDTO[] = []
-  public categoryName = "";
+export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
+  private classificationLevelCheckboxItems: Checkbox[] = [];
+  private showDialog = false;
+  public modalSelectedOptions: string[] = [];
+  private modalCheckboxItems: Checkbox[] = [];
+  public packageClassificationLevels: ClassificationLevelDTO[] = [];
+  public isIL6Selected = "";
+  public IL6SysId = "";
+  public allClassificationLevels:ClassificationLevelDTO[] = [];
 
-  // generate from data from backend when implemented
-  public instances = [
-    {
-      classification: {
-        name: "Unclassified / Impact Level 2 (IL2)",
-        value: "IL2",
-      },
-      description: "",
-      neededForEntireDuration: null,
-      periods: []
-    },
+  public serviceOfferingName = DescriptionOfWork.currentOfferingName;
 
-  ]
-
-  private createInstanceObjects(data: ClassificationLevelDTO[]) {
-    const arr: any = []
-    data.forEach((val)=>{
-      let instance = {
-        classification:{
-          name:'',
-          value:'',
+  public buildClassificationInstances(): void {
+    this.classificationLevelOptions.forEach((obj) => {
+      const longLabel = buildClassificationLabel(obj, "long");
+      const shortLabel = buildClassificationLabel(obj, "short");
+      const instance: DOWClassificationInstance = {
+        sysId: obj.sys_id,
+        classificationLevelLabels: { 
+          longLabel, 
+          shortLabel,
         },
-        description:'',
-        neededForEntireDuration: null,
-        periods: []
+        impactLevel: obj.impact_level,
+        classificationLevelSysId: obj.sys_id || "",
+        anticipatedNeedUsage: "",
+        entireDuration: "",
+        selectedPeriods: []
       }
-      switch (val.impact_level) {
-      case 'IL4':
-        instance.classification.value = val.impact_level;
-        instance.classification.name = 'Unclassified / Impact Level 4 (IL4)'
-        break;
-      case 'IL2':
-        instance.classification.value = val.impact_level;
-        instance.classification.name = 'Unclassified / Impact Level 2 (IL2)'
-        break;
-      case 'IL5':
-        instance.classification.value = val.impact_level;
-        instance.classification.name = 'Unclassified / Impact Level 5 (IL5)'
-        break;
-      case 'IL6':
-        instance.classification.value= val.impact_level;
-        instance.classification.name = 'Secret / Impact Level 6 (IL6)'
-        break;
-      default:
-        return
-      }
-      arr.push(instance)
-    })
-    return arr
+
+      this.classificationInstances.push(instance);
+    });
   }
 
-  // create classification level type when get data from backend implemented
-  public selectedClassificationLevelsOnLoad = [{}];
-  public selectedClassificationLevels = [{}];
-  public classificationLevels = [{}];
+  public classificationsInHeader: string[] = [];
+  public instancesForForm: DOWClassificationInstance[] = [];
+  public selectedClassificationLevels: string[] = [];
 
-  // get periods from data when implemented
+  @Watch("selectedClassificationLevels")
+  public classificationLevelSelectionChange(newSelectedOptions: string[]): void {
+    this.updateHeaderCheckboxOptions(newSelectedOptions);
+  }
+
+  public updateHeaderCheckboxOptions(sysIds: string[]): void {
+    // add to array of forms to show if selectedOption not in the list
+    sysIds.forEach((selectedOption: string) => {
+      if (this.classificationsInHeader.indexOf(selectedOption) === -1) {
+        this.classificationsInHeader.push(selectedOption);
+        const instance = this.classificationInstances.find(e => e.sysId === selectedOption);
+        if (instance) {
+          this.instancesForForm.push(instance);
+        }
+      }
+    });
+    // remove options not in new selected options array
+    const instancesToShowClone = this.classificationsInHeader;
+    instancesToShowClone.forEach((sysId) => {
+      if (!sysIds.includes(sysId)) {
+        const i = this.classificationsInHeader.findIndex(e => e === sysId);
+        if (i > -1) {
+          this.classificationsInHeader.splice(i, 1);
+        }
+      }
+    });
+
+    const instancesForFormClone = _.cloneDeep(this.instancesForForm);
+    instancesForFormClone.forEach((instance) => {
+      const sysId = instance.sysId || "";
+      if (!sysIds.includes(sysId)) {
+        const i = this.instancesForForm.findIndex(e => e.sysId === sysId);
+        if (i > -1) {
+          this.instancesForForm.splice(i, 1);
+        }
+      }
+    });
+    this.instancesForForm.sort((a,b) => (a.impactLevel > b.impactLevel) ? 1 : -1);    
+  }
+
+  // used for checkboxes at top of form if multiple 
+  public classificationLevelOptions: ClassificationLevelDTO[] = [];
+  public avlInstancesLength = 0;
   public periods = [{}];
 
-  private getIdText(string: string) {
-    return getIdText(string);
+  @Watch("modalSelectedOptions")
+  public modalSelectedOptionsChange(newVal: string[]): void {
+    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false";
+  };
+
+  public classificationOptionsChangedInModal(): void {
+    const arr :ClassificationLevelDTO[] = [];
+    this.modalSelectedOptions.forEach(item => {
+      const value = this.allClassificationLevels.filter(( data )=>{
+        return item == data.sys_id
+      })
+      arr.push(value[0])
+    })
+    ClassificationRequirements.setSelectedClassificationLevels(arr);
+    this.updateHeaderCheckboxOptions(this.modalSelectedOptions);
+
   }
 
-  public mounted(): void {
-    // get this from store data when implemented 
-    this.categoryName = "Data Management";
+  public get currentPackageClassificationLevels(): ClassificationLevelDTO[] {
+    const arr :ClassificationLevelDTO[] = [];
+    this.modalSelectedOptions.forEach(item => {
+      const value = this.allClassificationLevels.filter(( data )=>{
+        return item == data.sys_id
+      })
+      arr.push(value[0])
+    })
+    return arr
+  };
 
-    // get this from store data when implemented 
-    this.selectedClassificationLevels = [
-      {
-        name: "Unclassified / Impact Level 2 (IL2)",
-        value: "IL2",
-      },
-    ];
+  private hasChangedPackageClassificationLevels(): boolean {
+    return hasChanges(
+      this.currentPackageClassificationLevels, 
+      this.packageClassificationLevels
+    );
+  };
 
-    // get this from store data when implemented 
-    this.classificationLevels = [
-      {
-        name: "Unclassified / Impact Level 2 (IL2)",
-        value: "IL2",
-      },
-      {
-        name: "Unclassified / Impact Level 4 (IL4)",
-        value: "IL4",
-      },
-      {
-        name: "Unclassified / Impact Level 5 (IL5)",
-        value: "IL5",
-      },
-      {
-        name: "Secret / Impact Level 2 (IL6)",
-        value: "IL6",
-      },
-    ];    
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // if (this.hasChanged()) {
+      // todo in 7507
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+  };
 
-    this.selectedClassificationLevelsOnLoad = this.selectedClassificationLevels;
-    
-    // get from data from backend when implemented
-    this.periods = [
-    ]
-    this.loadOnEnter()
+  private createCheckboxItems(data: ClassificationLevelDTO[]) {
+    return data.length > 1 ? buildClassificationCheckboxList(data) : [];
   }
 
-  public openModal(): void {
-    // open modal functionality in task 7411
-  }
+  public classificationInstances: DOWClassificationInstance[] = [];
+
   public async loadOnEnter(): Promise<void> {
-    this.classifications = await classificationRequirements.getClassificationLevels()
-    if(this.classifications){
-      this.instances = this.createInstanceObjects(this.classifications)
+    this.classificationLevelOptions 
+      = await ClassificationRequirements.getSelectedClassificationLevels();
+    this.avlInstancesLength = this.classificationLevelOptions.length;
+
+    this.classificationLevelCheckboxItems 
+      = this.createCheckboxItems(this.classificationLevelOptions);
+
+    this.allClassificationLevels
+      = await ClassificationRequirements.getAllClassificationLevels();
+
+    this.modalCheckboxItems = this.createCheckboxItems(this.allClassificationLevels);
+
+    const IL6Checkbox 
+      = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
+    this.IL6SysId = IL6Checkbox?.value || "";
+
+    this.classificationInstances 
+      = await DescriptionOfWork.getClassificationInstances();
+
+    if (this.classificationInstances.length === 0) {
+      this.buildClassificationInstances();
     }
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
       this.periods = periods
     }
-  }
 
-}
+    const storeData = await ClassificationRequirements.getSelectedClassificationLevels()
+    if(storeData) {
+      this.packageClassificationLevels = storeData
+      storeData.forEach((val) => {
+        this.modalSelectedOptions.push(val.sys_id || "")
+      })
+    }
+
+  };
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter()
+  };
+};
 
 </script>
