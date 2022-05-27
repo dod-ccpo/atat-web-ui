@@ -84,6 +84,13 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         }
         this.checkboxItems.push(checkboxItem);
       });
+      const other: Checkbox = {
+        id: "Other",
+        label: "Other",
+        value: "OTHER",
+      };
+      this.checkboxItems.push(other);
+
     }
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
   }
