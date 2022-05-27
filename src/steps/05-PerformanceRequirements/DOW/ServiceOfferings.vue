@@ -74,6 +74,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public serviceOfferings: DOWServiceOffering[] = [];
 
   public async loadOnEnter(): Promise<void> {
+    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
     this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
     if (this.serviceOfferings.length) {
       this.serviceOfferings.forEach((offering) => {
@@ -85,15 +86,17 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         }
         this.checkboxItems.push(checkboxItem);
       });
-      const other: Checkbox = {
-        id: "Other",
-        label: "Other",
-        value: "OTHER",
-      };
-      this.checkboxItems.push(other);
-
+      debugger;
+      const noOtherOption = ["Advisory and Assistance", "Training"];
+      if (!noOtherOption.includes(this.requirementName)) {
+        const other: Checkbox = {
+          id: "Other",
+          label: "Other",
+          value: "OTHER",
+        };
+        this.checkboxItems.push(other);
+      }
     }
-    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
   }
 
   public async mounted(): Promise<void> {
