@@ -28,8 +28,8 @@
               </p>
               <ATATDialog
                 :showDialog.sync="showDialog"
-                title="What classification level(s)
-                  are required for your cloud resources and/or services?"
+                title="What classification level(s)are required for your
+                  cloud resources and/or services?"
                 no-click-animation
                 okText="Change Levels"
                 width="670"
@@ -194,8 +194,17 @@ export default class ServiceOfferingDetails extends Vue {
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected
-      = newVal.indexOf('405b52af87970590ec3b777acebb3556') > -1 ? "true" : "false";
+    this.isIL6Selected = 'false'
+    this.selectedOptions.every(item => {
+      const value = this.classificationLevels.find(( data )=>{
+        return item === data.sys_id
+      })
+      if(value && value.impact_level === 'IL6'){
+        this.isIL6Selected = 'true'
+        return false
+      }
+      return true
+    })
   }
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
@@ -266,7 +275,6 @@ export default class ServiceOfferingDetails extends Vue {
     // get this from store data when implemented
 
     this.selectedClassificationLevelsOnLoad = this.selectedClassificationLevels;
-
 
     this.loadOnEnter()
   }

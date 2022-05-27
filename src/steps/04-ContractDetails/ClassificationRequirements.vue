@@ -17,6 +17,7 @@
               Select all that apply to your contracting effort.
             </p>
           </div>
+          {{selectedOptions}}
           <ATATCheckboxGroup
             id="ClassificationLevelCheckboxes"
             :value.sync="selectedOptions"
@@ -52,14 +53,13 @@
 /* eslint-disable camelcase */
 import vue from 'vue'
 import { Component, Mixins, Watch } from "vue-property-decorator";
-
+import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import { Checkbox, stringObj } from "../../../types/Global";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { ClassificationLevelDTO, ContactDTO } from "@/api/models";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { hasChanges } from "@/helpers";
 import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
@@ -75,57 +75,36 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
   public isIL6Selected = ''
   private checkboxItems: Checkbox[] = []
 
-
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    const arr :Checkbox[] = [];
-    data.forEach((val)=>{
-      let classification: Checkbox = {
-        id:'',
-        value: '',
-        label: '',
-      }
-      classification.id = val.sys_id || '';
-      switch (val.impact_level) {
-      case 'IL4':
-        classification.value = val.impact_level;
-        classification.label = 'Unclassified / Impact Level 4 (IL4)'
-        break;
-      case 'IL2':
-        classification.value = val.impact_level;
-        classification.label = 'Unclassified / Impact Level 2 (IL2)'
-        break;
-      case 'IL5':
-        classification.value = val.impact_level;
-        classification.label = 'Unclassified / Impact Level 5 (IL5)'
-        break;
-      case 'IL6':
-        classification.value = val.impact_level;
-        classification.label = 'Secret / Impact Level 6 (IL6)'
-        break;
-      default:
-        return
-      }
-      arr.push(classification)
-    })
-    return arr.sort((a, b) => (a.value > b.value) ? 1 : -1)
+    return data.length > 1 ? buildClassificationCheckboxList(data) : [];
   }
 
   private saveSelected() {
     const arr :ClassificationLevelDTO[] = [];
     this.selectedOptions.forEach(item => {
       const value = this.classifications.filter(( data )=>{
-        return item == data.impact_level
+        return item == data.sys_id
       })
       arr.push(value[0])
     })
+    console.log(arr)
     return arr
   }
 
 
   @Watch("selectedOptions")
   public selectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected
-      = newVal.indexOf('IL6') > -1 ? "true" : "false";
+    this.isIL6Selected = 'false'
+    this.selectedOptions.every(item => {
+      const value = this.classifications.find(( data )=>{
+        return item === data.sys_id
+      })
+      if(value && value.impact_level === 'IL6'){
+        this.isIL6Selected = 'true'
+        return false
+      }
+      return true
+    })
   }
   public savedData: ClassificationLevelDTO[] = []
 
@@ -156,7 +135,7 @@ export default class ClassificationRequirements extends Mixins(SaveOnLeave) {
     if(storeData) {
       this.savedData = storeData
       storeData.forEach((val) => {
-        this.selectedOptions.push(val.impact_level)
+        this.selectedOptions.push(val.sys_id || '')
       })
     }
   }
