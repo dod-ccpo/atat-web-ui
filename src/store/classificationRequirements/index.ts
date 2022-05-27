@@ -40,7 +40,7 @@ export class ClassificationRequirementsStore extends VuexModule {
   }
 
   @Mutation
-  public setSelectedClassificationLevels(value: ClassificationLevelDTO[]):void {
+  public async setSelectedClassificationLevels(value: ClassificationLevelDTO[]): Promise<void> {
     this.selectedClassificationLevels = value;
   }
 
