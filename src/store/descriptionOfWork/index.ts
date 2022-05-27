@@ -171,6 +171,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         name: obj.name,
         "sys_id": obj.sys_id || "",
         sequence: obj.sequence,
+        description: obj.description,
       };
       serviceOfferings.push(offering);
     })
