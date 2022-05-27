@@ -105,6 +105,20 @@
       color: $error !important;
     }
   }
+  &.v-input--is-disabled {
+    .v-icon {
+      color: $disabled !important;
+      z-index: 2;
+    }
+    .v-input--selection-controls__input {
+      &:after {
+        background-color: $base-lightest;
+      }
+    }
+    .v-label {
+      color: $disabled !important;
+    }
+  }
 
 }
 

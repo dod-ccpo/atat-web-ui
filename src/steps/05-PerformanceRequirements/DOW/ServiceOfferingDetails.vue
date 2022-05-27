@@ -83,6 +83,9 @@
 
             <div id="OfferingDetailsForms">
               <!-- form component placeholder -->
+              <RequirementsForm
+              :data="instances"
+              />
             </div>
 
           </div>
@@ -96,15 +99,21 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { buildClassificationCheckboxList, hasChanges } from "@/helpers";
+
+import RequirementsForm from './RequirementsForm.vue'
 import { getIdText } from "@/helpers";
 import ATATDialog from "@/components/ATATDialog.vue";
 import { Checkbox } from "../../../../types/Global";
-import { ClassificationLevelDTO } from "@/api/models";
 
-import DescriptionOfWork from "@/store/descriptionOfWork";
+
+
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import classificationRequirements from "@/store/classificationRequirements";
+import { ClassificationLevelDTO } from "@/api/models";
+import Periods from "@/store/periods";
 
 
 @Component({
@@ -112,8 +121,10 @@ import classificationRequirements from "@/store/classificationRequirements";
     ATATDialog,
     ATATCheckboxGroup,
     ATATAlert,
+    RequirementsForm
   }
 })
+
 
 export default class ServiceOfferingDetails extends Vue {
   private showDialog = false
@@ -121,6 +132,7 @@ export default class ServiceOfferingDetails extends Vue {
   private checkboxItems: Checkbox[] = []
   public savedData: ClassificationLevelDTO[] = []
   public isIL6Selected = ''
+  private classifications: ClassificationLevelDTO[] = []
   public categoryName = "";
 
   // generate from data from backend when implemented
@@ -133,8 +145,46 @@ export default class ServiceOfferingDetails extends Vue {
       description: "",
       neededForEntireDuration: null,
       periods: []
-    }
+    },
+
   ]
+
+  private createInstanceObjects(data: ClassificationLevelDTO[]) {
+    const arr: any = []
+    data.forEach((val)=>{
+      let instance = {
+        classification:{
+          name:'',
+          value:'',
+        },
+        description:'',
+        neededForEntireDuration: null,
+        periods: []
+      }
+      switch (val.impact_level) {
+      case 'IL4':
+        instance.classification.value = val.impact_level;
+        instance.classification.name = 'Unclassified / Impact Level 4 (IL4)'
+        break;
+      case 'IL2':
+        instance.classification.value = val.impact_level;
+        instance.classification.name = 'Unclassified / Impact Level 2 (IL2)'
+        break;
+      case 'IL5':
+        instance.classification.value = val.impact_level;
+        instance.classification.name = 'Unclassified / Impact Level 5 (IL5)'
+        break;
+      case 'IL6':
+        instance.classification.value= val.impact_level;
+        instance.classification.name = 'Secret / Impact Level 6 (IL6)'
+        break;
+      default:
+        return
+      }
+      arr.push(instance)
+    })
+    return arr
+  }
 
   // create classification level type when get data from backend implemented
   public selectedClassificationLevelsOnLoad = [{}];
@@ -199,13 +249,20 @@ export default class ServiceOfferingDetails extends Vue {
         this.selectedOptions.push(val.sys_id || '')
       })
     }
+    this.classifications = await classificationRequirements.getClassificationLevels()
+    if(this.classifications){
+      this.instances = this.createInstanceObjects(this.classifications)
+    }
+    const periods = await Periods.loadPeriods();
+    if (periods && periods.length > 0) {
+      this.periods = periods
+    }
   }
-
   public mounted(): void {
-    // get this from store data when implemented 
+    // get this from store data when implemented
     this.categoryName = "Data Management";
 
-    // get this from store data when implemented 
+    // get this from store data when implemented
     this.selectedClassificationLevels = [
       {
         name: "Unclassified / Impact Level 2 (IL2)",
@@ -217,37 +274,9 @@ export default class ServiceOfferingDetails extends Vue {
 
     this.selectedClassificationLevelsOnLoad = this.selectedClassificationLevels;
 
-    // get from data from backend when implemented
-    this.periods = [
-      {
-        id: "Base",
-        label: "Base period",
-        value: "BASE", // sys_id ?
-      },
-      {
-        id: "Opt1",
-        label: "Option period 1",
-        value: "OPT1", // sys_id ?
-      },
-      {
-        id: "Opt2",
-        label: "Option period 2",
-        value: "OPT2", // sys_id ?
-      },
-      {
-        id: "Opt3",
-        label: "Option period 3",
-        value: "OPT3", // sys_id ?
-      },
-      {
-        id: "Opt4",
-        label: "Option period 4",
-        value: "OPT4", // sys_id ?
-      },
-    ]
+
     this.loadOnEnter()
   }
-
 }
 
 </script>
