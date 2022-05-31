@@ -18,6 +18,7 @@ export class StepsStore extends VuexModule implements StepsState {
       resolver: undefined,
       additionalButtons: [],
       backButtonText: '',
+      continueButtonText:'',
     };
     
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);

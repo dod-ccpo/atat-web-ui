@@ -31,12 +31,12 @@
         <v-btn 
           @click="$emit('next')" 
           depressed 
-          color="primary" 
+          :color="this.continueButtonText == 'Continue'? 'primary' : 'secondary'"
           role="link" 
           class="ml-4"
           id="ContinueButton"
         >
-          Continue
+          {{ continueButtonText }}
         </v-btn>
       </span>
     </div>
@@ -53,6 +53,7 @@ import { AdditionalButton } from "@/store/steps/types";
 export default class ATATStepperNavigation extends Vue {
   @Prop({ default: () => []}) private additionalButtons?: Array<unknown>;
   @Prop({ default: "Back" }) private backButtonText?: string;
+  @Prop({ default: "Continue" }) private continueButtonText?: string;
   @Prop({ default: false }) private noPrevious?: boolean;
 
   private getButtonClass(button: AdditionalButton) {

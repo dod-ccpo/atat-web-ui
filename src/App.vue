@@ -19,6 +19,7 @@
           @additionalButtonClick="additionalButtonClick"
           :additionalButtons="additionalButtons"
           :backButtonText="backButtonText"
+          :continueButtonText="continueButtonText"
           :noPrevious="noPrevious"
           class="mb-8"
         />
@@ -88,6 +89,7 @@ export default class App extends Vue {
   private additionalButtons: AdditionalButton[] = [];
   private noPrevious = false;
   private backButtonText = "Back";
+  private continueButtonText = "Continue";
 
   async mounted(): Promise<void> {
     //get first step and intitialize store to first step;
@@ -171,6 +173,7 @@ export default class App extends Vue {
   private setNavButtons(step: StepInfo): void {
     this.noPrevious = !step.prev;
     this.backButtonText = step.backButtonText || "Back";
+    this.continueButtonText = step.continueButtonText || "Continue";
     if (step.additionalButtons) {
       this.additionalButtons = step?.additionalButtons;
     }

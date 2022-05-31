@@ -9,6 +9,7 @@ export interface StepInfo {
     resolver: StepRouteResolver | StepPathResolver | undefined;
     additionalButtons: AdditionalButton[];
     backButtonText: string | undefined;
+    continueButtonText: string | undefined;
 }
 
 export interface AdditionalButton {
