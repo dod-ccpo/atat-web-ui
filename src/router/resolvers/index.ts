@@ -109,32 +109,33 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 export const RequirementsPathResolver = (current: string): string =>
 {
   
+  const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
+  const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
 
   if(current === routeNames.ClassificationRequirements){
     return basePerformanceRequirementsPath;
   }
 
-  if(current === routeNames.ServiceOfferings)
-    
-    if(!DescriptionOfWork.isAtBeginningOfServiceGroups && 
-      !DescriptionOfWork.isAtBeginningOfServiceOfferings ){
-       
-      const previousGroup = DescriptionOfWork.prevOfferingGroup;
-      if(previousGroup === undefined)
-      {
-        throw new Error('unable to get previous group');
-      }
-      DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
-      const lastOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
-
-      if(lastOfferingForGroup === undefined)
-      {
-        throw new Error(`unable to get last offering for group ${previousGroup}`);
-      }
-      DescriptionOfWork.setCurrentOffering(lastOfferingForGroup);
-      
-      return getServiceOfferingsDetailsPath(previousGroup, lastOfferingForGroup);
+  //if comming from Service Offerings and we have more
+  // service offerings groups to navigate through
+  if(current === routeNames.ServiceOfferings && 
+    !atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
+    const previousGroup = DescriptionOfWork.prevOfferingGroup;
+    if(previousGroup === undefined)
+    {
+      throw new Error('unable to get previous group');
     }
+    DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+    const lastOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
+
+    if(lastOfferingForGroup === undefined)
+    {
+      throw new Error(`unable to get last offering for group ${previousGroup}`);
+    }
+    DescriptionOfWork.setCurrentOffering(lastOfferingForGroup);
+      
+    return getServiceOfferingsDetailsPath(previousGroup, lastOfferingForGroup);
+  }
     
   return basePerformanceRequirementsPath;
 }
@@ -176,15 +177,16 @@ export const OfferGroupOfferingsPathResolver = (current: string,
       return getServiceOfferingsDetailsPath(groupId, previousServiceOffering);
     }
 
-
+    //at the beginning of service offerings for a given offering group
     if(!atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
 
+      //if routing from service offering details
+      //send the user to the step to select the Service Offerings (Service Offerings)
       if(current === routeNames.ServiceOfferingDetails){
         //display service offering group page
         return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
       }
-      
-      //we couldn't get the previous offering so try to get the previous offering group
+
       const previousGroup = DescriptionOfWork.prevOfferingGroup;
       if(previousGroup === undefined)
       {
