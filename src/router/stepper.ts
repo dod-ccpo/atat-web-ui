@@ -97,6 +97,7 @@ import {
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
+  RequirementsPathResolver as PerformanceRequirementsPathResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -371,6 +372,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.RequirementCategories,
         completePercentageWeight: 1,
         component: RequirementCategories,
+        routeResolver: PerformanceRequirementsPathResolver,
       },
       {
         menuText: "Service Offerings",

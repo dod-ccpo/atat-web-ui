@@ -57,3 +57,11 @@ export const buildClassificationLabel
     }
     return classificationString + "/" + IL;
   }
+
+
+//strips whitespace, and special characters
+export const sanitizeOfferingName = (offeringName: string): string => {
+
+  return offeringName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{\\}[\]\\/]/gi, "_")
+    .replace(/ /g, "_").replace(/_$/, '');
+}
