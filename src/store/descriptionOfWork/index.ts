@@ -24,7 +24,6 @@ import {
 
 import _, { last } from "lodash";
 import { off } from "process";
-import { updateDecorator } from "typescript";
 
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
@@ -54,6 +53,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   ];
 
   
+  // getters
   public get currentOfferingGroupIndex(): number {
     return this.DOWObject
       .findIndex(group=>group.serviceOfferingGroupId === this.currentGroupId);
@@ -196,10 +196,9 @@ export class DescriptionOfWorkStore extends VuexModule {
       return undefined;
     }
   
-    const offerings = this.DOWObject[currentGroupIndex].serviceOfferings;
-    const lastOffering =  this.DOWObject[currentGroupIndex].serviceOfferings[offerings.length -1];
+    const lastOffering =  last(this.DOWObject[currentGroupIndex].serviceOfferings);
 
-    return lastOffering.name;
+    return lastOffering ? lastOffering.name : undefined;
   }
 
   public get canGetPreviousServiceOffering(): boolean {
@@ -208,6 +207,15 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     return currentOfferingIndex >=0;
     
+  }
+
+  public get selectedServiceOfferingGroups(): string[] {
+    return this.DOWObject.map(group=> group.serviceOfferingGroupId);
+  }
+
+  public get selectedServiceOfferings(): string[] {
+    return this.DOWObject.map(group=>
+      group.serviceOfferings.flatMap(offering=>offering.name)).flat();
   }
 
   @Mutation
@@ -243,7 +251,8 @@ export class DescriptionOfWorkStore extends VuexModule {
           // todo future ticket - remove from SNOW db
         }
       });
-      this.currentGroupId = this.DOWObject[0].serviceOfferingGroupId;
+      this.currentGroupId = this.DOWObject.length > 0 ? 
+        this.DOWObject[0].serviceOfferingGroupId : "";
       this.currentOfferingName = "";
       this.currentOfferingSysId = "";
     });
@@ -285,8 +294,10 @@ export class DescriptionOfWorkStore extends VuexModule {
           // todo future ticket - remove from SNOW db
         }
       });
-      this.currentOfferingName = currentOfferings[0].name;
-      this.currentOfferingSysId = currentOfferings[0].sys_id;
+      this.currentOfferingName = currentOfferings.length > 0
+        ? currentOfferings[0].name : "";
+      this.currentOfferingSysId = currentOfferings.length > 0 
+        ? currentOfferings[0].sys_id : "";
     }
   }
 

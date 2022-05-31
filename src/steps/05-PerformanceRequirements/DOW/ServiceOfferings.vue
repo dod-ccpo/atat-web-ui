@@ -99,7 +99,18 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       value: "Other",
     })
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
-  }
+
+    const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
+    
+    const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
+      const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
+      const selected = itemIndex >=0 ? [...accumulator, 
+        this.checkboxItems[itemIndex].value] : accumulator;
+      return selected;
+    }, []);
+
+    this.selectedOptions.push(...validSelections);
+  } 
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
