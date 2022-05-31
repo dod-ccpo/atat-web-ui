@@ -4,6 +4,7 @@
     :role="role"
     class="_atat-alert"
     :class="getClasses"
+    :id="id"
   >
     <div 
       class="_content d-flex"

@@ -66,5 +66,15 @@ module.exports = {
   tmCheckBox: "#Checkbox_TMCheckbox",
   tmTextFieldLabel:"#JustificationForTM_text_field_label",
   tmTextFieldInputBox: "#JustificationForTM_text_area",
-  tmLearnMoreLink:"#JustificationLearnMore"
+  tmLearnMoreLink: "#JustificationLearnMore",
+  
+  //What classification level(s) will be required for your cloud resources and /or services?
+  selectMess: "#SelectMessage",
+  classCheckBoxes: "#ClassificationLevelCheckboxes",
+  level2: "#Checkbox_IL2",
+  level4: "#Checkbox_IL4",
+  level5: "#Checkbox_IL5",
+  level6: "#Checkbox_IL6",
+  errorClassCheckBox: "#ClassificationLevelCheckboxes .field-error",
+  alertMessage: "#ClassificationRequirementsAlert p",
 }
