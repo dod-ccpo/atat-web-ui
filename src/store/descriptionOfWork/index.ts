@@ -24,6 +24,7 @@ import {
 
 import _, { last } from "lodash";
 import { off } from "process";
+import { updateDecorator } from "typescript";
 
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
@@ -61,19 +62,15 @@ export class DescriptionOfWorkStore extends VuexModule {
   public get currentOfferingIndex(): number {
 
     const groupIndex = this.currentOfferingGroupIndex;
-    const offeringIndex = this.DOWObject[groupIndex]
-      .serviceOfferings.findIndex(offering=> offering.name === this.currentOfferingName);
-
+    const offeringIndex = groupIndex > -1 ? this.DOWObject[groupIndex]
+      .serviceOfferings.findIndex(offering=> offering.name 
+        === this.currentOfferingName): groupIndex;
     return offeringIndex;
   }
 
   public get serviceOfferingsForGroup(): DOWServiceOffering[] {
     const groupIndex = this.currentOfferingGroupIndex;
-    if(groupIndex == undefined || groupIndex < 0)
-    {
-      throw new Error ('unable to get current group index');
-    }
-    return this.DOWObject[groupIndex].serviceOfferings;
+    return groupIndex > -1 ? this.DOWObject[groupIndex].serviceOfferings : [];
   }
 
   public get isEndOfServiceOfferings(): boolean {
@@ -105,8 +102,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get nextServiceOffering(): string | undefined {
-
+ 
     const serviceOfferings = this.serviceOfferingsForGroup;
+
+    if(!serviceOfferings.length)
+    {
+      return undefined;
+    }
 
     const currentServiceIndex = serviceOfferings
       .findIndex(offering=>offering.name === this.currentOfferingName);
@@ -129,6 +131,11 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     const serviceOfferings = this.serviceOfferingsForGroup;
 
+    if(!serviceOfferings.length)
+    {
+      return undefined;
+    }
+
     const currentServiceIndex = serviceOfferings
       .findIndex(offering=>offering.name === this.currentOfferingName);
 
@@ -139,7 +146,8 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     if(currentServiceIndex > -1 )
     {
-      const nextOffering = serviceOfferings[currentServiceIndex - 1];
+      const serviceIndex = currentServiceIndex > 0 ? currentServiceIndex - 1: currentServiceIndex;
+      const nextOffering = serviceOfferings[serviceIndex];
       return nextOffering.name
     }
 
@@ -148,12 +156,13 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   public get nextOfferingGroup(): string | undefined {
 
+    
+
     const currentGroupIndex = this.DOWObject
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
-
-      throw new Error(`unable to get index for current offer group ${this.currentGroupId}`);
+      return undefined;
     }
 
     if((currentGroupIndex + 2) <= this.DOWObject.length){
@@ -170,27 +179,21 @@ export class DescriptionOfWorkStore extends VuexModule {
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
-
-      throw new Error(`unable to get index for current offer group ${this.currentGroupId}`);
+      return undefined;
     }
-
-    if(currentGroupIndex > -1){
-      const nextGroup = this.DOWObject[currentGroupIndex - 1].serviceOfferingGroupId;
-      return nextGroup;
-    }
-
-    return undefined;
+  
+    const groupIndex = currentGroupIndex > 0 ? currentGroupIndex - 1 :  currentGroupIndex;
+    const nextGroup = this.DOWObject[groupIndex].serviceOfferingGroupId;
+    return nextGroup;
   }
 
   public get lastOfferingForGroup(): string | undefined {
 
     const currentGroupIndex = this.DOWObject
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
-    
 
     if(currentGroupIndex < 0){
-
-      throw new Error(`unable to get index for current offer group ${this.currentGroupId}`);
+      return undefined;
     }
   
     const offerings = this.DOWObject[currentGroupIndex].serviceOfferings;
@@ -203,10 +206,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     const currentOfferingIndex = this.currentOfferingIndex;
 
-    if(currentOfferingIndex < 0){
-      throw new Error('unable to get current offering index');
-    }
-    return currentOfferingIndex -1 >= 0;
+    return currentOfferingIndex >=0;
     
   }
 

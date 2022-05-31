@@ -1,6 +1,6 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
-
+import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
 import DescriptionOfWork from "@/store/descriptionOfWork";
@@ -93,16 +93,51 @@ export const ContractTrainingReq = (current: string): string => {
     : routeNames.Training;
 };
 
-const baseOfferingDetailsPath =  `performance-requirements/service-offering-details/`;
+const basePerformanceRequirementsPath =  `performance-requirements`;
+
+const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
 const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
   let path = `${baseOfferingDetailsPath}${groupId.toLowerCase()}/`
-  path += `${serviceName.toLowerCase().replace(/ /g, "_")}`;
+  path += `${sanitizeOfferingName(serviceName)}`;
   return path;
 }
   
 
 const getOfferingGroupServicesPath = (groupId: string)=>
-  `performance-requirements/service-offerings/${groupId.toLowerCase()}`
+  `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
+
+export const RequirementsPathResolver = (current: string): string =>
+{
+  
+
+  if(current === routeNames.ClassificationRequirements){
+    return basePerformanceRequirementsPath;
+  }
+
+  if(current === routeNames.ServiceOfferings)
+    
+    if(!DescriptionOfWork.isAtBeginningOfServiceGroups && 
+      !DescriptionOfWork.isAtBeginningOfServiceOfferings ){
+       
+      const previousGroup = DescriptionOfWork.prevOfferingGroup;
+      if(previousGroup === undefined)
+      {
+        throw new Error('unable to get previous group');
+      }
+      DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+      const lastOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
+
+      if(lastOfferingForGroup === undefined)
+      {
+        throw new Error(`unable to get last offering for group ${previousGroup}`);
+      }
+      DescriptionOfWork.setCurrentOffering(lastOfferingForGroup);
+      
+      return getServiceOfferingsDetailsPath(previousGroup, lastOfferingForGroup);
+    }
+    
+  return basePerformanceRequirementsPath;
+}
 
 export const OfferGroupOfferingsPathResolver = (current: string, 
   direction: string): string => {
@@ -114,14 +149,23 @@ export const OfferGroupOfferingsPathResolver = (current: string,
     const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
     const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
 
-    if(atBeginningOfSericeOfferings && !atBeginningOfOfferingGroups){
-      //display the service offerings list for group
+    //at the beginning of service offerings and offering groups
+    // direct the user back to the performance requirements step
+    if(current === routeNames.ServiceOfferingDetails && 
+      atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
       return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
     }
 
-    if(atBeginningOfSericeOfferings && atBeginningOfOfferingGroups){
-      //there's more service offerings to work backwards towards
-      const previousServiceOffering = DescriptionOfWork.prevOfferingGroup;
+    if(atBeginningOfOfferingGroups && atBeginningOfSericeOfferings && 
+      current !== routeNames.ServiceOfferingDetails)
+    {
+      return basePerformanceRequirementsPath;
+    }
+
+    //if we are at the beginning of offering groups but not at the beginning of service offerings
+    //get the next service offering and display it in service offering details
+    if(atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings){
+      const previousServiceOffering = DescriptionOfWork.previousServiceOffering;
       const groupId = DescriptionOfWork.currentGroupId;
       if(previousServiceOffering === undefined)
       {
@@ -132,7 +176,35 @@ export const OfferGroupOfferingsPathResolver = (current: string,
       return getServiceOfferingsDetailsPath(groupId, previousServiceOffering);
     }
 
-    if(!atBeginningOfSericeOfferings && !atBeginningOfOfferingGroups)
+
+    if(!atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
+
+      if(current === routeNames.ServiceOfferingDetails){
+        //display service offering group page
+        return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
+      }
+      
+      //we couldn't get the previous offering so try to get the previous offering group
+      const previousGroup = DescriptionOfWork.prevOfferingGroup;
+      if(previousGroup === undefined)
+      {
+        throw new Error('unable to get previous offering group');
+      }
+   
+      DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
+      const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
+   
+      if(lastServiceOfferingForGroup === undefined)
+      {
+        throw new Error(`unable to get last offering for group ${previousGroup}`);
+      }
+      DescriptionOfWork.setCurrentOffering(lastServiceOfferingForGroup);
+      return getServiceOfferingsDetailsPath(previousGroup, lastServiceOfferingForGroup);
+    }
+
+    //not at the beginning of service offerings or offering groups
+    //get the next server offering and display in service offering details
+    if(!atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings)
     {
       const groupId = DescriptionOfWork.currentGroupId;
 
@@ -153,7 +225,8 @@ export const OfferGroupOfferingsPathResolver = (current: string,
 
       }
       else{
-
+          
+        //we couldn't get the previous offering so try to get the previous offering group
         const previousGroup = DescriptionOfWork.prevOfferingGroup;
         if(previousGroup === undefined)
         {
@@ -173,28 +246,33 @@ export const OfferGroupOfferingsPathResolver = (current: string,
     }     
   }
 
+  //default  
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
 
-
+//this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver =(): string => {
 
   const groupId = DescriptionOfWork.currentGroupId
-  const offering = DescriptionOfWork.currentOfferingName.replace(/ /g, "_");
-
+  const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
   return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;
 
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   
-
+  // coming from service offering details step
   if(current === routeNames.ServiceOfferingDetails){
-    //we were navigating away from another details page
-    const atOfferingsEnd = DescriptionOfWork.isEndOfServiceOfferings;
-    const atServicesEnd = DescriptionOfWork.isEndOfServiceGroups;
+    const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
+    const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
 
-    if(!atOfferingsEnd){
+    //no more offerings or services to process go to summary
+    if(atOfferingsEnd && atServicesEnd){
+      return "performance-requirements/dow-summary";
+    }
+
+    //there's more services to process
+    if(atOfferingsEnd && !atServicesEnd){
       const nextServiceOffering = DescriptionOfWork.nextServiceOffering;
       if(nextServiceOffering === undefined)
       {
@@ -204,24 +282,38 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
       return OfferingDetailsPathResolver();
     }
-    else{
 
-      if(atServicesEnd){
-
-        return "performance-requirements/dow-summary";
+    if(!atOfferingsEnd && !atServicesEnd){
+      //not at the end of offering groups yet
+      //get the next one and forward to the OfferGroupOfferings path
+      //resolver 
+      const nextServiceOffering = DescriptionOfWork.nextServiceOffering;
+      if(nextServiceOffering === undefined)
+      {
+        throw new Error('unable to retreive next service offering');
       }
-      else{
 
-        const nextOfferingGroup = DescriptionOfWork.nextOfferingGroup;
-        if(nextOfferingGroup === undefined)
-        {
-          throw new Error('unable to retrive next offering group');
-        }
-        DescriptionOfWork.setCurrentOfferingGroupId(nextOfferingGroup);
-        return OfferGroupOfferingsPathResolver(current , direction);
-
-      }
+      DescriptionOfWork.setCurrentOffering(nextServiceOffering);
+      return OfferingDetailsPathResolver();
     }
+
+    if(!atOfferingsEnd && atServicesEnd){
+      //not at the end of offering groups yet
+      //get the next one and forward to the OfferGroupOfferings path
+      //resolver 
+      const nextOfferingGroup = DescriptionOfWork.nextOfferingGroup;
+      if(nextOfferingGroup === undefined)
+      {
+        throw new Error('unable to retrive next offering group');
+      }
+      DescriptionOfWork.setCurrentOfferingGroupId(nextOfferingGroup);
+      return OfferGroupOfferingsPathResolver(current , direction);
+    }
+
+    //should never get here
+    return OfferingDetailsPathResolver();
+
+
   }
   else{
     return OfferingDetailsPathResolver();
@@ -244,6 +336,7 @@ const pathResolvers: Record<string, StepPathResolver> = {
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
+  RequirementsPathResolver,
 }
 
 export const InvokeRouteResolver = (
