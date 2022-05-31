@@ -4,11 +4,12 @@
       border-right: 1px solid $base-lighter;
       background-color: $white;
       z-index: 2;
+      .v-navigation-drawer__border {
+        display: none !important;
+      }
+
       .v-navigation-drawer__content{
         overflow-y: hidden;
-        .v-navigation-drawer__border {
-          display: none;
-        }
         .v-list {
           padding: 24px 24px 0px 24px;
           overflow-y: scroll;

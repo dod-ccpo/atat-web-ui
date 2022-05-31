@@ -11,10 +11,11 @@
             <div 
               v-if="avlClassificationLevelObjects.length === 1"
               id="SingleClassificationIntro"  
+              class="mb-10"
             >
-              <p id="SingleClassificationIntro">
+              <p>
                 In the previous section, you specified 
-                <strong>{{ avlClassificationLevelObjects[0].name }}</strong> for the 
+                <strong>{{ singleClassificationLabel }}</strong> for the
                 classification level of all cloud resources and services. If you 
                 need this within a different level, 
                 <a 
@@ -173,7 +174,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public isIL6Selected = "";
   public IL6SysId = "";
 
-  public packageClassificationLevels: ClassificationLevelDTO[] = [];
+  public classificationLevelsFromStore: ClassificationLevelDTO[] = [];
   public allClassificationLevels:ClassificationLevelDTO[] = [];
 
   // used for checkboxes at top of form if multiple 
@@ -206,16 +207,16 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         selectedPeriods: []
       }
       this.classificationInstances.push(instance);
-    });
+    }, this);
     await this.clearUnselected();
   }
 
   @Watch("selectedHeaderLevelSysIds")
-  public headerSelectionChange(sysIds: string[]): void {
-    this.updateHeaderOptions(sysIds);
-  }
+  public async updateInstances(sysIds: string[]): Promise<void> {
+    if (this.classificationInstances.length === 0) {
+      await this.buildClassificationInstances();
+    }
 
-  public updateHeaderOptions(sysIds: string[]): void {
     // add to array of forms to show if selectedOption not in the list
     sysIds.forEach((selectedOption: string) => {
       if (this.headerCheckboxSelectedSysIds.indexOf(selectedOption) === -1) {
@@ -225,7 +226,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
           this.instancesForForm.push(instance);
         }
       }
-    });
+    }, this);
     // remove options not in new selected options array
     const instancesToShowClone = this.headerCheckboxSelectedSysIds;
     instancesToShowClone.forEach((sysId) => {
@@ -235,7 +236,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
           this.headerCheckboxSelectedSysIds.splice(i, 1);
         }
       }
-    });
+    }, this);
     const instancesForFormClone = _.cloneDeep(this.instancesForForm);
     instancesForFormClone.forEach((instance) => {
       const sysId = instance.sysId || "";
@@ -245,7 +246,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
           this.instancesForForm.splice(i, 1);
         }
       }
-    });
+    }, this);
     this.instancesForForm.sort((a,b) => (a.impactLevel > b.impactLevel) ? 1 : -1);   
   }
 
@@ -255,30 +256,16 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   };
 
   public async classificationOptionsChangedInModal(): Promise<void> {
-    const arr: ClassificationLevelDTO[] = [];
-    this.modalSelectedOptions.forEach(item => {
-      const value = this.allClassificationLevels.filter(( data )=>{
-        return item == data.sys_id
-      })
-      arr.push(value[0])
-    })
-    await ClassificationRequirements.setSelectedClassificationLevels(arr);
-  
-    // update header checkboxes and form instances
-    // this.avlClassificationLevelObjects 
-    //   = await ClassificationRequirements.getSelectedClassificationLevels();
+    // remove any previously selected classifications no longer selected in modal
+    const keepSelected = this.modalSelectedOptions;
+    this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
+      return keepSelected.indexOf(sysId) > -1;
+    });
 
-    // this.avlInstancesLength = this.avlClassificationLevelObjects.length;
-    // this.avlClassificationLevelSysIds = [];
-    // this.avlClassificationLevelObjects.forEach((e) => {
-    //   if (e.sys_id) {
-    //     this.avlClassificationLevelSysIds.push(e.sys_id);
-    //   }
-    // });
-    // this.headerCheckboxItems 
-    //   = this.createCheckboxItems(this.avlClassificationLevelObjects);
+    const arr = this.currentPackageClassificationLevels;
+    await ClassificationRequirements.setSelectedClassificationLevels(arr);
     await this.setAvailableClassificationLevels();
-    this.buildClassificationInstances();
+    await this.buildClassificationInstances();
   }
 
   public async clearUnselected(): Promise<void> {
@@ -294,21 +281,34 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.instancesForForm = filteredInstances;
   }
 
+  public singleClassificationLabel = "";
+
+  @Watch("instancesForForm")
+  public instancesForFormChange(): void {
+    if (this.instancesForForm.length === 1 && this.instancesForForm[0].classificationLevelLabels) {
+      this.singleClassificationLabel 
+        = this.instancesForForm[0].classificationLevelLabels?.longLabel;
+    } else {
+      this.singleClassificationLabel = "";
+    }
+  }
+
+
   public get currentPackageClassificationLevels(): ClassificationLevelDTO[] {
     const arr :ClassificationLevelDTO[] = [];
     this.modalSelectedOptions.forEach(item => {
-      const value = this.allClassificationLevels.filter(( data )=>{
-        return item == data.sys_id
+      const value = this.allClassificationLevels.filter((e) => {
+        return item == e.sys_id
       })
-      arr.push(value[0])
+      arr.push(value[0]);
     })
-    return arr
+    return arr;
   };
 
   private hasChangedPackageClassificationLevels(): boolean {
     return hasChanges(
       this.currentPackageClassificationLevels, 
-      this.packageClassificationLevels
+      this.classificationLevelsFromStore
     );
   };
 
@@ -333,6 +333,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
     this.avlInstancesLength = this.avlClassificationLevelObjects.length;
+
+    // if only one classification level selected in Contract Details, set
+    // it as "selected" for instance forms
+    if (this.avlInstancesLength === 1 && this.avlClassificationLevelObjects[0].sys_id) {
+      const sysId = this.avlClassificationLevelObjects[0].sys_id;
+      this.selectedHeaderLevelSysIds.push(sysId);
+    }
     this.avlClassificationLevelSysIds = [];
     this.avlClassificationLevelObjects.forEach((e) => {
       if (e.sys_id) {
@@ -345,8 +352,11 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    await this.setAvailableClassificationLevels();
+    // load existing classification instances for this service offering
+    this.classificationInstances 
+      = await DescriptionOfWork.getClassificationInstances();
 
+    await this.setAvailableClassificationLevels();
     this.allClassificationLevels
       = await ClassificationRequirements.getAllClassificationLevels();
 
@@ -356,15 +366,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "";
 
-    // load existing classification instances for this service offering
-    this.classificationInstances 
-      = await DescriptionOfWork.getClassificationInstances();
-    // if no existing classification instances, build one for each
-    // classification level selected in Contract Details section
-    if (this.classificationInstances.length === 0) {
-      this.buildClassificationInstances();
-    }
-
     // set up PoP periods if not for entire duration
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
@@ -373,7 +374,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
     const storeData = await ClassificationRequirements.getSelectedClassificationLevels()
     if(storeData) {
-      this.packageClassificationLevels = storeData
+      this.classificationLevelsFromStore = storeData
       storeData.forEach((val) => {
         this.modalSelectedOptions.push(val.sys_id || "")
       })
