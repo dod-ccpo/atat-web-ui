@@ -97,6 +97,7 @@ import {
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
+  RequirementsPathResolver as PerformanceRequirementsPathResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -371,6 +372,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.RequirementCategories,
         completePercentageWeight: 1,
         component: RequirementCategories,
+        routeResolver: PerformanceRequirementsPathResolver,
       },
       {
         menuText: "Service Offerings",
@@ -406,6 +408,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: DOWSummary,
         routeResolver: DowSummaryPathResolver,
+        backButtonText: 'Back to Contract Details',
+        continueButtonText: 'Wrap up this section',
       },
     ],
   },
@@ -621,6 +625,7 @@ const mapStepRouteToStepperData = (
     stepNumber,
     additionalButtons,
     backButtonText,
+    continueButtonText,
   } = stepperRouteConfig;
 
   let {name} = stepperRouteConfig;
@@ -639,6 +644,7 @@ const mapStepRouteToStepperData = (
     ),
     additionalButtons,
     backButtonText,
+    continueButtonText,
   };
   return stepperStep;
 };
