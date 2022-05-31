@@ -11,12 +11,12 @@
             <div 
               v-if="avlClassificationLevelObjects.length === 1"
               id="SingleClassificationIntro"  
-               class="mb-10"
+              class="mb-10"
             >
               <p>
                 In the previous section, you specified 
-                <strong>{{ singleClassificationLabel }}</strong> 
-                for the classification level of all cloud resources and services. If you 
+                <strong>{{ singleClassificationLabel }}</strong> for the
+                classification level of all cloud resources and services. If you 
                 need this within a different level, 
                 <a 
                   role="button" 
@@ -191,7 +191,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   public async buildClassificationInstances(): Promise<void> {
     this.classificationInstances = [];
-    debugger;
     this.avlClassificationLevelObjects.forEach((obj) => {
       const longLabel = buildClassificationLabel(obj, "long");
       const shortLabel = buildClassificationLabel(obj, "short");
@@ -295,7 +294,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       const value = this.allClassificationLevels.filter((e) => {
         return item == e.sys_id
       })
-      arr.push(value[0])
+      arr.push(value[0]);
     })
     return arr;
   };
@@ -350,17 +349,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // load existing classification instances for this service offering
     this.classificationInstances 
       = await DescriptionOfWork.getClassificationInstances();
-    // if no existing classification instances, build one for each
-    // classification level selected in Contract Details section
-    // if (this.classificationInstances.length === 0) {
-    //   // avlClassificationLevelObjects needs to be set for buildClassificationInstances to work
-    //   await this.setAvailableClassificationLevels();
-    //   // this.buildClassificationInstances();
-    // }
-
 
     await this.setAvailableClassificationLevels();
-    debugger;
     this.allClassificationLevels
       = await ClassificationRequirements.getAllClassificationLevels();
 
