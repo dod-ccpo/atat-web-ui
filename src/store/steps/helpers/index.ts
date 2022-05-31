@@ -16,6 +16,8 @@ export const mapStepConfigs = (
       resolver: routeConfig.routeResolver,
       additionalButtons: routeConfig.additionalButtons || [],
       backButtonText: routeConfig.backButtonText || "Back",
+      continueButtonText: routeConfig.continueButtonText || "Continue",
+
     };
    
     const lastStep = map?.get(last || "");
