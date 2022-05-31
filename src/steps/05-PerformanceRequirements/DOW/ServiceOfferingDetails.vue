@@ -256,6 +256,12 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   };
 
   public async classificationOptionsChangedInModal(): Promise<void> {
+    // remove any previously selected classifications no longer selected in modal
+    const keepSelected = this.modalSelectedOptions;
+    this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
+      return keepSelected.indexOf(sysId) > -1;
+    });
+
     const arr = this.currentPackageClassificationLevels;
     await ClassificationRequirements.setSelectedClassificationLevels(arr);
     await this.setAvailableClassificationLevels();
