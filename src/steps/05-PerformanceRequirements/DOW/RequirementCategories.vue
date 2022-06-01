@@ -115,6 +115,16 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       } else {
         this.cloudSupportCheckboxItems.push(checkboxItem);
       }
+
+      const selectedOfferingGroups = DescriptionOfWork.selectedServiceOfferingGroups;
+      const validSelections = selectedOfferingGroups.reduce<string[]>((accumulator, current)=>{
+        const itemIndex = this.xaasCheckboxItems.findIndex(item=>item.value === current);
+        return itemIndex >=0 ? [...accumulator, 
+          this.xaasCheckboxItems[itemIndex].value] : accumulator;
+      },[]);
+      this.selectedXaasOptions.push(...validSelections);
+
+
     });
     
     const xaasNone: Checkbox = {
@@ -144,15 +154,17 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
+
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       // save to store
-      const selectedOfferingGroupss 
+      const selectedOfferingGroups
         = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
 
-      await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroupss);
+      await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
       // todo future ticket - save to SNOW
     } catch (error) {
       throw new Error('error saving requirement data');
