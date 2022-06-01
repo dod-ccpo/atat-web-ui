@@ -96,13 +96,13 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     })
   });
   
-  it("TC4: Upload file with drag and drop mode", () => {
+  it.only("TC4: Upload file with drag and drop mode", () => {
     cy.hopOutOfIframe(true, true);
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
     cy.verifyPageHeader("Upload your MIPR");
-    const file = "files/dd1155.pdf"
+    const file = "files/Test.xlsx"
     cy.findElement('input[type="file"]').attachFile(file,{ action: 'drag-drop' });
     cy.findElement(fd.fundingfileupload).click({ force: true })
     cy.findElement(fd.uploadedFile0RemoveBtn).should("exist")
