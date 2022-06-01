@@ -53,7 +53,11 @@ module.exports = {
   subStepContractTypeLink: "#SubStep_ContractType", 
   subStepContractTypeText: "#SubStep_ContractType .step-text",
   subStepClassReqsLink: "#SubStep_ClassificationRequirements",  
-  subStepClassReqsText: "#SubStep_ClassificationRequirements .step-text",  
+  subStepClassReqsText: "#SubStep_ClassificationRequirements .step-text",
+  
+  //Performance Requirements
+  stepPerformanceReqLink: "#Step_PerformanceRequirements",
+  stepPerformanceReqText:"#Step_PerformanceRequirements .step-text",
 
   //Government Furnished Euipment
   stepGovFurEquipLink: "#Step_GovernmentFurnishedEquipment",

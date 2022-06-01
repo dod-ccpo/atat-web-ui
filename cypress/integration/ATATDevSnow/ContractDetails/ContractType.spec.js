@@ -1,4 +1,4 @@
-import { bootstrapMockApis, colors, cleanText, randomAlphaNumeric} from "../../../helpers";
+import { bootstrapMockApis,cleanText, randomAlphaNumeric} from "../../../helpers";
 import common from "../../../selectors/common.sel"
 import contractDetails from "../../../selectors/contractDetails.sel";
 
@@ -15,12 +15,8 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepContractTypeText, " Contract Type ").click();;
-    cy.findElement(common.stepContractDetailsText)
-      .should("be.visible")
-      .and('have.css', 'color', colors.primary);
-    cy.findElement(common.subStepContractTypeText)
-      .should("be.visible")
-      .and('have.css', 'color', colors.primary)
+    cy.activeStep(common.stepContractDetailsText);      
+    cy.activeStep(common.subStepContractTypeText)      
       .click();     
       
   });
@@ -63,7 +59,7 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
     cy.findElement(contractDetails.popRadioGroup).should("exist");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Will this be a future recurring requirement? ");
-    cy.radioBtn(contractDetails.yesRadioOption,  "YES").not("[disabled]").click({force: true});
+    cy.radioBtn(contractDetails.yesRadioOption, "YES").not("[disabled]").click({ force: true });
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
     //Select the checkbox options
@@ -79,9 +75,8 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
         cy.enterTextInTextField(contractDetails.tmTextFieldInputBox, inputText);
       });
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
-    cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
-    cy.findElement(common.subStepClassReqsLink).contains("Classification Requirements")
-      .and('have.css', 'color', colors.primary);
+    cy.btnClick(common.continueBtn, " Continue ");
+    cy.activeStep(common.subStepClassReqsText);
   });
 
 });

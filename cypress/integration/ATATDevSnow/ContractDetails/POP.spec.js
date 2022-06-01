@@ -1,4 +1,4 @@
-import { bootstrapMockApis,colors,cleanText,randomNumberBetween}from "../../../helpers";
+import { bootstrapMockApis,cleanText,randomNumberBetween}from "../../../helpers";
 import common from "../../../selectors/common.sel"
 import contractDetails from "../../../selectors/contractDetails.sel";
 
@@ -15,12 +15,8 @@ describe("Test suite: Contract Details Step:Period of Performance substep", () =
     cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepPopText, " Period of Performance ");
-    cy.findElement(common.stepContractDetailsText)
-      .should("be.visible")
-      .and('have.css', 'color', colors.primary);
-    cy.findElement(common.subStepPopText)
-      .should("be.visible")
-      .and('have.css', 'color', colors.primary)
+    cy.activeStep(common.stepContractDetailsText);
+    cy.activeStep(common.subStepPopText)      
       .click();     
       
   });
