@@ -101,7 +101,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   }
 
-  public get nextServiceOffering(): string | undefined {
+  public get nextServiceOffering(): { name: string, sysId: string} | undefined {
  
     const serviceOfferings = this.serviceOfferingsForGroup;
 
@@ -121,7 +121,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     if((currentServiceIndex + 2) <= serviceOfferings.length )
     {
       const nextOffering = serviceOfferings[currentServiceIndex + 1];
-      return nextOffering.name
+      return { name: nextOffering.name, sysId: nextOffering.sys_id }
     }
 
     return undefined;
@@ -302,8 +302,22 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setCurrentOffering(value: string): void {
-    this.currentOfferingName = value;
+  public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
+    debugger;
+    const groupIndex = this.DOWObject.findIndex(
+      obj => obj.serviceOfferingGroupId === this.currentGroupId
+    );
+    const offeringIndex = this.DOWObject[groupIndex].serviceOfferings.findIndex(
+      obj => obj.sys_id === this.currentOfferingSysId
+    );
+    this.DOWObject[groupIndex].serviceOfferings[offeringIndex].classificationInstances
+      = instancesData;
+  }
+
+  @Mutation
+  public setCurrentOffering(value: { name: string, sysId: string }): void {
+    this.currentOfferingName = value.name;
+    this.currentOfferingSysId = value.sysId;
   }
 
   @Mutation

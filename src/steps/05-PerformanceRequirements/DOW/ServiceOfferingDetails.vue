@@ -167,6 +167,8 @@ import _ from "lodash";
 
 export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public serviceOfferingName = DescriptionOfWork.currentOfferingName;
+  public serviceOfferingSysId = DescriptionOfWork.currentOfferingSysId;
+  public groupId = DescriptionOfWork.currentGroupId;
 
   private showDialog = false;
   public modalSelectedOptions: string[] = [];
@@ -224,9 +226,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   @Watch("selectedHeaderLevelSysIds")
   public async updateInstances(newSysIds: string[]): Promise<void> {
-    if (this.classificationInstances.length === 0) {
-      await this.buildNewClassificationInstances();
-    }    
+    // if (this.classificationInstances.length === 0) {
+    // EJY this may be causing infinite loop
+    //   await this.buildNewClassificationInstances();
+    // }    
     // add to array of forms to show if selectedOption not in the list
     newSysIds.forEach((selectedOption: string) => {
       if (this.headerCheckboxSelectedSysIds.indexOf(selectedOption) === -1) {
@@ -419,6 +422,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         debugger;
         // save to store
+        // EJY need to update currentOfferingSysId on navigation from one offering
+        // details page to the next.
+        await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
       }
     } catch (error) {
       console.log(error);
