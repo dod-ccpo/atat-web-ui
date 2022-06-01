@@ -11,8 +11,9 @@
             <div 
               v-if="avlClassificationLevelObjects.length === 1"
               id="SingleClassificationIntro"  
+              class="mb-10"
             >
-              <p id="SingleClassificationIntro">
+              <p>
                 In the previous section, you specified 
                 <strong>{{ singleClassificationLabel }}</strong> for the 
                 classification level of all cloud resources and services. If you 
@@ -147,7 +148,6 @@ import { ClassificationLevelDTO } from "@/api/models";
 import { 
   buildClassificationCheckboxList, 
   buildClassificationLabel,
-  hasChanges,
 } from "@/helpers";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Periods from "@/store/periods";
@@ -224,7 +224,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   @Watch("selectedHeaderLevelSysIds")
-  public headerSelectionChange(newSysIds: string[]): void {
+  public updateInstances(newSysIds: string[]): void {
     // add to array of forms to show if selectedOption not in the list
     newSysIds.forEach((selectedOption: string) => {
       if (this.headerCheckboxSelectedSysIds.indexOf(selectedOption) === -1) {
@@ -234,7 +234,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
           this.instancesForForm.push(instance);
         }
       }
-    });
+    }, this);
     // remove options not in new selected options array
     const instancesToShowClone = this.headerCheckboxSelectedSysIds;
     instancesToShowClone.forEach((sysId) => {
@@ -244,7 +244,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
           this.headerCheckboxSelectedSysIds.splice(i, 1);
         }
       }
-    });
+    }, this);
     // remove previously selected instances from array of instances 
     const instancesForFormClone = _.cloneDeep(this.instancesForForm);
     instancesForFormClone.forEach((instance) => {
@@ -255,7 +255,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
           this.instancesForForm.splice(i, 1);
         }
       }
-    });
+    }, this);
     this.instancesForForm.sort((a,b) => (a.impactLevel > b.impactLevel) ? 1 : -1);   
   }
 
@@ -265,13 +265,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   };
 
   public async classificationOptionsChangedInModal(): Promise<void> {
-    const arr: ClassificationLevelDTO[] = [];
-    this.modalSelectedOptions.forEach(item => {
-      const value = this.allClassificationLevels.filter(( data )=>{
-        return item == data.sys_id
-      })
-      arr.push(value[0])
-    })
+    // remove any previously selected classifications no longer selected in modal
+    const keepSelected = this.modalSelectedOptions;
+    this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
+      return keepSelected.indexOf(sysId) > -1;
+    });
+
+    const arr = this.currentPackageClassificationLevels;
     await ClassificationRequirements.setSelectedClassificationLevels(arr);
     await this.setAvailableClassificationLevels();
     await this.buildClassificationInstances();
@@ -298,8 +298,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public get currentPackageClassificationLevels(): ClassificationLevelDTO[] {
     const arr :ClassificationLevelDTO[] = [];
     this.modalSelectedOptions.forEach(item => {
-      const value = this.allClassificationLevels.filter((data) => {
-        return item == data.sys_id;
+      const value = this.allClassificationLevels.filter((e) => {
+        return item == e.sys_id
       })
       arr.push(value[0]);
     })
@@ -333,6 +333,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
     this.avlInstancesLength = this.avlClassificationLevelObjects.length;
+
+    // if only one classification level selected in Contract Details, set
+    // it as "selected" for instance forms
+    if (this.avlInstancesLength === 1 && this.avlClassificationLevelObjects[0].sys_id) {
+      const sysId = this.avlClassificationLevelObjects[0].sys_id;
+      this.selectedHeaderLevelSysIds.push(sysId);
+    }
     this.avlClassificationLevelSysIds = [];
     this.avlClassificationLevelObjects.forEach((e) => {
       if (e.sys_id) {

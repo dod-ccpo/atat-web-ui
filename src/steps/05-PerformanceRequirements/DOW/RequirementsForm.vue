@@ -8,11 +8,16 @@
               v-for="(instance, index) in _instances" 
               :key="instance.classificationLevelLabels.shortLabel"
             >
-              <p v-if="avlInstancesLength > 1" id="RequirementHeading">
-                <span>{{index + 1}}.</span>
-                Tell us about the 
-                <strong>{{instance.classificationLevelLabels.shortLabel}}</strong> instance
-              </p>
+              <span v-if="avlInstancesLength > 1">
+                <hr />
+                <h2
+                  id="RequirementHeading"
+                  class="mb-5"
+                >
+                  {{ index + 1 }}. Tell us about the 
+                  {{ instance.classificationLevelLabels.shortLabel }} instance
+                </h2>
+              </span>
 
               <ATATTextArea
                 id="AnticipatedNeedUsage"
@@ -22,9 +27,9 @@
                 :value.sync="instance.anticipatedNeedUsage"
                 maxChars="500"
                 :rules="[
-              $validators.required('Please provide a description for this requirement.'),
-              $validators.maxLength('500', 'Description is to be 500 characters or less.')
-            ]"
+                  $validators.required('Please provide a description for this requirement.'),
+                  $validators.maxLength('500', 'Description is to be 500 characters or less.')
+                ]"
               />
               <ATATRadioGroup
                 class="copy-max-width mb-10"
@@ -73,7 +78,6 @@
                 </ATATAlert>
               </div>
 
-              <hr/>
             </div>
           </div>
         </v-col>
