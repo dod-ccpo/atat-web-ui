@@ -127,7 +127,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     return undefined;
   }
 
-  public get previousServiceOffering(): string | undefined {
+  public get previousServiceOffering(): { name: string, sysId: string } | undefined {
 
     const serviceOfferings = this.serviceOfferingsForGroup;
 
@@ -148,7 +148,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     {
       const serviceIndex = currentServiceIndex > 0 ? currentServiceIndex - 1: currentServiceIndex;
       const nextOffering = serviceOfferings[serviceIndex];
-      return nextOffering.name
+      return { name: nextOffering.name, sysId: nextOffering.sys_id }
     }
 
     return undefined;
@@ -187,7 +187,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     return nextGroup;
   }
 
-  public get lastOfferingForGroup(): string | undefined {
+  public get lastOfferingForGroup(): { name: string, sysId: string } | undefined {
 
     const currentGroupIndex = this.DOWObject
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
@@ -198,7 +198,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   
     const lastOffering =  last(this.DOWObject[currentGroupIndex].serviceOfferings);
 
-    return lastOffering ? lastOffering.name : undefined;
+    return lastOffering 
+      ? { name: lastOffering.name, sysId: lastOffering.sys_id } 
+      : undefined;
   }
 
   public get canGetPreviousServiceOffering(): boolean {
