@@ -49,7 +49,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     cy.findElement(fd.fundingfileupload).click({ force: true });
   });
   
-  it("TC2: Validations", () => {
+  it("TC3: Validations", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -79,7 +79,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     });
   });
 
-  it("TC3: Remove: Uploaded file", () => {
+  it("TC4: Remove: Uploaded file", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -96,7 +96,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     })
   });
   
-  it.only("TC4: Upload file with drag and drop mode", () => {
+  it("TC5: Upload file with drag and drop mode", () => {
     cy.hopOutOfIframe(true, true);
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
