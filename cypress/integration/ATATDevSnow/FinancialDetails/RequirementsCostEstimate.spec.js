@@ -1,8 +1,8 @@
-import { bootstrapMockApis,colors} from "../../helpers";
-import common from "../../selectors/common.sel";
-import financialDetails from "../../selectors/financialDetails.sel";
+import { bootstrapMockApis,colors} from "../../../helpers";
+import common from "../../../selectors/common.sel";
+import financialDetails from "../../../selectors/financialDetails.sel";
 
-describe("Test suite: Financial Details", () => {
+describe("Test suite: Financial Details:Requirements Cost Estimate", () => {
 
   let projectDetails;
   beforeEach(() => {
@@ -13,17 +13,13 @@ describe("Test suite: Financial Details", () => {
     cy.launchATAT();
         
   });
-  it("TC1: Financial Details step is active on the Vertical Stepper", () => {
+  it("TC1: Requirements Cost Estimate substep is active on the Vertical Stepper", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepRequirementsCostEstimateText,
-      " Requirements Cost Estimate ");        
-    cy.findElement(common.stepFinancialDetailsCircle)
-      .should("be.visible")
-      .and("have.css", "color", colors.primary)
-      .click();
-        
-        
+      " Requirements Cost Estimate ");  ;
+    cy.activeStep(common.stepFinancialDetailsCircle);  
+    cy.activeStep(common.subStepRequirementsCostEstimateText);  
         
   });
 
