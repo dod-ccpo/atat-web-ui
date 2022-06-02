@@ -94,6 +94,7 @@ export const ContractTrainingReq = (current: string): string => {
 };
 
 const basePerformanceRequirementsPath =  `performance-requirements`;
+const descriptionOfWorkSummaryPath=  "performance-requirements/dow-summary";
 
 const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
 const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
@@ -142,6 +143,13 @@ export const RequirementsPathResolver = (current: string): string =>
 
 export const OfferGroupOfferingsPathResolver = (current: string, 
   direction: string): string => {
+
+  if(DescriptionOfWork.currentGroupId === "XaaS_NONE")
+  {
+    //we go straight to the summary for now... 
+    //this might change slightly in the future...
+    return descriptionOfWorkSummaryPath;
+  }
 
   //handles moving backwards or forwards through service offerings
   if(current === routeNames.ServiceOfferingDetails &&
@@ -270,7 +278,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
     //no more offerings or services to process go to summary
     if(atOfferingsEnd && atServicesEnd){
-      return "performance-requirements/dow-summary";
+      return descriptionOfWorkSummaryPath;
     }
 
     //there's more services to process

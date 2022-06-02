@@ -61,7 +61,6 @@ export const buildClassificationLabel
 
 //strips whitespace, and special characters
 export const sanitizeOfferingName = (offeringName: string): string => {
-
   return offeringName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{\\}[\]\\/]/gi, "_")
     .replace(/ /g, "_").replace(/_$/, '');
 }
