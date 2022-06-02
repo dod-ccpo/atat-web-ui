@@ -232,6 +232,9 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
+    value.forEach((value, index) => {
+      value.sequence = index;
+    });
     this.serviceOfferingGroups = value;
   }
 
@@ -239,8 +242,10 @@ export class DescriptionOfWorkStore extends VuexModule {
   public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
     selectedOfferingGroups.forEach((selectedOfferingGroup) => {
       if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
+        const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroup)
         const offeringGroup: DOWServiceOfferingGroup = {
           serviceOfferingGroupId: selectedOfferingGroup,
+          sequence: group?.sequence || 0,
           serviceOfferings: []
         }
         this.DOWObject.push(offeringGroup);
@@ -253,6 +258,9 @@ export class DescriptionOfWorkStore extends VuexModule {
           // todo future ticket - remove from SNOW db
         }
       });
+
+      this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+
       this.currentGroupId = this.DOWObject.length > 0 ? 
         this.DOWObject[0].serviceOfferingGroupId : "";
       this.currentOfferingName = "";
@@ -296,6 +304,11 @@ export class DescriptionOfWorkStore extends VuexModule {
           // todo future ticket - remove from SNOW db
         }
       });
+
+      this.DOWObject[groupIndex].serviceOfferings.sort(
+        (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
+      );
+
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
       this.currentOfferingSysId = currentOfferings.length > 0 

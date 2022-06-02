@@ -215,6 +215,7 @@ export interface DOWServiceOffering {
 
 export interface DOWServiceOfferingGroup {
   serviceOfferingGroupId: string;
+  sequence: number;
   serviceOfferings: DOWServiceOffering[];
 }
 

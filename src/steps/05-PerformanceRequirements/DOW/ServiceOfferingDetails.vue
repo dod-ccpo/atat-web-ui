@@ -210,7 +210,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       const labelLong = buildClassificationLabel(obj, "long");
       const labelShort = buildClassificationLabel(obj, "short");
       const instance: DOWClassificationInstance = {
-        sysId: obj.sys_id,
+        sysId: "", // will be populated after saving
         impactLevel: obj.impact_level,
         classificationLevelSysId: obj.sys_id || "",
         anticipatedNeedUsage: "",
