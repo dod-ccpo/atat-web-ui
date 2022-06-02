@@ -227,14 +227,17 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   @Watch("selectedHeaderLevelSysIds")
   public async updateInstances(newSysIds: string[]): Promise<void> {
     // if (this.classificationInstances.length === 0) {
-    // EJY this may be causing infinite loop
+    // // EJY this may be causing infinite loop
     //   await this.buildNewClassificationInstances();
     // }    
     // add to array of forms to show if selectedOption not in the list
+    debugger;
     newSysIds.forEach((selectedOption: string) => {
       if (this.headerCheckboxSelectedSysIds.indexOf(selectedOption) === -1) {
         this.headerCheckboxSelectedSysIds.push(selectedOption);
-        const instance = this.classificationInstances.find(e => e.sysId === selectedOption);
+        const instance = this.classificationInstances.find(
+          e => e.classificationLevelSysId === selectedOption
+        );
         if (instance) {
           this.instancesFormData.push(instance);
         }
@@ -242,20 +245,25 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     }, this);
     // remove options not in new selected options array
     const instancesToShowClone = this.headerCheckboxSelectedSysIds;
-    instancesToShowClone.forEach((sysId) => {
-      if (!newSysIds.includes(sysId)) {
-        const i = this.headerCheckboxSelectedSysIds.findIndex(e => e === sysId);
+    instancesToShowClone.forEach((classificationLevelSysId) => {
+      if (!newSysIds.includes(classificationLevelSysId)) {
+        const i = this.headerCheckboxSelectedSysIds.findIndex(
+          e => e === classificationLevelSysId
+        );
         if (i > -1) {
           this.headerCheckboxSelectedSysIds.splice(i, 1);
         }
       }
     }, this);
     // remove previously selected instances from array of instances 
+    debugger;
     const instancesFormDataClone = _.cloneDeep(this.instancesFormData);
     instancesFormDataClone.forEach((instance) => {
-      const sysId = instance.sysId || "";
-      if (!newSysIds.includes(sysId)) {
-        const i = this.instancesFormData.findIndex(e => e.sysId === sysId);
+      const classificationLevelSysId = instance.classificationLevelSysId || "";
+      if (!newSysIds.includes(classificationLevelSysId)) {
+        const i = this.instancesFormData.findIndex(
+          e => e.classificationLevelSysId === classificationLevelSysId
+        );
         if (i > -1) {
           this.instancesFormData.splice(i, 1);
         }
@@ -283,6 +291,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   public async clearUnselected(): Promise<void> {
+    debugger;
     const filteredSelectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter(
       sysId => this.avlClassificationLevelSysIds.includes(sysId)
     );
@@ -382,6 +391,11 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     } else {
       await this.setSavedInstanceLabels();
       this.savedData = [...this.classificationInstances];
+      this.classificationInstances.forEach((instance) => {
+        if (instance.classificationLevelSysId) {
+          this.selectedHeaderLevelSysIds.push(instance.classificationLevelSysId);
+        }
+      });
     }
 
     // set up PoP periods if not for entire duration
