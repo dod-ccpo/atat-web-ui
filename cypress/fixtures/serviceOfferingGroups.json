@@ -1,0 +1,124 @@
+[
+{
+  "serviceOfferingGroups":"Compute",
+  "offeringGroupValue":"COMPUTE",
+  "id":"Checkbox_COMPUTE",
+  "serviceOffering":[
+    "Other"
+    ]
+},
+{
+  "serviceOfferingGroups":"Developer Tools and Service",
+  "id":"Checkbox_DEVELOPERTOOLS",
+  "serviceOffering":[
+    "DevSecOps",
+    "Data Management",
+    "Migration Tools",
+    "Transformation Tools",
+    "Cloud Development Tools",
+    "Cloud Audit/Monitoring Tools",
+    "Cyber Tools",
+    "Other"
+  ]
+},
+{
+  "serviceOfferingGroups":"Applications",
+  "id":"Checkbox_APPLICATIONS",
+  "serviceOffering":[
+    "Application",
+    "Web app",
+    "Database",
+    "Monitoring Tools",
+    "Discrete Platform as a Service(Paas)",
+    "Discrete Software as a Service(SaaS)",
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Advanced Technology and Algorithmic Techniques(Machine Learning)",
+  "id":"Checkbox_MACHINELEARNING",
+  "serviceOffering":[
+    "Specialized Tools",
+    "Specialized Applications",
+    "Specialized Platform as a Service(PaaS)",
+    "Specialized Software as a Service(SaaS)",
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Networking",
+  "id":"Checkbox_NETWORKING",
+  "serviceOffering":[
+    "Cloud Service Provider(CSP) Network",
+    "Hybrid Network",
+    "Custom Network",
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Security",
+  "id":"Checkbox_SECURITY",
+  "serviceOffering":[
+    "Cloud Service Provider(CSP) Network",
+    "Hybrid Network",
+    "Custom Network",
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Database with Storage",
+  "id":"Checkbox_DATABASE",
+  "serviceOffering":[
+    "Database services",
+    "Horizontal(typical transaction database row manage)",
+    "Vertical(attribute database/column manged)",   
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Edge Computing and Tactical Edge(TE)",
+  "id":"Checkbox_EDGECOMPUTING",
+  "serviceOffering":[
+    "Remotable Technology",
+    "Mobile Technology",
+    "Perimeter Technology",
+    "Conditional Flag indicating military hardening",   
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Internet of Things (IoT)",
+  "id":"Checkbox_IOT",
+  "serviceOffering":[
+    "IoT Edge",
+    "IoT Software as a Service(SaaS)",    
+    "IoT Platform as a Service(Paas)",   
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"General Iaas, PaaS, and SaaS",
+  "id":"Checkbox_GENERALXAAS",
+  "serviceOffering":[     
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"None of these apply to my acquistion.",
+  "id":"Checkbox_XaaSNoneApply",
+  "serviceOffering":[     
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Advisory and Assistance",
+  "id":"Checkbox_ADVISORY",
+  "serviceOffering":[ 
+    "Simple Challenge",
+    "Moderate Challenge",
+    "Complex Challenge",    
+    "Other"]
+},
+{
+  "serviceOfferingGroups":"Training",
+  "id":"Checkbox_TRAINING",
+  "serviceOffering":[ 
+    "OCONUS",
+    "OCONUS Local CSP Facility",
+    "OCONUS Local Government Facility",
+    "OCONUS Web based Training",     
+    "Other"]
+}
+
+]
