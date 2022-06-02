@@ -13,7 +13,7 @@
             projected schedule for your incremental funding next.
           </p>
           <ATATRadioGroup
-            class="copy-max-width mb-10 max-width-740"
+            class="copy-max-width mb-5 max-width-640"
             id="IncrementallyFundOptions"
             :card="true"
             :items="incrementallyFundOptions"
@@ -49,12 +49,12 @@
               How does this affect my acquisition package?
             </template>
             <template v-slot:content>
-              <p class="mb-4">
+              <p class="pb-2">
                 If you want to incrementally fund this requirement, your final acquisition package
                 must include a <strong>Certification of Severability and Incremental Funding
                 Plan</strong>.
               </p>
-              <p class="mb-4">
+              <p class="pb-2">
                 The purpose of this document is to provide Defense Information Technology
                 Contracting Organization (DITCO) with:
               </p>
@@ -62,16 +62,16 @@
                 <li class="pb-2">
                   written certification that the requirement is severable in nature;
                 </li>
-                <li class="pb-4">
+                <li class="pb-2">
                   a projected schedule for fully funding any contract line items that are not
                   optional in nature, regardless of contract type;
                 </li>
-                <li class="pb-4">
+                <li class="pb-2">
                   a projected schedule for fully funding firm-fixed-price contract line items in
                   order to populate DFARS clause 252.232-7007, Limitation of Government’s
                   Obligation; and
                 </li>
-                <li class="pb-4">
+                <li class="pb-2">
                   provide assurance to DITCO that funds have been budgeted and will be available to
                   fully fund contract line items that are not optional in nature.
                 </li>
