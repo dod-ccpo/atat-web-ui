@@ -769,11 +769,9 @@ Cypress.Commands.add("select508Option", (radioSelector, value) => {
     });
 });
 
-Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
-  console.log(checkboxes);
+Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {  
   cy.selectCheckBoxes(checkboxes);
-  cy.btnClick(common.continueBtn, "Continue");
-  
+  cy.btnClick(common.continueBtn, " Continue ");
       
 })
 

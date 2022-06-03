@@ -1,4 +1,3 @@
-import exp from "constants";
 import { 
   bootstrapMockApis, 
   cleanText,
@@ -29,7 +28,7 @@ describe("Test suite: Performace Requirements", () => {
       
   });
   
-  it.only("TC2: Asserts: Let’s work on your performance requirements", () => {
+  it("TC2: Asserts: Let’s work on your performance requirements", () => {
     cy.clickSideStepper(common.stepPerformanceReqText, " Performance Requirements ");
     cy.verifyPageHeader(" Let’s work on your performance requirements ");
     const expectedintroText = "Through JWCC, you have the ability to procure" +
@@ -67,17 +66,14 @@ describe("Test suite: Performace Requirements", () => {
     );
     const appCheckBoxId = getCheckboxId(applicationsObj.value);
     const networkCheckboxId = getCheckboxId(networkingObj.value);
-    cy.selectCheckBoxes([appCheckBoxId, networkCheckboxId]);
-    
-    cy.btnClick(common.continueBtn, " Continue ");   
-
-    cy.verifyPageHeader("What type of " + applicationsObj.label + " do you need?"); 
+    cy.selectServiceOfferingGroup([appCheckBoxId, networkCheckboxId]);    
+    //Navigates to the next page
+    cy.verifyPageHeader("What type of " + applicationsObj.label + " do you need?");
     
     const serviceOfferingCheckboxLabels = [];
     applicationsObj.serviceOfferings.forEach((label) => {
       serviceOfferingCheckboxLabels.push(label);
     });
-    console.log(serviceOfferingCheckboxLabels);
     cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
 
     const serviceOfferingCheckboxLabelsIds = [];
@@ -86,7 +82,7 @@ describe("Test suite: Performace Requirements", () => {
       const id = getCheckboxId(textForId);
       serviceOfferingCheckboxLabelsIds.push(id);
     });
-    console.log(serviceOfferingCheckboxLabelsIds);
+    
   });
 
   
