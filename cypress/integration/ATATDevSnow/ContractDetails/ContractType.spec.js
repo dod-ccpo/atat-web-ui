@@ -45,9 +45,9 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
     cy.textExists(contractDetails.selectMessageText,
       "Select all that apply to your contracting effort.")
     //assert checkbox options
-    cy.selectCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
+    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
       .check({ force: true }).uncheck({ force: true });
-    cy.selectCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
+    cy.findCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
       .check({ force: true }).uncheck({ force: true });      
     cy.btnExists(common.backBtn, "Back").not("[disabled]");
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]");
@@ -63,9 +63,9 @@ describe("Test suite: Contract Details Step: Contract Type substep", () => {
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, " Which contract type(s) apply to this acquisition? ");
     //Select the checkbox options
-    cy.selectCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
+    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
       .check({ force: true });
-    cy.selectCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
+    cy.findCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
       .check({ force: true }).then(() => {
         cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
         cy.textExists(contractDetails.tmTextFieldLabel,

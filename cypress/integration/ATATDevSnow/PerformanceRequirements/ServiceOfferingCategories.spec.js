@@ -1,12 +1,25 @@
-import { bootstrapMockApis,cleanText}from "../../../helpers";
+import exp from "constants";
+import { 
+  bootstrapMockApis, 
+  cleanText,
+  getCheckboxId, 
+  getIdText,
+  getObjectFromArrayByKey 
+} from "../../../helpers";
 import common from "../../../selectors/common.sel"
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
 describe("Test suite: Performace Requirements", () => {
+  let serviceOfferingGroups;
 
   beforeEach(() => {
     bootstrapMockApis();
+
+    cy.fixture("serviceOfferingGroups").then((data) => {
+      serviceOfferingGroups = data;
+    });
+
     cy.launchATAT();
   });
     
@@ -16,7 +29,7 @@ describe("Test suite: Performace Requirements", () => {
       
   });
   
-  it("TC2: Asserts: Let’s work on your performance requirements", () => {
+  it.only("TC2: Asserts: Let’s work on your performance requirements", () => {
     cy.clickSideStepper(common.stepPerformanceReqText, " Performance Requirements ");
     cy.verifyPageHeader(" Let’s work on your performance requirements ");
     const expectedintroText = "Through JWCC, you have the ability to procure" +
@@ -38,30 +51,42 @@ describe("Test suite: Performace Requirements", () => {
       performanceReqs.cloudSupportLabelText,
       " What type(s) of cloud support packages do you need? "
     );
-    const expectedLabels = [
-      "Compute",
-      "Developer Tools and Services",
-      "Applications",
-      "Advanced Technology and Algorithmic Techniques (Machine Learning)",
-      "Networking",
-      "Security",
-      "Database with Storage",
-      "Edge Computing and Tactical Edge (TE)",
-      "Internet of Things (IoT)",
-      "General Iaas, PaaS, and SaaS Including third party marketplace and any other XaaS" +
-      " resources not covered in the categories above",
-      "None of these apply to my acquisition.",
-      "Advisory and Assistance",
-      "Training",
-      "None of these apply to my acquisition.",
-      
-    ]
-    cy.verifyCheckBoxLabel('input[type=checkbox]', expectedLabels);
-    cy.selectCheckBoxes([performanceReqs.appCheckBox,performanceReqs.networkCheckBox]);
+
+    const expectedLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      expectedLabels.push(obj.label);
+    });
+    console.log(expectedLabels)
+    cy.verifyCheckBoxLabels('input[type=checkbox]', expectedLabels);
+
+    const applicationsObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "APPLICATIONS" 
+    );
+    const networkingObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "NETWORKING" 
+    );
+    const appCheckBoxId = getCheckboxId(applicationsObj.value);
+    const networkCheckboxId = getCheckboxId(networkingObj.value);
+    cy.selectCheckBoxes([appCheckBoxId, networkCheckboxId]);
     
     cy.btnClick(common.continueBtn, " Continue ");   
+
+    cy.verifyPageHeader("What type of " + applicationsObj.label + " do you need?"); 
     
-    
+    const serviceOfferingCheckboxLabels = [];
+    applicationsObj.serviceOfferings.forEach((label) => {
+      serviceOfferingCheckboxLabels.push(label);
+    });
+    console.log(serviceOfferingCheckboxLabels);
+    cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
+
+    const serviceOfferingCheckboxLabelsIds = [];
+    applicationsObj.serviceOfferings.forEach((label) => {
+      const textForId = getIdText(label);
+      const id = getCheckboxId(textForId);
+      serviceOfferingCheckboxLabelsIds.push(id);
+    });
+    console.log(serviceOfferingCheckboxLabelsIds);
   });
 
   

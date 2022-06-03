@@ -68,3 +68,15 @@ export function randomNumberBetween(min, max) {
   // The string is not a secret as it is just a list of min and max included
   return Math.floor(Math.random() * (max - min + 1) + min) // pragma: allowlist secret
 }
+
+export function getObjectFromArrayByKey(data, key, value) {
+  return data.find(e => e[key] === value);
+}
+
+export function getIdText(string) {
+  return string.replace(/[^A-Z0-9]/ig, "");
+}
+
+export function getCheckboxId(string) {
+  return "#Checkbox_" + string;
+}
