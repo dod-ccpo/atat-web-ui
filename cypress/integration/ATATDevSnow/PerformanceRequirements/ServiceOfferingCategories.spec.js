@@ -9,7 +9,7 @@ import common from "../../../selectors/common.sel"
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: Performace Requirements", () => {
+describe("Test suite: Performance Requirements", () => {
   let serviceOfferingGroups;
 
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe("Test suite: Performace Requirements", () => {
     cy.launchATAT();
   });
     
-  it("TC1: Performace Requirements on the Vertical Stepper is active", () => {
+  it("TC1: Performance Requirements on the Vertical Stepper is active", () => {
     cy.clickSideStepper(common.stepPerformanceReqText, " Performance Requirements ");
     cy.activeStep(common.stepPerformanceReqText);
       
