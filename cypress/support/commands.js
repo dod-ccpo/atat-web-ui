@@ -217,7 +217,7 @@ Cypress.Commands.add("checkBoxOption", (selector,value) => {
 });
 
 Cypress.Commands.add("selectCheckBoxes", (checkBoxesSelectors) => {
-  checkBoxesSelectors.each(selector => {
+  checkBoxesSelectors.forEach(selector => {
     cy.findElement(selector)
       .click({force:true}); 
   });

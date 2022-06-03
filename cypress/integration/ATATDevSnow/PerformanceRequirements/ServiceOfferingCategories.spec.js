@@ -57,7 +57,7 @@ describe("Test suite: Performace Requirements", () => {
       
     ]
     cy.verifyCheckBoxLabel('input[type=checkbox]', expectedLabels);
-    cy.selectCheckBoxes(performanceReqs.appCheckBox,performanceReqs.networkCheckBox);
+    cy.selectCheckBoxes([performanceReqs.appCheckBox,performanceReqs.networkCheckBox]);
     
     cy.btnClick(common.continueBtn, " Continue ");   
     
