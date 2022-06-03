@@ -1,4 +1,3 @@
-
 <template>
   <div class="mb-7">
     <v-container fluid class="container-max-width">
@@ -9,12 +8,12 @@
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
-              Through JWCC, you have the ability to procure many offerings for 
-              Anything as a Service (XaaS) and Cloud Support Packages. Specify 
-              any categories that may apply to your acquisition below, and we’ll 
-              walk through each selection to get more details next. 
-              <a 
-                role="button" 
+              Through JWCC, you have the ability to procure many offerings for
+              Anything as a Service (XaaS) and Cloud Support Packages. Specify
+              any categories that may apply to your acquisition below, and we’ll
+              walk through each selection to get more details next.
+              <a
+                role="button"
                 @click="openSlideoutPanel"
                 @keydown.enter="openSlideoutPanel"
                 @keydown.space="openSlideoutPanel"
@@ -23,7 +22,57 @@
                 Learn more about categories.
               </a>
             </p>
-
+            <ATATAlert
+              id="CategoryPageAlert"
+              v-show="showAlert === true"
+              type="warning"
+              class="copy-max-width mb-10"
+            >
+              <template v-slot:content>
+                <div v-if="isPeriodsDataMissing && !isClassificationDataMissing">
+                  <h3 class="h3">Your period of performance is missing.</h3>
+                  <p class="mt-2 mb-0" id="AlertInfo">
+                    You can continue to add cloud resources and support packages, but we won’t be
+                    able to gather details about your unique requirements until we have this missing
+                    info. We recommend updating your PoP in the
+                    <router-link
+                      id="Step5Link"
+                      :to="{name: routeNames.PeriodOfPerformance}"
+                    >Contract Details section
+                    </router-link>
+                    before proceeding.
+                  </p>
+                </div>
+                <div v-if="isClassificationDataMissing && !isPeriodsDataMissing">
+                  <h3>Your classification requirements are missing.</h3>
+                  <p class="mt-2 mb-0" id="AlertInfo">
+                    You can continue to add cloud resources and support packages, but we won’t be
+                    able to gather details about your unique requirements until we have this missing
+                    info. We recommend updating your classification requirements in the
+                    <router-link
+                      id="Step5Link"
+                      :to="{name: routeNames.ClassificationRequirements}"
+                    >Contract Details section
+                    </router-link>
+                    before proceeding.
+                  </p>
+                </div>
+                <div v-if="isClassificationDataMissing && isPeriodsDataMissing">
+                  <h3>Your period of performance and classification requirements are missing.</h3>
+                  <p class="mt-2 mb-0" id="AlertInfo">
+                    You can continue to add cloud resources and support packages, but we won’t be
+                    able to gather details about your unique requirements until we have this missing
+                    info. We recommend
+                    <router-link
+                      id="Step5Link"
+                      :to="{name: routeNames.PeriodOfPerformance}"
+                    >revisiting the Contract Details section
+                    </router-link>
+                    before proceeding.
+                  </p>
+                </div>
+              </template>
+            </ATATAlert>
             <ATATCheckboxGroup
               id="XaaSCheckboxes"
               aria-describedby="XaaSLabel"
@@ -38,7 +87,7 @@
               groupLabelId="XaaSLabel"
             />
 
-            <hr />
+            <hr/>
 
             <ATATCheckboxGroup
               id="CloudSupportCheckboxes"
@@ -70,14 +119,18 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 import { SystemChoiceDTO } from "@/api/models";
-
+import { routeNames } from "../../../router/stepper"
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { getIdText } from "@/helpers";
+import Periods from "@/store/periods";
+import ATATAlert from "@/components/ATATAlert.vue";
+import classificationRequirements from "@/store/classificationRequirements";
 
 @Component({
   components: {
     ATATCheckboxGroup,
     PerfReqLearnMore,
+    ATATAlert,
   }
 })
 
@@ -85,6 +138,10 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public selectedXaasOptions: string[] = [];
   private xaasCheckboxItems: Checkbox[] = [];
   private serviceOfferingGroups: SystemChoiceDTO[] = [];
+  private isPeriodsDataMissing = false
+  private isClassificationDataMissing = false
+  private showAlert = false
+  private routeNames = routeNames
 
   public cloudSupportSelectedOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
@@ -97,6 +154,16 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const periods = await Periods.loadPeriods();
+    const classifications = await classificationRequirements.getSelectedClassificationLevels()
+    if (periods && periods.length <= 0) {
+      this.showAlert = true
+      this.isPeriodsDataMissing = true
+    }
+    if (classifications && classifications.length <= 0) {
+      this.showAlert = true
+      this.isClassificationDataMissing = true
+    }
     this.serviceOfferingGroups = await DescriptionOfWork.getServiceOfferingGroups();
     this.serviceOfferingGroups.forEach((serviceOfferingGroup) => {
       const checkboxItem: Checkbox = {
@@ -117,27 +184,27 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       }
 
       const selectedOfferingGroups = DescriptionOfWork.selectedServiceOfferingGroups;
-      const validSelections = selectedOfferingGroups.reduce<string[]>((accumulator, current)=>{
-        const itemIndex = this.xaasCheckboxItems.findIndex(item=>item.value === current);
-        return itemIndex >=0 ? [...accumulator, 
+      const validSelections = selectedOfferingGroups.reduce<string[]>((accumulator, current) => {
+        const itemIndex = this.xaasCheckboxItems.findIndex(item => item.value === current);
+        return itemIndex >= 0 ? [...accumulator,
           this.xaasCheckboxItems[itemIndex].value] : accumulator;
-      },[]);
+      }, []);
       this.selectedXaasOptions.push(...validSelections);
 
 
     });
-    
+
     const xaasNone: Checkbox = {
       id: "XaaSNoneApply",
       label: "None of these apply to my acquisition.",
-      value: "XaaS_NONE", 
+      value: "XaaS_NONE",
     }
     this.xaasCheckboxItems.push(xaasNone)
 
     const cloudSupportNone: Checkbox = {
       id: "CloudSupportNoneApply",
       label: "None of these apply to my acquisition.",
-      value: "Cloud_NONE", 
+      value: "Cloud_NONE",
     }
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
