@@ -188,6 +188,14 @@ Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,er
     })
 });
 
+Cypress.Commands.add("verifyRequiredCheckbox", (checkboxSelector, errorSelector, errorMessage) => {
+  cy.findElement(checkboxSelector)
+    .check({ force: true }).uncheck({ force: true })
+    .then(() => {
+      cy.checkErrorMessage(errorSelector, errorMessage);
+    });
+});
+
 Cypress.Commands.add("verifyPageHeader", (headerText) => {
   cy.findElement(common.header).scrollIntoView().then(() => {
     cy.textExists(common.header,headerText );
@@ -195,7 +203,7 @@ Cypress.Commands.add("verifyPageHeader", (headerText) => {
   
 });
 
-Cypress.Commands.add("selectCheckBox", (selector,value) => {
+Cypress.Commands.add("findCheckBox", (selector,value) => {
   cy.findElement(selector)
     .should("have.value", value);
   
@@ -208,18 +216,25 @@ Cypress.Commands.add("checkBoxOption", (selector,value) => {
     
 });
 
-Cypress.Commands.add("verifyCheckBoxLabel", (selector,expectedLabels) => {
-  const labels = []
+Cypress.Commands.add("selectCheckBoxes", (checkBoxesSelectors) => {
+  checkBoxesSelectors.forEach(selector => {
+    cy.findElement(selector)
+      .click({force:true}); 
+  });
+});
+
+Cypress.Commands.add("verifyCheckBoxLabels", (selector,expectedLabels) => {
+  const foundLabels = []
   const length= expectedLabels.length
   cy.findElement(selector)
     .should('have.length', length)    
     .each(($checkbox) => {
       cy.findElement(`label[for=${$checkbox.attr('id')}]`)        
         .invoke('text')
-        .then((text) => labels.push(text))     
+        .then((text) => foundLabels.push(cleanText(text)))     
     })
     .then(() => {
-      expect(labels).to.deep.equal(expectedLabels)
+      expect(foundLabels).to.deep.equal(expectedLabels)
     })
   
 });
@@ -753,3 +768,10 @@ Cypress.Commands.add("select508Option", (radioSelector, value) => {
           
     });
 });
+
+Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {  
+  cy.selectCheckBoxes(checkboxes);
+  cy.btnClick(common.continueBtn, " Continue ");
+      
+})
+

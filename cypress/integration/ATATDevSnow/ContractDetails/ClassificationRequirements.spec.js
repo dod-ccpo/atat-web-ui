@@ -44,7 +44,7 @@ describe("Test suite: Contract Details Step:Classification Requirements substep"
       "Unclassified / Impact Level 5 (IL5)",
       "Secret / Impact Level 6 (IL6)",
     ]
-    cy.verifyCheckBoxLabel('input[type=checkbox]',expectedLabels);
+    cy.verifyCheckBoxLabels('input[type=checkbox]',expectedLabels);
     cy.findElement(contractDetails.level5).should("not.be.checked")
       .check({ force: true }).should("be.checked");
     cy.findElement(contractDetails.level2).should("not.be.checked")
@@ -102,7 +102,7 @@ describe("Test suite: Contract Details Step:Classification Requirements substep"
     const expectedLabels = [
       "Unclassified / Impact Level 4 (IL4)",
     ]
-    cy.verifyCheckBoxLabel('input[type=checkbox]:checked',expectedLabels);
+    cy.verifyCheckBoxLabels('input[type=checkbox]:checked',expectedLabels);
     
       
   });
