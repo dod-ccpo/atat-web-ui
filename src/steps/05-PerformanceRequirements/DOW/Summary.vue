@@ -64,12 +64,9 @@ export default class Summary extends Vue {
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels()
-    if (periods && periods.length <= 0) {
+    if (periods && periods.length <= 0 && classifications && classifications.length <= 0) {
       this.showAlert = true
       this.isPeriodsDataMissing = true
-    }
-    if (classifications && classifications.length <= 0) {
-      this.showAlert = true
       this.isClassificationDataMissing = true
     }
   }
