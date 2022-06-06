@@ -35,7 +35,12 @@ import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
-import { cleanText, colors } from "../helpers";
+import { 
+  cleanText, 
+  colors, 
+  getCheckboxId, 
+  getIdText,
+} from "../helpers";
 import sac from '../selectors/standComp.sel';
 import occ from '../selectors/occ.sel'
 
@@ -775,3 +780,47 @@ Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
       
 })
 
+Cypress.Commands.add("deselectAllCheckboxes", () => {  
+  cy.findElement("[type='checkbox']").uncheck({ force: true })
+});
+
+Cypress.Commands.add("DOWVerifyCategory", (categoryObj) => {
+  const categoryCheckBoxId = getCheckboxId(categoryObj.value);    
+  cy.selectServiceOfferingGroup([categoryCheckBoxId]);
+
+  cy.verifyPageHeader("What type of " + categoryObj.label + " do you need?");  
+  
+});
+
+Cypress.Commands.add("DOWVerifyServiceOffering", (categoryObj) => {
+  const serviceOfferingCheckboxLabels = [];
+  categoryObj.serviceOfferingCypressLabels.forEach((label) => {
+    serviceOfferingCheckboxLabels.push(label);
+  });
+
+  cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
+  
+  const serviceOfferingCheckboxIds = [];
+  const labels = categoryObj.serviceOfferingMainLabels 
+    ? categoryObj.serviceOfferingMainLabels 
+    : categoryObj.serviceOfferingCypressLabels;
+  
+  labels.forEach((label) => {
+    const textForId = getIdText(label);
+    const id = getCheckboxId(textForId);
+    serviceOfferingCheckboxIds.push(id);
+  });
+
+  serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
+    if (checkboxId.indexOf("Other") === -1) {
+      cy.deselectAllCheckboxes();
+      cy.selectCheckBoxes([checkboxId]);
+      cy.btnClick(common.continueBtn, " Continue ");   
+
+      cy.verifyPageHeader(
+        "Next, we’ll gather your requirements for " + labels[index]
+      );  
+      cy.btnClick(common.backBtn, "Back");
+    }
+  });  
+});

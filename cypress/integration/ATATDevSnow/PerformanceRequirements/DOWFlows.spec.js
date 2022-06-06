@@ -28,7 +28,8 @@ describe("Test suite: DOW Workflows for each option", () => {
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader("Do you want to request a PoP start date?");
     cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
-    cy.selectCheckBoxes([contractDetails.level5, contractDetails.level4]);
+    let selectedClassifications = [contractDetails.level5, contractDetails.level4];
+    cy.selectCheckBoxes(selectedClassifications);
     cy.btnClick(common.continueBtn, " Continue ");    
     cy.verifyPageHeader(" Let’s work on your performance requirements ");
 
@@ -53,14 +54,14 @@ describe("Test suite: DOW Workflows for each option", () => {
     cy.verifyPageHeader("What type of " + developertoolsObj.label + " do you need?");  
     
     const serviceOfferingCheckboxLabels = [];
-    developertoolsObj.serviceOfferings.forEach((label) => {
+    developertoolsObj.serviceOfferingCypressLabels.forEach((label) => {
       serviceOfferingCheckboxLabels.push(label);
     });
-    console.log(serviceOfferingCheckboxLabels);
+
     cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
     
     const serviceOfferingCheckboxLabelsIds = [];
-    developertoolsObj.serviceOfferings.forEach((label) => {
+    developertoolsObj.serviceOfferingCypressLabels.forEach((label) => {
       const textForId = getIdText(label);
       const id = getCheckboxId(textForId);
       serviceOfferingCheckboxLabelsIds.push(id);
@@ -93,7 +94,7 @@ describe("Test suite: DOW Workflows for each option", () => {
     cy.verifyPageHeader("What type of " + applicationsObj.label + " do you need?"); 
     
     const serviceOfferingCheckboxLabels = [];
-    applicationsObj.serviceOfferings.forEach((label) => {
+    applicationsObj.serviceOfferingCypressLabels.forEach((label) => {
       serviceOfferingCheckboxLabels.push(label);
     });
     console.log(serviceOfferingCheckboxLabels);
@@ -119,13 +120,13 @@ describe("Test suite: DOW Workflows for each option", () => {
     cy.verifyPageHeader("What type of " + networkingObj.label + " do you need?"); 
     
     const serviceOfferingCheckboxLabels = [];
-    networkingObj.serviceOfferings.forEach((label) => {
+    networkingObj.serviceOfferingCypressLabels.forEach((label) => {
       serviceOfferingCheckboxLabels.push(label);
     });
     console.log(serviceOfferingCheckboxLabels);
     cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
     const serviceOfferingCheckboxLabelsIds = [];
-    networkingObj.serviceOfferings.forEach((label) => {
+    networkingObj.serviceOfferingCypressLabels.forEach((label) => {
       const textForId = getIdText(label);
       const id = getCheckboxId(textForId);
       serviceOfferingCheckboxLabelsIds.push(id);
@@ -133,4 +134,94 @@ describe("Test suite: DOW Workflows for each option", () => {
       
   });
   
+
+  it.skip("TC4: Test ALL labels and headers", () => {    
+
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    serviceOfferingGroups.forEach((category) => {
+
+      const categoryObj = getObjectFromArrayByKey(
+        serviceOfferingGroups, "value", category.value 
+      );
+      cy.deselectAllCheckboxes();
+      const categoryCheckBoxId = getCheckboxId(categoryObj.value);    
+      cy.selectServiceOfferingGroup([categoryCheckBoxId]);
+
+      cy.verifyPageHeader("What type of " + categoryObj.label + " do you need?");  
+      
+      const serviceOfferingCheckboxLabels = [];
+      if (
+        categoryObj.serviceOfferingCypressLabels 
+        && categoryObj.serviceOfferingCypressLabels[0] !== "Other"
+      ) {
+        categoryObj.serviceOfferingCypressLabels.forEach((label) => {
+          serviceOfferingCheckboxLabels.push(label);
+        });
+        console.log(serviceOfferingCheckboxLabels);
+        cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
+        
+        const serviceOfferingCheckboxIds = [];
+        const labels = categoryObj.serviceOfferingMainLabels 
+          ? categoryObj.serviceOfferingMainLabels 
+          : categoryObj.serviceOfferingCypressLabels;
+        
+        labels.forEach((label) => {
+          const textForId = getIdText(label);
+          const id = getCheckboxId(textForId);
+          serviceOfferingCheckboxIds.push(id);
+        });
+        console.log("serviceOfferingCheckboxIds", serviceOfferingCheckboxIds)
+        serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
+          if (checkboxId.indexOf("Other") === -1) {
+            cy.deselectAllCheckboxes();
+            cy.selectCheckBoxes([checkboxId]);
+            cy.btnClick(common.continueBtn, " Continue ");   
+      
+            cy.verifyPageHeader(
+              "Next, we’ll gather your requirements for " + labels[index]
+            );  
+            cy.btnClick(common.backBtn, "Back");   
+          }
+        });
+      }
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1000); // needed because with 2 back button clicks, needs a pause for scroll into view
+      cy.btnClick(common.backBtn, "Back");   
+
+    });
+
+  });  
+  
+  it.only("TC4: Test Developer Tools checkboxes and headings", () => {    
+
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "DEVELOPERTOOLS" 
+    );
+
+    if (categoryObj) {
+      cy.DOWVerifyCategory(categoryObj)
+      if (
+        categoryObj.serviceOfferingCypressLabels 
+        && categoryObj.serviceOfferingCypressLabels[0] !== "Other"
+      ) {
+        cy.DOWVerifyServiceOffering(categoryObj);
+      }
+    
+    }
+  });
+
+
+
+
 });
