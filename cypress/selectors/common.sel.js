@@ -99,6 +99,7 @@ module.exports = {
   stepFinancialDetailsText: "#Step_FinancialDetails .step-text",
   stepFinancialDetailsCircle: "#Step_FinancialDetails .step-circle",
   subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text",
-
+  subStepFundingPlanLink: "#SubStep_FundingPlan",
+  subStepFundingPlanText: "#SubStep_FundingPlan .step-text",
 
 }

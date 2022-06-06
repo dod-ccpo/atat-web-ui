@@ -37,9 +37,9 @@ describe("Test suite: Contract Details: E2E work flow", () => {
     cy.radioBtn(contractDetails.yesRadioOption,  "YES").not("[disabled]").click({force: true});
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader( " Which contract type(s) apply to this acquisition? ");
-    cy.selectCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
+    cy.findCheckBox(contractDetails.ffpCheckBox, "FFP").should("not.be.checked")
       .check({ force: true });
-    cy.selectCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
+    cy.findCheckBox(contractDetails.tmCheckBox, "T&M").should("not.be.checked")
       .check({ force: true }).then(() => {
         cy.findElement(contractDetails.tmTextFieldLabel).should("exist");
         cy.textExists(contractDetails.tmTextFieldLabel,

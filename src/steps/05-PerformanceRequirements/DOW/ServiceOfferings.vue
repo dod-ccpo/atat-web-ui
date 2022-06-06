@@ -88,6 +88,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       });
     }
 
+    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
+
     const noOtherOption = ["Advisory and Assistance", "Training"];
     if (noOtherOption.indexOf(this.requirementName) === -1) {
       this.checkboxItems.push({

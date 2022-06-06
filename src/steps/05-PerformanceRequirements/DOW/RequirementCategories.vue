@@ -36,6 +36,7 @@
               ]"
               groupLabel="What type of XaaS resources, tools and services do you need?"
               groupLabelId="XaaSLabel"
+              :noneValue="this.xaaSNoneValue"
             />
 
             <hr />
@@ -52,6 +53,7 @@
               ]"
               groupLabel="What type(s) of cloud support packages do you need?"
               groupLabelId="CloudSupportLabel"
+              :noneValue="this.cloudNoneValue"
             />
 
           </div>
@@ -88,6 +90,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   public cloudSupportSelectedOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
+  public xaaSNoneValue = "XaaS_NONE";
+  public cloudNoneValue = "Cloud_NONE";
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -130,14 +134,14 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     const xaasNone: Checkbox = {
       id: "XaaSNoneApply",
       label: "None of these apply to my acquisition.",
-      value: "XaaS_NONE", 
+      value: this.xaaSNoneValue, 
     }
     this.xaasCheckboxItems.push(xaasNone)
 
     const cloudSupportNone: Checkbox = {
       id: "CloudSupportNoneApply",
       label: "None of these apply to my acquisition.",
-      value: "Cloud_NONE", 
+      value: this.cloudNoneValue, 
     }
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
