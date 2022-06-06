@@ -205,6 +205,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   }
 
   public async buildNewClassificationInstances(): Promise<void> {
+    debugger
     this.classificationInstances = [];
     this.avlClassificationLevelObjects.forEach((obj) => {
       const labelLong = buildClassificationLabel(obj, "long");
@@ -288,6 +289,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     await ClassificationRequirements.setSelectedClassificationLevels(arr);
     await this.setAvailableClassificationLevels();
     await this.buildNewClassificationInstances();
+    this.checkSingleClassification()
   }
 
   public async clearUnselected(): Promise<void> {
@@ -337,12 +339,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       = await ClassificationRequirements.getSelectedClassificationLevels();
     this.avlInstancesLength = this.avlClassificationLevelObjects.length;
 
-    // if only one classification level selected in Contract Details, set
-    // it as "selected" for instance forms
-    if (this.avlInstancesLength === 1 && this.avlClassificationLevelObjects[0].sys_id) {
-      const sysId = this.avlClassificationLevelObjects[0].sys_id;
-      this.selectedHeaderLevelSysIds.push(sysId);
-    }
     this.avlClassificationLevelSysIds = [];
     this.avlClassificationLevelObjects.forEach((e) => {
       if (e.sys_id) {
@@ -354,11 +350,21 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     
   }
 
+  public checkSingleClassification(): void {
+    // if only one classification level selected in Contract Details, set
+    // it as "selected" for instance forms
+    if (this.avlInstancesLength === 1 && this.avlClassificationLevelObjects[0].sys_id) {
+      const sysId = this.avlClassificationLevelObjects[0].sys_id;
+      debugger;
+      this.selectedHeaderLevelSysIds.push(sysId);
+    }
+  }
+
   public async loadOnEnter(): Promise<void> {
     // get classification levels selected in step 4 Contract Details
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-    
+    debugger;
     // TODO: if no classification levels selected in step 4, show warning alert
     // ticket AT-7502
 
@@ -368,10 +374,10 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         this.modalSelectedOptions.push(val.sys_id || "")
       });
     }
-
+    debugger;
     // set up header checkbox items and list of sysIds for available classification levels
     await this.setAvailableClassificationLevels();
-
+    debugger;
     // get list of all possible classification levels to generate checkbox list and labels
     this.allClassificationLevels
       = await ClassificationRequirements.getAllClassificationLevels();
@@ -383,6 +389,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // load existing classification instances for this service offering
     this.classificationInstances 
       = await DescriptionOfWork.getClassificationInstances();
+    debugger;
 
     // if no existing classification instances saved in store, build one for each
     // classification level selected in step 4 Contract Details
@@ -397,6 +404,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
         }
       });
     }
+
+    this.checkSingleClassification();
 
     // set up PoP periods if not for entire duration
     const periods = await Periods.loadPeriods();
