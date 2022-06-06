@@ -80,49 +80,52 @@
           </ATATExpandableLink>
           <ATATAlert
             id="RequestPageAlert"
-            v-show="showAlert === true"
+            v-show="selectedFundOption === 'YES'"
             type="warning"
             class="copy-max-width mb-10"
           >
             <template v-slot:content>
-              <div v-if="isPeriodsDataMissing && !isClassificationDataMissing">
+              <div v-if="isPeriodsDataMissing && !isCostEstimateMissing">
                 <h3 class="h3">Your period of performance is missing.</h3>
                 <p class="mt-2 mb-0" id="AlertInfo">
-                  You can continue to add cloud resources and support packages, but we won’t be
-                  able to gather details about your unique requirements until we have this missing
-                  info. We recommend updating your PoP in the
+                  We will not be able to create your incremental funding plan until we have this
+                  missing info. We recommend completing the
                   <router-link
-                    id="Step5Link"
+                    id="PeriodOfPerformanceLink"
                     :to="{name: routeNames.PeriodOfPerformance}"
-                  >Contract Details section
+                  >Period of Performance section
                   </router-link>
                   before proceeding.
                 </p>
               </div>
-              <div v-if="isClassificationDataMissing && !isPeriodsDataMissing">
+              <div v-if="isCostEstimateMissing && !isPeriodsDataMissing">
                 <h3>Your classification requirements are missing.</h3>
                 <p class="mt-2 mb-0" id="AlertInfo">
-                  You can continue to add cloud resources and support packages, but we won’t be
-                  able to gather details about your unique requirements until we have this missing
-                  info. We recommend updating your classification requirements in the
+                  We will not be able to gather details for your incremental funding plan until we
+                  have this missing info. We recommend completing the
                   <router-link
-                    id="Step5Link"
-                    :to="{name: routeNames.ClassificationRequirements}"
-                  >Contract Details section
+                    id="RequirementsCostLink"
+                    :to="{name: routeNames.RequirementsCostEstimate}"
+                  >Requirements Cost Estimate section
                   </router-link>
                   before proceeding.
                 </p>
               </div>
-              <div v-if="isClassificationDataMissing && isPeriodsDataMissing">
+              <div v-if="isCostEstimateMissing && isPeriodsDataMissing">
                 <h3>Your period of performance and classification requirements are missing.</h3>
                 <p class="mt-2 mb-0" id="AlertInfo">
-                  You can continue to add cloud resources and support packages, but we won’t be
-                  able to gather details about your unique requirements until we have this missing
-                  info. We recommend
+                  We will not be able to gather details for your incremental funding plan until we
+                  have this missing info. We recommend completing the
                   <router-link
-                    id="Step5Link"
+                    id="PeriodOfPerformanceLink"
                     :to="{name: routeNames.PeriodOfPerformance}"
-                  >revisiting the Contract Details section
+                  >Period of Performance section
+                  </router-link>
+                  and the
+                  <router-link
+                    id="RequirementsCostLink"
+                    :to="{name: routeNames.RequirementsCostEstimate}"
+                  >Requirements Cost Estimate section
                   </router-link>
                   before proceeding.
                 </p>
@@ -142,6 +145,10 @@ import { RadioButton } from "../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+import Periods from "@/store/periods";
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import { RequirementsCostEstimateDTO, SensitiveInformationDTO } from "@/api/models";
+import { routeNames } from "@/router/stepper";
 
 @Component({
   components: {
@@ -152,7 +159,9 @@ import ATATAlert from "@/components/ATATAlert.vue";
 })
 export default class SeverabilityAndIncrementalFunding extends Vue {
   private selectedFundOption = ''
-  private showAlert = false
+  private isPeriodsDataMissing = false
+  private isCostEstimateMissing = false
+  private routeNames = routeNames
   private incrementallyFundOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -165,6 +174,25 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
       value: "NO",
     },
   ];
+
+  public async loadOnEnter(): Promise<void> {
+    const periods = await Periods.loadPeriods();
+    // const classifications = await classificationRequirements.getSelectedClassificationLevels()
+    if (periods && periods.length <= 0) {
+      this.isPeriodsDataMissing = true
+    }
+    const storeData = await AcquisitionPackage
+      .loadData<RequirementsCostEstimateDTO>(
+        {storeProperty: StoreProperties.RequirementsCostEstimate}
+      );
+    if (!storeData.surge_capabilities) {
+      this.isCostEstimateMissing = true
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
 }
 </script>
 
