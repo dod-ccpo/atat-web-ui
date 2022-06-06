@@ -15,8 +15,8 @@
       "Migration Tools",
       "Transformation Tools",
       "Cloud Development Tools",
-      "Cloud Audit/Monitoring Tools",
-      "Cyber Tools",
+      "Cloud Audit/Monitoring Tools Requires a waiver from DISA CIO",
+      "Cyber Tools Requires a waiver from DISA CIO",
       "Other"
     ]
   },
@@ -48,7 +48,7 @@
     "label": "Networking",
     "value": "NETWORKING",
     "serviceOfferings": [
-      "Cloud Service Provider(CSP) Network",
+      "Cloud Service Provider (CSP) Network",
       "Hybrid Network",
       "Custom Network",
       "Other"
