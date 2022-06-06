@@ -4,13 +4,13 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Let’s work on your performance requirements
+            Let's work on your performance requirements
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
               Through JWCC, you have the ability to procure many offerings for
               Anything as a Service (XaaS) and Cloud Support Packages. Specify
-              any categories that may apply to your acquisition below, and we’ll
+              any categories that may apply to your acquisition below, and we'll
               walk through each selection to get more details next.
               <a
                 role="button"
@@ -29,45 +29,32 @@
               class="copy-max-width mb-10"
             >
               <template v-slot:content>
-                <div v-if="isPeriodsDataMissing && !isClassificationDataMissing">
-                  <h3 class="h3">Your period of performance is missing.</h3>
+                <div v-if="isPeriodsDataMissing || isClassificationDataMissing">
+                  <h3 class="h3">Your
+                    <span v-if="isOnlyPoPyMissing">
+                      period of performance is
+                    </span>
+                    <span v-else-if="isOnlyClassificationMissing">
+                      classification requirements are
+                    </span>
+                    <span v-else-if="isPoPAndClassificationMissing">
+                      period of performance and classification requirements are
+                    </span>
+                    missing.</h3>
                   <p class="mt-2 mb-0" id="AlertInfo">
-                    You can continue to add cloud resources and support packages, but we won’t be
-                    able to gather details about your unique requirements until we have this missing
-                    info. We recommend updating your PoP in the
-                    <router-link
-                      id="Step5Link"
-                      :to="{name: routeNames.PeriodOfPerformance}"
-                    >Contract Details section
-                    </router-link>
-                    before proceeding.
-                  </p>
-                </div>
-                <div v-if="isClassificationDataMissing && !isPeriodsDataMissing">
-                  <h3>Your classification requirements are missing.</h3>
-                  <p class="mt-2 mb-0" id="AlertInfo">
-                    You can continue to add cloud resources and support packages, but we won’t be
-                    able to gather details about your unique requirements until we have this missing
-                    info. We recommend updating your classification requirements in the
-                    <router-link
-                      id="Step5Link"
-                      :to="{name: routeNames.ClassificationRequirements}"
-                    >Contract Details section
-                    </router-link>
-                    before proceeding.
-                  </p>
-                </div>
-                <div v-if="isClassificationDataMissing && isPeriodsDataMissing">
-                  <h3>Your period of performance and classification requirements are missing.</h3>
-                  <p class="mt-2 mb-0" id="AlertInfo">
-                    You can continue to add cloud resources and support packages, but we won’t be
+                    You can continue to add cloud resources and support packages, but we won't be
                     able to gather details about your unique requirements until we have this missing
                     info. We recommend
+                    <span v-if="isOnlyPoPyMissing">
+                      updating your PoP in the
+                    </span>
+                    <span v-else-if="isOnlyClassificationMissing">
+                      updating your classification requirements in the
+                    </span>
                     <router-link
                       id="Step5Link"
-                      :to="{name: routeNames.PeriodOfPerformance}"
-                    >revisiting the Contract Details section
-                    </router-link>
+                      :to="{name: route}"
+                    >{{ linkText }} Contract Details section</router-link>
                     before proceeding.
                   </p>
                 </div>
@@ -150,6 +137,30 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public xaaSNoneValue = "XaaS_NONE";
   public cloudNoneValue = "Cloud_NONE";
 
+  public get isPoPAndClassificationMissing(): boolean {
+    return this.isClassificationDataMissing && this.isPeriodsDataMissing;
+  }
+
+  public get isOnlyPoPyMissing(): boolean {
+    return !this.isClassificationDataMissing && this.isPeriodsDataMissing;
+  }
+
+  public get isOnlyClassificationMissing(): boolean {
+    return this.isClassificationDataMissing && !this.isPeriodsDataMissing;
+  }
+
+  public get route(): string {
+    return this.isOnlyClassificationMissing
+      ? this.routeNames.ClassificationRequirements
+      : this.routeNames.PeriodOfPerformance;
+  }
+
+  public get linkText(): string {
+    return this.isPoPAndClassificationMissing
+      ? "revisiting the"
+      : "";
+  }
+
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
@@ -179,7 +190,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       const cloudServiceCategories = ["advisory", "training"];
       if (!cloudServiceCategories.includes(checkboxItem.value.toLowerCase())) {
         if (checkboxItem.value.toLowerCase() === "general_xaas") {
-          checkboxItem.description = `Including third party marketplace and any 
+          checkboxItem.description = `Including third party marketplace and any
             other XaaS resources not covered in the categories above`;
         }
         this.xaasCheckboxItems.push(checkboxItem);
@@ -246,4 +257,3 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
 }
 </script>
-
