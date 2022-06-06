@@ -78,6 +78,57 @@
               </ol>
             </template>
           </ATATExpandableLink>
+          <ATATAlert
+            id="RequestPageAlert"
+            v-show="showAlert === true"
+            type="warning"
+            class="copy-max-width mb-10"
+          >
+            <template v-slot:content>
+              <div v-if="isPeriodsDataMissing && !isClassificationDataMissing">
+                <h3 class="h3">Your period of performance is missing.</h3>
+                <p class="mt-2 mb-0" id="AlertInfo">
+                  You can continue to add cloud resources and support packages, but we won’t be
+                  able to gather details about your unique requirements until we have this missing
+                  info. We recommend updating your PoP in the
+                  <router-link
+                    id="Step5Link"
+                    :to="{name: routeNames.PeriodOfPerformance}"
+                  >Contract Details section
+                  </router-link>
+                  before proceeding.
+                </p>
+              </div>
+              <div v-if="isClassificationDataMissing && !isPeriodsDataMissing">
+                <h3>Your classification requirements are missing.</h3>
+                <p class="mt-2 mb-0" id="AlertInfo">
+                  You can continue to add cloud resources and support packages, but we won’t be
+                  able to gather details about your unique requirements until we have this missing
+                  info. We recommend updating your classification requirements in the
+                  <router-link
+                    id="Step5Link"
+                    :to="{name: routeNames.ClassificationRequirements}"
+                  >Contract Details section
+                  </router-link>
+                  before proceeding.
+                </p>
+              </div>
+              <div v-if="isClassificationDataMissing && isPeriodsDataMissing">
+                <h3>Your period of performance and classification requirements are missing.</h3>
+                <p class="mt-2 mb-0" id="AlertInfo">
+                  You can continue to add cloud resources and support packages, but we won’t be
+                  able to gather details about your unique requirements until we have this missing
+                  info. We recommend
+                  <router-link
+                    id="Step5Link"
+                    :to="{name: routeNames.PeriodOfPerformance}"
+                  >revisiting the Contract Details section
+                  </router-link>
+                  before proceeding.
+                </p>
+              </div>
+            </template>
+          </ATATAlert>
         </div>
       </v-col>
     </v-row>
@@ -90,15 +141,18 @@ import { Component } from "vue-property-decorator";
 import { RadioButton } from "../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
   components: {
     ATATRadioGroup,
     ATATExpandableLink,
+    ATATAlert,
   }
 })
 export default class SeverabilityAndIncrementalFunding extends Vue {
   private selectedFundOption = ''
+  private showAlert = false
   private incrementallyFundOptions: RadioButton[] = [
     {
       id: "Yes",
