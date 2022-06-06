@@ -226,7 +226,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   @Watch("selectedHeaderLevelSysIds")
   public async updateInstances(newSysIds: string[]): Promise<void> {
-    // add to array of forms to show if selectedOption not in the list
+    // add to array of instance forms to show if selectedOption not in the list
+    // of previously selected classification levels
     newSysIds.forEach((selectedOption: string) => {
       if (this.headerCheckboxSelectedSysIds.indexOf(selectedOption) === -1) {
         this.headerCheckboxSelectedSysIds.push(selectedOption);
@@ -282,24 +283,23 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     await ClassificationRequirements.setSelectedClassificationLevels(arr);
     await this.setAvailableClassificationLevels();
     await this.buildNewClassificationInstances();
-    // this.checkSingleClassification(); // KEEP
   }
 
   public async clearUnselected(): Promise<void> {
     const filteredSelectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter(
-      sysId => this.avlClassificationLevelSysIds.includes(sysId)
+      classificationLevelSysId => 
+        this.avlClassificationLevelSysIds.includes(classificationLevelSysId)
     );
     this.selectedHeaderLevelSysIds = filteredSelectedHeaderLevelSysIds;
 
     const filteredHeaderChecked = this.headerCheckboxSelectedSysIds.filter(
-      sysId => this.avlClassificationLevelSysIds.includes(sysId)
+      classificationLevelSysId => 
+        this.avlClassificationLevelSysIds.includes(classificationLevelSysId)
     );
     this.headerCheckboxSelectedSysIds = filteredHeaderChecked;
     const filteredInstances = this.instancesFormData.filter((instance) => {
-      if (instance.sysId) {
-        return this.avlClassificationLevelSysIds.includes(instance.sysId);
-      }
-    });
+      return this.avlClassificationLevelSysIds.includes(instance.classificationLevelSysId);
+    }, this);
     this.instancesFormData = filteredInstances;
   }
 
