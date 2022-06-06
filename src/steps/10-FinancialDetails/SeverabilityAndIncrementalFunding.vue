@@ -177,10 +177,10 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
-    // const classifications = await classificationRequirements.getSelectedClassificationLevels()
     if (periods && periods.length <= 0) {
       this.isPeriodsDataMissing = true
     }
+    // in the future we will replace surge_capabilities with the actual data
     const storeData = await AcquisitionPackage
       .loadData<RequirementsCostEstimateDTO>(
         {storeProperty: StoreProperties.RequirementsCostEstimate}
