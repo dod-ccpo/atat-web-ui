@@ -21,8 +21,8 @@
         <p id="AlertInfo" class="mt-2 mb-0">
           <span v-if="!summaryPage">
             You can continue to add cloud resources and support packages, but we won't be
-          able to gather details about your unique requirements until we have this missing
-          info. We recommend
+            able to gather details about your unique requirements until we have this missing
+            info. We recommend
           <span v-if="isOnlyPoPyMissing">
             updating your PoP in the
           </span>
@@ -34,9 +34,9 @@
             :to="{name: route}"
           >{{ linkText }} Contract Details section</router-link>
           before proceeding.
-            </span>
+          </span>
           <span v-if="summaryPage">
-          We cannot gather some details about your unique requirements at this time.
+            We cannot gather some details about your unique requirements at this time.
             In order to finalize your performance requirements, you need to tell us about your
           <span v-if="isOnlyPoPyMissing">
             PoP in the
