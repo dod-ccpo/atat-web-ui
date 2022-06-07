@@ -134,7 +134,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     const xaasNone: Checkbox = {
       id: "XaaSNoneApply",
       label: "None of these apply to my acquisition.",
-      value: this.xaaSNoneValue, 
+      value: this.xaaSNoneValue,
     }
     this.xaasCheckboxItems.push(xaasNone)
 

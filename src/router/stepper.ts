@@ -388,6 +388,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonId: "DontNeedResources",
             buttonClass: "secondary",
             name: routeNames.ServiceOfferings, // functionality TBD in future ticket
+            actionName: "deleteServiceOfferingGroup",
           },
         ],
       },

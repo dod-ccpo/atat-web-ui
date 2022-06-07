@@ -109,13 +109,13 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 export const RequirementsPathResolver = (current: string): string =>
 {
-  
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
 
   if(current === routeNames.ClassificationRequirements){
     return basePerformanceRequirementsPath;
   }
+
 
   //if comming from Service Offerings and we have more
   // service offerings groups to navigate through
@@ -141,15 +141,19 @@ export const RequirementsPathResolver = (current: string): string =>
   return basePerformanceRequirementsPath;
 }
 
-export const OfferGroupOfferingsPathResolver = (current: string, 
-  direction: string): string => {
+export const OfferGroupOfferingsPathResolver = (
+  current: string, direction: string
+): string => {
 
-  if(DescriptionOfWork.currentGroupId === "XaaS_NONE")
-  {
-    //we go straight to the summary for now... 
-    //this might change slightly in the future...
+  // if no options selected on category page, 
+  // or if only "None apply" checkboxes checked, send to summary page
+  const DOWObject = DescriptionOfWork.DOWObject;
+  const noneApply = DOWObject.every((e) => {
+    return e.serviceOfferingGroupId.indexOf("NONE") > -1;
+  });
+  if (DOWObject.length === 0 || noneApply) {
     return descriptionOfWorkSummaryPath;
-  }
+  } 
 
   //handles moving backwards or forwards through service offerings
   if(current === routeNames.ServiceOfferingDetails &&

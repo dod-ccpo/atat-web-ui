@@ -233,7 +233,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
     value.forEach((value, index) => {
-      value.sequence = index;
+      value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index;
     });
     this.serviceOfferingGroups = value;
   }
