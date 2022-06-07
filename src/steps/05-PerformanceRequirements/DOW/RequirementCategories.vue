@@ -22,44 +22,11 @@
                 Learn more about categories.
               </a>
             </p>
-            <ATATAlert
-              id="CategoryPageAlert"
-              v-show="showAlert === true"
-              type="warning"
-              class="copy-max-width mb-10"
-            >
-              <template v-slot:content>
-                <div v-if="isPeriodsDataMissing || isClassificationDataMissing">
-                  <h3 class="h3">Your
-                    <span v-if="isOnlyPoPyMissing">
-                      period of performance is
-                    </span>
-                    <span v-else-if="isOnlyClassificationMissing">
-                      classification requirements are
-                    </span>
-                    <span v-else-if="isPoPAndClassificationMissing">
-                      period of performance and classification requirements are
-                    </span>
-                    missing.</h3>
-                  <p class="mt-2 mb-0" id="AlertInfo">
-                    You can continue to add cloud resources and support packages, but we won't be
-                    able to gather details about your unique requirements until we have this missing
-                    info. We recommend
-                    <span v-if="isOnlyPoPyMissing">
-                      updating your PoP in the
-                    </span>
-                    <span v-else-if="isOnlyClassificationMissing">
-                      updating your classification requirements in the
-                    </span>
-                    <router-link
-                      id="Step5Link"
-                      :to="{name: route}"
-                    >{{ linkText }} Contract Details section</router-link>
-                    before proceeding.
-                  </p>
-                </div>
-              </template>
-            </ATATAlert>
+            <DOWAlert
+              v-show="showAlert"
+              :isPeriodsDataMissing="isPeriodsDataMissing"
+              :isClassificationDataMissing="isClassificationDataMissing"
+            />
             <ATATCheckboxGroup
               id="XaaSCheckboxes"
               aria-describedby="XaaSLabel"
@@ -112,14 +79,14 @@ import { routeNames } from "../../../router/stepper"
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
-import ATATAlert from "@/components/ATATAlert.vue";
 import classificationRequirements from "@/store/classificationRequirements";
+import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 
 @Component({
   components: {
     ATATCheckboxGroup,
     PerfReqLearnMore,
-    ATATAlert,
+    DOWAlert
   }
 })
 
@@ -137,29 +104,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public xaaSNoneValue = "XaaS_NONE";
   public cloudNoneValue = "Cloud_NONE";
 
-  public get isPoPAndClassificationMissing(): boolean {
-    return this.isClassificationDataMissing && this.isPeriodsDataMissing;
-  }
 
-  public get isOnlyPoPyMissing(): boolean {
-    return !this.isClassificationDataMissing && this.isPeriodsDataMissing;
-  }
 
-  public get isOnlyClassificationMissing(): boolean {
-    return this.isClassificationDataMissing && !this.isPeriodsDataMissing;
-  }
-
-  public get route(): string {
-    return this.isOnlyClassificationMissing
-      ? this.routeNames.ClassificationRequirements
-      : this.routeNames.PeriodOfPerformance;
-  }
-
-  public get linkText(): string {
-    return this.isPoPAndClassificationMissing
-      ? "revisiting the"
-      : "";
-  }
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {

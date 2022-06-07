@@ -11,29 +11,12 @@
             edits at any time. When you are ready to wrap up this section, we will move on to
             government furnished equipment.
           </p>
-          <ATATAlert
-            id="CategoryPageAlert"
-            v-show="showAlert === true"
-            type="warning"
-            class="copy-max-width mb-10"
-          >
-            <template v-slot:content>
-              <div v-if="isClassificationDataMissing && isPeriodsDataMissing">
-                <h3>Your period of performance and classification requirements are missing.</h3>
-                <p class="mt-2 mb-0" id="AlertInfo">
-                  You can continue to add cloud resources and support packages, but we won’t be
-                  able to gather details about your unique requirements until we have this missing
-                  info. We recommend
-                  <router-link
-                    id="Step5Link"
-                    :to="{name: routeNames.PeriodOfPerformance}"
-                  >revisiting the Contract Details section
-                  </router-link>
-                  before proceeding.
-                </p>
-              </div>
-            </template>
-          </ATATAlert>
+          <DOWAlert
+            v-show="showAlert"
+            :isPeriodsDataMissing="isPeriodsDataMissing"
+            :isClassificationDataMissing="isClassificationDataMissing"
+            summaryPage=true
+          />
         </div>
       </v-col>
     </v-row>
@@ -46,13 +29,14 @@ import { Component } from "vue-property-decorator";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { SlideoutPanelContent } from "../../../../types/Global";
-import PerfReqLearnMore from "@/steps/05-PerformanceRequirements/DOW/PerfReqLearnMore.vue";
-import SlideoutPanel from "@/store/slideoutPanel";
+import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
+
 
 @Component({
   components: {
     ATATAlert,
+    DOWAlert,
+
   }
 })
 export default class Summary extends Vue {
@@ -64,9 +48,12 @@ export default class Summary extends Vue {
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels()
-    if (periods && periods.length <= 0 && classifications && classifications.length <= 0) {
+    if (periods && periods.length <= 0) {
       this.showAlert = true
       this.isPeriodsDataMissing = true
+    }
+    if (classifications && classifications.length <= 0) {
+      this.showAlert = true
       this.isClassificationDataMissing = true
     }
   }
