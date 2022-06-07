@@ -6,7 +6,7 @@
           <div class="copy-max-width">
             <div 
               v-for="(instance, index) in _instances" 
-              :key="instance.classificationLevelLabels.shortLabel"
+              :key="instance.labelShort"
             >
               <span v-if="avlInstancesLength > 1">
                 <hr />
@@ -15,7 +15,7 @@
                   class="mb-5"
                 >
                   {{ index + 1 }}. Tell us about the 
-                  {{ instance.classificationLevelLabels.shortLabel }} instance
+                  {{ instance.labelShort }} instance
                 </h2>
               </span>
 

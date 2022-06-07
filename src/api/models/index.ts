@@ -106,6 +106,7 @@ export interface SystemChoiceDTO extends BaseTableDTO {
   name: string;
   label: string;
   value: string;
+  sequence?: number;
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
