@@ -188,11 +188,6 @@ export interface invalidFile{
   statusCode?: number;
 }
 
-export interface DOWInstanceClassificationLevelLabels {
-  longLabel: string;
-  shortLabel: string;
-}
-
 export interface DOWPoP {
   label: string;
   sysId: string;
@@ -200,12 +195,13 @@ export interface DOWPoP {
 
 export interface DOWClassificationInstance {
   sysId?: string;
-  classificationLevelLabels?: DOWInstanceClassificationLevelLabels;
   impactLevel: string; // for sorting
   classificationLevelSysId: string;
   anticipatedNeedUsage: string;
   entireDuration: string;
   selectedPeriods?: DOWPoP[];
+  labelLong?: string;
+  labelShort?: string;
 }
 
 export interface DOWServiceOffering {
@@ -219,6 +215,7 @@ export interface DOWServiceOffering {
 
 export interface DOWServiceOfferingGroup {
   serviceOfferingGroupId: string;
+  sequence: number;
   serviceOfferings: DOWServiceOffering[];
 }
 

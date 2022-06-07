@@ -135,7 +135,7 @@ export const RequirementsPathResolver = (current: string): string =>
     }
     DescriptionOfWork.setCurrentOffering(lastOfferingForGroup);
       
-    return getServiceOfferingsDetailsPath(previousGroup, lastOfferingForGroup);
+    return getServiceOfferingsDetailsPath(previousGroup, lastOfferingForGroup.name);
   }
     
   return basePerformanceRequirementsPath;
@@ -182,7 +182,7 @@ export const OfferGroupOfferingsPathResolver = (current: string,
       }
       DescriptionOfWork.setCurrentOffering(previousServiceOffering);
 
-      return getServiceOfferingsDetailsPath(groupId, previousServiceOffering);
+      return getServiceOfferingsDetailsPath(groupId, previousServiceOffering.name);
     }
 
     //at the beginning of service offerings for a given offering group
@@ -209,7 +209,7 @@ export const OfferGroupOfferingsPathResolver = (current: string,
         throw new Error(`unable to get last offering for group ${previousGroup}`);
       }
       DescriptionOfWork.setCurrentOffering(lastServiceOfferingForGroup);
-      return getServiceOfferingsDetailsPath(previousGroup, lastServiceOfferingForGroup);
+      return getServiceOfferingsDetailsPath(previousGroup, lastServiceOfferingForGroup.name);
     }
 
     //not at the beginning of service offerings or offering groups
@@ -231,7 +231,7 @@ export const OfferGroupOfferingsPathResolver = (current: string,
 
         DescriptionOfWork.setCurrentOffering(serviceOffering);
 
-        return getServiceOfferingsDetailsPath(groupId, serviceOffering);
+        return getServiceOfferingsDetailsPath(groupId, serviceOffering.name);
 
       }
       else{
@@ -251,7 +251,7 @@ export const OfferGroupOfferingsPathResolver = (current: string,
           throw new Error(`unable to get last offering for group ${previousGroup}`);
         }
         DescriptionOfWork.setCurrentOffering(lastServiceOfferingForGroup);
-        return getServiceOfferingsDetailsPath(previousGroup, lastServiceOfferingForGroup);
+        return getServiceOfferingsDetailsPath(previousGroup, lastServiceOfferingForGroup.name);
       }
     }     
   }
