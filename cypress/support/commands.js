@@ -35,7 +35,10 @@ import commonCorAcor from '../selectors/commonCorAcor.sel';
 import acor from '../selectors/acor.sel';
 import background from '../selectors/background.sel';
 import contractDetails from '../selectors/contractDetails.sel';
-import { cleanText, colors } from "../helpers";
+import { 
+  cleanText, 
+  colors,   
+} from "../helpers";
 import sac from '../selectors/standComp.sel';
 import occ from '../selectors/occ.sel'
 
@@ -769,9 +772,12 @@ Cypress.Commands.add("select508Option", (radioSelector, value) => {
     });
 });
 
-Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {  
+Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
   cy.selectCheckBoxes(checkboxes);
   cy.btnClick(common.continueBtn, " Continue ");
       
-})
+});
 
+Cypress.Commands.add("deselectAllCheckboxes", () => {  
+  cy.findElement("[type='checkbox']").uncheck({ force: true })
+});
