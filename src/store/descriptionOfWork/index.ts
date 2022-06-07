@@ -318,7 +318,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
-    debugger;
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
