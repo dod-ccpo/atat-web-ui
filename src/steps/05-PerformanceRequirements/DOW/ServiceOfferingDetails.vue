@@ -336,6 +336,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       if (e.sys_id) {
         this.avlClassificationLevelSysIds.push(e.sys_id);
       }
+      if (e.impact_level === "IL6") {
+        this.isIL6Selected = "true";
+      }
     });
     this.headerCheckboxItems 
       = this.createCheckboxItems(this.avlClassificationLevelObjects);
