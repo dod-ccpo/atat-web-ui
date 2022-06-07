@@ -1,6 +1,6 @@
 <template>
   <div class="mb-7">
-    <v-container fluid class="container-max-width">
+    <v-container class="container-max-width" fluid>
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
@@ -14,55 +14,52 @@
               walk through each selection to get more details next.
               <a
                 role="button"
+                tabindex="0"
                 @click="openSlideoutPanel"
                 @keydown.enter="openSlideoutPanel"
                 @keydown.space="openSlideoutPanel"
-                tabindex="0"
               >
                 Learn more about categories.
               </a>
             </p>
-            </div>
+          </div>
           <div class="container-max-width">
             <DOWAlert
               v-show="showAlert"
-              :isPeriodsDataMissing="isPeriodsDataMissing"
               :isClassificationDataMissing="isClassificationDataMissing"
+              :isPeriodsDataMissing="isPeriodsDataMissing"
             />
           </div>
           <div class="copy-max-width">
-          <ATATCheckboxGroup
+            <ATATCheckboxGroup
               id="XaaSCheckboxes"
-              aria-describedby="XaaSLabel"
-              :value.sync="selectedXaasOptions"
-              :items="xaasCheckboxItems"
               :card="false"
-              class="copy-max-width"
+              :items="xaasCheckboxItems"
+              :noneValue="this.xaaSNoneValue"
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
+              :value.sync="selectedXaasOptions"
+              aria-describedby="XaaSLabel"
+              class="copy-max-width"
               groupLabel="What type of XaaS resources, tools and services do you need?"
               groupLabelId="XaaSLabel"
-              :noneValue="this.xaaSNoneValue"
             />
-
             <hr/>
-
             <ATATCheckboxGroup
               id="CloudSupportCheckboxes"
-              aria-describedby="CloudSupportLabel"
-              :value.sync="cloudSupportSelectedOptions"
-              :items="cloudSupportCheckboxItems"
               :card="false"
-              class="copy-max-width"
+              :items="cloudSupportCheckboxItems"
+              :noneValue="this.cloudNoneValue"
               :rules="[
                 $validators.required('Please select at least one option.')
               ]"
+              :value.sync="cloudSupportSelectedOptions"
+              aria-describedby="CloudSupportLabel"
+              class="copy-max-width"
               groupLabel="What type(s) of cloud support packages do you need?"
               groupLabelId="CloudSupportLabel"
-              :noneValue="this.cloudNoneValue"
             />
-
           </div>
         </v-col>
       </v-row>
@@ -96,27 +93,23 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 
 export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public selectedXaasOptions: string[] = [];
+  public cloudSupportSelectedOptions: string[] = [];
+  public xaaSNoneValue = "XaaS_NONE";
+  public cloudNoneValue = "Cloud_NONE";
   private xaasCheckboxItems: Checkbox[] = [];
   private serviceOfferingGroups: SystemChoiceDTO[] = [];
   private isPeriodsDataMissing = false
   private isClassificationDataMissing = false
   private showAlert = false
   private routeNames = routeNames
-
-  public cloudSupportSelectedOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
-  public xaaSNoneValue = "XaaS_NONE";
-  public cloudNoneValue = "Cloud_NONE";
-
-
-
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
-    }
-  }
+    };
+  };
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
@@ -124,11 +117,11 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     if (periods && periods.length <= 0) {
       this.showAlert = true
       this.isPeriodsDataMissing = true
-    }
+    };
     if (classifications && classifications.length <= 0) {
       this.showAlert = true
       this.isClassificationDataMissing = true
-    }
+    };
     this.serviceOfferingGroups = await DescriptionOfWork.getServiceOfferingGroups();
     this.serviceOfferingGroups.forEach((serviceOfferingGroup) => {
       const checkboxItem: Checkbox = {
@@ -142,11 +135,11 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         if (checkboxItem.value.toLowerCase() === "general_xaas") {
           checkboxItem.description = `Including third party marketplace and any
             other XaaS resources not covered in the categories above`;
-        }
+        };
         this.xaasCheckboxItems.push(checkboxItem);
       } else {
         this.cloudSupportCheckboxItems.push(checkboxItem);
-      }
+      };
 
       const selectedOfferingGroups = DescriptionOfWork.selectedServiceOfferingGroups;
       const validSelections = selectedOfferingGroups.reduce<string[]>((accumulator, current) => {
@@ -163,21 +156,17 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
       id: "XaaSNoneApply",
       label: "None of these apply to my acquisition.",
       value: this.xaaSNoneValue,
-    }
+    };
     this.xaasCheckboxItems.push(xaasNone)
 
     const cloudSupportNone: Checkbox = {
       id: "CloudSupportNoneApply",
       label: "None of these apply to my acquisition.",
       value: this.cloudNoneValue,
-    }
+    };
     this.cloudSupportCheckboxItems.push(cloudSupportNone)
 
-  }
-
-  private getIdText(string: string) {
-    return getIdText(string);
-  }
+  };
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -188,7 +177,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
 
 
-  }
+  };
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
@@ -203,7 +192,11 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     }
 
     return true;
-  }
+  };
 
-}
+  private getIdText(string: string) {
+    return getIdText(string);
+  };
+
+};
 </script>

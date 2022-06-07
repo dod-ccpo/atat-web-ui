@@ -11,6 +11,8 @@
             edits at any time. When you are ready to wrap up this section, we will move on to
             government furnished equipment.
           </p>
+        </div>
+        <div class="container-max-width">
           <DOWAlert
             v-show="showAlert"
             :isPeriodsDataMissing="isPeriodsDataMissing"
@@ -51,16 +53,16 @@ export default class Summary extends Vue {
     if (periods && periods.length <= 0) {
       this.showAlert = true
       this.isPeriodsDataMissing = true
-    }
+    };
     if (classifications && classifications.length <= 0) {
       this.showAlert = true
       this.isClassificationDataMissing = true
-    }
-  }
+    };
+  };
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-  }
+  };
 }
 </script>
 
