@@ -1,7 +1,7 @@
 <template>
   <ATATAlert
     id="CategoryPageAlert"
-    class="copy-max-width mb-10"
+    class="mb-10"
     type="warning"
   >
     <template v-slot:content>

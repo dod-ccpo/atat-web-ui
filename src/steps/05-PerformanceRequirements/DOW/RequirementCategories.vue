@@ -4,13 +4,13 @@
       <v-row>
         <v-col class="col-12">
           <h1 class="page-header">
-            Let's work on your performance requirements
+            Let’s work on your performance requirements
           </h1>
           <div class="copy-max-width">
             <p class="mb-10">
               Through JWCC, you have the ability to procure many offerings for
               Anything as a Service (XaaS) and Cloud Support Packages. Specify
-              any categories that may apply to your acquisition below, and we'll
+              any categories that may apply to your acquisition below, and we’ll
               walk through each selection to get more details next.
               <a
                 role="button"
@@ -22,12 +22,16 @@
                 Learn more about categories.
               </a>
             </p>
+            </div>
+          <div class="container-max-width">
             <DOWAlert
               v-show="showAlert"
               :isPeriodsDataMissing="isPeriodsDataMissing"
               :isClassificationDataMissing="isClassificationDataMissing"
             />
-            <ATATCheckboxGroup
+          </div>
+          <div class="copy-max-width">
+          <ATATCheckboxGroup
               id="XaaSCheckboxes"
               aria-describedby="XaaSLabel"
               :value.sync="selectedXaasOptions"
