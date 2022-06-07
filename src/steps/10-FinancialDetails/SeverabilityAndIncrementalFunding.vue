@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="container-max-width">
+  <v-container class="container-max-width" fluid>
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
@@ -13,12 +13,12 @@
             projected schedule for your incremental funding next.
           </p>
           <ATATRadioGroup
-            class="copy-max-width mb-5 max-width-640"
             id="IncrementallyFundOptions"
             :card="true"
             :items="incrementallyFundOptions"
-            :value.sync="selectedFundOption"
             :rules="[$validators.required('Please select an option')]"
+            :value.sync="selectedFundOption"
+            class="copy-max-width mb-5 max-width-640"
           />
           <ATATExpandableLink aria-id="IFPFAQ1">
             <template v-slot:header>
@@ -79,54 +79,43 @@
             </template>
           </ATATExpandableLink>
           <ATATAlert
-            id="RequestPageAlert"
-            v-show="selectedFundOption === 'YES'"
-            type="warning"
+            id="IFPRequestPageAlert"
             class="copy-max-width mb-10"
+            type="warning"
           >
             <template v-slot:content>
-              <div v-if="isPeriodsDataMissing && !isCostEstimateMissing">
-                <h3 class="h3">Your period of performance is missing.</h3>
-                <p class="mt-2 mb-0" id="AlertInfo">
+              <div v-if="isPeriodsDataMissing || isCostEstimateMissing">
+                <h3 class="h3">Your
+                  <span v-if="isOnlyPoPyMissing">
+                    period of performance is
+                  </span>
+                  <span v-else-if="isOnlyCostEstimateMissing">
+                    requirements cost estimate is
+                  </span>
+                  <span v-else-if="isPoPAndClassificationMissing">
+                    period of performance and classification requirements are
+                  </span>
+                  missing.</h3>
+                  <p id="AlertInfo" class="mt-2 mb-0">
                   We will not be able to create your incremental funding plan until we have this
                   missing info. We recommend completing the
-                  <router-link
-                    id="PeriodOfPerformanceLink"
-                    :to="{name: routeNames.PeriodOfPerformance}"
-                  >Period of Performance section
-                  </router-link>
-                  before proceeding.
-                </p>
-              </div>
-              <div v-if="isCostEstimateMissing && !isPeriodsDataMissing">
-                <h3>Your classification requirements are missing.</h3>
-                <p class="mt-2 mb-0" id="AlertInfo">
-                  We will not be able to gather details for your incremental funding plan until we
-                  have this missing info. We recommend completing the
-                  <router-link
-                    id="RequirementsCostLink"
-                    :to="{name: routeNames.RequirementsCostEstimate}"
-                  >Requirements Cost Estimate section
-                  </router-link>
-                  before proceeding.
-                </p>
-              </div>
-              <div v-if="isCostEstimateMissing && isPeriodsDataMissing">
-                <h3>Your period of performance and classification requirements are missing.</h3>
-                <p class="mt-2 mb-0" id="AlertInfo">
-                  We will not be able to gather details for your incremental funding plan until we
-                  have this missing info. We recommend completing the
-                  <router-link
-                    id="PeriodOfPerformanceLink"
-                    :to="{name: routeNames.PeriodOfPerformance}"
-                  >Period of Performance section
-                  </router-link>
-                  and the
-                  <router-link
-                    id="RequirementsCostLink"
-                    :to="{name: routeNames.RequirementsCostEstimate}"
-                  >Requirements Cost Estimate section
-                  </router-link>
+                  <span v-if="isPoPAndClassificationMissing">
+                    <router-link
+                      id="Step5Link"
+                      :to="{name: routeNames.PeriodOfPerformance}"
+                    > Period of performance</router-link>
+                    and the
+                    <router-link
+                      id="Step5Link"
+                      :to="{name: routeNames.RequirementsCostEstimate}"
+                    > Requirements Cost Estimate Section</router-link>
+                  </span>
+                  <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
+                    <router-link
+                      id="Step5Link"
+                      :to="{name: route}"
+                    > {{ linkText }}</router-link>
+                  </span>
                   before proceeding.
                 </p>
               </div>
@@ -147,7 +136,7 @@ import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import Periods from "@/store/periods";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { RequirementsCostEstimateDTO, SensitiveInformationDTO } from "@/api/models";
+import { RequirementsCostEstimateDTO } from "@/api/models";
 import { routeNames } from "@/router/stepper";
 
 @Component({
@@ -174,6 +163,39 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
       value: "NO",
     },
   ];
+
+  public get isPoPAndClassificationMissing(): boolean {
+    if (this.isCostEstimateMissing && this.isPeriodsDataMissing) {
+      return this.isCostEstimateMissing && this.isPeriodsDataMissing;
+    }
+    return false
+  }
+
+  public get isOnlyPoPyMissing(): boolean {
+    if (!this.isCostEstimateMissing && this.isPeriodsDataMissing) {
+      return !this.isCostEstimateMissing && this.isPeriodsDataMissing;
+    }
+    return false
+  }
+
+  public get isOnlyCostEstimateMissing(): boolean {
+    if (this.isCostEstimateMissing && !this.isPeriodsDataMissing) {
+      return this.isCostEstimateMissing && !this.isPeriodsDataMissing;
+    }
+    return false
+  }
+
+  public get route(): string {
+    return this.isOnlyCostEstimateMissing
+      ? this.routeNames.RequirementsCostEstimate
+      : this.routeNames.PeriodOfPerformance;
+  }
+
+  public get linkText(): string {
+    return this.isOnlyCostEstimateMissing
+      ? "Requirements Cost Estimate section"
+      : "Period of Performance section";
+  }
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
