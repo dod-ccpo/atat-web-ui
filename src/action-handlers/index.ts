@@ -27,9 +27,7 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
 
 // used in Performance Requirements when user clicks "I don't need these cloud resources" button
 async function deleteServiceOfferingGroup() {
-
   await DescriptionOfWork.removeCurrentOfferingGroup();
-  
 
   router.push({
     name: "pathResolver",

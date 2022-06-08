@@ -235,6 +235,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
     value.forEach((value, index) => {
+      // ensure "none apply" options are last in sequence
       value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index;
     });
     this.serviceOfferingGroups = value;
@@ -252,6 +253,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.lastGroupRemoved = bool;
   }
 
+  // removes current offering group if user clicks  the "I don't need these cloud resources"
+  // button or does not select any offerings and clicks "Continue" button
   @Mutation
   public async removeCurrentOfferingGroup(): Promise<void> {
     if (!this.currentGroupRemoved) {
