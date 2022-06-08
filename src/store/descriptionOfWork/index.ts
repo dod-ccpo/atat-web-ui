@@ -62,7 +62,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get currentOfferingIndex(): number {
-
     const groupIndex = this.currentOfferingGroupIndex;
     const offeringIndex = groupIndex > -1 ? this.DOWObject[groupIndex]
       .serviceOfferings.findIndex(offering=> offering.name 
@@ -75,6 +74,12 @@ export class DescriptionOfWorkStore extends VuexModule {
     return groupIndex > -1 ? this.DOWObject[groupIndex].serviceOfferings : [];
   }
 
+  public get validServiceGroups(): DOWServiceOfferingGroup[] {
+    return this.DOWObject.filter(
+      obj => obj.serviceOfferingGroupId.indexOf("NONE") === -1
+    );
+  }
+
   public get isEndOfServiceOfferings(): boolean {
     
     const offerings =  this.serviceOfferingsForGroup;
@@ -84,9 +89,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get isEndOfServiceGroups(): boolean {
-    const groupIndex = this.DOWObject
+    const groupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
-    return (groupIndex + 1) === this.DOWObject.length;
+    return (groupIndex + 1) === this.validServiceGroups.length;
   }
 
   public get isAtBeginningOfServiceOfferings(): boolean {
@@ -97,7 +102,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get isAtBeginningOfServiceGroups(): boolean {
-    const groupIndex = this.DOWObject
+    const groupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
     return groupIndex === 0;
 
@@ -257,7 +262,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
   public async removeCurrentOfferingGroup(): Promise<void> {
-    debugger;
     if (!this.currentGroupRemoved) {
       const groupIdToRemove = this.currentGroupId;
       const groupIndex = this.DOWObject.findIndex(
