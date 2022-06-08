@@ -78,28 +78,29 @@
               </ol>
             </template>
           </ATATExpandableLink>
-          <ATATAlert
-            id="IFPRequestPageAlert"
-            class="copy-max-width mb-10"
-            type="warning"
-          >
-            <template v-slot:content>
-              <div v-if="isPeriodsDataMissing || isCostEstimateMissing">
-                <h3 class="h3">Your
-                  <span v-if="isOnlyPoPyMissing">
+          <div v-if="showAlert()">
+            <ATATAlert
+              id="IFPRequestPageAlert"
+              class="copy-max-width mb-10"
+              type="warning"
+            >
+              <template v-slot:content>
+                <div v-if="isPeriodsDataMissing || isCostEstimateMissing">
+                  <h3 class="h3">Your
+                    <span v-if="isOnlyPoPyMissing">
                     period of performance is
                   </span>
-                  <span v-else-if="isOnlyCostEstimateMissing">
+                    <span v-else-if="isOnlyCostEstimateMissing">
                     requirements cost estimate is
                   </span>
-                  <span v-else-if="isPoPAndClassificationMissing">
-                    period of performance and classification requirements are
+                    <span v-else-if="isPoPAndClassificationMissing">
+                    period of performance and requirements cost estimate are
                   </span>
-                  missing.</h3>
+                    missing.</h3>
                   <p id="AlertInfo" class="mt-2 mb-0">
-                  We will not be able to create your incremental funding plan until we have this
-                  missing info. We recommend completing the
-                  <span v-if="isPoPAndClassificationMissing">
+                    We will not be able to create your incremental funding plan until we have this
+                    missing info. We recommend completing the
+                    <span v-if="isPoPAndClassificationMissing">
                     <router-link
                       id="Step5Link"
                       :to="{name: routeNames.PeriodOfPerformance}"
@@ -110,17 +111,18 @@
                       :to="{name: routeNames.RequirementsCostEstimate}"
                     > Requirements Cost Estimate Section</router-link>
                   </span>
-                  <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
+                    <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
                     <router-link
                       id="Step5Link"
                       :to="{name: route}"
                     > {{ linkText }}</router-link>
                   </span>
-                  before proceeding.
-                </p>
-              </div>
-            </template>
-          </ATATAlert>
+                    before proceeding.
+                  </p>
+                </div>
+              </template>
+            </ATATAlert>
+          </div>
         </div>
       </v-col>
     </v-row>
@@ -129,7 +131,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import { RadioButton } from "../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -163,6 +165,15 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
       value: "NO",
     },
   ];
+
+  @Watch("selectedFundOption")
+  protected showAlert(): boolean {
+    if(this.selectedFundOption == "YES" && (this.isPeriodsDataMissing|| this.isCostEstimateMissing))
+    {
+      return true
+    }
+    return false
+  }
 
   public get isPoPAndClassificationMissing(): boolean {
     if (this.isCostEstimateMissing && this.isPeriodsDataMissing) {
