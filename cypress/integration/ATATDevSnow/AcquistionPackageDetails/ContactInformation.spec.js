@@ -77,11 +77,25 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
 
     //Salutation dropdown
     cy.dropDownClick(contact.salutationDropDownIcon);
-    const salutationDropdownList = "Mr.Mrs.MissMs.Dr."
-    cy.findElement(contact.salutationDropDownList).then(($el) => {
-      console.log($el.text());
-      expect(Cypress.$($el).text()).to.eq(salutationDropdownList);
-    });
+    
+    const salutationDropdownList = [
+      "Mr.",
+      "Mrs.",
+      "Miss",
+      "Ms.",
+      "Dr.",
+    ];
+    let foundDropdownList = 0
+    //Verify the list in the dropdown
+    cy.findElement(contact.salutationDropDownList)
+      .children()
+      .each(($el) => {
+        const text = $el.text();
+        if (salutationDropdownList.indexOf(text) > -1) {
+          foundDropdownList++
+        };
+        return foundDropdownList === salutationDropdownList.length;
+      })  
         
     //select the salutationfrom dropdown
     cy.findElement(contact.salutationDropdownListItemMr)
@@ -327,4 +341,5 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
         
   });  
   
-});      
+});    
+  
