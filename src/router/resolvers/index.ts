@@ -153,6 +153,7 @@ export const OfferGroupOfferingsPathResolver = (
     return e.serviceOfferingGroupId.indexOf("NONE") > -1;
   });
   const lastGroupRemoved = DescriptionOfWork.lastGroupRemoved;
+  debugger;
   if (DOWObject.length === 0 || onlyNoneApplySelected || atLastNoneApply || lastGroupRemoved) {
     DescriptionOfWork.setLastGroupRemoved(false);
     return descriptionOfWorkSummaryPath;
@@ -271,10 +272,11 @@ export const OfferingDetailsPathResolver =(): string => {
   const groupId = DescriptionOfWork.currentGroupId;
   if (DescriptionOfWork.currentGroupRemoved) {
     DescriptionOfWork.setCurrentGroupRemoved(false);
-    if (groupId) {
+    if (groupId && !DescriptionOfWork.lastGroupRemoved) {
       return getOfferingGroupServicesPath(groupId);
     }
     // if last group removed, currentGroupId === "", send to summary page
+    DescriptionOfWork.setLastGroupRemoved(false);
     return descriptionOfWorkSummaryPath;   
   } 
   

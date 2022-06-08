@@ -257,6 +257,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
   public async removeCurrentOfferingGroup(): Promise<void> {
+    debugger;
     if (!this.currentGroupRemoved) {
       const groupIdToRemove = this.currentGroupId;
       const groupIndex = this.DOWObject.findIndex(
@@ -288,32 +289,36 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
-    selectedOfferingGroups.forEach((selectedOfferingGroup) => {
-      if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
-        const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroup)
-        const offeringGroup: DOWServiceOfferingGroup = {
-          serviceOfferingGroupId: selectedOfferingGroup,
-          sequence: group?.sequence || 99,
-          serviceOfferings: []
+    if (selectedOfferingGroups.length) {
+      selectedOfferingGroups.forEach((selectedOfferingGroup) => {
+        if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
+          const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroup)
+          const offeringGroup: DOWServiceOfferingGroup = {
+            serviceOfferingGroupId: selectedOfferingGroup,
+            sequence: group?.sequence || 99,
+            serviceOfferings: []
+          }
+          this.DOWObject.push(offeringGroup);
         }
-        this.DOWObject.push(offeringGroup);
-      }
-      // remove any groups that were previously checked
-      this.DOWObject.forEach((offeringGroup, index) => {
-        const groupId = offeringGroup.serviceOfferingGroupId;
-        if (!selectedOfferingGroups.includes(groupId)) {
-          this.DOWObject.splice(index, 1);
-          // todo future ticket - remove from SNOW db
-        }
+        // remove any groups that were previously checked
+        this.DOWObject.forEach((offeringGroup, index) => {
+          const groupId = offeringGroup.serviceOfferingGroupId;
+          if (!selectedOfferingGroups.includes(groupId)) {
+            this.DOWObject.splice(index, 1);
+            // todo future ticket - remove from SNOW db
+          }
+        });
+
+        this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
       });
+    } else {
+      this.DOWObject = [];
+    }
+    this.currentGroupId = this.DOWObject.length > 0 ? 
+      this.DOWObject[0].serviceOfferingGroupId : "";
+    this.currentOfferingName = "";
+    this.currentOfferingSysId = "";
 
-      this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-
-      this.currentGroupId = this.DOWObject.length > 0 ? 
-        this.DOWObject[0].serviceOfferingGroupId : "";
-      this.currentOfferingName = "";
-      this.currentOfferingSysId = "";
-    });
   }
 
   @Mutation
