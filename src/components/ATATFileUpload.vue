@@ -27,7 +27,7 @@
           <div
             v-if="isFullSize"
             class="content d-flex flex-column align-center pt-9"
-            @click="fileUploadClicked"
+            @mousedown="fileUploadClicked"
           >
             <ATATSVGIcon name="uploadFile" :width="40" :height="50" />
             <h2 class="mt-5">Drag and Drop</h2>
@@ -42,12 +42,12 @@
                 browse to upload
               </a>
             </p>
-            <p class="mt-3 mb-9">Use a PDF file with a max size of 10 MB.</p>
+            <p class="mt-3 mb-9">Use a PDF file with a max size of 1 GB.</p>
           </div>
           <div
             v-else
             class="content-mini d-flex align-center width-100"
-            @click="fileUploadClicked"
+            @mousedown="fileUploadClicked"
           >
             <div>
               <ATATSVGIcon name="uploadFile" :width="40" :height="50" />
@@ -60,13 +60,13 @@
                   role="button"
                   id="BrowseToUpload"
                   class="_text-link ml-1"
-                  @mousedown="fileUploadClicked"
+                  @click="fileUploadClicked"
                 >
                   browse to upload
                 </a>
               </p>
             </div>
-            <p class="ml-auto mb-0">Use a PDF file with a max size of 10 MB.</p>
+            <p class="ml-auto mb-0">Use a PDF file with a max size of 1 GB.</p>
           </div>
         </template>
       </v-file-input>
@@ -148,10 +148,17 @@ export default class ATATFileUpload extends Vue {
   /**
    * triggers html file upload click
    */
-  private fileUploadClicked(): void {
-    this.fileUploadControl.click();
-  }
+  private fileUploadClicked(event: Event): void {
+    const eventSrc = event.target as HTMLElement;
+    if (eventSrc.classList.contains("_text-link")) {
+      event.preventDefault();
+      event.stopPropagation();}
 
+    (document.getElementById("FundingPlanFileUpload") as HTMLInputElement).click();
+    this.reset();
+    this.isFullSize = this.validFiles.length === 0;
+  }
+  // 
   /**
    * 1. sets uploadedFiles data
    * 2. removes unnecessary vuetify status msg
@@ -167,6 +174,9 @@ export default class ATATFileUpload extends Vue {
       if (vuetifyFileUploadStatus) {
         vuetifyFileUploadStatus.innerHTML = "";
       }
+      Vue.nextTick(()=>{
+        this.clearHTMLFileInput();
+      })
     });
   }
 
@@ -181,6 +191,7 @@ export default class ATATFileUpload extends Vue {
     this.isHovering = true;
     this.isFullSize = this.validFiles.length === 0;
     this.reset();
+    this.clearHTMLFileInput();
   }
 
   /**
@@ -345,8 +356,6 @@ export default class ATATFileUpload extends Vue {
   private clearErrorMessages(): void {
     // if (this.errorMessages.length>0){
     Vue.nextTick(() => {
-      // const formChildren = this.$refs.atatFileUploadForm.$children;
-      // formChildren.forEach(ref=> ((ref as unknown) as {errorMessages:[]}).errorMessages = []);
       this.$refs.atatFileUploadForm.reset();
       Vue.nextTick(() => {
         this.$refs.atatFileUploadForm.resetValidation();
@@ -360,13 +369,15 @@ export default class ATATFileUpload extends Vue {
       this._invalidFiles = [];
       this.clearErrorMessages();
       this.errorMessages = [];
-
-      // clear out any files 'left over' in the
-      // HTML file input
-      (
-        document.getElementById("FundingPlanFileUpload") as HTMLInputElement
-      ).value = "";
     });
+  }
+
+  /**
+   * Clears out all files form HTML File Input
+   */
+  private clearHTMLFileInput():void{
+    const fileInput = document.getElementById("FundingPlanFileUpload") as HTMLInputElement;
+    fileInput.value = "";
   }
 
   //life cycle hooks

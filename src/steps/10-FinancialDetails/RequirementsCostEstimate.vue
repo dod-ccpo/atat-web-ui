@@ -100,7 +100,7 @@ export default class RequirementsCostEstimate extends Mixins(SaveOnLeave) {
       StoreProperties.RequirementsCostEstimate});
     if (storeData) {
       this.savedData.surge_capabilities = storeData.surge_capabilities;
-      this.surgeCapabilities = storeData.surge_capabilities;
+      this.surgeCapabilities = storeData.surge_capabilities || "";
     }
   }
 

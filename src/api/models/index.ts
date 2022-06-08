@@ -107,6 +107,7 @@ export interface SystemChoiceDTO extends BaseTableDTO {
   name: string;
   label: string;
   value: string;
+  sequence?: number;
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
@@ -133,8 +134,10 @@ export interface SensitiveInformationDTO extends BaseTableDTO {
 }
 
 export interface ServiceOfferingDTO extends BaseTableDTO {
+  description: string;
   name: string;
   service_offering_group: string;
+  sequence: string;
 }
 
 export interface PeriodOfPerformanceDTO extends BaseTableDTO {
@@ -154,7 +157,8 @@ export interface ContractTypeDTO extends BaseTableDTO {
 }
 
 export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-    surge_capabilities: string;
+    surge_capabilities?: string;
+    estimatedTaskOrderValue?: string;
 }
 
 export interface RequiredServicesDTO extends BaseTableDTO {

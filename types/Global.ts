@@ -22,6 +22,7 @@ export interface StepperStep {
   subSteps?: StepperStep[];
   additionalButtons?: AdditionalButton[];
   backButtonText?: string;
+  continueButtonText?:string;
 }
 
 /**
@@ -60,9 +61,10 @@ interface StepperRouteBase {
     /**
      * A handler to 
      */
-    routeResolver?: (currentRoute: string) => string;
+    routeResolver?: (currentRoute: string, direction: string) => string;
     additionalButtons?: AdditionalButton[];
     backButtonText?: string;
+    continueButtonText?: string;
 }
 
 /**
@@ -161,10 +163,16 @@ export interface isValidObj {
 }
 
 export interface mask {
-  placeholder: string;
-  jitMasking: boolean;
+  placeholder?: string;
+  jitMasking?: boolean;
   regex?: string;
   mask?: string[];
+  alias?: string;
+  groupSeparator?: string;
+  autoGroup?: boolean;
+  digits?: number;
+  digitsOptional?: boolean;
+  rightAlign?: boolean;
 }
 
 export interface uploadingFile{
@@ -185,3 +193,36 @@ export interface invalidFile{
   SNOWError?: string;
   statusCode?: number;
 }
+
+export interface DOWPoP {
+  label: string;
+  sysId: string;
+}
+
+export interface DOWClassificationInstance {
+  sysId?: string;
+  impactLevel: string; // for sorting
+  classificationLevelSysId: string;
+  anticipatedNeedUsage: string;
+  entireDuration: string;
+  selectedPeriods?: DOWPoP[];
+  labelLong?: string;
+  labelShort?: string;
+}
+
+export interface DOWServiceOffering {
+  name: string;
+  otherOfferingName?: string;
+  "sys_id": string;
+  description: string;
+  classificationInstances?: DOWClassificationInstance[];
+  sequence: string;
+}
+
+export interface DOWServiceOfferingGroup {
+  serviceOfferingGroupId: string;
+  sequence: number;
+  serviceOfferings: DOWServiceOffering[];
+}
+
+

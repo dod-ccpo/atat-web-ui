@@ -265,11 +265,17 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
+  estimatedTaskOrderValue: string | null =  null;
 
   public initContact: ContactDTO = initialContact();
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
+  }
+
+  @Mutation
+  public setEstimatedTaskOrderValue(value: string): void {
+    this.estimatedTaskOrderValue = value;
   }
 
   @Mutation
@@ -380,7 +386,9 @@ export class AcquisitionPackageStore extends VuexModule {
 
   @Mutation
   public setRequirementsCostEstimate(value: RequirementsCostEstimateDTO): void {
-    this.requirementsCostEstimate = value;
+    this.requirementsCostEstimate = this.requirementsCostEstimate
+      ? Object.assign(this.requirementsCostEstimate, value)
+      : value;
   }
 
   @Action
@@ -439,7 +447,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContractConsiderations(initialContractConsiderations());
           this.setFundingPlans("");
           this.setFairOpportunity(initialFairOpportunity());
-          this.setRequirementsCostEstimate({ surge_capabilities: "" });
+          this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
@@ -509,7 +517,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.ProjectOverview]: "project_overview",
     [StoreProperties.PeriodOfPerformance]: "period_of_performance",
     [StoreProperties.Periods]: "periods",
-    [StoreProperties.RequirementsCostEstimate]: "requirements_const_estimate",
+    [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level"
   }

@@ -1,13 +1,15 @@
 export type StepRouteResolver = (current: string) => string;
+export type StepPathResolver = (current: string, direction: string)=> string;
 export interface StepInfo {
     stepNumber: string;
     stepName: string;
     stepLabel: string;
     prev: string | undefined;
     next: string | undefined;
-    resolver: StepRouteResolver | undefined;
+    resolver: StepRouteResolver | StepPathResolver | undefined;
     additionalButtons: AdditionalButton[];
     backButtonText: string | undefined;
+    continueButtonText: string | undefined;
 }
 
 export interface AdditionalButton {

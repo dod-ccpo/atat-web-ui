@@ -89,6 +89,7 @@ export default class ATATTextField extends Vue  {
   @Prop() private extraEmitVal!: string;
   @Prop({ default: ()=>[] }) private mask!: string[];
   @Prop({ default: false }) private isMaskRegex!: boolean;
+  @Prop({ default: false }) private isCurrency!: boolean;
   
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -117,24 +118,32 @@ export default class ATATTextField extends Vue  {
   }
 
   private setMasks(): void {
-    if (this.mask.length > 0){
+    const maskObj: mask = {};
+
+    if (this.isCurrency){
+      maskObj.alias = "numeric";
+      maskObj.groupSeparator = ",";
+      maskObj.digits = 2;
+      maskObj.autoGroup = true;
+      maskObj.digitsOptional = false;
+      maskObj.rightAlign=false;
+    } else if (this.mask.length > 0){
+      if (this.isMaskRegex){
+        maskObj.regex = this.mask[0] || "";
+      } else {
+        maskObj.mask = this.mask || [];
+      }
+    }
+    
+    if (Object.keys(maskObj).length>0){
+      maskObj.placeholder="";
+      maskObj.jitMasking=true;
       Vue.nextTick(()=>{
         const inputField = document.getElementById(
           this.id + '_text_field'
         ) as HTMLInputElement;
-
-        const maskObj: mask ={
-          placeholder: "",
-          jitMasking: true
-        }
-        if (this.isMaskRegex){
-          maskObj.regex = this.mask[0] || "";
-        } else {
-          maskObj.mask = this.mask || [];
-        }
         Inputmask(maskObj).mask(inputField);
-        
-      })
+      });
     }
     
   }

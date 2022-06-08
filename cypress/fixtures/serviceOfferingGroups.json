@@ -1,0 +1,154 @@
+[
+  {
+    "label": "Compute",
+    "value": "COMPUTE",
+    "serviceOfferingCypressLabels": [
+      "Other"
+    ]
+  },
+  {
+    "label": "Developer Tools and Services",
+    "value": "DEVELOPERTOOLS",
+    "serviceOfferingCypressLabels": [
+      "DevSecOps",
+      "Data Management",
+      "Migration Tools",
+      "Transformation Tools",
+      "Cloud Development Tools",
+      "Cloud Audit/Monitoring Tools Requires a waiver from DISA CIO",
+      "Cyber Tools Requires a waiver from DISA CIO",
+      "Other"
+    ],
+    "serviceOfferingMainLabels": [
+      "DevSecOps",
+      "Data Management",
+      "Migration Tools",
+      "Transformation Tools",
+      "Cloud Development Tools",
+      "Cloud Audit/Monitoring Tools",
+      "Cyber Tools",
+      "Other"
+    ]
+
+  },
+  {
+    "label": "Applications",
+    "value": "APPLICATIONS",
+    "serviceOfferingCypressLabels": [
+      "Application",
+      "Web app",
+      "Database",
+      "Monitoring Tools Requires a waiver from DISA CIO",
+      "Discrete Platform as a Service (PaaS)",
+      "Discrete Software as a Service (SaaS)",
+      "Other"
+    ],
+    "serviceOfferingMainLabels": [
+      "Application",
+      "Web app",
+      "Database",
+      "Monitoring Tools",
+      "Discrete Platform as a Service (PaaS)",
+      "Discrete Software as a Service (SaaS)",
+      "Other"
+    ]
+  },
+  {
+    "label": "Advanced Technology and Algorithmic Techniques (Machine Learning)",
+    "value": "MACHINELEARNING",
+    "serviceOfferingCypressLabels": [
+      "Specialized Tools",
+      "Specialized Applications",
+      "Specialized Platform as a Service (PaaS)",
+      "Specialized Software as a Service (SaaS)",
+      "Other"
+    ]
+  },
+  {
+    "label": "Networking",
+    "value": "NETWORKING",
+    "serviceOfferingCypressLabels": [
+      "Cloud Service Provider (CSP) Network",
+      "Hybrid Network",
+      "Custom Network",
+      "Other"
+    ]
+  },
+  {
+    "label": "Security",
+    "value": "SECURITY",
+    "serviceOfferingCypressLabels": [
+      "Security Services",
+      "CSP Cloud Security",
+      "Zero Trust/Permissive Trust Security",
+      "Custom Security",
+      "Other"
+    ]
+  },
+  {
+    "label": "Database with Storage",
+    "value": "DATABASE",
+    "serviceOfferingCypressLabels": [
+      "Database services",
+      "Horizontal (typical transaction database row manage)",
+      "Vertical (attribute database/column managed)",   
+      "Graph Database (node edge managed)",
+      "Other"
+    ]
+  },
+  {
+    "label": "Edge Computing and Tactical Edge (TE)",
+    "value": "EDGECOMPUTING",
+    "serviceOfferingCypressLabels": [
+      "Remotable Technology",
+      "Mobile Technology",
+      "Perimeter Technology",
+      "Conditional Flag indicating military hardening",   
+      "Other"
+    ]
+  },
+  {
+    "label": "Internet of Things (IoT)",
+    "value": "IOT",
+    "serviceOfferingCypressLabels": [
+      "IoT Edge",
+      "IoT Software as a Service (SaaS)",    
+      "IoT Platform as a Service (PaaS)",   
+      "Other"
+    ]
+  },
+  {
+    "label": "General Iaas, PaaS, and SaaS Including third party marketplace and any other XaaS resources not covered in the categories above",
+    "value": "GENERALXAAS",
+    "serviceOfferingCypressLabels": [ 
+      "Other"
+    ]
+  },
+  {
+    "label": "None of these apply to my acquisition.",
+    "value": "XaaSNoneApply"
+  },
+  {
+    "label": "Advisory and Assistance",
+    "value": "ADVISORY",
+    "serviceOfferingCypressLabels": [ 
+      "Simple Challenge",
+      "Moderate Challenge",
+      "Complex Challenge"  
+    ]
+  },
+  {
+    "label": "Training",
+    "value": "TRAINING",
+    "serviceOfferingCypressLabels": [ 
+      "OCONUS",
+      "OCONUS Local CSP Facility",
+      "OCONUS Local Government Facility",
+      "OCONUS Web based Training"    
+    ]
+  },
+  {
+    "label": "None of these apply to my acquisition.",
+    "value": "CloudSupportNoneApply"
+  }
+]

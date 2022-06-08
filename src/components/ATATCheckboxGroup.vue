@@ -1,5 +1,10 @@
 <template>
   <div :id="id">
+
+    <p v-if="groupLabel" :id="groupLabelId" class="_checkbox-group-label">
+      {{ groupLabel }}
+    </p>
+
     <v-checkbox
       v-for="(item, index) in items"
       v-model="_selected"
@@ -92,7 +97,9 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "" }) private otherValueRequiredMessage!: string;
   @Prop({ default: "NONE" }) private noneValue!: string;
   @Prop({ default: "" }) private otherValue!: string;
-  @Prop() private id!: string;
+  @Prop({ default: "CheckboxGroup" }) private id!: string;
+  @Prop({ default: "CheckboxGroupLabel" }) private groupLabelId!: string;
+  @Prop() private groupLabel!: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
 
   // data, methods, watchers, etc.
@@ -182,7 +189,9 @@ export default class ATATCheckboxGroup extends Vue {
     } else {
       setTimeout(() => {
         const checkbox = this.$refs.checkboxGroup;
-        this.errorMessages = checkbox[0].errorBucket;
+        if (checkbox.length) {
+          this.errorMessages = checkbox[0].errorBucket;
+        }
       }, 0)
     }
   } 
@@ -190,11 +199,24 @@ export default class ATATCheckboxGroup extends Vue {
     this.errorMessages = [];
   } 
 
-  public mounted(): void {
+  private setEventListeners(): void {
     document.querySelectorAll('input[type="checkbox"]').forEach((elem) => {
       const checkbox = elem as HTMLInputElement;
       checkbox.addEventListener("blur", this.setCheckboxEventListeners);
-    });  
+    });   
+  }
+
+  @Watch("items")
+  protected checkboxItemsChange(): void {
+    if (this.items.length) {
+      this.$nextTick(() => {
+        this.setEventListeners();
+      })
+    }
+  }
+  
+  public mounted(): void {
+    this.setEventListeners();
   }
 
   public setCheckboxEventListeners(event: FocusEvent): void {
