@@ -162,18 +162,15 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get nextOfferingGroup(): string | undefined {
-
-    
-
-    const currentGroupIndex = this.DOWObject
+    const currentGroupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
       return undefined;
     }
 
-    if((currentGroupIndex + 2) <= this.DOWObject.length){
-      const nextGroup = this.DOWObject[currentGroupIndex + 1].serviceOfferingGroupId;
+    if((currentGroupIndex + 2) <= this.validServiceGroups.length){
+      const nextGroup = this.validServiceGroups[currentGroupIndex + 1].serviceOfferingGroupId;
       return nextGroup;
     }
 
@@ -182,7 +179,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   public get prevOfferingGroup(): string | undefined {
 
-    const currentGroupIndex = this.DOWObject
+    const currentGroupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
@@ -190,20 +187,20 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   
     const groupIndex = currentGroupIndex > 0 ? currentGroupIndex - 1 :  currentGroupIndex;
-    const nextGroup = this.DOWObject[groupIndex].serviceOfferingGroupId;
+    const nextGroup = this.validServiceGroups[groupIndex].serviceOfferingGroupId;
     return nextGroup;
   }
 
   public get lastOfferingForGroup(): { name: string, sysId: string } | undefined {
 
-    const currentGroupIndex = this.DOWObject
+    const currentGroupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
       return undefined;
     }
   
-    const lastOffering =  last(this.DOWObject[currentGroupIndex].serviceOfferings);
+    const lastOffering =  last(this.validServiceGroups[currentGroupIndex].serviceOfferings);
 
     return lastOffering 
       ? { name: lastOffering.name, sysId: lastOffering.sys_id } 
@@ -318,8 +315,10 @@ export class DescriptionOfWorkStore extends VuexModule {
     } else {
       this.DOWObject = [];
     }
-    this.currentGroupId = this.DOWObject.length > 0 ? 
-      this.DOWObject[0].serviceOfferingGroupId : "";
+    this.currentGroupId = this.DOWObject.length > 0 
+      && this.DOWObject[0].serviceOfferingGroupId.indexOf("NONE") === -1 
+      ? this.DOWObject[0].serviceOfferingGroupId 
+      : "";
     this.currentOfferingName = "";
     this.currentOfferingSysId = "";
 

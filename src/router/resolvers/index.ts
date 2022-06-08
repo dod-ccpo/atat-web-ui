@@ -144,7 +144,6 @@ export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
   DescriptionOfWork.setCurrentGroupRemoved(false);
-
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
   const DOWObject = DescriptionOfWork.DOWObject;
@@ -207,7 +206,7 @@ export const OfferGroupOfferingsPathResolver = (
       {
         throw new Error('unable to get previous offering group');
       }
-   
+
       DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
       const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
    
@@ -249,7 +248,7 @@ export const OfferGroupOfferingsPathResolver = (
         {
           throw new Error('unable to get previous offering group');
         }
-  
+
         DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
         const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
   
@@ -268,7 +267,13 @@ export const OfferGroupOfferingsPathResolver = (
 }
 
 //this will always return the path for the current group and the current offering
-export const OfferingDetailsPathResolver =(): string => {
+export const OfferingDetailsPathResolver = (): string => {
+  if (!DescriptionOfWork.prevOfferingGroup && !DescriptionOfWork.currentGroupId) {
+    // only "none apply" options selected.
+    return basePerformanceRequirementsPath;
+    // future todo: route to step 4 summary if user lands on DOW Summary from other step
+  }
+
   const groupId = DescriptionOfWork.currentGroupId;
   if (DescriptionOfWork.currentGroupRemoved) {
     DescriptionOfWork.setCurrentGroupRemoved(false);
@@ -282,6 +287,7 @@ export const OfferingDetailsPathResolver =(): string => {
   
   const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
   return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`; 
+
 
 }
 
