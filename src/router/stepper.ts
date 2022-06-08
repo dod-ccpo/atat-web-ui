@@ -389,7 +389,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t need these cloud resources",
             buttonId: "DontNeedResources",
             buttonClass: "secondary",
-            name: routeNames.ServiceOfferings, // functionality TBD in future ticket
+            actionName: "deleteServiceOfferingGroup",
           },
         ],
       },

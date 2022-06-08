@@ -93,8 +93,8 @@ export const ContractTrainingReq = (current: string): string => {
     : routeNames.Training;
 };
 
-const basePerformanceRequirementsPath =  `performance-requirements`;
-const descriptionOfWorkSummaryPath=  "performance-requirements/dow-summary";
+const basePerformanceRequirementsPath =  "performance-requirements";
+const descriptionOfWorkSummaryPath = "performance-requirements/dow-summary";
 
 const baseOfferingDetailsPath =  `${basePerformanceRequirementsPath}/service-offering-details/`;
 const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
@@ -109,7 +109,6 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 export const RequirementsPathResolver = (current: string): string =>
 {
-  
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
 
@@ -141,19 +140,26 @@ export const RequirementsPathResolver = (current: string): string =>
   return basePerformanceRequirementsPath;
 }
 
-export const OfferGroupOfferingsPathResolver = (current: string, 
-  direction: string): string => {
+export const OfferGroupOfferingsPathResolver = (
+  current: string, direction: string
+): string => {
+  DescriptionOfWork.setCurrentGroupRemoved(false);
+  // if no options selected on category page, or if only "None apply" checkboxes checked, 
+  // or if last group was removed, send to summary page
+  const DOWObject = DescriptionOfWork.DOWObject;
+  const atLastNoneApply = DescriptionOfWork.currentGroupId === DescriptionOfWork.cloudNoneValue;
+  const onlyNoneApplySelected = DOWObject.every((e) => {
+    return e.serviceOfferingGroupId.indexOf("NONE") > -1;
+  });
+  const lastGroupRemoved = DescriptionOfWork.lastGroupRemoved;
 
-  if(DescriptionOfWork.currentGroupId === "XaaS_NONE")
-  {
-    //we go straight to the summary for now... 
-    //this might change slightly in the future...
+  if (DOWObject.length === 0 || onlyNoneApplySelected || atLastNoneApply || lastGroupRemoved) {
+    DescriptionOfWork.setLastGroupRemoved(false);
     return descriptionOfWorkSummaryPath;
-  }
-
+  } 
   //handles moving backwards or forwards through service offerings
-  if(current === routeNames.ServiceOfferingDetails &&
-     direction.toUpperCase() === RouteDirection.PREVIOUS)
+  if (current === routeNames.ServiceOfferingDetails &&
+    direction.toUpperCase() === RouteDirection.PREVIOUS)
   {  
     const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
     const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
@@ -200,7 +206,7 @@ export const OfferGroupOfferingsPathResolver = (current: string,
       {
         throw new Error('unable to get previous offering group');
       }
-   
+
       DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
       const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
    
@@ -242,7 +248,7 @@ export const OfferGroupOfferingsPathResolver = (current: string,
         {
           throw new Error('unable to get previous offering group');
         }
-  
+
         DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
         const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
   
@@ -261,16 +267,36 @@ export const OfferGroupOfferingsPathResolver = (current: string,
 }
 
 //this will always return the path for the current group and the current offering
-export const OfferingDetailsPathResolver =(): string => {
+export const OfferingDetailsPathResolver = (current: string): string => {
+  if (!DescriptionOfWork.prevOfferingGroup && !DescriptionOfWork.currentGroupId) {
+    // only "none apply" options selected.
+    if (current === routeNames.DOWSummary) {
+      return basePerformanceRequirementsPath;
+      // future todo: route to step 4 summary if user lands on DOW Summary from other step  
+    } else {
+      DescriptionOfWork.setLastGroupRemoved(false);
+      return descriptionOfWorkSummaryPath;    
+    }
+  }
 
-  const groupId = DescriptionOfWork.currentGroupId
+  const groupId = DescriptionOfWork.currentGroupId;
+  if (DescriptionOfWork.currentGroupRemoved) {
+    DescriptionOfWork.setCurrentGroupRemoved(false);
+    if (groupId && !DescriptionOfWork.lastGroupRemoved) {
+      return getOfferingGroupServicesPath(groupId);
+    }
+    // if last group removed, currentGroupId === "", send to summary page
+    DescriptionOfWork.setLastGroupRemoved(false);
+    return descriptionOfWorkSummaryPath;   
+  } 
+  
   const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
-  return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;
+  return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`; 
+
 
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  
   // coming from service offering details step
   if(current === routeNames.ServiceOfferingDetails){
     const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
@@ -290,7 +316,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       }
 
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
-      return OfferingDetailsPathResolver();
+      return OfferingDetailsPathResolver(current);
     }
 
     if(!atOfferingsEnd && !atServicesEnd){
@@ -304,7 +330,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       }
 
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
-      return OfferingDetailsPathResolver();
+      return OfferingDetailsPathResolver(current);
     }
 
     if(!atOfferingsEnd && atServicesEnd){
@@ -319,15 +345,9 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       DescriptionOfWork.setCurrentOfferingGroupId(nextOfferingGroup);
       return OfferGroupOfferingsPathResolver(current , direction);
     }
-
-    //should never get here
-    return OfferingDetailsPathResolver();
-
-
   }
-  else{
-    return OfferingDetailsPathResolver();
-  }
+
+  return OfferingDetailsPathResolver(current);
 }
 
 // add resolver here so that it can be found by invoker

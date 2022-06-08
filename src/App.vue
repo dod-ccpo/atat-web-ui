@@ -187,8 +187,9 @@ export default class App extends Vue {
       const actionArgs = button.actionArgs || [];
       await actionHandler(button.actionName, actionArgs);
     }
-
-    this.$router.push({ name: button.name });
+    if (button.name) {
+      this.$router.push({ name: button.name });
+    }
   }
 }
 </script>
