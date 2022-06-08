@@ -12,17 +12,57 @@
             government furnished equipment.
           </p>
         </div>
+        <div class="container-max-width">
+          <DOWAlert
+            v-show="showAlert"
+            :isPeriodsDataMissing="isPeriodsDataMissing"
+            :isClassificationDataMissing="isClassificationDataMissing"
+            summaryPage=true
+          />
+        </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
-
+import { routeNames } from "../../../router/stepper"
 import { Component } from "vue-property-decorator";
+import Periods from "@/store/periods";
+import classificationRequirements from "@/store/classificationRequirements";
+import ATATAlert from "@/components/ATATAlert.vue";
+import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 
-@Component({})
+
+@Component({
+  components: {
+    ATATAlert,
+    DOWAlert,
+
+  }
+})
 export default class Summary extends Vue {
+  private isPeriodsDataMissing = false
+  private isClassificationDataMissing = false
+  private showAlert = false
+  private routeNames = routeNames
+
+  public async loadOnEnter(): Promise<void> {
+    const periods = await Periods.loadPeriods();
+    const classifications = await classificationRequirements.getSelectedClassificationLevels()
+    if (periods && periods.length <= 0) {
+      this.showAlert = true
+      this.isPeriodsDataMissing = true
+    };
+    if (classifications && classifications.length <= 0) {
+      this.showAlert = true
+      this.isClassificationDataMissing = true
+    };
+  };
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  };
 }
 </script>
 
