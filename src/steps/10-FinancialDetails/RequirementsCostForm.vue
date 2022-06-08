@@ -9,7 +9,7 @@
           class="_input-max-width"
           label="Requirements Cost Estimate"
           id="TemporaryCostField"
-          mask=[9,999.99]
+          :isCurrency="true"
           :value.sync="costEstimate"
         />
       </v-col>
