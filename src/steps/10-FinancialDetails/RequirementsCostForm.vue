@@ -36,12 +36,11 @@ import ATATTextField from "../../components/ATATTextField.vue";
 export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
   private costEstimate = "";
 
-
   private get currentData(): RequirementsCostEstimateDTO {
     return {
       estimatedTaskOrderValue: this.costEstimate,
     };
-  }
+  };
 
   private savedData: RequirementsCostEstimateDTO = {
     estimatedTaskOrderValue: "",
@@ -49,7 +48,7 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
-  }
+  };
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await AcquisitionPackage.estimatedTaskOrderValue;
@@ -59,7 +58,7 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
     const estimatedTaskOrderValue = AcquisitionPackage.estimatedTaskOrderValue;
     this.savedData.estimatedTaskOrderValue = estimatedTaskOrderValue || "";
 
-  }
+  };
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
@@ -72,9 +71,9 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
     }
 
     return true;
-  }
+  };
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-  }
-}
+  };
+};
 </script>
