@@ -265,12 +265,22 @@ export class DescriptionOfWorkStore extends VuexModule {
         e => e.serviceOfferingGroupId === groupIdToRemove
       );
 
+      const DOWObjectBeforeRemoval = _.clone(this.DOWObject);
+      // remove group from DOWObject
+      this.DOWObject = this.DOWObject.filter(
+        obj => obj.serviceOfferingGroupId !== groupIdToRemove
+      );
+  
+      const onlyNoneRemain = this.DOWObject.every((e) => {
+        return e.serviceOfferingGroupId.indexOf("NONE") > -1;
+      });
+
       // check if last group was removed
-      if (groupIndex === this.DOWObject.length - 1) {
+      if (groupIndex === DOWObjectBeforeRemoval.length - 1 || onlyNoneRemain) {
         this.lastGroupRemoved = true;
         // set currentGroupId to previous if has one
-        if (this.DOWObject.length > 1) {
-          this.currentGroupId = this.DOWObject[groupIndex -1].serviceOfferingGroupId;
+        if (DOWObjectBeforeRemoval.length > 1 && !onlyNoneRemain) {
+          this.currentGroupId = DOWObjectBeforeRemoval[groupIndex -1].serviceOfferingGroupId;
         } else {
           // removed group was last in DOWObject, clear currentGroupId
           this.currentGroupId = "";
@@ -278,12 +288,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       } else {
         this.lastGroupRemoved = false;
         // set currentGroupId to next group in DOWObject
-        this.currentGroupId = this.DOWObject[groupIndex + 1].serviceOfferingGroupId;
+        this.currentGroupId = DOWObjectBeforeRemoval[groupIndex + 1].serviceOfferingGroupId;
       }
-      // remove group from DOWObject
-      this.DOWObject = this.DOWObject.filter(
-        obj => obj.serviceOfferingGroupId !== groupIdToRemove
-      );
       this.currentGroupRemoved = true; 
     }
   }

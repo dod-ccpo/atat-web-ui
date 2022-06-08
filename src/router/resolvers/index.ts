@@ -267,11 +267,16 @@ export const OfferGroupOfferingsPathResolver = (
 }
 
 //this will always return the path for the current group and the current offering
-export const OfferingDetailsPathResolver = (): string => {
+export const OfferingDetailsPathResolver = (current: string): string => {
   if (!DescriptionOfWork.prevOfferingGroup && !DescriptionOfWork.currentGroupId) {
     // only "none apply" options selected.
-    return basePerformanceRequirementsPath;
-    // future todo: route to step 4 summary if user lands on DOW Summary from other step
+    if (current === routeNames.DOWSummary) {
+      return basePerformanceRequirementsPath;
+      // future todo: route to step 4 summary if user lands on DOW Summary from other step  
+    } else {
+      DescriptionOfWork.setLastGroupRemoved(false);
+      return descriptionOfWorkSummaryPath;    
+    }
   }
 
   const groupId = DescriptionOfWork.currentGroupId;
@@ -311,7 +316,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       }
 
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
-      return OfferingDetailsPathResolver();
+      return OfferingDetailsPathResolver(current);
     }
 
     if(!atOfferingsEnd && !atServicesEnd){
@@ -325,7 +330,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       }
 
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
-      return OfferingDetailsPathResolver();
+      return OfferingDetailsPathResolver(current);
     }
 
     if(!atOfferingsEnd && atServicesEnd){
@@ -342,7 +347,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
     }
   }
 
-  return OfferingDetailsPathResolver();
+  return OfferingDetailsPathResolver(current);
 }
 
 // add resolver here so that it can be found by invoker
