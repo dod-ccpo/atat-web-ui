@@ -106,6 +106,7 @@ export interface SystemChoiceDTO extends BaseTableDTO {
   name: string;
   label: string;
   value: string;
+  sequence?: number;
 }
 
 export interface SensitiveInformationDTO extends BaseTableDTO {
@@ -155,7 +156,8 @@ export interface ContractTypeDTO extends BaseTableDTO {
 }
 
 export interface RequirementsCostEstimateDTO extends BaseTableDTO {
-    surge_capabilities: string;
+    surge_capabilities?: string;
+    estimatedTaskOrderValue?: string;
 }
 export interface GFEOverviewDTO extends BaseTableDTO {
   dpas_unit_identification_code?: string;

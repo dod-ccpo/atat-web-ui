@@ -189,7 +189,9 @@ export default class ATATCheckboxGroup extends Vue {
     } else {
       setTimeout(() => {
         const checkbox = this.$refs.checkboxGroup;
-        this.errorMessages = checkbox[0].errorBucket;
+        if (checkbox.length) {
+          this.errorMessages = checkbox[0].errorBucket;
+        }
       }, 0)
     }
   } 
