@@ -90,8 +90,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   public cloudSupportSelectedOptions: string[] = [];
   private cloudSupportCheckboxItems: Checkbox[] = [];
-  public xaaSNoneValue = "XaaS_NONE";
-  public cloudNoneValue = "Cloud_NONE";
+  public xaaSNoneValue = DescriptionOfWork.xaaSNoneValue;
+  public cloudNoneValue = DescriptionOfWork.cloudNoneValue;
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {

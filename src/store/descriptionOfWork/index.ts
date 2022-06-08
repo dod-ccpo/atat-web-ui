@@ -46,12 +46,14 @@ export class DescriptionOfWorkStore extends VuexModule {
   currentOfferingName = "";
   currentOfferingSysId = "";
 
+  xaaSNoneValue = "XaaS_NONE";
+  cloudNoneValue = "Cloud_NONE";
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
     nameofProperty(this, (x) => x.serviceOfferingGroups),
   ];
-
   
   // getters
   public get currentOfferingGroupIndex(): number {
@@ -238,6 +240,49 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.serviceOfferingGroups = value;
   }
 
+  public currentGroupRemoved = false;
+  public lastGroupRemoved = false;
+
+  @Mutation
+  public setCurrentGroupRemoved(bool: boolean): void {
+    this.currentGroupRemoved = bool;
+  }
+  @Mutation
+  public setLastGroupRemoved(bool: boolean): void {
+    this.lastGroupRemoved = bool;
+  }
+
+  @Mutation
+  public async removeCurrentOfferingGroup(): Promise<void> {
+    if (!this.currentGroupRemoved) {
+      const groupIdToRemove = this.currentGroupId;
+      const groupIndex = this.DOWObject.findIndex(
+        e => e.serviceOfferingGroupId === groupIdToRemove
+      );
+
+      // check if last group was removed
+      if (groupIndex === this.DOWObject.length - 1) {
+        this.lastGroupRemoved = true;
+        // set currentGroupId to previous if has one
+        if (this.DOWObject.length > 1) {
+          this.currentGroupId = this.DOWObject[groupIndex -1].serviceOfferingGroupId;
+        } else {
+          // removed group was last in DOWObject, clear currentGroupId
+          this.currentGroupId = "";
+        }
+      } else {
+        this.lastGroupRemoved = false;
+        // set currentGroupId to next group in DOWObject
+        this.currentGroupId = this.DOWObject[groupIndex + 1].serviceOfferingGroupId;
+      }
+      // remove group from DOWObject
+      this.DOWObject = this.DOWObject.filter(
+        obj => obj.serviceOfferingGroupId !== groupIdToRemove
+      );
+      this.currentGroupRemoved = true; 
+    }
+  }
+
   @Mutation
   public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
     selectedOfferingGroups.forEach((selectedOfferingGroup) => {
@@ -245,7 +290,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroup)
         const offeringGroup: DOWServiceOfferingGroup = {
           serviceOfferingGroupId: selectedOfferingGroup,
-          sequence: group?.sequence || 0,
+          sequence: group?.sequence || 99,
           serviceOfferings: []
         }
         this.DOWObject.push(offeringGroup);
@@ -318,7 +363,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
-    debugger;
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );

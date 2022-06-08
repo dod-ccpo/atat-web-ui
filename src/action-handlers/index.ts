@@ -1,12 +1,16 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
+import router from "@/router";
+
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
+  deleteServiceOfferingGroup: "deleteServiceOfferingGroup",
 }
 
 const actions =  {
   [actionHandlerNames.sampleAdditionalButtonAction]: sampleAdditionalButtonAction,
+  [actionHandlerNames.deleteServiceOfferingGroup]: deleteServiceOfferingGroup,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -22,19 +26,19 @@ function sampleAdditionalButtonAction(actionArgs: string[]) {
 }
 
 // used in Performance Requirements when user clicks "I don't need these cloud resources" button
-function deleteServiceOfferingGroup() {
-  const DOWObjectLength = DescriptionOfWork.DOWObject.length;
-  const currentGroupId = DescriptionOfWork.currentGroupId;
-  const currentGroupIndex = DescriptionOfWork.DOWObject.findIndex((obj) => {
-    return obj.serviceOfferingGroupId === currentGroupId;
-  });
-  DescriptionOfWork.DOWObject = DescriptionOfWork.DOWObject.filter((obj) => {
-    return obj.serviceOfferingGroupId !== currentGroupId;
-  });
+async function deleteServiceOfferingGroup() {
 
-  // need to route to next category if more exist in DOWObject, 
-  // or if last, or the last one is a "None apply" option, send to summary page
+  await DescriptionOfWork.removeCurrentOfferingGroup();
   
+
+  router.push({
+    name: "pathResolver",
+    params: {
+      resolver: "OfferGroupOfferingsPathResolver",
+      direction: "next"
+    },
+  }).catch(() => console.log("avoiding redundant navigation"));
+
 }
 
 export default actionHandler;
