@@ -20,6 +20,32 @@
             summaryPage=true
           />
         </div>
+        <div class="copy-max-width" v-for="(item) in this.DOWObject"
+              :key="item.serviceOfferingGroupId">
+          <div class=" d-flex justify-space-between">
+            <div>
+              <h5>
+                {{item.serviceOfferingGroupId}}
+              </h5>
+              <p class="mb-0" v-for="(service) in item.serviceOfferings" :key="service.name">
+                {{service.name}}
+              </p>
+            </div>
+            <div class="d-flex">
+              <div class="d-flex align-start mt-1">
+                <v-icon
+                  class="icon-20 text-warning-dark2 pr-2"
+                >warning</v-icon>
+                <p class="mb-0 pr-4">Missing info</p>
+              </div>
+              <v-btn
+              class="primary">
+                Review
+              </v-btn>
+            </div>
+          </div>
+          <hr />
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -32,6 +58,7 @@ import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
+import { DescriptionOfWorkStore } from "@/store/descriptionOfWork";
 
 
 @Component({
@@ -46,6 +73,7 @@ export default class Summary extends Vue {
   private isClassificationDataMissing = false
   private showAlert = false
   private routeNames = routeNames
+  private DOWObject = []
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
@@ -58,6 +86,7 @@ export default class Summary extends Vue {
       this.showAlert = true
       this.isClassificationDataMissing = true
     };
+    this.DOWObject = DescriptionOfWorkStore.state.DOWObject
   };
 
   public async mounted(): Promise<void> {
