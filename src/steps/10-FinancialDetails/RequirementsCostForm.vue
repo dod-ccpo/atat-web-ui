@@ -52,23 +52,20 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.
-      loadData<RequirementsCostEstimateDTO>({storeProperty:
-      StoreProperties.RequirementsCostEstimate});
+    const storeData = await AcquisitionPackage.estimatedTaskOrderValue;
     if (storeData) {
-      console.log(storeData)
-      this.savedData.estimatedTaskOrderValue = storeData.estimatedTaskOrderValue;
-      this.costEstimate = storeData.estimatedTaskOrderValue || "";
+      this.costEstimate = storeData || "";
     }
+    const estimatedTaskOrderValue = AcquisitionPackage.estimatedTaskOrderValue;
+    this.savedData.estimatedTaskOrderValue = estimatedTaskOrderValue || "";
+
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        console.log(this.currentData)
-        await AcquisitionPackage
-          .saveData<RequirementsCostEstimateDTO>({data: this.currentData,
-            storeProperty: StoreProperties.RequirementsCostEstimate});
+        AcquisitionPackage.
+          setEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
       }
     } catch (error) {
       console.log(error);
