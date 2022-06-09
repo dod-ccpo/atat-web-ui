@@ -49,6 +49,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   xaaSNoneValue = "XaaS_NONE";
   cloudNoneValue = "Cloud_NONE";
 
+  returnToDOWSummary = false;
+  addingGroupFromSummary = false;
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
@@ -295,22 +298,47 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
-    if (selectedOfferingGroups.length) {
-      selectedOfferingGroups.forEach((selectedOfferingGroup) => {
-        if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
-          const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroup)
-          const offeringGroup: DOWServiceOfferingGroup = {
-            serviceOfferingGroupId: selectedOfferingGroup,
-            sequence: group?.sequence || 99,
-            serviceOfferings: []
+  public setReturnToDOWSummary(bool: boolean): void {
+    this.returnToDOWSummary = bool;
+  }
+  @Mutation
+  public setAddingGroupFromSummary(bool: boolean): void {
+    this.addingGroupFromSummary = bool;
+  }
+
+  @Mutation
+  public addOfferingGroup(groupId: string): void {
+    const group = this.serviceOfferingGroups.find(e => e.value === groupId)
+    const offeringGroup: DOWServiceOfferingGroup = {
+      serviceOfferingGroupId: groupId,
+      sequence: group?.sequence || 99,
+      serviceOfferings: []
+    }
+    this.DOWObject.push(offeringGroup);
+  }
+
+  @Mutation
+  public async setSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
+    if (selectedOfferingGroupIds.length) {
+      selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
+        if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {
+          const groupIndex = this.DOWObject.findIndex((obj) => {
+            return obj.serviceOfferingGroupId === selectedOfferingGroupId
+          });
+          if (groupIndex === -1) {
+            const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroupId)
+            const offeringGroup: DOWServiceOfferingGroup = {
+              serviceOfferingGroupId: selectedOfferingGroupId,
+              sequence: group?.sequence || 99,
+              serviceOfferings: []
+            }
+            this.DOWObject.push(offeringGroup);
           }
-          this.DOWObject.push(offeringGroup);
         }
-        // remove any groups that were previously checked
+        // remove any groups that were previously checked and now unchecked
         this.DOWObject.forEach((offeringGroup, index) => {
           const groupId = offeringGroup.serviceOfferingGroupId;
-          if (!selectedOfferingGroups.includes(groupId)) {
+          if (!selectedOfferingGroupIds.includes(groupId)) {
             this.DOWObject.splice(index, 1);
             // todo future ticket - remove from SNOW db
           }
@@ -401,7 +429,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.currentGroupId = value;
   }
 
-
   @Action({ rawError: true })
   public async getClassificationInstances(): Promise<DOWClassificationInstance[]> {
     const currentGroup 
@@ -413,7 +440,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
     return [];
   }
-
 
   @Mutation
   public setStoreData(sessionData: string): void {

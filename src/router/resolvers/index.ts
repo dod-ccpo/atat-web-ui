@@ -153,10 +153,22 @@ export const OfferGroupOfferingsPathResolver = (
   });
   const lastGroupRemoved = DescriptionOfWork.lastGroupRemoved;
 
-  if (DOWObject.length === 0 || onlyNoneApplySelected || atLastNoneApply || lastGroupRemoved) {
+  if (!DescriptionOfWork.addingGroupFromSummary 
+    && (
+      DOWObject.length === 0 
+      || onlyNoneApplySelected 
+      || atLastNoneApply 
+      || lastGroupRemoved
+    )
+  ) {
+    DescriptionOfWork.setAddingGroupFromSummary(false);
+    DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
     return descriptionOfWorkSummaryPath;
   } 
+
+  DescriptionOfWork.setAddingGroupFromSummary(false);
+
   //handles moving backwards or forwards through service offerings
   if (current === routeNames.ServiceOfferingDetails &&
     direction.toUpperCase() === RouteDirection.PREVIOUS)
@@ -292,11 +304,15 @@ export const OfferingDetailsPathResolver = (current: string): string => {
   
   const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
   return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`; 
-
-
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  // Added a new offering group from the summary page. send directly back after details entered
+  if (DescriptionOfWork.returnToDOWSummary) {
+    DescriptionOfWork.setReturnToDOWSummary(false);
+    return descriptionOfWorkSummaryPath;
+  }
+
   // coming from service offering details step
   if(current === routeNames.ServiceOfferingDetails){
     const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;

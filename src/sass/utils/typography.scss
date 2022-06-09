@@ -1,7 +1,7 @@
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: $heading-font;
+  font-weight: 500;
   color: $base-darkest;
-  font-weight: 700 !important;
 }
 
 h1.xl, .h1.xl {
@@ -22,6 +22,7 @@ h1, .h1 {
   font-size: 3.4rem !important;
   line-height: 1.3em !important;
   letter-spacing: .025rem;
+  font-weight: 700 !important;
 }
 
 h2, .h2 {
@@ -29,7 +30,7 @@ h2, .h2 {
   line-height: 1.3em !important;
   &.form-section-heading {
     font-size: 2.0rem !important;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     line-height: 3.2rem !important;
     margin-bottom: 20px !important; 
     font-family: $base-font !important;
@@ -40,8 +41,7 @@ h3, .h3 {
   font-size: 2rem !important;
   line-height: 1.3em !important;
   letter-spacing: .015rem; 
-  //font-weight: 500 !important; need to add roboto condensed 500 font file
-  font-weight: 700 !important
+  font-weight: 500 !important;
 }
 
 h4, .h4 {
@@ -149,6 +149,21 @@ hr, .hr {
       top: -1px;
       right: 2px;
       font-size: 18px;
+    }
+  }
+  &._chevron-right-after {
+    text-decoration: none;
+    &:after {
+      content: "chevron_right";
+      font-family: "Material Icons";
+      -webkit-font-feature-settings: "liga";
+      font-size: 20px;
+      font-weight: normal;
+      display: inline-block;
+      height: 18px;
+      line-height: 18px;
+      text-decoration: none !important;
+      vertical-align: text-bottom;
     }
   }
 }
