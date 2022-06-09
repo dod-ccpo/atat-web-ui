@@ -76,6 +76,7 @@ import EvaluationCriteria
   from "../steps/09-EvaluationCriteria/EvaluationCriteria.vue";
 
 // step 10 - Financial Details
+import RequirementsCostForm from "@/steps/10-FinancialDetails/RequirementsCostForm.vue";
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
 import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
 import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
@@ -144,6 +145,7 @@ export const routeNames = {
   EvaluationCriteria: "Evaluation_Criteria",
   ClassificationRequirements: "Classification_Requirements",
   RequirementsCostEstimate: "Requirements_Cost_Estimate",
+  RequirementsCostForm: "Requirements_Cost_Form",
   FundingPlan: "Funding_Plan",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   ReviewRequiredForms: "Review_Required_Forms",
@@ -387,7 +389,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
             buttonText: "I don’t need these cloud resources",
             buttonId: "DontNeedResources",
             buttonClass: "secondary",
-            name: routeNames.ServiceOfferings, // functionality TBD in future ticket
+            actionName: "deleteServiceOfferingGroup",
           },
         ],
       },
@@ -565,6 +567,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     path: "/requirements-cost-estimate",
     component: FinancialDetails,
     children: [
+      {
+        menuText: "temporary page",
+        path: "requirements-cost-form",
+        excludeFromMenu: true,
+        name: routeNames.RequirementsCostForm,
+        completePercentageWeight: 1,
+        component: RequirementsCostForm,
+      },
       {
         menuText: "Requirements Cost Estimate",
         path: "requirements-cost-estimate",

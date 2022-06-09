@@ -113,3 +113,11 @@ textarea {
     width: 16px;
   }
 }
+
+._simple-card {
+  border: 1px solid $base-light;
+  border-radius: 8px;
+  padding: 16px 20px;
+  width: 100%;
+  height: 100%;
+}

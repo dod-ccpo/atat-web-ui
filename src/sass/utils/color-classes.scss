@@ -12,6 +12,9 @@
   .text-primary-dark     { color: $primary-dark !important; }
   .text-primary-darker   { color: $primary-darker !important; }
 
+  .text-warning-dark2    { color: $warning-dark2 !important; }
+
+
   .bg-base-darkest  { background-color: $base-darkest !important; }
   .bg-base-darker   { background-color: $base-darker !important; }
   .bg-base-dark     { background-color: $base-dark !important; }
@@ -41,7 +44,7 @@
   .border-base-darkest  { border-color: $base-darkest !important; }
   .border-base-darker   { border-color: $base-darker !important; }
   .border-base-dark     { border-color: $base-dark !important; }
-  .border-base-base     { border-color: $base !important; }
+  .border-base          { border-color: $base !important; }
   .border-base-light    { border-color: $base-light !important; }
   .border-base-lighter  { border-color: $base-lighter !important; }
   .border-base-lightest { border-color: $base-lightest !important; }

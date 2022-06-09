@@ -163,10 +163,16 @@ export interface isValidObj {
 }
 
 export interface mask {
-  placeholder: string;
-  jitMasking: boolean;
+  placeholder?: string;
+  jitMasking?: boolean;
   regex?: string;
   mask?: string[];
+  alias?: string;
+  groupSeparator?: string;
+  autoGroup?: boolean;
+  digits?: number;
+  digitsOptional?: boolean;
+  rightAlign?: boolean;
 }
 
 export interface uploadingFile{
