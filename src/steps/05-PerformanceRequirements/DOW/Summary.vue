@@ -28,7 +28,7 @@
       <h2 class="mb-5">Other available categories</h2>
       <a 
         id="ShowMoreLink"
-        class="expandable-content-opener mb-5"
+        class="expandable-content-opener mb-5 text-decoration-none"
         :class="[{ 'open' : showMore }]"
         v-show="availableServiceGroups.length > 4"
         @click="showMore = !showMore"
