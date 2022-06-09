@@ -170,32 +170,20 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
 
   @Watch("selectedFundOption")
   protected showAlert(): boolean {
-    if(this.selectedFundOption == "YES" && (this.isPeriodsDataMissing|| this.isCostEstimateMissing))
-    {
-      return true
-    }
-    return false
+    return this.selectedFundOption == "YES" && (this.isPeriodsDataMissing||
+      this.isCostEstimateMissing)
   }
 
   public get isPoPAndClassificationMissing(): boolean {
-    if (this.isCostEstimateMissing && this.isPeriodsDataMissing) {
-      return this.isCostEstimateMissing && this.isPeriodsDataMissing;
-    }
-    return false
+    return this.isCostEstimateMissing && this.isPeriodsDataMissing;
   }
 
   public get isOnlyPoPyMissing(): boolean {
-    if (!this.isCostEstimateMissing && this.isPeriodsDataMissing) {
-      return !this.isCostEstimateMissing && this.isPeriodsDataMissing;
-    }
-    return false
+    return !this.isCostEstimateMissing && this.isPeriodsDataMissing;
   }
 
   public get isOnlyCostEstimateMissing(): boolean {
-    if (this.isCostEstimateMissing && !this.isPeriodsDataMissing) {
-      return this.isCostEstimateMissing && !this.isPeriodsDataMissing;
-    }
-    return false
+    return this.isCostEstimateMissing && !this.isPeriodsDataMissing;
   }
 
   public get route(): string {
