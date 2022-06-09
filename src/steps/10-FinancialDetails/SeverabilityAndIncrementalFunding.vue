@@ -100,12 +100,14 @@
                     missing.</h3>
                   <p id="AlertInfo" class="mt-2 mb-0">
                     We will not be able to create your incremental funding plan until we have this
-                    missing info. We recommend completing the
+                    missing info. We recommend
+                    <span v-if="isPeriodsDataMissing">updating your</span>
+                    <span v-else>completing the</span>
                     <span v-if="isPoPAndClassificationMissing">
                     <router-link
                       id="Step5Link"
                       :to="{name: routeNames.PeriodOfPerformance}"
-                    > Period of performance</router-link>
+                    > Period of Performance section</router-link>
                     and the
                     <router-link
                       id="Step5Link"
@@ -205,7 +207,7 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
   public get linkText(): string {
     return this.isOnlyCostEstimateMissing
       ? "Requirements Cost Estimate section"
-      : "Period of Performance section";
+      : "Contract Details section";
   }
 
   public async loadOnEnter(): Promise<void> {
