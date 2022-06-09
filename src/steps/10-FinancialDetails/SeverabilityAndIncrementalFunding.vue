@@ -101,24 +101,24 @@
                   <p id="AlertInfo" class="mt-2 mb-0">
                     We will not be able to create your incremental funding plan until we have this
                     missing info. We recommend
-                    <span v-if="isPeriodsDataMissing">updating your</span>
-                    <span v-else>completing the</span>
+                    <span v-if="isPeriodsDataMissing">updating your </span>
+                    <span v-else>completing the </span>
                     <span v-if="isPoPAndClassificationMissing">
                     <router-link
                       id="Step5Link"
                       :to="{name: routeNames.PeriodOfPerformance}"
-                    > Period of Performance section</router-link>
+                    >Period of Performance section</router-link>
                     and the
                     <router-link
                       id="Step5Link"
                       :to="{name: routeNames.RequirementsCostEstimate}"
-                    > Requirements Cost Estimate Section</router-link>
+                    >Requirements Cost Estimate section</router-link>
                   </span>
                     <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
                     <router-link
                       id="Step5Link"
                       :to="{name: route}"
-                    > {{ linkText }}</router-link>
+                    >{{ linkText }}</router-link>
                   </span>
                     before proceeding.
                   </p>
