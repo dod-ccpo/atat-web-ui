@@ -78,53 +78,54 @@
               </ol>
             </template>
           </ATATExpandableLink>
-          </div>
-          <div v-if="showAlert()">
-            <ATATAlert
-              id="IFPRequestPageAlert"
-              class="container-max-width mb-10"
-              type="warning"
-            >
-              <template v-slot:content>
-                <div v-if="isPeriodsDataMissing || isCostEstimateMissing">
-                  <h3 class="h3">Your
-                    <span v-if="isOnlyPoPyMissing">
+        </div>
+        <div v-if="showAlert()">
+          <ATATAlert
+            id="IFPRequestPageAlert"
+            class="container-max-width my-10"
+            type="warning"
+          >
+            <template v-slot:content>
+              <div v-if="isPeriodsDataMissing || isCostEstimateMissing">
+                <h3 class="h3">Your
+                  <span v-if="isOnlyPoPyMissing">
                     period of performance is
                   </span>
-                    <span v-else-if="isOnlyCostEstimateMissing">
+                  <span v-else-if="isOnlyCostEstimateMissing">
                     requirements cost estimate is
                   </span>
-                    <span v-else-if="isPoPAndCostEstimateMissing">
+                  <span v-else-if="isPoPAndCostEstimateMissing">
                     period of performance and requirements cost estimate are
                   </span>
-                    missing.</h3>
-                  <p id="AlertInfo" class="mt-2 mb-0">
-                    We will not be able to create your incremental funding plan until we have this
-                    missing info. We recommend
-                    <span v-if="isPeriodsDataMissing">updating your </span>
-                    <span v-else>completing the </span>
-                    <span v-if="isPoPAndCostEstimateMissing">
+                  missing.
+                </h3>
+                <p id="AlertInfo" class="mt-2 mb-0">
+                  We will not be able to create your incremental funding plan until we have this
+                  missing info. We recommend
+                  <span v-if="isPeriodsDataMissing">updating your </span>
+                  <span v-else>completing the </span>
+                  <span v-if="isPoPAndCostEstimateMissing">
                     <router-link
-                      id="Step5Link"
+                      id="PoPLink"
                       :to="{name: routeNames.PeriodOfPerformance}"
                     >Period of Performance section</router-link>
                     and the
                     <router-link
-                      id="Step5Link"
+                      id="CostEstimateLink"
                       :to="{name: routeNames.RequirementsCostForm}"
                     >Requirements Cost Estimate section</router-link>
                   </span>
-                    <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
+                  <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
                     <router-link
-                      id="Step5Link"
+                      id="AlertLink"
                       :to="{name: route}"
                     >{{ linkText }}</router-link>
                   </span>
-                    before proceeding.
-                  </p>
-                </div>
-              </template>
-            </ATATAlert>
+                  before proceeding.
+                </p>
+              </div>
+            </template>
+          </ATATAlert>
         </div>
       </v-col>
     </v-row>
@@ -139,8 +140,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import Periods from "@/store/periods";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-import { RequirementsCostEstimateDTO } from "@/api/models";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 import { routeNames } from "@/router/stepper";
 
 @Component({
@@ -150,11 +150,12 @@ import { routeNames } from "@/router/stepper";
     ATATAlert,
   }
 })
+
 export default class SeverabilityAndIncrementalFunding extends Vue {
-  private selectedFundOption = ''
-  private isPeriodsDataMissing = false
-  private isCostEstimateMissing = false
-  private routeNames = routeNames
+  private selectedFundOption = "";
+  private isPeriodsDataMissing = false;
+  private isCostEstimateMissing = false;
+  private routeNames = routeNames;
   private incrementallyFundOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -170,8 +171,8 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
 
   @Watch("selectedFundOption")
   protected showAlert(): boolean {
-    return this.selectedFundOption === "YES" && (this.isPeriodsDataMissing||
-      this.isCostEstimateMissing)
+    return this.selectedFundOption === "YES" 
+      && (this.isPeriodsDataMissing || this.isCostEstimateMissing)
   }
 
   public get isPoPAndCostEstimateMissing(): boolean {
@@ -200,9 +201,9 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
-    this.isPeriodsDataMissing = (periods && periods.length <= 0)
-    const estimatedTOValue = await AcquisitionPackage.estimatedTaskOrderValue;
-    this.isCostEstimateMissing = !estimatedTOValue
+    this.isPeriodsDataMissing = (periods && periods.length === 0);
+    const estimatedTOValue = AcquisitionPackage.estimatedTaskOrderValue;
+    this.isCostEstimateMissing = !estimatedTOValue;
   }
 
   public async mounted(): Promise<void> {
