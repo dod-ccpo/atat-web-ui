@@ -78,10 +78,11 @@
               </ol>
             </template>
           </ATATExpandableLink>
+          </div>
           <div v-if="showAlert()">
             <ATATAlert
               id="IFPRequestPageAlert"
-              class="copy-max-width mb-10"
+              class="container-max-width mb-10"
               type="warning"
             >
               <template v-slot:content>
@@ -122,7 +123,6 @@
                 </div>
               </template>
             </ATATAlert>
-          </div>
         </div>
       </v-col>
     </v-row>
