@@ -25,18 +25,17 @@
 
     <hr />
     <div class="d-flex justify-space-between align-flex-end">
-      <h2 class="mb-10">Other available categories</h2>
+      <h2 class="mb-5">Other available categories</h2>
       <a 
         id="ShowMoreLink"
-        class="expandable-content-opener mb-10"
+        class="expandable-content-opener mb-5"
         :class="[{ 'open' : showMore }]"
         v-show="availableServiceGroups.length > 4"
         @click="showMore = !showMore"
-
-        
-      >Show 
-        <span v-show="showMore">less</span>
-        <span v-show="!showMore">more</span>
+        @keydown.enter="showMore = !showMore"
+        @keydown.space="showMore = !showMore"
+      >
+        Show {{ showMore ? "less" : "more" }}
       </a>
     </div>  
 
@@ -48,9 +47,7 @@
         :key="index"   
         v-show="index <= 3 || showMore"  
       >
-        <div 
-          class="_simple-card d-flex flex-column justify-space-between"
-        >
+        <div class="_simple-card d-flex flex-column justify-space-between">
           <div class="d-flex justify-space-between">
             <div class="h3 mb-2 ">
               {{ group.label }}
@@ -74,7 +71,9 @@
               @keydown.enter="routeToSelection(group.value)"
               @keydown.space="routeToSelection(group.value)"
               tabindex="0"
-            >Add requirements</a>
+            >
+              Add requirements
+            </a>
           </div>
 
         </div>
