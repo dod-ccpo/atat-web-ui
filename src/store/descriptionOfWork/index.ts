@@ -61,7 +61,6 @@ const mapDOWServiceOfferingToServiceProxy=
 
   const classificationInstances = dowServiceOffering
     .classificationInstances?.map((instance, instanceIndex)=> {
-      debugger;
 
       const classificationInstance: ClassificationInstanceProxy = {
         dowClassificationInstanceIndex: instanceIndex,
@@ -405,7 +404,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           const groupId = offeringGroup.serviceOfferingGroupId;
           if (!selectedOfferingGroupIds.includes(groupId)) {
             this.DOWObject.splice(index, 1);
-            // todo future ticket - remove from SNOW db
           }
         });
 
@@ -443,7 +441,6 @@ export class DescriptionOfWorkStore extends VuexModule {
               sequence: foundOffering.sequence,
             }
             currentOfferings.push({...offering,serviceId : ""});
-            // todo future ticket - add to SNOW db
           }
         }
       });
@@ -456,7 +453,6 @@ export class DescriptionOfWorkStore extends VuexModule {
         if (!selectedOfferingSysIds.includes(sysId)) {
           const i = currentOfferings.findIndex(e => e.sys_id === sysId);
           currentOfferings.splice(i, 1);
-          // todo future ticket - remove from SNOW db
         }
       });
 
@@ -539,7 +535,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       data.classificationInstances?.forEach((instance, index)=> {
         const savedInstanceProxy = 
           value.classificationInstances
-            .find(cInstance=>cInstance.dowClassificationInstanceIndex == index);
+            .find(cInstance=>cInstance.dowClassificationInstanceIndex === index);
         if(savedInstanceProxy)
         {
           instance.sysId = savedInstanceProxy?.classificationInstance.sys_id;
@@ -722,7 +718,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async saveClassificationInstance(data: 
     ClassificationInstanceProxy):Promise<ClassificationInstanceProxy>{
-    debugger;
     const sysId = data.classificationInstance.sys_id;
     const { classification_level, need_for_entire_task_order_duration, 
       selected_periods, usage_description, } = data.classificationInstance;
