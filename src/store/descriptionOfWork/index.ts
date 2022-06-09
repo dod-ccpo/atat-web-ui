@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   Action,
   getModule,
@@ -7,7 +8,8 @@ import {
 } from "vuex-module-decorators";
 import rootStore from "../index";
 import api from "@/api";
-import { ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
+import { ClassificationInstanceDTO, SelectedServiceOfferingDTO, 
+  ServiceOfferingDTO, SystemChoiceDTO } from "@/api/models";
 import {TABLENAME as ServiceOfferingTableName } from "@/api/serviceOffering"
 import {
   nameofProperty,
@@ -16,15 +18,66 @@ import {
 } from "../helpers";
 import Vue from "vue";
 import { 
-  stringObj, 
   DOWServiceOfferingGroup, 
   DOWServiceOffering, 
   DOWClassificationInstance 
 } from "../../../types/Global";
 
-import _, { last } from "lodash";
-import { off } from "process";
+import _, { differenceWith, filter, last } from "lodash";
+import { proxy } from "cypress/types/jquery";
+import { VAlert } from "vuetify/lib";
 
+//service proxy type for saving service offerings
+//and associated classification instances
+
+type ClassificationInstanceProxy = {
+   instanceIndex: number;
+   classificationInstance: ClassificationInstanceDTO;
+}
+
+type ServiceOfferingProxy =  {
+  serviceOffering: SelectedServiceOfferingDTO,
+  classificationInstances: ClassificationInstanceProxy[]
+  dowServiceGroupIndex: number,
+  dowServiceIndex: number
+}
+
+const mapDOWServiceOfferingToSelectedService= 
+(dowServiceOffering: DOWServiceOffering, groupIndex: number, 
+  serviceIndex: number): ServiceOfferingProxy=> {
+      
+  const serviceOffering: SelectedServiceOfferingDTO = {
+    service_offering : dowServiceOffering['sys_id'] || "",
+    classification_instances: "",
+    other_service_offering: dowServiceOffering.otherOfferingName || "",
+    sys_id : dowServiceOffering.serviceId.length ? 
+      dowServiceOffering.serviceId : undefined
+  };
+
+  const classificationInstances = dowServiceOffering
+    .classificationInstances?.map((instance, instanceIndex)=> {
+
+      const classificationInstance: ClassificationInstanceProxy = {
+        instanceIndex,
+        classificationInstance: {
+          selected_periods: instance
+            .selectedPeriods?.map(period=> period.sysId || "").join(',') || "",
+          classification_level: instance.classificationLevelSysId,
+          usage_description: instance.anticipatedNeedUsage,
+          need_for_entire_task_order_duration: instance.entireDuration
+        },
+      }
+      return classificationInstance;
+    }) || [];
+
+  return {
+    serviceOffering,
+    classificationInstances,
+    dowServiceGroupIndex: groupIndex,
+    dowServiceIndex: serviceIndex
+  }
+
+}
 
 const ATAT_DESCRIPTION_OF_WORK_KEY = "ATAT_DESCRIPTION_OF_WORK_KEY";
 
@@ -42,6 +95,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   // selectedOfferingGroups: stringObj[] = [];
   DOWObject: DOWServiceOfferingGroup[] = [];
 
+    //list of required services -- this is synchronized to back end
+    userSelectedServiceOfferings: SelectedServiceOfferingDTO[] = [];
+
   currentGroupId = "";
   currentOfferingName = "";
   currentOfferingSysId = "";
@@ -53,6 +109,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
     nameofProperty(this, (x) => x.serviceOfferingGroups),
+    nameofProperty(this, (x)=> x.userSelectedServiceOfferings),
+    nameofProperty(this, (x)=> x.DOWObject)
   ];
   
   // getters
@@ -347,9 +405,9 @@ export class DescriptionOfWorkStore extends VuexModule {
               "sys_id": selectedOfferingSysId,
               classificationInstances: [],
               description: foundOffering.description,
-              sequence: foundOffering.sequence
+              sequence: foundOffering.sequence,
             }
-            currentOfferings.push(offering);
+            currentOfferings.push({...offering,serviceId : ""});
             // todo future ticket - add to SNOW db
           }
         }
@@ -427,6 +485,42 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
+  @Mutation
+  public setUserSelectedServices(value: SelectedServiceOfferingDTO[]): void {
+    this.userSelectedServiceOfferings = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_DESCRIPTION_OF_WORK_KEY
+    );
+  }
+
+  @Mutation
+  public updateDOWObjectWithSavedIds(values: ServiceOfferingProxy[]): void {
+
+    values.forEach(value=> {
+      const data = this.DOWObject[value.dowServiceGroupIndex]
+        .serviceOfferings[value.dowServiceIndex];
+
+      //updated classification instances with ids
+      data.classificationInstances?.forEach((instance, index)=> {
+        const savedInstanceProxy = 
+          value.classificationInstances.find(cInstance=>cInstance.instanceIndex == index);
+        instance.sysId = savedInstanceProxy?.classificationInstance.sys_id;
+      })
+
+      //update service instances with ids
+      data.serviceId = value.serviceOffering.sys_id || "";
+    })
+
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_DESCRIPTION_OF_WORK_KEY
+    );
+  }
+
+
   @Action({ rawError: true })
   public async getServiceOfferingGroups(): Promise<SystemChoiceDTO[]> {
     await this.ensureInitialized();
@@ -439,16 +533,29 @@ export class DescriptionOfWorkStore extends VuexModule {
     const serviceOfferingsForGroup = this.serviceOfferings.filter((obj) => {
       return obj.service_offering_group === this.currentGroupId;
     })
+    //map services offerings from the service offering list
     const serviceOfferings: DOWServiceOffering[] = [];
+    const dowOfferings = this.serviceOfferingsForGroup;
+
     serviceOfferingsForGroup.forEach((obj) => {
-      const offering: DOWServiceOffering = {
+      
+      //does the saved offering exist in DOW store?
+      const savedInDown = dowOfferings.find(offering=>offering.sys_id === obj.sys_id);
+
+      const offering = savedInDown ? savedInDown :{
         name: obj.name,
         "sys_id": obj.sys_id || "",
         sequence: obj.sequence,
         description: obj.description,
+        serviceId: "",
       };
+
       serviceOfferings.push(offering);
-    })
+
+    });
+
+    //now map any from the DOW that might've been saved
+
     serviceOfferings.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     return serviceOfferings;
   }
@@ -476,22 +583,25 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     if (this.initialized) {
-      const sessionRestored = retrieveSession(ATAT_DESCRIPTION_OF_WORK_KEY);
-      if (sessionRestored) {
-        this.setStoreData(sessionRestored);
-      }
+      return;
+    }
+    
+    const sessionRestored = retrieveSession(ATAT_DESCRIPTION_OF_WORK_KEY);
+    if (sessionRestored) {
+      this.setStoreData(sessionRestored);
+      this.setInitialized(true);
     } else {
       try {
         await Promise.all([
           this.loadServiceOfferings(),
           this.LoadServiceOfferingGroups(),
         ]);
-        this.setInitialized(true);
         storeDataToSession(
           this,
           this.sessionProperties,
           ATAT_DESCRIPTION_OF_WORK_KEY
         );
+        this.setInitialized(true);
       } catch (error) {
         console.error(error);
       }
@@ -517,6 +627,222 @@ export class DescriptionOfWorkStore extends VuexModule {
     } catch (error) {
       throw new Error(`error loading Service Offering Groups ${error}`);
     }
+  }
+
+  @Action({rawError: true})
+  public async removeClassificationInstances(classificationInstances:
+    string[]): Promise<void>{
+
+  
+    try {
+      const calls = classificationInstances
+        .map(instanceId=> api.classificationInstanceTable.remove(instanceId));
+      await Promise.all(calls);
+    } catch (error) {
+      //do nothing here we'll delete optimistically
+    } 
+  }
+
+  @Action({rawError: true})
+  public async removeUserSelectedService(service: SelectedServiceOfferingDTO): Promise<void>{
+    const deletedService = true;
+    try {
+        
+      debugger;
+
+      await api.selectedServiceOfferingTable.remove(service.sys_id || "");
+     
+      const classificationInstances = service.classification_instances.split(',');
+
+      if(classificationInstances.length)
+      {
+        await this.removeClassificationInstances(classificationInstances);
+      }
+  
+    } catch (error) {
+      //do nothing here we'll delete optimistically
+    }
+  }
+
+  @Action({rawError: true})
+  public async removeUserSelectedServices(requiredServices: SelectedServiceOfferingDTO[])
+ : Promise<void>{
+    debugger;
+    try {
+
+      const calls = requiredServices.reduce<Promise<void>[]>((previous, current)=>  {
+        const values = [...previous];
+
+        if(current.sys_id){
+          values.push(this.removeUserSelectedService(current));
+        }
+        return values;
+
+      }, []);
+      await Promise.all(calls);
+       
+    } catch (error) {
+      //to nothing here we're deleting stuff optimistically
+    }
+  }
+
+  @Action({rawError: true})
+  public async saveClassificationInstance(data: 
+    ClassificationInstanceProxy):Promise<ClassificationInstanceProxy>{
+    const sysId = data.classificationInstance.sys_id || undefined;
+    const saveClassificationInstance = sysId ? 
+      api.classificationInstanceTable.update(sysId, data.classificationInstance) : 
+      api.classificationInstanceTable.create(data.classificationInstance);
+    const savedClassificationInstance =  await saveClassificationInstance;
+    data.classificationInstance = savedClassificationInstance;
+   
+    return data;
+  }
+
+  @Action({rawError: true})
+  public async saveclassificationInstances(data: ClassificationInstanceProxy[]):
+   Promise<ClassificationInstanceProxy[]>{
+ 
+    try {
+       
+      //create a save call for each classification instance
+      const calls = data.map(instance=> this.saveClassificationInstance(instance));
+      const savedInstances = await Promise.all(calls);
+      return savedInstances;
+       
+    } catch (error) {
+      throw new Error(`error saving classification instances ${error}`);
+       
+    }
+    
+  }
+
+
+  @Action({rawError: true})
+  public async saveUserService(serviceProxy: ServiceOfferingProxy): Promise<ServiceOfferingProxy>{
+
+    try {
+      let savedClassificationInstances: ClassificationInstanceProxy[] = [];
+
+      //first save classification instances
+      if(serviceProxy.classificationInstances.length)
+      {
+        savedClassificationInstances = 
+      await this.saveclassificationInstances(serviceProxy.classificationInstances);
+      }
+      
+      //save service instance
+      serviceProxy.serviceOffering.classification_instances = 
+      savedClassificationInstances
+        .map(instance=> instance.classificationInstance.sys_id || "").join(',') || "";
+
+      const apiTable = api.selectedServiceOfferingTable;
+
+      const saveService = serviceProxy.serviceOffering.sys_id ? 
+        apiTable.update(serviceProxy.serviceOffering.sys_id || "", serviceProxy.serviceOffering)
+        : apiTable.create(serviceProxy.serviceOffering);
+      
+      const savedService = await saveService;
+      
+      serviceProxy.classificationInstances = savedClassificationInstances;
+      serviceProxy.serviceOffering = savedService;
+     
+      return serviceProxy;
+
+    } catch (error) {
+      
+      throw new Error( `error occurred while saving service proxy`)
+    }
+
+
+  }
+
+  @Action({rawError: true})
+  public async saveUserServices(serviceProxies: ServiceOfferingProxy[]): Promise<void>{
+    debugger;
+
+    try {
+      const calls = serviceProxies.map(proxy=> this.saveUserService(proxy));
+      const savedProxies = await Promise.all(calls);
+      
+      //update dow object with saved ids
+      this.updateDOWObjectWithSavedIds(savedProxies);
+      const savedServices = savedProxies.map(proxy=> proxy.serviceOffering);
+      this.setUserSelectedServices(savedServices);
+      
+    } catch (error) {
+      console.error(error);
+      throw new Error(`error occurred saving services ${error}`);
+    }
+
+
+  }
+
+  //synchronizes back end with DOW
+  @Action({rawError: true})
+  public async saveUserSelectedServices(): Promise<void>{
+
+    try {
+
+      const requiredServices = this.userSelectedServiceOfferings;
+      const dowOfferingGroups = this.DOWObject;
+
+      //grab all of the selected services in the dow object
+      //build a list of Service Proxy items
+
+      //grab all of the selected services in the dow object
+      const serviceOfferingProxies: ServiceOfferingProxy[] = [];
+
+      dowOfferingGroups.forEach((group, groupIndex)=> {
+        group.serviceOfferings.forEach((offering, offeringIndex)=> {
+          const serviceOfferingProxy: ServiceOfferingProxy = 
+           mapDOWServiceOfferingToSelectedService(offering, groupIndex, offeringIndex);
+          serviceOfferingProxies.push(serviceOfferingProxy);
+
+        });
+      });
+
+      const unsavedServices = serviceOfferingProxies
+        .filter(proxy=>(proxy.serviceOffering.sys_id == undefined || 
+        proxy.serviceOffering.sys_id.length === 0));
+
+      const savedServices = serviceOfferingProxies
+        .filter(proxy=>proxy.serviceOffering.sys_id?.length);
+
+      const servicesToRemove: SelectedServiceOfferingDTO[] = [];
+
+      if(requiredServices.length)
+      {
+      //get services to delete - delete all of the service offerings
+      //that are no longer in the dow object
+        requiredServices.forEach(service=> {
+
+          const inSaved = savedServices
+            .find(saved=> saved.serviceOffering.sys_id === service.sys_id);
+          if(!inSaved){
+            servicesToRemove.push(service);
+          }
+        });
+    
+   
+        if(servicesToRemove.length){
+          await this.removeUserSelectedServices(servicesToRemove);
+        }
+      }
+
+      //get all of the services that haven't been removed for updating
+      const servicesToUpdate = differenceWith<ServiceOfferingProxy, SelectedServiceOfferingDTO>
+      (savedServices, servicesToRemove, ({serviceOffering}, selected)=> 
+        serviceOffering.service_offering === selected.service_offering);
+
+      const servicesTosave: ServiceOfferingProxy[] = [...servicesToUpdate, ...unsavedServices];
+      await this.saveUserServices(servicesTosave);
+     
+    } catch (error) {
+      console.error(error);
+      throw new Error(`error persisting services ${error}`);
+    }
+    
   }
 }
 

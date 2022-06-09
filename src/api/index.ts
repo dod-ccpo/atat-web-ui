@@ -20,7 +20,8 @@ import { AttachableDTO } from "./models";
 import { PeriodApi } from "./period";
 import { ClassificationLevelApi } from "./classificationLevels";
 import { ServiceOfferingApi } from "./serviceOffering";
-import { RequiredServicesApi } from "./requiredServices";
+import { SelectedServiceOfferingApi } from "./selectedServiceOffering";
+import { ClassificationInstanceApi } from "./classificationInstance";
 
 export const api = {
 
@@ -29,6 +30,7 @@ export const api = {
   acquisitionPackageTable: new AcquisitionPackagesApi(),
   projectOverviewTable: new ProjectOverviewApi(),
   organizationTable: new OrganizationApi(),
+  classificationInstanceTable: new ClassificationInstanceApi(),
   classificationLevelTable: new ClassificationLevelApi(),
   contactsTable: new ContactsApi(),
   contractConsiderationsTable: new ContractConsiderationsApi(),
@@ -43,9 +45,9 @@ export const api = {
   gfeOverviewTable: new GFEOverviewApi(),
   contractTypeTable: new ContractTypeApi(),
   requirementsCostEstimateTable: new RequirementsCostEstimateApi(),
+  selectedServiceOfferingTable: new SelectedServiceOfferingApi(),
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),
-  requiredServicesTables: new RequiredServicesApi(),
 }
 
 export default {

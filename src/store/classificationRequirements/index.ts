@@ -32,16 +32,24 @@ export class ClassificationRequirementsStore extends VuexModule {
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.classificationLevels),
+    nameofProperty(this, (x)=> x.selectedClassificationLevels)
   ];
 
   @Mutation
   private setClassifications(value: ClassificationLevelDTO[]) {
     this.classificationLevels = value;
+
   }
 
   @Mutation
   public async setSelectedClassificationLevels(value: ClassificationLevelDTO[]): Promise<void> {
     this.selectedClassificationLevels = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_CLASSIFICATION_LEVELS_KEY
+    );
+
   }
 
   @Mutation
@@ -59,6 +67,11 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Action({ rawError: true })
   public async getSelectedClassificationLevels(): Promise<ClassificationLevelDTO[]> {
     return this.selectedClassificationLevels;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_CLASSIFICATION_LEVELS_KEY
+    );
   }
 
   @Action({ rawError: true })
@@ -77,21 +90,25 @@ export class ClassificationRequirementsStore extends VuexModule {
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
     if (this.initialized) {
-      const sessionRestored = retrieveSession(ATAT_CLASSIFICATION_LEVELS_KEY);
-      if (sessionRestored) {
-        this.setStoreData(sessionRestored);
-      }
+      return;
+    } 
+    
+     
+    const sessionRestored = retrieveSession(ATAT_CLASSIFICATION_LEVELS_KEY);
+    if (sessionRestored) {
+      this.setStoreData(sessionRestored);
+      this.setInitialized(true);
     } else {
       try {
         await Promise.all([
           this.loadClassificationLevels(),
         ]);
-        this.setInitialized(true);
         storeDataToSession(
           this,
           this.sessionProperties,
           ATAT_CLASSIFICATION_LEVELS_KEY
         );
+        this.setInitialized(true);
       } catch (error) {
         console.error(error);
       }

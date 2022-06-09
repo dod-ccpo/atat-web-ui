@@ -436,6 +436,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       if (this.hasChanged()) {
         // save to store
         await DescriptionOfWork.setOfferingDetails(this.instancesFormData);
+        //save to backend
+        await DescriptionOfWork.saveUserSelectedServices();
       }
     } catch (error) {
       console.log(error);

@@ -120,11 +120,16 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     try {
       if (this.selectedOptions.length === 0) {
         await DescriptionOfWork.removeCurrentOfferingGroup();
+        //save to backend
+        await DescriptionOfWork.saveUserSelectedServices();
       } else {
         // save to store
         await DescriptionOfWork.setSelectedOfferings(this.selectedOptions);
+        //save to backend
+        await DescriptionOfWork.saveUserSelectedServices();
       }
     } catch (error) {
+      debugger;
       throw new Error('error saving requirement data');
     }
 
