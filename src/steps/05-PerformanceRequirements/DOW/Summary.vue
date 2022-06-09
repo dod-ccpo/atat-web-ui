@@ -32,22 +32,24 @@
                 {{formattedOfferings(item.serviceOfferings)}}
               </p>
             </div>
-            <div class="d-flex">
-              <div v-if="missingData(item.serviceOfferingGroupId)" class="d-flex align-start mt-1">
-                <v-icon
-                  class="icon-20 text-warning-dark2 pr-2"
-                >warning</v-icon>
-                <p class="mb-0 pr-4 _semibold">Missing info</p>
+            <div class="d-flex align-start">
+              <div class="d-flex align-center">
+                <div v-if="missingData(item.serviceOfferingGroupId)" class="d-flex align-start">
+                  <v-icon
+                    class="icon-20 text-warning-dark2 pr-2"
+                  >warning</v-icon>
+                  <p class="mb-0 pr-4 _semibold">Missing info</p>
+                </div>
+                <v-btn
+                  width="111"
+                  :class="missingData(item.serviceOfferingGroupId)? 'primary': 'secondary'"
+                  @click="routeToSelection(item.serviceOfferingGroupId,false)"
+                  @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
+                  @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
+                >
+                  {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
+                </v-btn>
               </div>
-              <v-btn
-                width="111"
-                :class="missingData(item.serviceOfferingGroupId)? 'primary': 'secondary'"
-                @click="routeToSelection(item.serviceOfferingGroupId,false)"
-                @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
-                @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
-              >
-                {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
-              </v-btn>
             </div>
           </div>
           <hr />
@@ -248,36 +250,41 @@ export default class Summary extends Vue {
   };
 
   public getFormattedNames(value: string): string{
-    const avlOfferings = DescriptionOfWork.serviceOfferingGroups
-    const filtered = avlOfferings.filter(obj => obj.value == value)
-    return filtered[0].label
+    const avlOfferings = DescriptionOfWork.serviceOfferingGroups;
+    const filtered = avlOfferings.filter(obj => obj.value == value);
+    return filtered[0].label;
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
-    const serviceArr = value.map(obj => ` ${obj.name}`)
-    return serviceArr.join()
+    const serviceArr = value.map(obj => ` ${obj.name}`);
+    return serviceArr.join();
   };
 
   public labelsMissingData(value: DOWServiceOfferingGroup[]): void {
-    let outputArr :string[] = []
+    let outputArr :string[] = [];
     value.forEach((obj)=>{
-      let id = obj.serviceOfferingGroupId
+      let id = obj.serviceOfferingGroupId;
       obj.serviceOfferings.forEach((offering)=>{
+        if(offering.classificationInstances && offering.classificationInstances.length == 0) {
+          if(outputArr.indexOf(id) < 0){
+            outputArr.push(id);
+          };
+        };
         offering.classificationInstances?.forEach((instance)=>{
           if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
             if(outputArr.indexOf(id) < 0){
-              outputArr.push(id)
-            }
+              outputArr.push(id);
+            };
           }
           else if(instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
             if(outputArr.indexOf(id) < 0){
-              outputArr.push(id)
+              outputArr.push(id);
             }
           };
         });
       })
     });
-    this.instancesMissingData = outputArr
+    this.instancesMissingData = outputArr;
   };
 
   public missingData(value :string) {
@@ -287,20 +294,20 @@ export default class Summary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
-    const classifications = await classificationRequirements.getSelectedClassificationLevels()
+    const classifications = await classificationRequirements.getSelectedClassificationLevels();
     if (periods && periods.length <= 0) {
-      this.showAlert = true
-      this.isPeriodsDataMissing = true
+      this.showAlert = true;
+      this.isPeriodsDataMissing = true;
     };
     if (classifications && classifications.length <= 0) {
-      this.showAlert = true
-      this.isClassificationDataMissing = true
+      this.showAlert = true;
+      this.isClassificationDataMissing = true;
     };
 
     const selectedOfferingGroups: string[] = DescriptionOfWork.selectedServiceOfferingGroups;
     this.allServiceGroups = DescriptionOfWork.serviceOfferingGroups;
     this.availableServiceGroups = this.allServiceGroups.filter((serviceGroup) => {
-      return selectedOfferingGroups.indexOf(serviceGroup.value) === -1
+      return selectedOfferingGroups.indexOf(serviceGroup.value) === -1;
     });
     this.availableServiceGroups.forEach((group) => {
       const altNameIndex = this.alternateGroupNames.findIndex((altObj) => {
@@ -314,7 +321,7 @@ export default class Summary extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    this.labelsMissingData(this.DOWObject)
+    this.labelsMissingData(this.DOWObject);
   };
 };
 </script>

@@ -312,7 +312,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
   // If added a new offering group or editing/reviewing existing offering from the summary page, and
   // at last service in group, send back to summary page
-  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd) {
+  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd && atOfferingsEnd) {
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;
   }
