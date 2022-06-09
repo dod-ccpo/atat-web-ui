@@ -184,7 +184,6 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
 
       await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
-      // todo future ticket - save to SNOW
     } catch (error) {
       throw new Error('error saving requirement data');
     }

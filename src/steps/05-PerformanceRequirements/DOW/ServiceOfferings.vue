@@ -124,6 +124,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         // save to store
         await DescriptionOfWork.setSelectedOfferings(this.selectedOptions);
       }
+      //save to backend
+      await DescriptionOfWork.saveUserSelectedServices();
     } catch (error) {
       throw new Error('error saving requirement data');
     }

@@ -27,6 +27,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   contract_considerations: string;
   funding_plans: string;
   classification_level: string;
+  required_services: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -159,6 +160,16 @@ export interface RequirementsCostEstimateDTO extends BaseTableDTO {
     surge_capabilities?: string;
     estimatedTaskOrderValue?: string;
 }
+
+export interface RequiredServicesDTO extends BaseTableDTO {
+  usage_description: string;
+  applicable_classification_levels: string;
+  need_for_entire_to_duration: string;
+  applicable_periods: string;
+  select_service_offerings: string;
+  other_service_offering: string;
+}
+
 export interface GFEOverviewDTO extends BaseTableDTO {
   dpas_unit_identification_code?: string;
   gfe_gfp_furnished?: string;
@@ -217,4 +228,18 @@ export interface PeriodDTO extends BaseTableDTO {
 export interface ReferenceColumn {
   link: string;
   value: string;
+}
+
+
+export interface SelectedServiceOfferingDTO extends BaseTableDTO {
+  classification_instances: string;
+  other_service_offering: string;
+  service_offering: string;
+}
+
+export interface ClassificationInstanceDTO extends BaseTableDTO {
+  selected_periods: string;
+  classification_level: string;
+  usage_description: string;
+  need_for_entire_task_order_duration: string;
 }
