@@ -77,7 +77,6 @@
             >Add requirements</a>
           </div>
 
-
         </div>
       
       </v-col>
@@ -98,6 +97,7 @@ import Periods from "@/store/periods";
 import { DOWServiceOfferingGroup } from "../../../../types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { SystemChoiceDTO } from "@/api/models";
+// import router from "@/router";  
 
 @Component({
   components: {
@@ -107,10 +107,10 @@ import { SystemChoiceDTO } from "@/api/models";
   }
 })
 export default class Summary extends Vue {
-  private isPeriodsDataMissing = false
-  private isClassificationDataMissing = false
-  private showAlert = false
-  private routeNames = routeNames
+  private isPeriodsDataMissing = false;
+  private isClassificationDataMissing = false;
+  private showAlert = false;
+  private routeNames = routeNames;
 
   public availableServiceGroups: SystemChoiceDTO[] = [];
   public allServiceGroups: SystemChoiceDTO[] = [];
@@ -199,8 +199,19 @@ export default class Summary extends Vue {
     return tooltipObj ? tooltipObj.text : "";
   }
 
-  public routeToSelection(value: string): void {
-    // use value to get route and send there
+  public async routeToSelection(value: string): Promise<void> {
+    DescriptionOfWork.setCurrentOfferingGroupId(value);
+    DescriptionOfWork.addOfferingGroup(value);
+    DescriptionOfWork.setReturnToDOWSummary(true);
+    DescriptionOfWork.setAddingGroupFromSummary(true);
+
+    this.$router.push({
+      name: "pathResolver",
+      params: {
+        resolver: "OfferGroupOfferingsPathResolver",
+        direction: "next"
+      },
+    }).catch((error) => console.log("Routing error:" + error));
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -228,7 +239,6 @@ export default class Summary extends Vue {
         group.label = this.alternateGroupNames[altNameIndex].label;
       }
     });
-    console.log(this.availableServiceGroups);
   };
 
   public async mounted(): Promise<void> {
