@@ -94,15 +94,15 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 export default class RequirementCategories extends Mixins(SaveOnLeave) {
   public selectedXaasOptions: string[] = [];
   public cloudSupportSelectedOptions: string[] = [];
-  public xaaSNoneValue = "XaaS_NONE";
-  public cloudNoneValue = "Cloud_NONE";
+  private cloudSupportCheckboxItems: Checkbox[] = [];
+  public xaaSNoneValue = DescriptionOfWork.xaaSNoneValue;
+  public cloudNoneValue = DescriptionOfWork.cloudNoneValue;
   private xaasCheckboxItems: Checkbox[] = [];
   private serviceOfferingGroups: SystemChoiceDTO[] = [];
   private isPeriodsDataMissing = false
   private isClassificationDataMissing = false
   private showAlert = false
   private routeNames = routeNames
-  private cloudSupportCheckboxItems: Checkbox[] = [];
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -130,7 +130,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         value: serviceOfferingGroup.value
       };
 
-      const cloudServiceCategories = ["advisory", "training"];
+      const cloudServiceCategories = ["advisory", "training", this.cloudNoneValue.toLowerCase()];
       if (!cloudServiceCategories.includes(checkboxItem.value.toLowerCase())) {
         if (checkboxItem.value.toLowerCase() === "general_xaas") {
           checkboxItem.description = `Including third party marketplace and any
@@ -141,15 +141,13 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
         this.cloudSupportCheckboxItems.push(checkboxItem);
       };
 
-      const selectedOfferingGroups = DescriptionOfWork.selectedServiceOfferingGroups;
-      const validSelections = selectedOfferingGroups.reduce<string[]>((accumulator, current) => {
-        const itemIndex = this.xaasCheckboxItems.findIndex(item => item.value === current);
-        return itemIndex >= 0 ? [...accumulator,
-          this.xaasCheckboxItems[itemIndex].value] : accumulator;
-      }, []);
-      this.selectedXaasOptions.push(...validSelections);
-
-
+      DescriptionOfWork.selectedServiceOfferingGroups.forEach((groupId) => {
+        if (cloudServiceCategories.indexOf(groupId.toLowerCase()) === -1) {
+          this.selectedXaasOptions.push(groupId)
+        } else {
+          this.cloudSupportSelectedOptions.push(groupId);
+        }
+      })
     });
 
     const xaasNone: Checkbox = {
