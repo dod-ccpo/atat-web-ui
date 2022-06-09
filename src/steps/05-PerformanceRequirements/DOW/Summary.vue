@@ -24,9 +24,9 @@
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
-              <h4>
+              <h3>
                 {{getFormattedNames(item.serviceOfferingGroupId)}}
-              </h4>
+              </h3>
               <p class="mb-0">
                 {{formattedOfferings(item.serviceOfferings)}}
               </p>
