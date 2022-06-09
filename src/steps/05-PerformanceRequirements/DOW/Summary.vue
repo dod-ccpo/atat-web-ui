@@ -24,11 +24,11 @@
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
-              <h5>
-                {{item.serviceOfferingGroupId}}
-              </h5>
-              <p class="mb-0" v-for="(service) in item.serviceOfferings" :key="service.name">
-                {{service.name}}
+              <h4>
+                {{getFormattedNames(item.serviceOfferingGroupId)}}
+              </h4>
+              <p class="mb-0">
+                {{formattedOfferings(item.serviceOfferings)}}
               </p>
             </div>
             <div class="d-flex">
@@ -59,7 +59,7 @@ import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
-import { DOWServiceOfferingGroup } from "../../../../types/Global";
+import { DOWServiceOffering, DOWServiceOfferingGroup, stringObj } from "../../../../types/Global";
 
 
 @Component({
@@ -75,6 +75,17 @@ export default class Summary extends Vue {
   private showAlert = false
   private routeNames = routeNames
   public DOWObject: DOWServiceOfferingGroup[] = DescriptionOfWork.DOWObject;
+
+  public getFormattedNames(value: string): string{
+    const avlOfferings = DescriptionOfWork.serviceOfferingGroups
+    const filtered = avlOfferings.filter(obj => obj.value == value)
+    return filtered[0].label
+  }
+
+  public formattedOfferings(value: DOWServiceOffering[]): string {
+    const serviceArr = value.map(obj => ` ${obj.name}`)
+    return serviceArr.join()
+  }
 
 
   public async loadOnEnter(): Promise<void> {
