@@ -20,7 +20,7 @@
             summaryPage=true
           />
         </div>
-        <div class="copy-max-width" v-for="(item) in this.DOWObject"
+        <div class="container-max-width" v-for="(item) in this.DOWObject"
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
