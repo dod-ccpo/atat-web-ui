@@ -151,6 +151,21 @@ hr, .hr {
       font-size: 18px;
     }
   }
+  &._nav-link {
+    text-decoration: none;
+    &:after {
+      content: "chevron_right";
+      font-family: "Material Icons";
+      -webkit-font-feature-settings: "liga";
+      font-size: 20px;
+      font-weight: normal;
+      display: inline-block;
+      height: 18px;
+      line-height: 18px;
+      text-decoration: none !important;
+      vertical-align: text-bottom;
+    }
+    }
 }
 
 .text-decoration-none {
