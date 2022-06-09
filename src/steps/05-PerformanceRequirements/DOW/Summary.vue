@@ -20,7 +20,8 @@
             summaryPage=true
           />
         </div>
-        <div class="container-max-width" v-for="(item) in this.DOWObject"
+        <div class="container-max-width"
+              v-for="(item) in this.DOWObject"
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
@@ -40,10 +41,11 @@
               </div>
               <v-btn
                 width="111"
-              :class="missingData(item.serviceOfferingGroupId)? 'primary': 'secondary'"
-              @click="routeToSelection(item.serviceOfferingGroupId,false)"
-              @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
-              @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)">
+                :class="missingData(item.serviceOfferingGroupId)? 'primary': 'secondary'"
+                @click="routeToSelection(item.serviceOfferingGroupId,false)"
+                @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
+                @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
+              >
                 {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
               </v-btn>
             </div>
