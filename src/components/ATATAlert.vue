@@ -6,7 +6,7 @@
     :class="getClasses"
     :id="id"
   >
-    <div 
+    <div
       class="_content d-flex"
       :style="{ 'max-height': maxHeight + 'px' }"
       :class="{ 'pt-6 pr-6': maxHeight }"
@@ -27,7 +27,7 @@
       </div>
       <div>
         <slot name="content"></slot>
-        <div 
+        <div
           v-if="maxHeight"
           style="height: 60px; display: block; width: 100%"
         >
@@ -78,10 +78,10 @@ import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ATATAlert extends Vue {
-  @Prop({ default: "presentation" }) private role?: string;
-  @Prop({ default: true }) private show?: boolean;
-  @Prop({ default: "Alert" }) private id?: string;
-  @Prop({ default: "" }) private maxHeight?: string;
+  @Prop({default: "presentation"}) private role?: string;
+  @Prop({default: true}) private show?: boolean;
+  @Prop({default: "Alert"}) private id?: string;
+  @Prop({default: ""}) private maxHeight?: string;
 
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
@@ -89,16 +89,16 @@ export default class ATATAlert extends Vue {
    * type "callout" will never have an icon or border, always light blue background - general info
    * all other types are alerts and will always have an icon and border
    */
-  @Prop({ default: "error" }) private type?: string;
+  @Prop({default: "error"}) private type?: string;
 
   /**
    * size: 1) large or 2)small
    * large size will render a 8px left border and 20px icon
    * small size will render a 4px left border and 16px icon
    */
-  @Prop({ default: "small" }) private size?: string;
-  @Prop({ default: false }) private borderLeft?: boolean;
-  @Prop({ default: false }) private closeButton?: boolean;
+  @Prop({default: "small"}) private size?: string;
+  @Prop({default: false}) private borderLeft?: boolean;
+  @Prop({default: false}) private closeButton?: boolean;
 
   public get getClasses(): string {
     if (this.type === "callout") {

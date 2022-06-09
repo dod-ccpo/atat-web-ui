@@ -62,6 +62,17 @@
   url('./assets/fonts/roboto-condensed-regular.woff2') format('woff2'),
   url('./assets/fonts/roboto-condensed-regular.woff') format('woff');
 }
+
+/* roboto-condensed-500 - latin */
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 500;
+  src: local(''),
+  url('./assets/fonts/roboto-condensed-500.woff2') format('woff2'),
+  url('./assets/fonts/roboto-condensed-500.woff') format('woff');
+}
+
 /* roboto-condensed-700 - latin */
 @font-face {
   font-family: 'Roboto Condensed';
