@@ -32,15 +32,15 @@
               </p>
             </div>
             <div class="d-flex">
-              <div class="d-flex align-start mt-1">
+              <div v-if="missingData(item.serviceOfferingGroupId)" class="d-flex align-start mt-1">
                 <v-icon
                   class="icon-20 text-warning-dark2 pr-2"
                 >warning</v-icon>
                 <p class="mb-0 pr-4">Missing info</p>
               </div>
               <v-btn
-              class="primary">
-                Review
+              :class="missingData(item.serviceOfferingGroupId)? 'primary': 'secondary'">
+                {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
               </v-btn>
             </div>
           </div>
@@ -75,6 +75,7 @@ export default class Summary extends Vue {
   private showAlert = false
   private routeNames = routeNames
   public DOWObject: DOWServiceOfferingGroup[] = DescriptionOfWork.DOWObject;
+  public instancesMissingData: string[] =[]
 
   public getFormattedNames(value: string): string{
     const avlOfferings = DescriptionOfWork.serviceOfferingGroups
@@ -85,6 +86,37 @@ export default class Summary extends Vue {
   public formattedOfferings(value: DOWServiceOffering[]): string {
     const serviceArr = value.map(obj => ` ${obj.name}`)
     return serviceArr.join()
+  }
+
+  public labelsMissingData(value: DOWServiceOfferingGroup[]): void {
+    let outputArr :string[] = []
+    value.forEach((obj)=>{
+      let id = obj.serviceOfferingGroupId
+      obj.serviceOfferings.forEach((offering)=>{
+        offering.classificationInstances?.forEach((instance)=>{
+          if(instance.anticipatedNeedUsage === '') {
+            outputArr.push(id)
+          }
+          else if(instance.entireDuration === '') {
+            outputArr.push(id)
+          }
+          else if(instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
+            outputArr.push(id)
+          };
+        });
+      })
+    })
+    console.log(outputArr)
+    this.instancesMissingData = outputArr
+  }
+
+  public missingData(value :string) {
+    // 23f
+    if(this.instancesMissingData.includes(value)){
+      return true
+    } else{
+      return false
+    }
   }
 
 
@@ -103,6 +135,8 @@ export default class Summary extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.labelsMissingData(this.DOWObject)
+    this.missingData('')
   };
 }
 </script>
