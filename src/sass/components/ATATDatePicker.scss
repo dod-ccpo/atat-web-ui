@@ -34,8 +34,6 @@
               color: $base-darkest !important;
             }
             button{
-              pointer-events: none;
-              user-select: none;
               color: $base_darkest;
               &:hover{
                 color: $base_darkest;
