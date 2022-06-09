@@ -24,7 +24,7 @@
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
-              <h3>
+              <h3 class="mb-1">
                 {{getFormattedNames(item.serviceOfferingGroupId)}}
               </h3>
               <p class="mb-0">
@@ -36,9 +36,10 @@
                 <v-icon
                   class="icon-20 text-warning-dark2 pr-2"
                 >warning</v-icon>
-                <p class="mb-0 pr-4">Missing info</p>
+                <p class="mb-0 pr-4 _semibold">Missing info</p>
               </div>
               <v-btn
+                width="111"
               :class="missingData(item.serviceOfferingGroupId)? 'primary': 'secondary'"
               @click="routeToSelection(item.serviceOfferingGroupId,false)"
               @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
@@ -258,12 +259,7 @@ export default class Summary extends Vue {
       let id = obj.serviceOfferingGroupId
       obj.serviceOfferings.forEach((offering)=>{
         offering.classificationInstances?.forEach((instance)=>{
-          if(instance.anticipatedNeedUsage === '') {
-            if(outputArr.indexOf(id) < 0){
-              outputArr.push(id)
-            }
-          }
-          else if(instance.entireDuration === '') {
+          if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
             if(outputArr.indexOf(id) < 0){
               outputArr.push(id)
             }
