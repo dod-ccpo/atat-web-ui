@@ -78,6 +78,7 @@ export default class DOWAlert extends Vue {
   @Prop({default: false}) private summaryPage?: boolean;
 
 
+
   private routeNames = routeNames
 
   public get isPoPAndClassificationMissing(): boolean {

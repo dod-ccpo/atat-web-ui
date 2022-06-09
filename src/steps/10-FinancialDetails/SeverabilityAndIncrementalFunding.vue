@@ -94,7 +94,7 @@
                     <span v-else-if="isOnlyCostEstimateMissing">
                     requirements cost estimate is
                   </span>
-                    <span v-else-if="isPoPAndClassificationMissing">
+                    <span v-else-if="isPoPAndCostEstimateMissing">
                     period of performance and requirements cost estimate are
                   </span>
                     missing.</h3>
@@ -103,7 +103,7 @@
                     missing info. We recommend
                     <span v-if="isPeriodsDataMissing">updating your </span>
                     <span v-else>completing the </span>
-                    <span v-if="isPoPAndClassificationMissing">
+                    <span v-if="isPoPAndCostEstimateMissing">
                     <router-link
                       id="Step5Link"
                       :to="{name: routeNames.PeriodOfPerformance}"
@@ -174,7 +174,7 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
       this.isCostEstimateMissing)
   }
 
-  public get isPoPAndClassificationMissing(): boolean {
+  public get isPoPAndCostEstimateMissing(): boolean {
     return this.isCostEstimateMissing && this.isPeriodsDataMissing;
   }
 
