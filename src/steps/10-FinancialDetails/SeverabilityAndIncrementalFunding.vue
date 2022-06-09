@@ -188,7 +188,7 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
 
   public get route(): string {
     return this.isOnlyCostEstimateMissing
-      ? this.routeNames.RequirementsCostEstimate
+      ? this.routeNames.RequirementsCostForm
       : this.routeNames.PeriodOfPerformance;
   }
 
