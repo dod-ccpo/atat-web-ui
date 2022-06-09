@@ -46,12 +46,14 @@ export class DescriptionOfWorkStore extends VuexModule {
   currentOfferingName = "";
   currentOfferingSysId = "";
 
+  xaaSNoneValue = "XaaS_NONE";
+  cloudNoneValue = "Cloud_NONE";
+
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.serviceOfferings),
     nameofProperty(this, (x) => x.serviceOfferingGroups),
   ];
-
   
   // getters
   public get currentOfferingGroupIndex(): number {
@@ -60,7 +62,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get currentOfferingIndex(): number {
-
     const groupIndex = this.currentOfferingGroupIndex;
     const offeringIndex = groupIndex > -1 ? this.DOWObject[groupIndex]
       .serviceOfferings.findIndex(offering=> offering.name 
@@ -73,6 +74,12 @@ export class DescriptionOfWorkStore extends VuexModule {
     return groupIndex > -1 ? this.DOWObject[groupIndex].serviceOfferings : [];
   }
 
+  public get validServiceGroups(): DOWServiceOfferingGroup[] {
+    return this.DOWObject.filter(
+      obj => obj.serviceOfferingGroupId.indexOf("NONE") === -1
+    );
+  }
+
   public get isEndOfServiceOfferings(): boolean {
     
     const offerings =  this.serviceOfferingsForGroup;
@@ -82,9 +89,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get isEndOfServiceGroups(): boolean {
-    const groupIndex = this.DOWObject
+    const groupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
-    return (groupIndex + 1) === this.DOWObject.length;
+    return (groupIndex + 1) === this.validServiceGroups.length;
   }
 
   public get isAtBeginningOfServiceOfferings(): boolean {
@@ -95,7 +102,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get isAtBeginningOfServiceGroups(): boolean {
-    const groupIndex = this.DOWObject
+    const groupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
     return groupIndex === 0;
 
@@ -155,18 +162,15 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get nextOfferingGroup(): string | undefined {
-
-    
-
-    const currentGroupIndex = this.DOWObject
+    const currentGroupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
       return undefined;
     }
 
-    if((currentGroupIndex + 2) <= this.DOWObject.length){
-      const nextGroup = this.DOWObject[currentGroupIndex + 1].serviceOfferingGroupId;
+    if((currentGroupIndex + 2) <= this.validServiceGroups.length){
+      const nextGroup = this.validServiceGroups[currentGroupIndex + 1].serviceOfferingGroupId;
       return nextGroup;
     }
 
@@ -175,7 +179,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   public get prevOfferingGroup(): string | undefined {
 
-    const currentGroupIndex = this.DOWObject
+    const currentGroupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
@@ -183,20 +187,20 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   
     const groupIndex = currentGroupIndex > 0 ? currentGroupIndex - 1 :  currentGroupIndex;
-    const nextGroup = this.DOWObject[groupIndex].serviceOfferingGroupId;
+    const nextGroup = this.validServiceGroups[groupIndex].serviceOfferingGroupId;
     return nextGroup;
   }
 
   public get lastOfferingForGroup(): { name: string, sysId: string } | undefined {
 
-    const currentGroupIndex = this.DOWObject
+    const currentGroupIndex = this.validServiceGroups
       .findIndex(group=> group.serviceOfferingGroupId === this.currentGroupId);
 
     if(currentGroupIndex < 0){
       return undefined;
     }
   
-    const lastOffering =  last(this.DOWObject[currentGroupIndex].serviceOfferings);
+    const lastOffering =  last(this.validServiceGroups[currentGroupIndex].serviceOfferings);
 
     return lastOffering 
       ? { name: lastOffering.name, sysId: lastOffering.sys_id } 
@@ -233,39 +237,97 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
     value.forEach((value, index) => {
-      value.sequence = index;
+      // ensure "none apply" options are last in sequence
+      value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index;
     });
     this.serviceOfferingGroups = value;
   }
 
+  public currentGroupRemoved = false;
+  public lastGroupRemoved = false;
+
   @Mutation
-  public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
-    selectedOfferingGroups.forEach((selectedOfferingGroup) => {
-      if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
-        const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroup)
-        const offeringGroup: DOWServiceOfferingGroup = {
-          serviceOfferingGroupId: selectedOfferingGroup,
-          sequence: group?.sequence || 0,
-          serviceOfferings: []
-        }
-        this.DOWObject.push(offeringGroup);
-      }
-      // remove any groups that were previously checked
-      this.DOWObject.forEach((offeringGroup, index) => {
-        const groupId = offeringGroup.serviceOfferingGroupId;
-        if (!selectedOfferingGroups.includes(groupId)) {
-          this.DOWObject.splice(index, 1);
-          // todo future ticket - remove from SNOW db
-        }
+  public setCurrentGroupRemoved(bool: boolean): void {
+    this.currentGroupRemoved = bool;
+  }
+  @Mutation
+  public setLastGroupRemoved(bool: boolean): void {
+    this.lastGroupRemoved = bool;
+  }
+
+  // removes current offering group if user clicks  the "I don't need these cloud resources"
+  // button or does not select any offerings and clicks "Continue" button
+  @Mutation
+  public async removeCurrentOfferingGroup(): Promise<void> {
+    if (!this.currentGroupRemoved) {
+      const groupIdToRemove = this.currentGroupId;
+      const groupIndex = this.DOWObject.findIndex(
+        e => e.serviceOfferingGroupId === groupIdToRemove
+      );
+
+      const DOWObjectBeforeRemoval = _.clone(this.DOWObject);
+      // remove group from DOWObject
+      this.DOWObject = this.DOWObject.filter(
+        obj => obj.serviceOfferingGroupId !== groupIdToRemove
+      );
+  
+      const onlyNoneRemain = this.DOWObject.every((e) => {
+        return e.serviceOfferingGroupId.indexOf("NONE") > -1;
       });
 
-      this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+      // check if last group was removed
+      if (groupIndex === DOWObjectBeforeRemoval.length - 1 || onlyNoneRemain) {
+        this.lastGroupRemoved = true;
+        // set currentGroupId to previous if has one
+        if (DOWObjectBeforeRemoval.length > 1 && !onlyNoneRemain) {
+          this.currentGroupId = DOWObjectBeforeRemoval[groupIndex -1].serviceOfferingGroupId;
+        } else {
+          // removed group was last in DOWObject, clear currentGroupId
+          this.currentGroupId = "";
+        }
+      } else {
+        this.lastGroupRemoved = false;
+        // set currentGroupId to next group in DOWObject
+        this.currentGroupId = DOWObjectBeforeRemoval[groupIndex + 1].serviceOfferingGroupId;
+      }
+      this.currentGroupRemoved = true; 
+    }
+  }
 
-      this.currentGroupId = this.DOWObject.length > 0 ? 
-        this.DOWObject[0].serviceOfferingGroupId : "";
-      this.currentOfferingName = "";
-      this.currentOfferingSysId = "";
-    });
+  @Mutation
+  public setSelectedOfferingGroups(selectedOfferingGroups: string[]): void {
+    if (selectedOfferingGroups.length) {
+      selectedOfferingGroups.forEach((selectedOfferingGroup) => {
+        if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroup)) {
+          const group = this.serviceOfferingGroups.find(e => e.value === selectedOfferingGroup)
+          const offeringGroup: DOWServiceOfferingGroup = {
+            serviceOfferingGroupId: selectedOfferingGroup,
+            sequence: group?.sequence || 99,
+            serviceOfferings: []
+          }
+          this.DOWObject.push(offeringGroup);
+        }
+        // remove any groups that were previously checked
+        this.DOWObject.forEach((offeringGroup, index) => {
+          const groupId = offeringGroup.serviceOfferingGroupId;
+          if (!selectedOfferingGroups.includes(groupId)) {
+            this.DOWObject.splice(index, 1);
+            // todo future ticket - remove from SNOW db
+          }
+        });
+
+        this.DOWObject.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+      });
+    } else {
+      this.DOWObject = [];
+    }
+    this.currentGroupId = this.DOWObject.length > 0 
+      && this.DOWObject[0].serviceOfferingGroupId.indexOf("NONE") === -1 
+      ? this.DOWObject[0].serviceOfferingGroupId 
+      : "";
+    this.currentOfferingName = "";
+    this.currentOfferingSysId = "";
+
   }
 
   @Mutation
