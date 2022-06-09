@@ -82,6 +82,8 @@ import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsC
 import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
+import IncrementalFunding 
+  from "../steps/10-FinancialDetails/IncrementalFunding.vue";
 
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
@@ -148,6 +150,7 @@ export const routeNames = {
   RequirementsCostForm: "Requirements_Cost_Form",
   FundingPlan: "Funding_Plan",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
+  IncrementalFunding: "Incremental_Funding",
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
@@ -595,6 +598,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
+      },
+      {
+        menuText: "Incremental Funding",
+        path: "incremental-funding",
+        excludeFromMenu: true,
+        name: routeNames.IncrementalFunding,
+        completePercentageWeight: 1,
+        component: IncrementalFunding,
       },
     ]
   },
