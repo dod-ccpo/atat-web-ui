@@ -58,7 +58,8 @@ import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
-import { DescriptionOfWorkStore } from "@/store/descriptionOfWork";
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import { DOWServiceOfferingGroup } from "../../../../types/Global";
 
 
 @Component({
@@ -73,7 +74,8 @@ export default class Summary extends Vue {
   private isClassificationDataMissing = false
   private showAlert = false
   private routeNames = routeNames
-  private DOWObject = []
+  public DOWObject: DOWServiceOfferingGroup[] = DescriptionOfWork.DOWObject;
+
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
@@ -86,7 +88,6 @@ export default class Summary extends Vue {
       this.showAlert = true
       this.isClassificationDataMissing = true
     };
-    this.DOWObject = DescriptionOfWorkStore.state.DOWObject
   };
 
   public async mounted(): Promise<void> {
