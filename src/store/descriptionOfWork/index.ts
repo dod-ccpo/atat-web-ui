@@ -23,18 +23,19 @@ import {
   DOWClassificationInstance 
 } from "../../../types/Global";
 
-import _, { differenceWith, filter, last } from "lodash";
-import { proxy } from "cypress/types/jquery";
-import { VAlert } from "vuetify/lib";
+import _, { differenceWith, last } from "lodash";
 
-//service proxy type for saving service offerings
-//and associated classification instances
 
+// Classification Proxy helps keep track of saved
+// Classification Instances so we can efficiently
+// update the DOW object
 type ClassificationInstanceProxy = {
-   instanceIndex: number;
+   dowClassificationInstanceIndex: number;
    classificationInstance: ClassificationInstanceDTO;
 }
-
+// service proxy type for saving service offerings
+// and associated classification instances
+// helps keep track of changes and updating dow object
 type ServiceOfferingProxy =  {
   serviceOffering: SelectedServiceOfferingDTO,
   classificationInstances: ClassificationInstanceProxy[]
@@ -42,7 +43,10 @@ type ServiceOfferingProxy =  {
   dowServiceIndex: number
 }
 
-const mapDOWServiceOfferingToSelectedService= 
+//helper to map DowService offering
+//from DOW object to a ServiceOffering Proxy 
+// that can be saved
+const mapDOWServiceOfferingToServiceProxy= 
 (dowServiceOffering: DOWServiceOffering, groupIndex: number, 
   serviceIndex: number): ServiceOfferingProxy=> {
       
@@ -58,7 +62,7 @@ const mapDOWServiceOfferingToSelectedService=
     .classificationInstances?.map((instance, instanceIndex)=> {
 
       const classificationInstance: ClassificationInstanceProxy = {
-        instanceIndex,
+        dowClassificationInstanceIndex: instanceIndex,
         classificationInstance: {
           selected_periods: instance
             .selectedPeriods?.map(period=> period.sysId || "").join(',') || "",
@@ -505,8 +509,12 @@ export class DescriptionOfWorkStore extends VuexModule {
       //updated classification instances with ids
       data.classificationInstances?.forEach((instance, index)=> {
         const savedInstanceProxy = 
-          value.classificationInstances.find(cInstance=>cInstance.instanceIndex == index);
-        instance.sysId = savedInstanceProxy?.classificationInstance.sys_id;
+          value.classificationInstances
+            .find(cInstance=>cInstance.dowClassificationInstanceIndex == index);
+        if(savedInstanceProxy)
+        {
+          instance.sysId = savedInstanceProxy?.classificationInstance.sys_id;
+        }
       })
 
       //update service instances with ids
@@ -645,11 +653,8 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async removeUserSelectedService(service: SelectedServiceOfferingDTO): Promise<void>{
-    const deletedService = true;
     try {
         
-      debugger;
-
       await api.selectedServiceOfferingTable.remove(service.sys_id || "");
      
       const classificationInstances = service.classification_instances.split(',');
@@ -667,7 +672,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async removeUserSelectedServices(requiredServices: SelectedServiceOfferingDTO[])
  : Promise<void>{
-    debugger;
     try {
 
       const calls = requiredServices.reduce<Promise<void>[]>((previous, current)=>  {
@@ -759,7 +763,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action({rawError: true})
   public async saveUserServices(serviceProxies: ServiceOfferingProxy[]): Promise<void>{
-    debugger;
 
     try {
       const calls = serviceProxies.map(proxy=> this.saveUserService(proxy));
@@ -795,10 +798,8 @@ export class DescriptionOfWorkStore extends VuexModule {
 
       dowOfferingGroups.forEach((group, groupIndex)=> {
         group.serviceOfferings.forEach((offering, offeringIndex)=> {
-          const serviceOfferingProxy: ServiceOfferingProxy = 
-           mapDOWServiceOfferingToSelectedService(offering, groupIndex, offeringIndex);
-          serviceOfferingProxies.push(serviceOfferingProxy);
-
+          serviceOfferingProxies.push(
+            mapDOWServiceOfferingToServiceProxy(offering, groupIndex, offeringIndex));
         });
       });
 
