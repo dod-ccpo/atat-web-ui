@@ -64,7 +64,7 @@
 
           <div>
             <a 
-              class="_nav-link"
+              class="_chevron-right-after"
               :id="group.value + '_link'"
               role="link"
               @click="routeToSelection(group.value)"

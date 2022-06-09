@@ -151,7 +151,7 @@ hr, .hr {
       font-size: 18px;
     }
   }
-  &._nav-link {
+  &._chevron-right-after {
     text-decoration: none;
     &:after {
       content: "chevron_right";
@@ -165,7 +165,7 @@ hr, .hr {
       text-decoration: none !important;
       vertical-align: text-bottom;
     }
-    }
+  }
 }
 
 .text-decoration-none {
