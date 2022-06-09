@@ -24,6 +24,7 @@ import {
 } from "../../../types/Global";
 
 import _, { differenceWith, last } from "lodash";
+import { sys } from "typescript";
 
 
 // Classification Proxy helps keep track of saved
@@ -60,13 +61,15 @@ const mapDOWServiceOfferingToServiceProxy=
 
   const classificationInstances = dowServiceOffering
     .classificationInstances?.map((instance, instanceIndex)=> {
+      debugger;
 
       const classificationInstance: ClassificationInstanceProxy = {
         dowClassificationInstanceIndex: instanceIndex,
         classificationInstance: {
           selected_periods: instance
-            .selectedPeriods?.map(period=> period.sysId || "").join(',') || "",
+            .selectedPeriods?.map(period=>period).join(',') || "",
           classification_level: instance.classificationLevelSysId,
+          sys_id: instance.sysId,
           usage_description: instance.anticipatedNeedUsage,
           need_for_entire_task_order_duration: instance.entireDuration
         },
@@ -693,10 +696,23 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async saveClassificationInstance(data: 
     ClassificationInstanceProxy):Promise<ClassificationInstanceProxy>{
-    const sysId = data.classificationInstance.sys_id || undefined;
-    const saveClassificationInstance = sysId ? 
-      api.classificationInstanceTable.update(sysId, data.classificationInstance) : 
-      api.classificationInstanceTable.create(data.classificationInstance);
+    debugger;
+    const sysId = data.classificationInstance.sys_id;
+    const { classification_level, need_for_entire_task_order_duration, 
+      selected_periods, usage_description, } = data.classificationInstance;
+    const saveClassificationInstance = (sysId && sysId.length > 0) ? 
+      api.classificationInstanceTable.update(sysId, {
+        classification_level,
+        need_for_entire_task_order_duration,
+        selected_periods,
+        usage_description
+      }) : 
+      api.classificationInstanceTable.create({
+        classification_level,
+        need_for_entire_task_order_duration,
+        selected_periods,
+        usage_description
+      });
     const savedClassificationInstance =  await saveClassificationInstance;
     data.classificationInstance = savedClassificationInstance;
    
