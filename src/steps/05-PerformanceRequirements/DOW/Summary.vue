@@ -232,8 +232,8 @@ export default class Summary extends Vue {
   public async routeToSelection(groupID: string, addToStore:boolean ): Promise<void> {
     DescriptionOfWork.setCurrentOfferingGroupId(groupID);
     if (addToStore){
-      DescriptionOfWork.addOfferingGroup(groupID)
-    };
+      DescriptionOfWork.addOfferingGroup(groupID);
+    }
     DescriptionOfWork.setReturnToDOWSummary(true);
     DescriptionOfWork.setAddingGroupFromSummary(true);
 
