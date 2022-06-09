@@ -841,7 +841,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       });
 
       const unsavedServices = serviceOfferingProxies
-        .filter(proxy=>(proxy.serviceOffering.sys_id == undefined || 
+        .filter(proxy=>(proxy.serviceOffering.sys_id === undefined || 
         proxy.serviceOffering.sys_id.length === 0));
 
       const savedServices = serviceOfferingProxies
