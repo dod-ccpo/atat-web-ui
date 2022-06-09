@@ -5,7 +5,7 @@ import {
 import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: DOW Workflows for each option", () => {
+describe("Test suite: DOW Workflows for each Category option", () => {
 
   let serviceOfferingGroups;
 
@@ -34,7 +34,7 @@ describe("Test suite: DOW Workflows for each option", () => {
   });
 
       
-  it("TC1: Developer Tools & Services checkboxes and headings", () => {
+  it("TC1: Developer Tools checkboxes and headings", () => {
 
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
@@ -52,13 +52,13 @@ describe("Test suite: DOW Workflows for each option", () => {
         categoryObj.serviceOfferingCypressLabels
         && categoryObj.serviceOfferingCypressLabels[0] !== "Other"
       ) {
-        cy.verifyServiceOfferingsForCategory(categoryObj);
+        cy.verifyServiceOfferingsForCategory(categoryObj);        
       }
     
     }
   });
 
-  it("TC2: Applications & Services checkboxes and headings", () => {
+  it("TC2: Applications checkboxes and headings", () => {
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       categoryLabels.push(obj.label);
@@ -75,7 +75,7 @@ describe("Test suite: DOW Workflows for each option", () => {
     }
   });
   
-  it("TC3: Networking & Services checkboxes and headings", () => {
+  it("TC3: Networking checkboxes and headings", () => {
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       categoryLabels.push(obj.label);
@@ -96,6 +96,131 @@ describe("Test suite: DOW Workflows for each option", () => {
       }
     
     }
+  });
+  it("TC4: Security checkboxes and headings", () => {
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "SECURITY"
+    );
+
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);      
+      cy.verifyServiceOfferingsForCategory(categoryObj);    
+    }
+
+  });
+
+  it("TC5: Machine Learning checkboxes and headings", () => {
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "MACHINELEARNING"
+    );
+
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);      
+      cy.verifyServiceOfferingsForCategory(categoryObj);    
+    }
+
+  });
+
+  it("TC6: Database with Storage checkboxes and headings", () => {
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "DATABASE"
+    );
+
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);      
+      cy.verifyServiceOfferingsForCategory(categoryObj);    
+    }
+
+  });
+
+  it("TC7: Edge Computing and Tactical Edge(TE) checkboxes and headings", () => {
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "EDGECOMPUTING"
+    );
+
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);      
+      cy.verifyServiceOfferingsForCategory(categoryObj);    
+    }
+
+  });
+
+  it("TC8: Internet of Things (IoT) checkboxes and headings", () => {
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "IOT"
+    );
+
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);      
+      cy.verifyServiceOfferingsForCategory(categoryObj);    
+    }
+
+  });
+  
+  it("TC9: Advisory and Assistance checkboxes and headings", () => {
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "ADVISORY"
+    );
+
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);      
+      cy.verifyServiceOfferingsForCategory(categoryObj);    
+    }
+
+  });
+
+  it("TC10: Training checkboxes and headings", () => {
+    const categoryLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      categoryLabels.push(obj.label);
+    });
+    cy.verifyCheckBoxLabels('input[type=checkbox]', categoryLabels);
+
+    const categoryObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "TRAINING"
+    );    
+
+    if (categoryObj) {
+      cy.verifyServiceOfferingHeader(categoryObj);      
+      cy.verifyServiceOfferingsForCategory(categoryObj);    
+    }
+
   });
 
 });

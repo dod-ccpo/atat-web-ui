@@ -80,3 +80,23 @@ export function getIdText(string) {
 export function getCheckboxId(string) {
   return "#Checkbox_" + string;
 }
+
+export function getServiceOfferingNames(obj) {
+  return obj.serviceOfferingMainLabels 
+    ? obj.serviceOfferingMainLabels 
+    : obj.serviceOfferingCypressLabels;
+}
+
+export function getCheckboxIds(obj) {  
+  const labels =  obj.serviceOfferingMainLabels 
+    ? obj.serviceOfferingMainLabels 
+    : obj.serviceOfferingCypressLabels;
+
+  let checkboxIds=[]
+  labels.forEach((label) => {
+    const textForId = getIdText(label);
+    const id = getCheckboxId(textForId);
+    checkboxIds.push(id);    
+  });
+  return checkboxIds;
+}

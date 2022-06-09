@@ -1,6 +1,7 @@
 import {    
-  getCheckboxId, 
-  getIdText,
+  getCheckboxId,  
+  getServiceOfferingNames,
+  getCheckboxIds
 } from "../helpers";
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
@@ -21,19 +22,12 @@ Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
     serviceOfferingCheckboxLabels.push(label);
   });
 
-  cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
-  
-  const serviceOfferingCheckboxIds = [];
-  const labels = categoryObj.serviceOfferingMainLabels 
-    ? categoryObj.serviceOfferingMainLabels 
-    : categoryObj.serviceOfferingCypressLabels;
-  
-  labels.forEach((label) => {
-    const textForId = getIdText(label);
-    const id = getCheckboxId(textForId);
-    serviceOfferingCheckboxIds.push(id);
-  });
+  cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);  
 
+  const serviceOfferingNames = getServiceOfferingNames(categoryObj);
+  
+  const serviceOfferingCheckboxIds = getCheckboxIds(categoryObj);
+  
   serviceOfferingCheckboxIds.forEach((checkboxId, index) => {
     if (checkboxId.indexOf("Other") === -1) {
       cy.deselectAllCheckboxes();
@@ -41,9 +35,12 @@ Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
       cy.btnClick(common.continueBtn, " Continue ");   
 
       cy.verifyPageHeader(
-        "Next, we’ll gather your requirements for " + labels[index]
-      );  
+        "Next, we’ll gather your requirements for " + serviceOfferingNames[index]
+      ); 
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1000); // needed because with 2 back button clicks, needs a pause for scroll into view
       cy.btnClick(common.backBtn, "Back");
     }
   });  
 });
+
