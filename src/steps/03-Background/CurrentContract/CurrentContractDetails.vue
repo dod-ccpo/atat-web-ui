@@ -1,56 +1,62 @@
 
 <template>
-    <v-container fluid class="container-max-width">
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Let’s gather some details about your current contract
-          </h1>
-          <div class="copy-max-width">
-  
-            <ATATTextField 
-              label="Incumbent contractor name" 
-              id="IncumbentContractorName" 
-              class="_input-max-width mb-10" 
-              :value.sync="incumbentContractorName"
-              :rules="[
-                $validators.required('Please enter the incumbent contractor’s name.')
-              ]"            
-            />
+  <v-container fluid class="container-max-width">
+    <v-row>
+      <v-col class="col-12">
+        <h1 class="page-header">
+          Let’s gather some details about your current contract
+        </h1>
+        <div class="copy-max-width">
+          <ATATTextField
+            label="Incumbent contractor name"
+            id="IncumbentContractorName"
+            class="_input-max-width mb-10"
+            :value.sync="incumbentContractorName"
+            :rules="[
+              $validators.required(
+                'Please enter the incumbent contractor’s name.'
+              ),
+            ]"
+          />
 
-            <ATATTextField 
-              label="Contract number" 
-              id="ContractNumber" 
-              class="_input-max-width mb-10" 
-              :value.sync="contractNumber"
-              :rules="[
-                $validators.required('Please enter your contract number.')
-              ]"            
-            />
-            
-            <ATATTextField 
-              label="Task/Delivery order number" 
-              id="TaskDeliveryOrderNumber" 
-              class="_input-max-width mb-10" 
-              :value.sync="taskDeliveryOrderNumber"
-            />
+          <ATATTextField
+            label="Contract number"
+            id="ContractNumber"
+            class="_input-max-width mb-10"
+            :value.sync="contractNumber"
+            :rules="[
+              $validators.required('Please enter your contract number.'),
+            ]"
+          />
 
-            <!-- NOTE: max date to be determined -->
-            <ATATDatePicker id="Expiration" 
-              label="Contract/Order expiration date"
-              placeHolder="MM/DD/YYYY"
-              :value.sync="contractOrderExpirationDate" 
-              :min="minDate"
-              max="2024-01-01"
-              :rules="[
-                $validators.required('Please enter your contract/order expiration date.'),
-                $validators.isDateValid('Please enter a valid date.')
-              ]" />
+          <ATATTextField
+            label="Task/Delivery order number"
+            id="TaskDeliveryOrderNumber"
+            class="_input-max-width mb-10"
+            :value.sync="taskDeliveryOrderNumber"
+          />
 
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
+          <!-- NOTE: max date to be determined -->
+          <ATATDatePicker
+            id="Expiration"
+            label="Contract/Order expiration date"
+            placeHolder="MM/DD/YYYY"
+            :value.sync="contractOrderExpirationDate"
+            :min="minDate"
+            tooltipText="Use the period of performance end date for your task order. If you 
+                do not have an order number, use your contract expiration date."
+            max="2024-01-01"
+            :rules="[
+              $validators.required(
+                'Please enter your contract/order expiration date.'
+              ),
+              $validators.isDateValid('Please enter a valid date.'),
+            ]"
+          />
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -60,7 +66,9 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import AcquisitionPackage, {
+  StoreProperties,
+} from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -72,19 +80,18 @@ import { add, format } from "date-fns";
     ATATTextField,
   },
 })
-
 export default class CurrentContract extends Mixins(SaveOnLeave) {
-  private incumbentContractorName 
-    = AcquisitionPackage.currentContract?.incumbent_contractor_name || "";
-  
-  private contractNumber 
-    = AcquisitionPackage.currentContract?.contract_number || "";
-  
-  private taskDeliveryOrderNumber 
-    = AcquisitionPackage.currentContract?.task_delivery_order_number || "";
-  
-  private contractOrderExpirationDate 
-    = AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
+  private incumbentContractorName =
+    AcquisitionPackage.currentContract?.incumbent_contractor_name || "";
+
+  private contractNumber =
+    AcquisitionPackage.currentContract?.contract_number || "";
+
+  private taskDeliveryOrderNumber =
+    AcquisitionPackage.currentContract?.task_delivery_order_number || "";
+
+  private contractOrderExpirationDate =
+    AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
 
   private minDate: string = format(add(new Date(), { days: 1 }), "yyyy-MM-dd");
 
@@ -97,7 +104,7 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     };
   }
 
-  private savedData = { 
+  private savedData = {
     incumbent_contractor_name: "",
     contract_number: "",
     task_delivery_order_number: "",
@@ -109,16 +116,16 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<CurrentContractDTO>({storeProperty: 
-      StoreProperties.CurrentContract}) as Record<string, string>;
+    const storeData = (await AcquisitionPackage.loadData<CurrentContractDTO>({
+      storeProperty: StoreProperties.CurrentContract,
+    })) as Record<string, string>;
 
     if (storeData) {
       const keys: string[] = [
         "incumbent_contractor_name",
         "contract_number",
         "task_delivery_order_number",
-        "contract_order_expiration_date"
+        "contract_order_expiration_date",
       ];
       keys.forEach((key: string) => {
         if (Object.prototype.hasOwnProperty.call(storeData, key)) {
@@ -137,9 +144,10 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage
-          .saveData<CurrentContractDTO>({data: this.currentData, 
-            storeProperty: StoreProperties.CurrentContract });
+        await AcquisitionPackage.saveData<CurrentContractDTO>({
+          data: this.currentData,
+          storeProperty: StoreProperties.CurrentContract,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -147,6 +155,5 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
 
     return true;
   }
-
 }
 </script>

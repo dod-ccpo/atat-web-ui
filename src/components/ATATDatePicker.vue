@@ -72,7 +72,8 @@
         v-model="date"
         :show-adjacent-months="showAdjacentMonths"
         no-title
-        active-picker="date"
+        :active-picker.sync="activePicker"
+        type="date"
         :min="min"
         :max="max"
         @click:date="datePickerClicked"
@@ -87,7 +88,7 @@
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import Inputmask from "inputmask";
-import { add, format, isAfter, isBefore, isValid } from "date-fns";
+import { add, format, isValid } from "date-fns";
 import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
@@ -113,6 +114,7 @@ export default class ATATDatePicker extends Vue {
   private dateFormatted = "";
   private menu = false;
   private errorMessages: string[] = [];
+  private activePicker = '';
 
   // Flash of red border on date text field when validateOnBlur is true and user
   // clicks a date in the picker to be addressed in future milestone.
@@ -135,12 +137,25 @@ export default class ATATDatePicker extends Vue {
   @Prop({ default: ()=>[] }) private rules!: Array<unknown>;
   @Prop({ default: false }) private isRequired!: boolean;
 
+
   /**
    * WATCHERS
    */
   @Watch("date")
   protected formatDateWatcher(): void {
     this.dateFormatted = this.reformatDate(this.date);
+  }
+
+  /**
+   * restores standar calendar view when popup menu is displayed 
+   * if previous view was month or year view
+   */
+
+  @Watch("menu")
+  protected showStandardCalendar(val: boolean): void {
+    if (val){
+      setTimeout(()=> this.activePicker = 'DATE')
+    }
   }
 
   /**

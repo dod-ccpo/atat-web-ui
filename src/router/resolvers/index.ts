@@ -307,16 +307,19 @@ export const OfferingDetailsPathResolver = (current: string): string => {
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  // Added a new offering group from the summary page. send directly back after details entered
-  if (DescriptionOfWork.returnToDOWSummary) {
+  const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
+  const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
+
+  // If added a new offering group or editing/reviewing existing offering from the summary page, and
+  // at last service in group, send back to summary page
+  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd && atOfferingsEnd) {
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;
   }
 
   // coming from service offering details step
   if(current === routeNames.ServiceOfferingDetails){
-    const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
-    const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
+
 
     //no more offerings or services to process go to summary
     if(atOfferingsEnd && atServicesEnd){
@@ -328,7 +331,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       const nextServiceOffering = DescriptionOfWork.nextServiceOffering;
       if(nextServiceOffering === undefined)
       {
-        throw new Error('unable to retreive next service offering');
+        throw new Error('unable to retrieve next service offering');
       }
 
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
