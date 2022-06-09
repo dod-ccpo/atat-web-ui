@@ -13,7 +13,7 @@ export interface StepInfo {
 }
 
 export interface AdditionalButton {
-    name: string;
+    name?: string;
     buttonText: string;
     buttonId: string;
     buttonClass?: string;
