@@ -231,7 +231,9 @@ export default class Summary extends Vue {
 
   public async routeToSelection(groupID: string, addToStore:boolean ): Promise<void> {
     DescriptionOfWork.setCurrentOfferingGroupId(groupID);
-    if(addToStore){DescriptionOfWork.addOfferingGroup(groupID)};
+    if (addToStore){
+      DescriptionOfWork.addOfferingGroup(groupID)
+    };
     DescriptionOfWork.setReturnToDOWSummary(true);
     DescriptionOfWork.setAddingGroupFromSummary(true);
 
@@ -241,19 +243,20 @@ export default class Summary extends Vue {
         resolver: "OfferGroupOfferingsPathResolver",
         direction: "next"
       },
-    }).catch((error) => console.log("Routing error:" + error));
-  }
+    })
+      .catch((error) => console.log("Routing error:" + error));
+  };
 
   public getFormattedNames(value: string): string{
     const avlOfferings = DescriptionOfWork.serviceOfferingGroups
     const filtered = avlOfferings.filter(obj => obj.value == value)
     return filtered[0].label
-  }
+  };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
     const serviceArr = value.map(obj => ` ${obj.name}`)
     return serviceArr.join()
-  }
+  };
 
   public labelsMissingData(value: DOWServiceOfferingGroup[]): void {
     let outputArr :string[] = []
@@ -273,18 +276,13 @@ export default class Summary extends Vue {
           };
         });
       })
-    })
+    });
     this.instancesMissingData = outputArr
-  }
+  };
 
   public missingData(value :string) {
-    // 23f
-    if(this.instancesMissingData.includes(value)){
-      return true
-    } else{
-      return false
-    }
-  }
+    return this.instancesMissingData.includes(value) ? true : false;
+  };
 
 
   public async loadOnEnter(): Promise<void> {
@@ -318,6 +316,6 @@ export default class Summary extends Vue {
     await this.loadOnEnter();
     this.labelsMissingData(this.DOWObject)
   };
-}
+};
 </script>
 
