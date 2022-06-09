@@ -111,7 +111,7 @@
                     and the
                     <router-link
                       id="Step5Link"
-                      :to="{name: routeNames.RequirementsCostEstimate}"
+                      :to="{name: routeNames.RequirementsCostForm}"
                     >Requirements Cost Estimate section</router-link>
                   </span>
                     <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
