@@ -170,7 +170,7 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
 
   @Watch("selectedFundOption")
   protected showAlert(): boolean {
-    return this.selectedFundOption == "YES" && (this.isPeriodsDataMissing||
+    return this.selectedFundOption === "YES" && (this.isPeriodsDataMissing||
       this.isCostEstimateMissing)
   }
 
@@ -200,13 +200,9 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
-    if (periods && periods.length <= 0) {
-      this.isPeriodsDataMissing = true
-    }
-    const storeData = await AcquisitionPackage.estimatedTaskOrderValue;
-    if (!storeData) {
-      this.isCostEstimateMissing = true
-    }
+    this.isPeriodsDataMissing = (periods && periods.length <= 0)
+    const estimatedTOValue = await AcquisitionPackage.estimatedTaskOrderValue;
+    this.isCostEstimateMissing = !estimatedTOValue
   }
 
   public async mounted(): Promise<void> {
