@@ -73,32 +73,23 @@ import { routeNames } from "../../../router/stepper"
 })
 
 export default class DOWAlert extends Vue {
-  @Prop({default: false}) private isPeriodsDataMissing?: boolean;
-  @Prop({default: false}) private isClassificationDataMissing?: boolean;
-  @Prop({default: false}) private summaryPage?: boolean;
+  @Prop({default: false}) private isPeriodsDataMissing!: boolean;
+  @Prop({default: false}) private isClassificationDataMissing!: boolean;
+  @Prop({default: false}) private summaryPage!: boolean;
 
 
   private routeNames = routeNames
 
   public get isPoPAndClassificationMissing(): boolean {
-    if (this.isClassificationDataMissing && this.isPeriodsDataMissing) {
-      return this.isClassificationDataMissing && this.isPeriodsDataMissing;
-    };
-    return false
+    return this.isClassificationDataMissing && this.isPeriodsDataMissing;
   };
 
   public get isOnlyPoPyMissing(): boolean {
-    if (!this.isClassificationDataMissing && this.isPeriodsDataMissing) {
-      return !this.isClassificationDataMissing && this.isPeriodsDataMissing;
-    };
-    return false
+    return !this.isClassificationDataMissing && this.isPeriodsDataMissing;
   };
 
   public get isOnlyClassificationMissing(): boolean {
-    if (this.isClassificationDataMissing && !this.isPeriodsDataMissing) {
-      return this.isClassificationDataMissing && !this.isPeriodsDataMissing;
-    };
-    return false
+    return this.isClassificationDataMissing && !this.isPeriodsDataMissing;
   };
 
   public get route(): string {

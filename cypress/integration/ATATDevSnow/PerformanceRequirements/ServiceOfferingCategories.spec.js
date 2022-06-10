@@ -1,15 +1,17 @@
 import { 
   bootstrapMockApis, 
   cleanText,
+  getCheckboxIds,   
+  getServiceOfferingNames,
   getCheckboxId, 
-  getIdText,
   getObjectFromArrayByKey 
 } from "../../../helpers";
-import common from "../../../selectors/common.sel"
+import common from "../../../selectors/common.sel";
+import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: Performance Requirements", () => {
+describe("Test suite: Performance Requirements: Categories", () => {
   let serviceOfferingGroups;
 
   beforeEach(() => {
@@ -29,7 +31,11 @@ describe("Test suite: Performance Requirements", () => {
   });
   
   it("TC2: Asserts: Let’s work on your performance requirements", () => {
-    cy.clickSideStepper(common.stepPerformanceReqText, " Performance Requirements ");
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
+    let selectedClassifications = [contractDetails.level5, contractDetails.level4];
+    cy.selectCheckBoxes(selectedClassifications);
+    cy.btnClick(common.continueBtn, " Continue ");    
     cy.verifyPageHeader(" Let’s work on your performance requirements ");
     const expectedintroText = "Through JWCC, you have the ability to procure" +
       " many offerings for Anything as a Service (XaaS) and Cloud Support Packages." +
@@ -54,8 +60,7 @@ describe("Test suite: Performance Requirements", () => {
     const expectedLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       expectedLabels.push(obj.label);
-    });
-    console.log(expectedLabels)
+    });    
     cy.verifyCheckBoxLabels('input[type=checkbox]', expectedLabels);
 
     const applicationsObj = getObjectFromArrayByKey(
@@ -66,22 +71,21 @@ describe("Test suite: Performance Requirements", () => {
     );
     const appCheckBoxId = getCheckboxId(applicationsObj.value);
     const networkCheckboxId = getCheckboxId(networkingObj.value);
+    
     cy.selectServiceOfferingGroup([appCheckBoxId, networkCheckboxId]);    
     //Navigates to the next page
-    cy.verifyPageHeader("What type of " + applicationsObj.label + " do you need?");
+    cy.verifyPageHeader("What type of " + applicationsObj.label + " do you need?");             
+    cy.verifyCheckBoxLabels('input[type=checkbox]', applicationsObj.serviceOfferingCypressLabels);
     
-    const serviceOfferingCheckboxLabels = [];
-    applicationsObj.serviceOfferings.forEach((label) => {
-      serviceOfferingCheckboxLabels.push(label);
-    });
-    cy.verifyCheckBoxLabels('input[type=checkbox]', serviceOfferingCheckboxLabels);
-
-    const serviceOfferingCheckboxLabelsIds = [];
-    applicationsObj.serviceOfferings.forEach((label) => {
-      const textForId = getIdText(label);
-      const id = getCheckboxId(textForId);
-      serviceOfferingCheckboxLabelsIds.push(id);
-    });
+    const labels = getServiceOfferingNames(applicationsObj);
+    const checkboxIds = getCheckboxIds(applicationsObj);
+    
+    cy.selectCheckBoxes([checkboxIds[1]]);
+    cy.btnClick(common.continueBtn, " Continue ");   
+    //Navigates to the Gather your requirement screen
+    cy.verifyPageHeader(
+      "Next, we’ll gather your requirements for " + labels[1]
+    );     
     
   });
 

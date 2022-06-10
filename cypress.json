@@ -1,5 +1,9 @@
 {
     "viewportWidth": 1920,
     "viewportHeight": 1080,
-    "ChromeWebSecurity": false
+    "ChromeWebSecurity": false,
+    "defaultCommandTimeout":10000,
+    "pageLoadTimeout": 90000,
+    "numTestsKeptInMemory": 1    
+    
 }

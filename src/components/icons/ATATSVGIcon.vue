@@ -13,21 +13,25 @@ import {stringObj } from "types/Global";
 import Vue from "vue";
 
 import { Component, Prop, PropSync } from "vue-property-decorator";
-import Pdf from "@/components/icons/Pdf.vue";
-import UploadFile from "@/components/icons/UploadFile.vue";
+
 import Close from "@/components/icons/Close.vue";
-import Remove from "@/components/icons/Remove.vue";
-import FilePresent from "@/components/icons/FilePresent.vue";
+import Currency from "@/components/icons/Currency.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
+import FilePresent from "@/components/icons/FilePresent.vue";
+import Pdf from "@/components/icons/Pdf.vue";
+import Remove from "@/components/icons/Remove.vue";
+import UploadFile from "@/components/icons/UploadFile.vue";
+
 
 @Component({
   components:{
-    Pdf,
-    UploadFile,
     Close,
-    Remove,
-    FilePresent,
+    Currency,
     ExternalLink,
+    FilePresent,
+    Pdf,
+    Remove,
+    UploadFile,
   }
 })
 
@@ -55,6 +59,7 @@ export default class ATATSVGIcon extends Vue {
   private standardColors: stringObj[] = [
     { "base":  "61686c" },
     { "base-dark": "41494e"},
+    { "base-light": "959a9d"},
     { "primary": "544496" },
     { "info": "009ddd" },
     { "success": "62bd59" },
