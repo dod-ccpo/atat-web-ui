@@ -74,8 +74,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public serviceOfferings: DOWServiceOffering[] = [];
 
   public async loadOnEnter(): Promise<void> {
+    
+
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
     this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
+  
     if (this.serviceOfferings.length) {
       this.serviceOfferings.forEach((offering) => {
         const checkboxItem: Checkbox = {
@@ -101,6 +104,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     }, []);
 
     this.selectedOptions.push(...validSelections);
+
+    this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry
   } 
 
   public async mounted(): Promise<void> {

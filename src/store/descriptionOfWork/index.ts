@@ -25,6 +25,7 @@ import {
 
 import _, { differenceWith, last } from "lodash";
 import { sys } from "typescript";
+import { OfferingDetailsPathResolver } from "@/router/resolvers";
 
 
 // Classification Proxy helps keep track of saved
@@ -50,6 +51,8 @@ type ServiceOfferingProxy =  {
 const mapDOWServiceOfferingToServiceProxy= 
 (dowServiceOffering: DOWServiceOffering, groupIndex: number, 
   serviceIndex: number): ServiceOfferingProxy=> {
+
+  
       
   const serviceOffering: SelectedServiceOfferingDTO = {
     service_offering : dowServiceOffering['sys_id'] || "",
@@ -58,6 +61,14 @@ const mapDOWServiceOfferingToServiceProxy=
     sys_id : dowServiceOffering.serviceId.length ? 
       dowServiceOffering.serviceId : undefined
   };
+
+
+  if(serviceOffering.service_offering === "Other"){
+    const soOther = ((dowServiceOffering as unknown) as ServiceOfferingDTO);
+
+    serviceOffering.service_offering = "";
+    serviceOffering.other_service_offering = soOther && soOther.other ? soOther.other : ""
+  }
 
   const classificationInstances = dowServiceOffering
     .classificationInstances?.map((instance, instanceIndex)=> {
@@ -76,6 +87,7 @@ const mapDOWServiceOfferingToServiceProxy=
       return classificationInstance;
     }) || [];
 
+  
   return {
     serviceOffering,
     classificationInstances,
@@ -287,8 +299,18 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get selectedServiceOfferings(): string[] {
+    const mapOfferingName = (offering: DOWServiceOffering)=> {
+      const name = offering.sys_id === "Other" ? "Other": offering.name
+      return name;
+    }
     return this.DOWObject.map(group=>
-      group.serviceOfferings.flatMap(offering=>offering.name)).flat();
+      group.serviceOfferings.flatMap(offering=>mapOfferingName(offering))).flat();
+  }
+
+  public get otherServiceOfferingEntry(): string {
+    const otherServiceOffer = this.serviceOfferingsForGroup
+      .find(offering=>offering.sys_id === "Other");
+    return otherServiceOffer ? otherServiceOffer.name : "";
   }
 
   @Mutation
@@ -451,7 +473,6 @@ export class DescriptionOfWorkStore extends VuexModule {
           }
         }
       });
-      debugger;
       // remove any service offerings previously selected but unchecked this pass
       const currentOfferingsClone = _.cloneDeep(currentOfferings);
       // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
@@ -595,7 +616,7 @@ export class DescriptionOfWorkStore extends VuexModule {
     });
 
     const groupsWithNoOtherOption = ["ADVISORY", "TRAINING"];
-    debugger;
+    
     if (groupsWithNoOtherOption.indexOf(this.currentGroupId) === -1) {
       const otherOffering: DOWServiceOffering = {
         name: "Other",
@@ -843,6 +864,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async saveUserSelectedServices(): Promise<void>{
 
     try {
+
+      
 
       const requiredServices = this.userSelectedServiceOfferings;
       const dowOfferingGroups = this.DOWObject;
