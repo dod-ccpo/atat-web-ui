@@ -714,10 +714,18 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async removeClassificationInstances(classificationInstances:
     string[]): Promise<void>{
 
+    debugger;
   
     try {
-      const calls = classificationInstances
-        .map(instanceId=> api.classificationInstanceTable.remove(instanceId));
+
+      const calls:Promise<void>[] = [];
+     
+      classificationInstances.forEach(instance=> {
+
+        if(instance.length> 0){
+          calls.push(api.classificationInstanceTable.remove(instance))
+        }
+      })
       await Promise.all(calls);
     } catch (error) {
       //do nothing here we'll delete optimistically
@@ -727,12 +735,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async removeUserSelectedService(service: SelectedServiceOfferingDTO): Promise<void>{
     try {
-        
+      debugger;
+
       await api.selectedServiceOfferingTable.remove(service.sys_id || "");
      
       const classificationInstances = service.classification_instances.split(',');
 
-      if(classificationInstances.length)
+      if(classificationInstances)
       {
         await this.removeClassificationInstances(classificationInstances);
       }
