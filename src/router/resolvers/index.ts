@@ -143,7 +143,6 @@ export const RequirementsPathResolver = (current: string): string =>
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
-  debugger;
   DescriptionOfWork.setCurrentGroupRemoved(false);
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
@@ -154,10 +153,13 @@ export const OfferGroupOfferingsPathResolver = (
   });
   const lastGroupRemoved = DescriptionOfWork.lastGroupRemoved;
 
-  const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
-  const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
-  const navFromSummary = DescriptionOfWork.navFromDOWSummary;
+  // if reviewing service group from store, set "atServicesEnd" to false 
+  const reviewGroupFromSummary = DescriptionOfWork.reviewGroupFromSummary;
+  const atServicesEnd = reviewGroupFromSummary ? false : DescriptionOfWork.isEndOfServiceOfferings;
+  DescriptionOfWork.setReviewGroupFromSummary(false);
+
   const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
+  const addGroupFromSummary = DescriptionOfWork.addGroupFromSummary;
   const currentGroupRemovedForNav = DescriptionOfWork.currentGroupRemovedForNav;
 
   const nowhereToGo = DOWObject.length === 0 
@@ -165,17 +167,17 @@ export const OfferGroupOfferingsPathResolver = (
     || atLastNoneApply 
     || lastGroupRemoved
 
-  debugger;
-  if (currentGroupRemovedForNav || (navFromSummary && atServicesEnd) || nowhereToGo) {
+  if (!addGroupFromSummary && 
+    (currentGroupRemovedForNav || (returnToDOWSummary && atServicesEnd) || nowhereToGo)
+  ) {
     // return to summary
-    DescriptionOfWork.setNavFromDOWSummary(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false); 
     return descriptionOfWorkSummaryPath;
   } 
 
-  DescriptionOfWork.setNavFromDOWSummary(false);
+  DescriptionOfWork.setAddGroupFromSummary(false);
 
   //handles moving backwards or forwards through service offerings
   if (current === routeNames.ServiceOfferingDetails &&

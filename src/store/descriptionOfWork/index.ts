@@ -112,7 +112,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   cloudNoneValue = "Cloud_NONE";
 
   returnToDOWSummary = false;
-  navFromDOWSummary = false;
+  reviewGroupFromSummary = false;
+  addGroupFromSummary = false;
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -148,10 +149,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get isEndOfServiceOfferings(): boolean {
-    
+    if (this.reviewGroupFromSummary) {
+      return false;
+    }
     const offerings =  this.serviceOfferingsForGroup;
     const currentOfferingIndex = offerings
       .findIndex(offering=> offering.name === this.currentOfferingName);
+    debugger;
     return (currentOfferingIndex + 1) === offerings.length;
   }
 
@@ -380,8 +384,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.returnToDOWSummary = bool;
   }
   @Mutation
-  public setNavFromDOWSummary(bool: boolean): void {
-    this.navFromDOWSummary = bool;
+  public setReviewGroupFromSummary(bool: boolean): void {
+    this.reviewGroupFromSummary = bool;
+  }
+
+  @Mutation
+  public setAddGroupFromSummary(bool: boolean): void {
+    this.addGroupFromSummary = bool;
   }
 
   @Mutation
