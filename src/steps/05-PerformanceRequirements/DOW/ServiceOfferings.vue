@@ -88,22 +88,15 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           description: offering.description,
         }
         this.checkboxItems.push(checkboxItem);
+        if (checkboxItem.value === "Other") {
+          this.otherValueEntered = offering.otherOfferingName || "";
+        }
       });
     }
 
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
-    const noOtherOption = ["Advisory and Assistance", "Training"];
-    if (noOtherOption.indexOf(this.requirementName) === -1) {
-      this.checkboxItems.push({
-        id: "Other",
-        label: "Other",
-        value: "Other",
-      });
-    }
-    
     const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
-    
     const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
       const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
       const selected = itemIndex >=0 ? [...accumulator, 
@@ -112,6 +105,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     }, []);
 
     this.selectedOptions.push(...validSelections);
+
+    this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry
   } 
 
   public async mounted(): Promise<void> {
@@ -125,8 +120,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       } else {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
-          await DescriptionOfWork.setSelectedOfferings(this.selectedOptions);
+          await DescriptionOfWork.setSelectedOfferings(
+            { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
+          );
         }
+        // save to store
       }
       //save to backend
       await DescriptionOfWork.saveUserSelectedServices();
@@ -136,7 +134,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
     return true;
   }
-
 
 }
 

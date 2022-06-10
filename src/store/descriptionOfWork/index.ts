@@ -25,6 +25,7 @@ import {
 
 import _, { differenceWith, last } from "lodash";
 import { sys } from "typescript";
+import { OfferingDetailsPathResolver } from "@/router/resolvers";
 
 
 // Classification Proxy helps keep track of saved
@@ -50,6 +51,8 @@ type ServiceOfferingProxy =  {
 const mapDOWServiceOfferingToServiceProxy= 
 (dowServiceOffering: DOWServiceOffering, groupIndex: number, 
   serviceIndex: number): ServiceOfferingProxy=> {
+
+  
       
   const serviceOffering: SelectedServiceOfferingDTO = {
     service_offering : dowServiceOffering['sys_id'] || "",
@@ -58,6 +61,14 @@ const mapDOWServiceOfferingToServiceProxy=
     sys_id : dowServiceOffering.serviceId.length ? 
       dowServiceOffering.serviceId : undefined
   };
+
+
+  if(serviceOffering.service_offering === "Other"){
+    const soOther = ((dowServiceOffering as unknown) as ServiceOfferingDTO);
+
+    serviceOffering.service_offering = "";
+    serviceOffering.other_service_offering = soOther && soOther.other ? soOther.other : ""
+  }
 
   const classificationInstances = dowServiceOffering
     .classificationInstances?.map((instance, instanceIndex)=> {
@@ -76,6 +87,7 @@ const mapDOWServiceOfferingToServiceProxy=
       return classificationInstance;
     }) || [];
 
+  
   return {
     serviceOffering,
     classificationInstances,
@@ -287,8 +299,18 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get selectedServiceOfferings(): string[] {
+    const mapOfferingName = (offering: DOWServiceOffering)=> {
+      const name = offering.sys_id === "Other" ? "Other": offering.name
+      return name;
+    }
     return this.DOWObject.map(group=>
-      group.serviceOfferings.flatMap(offering=>offering.name)).flat();
+      group.serviceOfferings.flatMap(offering=>mapOfferingName(offering))).flat();
+  }
+
+  public get otherServiceOfferingEntry(): string {
+    const otherServiceOffer = this.serviceOfferingsForGroup
+      .find(offering=>offering.sys_id === "Other");
+    return otherServiceOffer ? otherServiceOffer.name : "";
   }
 
   public get currentOfferingGroupHasOfferings(): boolean {
@@ -335,7 +357,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
-    await this.setSelectedOfferings([]);
+    await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
     this.doremoveCurrentOfferingGroup();
   }
 
@@ -451,15 +473,20 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Action 
-  public async setSelectedOfferings(selectedOfferingSysIds: string[]): Promise<void> {
-    this.doSetSelectedOfferings(selectedOfferingSysIds);
+  public async setSelectedOfferings(
+    { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
+  ): Promise<void> {
+    this.doSetSelectedOfferings({ selectedOfferingSysIds, otherValue });
   }
 
   @Mutation
-  public doSetSelectedOfferings(selectedOfferingSysIds: string[]): void {
+  public doSetSelectedOfferings(
+    { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
+  ): void {
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+
     if (groupIndex >= 0) {
       if (selectedOfferingSysIds.length === 0) {
         this.DOWObject[groupIndex].serviceOfferings = [];
@@ -470,19 +497,24 @@ export class DescriptionOfWorkStore extends VuexModule {
           if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
             const foundOffering 
               = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-            if (foundOffering) {
+            if (foundOffering || otherValue) {
+              const name = foundOffering ? foundOffering.name : otherValue;
+              const description = foundOffering ? foundOffering.name : "";
+              const sequence = foundOffering ? foundOffering.sequence : "99";
+
               const offering = {
-                name: foundOffering.name,
+                name,
+                other: otherValue,
                 "sys_id": selectedOfferingSysId,
                 classificationInstances: [],
-                description: foundOffering.description,
-                sequence: foundOffering.sequence,
+                description,
+                sequence,
               }
               currentOfferings.push({...offering,serviceId : ""});
             }
           }
         });
-        
+
         // remove any service offerings previously selected but unchecked this pass
         const currentOfferingsClone = _.cloneDeep(currentOfferings);
         // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
@@ -497,6 +529,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         this.DOWObject[groupIndex].serviceOfferings.sort(
           (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
         );
+
       }
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
@@ -630,6 +663,18 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     });
 
+    const groupsWithNoOtherOption = ["ADVISORY", "TRAINING"];
+    
+    if (groupsWithNoOtherOption.indexOf(this.currentGroupId) === -1) {
+      const otherOffering: DOWServiceOffering = {
+        name: "Other",
+        sys_id: "Other",
+        sequence: "99",
+        description: "",
+        serviceId: "",
+      };
+      serviceOfferings.push(otherOffering);
+    }
 
 
     //now map any from the DOW that might've been saved
@@ -868,6 +913,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async saveUserSelectedServices(): Promise<void>{
 
     try {
+
+      
 
       const requiredServices = this.userSelectedServiceOfferings;
       const dowOfferingGroups = this.DOWObject;
