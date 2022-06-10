@@ -330,7 +330,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
   public async removeCurrentOfferingGroup(): Promise<void> {
-    debugger;
     
     if (!this.currentGroupRemoved) {
       const groupIdToRemove = this.currentGroupId;
