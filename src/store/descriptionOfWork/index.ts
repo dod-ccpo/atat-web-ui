@@ -291,6 +291,10 @@ export class DescriptionOfWorkStore extends VuexModule {
       group.serviceOfferings.flatMap(offering=>offering.name)).flat();
   }
 
+  public get currentOfferingGroupHasOfferings(): boolean {
+    return this.serviceOfferingsForGroup.length > 0;
+  }
+
   @Mutation
   private setInitialized(value: boolean) {
     this.initialized = value;
@@ -361,6 +365,7 @@ export class DescriptionOfWorkStore extends VuexModule {
         // set currentGroupId to previous if has one
         if (DOWObjectBeforeRemoval.length > 1 && !onlyNoneRemain) {
           this.currentGroupId = DOWObjectBeforeRemoval[groupIndex -1].serviceOfferingGroupId;
+
         } else {
           // removed group was last in DOWObject, clear currentGroupId
           this.currentGroupId = "";
@@ -619,6 +624,8 @@ export class DescriptionOfWorkStore extends VuexModule {
       serviceOfferings.push(offering);
 
     });
+
+
 
     //now map any from the DOW that might've been saved
 
