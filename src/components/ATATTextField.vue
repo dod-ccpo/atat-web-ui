@@ -38,6 +38,15 @@
       @update:error="setErrorMessage"
       autocomplete="off"
     >
+    <template v-slot:prepend-inner v-if="isCurrency">
+      <ATATSVGIcon
+        name="currency"
+        color="base-light"
+        :width="9"
+        :height="16"
+        class="pt-1 mr-1"
+    />
+   </template>
     </v-text-field>
     <ATATErrorValidation :errorMessages="errorMessages" />
     <div v-if="helpText" class="help-text mt-2">
@@ -51,13 +60,15 @@ import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
 
 @Component({
   components: {
     ATATTooltip,
-    ATATErrorValidation
+    ATATErrorValidation,
+    ATATSVGIcon
   },
 })
 export default class ATATTextField extends Vue  {
