@@ -155,7 +155,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const offerings =  this.serviceOfferingsForGroup;
     const currentOfferingIndex = offerings
       .findIndex(offering=> offering.name === this.currentOfferingName);
-    debugger;
     return (currentOfferingIndex + 1) === offerings.length;
   }
 
@@ -342,7 +341,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
   public doremoveCurrentOfferingGroup(): void {
-    debugger;
     if (!this.currentGroupRemoved) {
       this.currentGroupRemovedForNav = true;    
       const groupIdToRemove = this.currentGroupId;
@@ -355,7 +353,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       this.DOWObject = this.DOWObject.filter(
         obj => obj.serviceOfferingGroupId !== groupIdToRemove
       );
-      debugger;
+
       const onlyNoneRemain = this.DOWObject.every((e) => {
         return e.serviceOfferingGroupId.indexOf("NONE") > -1;
       });
@@ -456,7 +454,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public doSetSelectedOfferings(selectedOfferingSysIds: string[]): void {
-    debugger;
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     if (groupIndex >= 0) {

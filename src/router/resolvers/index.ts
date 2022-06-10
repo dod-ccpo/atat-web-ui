@@ -317,7 +317,6 @@ export const OfferingDetailsPathResolver = (current: string): string => {
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  debugger;
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
   const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
 
