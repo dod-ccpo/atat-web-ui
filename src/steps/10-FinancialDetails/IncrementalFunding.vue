@@ -29,19 +29,25 @@
               />
             </div>
             <hr />
-            <div class="d-flex justify-space-between align-center">
+
+            <div 
+              class="d-flex justify-space-between align-center"
+              v-for="(increment, index) in increments"
+              :key="index"
+            >
               <ATATSelect
-                id="IncrementPeriod1"
-                :items="timePeriods"
+                :id="'IncrementPeriod' + index"
+                :items="incrementPeriods"
                 width="190"
-                :selectedValue.sync="optionPeriods[index].unitOfTime"
+                :selectedValue.sync="increments[index].qtr"
                 class="mr-4"
+                @
               />
               
 
               <ATATTextField
-                id="InitialAmount"
-                :value.sync="initialIncrementAmount"
+                :id="'Amount' + index"
+                :value.sync="increments[index].amt"
                 width="190"
                 class="mr-9"
               />
@@ -76,14 +82,20 @@ export default class IncrementalFunding extends Vue {
 
   public incrementPeriods: SelectData[] = [
     { text: "3rd QTR FY22", value: "3rd QTR FY22" },
-    { text: "", value: "" },
-    { text: "", value: "" },
-    { text: "", value: "" },
-    { text: "", value: "" },
-    { text: "", value: "" },
+    { text: "4th QTR FY22", value: "4th QTR FY22" },
+    { text: "1st QTR FY23", value: "1st QTR FY23" },
+    { text: "2nd QTR FY23", value: "2nd QTR FY23" },
+    { text: "3rd QTR FY23", value: "3rd QTR FY23" },
+    { text: "4th QTR FY23", value: "4th QTR FY23" },
+    { text: "1st QTR FY24", value: "1st QTR FY24" },
+    { text: "2nd QTR FY24", value: "2nd QTR FY24" },
   ];
   public costEstimate = AcquisitionPackage.estimatedTaskOrderValue;
-  public initialIncrementAmount = undefined;
+  public initialIncrementAmount = 0;
+
+  public increments: { qtr: string, amt: string }[] = [
+    { qtr: "3rd QTR FY22", amt: "0" }
+  ];
 
 
 
