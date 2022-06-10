@@ -280,6 +280,25 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string): string => {
+
+
+  if(current === routeNames.DOWSummary){
+    if(!DescriptionOfWork.currentOfferingGroupHasOfferings || 
+      DescriptionOfWork.currentGroupId === ""){
+      return basePerformanceRequirementsPath;
+    }
+
+    if(DescriptionOfWork.currentOfferingName == ""){
+      //get the last offering and display
+      const offering = DescriptionOfWork.lastOfferingForGroup;
+      if(offering)
+      {
+        DescriptionOfWork.setCurrentOffering(offering);
+      }
+    }
+  }
+
+
   if (!DescriptionOfWork.prevOfferingGroup && !DescriptionOfWork.currentGroupId) {
     // only "none apply" options selected.
     if (current === routeNames.DOWSummary) {
