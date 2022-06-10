@@ -82,6 +82,7 @@ import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsC
 import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
+import FundingPlanType from "@/steps/10-FinancialDetails/FundingPlanType.vue";
 
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
@@ -152,6 +153,7 @@ export const routeNames = {
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
+  FundingPlanType: 'Funding_Plan_Type',
 };
 
 /**
@@ -585,6 +587,13 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Funding Plan",
         path: "funding-plan",
+        name: routeNames.FundingPlanType,
+        completePercentageWeight: 1,
+        component: FundingPlanType,
+      },
+      {
+        menuText: "Funding Plan temp",
+        path: "funding-plan-temp",
         name: routeNames.FundingPlan,
         completePercentageWeight: 1,
         component: FundingPlan,

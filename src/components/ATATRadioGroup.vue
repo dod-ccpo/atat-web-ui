@@ -30,11 +30,11 @@
         >
           <template v-if="item.description || card" v-slot:label>
             <div class="d-flex flex-column">
-              <p 
-                :class="[item.description ? 'card-label' : 'mb-0']" 
+              <div
+                :class="[item.description ? 'card-label' : 'mb-0']"
                 v-html="item.label"
-              ></p>
-              <p class="mb-0" v-html="item.description"></p>
+              ></div>
+              <div class="mb-0" v-html="item.description"></div>
             </div>
           </template>
           <template v-else v-slot:label>
