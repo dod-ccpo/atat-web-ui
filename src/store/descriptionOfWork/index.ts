@@ -714,7 +714,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async removeClassificationInstances(classificationInstances:
     string[]): Promise<void>{
 
-    debugger;
+    
   
     try {
 
@@ -735,13 +735,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async removeUserSelectedService(service: SelectedServiceOfferingDTO): Promise<void>{
     try {
-      debugger;
+      
 
       await api.selectedServiceOfferingTable.remove(service.sys_id || "");
      
       const classificationInstances = service.classification_instances.split(',');
 
-      if(classificationInstances)
+      if(classificationInstances && classificationInstances.length)
       {
         await this.removeClassificationInstances(classificationInstances);
       }
