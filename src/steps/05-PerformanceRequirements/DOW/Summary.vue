@@ -235,9 +235,12 @@ export default class Summary extends Vue {
     DescriptionOfWork.setCurrentOfferingGroupId(groupID);
     if (addToStore){
       DescriptionOfWork.addOfferingGroup(groupID);
+      DescriptionOfWork.setAddGroupFromSummary(true);
+    } else {
+      DescriptionOfWork.setReviewGroupFromSummary(true);
     }
+
     DescriptionOfWork.setReturnToDOWSummary(true);
-    DescriptionOfWork.setAddingGroupFromSummary(true);
 
     this.$router.push({
       name: "pathResolver",

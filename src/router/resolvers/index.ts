@@ -153,21 +153,31 @@ export const OfferGroupOfferingsPathResolver = (
   });
   const lastGroupRemoved = DescriptionOfWork.lastGroupRemoved;
 
-  if (!DescriptionOfWork.addingGroupFromSummary 
-    && (
-      DOWObject.length === 0 
-      || onlyNoneApplySelected 
-      || atLastNoneApply 
-      || lastGroupRemoved
-    )
+  // if reviewing service group from store, set "atServicesEnd" to false 
+  const reviewGroupFromSummary = DescriptionOfWork.reviewGroupFromSummary;
+  const atServicesEnd = reviewGroupFromSummary ? false : DescriptionOfWork.isEndOfServiceOfferings;
+  DescriptionOfWork.setReviewGroupFromSummary(false);
+
+  const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
+  const addGroupFromSummary = DescriptionOfWork.addGroupFromSummary;
+  const currentGroupRemovedForNav = DescriptionOfWork.currentGroupRemovedForNav;
+
+  const nowhereToGo = DOWObject.length === 0 
+    || onlyNoneApplySelected 
+    || atLastNoneApply 
+    || lastGroupRemoved
+
+  if (!addGroupFromSummary && 
+    (currentGroupRemovedForNav || (returnToDOWSummary && atServicesEnd) || nowhereToGo)
   ) {
-    DescriptionOfWork.setAddingGroupFromSummary(false);
+    // return to summary
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false); 
     return descriptionOfWorkSummaryPath;
   } 
 
-  DescriptionOfWork.setAddingGroupFromSummary(false);
+  DescriptionOfWork.setAddGroupFromSummary(false);
 
   //handles moving backwards or forwards through service offerings
   if (current === routeNames.ServiceOfferingDetails &&
@@ -280,7 +290,9 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string): string => {
-
+  if (DescriptionOfWork.currentGroupRemovedForNav) {
+    return descriptionOfWorkSummaryPath;
+  }
 
   if(current === routeNames.DOWSummary){
     if(!DescriptionOfWork.currentOfferingGroupHasOfferings || 
@@ -342,7 +354,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
   // If added a new offering group or editing/reviewing existing offering from the summary page, and
   // at last service in group, send back to summary page
-  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd && atOfferingsEnd) {
+  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd) {
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;
   }

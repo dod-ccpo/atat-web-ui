@@ -72,13 +72,13 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public selectedOptions: string[] = [];
   private checkboxItems: Checkbox[] = [];
   public serviceOfferings: DOWServiceOffering[] = [];
+  public serviceGroupOnLoad = "";
 
   public async loadOnEnter(): Promise<void> {
-    
-
+    this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
     this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
-  
+
     if (this.serviceOfferings.length) {
       this.serviceOfferings.forEach((offering) => {
         const checkboxItem: Checkbox = {
@@ -92,12 +92,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           this.otherValueEntered = offering.otherOfferingName || "";
         }
       });
-
     }
 
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
     const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
+    
     const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
       const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
       const selected = itemIndex >=0 ? [...accumulator, 
@@ -119,10 +119,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       if (this.selectedOptions.length === 0) {
         await DescriptionOfWork.removeCurrentOfferingGroup();
       } else {
-        // save to store
-        await DescriptionOfWork.setSelectedOfferings(
-          { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
-        );
+        // save to store if user hasn't clicked "I don't need these cloud resources" button
+        if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
+          await DescriptionOfWork.setSelectedOfferings(
+            { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
+          );
+        }
       }
       //save to backend
       await DescriptionOfWork.saveUserSelectedServices();

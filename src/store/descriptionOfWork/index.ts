@@ -124,7 +124,8 @@ export class DescriptionOfWorkStore extends VuexModule {
   cloudNoneValue = "Cloud_NONE";
 
   returnToDOWSummary = false;
-  addingGroupFromSummary = false;
+  reviewGroupFromSummary = false;
+  addGroupFromSummary = false;
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -160,7 +161,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get isEndOfServiceOfferings(): boolean {
-    
     const offerings =  this.serviceOfferingsForGroup;
     const currentOfferingIndex = offerings
       .findIndex(offering=> offering.name === this.currentOfferingName);
@@ -337,23 +337,36 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public currentGroupRemoved = false;
+  public currentGroupRemovedForNav = false;
   public lastGroupRemoved = false;
 
   @Mutation
   public setCurrentGroupRemoved(bool: boolean): void {
     this.currentGroupRemoved = bool;
   }
+
+  @Mutation
+  public setCurrentGroupRemovedForNav(bool: boolean): void {
+    this.currentGroupRemovedForNav = bool;
+  }
+
   @Mutation
   public setLastGroupRemoved(bool: boolean): void {
     this.lastGroupRemoved = bool;
   }
 
+  @Action
+  public async removeCurrentOfferingGroup(): Promise<void> {
+    await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
+    this.doremoveCurrentOfferingGroup();
+  }
+
   // removes current offering group if user clicks  the "I don't need these cloud resources"
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
-  public async removeCurrentOfferingGroup(): Promise<void> {
-    
+  public doremoveCurrentOfferingGroup(): void {
     if (!this.currentGroupRemoved) {
+      this.currentGroupRemovedForNav = true;    
       const groupIdToRemove = this.currentGroupId;
       const groupIndex = this.DOWObject.findIndex(
         e => e.serviceOfferingGroupId === groupIdToRemove
@@ -364,7 +377,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       this.DOWObject = this.DOWObject.filter(
         obj => obj.serviceOfferingGroupId !== groupIdToRemove
       );
-  
+
       const onlyNoneRemain = this.DOWObject.every((e) => {
         return e.serviceOfferingGroupId.indexOf("NONE") > -1;
       });
@@ -394,8 +407,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.returnToDOWSummary = bool;
   }
   @Mutation
-  public setAddingGroupFromSummary(bool: boolean): void {
-    this.addingGroupFromSummary = bool;
+  public setReviewGroupFromSummary(bool: boolean): void {
+    this.reviewGroupFromSummary = bool;
+  }
+
+  @Mutation
+  public setAddGroupFromSummary(bool: boolean): void {
+    this.addGroupFromSummary = bool;
   }
 
   @Mutation
@@ -409,8 +427,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.DOWObject.push(offeringGroup);
   }
 
-  @Mutation
+  @Action
   public async setSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
+    this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
+  }
+
+  @Mutation
+  public doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): void {
     if (selectedOfferingGroupIds.length) {
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
         if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {
@@ -449,51 +472,65 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   }
 
-  @Mutation
+  @Action 
   public async setSelectedOfferings(
     { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
   ): Promise<void> {
+    this.doSetSelectedOfferings({ selectedOfferingSysIds, otherValue });
+  }
+
+  @Mutation
+  public doSetSelectedOfferings(
+    { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
+  ): void {
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
+
     if (groupIndex >= 0) {
-      const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-      // add selectedOfferings to DOWObject
-      selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
-        if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
-          const foundOffering 
-            = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-          if (foundOffering || otherValue) {
-            const name = foundOffering ? foundOffering.name : otherValue;
-            const description = foundOffering ? foundOffering.name : "";
-            const sequence = foundOffering ? foundOffering.sequence : "99";
+      if (selectedOfferingSysIds.length === 0) {
+        this.DOWObject[groupIndex].serviceOfferings = [];
+        currentOfferings = [];
+      } else {
+        // add selectedOfferings to DOWObject
+        selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
+          if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
+            const foundOffering 
+              = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
+            if (foundOffering || otherValue) {
+              const name = foundOffering ? foundOffering.name : otherValue;
+              const description = foundOffering ? foundOffering.name : "";
+              const sequence = foundOffering ? foundOffering.sequence : "99";
 
-            const offering = {
-              name,
-              other: otherValue,
-              "sys_id": selectedOfferingSysId,
-              classificationInstances: [],
-              description,
-              sequence,
+              const offering = {
+                name,
+                other: otherValue,
+                "sys_id": selectedOfferingSysId,
+                classificationInstances: [],
+                description,
+                sequence,
+              }
+              currentOfferings.push({...offering,serviceId : ""});
             }
-            currentOfferings.push({...offering,serviceId : ""});
           }
-        }
-      });
-      // remove any service offerings previously selected but unchecked this pass
-      const currentOfferingsClone = _.cloneDeep(currentOfferings);
-      // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
-      currentOfferingsClone.forEach((offering) => {
-        const sysId = offering.sys_id;
-        if (!selectedOfferingSysIds.includes(sysId)) {
-          const i = currentOfferings.findIndex(e => e.sys_id === sysId);
-          currentOfferings.splice(i, 1);
-        }
-      });
+        });
 
-      this.DOWObject[groupIndex].serviceOfferings.sort(
-        (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
-      );
+        // remove any service offerings previously selected but unchecked this pass
+        const currentOfferingsClone = _.cloneDeep(currentOfferings);
+        // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
+        currentOfferingsClone.forEach((offering) => {
+          const sysId = offering.sys_id;
+          if (!selectedOfferingSysIds.includes(sysId)) {
+            const i = currentOfferings.findIndex(e => e.sys_id === sysId);
+            currentOfferings.splice(i, 1);
+          }
+        });
 
+        this.DOWObject[groupIndex].serviceOfferings.sort(
+          (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
+        );
+
+      }
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
       this.currentOfferingSysId = currentOfferings.length > 0 
@@ -501,8 +538,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
+    this.doSetOfferingDetails(instancesData);
+  }
+
+  @Mutation
+  public doSetOfferingDetails(instancesData: DOWClassificationInstance[]): void {
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
@@ -714,10 +756,18 @@ export class DescriptionOfWorkStore extends VuexModule {
   public async removeClassificationInstances(classificationInstances:
     string[]): Promise<void>{
 
+    
   
     try {
-      const calls = classificationInstances
-        .map(instanceId=> api.classificationInstanceTable.remove(instanceId));
+
+      const calls:Promise<void>[] = [];
+     
+      classificationInstances.forEach(instance=> {
+
+        if(instance.length> 0){
+          calls.push(api.classificationInstanceTable.remove(instance))
+        }
+      })
       await Promise.all(calls);
     } catch (error) {
       //do nothing here we'll delete optimistically
@@ -727,12 +777,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action({rawError: true})
   public async removeUserSelectedService(service: SelectedServiceOfferingDTO): Promise<void>{
     try {
-        
+      
+
       await api.selectedServiceOfferingTable.remove(service.sys_id || "");
      
       const classificationInstances = service.classification_instances.split(',');
 
-      if(classificationInstances.length)
+      if(classificationInstances && classificationInstances.length)
       {
         await this.removeClassificationInstances(classificationInstances);
       }
