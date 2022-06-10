@@ -60,7 +60,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     these cloud resources” button below.`;
 
   public otherValueRequiredMessage = "Please enter a title for this requirement."
-  public otherValue = "OTHER";
+  public otherValue = "Other";
   public otherValueEntered = "";
   public otherSelected = "";
 

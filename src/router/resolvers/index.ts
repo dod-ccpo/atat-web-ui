@@ -158,6 +158,7 @@ export const OfferGroupOfferingsPathResolver = (
   const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
   const navFromSummary = DescriptionOfWork.navFromDOWSummary;
   const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
+  const currentGroupRemovedForNav = DescriptionOfWork.currentGroupRemovedForNav;
 
   const nowhereToGo = DOWObject.length === 0 
     || onlyNoneApplySelected 
@@ -165,11 +166,12 @@ export const OfferGroupOfferingsPathResolver = (
     || lastGroupRemoved
 
   debugger;
-  if ((returnToDOWSummary && atServicesEnd) || nowhereToGo) {
+  if (currentGroupRemovedForNav || (navFromSummary && atServicesEnd) || nowhereToGo) {
     // return to summary
     DescriptionOfWork.setNavFromDOWSummary(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false); 
     return descriptionOfWorkSummaryPath;
   } 
 

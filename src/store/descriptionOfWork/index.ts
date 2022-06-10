@@ -311,12 +311,19 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public currentGroupRemoved = false;
+  public currentGroupRemovedForNav = false;
   public lastGroupRemoved = false;
 
   @Mutation
   public setCurrentGroupRemoved(bool: boolean): void {
     this.currentGroupRemoved = bool;
   }
+
+  @Mutation
+  public setCurrentGroupRemovedForNav(bool: boolean): void {
+    this.currentGroupRemovedForNav = bool;
+  }
+
   @Mutation
   public setLastGroupRemoved(bool: boolean): void {
     this.lastGroupRemoved = bool;
@@ -333,6 +340,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   public doremoveCurrentOfferingGroup(): void {
     debugger;
     if (!this.currentGroupRemoved) {
+      this.currentGroupRemovedForNav = true;    
       const groupIdToRemove = this.currentGroupId;
       const groupIndex = this.DOWObject.findIndex(
         e => e.serviceOfferingGroupId === groupIdToRemove
