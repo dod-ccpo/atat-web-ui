@@ -227,13 +227,13 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       if (optionPeriod.duration) {
         let multiplier = 1;
         switch (optionPeriod.unitOfTime) {
-        case "Week(s)":
+        case "WEEK":
           multiplier = 7;
           break;
-        case "Month(s)":
+        case "MONTH":
           multiplier = 30;
           break;
-        case "Year":
+        case "YEAR":
           multiplier = 365;
           break;
         default:
