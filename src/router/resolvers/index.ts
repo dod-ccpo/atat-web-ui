@@ -143,6 +143,7 @@ export const RequirementsPathResolver = (current: string): string =>
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
+  debugger;
   DescriptionOfWork.setCurrentGroupRemoved(false);
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
@@ -153,21 +154,26 @@ export const OfferGroupOfferingsPathResolver = (
   });
   const lastGroupRemoved = DescriptionOfWork.lastGroupRemoved;
 
-  if (!DescriptionOfWork.addingGroupFromSummary 
-    && (
-      DOWObject.length === 0 
-      || onlyNoneApplySelected 
-      || atLastNoneApply 
-      || lastGroupRemoved
-    )
-  ) {
-    DescriptionOfWork.setAddingGroupFromSummary(false);
+  const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
+  const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
+  const navFromSummary = DescriptionOfWork.navFromDOWSummary;
+  const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
+
+  const nowhereToGo = DOWObject.length === 0 
+    || onlyNoneApplySelected 
+    || atLastNoneApply 
+    || lastGroupRemoved
+
+  debugger;
+  if ((returnToDOWSummary && atServicesEnd) || nowhereToGo) {
+    // return to summary
+    DescriptionOfWork.setNavFromDOWSummary(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
     return descriptionOfWorkSummaryPath;
   } 
 
-  DescriptionOfWork.setAddingGroupFromSummary(false);
+  DescriptionOfWork.setNavFromDOWSummary(false);
 
   //handles moving backwards or forwards through service offerings
   if (current === routeNames.ServiceOfferingDetails &&
@@ -307,12 +313,13 @@ export const OfferingDetailsPathResolver = (current: string): string => {
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  debugger;
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
   const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
 
   // If added a new offering group or editing/reviewing existing offering from the summary page, and
   // at last service in group, send back to summary page
-  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd && atOfferingsEnd) {
+  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd) {
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;
   }

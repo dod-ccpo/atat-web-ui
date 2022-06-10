@@ -237,7 +237,7 @@ export default class Summary extends Vue {
       DescriptionOfWork.addOfferingGroup(groupID);
     }
     DescriptionOfWork.setReturnToDOWSummary(true);
-    DescriptionOfWork.setAddingGroupFromSummary(true);
+    DescriptionOfWork.setNavFromDOWSummary(true);
 
     this.$router.push({
       name: "pathResolver",

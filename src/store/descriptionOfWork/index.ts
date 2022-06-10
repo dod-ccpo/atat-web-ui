@@ -112,7 +112,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   cloudNoneValue = "Cloud_NONE";
 
   returnToDOWSummary = false;
-  addingGroupFromSummary = false;
+  navFromDOWSummary = false;
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -322,10 +322,16 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.lastGroupRemoved = bool;
   }
 
+  @Action
+  public async removeCurrentOfferingGroup(): Promise<void> {
+    this.doremoveCurrentOfferingGroup();
+  }
+
   // removes current offering group if user clicks  the "I don't need these cloud resources"
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
-  public async removeCurrentOfferingGroup(): Promise<void> {
+  public doremoveCurrentOfferingGroup(): void {
+    debugger;
     if (!this.currentGroupRemoved) {
       const groupIdToRemove = this.currentGroupId;
       const groupIndex = this.DOWObject.findIndex(
@@ -337,7 +343,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       this.DOWObject = this.DOWObject.filter(
         obj => obj.serviceOfferingGroupId !== groupIdToRemove
       );
-  
+      debugger;
       const onlyNoneRemain = this.DOWObject.every((e) => {
         return e.serviceOfferingGroupId.indexOf("NONE") > -1;
       });
@@ -366,8 +372,8 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.returnToDOWSummary = bool;
   }
   @Mutation
-  public setAddingGroupFromSummary(bool: boolean): void {
-    this.addingGroupFromSummary = bool;
+  public setNavFromDOWSummary(bool: boolean): void {
+    this.navFromDOWSummary = bool;
   }
 
   @Mutation
@@ -381,8 +387,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     this.DOWObject.push(offeringGroup);
   }
 
-  @Mutation
+  @Action
   public async setSelectedOfferingGroups(selectedOfferingGroupIds: string[]): Promise<void> {
+    this.doSetSelectedOfferingGroups(selectedOfferingGroupIds);
+  }
+
+  @Mutation
+  public doSetSelectedOfferingGroups(selectedOfferingGroupIds: string[]): void {
     if (selectedOfferingGroupIds.length) {
       selectedOfferingGroupIds.forEach(async (selectedOfferingGroupId) => {
         if (!this.DOWObject.some(e => e.serviceOfferingGroupId === selectedOfferingGroupId)) {
@@ -421,8 +432,14 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   }
 
-  @Mutation
+  @Action 
   public async setSelectedOfferings(selectedOfferingSysIds: string[]): Promise<void> {
+    this.doSetSelectedOfferings(selectedOfferingSysIds);
+  }
+
+  @Mutation
+  public doSetSelectedOfferings(selectedOfferingSysIds: string[]): void {
+    debugger;
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     if (groupIndex >= 0) {
@@ -467,8 +484,13 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   public async setOfferingDetails(instancesData: DOWClassificationInstance[]): Promise<void> {
+    this.doSetOfferingDetails(instancesData);
+  }
+
+  @Mutation
+  public doSetOfferingDetails(instancesData: DOWClassificationInstance[]): void {
     const groupIndex = this.DOWObject.findIndex(
       obj => obj.serviceOfferingGroupId === this.currentGroupId
     );
@@ -586,6 +608,9 @@ export class DescriptionOfWorkStore extends VuexModule {
       serviceOfferings.push(offering);
 
     });
+
+    // EJY add other here for all except cloud services
+
 
     //now map any from the DOW that might've been saved
 
