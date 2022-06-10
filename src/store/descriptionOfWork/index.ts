@@ -422,7 +422,9 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public async setSelectedOfferings(selectedOfferingSysIds: string[]): Promise<void> {
+  public async setSelectedOfferings(
+    { selectedOfferingSysIds, otherValue }: { selectedOfferingSysIds: string[], otherValue: string }
+  ): Promise<void> {
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     if (groupIndex >= 0) {
@@ -432,19 +434,24 @@ export class DescriptionOfWorkStore extends VuexModule {
         if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
           const foundOffering 
             = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-          if (foundOffering) {
+          if (foundOffering || otherValue) {
+            const name = foundOffering ? foundOffering.name : otherValue;
+            const description = foundOffering ? foundOffering.name : "";
+            const sequence = foundOffering ? foundOffering.sequence : "99";
+
             const offering = {
-              name: foundOffering.name,
+              name,
+              other: otherValue,
               "sys_id": selectedOfferingSysId,
               classificationInstances: [],
-              description: foundOffering.description,
-              sequence: foundOffering.sequence,
+              description,
+              sequence,
             }
             currentOfferings.push({...offering,serviceId : ""});
           }
         }
       });
-      
+      debugger;
       // remove any service offerings previously selected but unchecked this pass
       const currentOfferingsClone = _.cloneDeep(currentOfferings);
       // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
@@ -586,6 +593,19 @@ export class DescriptionOfWorkStore extends VuexModule {
       serviceOfferings.push(offering);
 
     });
+
+    const groupsWithNoOtherOption = ["ADVISORY", "TRAINING"];
+    debugger;
+    if (groupsWithNoOtherOption.indexOf(this.currentGroupId) === -1) {
+      const otherOffering: DOWServiceOffering = {
+        name: "Other",
+        sys_id: "Other",
+        sequence: "99",
+        description: "",
+        serviceId: "",
+      };
+      serviceOfferings.push(otherOffering);
+    }
 
     //now map any from the DOW that might've been saved
 

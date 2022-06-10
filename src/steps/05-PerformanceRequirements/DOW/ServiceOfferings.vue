@@ -60,7 +60,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     these cloud resources” button below.`;
 
   public otherValueRequiredMessage = "Please enter a title for this requirement."
-  public otherValue = "OTHER";
+  public otherValue = "Other";
   public otherValueEntered = "";
   public otherSelected = "";
 
@@ -91,15 +91,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
-    const noOtherOption = ["Advisory and Assistance", "Training"];
-    if (noOtherOption.indexOf(this.requirementName) === -1) {
-      this.checkboxItems.push({
-        id: "Other",
-        label: "Other",
-        value: "Other",
-      });
-    }
-    
     const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
     
     const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
@@ -122,7 +113,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         await DescriptionOfWork.removeCurrentOfferingGroup();
       } else {
         // save to store
-        await DescriptionOfWork.setSelectedOfferings(this.selectedOptions);
+        await DescriptionOfWork.setSelectedOfferings(
+          { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
+        );
       }
       //save to backend
       await DescriptionOfWork.saveUserSelectedServices();
