@@ -21,7 +21,7 @@
           />
         </div>
         <div class="container-max-width"
-              v-for="(item) in this.DOWObject"
+              v-for="(item) in selectedServiceGroups"
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
@@ -142,10 +142,10 @@ export default class Summary extends Vue {
   private isClassificationDataMissing = false;
   private showAlert = false;
   private routeNames = routeNames;
-  public instancesMissingData: string[] =[]
+  public serviceGroupsMissingData: string[] =[]
   public availableServiceGroups: SystemChoiceDTO[] = [];
   public allServiceGroups: SystemChoiceDTO[] = [];
-  public DOWObject: DOWServiceOfferingGroup[] = DescriptionOfWork.DOWObject;
+  public selectedServiceGroups: DOWServiceOfferingGroup[] = [];
   public showMore = false;
 
   public alternateGroupNames = [
@@ -249,10 +249,10 @@ export default class Summary extends Vue {
       .catch((error) => console.log("Routing error:" + error));
   };
 
-  public getFormattedNames(value: string): string{
-    const avlOfferings = DescriptionOfWork.serviceOfferingGroups;
+  public getFormattedNames(value: string): string {
+    let avlOfferings = DescriptionOfWork.serviceOfferingGroups;
     const filtered = avlOfferings.filter(obj => obj.value == value);
-    return filtered[0].label;
+    return filtered.length > 0 ? filtered[0].label : "";
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
@@ -260,7 +260,7 @@ export default class Summary extends Vue {
     return serviceArr.join();
   };
 
-  public labelsMissingData(value: DOWServiceOfferingGroup[]): void {
+  public setSelectedGroupsMissingData(value: DOWServiceOfferingGroup[]): void {
     let outputArr :string[] = [];
     value.forEach((obj)=>{
       let id = obj.serviceOfferingGroupId;
@@ -284,13 +284,12 @@ export default class Summary extends Vue {
         });
       })
     });
-    this.instancesMissingData = outputArr;
+    this.serviceGroupsMissingData = outputArr;
   };
 
-  public missingData(value :string) {
-    return this.instancesMissingData.includes(value) ? true : false;
+  public missingData(value: string): boolean {
+    return this.serviceGroupsMissingData.includes(value) ? true : false;
   };
-
 
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
@@ -317,12 +316,17 @@ export default class Summary extends Vue {
         group.label = this.alternateGroupNames[altNameIndex].label;
       }
     });
+
+    this.selectedServiceGroups = DescriptionOfWork.DOWObject.filter(
+      e => e.serviceOfferingGroupId.indexOf("NONE") === -1
+    );
+
+    this.setSelectedGroupsMissingData(this.selectedServiceGroups);
+
   };
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
-    this.labelsMissingData(this.DOWObject);
   };
 };
 </script>
-
