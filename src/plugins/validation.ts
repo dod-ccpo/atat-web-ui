@@ -193,7 +193,6 @@ export class ValidationPlugin {
       else {
         return "Please enter your phone number."
       }
-      return true;
     }
   };
 
