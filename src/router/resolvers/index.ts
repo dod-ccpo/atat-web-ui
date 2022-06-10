@@ -3,7 +3,7 @@ import OtherContractConsiderations from "@/store/otherContractConsiderations";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork, { DescriptionOfWorkStore } from "@/store/descriptionOfWork";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -307,6 +307,17 @@ export const OfferingDetailsPathResolver = (current: string): string => {
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+
+
+  if(current === routeNames.PropertyDetails){
+    if(DescriptionOfWork.DOWObject.length > 0){
+      return descriptionOfWorkSummaryPath
+    }
+    else{
+      return basePerformanceRequirementsPath;
+    }
+  }
+
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
   const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
 
