@@ -149,9 +149,6 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get isEndOfServiceOfferings(): boolean {
-    if (this.reviewGroupFromSummary) {
-      return false;
-    }
     const offerings =  this.serviceOfferingsForGroup;
     const currentOfferingIndex = offerings
       .findIndex(offering=> offering.name === this.currentOfferingName);
@@ -622,9 +619,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       serviceOfferings.push(offering);
 
     });
-
-    // EJY add other here for all except cloud services
-
 
     //now map any from the DOW that might've been saved
 
