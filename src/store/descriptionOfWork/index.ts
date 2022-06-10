@@ -335,6 +335,7 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
+    await this.setSelectedOfferings([]);
     this.doremoveCurrentOfferingGroup();
   }
 
@@ -458,41 +459,45 @@ export class DescriptionOfWorkStore extends VuexModule {
   public doSetSelectedOfferings(selectedOfferingSysIds: string[]): void {
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
+    let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
     if (groupIndex >= 0) {
-      const currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-      // add selectedOfferings to DOWObject
-      selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
-        if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
-          const foundOffering 
-            = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
-          if (foundOffering) {
-            const offering = {
-              name: foundOffering.name,
-              "sys_id": selectedOfferingSysId,
-              classificationInstances: [],
-              description: foundOffering.description,
-              sequence: foundOffering.sequence,
+      if (selectedOfferingSysIds.length === 0) {
+        this.DOWObject[groupIndex].serviceOfferings = [];
+        currentOfferings = [];
+      } else {
+        // add selectedOfferings to DOWObject
+        selectedOfferingSysIds.forEach((selectedOfferingSysId) => {
+          if (!currentOfferings.some((e) => e.sys_id === selectedOfferingSysId)) {
+            const foundOffering 
+              = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
+            if (foundOffering) {
+              const offering = {
+                name: foundOffering.name,
+                "sys_id": selectedOfferingSysId,
+                classificationInstances: [],
+                description: foundOffering.description,
+                sequence: foundOffering.sequence,
+              }
+              currentOfferings.push({...offering,serviceId : ""});
             }
-            currentOfferings.push({...offering,serviceId : ""});
           }
-        }
-      });
-      
-      // remove any service offerings previously selected but unchecked this pass
-      const currentOfferingsClone = _.cloneDeep(currentOfferings);
-      // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
-      currentOfferingsClone.forEach((offering) => {
-        const sysId = offering.sys_id;
-        if (!selectedOfferingSysIds.includes(sysId)) {
-          const i = currentOfferings.findIndex(e => e.sys_id === sysId);
-          currentOfferings.splice(i, 1);
-        }
-      });
+        });
+        
+        // remove any service offerings previously selected but unchecked this pass
+        const currentOfferingsClone = _.cloneDeep(currentOfferings);
+        // const currentOfferingsClone = JSON.parse(JSON.stringify(currentOfferings));
+        currentOfferingsClone.forEach((offering) => {
+          const sysId = offering.sys_id;
+          if (!selectedOfferingSysIds.includes(sysId)) {
+            const i = currentOfferings.findIndex(e => e.sys_id === sysId);
+            currentOfferings.splice(i, 1);
+          }
+        });
 
-      this.DOWObject[groupIndex].serviceOfferings.sort(
-        (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
-      );
-
+        this.DOWObject[groupIndex].serviceOfferings.sort(
+          (a, b) => parseInt(a.sequence) > parseInt(b.sequence) ? 1 : -1
+        );
+      }
       this.currentOfferingName = currentOfferings.length > 0
         ? currentOfferings[0].name : "";
       this.currentOfferingSysId = currentOfferings.length > 0 

@@ -290,7 +290,9 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string): string => {
-
+  if (DescriptionOfWork.currentGroupRemovedForNav) {
+    return descriptionOfWorkSummaryPath;
+  }
 
   if(current === routeNames.DOWSummary){
     if(!DescriptionOfWork.currentOfferingGroupHasOfferings || 
