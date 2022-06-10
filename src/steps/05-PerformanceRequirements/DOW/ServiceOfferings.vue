@@ -88,6 +88,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           description: offering.description,
         }
         this.checkboxItems.push(checkboxItem);
+        if (checkboxItem.value === "Other") {
+          this.otherValueEntered = offering.otherOfferingName || "";
+        }
       });
 
     }
@@ -95,7 +98,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
 
     const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
-    
+    debugger;
     const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
       const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
       const selected = itemIndex >=0 ? [...accumulator, 
@@ -130,7 +133,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
     return true;
   }
-
 
 }
 
