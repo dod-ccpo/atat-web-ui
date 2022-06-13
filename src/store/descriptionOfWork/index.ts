@@ -499,7 +499,7 @@ export class DescriptionOfWorkStore extends VuexModule {
               = this.serviceOfferings.find((e) => e.sys_id === selectedOfferingSysId);
             if (foundOffering || otherValue) {
               const name = foundOffering ? foundOffering.name : otherValue;
-              const description = foundOffering ? foundOffering.name : "";
+              const description = foundOffering ? foundOffering.description : "";
               const sequence = foundOffering ? foundOffering.sequence : "99";
 
               const offering = {
