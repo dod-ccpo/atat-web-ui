@@ -12,7 +12,7 @@
       :class="[
         card ? '_checkbox-card' : '_checkbox',
         { 'flex-column _has-other': item.value === otherValue },
-        { '_other-selected': showOtherTextarea(item.value) }
+        { '_other-selected': showOtherEntry(item.value) }
       ]"
       :key="item.value"
       :label="item.label"
@@ -43,13 +43,24 @@
           ></div>
         </div>
       </template>
-      <template v-slot:append v-if="showOtherTextarea(item.value)">
+      <template v-slot:append v-if="showOtherEntry(item.value)">
         <ATATTextArea
-          ref="atatTextArea"
-          v-show="showOtherTextarea(item.value)"
+          v-if="otherEntryType === 'textarea'"
+          ref="atatTextInput"
+          v-show="showOtherEntry(item.value)"
           id="OtherEntry"
           class="width-100 ml-5 mb-6"
           :rows="3"
+          :validateItOnBlur="validateOtherOnBlur"
+          :value.sync="_otherValueEntered"
+          :rules="textareaRequiredRule"
+        />
+        <ATATTextField
+          v-if="otherEntryType === 'textfield'"
+          ref="atatTextInput"
+          v-show="showOtherEntry(item.value)"
+          id="OtherEntry"
+          class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
           :rules="textareaRequiredRule"
@@ -67,6 +78,7 @@ import Vue from "vue";
 import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
 
 import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 
 import {Checkbox} from "../../types/Global";
@@ -75,6 +87,7 @@ import { getIdText } from "@/helpers";
 @Component({
   components: {
     ATATTextArea,
+    ATATTextField,
     ATATErrorValidation,
   }
 })
@@ -83,6 +96,7 @@ export default class ATATCheckboxGroup extends Vue {
   // refs
   $refs!: {
     checkboxGroup: (Vue & { errorBucket: string[]; errorCount: number })[];
+    atatTextInput: (Vue & { errorBucket: string[]; errorCount: number })[];
   }; 
 
   // props
@@ -101,6 +115,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop({ default: "CheckboxGroupLabel" }) private groupLabelId!: string;
   @Prop() private groupLabel!: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
+  @Prop({ default: "textfield" }) private otherEntryType?: string;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
@@ -152,7 +167,7 @@ export default class ATATCheckboxGroup extends Vue {
     return getIdText(string);
   }
 
-  private showOtherTextarea(value: string): boolean {
+  private showOtherEntry(value: string): boolean {
     return this.hasOtherValue 
       && value === this.otherValue
       && this._selected.indexOf(this.otherValue) > -1

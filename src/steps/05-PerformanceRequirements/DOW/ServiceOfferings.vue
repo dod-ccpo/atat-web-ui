@@ -22,6 +22,7 @@
               :otherValue="otherValue"
               :otherValueEntered.sync="otherValueEntered"
               :otherValueRequiredMessage="otherValueRequiredMessage"
+              otherEntryType="textfield"
               :rules="[
                 $validators.required(requiredMessage)
               ]"
