@@ -11,7 +11,7 @@
               To complete this section, you will need an authorized funding request to transfer
               funds from your agency to DITCO. We recommend using G-Invoicing to generate your 7600A
               and 7600B, but you will also be able to upload form(s) directly from your computer.
-              <a>
+              <a role="button" id="LearnMoreFunding" @click="openSlideoutPanel">
                 <span class="">Learn more about funding requests</span>
               </a>
             </p>
@@ -66,13 +66,19 @@ import { Component, Watch } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
-import { RadioButton } from "../../../types/Global";
+import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import vue from "vue";
+import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+import BAALearnMore from "@/steps/08-StandardsAndCompliance/BAALearnMore.vue";
+
 
 @Component({
   components: {
     ATATRadioGroup,
-    ATATExpandableLink
+    ATATExpandableLink,
+    FundingRequestLearnMore,
+
   },
 })
 
@@ -110,6 +116,19 @@ export default class FundingPlanType extends vue {
       this.justification = "";
     }
   }
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
 
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: FundingRequestLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
 }
 </script>
