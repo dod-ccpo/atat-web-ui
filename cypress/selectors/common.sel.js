@@ -101,5 +101,11 @@ module.exports = {
   subStepRequirementsCostEstimateText: "#SubStep_RequirementsCostEstimate .step-text",
   subStepFundingPlanLink: "#SubStep_FundingPlan",
   subStepFundingPlanText: "#SubStep_FundingPlan .step-text",
+  subStepIFLink: "#SubStep_SeverabilityandIncrementalFunding",
+  subStepIFText: "#SubStep_SeverabilityandIncrementalFunding .step-text",
+
+  //Review Required forms
+  stepRequiredFormLink: "#Step_ReviewRequiredForms",
+  stepRequiredFormText: "#Step_ReviewRequiredForms .step-text",
 
 }
