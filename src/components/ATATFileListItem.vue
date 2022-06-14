@@ -142,22 +142,6 @@ export default class ATATFileListItem extends Vue {
   }
 
 
-  /**
-   * While progressStatus < 100, show progress bar.
-   * 
-   * `setTimeout` was added to display progress bar during
-   * fast uploads.  Without it, the progress bar would never 
-   * display for light uploads
-   */
-  // @Watch("uploadingFileObj.progressStatus")
-  // protected IsFileLoading(newVal: number): void {
-  //   window.setTimeout(
-  //     () =>
-  //       (this.isLoading =
-  //         newVal < 100 && this.uploadingFileObj.isErrored === false),
-  //     700
-  //   );
-  // }
 
   /**
    * Watches for `isErrored` to change after
@@ -168,7 +152,6 @@ export default class ATATFileListItem extends Vue {
   protected IsFileErrored(newVal: boolean): void {
     if (newVal) {
       this.removeFile(this.index);
-      // this.isLoading = newVal;
     }
   }
 

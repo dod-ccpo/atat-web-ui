@@ -140,7 +140,9 @@ export class AttachmentStore extends VuexModule {
         this.addAttachment({
           key: FundingPlansTable,
           attachment,
-        }).then(() => console.log("added"));
+        }).then(() => {
+          //nothing to do here
+        });
       }
     );
 
