@@ -23,11 +23,23 @@ export class StepsStore extends VuexModule implements StepsState {
     
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
+    altBackButtonText = "";
+
+    @Mutation
+    public setBackButtonText(text: string): void {
+      this.altBackButtonText = text;
+    }
+
     @Mutation
     [Mutations.SET_CURRENT_STEP](stepName: string): void {
       const step = this.stepMap.get(stepName);
       if (step) {
         this.currentStep = step;
+      }
+      if (this.altBackButtonText && this.currentStep) {
+        this.currentStep.backButtonText = this.altBackButtonText;
+      } else if (this.currentStep) {
+        this.currentStep.backButtonText = "Back";
       }
     }
 

@@ -1,3 +1,4 @@
+import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import OtherContractConsiderations from "@/store/otherContractConsiderations";
 import { sanitizeOfferingName } from "@/helpers";
@@ -6,6 +7,8 @@ import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/ste
 import DescriptionOfWork, { DescriptionOfWorkStore } from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
+import Steps from "@/store/steps";
+
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -160,6 +163,9 @@ export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
   debugger;
+  DescriptionOfWork.setBackToContractDetails(false);
+  Steps.setBackButtonText("");
+
   DescriptionOfWork.setCurrentGroupRemoved(false);
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
@@ -311,6 +317,15 @@ export const OfferGroupOfferingsPathResolver = (
 // When leaving service offering details page
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  debugger;
+  Steps.setBackButtonText("");
+
+  if (DescriptionOfWork.summaryBackToContractDetails) {
+    debugger;
+    DescriptionOfWork.setBackToContractDetails(false);
+    return "period-of-performance/period-of-performance";
+  }
+
   const missingDOWReqs = DescriptionOfWork.missingClassificationLevels;
 
   if ((missingDOWReqs && DescriptionOfWork.returnToDOWSummary) 
@@ -391,9 +406,13 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   return descriptionOfWorkSummaryPath
 }
 
-// when leaving DOW Summary page
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   debugger;
+  DescriptionOfWork.setBackToContractDetails(false);
+  Vue.nextTick(() => {
+    Steps.setBackButtonText("");
+  });
+
   if(current === routeNames.PropertyDetails){
     if(DescriptionOfWork.DOWObject.length > 0){
       DescriptionOfWork.setReturnToDOWSummary(false);

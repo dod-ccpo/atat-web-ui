@@ -413,9 +413,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: DOWSummary,
         routeResolver: DowSummaryPathResolver,
-        backButtonText: DescriptionOfWork.summaryBackToContractDetails 
-          ? 'Back to Contract Details' 
-          : 'Back',
+        backButtonText: "Back",
         continueButtonText: 'Wrap up this section',
       },
     ],

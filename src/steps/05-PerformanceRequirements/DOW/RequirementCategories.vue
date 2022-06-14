@@ -77,13 +77,14 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 import { SystemChoiceDTO } from "@/api/models";
 import { routeNames } from "../../../router/stepper";
-import router from "@/router";
+// import router from "@/router";
 
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
 import classificationRequirements from "@/store/classificationRequirements";
 import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
+
 
 @Component({
   components: {
@@ -174,7 +175,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
     debugger;
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
-      router.push({
+      debugger;
+      this.$router.push({
         name: routeNames.DOWSummary,
       }).catch(() => console.log("error navigating to DOW Summary"));
     }    

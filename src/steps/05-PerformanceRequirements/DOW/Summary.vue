@@ -133,6 +133,7 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import { DOWServiceOffering, DOWServiceOfferingGroup } from "../../../../types/Global";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 // import router from "@/router";
 
@@ -306,6 +307,13 @@ export default class Summary extends Vue {
   };
 
   public async loadOnEnter(): Promise<void> {
+    if (DescriptionOfWork.summaryBackToContractDetails) {
+      debugger;
+      Steps.setBackButtonText("Back to Contract Details");
+    } else {
+      debugger;
+      Steps.setBackButtonText("");
+    }
     DescriptionOfWork.setCurrentGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);
     DescriptionOfWork.setReturnToDOWSummary(false);
