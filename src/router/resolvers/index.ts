@@ -309,10 +309,6 @@ export const OfferGroupOfferingsPathResolver = (
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   const missingDOWReqs = DescriptionOfWork.missingDOWRequirements;
 
-  const foo1 = DescriptionOfWork.lastGroupRemoved;
-  const bar2 = DescriptionOfWork.currentGroupRemovedForNav;
-  console.log(foo1, bar2);
-
   if ((missingDOWReqs && DescriptionOfWork.returnToDOWSummary) 
     || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
     // and no more groups after
