@@ -21,7 +21,7 @@
           />
         </div>
         <div class="container-max-width"
-              v-for="(item) in selectedServiceGroups"
+              v-for="(item, index) in selectedServiceGroups"
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
@@ -55,12 +55,15 @@
               </div>
             </div>
           </div>
-          <hr />
+          <hr v-if="index !== allServiceGroups.length - 1" />
         </div>
       </v-col>
     </v-row>
 
-    <div class="d-flex justify-space-between align-flex-end">
+    <div 
+      v-if="availableServiceGroups.length > 0" 
+      class="d-flex justify-space-between align-flex-end"
+    >
       <h2 class="mb-5">Other available categories</h2>
       <a
         id="ShowMoreLink"
@@ -75,7 +78,7 @@
       </a>
     </div>
 
-    <v-row>
+    <v-row v-if="availableServiceGroups.length > 0">
       <v-col
         cols="3"
         style="padding: 10px; !important"

@@ -110,9 +110,10 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 export const RequirementsPathResolver = (current: string, direction: string): string =>
 {
+  debugger;
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
-  const missingDOWReqs = DescriptionOfWork.missingDOWRequirements;
+  const missingDOWReqs = DescriptionOfWork.missingClassificationLevels;
 
   if (current === routeNames.ServiceOfferings && missingDOWReqs && !atBeginningOfOfferingGroups) {
     const group = direction === "next" 
@@ -154,9 +155,11 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
+// When leaving category service offerings checkbox list page
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
+  debugger;
   DescriptionOfWork.setCurrentGroupRemoved(false);
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
@@ -305,9 +308,10 @@ export const OfferGroupOfferingsPathResolver = (
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
 
+// When leaving service offering details page
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  const missingDOWReqs = DescriptionOfWork.missingDOWRequirements;
+  const missingDOWReqs = DescriptionOfWork.missingClassificationLevels;
 
   if ((missingDOWReqs && DescriptionOfWork.returnToDOWSummary) 
     || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
@@ -387,7 +391,9 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   return descriptionOfWorkSummaryPath
 }
 
+// when leaving DOW Summary page
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  debugger;
   if(current === routeNames.PropertyDetails){
     if(DescriptionOfWork.DOWObject.length > 0){
       DescriptionOfWork.setReturnToDOWSummary(false);

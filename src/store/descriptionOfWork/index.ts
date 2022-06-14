@@ -294,16 +294,12 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get canGetPreviousServiceOffering(): boolean {
-
     const currentOfferingIndex = this.currentOfferingIndex;
-
     return currentOfferingIndex >=0;
-    
   }
-  public get missingDOWRequirements(): boolean {
-    const selectedClassifications = ClassificationRequirements.selectedClassificationLevels;
-    const periods = Periods.periods;
-    return selectedClassifications.length === 0 || periods === null;
+
+  public get missingClassificationLevels(): boolean {
+    return ClassificationRequirements.selectedClassificationLevels.length === 0;;
   }
 
   public get selectedServiceOfferingGroups(): string[] {
@@ -328,6 +324,14 @@ export class DescriptionOfWorkStore extends VuexModule {
   public get currentOfferingGroupHasOfferings(): boolean {
     return this.serviceOfferingsForGroup.length > 0;
   }
+
+  public summaryBackToContractDetails = false;
+
+  @Mutation
+  public setBackToContractDetails(bool: boolean): void {
+    this.summaryBackToContractDetails = bool;
+  }
+
 
   @Mutation
   private setInitialized(value: boolean) {

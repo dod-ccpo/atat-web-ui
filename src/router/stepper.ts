@@ -1,5 +1,6 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 // Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
@@ -410,7 +411,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: DOWSummary,
         routeResolver: DowSummaryPathResolver,
-        backButtonText: 'Back to Contract Details',
+        backButtonText: DescriptionOfWork.summaryBackToContractDetails 
+          ? 'Back to Contract Details' 
+          : 'Back',
         continueButtonText: 'Wrap up this section',
       },
     ],

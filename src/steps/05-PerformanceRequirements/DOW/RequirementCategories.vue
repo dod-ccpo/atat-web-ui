@@ -76,7 +76,9 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { Checkbox, SlideoutPanelContent } from "../../../../types/Global";
 import { SystemChoiceDTO } from "@/api/models";
-import { routeNames } from "../../../router/stepper"
+import { routeNames } from "../../../router/stepper";
+import router from "@/router";
+
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import { getIdText } from "@/helpers";
 import Periods from "@/store/periods";
@@ -103,6 +105,7 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   private isClassificationDataMissing = false
   private showAlert = false
   private routeNames = routeNames
+  private goToSummary = false;
 
   public openSlideoutPanel(e: Event): void {
     if (e && e.currentTarget) {
@@ -167,6 +170,14 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
   };
 
   public async mounted(): Promise<void> {
+    this.goToSummary = DescriptionOfWork.DOWObject.length > 0;
+    debugger;
+    if (this.goToSummary) {
+      DescriptionOfWork.setBackToContractDetails(true);
+      router.push({
+        name: routeNames.DOWSummary,
+      }).catch(() => console.log("error navigating to DOW Summary"));
+    }    
     await this.loadOnEnter();
     const slideoutPanelContent: SlideoutPanelContent = {
       component: PerfReqLearnMore,
@@ -179,11 +190,13 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      // save to store
-      const selectedOfferingGroups
-        = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
+      if (!this.goToSummary) {
+        // save to store
+        const selectedOfferingGroups
+          = this.selectedXaasOptions.concat(this.cloudSupportSelectedOptions);
 
-      await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
+        await DescriptionOfWork.setSelectedOfferingGroups(selectedOfferingGroups);
+      }
     } catch (error) {
       throw new Error('error saving requirement data');
     }
