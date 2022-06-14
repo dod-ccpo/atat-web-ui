@@ -78,7 +78,7 @@
     </div>
 
     <ATATFileList
-      :validFiles="validFiles"
+      :validFiles="_validFiles"
       :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
       @delete="(file) => $emit('delete', file)"
@@ -135,9 +135,8 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 1073741824, required: true })
   private maxFileSizeInBytes!: number;
   
-
-  //data
-  private validFiles: uploadingFile[] = [];
+  @PropSync("validFiles", { default: () => [] })
+  private _validFiles!: uploadingFile[];
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
@@ -156,7 +155,7 @@ export default class ATATFileUpload extends Vue {
 
     (document.getElementById("FundingPlanFileUpload") as HTMLInputElement).click();
     this.reset();
-    this.isFullSize = this.validFiles.length === 0;
+    this.isFullSize = this._validFiles.length === 0;
   }
   // 
   /**
@@ -189,7 +188,7 @@ export default class ATATFileUpload extends Vue {
   private onDragEnter(e: DragEvent): void {
     e.preventDefault();
     this.isHovering = true;
-    this.isFullSize = this.validFiles.length === 0;
+    this.isFullSize = this._validFiles.length === 0;
     this.reset();
     this.clearHTMLFileInput();
   }
@@ -234,7 +233,7 @@ export default class ATATFileUpload extends Vue {
         (format) => thisFileFormat === format
       );
 
-      const doesFileExist = this.validFiles.some((fileObj) => {
+      const doesFileExist = this._validFiles.some((fileObj) => {
         return (
           vFile.name === fileObj.file?.name &&
           vFile.lastModified === fileObj.file.lastModified &&
@@ -261,9 +260,9 @@ export default class ATATFileUpload extends Vue {
     this.createFileObjects(_validFiles);
   }
 
-  private createFileObjects(_validFiles: File[]): void {
-    _validFiles.forEach((vFile) => {
-      this.validFiles.push({
+  private createFileObjects(validFiles: File[]): void {
+    validFiles.forEach((vFile) => {
+      this._validFiles.push({
         file: vFile,
         fileName: vFile.name,
         created: vFile.lastModified,
@@ -279,9 +278,9 @@ export default class ATATFileUpload extends Vue {
   }
 
   private uploadFiles(): void {
-    for (let i = 0; i < this.validFiles.length; i++) {
+    for (let i = 0; i < this._validFiles.length; i++) {
       //wire up file upload here
-      let uploadingFileObj = this.validFiles[i] as uploadingFile;
+      let uploadingFileObj = this._validFiles[i] as uploadingFile;
 
       // only new files are uploaded
       if (!uploadingFileObj.isUploaded) {
@@ -310,6 +309,8 @@ export default class ATATFileUpload extends Vue {
               uploadingFileObj.attachmentId = sys_id || "";
               uploadingFileObj.recordId = table_sys_id;
               uploadingFileObj.isUploaded = true;
+
+              this.$emit('uploaded', uploadingFileObj);
             })
             .catch((error) => {
               //file upload error occurred
@@ -400,7 +401,7 @@ export default class ATATFileUpload extends Vue {
   }
 
   private updated(): void {
-    this.isFullSize = this.validFiles.length === 0;
+    this.isFullSize = this._validFiles.length === 0;
   }
 }
 </script>

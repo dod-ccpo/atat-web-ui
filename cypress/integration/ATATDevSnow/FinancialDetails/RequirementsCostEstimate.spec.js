@@ -1,4 +1,4 @@
-import { bootstrapMockApis,colors} from "../../../helpers";
+import { bootstrapMockApis} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import financialDetails from "../../../selectors/financialDetails.sel";
 
@@ -17,7 +17,7 @@ describe("Test suite: Financial Details:Requirements Cost Estimate", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepRequirementsCostEstimateText,
-      " Requirements Cost Estimate ");  ;
+      " Requirements Cost Estimate ").click();  
     cy.activeStep(common.stepFinancialDetailsCircle);  
     cy.activeStep(common.subStepRequirementsCostEstimateText);  
         
@@ -27,6 +27,8 @@ describe("Test suite: Financial Details:Requirements Cost Estimate", () => {
     () => {
 
       cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
+      cy.textExists(common.subStepRequirementsCostEstimateText,
+        " Requirements Cost Estimate ").click();
       // Navigates to "Tell us more about the scope of your project"
       cy.textExists(common.header, "Tell us more about the scope of your project");
         

@@ -11,7 +11,7 @@
               <span v-if="avlInstancesLength > 1">
                 <hr />
                 <h2
-                  id="RequirementHeading"
+                  :id="'RequirementHeading_' + (index + 1)"
                   class="mb-5"
                 >
                   {{ index + 1 }}. Tell us about the 
@@ -20,7 +20,7 @@
               </span>
 
               <ATATTextArea
-                id="AnticipatedNeedUsage"
+                :id="'AnticipatedNeedUsage_' + (index + 1)"
                 label="Describe the anticipated need and usage of this requirement"
                 class="width-100 mb-10"
                 :rows="5"
@@ -33,7 +33,7 @@
               />
               <ATATRadioGroup
                 class="copy-max-width mb-10"
-                id="EntireDuration"
+                :id="'EntireDuration_' + (index + 1)"
                 legend="Is this requirement for the entire duration of your task order?"
                 :items="requirementOptions"
                 :value.sync="instance.entireDuration"
@@ -42,12 +42,12 @@
                 ]"
               />
               <div v-if="instance.entireDuration === 'NO'">
-                <p id="CloudSupportLabel" class="_checkbox-group-label mb-3">
+                <p :id="'PeriodsLabel_' + (index + 1)" class="_checkbox-group-label">
                   Which base and/or option periods do you need this requirement?
                 </p>
                 <ATATCheckboxGroup
-                  id="CloudSupportCheckboxes"
-                  aria-describedby="CloudSupportLabel"
+                  :id="'PeriodsCheckboxes_' + (index + 1)"
+                  :aria-describedby="'PeriodsLabel_' + (index + 1)"
                   :value.sync="instance.selectedPeriods"
                   :items="availablePeriodCheckboxItems"
                   :card="false"
@@ -59,17 +59,17 @@
                   class="copy-max-width"
                 />
                 <ATATAlert
-                  id="ClassificationRequirementsAlert"
+                  :id="'PeriodRequirementsAlert_' + (index + 1)"
                   v-show="isDisabled === true"
                   type="warning"
                   class="copy-max-width mb-10"
                 >
                   <template v-slot:content>
-                    <p class="mb-0" id="SingleClassificationIntro">
+                    <p class="mb-0" :id="'PeriodIntro_' + (index + 1)">
                       Your period of performance details are missing. To select specific base or
                       option periods for this requirement,
                       <router-link
-                        id="Step4Link"
+                        :id="'ContractDetailsLink_' + (index + 1)"
                         :to="{name: routeNames.PeriodOfPerformance}"
                       >revisit the Contract Details section
                       </router-link>
