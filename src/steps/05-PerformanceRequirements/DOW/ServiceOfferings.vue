@@ -117,15 +117,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.serviceGroupOnLoad) {
-        if (this.selectedOptions.length === 0) {
-          await DescriptionOfWork.removeCurrentOfferingGroup();
-        } else {
-          // save to store if user hasn't clicked "I don't need these cloud resources" button
-          if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
-            await DescriptionOfWork.setSelectedOfferings(
-              { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
-            );
-          }
+        // save to store if user hasn't clicked "I don't need these cloud resources" button
+        if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
+          await DescriptionOfWork.setSelectedOfferings(
+            { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
+          );
         }
         //save to backend
         await DescriptionOfWork.saveUserSelectedServices();
