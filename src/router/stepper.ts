@@ -82,7 +82,7 @@ import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsC
 import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
-import FundingPlanType from "@/steps/10-FinancialDetails/FundingPlanType.vue";
+import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 

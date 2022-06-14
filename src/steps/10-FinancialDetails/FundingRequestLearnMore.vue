@@ -52,14 +52,6 @@
     <p>
       If you choose to upload, you will need to provide both of these FS forms.
     </p>
-
-    <p>
-      The BAA also serves to clarify and limit, as appropriate, the permissible uses and
-      disclosures of PHI by the business associate, based on the relationship between the parties
-      and the activities or services being performed by the business associate. A business
-      associate may use or disclose PHI only as permitted or required by its BAA or as required
-      by law.
-    </p>
     <hr class="my-5"/>
 
     <h3 class="mb-4">Military Interdepartmental Purchase Request (MIPR)</h3>

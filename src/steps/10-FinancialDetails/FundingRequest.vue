@@ -38,7 +38,7 @@
                   G-Invoicing is the long-term solution for Federal Program Agencies (FPAs) to
                   manage their intragovernmental (IGT) Buy/Sell transactions. This is the preferred
                   system for generating and maintaining your GT&Cs and Orders with DITCO.
-                  <a>
+                  <a role="button" id="LearnMoreGInvoicing" @click="openSlideoutPanel">
                     <span>Learn more about G-Invoicing</span>
                   </a>
                 </p>
@@ -70,7 +70,7 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import vue from "vue";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import BAALearnMore from "@/steps/08-StandardsAndCompliance/BAALearnMore.vue";
+import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 
 
 @Component({
@@ -78,7 +78,7 @@ import BAALearnMore from "@/steps/08-StandardsAndCompliance/BAALearnMore.vue";
     ATATRadioGroup,
     ATATExpandableLink,
     FundingRequestLearnMore,
-
+    GInvoiceLearnMore,
   },
 })
 
@@ -124,11 +124,16 @@ export default class FundingPlanType extends vue {
   }
 
   public async mounted(): Promise<void> {
-    const slideoutPanelContent: SlideoutPanelContent = {
+    const fundingSlideoutContent: SlideoutPanelContent = {
       component: FundingRequestLearnMore,
       title: "Learn More",
     }
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await SlideoutPanel.setSlideoutPanelComponent(fundingSlideoutContent);
+    const gInvoiceSlideoutContent: SlideoutPanelContent = {
+      component: GInvoiceLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(gInvoiceSlideoutContent);
   }
 }
 </script>
