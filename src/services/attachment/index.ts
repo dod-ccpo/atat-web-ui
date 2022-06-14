@@ -8,6 +8,56 @@ import {
   TABLENAME as FundingPlanTableName,
 } from "@/api/fundingPlan";
 
+
+
+export const AttachmentServiceCallbacks =  (()=>{
+
+  const uploadCallbacks: Record<string, ((attachment: AttachmentDTO)=> void)[]> = {};
+  const removeCallbacks:  Record<string, ((attachment: AttachmentDTO)=> void)[]> = {};
+
+  const registerUploadCallBack= (serviceKey: string , 
+    callback: (attachment: AttachmentDTO)=> void)=> {
+    
+    if(!uploadCallbacks[serviceKey]?.length){
+      uploadCallbacks[serviceKey]= []; 
+    } 
+    uploadCallbacks[serviceKey].push(callback);
+  } 
+
+  const registerRemoveCallBack= (serviceKey: string , 
+    callback: (attachment: AttachmentDTO)=> void)=> {
+    
+    if(!removeCallbacks[serviceKey]?.length){
+      removeCallbacks[serviceKey]= []; 
+    } 
+    removeCallbacks[serviceKey].push(callback);
+  }
+
+  const invokeUploadCallbacks = (serviceKey: string, attachment: AttachmentDTO) => {
+    if(uploadCallbacks[serviceKey])
+    {
+      uploadCallbacks[serviceKey].forEach(callback=> callback(attachment));
+    }
+  }
+
+  const invokeRemoveCallbacks = (serviceKey: string, attachment: AttachmentDTO) => {
+    if(removeCallbacks[serviceKey]){
+      removeCallbacks[serviceKey].forEach(callback=> callback(attachment));
+    }
+  }
+
+  return {
+
+    registerUploadCallBack,
+    registerRemoveCallBack,
+    invokeUploadCallbacks,
+    invokeRemoveCallbacks,
+    
+  }
+   
+
+})() 
+
 interface TableAttachment<TModel extends AttachableDTO> {
   data: TModel;
   attachment: AttachmentDTO;
@@ -22,9 +72,11 @@ class FileAttachmentServiceBase<
   TModel extends AttachableDTO
 > {
   attachmentApi = new AttachmentApi();
+  serviceKey: string;
   tableName: string;
   tableApi: TTableApi;
-  constructor(tableName: string, tableApi: TTableApi) {
+  constructor(serviceKey: string, tableName: string, tableApi: TTableApi) {
+    this.serviceKey = serviceKey;
     this.tableName = tableName;
     this.tableApi = tableApi;
   }
@@ -63,6 +115,9 @@ class FileAttachmentServiceBase<
       onProgress
     );
 
+    AttachmentServiceCallbacks
+      .invokeUploadCallbacks(this.serviceKey, {...attachment, ...updatedAttachment});
+
     const attachmentSysId = updatedAttachment?.sys_id || "";
 
     // update record with attachment sys id, file name, and extension
@@ -93,6 +148,8 @@ class FileAttachmentServiceBase<
     await this.attachmentApi.remove(attachment.sys_id || "");
     //then delete the record
     await this.tableApi.remove(attachment.table_sys_id);
+
+    AttachmentServiceCallbacks.invokeRemoveCallbacks(this.serviceKey, attachment);
   }
 }
 
@@ -111,6 +168,7 @@ export const FileAttachmentServiceFactory = (
   switch (attachmentServiceType) {
   case AttachmentServiceTypes.FundingPlans:
     return new FileAttachmentServiceBase<FundingPlanApi, FundingPlanDTO>(
+      attachmentServiceType,
       FundingPlanTableName,
       api.fundingPlanTable
     ) as FileAttachmentService;

@@ -134,7 +134,12 @@ export default class ATATFileListItem extends Vue {
   @Prop({ default: () => ({}) }) private uploadingFileObj!: uploadingFile;
 
   /** DATA */
-  private isLoading = true;
+  get isLoading(): boolean {
+
+    return this.uploadingFileObj && 
+    this.uploadingFileObj.progressStatus < 100 &&
+    this.uploadingFileObj.isErrored === false
+  }
 
 
   /**
@@ -144,15 +149,15 @@ export default class ATATFileListItem extends Vue {
    * fast uploads.  Without it, the progress bar would never 
    * display for light uploads
    */
-  @Watch("uploadingFileObj.progressStatus")
-  protected IsFileLoading(newVal: number): void {
-    window.setTimeout(
-      () =>
-        (this.isLoading =
-          newVal < 100 && this.uploadingFileObj.isErrored === false),
-      700
-    );
-  }
+  // @Watch("uploadingFileObj.progressStatus")
+  // protected IsFileLoading(newVal: number): void {
+  //   window.setTimeout(
+  //     () =>
+  //       (this.isLoading =
+  //         newVal < 100 && this.uploadingFileObj.isErrored === false),
+  //     700
+  //   );
+  // }
 
   /**
    * Watches for `isErrored` to change after
@@ -163,7 +168,7 @@ export default class ATATFileListItem extends Vue {
   protected IsFileErrored(newVal: boolean): void {
     if (newVal) {
       this.removeFile(this.index);
-      this.isLoading = newVal;
+      // this.isLoading = newVal;
     }
   }
 
