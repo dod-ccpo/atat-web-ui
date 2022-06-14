@@ -4,6 +4,8 @@ import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
 import DescriptionOfWork, { DescriptionOfWorkStore } from "@/store/descriptionOfWork";
+import ClassificationRequirements from "@/store/classificationRequirements";
+import Periods from "@/store/periods";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -102,15 +104,27 @@ const getServiceOfferingsDetailsPath= (groupId: string, serviceName: string)=> {
   path += `${sanitizeOfferingName(serviceName)}`;
   return path;
 }
-  
 
 const getOfferingGroupServicesPath = (groupId: string)=>
   `${basePerformanceRequirementsPath}/service-offerings/${groupId.toLowerCase()}`
 
-export const RequirementsPathResolver = (current: string): string =>
+export const RequirementsPathResolver = (current: string, direction: string): string =>
 {
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
+  const missingDOWReqs = DescriptionOfWork.missingDOWRequirements;
+
+  if (current === routeNames.ServiceOfferings && missingDOWReqs && !atBeginningOfOfferingGroups) {
+    const group = direction === "next" 
+      ? DescriptionOfWork.nextOfferingGroup 
+      : DescriptionOfWork.prevOfferingGroup;
+    if (group) {
+      // send to group offerings page
+      const serviceOffering = routeNames.ServiceOfferings
+      DescriptionOfWork.setCurrentOfferingGroupId(group);
+      return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+    }
+  }
 
   if(current === routeNames.ClassificationRequirements){
     return basePerformanceRequirementsPath;
@@ -167,8 +181,11 @@ export const OfferGroupOfferingsPathResolver = (
     || atLastNoneApply 
     || lastGroupRemoved
 
-  if (!addGroupFromSummary && 
-    (currentGroupRemovedForNav || (returnToDOWSummary && atServicesEnd) || nowhereToGo)
+  if (!addGroupFromSummary 
+    && ((currentGroupRemovedForNav && lastGroupRemoved) 
+    || (currentGroupRemovedForNav && returnToDOWSummary)
+    || (returnToDOWSummary && atServicesEnd) 
+    || nowhereToGo)
   ) {
     // return to summary
     DescriptionOfWork.setReturnToDOWSummary(false);
@@ -289,23 +306,38 @@ export const OfferGroupOfferingsPathResolver = (
 }
 
 //this will always return the path for the current group and the current offering
-export const OfferingDetailsPathResolver = (current: string): string => {
-  if (DescriptionOfWork.currentGroupRemovedForNav) {
+export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  const missingDOWReqs = DescriptionOfWork.missingDOWRequirements;
+
+  const foo1 = DescriptionOfWork.lastGroupRemoved;
+  const bar2 = DescriptionOfWork.currentGroupRemovedForNav;
+  console.log(foo1, bar2);
+
+  if ((missingDOWReqs && DescriptionOfWork.returnToDOWSummary) 
+    || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
+    // and no more groups after
+    DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;
   }
 
-  if(current === routeNames.DOWSummary){
-    if(!DescriptionOfWork.currentOfferingGroupHasOfferings || 
-      DescriptionOfWork.currentGroupId === ""){
+  if (current === routeNames.DOWSummary){
+    if (DescriptionOfWork.currentGroupId === "") {
       return basePerformanceRequirementsPath;
     }
+    if (!DescriptionOfWork.currentOfferingGroupHasOfferings) { 
+      // send to group offerings page
+      const serviceOffering = routeNames.ServiceOfferings
+      return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+    }
 
-    if(DescriptionOfWork.currentOfferingName == ""){
+    if (DescriptionOfWork.currentOfferingName === ""){
       //get the last offering and display
       const offering = DescriptionOfWork.lastOfferingForGroup;
-      if(offering)
-      {
+      if (offering && !missingDOWReqs) {
         DescriptionOfWork.setCurrentOffering(offering);
+      } else {
+        const serviceOffering = routeNames.ServiceOfferings
+        return OfferGroupOfferingsPathResolver(serviceOffering , direction);
       }
     }
   }
@@ -318,6 +350,7 @@ export const OfferingDetailsPathResolver = (current: string): string => {
       // future todo: route to step 4 summary if user lands on DOW Summary from other step  
     } else {
       DescriptionOfWork.setLastGroupRemoved(false);
+      DescriptionOfWork.setReturnToDOWSummary(false);
       return descriptionOfWorkSummaryPath;    
     }
   }
@@ -330,18 +363,38 @@ export const OfferingDetailsPathResolver = (current: string): string => {
     }
     // if last group removed, currentGroupId === "", send to summary page
     DescriptionOfWork.setLastGroupRemoved(false);
+    DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
-  
-  const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
-  return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`; 
+  if (!missingDOWReqs) {
+    const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
+    return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
+  } 
+
+  let group;
+  if (current === routeNames.DOWSummary) {
+    group = DescriptionOfWork.lastOfferingGroup;
+  } else {
+    group = direction === "next" 
+      ? DescriptionOfWork.nextOfferingGroup 
+      : DescriptionOfWork.prevOfferingGroup;
+  }
+
+  if (group) {
+    // send to group offerings page
+    const serviceOffering = routeNames.ServiceOfferings
+    DescriptionOfWork.setCurrentOfferingGroupId(group);
+    return OfferGroupOfferingsPathResolver(serviceOffering , direction);
+  }
+
+  DescriptionOfWork.setReturnToDOWSummary(false);
+  return descriptionOfWorkSummaryPath
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-
-
   if(current === routeNames.PropertyDetails){
     if(DescriptionOfWork.DOWObject.length > 0){
+      DescriptionOfWork.setReturnToDOWSummary(false);
       return descriptionOfWorkSummaryPath
     }
     else{
@@ -365,6 +418,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
     //no more offerings or services to process go to summary
     if(atOfferingsEnd && atServicesEnd){
+      DescriptionOfWork.setReturnToDOWSummary(false);
       return descriptionOfWorkSummaryPath;
     }
 
@@ -377,7 +431,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       }
 
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
-      return OfferingDetailsPathResolver(current);
+      return OfferingDetailsPathResolver(current, direction);
     }
 
     if(!atOfferingsEnd && !atServicesEnd){
@@ -391,7 +445,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
       }
 
       DescriptionOfWork.setCurrentOffering(nextServiceOffering);
-      return OfferingDetailsPathResolver(current);
+      return OfferingDetailsPathResolver(current, direction);
     }
 
     if(!atOfferingsEnd && atServicesEnd){
@@ -408,7 +462,7 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
     }
   }
 
-  return OfferingDetailsPathResolver(current);
+  return OfferingDetailsPathResolver(current, direction);
 }
 
 // add resolver here so that it can be found by invoker

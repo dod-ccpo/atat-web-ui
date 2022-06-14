@@ -26,6 +26,8 @@ import {
 import _, { differenceWith, last } from "lodash";
 import { sys } from "typescript";
 import { OfferingDetailsPathResolver } from "@/router/resolvers";
+import ClassificationRequirements from "@/store/classificationRequirements";
+import Periods from "@/store/periods";
 
 
 // Classification Proxy helps keep track of saved
@@ -256,6 +258,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     return undefined;
   }
 
+  public get lastOfferingGroup(): string | undefined {
+    const len = this.validServiceGroups.length;
+    return len ? this.validServiceGroups[len - 1].serviceOfferingGroupId : undefined;
+  }
+
   public get prevOfferingGroup(): string | undefined {
 
     const currentGroupIndex = this.validServiceGroups
@@ -292,6 +299,11 @@ export class DescriptionOfWorkStore extends VuexModule {
 
     return currentOfferingIndex >=0;
     
+  }
+  public get missingDOWRequirements(): boolean {
+    const selectedClassifications = ClassificationRequirements.selectedClassificationLevels;
+    const periods = Periods.periods;
+    return selectedClassifications.length === 0 || periods === null;
   }
 
   public get selectedServiceOfferingGroups(): string[] {
@@ -358,13 +370,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
     await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
-    this.doremoveCurrentOfferingGroup();
+    this.doRemoveCurrentOfferingGroup();
   }
 
   // removes current offering group if user clicks  the "I don't need these cloud resources"
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
-  public doremoveCurrentOfferingGroup(): void {
+  public doRemoveCurrentOfferingGroup(): void {
     if (!this.currentGroupRemoved) {
       this.currentGroupRemovedForNav = true;    
       const groupIdToRemove = this.currentGroupId;
@@ -381,7 +393,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       const onlyNoneRemain = this.DOWObject.every((e) => {
         return e.serviceOfferingGroupId.indexOf("NONE") > -1;
       });
-
       // check if last group was removed
       if (groupIndex === DOWObjectBeforeRemoval.length - 1 || onlyNoneRemain) {
         this.lastGroupRemoved = true;
@@ -486,7 +497,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-
     if (groupIndex >= 0) {
       if (selectedOfferingSysIds.length === 0) {
         this.DOWObject[groupIndex].serviceOfferings = [];

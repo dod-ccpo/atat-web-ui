@@ -34,7 +34,10 @@
             </div>
             <div class="d-flex align-start">
               <div class="d-flex align-center">
-                <div v-if="missingData(item.serviceOfferingGroupId)" class="d-flex align-start">
+                <div 
+                  v-if="missingData(item.serviceOfferingGroupId)" 
+                  class="d-flex align-start nowrap ml-5"
+                >
                   <v-icon
                     class="icon-20 text-warning-dark2 pr-2"
                   >warning</v-icon>
@@ -140,6 +143,7 @@ import { SystemChoiceDTO } from "@/api/models";
 export default class Summary extends Vue {
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
+  private isMissingRequirements = this.isPeriodsDataMissing || this.isClassificationDataMissing;
   private showAlert = false;
   private routeNames = routeNames;
   public serviceGroupsMissingData: string[] =[]
@@ -267,25 +271,29 @@ export default class Summary extends Vue {
     let outputArr :string[] = [];
     value.forEach((obj)=>{
       let id = obj.serviceOfferingGroupId;
-      obj.serviceOfferings.forEach((offering)=>{
-        if(offering.classificationInstances && offering.classificationInstances.length == 0) {
-          if(outputArr.indexOf(id) < 0){
-            outputArr.push(id);
-          };
-        };
-        offering.classificationInstances?.forEach((instance)=>{
-          if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
+      if (this.isMissingRequirements || obj.serviceOfferings.length === 0) {
+        outputArr.push(id);
+      } else {
+        obj.serviceOfferings.forEach((offering)=>{
+          if(offering.classificationInstances && offering.classificationInstances.length === 0) {
             if(outputArr.indexOf(id) < 0){
               outputArr.push(id);
             };
+          } else {
+            offering.classificationInstances?.forEach((instance)=>{
+              if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
+                if(outputArr.indexOf(id) < 0){
+                  outputArr.push(id);
+                };
+              } else if (instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
+                if(outputArr.indexOf(id) < 0){
+                  outputArr.push(id);
+                }
+              };
+            });
           }
-          else if(instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
-            if(outputArr.indexOf(id) < 0){
-              outputArr.push(id);
-            }
-          };
         });
-      })
+      }
     });
     this.serviceGroupsMissingData = outputArr;
   };
@@ -295,6 +303,11 @@ export default class Summary extends Vue {
   };
 
   public async loadOnEnter(): Promise<void> {
+    DescriptionOfWork.setCurrentGroupRemoved(false);
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false);
+    DescriptionOfWork.setReturnToDOWSummary(false);
+    DescriptionOfWork.setLastGroupRemoved(false);
+
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
     if (periods && periods.length <= 0) {
