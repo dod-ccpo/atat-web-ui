@@ -204,31 +204,28 @@ export const OfferGroupOfferingsPathResolver = (
 
   //handles moving backwards or forwards through service offerings
   if (current === routeNames.ServiceOfferingDetails &&
-    direction.toUpperCase() === RouteDirection.PREVIOUS)
-  {  
+    direction.toUpperCase() === RouteDirection.PREVIOUS) {  
     const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
     const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
 
     //at the beginning of service offerings and offering groups
     // direct the user back to the performance requirements step
-    if(current === routeNames.ServiceOfferingDetails && 
+    if (current === routeNames.ServiceOfferingDetails && 
       atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
       return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
     }
 
-    if(atBeginningOfOfferingGroups && atBeginningOfSericeOfferings && 
-      current !== routeNames.ServiceOfferingDetails)
-    {
+    if (atBeginningOfOfferingGroups && atBeginningOfSericeOfferings && 
+      current !== routeNames.ServiceOfferingDetails) {
       return basePerformanceRequirementsPath;
     }
 
     //if we are at the beginning of offering groups but not at the beginning of service offerings
     //get the next service offering and display it in service offering details
-    if(atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings){
+    if (atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings){
       const previousServiceOffering = DescriptionOfWork.previousServiceOffering;
       const groupId = DescriptionOfWork.currentGroupId;
-      if(previousServiceOffering === undefined)
-      {
+      if (previousServiceOffering === undefined) {
         throw new Error('unable to get previous service offering group');
       }
       DescriptionOfWork.setCurrentOffering(previousServiceOffering);
@@ -237,26 +234,23 @@ export const OfferGroupOfferingsPathResolver = (
     }
 
     //at the beginning of service offerings for a given offering group
-    if(!atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
-
+    if (!atBeginningOfOfferingGroups && atBeginningOfSericeOfferings) {
       //if routing from service offering details
       //send the user to the step to select the Service Offerings (Service Offerings)
-      if(current === routeNames.ServiceOfferingDetails){
+      if (current === routeNames.ServiceOfferingDetails) {
         //display service offering group page
         return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
       }
 
       const previousGroup = DescriptionOfWork.prevOfferingGroup;
-      if(previousGroup === undefined)
-      {
+      if (previousGroup === undefined) {
         throw new Error('unable to get previous offering group');
       }
 
       DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
       const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
    
-      if(lastServiceOfferingForGroup === undefined)
-      {
+      if (lastServiceOfferingForGroup === undefined) {
         throw new Error(`unable to get last offering for group ${previousGroup}`);
       }
       DescriptionOfWork.setCurrentOffering(lastServiceOfferingForGroup);
@@ -265,28 +259,23 @@ export const OfferGroupOfferingsPathResolver = (
 
     //not at the beginning of service offerings or offering groups
     //get the next server offering and display in service offering details
-    if(!atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings)
-    {
+    if (!atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings) {
       const groupId = DescriptionOfWork.currentGroupId;
 
       //can we get the previous service offering for this group?
       const canGetPreviousOffering = DescriptionOfWork.canGetPreviousServiceOffering;
 
-      if(canGetPreviousOffering){
+      if (canGetPreviousOffering) {
         const serviceOffering = DescriptionOfWork.previousServiceOffering;
 
-        if(serviceOffering === undefined)
-        {
+        if (serviceOffering === undefined) {
           throw new Error('unable to get previous service offering');
         }
 
         DescriptionOfWork.setCurrentOffering(serviceOffering);
 
         return getServiceOfferingsDetailsPath(groupId, serviceOffering.name);
-
-      }
-      else{
-          
+      } else {
         //we couldn't get the previous offering so try to get the previous offering group
         const previousGroup = DescriptionOfWork.prevOfferingGroup;
         if(previousGroup === undefined)
