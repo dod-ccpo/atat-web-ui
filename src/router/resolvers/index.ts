@@ -365,7 +365,9 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
   } 
   if (!missingClassification) {
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
-    return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
+    if (offering) {
+      return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
+    }
   } 
 
   let group;
@@ -390,9 +392,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   DescriptionOfWork.setBackToContractDetails(false);
-  Vue.nextTick(() => {
-    Steps.clearAltBackButtonText();
-  });
+  Steps.clearAltBackButtonText();
 
   if(current === routeNames.PropertyDetails){
     if(DescriptionOfWork.DOWObject.length > 0){

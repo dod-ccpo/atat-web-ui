@@ -78,7 +78,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
     this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
-
     if (this.serviceOfferings.length) {
       this.serviceOfferings.forEach((offering) => {
         const checkboxItem: Checkbox = {

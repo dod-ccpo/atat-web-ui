@@ -28,6 +28,7 @@ import { sys } from "typescript";
 import { OfferingDetailsPathResolver } from "@/router/resolvers";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import Periods from "@/store/periods";
+import { group } from "console";
 
 
 // Classification Proxy helps keep track of saved
@@ -307,12 +308,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get selectedServiceOfferings(): string[] {
-    const mapOfferingName = (offering: DOWServiceOffering)=> {
-      const name = offering.sys_id === "Other" ? "Other": offering.name
-      return name;
+    const currentGroup = this.DOWObject.find(group => 
+      group.serviceOfferingGroupId === this.currentGroupId);
+    if (currentGroup?.serviceOfferings) {
+      return currentGroup.serviceOfferings.flatMap(offering => 
+        offering.sys_id === "Other" ? "Other" : offering.name);
     }
-    return this.DOWObject.map(group=>
-      group.serviceOfferings.flatMap(offering=>mapOfferingName(offering))).flat();
+    return [""];
   }
 
   public get otherServiceOfferingEntry(): string {
