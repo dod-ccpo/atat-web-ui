@@ -349,7 +349,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
     value.forEach((value, index) => {
       // ensure "none apply" options are last in sequence
-      value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index;
+      value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index + 1;
     });
     this.serviceOfferingGroups = value;
   }
