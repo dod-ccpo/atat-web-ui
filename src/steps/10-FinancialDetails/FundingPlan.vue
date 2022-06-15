@@ -10,6 +10,7 @@
           id="FundingPlan"
           @delete="onRemoveAttachment"
           :invalidFiles.sync="invalidFiles"
+          :validFiles.sync="uploadedFiles"
           :rules="getRulesArray()"
         />
       </v-col>
@@ -17,13 +18,14 @@
   </v-container>
 </template>
 <script lang="ts">
-import AcquisitionPackage from "@/store/acquisitionPackage";
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
-import { AttachmentTables } from "@/api";
+import { AttachmentTables} from "@/api";
+import { AttachmentDTO } from "@/api/models";
 import { invalidFile, uploadingFile } from "types/Global";
+import Attachments from "@/store/attachments";
 
 @Component({
   components: {
@@ -59,21 +61,29 @@ export default class FundingPlan extends Vue {
 
   async loadOnEnter(): Promise<void> {
     try {
-      const data =
-        (await AcquisitionPackage.loadAttachments(
-          AttachmentTables.FundingPlans
-        )) || [];
-      this.uploadedFiles = data.map((attachment) => {
-        return {
-          file: new File([], attachment.file_name),
-          attachmentId: attachment.sys_id,
-          recordId: attachment.table_sys_id,
-          link: attachment.download_link,
-          isUploaded: true,
-          isErrored: false,
+
+      const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
+      const uploadedFiles = attachments.map((attachment: AttachmentDTO)=> {
+        const file = new File([], attachment.file_name, {
+          lastModified: Date.parse(attachment.sys_created_on || "")
+        });
+        const upload:uploadingFile = {
+          attachmentId: attachment.sys_id || "",
+          fileName : attachment.file_name,
+          file: file,
+          created: file.lastModified,
           progressStatus: 100,
-        };
-      }) as uploadingFile[];
+          link: attachment.download_link || "",
+          recordId: attachment.table_sys_id,
+          isErrored: false,
+          isUploaded: true
+        }
+
+        return upload;
+      });
+
+      this.uploadedFiles = [...uploadedFiles];
+     
     } catch (error) {
       throw new Error("an error occurred loading funding plans data");
     }
@@ -85,7 +95,7 @@ export default class FundingPlan extends Vue {
         const key = AttachmentTables.FundingPlans;
         const attachmentId = file.attachmentId;
         const recordId = file.recordId;
-        await AcquisitionPackage.removeAttachment({
+        await Attachments.removeAttachment({
           key,
           attachmentId,
           recordId,
@@ -95,5 +105,10 @@ export default class FundingPlan extends Vue {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
     }
   }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
 }
 </script>

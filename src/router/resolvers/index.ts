@@ -3,7 +3,7 @@ import OtherContractConsiderations from "@/store/otherContractConsiderations";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
-import DescriptionOfWork from "@/store/descriptionOfWork";
+import DescriptionOfWork, { DescriptionOfWorkStore } from "@/store/descriptionOfWork";
 
 export const AcorsRouteResolver = (current: string): string => {
   const hasAlternativeContactRep = AcquisitionPackage.hasAlternativeContactRep;
@@ -153,21 +153,31 @@ export const OfferGroupOfferingsPathResolver = (
   });
   const lastGroupRemoved = DescriptionOfWork.lastGroupRemoved;
 
-  if (!DescriptionOfWork.addingGroupFromSummary 
-    && (
-      DOWObject.length === 0 
-      || onlyNoneApplySelected 
-      || atLastNoneApply 
-      || lastGroupRemoved
-    )
+  // if reviewing service group from store, set "atServicesEnd" to false 
+  const reviewGroupFromSummary = DescriptionOfWork.reviewGroupFromSummary;
+  const atServicesEnd = reviewGroupFromSummary ? false : DescriptionOfWork.isEndOfServiceOfferings;
+  DescriptionOfWork.setReviewGroupFromSummary(false);
+
+  const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
+  const addGroupFromSummary = DescriptionOfWork.addGroupFromSummary;
+  const currentGroupRemovedForNav = DescriptionOfWork.currentGroupRemovedForNav;
+
+  const nowhereToGo = DOWObject.length === 0 
+    || onlyNoneApplySelected 
+    || atLastNoneApply 
+    || lastGroupRemoved
+
+  if (!addGroupFromSummary && 
+    (currentGroupRemovedForNav || (returnToDOWSummary && atServicesEnd) || nowhereToGo)
   ) {
-    DescriptionOfWork.setAddingGroupFromSummary(false);
+    // return to summary
     DescriptionOfWork.setReturnToDOWSummary(false);
     DescriptionOfWork.setLastGroupRemoved(false);
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false); 
     return descriptionOfWorkSummaryPath;
   } 
 
-  DescriptionOfWork.setAddingGroupFromSummary(false);
+  DescriptionOfWork.setAddGroupFromSummary(false);
 
   //handles moving backwards or forwards through service offerings
   if (current === routeNames.ServiceOfferingDetails &&
@@ -280,6 +290,27 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string): string => {
+  if (DescriptionOfWork.currentGroupRemovedForNav) {
+    return descriptionOfWorkSummaryPath;
+  }
+
+  if(current === routeNames.DOWSummary){
+    if(!DescriptionOfWork.currentOfferingGroupHasOfferings || 
+      DescriptionOfWork.currentGroupId === ""){
+      return basePerformanceRequirementsPath;
+    }
+
+    if(DescriptionOfWork.currentOfferingName == ""){
+      //get the last offering and display
+      const offering = DescriptionOfWork.lastOfferingForGroup;
+      if(offering)
+      {
+        DescriptionOfWork.setCurrentOffering(offering);
+      }
+    }
+  }
+
+
   if (!DescriptionOfWork.prevOfferingGroup && !DescriptionOfWork.currentGroupId) {
     // only "none apply" options selected.
     if (current === routeNames.DOWSummary) {
@@ -307,12 +338,23 @@ export const OfferingDetailsPathResolver = (current: string): string => {
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+
+
+  if(current === routeNames.PropertyDetails){
+    if(DescriptionOfWork.DOWObject.length > 0){
+      return descriptionOfWorkSummaryPath
+    }
+    else{
+      return basePerformanceRequirementsPath;
+    }
+  }
+
   const atServicesEnd = DescriptionOfWork.isEndOfServiceOfferings;
   const atOfferingsEnd = DescriptionOfWork.isEndOfServiceGroups;
 
   // If added a new offering group or editing/reviewing existing offering from the summary page, and
   // at last service in group, send back to summary page
-  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd && atOfferingsEnd) {
+  if (DescriptionOfWork.returnToDOWSummary && atServicesEnd) {
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;
   }
