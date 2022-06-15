@@ -25,13 +25,13 @@ export interface SessionData {
   contractType: ContractTypeDTO;
   currentContract: CurrentContractDTO;
   fairOpportunity: FairOpportunityDTO;
-  gFEOverview: GFEOverviewDTO;
+  gfeOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
   periods: string;
   periodOfPerformance: PeriodOfPerformanceDTO;
   projectOverview: ProjectOverviewDTO;
   requirementsCostEstimate: RequirementsCostEstimateDTO;
-  SensitiveInformation: SensitiveInformationDTO;
+  sensitiveInformation: SensitiveInformationDTO;
   classificationLevel: ClassificationLevelDTO;
   requiredServices: RequiredServicesDTO;
 }
