@@ -147,7 +147,6 @@ import { SystemChoiceDTO } from "@/api/models";
 export default class Summary extends Vue {
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
-  private isMissingRequirements = this.isPeriodsDataMissing || this.isClassificationDataMissing;
   private showAlert = false;
   private routeNames = routeNames;
   public serviceGroupsMissingData: string[] =[]
@@ -275,7 +274,7 @@ export default class Summary extends Vue {
     let outputArr :string[] = [];
     value.forEach((obj)=>{
       let id = obj.serviceOfferingGroupId;
-      if (this.isMissingRequirements || obj.serviceOfferings.length === 0) {
+      if (this.isClassificationDataMissing || obj.serviceOfferings.length === 0) {
         outputArr.push(id);
       } else {
         obj.serviceOfferings.forEach((offering)=>{
