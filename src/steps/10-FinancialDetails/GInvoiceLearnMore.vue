@@ -9,13 +9,13 @@
       G‑Invoicing helps agencies and their trading partners:
     </p>
     <ul>
-      <li>
+      <li class="mb-2">
         Negotiate and accept General Terms and Conditions (GT&C) agreements
       </li>
-      <li>
+      <li class="mb-2">
         Broker orders
       </li>
-      <li>
+      <li class="mb-2">
         Exchange performance information
       </li>
       <li class="mb-6">

@@ -369,6 +369,24 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current);
 }
 
+export const FundingRequestResolver = (current: string): string => {
+  const fundingType
+      = AcquisitionPackage.fundingRequestType
+
+  if(current === routeNames.GInvoicing){
+    return routeNames.FundingPlanType
+  }
+  if (fundingType === "FSF") {
+    return routeNames.GInvoicing;
+  } else if (fundingType === "MIPR") {
+    return routeNames.MIPR
+  }
+
+  return current === routeNames.FundingPlanType
+    ? routeNames.SeverabilityAndIncrementalFunding
+    : routeNames.FundingPlanType;
+};
+
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
@@ -378,6 +396,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
+  FundingRequestResolver
 };
 
 // add path resolvers here 

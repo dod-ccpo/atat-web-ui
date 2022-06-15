@@ -79,11 +79,11 @@ import EvaluationCriteria
 import RequirementsCostForm from "@/steps/10-FinancialDetails/RequirementsCostForm.vue";
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
 import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
-import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
+import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
-
+import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
@@ -99,6 +99,7 @@ import {
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
+  FundingRequestResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
 } from "./resolvers";
 
@@ -147,13 +148,14 @@ export const routeNames = {
   ClassificationRequirements: "Classification_Requirements",
   RequirementsCostEstimate: "Requirements_Cost_Estimate",
   RequirementsCostForm: "Requirements_Cost_Form",
-  FundingPlan: "Funding_Plan",
+  MIPR: "MIPR",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
   FundingPlanType: 'Funding_Plan_Type',
+  GInvoicing:'G_Invoicing'
 };
 
 /**
@@ -592,11 +594,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: FundingPlanType,
       },
       {
-        menuText: "Funding Plan temp",
-        path: "funding-plan-temp",
-        name: routeNames.FundingPlan,
+        menuText: "MIPR",
+        excludeFromMenu: true,
+        path: "mipr",
+        name: routeNames.MIPR,
         completePercentageWeight: 1,
-        component: FundingPlan,
+        component: MIPR,
+        routeResolver: FundingRequestResolver
+      },
+      {
+        menuText: "G-Invoicing",
+        excludeFromMenu: true,
+        path: "g-invoicing",
+        name: routeNames.GInvoicing,
+        completePercentageWeight: 1,
+        component: GInvoicing,
+        routeResolver: FundingRequestResolver
       },
       {
         menuText: "Severability and Incremental Funding",
