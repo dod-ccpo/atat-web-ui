@@ -41,10 +41,10 @@ export class StepsStore extends VuexModule implements StepsState {
       if (step) {
         this.currentStep = step;
       }
-      if (this.altBackButtonText && this.currentStep) {
-        this.currentStep.backButtonText = this.altBackButtonText;
-      } else if (this.currentStep) {
-        this.currentStep.backButtonText = "Back";
+      if (this.currentStep) {
+        this.currentStep.backButtonText = this.altBackButtonText 
+          ? this.altBackButtonText 
+          : "Back";
       }
     }
 
