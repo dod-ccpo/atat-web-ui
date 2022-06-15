@@ -154,6 +154,10 @@ Cypress.Commands.add('btnClick', (selector, text) => {
     .not("[disabled]").and("have.text", text).click()  
 });
 
+Cypress.Commands.add("clickLink", (selector) => {
+  cy.findElement(selector).scrollIntoView().click();  
+});
+
 Cypress.Commands.add('radioBtn', (selector, value) => {
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.findElement(selector).wait(0).should("have.value", value);  
@@ -204,6 +208,15 @@ Cypress.Commands.add("verifyPageHeader", (headerText) => {
     cy.textExists(common.header,headerText );
   });
   
+});
+
+Cypress.Commands.add("verifyTextMatches", (selector,expectedText) => {  
+  cy.findElement(selector).then(($el) => {
+    let actualTxt = $el.text();
+    cy.log(actualTxt);
+    const formattedTxt = cleanText(actualTxt);
+    expect(formattedTxt).equal(expectedText);
+  })
 });
 
 Cypress.Commands.add("findCheckBox", (selector,value) => {
