@@ -31,7 +31,7 @@ export interface SessionData {
   periodOfPerformance: PeriodOfPerformanceDTO;
   projectOverview: ProjectOverviewDTO;
   requirementsCostEstimate: RequirementsCostEstimateDTO;
-  SensitiveInformation: SensitiveInformationDTO;
+  sensitiveInformation: SensitiveInformationDTO;
   classificationLevel: ClassificationLevelDTO;
   requiredServices: RequiredServicesDTO;
 }
