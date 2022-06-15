@@ -308,9 +308,9 @@ export default class Summary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     if (DescriptionOfWork.summaryBackToContractDetails) {
-      Steps.setBackButtonText("Back to Contract Details");
+      Steps.setAltBackButtonText("Back to Contract Details");
     } else {
-      Steps.setBackButtonText("");
+      Steps.clearAltBackButtonText();
     }
     DescriptionOfWork.setCurrentGroupRemoved(false);
     DescriptionOfWork.setCurrentGroupRemovedForNav(false);

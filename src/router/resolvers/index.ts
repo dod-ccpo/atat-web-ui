@@ -161,7 +161,7 @@ export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
   DescriptionOfWork.setBackToContractDetails(false);
-  Steps.setBackButtonText("");
+  Steps.clearAltBackButtonText();
 
   DescriptionOfWork.setCurrentGroupRemoved(false);
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
@@ -302,7 +302,7 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  Steps.setBackButtonText("");
+  Steps.clearAltBackButtonText();
 
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
@@ -391,7 +391,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   DescriptionOfWork.setBackToContractDetails(false);
   Vue.nextTick(() => {
-    Steps.setBackButtonText("");
+    Steps.clearAltBackButtonText();
   });
 
   if(current === routeNames.PropertyDetails){
