@@ -113,7 +113,6 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 export const RequirementsPathResolver = (current: string, direction: string): string =>
 {
-  debugger;
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingDOWReqs = DescriptionOfWork.missingClassificationLevels;
@@ -162,7 +161,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
-  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.setBackButtonText("");
 
@@ -317,11 +315,9 @@ export const OfferGroupOfferingsPathResolver = (
 // When leaving service offering details page
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  debugger;
   Steps.setBackButtonText("");
 
   if (DescriptionOfWork.summaryBackToContractDetails) {
-    debugger;
     DescriptionOfWork.setBackToContractDetails(false);
     return "period-of-performance/period-of-performance";
   }
@@ -407,7 +403,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Vue.nextTick(() => {
     Steps.setBackButtonText("");

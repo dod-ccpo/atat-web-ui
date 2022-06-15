@@ -172,10 +172,8 @@ export default class RequirementCategories extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     this.goToSummary = DescriptionOfWork.DOWObject.length > 0;
-    debugger;
     if (this.goToSummary) {
       DescriptionOfWork.setBackToContractDetails(true);
-      debugger;
       this.$router.push({
         name: routeNames.DOWSummary,
       }).catch(() => console.log("error navigating to DOW Summary"));

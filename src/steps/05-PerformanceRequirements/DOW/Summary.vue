@@ -308,10 +308,8 @@ export default class Summary extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     if (DescriptionOfWork.summaryBackToContractDetails) {
-      debugger;
       Steps.setBackButtonText("Back to Contract Details");
     } else {
-      debugger;
       Steps.setBackButtonText("");
     }
     DescriptionOfWork.setCurrentGroupRemoved(false);
