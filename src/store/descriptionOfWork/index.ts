@@ -24,11 +24,7 @@ import {
 } from "../../../types/Global";
 
 import _, { differenceWith, last } from "lodash";
-import { sys } from "typescript";
-import { OfferingDetailsPathResolver } from "@/router/resolvers";
 import ClassificationRequirements from "@/store/classificationRequirements";
-import Periods from "@/store/periods";
-import { group } from "console";
 
 
 // Classification Proxy helps keep track of saved
