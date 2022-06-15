@@ -157,7 +157,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
   return basePerformanceRequirementsPath;
 }
 
-// When leaving category service offerings checkbox list page
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
@@ -312,7 +311,6 @@ export const OfferGroupOfferingsPathResolver = (
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
 
-// When leaving service offering details page
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.setBackButtonText("");
@@ -352,7 +350,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
       }
     }
   }
-
 
   if (!DescriptionOfWork.prevOfferingGroup && !DescriptionOfWork.currentGroupId) {
     // only "none apply" options selected.
@@ -430,7 +427,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
   // coming from service offering details step
   if(current === routeNames.ServiceOfferingDetails){
-
 
     //no more offerings or services to process go to summary
     if(atOfferingsEnd && atServicesEnd){
