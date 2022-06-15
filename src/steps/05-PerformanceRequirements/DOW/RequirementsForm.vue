@@ -38,7 +38,7 @@
                 :items="requirementOptions"
                 :value.sync="instance.entireDuration"
                 :rules="[
-                  $validators.required('Please select an option to specify your requirement\'s.')
+                  $validators.required('Please select an option to specify your requirements.')
                 ]"
               />
               <div v-if="instance.entireDuration === 'NO'">
@@ -54,7 +54,7 @@
                   :disabled="isDisabled"
                   :rules="[
                     $validators.required('Please select at least one base or option period' +
-                      ' to specify your requirement\'s duration level.')
+                      ' to specify your requirement’s duration level.')
                   ]"
                   class="copy-max-width"
                 />
@@ -119,9 +119,9 @@ export default class RequirementsForm extends Vue {
   @PropSync("instances") private _instances!: DOWClassificationInstance[];
   @Prop() private avlInstancesLength!: number;
 
-  private selectedOptions: string[] = []
-  private routeNames = routeNames
-  private isDisabled = true
+  private selectedOptions: string[] = [];
+  private routeNames = routeNames;
+  private isDisabled = true;
   private requirementOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -143,9 +143,10 @@ export default class RequirementsForm extends Vue {
     
     const arr: Checkbox[] = [];
     periods.forEach((period, idx) => {
-      let option: Checkbox = {
+      const label = idx === 0 ? "Base period" : `Option period ${idx}`;
+      const option: Checkbox = {
         id: period.period_type,
-        label: `${toTitleCase(period.period_type)} period ${idx + 1}`,
+        label,
         value: period.sys_id || "",
       }
       arr.push(option)
@@ -156,9 +157,17 @@ export default class RequirementsForm extends Vue {
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
-      this.isDisabled = false
-      this.availablePeriodCheckboxItems = this.createCheckboxItems(periods)
-      this.selectedOptions.push(this.availablePeriodCheckboxItems[0].value)
+      this.isDisabled = false;
+      this.availablePeriodCheckboxItems = this.createCheckboxItems(periods);
+      this.selectedOptions.push(this.availablePeriodCheckboxItems[0].value);
+    } else {
+      this.availablePeriodCheckboxItems = [
+        {
+          id: "BaseDisabled",
+          label: "Base period",
+          value: "",
+        }
+      ]
     }
   };
 
