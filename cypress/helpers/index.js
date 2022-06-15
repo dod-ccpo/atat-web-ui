@@ -1,25 +1,37 @@
+import {loadInitialData} from "../helpers/initialDataLoad";
+
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
   return `${baseAPIUrl}/now/table/${tableName}`;
+  //https://disastorefrontdev.servicenowservices.com/api/now/table/${tableName}
 }
 
 
 const bootStrapAcquisitionPackageApi= ()=> {
 
   const acquisitionPackageApiEndpoint = buildTableApiPath('x_g_dis_atat_acquisition_package');
+  const projectOverviewApiEndpoint = buildTableApiPath('x_g_dis_atat_project_overview');
+  
   cy.fixture("acquistionPackage").then((data) => {
     cy.intercept('POST', acquisitionPackageApiEndpoint, {
+      statusCode: 404,
+      body: data,
+    });
+  }); 
+
+  cy.fixture("projectOverview").then((data) => {
+    cy.intercept('POST', projectOverviewApiEndpoint, {
       statusCode: 201,
       body: data,
     });
-  });
-   
+  }); 
+
+  loadInitialData();
+
 }
 
 export function bootstrapMockApis(){
-    
-  bootStrapAcquisitionPackageApi();
-    
+  bootStrapAcquisitionPackageApi();    
 }
 
 export const cleanText = (text) => {

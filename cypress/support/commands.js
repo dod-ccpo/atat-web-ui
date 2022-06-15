@@ -44,10 +44,13 @@ import occ from '../selectors/occ.sel'
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
+const isTestingIsolated = Cypress.env("isTestingIsolated") === "true";
 let hopOutOfIframe = false;
 
 Cypress.Commands.add("visitURL", () => {
-  if (isTestingLocally) {
+  if (isTestingIsolated){
+    cy.visit(Cypress.env("isolatedTestingURL"));    
+  } else if (isTestingLocally) {
     if (runTestsInIframe && !hopOutOfIframe) {
       cy.visit(Cypress.env("localTestURLInIframe"));    
     } else {
@@ -79,6 +82,9 @@ Cypress.Commands.add("launchATAT", () => {
     } else {
       cy.visit(Cypress.env("localTestURL"));    
     }
+  } if (isTestingIsolated){
+    cy.clearSession();
+    cy.visit(Cypress.env("isolatedTestingURL"));    
   } else {
     cy.visit(Cypress.env("testURL"));    
     cy.login(Cypress.env("snowUser"), Cypress.env("snowPass"));
@@ -86,6 +92,8 @@ Cypress.Commands.add("launchATAT", () => {
     cy.get(common.title).should('have.text', 'DISA Sandbox home page - DISA Sandbox');
     cy.frameLoaded(common.app);
   }
+
+  //if(!isTestingIsolated){
   cy.window()
     .its("sessionStorage")
     .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
@@ -94,14 +102,15 @@ Cypress.Commands.add("launchATAT", () => {
     .its("sessionStorage")
     .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
     .should("exist");
-  cy.window()
-    .its("sessionStorage")
-    .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
-    .should("exist");
+  // cy.window()
+  //   .its("sessionStorage")
+  //   .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
+  //   .should("exist");
+  //}
 });
 
 Cypress.Commands.add("clearSession", () => {
-  if (isTestingLocally) {
+  if (isTestingLocally || isTestingIsolated) {
     cy.window().then((win) => {
       win.sessionStorage.clear();
     });      
