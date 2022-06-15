@@ -1,7 +1,5 @@
 import {StepperRouteConfig, StepperStep} from "../../types/Global";
 
-import DescriptionOfWork from "@/store/descriptionOfWork";
-
 // Step 1 - Acquisition Package Details
 import AcquisitionPackageDetails from "../steps/01-AcquisitionPackageDetails/Index.vue";
 import ProjectOverview from "../steps/01-AcquisitionPackageDetails/ProjectOverview.vue";

@@ -1,12 +1,9 @@
 import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import OtherContractConsiderations from "@/store/otherContractConsiderations";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
-import DescriptionOfWork, { DescriptionOfWorkStore } from "@/store/descriptionOfWork";
-import ClassificationRequirements from "@/store/classificationRequirements";
-import Periods from "@/store/periods";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 
 
