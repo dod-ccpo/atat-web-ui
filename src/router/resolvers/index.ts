@@ -115,9 +115,12 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 {
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
-  const missingDOWReqs = DescriptionOfWork.missingClassificationLevels;
+  const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
-  if (current === routeNames.ServiceOfferings && missingDOWReqs && !atBeginningOfOfferingGroups) {
+  if (current === routeNames.ServiceOfferings 
+    && missingClassification 
+    && !atBeginningOfOfferingGroups
+  ) {
     const group = direction === "next" 
       ? DescriptionOfWork.nextOfferingGroup 
       : DescriptionOfWork.prevOfferingGroup;
@@ -309,9 +312,9 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     return "period-of-performance/period-of-performance";
   }
 
-  const missingDOWReqs = DescriptionOfWork.missingClassificationLevels;
+  const missingClassification = DescriptionOfWork.missingClassificationLevels;
 
-  if ((missingDOWReqs && DescriptionOfWork.returnToDOWSummary) 
+  if ((missingClassification && DescriptionOfWork.returnToDOWSummary) 
     || (DescriptionOfWork.currentGroupRemovedForNav && DescriptionOfWork.lastGroupRemoved)) {
     // and no more groups after
     DescriptionOfWork.setReturnToDOWSummary(false);
@@ -331,7 +334,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     if (DescriptionOfWork.currentOfferingName === ""){
       //get the last offering and display
       const offering = DescriptionOfWork.lastOfferingForGroup;
-      if (offering && !missingDOWReqs) {
+      if (offering && !missingClassification) {
         DescriptionOfWork.setCurrentOffering(offering);
       } else {
         const serviceOffering = routeNames.ServiceOfferings
@@ -363,7 +366,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setReturnToDOWSummary(false);
     return descriptionOfWorkSummaryPath;   
   } 
-  if (!missingDOWReqs) {
+  if (!missingClassification) {
     const offering = sanitizeOfferingName(DescriptionOfWork.currentOfferingName);
     return `${baseOfferingDetailsPath}${groupId.toLowerCase()}/${offering.toLowerCase()}`;  
   } 
