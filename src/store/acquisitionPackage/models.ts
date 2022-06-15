@@ -25,7 +25,7 @@ export interface SessionData {
   contractType: ContractTypeDTO;
   currentContract: CurrentContractDTO;
   fairOpportunity: FairOpportunityDTO;
-  gFEOverview: GFEOverviewDTO;
+  gfeOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
   periods: string;
   periodOfPerformance: PeriodOfPerformanceDTO;

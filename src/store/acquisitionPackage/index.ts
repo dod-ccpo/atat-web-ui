@@ -413,7 +413,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
     this.sensitiveInformation = sessionData.SensitiveInformation;
-    this.gfeOverview = sessionData.gFEOverview;
+    this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
   }
 
