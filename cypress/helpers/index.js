@@ -1,4 +1,5 @@
 import {loadInitialData} from "../helpers/initialDataLoad";
+import {saveToSNOW} from "../helpers/saveToSNOW";
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
@@ -11,6 +12,7 @@ const bootStrapAcquisitionPackageApi= ()=> {
 
   const acquisitionPackageApiEndpoint = buildTableApiPath('x_g_dis_atat_acquisition_package');
   const projectOverviewApiEndpoint = buildTableApiPath('x_g_dis_atat_project_overview');
+  const organization = buildTableApiPath('x_g_dis_atat_organization');
   
   cy.fixture("acquistionPackage").then((data) => {
     cy.intercept('POST', acquisitionPackageApiEndpoint, {
