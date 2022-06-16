@@ -54,10 +54,11 @@ export default {
   ...api
 };
 
+export const FundingPlansTable = "fundingPlans";
 
 export const AttachmentTables = {
 
-  FundingPlans: "fundingPlans"
+  FundingPlans: FundingPlansTable
 }
 
 export const AttachmentTableApiFactory = (key: string): TableApiBase<AttachableDTO>=> {

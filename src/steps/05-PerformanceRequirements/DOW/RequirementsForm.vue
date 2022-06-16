@@ -11,7 +11,7 @@
               <span v-if="avlInstancesLength > 1">
                 <hr />
                 <h2
-                  id="RequirementHeading"
+                  :id="'RequirementHeading_' + (index + 1)"
                   class="mb-5"
                 >
                   {{ index + 1 }}. Tell us about the 
@@ -20,7 +20,7 @@
               </span>
 
               <ATATTextArea
-                id="AnticipatedNeedUsage"
+                :id="'AnticipatedNeedUsage_' + (index + 1)"
                 label="Describe the anticipated need and usage of this requirement"
                 class="width-100 mb-10"
                 :rows="5"
@@ -33,43 +33,43 @@
               />
               <ATATRadioGroup
                 class="copy-max-width mb-10"
-                id="EntireDuration"
+                :id="'EntireDuration_' + (index + 1)"
                 legend="Is this requirement for the entire duration of your task order?"
                 :items="requirementOptions"
                 :value.sync="instance.entireDuration"
                 :rules="[
-                  $validators.required('Please select an option to specify your requirement\'s.')
+                  $validators.required('Please select an option to specify your requirements.')
                 ]"
               />
               <div v-if="instance.entireDuration === 'NO'">
-                <p id="CloudSupportLabel" class="_checkbox-group-label">
+                <p :id="'PeriodsLabel_' + (index + 1)" class="_checkbox-group-label">
                   Which base and/or option periods do you need this requirement?
                 </p>
                 <ATATCheckboxGroup
-                  id="CloudSupportCheckboxes"
-                  aria-describedby="CloudSupportLabel"
+                  :id="'PeriodsCheckboxes_' + (index + 1)"
+                  :aria-describedby="'PeriodsLabel_' + (index + 1)"
                   :value.sync="instance.selectedPeriods"
                   :items="availablePeriodCheckboxItems"
                   :card="false"
                   :disabled="isDisabled"
                   :rules="[
                     $validators.required('Please select at least one base or option period' +
-                      ' to specify your requirement\'s duration level.')
+                      ' to specify your requirement’s duration level.')
                   ]"
                   class="copy-max-width"
                 />
                 <ATATAlert
-                  id="ClassificationRequirementsAlert"
+                  :id="'PeriodRequirementsAlert_' + (index + 1)"
                   v-show="isDisabled === true"
                   type="warning"
                   class="copy-max-width mb-10"
                 >
                   <template v-slot:content>
-                    <p class="mb-0" id="SingleClassificationIntro">
+                    <p class="mb-0" :id="'PeriodIntro_' + (index + 1)">
                       Your period of performance details are missing. To select specific base or
                       option periods for this requirement,
                       <router-link
-                        id="Step4Link"
+                        :id="'ContractDetailsLink_' + (index + 1)"
                         :to="{name: routeNames.PeriodOfPerformance}"
                       >revisit the Contract Details section
                       </router-link>
@@ -119,9 +119,9 @@ export default class RequirementsForm extends Vue {
   @PropSync("instances") private _instances!: DOWClassificationInstance[];
   @Prop() private avlInstancesLength!: number;
 
-  private selectedOptions: string[] = []
-  private routeNames = routeNames
-  private isDisabled = true
+  private selectedOptions: string[] = [];
+  private routeNames = routeNames;
+  private isDisabled = true;
   private requirementOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -143,9 +143,10 @@ export default class RequirementsForm extends Vue {
     
     const arr: Checkbox[] = [];
     periods.forEach((period, idx) => {
-      let option: Checkbox = {
+      const label = idx === 0 ? "Base period" : `Option period ${idx}`;
+      const option: Checkbox = {
         id: period.period_type,
-        label: `${toTitleCase(period.period_type)} period ${idx + 1}`,
+        label,
         value: period.sys_id || "",
       }
       arr.push(option)
@@ -156,9 +157,17 @@ export default class RequirementsForm extends Vue {
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
-      this.isDisabled = false
-      this.availablePeriodCheckboxItems = this.createCheckboxItems(periods)
-      this.selectedOptions.push(this.availablePeriodCheckboxItems[0].value)
+      this.isDisabled = false;
+      this.availablePeriodCheckboxItems = this.createCheckboxItems(periods);
+      this.selectedOptions.push(this.availablePeriodCheckboxItems[0].value);
+    } else {
+      this.availablePeriodCheckboxItems = [
+        {
+          id: "BaseDisabled",
+          label: "Base period",
+          value: "",
+        }
+      ]
     }
   };
 

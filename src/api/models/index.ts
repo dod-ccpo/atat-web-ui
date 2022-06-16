@@ -136,6 +136,7 @@ export interface SensitiveInformationDTO extends BaseTableDTO {
 export interface ServiceOfferingDTO extends BaseTableDTO {
   description: string;
   name: string;
+  other?: string;
   service_offering_group: string;
   sequence: string;
 }
