@@ -499,9 +499,11 @@ describe("Test suite: Gather Requirements screen ", () => {
       " To select specific base or option periods for this requirement," +
       " revisit the Contract Details section"
     cy.verifyTextMatches(performanceReqs.alertPeriod1Text,
-      alertText)
+      alertText);
       
-    //cy.periodCount(periodCheckboxCount, performanceReqs.periodCheckboxRow1);
+    cy.textExists(performanceReqs.contractDtailsLink, "revisit the Contract Details section ")
+      .click();
+    cy.verifyPageHeader("Let’s gather some details about the duration of your task order");
     
   });
 

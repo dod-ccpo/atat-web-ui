@@ -48,6 +48,7 @@ module.exports = {
   checkBoxBase:"#Checkbox_BASE",
   alertPeriod1Text: "#PeriodIntro_1",
   baseCheck1Error: "#PeriodsCheckboxes_1 .field-error",
+  contractDtailsLink:"#ContractDetailsLink_1",
   
   //Multiple classifications levels  
   requirmentHeading2: "h2#RequirementHeading_2", 
