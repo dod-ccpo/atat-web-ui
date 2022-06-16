@@ -28,6 +28,7 @@
       :placeholder="placeHolder"
       @input="onInput"
       class="text-primary"
+      :class="[{ 'text-right' : alignRight }]"
       :hide-details="counter === ''"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
@@ -102,6 +103,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: ()=>[] }) private mask!: string[];
   @Prop({ default: false }) private isMaskRegex!: boolean;
   @Prop({ default: false }) private isCurrency!: boolean;
+  @Prop({ default: false }) private alignRight?: boolean;
   
   @PropSync("value", { default: "" }) private _value!: string;
 

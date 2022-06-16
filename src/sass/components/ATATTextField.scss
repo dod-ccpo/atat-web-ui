@@ -26,5 +26,11 @@
       margin-top: 1px;
     }
   }
+  
+  &.text-right {
+    input {
+      text-align: right !important;
+    }
+  }
 
 }
