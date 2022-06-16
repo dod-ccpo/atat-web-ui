@@ -585,5 +585,83 @@ describe("Test suite: Gather Requirements screen ", () => {
     
   });
 
+  it.only("TC7: Update Classification in Gather Reqirement screen ", () => {
+    //Enter the Value for Base
+    cy.findElement(contractDetails.baseInputTxtBox).type("12");
+    cy.dropDownClick(contractDetails.baseDropdownIcon);
+    cy.findElement(contractDetails.baseDropdownMonth).click({ force: true });    
+    cy.btnClick(common.continueBtn, " Continue ");
+    cy.verifyPageHeader("Do you want to request a PoP start date?");
+    cy.clickSideStepper(common.stepContractDetailsLink, " Contract Details ");
+    cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
+    const selectedClassLevelsLabels = ["Unclassified / Impact Level 5 (IL5)"];    
+    
+    cy.selectCheckBoxes([contractDetails.level5]);    
+    
+    cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
+    
+    cy.btnClick(common.continueBtn, " Continue ");    
+    cy.verifyPageHeader(" Let’s work on your performance requirements ");    
+    const expectedLabels = [];
+    serviceOfferingGroups.forEach((obj) => {
+      expectedLabels.push(obj.label);
+    });    
+    cy.verifyCheckBoxLabels('input[type=checkbox]', expectedLabels);
+
+    const machineObj = getObjectFromArrayByKey(
+      serviceOfferingGroups, "value", "MACHINELEARNING" 
+    );
+    
+    const machineCheckBoxId = getCheckboxId(machineObj.value);    
+    cy.selectServiceOfferingGroup([machineCheckBoxId]);
+    
+    //Navigates to the next page
+    cy.verifyPageHeader("What type of " + machineObj.label + " do you need?");             
+    cy.verifyCheckBoxLabels('input[type=checkbox]', machineObj.serviceOfferingCypressLabels);
+    
+    const labels = getServiceOfferingNames(machineObj);
+    const checkboxIds = getCheckboxIds(machineObj);
+    
+    cy.selectCheckBoxes([checkboxIds[1]]);
+    cy.btnClick(common.continueBtn, " Continue ");  
+    
+    //Navigates to the Gather your requirement screen
+    cy.verifyPageHeader(
+      "Next, we’ll gather your requirements for " + labels[1]
+    );     
+    cy.textExists(performanceReqs.updateLink, "update your Classification Requirements").click()
+      .then(() => {
+        cy.findElement(performanceReqs.updateModal).should("be.visible");
+        const modalTitle = "What classification level(s)are required" +
+          " for your cloud resources and/or services?"
+        cy.verifyTextMatches(
+          performanceReqs.modaltitle,
+          modalTitle);
+        const modalMessage = "Changes to the selections below will be" +
+          " reflected in the overall Classification Requirements section." +
+          " If you select more than one, we will ask you to specify a" +
+          " level for each performance requirement."
+        cy.verifyTextMatches(
+          performanceReqs.modalMessage,
+          modalMessage);
+        cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
+        cy.findElement(performanceReqs.changeLevelBtn).should("be.disabled");
+        cy.selectCheckBoxes([contractDetails.level2]).then(() => {
+          cy.findElement(performanceReqs.changeLevelBtn).should("not.be.disabled")
+            .click().then(() => {
+              cy.verifyPageHeader(
+                "Next, we’ll gather your requirements for " + labels[1]
+              );
+              const updatedClassLevels = [
+                "Unclassified / Impact Level 2(IL2)",
+                "Unclassified / Impact Level 5 (IL5)"
+              ];
+              cy.verifyCheckBoxLabels('#ClassificationCheckboxes input[type=checkbox]',
+                updatedClassLevels);
+                            
+            });
+        });
+      });    
+  });
 
 });

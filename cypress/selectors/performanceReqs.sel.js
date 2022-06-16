@@ -60,6 +60,12 @@ module.exports = {
   periodCheckboxLabel2: "#PeriodsLabel_2",
   periodCheckboxRow2: "#PeriodsCheckboxes_2 ._checkbox",
   periodCheckbox2: "#PeriodsCheckboxes_2",
-  periodCheckBoxBase2:"#PeriodsCheckboxes_2 #Checkbox_BASE"
+  periodCheckBoxBase2: "#PeriodsCheckboxes_2 #Checkbox_BASE",
+  
+  //Update classification model
+  updateModal: ".v-dialog",
+  modaltitle: "#modalDialogTitle",
+  modalMessage:".v-dialog #modalDialogMessage > :nth-child(1)",
+  changeLevelBtn:"#dialog_ok"
   
 }
