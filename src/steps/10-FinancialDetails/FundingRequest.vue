@@ -11,7 +11,7 @@
               To complete this section, you will need an authorized funding request to transfer
               funds from your agency to DITCO. We recommend using G-Invoicing to generate your 7600A
               and 7600B, but you will also be able to upload form(s) directly from your computer.
-              <a id="LearnMoreFunding" role="button" @click="openSlideoutPanel">
+              <a id="LearnMoreFunding" role="button" @click="openSlideoutPanel($event, 'Funding')">
                 <span class="">Learn more about funding requests</span>
               </a>
             </p>
@@ -38,7 +38,8 @@
                   G-Invoicing is the long-term solution for Federal Program Agencies (FPAs) to
                   manage their intragovernmental (IGT) Buy/Sell transactions. This is the preferred
                   system for generating and maintaining your GT&Cs and Orders with DITCO.
-                  <a id="LearnMoreGInvoicing" role="button" @click="openSlideoutPanel">
+                  <a id="LearnMoreGInvoicing" role="button"
+                     @click="openSlideoutPanel($event, 'Ginvoice')">
                     <span>Learn more about G-Invoicing</span>
                   </a>
                 </p>
@@ -112,33 +113,35 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
     };
   };
 
-  public openSlideoutPanel(e: Event): void {
+
+  public async openSlideoutPanel(e: Event, panelType: string): Promise<void> {
+    if (panelType === "Ginvoice") {
+      const gInvoice: SlideoutPanelContent = {
+        component: GInvoiceLearnMore,
+        title: "Learn More",
+      };
+      await SlideoutPanel.setSlideoutPanelComponent(gInvoice);
+    } else {
+      const funding: SlideoutPanelContent = {
+        component: FundingRequestLearnMore,
+        title: "Learn More",
+      };
+      await SlideoutPanel.setSlideoutPanelComponent(funding);
+    }
     if (e && e.currentTarget) {
       const opener = e.currentTarget as HTMLElement;
       SlideoutPanel.openSlideoutPanel(opener.id);
-    }
-  }
+    };
+  };
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.fundingRequestType;
-    this.selectedFundingTypes = storeData || "";
-    const fundingRequestType = AcquisitionPackage.fundingRequestType;
-    this.savedData.fundingRequestType = fundingRequestType || "";
+    this.selectedFundingTypes = await AcquisitionPackage.fundingRequestType || "";
+    this.savedData.fundingRequestType = await AcquisitionPackage.fundingRequestType || "";
   };
 
   public async mounted(): Promise<void> {
-    const fundingSlideoutContent: SlideoutPanelContent = {
-      component: FundingRequestLearnMore,
-      title: "Learn More",
-    }
-    await SlideoutPanel.setSlideoutPanelComponent(fundingSlideoutContent);
-    const gInvoiceSlideoutContent: SlideoutPanelContent = {
-      component: GInvoiceLearnMore,
-      title: "Learn More",
-    }
-    await SlideoutPanel.setSlideoutPanelComponent(gInvoiceSlideoutContent);
     await this.loadOnEnter();
-  }
+  };
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
@@ -154,5 +157,5 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   };
-}
+};
 </script>
