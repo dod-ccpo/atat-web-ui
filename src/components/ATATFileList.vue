@@ -38,7 +38,10 @@ export default class ATATFileList extends Vue {
    * sets title to plural when necessary
    */
   private getFileUploadsDivTitle(): string {
-    return "Your Upload" + (this.uploadingFiles.length > 1 ? "s" : "");
+    if(this.uploadingFiles.length > 1){
+      return "Your Upload" + (this.uploadingFiles.length > 1 ? "s" : "");
+    }
+    return ''
   }
 
   /**

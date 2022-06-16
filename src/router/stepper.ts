@@ -78,7 +78,7 @@ import EvaluationCriteria
 import RequirementsCostForm from "@/steps/10-FinancialDetails/RequirementsCostForm.vue";
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
 import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
-import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
+import FundingPlan from "../steps/10-FinancialDetails/MIPR.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingPlanType.vue";

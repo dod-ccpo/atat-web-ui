@@ -42,7 +42,7 @@
                 browse to upload
               </a>
             </p>
-            <p class="mt-3 mb-9">Use a PDF file with a max size of 1 GB.</p>
+            <p class="mt-3 mb-9 text-base">{{helpText}}</p>
           </div>
           <div
             v-else
@@ -66,7 +66,7 @@
                 </a>
               </p>
             </div>
-            <p class="ml-auto mb-0">Use a PDF file with a max size of 1 GB.</p>
+            <p class="ml-auto mb-0 text-base">{{helpText}}</p>
           </div>
         </template>
       </v-file-input>
@@ -123,6 +123,8 @@ export default class ATATFileUpload extends Vue {
   // props
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
+  @Prop({ default: "Use a PDF file with a max size of 1 GB." }) helpText!: string;
+
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] })
   private _invalidFiles!: invalidFile[];
