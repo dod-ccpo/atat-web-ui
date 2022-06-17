@@ -32,7 +32,7 @@
                   :rules="[
                     $validators.required('Please enter an initial funding increment.')
                   ]"
-                  @blur="calcAmount"
+                  @blur="calcAmounts"
                 />
                 <span class="d-block" style="width: 9px"></span>
               </div>
@@ -59,7 +59,7 @@
                   :isCurrency="true"
                   width="190"
                   class="mr-2"
-                  @blur="calcAmount"
+                  @blur="calcAmounts"
                 />
 
                 <v-btn
@@ -158,6 +158,7 @@ import Periods from "@/store/periods";
 
 import { PeriodDTO } from "@/api/models";
 import { SelectData } from "../../../types/Global";
+import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 import _ from "lodash";
 
 @Component({
@@ -213,14 +214,9 @@ export default class IncrementalFunding extends Vue {
     }
   }
 
-  @Watch("payments", { deep: true })
-  public paymentsChanged(): void {
-    this.calcAmount();
-  }
-
   public deletePayment(index: number): void {
     this.payments.splice(index, 1);
-    this.calcAmount();
+    this.calcAmounts();
   }
 
   public addIncrement(): void {
@@ -235,46 +231,37 @@ export default class IncrementalFunding extends Vue {
       const newIncrement = { qtr: nextQtr, amt: "0.00" }
       this.payments.push(newIncrement);
     }
-
-
-    debugger;
   }
 
   public incrementSelected(index: number): void {
-    // if (this.payments.length > 1) {
-    const firstSelectedQtr = this.payments[0].qtr;
-    const firstSelectedQtrIndex 
-      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
-    const lastPossibleIndex = firstSelectedQtrIndex + this.maxIncrements;
-    debugger;
+    // LOGIC TO BE COMPLETED IN TICKET 7527
 
-    // } else {
-    //   this.incrementPeriodsForDropdowns = this.incrementPeriods;
-    // }
+    // const firstSelectedQtr = this.payments[0].qtr;
+    // const firstSelectedQtrIndex 
+    //   = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
+    // const lastPossibleIndex = firstSelectedQtrIndex + this.maxIncrements;
   }
 
 
-  public calcAmount(): void {
+  public calcAmounts(): void {
     let incrementsTotal = this.payments.reduce(
       (accumulator, current) =>  
-        accumulator + Number(this.strToNum(current.amt)), 0
+        accumulator + Number(currencyStringToNumber(current.amt)), 0
     );
-    this.initialPayment = this.strToNum(this.initialPaymentStr);
+    this.initialPayment = currencyStringToNumber(this.initialPaymentStr);
     this.totalAmount = this.initialPayment 
       ? this.initialPayment + incrementsTotal
       : incrementsTotal;
-    this.totalAmountStr = this.numToStr(this.totalAmount);
+    this.totalAmountStr = toCurrencyString(this.totalAmount);
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
-    this.amountRemainingStr = this.numToStr(this.amountRemaining);
-  }
-
-  public numToStr(num: number): string {
-    return num.toLocaleString("en-US");
-  }
-
-  public strToNum(str: string): number {
-    return parseFloat(str.replaceAll(",",""));
+    this.amountRemainingStr = toCurrencyString(this.amountRemaining);
+    this.initialPaymentStr = toCurrencyString(this.initialPayment);
+    this.$nextTick(() => {
+      this.payments.forEach(
+        pmt => pmt.amt = toCurrencyString(currencyStringToNumber(pmt.amt))
+      );
+    })
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -282,9 +269,9 @@ export default class IncrementalFunding extends Vue {
     this.incrementPeriodsForDropdowns = _.clone(this.incrementPeriods);
 
     if (AcquisitionPackage.estimatedTaskOrderValue) {
-      this.costEstimate = this.strToNum(AcquisitionPackage.estimatedTaskOrderValue);
+      this.costEstimate = currencyStringToNumber(AcquisitionPackage.estimatedTaskOrderValue);
 
-      this.costEstimateStr = this.numToStr(this.costEstimate);
+      this.costEstimateStr = toCurrencyString(this.costEstimate);
       this.amountRemaining = this.costEstimate;
       this.amountRemainingStr = this.costEstimateStr;
     }

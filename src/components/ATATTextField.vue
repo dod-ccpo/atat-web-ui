@@ -66,6 +66,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
+import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 @Component({
   components: {
@@ -126,6 +127,9 @@ export default class ATATTextField extends Vue  {
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value, this.extraEmitVal);
+    if (this.isCurrency) {
+      this._value = toCurrencyString(currencyStringToNumber(input.value));
+    }   
   }
 
   public resetValidation(): void {

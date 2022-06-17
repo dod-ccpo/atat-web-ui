@@ -58,9 +58,21 @@ export const buildClassificationLabel
     return classificationString + "/" + IL;
   }
 
-
 //strips whitespace, and special characters
 export const sanitizeOfferingName = (offeringName: string): string => {
   return offeringName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{\\}[\]\\/]/gi, "_")
     .replace(/ /g, "_").replace(/_$/, '');
 }
+
+// formats a number to currency string with commas and 2 decimal places
+export const toCurrencyString = (num: number): string => {
+  return num.toLocaleString(
+    undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+  );
+}
+
+// converts a formatted currency string back to a number
+export const currencyStringToNumber = (str: string): number => {
+  return parseFloat(str.replaceAll(",",""));
+}
+
