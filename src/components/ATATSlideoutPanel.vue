@@ -12,7 +12,7 @@
   >
     <div class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
-        {{ panelTitle }} 
+        {{ panelTitle }}
       </div>
       <v-btn
         class="text--base-darkest pa-0 icon-24"
@@ -63,7 +63,7 @@ export default class ATATSlideoutPanel extends Vue {
   }
   /*
    * adds click event listener to overlay if Displayed
-   * return isSlideoutPanelOpen 
+   * return isSlideoutPanelOpen
    */
   get isSlideoutPanelOpen(): boolean {
     const _isSlideoutPanelOpen = SlideoutPanel.slideoutPanelIsOpen;
@@ -78,7 +78,7 @@ export default class ATATSlideoutPanel extends Vue {
           ?.removeEventListener("click", this.closeSlideoutPanel);
       }
     }, 0);
-  
+
     return _isSlideoutPanelOpen;
   }
 

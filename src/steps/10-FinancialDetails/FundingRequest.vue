@@ -75,6 +75,7 @@ import { hasChanges } from "@/helpers";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { FundingRequestDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import Vue from "vue";
 
 
 @Component({
@@ -113,6 +114,11 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
     };
   };
 
+  private get panelContent() {
+    console.log(SlideoutPanel.slideoutPanelComponent)
+    return SlideoutPanel.slideoutPanelComponent
+  }
+
 
   public async openSlideoutPanel(e: Event, panelType: string): Promise<void> {
     if (panelType === "Ginvoice") {
@@ -121,22 +127,27 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
         title: "Learn More",
       };
       await SlideoutPanel.setSlideoutPanelComponent(gInvoice);
+      this.$forceUpdate();
     } else {
       const funding: SlideoutPanelContent = {
         component: FundingRequestLearnMore,
         title: "Learn More",
       };
       await SlideoutPanel.setSlideoutPanelComponent(funding);
+      this.$forceUpdate();
     }
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
-    };
+    this.$nextTick(()=>{
+      if (e && e.currentTarget) {
+        const opener = e.currentTarget as HTMLElement;
+        SlideoutPanel.openSlideoutPanel(opener.id);
+      };
+    });
   };
 
   public async loadOnEnter(): Promise<void> {
     this.selectedFundingTypes = await AcquisitionPackage.fundingRequestType || "";
     this.savedData.fundingRequestType = await AcquisitionPackage.fundingRequestType || "";
+    this.panelContent
   };
 
   public async mounted(): Promise<void> {
