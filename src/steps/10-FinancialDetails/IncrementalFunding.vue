@@ -241,13 +241,16 @@ export default class IncrementalFunding extends Vue {
   }
 
   public incrementSelected(index: number): void {
+    // if (this.payments.length > 1) {
+    const firstSelectedQtr = this.payments[0].qtr;
+    const firstSelectedQtrIndex 
+      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
+    const lastPossibleIndex = firstSelectedQtrIndex + this.maxIncrements;
     debugger;
-    if (this.payments.length > 1) {
-      const firstSelectedQtr = this.payments[0].qtr;
-      
-    } else {
-      this.incrementPeriodsForDropdowns = this.incrementPeriods;
-    }
+
+    // } else {
+    //   this.incrementPeriodsForDropdowns = this.incrementPeriods;
+    // }
   }
 
 
