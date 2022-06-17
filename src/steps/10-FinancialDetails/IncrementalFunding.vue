@@ -282,7 +282,6 @@ export default class IncrementalFunding extends Vue {
           unit = unitCount > 1 ? unit + "s" : unit;
         }
         this.periodLengthStr = unitCount + " " + unit;
-        debugger;
         switch (unit) {
         case "days": 
           this.maxPayments = unitCount > 270 ? 5: 4;
