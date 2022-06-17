@@ -644,16 +644,19 @@ describe("Test suite: Gather Requirements screen ", () => {
         cy.verifyTextMatches(
           performanceReqs.modalMessage,
           modalMessage);
-        cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
+        cy.verifyCheckBoxLabels(
+          '#ClassificationLevelCheckboxesModal input[type=checkbox]:checked', 
+          selectedClassLevelsLabels
+        );
         cy.findElement(performanceReqs.changeLevelBtn).should("be.disabled");
-        cy.selectCheckBoxes([contractDetails.level2]).then(() => {
+        cy.selectCheckBoxes([contractDetails.modalLevel2]).then(() => {
           cy.findElement(performanceReqs.changeLevelBtn).should("not.be.disabled")
             .click().then(() => {
               cy.verifyPageHeader(
                 "Next, we’ll gather your requirements for " + labels[1]
               );
               const updatedClassLevels = [
-                "Unclassified / Impact Level 2(IL2)",
+                "Unclassified / Impact Level 2 (IL2)",
                 "Unclassified / Impact Level 5 (IL5)"
               ];
               cy.verifyCheckBoxLabels('#ClassificationCheckboxes input[type=checkbox]',
