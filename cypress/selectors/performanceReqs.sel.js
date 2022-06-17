@@ -27,6 +27,7 @@ module.exports = {
   singleClassIntro: "#SingleClassificationIntro",  
   classTextInIntro:"#SingleClassificationIntro p",
   classLevelsLabel: "#ClassificationGroupLabel",
+  classCheckboxes:"#ClassificationCheckboxes input[type=checkbox]",
   contentAboutClass: "#Button_AboutClassificationLevels",
   contentText:      "#Content_AboutClassificationLevels",
   updateLink: "#UpdateClassification",
@@ -65,7 +66,14 @@ module.exports = {
   //Update classification model
   updateModal: ".v-dialog",
   modaltitle: "#modalDialogTitle",
-  modalMessage:".v-dialog #modalDialogMessage > :nth-child(1)",
-  changeLevelBtn:"#dialog_ok"
+  modalMessage: ".v-dialog #modalDialogMessage > :nth-child(1)",
+  modalCheckboxes: "#ClassificationLevelCheckboxesModal input[type=checkbox]:checked",
+  level2: "#Checkbox_IL2Modal",
+  level4: "#Checkbox_IL4Modal",
+  level5: "#Checkbox_IL5Modal",
+  level6: "#Checkbox_IL6Modal",
+  modalCheckboxesError:"#ClassificationLevelCheckboxesModal .field-error",
+  changeLevelBtn: "#dialog_ok",
+  cancelBtn:"#dialog_cancel"
   
 }
