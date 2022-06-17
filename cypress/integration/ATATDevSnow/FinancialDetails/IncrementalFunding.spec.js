@@ -122,6 +122,8 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
     cy.verifyPageHeader("Tell us more about the scope of your project"); 
     const contractorAmt = randomNumberBetween(1, 50);
     cy.fillSurgeCapabilities(contractorAmt, "continue");
+    cy.verifyPageHeader(" What type of funding request did you use for this acquisition? ");
+    cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader("Upload your MIPR"); 
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(" Are you requesting to incrementally fund this requirement? "); 
@@ -182,7 +184,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
     cy.textExists(common.subStepIFLink, " Severability and Incremental Funding ").click();
     cy.verifyPageHeader(" Are you requesting to incrementally fund this requirement? ");
     
-    cy.radioBtn(fd.iFundYesRadio, "YES").focus().tab().then(() => {
+    cy.radioBtn(fd.iFundYesRadio, "YES").focus().tab().tab().then(() => {
       cy.checkErrorMessage(fd.iFundRadioerror, "Please select an option");
     });
   }); 
