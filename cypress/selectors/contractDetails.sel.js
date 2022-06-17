@@ -76,6 +76,10 @@ module.exports = {
   level4: "#Checkbox_IL4",
   level5: "#Checkbox_IL5",
   level6: "#Checkbox_IL6",
+  modalLevel2: "#Checkbox_IL2Modal",
+  modalLevel4: "#Checkbox_IL4Modal",
+  modalLevel5: "#Checkbox_IL5Modal",
+  modalLevel6: "#Checkbox_IL6Modal",
   errorClassCheckBox: "#ClassificationLevelCheckboxes .field-error",
   alertMessage: "#ClassificationRequirementsAlert p",
 }
