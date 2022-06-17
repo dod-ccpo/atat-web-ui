@@ -22,6 +22,7 @@
               :otherValue="otherValue"
               :otherValueEntered.sync="otherValueEntered"
               :otherValueRequiredMessage="otherValueRequiredMessage"
+              otherEntryType="textfield"
               :rules="[
                 $validators.required(requiredMessage)
               ]"
@@ -78,7 +79,6 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
     this.requirementName = await DescriptionOfWork.getOfferingGroupName();
     this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
-
     if (this.serviceOfferings.length) {
       this.serviceOfferings.forEach((offering) => {
         const checkboxItem: Checkbox = {
@@ -116,18 +116,16 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      if (this.selectedOptions.length === 0) {
-        await DescriptionOfWork.removeCurrentOfferingGroup();
-      } else {
+      if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
           await DescriptionOfWork.setSelectedOfferings(
             { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
           );
         }
+        //save to backend
+        await DescriptionOfWork.saveUserSelectedServices();
       }
-      //save to backend
-      await DescriptionOfWork.saveUserSelectedServices();
     } catch (error) {
       throw new Error('error saving requirement data');
     }
