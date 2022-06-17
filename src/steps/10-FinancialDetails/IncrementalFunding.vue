@@ -24,7 +24,7 @@
                 </label>
                 <ATATTextField
                   id="InitialAmount"
-                  :value.sync="initialIncrementAmount"
+                  :value.sync="initialPaymentStr"
                   :alignRight="true"
                   :isCurrency="true"
                   width="190"
@@ -39,22 +39,22 @@
               <hr />
 
               <div 
-                class="d-flex justify-space-between align-center"
-                v-for="(increment, index) in increments"
+                class="d-flex justify-space-between align-center mb-4"
+                v-for="(payment, index) in payments"
                 :key="index"
               >
                 <ATATSelect
                   :id="'IncrementPeriod' + index"
-                  :items="incrementPeriods"
+                  :items="incrementPeriodsForDropdowns"
                   width="190"
-                  :selectedValue.sync="increments[index].qtr"
+                  :selectedValue.sync="payments[index].qtr"
                   class="mr-4"
                   @onChange="incrementSelected(index)"
                 />
                 
                 <ATATTextField
                   :id="'Amount' + index"
-                  :value.sync="increments[index].amt"
+                  :value.sync="payments[index].amt"
                   :alignRight="true"
                   :isCurrency="true"
                   width="190"
@@ -64,41 +64,77 @@
 
                 <v-btn
                   icon
+                  @click="deletePayment(index)"
+                  :disabled="payments.length === 1"
                 >
                   <v-icon> delete </v-icon>
                 </v-btn>
 
               </div>            
 
+              <v-btn
+                id="AddIncrementButton"
+                v-if="payments.length < maxIncrements"
+                plain
+                text
+                class="_text-link mt-5"
+                :ripple="false"
+                @click="addIncrement()"
+              >
+                <v-icon color="primary" class="mr-2">control_point</v-icon>
+                <span>Add funding increment</span>
+              </v-btn>
+
+              <hr />
+
+              <div class="d-flex justify-end align-center">
+                <label for="TotalAmount" class="mr-4">
+                  Total
+                </label>
+
+                <ATATTextField
+                  id="TotalAmount"
+                  :value.sync="totalAmountStr"
+                  :alignRight="true"
+                  :isCurrency="true"
+                  width="190"
+                  class="mr-2"
+                  :disabled="true"
+                />
+                <span class="d-block" style="width: 36px"></span>
+
+              </div>
             </div>
 
-            <div class="bg-primary-lighter ml-10 width-100 border-rounded-more pa-6">
-              <div class="d-flex">
-                <div class="pr-5">
-                  <ATATSVGIcon name="calendar" :width="34" :height="37" color="primary" />
+            <div class="ml-10 width-100">
+              <div class="bg-primary-lighter width-100 border-rounded-more pa-6">
+
+                <div class="d-flex">
+                  <div class="pr-5">
+                    <ATATSVGIcon name="calendar" :width="34" :height="37" color="primary" />
+                  </div>
+                  <div>
+                    <span class="h3">Base period length: {{ periodLengthStr }}</span>
+                    <p class="mb-0">
+                      Your funding plan may not exceed this PoP.
+                    </p>
+                    <hr class="base my-4" />
+                  </div>
                 </div>
-                <div>
-                  <span class="h3">Base period length: xxxxx</span>
-                  <p class="mb-0">
-                    Your funding plan may not exceed this PoP.
-                  </p>
-                  <hr class="base my-4" />
+
+                <div class="d-flex">
+                  <div class="pr-5">
+                    <ATATSVGIcon name="monetizationOn" :width="34" :height="34" color="primary" />
+                  </div>
+                  <div>
+                    <span class="h3">Total cost estimate: ${{ costEstimateStr }}</span>
+                    <p class="mb-0">
+                      You need to add <strong>${{ amountRemainingStr }}</strong> 
+                      to fully fund your base period.
+                    </p>
+                  </div>
                 </div>
               </div>
-
-              <div class="d-flex">
-                <div class="pr-5">
-                  <ATATSVGIcon name="monetizationOn" :width="34" :height="34" color="primary" />
-                </div>
-                <div>
-                  <span class="h3">Total cost estimate: ${{ costEstimateStr }}</span>
-                  <p class="mb-0">
-                    You need to add <strong>${{ amountRemainingStr }}</strong> 
-                    to fully fund your base period.
-                  </p>
-                </div>
-              </div>
-
             </div>
 
           </div>
@@ -111,14 +147,18 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import Periods from "@/store/periods";
+
+import { PeriodDTO } from "@/api/models";
 import { SelectData } from "../../../types/Global";
+import _ from "lodash";
 
 @Component({
   components: {
@@ -134,19 +174,27 @@ export default class IncrementalFunding extends Vue {
   public currentQuarter = Math.floor((this.today.getMonth() + 3) / 3);
   public currentYear = this.today.getFullYear();
 
+  public periods: PeriodDTO[] | null = [];
+  public maxIncrements = 1;
+  public periodLengthStr = "";
+
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
   public incrementPeriods: SelectData[] = [];
+  public incrementPeriodsForDropdowns: SelectData[] = [];
 
   public costEstimate = 0;
   public costEstimateStr = "";
   public amountRemaining = 0;
   public amountRemainingStr = "";
-  public initialIncrementAmount = "";
+  public initialPayment = 0;
+  public initialPaymentStr = "0.00";
+  public totalAmount = 0;
+  public totalAmountStr = "0.00";
 
-  public increments: { qtr: string, amt: string }[] = [];
+  public payments: { qtr: string, amt: string }[] = [];
 
-  public setIncrements(): void {
+  public async initializeIncrements(): Promise<void> {
     let qtr = this.currentQuarter;
     let year = parseInt(this.currentYear.toString().slice(-2));
     for (let i = 0; i < 8; i++) {
@@ -160,38 +208,111 @@ export default class IncrementalFunding extends Vue {
 
       if (i === 0) {
         // default to 1st option if no store data
-        this.increments.push({qtr: periodStr, amt: "0.00"})
+        this.payments.push({qtr: periodStr, amt: "0.00"})
       }
     }
   }
 
+  @Watch("payments", { deep: true })
+  public paymentsChanged(): void {
+    this.calcAmount();
+  }
+
+  public deletePayment(index: number): void {
+    this.payments.splice(index, 1);
+    this.calcAmount();
+  }
+
+  public addIncrement(): void {
+    const lastPayment = this.payments.at(-1);
+    const lastSelectedQtr = lastPayment?.qtr;
+    let selectedQtrIndex = this.incrementPeriods.findIndex(p => p.text === lastSelectedQtr);
+    let nextQtr;
+    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.incrementPeriods.length) {
+      nextQtr = this.incrementPeriods[selectedQtrIndex + 1].text;
+    }
+    if (nextQtr) {
+      const newIncrement = { qtr: nextQtr, amt: "0.00" }
+      this.payments.push(newIncrement);
+    }
+
+
+    debugger;
+  }
+
   public incrementSelected(index: number): void {
     debugger;
-
+    if (this.payments.length > 1) {
+      const firstSelectedQtr = this.payments[0].qtr;
+      
+    } else {
+      this.incrementPeriodsForDropdowns = this.incrementPeriods;
+    }
   }
 
 
   public calcAmount(): void {
-    let incrementsTotal = this.increments.reduce(
-      (accumulator, current) =>  accumulator + Number(parseFloat(current.amt.replace(",",""))), 0
+    let incrementsTotal = this.payments.reduce(
+      (accumulator, current) =>  
+        accumulator + Number(this.strToNum(current.amt)), 0
     );
-    let totalEntered = this.initialIncrementAmount 
-      ? parseFloat(this.initialIncrementAmount.replace(",","")) + incrementsTotal
+    this.initialPayment = this.strToNum(this.initialPaymentStr);
+    this.totalAmount = this.initialPayment 
+      ? this.initialPayment + incrementsTotal
       : incrementsTotal;
-    this.amountRemaining = this.costEstimate - totalEntered;
-    debugger;
-    this.amountRemainingStr = this.amountRemaining.toLocaleString("en-US");
+    this.totalAmountStr = this.numToStr(this.totalAmount);
 
+    this.amountRemaining = this.costEstimate - this.totalAmount;
+    this.amountRemainingStr = this.numToStr(this.amountRemaining);
   }
 
+  public numToStr(num: number): string {
+    return num.toLocaleString("en-US");
+  }
+
+  public strToNum(str: string): number {
+    return parseFloat(str.replaceAll(",",""));
+  }
 
   public async loadOnEnter(): Promise<void> {
-    this.setIncrements();
+    await this.initializeIncrements();
+    this.incrementPeriodsForDropdowns = _.clone(this.incrementPeriods);
+
     if (AcquisitionPackage.estimatedTaskOrderValue) {
-      this.costEstimate = parseFloat(AcquisitionPackage.estimatedTaskOrderValue.replace(",",""));
-      this.costEstimateStr = this.costEstimate.toLocaleString("en-US");
+      this.costEstimate = this.strToNum(AcquisitionPackage.estimatedTaskOrderValue);
+
+      this.costEstimateStr = this.numToStr(this.costEstimate);
       this.amountRemaining = this.costEstimate;
-      this.amountRemainingStr = this.amountRemaining.toLocaleString("en-US");
+      this.amountRemainingStr = this.costEstimateStr;
+    }
+
+    this.periods = Periods.periods;
+    if (this.periods) {
+      const basePeriod = this.periods.find(p => p.period_type === "BASE");
+      if (basePeriod) {
+        const unitCount: number = parseInt(basePeriod.period_unit_count);
+        let unit = basePeriod.period_unit.toLowerCase();
+        if (unitCount) {
+          unit = unitCount > 1 ? unit + "s" : unit;
+        }
+        this.periodLengthStr = unitCount + " " + unit;
+        switch (unit) {
+        case "year":
+          this.maxIncrements = 5;
+          break;
+        case "months": 
+          this.maxIncrements = (unitCount / 3) + 1;
+          break;
+        case "weeks":
+          this.maxIncrements = (unitCount / 12) + 1;
+          break;
+        case "days":
+          this.maxIncrements = (unitCount / 91) + 1;
+          break;
+        default:
+          this.maxIncrements = 1;
+        }
+      }
     }
 
   }
