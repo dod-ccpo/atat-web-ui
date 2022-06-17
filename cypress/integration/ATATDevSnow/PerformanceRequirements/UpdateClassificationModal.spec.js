@@ -33,7 +33,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ", () => {
     cy.textExists(common.subStepClassReqsLink, " Classification Requirements ").click();
   }); 
 
-  it("TC1: Update Classification for SINGLE Level in Gather Reqirement screen ", () => {    
+  it("TC1: Update Classification for SINGLE Level in Gather Requirement screen ", () => {    
     const selectedClassLevelsLabels = ["Unclassified / Impact Level 5 (IL5)"];    
     
     cy.selectCheckBoxes([contractDetails.level5]);    
@@ -182,7 +182,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ", () => {
       });    
   });
   
-  it("TC3: Update for Classification MULTIPLE Levels in Gather Reqirement screen", () => {
+  it("TC3: Update for Classification MULTIPLE Levels in Gather Requirement screen", () => {
     const selectedClassLevelsLabels = [
       "Unclassified / Impact Level 4 (IL4)",
       "Unclassified / Impact Level 5 (IL5)",
