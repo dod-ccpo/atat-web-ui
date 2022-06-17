@@ -36,6 +36,7 @@
                 />
                 <span class="d-block" style="width: 9px"></span>
               </div>
+
               <hr />
 
               <div 
@@ -51,7 +52,6 @@
                   class="mr-4"
                   @onChange="incrementSelected(index)"
                 />
-                
                 <ATATTextField
                   :id="'Amount' + index"
                   :value.sync="payments[index].amt"
@@ -61,7 +61,6 @@
                   class="mr-2"
                   @blur="calcAmounts"
                 />
-
                 <v-btn
                   icon
                   @click="deletePayment(index)"
@@ -69,12 +68,11 @@
                 >
                   <v-icon> delete </v-icon>
                 </v-btn>
-
               </div>            
 
               <v-btn
                 id="AddIncrementButton"
-                v-if="payments.length < maxIncrements"
+                v-if="payments.length < maxPayments"
                 plain
                 text
                 class="_text-link mt-5"
@@ -102,7 +100,6 @@
                   :disabled="true"
                 />
                 <span class="d-block" style="width: 36px"></span>
-
               </div>
             </div>
 
@@ -147,7 +144,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -176,7 +173,7 @@ export default class IncrementalFunding extends Vue {
   public currentYear = this.today.getFullYear();
 
   public periods: PeriodDTO[] | null = [];
-  public maxIncrements = 1;
+  public maxPayments = 1;
   public periodLengthStr = "";
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
@@ -239,9 +236,8 @@ export default class IncrementalFunding extends Vue {
     // const firstSelectedQtr = this.payments[0].qtr;
     // const firstSelectedQtrIndex 
     //   = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
-    // const lastPossibleIndex = firstSelectedQtrIndex + this.maxIncrements;
+    // const lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
   }
-
 
   public calcAmounts(): void {
     let incrementsTotal = this.payments.reduce(
@@ -286,27 +282,25 @@ export default class IncrementalFunding extends Vue {
           unit = unitCount > 1 ? unit + "s" : unit;
         }
         this.periodLengthStr = unitCount + " " + unit;
-
+        debugger;
         switch (unit) {
-        case "DAYS": 
-          this.maxIncrements = unitCount > 270 ? 5: 4;
+        case "days": 
+          this.maxPayments = unitCount > 270 ? 5: 4;
           break;
-        case "WEEK":
-          this.maxIncrements = unitCount > 36 ? 5: 4;
+        case "weeks":
+          this.maxPayments = unitCount > 36 ? 5: 4;
           break;
-        case "MONTH":
-          this.maxIncrements = unitCount > 9 ? 5: 4;
+        case "months":
+          this.maxPayments = unitCount > 9 ? 5: 4;
           break;
-        case "YEAR":
-          this.maxIncrements = 5;
+        case "year":
+          this.maxPayments = 5;
           break;
         default:
-          this.maxIncrements = 1;
+          this.maxPayments = 1;
         }
-
       }
     }
-
   }
 
   public async mounted(): Promise<void> {
