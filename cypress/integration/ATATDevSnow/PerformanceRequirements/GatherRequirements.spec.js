@@ -583,7 +583,6 @@ describe("Test suite: Gather Requirements screen ", () => {
       " level."
     )    
     
-  });
-
+  });  
 
 });
