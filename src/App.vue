@@ -2,8 +2,8 @@
   <v-app  style="overflow: hidden;">
     <ATATSideStepper ref="sideStepper" :stepperData="stepperData" />
 
-    <ATATSlideoutPanel v-if="hasSlideoutPanelComponent">
-      <component :is="slideoutPanelComponent"></component>
+    <ATATSlideoutPanel v-if="panelContent">
+      <component :is="panelContent"></component>
     </ATATSlideoutPanel>
     <ATATToast />
 
@@ -77,12 +77,9 @@ export default class App extends Vue {
     sideStepper: ATATSideStepper;
   };
 
-  public slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
 
-  public hasSlideoutPanelComponent = false;
-  @Watch("slideoutPanelComponent")
-  public onSlideoutPanelComponentChange(c: unknown): void {
-    this.hasSlideoutPanelComponent = c !== undefined ? true : false;
+  private get panelContent() {
+    return SlideoutPanel.slideoutPanelComponent
   }
 
   private stepperData = buildStepperData();
@@ -102,9 +99,7 @@ export default class App extends Vue {
     }
     
     await AcquisitionPackage.initialize();
-    
 
-    this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
   }
 
   @Watch("$route")
@@ -119,7 +114,6 @@ export default class App extends Vue {
       this.$refs.sideStepper.setCurrentStep(stepNumber);
 
       SlideoutPanel.closeSlideoutPanel();
-      this.slideoutPanelComponent = SlideoutPanel.slideoutPanelComponent;
     }
   }
 

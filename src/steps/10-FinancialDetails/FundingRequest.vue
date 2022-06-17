@@ -114,11 +114,6 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
     };
   };
 
-  private get panelContent() {
-    console.log(SlideoutPanel.slideoutPanelComponent)
-    return SlideoutPanel.slideoutPanelComponent
-  }
-
 
   public async openSlideoutPanel(e: Event, panelType: string): Promise<void> {
     if (panelType === "Ginvoice") {
@@ -127,14 +122,12 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
         title: "Learn More",
       };
       await SlideoutPanel.setSlideoutPanelComponent(gInvoice);
-      this.$forceUpdate();
     } else {
       const funding: SlideoutPanelContent = {
         component: FundingRequestLearnMore,
         title: "Learn More",
       };
       await SlideoutPanel.setSlideoutPanelComponent(funding);
-      this.$forceUpdate();
     }
     this.$nextTick(()=>{
       if (e && e.currentTarget) {
