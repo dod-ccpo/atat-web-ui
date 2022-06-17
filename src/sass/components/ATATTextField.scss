@@ -33,4 +33,12 @@
     }
   }
 
+  &.v-input--is-disabled {
+    .v-input__control {
+      background-color: $base-lightest;
+      input {
+        color: $base-darkest;
+      }
+    }
+  }
 }

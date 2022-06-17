@@ -299,22 +299,24 @@ export default class IncrementalFunding extends Vue {
           unit = unitCount > 1 ? unit + "s" : unit;
         }
         this.periodLengthStr = unitCount + " " + unit;
+
         switch (unit) {
-        case "year":
+        case "DAYS": 
+          this.maxIncrements = unitCount > 270 ? 5: 4;
+          break;
+        case "WEEK":
+          this.maxIncrements = unitCount > 36 ? 5: 4;
+          break;
+        case "MONTH":
+          this.maxIncrements = unitCount > 9 ? 5: 4;
+          break;
+        case "YEAR":
           this.maxIncrements = 5;
-          break;
-        case "months": 
-          this.maxIncrements = (unitCount / 3) + 1;
-          break;
-        case "weeks":
-          this.maxIncrements = (unitCount / 12) + 1;
-          break;
-        case "days":
-          this.maxIncrements = (unitCount / 91) + 1;
           break;
         default:
           this.maxIncrements = 1;
         }
+
       }
     }
 

@@ -29,6 +29,7 @@
       @input="onInput"
       class="text-primary"
       :class="[{ 'text-right' : alignRight }]"
+      :disabled="disabled"
       :hide-details="counter === ''"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
@@ -104,7 +105,8 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: false }) private isMaskRegex!: boolean;
   @Prop({ default: false }) private isCurrency!: boolean;
   @Prop({ default: false }) private alignRight?: boolean;
-  
+  @Prop({ default: false }) private disabled?: boolean;
+
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
