@@ -263,10 +263,23 @@ export default class IncrementalFunding extends Vue {
     if (index === 0) {
       return this.incrementPeriods;
     } 
+
     const firstSelectedQtr = this.payments[0].qtr;
     const firstSelectedQtrIndex 
       = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr);
-    // ejy come back to this
+
+
+    const prevSelectedQtr = this.payments[index - 1].qtr;
+    const prevSelectedQtrIndex 
+      = this.incrementPeriods.findIndex(p => p.text === prevSelectedQtr);
+    let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
+    lastPossibleIndex = lastPossibleIndex > this.incrementPeriods.length 
+      ? this.incrementPeriods.length
+      : lastPossibleIndex;
+    let optionsArr = this.incrementPeriods.slice(prevSelectedQtrIndex + 1, lastPossibleIndex) 
+    debugger;
+    return optionsArr;
+
   }
 
   public async loadOnEnter(): Promise<void> {
