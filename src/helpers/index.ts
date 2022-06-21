@@ -67,14 +67,16 @@ export const sanitizeOfferingName = (offeringName: string): string => {
 
 // formats a number to currency string with commas and 2 decimal places
 export const toCurrencyString = (num: number): string => {
-  num = isNaN(num) ? 0 : num;
-  return num.toLocaleString(
-    undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-  );
+  if (!isNaN(num)) {
+    return num.toLocaleString(
+      undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    );
+  }
+  return "";
 }
 
 // converts a formatted currency string back to a number
 export const currencyStringToNumber = (str: string): number => {
-  return parseFloat(str.replaceAll(",",""));
+  return str ? parseFloat(str.replaceAll(",","")) : 0;
 }
 

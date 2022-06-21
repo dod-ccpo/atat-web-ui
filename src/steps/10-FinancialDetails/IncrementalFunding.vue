@@ -37,7 +37,7 @@
                 <span class="d-block" style="width: 9px"></span>
               </div>
 
-              <hr />
+              <hr class="my-6" />
 
               <div 
                 class="d-flex justify-space-between align-center mb-4"
@@ -83,7 +83,7 @@
                 <span>Add funding increment</span>
               </v-btn>
 
-              <hr />
+              <hr class="my-6" />
 
               <div class="d-flex justify-end align-center">
                 <label for="TotalAmount" class="mr-4">
@@ -92,7 +92,7 @@
 
                 <ATATTextField
                   id="TotalAmount"
-                  :value.sync="totalAmountStr"
+                  :value.sync="totalAmount"
                   :alignRight="true"
                   :isCurrency="true"
                   width="190"
@@ -186,9 +186,8 @@ export default class IncrementalFunding extends Vue {
   public amountRemaining = 0;
   public amountRemainingStr = "";
   public initialPayment = 0;
-  public initialPaymentStr = "0.00";
-  public totalAmount = 0;
-  public totalAmountStr = "0.00";
+  public initialPaymentStr = "";
+  public totalAmount: number | null = null;
 
   public payments: { qtr: string, amt: string }[] = [];
 
@@ -206,7 +205,7 @@ export default class IncrementalFunding extends Vue {
 
       if (i === 0) {
         // default to 1st option if no store data
-        this.payments.push({qtr: periodStr, amt: "0.00"})
+        this.payments.push({qtr: periodStr, amt: ""})
       }
     }
   }
@@ -225,7 +224,7 @@ export default class IncrementalFunding extends Vue {
       nextQtr = this.incrementPeriods[selectedQtrIndex + 1].text;
     }
     if (nextQtr) {
-      const newIncrement = { qtr: nextQtr, amt: "0.00" }
+      const newIncrement = { qtr: nextQtr, amt: "" }
       this.payments.push(newIncrement);
     }
   }
@@ -248,15 +247,16 @@ export default class IncrementalFunding extends Vue {
     this.totalAmount = this.initialPayment 
       ? this.initialPayment + incrementsTotal
       : incrementsTotal;
-    this.totalAmountStr = toCurrencyString(this.totalAmount);
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
-    this.amountRemainingStr = toCurrencyString(this.amountRemaining);
-    this.initialPaymentStr = toCurrencyString(this.initialPayment);
+    this.amountRemainingStr = this.amountRemaining ? toCurrencyString(this.amountRemaining) : "";
+    this.initialPaymentStr = this.initialPayment ? toCurrencyString(this.initialPayment) : "";
     this.$nextTick(() => {
-      this.payments.forEach(
-        pmt => pmt.amt = toCurrencyString(currencyStringToNumber(pmt.amt))
-      );
+      this.payments.forEach((pmt) => {
+        return pmt.amt = pmt.amt && pmt.amt !== "0.00" 
+          ? toCurrencyString(currencyStringToNumber(pmt.amt)) 
+          : ""
+      });
     })
   }
 

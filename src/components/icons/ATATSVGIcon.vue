@@ -63,6 +63,7 @@ export default class ATATSVGIcon extends Vue {
   private standardColors: stringObj[] = [
     { "base":  "61686c" },
     { "base-dark": "41494e"},
+    { "base-darkest" : "161b1e" },
     { "base-light": "959a9d"},
     { "primary": "544496" },
     { "info": "009ddd" },

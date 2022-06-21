@@ -44,7 +44,7 @@
       <ATATSVGIcon
         v-if="isCurrency"
         name="currency"
-        color="base-light"
+        :color="iconColor"
         :width="9"
         :height="16"
         class="pt-1 mr-1"
@@ -114,6 +114,9 @@ export default class ATATTextField extends Vue  {
   private errorMessages: string[] = [];
   private onInput(v: string) {
     this._value = v;
+    if (this.isCurrency) {
+      this.iconColor = v ? "base-darkest" : "base-light";
+    }
   }
 
   private setErrorMessage(): void {
@@ -121,6 +124,7 @@ export default class ATATTextField extends Vue  {
       this.errorMessages = this.$refs.atatTextField.errorBucket;
     });
   }
+  private iconColor = "base-light";
 
   //@Events
   private onBlur(e: FocusEvent) : void{
@@ -141,7 +145,7 @@ export default class ATATTextField extends Vue  {
     const maskObj: mask = {};
 
     if (this.isCurrency){
-      maskObj.alias = "numeric";
+      maskObj.alias = "currency";
       maskObj.groupSeparator = ",";
       maskObj.digits = 2;
       maskObj.autoGroup = true;
@@ -165,11 +169,13 @@ export default class ATATTextField extends Vue  {
         Inputmask(maskObj).mask(inputField);
       });
     }
-    
   }
 
   private mounted(): void{
     this.setMasks();
+    if (this.isCurrency) {
+      this.iconColor = this._value || this.disabled ? "base-darkest" : "base-light";
+    }
   }
 
 }
