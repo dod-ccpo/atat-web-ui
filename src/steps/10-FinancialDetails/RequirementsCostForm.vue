@@ -11,6 +11,8 @@
           id="TemporaryCostField"
           :isCurrency="true"
           :value.sync="costEstimate"
+          :alignRight="true"
+          width="200"
         />
       </v-col>
     </v-row>

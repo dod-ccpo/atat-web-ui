@@ -28,6 +28,8 @@
       :placeholder="placeHolder"
       @input="onInput"
       class="text-primary"
+      :class="[{ 'text-right' : alignRight }]"
+      :disabled="disabled"
       :hide-details="counter === ''"
       :suffix="suffix"
       :style="'width: ' + width + 'px'"
@@ -42,7 +44,7 @@
       <ATATSVGIcon
         v-if="isCurrency"
         name="currency"
-        color="base-light"
+        :color="iconColor"
         :width="9"
         :height="16"
         class="pt-1 mr-1"
@@ -64,6 +66,7 @@ import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
+import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 @Component({
   components: {
@@ -102,13 +105,18 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: ()=>[] }) private mask!: string[];
   @Prop({ default: false }) private isMaskRegex!: boolean;
   @Prop({ default: false }) private isCurrency!: boolean;
-  
+  @Prop({ default: false }) private alignRight?: boolean;
+  @Prop({ default: false }) private disabled?: boolean;
+
   @PropSync("value", { default: "" }) private _value!: string;
 
   //data
   private errorMessages: string[] = [];
   private onInput(v: string) {
     this._value = v;
+    if (this.isCurrency) {
+      this.iconColor = v ? "base-darkest" : "base-light";
+    }
   }
 
   private setErrorMessage(): void {
@@ -116,12 +124,16 @@ export default class ATATTextField extends Vue  {
       this.errorMessages = this.$refs.atatTextField.errorBucket;
     });
   }
+  private iconColor = "base-light";
 
   //@Events
   private onBlur(e: FocusEvent) : void{
     const input = e.target as HTMLInputElement;
     this.setErrorMessage();
     this.$emit('blur', input.value, this.extraEmitVal);
+    if (this.isCurrency) {
+      this._value = toCurrencyString(currencyStringToNumber(input.value));
+    }   
   }
 
   public resetValidation(): void {
@@ -133,7 +145,7 @@ export default class ATATTextField extends Vue  {
     const maskObj: mask = {};
 
     if (this.isCurrency){
-      maskObj.alias = "numeric";
+      maskObj.alias = "currency";
       maskObj.groupSeparator = ",";
       maskObj.digits = 2;
       maskObj.autoGroup = true;
@@ -157,11 +169,13 @@ export default class ATATTextField extends Vue  {
         Inputmask(maskObj).mask(inputField);
       });
     }
-    
   }
 
   private mounted(): void{
     this.setMasks();
+    if (this.isCurrency) {
+      this.iconColor = this._value || this.disabled ? "base-darkest" : "base-light";
+    }
   }
 
 }

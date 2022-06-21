@@ -109,7 +109,13 @@ hr, .hr {
   border-style: solid !important;
   border-bottom: none !important;
   margin: 40px 0;
+  &.base {
+    border-color: $base !important;
+    -ieVar-❗border-color: $base !important;  
+  }
 }
+
+
 
 .color-base {
   color: $base !important;
