@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:testing": "vue-cli-service build --dest dist_testing",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "postbuild": "node servicenow.postbuild.js",
@@ -85,5 +86,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "vuePlugins": {
+    "service": ["cypressbuildplugin.js"]
+  }
 }
