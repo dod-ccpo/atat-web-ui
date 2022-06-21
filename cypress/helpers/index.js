@@ -3,7 +3,7 @@ import {saveToSNOW} from "../helpers/saveToSNOW";
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
-  return `${baseAPIUrl}/now/table/${tableName}`;
+  return `${baseAPIUrl}/api/now/table/${tableName}`;
   //https://disastorefrontdev.servicenowservices.com/api/now/table/${tableName}
 }
 
@@ -11,9 +11,6 @@ const buildTableApiPath = (tableName)=> {
 const bootStrapAcquisitionPackageApi= ()=> {
 
   const acquisitionPackageApiEndpoint = buildTableApiPath('x_g_dis_atat_acquisition_package');
-  const projectOverviewApiEndpoint = buildTableApiPath('x_g_dis_atat_project_overview');
-  const organization = buildTableApiPath('x_g_dis_atat_organization');
-  
   cy.fixture("acquistionPackage").then((data) => {
     cy.intercept('POST', acquisitionPackageApiEndpoint, {
       statusCode: 404,
@@ -21,14 +18,18 @@ const bootStrapAcquisitionPackageApi= ()=> {
     });
   }); 
 
-  cy.fixture("projectOverview").then((data) => {
-    cy.intercept('POST', projectOverviewApiEndpoint, {
-      statusCode: 201,
-      body: data,
-    });
-  }); 
+  // const projectOverviewApiEndpoint = buildTableApiPath('x_g_dis_atat_project_overview');
+  // const organization = buildTableApiPath('x_g_dis_atat_organization');
+
+  // cy.fixture("projectOverview").then((data) => {
+  //   cy.intercept('POST', projectOverviewApiEndpoint, {
+  //     statusCode: 201,
+  //     body: data,
+  //   });
+  // }); 
 
   loadInitialData();
+  saveToSNOW();
 
 }
 

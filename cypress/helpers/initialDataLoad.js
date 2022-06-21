@@ -1,7 +1,7 @@
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
-  return `${baseAPIUrl}/now/table/${tableName}`;
+  return `${baseAPIUrl}/api/now/table/${tableName}`;
   //https://disastorefrontdev.servicenowservices.com/api/now/table/${tableName}
 }
 

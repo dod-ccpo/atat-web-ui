@@ -100,7 +100,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
 
     });  
 
-  it.only("TC3: Service Agency selected is DISA & Address Type is Military", () => {
+  it("TC3: Service Agency selected is DISA & Address Type is Military", () => {
         
     cy.clickSideStepper(common.subStepOrganizationLink, " Organization "); 
 
