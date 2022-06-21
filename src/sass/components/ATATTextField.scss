@@ -26,5 +26,19 @@
       margin-top: 1px;
     }
   }
+  
+  &.text-right {
+    input {
+      text-align: right !important;
+    }
+  }
 
+  &.v-input--is-disabled {
+    .v-input__control {
+      background-color: $base-lightest;
+      input {
+        color: $base-darkest;
+      }
+    }
+  }
 }

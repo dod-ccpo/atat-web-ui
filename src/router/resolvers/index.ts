@@ -391,7 +391,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  DescriptionOfWork.setBackToContractDetails(false);
+  DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
 
   if(current === routeNames.PropertyDetails){

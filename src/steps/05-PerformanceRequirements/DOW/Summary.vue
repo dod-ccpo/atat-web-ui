@@ -122,9 +122,9 @@
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import { routeNames } from "../../../router/stepper"
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -144,7 +144,8 @@ import { SystemChoiceDTO } from "@/api/models";
     DOWAlert,
   }
 })
-export default class Summary extends Vue {
+
+export default class Summary extends Mixins(SaveOnLeave) {
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
   private showAlert = false;
@@ -352,5 +353,11 @@ export default class Summary extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    Steps.clearAltBackButtonText();
+    return true;
+  }
+
 };
 </script>

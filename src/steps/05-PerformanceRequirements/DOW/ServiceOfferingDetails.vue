@@ -99,7 +99,7 @@
           Select all that apply to your contracting effort.
         </p>
         <ATATCheckboxGroup
-          id="ClassificationLevelCheckboxes"
+          id="ClassificationLevelCheckboxesModal"
           :value.sync="modalSelectedOptions"
           :hasOtherValue="true"
           :items="modalCheckboxItems"
@@ -320,8 +320,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     return !_.isEqual(arr1, arr2) && this.modalSelectedOptions.length !== 0;
   };
 
-  private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return data.length > 1 ? buildClassificationCheckboxList(data) : [];
+  private createCheckboxItems(data: ClassificationLevelDTO[], idSuffix: string) {
+    idSuffix = idSuffix || "";
+    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix) : [];
   }
 
   public classificationInstances: DOWClassificationInstance[] = [];
@@ -341,7 +342,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       }
     });
     this.headerCheckboxItems 
-      = this.createCheckboxItems(this.avlClassificationLevelObjects);
+      = this.createCheckboxItems(this.avlClassificationLevelObjects, "");
     
   }
 
@@ -373,7 +374,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // get list of all possible classification levels to generate checkbox list and labels
     this.allClassificationLevels
       = await ClassificationRequirements.getAllClassificationLevels();
-    this.modalCheckboxItems = this.createCheckboxItems(this.allClassificationLevels);
+    this.modalCheckboxItems = this.createCheckboxItems(this.allClassificationLevels, "Modal");
     const IL6Checkbox 
       = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "";
