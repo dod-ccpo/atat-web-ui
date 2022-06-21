@@ -1,4 +1,3 @@
-import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
