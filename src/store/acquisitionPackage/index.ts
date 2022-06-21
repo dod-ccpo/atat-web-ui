@@ -18,7 +18,7 @@ import {
   ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
   AttachmentDTO,
-  PeriodDTO
+  PeriodDTO,
 } from "@/api/models";
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
@@ -267,6 +267,7 @@ export class AcquisitionPackageStore extends VuexModule {
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
   estimatedTaskOrderValue: string | null =  null;
+  fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact();
 
@@ -277,6 +278,11 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setEstimatedTaskOrderValue(value: string): void {
     this.estimatedTaskOrderValue = value;
+  }
+
+  @Mutation
+  public setFundingRequestType(value: string): void {
+    this.fundingRequestType = value;
   }
 
   @Mutation
@@ -450,6 +456,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setFundingPlans("");
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
+          this.setFundingRequestType("");
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
