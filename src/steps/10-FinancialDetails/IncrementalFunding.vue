@@ -46,7 +46,7 @@
               >
                 <ATATSelect
                   :id="'IncrementPeriod' + index"
-                  :items="incrementPeriodsForDropdowns"
+                  :items="getIncrementPeriodsForDropdown(index)"
                   width="190"
                   :selectedValue.sync="payments[index].qtr"
                   class="mr-4"
@@ -169,7 +169,7 @@ import _ from "lodash";
 export default class IncrementalFunding extends Vue {
 
   public today = new Date();
-  public currentQuarter = Math.floor((this.today.getMonth() + 3) / 3);
+  public currentQuarter = Math.floor(((this.today.getMonth() + 3) / 3) + 1);
   public currentYear = this.today.getFullYear();
 
   public periods: PeriodDTO[] | null = [];
@@ -230,12 +230,11 @@ export default class IncrementalFunding extends Vue {
   }
 
   public incrementSelected(index: number): void {
-    // LOGIC TO BE COMPLETED IN TICKET 7527
-
-    // const firstSelectedQtr = this.payments[0].qtr;
-    // const firstSelectedQtrIndex 
-    //   = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
-    // const lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
+    const firstSelectedQtr = this.payments[0].qtr;
+    const firstSelectedQtrIndex 
+      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
+    const lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
+    debugger;
   }
 
   public calcAmounts(): void {
@@ -258,6 +257,16 @@ export default class IncrementalFunding extends Vue {
           : ""
       });
     })
+  }
+
+  public getIncrementPeriodsForDropdown(index: number): SelectData[] {
+    if (index === 0) {
+      return this.incrementPeriods;
+    } 
+    const firstSelectedQtr = this.payments[0].qtr;
+    const firstSelectedQtrIndex 
+      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr);
+    // ejy come back to this
   }
 
   public async loadOnEnter(): Promise<void> {
