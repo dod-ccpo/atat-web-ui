@@ -79,8 +79,8 @@ export default class App extends Vue {
 
 
   private get panelContent() {
-    return SlideoutPanel.slideoutPanelComponent
-  }
+    return SlideoutPanel.slideoutPanelComponent;
+  };
 
   private stepperData = buildStepperData();
   private additionalButtons: AdditionalButton[] = [];

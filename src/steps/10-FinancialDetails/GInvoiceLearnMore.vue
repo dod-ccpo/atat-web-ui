@@ -10,7 +10,7 @@
     </p>
     <ul>
       <li class="mb-2">
-        Negotiate and accept General Terms and Conditions (GT&C) agreements
+        Negotiate and accept General Terms and Conditions (GT&amp;Cs) agreements
       </li>
       <li class="mb-2">
         Broker orders
@@ -35,16 +35,14 @@
       <li>
         <a
           :href="fiscalServiceHref"
-          class="_text-link"
           target="_blank"
         >
-          <span>Bureau of Fiscal Service, G-Invoicing</span>
+         Bureau of Fiscal Service, G-Invoicing
         </a>
       </li>
       <li>
         <a
           :href="gInvoiceLoginHref"
-          class="_text-link"
           target="_blank"
         >
           <span> G-Invoicing Login</span>
@@ -54,14 +52,15 @@
     <hr class="my-5"/>
     <h3 class="mb-4">How does G-Invoicing affect my acquisition?</h3>
     <p>
-      In order to finalize your acquisition package, you will need to have a GT&C agreement
+      In order to finalize your acquisition package, you will need to have a GT&amp;Cs agreement
       established between your requesting agency and DISA, the servicing agency. This agreement must
       be completed in the G-Invoicing system.
     </p>
     <p>
-      Once a GT&C is established, you will also need to create an Order for your requirement. You
-      can do this directly within G-Invoicing and we will import your details. Or, we can collect
-      your order requirements and funding info and generate a new Order within G-Invoicing for you.
+      Once a GT&amp;Cs is established, you will also need to create an Order for your requirement.
+      You can do this directly within G-Invoicing and we will import your details. Or, we can
+      collect your order requirements and funding info and generate a new Order within G-Invoicing
+      for you.
     </p>
   </div>
 </template>
@@ -73,8 +72,8 @@ import { Component } from "vue-property-decorator";
 @Component({})
 
 export default class GInvoiceLearnMore extends Vue {
-  private fiscalServiceHref = `https://www.fiscal.treasury.gov/g-invoice/index.html`
+  private fiscalServiceHref = "https://www.fiscal.treasury.gov/g-invoice/index.html";
   private gInvoiceLoginHref =
-    `https://www.igt.fiscal.treasury.gov`
+   " https://www.igt.fiscal.treasury.gov";
 }
 </script>

@@ -28,7 +28,7 @@
       </v-btn>
     </div>
 
-    <div class="_panel-content-wrap" v-if="panelTitle">
+    <div id="PanelWrap" class="_panel-content-wrap" v-if="panelTitle">
       <slot></slot>
     </div>
 
@@ -99,6 +99,10 @@ export default class ATATSlideoutPanel extends Vue {
     this.$nextTick(() => {
       if (isOpen) {
         document.getElementById("PanelTitle")?.focus();
+        const wrapper = document.getElementById("PanelWrap");
+        if (wrapper) {
+          wrapper.scrollTop = 0;
+        }
       } else {
         const returnFocusToElementId = SlideoutPanel.slideoutPanelOpenerId;
         setTimeout(function () {

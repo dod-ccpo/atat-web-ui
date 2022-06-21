@@ -19,7 +19,7 @@
               id="FundingTypesRadioGroup"
               :card="true"
               :items="radioButtonItems"
-              :rules="[$validators.required('Please select an option')]"
+              :rules="[$validators.required('Please select a type of funding request.')]"
               :value.sync="selectedFundingTypes"
               class="max-width-640 mb-7"
               name="radioButton-card"
@@ -37,7 +37,7 @@
                 <p>
                   G-Invoicing is the long-term solution for Federal Program Agencies (FPAs) to
                   manage their intragovernmental (IGT) Buy/Sell transactions. This is the preferred
-                  system for generating and maintaining your GT&Cs and Orders with DITCO.
+                  system for generating and maintaining your GT&amp;Cs and Orders with DITCO.
                   <a id="LearnMoreGInvoicing" role="button"
                      @click="openSlideoutPanel($event, 'Ginvoice')">
                     <span>Learn more about G-Invoicing</span>

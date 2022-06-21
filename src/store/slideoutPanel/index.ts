@@ -27,6 +27,10 @@ export class SlideoutPanelStore extends VuexModule {
   public doSetSlideoutPanelComponent(panelContent: SlideoutPanelContent): void {
     this.slideoutPanelComponent = panelContent.component;
     this.slideoutPanelTitle = panelContent.title;
+    const wrapper = document.getElementById("PanelWrap");
+    if (wrapper) {
+      wrapper.scrollTop = 0;
+    }
   }
 
   @Action 

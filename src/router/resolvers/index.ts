@@ -464,20 +464,20 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   }
 
   return OfferingDetailsPathResolver(current, direction);
-}
+};
 
 export const FundingRequestResolver = (current: string): string => {
   const fundingType
-      = AcquisitionPackage.fundingRequestType
+      = AcquisitionPackage.fundingRequestType;
 
   if(current === routeNames.GInvoicing){
-    return routeNames.FundingPlanType
-  }
+    return routeNames.FundingPlanType;
+  };
   if (fundingType === "FSF") {
     return routeNames.GInvoicing;
   } else if (fundingType === "MIPR") {
-    return routeNames.MIPR
-  }
+    return routeNames.MIPR;
+  };
 
   return current === routeNames.FundingPlanType
     ? routeNames.SeverabilityAndIncrementalFunding
