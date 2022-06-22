@@ -40,6 +40,7 @@
               <div 
                 v-if="errorMissingInitialIncrement" 
                 class="d-flex justify-start align-top atat-text-field-error mb-1 mt-3"
+                id="InitialIncrementError"
               >
                 <ATATSVGIcon 
                   style="margin-top: 2px;"
@@ -72,9 +73,14 @@
                     :value.sync="payments[index].amt"
                     :alignRight="true"
                     :isCurrency="true"
+                    :showErrorMessages="false"
                     width="190"
                     class="mr-2"
                     @blur="calcAmounts('increment' + index)"
+                    :rules="[
+                      $validators.required('', true)
+                    ]"
+
                   />
                   <v-btn
                     icon
@@ -83,8 +89,25 @@
                   >
                     <v-icon> delete </v-icon>
                   </v-btn>
-                </div>            
+                </div>    
+
+                <div 
+                  v-if="errorMissingFirstIncrement" 
+                  class="d-flex justify-start align-top atat-text-field-error mb-1 mt-3"
+                  id="FirstIncrementError"
+                >
+                  <ATATSVGIcon 
+                    style="margin-top: 2px;"
+                    name="exclamationMark" 
+                    :width="18" 
+                    :height="18" 
+                    color="error" 
+                  />
+                  <div class="field-error ml-2">{{ errorMissingFirstIncrementMessage }}</div>
+                </div>
+
               </div>
+
               <v-btn
                 id="AddIncrementButton"
                 v-if="payments.length < maxPayments"
@@ -206,6 +229,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public errorMissingInitialIncrement = false;
   public errorMissingInitialIncrementMessage = "Please enter the amount of your initial funding.";
+  public errorMissingFirstIncrement = false;
+  public errorMissingFirstIncrementMessage = "Please enter the amount of your first increment.";
 
   public hasReturnedToPage = false;
 
@@ -281,9 +306,15 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
           : ""
       });
     });
+
+    // validation on blur for initial and first increments required
+    let amt;
     if (field === "initialIncrement") {
-      this.errorMissingInitialIncrement 
-        = this.initialPaymentStr === "0.00" || !this.initialPaymentStr;
+      amt = parseFloat(this.initialPaymentStr);
+      this.errorMissingInitialIncrement = amt === 0 || isNaN(amt);
+    } else if (field === "increment0") {
+      amt = parseFloat(this.payments[0].amt);
+      this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
   }
 
@@ -301,7 +332,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       ? this.incrementPeriods.length
       : lastPossibleIndex;
     let optionsArr = this.incrementPeriods.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
-    debugger;
+
     return optionsArr;
   }
 
@@ -361,13 +392,13 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
+      // FUTURE TICKET VALIDATION: first time user clicks continue:
+      // • check if same quarter selected for more than one dropdown
+      // • check if over/under funded - AC 4 which was crossed out
+      // set a flag if error has been show. if so, user can continue
+
       if (this.hasChanged()) {
-        debugger;
         FinancialDetails.setIFPData(this.currentData);
-        // EJY first time user clicks continue:
-        // • check if same quarter selected for more than one dropdown
-        // • check if over/under funded - AC 4 which was crossed out
-        // set a flag if error has been show. if so, user can continue
       }
     } catch (error) {
       console.log(error);
@@ -377,8 +408,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    // return false;
-    debugger;
     return hasChanges(this.currentData, this.savedData);
   }
 

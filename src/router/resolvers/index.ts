@@ -467,7 +467,6 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 };
 
 export const FundingRequestResolver = (current: string): string => {
-  debugger;
   const fundingType
       = FinancialDetails.fundingRequestType;
 
