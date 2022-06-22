@@ -14,6 +14,10 @@ export function loadInitialData(){
                 '&name=x_g_dis_atat_military_rank&element=branch'
     },
     {
+      'fixture': 'classificationLevels',
+      'apiURL': 'x_g_dis_atat_classification_level'
+    },
+    {
       'fixture': 'countries',
       'apiURL': 'core_country?sysparm_query=active%3Dtrue%5EORDERBYname'+
                 '&sysparm_fields=name,iso3166_2'

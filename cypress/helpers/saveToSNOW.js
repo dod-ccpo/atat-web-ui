@@ -24,15 +24,44 @@ export function saveToSNOW(){
       'fixture': 'contacts',
       'apiURL': 'x_g_dis_atat_contacts'
     },  
+    {
+      'fixture': 'fairOpportunity',
+      'apiURL': 'x_g_dis_atat_fair_opportunity'
+    },
+    {
+      'fixture': 'period',
+      'apiURL': 'x_g_dis_atat_period'
+    },
+    {
+      'fixture': 'period_PATCH',
+      'apiURL': 'x_g_dis_atat_period/**'
+      
+    },   
+    {
+      'fixture': 'periodOfPerformance',
+      'apiURL': 'x_g_dis_atat_period_of_performance'
+    }, 
+    {
+      'fixture': 'periodOfPerformance_GET',
+      'apiURL': 'x_g_dis_atat_period_of_performance/**',
+      'action': 'GET'
+    }, 
     // {
-    //   'fixture': 'acquistionPackage',
-    //   'apiURL': 'x_g_dis_atat_acquisition_package'
-    // },    
+    //   'fixture': 'contractType_PATCH',
+    //   'apiURL': 'x_g_dis_atat_contract_type/**',
+    //   'action': 'PATCH'
+    // },
+    {
+      'fixture': 'contractType_GET',
+      'apiURL': 'x_g_dis_atat_contract_type/**',
+      'action': 'GET'
+    }, 
   ];
 
   endPoints.forEach((ep)=>{
+    const action = ep.action || 'POST';
     cy.fixture("saveToSNOW/" + ep.fixture).then((data) => {
-      cy.intercept('POST', buildTableApiPath(ep.apiURL), {
+      cy.intercept(action, buildTableApiPath(ep.apiURL), {
         statusCode: 201,
         body: data,
       });
