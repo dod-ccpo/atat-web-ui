@@ -64,7 +64,8 @@ export class ValidationPlugin {
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
         if (isCurrency) {
-          return (v !== "0.00" && v !== "") || message;
+          const amt = parseFloat(v);
+          return (amt !== 0 && !isNaN(amt)) || message;
         } else {
           return (v !== "") || message;
         }

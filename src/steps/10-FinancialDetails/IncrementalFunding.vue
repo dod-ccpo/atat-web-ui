@@ -232,6 +232,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public errorMissingFirstIncrement = false;
   public errorMissingFirstIncrementMessage = "Please enter the amount of your first increment.";
 
+  // use in future ticket for validation returning to page to show error messages
   public hasReturnedToPage = false;
 
   public payments: { qtr: string, amt: string }[] = [];
