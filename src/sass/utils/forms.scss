@@ -4,6 +4,11 @@
         max-width: 446px !important;
     }
 }
+
+._input-wrapper-max-width {
+  width: 416px !important;
+}
+
 .textarea-max-width {
   @extend .max-width-740;
 }

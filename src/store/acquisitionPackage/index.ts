@@ -35,6 +35,7 @@ import { FileAttachmentServiceFactory } from "@/services/attachment";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import { ClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements"
+import Attachments from "../attachments";
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -411,8 +412,8 @@ export class AcquisitionPackageStore extends VuexModule {
     this.projectOverview = sessionData.projectOverview;
     this.periodOfPerformance = sessionData.periodOfPerformance;
     this.requirementsCostEstimate = sessionData.requirementsCostEstimate;
-    this.sensitiveInformation = sessionData.SensitiveInformation;
-    this.gfeOverview = sessionData.gFEOverview;
+    this.sensitiveInformation = sessionData.sensitiveInformation;
+    this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
   }
 
@@ -421,6 +422,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await ContactData.initialize();
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
+    await Attachments.initialize();
 
     if (this.initialized) {
       return;

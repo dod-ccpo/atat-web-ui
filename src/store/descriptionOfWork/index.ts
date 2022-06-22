@@ -24,8 +24,7 @@ import {
 } from "../../../types/Global";
 
 import _, { differenceWith, last } from "lodash";
-import { sys } from "typescript";
-import { OfferingDetailsPathResolver } from "@/router/resolvers";
+import ClassificationRequirements from "@/store/classificationRequirements";
 
 
 // Classification Proxy helps keep track of saved
@@ -256,6 +255,11 @@ export class DescriptionOfWorkStore extends VuexModule {
     return undefined;
   }
 
+  public get lastOfferingGroup(): string | undefined {
+    const len = this.validServiceGroups.length;
+    return len ? this.validServiceGroups[len - 1].serviceOfferingGroupId : undefined;
+  }
+
   public get prevOfferingGroup(): string | undefined {
 
     const currentGroupIndex = this.validServiceGroups
@@ -287,11 +291,12 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get canGetPreviousServiceOffering(): boolean {
-
     const currentOfferingIndex = this.currentOfferingIndex;
-
     return currentOfferingIndex >=0;
-    
+  }
+
+  public get missingClassificationLevels(): boolean {
+    return ClassificationRequirements.selectedClassificationLevels.length === 0;;
   }
 
   public get selectedServiceOfferingGroups(): string[] {
@@ -299,12 +304,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   public get selectedServiceOfferings(): string[] {
-    const mapOfferingName = (offering: DOWServiceOffering)=> {
-      const name = offering.sys_id === "Other" ? "Other": offering.name
-      return name;
+    const currentGroup = this.DOWObject.find(group => 
+      group.serviceOfferingGroupId === this.currentGroupId);
+    if (currentGroup?.serviceOfferings) {
+      return currentGroup.serviceOfferings.flatMap(offering => 
+        offering.sys_id === "Other" ? "Other" : offering.name);
     }
-    return this.DOWObject.map(group=>
-      group.serviceOfferings.flatMap(offering=>mapOfferingName(offering))).flat();
+    return [""];
   }
 
   public get otherServiceOfferingEntry(): string {
@@ -316,6 +322,14 @@ export class DescriptionOfWorkStore extends VuexModule {
   public get currentOfferingGroupHasOfferings(): boolean {
     return this.serviceOfferingsForGroup.length > 0;
   }
+
+  public summaryBackToContractDetails = false;
+
+  @Mutation
+  public setBackToContractDetails(bool: boolean): void {
+    this.summaryBackToContractDetails = bool;
+  }
+
 
   @Mutation
   private setInitialized(value: boolean) {
@@ -331,7 +345,7 @@ export class DescriptionOfWorkStore extends VuexModule {
   private setServiceOfferingGroups(value: SystemChoiceDTO[]) {
     value.forEach((value, index) => {
       // ensure "none apply" options are last in sequence
-      value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index;
+      value.sequence = value.value.indexOf("NONE") > -1 ? 99 : index + 1;
     });
     this.serviceOfferingGroups = value;
   }
@@ -358,13 +372,13 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Action
   public async removeCurrentOfferingGroup(): Promise<void> {
     await this.setSelectedOfferings({selectedOfferingSysIds: [], otherValue: ""});
-    this.doremoveCurrentOfferingGroup();
+    this.doRemoveCurrentOfferingGroup();
   }
 
   // removes current offering group if user clicks  the "I don't need these cloud resources"
   // button or does not select any offerings and clicks "Continue" button
   @Mutation
-  public doremoveCurrentOfferingGroup(): void {
+  public doRemoveCurrentOfferingGroup(): void {
     if (!this.currentGroupRemoved) {
       this.currentGroupRemovedForNav = true;    
       const groupIdToRemove = this.currentGroupId;
@@ -381,7 +395,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       const onlyNoneRemain = this.DOWObject.every((e) => {
         return e.serviceOfferingGroupId.indexOf("NONE") > -1;
       });
-
       // check if last group was removed
       if (groupIndex === DOWObjectBeforeRemoval.length - 1 || onlyNoneRemain) {
         this.lastGroupRemoved = true;
@@ -486,7 +499,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const groupIndex 
       = this.DOWObject.findIndex((obj) => obj.serviceOfferingGroupId === this.currentGroupId);
     let currentOfferings = this.DOWObject[groupIndex].serviceOfferings;
-
     if (groupIndex >= 0) {
       if (selectedOfferingSysIds.length === 0) {
         this.DOWObject[groupIndex].serviceOfferings = [];

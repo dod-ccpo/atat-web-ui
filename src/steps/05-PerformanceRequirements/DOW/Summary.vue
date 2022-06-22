@@ -21,7 +21,7 @@
           />
         </div>
         <div class="container-max-width"
-              v-for="(item) in selectedServiceGroups"
+              v-for="(item, index) in selectedServiceGroups"
               :key="item.serviceOfferingGroupId">
           <div class=" d-flex justify-space-between">
             <div>
@@ -34,7 +34,10 @@
             </div>
             <div class="d-flex align-start">
               <div class="d-flex align-center">
-                <div v-if="missingData(item.serviceOfferingGroupId)" class="d-flex align-start">
+                <div 
+                  v-if="missingData(item.serviceOfferingGroupId)" 
+                  class="d-flex align-start nowrap ml-5"
+                >
                   <v-icon
                     class="icon-20 text-warning-dark2 pr-2"
                   >warning</v-icon>
@@ -52,16 +55,19 @@
               </div>
             </div>
           </div>
-          <hr />
+          <hr v-if="index !== allServiceGroups.length - 1" />
         </div>
       </v-col>
     </v-row>
 
-    <div class="d-flex justify-space-between align-flex-end">
+    <div 
+      v-if="availableServiceGroups.length > 0" 
+      class="d-flex justify-space-between align-flex-end"
+    >
       <h2 class="mb-5">Other available categories</h2>
       <a
         id="ShowMoreLink"
-        class="expandable-content-opener mb-5 text-decoration-none"
+        class="expandable-content-opener mt-1 text-decoration-none"
         :class="[{ 'open' : showMore }]"
         v-show="availableServiceGroups.length > 4"
         @click="showMore = !showMore"
@@ -72,7 +78,7 @@
       </a>
     </div>
 
-    <v-row>
+    <v-row v-if="availableServiceGroups.length > 0">
       <v-col
         cols="3"
         style="padding: 10px; !important"
@@ -116,9 +122,9 @@
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import { routeNames } from "../../../router/stepper"
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -127,6 +133,7 @@ import DOWAlert from "@/steps/05-PerformanceRequirements/DOW/DOWAlert.vue";
 import { DOWServiceOffering, DOWServiceOfferingGroup } from "../../../../types/Global";
 import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
 // import router from "@/router";
 
@@ -137,7 +144,8 @@ import { SystemChoiceDTO } from "@/api/models";
     DOWAlert,
   }
 })
-export default class Summary extends Vue {
+
+export default class Summary extends Mixins(SaveOnLeave) {
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
   private showAlert = false;
@@ -267,25 +275,29 @@ export default class Summary extends Vue {
     let outputArr :string[] = [];
     value.forEach((obj)=>{
       let id = obj.serviceOfferingGroupId;
-      obj.serviceOfferings.forEach((offering)=>{
-        if(offering.classificationInstances && offering.classificationInstances.length == 0) {
-          if(outputArr.indexOf(id) < 0){
-            outputArr.push(id);
-          };
-        };
-        offering.classificationInstances?.forEach((instance)=>{
-          if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
+      if (this.isClassificationDataMissing || obj.serviceOfferings.length === 0) {
+        outputArr.push(id);
+      } else {
+        obj.serviceOfferings.forEach((offering)=>{
+          if(offering.classificationInstances && offering.classificationInstances.length === 0) {
             if(outputArr.indexOf(id) < 0){
               outputArr.push(id);
             };
+          } else {
+            offering.classificationInstances?.forEach((instance)=>{
+              if(instance.anticipatedNeedUsage === ''|| instance.entireDuration === '') {
+                if(outputArr.indexOf(id) < 0){
+                  outputArr.push(id);
+                };
+              } else if (instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
+                if(outputArr.indexOf(id) < 0){
+                  outputArr.push(id);
+                }
+              };
+            });
           }
-          else if(instance.entireDuration === 'NO' && !instance.selectedPeriods?.length){
-            if(outputArr.indexOf(id) < 0){
-              outputArr.push(id);
-            }
-          };
         });
-      })
+      }
     });
     this.serviceGroupsMissingData = outputArr;
   };
@@ -295,6 +307,16 @@ export default class Summary extends Vue {
   };
 
   public async loadOnEnter(): Promise<void> {
+    if (DescriptionOfWork.summaryBackToContractDetails) {
+      Steps.setAltBackButtonText("Back to Contract Details");
+    } else {
+      Steps.clearAltBackButtonText();
+    }
+    DescriptionOfWork.setCurrentGroupRemoved(false);
+    DescriptionOfWork.setCurrentGroupRemovedForNav(false);
+    DescriptionOfWork.setReturnToDOWSummary(false);
+    DescriptionOfWork.setLastGroupRemoved(false);
+
     const periods = await Periods.loadPeriods();
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
     if (periods && periods.length <= 0) {
@@ -331,5 +353,11 @@ export default class Summary extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    Steps.clearAltBackButtonText();
+    return true;
+  }
+
 };
 </script>

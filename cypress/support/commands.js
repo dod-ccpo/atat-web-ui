@@ -803,3 +803,28 @@ Cypress.Commands.add("selectServiceOfferingGroup", (checkboxes) => {
 Cypress.Commands.add("deselectAllCheckboxes", () => {  
   cy.findElement("[type='checkbox']").uncheck({ force: true })
 });
+
+Cypress.Commands.add("durationPeriodExists", (
+  radioSelector, activeSelector, periodLabelSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true })
+  cy.findElement(activeSelector)
+    .then(($radioBtn) => {
+      const selectedOption = $radioBtn.text();
+      cy.log(selectedOption);        
+      if (selectedOption === "radio_button_checkedNo") {
+        cy.findElement(periodLabelSelector).should("exist");
+        
+      } else {        
+        cy.findElement(periodLabelSelector).should("not.exist");
+      }
+    })
+});
+
+Cypress.Commands.add("periodCount", (count,checkBoxRowSelector) => { 
+  cy.findElement(common.wrap)
+    .then((main) => {      
+      const periodCount = main.find(checkBoxRowSelector).length;      
+      expect(periodCount).equal(count);     
+    });
+
+});
