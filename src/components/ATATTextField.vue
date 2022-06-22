@@ -40,18 +40,18 @@
       @update:error="setErrorMessage"
       autocomplete="off"
     >
-    <template v-slot:prepend-inner>
-      <ATATSVGIcon
-        v-if="isCurrency"
-        name="currency"
-        :color="iconColor"
-        :width="9"
-        :height="16"
-        class="pt-1 mr-1"
-    />
-   </template>
+      <template v-slot:prepend-inner>
+        <ATATSVGIcon
+          v-if="isCurrency"
+          name="currency"
+          :color="iconColor"
+          :width="9"
+          :height="16"
+          class="pt-1 mr-1"
+        />
+      </template>
     </v-text-field>
-    <ATATErrorValidation :errorMessages="errorMessages" />
+    <ATATErrorValidation :errorMessages="errorMessages" v-if="showErrorMessages" />
     <div v-if="helpText" class="help-text mt-2">
       {{ helpText }}
     </div>
@@ -107,6 +107,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: false }) private isCurrency!: boolean;
   @Prop({ default: false }) private alignRight?: boolean;
   @Prop({ default: false }) private disabled?: boolean;
+  @Prop({ default: true }) private showErrorMessages?: boolean;
 
   @PropSync("value", { default: "" }) private _value!: string;
 

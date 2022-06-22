@@ -27,49 +27,64 @@
                   :value.sync="initialPaymentStr"
                   :alignRight="true"
                   :isCurrency="true"
+                  :showErrorMessages="false"
                   width="190"
                   class="mr-2"
                   :rules="[
-                    $validators.required('Please enter an initial funding increment.')
+                    $validators.required('', true)
                   ]"
-                  @blur="calcAmounts"
+                  @blur="calcAmounts('initialIncrement')"
                 />
                 <span class="d-block" style="width: 9px"></span>
+              </div>
+              <div 
+                v-if="errorMissingInitialIncrement" 
+                class="d-flex justify-start align-top atat-text-field-error mb-1 mt-3"
+              >
+                <ATATSVGIcon 
+                  style="margin-top: 2px;"
+                  name="exclamationMark" 
+                  :width="18" 
+                  :height="18" 
+                  color="error" 
+                />
+                <div class="field-error ml-2">{{ errorMissingInitialIncrementMessage }}</div>
               </div>
 
               <hr class="my-6" />
 
-              <div 
-                class="d-flex justify-space-between align-center mb-4"
+              <div
                 v-for="(payment, index) in payments"
-                :key="index"
+                :key="index"              
               >
-                <ATATSelect
-                  :id="'IncrementPeriod' + index"
-                  :items="getIncrementPeriodsForDropdown(index)"
-                  width="190"
-                  :selectedValue.sync="payments[index].qtr"
-                  class="mr-4"
-                  @onChange="incrementSelected(index)"
-                />
-                <ATATTextField
-                  :id="'Amount' + index"
-                  :value.sync="payments[index].amt"
-                  :alignRight="true"
-                  :isCurrency="true"
-                  width="190"
-                  class="mr-2"
-                  @blur="calcAmounts"
-                />
-                <v-btn
-                  icon
-                  @click="deletePayment(index)"
-                  :disabled="payments.length === 1"
-                >
-                  <v-icon> delete </v-icon>
-                </v-btn>
-              </div>            
 
+                <div class="d-flex justify-space-between align-center mb-4">
+                  <ATATSelect
+                    :id="'IncrementPeriod' + index"
+                    :items="getIncrementPeriodsForDropdown(index)"
+                    width="190"
+                    :selectedValue.sync="payments[index].qtr"
+                    class="mr-4"
+                    @onChange="incrementSelected(index)"
+                  />
+                  <ATATTextField
+                    :id="'Amount' + index"
+                    :value.sync="payments[index].amt"
+                    :alignRight="true"
+                    :isCurrency="true"
+                    width="190"
+                    class="mr-2"
+                    @blur="calcAmounts('increment' + index)"
+                  />
+                  <v-btn
+                    icon
+                    @click="deletePayment(index)"
+                    :disabled="payments.length === 1"
+                  >
+                    <v-icon> delete </v-icon>
+                  </v-btn>
+                </div>            
+              </div>
               <v-btn
                 id="AddIncrementButton"
                 v-if="payments.length < maxPayments"
@@ -153,7 +168,7 @@ import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 
 import { PeriodDTO } from "@/api/models";
-import { SelectData } from "../../../types/Global";
+import { SelectData, fundingIncrements, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -189,7 +204,24 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public initialPaymentStr = "";
   public totalAmount: number | null = null;
 
+  public errorMissingInitialIncrement = false;
+  public errorMissingInitialIncrementMessage = "Please enter the amount of your initial funding.";
+
+  public hasReturnedToPage = false;
+
   public payments: { qtr: string, amt: string }[] = [];
+
+  private get currentData(): IFPData {
+    return {
+      initialFundingIncrementStr: this.initialPaymentStr,
+      fundingIncrements: this.payments,
+    };
+  };
+
+  private savedData: IFPData = {
+    initialFundingIncrementStr: "",
+    fundingIncrements: [],
+  }
 
   public async initializeIncrements(): Promise<void> {
     let qtr = this.currentQuarter;
@@ -203,7 +235,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       const periodStr = ordinal + " QTR FY" + year;
       this.incrementPeriods.push({ text: periodStr, value: periodStr});
 
-      if (i === 0) {
+      if (i === 0 && this.payments.length === 0) {
         // default to 1st option if no store data
         this.payments.push({qtr: periodStr, amt: ""})
       }
@@ -212,7 +244,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public deletePayment(index: number): void {
     this.payments.splice(index, 1);
-    this.calcAmounts();
+    this.calcAmounts("");
   }
 
   public addIncrement(): void {
@@ -229,7 +261,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
-  public calcAmounts(): void {
+  public calcAmounts(field: string): void {
     let incrementsTotal = this.payments.reduce(
       (accumulator, current) =>  
         accumulator + Number(currencyStringToNumber(current.amt)), 0
@@ -248,7 +280,11 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
           ? toCurrencyString(currencyStringToNumber(pmt.amt)) 
           : ""
       });
-    })
+    });
+    if (field === "initialIncrement") {
+      this.errorMissingInitialIncrement 
+        = this.initialPaymentStr === "0.00" || !this.initialPaymentStr;
+    }
   }
 
   public getIncrementPeriodsForDropdown(index: number): SelectData[] {
@@ -270,6 +306,15 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const storeData = await FinancialDetails.getIFPData();
+    if (storeData) {
+      this.initialPaymentStr = storeData.initialFundingIncrementStr;
+      this.savedData.initialFundingIncrementStr = this.initialPaymentStr;
+      this.payments = storeData.fundingIncrements;
+      this.savedData.fundingIncrements = this.payments;
+      this.hasReturnedToPage = this.payments.length > 0;
+    }
+
     await this.initializeIncrements();
 
     if (FinancialDetails.estimatedTaskOrderValue) {
@@ -317,6 +362,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
+        debugger;
+        FinancialDetails.setIFPData(this.currentData);
         // EJY first time user clicks continue:
         // • check if same quarter selected for more than one dropdown
         // • check if over/under funded - AC 4 which was crossed out
@@ -330,8 +377,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    return false;
-    // return hasChanges(this.currentData, this.savedData);
+    // return false;
+    debugger;
+    return hasChanges(this.currentData, this.savedData);
   }
 
 

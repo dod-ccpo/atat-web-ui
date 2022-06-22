@@ -51,7 +51,7 @@ export class ValidationPlugin {
  */
 
   required(
-    message?: string
+    message?: string, isCurrency?: string
   ): ((v: string) => string | true | undefined) {
     message = message || "This field is required.";
     return (v: string) => {
@@ -63,7 +63,11 @@ export class ValidationPlugin {
         // array of strings
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
-        return (v !== "") || message;
+        if (isCurrency) {
+          return (v !== "0.00" && v !== "") || message;
+        } else {
+          return (v !== "") || message;
+        }
       }
       return true;
     };
