@@ -141,22 +141,23 @@
     </v-row>
   </v-container>
 </template>
-<script lang="ts">
-import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+<script lang="ts">
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 
 import { PeriodDTO } from "@/api/models";
 import { SelectData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
-import _ from "lodash";
+
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -166,7 +167,7 @@ import _ from "lodash";
   }
 })
 
-export default class IncrementalFunding extends Vue {
+export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public today = new Date();
   public currentQuarter = Math.floor(((this.today.getMonth() + 3) / 3) + 1);
@@ -179,7 +180,6 @@ export default class IncrementalFunding extends Vue {
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
   public incrementPeriods: SelectData[] = [];
-  public incrementPeriodsForDropdowns: SelectData[] = [];
 
   public costEstimate = 0;
   public costEstimateStr = "";
@@ -194,7 +194,7 @@ export default class IncrementalFunding extends Vue {
   public async initializeIncrements(): Promise<void> {
     let qtr = this.currentQuarter;
     let year = parseInt(this.currentYear.toString().slice(-2));
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 6; i++) {
       const ordinal = this.ordinals[qtr - 1];
       // increment year if at first quarter and not first in the loop
       year = qtr === 1 && i !== 0 ? year + 1 : year;
@@ -229,14 +229,6 @@ export default class IncrementalFunding extends Vue {
     }
   }
 
-  public incrementSelected(index: number): void {
-    const firstSelectedQtr = this.payments[0].qtr;
-    const firstSelectedQtrIndex 
-      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
-    const lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
-    debugger;
-  }
-
   public calcAmounts(): void {
     let incrementsTotal = this.payments.reduce(
       (accumulator, current) =>  
@@ -268,26 +260,20 @@ export default class IncrementalFunding extends Vue {
     const firstSelectedQtrIndex 
       = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr);
 
-
-    const prevSelectedQtr = this.payments[index - 1].qtr;
-    const prevSelectedQtrIndex 
-      = this.incrementPeriods.findIndex(p => p.text === prevSelectedQtr);
     let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
     lastPossibleIndex = lastPossibleIndex > this.incrementPeriods.length 
       ? this.incrementPeriods.length
       : lastPossibleIndex;
-    let optionsArr = this.incrementPeriods.slice(prevSelectedQtrIndex + 1, lastPossibleIndex) 
+    let optionsArr = this.incrementPeriods.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
     debugger;
     return optionsArr;
-
   }
 
   public async loadOnEnter(): Promise<void> {
     await this.initializeIncrements();
-    this.incrementPeriodsForDropdowns = _.clone(this.incrementPeriods);
 
-    if (AcquisitionPackage.estimatedTaskOrderValue) {
-      this.costEstimate = currencyStringToNumber(AcquisitionPackage.estimatedTaskOrderValue);
+    if (FinancialDetails.estimatedTaskOrderValue) {
+      this.costEstimate = currencyStringToNumber(FinancialDetails.estimatedTaskOrderValue);
 
       this.costEstimateStr = toCurrencyString(this.costEstimate);
       this.amountRemaining = this.costEstimate;
@@ -327,6 +313,27 @@ export default class IncrementalFunding extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        // EJY first time user clicks continue:
+        // • check if same quarter selected for more than one dropdown
+        // • check if over/under funded - AC 4 which was crossed out
+        // set a flag if error has been show. if so, user can continue
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  private hasChanged(): boolean {
+    return false;
+    // return hasChanges(this.currentData, this.savedData);
+  }
+
 
 }
 </script>

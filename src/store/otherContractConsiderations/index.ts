@@ -8,6 +8,7 @@ import rootStore from "../index";
   store: rootStore
 })
 
+// EJY 6/22/22 - this appears to not be in use any longer - any reason to keep?
 export class OtherContractConsiderationsStore extends VuexModule {
 
   PIIRecordIncluded: boolean | null = null;

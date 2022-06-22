@@ -266,7 +266,9 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
-  estimatedTaskOrderValue: string | null =  null;
+  
+  // should funding have its own store?
+  // estimatedTaskOrderValue: string | null =  null;
 
   public initContact: ContactDTO = initialContact();
 
@@ -274,10 +276,10 @@ export class AcquisitionPackageStore extends VuexModule {
     return this.projectOverview?.title || "";
   }
 
-  @Mutation
-  public setEstimatedTaskOrderValue(value: string): void {
-    this.estimatedTaskOrderValue = value;
-  }
+  // @Mutation
+  // public setEstimatedTaskOrderValue(value: string): void {
+  //   this.estimatedTaskOrderValue = value;
+  // }
 
   @Mutation
   public setInitialized(value: boolean): void {

@@ -77,7 +77,7 @@ import EvaluationCriteria
 // step 10 - Financial Details
 import RequirementsCostForm from "@/steps/10-FinancialDetails/RequirementsCostForm.vue";
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
-import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
+import SurgeCapabilities from "../step../steps/10-FinancialDetails/SurgeCapabilities.vue";
 import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
@@ -146,7 +146,7 @@ export const routeNames = {
   EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
   EvaluationCriteria: "Evaluation_Criteria",
   ClassificationRequirements: "Classification_Requirements",
-  RequirementsCostEstimate: "Requirements_Cost_Estimate",
+  SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
   FundingPlan: "Funding_Plan",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
@@ -582,9 +582,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Requirements Cost Estimate",
         path: "requirements-cost-estimate",
-        name: routeNames.RequirementsCostEstimate,
+        name: routeNames.SurgeCapabilities,
         completePercentageWeight: 1,
-        component: RequirementsCostEstimate,
+        component: SurgeCapabilities,
       },
       {
         menuText: "Funding Plan",
