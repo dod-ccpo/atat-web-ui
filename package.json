@@ -5,10 +5,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:testing": "vue-cli-service build --dest dist_testing",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "postbuild": "node servicenow.postbuild.js",
+    "postbuild:cypress": "node cypress.postbuild.js",
+    "build:testing": "vue-cli-service build --dest dist_testing",
+    "build:localtest":"npm run build:testing && npm run postbuild:cypress",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest",
     "test-file:watch": "jest --watch --no-cache src/components/ATATTextArea.spec.ts ",
@@ -86,8 +88,5 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ],
-  "vuePlugins": {
-    "service": ["cypressbuildplugin.js"]
-  }
+  ]
 }
