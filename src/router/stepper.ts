@@ -77,7 +77,7 @@ import EvaluationCriteria
 // step 10 - Financial Details
 import RequirementsCostForm from "@/steps/10-FinancialDetails/RequirementsCostForm.vue";
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
-import SurgeCapabilities from "../step../steps/10-FinancialDetails/SurgeCapabilities.vue";
+import SurgeCapabilities from "../steps/10-FinancialDetails/SurgeCapabilities.vue";
 import FundingPlan from "../steps/10-FinancialDetails/FundingPlan.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";

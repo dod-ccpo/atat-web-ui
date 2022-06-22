@@ -70,15 +70,12 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 import vue from "vue";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import BAALearnMore from "@/steps/08-StandardsAndCompliance/BAALearnMore.vue";
-
 
 @Component({
   components: {
     ATATRadioGroup,
     ATATExpandableLink,
     FundingRequestLearnMore,
-
   },
 })
 
