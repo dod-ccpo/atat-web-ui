@@ -8,16 +8,20 @@ import rootStore from "../index";
   store: rootStore
 })
 
-// EJY 6/22/22 - this appears to not be in use any longer - any reason to keep?
 export class FinancialDetailsStore extends VuexModule {
 
   estimatedTaskOrderValue: string | null =  null;
+  fundingRequestType: string | null =  null;
 
   @Mutation
   public setEstimatedTaskOrderValue(value: string): void {
     this.estimatedTaskOrderValue = value;
   }
 
+  @Mutation
+  public setFundingRequestType(value: string): void {
+    this.fundingRequestType = value;
+  }
 
 }
 

@@ -276,11 +276,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setFundingRequestType(value: string): void {
-    this.fundingRequestType = value;
-  }
-
-  @Mutation
   public setInitialized(value: boolean): void {
     this.initialized = value;
   }

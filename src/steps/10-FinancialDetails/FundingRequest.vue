@@ -72,7 +72,7 @@ import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestL
 import SlideoutPanel from "@/store/slideoutPanel/index";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import { hasChanges } from "@/helpers";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 import { FundingRequestDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -136,8 +136,8 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    this.selectedFundingTypes = await AcquisitionPackage.fundingRequestType || "";
-    this.savedData.fundingRequestType = await AcquisitionPackage.fundingRequestType || "";
+    this.selectedFundingTypes = await FinancialDetails.fundingRequestType || "";
+    this.savedData.fundingRequestType = await FinancialDetails.fundingRequestType || "";
   };
 
   public async mounted(): Promise<void> {
@@ -147,7 +147,7 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        AcquisitionPackage.setFundingRequestType(this.currentData.fundingRequestType || "");
+        FinancialDetails.setFundingRequestType(this.currentData.fundingRequestType || "");
       }
     } catch (error) {
       console.log(error);
