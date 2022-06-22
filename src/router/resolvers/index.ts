@@ -1,4 +1,5 @@
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
@@ -466,8 +467,9 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 };
 
 export const FundingRequestResolver = (current: string): string => {
+  debugger;
   const fundingType
-      = AcquisitionPackage.fundingRequestType;
+      = FinancialDetails.fundingRequestType;
 
   if(current === routeNames.GInvoicing){
     return routeNames.FundingPlanType;
