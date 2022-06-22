@@ -30,7 +30,7 @@
             updating your classification requirements in the
           </span>
           <router-link
-            id="Step5Link"
+            id="Step4Link"
             :to="{name: route}"
           >{{ linkText }} Contract Details section</router-link>
           before proceeding.
@@ -48,7 +48,7 @@
             PoP and classification requirements in the
           </span>
           <router-link
-            id="Step5Link"
+            id="Step4Link"
             :to="{name: route}"
           >Contract Details section</router-link>
           first.

@@ -11,7 +11,7 @@
               To complete this section, you will need an authorized funding request to transfer
               funds from your agency to DITCO. We recommend using G-Invoicing to generate your 7600A
               and 7600B, but you will also be able to upload form(s) directly from your computer.
-              <a role="button" id="LearnMoreFunding" @click="openSlideoutPanel">
+              <a id="LearnMoreFunding" role="button" @click="openSlideoutPanel($event, 'Funding')">
                 <span class="">Learn more about funding requests</span>
               </a>
             </p>
@@ -19,10 +19,10 @@
               id="FundingTypesRadioGroup"
               :card="true"
               :items="radioButtonItems"
+              :rules="[$validators.required('Please select a type of funding request.')]"
               :value.sync="selectedFundingTypes"
               class="max-width-640 mb-7"
               name="radioButton-card"
-              :rules="[$validators.required('Please select an option')]"
             />
             <ATATExpandableLink aria-id="AboutMissingFundingRequest">
               <template v-slot:header>
@@ -37,8 +37,9 @@
                 <p>
                   G-Invoicing is the long-term solution for Federal Program Agencies (FPAs) to
                   manage their intragovernmental (IGT) Buy/Sell transactions. This is the preferred
-                  system for generating and maintaining your GT&Cs and Orders with DITCO.
-                  <a>
+                  system for generating and maintaining your GT&amp;Cs and Orders with DITCO.
+                  <a id="LearnMoreGInvoicing" role="button"
+                     @click="openSlideoutPanel($event, 'Ginvoice')">
                     <span>Learn more about G-Invoicing</span>
                   </a>
                 </p>
@@ -62,29 +63,30 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
-import vue from "vue";
 import FundingRequestLearnMore from "@/steps/10-FinancialDetails/FundingRequestLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
+import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
+import { hasChanges } from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { FundingRequestDTO } from "@/api/models";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
     ATATRadioGroup,
     ATATExpandableLink,
     FundingRequestLearnMore,
+    GInvoiceLearnMore,
   },
 })
 
-export default class FundingPlanType extends vue {
-  private firmFixedPriceSelected = "";
-  private timeAndMaterialsSelected = "";
-
+export default class FundingPlanType extends Mixins(SaveOnLeave) {
   private selectedFundingTypes = "";
-  private justification = "";
   private radioButtonItems: RadioButton[] = [
     {
       id: "FSFCheckbox",
@@ -100,32 +102,61 @@ export default class FundingPlanType extends vue {
       description: "Manually upload your completed DD Form 448.",
     }
   ];
+  private savedData: FundingRequestDTO = {
+    fundingRequestType: "",
+  };
 
-  @Watch("selectedContractTypes")
-  protected selectedContractTypesChanged(newSelections: string[]): void {
-    this.firmFixedPriceSelected = newSelections.indexOf("FFP") > -1 ? "true" : "false";
-    this.timeAndMaterialsSelected = newSelections.indexOf("T&M") > -1 ? "true" : "false";
-  }
+  private get currentData(): FundingRequestDTO {
+    return {
+      fundingRequestType: this.selectedFundingTypes,
+    };
+  };
 
-  @Watch("timeAndMaterialsSelected")
-  protected selectedTMChanged(newVal: string): void {
-    if (newVal === "false") {
-      this.justification = "";
+
+  public async openSlideoutPanel(e: Event, panelType: string): Promise<void> {
+    if (panelType === "Ginvoice") {
+      const gInvoice: SlideoutPanelContent = {
+        component: GInvoiceLearnMore,
+        title: "Learn More",
+      };
+      await SlideoutPanel.setSlideoutPanelComponent(gInvoice);
+    } else {
+      const funding: SlideoutPanelContent = {
+        component: FundingRequestLearnMore,
+        title: "Learn More",
+      };
+      await SlideoutPanel.setSlideoutPanelComponent(funding);
     }
-  }
-  public openSlideoutPanel(e: Event): void {
-    if (e && e.currentTarget) {
-      const opener = e.currentTarget as HTMLElement;
-      SlideoutPanel.openSlideoutPanel(opener.id);
-    }
-  }
+    this.$nextTick(()=>{
+      if (e && e.currentTarget) {
+        const opener = e.currentTarget as HTMLElement;
+        SlideoutPanel.openSlideoutPanel(opener.id);
+      };
+    });
+  };
+
+  public async loadOnEnter(): Promise<void> {
+    this.selectedFundingTypes = await AcquisitionPackage.fundingRequestType || "";
+    this.savedData.fundingRequestType = await AcquisitionPackage.fundingRequestType || "";
+  };
 
   public async mounted(): Promise<void> {
-    const slideoutPanelContent: SlideoutPanelContent = {
-      component: FundingRequestLearnMore,
-      title: "Learn More",
+    await this.loadOnEnter();
+  };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        AcquisitionPackage.setFundingRequestType(this.currentData.fundingRequestType || "");
+      }
+    } catch (error) {
+      console.log(error);
     }
-    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-  }
-}
+    return true;
+  };
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  };
+};
 </script>
