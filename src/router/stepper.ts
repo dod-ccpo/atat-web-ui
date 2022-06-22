@@ -78,6 +78,8 @@ import SurgeCapabilities from "../steps/10-FinancialDetails/SurgeCapabilities.vu
 import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
+import IncrementalFunding 
+  from "../steps/10-FinancialDetails/IncrementalFunding.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
@@ -146,6 +148,7 @@ export const routeNames = {
   RequirementsCostForm: "Requirements_Cost_Form",
   MIPR: "MIPR",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
+  IncrementalFunding: "Incremental_Funding",
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
@@ -613,6 +616,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
+      },
+      {
+        menuText: "Incremental Funding",
+        excludeFromMenu: true,
+        path: "incremental-funding",
+        name: routeNames.IncrementalFunding,
+        completePercentageWeight: 1,
+        component: IncrementalFunding,
       },
     ]
   },
