@@ -1,15 +1,92 @@
 <template>
-  <div>
-    Future G-Invoicing page
-  </div>
+  <v-container fluid class="container-max-width">
+    <v-row>
+      <v-col class="col-12">
+        <h1 class="page-header mb-3">
+          Did you use G-Invoicing for your funding request?
+        </h1>
+        <div class="copy-max-width">
+          <p class="mb-10">
+            If you select Yes below, then we will verify a few details and sync 
+            your funding request with this effort. Otherwise, you can manually 
+            upload forms from your computer. 
+            <a
+              role="button"
+              id="GInvoicingLearnMore"
+              class="_text-link"
+              @click="openSlideoutPanel"
+            >
+              Learn more about G-Invoicing
+            </a>
+          </p>
+          <ATATRadioGroup
+            class="copy-max-width max-width-760"
+            id="GInvoicingOptions"
+            :card="true"
+            :items="gInvoicingOptions"
+            :value.sync="useGInvoicing"
+            :rules="[$validators.required('Please select an option')]"
+          />
+        </div>
+        <div v-show="useGInvoicing === 'Yes'">
+          <hr class="mt-5" />
+            -- search input goes here --
+
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
+import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 
-@Component({})
+import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel/index";
+
+import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+
+
+@Component({
+  components: {
+    ATATRadioGroup,
+    GInvoiceLearnMore,
+  },
+})
 export default class GInvoicing extends Vue {
+
+  public useGInvoicing: boolean | null = null;
+
+  private gInvoicingOptions: RadioButton[] = [
+    {
+      id: "Yes",
+      label: "Yes. My General Terms &amp; Conditions (GT&amp;C) and Order are in G-Invoicing.",
+      value: "Yes",
+    },
+    {
+      id: "No",
+      label: "No. I would like to upload my 7600A and 7600B forms.",
+      value: "No",
+    }
+  ];  
+
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
+
+  public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: GInvoiceLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+  }
+
 }
 </script>
 
