@@ -22,6 +22,8 @@
         @change="fileUploadChanged"
         :hide-details="true"
         :rules="_rules"
+        :validate-on-blur="true"
+        @blur="setErrorMessage()"
       >
         <template v-slot:prepend-inner>
           <div
@@ -124,7 +126,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "Use a PDF file with a max size of 1 GB." }) helpText!: string;
-
+  
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] })
   private _invalidFiles!: invalidFile[];
@@ -159,6 +161,7 @@ export default class ATATFileUpload extends Vue {
     this.reset();
     this.isFullSize = this._validFiles.length === 0;
   }
+
   // 
   /**
    * 1. sets uploadedFiles data
@@ -351,20 +354,23 @@ export default class ATATFileUpload extends Vue {
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.errorMessages = this.$refs.atatFileUpload.errorBucket;
+      if (this._invalidFiles.length > 0){
+        this.errorMessages = this.errorMessages.filter(
+          (msg)=>msg !== "Please upload your MIPR (DD Form 448)."
+        );
+      }
     });
   }
 
   private clearErrorMessages(): void {
-    // if (this.errorMessages.length>0){
     Vue.nextTick(() => {
       this.$refs.atatFileUploadForm.reset();
       Vue.nextTick(() => {
         this.$refs.atatFileUploadForm.resetValidation();
       });
     });
-    // }
   }
 
   private reset(): void {
@@ -398,8 +404,8 @@ export default class ATATFileUpload extends Vue {
     this.fileAttachmentService = FileAttachmentServiceFactory(
       this.attachmentServiceName
     );
-
-    this._invalidFiles = [];
+    
+    this._invalidFiles = [];  
   }
 
   private updated(): void {

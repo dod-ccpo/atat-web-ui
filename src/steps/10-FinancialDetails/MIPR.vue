@@ -17,7 +17,7 @@
           />
         </div>
         <hr/>
-        <h3 class="mb-5">Upload your MIPR (DD Fom 448)</h3>
+        <h3 class="mb-5">Upload your MIPR (DD Form 448)</h3>
         <ATATFileUpload
           id="FundingPlan"
           :invalidFiles.sync="invalidFiles"
@@ -115,9 +115,11 @@ export default class MIPR extends Vue {
   }
 
   // `ATATFileUpload.vue`
-  private getRulesArray(): ((v: string) => string | true | undefined)[] {
+  private getRulesArray(): ((v: string) => string|true|undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
-
+  
+    rulesArr.push(
+      this.$validators.required('Please upload your MIPR (DD Form 448).'));
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
         this.$validators.isFileValid(
@@ -130,7 +132,6 @@ export default class MIPR extends Vue {
         )
       );
     });
-    console.log(rulesArr)
     return rulesArr;
   }
 

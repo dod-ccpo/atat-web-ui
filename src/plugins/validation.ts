@@ -64,6 +64,8 @@ export class ValidationPlugin {
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
         return (v !== "") || message;
+      } else if ( typeof (v) === "undefined"){ //validates file upload
+        return message;
       }
       return true;
     };
