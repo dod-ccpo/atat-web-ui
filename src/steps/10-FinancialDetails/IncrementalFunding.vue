@@ -27,48 +27,86 @@
                   :value.sync="initialPaymentStr"
                   :alignRight="true"
                   :isCurrency="true"
+                  :showErrorMessages="false"
                   width="190"
                   class="mr-2"
                   :rules="[
-                    $validators.required('Please enter an initial funding increment.')
+                    $validators.required('', true)
                   ]"
-                  @blur="calcAmounts"
+                  @blur="calcAmounts('initialIncrement')"
                 />
                 <span class="d-block" style="width: 9px"></span>
+              </div>
+              <div 
+                v-if="errorMissingInitialIncrement" 
+                class="d-flex justify-start align-top atat-text-field-error mb-1 mt-3"
+                id="InitialIncrementError"
+              >
+                <ATATSVGIcon 
+                  style="margin-top: 2px;"
+                  name="exclamationMark" 
+                  :width="18" 
+                  :height="18" 
+                  color="error" 
+                />
+                <div class="field-error ml-2">{{ errorMissingInitialIncrementMessage }}</div>
               </div>
 
               <hr class="my-6" />
 
-              <div 
-                class="d-flex justify-space-between align-center mb-4"
+              <div
                 v-for="(payment, index) in payments"
-                :key="index"
+                :key="index"              
               >
-                <ATATSelect
-                  :id="'IncrementPeriod' + index"
-                  :items="incrementPeriodsForDropdowns"
-                  width="190"
-                  :selectedValue.sync="payments[index].qtr"
-                  class="mr-4"
-                  @onChange="incrementSelected(index)"
-                />
-                <ATATTextField
-                  :id="'Amount' + index"
-                  :value.sync="payments[index].amt"
-                  :alignRight="true"
-                  :isCurrency="true"
-                  width="190"
-                  class="mr-2"
-                  @blur="calcAmounts"
-                />
-                <v-btn
-                  icon
-                  @click="deletePayment(index)"
-                  :disabled="payments.length === 1"
+
+                <div class="d-flex justify-space-between align-center mb-4">
+                  <ATATSelect
+                    :id="'IncrementPeriod' + index"
+                    :items="getIncrementPeriodsForDropdown(index)"
+                    width="190"
+                    :selectedValue.sync="payments[index].qtr"
+                    class="mr-4"
+                    @onChange="incrementSelected(index)"
+                  />
+                  <ATATTextField
+                    :id="'Amount' + index"
+                    :value.sync="payments[index].amt"
+                    :alignRight="true"
+                    :isCurrency="true"
+                    :showErrorMessages="false"
+                    width="190"
+                    class="mr-2"
+                    @blur="calcAmounts('increment' + index)"
+                    :rules="[
+                      $validators.required('', true)
+                    ]"
+
+                  />
+                  <v-btn
+                    icon
+                    @click="deletePayment(index)"
+                    :disabled="payments.length === 1"
+                  >
+                    <v-icon> delete </v-icon>
+                  </v-btn>
+                </div>    
+
+                <div 
+                  v-if="errorMissingFirstIncrement && index === 0" 
+                  class="d-flex justify-start align-top atat-text-field-error mb-4 mt-3"
+                  id="FirstIncrementError"
                 >
-                  <v-icon> delete </v-icon>
-                </v-btn>
-              </div>            
+                  <ATATSVGIcon 
+                    style="margin-top: 2px;"
+                    name="exclamationMark" 
+                    :width="18" 
+                    :height="18" 
+                    color="error" 
+                  />
+                  <div class="field-error ml-2">{{ errorMissingFirstIncrementMessage }}</div>
+                </div>
+
+              </div>
 
               <v-btn
                 id="AddIncrementButton"
@@ -141,22 +179,23 @@
     </v-row>
   </v-container>
 </template>
-<script lang="ts">
-import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+<script lang="ts">
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 
 import { PeriodDTO } from "@/api/models";
-import { SelectData } from "../../../types/Global";
+import { SelectData, fundingIncrements, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
-import _ from "lodash";
+
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -166,10 +205,10 @@ import _ from "lodash";
   }
 })
 
-export default class IncrementalFunding extends Vue {
+export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public today = new Date();
-  public currentQuarter = Math.floor((this.today.getMonth() + 3) / 3);
+  public currentQuarter = Math.floor(((this.today.getMonth() + 3) / 3) + 1);
   public currentYear = this.today.getFullYear();
 
   public periods: PeriodDTO[] | null = [];
@@ -179,7 +218,6 @@ export default class IncrementalFunding extends Vue {
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
   public incrementPeriods: SelectData[] = [];
-  public incrementPeriodsForDropdowns: SelectData[] = [];
 
   public costEstimate = 0;
   public costEstimateStr = "";
@@ -189,12 +227,32 @@ export default class IncrementalFunding extends Vue {
   public initialPaymentStr = "";
   public totalAmount: number | null = null;
 
+  public errorMissingInitialIncrement = false;
+  public errorMissingInitialIncrementMessage = "Please enter the amount of your initial funding.";
+  public errorMissingFirstIncrement = false;
+  public errorMissingFirstIncrementMessage = "Please enter the amount of your first increment.";
+
+  // use in future ticket for validation returning to page to show error messages
+  public hasReturnedToPage = false;
+
   public payments: { qtr: string, amt: string }[] = [];
+
+  private get currentData(): IFPData {
+    return {
+      initialFundingIncrementStr: this.initialPaymentStr,
+      fundingIncrements: this.payments,
+    };
+  };
+
+  private savedData: IFPData = {
+    initialFundingIncrementStr: "",
+    fundingIncrements: [],
+  }
 
   public async initializeIncrements(): Promise<void> {
     let qtr = this.currentQuarter;
     let year = parseInt(this.currentYear.toString().slice(-2));
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 6; i++) {
       const ordinal = this.ordinals[qtr - 1];
       // increment year if at first quarter and not first in the loop
       year = qtr === 1 && i !== 0 ? year + 1 : year;
@@ -203,7 +261,7 @@ export default class IncrementalFunding extends Vue {
       const periodStr = ordinal + " QTR FY" + year;
       this.incrementPeriods.push({ text: periodStr, value: periodStr});
 
-      if (i === 0) {
+      if (i === 0 && this.payments.length === 0) {
         // default to 1st option if no store data
         this.payments.push({qtr: periodStr, amt: ""})
       }
@@ -212,7 +270,7 @@ export default class IncrementalFunding extends Vue {
 
   public deletePayment(index: number): void {
     this.payments.splice(index, 1);
-    this.calcAmounts();
+    this.calcAmounts("");
   }
 
   public addIncrement(): void {
@@ -229,16 +287,7 @@ export default class IncrementalFunding extends Vue {
     }
   }
 
-  public incrementSelected(index: number): void {
-    // LOGIC TO BE COMPLETED IN TICKET 7527
-
-    // const firstSelectedQtr = this.payments[0].qtr;
-    // const firstSelectedQtrIndex 
-    //   = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr)
-    // const lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
-  }
-
-  public calcAmounts(): void {
+  public calcAmounts(field: string): void {
     let incrementsTotal = this.payments.reduce(
       (accumulator, current) =>  
         accumulator + Number(currencyStringToNumber(current.amt)), 0
@@ -257,15 +306,52 @@ export default class IncrementalFunding extends Vue {
           ? toCurrencyString(currencyStringToNumber(pmt.amt)) 
           : ""
       });
-    })
+    });
+
+    // validation on blur for initial and first increments required
+    let amt;
+    if (field === "initialIncrement") {
+      amt = parseFloat(this.initialPaymentStr);
+      this.errorMissingInitialIncrement = amt === 0 || isNaN(amt);
+    } else if (field === "increment0") {
+      amt = parseFloat(this.payments[0].amt);
+      this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
+    }
+  }
+
+  public getIncrementPeriodsForDropdown(index: number): SelectData[] {
+    if (index === 0) {
+      return this.incrementPeriods;
+    } 
+
+    const firstSelectedQtr = this.payments[0].qtr;
+    const firstSelectedQtrIndex 
+      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr);
+
+    let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
+    lastPossibleIndex = lastPossibleIndex > this.incrementPeriods.length 
+      ? this.incrementPeriods.length
+      : lastPossibleIndex;
+    let optionsArr = this.incrementPeriods.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
+
+    return optionsArr;
   }
 
   public async loadOnEnter(): Promise<void> {
-    await this.initializeIncrements();
-    this.incrementPeriodsForDropdowns = _.clone(this.incrementPeriods);
+    const storeData = await FinancialDetails.getIFPData();
+    if (storeData) {
+      this.initialPaymentStr = storeData.initialFundingIncrementStr;
+      this.savedData.initialFundingIncrementStr = this.initialPaymentStr;
+      this.payments = storeData.fundingIncrements;
+      this.savedData.fundingIncrements = this.payments;
+      this.hasReturnedToPage = this.payments.length > 0;
+      this.calcAmounts("");
+    }
 
-    if (AcquisitionPackage.estimatedTaskOrderValue) {
-      this.costEstimate = currencyStringToNumber(AcquisitionPackage.estimatedTaskOrderValue);
+    await this.initializeIncrements();
+
+    if (FinancialDetails.estimatedTaskOrderValue) {
+      this.costEstimate = currencyStringToNumber(FinancialDetails.estimatedTaskOrderValue);
 
       this.costEstimateStr = toCurrencyString(this.costEstimate);
       this.amountRemaining = this.costEstimate;
@@ -305,6 +391,28 @@ export default class IncrementalFunding extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      // FUTURE TICKET VALIDATION: first time user clicks continue:
+      // • check if same quarter selected for more than one dropdown
+      // • check if over/under funded - AC 4 which was crossed out
+      // set a flag if error has been show. if so, user can continue
+
+      if (this.hasChanged()) {
+        FinancialDetails.setIFPData(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
+  }
+
 
 }
 </script>
