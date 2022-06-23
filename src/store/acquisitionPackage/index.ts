@@ -446,7 +446,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setFundingPlans("");
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
-          this.setFundingRequestType("");
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
