@@ -8,9 +8,6 @@
         :for="id + '_SearchInput'"
       >
         {{ label }}
-        <span v-if="optional" class="optional">
-          Optional
-        </span>
       </label>
       <ATATTooltip 
         :tooltipText="tooltipText"
@@ -21,9 +18,10 @@
     </div>
 
     <v-text-field
+      :id="id + '_SearchInput'"
+      class="_search-input"
       clearable
       @input="onInput"
-      :id="id + '_SearchInput'"
       outlined
       dense
       :height="42"
@@ -33,7 +31,15 @@
 
       autocomplete="off"
 
-    ></v-text-field>
+    />
+    <v-btn class="primary">
+      <ATATSVGIcon 
+        name="search"
+        color="white"
+        width="18"
+        height="18"
+      />
+    </v-btn>
   </div>
 </template>
 
@@ -41,9 +47,11 @@
 import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATTooltip from "@/components/ATATTooltip.vue"
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
 @Component({
   components: {
+    ATATSVGIcon,
     ATATTooltip,
   },
 })
@@ -53,6 +61,8 @@ export default class ATATSearch extends Vue {
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: "272" }) private width!: string;
   @Prop({ default: "" }) private label!: string;
+  @Prop({ default: "" }) private tooltipTitle!: string;
+  @Prop({ default: "" }) private tooltipText!: string;
 
   @PropSync("value", { default: "" }) private _value!: string;
 

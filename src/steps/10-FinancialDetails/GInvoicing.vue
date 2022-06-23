@@ -34,6 +34,10 @@
               id="OrderNumber"
               placeHolder="Find your order in G-Invoicing"
               label="Order Number"
+              tooltipText="This is a 20-character value (including hyphens) generated 
+                by G-Invoicing. You may also enter 22 characters (including a period 
+                and digit at the end) to reference the version number."
+
             />
 
         </div>
