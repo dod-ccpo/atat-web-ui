@@ -13,7 +13,19 @@
               helpText="Format: AYYMM-000-000-000000"
               :tooltipText="generalTermsAndConditionsToolTips"
               class="_input-max-width"
-              :rules="[$validators.required('Please enter your GT&C number.')]"
+              :validate-on-blur="true"
+              :rules="[
+                $validators.required('Please enter your GT&C number.'),
+                $validators.isMaskValid(
+                  ['A[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
+                  `Your order number should be 20 or 22 characters (including hyphens 
+                    and periods) and use the format:<ul>
+                    <li>AYYMM-000-000-000000</li>
+                    <li>AYYMM-000-000-000000.0 (with version number)</li></ul>`
+                , true),
+              ]"
+              :value.sync="gtcNumber"
+              hideHelpTextOnErrors="true"
             />
           </div>
           <div class="mt-10">
@@ -23,13 +35,26 @@
               helpText="Format: OYYMM-000-000-000000"
               :tooltipText="orderNumberToolTips"
               class="_input-max-width"
-              :rules="[$validators.required('Please enter your order number.')]"
+              :rules="[
+                $validators.required('Please enter your order number.'),
+                $validators.isMaskValid(
+                  ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
+                  `Your order number should be 20 or 22 characters (including hyphens 
+                    and periods) and use the format:<ul>
+                    <li>OYYMM-000-000-000000</li>
+                    <li>OYYMM-000-000-000000.0 (with version number)</li></ul>`
+                , true),
+              ]"
+               :value.sync="orderNumber"
+              hideHelpTextOnErrors="true"
             />
           </div>
           <hr class="base-lighter mt-10 mb-8" />
 
-          <di class="mt-10">
-            <h4 class="h4 text-base-darkest font-size-24 mb-5">Upload your 7600A and 7600B</h4>
+          <div class="mt-10">
+            <h4 class="h4 text-base-darkest font-size-24 mb-5">
+              Upload your 7600A and 7600B
+            </h4>
             <ATATFileUpload
               :validFileFormats="validFileFormats"
               attachmentServiceName="FundingPlans"
@@ -39,8 +64,26 @@
               :invalidFiles.sync="invalidFiles"
               :validFiles.sync="uploadedFiles"
               :rules="getRulesArray()"
+              @mouseleave="onFileUploadChanged"
+              @blur="onFileUploadChanged"
             />
-          </di>
+          </div>
+          <div class="mt-10">
+             <ATATAlert
+            id="UPload7600Alert"
+            v-show="uploadedFiles.length < 2"
+            type="warning"
+            class="copy-max-width my-10"
+          >
+            <template v-slot:content>
+              <p class="mb-0">
+               You may be missing a funding document. Please ensure that both authorized 
+               forms are uploaded. If your 7600A and 7600B were combined into a single file 
+               before uploading, ignore this message.
+              </p>
+            </template>
+          </ATATAlert>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -52,6 +95,8 @@
 import { Component, Mixins } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 import { invalidFile, uploadingFile } from "types/Global";
 
 // import { hasChanges } from "@/helpers";
@@ -59,6 +104,7 @@ import { invalidFile, uploadingFile } from "types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { AttachmentTables } from "@/api";
 import Attachments from "@/store/attachments";
+import { isValid } from "date-fns";
 
 let generalTermsAndConditionsToolTips = "This is a unique 20-character value";
 generalTermsAndConditionsToolTips +=
@@ -71,19 +117,25 @@ let orderNumberToolTips =
 orderNumberToolTips +=
   "You can find your order number in the top section of your FS Form 7600B.";
 
+const GTCMRegex = /A[0-9]{4}-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$/gm;
+
 @Component({
   components: {
     ATATTextField,
     ATATFileUpload,
+    ATATErrorValidation,
+    ATATAlert,
   },
 })
-export default class FundingPlanType extends Mixins(SaveOnLeave) {
+export default class Upload7600 extends Mixins(SaveOnLeave) {
   private generalTermsAndConditionsToolTips = generalTermsAndConditionsToolTips;
   private orderNumberToolTips = orderNumberToolTips;
-   private uploadedFiles: uploadingFile[] = [];
+  private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
   private validFileFormats = ["xlsx", "xls", "pdf"];
   private maxFileSizeInBytes = 1073741824;
+  private gtcNumber = "";
+  private orderNumber = "";
 
   // rules array dynamically created based on the invalid
   // files returned from the child component
@@ -103,6 +155,13 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
         )
       );
     });
+
+    // if(this.uploadedFiles.length == 0){
+    //    rulesArr.push(()=> {
+
+    //         ret
+    //    }  )
+    // }
     return rulesArr;
   }
 
@@ -146,6 +205,23 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
     // return hasChanges(this.currentData, this.savedData);
     // todo fill out has changes
     return false;
+  }
+
+  private showDefaultValidation(): boolean {
+    if (this.gtcNumber.length === 0) {
+      return true;
+    }
+
+    return GTCMRegex.test(this.gtcNumber);
+  }
+
+  private onFileUploadChanged(): void {
+
+    if(this.uploadedFiles.length == 0){
+      // todo do something
+
+          
+    }
   }
 }
 </script>

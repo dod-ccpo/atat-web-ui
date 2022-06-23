@@ -1,10 +1,12 @@
 <template>
+<button style="outline:none" @blur="$emit('blur')">
   <v-form ref="atatFileUploadForm">
     <div
       v-cloak
       @dragenter="onDragEnter"
       @drop.prevent="addDropFile"
       @dragover.prevent
+      @mouseleave="$emit('mouseleave')"
     >
       <v-file-input
         ref="atatFileUpload"
@@ -84,6 +86,7 @@
       @delete="(file) => $emit('delete', file)"
     />
   </v-form>
+</button>
 </template>
 
 <script lang="ts">
