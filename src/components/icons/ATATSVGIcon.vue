@@ -18,6 +18,7 @@ import Calendar from "@/components/icons/Calendar.vue";
 import Close from "@/components/icons/Close.vue";
 import Currency from "@/components/icons/Currency.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
+import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Pdf from "@/components/icons/Pdf.vue";
@@ -25,12 +26,12 @@ import Search from "@/components/icons/Search.vue";
 import Remove from "@/components/icons/Remove.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 
-
 @Component({
   components:{
     Calendar,
     Close,
     Currency,
+    ExclamationMark,
     ExternalLink,
     FilePresent,
     MonetizationOn,

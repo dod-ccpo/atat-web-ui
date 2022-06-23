@@ -226,4 +226,11 @@ export interface DOWServiceOfferingGroup {
   serviceOfferings: DOWServiceOffering[];
 }
 
-
+export interface fundingIncrements {
+  qtr: string;
+  amt: string;
+}
+export interface IFPData {
+  initialFundingIncrementStr: string;
+  fundingIncrements: fundingIncrements[];
+}
