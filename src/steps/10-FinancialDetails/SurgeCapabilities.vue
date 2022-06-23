@@ -65,7 +65,7 @@ import ATATTextField from "../../components/ATATTextField.vue";
     ATATTextField,
   },
 })
-export default class RequirementsCostEstimate extends Mixins(SaveOnLeave) {
+export default class SurgeCapabilities extends Mixins(SaveOnLeave) {
   private surgeCapabilities = "";
 
   get contractPricePercentageRules(): unknown[] {
