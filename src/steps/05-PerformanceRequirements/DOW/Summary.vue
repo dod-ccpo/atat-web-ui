@@ -20,111 +20,128 @@
             summaryPage=true
           />
         </div>
-        <div class="container-max-width"
-              v-for="(item, index) in selectedServiceGroups"
-              :key="item.serviceOfferingGroupId">
-          <div class=" d-flex justify-space-between">
-            <div>
-              <h3 class="mb-1">
-                {{getFormattedNames(item.serviceOfferingGroupId)}}
-              </h3>
-              <p class="mb-0">
-                {{formattedOfferings(item.serviceOfferings)}}
-              </p>
-            </div>
-            <div class="d-flex align-start">
-              <div class="d-flex align-center">
-                <div 
-                  v-if="missingData(item.serviceOfferingGroupId)" 
-                  class="d-flex align-start nowrap ml-5"
+        <div id="SelectedGroups">
+
+          <div 
+            class="container-max-width"
+            :id="getIdText(item.serviceOfferingGroupId )+ '_Wrapper'"
+            v-for="(item, index) in selectedServiceGroups"
+            :key="item.serviceOfferingGroupId"
+          >
+            <div class=" d-flex justify-space-between">
+              <div>
+                <h3 class="mb-1" :id="getIdText(item.serviceOfferingGroupId) + '_Heading'">
+                  {{getFormattedNames(item.serviceOfferingGroupId)}}
+                </h3>
+                <p 
+                  class="mb-0 _selectedOfferings" 
+                  v-html="formattedOfferings(item.serviceOfferings)"
                 >
-                  <v-icon
-                    class="icon-20 text-warning-dark2 pr-2"
-                  >warning</v-icon>
-                  <p class="mb-0 pr-4 _semibold">Missing info</p>
+                </p>
+              </div>
+              <div class="d-flex align-start">
+                <div class="d-flex align-center">
+                  <div 
+                    v-if="missingData(item.serviceOfferingGroupId)" 
+                    class="d-flex align-start nowrap ml-5"
+                  >
+                    <v-icon
+                      class="icon-20 text-warning-dark2 pr-2"
+                    >warning</v-icon>
+                    <p class="mb-0 pr-4 _semibold">Missing info</p>
+                  </div>
+                  <v-btn
+                    width="111"
+                    :class="[
+                      missingData(item.serviceOfferingGroupId)? 'primary': 'secondary',
+                      '_' + getIdText(item.serviceOfferingGroupId) + '-button'
+                    ]"
+                    @click="routeToSelection(item.serviceOfferingGroupId,false)"
+                    @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
+                    @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
+                  >
+                    {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
+                  </v-btn>
                 </div>
-                <v-btn
-                  width="111"
-                  :class="missingData(item.serviceOfferingGroupId)? 'primary': 'secondary'"
-                  @click="routeToSelection(item.serviceOfferingGroupId,false)"
-                  @keydown.enter="routeToSelection(item.serviceOfferingGroupId,false)"
-                  @keydown.space="routeToSelection(item.serviceOfferingGroupId,false)"
-                >
-                  {{ missingData(item.serviceOfferingGroupId)? 'Review': 'View/Edit' }}
-                </v-btn>
               </div>
             </div>
+            <hr v-if="index !== allServiceGroups.length - 1" />
           </div>
-          <hr v-if="index !== allServiceGroups.length - 1" />
         </div>
+
       </v-col>
     </v-row>
+    <div id="OtherAvlGroups">
 
-    <div 
-      v-if="availableServiceGroups.length > 0" 
-      class="d-flex justify-space-between align-flex-end"
-    >
-      <h2 class="mb-5">Other available categories</h2>
-      <a
-        id="ShowMoreLink"
-        class="expandable-content-opener mt-1 text-decoration-none"
-        :class="[{ 'open' : showMore }]"
-        v-show="availableServiceGroups.length > 4"
-        @click="showMore = !showMore"
-        @keydown.enter="showMore = !showMore"
-        @keydown.space="showMore = !showMore"
+      <div 
+        v-if="availableServiceGroups.length > 0" 
+        class="d-flex justify-space-between align-flex-end"
       >
-        Show {{ showMore ? "less" : "more" }}
-      </a>
+        <h2 class="mb-5">Other available categories</h2>
+        <a
+          id="ShowMoreLink"
+          class="expandable-content-opener mt-1 text-decoration-none"
+          :class="[{ 'open' : showMore }]"
+          v-show="availableServiceGroups.length > 4"
+          @click="showMore = !showMore"
+          @keydown.enter="showMore = !showMore"
+          @keydown.space="showMore = !showMore"
+        >
+          Show {{ showMore ? "less" : "more" }}
+        </a>
+      </div>
+
+      <v-row v-if="availableServiceGroups.length > 0">
+        <v-col
+          cols="3"
+          style="padding: 10px; !important"
+          v-for="(group, index) in availableServiceGroups"
+          :key="index"
+          v-show="index <= 3 || showMore"
+        >
+          <div 
+            class="_simple-card d-flex flex-column justify-space-between"
+            :id="getIdText(group.value) + '_Wrapper'"
+          >
+            <div class="d-flex justify-space-between">
+              <div class="h3 mb-2 " :id="getIdText(group.value) + '_Heading'" >
+                {{ group.label }}
+              </div>
+
+              <div class="pl-2">
+                <ATATTooltip
+                  :tooltipText="getTooltipText(group.value)"
+                  :id="getIdText(group.value)"
+                  :label="group.label"
+                />
+              </div>
+            </div>
+
+            <div>
+              <a
+                class="_chevron-right-after"
+                :id="getIdText(group.value) + '_Link'"
+                role="link"
+                @click="routeToSelection(group.value, true)"
+                @keydown.enter="routeToSelection(group.value, true)"
+                @keydown.space="routeToSelection(group.value, true)"
+                tabindex="0"
+              >
+                Add requirements
+              </a>
+            </div>
+
+          </div>
+
+        </v-col>
+      </v-row>
     </div>
-
-    <v-row v-if="availableServiceGroups.length > 0">
-      <v-col
-        cols="3"
-        style="padding: 10px; !important"
-        v-for="(group, index) in availableServiceGroups"
-        :key="index"
-        v-show="index <= 3 || showMore"
-      >
-        <div class="_simple-card d-flex flex-column justify-space-between">
-          <div class="d-flex justify-space-between">
-            <div class="h3 mb-2 ">
-              {{ group.label }}
-            </div>
-
-            <div class="pl-2">
-              <ATATTooltip
-                :tooltipText="getTooltipText(group.value)"
-                :id="group.value"
-                :label="group.label"
-              />
-            </div>
-          </div>
-
-          <div>
-            <a
-              class="_chevron-right-after"
-              :id="group.value + '_link'"
-              role="link"
-              @click="routeToSelection(group.value, true)"
-              @keydown.enter="routeToSelection(group.value, true)"
-              @keydown.space="routeToSelection(group.value, true)"
-              tabindex="0"
-            >
-              Add requirements
-            </a>
-          </div>
-
-        </div>
-
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
 import { routeNames } from "../../../router/stepper"
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -135,6 +152,7 @@ import Periods from "@/store/periods";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
 import { SystemChoiceDTO } from "@/api/models";
+import { getIdText, toTitleCase } from "@/helpers";
 // import router from "@/router";
 
 @Component({
@@ -144,7 +162,8 @@ import { SystemChoiceDTO } from "@/api/models";
     DOWAlert,
   }
 })
-export default class Summary extends Vue {
+
+export default class Summary extends Mixins(SaveOnLeave) {
   private isPeriodsDataMissing = false;
   private isClassificationDataMissing = false;
   private showAlert = false;
@@ -237,6 +256,9 @@ export default class Summary extends Vue {
     return tooltipObj ? tooltipObj.text : "";
   }
 
+  public getIdText(val: string): string {
+    return getIdText(toTitleCase(val));
+  }
 
   public async routeToSelection(groupID: string, addToStore:boolean ): Promise<void> {
     DescriptionOfWork.setCurrentOfferingGroupId(groupID);
@@ -266,7 +288,7 @@ export default class Summary extends Vue {
   };
 
   public formattedOfferings(value: DOWServiceOffering[]): string {
-    const serviceArr = value.map(obj => ` ${obj.name}`);
+    const serviceArr = value.map(obj => ` <span class="_selectedOffering">${obj.name}</span>`);
     return serviceArr.join();
   };
 
@@ -352,5 +374,11 @@ export default class Summary extends Vue {
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
+
+  protected async saveOnLeave(): Promise<boolean> {
+    Steps.clearAltBackButtonText();
+    return true;
+  }
+
 };
 </script>

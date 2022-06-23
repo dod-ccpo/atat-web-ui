@@ -65,8 +65,8 @@
         target="_blank"
       >
         <span class="_external-link">Federal Acquisition Regulation (FAR) 253.208</span>
-      .
       </a>
+      .
     </p>
   </div>
 </template>

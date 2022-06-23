@@ -23,8 +23,9 @@ export const convertSystemChoiceToSelect =
 });
 
 export const buildClassificationCheckboxList 
-  = (data: ClassificationLevelDTO[]): Checkbox[] => {
+  = (data: ClassificationLevelDTO[], idSuffix: string): Checkbox[] => {
     const arr: Checkbox[] = [];
+    idSuffix = idSuffix || "";
     data.forEach((classLevel) => {
       if (classLevel.impact_level 
         && classLevel.classification
@@ -32,7 +33,7 @@ export const buildClassificationCheckboxList
       ) {
         const label = buildClassificationLabel(classLevel, "long");
         const classificationCheckbox: Checkbox = {
-          id: classLevel.impact_level,
+          id: classLevel.impact_level + idSuffix,
           value: classLevel.sys_id,
           label: label,
         }
@@ -58,9 +59,24 @@ export const buildClassificationLabel
     return classificationString + "/" + IL;
   }
 
-
 //strips whitespace, and special characters
 export const sanitizeOfferingName = (offeringName: string): string => {
   return offeringName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>{\\}[\]\\/]/gi, "_")
     .replace(/ /g, "_").replace(/_$/, '');
 }
+
+// formats a number to currency string with commas and 2 decimal places
+export const toCurrencyString = (num: number): string => {
+  if (!isNaN(num)) {
+    return num.toLocaleString(
+      undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    );
+  }
+  return "";
+}
+
+// converts a formatted currency string back to a number
+export const currencyStringToNumber = (str: string): number => {
+  return str ? parseFloat(str.replaceAll(",","")) : 0;
+}
+

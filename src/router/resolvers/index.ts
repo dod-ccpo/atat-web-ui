@@ -1,5 +1,5 @@
-import Vue from "vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 import { sanitizeOfferingName } from "@/helpers";
 import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
@@ -391,7 +391,7 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  DescriptionOfWork.setBackToContractDetails(false);
+  DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
 
   if(current === routeNames.PropertyDetails){
@@ -464,7 +464,25 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   }
 
   return OfferingDetailsPathResolver(current, direction);
-}
+};
+
+export const FundingRequestResolver = (current: string): string => {
+  const fundingType
+      = FinancialDetails.fundingRequestType;
+
+  if(current === routeNames.GInvoicing){
+    return routeNames.FundingPlanType;
+  };
+  if (fundingType === "FSF") {
+    return routeNames.GInvoicing;
+  } else if (fundingType === "MIPR") {
+    return routeNames.MIPR;
+  };
+
+  return current === routeNames.FundingPlanType
+    ? routeNames.SeverabilityAndIncrementalFunding
+    : routeNames.FundingPlanType;
+};
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
@@ -475,6 +493,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
+  FundingRequestResolver
 };
 
 // add path resolvers here 

@@ -12,7 +12,7 @@
   >
     <div class="_panel-header">
       <div class="_panel-title" id="PanelTitle" tabindex="-1">
-        {{ panelTitle }} 
+        {{ panelTitle }}
       </div>
       <v-btn
         class="text--base-darkest pa-0 icon-24"
@@ -28,7 +28,7 @@
       </v-btn>
     </div>
 
-    <div class="_panel-content-wrap" v-if="panelTitle">
+    <div id="PanelWrap" class="_panel-content-wrap" v-if="panelTitle">
       <slot></slot>
     </div>
 
@@ -63,7 +63,7 @@ export default class ATATSlideoutPanel extends Vue {
   }
   /*
    * adds click event listener to overlay if Displayed
-   * return isSlideoutPanelOpen 
+   * return isSlideoutPanelOpen
    */
   get isSlideoutPanelOpen(): boolean {
     const _isSlideoutPanelOpen = SlideoutPanel.slideoutPanelIsOpen;
@@ -78,7 +78,7 @@ export default class ATATSlideoutPanel extends Vue {
           ?.removeEventListener("click", this.closeSlideoutPanel);
       }
     }, 0);
-  
+
     return _isSlideoutPanelOpen;
   }
 
@@ -99,6 +99,10 @@ export default class ATATSlideoutPanel extends Vue {
     this.$nextTick(() => {
       if (isOpen) {
         document.getElementById("PanelTitle")?.focus();
+        const wrapper = document.getElementById("PanelWrap");
+        if (wrapper) {
+          wrapper.scrollTop = 0;
+        }
       } else {
         const returnFocusToElementId = SlideoutPanel.slideoutPanelOpenerId;
         setTimeout(function () {

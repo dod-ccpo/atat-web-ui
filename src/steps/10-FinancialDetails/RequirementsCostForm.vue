@@ -11,6 +11,8 @@
           id="TemporaryCostField"
           :isCurrency="true"
           :value.sync="costEstimate"
+          :alignRight="true"
+          width="200"
         />
       </v-col>
     </v-row>
@@ -20,7 +22,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Mixins } from "vue-property-decorator";
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 import { RequirementsCostEstimateDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -51,11 +53,11 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage.estimatedTaskOrderValue;
+    const storeData = await FinancialDetails.estimatedTaskOrderValue;
     if (storeData) {
       this.costEstimate = storeData || "";
     }
-    const estimatedTaskOrderValue = AcquisitionPackage.estimatedTaskOrderValue;
+    const estimatedTaskOrderValue = FinancialDetails.estimatedTaskOrderValue;
     this.savedData.estimatedTaskOrderValue = estimatedTaskOrderValue || "";
 
   };
@@ -63,7 +65,7 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        AcquisitionPackage.
+        FinancialDetails.
           setEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
       }
     } catch (error) {

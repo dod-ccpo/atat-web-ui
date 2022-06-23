@@ -33,9 +33,7 @@ import CurrentEnvironment
 /* 4.3 */   import ClassificationRequirements
   from "../steps/04-ContractDetails/ClassificationRequirements.vue";
 
-
 // Step 5 - Performance Requirements
-
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
@@ -57,7 +55,6 @@ import PackagingPackingAndShipping
 import Training from "../steps/07-OtherContractConsiderations/Training.vue";
 import TrainingCourses from "@/steps/07-OtherContractConsiderations/TrainingCourses.vue";
 
-
 // Step 8 - Standards and Compliance
 import OtherContractConsiderations from "../steps/08-StandardsAndCompliance/Index.vue";
 import PII from "../steps/08-StandardsAndCompliance/PII.vue";
@@ -77,15 +74,18 @@ import EvaluationCriteria
 // step 10 - Financial Details
 import RequirementsCostForm from "@/steps/10-FinancialDetails/RequirementsCostForm.vue";
 import FinancialDetails from "../steps/10-FinancialDetails/Index.vue";
-import RequirementsCostEstimate from "../steps/10-FinancialDetails/RequirementsCostEstimate.vue";
-import FundingPlan from "../steps/10-FinancialDetails/MIPR.vue";
+import SurgeCapabilities from "../steps/10-FinancialDetails/SurgeCapabilities.vue";
+import MIPR from "../steps/10-FinancialDetails/MIPR.vue";
 import SeverabilityAndIncrementalFunding 
   from "../steps/10-FinancialDetails/SeverabilityAndIncrementalFunding.vue";
-import FundingPlanType from "@/steps/10-FinancialDetails/FundingPlanType.vue";
-
+import IncrementalFunding 
+  from "../steps/10-FinancialDetails/IncrementalFunding.vue";
+import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
+import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 
 import {
   AcorsRouteResolver,
@@ -98,6 +98,7 @@ import {
   OfferGroupOfferingsPathResolver,
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
+  FundingRequestResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
 } from "./resolvers";
 
@@ -144,15 +145,18 @@ export const routeNames = {
   EvaluationCriteriaIndex: "Evaluation_Criteria_Index",
   EvaluationCriteria: "Evaluation_Criteria",
   ClassificationRequirements: "Classification_Requirements",
-  RequirementsCostEstimate: "Requirements_Cost_Estimate",
+  SurgeCapabilities: "SurgeCapabilities",
   RequirementsCostForm: "Requirements_Cost_Form",
-  FundingPlan: "Funding_Plan",
+  MIPR: "MIPR",
   SeverabilityAndIncrementalFunding: "Severability_And_Incremental_Funding",
+  IncrementalFunding: "Incremental_Funding",
   ReviewRequiredForms: "Review_Required_Forms",
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
-  FundingPlanType: 'Funding_Plan_Type',
+  FundingPlanType: "Funding_Plan_Type",
+  GInvoicing:"G_Invoicing",
+  FinancialPOCForm: "Financial_POC_Form"
 };
 
 /**
@@ -579,9 +583,9 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Requirements Cost Estimate",
         path: "requirements-cost-estimate",
-        name: routeNames.RequirementsCostEstimate,
+        name: routeNames.SurgeCapabilities,
         completePercentageWeight: 1,
-        component: RequirementsCostEstimate,
+        component: SurgeCapabilities,
       },
       {
         menuText: "Funding Plan",
@@ -591,11 +595,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: FundingPlanType,
       },
       {
-        menuText: "Funding Plan temp",
-        path: "funding-plan-temp",
-        name: routeNames.FundingPlan,
+        menuText: "MIPR",
+        excludeFromMenu: true,
+        path: "mipr",
+        name: routeNames.MIPR,
         completePercentageWeight: 1,
-        component: FundingPlan,
+        component: MIPR,
+        routeResolver: FundingRequestResolver
+      },
+      {
+        menuText: "G-Invoicing",
+        excludeFromMenu: true,
+        path: "g-invoicing",
+        name: routeNames.GInvoicing,
+        completePercentageWeight: 1,
+        component: GInvoicing,
+        routeResolver: FundingRequestResolver
       },
       {
         menuText: "Severability and Incremental Funding",
@@ -603,6 +618,22 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
+      },
+      {
+        menuText: "Incremental Funding",
+        excludeFromMenu: true,
+        path: "incremental-funding",
+        name: routeNames.IncrementalFunding,
+        completePercentageWeight: 1,
+        component: IncrementalFunding,
+      },
+      {
+        menuText: "Financial POC Form",
+        excludeFromMenu: true,
+        path: "financial-POC-Form",
+        name: routeNames.FinancialPOCForm,
+        completePercentageWeight: 1,
+        component: FinancialPOCForm,
       },
     ]
   },

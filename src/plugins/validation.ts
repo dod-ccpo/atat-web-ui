@@ -51,7 +51,7 @@ export class ValidationPlugin {
  */
 
   required(
-    message?: string
+    message?: string, isCurrency?: string
   ): ((v: string) => string | true | undefined) {
     message = message || "This field is required.";
     return (v: string) => {
@@ -66,6 +66,11 @@ export class ValidationPlugin {
         return (v !== "") || message;
       } else if ( typeof (v) === "undefined"){ //validates file upload
         return message;
+      } else if (isCurrency) {
+        const amt = parseFloat(v);
+        return (amt !== 0 && !isNaN(amt)) || message;
+      } else {
+        return (v !== "") || message;
       }
       return true;
     };
