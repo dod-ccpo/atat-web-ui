@@ -30,7 +30,11 @@
         </div>
         <div v-show="useGInvoicing === 'Yes'">
           <hr class="mt-5" />
-            -- search input goes here --
+            <ATATSearch
+              id="OrderNumber"
+              placeHolder="Find your order in G-Invoicing"
+              label="Order Number"
+            />
 
         </div>
       </v-col>
@@ -42,7 +46,7 @@ import Vue from "vue";
 
 import { Component } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-
+import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
@@ -52,6 +56,7 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 @Component({
   components: {
     ATATRadioGroup,
+    ATATSearch,
     GInvoiceLearnMore,
   },
 })
