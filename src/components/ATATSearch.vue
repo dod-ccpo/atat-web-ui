@@ -186,16 +186,13 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    // this.clearErrorMessages();
-    if (this.errorMessages.length === 0) {
+    if (this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.
       this.showLoader = true;
       this.showSuccessAlert = false;
       this.showErrorAlert = false;
-
       this.showHelpText = false;
-
       this.searchCount = this.searchCount + 1;
 
       setTimeout(() => {
