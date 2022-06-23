@@ -20,7 +20,7 @@
             </a>
           </p>
           <ATATRadioGroup
-            class="copy-max-width max-width-760"
+            class="max-width-640"
             id="GInvoicingOptions"
             :card="true"
             :items="gInvoicingOptions"
@@ -37,7 +37,21 @@
               tooltipText="This is a 20-character value (including hyphens) generated 
                 by G-Invoicing. You may also enter 22 characters (including a period 
                 and digit at the end) to reference the version number."
+              :hideHelpTextOnError="true"
+              :validate-on-blur="true"
+              :value.sync="gInvoiceNumber"
+              helpText="Format: OYYMM-000-000-000000"
 
+              :rules="[
+                $validators.isMaskValid(
+                  ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
+                  `Your order number should be 20 or 22 characters (including hyphens 
+                    and periods) and use the format:<ul>
+                    <li>OYYMM-000-000-000000</li>
+                    <li>OYYMM-000-000-000000.0 (with version number)</li></ul>`,
+                  true
+                )
+              ]"
             />
 
         </div>
@@ -67,6 +81,7 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
 export default class GInvoicing extends Vue {
 
   public useGInvoicing: boolean | null = null;
+  public gInvoiceNumber = "";
 
   private gInvoicingOptions: RadioButton[] = [
     {

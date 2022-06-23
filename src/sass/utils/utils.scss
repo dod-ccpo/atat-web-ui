@@ -65,7 +65,7 @@ $positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
 }
 
 // max width wrapper classes
-$widths: 500, 640, 740, 760;
+$widths: 450, 500, 640, 740, 760;
 @each $width in $widths {
   .max-width-#{$width} {
     max-width: #{$width}px !important;

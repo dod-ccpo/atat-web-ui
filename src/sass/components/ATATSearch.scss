@@ -3,6 +3,12 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
+  .v-text-field__details {
+    display: none;
+  }
+  .v-input__slot {
+    margin-bottom: 0;
+  }
 }
 
 ._search-button.v-btn.v-size--default {
@@ -11,3 +17,4 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
+

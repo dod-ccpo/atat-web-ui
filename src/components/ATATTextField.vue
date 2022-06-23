@@ -82,7 +82,7 @@ export default class ATATTextField extends Vue  {
       errorBucket: string[]; 
       errorCount: number 
       resetValidation(): void
-  };
+    };
   }; 
 
   // props
