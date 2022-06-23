@@ -2,7 +2,12 @@
   fieldset {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
- 
   }
+}
 
+._search-button.v-btn.v-size--default {
+  height: 40px;
+  min-width: 48px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
