@@ -1,28 +1,21 @@
 
 <template>
   <section class="mt-10">
-    <hr />
-    <h2 id="ContactInfoHeader" class="form-section-heading">
-      Your {{ corOrAcor }}’s Contact Information
-    </h2>
-
     <ATATRadioGroup
       id="ContactAffiliation"
       :legend="
-        'What role best describes your ' +
-        corOrAcor +
-        '’s affiliation with the DoD?'
+        'What role best describes your affiliation with the DoD?'
       "
       :items="contactRoles"
       :value.sync="_selectedRole"
       :rules="[
-        $validators.required('Please enter your ' + corOrAcor + '’s role.'),
+        $validators.required('Please enter your role.'),
       ]"
       class="mb-10"
       @radioButtonSelected="contactTypeChange"
     />
 
-    <v-form ref="CORACORContactForm">
+    <v-form ref="atatGlobalContact">
       <ATATSelect
         id="Branch"
         v-show="_selectedRole === 'MILITARY'"
@@ -36,7 +29,7 @@
         :returnObject="true"
         :rules="[
           $validators.required(
-            'Please select your ' + corOrAcor + '’s service branch.'
+            'Please select your service branch.'
           ),
         ]"
       />
@@ -52,7 +45,7 @@
           :selectedItem.sync="_selectedRank"
           :rules="[
             $validators.required(
-              'Please select your ' + corOrAcor + '’s rank.'
+              'Please select your rank.'
             ),
           ]"
           class="_input-max-width mb-7"
@@ -152,14 +145,23 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-
-import { RadioButton, SelectData, RankData } from "../../../../types/Global";
+;
+import ContactData from "@/store/contactData";
+import {
+  AutoCompleteItem,
+  AutoCompleteItemGroups,
+  RadioButton,
+  RankData,
+  SelectData
+} from "../../types/Global";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { convertSystemChoiceToSelect } from "@/helpers";
 
 @Component({
   components: {
@@ -172,16 +174,13 @@ import { RadioButton, SelectData, RankData } from "../../../../types/Global";
 })
 export default class ATATContactForm extends Vue {
   $refs!: {
-    CORACORContactForm: Vue & {
+    atatGlobalContact: Vue & {
       resetValidation: () => void;
       reset: () => void;
     };
   };
 
   //props
-
-  @Prop() private branchData!: SelectData[];
-  @Prop() private selectedBranchRanksData!: SelectData[];
 
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
@@ -198,15 +197,20 @@ export default class ATATContactForm extends Vue {
   @PropSync("phone") private _phone?: string;
   @PropSync("phoneExt") private _phoneExt?: string;
 
-  // data
+  // watchers
 
-  private salutationData: SelectData[] = [
-    { text: "Mr.", value: "MR" },
-    { text: "Mrs.", value: "MRS" },
-    { text: "Miss", value: "MISS" },
-    { text: "Ms.", value: "MS" },
-    { text: "Dr.", value: "DR" },
-  ];
+  @Watch("_selectedBranch")
+  protected branchChange(newVal: string): void {
+    if (newVal !== null){
+      this.setRankData();
+    }
+  }
+
+  // data
+  private branchData: SelectData[] = [];
+  private branchRanksData: AutoCompleteItemGroups = {};
+  private selectedBranchRanksData: AutoCompleteItem[] = [];
+  private salutationData: SelectData[] = [];
   private contactRoles: RadioButton[] = [
     {
       id: "Military",
@@ -219,5 +223,48 @@ export default class ATATContactForm extends Vue {
       value: "CIVILIAN",
     },
   ];
+  private setRankData(): void {
+    if (this._selectedBranch && this._selectedBranch.value) {
+      this.selectedBranchRanksData =
+        this.branchRanksData[this._selectedBranch.value];
+    }
+  }
+
+  private contactTypeChange(): void {
+    this.resetData();
+
+  }
+  public resetData(): void {
+    Vue.nextTick(() => {
+      //iterate over the forms children ref manually set their 'errorMessages' array to empty
+      const formChildren = this.$refs.atatGlobalContact.$children;
+
+      formChildren.forEach((ref)=> {
+        ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
+      });
+      Vue.nextTick(() => {
+        this.$refs.atatGlobalContact.reset();
+        this.$refs.atatGlobalContact.resetValidation();
+      });
+    });
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    const branches = await ContactData.LoadMilitaryBranches();
+    this.branchData = branches.map((choice) => {
+      const text = `U.S. ${choice.label}`;
+      const { value } = choice;
+      return {
+        text,
+        value,
+      };
+    });
+    this.branchRanksData = ContactData.militaryAutoCompleteGroups;
+    this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
+  }
+
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
 }
 </script>
