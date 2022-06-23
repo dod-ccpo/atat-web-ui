@@ -92,8 +92,8 @@
                 </div>    
 
                 <div 
-                  v-if="errorMissingFirstIncrement" 
-                  class="d-flex justify-start align-top atat-text-field-error mb-1 mt-3"
+                  v-if="errorMissingFirstIncrement && index === 0" 
+                  class="d-flex justify-start align-top atat-text-field-error mb-4 mt-3"
                   id="FirstIncrementError"
                 >
                   <ATATSVGIcon 
@@ -345,6 +345,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.payments = storeData.fundingIncrements;
       this.savedData.fundingIncrements = this.payments;
       this.hasReturnedToPage = this.payments.length > 0;
+      this.calcAmounts("");
     }
 
     await this.initializeIncrements();
