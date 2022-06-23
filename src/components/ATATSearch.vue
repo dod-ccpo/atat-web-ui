@@ -62,7 +62,6 @@
       {{ helpText }}
     </div>
 
-
     <div id="Progress" v-show="showLoader" class="mt-4">
       <v-progress-circular
         indeterminate
@@ -70,7 +69,7 @@
         size="24"
         width="3"
         class="mr-2"
-      ></v-progress-circular>
+      />
       <span class="text-base">
         Locating your order in G-Invoicing
       </span>
@@ -110,7 +109,6 @@
         </p>
       </template>
     </ATATAlert>
-
 
   </div>
 </template>
