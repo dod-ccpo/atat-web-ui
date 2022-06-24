@@ -18,7 +18,7 @@ import {
   ContractConsiderationsDTO,
   RequirementsCostEstimateDTO,
   AttachmentDTO,
-  PeriodDTO
+  PeriodDTO,
 } from "@/api/models";
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
@@ -266,17 +266,13 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
-  estimatedTaskOrderValue: string | null =  null;
+  
+  fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact();
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
-  }
-
-  @Mutation
-  public setEstimatedTaskOrderValue(value: string): void {
-    this.estimatedTaskOrderValue = value;
   }
 
   @Mutation

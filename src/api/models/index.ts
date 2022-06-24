@@ -244,3 +244,8 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
   usage_description: string;
   need_for_entire_task_order_duration: string;
 }
+
+export interface FundingRequestDTO extends BaseTableDTO {
+  fundingRequestType: string;
+
+}

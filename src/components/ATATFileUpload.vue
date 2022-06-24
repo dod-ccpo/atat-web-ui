@@ -5,6 +5,7 @@
       @dragenter="onDragEnter"
       @drop.prevent="addDropFile"
       @dragover.prevent
+      v-show="isFileUploadDisplayed"
     >
       <v-file-input
         ref="atatFileUpload"
@@ -22,6 +23,8 @@
         @change="fileUploadChanged"
         :hide-details="true"
         :rules="_rules"
+        :validate-on-blur="validateOnBlur"
+        @keydown.tab="setErrorMessage()"
       >
         <template v-slot:prepend-inner>
           <div
@@ -42,7 +45,7 @@
                 browse to upload
               </a>
             </p>
-            <p class="mt-3 mb-9">Use a PDF file with a max size of 1 GB.</p>
+            <p class="mt-3 mb-9 text-base">{{helpText}}</p>
           </div>
           <div
             v-else
@@ -66,7 +69,7 @@
                 </a>
               </p>
             </div>
-            <p class="ml-auto mb-0">Use a PDF file with a max size of 1 GB.</p>
+            <p class="ml-auto mb-0 text-base">{{helpText}}</p>
           </div>
         </template>
       </v-file-input>
@@ -79,8 +82,8 @@
 
     <ATATFileList
       :validFiles="_validFiles"
-      :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
+      :multiplesAllowed="multiplesAllowed"
       @delete="(file) => $emit('delete', file)"
     />
   </v-form>
@@ -123,6 +126,10 @@ export default class ATATFileUpload extends Vue {
   // props
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
+  @Prop({ default: "Use a PDF file with a max size of 1 GB." }) helpText!: string;
+  @Prop({ default: true}) private multiplesAllowed!: boolean;
+  @Prop({ default: "required"}) private requiredMessage!: string;
+  
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] })
   private _invalidFiles!: invalidFile[];
@@ -142,6 +149,14 @@ export default class ATATFileUpload extends Vue {
   private isFullSize = true;
   private fileAttachmentService?: FileAttachmentService;
   private errorMessages: string[] = [];
+  private validateOnBlur = true;
+  
+  get isFileUploadDisplayed(): boolean {
+    if (this.multiplesAllowed === false){
+      return this._validFiles.length !== 1 || this.errorMessages.length > 0
+    }
+    return true;
+  }
 
   //Events
   /**
@@ -153,10 +168,12 @@ export default class ATATFileUpload extends Vue {
       event.preventDefault();
       event.stopPropagation();}
 
-    (document.getElementById("FundingPlanFileUpload") as HTMLInputElement).click();
+    (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
     this.reset();
     this.isFullSize = this._validFiles.length === 0;
+   
   }
+
   // 
   /**
    * 1. sets uploadedFiles data
@@ -175,6 +192,7 @@ export default class ATATFileUpload extends Vue {
       }
       Vue.nextTick(()=>{
         this.clearHTMLFileInput();
+        (document.getElementById(this.id + "FileUpload") as HTMLInputElement).blur();
       })
     });
   }
@@ -349,20 +367,23 @@ export default class ATATFileUpload extends Vue {
   }
 
   private setErrorMessage(): void {
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       this.errorMessages = this.$refs.atatFileUpload.errorBucket;
+      if (this._invalidFiles.length > 0){
+        this.errorMessages = this.errorMessages.filter(
+          (msg)=>msg !== this.requiredMessage
+        );
+      }
     });
   }
 
   private clearErrorMessages(): void {
-    // if (this.errorMessages.length>0){
     Vue.nextTick(() => {
       this.$refs.atatFileUploadForm.reset();
       Vue.nextTick(() => {
         this.$refs.atatFileUploadForm.resetValidation();
       });
     });
-    // }
   }
 
   private reset(): void {
@@ -377,7 +398,7 @@ export default class ATATFileUpload extends Vue {
    * Clears out all files form HTML File Input
    */
   private clearHTMLFileInput():void{
-    const fileInput = document.getElementById("FundingPlanFileUpload") as HTMLInputElement;
+    const fileInput = document.getElementById(this.id + "FileUpload") as HTMLInputElement;
     fileInput.value = "";
   }
 
@@ -396,8 +417,8 @@ export default class ATATFileUpload extends Vue {
     this.fileAttachmentService = FileAttachmentServiceFactory(
       this.attachmentServiceName
     );
-
-    this._invalidFiles = [];
+    
+    this._invalidFiles = [];  
   }
 
   private updated(): void {
