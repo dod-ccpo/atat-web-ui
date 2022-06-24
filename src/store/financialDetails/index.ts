@@ -8,6 +8,8 @@ import {
 } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
 import Vue from "vue";
+import { TaskOrderDTO } from "@/api/models";
+import api from "@/api";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
@@ -35,6 +37,8 @@ export class FinancialDetailsStore extends VuexModule {
 
   gtcNumber: string | null = null;
   orderNumber: string | null = null;
+  taskOrder: TaskOrderDTO | null = null;
+
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -113,6 +117,27 @@ export class FinancialDetailsStore extends VuexModule {
   public async getMIPRNumber(): Promise<string>  {
     return this.miprNumber || '';
   }
+
+  @Action
+  public async saveTaskOrder(taskOrder: TaskOrderDTO): Promise<TaskOrderDTO>  {
+    try {
+      const sysId = taskOrder.sys_id;
+
+      const saveTaskOrder = sysId?.length ? api.taskOrderTable.update(sysId, taskOrder) :
+        api.taskOrderTable.create(taskOrder);
+
+      const savedTaskOrder = await saveTaskOrder;
+
+      return savedTaskOrder;
+      
+    } catch (error) {
+      console.error(`error occurred saving task order`);
+      throw new Error('error occurred saving Task Order');
+      
+    }
+
+  }
+
 
   @Mutation
   public async setIFPData(data: IFPData): Promise<void> {
