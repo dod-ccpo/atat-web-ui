@@ -439,7 +439,6 @@ export default class ContactInfo extends Mixins(SaveOnLeave) {
       }
 
       this.selectedSalutation = storeData.salutation;
-
       this.firstName = storeData.first_name;
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
