@@ -100,6 +100,7 @@ import {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   MIPRResolver,
+  GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
@@ -614,6 +615,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GInvoicing,
         completePercentageWeight: 1,
         component: GInvoicing,
+        routeResolver: GInvoicingResolver,
       },
       {
         menuText: "Upload-7600",
