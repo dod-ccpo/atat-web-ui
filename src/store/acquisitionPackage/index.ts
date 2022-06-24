@@ -36,6 +36,7 @@ import DescriptionOfWork from "@/store/descriptionOfWork"
 import { ClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
+import FinancialDetails from "../financialDetails";
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -419,6 +420,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
+    await FinancialDetails.initialize();
 
     if (this.initialized) {
       return;

@@ -82,6 +82,7 @@ import IncrementalFunding
   from "../steps/10-FinancialDetails/IncrementalFunding.vue";
 import FundingPlanType from "@/steps/10-FinancialDetails/FundingRequest.vue";
 import GInvoicing from "@/steps/10-FinancialDetails/GInvoicing.vue";
+import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
@@ -154,8 +155,9 @@ export const routeNames = {
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
+  GInvoicing:'G_Invoicing',
+  Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
-  GInvoicing:"G_Invoicing",
   FinancialPOCForm: "Financial_POC_Form"
 };
 
@@ -611,6 +613,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: GInvoicing,
         routeResolver: FundingRequestResolver
+      },
+      {
+        menuText: "Upload-7600",
+        excludeFromMenu: true,
+        path: "upload-7600",
+        name: routeNames.Upload7600,
+        completePercentageWeight: 1,
+        component: Upload7600,
       },
       {
         menuText: "Severability and Incremental Funding",
