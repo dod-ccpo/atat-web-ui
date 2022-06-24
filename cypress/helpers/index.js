@@ -4,7 +4,6 @@ import {saveToSNOW} from "../helpers/saveToSNOW";
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
   return `${baseAPIUrl}/api/now/table/${tableName}`;
-  //https://disastorefrontdev.servicenowservices.com/api/now/table/${tableName}
 }
 
 
@@ -18,23 +17,15 @@ const bootStrapAcquisitionPackageApi= ()=> {
     });
   }); 
 
-  // const projectOverviewApiEndpoint = buildTableApiPath('x_g_dis_atat_project_overview');
-  // const organization = buildTableApiPath('x_g_dis_atat_organization');
-
-  // cy.fixture("projectOverview").then((data) => {
-  //   cy.intercept('POST', projectOverviewApiEndpoint, {
-  //     statusCode: 201,
-  //     body: data,
-  //   });
-  // }); 
-
   loadInitialData();
   saveToSNOW();
 
 }
 
 export function bootstrapMockApis(){
+  
   bootStrapAcquisitionPackageApi();    
+  
 }
 
 export const cleanText = (text) => {

@@ -93,7 +93,6 @@ Cypress.Commands.add("launchATAT", () => {
     cy.frameLoaded(common.app);
   }
 
-  //if(!isTestingIsolated){
   cy.window()
     .its("sessionStorage")
     .invoke("getItem", "ATAT_CONTACT_DATA_KEY")
@@ -106,7 +105,7 @@ Cypress.Commands.add("launchATAT", () => {
   //   .its("sessionStorage")
   //   .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
   //   .should("exist");
-  //}
+
 });
 
 Cypress.Commands.add("clearSession", () => {
