@@ -22,6 +22,7 @@ import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Pdf from "@/components/icons/Pdf.vue";
+import Search from "@/components/icons/Search.vue";
 import Remove from "@/components/icons/Remove.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 
@@ -36,6 +37,7 @@ import UploadFile from "@/components/icons/UploadFile.vue";
     MonetizationOn,
     Pdf,
     Remove,
+    Search,
     UploadFile,
   }
 })
@@ -52,8 +54,8 @@ export default class ATATSVGIcon extends Vue {
   private setDivStyle(): void {
     Vue.nextTick(()=>{
       this.divStyle =  "width: " + this._width + "px;" +
-            "height: " + this._height + "px;" +
-            "line-height: 0px";
+        "height: " + this._height + "px;" +
+        "line-height: 0px";
     });
   }
   
@@ -70,7 +72,8 @@ export default class ATATSVGIcon extends Vue {
     { "info": "009ddd" },
     { "success": "62bd59" },
     { "error": "c60634" },
-    { "disabled": "c9c9c9" }
+    { "disabled": "c9c9c9" },
+    { "white": "ffffff" },
   ]
 
   private mounted(): void{

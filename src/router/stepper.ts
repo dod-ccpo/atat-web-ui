@@ -86,6 +86,7 @@ import Upload7600 from "@/steps/10-FinancialDetails/Upload7600.vue";
 import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
+import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
 
 import {
   AcorsRouteResolver,
@@ -154,9 +155,10 @@ export const routeNames = {
   ReviewRequiredFormsStepOne: "Review_Required_Forms_Step_One",
   POPStart: "POP_Start",
   Section508AccessibilityRequirements: "Section_508_Accessibility_Requirements",
-  FundingPlanType: 'Funding_Plan_Type',
   GInvoicing:'G_Invoicing',
-  Upload7600:'Upload_7600'
+  Upload7600:'Upload_7600',
+  FundingPlanType: "Funding_Plan_Type",
+  FinancialPOCForm: "Financial_POC_Form"
 };
 
 /**
@@ -634,6 +636,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.IncrementalFunding,
         completePercentageWeight: 1,
         component: IncrementalFunding,
+      },
+      {
+        menuText: "Financial POC Form",
+        excludeFromMenu: true,
+        path: "financial-POC-Form",
+        name: routeNames.FinancialPOCForm,
+        completePercentageWeight: 1,
+        component: FinancialPOCForm,
       },
     ]
   },
