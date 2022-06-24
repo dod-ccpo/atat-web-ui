@@ -72,7 +72,7 @@
           id="UPload7600Alert"
           v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
           type="warning"
-          class="copy-max-width my-10"
+          class="max-width-70 mt-10"
         >
           <template v-slot:content>
             <p class="mb-0">
