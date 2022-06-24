@@ -1,7 +1,11 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 
-import { fundingIncrements, IFPData } from "types/Global";
+import { 
+  baseGInvoiceData, 
+  fundingIncrements, 
+  IFPData,  
+} from "types/Global";
 
 @Module({
   name: 'FinancialDetails',
@@ -23,13 +27,18 @@ export class FinancialDetailsStore extends VuexModule {
   gInvoiceNumber = "";
 
   @Action
-  public async getGInvoiceData(): Promise<{ 
-    useGInvoicing: boolean | null, gInvoiceNumber: string
-  }> {
+  public async getGInvoiceData(): Promise<baseGInvoiceData> {
     return {
       useGInvoicing: this.useGInvoicing,
       gInvoiceNumber: this.gInvoiceNumber,
     }
+  }
+
+  @Mutation
+  public async saveGInvoiceData(data: baseGInvoiceData): Promise<void> {
+    this.useGInvoicing = data.useGInvoicing;
+    this.gInvoiceNumber = data.gInvoiceNumber;
+    return;
   }
 
   @Action

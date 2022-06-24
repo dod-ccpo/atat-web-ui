@@ -66,7 +66,11 @@ import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import { 
+  baseGInvoiceData, 
+  RadioButton, 
+  SlideoutPanelContent 
+} from "../../../types/Global";
 import FinancialDetails from "@/store/financialDetails";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -104,16 +108,50 @@ export default class GInvoicing extends Mixins(SaveOnLeave) {
     }
   }
 
+  public get currentData(): baseGInvoiceData {
+    return {
+      useGInvoicing: this.useGInvoicing,
+      gInvoiceNumber: this.gInvoiceNumber,
+    }
+  }
+  
+  public savedData: baseGInvoiceData = {
+    useGInvoicing: null,
+    gInvoiceNumber: "",
+  }
+
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
       component: GInvoiceLearnMore,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-    await FinancialDetails.getGInvoiceData();
+    const storeData = await FinancialDetails.getGInvoiceData();
+    if (storeData) {
+      this.useGInvoicing = storeData.useGInvoicing;
+      this.gInvoiceNumber = storeData.gInvoiceNumber;
+      this.savedData = {
+        useGInvoicing: this.useGInvoicing,
+        gInvoiceNumber: this.gInvoiceNumber,
+      }
+    }
+  }
 
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        FinancialDetails.saveGInvoiceData(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
   }
 
 }
 </script>
-
