@@ -257,9 +257,9 @@ export class ValidationPlugin {
         fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase() === ext
       )
       if (!isValidExtension){
-        return "<ul><li>" + fileName + " is not a valid format or has been corrupted. " +
-                "Please upload a valid " + validExtensions.slice(0, -1).join(", .") + " or " +
-                validExtensions.slice(-1) + " file.</li></ul>"
+        return `'${fileName}' is not a valid format or has been corrupted. ` +
+                `Please upload a valid .${validExtensions.slice(0, -1).join(", .")} or ` +
+                `.${validExtensions.slice(-1)} file.`
       }
 
       // does file aleady exist?
