@@ -129,6 +129,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "Use a PDF file with a max size of 1 GB." }) helpText!: string;
   @Prop({ default: true}) private multiplesAllowed!: boolean;
+  @Prop({ default: "required"}) private requiredMessage!: string;
   
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] })
@@ -368,7 +369,7 @@ export default class ATATFileUpload extends Vue {
       this.errorMessages = this.$refs.atatFileUpload.errorBucket;
       if (this._invalidFiles.length > 0){
         this.errorMessages = this.errorMessages.filter(
-          (msg)=>msg !== "Please upload your MIPR (DD Form 448)."
+          (msg)=>msg !== this.requiredMessage
         );
       }
     });

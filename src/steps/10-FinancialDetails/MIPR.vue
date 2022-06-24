@@ -29,6 +29,7 @@
           attachmentServiceName="FundingPlans"
           @delete="onRemoveAttachment"
           :multiplesAllowed="false"
+          :requiredMessage="requiredMessage"
         />
       </v-col>
     </v-row>
@@ -60,6 +61,9 @@ export default class MIPR extends Vue {
   private toolTip = `This number is assigned by your agency’s accounting and finance office.
    It is located in Box 5 on the MIPR form (DD Form 448).`
   private fileUploadHelpText = "Supported file types: PDF • Max file size: 1GB"
+  private requiredMessage = "You must include an authorized MIPR for this acquisition. " +
+        "Please upload your missing document, or select Back to choose another method for " +
+        "transferring funds.";
 
   // rules array dynamically created based on the invalid
   // files returned from the child component
@@ -119,8 +123,7 @@ export default class MIPR extends Vue {
   private getRulesArray(): ((v: string) => string|true|undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
   
-    rulesArr.push(
-      this.$validators.required('Please upload your MIPR (DD Form 448).'));
+    rulesArr.push(this.$validators.required(this.requiredMessage));
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
         this.$validators.isFileValid(
