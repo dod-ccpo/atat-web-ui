@@ -234,3 +234,8 @@ export interface IFPData {
   initialFundingIncrementStr: string;
   fundingIncrements: fundingIncrements[];
 }
+
+export interface baseGInvoiceData {
+  useGInvoicing: string;
+  gInvoiceNumber: string;
+}

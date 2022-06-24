@@ -60,16 +60,21 @@
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
-
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
-import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import { 
+  baseGInvoiceData, 
+  RadioButton, 
+  SlideoutPanelContent 
+} from "../../../types/Global";
+import FinancialDetails from "@/store/financialDetails";
 
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -78,9 +83,9 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
     GInvoiceLearnMore,
   },
 })
-export default class GInvoicing extends Vue {
+export default class GInvoicing extends Mixins(SaveOnLeave) {
 
-  public useGInvoicing: boolean | null = null;
+  public useGInvoicing = "";
   public gInvoiceNumber = "";
 
   private gInvoicingOptions: RadioButton[] = [
@@ -103,14 +108,53 @@ export default class GInvoicing extends Vue {
     }
   }
 
+  public get currentData(): baseGInvoiceData {
+    return {
+      useGInvoicing: this.useGInvoicing,
+      gInvoiceNumber: this.gInvoiceNumber,
+    }
+  }
+  
+  public savedData: baseGInvoiceData = {
+    useGInvoicing: "",
+    gInvoiceNumber: "",
+  }
+
   public async mounted(): Promise<void> {
     const slideoutPanelContent: SlideoutPanelContent = {
       component: GInvoiceLearnMore,
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    const storeData = await FinancialDetails.getGInvoiceData();
+    if (storeData) {
+      this.useGInvoicing = storeData.useGInvoicing;
+      this.gInvoiceNumber = storeData.gInvoiceNumber;
+      this.savedData = {
+        useGInvoicing: this.useGInvoicing,
+        gInvoiceNumber: this.gInvoiceNumber,
+      }
+    }
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        if (this.currentData.useGInvoicing === "No") {
+          this.currentData.gInvoiceNumber = "";
+        }
+        FinancialDetails.saveGInvoiceData(this.currentData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
   }
 
 }
 </script>
-

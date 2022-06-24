@@ -1,7 +1,11 @@
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators";
 import rootStore from "../index";
 
-import { fundingIncrements, IFPData } from "types/Global";
+import { 
+  baseGInvoiceData, 
+  fundingIncrements, 
+  IFPData,  
+} from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
 import Vue from "vue";
 
@@ -26,42 +30,66 @@ export class FinancialDetailsStore extends VuexModule {
   initialFundingIncrement = 0; // EJY save number or string in store?
   fundingIncrements: fundingIncrements[] = [];
 
+  useGInvoicing = "";
+  gInvoiceNumber = "";
+
   gtcNumber: string | null = null;
   orderNumber: string | null = null;
 
-    // store session properties
-    protected sessionProperties: string[] = [
-      nameofProperty(this, (x) => x.estimatedTaskOrderValue),
-      nameofProperty(this, (x) => x.miprNumber),
-      nameofProperty(this, (x) => x.fundingRequestType),
-      nameofProperty(this, (x)=> x.initialFundingIncrement),
-      nameofProperty(this, (x)=> x.initialFundingIncrementStr),
-      nameofProperty(this, (x)=> x.fundingIncrements),
-      nameofProperty(this, (x)=> x.gtcNumber),
-      nameofProperty(this, (x)=> x.orderNumber),
-    ];
-    
+  // store session properties
+  protected sessionProperties: string[] = [
+    nameofProperty(this, (x) => x.estimatedTaskOrderValue),
+    nameofProperty(this, (x) => x.fundingRequestType),
+    nameofProperty(this, (x)=> x.initialFundingIncrement),
+    nameofProperty(this, (x)=> x.initialFundingIncrementStr),
+    nameofProperty(this, (x)=> x.fundingIncrements),
+    nameofProperty(this, (x)=> x.gtcNumber),
+    nameofProperty(this, (x)=> x.orderNumber),
+    nameofProperty(this, (x) => x.useGInvoicing),
+    nameofProperty(this, (x) => x.gInvoiceNumber),      
+  ];
   
-    @Action({ rawError: true })
-    public async initialize(): Promise<void> {
-      if (this.initialized) {
-        return;
-      }
-      const sessionRestored = retrieveSession(ATAT_FINANCIAL_DETAILS__KEY);
-      if (sessionRestored) {
-        this.setStoreData(sessionRestored);
-        this.setInitialized(true);
-      }
+  @Action({ rawError: true })
+  public async initialize(): Promise<void> {
+    if (this.initialized) {
+      return;
     }
+    const sessionRestored = retrieveSession(ATAT_FINANCIAL_DETAILS__KEY);
+    if (sessionRestored) {
+      this.setStoreData(sessionRestored);
+      this.setInitialized(true);
+    }
+  }
+
+  @Action
+  public async getGInvoiceData(): Promise<baseGInvoiceData> {
+    return {
+      useGInvoicing: this.useGInvoicing,
+      gInvoiceNumber: this.gInvoiceNumber,
+    }
+  }
+
+  @Mutation
+  public async saveGInvoiceData(data: baseGInvoiceData): Promise<void> {
+    this.useGInvoicing = data.useGInvoicing;
+    this.gInvoiceNumber = data.gInvoiceNumber;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+
+    return;
+  }
 
 
   @Action
-    public async getIFPData(): Promise<IFPData> {
-      return {
-        initialFundingIncrementStr: this.initialFundingIncrementStr,
-        fundingIncrements: this.fundingIncrements,
-      }
+  public async getIFPData(): Promise<IFPData> {
+    return {
+      initialFundingIncrementStr: this.initialFundingIncrementStr,
+      fundingIncrements: this.fundingIncrements,
     }
+  }
 
     
   @Action
@@ -76,7 +104,6 @@ export class FinancialDetailsStore extends VuexModule {
     orderNumber: string}>{
 
     return {
-
       gtcNumber: this.gtcNumber || "",
       orderNumber: this.orderNumber || ""
     }
@@ -171,8 +198,6 @@ export class FinancialDetailsStore extends VuexModule {
       throw new Error("error saving session data");
     }
   }
-
-  
 
 }
 
