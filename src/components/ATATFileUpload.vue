@@ -5,6 +5,7 @@
       @dragenter="onDragEnter"
       @drop.prevent="addDropFile"
       @dragover.prevent
+      v-show="isFileUploadDisplayed"
     >
       <v-file-input
         ref="atatFileUpload"
@@ -83,6 +84,7 @@
       :validFiles="_validFiles"
       :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
+      :multiplesAllowed="multiplesAllowed"
       @delete="(file) => $emit('delete', file)"
     />
   </v-form>
@@ -126,6 +128,7 @@ export default class ATATFileUpload extends Vue {
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
   @Prop({ default: "Use a PDF file with a max size of 1 GB." }) helpText!: string;
+  @Prop({ default: true}) private multiplesAllowed!: boolean;
   
   @Prop({ default: () => [] }) private validFileFormats!: string[];
   @PropSync("invalidFiles", { default: () => [] })
@@ -146,6 +149,13 @@ export default class ATATFileUpload extends Vue {
   private isFullSize = true;
   private fileAttachmentService?: FileAttachmentService;
   private errorMessages: string[] = [];
+  
+  get isFileUploadDisplayed(): boolean {
+    if (this.multiplesAllowed === false){
+      return this._validFiles.length !== 1 || this.errorMessages.length > 0
+    }
+    return true;
+  }
 
   //Events
   /**

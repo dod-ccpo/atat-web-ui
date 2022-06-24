@@ -28,6 +28,7 @@
           :helpText="fileUploadHelpText"
           attachmentServiceName="FundingPlans"
           @delete="onRemoveAttachment"
+          :multiplesAllowed="false"
         />
       </v-col>
     </v-row>

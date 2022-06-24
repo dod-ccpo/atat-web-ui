@@ -1,14 +1,20 @@
 <template>
   <div v-if="uploadingFiles.length > 0">
     <v-card flat class="file-loading-div pa-6">
-      <v-card-title class="h2 pa-0 pb-6">{{
-        getFileUploadsDivTitle()
-      }}</v-card-title>
+      <v-card-title 
+        v-if="multiplesAllowed === true"
+        :class="[
+          { 'pb-6': multiplesAllowed },
+          'h2 pa-0',
+        ]">
+        {{ getFileUploadsDivTitle() }}
+      </v-card-title>
       <div v-for="(uploadingFile, idx) of uploadingFiles" :key="idx">
         <ATATFileListItem
           :index="idx"
           :uploadingFileObj="uploadingFile"
           @removeFiles="removeFiles"
+          :class="[{ 'mb-5': multiplesAllowed }]"
         />
       </div>
     </v-card>
@@ -32,13 +38,14 @@ export default class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
   @Prop({ default: () => [] }) private validFiles!: uploadingFile[];
   @PropSync("isFullSize", {default: true}) private _isFullSize!: boolean;
+  @Prop({ default: true }) private multiplesAllowed!: boolean;
   private uploadingFiles: uploadingFile[] = [];
 
   /**
    * sets title to plural when necessary
    */
   private getFileUploadsDivTitle(): string {
-    if(this.uploadingFiles.length > 1){
+    if (this.multiplesAllowed){
       return "Your Upload" + (this.uploadingFiles.length > 1 ? "s" : "");
     }
     return ''

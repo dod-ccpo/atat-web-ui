@@ -1,5 +1,5 @@
 <template>
-  <div class="content-div d-flex align-center mb-5">
+  <div class="content-div d-flex align-center">
     <ATATSVGIcon
       :name="isPDF(uploadingFileObj.fileName) ? 'pdf' : 'filePresent'"
       :width="32"
