@@ -42,7 +42,6 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 export const CurrentContractEnvRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
-  debugger;
   if (hasCurrentContract) {
     return routeNames.CurrentEnvironment;
   }
@@ -498,8 +497,7 @@ export const IncrementalFundingResolver = (): string => {
   // currently not saving yes/no if need incremental funding.
   // future ticket will have route resolve to either Incremental Funding Page
   // or the Financial POC Form page
-  // for now, if either yes or no is selected, route to IF page
-  debugger;
+  // for now, if either yes or no is selected, route to IFP page
   return routeNames.IncrementalFunding;
 }
 
