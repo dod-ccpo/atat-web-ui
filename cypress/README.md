@@ -21,7 +21,29 @@ npx cypress open
 npm run test:e2e
 ```
 
-### To run Cypress tests on localhost
+### To run Cypress tests on localhost with mocked data
+Change the .env variable 'isTestingLocally' to false
+Change the .env variable 'isTestingInIframe' to false
+Change the .env variable 'isTestingIsolated' to true
+Ensure .env variable 'isolatedTestingURL' is set to "dist_testing/index.html"
+
+Build app locally
+```
+npm run build:testing
+```
+
+Run app locally
+```
+npm run test:e2e --  --spec "cypress\integration\ATATDevSnow\<<test suite name>>\*.spec.js"
+```
+
+Open another terminal window and run 
+
+```
+npx cypress open
+```
+
+### To run Cypress tests on localhost with ServiceNow Connection
 Change the .env variable 'isTestingLocally' to true
 
 Run app locally

@@ -24,6 +24,9 @@ module.exports = (on, config) => {
   config.env.testURL = process.env.testURL;
   config.env.localTestURL = process.env.localTestURL;
   config.env.isTestingLocally = process.env.isTestingLocally;
+  config.env.BASE_API_URL = process.env.BASE_API_URL;
+  config.env.isolatedTestingURL = process.env.isolatedTestingURL;
+  config.env.isTestingIsolated = process.env.isTestingIsolated;
   config.env.isTestingInIframe = process.env.isTestingInIframe;  
   config.env.localTestURLInIframe = process.env.localTestURLInIframe;
   config.env.snowUser = process.env.SNOWUSER;
