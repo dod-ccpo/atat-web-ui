@@ -181,7 +181,7 @@ export default class ATATContactForm extends Vue {
   };
 
   //props
-
+  @Prop() private loaded!: boolean
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry?: string;
 
@@ -231,7 +231,9 @@ export default class ATATContactForm extends Vue {
   }
 
   private contactTypeChange(): void {
-    this.resetData();
+    if(this.loaded){
+      this.resetData();
+    }
 
   }
   public resetData(): void {

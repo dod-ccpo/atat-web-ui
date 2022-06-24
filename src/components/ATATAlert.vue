@@ -5,6 +5,7 @@
     class="_atat-alert"
     :class="getClasses"
     :id="id"
+    :style="{ 'max-width': maxWidth + 'px' }"
   >
     <div
       class="_content d-flex"
@@ -82,6 +83,7 @@ export default class ATATAlert extends Vue {
   @Prop({default: true}) private show?: boolean;
   @Prop({default: "Alert"}) private id?: string;
   @Prop({default: ""}) private maxHeight?: string;
+  @Prop({default: ""}) private maxWidth?: string;
 
   /**
    * type: 1) info, 2) error, 3) warning, 4) success, 5) callout
