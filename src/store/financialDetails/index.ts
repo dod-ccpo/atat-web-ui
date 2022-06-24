@@ -21,7 +21,7 @@ export class FinancialDetailsStore extends VuexModule {
 
   estimatedTaskOrderValue: string | null =  null;
   fundingRequestType: string | null =  null;
-
+  miprNumber: string | null = null;
   initialFundingIncrementStr = "";
   initialFundingIncrement = 0; // EJY save number or string in store?
   fundingIncrements: fundingIncrements[] = [];
@@ -32,6 +32,7 @@ export class FinancialDetailsStore extends VuexModule {
     // store session properties
     protected sessionProperties: string[] = [
       nameofProperty(this, (x) => x.estimatedTaskOrderValue),
+      nameofProperty(this, (x) => x.miprNumber),
       nameofProperty(this, (x) => x.fundingRequestType),
       nameofProperty(this, (x)=> x.initialFundingIncrement),
       nameofProperty(this, (x)=> x.initialFundingIncrementStr),
@@ -81,7 +82,10 @@ export class FinancialDetailsStore extends VuexModule {
     }
         
   }
-
+  @Action
+  public async getMIPRNumber(): Promise<string>  {
+    return this.miprNumber || '';
+  }
 
   @Mutation
   public async setIFPData(data: IFPData): Promise<void> {
@@ -98,6 +102,17 @@ export class FinancialDetailsStore extends VuexModule {
   @Mutation
   public setEstimatedTaskOrderValue(value: string): void {
     this.estimatedTaskOrderValue = value;
+
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+  }
+
+  @Mutation
+  public setMIPRNumber(value: string): void {
+    this.miprNumber = value;
 
     storeDataToSession(
       this,
