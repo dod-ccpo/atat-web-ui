@@ -473,6 +473,11 @@ export const FundingRequestResolver = (current: string): string => {
   if(current === routeNames.GInvoicing){
     return routeNames.FundingPlanType;
   };
+  
+  if (current === "MIPR") {
+    return routeNames.SeverabilityAndIncrementalFunding;
+  };
+
   if (fundingType === "FSF") {
     return routeNames.GInvoicing;
   } else if (fundingType === "MIPR") {
