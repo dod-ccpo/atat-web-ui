@@ -1,98 +1,95 @@
 <template>
-  <div class="mb-7">
-    <v-container class="container-max-width" fluid>
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Let’s gather info about your 7600A and 7600B
-          </h1>
-          <div class="mt-10">
-            <ATATTextField
-              id="GeneralTermsAndConditions"
-              label="General Terms & Conditions (GT&C) Number"
-              helpText="Format: AYYMM-000-000-000000"
-              :tooltipText="generalTermsAndConditionsToolTips"
-              class="_input-max-width"
-              :validate-on-blur="true"
-              :rules="[
-                $validators.required('Please enter your GT&C number.'),
-                $validators.isMaskValid(
-                  ['A[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
-                  `Your order number should be 20 or 22 characters (including hyphens 
+  <v-container class="container-max-width mb-7" fluid>
+    <v-row>
+      <v-col class="col-12">
+        <h1 class="page-header">
+          Let’s gather info about your 7600A and 7600B
+        </h1>
+        <div class="mt-10">
+          <ATATTextField
+            id="GeneralTermsAndConditions"
+            label="General Terms & Conditions (GT&C) Number"
+            helpText="Format: AYYMM-000-000-000000"
+            :tooltipText="generalTermsAndConditionsToolTips"
+            class="_input-max-width"
+            :validate-on-blur="true"
+            :rules="[
+              $validators.required('Please enter your GT&C number.'),
+              $validators.isMaskValid(
+                ['A[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
+                `Your order number should be 20 or 22 characters (including hyphens 
                     and periods) and use the format:<ul>
                     <li>AYYMM-000-000-000000</li>
-                    <li>AYYMM-000-000-000000.0 (with version number)</li></ul>`
-                , true),
-              ]"
-              :value.sync="gtcNumber"
-              hideHelpTextOnErrors="true"
-            />
-          </div>
-          <div class="mt-10">
-            <ATATTextField
-              id="OrderNumber"
-              label="Order Number"
-              helpText="Format: OYYMM-000-000-000000"
-              :tooltipText="orderNumberToolTips"
-              class="_input-max-width"
-              :rules="[
-                $validators.required('Please enter your order number.'),
-                $validators.isMaskValid(
-                  ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
-                  `Your order number should be 20 or 22 characters (including hyphens 
+                    <li>AYYMM-000-000-000000.0 (with version number)</li></ul>`,
+                true
+              ),
+            ]"
+            :value.sync="gtcNumber"
+            hideHelpTextOnErrors="true"
+          />
+        </div>
+        <div class="mt-10">
+          <ATATTextField
+            id="OrderNumber"
+            label="Order Number"
+            helpText="Format: OYYMM-000-000-000000"
+            :tooltipText="orderNumberToolTips"
+            class="_input-max-width"
+            :rules="[
+              $validators.required('Please enter your order number.'),
+              $validators.isMaskValid(
+                ['O[0-9]{4}\-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$'],
+                `Your order number should be 20 or 22 characters (including hyphens 
                     and periods) and use the format:<ul>
                     <li>OYYMM-000-000-000000</li>
-                    <li>OYYMM-000-000-000000.0 (with version number)</li></ul>`
-                , true),
-              ]"
-               :value.sync="orderNumber"
-              hideHelpTextOnErrors="true"
-            />
-          </div>
-          <hr class="base-lighter mt-10 mb-8" />
+                    <li>OYYMM-000-000-000000.0 (with version number)</li></ul>`,
+                true
+              ),
+            ]"
+            :value.sync="orderNumber"
+            hideHelpTextOnErrors="true"
+          />
+        </div>
+        <hr class="base-lighter" />
 
-          <div class="mt-10">
-            <h4 class="h4 text-base-darkest font-size-24 mb-5">
-              Upload your 7600A and 7600B
-            </h4>
-            <ATATFileUpload
-              :validFileFormats="validFileFormats"
-              attachmentServiceName="FundingPlans"
-              :maxFileSizeInBytes="maxFileSizeInBytes"
-              id="FundingPlan"
-              @delete="onRemoveAttachment"
-              :invalidFiles.sync="invalidFiles"
-              :validFiles.sync="uploadedFiles"
-              :rules="getRulesArray()"
-              @mouseleave="onFileUploadChanged"
-              @blur="onFileUploadChanged"
-            />
-          </div>
-          <div class="mt-10">
-             <ATATAlert
-            id="UPload7600Alert"
-            v-show="uploadedFiles.length < 2"
-            type="warning"
-            class="copy-max-width my-10"
-          >
-            <template v-slot:content>
-              <p class="mb-0">
-               You may be missing a funding document. Please ensure that both authorized 
-               forms are uploaded. If your 7600A and 7600B were combined into a single file 
-               before uploading, ignore this message.
-              </p>
-            </template>
-          </ATATAlert>
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+        <h4 class="h4 text-base-darkest font-size-24 mb-5">
+          Upload your 7600A and 7600B
+        </h4>
+        <ATATFileUpload
+          :validFileFormats="validFileFormats"
+          attachmentServiceName="FundingPlans"
+          :maxFileSizeInBytes="maxFileSizeInBytes"
+          id="FundingPlan"
+          @delete="onRemoveAttachment"
+          :invalidFiles.sync="invalidFiles"
+          :validFiles.sync="uploadedFiles"
+          :requiredMessage="requiredMessage"
+          :rules="getRulesArray()"
+          @mouseleave="onFileUploadChanged"
+          @blur="onFileUploadChanged"
+        />
+        <ATATAlert
+          id="UPload7600Alert"
+          v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
+          type="warning"
+          class="copy-max-width my-10"
+        >
+          <template v-slot:content>
+            <p class="mb-0">
+              You may be missing a funding document. Please ensure that both
+              authorized forms are uploaded. If your 7600A and 7600B were
+              combined into a single file before uploading, ignore this message.
+            </p>
+          </template>
+        </ATATAlert>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -105,6 +102,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { AttachmentTables } from "@/api";
 import Attachments from "@/store/attachments";
 import { isValid } from "date-fns";
+import { AttachmentDTO } from "@/api/models";
 
 let generalTermsAndConditionsToolTips = "This is a unique 20-character value";
 generalTermsAndConditionsToolTips +=
@@ -136,12 +134,20 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   private maxFileSizeInBytes = 1073741824;
   private gtcNumber = "";
   private orderNumber = "";
+  private showWarning = false;
+
+  private requiredMessage =
+    "You must include an authorized 7600A and 7600B for this acquisition. " +
+    "Please upload your missing documents," +
+    "or select Back to choose another method for transferring funds.";
 
   // rules array dynamically created based on the invalid
   // files returned from the child component
   // `ATATFileUpload.vue`
   private getRulesArray(): ((v: string) => string | true | undefined)[] {
     let rulesArr: ((v: string) => string | true | undefined)[] = [];
+
+    rulesArr.push(this.$validators.required(this.requiredMessage));
 
     this.invalidFiles.forEach((iFile) => {
       rulesArr.push(
@@ -156,12 +162,6 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
       );
     });
 
-    // if(this.uploadedFiles.length == 0){
-    //    rulesArr.push(()=> {
-
-    //         ret
-    //    }  )
-    // }
     return rulesArr;
   }
 
@@ -182,8 +182,40 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
     }
   }
 
-  public async loadOnEnter(): Promise<void> {
-    //todo: load data
+  @Watch("uploadedFiles")
+  private onUploadedFilesChanged(): void {
+    this.showWarning =
+      this.uploadedFiles.length > 0 && this.uploadedFiles.length < 2;
+  }
+
+  async loadOnEnter(): Promise<void> {
+    try {
+
+      const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
+      const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
+        const file = new File([], attachment.file_name, {
+          lastModified: Date.parse(attachment.sys_created_on || "")
+        });
+        const upload: uploadingFile = {
+          attachmentId: attachment.sys_id || "",
+          fileName: attachment.file_name,
+          file: file,
+          created: file.lastModified,
+          progressStatus: 100,
+          link: attachment.download_link || "",
+          recordId: attachment.table_sys_id,
+          isErrored: false,
+          isUploaded: true
+        }
+
+        return upload;
+      });
+
+      this.uploadedFiles = [...uploadedFiles];
+
+    } catch (error) {
+      throw new Error("an error occurred loading funding plans data");
+    }
   }
 
   public async mounted(): Promise<void> {
@@ -216,11 +248,8 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   }
 
   private onFileUploadChanged(): void {
-
-    if(this.uploadedFiles.length == 0){
+    if (this.uploadedFiles.length == 0) {
       // todo do something
-
-          
     }
   }
 }
