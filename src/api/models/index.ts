@@ -249,3 +249,9 @@ export interface FundingRequestDTO extends BaseTableDTO {
   fundingRequestType: string;
 
 }
+
+export interface FundingIncrementDTO extends BaseTableDTO{
+  amount: string;
+  description: string;
+  order: string;
+}
