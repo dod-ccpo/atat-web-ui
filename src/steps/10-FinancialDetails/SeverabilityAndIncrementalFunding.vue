@@ -140,7 +140,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import Periods from "@/store/periods";
-import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 import { routeNames } from "@/router/stepper";
 
 @Component({
@@ -196,7 +196,7 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
-    const estimatedTOValue = AcquisitionPackage.estimatedTaskOrderValue;
+    const estimatedTOValue = FinancialDetails.estimatedTaskOrderValue;
     this.isCostEstimateMissing = !estimatedTOValue;
   }
 
