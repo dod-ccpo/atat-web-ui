@@ -85,7 +85,7 @@ import { hasChanges } from "@/helpers";
 })
 export default class GInvoicing extends Mixins(SaveOnLeave) {
 
-  public useGInvoicing: boolean | null = null;
+  public useGInvoicing = "";
   public gInvoiceNumber = "";
 
   private gInvoicingOptions: RadioButton[] = [
@@ -116,7 +116,7 @@ export default class GInvoicing extends Mixins(SaveOnLeave) {
   }
   
   public savedData: baseGInvoiceData = {
-    useGInvoicing: null,
+    useGInvoicing: "",
     gInvoiceNumber: "",
   }
 
@@ -140,6 +140,9 @@ export default class GInvoicing extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
+        if (this.currentData.useGInvoicing === "No") {
+          this.currentData.gInvoiceNumber = "";
+        }
         FinancialDetails.saveGInvoiceData(this.currentData);
       }
     } catch (error) {

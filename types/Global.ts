@@ -236,6 +236,6 @@ export interface IFPData {
 }
 
 export interface baseGInvoiceData {
-  useGInvoicing: boolean | null;
+  useGInvoicing: string;
   gInvoiceNumber: string;
 }
