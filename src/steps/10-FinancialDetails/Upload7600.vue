@@ -61,7 +61,9 @@
           :maxFileSizeInBytes="maxFileSizeInBytes"
           id="FundingPlan"
           @delete="onRemoveAttachment"
+          fileListTitle="Your files"
           :invalidFiles.sync="invalidFiles"
+          :maxNumberOfFiles="2"
           :validFiles.sync="uploadedFiles"
           :requiredMessage="requiredMessage"
           :rules="getRulesArray()"
@@ -72,7 +74,7 @@
           id="UPload7600Alert"
           v-show="uploadedFiles.length > 0 && uploadedFiles.length < 2"
           type="warning"
-          class="max-width-70 mt-10"
+          class="mt-10"
         >
           <template v-slot:content>
             <p class="mb-0">
@@ -103,6 +105,8 @@ import { AttachmentTables } from "@/api";
 import Attachments from "@/store/attachments";
 import { isValid } from "date-fns";
 import { AttachmentDTO } from "@/api/models";
+import FinancialDetails from "@/store/financialDetails";
+import { hasChanges } from "@/helpers";
 
 let generalTermsAndConditionsToolTips = "This is a unique 20-character value";
 generalTermsAndConditionsToolTips +=
@@ -135,11 +139,25 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   private gtcNumber = "";
   private orderNumber = "";
   private showWarning = false;
-
+ 
   private requiredMessage =
     "You must include an authorized 7600A and 7600B for this acquisition. " +
     "Please upload your missing documents," +
     "or select Back to choose another method for transferring funds.";
+
+  private saved: {gtcNumber: string, orderNumber: string} = {
+    gtcNumber: "",
+    orderNumber: ""
+  };
+  
+
+  get current(): {gtcNumber: string, orderNumber: string} {
+    return {
+
+      gtcNumber: this.gtcNumber,
+      orderNumber: this.orderNumber
+    }     
+  }
 
   // rules array dynamically created based on the invalid
   // files returned from the child component
@@ -191,6 +209,10 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   async loadOnEnter(): Promise<void> {
     try {
 
+      this.saved =await FinancialDetails.load7600();
+      this.gtcNumber = this.saved.gtcNumber;
+      this.orderNumber = this.saved.orderNumber;
+
       const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
       const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
         const file = new File([], attachment.file_name, {
@@ -225,7 +247,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        //todo: save data
+        FinancialDetails.save7600(this.current);
       }
     } catch (error) {
       console.log(error);
@@ -234,9 +256,8 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    // return hasChanges(this.currentData, this.savedData);
-    // todo fill out has changes
-    return false;
+    return hasChanges(this.current, this.saved);
+     
   }
 
   private showDefaultValidation(): boolean {

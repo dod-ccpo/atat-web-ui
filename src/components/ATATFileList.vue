@@ -39,12 +39,19 @@ export default class ATATFileList extends Vue {
   @Prop({ default: () => [] }) private validFiles!: uploadingFile[];
   @PropSync("isFullSize", {default: true}) private _isFullSize!: boolean;
   @Prop({ default: true }) private multiplesAllowed!: boolean;
+  @Prop({ default: "" }) private title!: string;
   private uploadingFiles: uploadingFile[] = [];
 
   /**
    * sets title to plural when necessary
    */
   private getFileUploadsDivTitle(): string {
+
+    if(this.title.length > 0)
+    {
+      return this.title;
+    }
+    
     if (this.multiplesAllowed){
       return "Your Upload" + (this.uploadingFiles.length > 1 ? "s" : "");
     }

@@ -90,6 +90,7 @@
       class="mt-5"
       :isFullSize.sync="isFullSize"
       :multiplesAllowed="multiplesAllowed"
+      :title="fileListTitle"
       @delete="(file) => $emit('delete', file)"
     />
   </v-form>
@@ -152,6 +153,9 @@ export default class ATATFileUpload extends Vue {
   
   @PropSync("validFiles", { default: () => [] })
   private _validFiles!: uploadingFile[];
+
+  @Prop({ default: "" }) private fileListTitle!: string;
+
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
