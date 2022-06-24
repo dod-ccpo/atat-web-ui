@@ -467,17 +467,17 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 };
 
 export const FundingRequestResolver = (current: string): string => {
-  const fundingType
-      = FinancialDetails.fundingRequestType;
-
   if(current === routeNames.GInvoicing){
-    return routeNames.FundingPlanType;
+    return FinancialDetails.useGInvoicing === "Yes"
+      ? routeNames.SeverabilityAndIncrementalFunding
+      : routeNames.Upload7600
   };
-  
-  if (current === "MIPR") {
+
+  if (current === routeNames.MIPR) {
     return routeNames.SeverabilityAndIncrementalFunding;
   };
 
+  const fundingType = FinancialDetails.fundingRequestType;
   if (fundingType === "FSF") {
     return routeNames.GInvoicing;
   } else if (fundingType === "MIPR") {

@@ -621,6 +621,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.Upload7600,
         completePercentageWeight: 1,
         component: Upload7600,
+        routeResolver: FundingRequestResolver
       },
       {
         menuText: "Severability and Incremental Funding",
