@@ -466,13 +466,9 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
   return OfferingDetailsPathResolver(current, direction);
 };
 
-export const FundingRequestResolver = (current: string): string => {
-  if(current === routeNames.GInvoicing){
-    return FinancialDetails.useGInvoicing === "Yes"
-      ? routeNames.SeverabilityAndIncrementalFunding
-      : routeNames.Upload7600
-  };
 
+export const MIPRResolver = (current: string): string => {
+  debugger;
   if (current === routeNames.MIPR) {
     return routeNames.SeverabilityAndIncrementalFunding;
   };
@@ -489,6 +485,40 @@ export const FundingRequestResolver = (current: string): string => {
     : routeNames.FundingPlanType;
 };
 
+export const GInvoicingResolver = (current: string): string => {
+  debugger;
+  // from MIPR - skip ginvoicing, go to sev & inc funding, 
+  // from funding plan type go to GInvoice
+  if (current === routeNames.MIPR) {
+    return routeNames.SeverabilityAndIncrementalFunding;
+  }
+  if (current === )
+  return routeNames.GInvoicing;
+  
+  
+  //   return FinancialDetails.useGInvoicing === "Yes"
+  //     ? routeNames.SeverabilityAndIncrementalFunding
+  //     : routeNames.Upload7600
+  // };
+  // return routeNames.Upload7600;
+}
+
+export const Upload7600Resolver = (current: string): string => {
+  debugger;
+  return current === routeNames.Upload7600 
+    ? routeNames.SeverabilityAndIncrementalFunding
+    : routeNames.GInvoicing;
+}
+
+export const SevAndIncFundingResolver = (): string => {
+  // currently not saving yes/no if need incremental funding.
+  // future ticket will have route resolve to either Incremental Funding Page
+  // or the Financial POC Form page
+  // for now, if either yes or no is selected, route to IF page
+  debugger;
+  return routeNames.IncrementalFunding;
+}
+
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
@@ -498,7 +528,10 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   FOIARecordResolver,
   A11yRequirementResolver,
   ContractTrainingReq,
-  FundingRequestResolver
+  MIPRResolver,
+  GInvoicingResolver,
+  Upload7600Resolver,
+  SevAndIncFundingResolver,
 };
 
 // add path resolvers here 
