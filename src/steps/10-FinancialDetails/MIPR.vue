@@ -22,6 +22,7 @@
           id="FundingPlan"
           :invalidFiles.sync="invalidFiles"
           :maxFileSizeInBytes="maxFileSizeInBytes"
+          :maxNumberOfFiles="1"
           :rules="getRulesArray()"
           :validFileFormats="validFileFormats"
           :validFiles.sync="uploadedFiles"
@@ -38,13 +39,16 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { AttachmentTables } from "@/api";
 import { AttachmentDTO } from "@/api/models";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 import ATATTextField from "@/components/ATATTextField.vue";
+import FinancialDetails from "@/store/financialDetails";
+import { hasChanges } from "@/helpers";
+import SaveOnLeave from "@/mixins/saveOnLeave";
 
 @Component({
   components: {
@@ -52,17 +56,18 @@ import ATATTextField from "@/components/ATATTextField.vue";
     ATATFileUpload,
   },
 })
-export default class MIPR extends Vue {
+export default class MIPR extends Mixins(SaveOnLeave)  {
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
   private validFileFormats = ["xlsx", "xls", "pdf"];
   private maxFileSizeInBytes = 1073741824;
+  private saved = "";
   private MIPRNumber = ""
   private toolTip = `This number is assigned by your agency’s accounting and finance office.
    It is located in Box 5 on the MIPR form (DD Form 448).`
   private fileUploadHelpText = "Supported file types: PDF&nbsp;&nbsp;•" +
                                   "&nbsp;&nbsp;Max file size: 1GB&nbsp;&nbsp;•" +
-                                  "&nbsp;&nbsp;Maximum 2 files";
+                                  "&nbsp;&nbsp;Maximum 1 file";
   private requiredMessage = "You must include an authorized MIPR for this acquisition. " +
         "Please upload your missing document, or select Back to choose another method for " +
         "transferring funds.";
@@ -72,7 +77,8 @@ export default class MIPR extends Vue {
 
   async loadOnEnter(): Promise<void> {
     try {
-
+      this.saved = await FinancialDetails.getMIPRNumber();
+      this.MIPRNumber = this.saved;
       const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
       const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
         const file = new File([], attachment.file_name, {
@@ -89,7 +95,6 @@ export default class MIPR extends Vue {
           isErrored: false,
           isUploaded: true
         }
-
         return upload;
       });
 
@@ -98,6 +103,23 @@ export default class MIPR extends Vue {
     } catch (error) {
       throw new Error("an error occurred loading funding plans data");
     }
+  }
+
+  get current(): string {
+    return this.MIPRNumber
+  }
+  private hasChanged(): boolean {
+    return hasChanges(this.current, this.saved);
+  }
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+      if (this.hasChanged()) {
+        FinancialDetails.setMIPRNumber(this.current);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
   }
 
   async onRemoveAttachment(file: uploadingFile): Promise<void> {
