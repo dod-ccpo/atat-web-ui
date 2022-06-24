@@ -73,6 +73,7 @@ export default class ATATSVGIcon extends Vue {
     { "success": "62bd59" },
     { "error": "c60634" },
     { "disabled": "c9c9c9" },
+    { "disabled-dark": "adadad"},
     { "white": "ffffff" },
   ]
 

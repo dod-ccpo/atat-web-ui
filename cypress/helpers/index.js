@@ -1,6 +1,9 @@
+import {loadInitialData} from "../helpers/initialDataLoad";
+import {saveToSNOW} from "../helpers/saveToSNOW";
+
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
-  return `${baseAPIUrl}/now/table/${tableName}`;
+  return `${baseAPIUrl}/api/now/table/${tableName}`;
 }
 
 
@@ -9,17 +12,20 @@ const bootStrapAcquisitionPackageApi= ()=> {
   const acquisitionPackageApiEndpoint = buildTableApiPath('x_g_dis_atat_acquisition_package');
   cy.fixture("acquistionPackage").then((data) => {
     cy.intercept('POST', acquisitionPackageApiEndpoint, {
-      statusCode: 201,
+      statusCode: 404,
       body: data,
     });
-  });
-   
+  }); 
+
+  loadInitialData();
+  saveToSNOW();
+
 }
 
 export function bootstrapMockApis(){
-    
-  bootStrapAcquisitionPackageApi();
-    
+  
+  bootStrapAcquisitionPackageApi();    
+  
 }
 
 export const cleanText = (text) => {

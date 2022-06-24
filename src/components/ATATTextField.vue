@@ -52,7 +52,7 @@
       </template>
     </v-text-field>
     <ATATErrorValidation :errorMessages="errorMessages" v-if="showErrorMessages" />
-    <div v-if="helpText" class="help-text mt-2">
+    <div v-if="showHelpText()" class="help-text mt-2">
       {{ helpText }}
     </div>
   </div>
@@ -108,6 +108,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: false }) private alignRight?: boolean;
   @Prop({ default: false }) private disabled?: boolean;
   @Prop({ default: true }) private showErrorMessages?: boolean;
+  @Prop({ default: false }) private hideHelpTextOnErrors?: boolean;
 
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -177,6 +178,13 @@ export default class ATATTextField extends Vue  {
     if (this.isCurrency) {
       this.iconColor = this._value || this.disabled ? "base-darkest" : "base-light";
     }
+  }
+
+  private showHelpText(): boolean {
+    if(this.errorMessages.length && this.hideHelpTextOnErrors){
+      return false;
+    }
+    return  this.helpText.length > 0;
   }
 
 }

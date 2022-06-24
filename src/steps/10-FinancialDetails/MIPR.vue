@@ -60,7 +60,9 @@ export default class MIPR extends Vue {
   private MIPRNumber = ""
   private toolTip = `This number is assigned by your agency’s accounting and finance office.
    It is located in Box 5 on the MIPR form (DD Form 448).`
-  private fileUploadHelpText = "Supported file types: PDF • Max file size: 1GB"
+  private fileUploadHelpText = "Supported file types: PDF&nbsp;&nbsp;•" +
+                                  "&nbsp;&nbsp;Max file size: 1GB&nbsp;&nbsp;•" +
+                                  "&nbsp;&nbsp;Maximum 2 files";
   private requiredMessage = "You must include an authorized MIPR for this acquisition. " +
         "Please upload your missing document, or select Back to choose another method for " +
         "transferring funds.";
