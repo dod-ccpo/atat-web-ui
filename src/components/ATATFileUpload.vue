@@ -23,8 +23,8 @@
         @change="fileUploadChanged"
         :hide-details="true"
         :rules="_rules"
-        :validate-on-blur="true"
-        @blur="setErrorMessage()"
+        :validate-on-blur="validateOnBlur"
+        @keydown.tab="setErrorMessage()"
       >
         <template v-slot:prepend-inner>
           <div
@@ -82,7 +82,6 @@
 
     <ATATFileList
       :validFiles="_validFiles"
-      :class="[{ 'mt-10': !isFullSize }]"
       :isFullSize.sync="isFullSize"
       :multiplesAllowed="multiplesAllowed"
       @delete="(file) => $emit('delete', file)"
@@ -150,6 +149,7 @@ export default class ATATFileUpload extends Vue {
   private isFullSize = true;
   private fileAttachmentService?: FileAttachmentService;
   private errorMessages: string[] = [];
+  private validateOnBlur = true;
   
   get isFileUploadDisplayed(): boolean {
     if (this.multiplesAllowed === false){
@@ -168,9 +168,10 @@ export default class ATATFileUpload extends Vue {
       event.preventDefault();
       event.stopPropagation();}
 
-    (document.getElementById("FundingPlanFileUpload") as HTMLInputElement).click();
+    (document.getElementById(this.id + "FileUpload") as HTMLInputElement).click();
     this.reset();
     this.isFullSize = this._validFiles.length === 0;
+   
   }
 
   // 
@@ -191,6 +192,7 @@ export default class ATATFileUpload extends Vue {
       }
       Vue.nextTick(()=>{
         this.clearHTMLFileInput();
+        (document.getElementById(this.id + "FileUpload") as HTMLInputElement).blur();
       })
     });
   }
@@ -396,7 +398,7 @@ export default class ATATFileUpload extends Vue {
    * Clears out all files form HTML File Input
    */
   private clearHTMLFileInput():void{
-    const fileInput = document.getElementById("FundingPlanFileUpload") as HTMLInputElement;
+    const fileInput = document.getElementById(this.id + "FileUpload") as HTMLInputElement;
     fileInput.value = "";
   }
 
