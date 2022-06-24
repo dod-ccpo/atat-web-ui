@@ -134,7 +134,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   private orderNumberToolTips = orderNumberToolTips;
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
-  private validFileFormats = ["xlsx", "xls", "pdf"];
+  private validFileFormats = ["pdf"];
   private maxFileSizeInBytes = 1073741824;
   private gtcNumber = "";
   private orderNumber = "";
