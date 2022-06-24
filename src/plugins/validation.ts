@@ -63,12 +63,14 @@ export class ValidationPlugin {
         // array of strings
         return v && Object.values(v).length > 0 || message;
       } else if (typeof (v) === "string") {
-        if (isCurrency) {
-          const amt = parseFloat(v);
-          return (amt !== 0 && !isNaN(amt)) || message;
-        } else {
-          return (v !== "") || message;
-        }
+        return (v !== "") || message;
+      } else if ( typeof (v) === "undefined"){ //validates file upload
+        return message;
+      } else if (isCurrency) {
+        const amt = parseFloat(v);
+        return (amt !== 0 && !isNaN(amt)) || message;
+      } else {
+        return (v !== "") || message;
       }
       return true;
     };
