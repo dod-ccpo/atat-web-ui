@@ -100,9 +100,8 @@ import {
   OfferingDetailsPathResolver,
   DowSummaryPathResolver,
   MIPRResolver,
-  GInvoicingResolver,
   Upload7600Resolver,
-  SevAndIncFundingResolver,
+  IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
 } from "./resolvers";
 
@@ -615,7 +614,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.GInvoicing,
         completePercentageWeight: 1,
         component: GInvoicing,
-        routeResolver: GInvoicingResolver
       },
       {
         menuText: "Upload-7600",
@@ -632,7 +630,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
-        routeResolver: SevAndIncFundingResolver
       },
       {
         menuText: "Incremental Funding",
@@ -641,6 +638,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.IncrementalFunding,
         completePercentageWeight: 1,
         component: IncrementalFunding,
+        routeResolver: IncrementalFundingResolver
       },
       {
         menuText: "Financial POC Form",

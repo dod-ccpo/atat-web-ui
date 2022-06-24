@@ -42,6 +42,7 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 export const CurrentContractEnvRouteResolver = (current: string): string => {
   const hasCurrentContract 
     = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
+  debugger;
   if (hasCurrentContract) {
     return routeNames.CurrentEnvironment;
   }
@@ -468,49 +469,32 @@ export const DowSummaryPathResolver = (current: string, direction: string): stri
 
 
 export const MIPRResolver = (current: string): string => {
-  debugger;
-  if (current === routeNames.MIPR) {
-    return routeNames.SeverabilityAndIncrementalFunding;
-  };
-
   const fundingType = FinancialDetails.fundingRequestType;
-  if (fundingType === "FSF") {
-    return routeNames.GInvoicing;
-  } else if (fundingType === "MIPR") {
+  if (fundingType === "MIPR") {
     return routeNames.MIPR;
-  };
-
-  return current === routeNames.FundingPlanType
-    ? routeNames.SeverabilityAndIncrementalFunding
-    : routeNames.FundingPlanType;
+  }
+  return current === routeNames.GInvoicing
+    ? routeNames.FundingPlanType
+    : routeNames.GInvoicing;
 };
 
-export const GInvoicingResolver = (current: string): string => {
-  debugger;
-  // from MIPR - skip ginvoicing, go to sev & inc funding, 
-  // from funding plan type go to GInvoice
-  if (current === routeNames.MIPR) {
-    return routeNames.SeverabilityAndIncrementalFunding;
-  }
-  if (current === )
-  return routeNames.GInvoicing;
-  
-  
-  //   return FinancialDetails.useGInvoicing === "Yes"
-  //     ? routeNames.SeverabilityAndIncrementalFunding
-  //     : routeNames.Upload7600
-  // };
-  // return routeNames.Upload7600;
-}
-
 export const Upload7600Resolver = (current: string): string => {
-  debugger;
-  return current === routeNames.Upload7600 
-    ? routeNames.SeverabilityAndIncrementalFunding
-    : routeNames.GInvoicing;
+  const useGInvoicing = FinancialDetails.useGInvoicing === "Yes";
+  if (!useGInvoicing) {
+    return routeNames.Upload7600;
+  }
+
+  const fundingType = FinancialDetails.fundingRequestType
+  if (current === routeNames.SeverabilityAndIncrementalFunding) {
+    return fundingType === "MIPR"
+      ? routeNames.MIPR
+      : routeNames.GInvoicing
+  }
+
+  return routeNames.SeverabilityAndIncrementalFunding
 }
 
-export const SevAndIncFundingResolver = (): string => {
+export const IncrementalFundingResolver = (): string => {
   // currently not saving yes/no if need incremental funding.
   // future ticket will have route resolve to either Incremental Funding Page
   // or the Financial POC Form page
@@ -529,9 +513,8 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   A11yRequirementResolver,
   ContractTrainingReq,
   MIPRResolver,
-  GInvoicingResolver,
   Upload7600Resolver,
-  SevAndIncFundingResolver,
+  IncrementalFundingResolver,
 };
 
 // add path resolvers here 
