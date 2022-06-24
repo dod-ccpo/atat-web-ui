@@ -85,7 +85,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
     
     cy.btnClick(common.continueBtn, " Continue ");    
     
-    cy.activeStep(common. stepRequiredFormText)
+    cy.verifyPageHeader("Let’s create an incremental funding plan for your base period ")
   });
   
   it("TC3: Warning Message,if PoP & Cost estimate are missing", () => {
@@ -123,9 +123,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
     const contractorAmt = randomNumberBetween(1, 50);
     cy.fillSurgeCapabilities(contractorAmt, "continue");
     cy.verifyPageHeader(" What type of funding request did you use for this acquisition? ");
-    cy.btnClick(common.continueBtn, " Continue ");
-    cy.verifyPageHeader("Upload your MIPR"); 
-    cy.btnClick(common.continueBtn, " Continue ");
+    cy.btnClick(common.continueBtn, " Continue ");    
     cy.verifyPageHeader(" Are you requesting to incrementally fund this requirement? "); 
     cy.radioBtn(fd.iFundYesRadio, "YES").click({ force: true }).then(() => {
       cy.findElement(fd.alertWarning).should("exist");
