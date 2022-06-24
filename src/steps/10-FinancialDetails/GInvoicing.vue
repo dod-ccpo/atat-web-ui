@@ -60,16 +60,17 @@
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
-
-import { Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
 
 import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
+import FinancialDetails from "@/store/financialDetails";
 
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -78,7 +79,7 @@ import { RadioButton, SlideoutPanelContent } from "../../../types/Global";
     GInvoiceLearnMore,
   },
 })
-export default class GInvoicing extends Vue {
+export default class GInvoicing extends Mixins(SaveOnLeave) {
 
   public useGInvoicing: boolean | null = null;
   public gInvoiceNumber = "";
@@ -109,6 +110,8 @@ export default class GInvoicing extends Vue {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+    await FinancialDetails.getGInvoiceData();
+
   }
 
 }

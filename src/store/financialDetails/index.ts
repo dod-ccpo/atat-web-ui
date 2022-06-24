@@ -19,6 +19,19 @@ export class FinancialDetailsStore extends VuexModule {
   initialFundingIncrement = 0; // EJY save number or string in store?
   fundingIncrements: fundingIncrements[] = [];
 
+  useGInvoicing: boolean | null = null;
+  gInvoiceNumber = "";
+
+  @Action
+  public async getGInvoiceData(): Promise<{ 
+    useGInvoicing: boolean | null, gInvoiceNumber: string
+  }> {
+    return {
+      useGInvoicing: this.useGInvoicing,
+      gInvoiceNumber: this.gInvoiceNumber,
+    }
+  }
+
   @Action
   public async getIFPData(): Promise<IFPData> {
     return {
