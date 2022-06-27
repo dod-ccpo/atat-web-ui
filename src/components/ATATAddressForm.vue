@@ -11,7 +11,7 @@
       @radioButtonSelected="addressTypeChange"
     />
 
-    <v-form ref="atatAddressForm" lazy-validation>
+    <v-form v-show="_selectedAddressType !== ''" ref="atatAddressForm" lazy-validation>
       <v-row>
       <v-col class="col-12 col-lg-8">
         <ATATTextField

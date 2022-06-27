@@ -32,6 +32,7 @@
         :return-object="returnObject"
         :style="'width: ' + width + 'px'"
         :rules="rules"
+        :menu-props="{ bottom: true, offsetY: true }"
       >
         <template v-slot:item="{ item, on }">
           <v-list-item v-on="on">

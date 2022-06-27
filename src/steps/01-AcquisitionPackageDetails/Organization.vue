@@ -216,7 +216,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
 
   private organizationName = "";
   private dodAddressCode = "";
-  private selectedAddressType = this.addressTypes.USA;
+  private selectedAddressType = "";
   private streetAddress1 = "";
   private streetAddress2 = "";
   private city = "";
@@ -233,7 +233,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     },
     {
       id: "MilitaryAddress",
-      label: "Military (APO or FPO)",
+      label: "Military/Diplomatic (APO, FPO or DPO)",
       value: this.addressTypes.MIL,
     },
     {
@@ -409,7 +409,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
       this.selectedAddressType =
         selectedAddressTypeIndx > -1
           ? this.addressTypeOptions[selectedAddressTypeIndx].value
-          : this.addressTypes.USA;
+          : "";
           
       this.streetAddress1 = storeData.street_address_1;
       this.streetAddress2 = storeData.street_address_2;
