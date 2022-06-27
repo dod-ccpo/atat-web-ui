@@ -1,6 +1,5 @@
-
 <template>
-  <v-container fluid class="container-max-width">
+  <v-container class="container-max-width" fluid>
     <v-row>
       <v-col class="col-12">
         <h1 class="page-header">
@@ -8,50 +7,53 @@
         </h1>
         <div class="copy-max-width">
           <ATATTextField
-            label="Incumbent contractor name"
             id="IncumbentContractorName"
-            class="_input-max-width mb-10"
-            :value.sync="incumbentContractorName"
             :rules="[
               $validators.required(
                 'Please enter the incumbent contractor’s name.'
               ),
             ]"
+            :value.sync="incumbentContractorName"
+            class="_input-max-width mb-10"
+            label="Incumbent contractor name"
           />
 
           <ATATTextField
-            label="Contract number"
             id="ContractNumber"
-            class="_input-max-width mb-10"
-            :value.sync="contractNumber"
             :rules="[
               $validators.required('Please enter your contract number.'),
             ]"
+            :value.sync="contractNumber"
+            class="_input-max-width mb-10"
+            label="Contract number"
           />
 
           <ATATTextField
-            label="Task/Delivery order number"
             id="TaskDeliveryOrderNumber"
-            class="_input-max-width mb-10"
             :value.sync="taskDeliveryOrderNumber"
+            :optional="true"
+            class="_input-max-width mb-10"
+            label="Task/Delivery order number"
+            tooltipText="Leave this field empty if your previous acquisition
+             was only a contract, not an order placed under a contract."
           />
 
           <!-- NOTE: max date to be determined -->
           <ATATDatePicker
             id="Expiration"
-            label="Contract/Order expiration date"
-            placeHolder="MM/DD/YYYY"
-            :value.sync="contractOrderExpirationDate"
             :min="minDate"
-            tooltipText="Use the period of performance end date for your task order. If you 
-                do not have an order number, use your contract expiration date."
-            max="2024-01-01"
             :rules="[
               $validators.required(
                 'Please enter your contract/order expiration date.'
               ),
               $validators.isDateValid('Please enter a valid date.'),
             ]"
+            :value.sync="contractOrderExpirationDate"
+            label="Contract/Order expiration date"
+            max="2024-01-01"
+            placeHolder="MM/DD/YYYY"
+            tooltipText="Use the period of performance end date for your task order. If you
+                do not have an order number, use your contract expiration date."
           />
         </div>
       </v-col>
@@ -66,9 +68,7 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATDatePicker from "@/components/ATATDatePicker.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import AcquisitionPackage, {
-  StoreProperties,
-} from "@/store/acquisitionPackage";
+import AcquisitionPackage, { StoreProperties, } from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -93,7 +93,13 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
   private contractOrderExpirationDate =
     AcquisitionPackage.currentContract?.contract_order_expiration_date || "";
 
-  private minDate: string = format(add(new Date(), { days: 1 }), "yyyy-MM-dd");
+  private minDate: string = format(add(new Date(), {days: 1}), "yyyy-MM-dd");
+  private savedData = {
+    incumbent_contractor_name: "",
+    contract_number: "",
+    task_delivery_order_number: "",
+    contract_order_expiration_date: "",
+  } as Record<string, string>;
 
   private get currentData(): CurrentContractDTO {
     return {
@@ -103,13 +109,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
       contract_order_expiration_date: this.contractOrderExpirationDate,
     };
   }
-
-  private savedData = {
-    incumbent_contractor_name: "",
-    contract_number: "",
-    task_delivery_order_number: "",
-    contract_order_expiration_date: "",
-  } as Record<string, string>;
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -137,10 +136,6 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     }
   }
 
-  private hasChanged(): boolean {
-    return hasChanges(this.currentData, this.savedData);
-  }
-
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
@@ -154,6 +149,10 @@ export default class CurrentContract extends Mixins(SaveOnLeave) {
     }
 
     return true;
+  }
+
+  private hasChanged(): boolean {
+    return hasChanges(this.currentData, this.savedData);
   }
 }
 </script>
