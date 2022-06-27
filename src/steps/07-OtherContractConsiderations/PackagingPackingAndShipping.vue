@@ -26,6 +26,8 @@
             :otherValueRequiredMessage="otherValueRequiredMessage"
             :noneValue="noneApplyValue"
             :items="checkboxItems"
+            otherEntryType="textarea"
+
             name="checkboxes"
             :card="false"
             class="copy-max-width"
