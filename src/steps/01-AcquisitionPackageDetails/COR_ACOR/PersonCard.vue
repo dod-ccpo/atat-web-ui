@@ -53,8 +53,8 @@
           <router-link 
             :id="'LinkTo' + (isACOR ? 'COR' : 'ACOR')"
             :to="{ name: isACOR 
-              ? routeNames.Cor_Information 
-              : routeNames.Acor_Information 
+              ? routeNames.CorInformation
+              : routeNames.AlternateCor
             }"
           >
             change your {{ isACOR ? 'COR' : 'ACOR' }}.
