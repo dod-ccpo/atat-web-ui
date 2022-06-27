@@ -8,11 +8,10 @@ const buildTableApiPath = (tableName)=> {
 
 
 const bootStrapAcquisitionPackageApi= ()=> {
-
   const acquisitionPackageApiEndpoint = buildTableApiPath('x_g_dis_atat_acquisition_package');
   cy.fixture("acquistionPackage").then((data) => {
     cy.intercept('POST', acquisitionPackageApiEndpoint, {
-      statusCode: 404,
+      statusCode: 201,
       body: data,
     });
   }); 

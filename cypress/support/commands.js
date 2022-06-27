@@ -82,7 +82,7 @@ Cypress.Commands.add("launchATAT", () => {
     } else {
       cy.visit(Cypress.env("localTestURL"));    
     }
-  } if (isTestingIsolated){
+  } else if (isTestingIsolated) {
     cy.clearSession();
     cy.visit(Cypress.env("isolatedTestingURL"));    
   } else {
@@ -101,10 +101,14 @@ Cypress.Commands.add("launchATAT", () => {
     .its("sessionStorage")
     .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
     .should("exist");
-  // cy.window()
-  //   .its("sessionStorage")
-  //   .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
-  //   .should("exist");
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_DESCRIPTION_OF_WORK_KEY")
+    .should("exist");
+  cy.window()
+    .its("sessionStorage")
+    .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
+    .should("exist");
 
 });
 
