@@ -110,8 +110,8 @@ describe("Test suite: OCC: PPS substep", () => {
     cy.textExists(common.subStepPPSText, " Packaging, Packing, and Shipping ").click();
     cy.verifyPageHeader("Do you need to include packaging, packing, or shipping instructions?");    
     //validation if Check box is not selected
-    cy.findElement(occ.contractorProviderCheckBox).focus()
-      .tab().tab().tab().then(() => {
+    cy.findElement(occ.contractorProviderCheckBox).check({force: true}).uncheck({force: true})
+      .then(() => {
         cy.checkErrorMessage(
           occ.checkBoxError,
           "Please select an option.");

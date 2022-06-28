@@ -51,6 +51,9 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
       zipCode: orgAddressType.Zipcode,
             
     }
+
+    cy.findElement(org.usaRadioBtn).click({ force: true });
+
     cy.enterOrganizationAddress(orgAddress);
 
     //Click on Continue button
@@ -319,8 +322,9 @@ describe("Test suite: Acquisition Package: Contact Information ", () => {
     cy.findElement(contact.militaryRadioBtn).click({ force: true });
 
     //Validation message for Service Agency
-    cy.findElement(contact.serviceBranchDropdown).focus()
-      .tab().then(() => {
+    cy.findElement(contact.serviceBranchDropDownIcon).click({force: true});
+    cy.findElement(contact.militaryRadioBtn).click({ force: true })
+      .then(() => {
         cy.checkErrorMessage(
           contact.serviceBranchError,
           "Please enter your Service Branch.");
