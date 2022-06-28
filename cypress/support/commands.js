@@ -152,7 +152,7 @@ Cypress.Commands.add('enterTextInTextField', (selector, text) => {
     .should("be.visible")
     .clear()
     .type(text)
-    .should("have.value", text);
+    .then(() => cy.findElement(selector).should("have.value", text))
 });
 
 Cypress.Commands.add('btnExists', (selector, text) => {
@@ -202,7 +202,7 @@ Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,error
 Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.findElement(textboxSelector).click({ force: true })
-    .tab().wait(0).then(() => {
+    .tab().wait(500).then(() => {
       cy.checkErrorMessage(errorSelector, errorMessage);
     })
 });
