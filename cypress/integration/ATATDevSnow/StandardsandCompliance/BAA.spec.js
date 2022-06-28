@@ -128,7 +128,7 @@ describe("Test suite: SAC step: BAA", () => {
     //select radio option as No
     cy.selectPiiOption(sac.noPIIRadioOption, "NO");
     // radio options error
-    cy.radioBtn(sac.yesBAARadioOption, "YES").focus().tab()
+    cy.radioBtn(sac.yesBAARadioOption, "YES").focus().tab().tab()
       .then(() => {
         cy.checkErrorMessage(sac.baaRadioError, "Please select an option");
       });

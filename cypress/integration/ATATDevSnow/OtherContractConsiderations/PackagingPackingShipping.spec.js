@@ -119,7 +119,8 @@ describe("Test suite: OCC: PPS substep", () => {
     //validation if Other Input field is blank
     cy.findElement(occ.otherCheckBox).check({ force: true })
       .then(() => {
-        cy.findElement(occ.otherTextBox).focus().tab().then(() => {
+        cy.findElement(occ.otherTextBox).click({force: true});
+        cy.clickSomethingElse(occ.otherTextBox).then(() => {
           cy.checkErrorMessage(
             occ.otherTxtError,
             "Please enter your packaging, packing and shipping instructions."

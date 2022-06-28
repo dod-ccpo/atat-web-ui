@@ -112,7 +112,7 @@ describe("Test suite:SAC Step: PII sub step ", () => {
   it("TC5: PII: Validations", () => {
     cy.clickSideStepper(common.stepStandCompLink, " Standards and Compliance ");
     // if radio option is not selected
-    cy.findElement(sac.yesPIIRadioOption).focus().tab()
+    cy.findElement(sac.yesPIIRadioOption).focus().tab().tab()
       .then(() => {
         cy.checkErrorMessage(sac.piiRadioError, "Please select an option");
       })
