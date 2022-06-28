@@ -200,11 +200,13 @@ Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,error
 });
 
 Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
-  // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.findElement(textboxSelector).click({ force: true })
-    .tab().wait(500).then(() => {
-      cy.checkErrorMessage(errorSelector, errorMessage);
-    })
+  cy.findElement(textboxSelector).click({ force: true });
+  cy.findElement(common.clickSomethingElse)
+    .scrollIntoView()
+    .should("be.visible")
+    .click({ force: true });
+  cy.findElement(errorSelector).scrollIntoView().should("be.visible");
+  cy.checkErrorMessage(errorSelector, errorMessage);
 });
 
 Cypress.Commands.add("verifyRequiredCheckbox", (checkboxSelector, errorSelector, errorMessage) => {
