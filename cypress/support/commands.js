@@ -109,7 +109,6 @@ Cypress.Commands.add("launchATAT", () => {
     .its("sessionStorage")
     .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
     .should("exist");
-
 });
 
 Cypress.Commands.add("clearSession", () => {
