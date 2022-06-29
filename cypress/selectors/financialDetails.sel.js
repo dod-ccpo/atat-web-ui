@@ -14,7 +14,7 @@ module.exports = {
   panelClose: "#PanelCloser",
   panelMainLabelText: "#PanelWrap h2",
   panelNextLabelText: "#PanelWrap h3",
-  panelFARLink:"._external-link",
+  panelFARLink:"#FARLink",
   fsfRadioBtn: "#Radio_FSFCheckbox",
   fsfCardLabel:":nth-child(1) > .v-label",
   miprRadioBtn: "#Radio_MIPRCheckbox",

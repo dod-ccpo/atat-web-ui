@@ -112,27 +112,18 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
     };
   };
 
-
   public async openSlideoutPanel(e: Event, panelType: string): Promise<void> {
-    if (panelType === "Ginvoice") {
-      const gInvoice: SlideoutPanelContent = {
-        component: GInvoiceLearnMore,
-        title: "Learn More",
-      };
-      await SlideoutPanel.setSlideoutPanelComponent(gInvoice);
-    } else {
-      const funding: SlideoutPanelContent = {
-        component: FundingRequestLearnMore,
-        title: "Learn More",
-      };
-      await SlideoutPanel.setSlideoutPanelComponent(funding);
+    const component = panelType === "Ginvoice" ? GInvoiceLearnMore : FundingRequestLearnMore;
+    const panelContent: SlideoutPanelContent = {
+      component,
+      title: "Learn More",
     }
-    this.$nextTick(()=>{
-      if (e && e.currentTarget) {
-        const opener = e.currentTarget as HTMLElement;
-        SlideoutPanel.openSlideoutPanel(opener.id);
-      };
-    });
+    SlideoutPanel.setSlideoutPanelComponent(panelContent);
+
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    };
   };
 
   public async loadOnEnter(): Promise<void> {
@@ -141,6 +132,12 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
   };
 
   public async mounted(): Promise<void> {
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: FundingRequestLearnMore,
+      title: "Learn More",
+    };
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
+
     await this.loadOnEnter();
   };
 
