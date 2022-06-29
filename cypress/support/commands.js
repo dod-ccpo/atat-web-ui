@@ -40,7 +40,8 @@ import {
   colors,   
 } from "../helpers";
 import sac from '../selectors/standComp.sel';
-import occ from '../selectors/occ.sel'
+import occ from '../selectors/occ.sel';
+import fd from '../selectors/financialDetails.sel'
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -832,4 +833,26 @@ Cypress.Commands.add("periodCount", (count,checkBoxRowSelector) => {
       expect(periodCount).equal(count);     
     });
 
+});
+
+Cypress.Commands.add("selectFundingRequest", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(fd.fundingRadioActive)
+    .then(($radioBtn) => {      
+      const selectedOption = cleanText($radioBtn.text());     
+      cy.log(selectedOption);
+      cy.btnClick(common.continueBtn, " Continue ");
+      const fsfLabel= "radio_button_checkedFiscal" +
+        " Service Forms (7600A and 7600B)"
+        + "Import from G-Invoicing or manually upload your completed forms."
+        + " Recommended" 
+      if (selectedOption === fsfLabel) {
+        //naviagtes to "Did you use G-Invoicing for your funding request?"
+        cy.verifyPageHeader("Did you use G-Invoicing for your funding request?");
+      } else {
+        //navigate to "Let’s gather info about your MIPR"
+        cy.verifyPageHeader("Let’s gather info about your MIPR");
+      }
+          
+    })
 });
