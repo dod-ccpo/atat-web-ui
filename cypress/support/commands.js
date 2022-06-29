@@ -424,7 +424,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
         cy.autoCompleteSelection(org.stateTxtBox, orgAddress.state, org.stateAutoCompleteList);
         cy.enterTextInTextField(org.zipCodeTxtBox,orgAddress.zipCode);
       }
-      if (selectedOption === "radio_button_checkedMilitary (APO or FPO)") {
+      if (selectedOption === "radio_button_checkedMilitary/Diplomatic (APO, FPO, or DPO)") {
         //Assert Organization's address labels
                 
         cy.findElement(org.apoFpoDropDown).click({ force: true });

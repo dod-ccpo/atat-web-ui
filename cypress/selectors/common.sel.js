@@ -15,6 +15,7 @@ module.exports = {
   footerLinks:".atat-page-footer .links",
   continueBtn:"#ContinueButton",
   backBtn: "#BackButton span span",
+  introText:"p.mb-10",
   
   // Acquisition Package Details
   stepAcquisitionText: "#Step_AcquisitionPackageDetails >.step-text",

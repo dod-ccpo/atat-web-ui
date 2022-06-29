@@ -24,13 +24,16 @@ module.exports = {
   aboutFRLink: "#Button_AboutMissingFundingRequest",
   aboutRequestMessage: "#Content_AboutMissingFundingRequest",
   ginvoiceLink: "#LearnMoreGInvoicing",
+  bureauLink: "#PanelWrap ul li :nth-child(1)",
+  ginvoiceLoginLink:":nth-child(7) > :nth-child(2) > a > span",
 
   //Did tou use G-Invoicing for your funding request?
-  ginvoiceYesRadioBtn: "#",
-  ginvoiceNoRadioBtn: "#",
+  ginvoiceYesRadioBtn: "#Radio_Yes",
+  ginvoiceNoRadioBtn: "#Radio_No",
   gInvoiceActiveRadioOption: "#GInvoicingOptions_radio_group_control .v-item--active",
   gInvoiceErrorRadioOption: "#GInvoicingOptions_radio_group_control  .field-error",
-  
+  yesLabel: "#GInvoicingOptions_radio_group_control :nth-child(1) > .v-label",
+  noLabel:"#GInvoicingOptions_radio_group_control :nth-child(2) > .v-label",
   //Let's Gather Info about your MIPR
   miprTextLabel: "#MIPRNumber_text_field_label",
   miprTooltipBtn: "#TooltipButton_MIPRNumber",
