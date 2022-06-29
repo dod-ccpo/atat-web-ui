@@ -172,13 +172,11 @@ describe("Test suite:SAC Step: FOIA sub step", () => {
     cy.btnExists(common.continueBtn, " Continue ").not("[disabled]").click();
     cy.textExists(common.header, "Let’s look into the Freedom of Information Act (FOIA)");
     // radio option  is not selected 
-    cy.radioBtn(sac.foiaYesOption, "YES").focus().tab()
+    cy.radioBtn(sac.foiaYesOption, "YES").focus();
+    cy.clickSomethingElse(sac.foiaRadioError)
       .then(() => {
-        cy.radioBtn(sac.foiaNoOption, "NO").focus().tab()
-          .then(() => {
-            cy.checkErrorMessage(sac.foiaRadioError, "Please select an option");
-          })
-      });
+        cy.checkErrorMessage(sac.foiaRadioError, "Please select an option");
+      })
     cy.selectFOIAOption(sac.foiaYesOption, "YES");
   });
 
