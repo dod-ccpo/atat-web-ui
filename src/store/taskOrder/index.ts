@@ -9,6 +9,7 @@ import {
   storeDataToSession,
   retrieveSession,
 } from "../helpers";
+import { convertColumnReferencesToValues } from "@/api/helpers";
 
 const ATAT_TASK_ORDER_KEY = 'ATAT_TASK_ORDER_KEY';
 
@@ -96,6 +97,9 @@ export class TaskOrderStore extends VuexModule {
     public async save(value: TaskOrderDTO): Promise<TaskOrderDTO>{
         
       try {
+
+        // this converts any references columns to strings
+        value = convertColumnReferencesToValues(value);
             
         const sysId = this.taskOrder?.sys_id || "";
 

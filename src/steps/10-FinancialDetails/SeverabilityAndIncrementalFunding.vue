@@ -214,8 +214,6 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
     try {
      
       if (this.hasChanged()) {
-        debugger;
-        
         const taskOrder = {
           ...TaskOrder.value,
           // eslint-disable-next-line camelcase

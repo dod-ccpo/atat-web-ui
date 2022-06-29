@@ -97,8 +97,6 @@ export default class App extends Vue {
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
     }
-    
-    await AcquisitionPackage.initialize();
 
   }
 
