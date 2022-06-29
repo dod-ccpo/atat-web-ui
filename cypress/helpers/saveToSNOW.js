@@ -7,11 +7,7 @@ const buildTableApiPath = (tableName)=> {
 
 export function saveToSNOW(){
   
-  const endPoints = [
-    // {
-    //   'fixture': 'acquistionPackage',
-    //   'apiURL': 'x_g_dis_atat_acquisition_package'
-    // },  
+  const acqPackageEndPoints = [
     {
       'fixture': 'projectOverview',
       'apiURL': 'x_g_dis_atat_project_overview'
@@ -23,29 +19,41 @@ export function saveToSNOW(){
     {
       'fixture': 'contacts',
       'apiURL': 'x_g_dis_atat_contacts'
-    },  
+    }
+  ]
+  const contractDetailsEndPoints = [
     {
       'fixture': 'fairOpportunity',
       'apiURL': 'x_g_dis_atat_fair_opportunity'
     },
+    {
+      'fixture': 'period',
+      'apiURL': 'x_g_dis_atat_period'
+    },
+    {
+      'fixture': 'periodOfPerformance',
+      'apiURL': 'x_g_dis_atat_period_of_performance'
+    },
+  ]
+  const financialDetailsEndPoints = [
+    {
+      'fixture': 'fairOpportunity',
+      'apiURL': 'x_g_dis_atat_fair_opportunity'
+    },
+  ]
+
+  const endPoints = [
+     
+  
     // {
     //   'fixture': 'period',
     //   'apiURL': 'x_g_dis_atat_period'
     // },
     // {
-    //   'fixture': 'period_PATCH',
-    //   'apiURL': 'x_g_dis_atat_period/**'
-      
-    // },   
-    // {
     //   'fixture': 'periodOfPerformance',
     //   'apiURL': 'x_g_dis_atat_period_of_performance'
     // }, 
     // {
-    //   'fixture': 'periodOfPerformance_GET',
-    //   'apiURL': 'x_g_dis_atat_period_of_performance/**',
-    //   'action': 'GET'
-    // }, 
     // {
     //   'fixture': 'contractType_PATCH',
     //   'apiURL': 'x_g_dis_atat_contract_type/**',
@@ -58,7 +66,10 @@ export function saveToSNOW(){
     // }, 
   ];
 
-  endPoints.forEach((ep)=>{
+  acqPackageEndPoints.concat(
+    contractDetailsEndPoints,
+    financialDetailsEndPoints
+  ).forEach((ep)=>{
     const action = ep.action || 'POST';
     cy.fixture("saveToSNOW/" + ep.fixture).then((data) => {
       cy.intercept(action, buildTableApiPath(ep.apiURL), {
