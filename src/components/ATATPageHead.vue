@@ -49,6 +49,8 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
+import Sections from "@/store/sections";
+
 @Component({})
 
 export default class ATATPageHead extends Vue {
@@ -56,16 +58,11 @@ export default class ATATPageHead extends Vue {
 
   public moreMenuOpen = false;
 
-  moreMenuItems = [
-    { title: "Acquisition Package Builder" },
-    { title: "JWCC Dashboard" },
-    { title: "Portfolio Dashboard" },
-    { title: "Lookup TO in EDA" },
-  ];
-
+  moreMenuItems = Sections.appSectionMenuItems;
 
   public moreMenuClick(index: number): void {
-    // debugger;
+    const selectedSection = this.moreMenuItems[index].title;
+    Sections.changeActiveSection(selectedSection);
   }
 
 }
