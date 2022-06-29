@@ -12,6 +12,8 @@ import { Component, Watch } from "vue-property-decorator";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
+import JWCCDashboard from "@/dashboards/JWCC.vue";
+import PortfolioDashboard from "@/dashboards/Portfolio.vue";
 
 import AppSections from "@/store/appSections";
 
@@ -28,6 +30,12 @@ export default class App extends Vue {
     switch (newActiveSection) {
     case this.sectionTitles.AcquisitionPackage:
       AppSections.setAppContentComponent(AppPackageBuilder);
+      break;
+    case this.sectionTitles.JWCCDashboard:
+      AppSections.setAppContentComponent(JWCCDashboard);
+      break;
+    case this.sectionTitles.PortfolioDashboard:
+      AppSections.setAppContentComponent(PortfolioDashboard);
       break;
     case this.sectionTitles.TOLookup:
       AppSections.setAppContentComponent(TaskOrderLookup);

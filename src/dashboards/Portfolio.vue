@@ -1,6 +1,6 @@
 <template>
   <div class="pa-5">
-    <ATATPageHead headline="Future Task Order Lookup Page" />
+    <ATATPageHead headline="Future Portfolio Dashboard" />
     <div id="app-content" class="d-flex flex-column">
       <div class="mb-auto" style="margin-top: 100px; padding-bottom: 200px;">
         Content...
@@ -15,8 +15,8 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import ATATFooter from "./components/ATATFooter.vue";
-import ATATPageHead from "./components/ATATPageHead.vue";
+import ATATFooter from "../components/ATATFooter.vue";
+import ATATPageHead from "../components/ATATPageHead.vue";
 
 @Component({
   components: {
@@ -25,6 +25,6 @@ import ATATPageHead from "./components/ATATPageHead.vue";
   }
 })
 
-export default class TaskOrderLookup extends Vue {}
+export default class PortfolioDashboard extends Vue {}
 
 </script>
