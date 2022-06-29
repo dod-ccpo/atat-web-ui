@@ -95,7 +95,21 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     
   });
 
-  it("TC3: Select FSF as Funding Request type", () => {
+  it("TC3: Validations: Funding Request type", () => {
+    cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
+    //Verify the Substeps are  visible
+    cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
+    cy.verifyPageHeader("What type of funding request did you use for this acquisition?");    
+    cy.radioBtn(fd.fsfRadioBtn, "FSF").focus();
+    cy.clickSomethingElse(fd.fundingRadioError)
+      .then(() => {
+        cy.checkErrorMessage(fd.fundingRadioError, "Please select a type of funding request.");
+      });
+    
+    
+  });
+
+  it("TC4: Select FSF as Funding Request type", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -115,7 +129,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
   });
 
 
-  it("TC4: Select MIPR as Funding Request type", () => {
+  it("TC5: Select MIPR as Funding Request type", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -137,7 +151,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     
   });
   
-  it.skip("TC5: Upload a file", () => {
+  it.skip("TC6: Upload a file", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -166,7 +180,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     cy.findElement(fd.fundingfileupload).click({ force: true });
   });
   
-  it.skip("TC6: Validations", () => {
+  it.skip("TC7: Validations", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -196,7 +210,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     });
   });
 
-  it.skip("TC7: Remove: Uploaded file", () => {
+  it.skip("TC8: Remove: Uploaded file", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
