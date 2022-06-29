@@ -110,7 +110,6 @@ Cypress.Commands.add("launchATAT", () => {
     .its("sessionStorage")
     .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
     .should("exist");
-
 });
 
 Cypress.Commands.add("clearSession", () => {
@@ -202,11 +201,7 @@ Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,error
 
 Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
   cy.findElement(textboxSelector).click({ force: true });
-  cy.findElement(common.clickSomethingElse)
-    .scrollIntoView()
-    .should("be.visible")
-    .click({ force: true });
-  cy.findElement(errorSelector).scrollIntoView().should("be.visible");
+  cy.clickSomethingElse(errorSelector);
   cy.checkErrorMessage(errorSelector, errorMessage);
 });
 
@@ -856,3 +851,14 @@ Cypress.Commands.add("selectFundingRequest", (radioSelector, value) => {
           
     })
 });
+Cypress.Commands.add("clickSomethingElse", (selectorToScrollToAfter) => {
+  cy.findElement(common.somethingElse)
+    .scrollIntoView()
+    .should("be.visible")
+    .click({force: true});
+  if (selectorToScrollToAfter) {
+    cy.findElement(selectorToScrollToAfter)
+      .scrollIntoView()
+      .should("be.visible");
+  }
+})

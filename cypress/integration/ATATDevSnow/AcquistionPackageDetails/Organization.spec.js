@@ -208,6 +208,9 @@ describe("Test suite: Acquisition Package: Organization ", () => {
           "Your DoDAAC must be 6 characters."
         );
       });
+
+    cy.findElement(org.usaRadioBtn).click({ force: true });
+
     //Street address is blank
     cy.verifyRequiredInput(
       org.streetTxtBox,
