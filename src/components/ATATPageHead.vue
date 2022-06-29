@@ -35,6 +35,7 @@
               v-for="(item, index) in moreMenuItems"
               :key="index"
               @click="moreMenuClick(index)"
+              :class="{active : item.title === activeAppSection}"
             >
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
@@ -49,7 +50,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
-import Sections from "@/store/sections";
+import AppSections from "@/store/appSections";
 
 @Component({})
 
@@ -57,12 +58,12 @@ export default class ATATPageHead extends Vue {
   @Prop({ default: "Headline" }) private headline!: string;
 
   public moreMenuOpen = false;
-
-  moreMenuItems = Sections.appSectionMenuItems;
+  public moreMenuItems = AppSections.appSectionMenuItems;
+  public activeAppSection = AppSections.activeAppSection;
 
   public moreMenuClick(index: number): void {
     const selectedSection = this.moreMenuItems[index].title;
-    Sections.changeActiveSection(selectedSection);
+    AppSections.changeActiveSection(selectedSection);
   }
 
 }

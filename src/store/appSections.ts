@@ -10,13 +10,13 @@ import { Component } from "vue";
 import rootStore from "./index";
 
 @Module({
-  name: "SectionsStore",
+  name: "AppSectionsStore",
   namespaced: true,
   dynamic: true,
   store: rootStore,
 })
 
-export class SectionsStore extends VuexModule {
+export class AppSectionsStore extends VuexModule {
 
   sectionTitles: Record<string, string> = {
     AcquisitionPackage: "Acquisition Package Builder",
@@ -25,7 +25,7 @@ export class SectionsStore extends VuexModule {
     TOLookup: "Lookup TO in EDA",
   }
 
-  activeSection = this.sectionTitles.AcquisitionPackage;
+  activeAppSection = this.sectionTitles.AcquisitionPackage;
 
   appSectionMenuItems: { title: string }[] = [
     { title: this.sectionTitles.AcquisitionPackage },
@@ -36,7 +36,7 @@ export class SectionsStore extends VuexModule {
 
   @Mutation
   public changeActiveSection(section: string): void {
-    this.activeSection = section;
+    this.activeAppSection = section;
   }
 
   @Action
@@ -45,7 +45,7 @@ export class SectionsStore extends VuexModule {
     sectionTitles: Record<string, string> 
   }> {
     return {
-      activeSection: this.activeSection,
+      activeSection: this.activeAppSection,
       sectionTitles: this.sectionTitles
     }
   }
@@ -65,5 +65,5 @@ export class SectionsStore extends VuexModule {
 
 }
 
-const Sections = getModule(SectionsStore);
-export default Sections;
+const AppSections = getModule(AppSectionsStore);
+export default AppSections;

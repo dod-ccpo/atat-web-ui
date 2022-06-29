@@ -13,44 +13,44 @@ import { Component, Watch } from "vue-property-decorator";
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
 
-import Sections from "@/store/sections";
+import AppSections from "@/store/appSections";
 
 @Component({})
 
 export default class App extends Vue {
 
-  public get activeSection(): string {
-    return Sections.activeSection;
+  public get activeAppSection(): string {
+    return AppSections.activeAppSection;
   }
 
-  @Watch("activeSection")
-  public activeSectionChanged(newActiveSection: string): void {
+  @Watch("activeAppSection")
+  public activeAppSectionChanged(newActiveSection: string): void {
     switch (newActiveSection) {
     case this.sectionTitles.AcquisitionPackage:
-      Sections.setAppContentComponent(AppPackageBuilder);
+      AppSections.setAppContentComponent(AppPackageBuilder);
       break;
     case this.sectionTitles.TOLookup:
-      Sections.setAppContentComponent(TaskOrderLookup);
+      AppSections.setAppContentComponent(TaskOrderLookup);
       break;
     }
   }
 
   public get appContentComponent() {
-    return Sections.appContentComponent;
+    return AppSections.appContentComponent;
   }
 
   public sectionTitles: Record<string, string> = {};
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await Sections.getSectionData();
+    const storeData = await AppSections.getSectionData();
     if (storeData) {
-      // this.activeSection = storeData.activeSection;
+      // this.activeAppSection = storeData.activeAppSection;
       this.sectionTitles = storeData.sectionTitles;
     }
   }
 
   public async mounted(): Promise<void> {
-    await Sections.setAppContentComponent(AppPackageBuilder);
+    await AppSections.setAppContentComponent(AppPackageBuilder);
     await this.loadOnEnter();
   }
 
