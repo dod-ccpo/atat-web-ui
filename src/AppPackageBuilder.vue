@@ -5,14 +5,17 @@
     <ATATSlideoutPanel v-if="panelContent">
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
+
     <ATATToast />
 
     <ATATPageHead :headline="projectTitle" />
+
     <v-main id="app" >
       <div id="app-content" class="d-flex flex-column">
         <div  class="mb-auto">
           <router-view></router-view>
         </div>
+
         <ATATStepperNavigation
           @next="navigate('next')"
           @previous="navigate('previous')"
@@ -23,7 +26,9 @@
           :noPrevious="noPrevious"
           class="mb-8"
         />
+
         <ATATFooter/>
+
       </div>
     </v-main>
   </div>
@@ -54,6 +59,7 @@ import {
   StepPathResolver,
   StepRouteResolver,
 } from "@/store/steps/types";
+
 import {
   isRouteResolver,
   isPathResolver
@@ -118,16 +124,12 @@ export default class AppPackageBuilder extends Vue {
   }
 
   async navigate(direction: string): Promise<void> {
-
-    
-
-    const nextStepName =
-      direction === "next" ? await Steps.getNext() : await Steps.getPrevious();
+    const nextStepName = direction === "next" 
+      ? await Steps.getNext() 
+      : await Steps.getPrevious();
 
     if (nextStepName) {
-
-      if(isRouteResolver(nextStepName)){
-
+      if (isRouteResolver(nextStepName)) {
         const routeResolver = nextStepName as StepRouteResolver;
         this.$router.push({
           name: "routeResolver",
@@ -140,8 +142,7 @@ export default class AppPackageBuilder extends Vue {
         return ;
       }
 
-      if(isPathResolver(nextStepName)){
-
+      if (isPathResolver(nextStepName)) {
         const pathResolver = nextStepName as StepPathResolver;
         this.$router.push({
           name: "pathResolver",
@@ -177,10 +178,12 @@ export default class AppPackageBuilder extends Vue {
     if (button.emitText) {
       this.$emit("AdditionalButtonClicked", button.emitText);
     }
+
     if (button.actionName) {
       const actionArgs = button.actionArgs || [];
       await actionHandler(button.actionName, actionArgs);
     }
+
     if (button.name) {
       this.$router.push({ name: button.name });
     }

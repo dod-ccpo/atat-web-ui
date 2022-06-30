@@ -8,7 +8,6 @@ import vuetify from "./plugins/vuetify";
 import validation from "./plugins/validation";
 import { format, compareAsc } from 'date-fns';
 import InputMask from "inputmask";
-import createApp from 'vue'
 
 Vue.use(VueRouter);
 Vue.use(validation);
