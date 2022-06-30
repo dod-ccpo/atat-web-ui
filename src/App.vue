@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app id="app">
     <div v-if="appContentComponent">
       <component :is="appContentComponent" />
     </div>
@@ -9,6 +9,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
+import { Component as VueComponent } from "vue";
 
 import AppPackageBuilder from "@/AppPackageBuilder.vue";
 import TaskOrderLookup from "@/TaskOrderLookup.vue";
@@ -43,8 +44,8 @@ export default class App extends Vue {
     }
   }
 
-  public get appContentComponent() {
-    return AppSections.appContentComponent;
+  public get appContentComponent(): VueComponent {
+    return AppSections.appContentComponent || {};
   }
 
   public sectionTitles: Record<string, string> = {};
@@ -52,14 +53,16 @@ export default class App extends Vue {
   public async loadOnEnter(): Promise<void> {
     const storeData = await AppSections.getSectionData();
     if (storeData) {
-      // this.activeAppSection = storeData.activeAppSection;
       this.sectionTitles = storeData.sectionTitles;
     }
   }
 
   public async mounted(): Promise<void> {
-    await AppSections.setAppContentComponent(AppPackageBuilder);
     await this.loadOnEnter();
+  }
+
+  public async beforeMount(): Promise<void> {
+    await AppSections.setAppContentComponent(AppPackageBuilder);
   }
 
 }

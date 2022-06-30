@@ -1,6 +1,7 @@
 header._atat-page-header {
   height: 6rem !important;
   background-color: $white !important;
+  
   .v-toolbar__content {
     height: 6rem !important;
     padding: 16px 24px !important;
@@ -10,6 +11,14 @@ header._atat-page-header {
   ._more-menu-button.v-btn.v-size--default {
     min-width: 36px;
     width: 36px;
+    
+    &:hover {
+      background-color: $base-lightest !important;
+    }
+
+    &[aria-expanded=true] {
+      background-color: $primary-lighter !important;
+    }
   }
 
   ._header-button.theme--light.v-btn.v-btn--has-bg {
@@ -19,14 +28,23 @@ header._atat-page-header {
   ._header-menu {
     .v-menu__content {
       .v-list-item {
-        &.active {
-          background-color: $base-lightest;
-          font-weight: 700;
-        }
 
         &:hover {
           background-color: $base-lightest;
           cursor: pointer !important;
+        }
+
+        &.active {
+          background-color: $base-lightest;
+          font-weight: 700;
+
+          &:hover {
+            cursor: default !important;
+
+            &:before {
+              opacity: 0;
+            }
+          }
         }
       }
 
@@ -35,5 +53,4 @@ header._atat-page-header {
       }
     }
   }
-
 }

@@ -72,6 +72,7 @@ import actionHandler from "./action-handlers/index";
     ATATToast,
   },
 })
+
 export default class AppPackageBuilder extends Vue {
   $refs!: {
     sideStepper: ATATSideStepper;
