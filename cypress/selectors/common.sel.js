@@ -108,6 +108,6 @@ module.exports = {
   stepRequiredFormLink: "#Step_ReviewRequiredForms",
   stepRequiredFormText: "#Step_ReviewRequiredForms .step-text",
 
-  clickSomethingElse: "#PackageNameHeader",
+  somethingElse: "#PackageNameHeader",
 
 }

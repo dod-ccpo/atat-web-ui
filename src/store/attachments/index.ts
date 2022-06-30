@@ -24,7 +24,6 @@ import {
   storeDataToSession,
   retrieveSession,
 } from "../helpers";
-
 @Module({
   name: "AttachmentsStore",
   namespaced: true,
@@ -147,8 +146,9 @@ export class AttachmentStore extends VuexModule {
     const sessionRestored = retrieveSession(ATAT_ATTACHMENTS_KEY);
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
-      this.setInitialized(true);
     }
+
+    this.setInitialized(true);
   }
 
   @Action({ rawError: true })
