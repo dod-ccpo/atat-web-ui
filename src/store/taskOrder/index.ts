@@ -1,7 +1,13 @@
 /* eslint-disable camelcase */
 import api from "@/api";
 import { TaskOrderDTO } from "@/api/models";
-import { VuexModule, Module, Action, Mutation, getModule } from "vuex-module-decorators";
+import {
+  VuexModule,
+  Module,
+  Action,
+  Mutation,
+  getModule,
+} from "vuex-module-decorators";
 import rootStore from "../index";
 import Vue from "vue";
 import {
@@ -11,7 +17,7 @@ import {
 } from "../helpers";
 import { convertColumnReferencesToValues } from "@/api/helpers";
 
-const ATAT_TASK_ORDER_KEY = 'ATAT_TASK_ORDER_KEY';
+const ATAT_TASK_ORDER_KEY = "ATAT_TASK_ORDER_KEY";
 
 const initial: TaskOrderDTO = {
   clins: "",
@@ -24,37 +30,36 @@ const initial: TaskOrderDTO = {
   funding_plan: "",
   pop_end_date: "",
   pop_start_date: "",
-  funds_total: ""
+  funds_total: "",
 };
 
-@Module({ name: 'TaskOrder', namespaced: true, dynamic: true, store: rootStore })
+@Module({
+  name: "TaskOrder",
+  namespaced: true,
+  dynamic: true,
+  store: rootStore,
+})
 export class TaskOrderStore extends VuexModule {
+  initialized = false;
+  taskOrder: TaskOrderDTO | null = null;
 
-    initialized = false;
-    taskOrder: TaskOrderDTO | null = null;
-
-    // store session properties
+  // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.taskOrder),
   ];
 
-  public get value(): TaskOrderDTO{
-    return this.taskOrder || initial; 
+  public get value(): TaskOrderDTO {
+    return this.taskOrder || initial;
   }
 
-
   @Mutation
-  public setTaskOrder(value: TaskOrderDTO): void{
+  public setTaskOrder(value: TaskOrderDTO): void {
     this.taskOrder = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_TASK_ORDER_KEY,
-    );
+    storeDataToSession(this, this.sessionProperties, ATAT_TASK_ORDER_KEY);
   }
 
   @Mutation
-  public setInitialized(value: boolean): void{
+  public setInitialized(value: boolean): void {
     this.initialized = value;
   }
 
@@ -66,57 +71,52 @@ export class TaskOrderStore extends VuexModule {
         Vue.set(this, property, sessionDataObject[property]);
       });
     } catch (error) {
-      throw new Error("error restoring session for contact data store");
+      throw new Error("error restoring session for Task Order store");
     }
   }
 
-
-    @Action({rawError: true})
-  public async initialize(acquisitionPackageId: string): Promise<void>{
-
-    if(this.initialized){
+  @Action({ rawError: true })
+  public async initialize(acquisitionPackageId: string): Promise<void> {
+    if (this.initialized) {
       const sessionRestored = retrieveSession(ATAT_TASK_ORDER_KEY);
       if (sessionRestored) {
         this.setStoreData(sessionRestored);
         this.setInitialized(true);
-      } 
+      }
     }
 
-    if(!this.initialized){
-
+    if (!this.initialized) {
       const taskOrder = {
         ...initial,
-        acquisition_package: acquisitionPackageId
-      }
+        acquisition_package: acquisitionPackageId,
+      };
       this.taskOrder = await this.save(taskOrder);
       this.setInitialized(true);
     }
   }
 
-    @Action({rawError: true})
-    public async save(value: TaskOrderDTO): Promise<TaskOrderDTO>{
-        
-      try {
+  @Action({ rawError: true })
+  public async save(value: TaskOrderDTO): Promise<TaskOrderDTO> {
+    try {
+      // this converts any references columns to strings
+      value = convertColumnReferencesToValues(value);
 
-        // this converts any references columns to strings
-        value = convertColumnReferencesToValues(value);
-            
-        const sysId = this.taskOrder?.sys_id || "";
+      const sysId = this.taskOrder?.sys_id || "";
 
-        const saveTaskOrder = sysId.length > 0 ? 
-          api.taskOrderTable.update(sysId, value) : 
-          api.taskOrderTable.create(value);
+      const saveTaskOrder =
+        sysId.length > 0
+          ? api.taskOrderTable.update(sysId, value)
+          : api.taskOrderTable.create(value);
 
-        const savedTaskOrder = await saveTaskOrder;
+      const savedTaskOrder = await saveTaskOrder;
 
-        this.setTaskOrder(savedTaskOrder);
+      this.setTaskOrder(savedTaskOrder);
 
-        return savedTaskOrder;
-
-      } catch (error) {
-        throw new Error(`error saving TaskOrder ${error}`);
-      }
+      return savedTaskOrder;
+    } catch (error) {
+      throw new Error(`error saving TaskOrder ${error}`);
     }
+  }
 }
 
 const TaskOrder = getModule(TaskOrderStore);

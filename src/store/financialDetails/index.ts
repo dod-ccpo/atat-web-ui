@@ -118,26 +118,6 @@ export class FinancialDetailsStore extends VuexModule {
     return this.miprNumber || '';
   }
 
-  @Action
-  public async saveTaskOrder(taskOrder: TaskOrderDTO): Promise<TaskOrderDTO>  {
-    try {
-      const sysId = taskOrder.sys_id;
-
-      const saveTaskOrder = sysId?.length ? api.taskOrderTable.update(sysId, taskOrder) :
-        api.taskOrderTable.create(taskOrder);
-
-      const savedTaskOrder = await saveTaskOrder;
-
-      return savedTaskOrder;
-      
-    } catch (error) {
-      console.error(`error occurred saving task order`);
-      throw new Error('error occurred saving Task Order');
-      
-    }
-
-  }
-
 
   @Mutation
   public async setIFPData(data: IFPData): Promise<void> {
