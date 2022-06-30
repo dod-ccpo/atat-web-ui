@@ -47,12 +47,12 @@ export function saveToSNOW(){
       'fixture': 'contractConsiderations',
       'apiURL': 'x_g_dis_atat_contract_considerations'
     },
-    {
-      'fixture': 'contractConsiderations_GET',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'GET',
-      'statusCode': 200
-    },
+    // {
+    //   'fixture': 'contractConsiderations_GET',
+    //   'apiURL': 'x_g_dis_atat_contract_considerations/**',
+    //   'action': 'GET',
+    //   'statusCode': 200
+    // },
     {
       'fixture': 'contractConsiderations_PATCH',
       'apiURL': 'x_g_dis_atat_contract_considerations/**',
@@ -69,6 +69,10 @@ export function saveToSNOW(){
   ).forEach((ep)=>{
     const action = ep.action || 'POST';
     cy.fixture("saveToSNOW/" + ep.fixture).then((data) => {
+      console.log('*** url ****');
+      console.log(ep.apiUrl);
+      console.log('*** data *****');
+      console.log(data)
       cy.intercept(action, buildTableApiPath(ep.apiURL), {
         statusCode: ep.statusCode || 201,
         body: data,
