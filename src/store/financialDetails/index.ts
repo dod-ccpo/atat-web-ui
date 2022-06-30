@@ -95,7 +95,18 @@ export class FinancialDetailsStore extends VuexModule {
     }
   }
 
-    
+  @Mutation
+  public async setIFPData(data: IFPData): Promise<void> {
+    this.initialFundingIncrementStr = data.initialFundingIncrementStr;
+    this.fundingIncrements = data.fundingIncrements;
+
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+  }
+
   @Action
   public async save7600({gtcNumber, orderNumber}: {gtcNumber: string, 
     orderNumber: string}): Promise<void> {
@@ -111,24 +122,11 @@ export class FinancialDetailsStore extends VuexModule {
       gtcNumber: this.gtcNumber || "",
       orderNumber: this.orderNumber || ""
     }
-        
   }
+
   @Action
   public async getMIPRNumber(): Promise<string>  {
     return this.miprNumber || '';
-  }
-
-
-  @Mutation
-  public async setIFPData(data: IFPData): Promise<void> {
-    this.initialFundingIncrementStr = data.initialFundingIncrementStr;
-    this.fundingIncrements = data.fundingIncrements;
-
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
   }
 
   @Mutation

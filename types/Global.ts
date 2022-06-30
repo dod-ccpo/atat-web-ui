@@ -230,6 +230,7 @@ export interface fundingIncrements {
   qtr: string;
   amt: string;
   order: number;
+  sysId?: string;
 }
 export interface IFPData {
   initialFundingIncrementStr: string;

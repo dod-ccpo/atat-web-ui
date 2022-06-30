@@ -55,21 +55,21 @@
               <hr class="my-6" />
 
               <div
-                v-for="(payment, index) in payments"
+                v-for="(fundingIncrement, index) in fundingIncrements"
                 :key="index"              
               >
 
                 <div class="d-flex justify-space-between align-center mb-4">
                   <ATATSelect
                     :id="'IncrementPeriod' + index"
-                    :items="getIncrementPeriodsForDropdown(index)"
+                    :items="getDropdownData(index)"
                     width="190"
-                    :selectedValue.sync="payments[index].qtr"
+                    :selectedValue.sync="fundingIncrements[index].qtr"
                     class="mr-4"
                   />
                   <ATATTextField
                     :id="'Amount' + index"
-                    :value.sync="payments[index].amt"
+                    :value.sync="fundingIncrements[index].amt"
                     :alignRight="true"
                     :isCurrency="true"
                     :showErrorMessages="false"
@@ -84,7 +84,7 @@
                   <v-btn
                     icon
                     @click="deletePayment(index)"
-                    :disabled="payments.length === 1"
+                    :disabled="fundingIncrements.length === 1"
                   >
                     <v-icon> delete </v-icon>
                   </v-btn>
@@ -109,7 +109,7 @@
 
               <v-btn
                 id="AddIncrementButton"
-                v-if="payments.length < maxPayments"
+                v-if="fundingIncrements.length < maxPayments"
                 plain
                 text
                 class="_text-link mt-5"
@@ -216,7 +216,21 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
-  public incrementPeriods: SelectData[] = [];
+  public selectedTestItem = {};
+  public testItems = [
+    {
+      text: "Foo",
+      value: 1,
+      other: "asjdflakjfa;skl"
+    },
+    {
+      text: "Bar",
+      value: 2,
+      other: "fefefefefefefe"
+    }
+  ];
+
+  public dropdownData: SelectData[] = [];
 
   public costEstimate = 0;
   public costEstimateStr = "";
@@ -234,12 +248,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   // use in future ticket for validation returning to page to show error messages
   public hasReturnedToPage = false;
 
-  public payments: { qtr: string, amt: string, order: number }[] = [];
+  public fundingIncrements: fundingIncrements[] = [];
 
   private get currentData(): IFPData {
     return {
       initialFundingIncrementStr: this.initialPaymentStr,
-      fundingIncrements: this.payments,
+      fundingIncrements: this.fundingIncrements,
     };
   };
 
@@ -258,36 +272,36 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // increment quarter
       qtr = qtr === 4 ? 1 : qtr + 1;
       const periodStr = ordinal + " QTR FY" + year;
-      this.incrementPeriods.push({ text: periodStr, value: periodStr});
+      this.dropdownData.push({ text: periodStr, value: periodStr });
 
-      if (i === 0 && this.payments.length === 0) {
+      if (i === 0 && this.fundingIncrements.length === 0) {
         // default to 1st option if no store data
-        this.payments.push({qtr: periodStr, amt: "", order: 1})
+        this.fundingIncrements.push({ qtr: periodStr, amt: "", order: 1, sysId: "" })
       }
     }
   }
 
   public deletePayment(index: number): void {
-    this.payments.splice(index, 1);
+    this.fundingIncrements.splice(index, 1);
     this.calcAmounts("");
   }
 
   public addIncrement(): void {
-    const lastPayment = this.payments.at(-1);
+    const lastPayment = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastPayment?.qtr;
-    let selectedQtrIndex = this.incrementPeriods.findIndex(p => p.text === lastSelectedQtr);
+    let selectedQtrIndex = this.dropdownData.findIndex(p => p.text === lastSelectedQtr);
     let nextQtr;
-    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.incrementPeriods.length) {
-      nextQtr = this.incrementPeriods[selectedQtrIndex + 1].text;
+    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.dropdownData.length) {
+      nextQtr = this.dropdownData[selectedQtrIndex + 1].text;
     }
     if (nextQtr) {
-      const newIncrement = { qtr: nextQtr, amt: "", order: this.payments.length - 1 }
-      this.payments.push(newIncrement);
+      const newIncrement = { qtr: nextQtr, amt: "", order: this.fundingIncrements.length + 1 }
+      this.fundingIncrements.push(newIncrement);
     }
   }
 
   public calcAmounts(field: string): void {
-    let incrementsTotal = this.payments.reduce(
+    let incrementsTotal = this.fundingIncrements.reduce(
       (accumulator, current) =>  
         accumulator + Number(currencyStringToNumber(current.amt)), 0
     );
@@ -300,7 +314,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.amountRemainingStr = this.amountRemaining ? toCurrencyString(this.amountRemaining) : "";
     this.initialPaymentStr = this.initialPayment ? toCurrencyString(this.initialPayment) : "";
     this.$nextTick(() => {
-      this.payments.forEach((pmt) => {
+      this.fundingIncrements.forEach((pmt) => {
         return pmt.amt = pmt.amt && pmt.amt !== "0.00" 
           ? toCurrencyString(currencyStringToNumber(pmt.amt)) 
           : ""
@@ -313,25 +327,25 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       amt = parseFloat(this.initialPaymentStr);
       this.errorMissingInitialIncrement = amt === 0 || isNaN(amt);
     } else if (field === "increment0") {
-      amt = parseFloat(this.payments[0].amt);
+      amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
   }
 
-  public getIncrementPeriodsForDropdown(index: number): SelectData[] {
+  public getDropdownData(index: number): SelectData[] {
     if (index === 0) {
-      return this.incrementPeriods;
+      return this.dropdownData;
     } 
 
-    const firstSelectedQtr = this.payments[0].qtr;
+    const firstSelectedQtr = this.fundingIncrements[0].qtr;
     const firstSelectedQtrIndex 
-      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr);
+      = this.dropdownData.findIndex(p => p.text === firstSelectedQtr);
 
     let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
-    lastPossibleIndex = lastPossibleIndex > this.incrementPeriods.length 
-      ? this.incrementPeriods.length
+    lastPossibleIndex = lastPossibleIndex > this.dropdownData.length 
+      ? this.dropdownData.length
       : lastPossibleIndex;
-    let optionsArr = this.incrementPeriods.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
+    let optionsArr = this.dropdownData.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
 
     return optionsArr;
   }
@@ -341,9 +355,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.initialPaymentStr = storeData.initialFundingIncrementStr;
       this.savedData.initialFundingIncrementStr = this.initialPaymentStr;
-      this.payments = storeData.fundingIncrements;
-      this.savedData.fundingIncrements = this.payments;
-      this.hasReturnedToPage = this.payments.length > 0;
+      this.fundingIncrements = storeData.fundingIncrements;
+      this.savedData.fundingIncrements = this.fundingIncrements;
+      this.hasReturnedToPage = this.fundingIncrements.length > 0;
       this.calcAmounts("");
     }
 
@@ -396,7 +410,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // FUTURE TICKET VALIDATION: first time user clicks continue:
       // • check if same quarter selected for more than one dropdown
       // • check if over/under funded - AC 4 which was crossed out
-      // set a flag if error has been show. if so, user can continue
+      // set a flag if error has been shown. if so, user can continue
 
       if (this.hasChanged()) {
         FinancialDetails.setIFPData(this.currentData);

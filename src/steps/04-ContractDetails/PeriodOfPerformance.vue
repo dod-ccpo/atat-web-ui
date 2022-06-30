@@ -246,6 +246,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public deleteOptionPeriod(index: number): void {
+    debugger;
     const optionPeriod = this.optionPeriods[index];
     if(optionPeriod.id){
       this.removed.push(convertPoPToPeriod(optionPeriod));
@@ -260,8 +261,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       duration,
       order,
       unitOfTime,
-       
-    }= this.optionPeriods[index];
+    } = this.optionPeriods[index];
 
     const duplicateObj: PoP ={
       duration,
@@ -456,7 +456,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
       if (hasChanged) {
         const removed = this.removed;
-        await Periods.savePeriod({periods: this.currentData, removed});
+        await Periods.savePeriods({periods: this.currentData, removed});
       }
     } catch (error) {
       throw new Error('error saving period data');

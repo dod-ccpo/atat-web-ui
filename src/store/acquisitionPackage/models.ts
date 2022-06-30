@@ -1,37 +1,40 @@
 import {
   AcquisitionPackageDTO,
+  ClassificationLevelDTO,
   ContactDTO,
+  ContractConsiderationsDTO,
+  ContractTypeDTO,
   CurrentContractDTO,
   FairOpportunityDTO,
+  FundingIncrementDTO,
+  FundingPlanDTO,
   GFEOverviewDTO,
   OrganizationDTO,
-  ProjectOverviewDTO,
-  SensitiveInformationDTO,
-  RequirementsCostEstimateDTO,
   PeriodOfPerformanceDTO,
-  ContractTypeDTO,
-  ContractConsiderationsDTO,
-  FundingPlanDTO,
-  ClassificationLevelDTO,
-  RequiredServicesDTO
+  ProjectOverviewDTO,
+  RequiredServicesDTO,
+  RequirementsCostEstimateDTO,
+  SensitiveInformationDTO,
 } from "@/api/models";
 
 export interface SessionData {
   acquisitionPackage: AcquisitionPackageDTO;
   acorInfo: ContactDTO;
+  classificationLevel: ClassificationLevelDTO;
   contactInfo: ContactDTO;
   contractConsiderations: ContractConsiderationsDTO;
   corInfo: ContactDTO;
   contractType: ContractTypeDTO;
   currentContract: CurrentContractDTO;
   fairOpportunity: FairOpportunityDTO;
+  fundingIncrement: FundingIncrementDTO,
+  fundingPlan: FundingPlanDTO;
   gfeOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
-  periods: string;
   periodOfPerformance: PeriodOfPerformanceDTO;
+  periods: string;
   projectOverview: ProjectOverviewDTO;
+  requiredServices: RequiredServicesDTO;
   requirementsCostEstimate: RequirementsCostEstimateDTO;
   sensitiveInformation: SensitiveInformationDTO;
-  classificationLevel: ClassificationLevelDTO;
-  requiredServices: RequiredServicesDTO;
 }

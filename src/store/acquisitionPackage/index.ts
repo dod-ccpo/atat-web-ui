@@ -54,6 +54,7 @@ export const StoreProperties = {
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
+  FundingPlan: "fundingPlan",
 };
 
 const initialCurrentContract = ()=> {
@@ -506,6 +507,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
+    [StoreProperties.FundingPlan]: api.classificationLevelTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -520,7 +522,8 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Periods]: "periods",
     [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
-    [StoreProperties.ClassificationLevel]: "classification_level"
+    [StoreProperties.ClassificationLevel]: "classification_level",
+    [StoreProperties.FundingPlan]: "funding_plan",
   }
 
   @Action({ rawError: true })
@@ -689,49 +692,49 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  @Action({ rawError: true })
-  async loadFairOpportunity(): Promise<FairOpportunityDTO> {
-    try {
-      await this.ensureInitialized();
+  // @Action({ rawError: true })
+  // async loadFairOpportunity(): Promise<FairOpportunityDTO> {
+  //   try {
+  //     await this.ensureInitialized();
 
-      const sys_id = this.fairOpportunity?.sys_id || "";
+  //     const sys_id = this.fairOpportunity?.sys_id || "";
 
-      if (sys_id.length > 0) {
-        const fairOpportunityData = await api.fairOpportunityTable.retrieve(
-          sys_id as string
-        );
-        this.setFairOpportunity(fairOpportunityData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          fair_opportunity: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.fairOpportunity as FairOpportunityDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading fair opportunity info ${error}`);
-    }
-  }
+  //     if (sys_id.length > 0) {
+  //       const fairOpportunityData = await api.fairOpportunityTable.retrieve(
+  //         sys_id as string
+  //       );
+  //       this.setFairOpportunity(fairOpportunityData);
+  //       this.setAcquisitionPackage({
+  //         ...this.acquisitionPackage,
+  //         fair_opportunity: sys_id,
+  //       } as AcquisitionPackageDTO);
+  //     }
+  //     return this.fairOpportunity as FairOpportunityDTO;
+  //   } catch (error) {
+  //     throw new Error(`error occurred loading fair opportunity info ${error}`);
+  //   }
+  // }
 
-  @Action({ rawError: true })
-  /**
-   * Saves Fair Opportunity data to backend
-   */
-  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
-    try {
-      const sys_id = this.fairOpportunity?.sys_id || "";
-      const savedFairOpportunity =
-        sys_id.length > 0
-          ? await api.fairOpportunityTable.update(sys_id, { ...data, sys_id })
-          : await api.fairOpportunityTable.create(data);
-      this.setFairOpportunity(savedFairOpportunity);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        fair_opportunity: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving fair opportunity info ${error}`);
-    }
-  }
+  // @Action({ rawError: true })
+  // /**
+  //  * Saves Fair Opportunity data to backend
+  //  */
+  // async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
+  //   try {
+  //     const sys_id = this.fairOpportunity?.sys_id || "";
+  //     const savedFairOpportunity =
+  //       sys_id.length > 0
+  //         ? await api.fairOpportunityTable.update(sys_id, { ...data, sys_id })
+  //         : await api.fairOpportunityTable.create(data);
+  //     this.setFairOpportunity(savedFairOpportunity);
+  //     this.setAcquisitionPackage({
+  //       ...this.acquisitionPackage,
+  //       fair_opportunity: sys_id,
+  //     } as AcquisitionPackageDTO);
+  //   } catch (error) {
+  //     throw new Error(`error occurred saving fair opportunity info ${error}`);
+  //   }
+  // }
 
   /**
    * Loads Sensitive Information (FOIA) data from backend
@@ -785,115 +788,116 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Loads Period of Performance data from backend
    */
-  @Action({ rawError: true })
-  async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
-    try {
-      await this.ensureInitialized();
+  // @Action({ rawError: true })
+  // async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
+  //   try {
+  //     await this.ensureInitialized();
 
-      const sys_id = this.periodOfPerformance?.sys_id || "";
+  //     const sys_id = this.periodOfPerformance?.sys_id || "";
 
-      if (sys_id.length > 0) {
-        const periodOfPerformanceData =
-          await api.periodOfPerformanceTable.retrieve(sys_id as string);
-        this.setPeriodOfPerformance(periodOfPerformanceData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          period_of_performance: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.periodOfPerformance as PeriodOfPerformanceDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading PoP info data ${error}`);
-    }
-  }
+  //     if (sys_id.length > 0) {
+  //       const periodOfPerformanceData =
+  //         await api.periodOfPerformanceTable.retrieve(sys_id as string);
+  //       this.setPeriodOfPerformance(periodOfPerformanceData);
+  //       this.setAcquisitionPackage({
+  //         ...this.acquisitionPackage,
+  //         period_of_performance: sys_id,
+  //       } as AcquisitionPackageDTO);
+  //     }
+  //     return this.periodOfPerformance as PeriodOfPerformanceDTO;
+  //   } catch (error) {
+  //     throw new Error(`error occurred loading PoP info data ${error}`);
+  //   }
+  // }
 
   /**
    * Saves Period of Performance Information (FOIA) data to backend
    */
-  @Action({ rawError: true })
-  async savePeriodOfPerformance(data: PeriodOfPerformanceDTO): Promise<void> {
-    try {
-      const sys_id = this.periodOfPerformance?.sys_id || "";
-      const savedPeriodOfPerformance =
-        sys_id.length > 0
-          ? await api.periodOfPerformanceTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.periodOfPerformanceTable.create(data);
-      this.setPeriodOfPerformance(savedPeriodOfPerformance);
-      this.setAcquisitionPackage({
-        ...this.periodOfPerformance,
-        period_of_performance: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving PoP data ${error}`);
-    }
-  }
+  // @Action({ rawError: true })
+  // async savePeriodOfPerformance(data: PeriodOfPerformanceDTO): Promise<void> {
+  //   try {
+  //     const sys_id = this.periodOfPerformance?.sys_id || "";
+  //     const savedPeriodOfPerformance =
+  //       sys_id.length > 0
+  //         ? await api.periodOfPerformanceTable.update(sys_id, {
+  //           ...data,
+  //           sys_id,
+  //         })
+  //         : await api.periodOfPerformanceTable.create(data);
+  //     this.setPeriodOfPerformance(savedPeriodOfPerformance);
+  //     this.setAcquisitionPackage({
+  //       ...this.periodOfPerformance,
+  //       period_of_performance: sys_id,
+  //     } as AcquisitionPackageDTO);
+  //   } catch (error) {
+  //     throw new Error(`error occurred saving PoP data ${error}`);
+  //   }
+  // }
 
-  @Action({ rawError: true })
-  async loadGFEOverview(): Promise<GFEOverviewDTO> {
-    try {
-      await this.ensureInitialized();
-      const sys_id = this.gfeOverview?.sys_id || "";
+  // @Action({ rawError: true })
+  // async loadGFEOverview(): Promise<GFEOverviewDTO> {
+  //   try {
+  //     await this.ensureInitialized();
+  //     const sys_id = this.gfeOverview?.sys_id || "";
 
-      if (sys_id.length > 0) {
-        const GFEOverviewData = await api.gfeOverviewTable.retrieve(
-          sys_id as string
-        );
-        this.setGFEOverview(GFEOverviewData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          gfe_overview: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.gfeOverview as GFEOverviewDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading GFE info ${error}`);
-    }
-  }
+  //     if (sys_id.length > 0) {
+  //       const GFEOverviewData = await api.gfeOverviewTable.retrieve(
+  //         sys_id as string
+  //       );
+  //       this.setGFEOverview(GFEOverviewData);
+  //       this.setAcquisitionPackage({
+  //         ...this.acquisitionPackage,
+  //         gfe_overview: sys_id,
+  //       } as AcquisitionPackageDTO);
+  //     }
+  //     return this.gfeOverview as GFEOverviewDTO;
+  //   } catch (error) {
+  //     throw new Error(`error occurred loading GFE info ${error}`);
+  //   }
+  // }
 
-  @Action({ rawError: true })
-  async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
-    try {
-      const sys_id = this.gfeOverview?.sys_id || "";
-      const savedGFEOverviewData =
-        sys_id.length > 0
-          ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
-          : await api.gfeOverviewTable.create(data);
-      this.setGFEOverview(savedGFEOverviewData);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        gfe_overview: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving GFE data ${error}`);
-    }
-  }
+  // @Action({ rawError: true })
+  // async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
+  //   try {
+  //     const sys_id = this.gfeOverview?.sys_id || "";
+  //     const savedGFEOverviewData =
+  //       sys_id.length > 0
+  //         ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
+  //         : await api.gfeOverviewTable.create(data);
+  //     this.setGFEOverview(savedGFEOverviewData);
+  //     this.setAcquisitionPackage({
+  //       ...this.acquisitionPackage,
+  //       gfe_overview: sys_id,
+  //     } as AcquisitionPackageDTO);
+  //   } catch (error) {
+  //     throw new Error(`error occurred saving GFE data ${error}`);
+  //   }
+  // }
+
   /**
    * Loads Contract Type data from backend
    */
-  @Action({ rawError: true })
-  async loadContractType(): Promise<ContractTypeDTO> {
-    try {
-      await this.ensureInitialized();
-      const sys_id = this.contractType?.sys_id || "";
+  // @Action({ rawError: true })
+  // async loadContractType(): Promise<ContractTypeDTO> {
+  //   try {
+  //     await this.ensureInitialized();
+  //     const sys_id = this.contractType?.sys_id || "";
 
-      if (sys_id.length > 0) {
-        const contractTypeData = await api.contractTypeTable.retrieve(
-          sys_id as string
-        );
-        this.setContractType(contractTypeData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          contract_type: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.contractType as ContractTypeDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading Contract Type data ${error}`);
-    }
-  }
+  //     if (sys_id.length > 0) {
+  //       const contractTypeData = await api.contractTypeTable.retrieve(
+  //         sys_id as string
+  //       );
+  //       this.setContractType(contractTypeData);
+  //       this.setAcquisitionPackage({
+  //         ...this.acquisitionPackage,
+  //         contract_type: sys_id,
+  //       } as AcquisitionPackageDTO);
+  //     }
+  //     return this.contractType as ContractTypeDTO;
+  //   } catch (error) {
+  //     throw new Error(`error occurred loading Contract Type data ${error}`);
+  //   }
+  // }
 
   @Action({ rawError: true })
   async loadContractConsiderations(): Promise<ContractConsiderationsDTO> {
@@ -947,76 +951,76 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Loads Requirements Cost Estimate data from backend
    */
-  @Action({ rawError: true })
-  async loadRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
-    try {
-      await this.ensureInitialized();
-      const sys_id = this.requirementsCostEstimate?.sys_id || "";
+  // @Action({ rawError: true })
+  // async loadRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
+  //   try {
+  //     await this.ensureInitialized();
+  //     const sys_id = this.requirementsCostEstimate?.sys_id || "";
 
-      if (sys_id.length > 0) {
-        const data = await api.requirementsCostEstimateTable.retrieve(
-          sys_id as string
-        );
-        this.setRequirementsCostEstimate(data);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          requirements_cost_estimate: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading Contract Type data ${error}`);
-    }
-  }
+  //     if (sys_id.length > 0) {
+  //       const data = await api.requirementsCostEstimateTable.retrieve(
+  //         sys_id as string
+  //       );
+  //       this.setRequirementsCostEstimate(data);
+  //       this.setAcquisitionPackage({
+  //         ...this.acquisitionPackage,
+  //         requirements_cost_estimate: sys_id,
+  //       } as AcquisitionPackageDTO);
+  //     }
+  //     return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
+  //   } catch (error) {
+  //     throw new Error(`error occurred loading Contract Type data ${error}`);
+  //   }
+  // }
 
   /**
    * Saves Requirements Cost Estimate data to backend
    */
-  @Action({ rawError: true })
-  async saveRequirementsCostEstimate(
-    data: RequirementsCostEstimateDTO
-  ): Promise<void> {
-    try {
-      const sys_id = this.requirementsCostEstimate?.sys_id || "";
-      const savedData =
-        sys_id.length > 0
-          ? await api.requirementsCostEstimateTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.requirementsCostEstimateTable.create(data);
-      this.setRequirementsCostEstimate(savedData);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        requirements_cost_estimate: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(
-        `error occurred saving Requirements Cost Estimate data ${error}`
-      );
-    }
-  }
+  // @Action({ rawError: true })
+  // async saveRequirementsCostEstimate(
+  //   data: RequirementsCostEstimateDTO
+  // ): Promise<void> {
+  //   try {
+  //     const sys_id = this.requirementsCostEstimate?.sys_id || "";
+  //     const savedData =
+  //       sys_id.length > 0
+  //         ? await api.requirementsCostEstimateTable.update(sys_id, {
+  //           ...data,
+  //           sys_id,
+  //         })
+  //         : await api.requirementsCostEstimateTable.create(data);
+  //     this.setRequirementsCostEstimate(savedData);
+  //     this.setAcquisitionPackage({
+  //       ...this.acquisitionPackage,
+  //       requirements_cost_estimate: sys_id,
+  //     } as AcquisitionPackageDTO);
+  //   } catch (error) {
+  //     throw new Error(
+  //       `error occurred saving Requirements Cost Estimate data ${error}`
+  //     );
+  //   }
+  // }
 
   /**
    * Saves Contract Type data to backend
    */
-  @Action({ rawError: true })
-  async saveContractType(data: ContractTypeDTO): Promise<void> {
-    try {
-      const sys_id = this.contractType?.sys_id || "";
-      const savedContractType =
-        sys_id.length > 0
-          ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
-          : await api.contractTypeTable.create(data);
-      this.setContractType(savedContractType);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        contract_type: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving PoP data ${error}`);
-    }
-  }
+  // @Action({ rawError: true })
+  // async saveContractType(data: ContractTypeDTO): Promise<void> {
+  //   try {
+  //     const sys_id = this.contractType?.sys_id || "";
+  //     const savedContractType =
+  //       sys_id.length > 0
+  //         ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
+  //         : await api.contractTypeTable.create(data);
+  //     this.setContractType(savedContractType);
+  //     this.setAcquisitionPackage({
+  //       ...this.acquisitionPackage,
+  //       contract_type: sys_id,
+  //     } as AcquisitionPackageDTO);
+  //   } catch (error) {
+  //     throw new Error(`error occurred saving PoP data ${error}`);
+  //   }
+  // }
 
   /**
    * Loads Classification Level data from backend
@@ -1046,55 +1050,55 @@ export class AcquisitionPackageStore extends VuexModule {
   /**
    * Saves Sensitive Information (FOIA) data to backend
    */
-  @Action({rawError: true})
-  async saveClassificationLevel(data: ClassificationLevelDTO): Promise<void> {
-    try {
-      const sys_id = this.classificationLevel?.sys_id || "";
-      const savedClassificationLevel =
-          sys_id.length > 0
-            ? await api.classificationLevelTable.update(sys_id, {
-              ...data,
-              sys_id,
-            })
-            : await api.classificationLevelTable.create(data);
-      this.setClassificationLevel(savedClassificationLevel);
-      this.setAcquisitionPackage({
-        ...this.classificationLevel,
-        classification_level: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving classification level data ${error}`);
-    }
-  }
+  // @Action({rawError: true})
+  // async saveClassificationLevel(data: ClassificationLevelDTO): Promise<void> {
+  //   try {
+  //     const sys_id = this.classificationLevel?.sys_id || "";
+  //     const savedClassificationLevel =
+  //         sys_id.length > 0
+  //           ? await api.classificationLevelTable.update(sys_id, {
+  //             ...data,
+  //             sys_id,
+  //           })
+  //           : await api.classificationLevelTable.create(data);
+  //     this.setClassificationLevel(savedClassificationLevel);
+  //     this.setAcquisitionPackage({
+  //       ...this.classificationLevel,
+  //       classification_level: sys_id,
+  //     } as AcquisitionPackageDTO);
+  //   } catch (error) {
+  //     throw new Error(`error occurred saving classification level data ${error}`);
+  //   }
+  // }
 
   /**
    * A method to retrieve data from tables that are used strictly for attaching files
    * @param key string
    * @returns attachment table data
    */
-  @Action({ rawError: true })
-  async loadAttachments(key: string): Promise<AttachmentDTO[] | undefined> {
-    const storeData = this as unknown as Record<string, unknown>;
+  // @Action({ rawError: true })
+  // async loadAttachments(key: string): Promise<AttachmentDTO[] | undefined> {
+  //   const storeData = this as unknown as Record<string, unknown>;
 
-    try {
-      //attachment table data is stored as a comma seperated
-      // string list on the acquisition package object and in the store
-      const tableIdList = storeData[key] as string;
-      const tableIds = tableIdList.length ? tableIdList.split(",") : [];
+  //   try {
+  //     //attachment table data is stored as a comma seperated
+  //     // string list on the acquisition package object and in the store
+  //     const tableIdList = storeData[key] as string;
+  //     const tableIds = tableIdList.length ? tableIdList.split(",") : [];
 
-      if (tableIds.length === 0) {
-        return [];
-      }
+  //     if (tableIds.length === 0) {
+  //       return [];
+  //     }
 
-      const requests = tableIds.map((id) => api.attachments.getByRecordId(id));
-      const data = await Promise.all(requests);
-      return data;
-    } catch (error) {
-      console.error(
-        `error ocurred loading attachment data for ${key} error: ${error}`
-      );
-    }
-  }
+  //     const requests = tableIds.map((id) => api.attachments.getByRecordId(id));
+  //     const data = await Promise.all(requests);
+  //     return data;
+  //   } catch (error) {
+  //     console.error(
+  //       `error ocurred loading attachment data for ${key} error: ${error}`
+  //     );
+  //   }
+  // }
 
   @Action({ rawError: true })
   async removeAttachment({
