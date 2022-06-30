@@ -42,113 +42,106 @@ describe("Test suite: Summary screen: Unselected Offerings ", () => {
             expect(listing).to.have.length(listingCount);
           });
       
-        //verify the  Compute card
-        cy.textExists(performanceReqs.computeHeading, "Compute ");
-        cy.hoverToolTip(
-          performanceReqs.computeTooltipBtn,
-          performanceReqs.computeTooltipText,
-          summary.computeTooltipText
-        );
-        cy.textExists(performanceReqs.computeLink, " Add requirements ");
-
-        //verify Dev tools card
-        cy.textExists(performanceReqs.devHeading, " Developer Tools and Services ");
-        cy.hoverToolTip(
-          performanceReqs.devTooltipBtn,
-          performanceReqs.devTooltipText,
-          summary.devTooltipText
-        );
-        cy.textExists(performanceReqs.devLink, " Add requirements ");
-
-        //verify Application card
-        cy.textExists(performanceReqs.appHeading, " Applications ");
-        cy.hoverToolTip(
-          performanceReqs.appTooltipBtn,
-          performanceReqs.appTooltipText,
-          summary.appTooltipText
-        );
-        cy.textExists(performanceReqs.appLink, " Add requirements ");
-
-        //verify MachineLearning Card
-        cy.textExists(performanceReqs.mlHeading, " Machine Learning ");
-        cy.hoverToolTip(
-          performanceReqs.mlTooltipBtn,
-          performanceReqs.mlTooltipText,
-          summary.mlTooltipText
-        );
-        cy.textExists(performanceReqs.mlLink, " Add requirements ");
-
-        //verify Networking Card
-        cy.textExists(performanceReqs.netHeading, " Networking ");
-        cy.hoverToolTip(
-          performanceReqs.netTooltipBtn,
-          performanceReqs.netTooltipText,
-          summary.netTooltipText
-        );
-        cy.textExists(performanceReqs.netLink, " Add requirements ");
-        // Verify Security Card
-        cy.textExists(performanceReqs.secHeading, " Security ");
-        cy.hoverToolTip(
-          performanceReqs.secTooltipBtn,
-          performanceReqs.secTooltipText,
-          summary.secTooltipText
-        );
-        cy.textExists(performanceReqs.secLink, " Add requirements ");
-
-        // Verify Database with Storage Card
-        cy.textExists(performanceReqs.dbHeading, " Database with Storage ");
-        cy.hoverToolTip(
-          performanceReqs.dbTooltipBtn,
-          performanceReqs.dbTooltipText,
-          summary.dbTooltipText
-        );
-        cy.textExists(performanceReqs.dbLink, " Add requirements ");
-
-        // Verify Edge Computing and Tactical Edge Card
-        cy.textExists(performanceReqs.edHeading, " Edge Computing and Tactical Edge ");
-        cy.hoverToolTip(
-          performanceReqs.edTooltipBtn,
-          performanceReqs.edTooltipText,
-          summary.edTooltipText
-        );
-        cy.textExists(performanceReqs.edLink, " Add requirements ");
+        const otherCategories = [
+          {
+            headingSelector: performanceReqs.computeHeading,
+            headingText: "Compute ",
+            tooltipButtonSelector: performanceReqs.computeTooltipBtn,
+            tooltipTextSelector: performanceReqs.computeTooltipText,
+            tooltipText: summary.computeTooltipText,
+            linkSelector: performanceReqs.computeLink,
+          },
+          {
+            headingSelector: performanceReqs.devHeading,
+            headingText: " Developer Tools and Services ",
+            tooltipButtonSelector: performanceReqs.devTooltipBtn,
+            tooltipTextSelector: performanceReqs.devTooltipText,
+            tooltipText: summary.devTooltipText,
+            linkSelector: performanceReqs.devLink,
+          },
+          {
+            headingSelector: performanceReqs.appHeading,
+            headingText: " Applications ",
+            tooltipButtonSelector: performanceReqs.appTooltipBtn,
+            tooltipTextSelector: performanceReqs.appTooltipText,
+            tooltipText: summary.appTooltipText,
+            linkSelector: performanceReqs.appLink,
+          },
+          {
+            headingSelector: performanceReqs.mlHeading,
+            headingText: " Machine Learning ",
+            tooltipButtonSelector: performanceReqs.mlTooltipBtn,
+            tooltipTextSelector: performanceReqs.mlTooltipText,
+            tooltipText: summary.mlTooltipText,
+            linkSelector: performanceReqs.mlLink,
+          },
+          {
+            headingSelector: performanceReqs.netHeading,
+            headingText: " Networking ",
+            tooltipButtonSelector: performanceReqs.netTooltipBtn,
+            tooltipTextSelector: performanceReqs.netTooltipText,
+            tooltipText: summary.netTooltipText,
+            linkSelector: performanceReqs.netLink,
+          },
+          {
+            headingSelector: performanceReqs.secHeading,
+            headingText: " Security ",
+            tooltipButtonSelector: performanceReqs.secTooltipBtn,
+            tooltipTextSelector: performanceReqs.secTooltipText,
+            tooltipText: summary.secTooltipText,
+            linkSelector: performanceReqs.secLink,
+          },
+          {
+            headingSelector: performanceReqs.dbHeading,
+            headingText: " Database with Storage ",
+            tooltipButtonSelector: performanceReqs.dbTooltipBtn,
+            tooltipTextSelector: performanceReqs.dbTooltipText,
+            tooltipText: summary.dbTooltipText,
+            linkSelector: performanceReqs.dbLink,
+          },
+          {
+            headingSelector: performanceReqs.edHeading,
+            headingText: " Edge Computing and Tactical Edge ",
+            tooltipButtonSelector: performanceReqs.edTooltipBtn,
+            tooltipTextSelector: performanceReqs.edTooltipText,
+            tooltipText: summary.edTooltipText,
+            linkSelector: performanceReqs.edLink,
+          },
+          {
+            headingSelector: performanceReqs.iotHeading,
+            headingText: " Internet of Things ",
+            tooltipButtonSelector: performanceReqs.iotTooltipBtn,
+            tooltipTextSelector: performanceReqs.iotTooltipText,
+            tooltipText: summary.iotTooltipText,
+            linkSelector: performanceReqs.iotLink,
+          },
+          {
+            headingSelector: performanceReqs.genHeading,
+            headingText: " General Iaas, PaaS, and SaaS ",
+            tooltipButtonSelector: performanceReqs.genTooltipBtn,
+            tooltipTextSelector: performanceReqs.genTooltipText,
+            tooltipText: summary.genTooltipText,
+            linkSelector: performanceReqs.genLink,
+          },
+          {
+            headingSelector: performanceReqs.adHeading,
+            headingText: " Advisory and Assistance ",
+            tooltipButtonSelector: performanceReqs.adTooltipBtn,
+            tooltipTextSelector: performanceReqs.adTooltipText,
+            tooltipText: summary.adTooltipText,
+            linkSelector: performanceReqs.adLink,
+          },
+          {
+            headingSelector: performanceReqs.trainHeading,
+            headingText: " Training ",
+            tooltipButtonSelector: performanceReqs.trainTooltipBtn,
+            tooltipTextSelector: performanceReqs.trainTooltipText,
+            tooltipText: summary.trainTooltipText,
+            linkSelector: performanceReqs.trainLink,
+          },
+        ]
         
-        //verify IOT card
-        cy.textExists(performanceReqs.iotHeading, " Internet of Things ");
-        cy.hoverToolTip(
-          performanceReqs.iotTooltipBtn,
-          performanceReqs.iotTooltipText,
-          summary.iotTooltipText
-        );
-        cy.textExists(performanceReqs.iotLink, " Add requirements ");
-
-        //verify General laas,PaaS and SaaS card
-        cy.textExists(performanceReqs.genHeading, " General Iaas, PaaS, and SaaS ");
-        cy.hoverToolTip(
-          performanceReqs.genTooltipBtn,
-          performanceReqs.genTooltipText,
-          summary.genTooltipText
-        );
-        cy.textExists(performanceReqs.genLink, " Add requirements ");
-
-        //verify Advisory and Assistance card
-        cy.textExists(performanceReqs.adHeading, " Advisory and Assistance ");
-        cy.hoverToolTip(
-          performanceReqs.adTooltipBtn,
-          performanceReqs.adTooltipText,
-          summary.adTooltipText
-        );
-        cy.textExists(performanceReqs.adLink, " Add requirements ");
-
-        //verify Training card
-        cy.textExists(performanceReqs.trainHeading, " Training ");
-        cy.hoverToolTip(
-          performanceReqs.trainTooltipBtn,
-          performanceReqs.trainTooltipText,
-          summary.trainTooltipText
-        );
-        cy.textExists(performanceReqs.trainLink, " Add requirements ");
-        
+        cy.verifyOtherServiceOfferings(otherCategories);
 
         //wrap up button exists
         cy.btnExists(common.continueBtn, " Wrap up this section ");
