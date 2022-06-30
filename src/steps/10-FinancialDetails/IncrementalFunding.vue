@@ -62,7 +62,7 @@
                 <div class="d-flex justify-space-between align-center mb-4">
                   <ATATSelect
                     :id="'IncrementPeriod' + index"
-                    :items="getDropdownData(index)"
+                    :items="getFiscalQuarters(index)"
                     width="190"
                     :selectedValue.sync="fundingIncrements[index].qtr"
                     class="mr-4"
@@ -230,8 +230,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   ];
 
-  public dropdownData: SelectData[] = [];
-
   public costEstimate = 0;
   public costEstimateStr = "";
   public amountRemaining = 0;
@@ -262,6 +260,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     fundingIncrements: [],
   }
 
+  public fiscalQuarters: { text: string, order: number }[] = [];
+
   public async initializeIncrements(): Promise<void> {
     let qtr = this.currentQuarter;
     let year = parseInt(this.currentYear.toString().slice(-2));
@@ -272,7 +272,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // increment quarter
       qtr = qtr === 4 ? 1 : qtr + 1;
       const periodStr = ordinal + " QTR FY" + year;
-      this.dropdownData.push({ text: periodStr, value: periodStr });
+      this.fiscalQuarters.push({ text: periodStr, order: i + 1 });
 
       if (i === 0 && this.fundingIncrements.length === 0) {
         // default to 1st option if no store data
@@ -289,10 +289,10 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public addIncrement(): void {
     const lastPayment = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastPayment?.qtr;
-    let selectedQtrIndex = this.dropdownData.findIndex(p => p.text === lastSelectedQtr);
+    let selectedQtrIndex = this.fiscalQuarters.findIndex(p => p.text === lastSelectedQtr);
     let nextQtr;
-    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.dropdownData.length) {
-      nextQtr = this.dropdownData[selectedQtrIndex + 1].text;
+    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.fiscalQuarters.length) {
+      nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
     }
     if (nextQtr) {
       const newIncrement = { qtr: nextQtr, amt: "", order: this.fundingIncrements.length + 1 }
@@ -332,20 +332,20 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
-  public getDropdownData(index: number): SelectData[] {
+  public getFiscalQuarters(index: number): SelectData[] {
     if (index === 0) {
-      return this.dropdownData;
+      return this.fiscalQuarters;
     } 
 
     const firstSelectedQtr = this.fundingIncrements[0].qtr;
     const firstSelectedQtrIndex 
-      = this.dropdownData.findIndex(p => p.text === firstSelectedQtr);
+      = this.fiscalQuarters.findIndex(p => p.text === firstSelectedQtr);
 
     let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
-    lastPossibleIndex = lastPossibleIndex > this.dropdownData.length 
-      ? this.dropdownData.length
+    lastPossibleIndex = lastPossibleIndex > this.fiscalQuarters.length 
+      ? this.fiscalQuarters.length
       : lastPossibleIndex;
-    let optionsArr = this.dropdownData.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
+    let optionsArr = this.fiscalQuarters.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
 
     return optionsArr;
   }
@@ -412,13 +412,28 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // • check if over/under funded - AC 4 which was crossed out
       // set a flag if error has been shown. if so, user can continue
 
+      // Set chronological order of fiscal quarters in fundingIncrements
+      let sortedIncrements: fundingIncrements[] = []; 
+      this.fundingIncrements.forEach((incr) => {
+        incr.order = this.fiscalQuarters.findIndex(q => q.text === incr.qtr) + 1;
+        sortedIncrements.push(incr);
+      });
+      sortedIncrements.sort((a,b) => { 
+        return a.order > b.order ? 1 : -1 
+      })
+      sortedIncrements.forEach((incr, i) => {
+        incr.order = i;
+      });
+
+      this.fundingIncrements = sortedIncrements;
+
       if (this.hasChanged()) {
         FinancialDetails.setIFPData(this.currentData);
       }
     } catch (error) {
       console.log(error);
     }
-
+    // return false;
     return true;
   }
 
