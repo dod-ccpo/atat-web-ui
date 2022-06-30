@@ -41,6 +41,7 @@ import {
 } from "../helpers";
 import sac from '../selectors/standComp.sel';
 import occ from '../selectors/occ.sel';
+import fd from '../selectors/financialDetails.sel'
 import performanceReqs from '../selectors/performanceReqs.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
@@ -434,7 +435,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
         cy.autoCompleteSelection(org.stateTxtBox, orgAddress.state, org.stateAutoCompleteList);
         cy.enterTextInTextField(org.zipCodeTxtBox,orgAddress.zipCode);
       }
-      if (selectedOption === "radio_button_checkedMilitary (APO or FPO)") {
+      if (selectedOption === "radio_button_checkedMilitary/Diplomatic (APO, FPO, or DPO)") {
         //Assert Organization's address labels
                 
         cy.findElement(org.apoFpoDropDown).click({ force: true });
@@ -845,6 +846,27 @@ Cypress.Commands.add("periodCount", (count,checkBoxRowSelector) => {
 
 });
 
+Cypress.Commands.add("selectFundingRequest", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(fd.fundingRadioActive)
+    .then(($radioBtn) => {      
+      const selectedOption = cleanText($radioBtn.text());     
+      cy.log(selectedOption);
+      cy.btnClick(common.continueBtn, " Continue ");
+      const fsfLabel= "radio_button_checkedFiscal" +
+        " Service Forms (7600A and 7600B)"
+        + "Import from G-Invoicing or manually upload your completed forms."
+        + " Recommended" 
+      if (selectedOption === fsfLabel) {
+        //naviagtes to "Did you use G-Invoicing for your funding request?"
+        cy.verifyPageHeader("Did you use G-Invoicing for your funding request?");
+      } else {
+        //navigate to "Let’s gather info about your MIPR"
+        cy.verifyPageHeader("Let’s gather info about your MIPR");
+      }
+          
+    })
+});
 Cypress.Commands.add("clickSomethingElse", (selectorToScrollToAfter) => {
   cy.findElement(common.somethingElse)
     .scrollIntoView()
