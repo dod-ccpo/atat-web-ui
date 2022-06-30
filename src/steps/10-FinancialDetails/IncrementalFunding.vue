@@ -314,9 +314,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.amountRemainingStr = this.amountRemaining ? toCurrencyString(this.amountRemaining) : "";
     this.initialPaymentStr = this.initialPayment ? toCurrencyString(this.initialPayment) : "";
     this.$nextTick(() => {
-      this.fundingIncrements.forEach((pmt) => {
-        return pmt.amt = pmt.amt && pmt.amt !== "0.00" 
-          ? toCurrencyString(currencyStringToNumber(pmt.amt)) 
+      this.fundingIncrements.forEach((incr) => {
+        return incr.amt = incr.amt && incr.amt !== "0.00" 
+          ? toCurrencyString(currencyStringToNumber(incr.amt)) 
           : ""
       });
     });
@@ -365,7 +365,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
     if (FinancialDetails.estimatedTaskOrderValue) {
       this.costEstimate = currencyStringToNumber(FinancialDetails.estimatedTaskOrderValue);
-
       this.costEstimateStr = toCurrencyString(this.costEstimate);
       this.amountRemaining = this.costEstimate;
       this.amountRemainingStr = this.costEstimateStr;
@@ -426,6 +425,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       });
 
       this.fundingIncrements = sortedIncrements;
+
+      // EJY need to track removal of previously saved increments
 
       if (this.hasChanged()) {
         FinancialDetails.setIFPData(this.currentData);
