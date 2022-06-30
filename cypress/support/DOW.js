@@ -44,3 +44,15 @@ Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
   });  
 });
 
+//This command is to verify the OtherCategories HeaderLabel on Summary Page 
+Cypress.Commands.add("verifyOtherServiceOfferings", (otherCategories) => {
+  
+  cy.textExists(otherCategories.selector, otherCategories.heading);
+  cy.hoverToolTip(
+    otherCategories.TooltipBtn,
+    otherCategories.TooltipText,
+    //summary[otherCategories]
+  );
+  cy.textExists(otherCategories.selectorLink, " Add requirements ");
+})
+
