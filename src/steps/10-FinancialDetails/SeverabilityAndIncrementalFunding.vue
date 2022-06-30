@@ -132,9 +132,8 @@
   </v-container>
 </template>
 <script lang="ts">
-import Vue from "vue";
 
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { RadioButton } from "../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -142,6 +141,9 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import Periods from "@/store/periods";
 import FinancialDetails from "@/store/financialDetails";
 import { routeNames } from "@/router/stepper";
+import SaveOnLeave from "@/mixins/saveOnLeave";
+import { hasChanges } from "@/helpers";
+import TaskOrder from "@/store/taskOrder";
 
 @Component({
   components: {
@@ -151,8 +153,9 @@ import { routeNames } from "@/router/stepper";
   }
 })
 
-export default class SeverabilityAndIncrementalFunding extends Vue {
+export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeave) {
   private selectedFundOption = "";
+  private saved = "UNSELECTED";
   private isPeriodsDataMissing = false;
   private isCostEstimateMissing = false;
   private routeNames = routeNames;
@@ -198,10 +201,36 @@ export default class SeverabilityAndIncrementalFunding extends Vue {
     this.isPeriodsDataMissing = (periods && periods.length === 0);
     const estimatedTOValue = FinancialDetails.estimatedTaskOrderValue;
     this.isCostEstimateMissing = !estimatedTOValue;
+    const incrementallyFunded = TaskOrder?.value?.incrementally_funded;
+    this.saved = incrementallyFunded.length > 0 ? incrementallyFunded : "UNSELECTED";
+    this.selectedFundOption = this.saved;
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+  }
+
+  protected async saveOnLeave(): Promise<boolean> {
+    try {
+     
+      if (this.hasChanged()) {
+        const taskOrder = {
+          ...TaskOrder.value,
+          // eslint-disable-next-line camelcase
+          incrementally_funded: this.selectedFundOption
+        }
+        await TaskOrder.save(taskOrder);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return true;
+  }
+
+  private hasChanged(): boolean {
+    const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "UNSELECTED";
+    return hasChanges(current, this.saved);
   }
 
   @Watch("selectedFundOption")

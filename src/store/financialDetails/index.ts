@@ -8,6 +8,8 @@ import {
 } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
 import Vue from "vue";
+import { TaskOrderDTO } from "@/api/models";
+import api from "@/api";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
@@ -35,6 +37,8 @@ export class FinancialDetailsStore extends VuexModule {
 
   gtcNumber: string | null = null;
   orderNumber: string | null = null;
+  taskOrder: TaskOrderDTO | null = null;
+
 
   // store session properties
   protected sessionProperties: string[] = [
@@ -113,6 +117,7 @@ export class FinancialDetailsStore extends VuexModule {
   public async getMIPRNumber(): Promise<string>  {
     return this.miprNumber || '';
   }
+
 
   @Mutation
   public async setIFPData(data: IFPData): Promise<void> {

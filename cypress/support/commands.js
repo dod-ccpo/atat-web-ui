@@ -42,6 +42,7 @@ import {
 import sac from '../selectors/standComp.sel';
 import occ from '../selectors/occ.sel';
 import fd from '../selectors/financialDetails.sel'
+import performanceReqs from '../selectors/performanceReqs.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -263,6 +264,21 @@ Cypress.Commands.add("verifyCheckBoxLabels", (selector,expectedLabels) => {
       expect(foundLabels).to.deep.equal(expectedLabels)
     })
   
+});
+
+Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
+  
+  //Verify the list 
+  cy.findElement(selector)
+    .then(($els) => {
+      
+      const foundText = Cypress.$.makeArray($els).map((el) => el.innerText)
+      const foundTextArray = foundText[0].split(", ")
+      return foundTextArray;
+
+    })
+    .should('deep.equal', expectedText);  
+
 });
 
 Cypress.Commands.add("clickSideStepper", (stepperSelector,stepperText) => {
@@ -855,10 +871,23 @@ Cypress.Commands.add("clickSomethingElse", (selectorToScrollToAfter) => {
   cy.findElement(common.somethingElse)
     .scrollIntoView()
     .should("be.visible")
-    .click({force: true});
+    .click({ force: true });
   if (selectorToScrollToAfter) {
     cy.findElement(selectorToScrollToAfter)
       .scrollIntoView()
       .should("be.visible");
   }
-})
+});
+
+Cypress.Commands.add("notAvailableCategory", (categoryText) => {
+  cy.textExists(performanceReqs.showMoreLink, " Show more ")
+    .click().then(() => {
+      cy.findElement("#OtherAvlGroups .h3")
+        .each(($el) => {
+          const text = $el.text()
+          cy.log(text)
+        })
+        .should("not.contain", categoryText);
+        
+    });
+});

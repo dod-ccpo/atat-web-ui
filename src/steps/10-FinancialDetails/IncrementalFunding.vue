@@ -66,7 +66,6 @@
                     width="190"
                     :selectedValue.sync="payments[index].qtr"
                     class="mr-4"
-                    @onChange="incrementSelected(index)"
                   />
                   <ATATTextField
                     :id="'Amount' + index"
@@ -235,7 +234,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   // use in future ticket for validation returning to page to show error messages
   public hasReturnedToPage = false;
 
-  public payments: { qtr: string, amt: string }[] = [];
+  public payments: { qtr: string, amt: string, order: number }[] = [];
 
   private get currentData(): IFPData {
     return {
@@ -263,7 +262,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
       if (i === 0 && this.payments.length === 0) {
         // default to 1st option if no store data
-        this.payments.push({qtr: periodStr, amt: ""})
+        this.payments.push({qtr: periodStr, amt: "", order: 1})
       }
     }
   }
@@ -282,7 +281,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       nextQtr = this.incrementPeriods[selectedQtrIndex + 1].text;
     }
     if (nextQtr) {
-      const newIncrement = { qtr: nextQtr, amt: "" }
+      const newIncrement = { qtr: nextQtr, amt: "", order: this.payments.length - 1 }
       this.payments.push(newIncrement);
     }
   }

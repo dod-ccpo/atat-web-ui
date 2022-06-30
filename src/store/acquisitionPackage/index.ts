@@ -37,6 +37,7 @@ import { ClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
 import FinancialDetails from "../financialDetails";
+import TaskOrder from "../taskOrder";
 
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
@@ -452,8 +453,8 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
-          //the should be in the initialization sequence
           this.setAcquisitionPackage(acquisitionPackage);
+          await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);
         }
       } catch (error) {
