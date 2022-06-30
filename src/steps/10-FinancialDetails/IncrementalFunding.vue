@@ -24,7 +24,7 @@
                 </label>
                 <ATATTextField
                   id="InitialAmount"
-                  :value.sync="initialPaymentStr"
+                  :value.sync="initialAmountStr"
                   :alignRight="true"
                   :isCurrency="true"
                   :showErrorMessages="false"
@@ -83,7 +83,7 @@
                   />
                   <v-btn
                     icon
-                    @click="deletePayment(index)"
+                    @click="deleteFundingIncrement(index)"
                     :disabled="fundingIncrements.length === 1"
                   >
                     <v-icon> delete </v-icon>
@@ -234,8 +234,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public costEstimateStr = "";
   public amountRemaining = 0;
   public amountRemainingStr = "";
-  public initialPayment = 0;
-  public initialPaymentStr = "";
+  public initialAmount = 0;
+  public initialAmountStr = "";
   public totalAmount: number | null = null;
 
   public errorMissingInitialIncrement = false;
@@ -250,7 +250,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   private get currentData(): IFPData {
     return {
-      initialFundingIncrementStr: this.initialPaymentStr,
+      initialFundingIncrementStr: this.initialAmountStr,
       fundingIncrements: this.fundingIncrements,
     };
   };
@@ -281,14 +281,23 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
-  public deletePayment(index: number): void {
+  public removedIncrements: fundingIncrements[] = [];
+
+  public deleteFundingIncrement(index: number): void {
+    if (this.savedData.fundingIncrements && this.fundingIncrements[index].sysId !== "") {
+      const incr = this.savedData.fundingIncrements[index];
+      if (incr) {
+        this.removedIncrements.push(this.savedData.fundingIncrements[index]);
+      }
+    }
+
     this.fundingIncrements.splice(index, 1);
     this.calcAmounts("");
   }
 
   public addIncrement(): void {
-    const lastPayment = this.fundingIncrements.at(-1);
-    const lastSelectedQtr = lastPayment?.qtr;
+    const lastFundingIncrement = this.fundingIncrements.at(-1);
+    const lastSelectedQtr = lastFundingIncrement?.qtr;
     let selectedQtrIndex = this.fiscalQuarters.findIndex(p => p.text === lastSelectedQtr);
     let nextQtr;
     if (selectedQtrIndex > -1 && selectedQtrIndex !== this.fiscalQuarters.length) {
@@ -305,14 +314,14 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       (accumulator, current) =>  
         accumulator + Number(currencyStringToNumber(current.amt)), 0
     );
-    this.initialPayment = currencyStringToNumber(this.initialPaymentStr);
-    this.totalAmount = this.initialPayment 
-      ? this.initialPayment + incrementsTotal
+    this.initialAmount = currencyStringToNumber(this.initialAmountStr);
+    this.totalAmount = this.initialAmount 
+      ? this.initialAmount + incrementsTotal
       : incrementsTotal;
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
     this.amountRemainingStr = this.amountRemaining ? toCurrencyString(this.amountRemaining) : "";
-    this.initialPaymentStr = this.initialPayment ? toCurrencyString(this.initialPayment) : "";
+    this.initialAmountStr = this.initialAmount ? toCurrencyString(this.initialAmount) : "";
     this.$nextTick(() => {
       this.fundingIncrements.forEach((incr) => {
         return incr.amt = incr.amt && incr.amt !== "0.00" 
@@ -324,7 +333,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     // validation on blur for initial and first increments required
     let amt;
     if (field === "initialIncrement") {
-      amt = parseFloat(this.initialPaymentStr);
+      amt = parseFloat(this.initialAmountStr);
       this.errorMissingInitialIncrement = amt === 0 || isNaN(amt);
     } else if (field === "increment0") {
       amt = parseFloat(this.fundingIncrements[0].amt);
@@ -353,8 +362,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public async loadOnEnter(): Promise<void> {
     const storeData = await FinancialDetails.getIFPData();
     if (storeData) {
-      this.initialPaymentStr = storeData.initialFundingIncrementStr;
-      this.savedData.initialFundingIncrementStr = this.initialPaymentStr;
+      this.initialAmountStr = storeData.initialFundingIncrementStr;
+      this.savedData.initialFundingIncrementStr = this.initialAmountStr;
       this.fundingIncrements = storeData.fundingIncrements;
       this.savedData.fundingIncrements = this.fundingIncrements;
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
