@@ -28,10 +28,10 @@
     </p>
     <p>
       The 7600A is a
-      <strong>General Terms and Conditions (GT&C)</strong>
+      <strong>General Terms and Conditions (GT&amp;C)</strong>
       agreement that establishes the relationship
       between the trading partners and identifies the agreement action, period, and type. No fiscal
-      obligations are created through the execution of the GT&C: therefore, no services may be
+      obligations are created through the execution of the GT&amp;C: therefore, no services may be
       performed and/or no goods may be delivered.
     </p>
     <p>
@@ -43,7 +43,7 @@
       when all required points of contact sign to authorize the Order.
     </p>
     <p>
-      A GT&C agreement may contain one or more Orders.
+      A GT&amp;C agreement may contain one or more Orders.
     </p>
     <p>
       If your agency uses G-Invoicing, then you will only need to provide your Order Number, and we
@@ -63,10 +63,10 @@
         class="_text-link"
         :href="federalAcqHref"
         target="_blank"
+        id="FARLink"
       >
-        <span class="_external-link">Federal Acquisition Regulation (FAR) 253.208</span>
-      </a>
-      .
+        Federal Acquisition Regulation (FAR) <span class="_external-link">253.208</span>
+      </a>.
     </p>
   </div>
 </template>

@@ -40,7 +40,9 @@ import {
   colors,   
 } from "../helpers";
 import sac from '../selectors/standComp.sel';
-import occ from '../selectors/occ.sel'
+import occ from '../selectors/occ.sel';
+import fd from '../selectors/financialDetails.sel'
+import performanceReqs from '../selectors/performanceReqs.sel';
 
 const isTestingLocally = Cypress.env("isTestingLocally") === "true";
 const runTestsInIframe = Cypress.env("isTestingInIframe") === "true";
@@ -109,7 +111,6 @@ Cypress.Commands.add("launchATAT", () => {
     .its("sessionStorage")
     .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
     .should("exist");
-
 });
 
 Cypress.Commands.add("clearSession", () => {
@@ -201,11 +202,7 @@ Cypress.Commands.add("verifyRequiredInput", (textboxSelector,errorSelector,error
 
 Cypress.Commands.add("verifyRequiredDropdown", (textboxSelector,errorSelector,errorMessage) => {
   cy.findElement(textboxSelector).click({ force: true });
-  cy.findElement(common.clickSomethingElse)
-    .scrollIntoView()
-    .should("be.visible")
-    .click({ force: true });
-  cy.findElement(errorSelector).scrollIntoView().should("be.visible");
+  cy.clickSomethingElse(errorSelector);
   cy.checkErrorMessage(errorSelector, errorMessage);
 });
 
@@ -267,6 +264,21 @@ Cypress.Commands.add("verifyCheckBoxLabels", (selector,expectedLabels) => {
       expect(foundLabels).to.deep.equal(expectedLabels)
     })
   
+});
+
+Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
+  
+  //Verify the list 
+  cy.findElement(selector)
+    .then(($els) => {
+      
+      const foundText = Cypress.$.makeArray($els).map((el) => el.innerText)
+      const foundTextArray = foundText[0].split(", ")
+      return foundTextArray;
+
+    })
+    .should('deep.equal', expectedText);  
+
 });
 
 Cypress.Commands.add("clickSideStepper", (stepperSelector,stepperText) => {
@@ -423,7 +435,7 @@ Cypress.Commands.add("enterOrganizationAddress", (orgAddress)    => {
         cy.autoCompleteSelection(org.stateTxtBox, orgAddress.state, org.stateAutoCompleteList);
         cy.enterTextInTextField(org.zipCodeTxtBox,orgAddress.zipCode);
       }
-      if (selectedOption === "radio_button_checkedMilitary (APO or FPO)") {
+      if (selectedOption === "radio_button_checkedMilitary/Diplomatic (APO, FPO, or DPO)") {
         //Assert Organization's address labels
                 
         cy.findElement(org.apoFpoDropDown).click({ force: true });
@@ -832,4 +844,50 @@ Cypress.Commands.add("periodCount", (count,checkBoxRowSelector) => {
       expect(periodCount).equal(count);     
     });
 
+});
+
+Cypress.Commands.add("selectFundingRequest", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(fd.fundingRadioActive)
+    .then(($radioBtn) => {      
+      const selectedOption = cleanText($radioBtn.text());     
+      cy.log(selectedOption);
+      cy.btnClick(common.continueBtn, " Continue ");
+      const fsfLabel= "radio_button_checkedFiscal" +
+        " Service Forms (7600A and 7600B)"
+        + "Import from G-Invoicing or manually upload your completed forms."
+        + " Recommended" 
+      if (selectedOption === fsfLabel) {
+        //naviagtes to "Did you use G-Invoicing for your funding request?"
+        cy.verifyPageHeader("Did you use G-Invoicing for your funding request?");
+      } else {
+        //navigate to "Let’s gather info about your MIPR"
+        cy.verifyPageHeader("Let’s gather info about your MIPR");
+      }
+          
+    })
+});
+Cypress.Commands.add("clickSomethingElse", (selectorToScrollToAfter) => {
+  cy.findElement(common.somethingElse)
+    .scrollIntoView()
+    .should("be.visible")
+    .click({ force: true });
+  if (selectorToScrollToAfter) {
+    cy.findElement(selectorToScrollToAfter)
+      .scrollIntoView()
+      .should("be.visible");
+  }
+});
+
+Cypress.Commands.add("notAvailableCategory", (categoryText) => {
+  cy.textExists(performanceReqs.showMoreLink, " Show more ")
+    .click().then(() => {
+      cy.findElement("#OtherAvlGroups .h3")
+        .each(($el) => {
+          const text = $el.text()
+          cy.log(text)
+        })
+        .should("not.contain", categoryText);
+        
+    });
 });

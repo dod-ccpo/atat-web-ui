@@ -1,0 +1,15 @@
+{
+  "computeTooltipText":"This category includes processing power, memory, storage, regions, and more for computing instances.",
+  "mlTooltipText":"This category includes specialized tools, applications, PaaS and SaaS.",
+  "netTooltipText":"This category includes CSP, hybrid, and custom networks.",
+  "devTooltipText":"This category includes DevSecOPS, data management, migration tools, transformation tools, cloud development tools, cloud audit monitoring tools, and cyber tools.",
+  "appTooltipText":"This category includes applications, web apps, databases, monitoring tools, discrete PaaS, and discrete SaaS.",
+  "secTooltipText":"This category includes security services, CSP cloud security, Zero Trust/Permissive Trust security, and custom security options.",
+  "dbTooltipText":"This category includes database services, horizontal, vertical, and graph databases.",
+  "iotTooltipText":"This category includes IoT Edge, IoT SaaS, and IoT PaaS.",
+  "genTooltipText":"This category encompasses other Infrastructure as a Service, Platform as a Service, and Software as a Service requirements not covered by the other categories, to include third party marketplace.",      
+  "adTooltipText":"This category customizes advisory support packages based on the level of complexity for your challenge.",
+  "trainTooltipText":"This category customizes support packages for location and web-based training requirements.",
+  "edTooltipText":"This category includes remotable, mobile, and perimeter technology, as well as conditional flag indicating military hardening."
+  
+}

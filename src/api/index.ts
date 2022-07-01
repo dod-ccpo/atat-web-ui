@@ -22,6 +22,7 @@ import { ClassificationLevelApi } from "./classificationLevels";
 import { ServiceOfferingApi } from "./serviceOffering";
 import { SelectedServiceOfferingApi } from "./selectedServiceOffering";
 import { ClassificationInstanceApi } from "./classificationInstance";
+import { TaskOrderApi } from "./taskOrder";
 
 export const api = {
 
@@ -48,6 +49,7 @@ export const api = {
   selectedServiceOfferingTable: new SelectedServiceOfferingApi(),
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),
+  taskOrderTable: new TaskOrderApi(),
 }
 
 export default {
