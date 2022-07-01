@@ -269,7 +269,7 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       org.postalCodeError,
       "Please enter a postal code."
     ); 
-    cy.findElement(common.continueBtn).scrollIntoView()
+    cy.findElement(common.continueBtn).scrollIntoView().should("be.visible")
     //country dropdown is blank
     cy.verifyRequiredInput(
       org.countryInput,
