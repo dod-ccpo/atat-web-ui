@@ -47,17 +47,18 @@ export function saveToSNOW(){
       'fixture': 'contractConsiderations',
       'apiURL': 'x_g_dis_atat_contract_considerations'
     },
-    // {
-    //   'fixture': 'contractConsiderations_GET',
-    //   'apiURL': 'x_g_dis_atat_contract_considerations/**',
-    //   'action': 'GET',
-    //   'statusCode': 200
-    // },
+    {
+      'fixture': 'contractConsiderations_GET',
+      'apiURL': 'x_g_dis_atat_contract_considerations/**',
+      'action': 'GET',
+      'statusCode': 200
+    },
     {
       'fixture': 'contractConsiderations_PATCH',
       'apiURL': 'x_g_dis_atat_contract_considerations/**',
       'action': 'PATCH',
-      'statusCode': 200
+      'statusCode': 200,
+      'times': 1,
     },
   ]
 
@@ -67,17 +68,18 @@ export function saveToSNOW(){
     financialDetailsEndPoints,
     otherContractConsiderations
   ).forEach((ep)=>{
-    const action = ep.action || 'POST';
-    cy.fixture("saveToSNOW/" + ep.fixture).then((data) => {
-      console.log('*** url ****');
-      console.log(ep.apiUrl);
-      console.log('*** data *****');
-      console.log(data)
-      cy.intercept(action, buildTableApiPath(ep.apiURL), {
-        statusCode: ep.statusCode || 201,
-        body: data,
-      });
-    }); 
+    // const action = ep.action || 'POST';
+    // cy.fixture("saveToSNOW/" + ep.fixture).then((data) => {
+    //   console.log('*** url ****');
+    //   console.log(ep.apiUrl);
+    //   console.log('*** data *****');
+    //   console.log(data)
+    cy.intercept(buildTableApiPath(ep.apiURL), {
+      "fixture": "saveToSNOW/" + ep.fixture,
+      "times": ep.times ? ep.times : 10,
+      "statusCode":  ep.statusCode || 201,
+    });
+    // }); 
   });
 
 }
