@@ -22,7 +22,8 @@ module.exports = {
   trainingCheckBox: "#Checkbox_TRAINING",
   xassCheckbBoxError: "#XaaSCheckboxes .field-error",
   cloudSupportCheckboxError: "#CloudSupportCheckboxes .field-error",
-
+  dontneedBtn: "#DontNeedResources",
+  
   //Next, we’ll gather your requirements for Migration Tools
   singleClassIntro: "#SingleClassificationIntro",
   classTextInIntro: "#SingleClassificationIntro p",
