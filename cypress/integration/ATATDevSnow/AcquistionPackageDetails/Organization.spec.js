@@ -262,13 +262,14 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       org.stateProvinceTxtBox,
       org.stateProvinceError,
       "Please enter a state/province."
-    );    
+    );  
     //Postal code is blank
     cy.verifyRequiredInput(
       org.postalCodeTxtBox,
       org.postalCodeError,
       "Please enter a postal code."
-    );      
+    ); 
+    cy.findElement(common.continueBtn).scrollIntoView()
     //country dropdown is blank
     cy.verifyRequiredInput(
       org.countryInput,
