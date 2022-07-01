@@ -96,15 +96,36 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
   @Mutation
-  public async setIFPData(data: IFPData): Promise<void> {
+  public setIFPData(data: IFPData): void {
     this.initialFundingIncrementStr = data.initialFundingIncrementStr;
     this.fundingIncrements = data.fundingIncrements;
+  }
 
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
+  @Action({ rawError: true })
+  public async saveIFPData(
+    { data, removed }: { data: IFPData, removed: fundingIncrements[]}
+  ): Promise<void> {
+    try {
+
+      const removeIncrements = removed.map(
+        incr => api.fundingIncrementTable.remove(incr.sysId || "")
+      );
+      if (removeIncrements) {
+        await Promise.all(removeIncrements);
+      }
+
+      this.setIFPData(data);
+
+      storeDataToSession(
+        this,
+        this.sessionProperties,
+        ATAT_FINANCIAL_DETAILS__KEY
+      );
+
+    } catch(error) {
+      throw new Error(`error occurred saving Incremental Funding Data: ${error}`);
+    }
+
   }
 
   @Action

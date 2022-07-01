@@ -284,10 +284,10 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public removedIncrements: fundingIncrements[] = [];
 
   public deleteFundingIncrement(index: number): void {
-    if (this.savedData.fundingIncrements && this.fundingIncrements[index].sysId !== "") {
+    if (this.savedData.fundingIncrements && this.fundingIncrements[index].sysId) {
       const incr = this.savedData.fundingIncrements[index];
       if (incr) {
-        this.removedIncrements.push(this.savedData.fundingIncrements[index]);
+        this.removedIncrements.push(incr);
       }
     }
 
@@ -430,7 +430,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         return a.order > b.order ? 1 : -1 
       })
       sortedIncrements.forEach((incr, i) => {
-        incr.order = i;
+        incr.order = i + 1;
       });
 
       this.fundingIncrements = sortedIncrements;
@@ -438,7 +438,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // EJY need to track removal of previously saved increments
 
       if (this.hasChanged()) {
-        FinancialDetails.setIFPData(this.currentData);
+        FinancialDetails.saveIFPData(
+          { data: this.currentData, removed: this.removedIncrements }
+        );
       }
     } catch (error) {
       console.log(error);
