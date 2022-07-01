@@ -1,12 +1,12 @@
 {
   "result": {
     "packaging_shipping_other": "false",
-    "contractor_required_training": "",
+    "contractor_required_training": "YES",
     "packaging_shipping_other_explanation": "",
     "conflict_of_interest_explanation": "",
     "potential_conflict_of_interest": "NO",
-    "sys_mod_count": "1",
-    "sys_updated_on": "2022-07-01 18:32:39",
+    "sys_mod_count": "2",
+    "sys_updated_on": "2022-07-01 18:32:40",
     "sys_tags": "",
     "sys_id": "e26a4cb787d05d10bc86b889cebb3571",
     "sys_updated_by": "tony.sumner-ctr@ccpo.mil",

@@ -51,10 +51,25 @@ export function saveToSNOW(){
       'fixture': 'contractConsiderations_GET',
       'apiURL': 'x_g_dis_atat_contract_considerations/**',
       'action': 'GET',
-      'statusCode': 200
+      'statusCode': 200,
+      'times': 1
+    },
+    {
+      'fixture': 'contractConsiderations_GET_2',
+      'apiURL': 'x_g_dis_atat_contract_considerations/**',
+      'action': 'GET',
+      'statusCode': 200,
+      'times': 1
     },
     {
       'fixture': 'contractConsiderations_PATCH',
+      'apiURL': 'x_g_dis_atat_contract_considerations/**',
+      'action': 'PATCH',
+      'statusCode': 200,
+      'times': 1
+    },
+    {
+      'fixture': 'contractConsiderations_PATCH_2',
       'apiURL': 'x_g_dis_atat_contract_considerations/**',
       'action': 'PATCH',
       'statusCode': 200,
@@ -74,12 +89,20 @@ export function saveToSNOW(){
     //   console.log(ep.apiUrl);
     //   console.log('*** data *****');
     //   console.log(data)
-    cy.intercept(buildTableApiPath(ep.apiURL), {
+
+    let fixtureObj = {
       "fixture": "saveToSNOW/" + ep.fixture,
-      "times": ep.times ? ep.times : 10,
       "statusCode":  ep.statusCode || 201,
-    });
-    // }); 
+    }
+
+    if (ep.times){
+      fixtureObj.times = ep.times;
+    }
+    // console.log('*** url ****');
+    // console.log(ep.apiURL);
+    // console.log('***fixture obj*****');
+    // console.log(fixtureObj);
+    cy.intercept(buildTableApiPath(ep.apiURL), fixtureObj );
   });
 
 }
