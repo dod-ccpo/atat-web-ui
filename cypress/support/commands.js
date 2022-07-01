@@ -415,6 +415,7 @@ Cypress.Commands.add("selectTypeOfMailingAddress", (radioSelector, value) => {
         cy.textExists(org.unitLabel, " Unit, suite, etc.  Optional ");
       });
       commonFields();
+      cy.findElement(common.continueBtn).scrollIntoView().should("be.visible");
       if (selectedOption === "radio_button_checkedU.S. address") {                
         cy.textExists(org.cityLabel, " City ");
         cy.textExists(org.stateLabel, " State ");
