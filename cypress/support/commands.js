@@ -266,6 +266,21 @@ Cypress.Commands.add("verifyCheckBoxLabels", (selector,expectedLabels) => {
   
 });
 
+//This command is to verify the selected Categories and Offerings in the summary page
+Cypress.Commands.add("verifyTextArray", (selector, expectedValues) => {
+  const foundItems = [];
+  const length = expectedValues.length;
+
+  cy.findElement(selector)
+    .should("have.length", length)
+    .each((el) => {
+      foundItems.push(cleanText(el.text()))
+    }).then(() => {
+      expect(foundItems).deep.equal(expectedValues)
+    });
+      
+});
+
 Cypress.Commands.add("verifyListMatches", (selector, expectedText) => {
   
   //Verify the list 
