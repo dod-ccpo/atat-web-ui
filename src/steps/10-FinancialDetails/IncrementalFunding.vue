@@ -304,7 +304,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
     }
     if (nextQtr) {
-      const newIncrement = { qtr: nextQtr, amt: "", order: this.fundingIncrements.length + 1 }
+      const newIncrement = { 
+        qtr: nextQtr, 
+        amt: "", 
+        order: this.fundingIncrements.length + 1,
+        sysId: "" 
+      }
       this.fundingIncrements.push(newIncrement);
     }
   }
@@ -361,11 +366,14 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await FinancialDetails.getIFPData();
+    debugger;
+
     if (storeData) {
+      this.savedData = storeData;
       this.initialAmountStr = storeData.initialFundingIncrementStr;
-      this.savedData.initialFundingIncrementStr = this.initialAmountStr;
+      // this.savedData.initialFundingIncrementStr = storeData.initialFundingIncrementStr;
       this.fundingIncrements = storeData.fundingIncrements;
-      this.savedData.fundingIncrements = this.fundingIncrements;
+      // this.savedData.fundingIncrements = storeData.fundingIncrements;
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
       this.calcAmounts("");
     }
@@ -436,7 +444,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.fundingIncrements = sortedIncrements;
 
       // EJY need to track removal of previously saved increments
-
+      debugger;
       if (this.hasChanged()) {
         FinancialDetails.saveIFPData(
           { data: this.currentData, removed: this.removedIncrements }

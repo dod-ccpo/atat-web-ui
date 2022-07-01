@@ -97,6 +97,7 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Mutation
   public setIFPData(data: IFPData): void {
+    debugger;
     this.initialFundingIncrementStr = data.initialFundingIncrementStr;
     this.fundingIncrements = data.fundingIncrements;
   }
@@ -106,6 +107,9 @@ export class FinancialDetailsStore extends VuexModule {
     { data, removed }: { data: IFPData, removed: fundingIncrements[]}
   ): Promise<void> {
     try {
+      debugger;
+      const initialAmount = data.initialFundingIncrementStr;
+      const fundingIncrements: fundingIncrements[] = data.fundingIncrements;
 
       const removeIncrements = removed.map(
         incr => api.fundingIncrementTable.remove(incr.sysId || "")
@@ -113,6 +117,16 @@ export class FinancialDetailsStore extends VuexModule {
       if (removeIncrements) {
         await Promise.all(removeIncrements);
       }
+
+      const existingIncrements = fundingIncrements.filter(
+        incr => incr.sysId && incr.sysId !== ""
+      );
+      const newIncrements = fundingIncrements.filter(
+        incr => incr.sysId && incr.sysId === ""
+      );
+      
+      debugger;
+
 
       this.setIFPData(data);
 
