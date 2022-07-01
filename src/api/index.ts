@@ -10,7 +10,7 @@ import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
 import { GFEOverviewApi } from "./GFEOverview";
-import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
+import { RequirementsCostEstimateApi } from "./requirementsCostEstimate";
 import {StatesApi} from "./states";
 import {CountriesApi} from "./countries";
 import { FundingPlanApi } from "./fundingPlan";
