@@ -327,7 +327,7 @@ describe("Test suite: Summary screen: Selected Offerings ", () => {
     
     const appLabels = getServiceOfferingNames(appObj);
     const appCheckboxIds = getCheckboxIds(appObj);
-    const appSSOffering = [appLabels[1]]
+    const appSSOffering = appLabels[1];
     cy.selectCheckBoxes([appCheckboxIds[1]]);
     cy.btnClick(common.continueBtn, " Continue ");
 
@@ -357,7 +357,7 @@ describe("Test suite: Summary screen: Selected Offerings ", () => {
     
     const networkLabels = getServiceOfferingNames(networkingObj);
     const networkCheckboxIds = getCheckboxIds(networkingObj);
-    const netSSOffering = [networkLabels[1]]
+    const netSSOffering = networkLabels[1];
     cy.selectCheckBoxes([networkCheckboxIds[1]]);
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(
@@ -383,12 +383,12 @@ describe("Test suite: Summary screen: Selected Offerings ", () => {
       "Your Performance Requirements"
     );
     const expectedCategoryHeaders = [appObj.label, networkingObj.label];
-    const serviceOfferingLabels =[appSSOffering,netSSOffering]
-    cy.verifySelectedDetails(
+    const serviceOfferingLabels =[appSSOffering, netSSOffering]
+    cy.verifyTextArray(
       performanceReqs.categoryNameHeader,
       expectedCategoryHeaders);
-    cy.verifySelectedDetails(
-      performanceReqs.serviceOfferingLabels,
+    cy.verifyTextArray(
+      performanceReqs.serviceOfferingSpans,
       serviceOfferingLabels);
     
   });

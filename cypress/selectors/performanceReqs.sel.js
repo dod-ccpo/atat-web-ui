@@ -81,6 +81,7 @@ module.exports = {
   selectedGroups: "#SelectedGroups",
   categoryNameHeader: "#SelectedGroups h3",
   serviceOfferingLabels: "#SelectedGroups p.mb-0._selectedOfferings",
+  serviceOfferingSpans: "#SelectedGroups ._selectedOffering",
   missingInfo: "#SelectedGroups ._semibold",
   reviewbtn: "#SelectedGroups button",
   otherCategories: "#OtherAvlGroups h2",

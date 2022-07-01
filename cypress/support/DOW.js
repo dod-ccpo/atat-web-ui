@@ -2,7 +2,6 @@ import {
   getCheckboxId,  
   getServiceOfferingNames,
   getCheckboxIds,
-  cleanText
 } from "../helpers";
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
@@ -57,26 +56,3 @@ Cypress.Commands.add("verifyOtherServiceOfferings", (categories) => {
     cy.textExists(cat.linkSelector, " Add requirements ");  
   })
 })
-
-//This command is to verify the selected Categories and Offerings in the summary page
-Cypress.Commands.add("verifySelectedDetails", (selector, expectedValues) => {
-  cy.findElement(selector).then((e) => {
-    if (selector === "#SelectedGroups h3") {
-      const text = e.text();
-      const foundCategories = text.split("  ")
-      const foundCategoriesArr = foundCategories.map((c) => {
-        return cleanText(c);
-
-      })
-      expect(foundCategoriesArr).deep.equal(expectedValues)
-    
-    } else if (selector === "#SelectedGroups ._selectedOfferings") {
-      let foundOfferings = []
-      cy.findElement(selector).then((e) => {
-        foundOfferings.push(cleanText(e.text()));
-        expect(foundOfferings).deep.equal(expectedValues)
-      })
-    }
-        
-  });
-});
