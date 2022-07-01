@@ -14,7 +14,6 @@ export class PortfolioDashBoardService{
   public async getdata(taskOrderNumber: string): Promise<PortFolioDashBoardDTO>{
 
     try {
-      debugger;
       const taskOrderRequestConfig: AxiosRequestConfig = {
         params: {
           // eslint-disable-next-line camelcase
