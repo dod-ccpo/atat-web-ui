@@ -23,6 +23,7 @@ import { ServiceOfferingApi } from "./serviceOffering";
 import { SelectedServiceOfferingApi } from "./selectedServiceOffering";
 import { ClassificationInstanceApi } from "./classificationInstance";
 import { TaskOrderApi } from "./taskOrder";
+import { CostsApi } from "./costs";
 
 export const api = {
 
@@ -50,6 +51,7 @@ export const api = {
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
+  costsTable: new CostsApi(),
 }
 
 export default {

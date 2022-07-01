@@ -14,6 +14,7 @@
 
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
@@ -25,6 +26,19 @@ import ATATPageHead from "../components/ATATPageHead.vue";
   }
 })
 
-export default class PortfolioDashboard extends Vue {}
+export default class PortfolioDashboard extends Vue {
+
+  portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
+
+
+  public async mounted(): Promise<void>{
+
+    const data = await this.portFolioDashBoardService.getdata('1000000001234');
+    console.log({data});
+
+  }
+
+
+}
 
 </script>
