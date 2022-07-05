@@ -51,6 +51,8 @@ export class FinancialDetailsStore extends VuexModule {
   fundingIncrements: fundingIncrements[] = [];
   remainingAmountStr = "";
 
+  fundingPlanSysId = "";
+
   useGInvoicing = "";
   gInvoiceNumber = "";
 
@@ -106,8 +108,16 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
 
-  @Action
-  public async getIFPData(): Promise<IFPData> {
+  @Action({ rawError: true })
+  public async loadIFPData(): Promise<IFPData> {
+    const foo = StoreProperties.FundingPlanAmounts;
+    debugger;
+
+    const data = await AcquisitionPackage
+      .loadData<FundingPlanAmountsDTO>({ storeProperty: StoreProperties.FundingPlanAmounts })
+    this.fundingPlanSysId = data.sys_id || "";
+    debugger;
+
     return {
       initialFundingIncrementStr: this.initialFundingIncrementStr,
       fundingIncrements: this.fundingIncrements,
@@ -121,6 +131,20 @@ export class FinancialDetailsStore extends VuexModule {
     this.fundingIncrements = data.fundingIncrements;
     this.remainingAmountStr = data.remainingAmountStr;
   }
+
+  // @Action({ rawError: true })
+  // public async loadIFPData(): Promise<void> {
+  //   const data = await AcquisitionPackage
+  //     .loadData<FundingPlanAmountsDTO>({ storeProperty: StoreProperties.FundingPlanAmounts })
+  //   this.fundingPlanSysId = data.sys_id || "";
+  //   debugger;
+  //   // const savedIFPData: IFPData = {
+  //   //   initialFundingIncrementStr: data.initial_amount,
+  //   //   fundingIncrements: data.remaining_amount_increments,
+  //   //   remainingAmountStr: data.remaining_amount,
+  //   // }
+    
+  // }
 
   @Action({ rawError: true })
   public async saveIFPData(
@@ -138,10 +162,12 @@ export class FinancialDetailsStore extends VuexModule {
 
       const saveIncrements = fundingIncrements.map(incr => saveIncrement(incr));
       const savedIncrements = await Promise.all(saveIncrements);
-
+      debugger;
       const incrementSysIds = savedIncrements.map(incr => incr.sys_id);
 
-      const fundingPlandata: FundingPlanAmountsDTO = {
+      const fundingPlanData: FundingPlanAmountsDTO = {
+        // eslint-disable-next-line camelcase
+        sys_id: this.fundingPlanSysId,
         // eslint-disable-next-line camelcase
         remaining_amount: data.remainingAmountStr,
         // eslint-disable-next-line camelcase
@@ -150,11 +176,12 @@ export class FinancialDetailsStore extends VuexModule {
         remaining_amount_increments: incrementSysIds,
       }
 
-      await AcquisitionPackage.saveData({
-        fundingPlanData,
-        storeProperty: StoreProperties.FundingPlan
+      await AcquisitionPackage.setFundingPlanAmounts(fundingPlanData);
 
-      })
+      await AcquisitionPackage.saveData({
+        data: fundingPlanData,
+        storeProperty: StoreProperties.FundingPlanAmounts
+      });
 
 
       this.setIFPData(data);

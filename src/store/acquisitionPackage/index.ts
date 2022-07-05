@@ -14,26 +14,28 @@ import OrganiationData from "../organizationData";
 import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
-  BaseTableDTO,
-  ContractConsiderationsDTO,
-  RequirementsCostEstimateDTO,
   AttachmentDTO,
+  BaseTableDTO,
+  ClassificationLevelDTO,
+  ContactDTO,
+  ContractConsiderationsDTO,
+  ContractTypeDTO,
+  CurrentContractDTO,
+  FairOpportunityDTO,
+  FundingPlanAmountsDTO,
+  GFEOverviewDTO,
+  RequirementsCostEstimateDTO,
+  OrganizationDTO,
   PeriodDTO,
+  PeriodOfPerformanceDTO,
+  ProjectOverviewDTO,
+  SensitiveInformationDTO,
 } from "@/api/models";
+
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
-import { ProjectOverviewDTO } from "@/api/models";
-import { OrganizationDTO } from "@/api/models";
-import { ContactDTO } from "@/api/models";
-import { FairOpportunityDTO } from "@/api/models";
-import { CurrentContractDTO } from "@/api/models";
-import { SensitiveInformationDTO } from "@/api/models";
-import { PeriodOfPerformanceDTO } from "@/api/models";
-import { GFEOverviewDTO } from "@/api/models";
-import { ContractTypeDTO } from "@/api/models";
 import { FileAttachmentServiceFactory } from "@/services/attachment";
 import DescriptionOfWork from "@/store/descriptionOfWork"
-import { ClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
 import FinancialDetails from "../financialDetails";
@@ -55,6 +57,7 @@ export const StoreProperties = {
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
   FundingPlan: "fundingPlan",
+  FundingPlanAmounts: "fundingPlanAmounts",
 };
 
 const initialCurrentContract = ()=> {
@@ -98,6 +101,15 @@ const initialContractType = ()=> {
     firm_fixed_price: "",
     time_and_materials: "",
     contract_type_justification: "",
+  }
+}
+
+const initialFundingPlanAmounts = () => {
+  return {
+    remaining_amount: "",
+    initial_amount: "",
+    estimated_task_order_value: "",
+    remaining_amount_increments: [""],
   }
 }
 
@@ -215,6 +227,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
+      fundingPlanAmounts: store.fundingPlanAmounts,
     })
   );
 };
@@ -223,6 +236,7 @@ const getStoreDataTableProperty = (
   storeProperty: string,
   store: AcquisitionPackageStore
 ): BaseTableDTO => {
+  debugger;
   // get specific property
   const dataProperty = (store as unknown as Record<string, BaseTableDTO>)[
     storeProperty
@@ -261,6 +275,7 @@ export class AcquisitionPackageStore extends VuexModule {
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
   fundingPlans: string | null = null;
+  fundingPlanAmounts: FundingPlanAmountsDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
@@ -269,7 +284,7 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
-  
+
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact();
@@ -350,6 +365,19 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
+  @Action
+  public async setFundingPlanAmounts(value: FundingPlanAmountsDTO): Promise<void> {
+    this.doSetFundingPlanAmounts(value);
+  }
+
+  @Mutation
+  public doSetFundingPlanAmounts(value: FundingPlanAmountsDTO): void {
+    debugger;
+    this.fundingPlanAmounts = this.fundingPlanAmounts
+      ? Object.assign(this.fundingPlanAmounts, value)
+      : value;
+  }
+
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
     this.contractType = this.contractType
@@ -414,6 +442,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
+    this.fundingPlanAmounts = sessionData.fundingPlanAmounts;
   }
 
   @Action({ rawError: true })
@@ -453,6 +482,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
+          this.setFundingPlanAmounts(initialFundingPlanAmounts())
           this.setSensitiveInformation(initialSensitiveInformation());
           this.setAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
@@ -508,6 +538,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
     [StoreProperties.FundingPlan]: api.fundingPlanTable,
+    [StoreProperties.FundingPlanAmounts]: api.fundingPlanAmountsTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -524,6 +555,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
     [StoreProperties.FundingPlan]: "funding_plan",
+    [StoreProperties.FundingPlanAmounts]: "funding_plan_amounts",
   }
 
   @Action({ rawError: true })
@@ -631,6 +663,7 @@ export class AcquisitionPackageStore extends VuexModule {
   }): Promise<TableDTO> {
     try {
       await this.ensureInitialized();
+      debugger;
       // retrives Store TableDTO based property using property name as key
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const sysId = storeDataProperty.sys_id || "";
@@ -677,6 +710,8 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.update(storeDataProperty.sys_id || "", data) :
         apiEndPoint.create(data);
       const savedData = await saveAction;
+
+      debugger;
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
       if(acquisitionPackageProp === undefined)

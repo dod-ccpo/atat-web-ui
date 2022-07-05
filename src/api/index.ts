@@ -14,6 +14,8 @@ import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
 import {StatesApi} from "./states";
 import {CountriesApi} from "./countries";
 import { FundingPlanApi } from "./fundingPlan";
+import { FundingIncrementApi } from "./fundingIncrement"
+import { FundingPlanAmountsApi } from "./fundingPlan"
 import { AttachmentApi } from "./attachments";
 import { TableApiBase } from "./tableApiBase";
 import { AttachableDTO } from "./models";
@@ -23,7 +25,6 @@ import { ServiceOfferingApi } from "./serviceOffering";
 import { SelectedServiceOfferingApi } from "./selectedServiceOffering";
 import { ClassificationInstanceApi } from "./classificationInstance";
 import { TaskOrderApi } from "./taskOrder";
-import { FundingIncrementApi } from "./fundingIncrement"
 
 export const api = {
 
@@ -38,6 +39,8 @@ export const api = {
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
   fundingPlanTable :new FundingPlanApi(),
+  fundingPlanAmountsTable: new FundingPlanAmountsApi(),
+  fundingIncrementTable: new FundingIncrementApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),
@@ -51,7 +54,6 @@ export const api = {
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
-  fundingIncrementTable: new FundingIncrementApi(),
 }
 
 export default {
