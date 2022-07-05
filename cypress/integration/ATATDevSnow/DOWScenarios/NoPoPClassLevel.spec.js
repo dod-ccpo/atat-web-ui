@@ -49,7 +49,8 @@ describe("Test suite: No PoP and Classification Levels exists workflows", () => 
       serviceOfferingGroups, "value", "EDGECOMPUTING" 
     );
     const labels = getServiceOfferingNames(edgeObj);
-    const edgeCheckBoxId = getCheckboxId(edgeObj.value);    
+    const edgeCheckBoxId = getCheckboxId(edgeObj.value);
+    const selectedServiceOfferings = [labels[0], labels[1]]  
     cy.selectServiceOfferingGroup([edgeCheckBoxId]);    
     //Navigates to the next page
     cy.verifyPageHeader("What type of " + edgeObj.label + " do you need?");             
@@ -69,7 +70,7 @@ describe("Test suite: No PoP and Classification Levels exists workflows", () => 
     );
     cy.verifyTextMatches(performanceReqs.categoryAlertInfoTxt, summaryAlertInfo);
     cy.verifyTextMatches(performanceReqs.categoryNameHeader, edgeObj.label);
-    cy.verifyListMatches(performanceReqs.serviceOfferingLabels, labels);
+    cy.verifyListMatches(performanceReqs.serviceOfferingLabels, selectedServiceOfferings);
     cy.textExists(performanceReqs.missingInfo, "Missing info").should("exist");
     cy.btnExists(performanceReqs.reviewbtn, " Review ");
     cy.textExists(performanceReqs.otherCategories, "Other available categories");
