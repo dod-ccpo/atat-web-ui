@@ -111,6 +111,39 @@ Cypress.Commands.add("launchATAT", () => {
     .its("sessionStorage")
     .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
     .should("exist");
+
+  // ==========================================================================
+  // KEEP FOR LOCAL TESTING TO NOT LOG DATA IN CYPRESS RUNNER
+  // UNCOMMENT THIS BLOCK AND COMMENT OUT THE sessionStorage CODE ABOVE
+  // ==========================================================================
+  // //eslint-disable-next-line cypress/no-unnecessary-waiting
+  // cy.window().wait(1000)
+  //   .its("sessionStorage").invoke("getItem", "ATAT_CONTACT_DATA_KEY")
+  //   .then(data => {
+  //     cy.wrap(JSON.parse(data)).its("branchChoices").should("exist")
+  //       // eslint-disable-next-line cypress/no-unnecessary-waiting
+  //       .then(() => cy.window().wait(1000).its("sessionStorage")
+  //         .invoke("getItem", "ATAT_ORGANIZATION_DATA_KEY")
+  //         .then(data => {
+  //           cy.wrap(JSON.parse(data)).its("service_agency_data").should("exist")
+  //             // eslint-disable-next-line cypress/no-unnecessary-waiting
+  //             .then(() => cy.window().wait(1000).its("sessionStorage")
+  //               .invoke("getItem", "ATAT_DESCRIPTION_OF_WORK_KEY")
+  //               .then(data => {
+  //                 cy.wrap(JSON.parse(data)).its("serviceOfferings").should("exist")
+  //                   // eslint-disable-next-line cypress/no-unnecessary-waiting
+  //                   .then(() => cy.window().wait(1000).its("sessionStorage")
+  //                     .invoke("getItem", "ATAT_ACQUISTION_PACKAGE_KEY")
+  //                     .then(data => {
+  //                       cy.wrap(JSON.parse(data)).its("acorInfo").should("exist")
+  //                     })
+  //                   )
+  //               })
+  //             )
+  //         })
+  //       )
+  //   })
+
 });
 
 Cypress.Commands.add("clearSession", () => {
@@ -163,8 +196,13 @@ Cypress.Commands.add('btnExists', (selector, text) => {
 });
 
 Cypress.Commands.add('btnClick', (selector, text) => {
-  cy.findElement(selector).scrollIntoView()
-    .not("[disabled]").and("have.text", text).click()  
+  cy.findElement(selector).then((el) => {
+    if (el.length > 1) {
+      el = el[0]
+    }
+    cy.wrap(el).scrollIntoView()
+      .not("[disabled]").and("have.text", text).click()
+  });
 });
 
 Cypress.Commands.add("clickLink", (selector) => {
