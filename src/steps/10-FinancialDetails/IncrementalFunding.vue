@@ -249,6 +249,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public fundingIncrements: fundingIncrements[] = [];
 
   private get currentData(): IFPData {
+    debugger;
     return {
       initialFundingIncrementStr: this.initialAmountStr,
       fundingIncrements: this.fundingIncrements,
@@ -371,9 +372,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     if (storeData) {
       this.savedData = storeData;
       this.initialAmountStr = storeData.initialFundingIncrementStr;
-      // this.savedData.initialFundingIncrementStr = storeData.initialFundingIncrementStr;
-      this.fundingIncrements = storeData.fundingIncrements;
-      // this.savedData.fundingIncrements = storeData.fundingIncrements;
+      this.fundingIncrements = [...storeData.fundingIncrements];
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
       this.calcAmounts("");
     }

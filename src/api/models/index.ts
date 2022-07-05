@@ -223,12 +223,6 @@ export interface FundingPlanDTO extends BaseTableDTO {
   remaining_amount_increments: string[];
 }
 
-export interface FundingIncrementDTO extends BaseTableDTO {
-  amount: string,
-  description: string,
-  order: string,
-}
-
 export interface PeriodDTO extends BaseTableDTO {
   period_unit: string;
   period_unit_count: string;
