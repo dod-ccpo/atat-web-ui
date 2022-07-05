@@ -123,7 +123,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
     const contractorAmt = randomNumberBetween(1, 50);
     cy.fillSurgeCapabilities(contractorAmt, "continue");
     cy.verifyPageHeader(" What type of funding request did you use for this acquisition? ");
-    cy.btnClick(common.continueBtn, " Continue ");    
+    cy.textExists(common.subStepIFLink, " Severability and Incremental Funding ").click();
     cy.verifyPageHeader(" Are you requesting to incrementally fund this requirement? "); 
     cy.radioBtn(fd.iFundYesRadio, "YES").click({ force: true }).then(() => {
       cy.findElement(fd.alertWarning).should("exist");
@@ -181,10 +181,12 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
     //Verify the Substeps are  visible
     cy.textExists(common.subStepIFLink, " Severability and Incremental Funding ").click();
     cy.verifyPageHeader(" Are you requesting to incrementally fund this requirement? ");
+    cy.radioBtn(fd.iFundYesRadio, "YES").focus();
+    cy.clickSomethingElse(fd.iFundRadioerror)
+      .then(() => {
+        cy.checkErrorMessage(fd.iFundRadioerror, "Please select an option");
+      });
     
-    cy.radioBtn(fd.iFundYesRadio, "YES").focus().tab().tab().then(() => {
-      cy.checkErrorMessage(fd.iFundRadioerror, "Please select an option");
-    });
   }); 
     
 });

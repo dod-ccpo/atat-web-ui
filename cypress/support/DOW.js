@@ -1,7 +1,7 @@
 import {    
   getCheckboxId,  
   getServiceOfferingNames,
-  getCheckboxIds
+  getCheckboxIds,
 } from "../helpers";
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
@@ -44,3 +44,15 @@ Cypress.Commands.add("verifyServiceOfferingsForCategory", (categoryObj) => {
   });  
 });
 
+//This command is to verify the OtherCategories HeaderLabel on Summary Page 
+Cypress.Commands.add("verifyOtherServiceOfferings", (categories) => {
+  categories.forEach((cat) => {
+    cy.textExists(cat.headingSelector, cat.headingText);
+    cy.hoverToolTip(
+      cat.tooltipButtonSelector,
+      cat.tooltipTextSelector,
+      cat.tooltipText
+    );
+    cy.textExists(cat.linkSelector, " Add requirements ");  
+  })
+})
