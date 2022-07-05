@@ -140,16 +140,10 @@ describe("Test suite: No PoP and Classification Levels exists workflows", () => 
     cy.btnExists(performanceReqs.reviewbtn, " Review ");
     cy.textExists(performanceReqs.otherCategories, "Other available categories");
     cy.notAvailableCategory(adObj.label);
-    cy.findElement(common.footerLinks).scrollIntoView();
-    cy.findElement(common.backBtn).then((el) => {
-      console.log(el)
-    })
-    cy.contains("Back to Contract Details")
-      .click( { force: true });
-    
+    cy.findElement(common.footerLinks).scrollIntoView();    
+    cy.contains("Back to Contract Details").click( { force: true });
     cy.verifyPageHeader("Let’s gather some details about the duration of your task order");
     
-  });
-  
+  });  
   
 });
