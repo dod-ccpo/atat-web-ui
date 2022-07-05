@@ -1,6 +1,6 @@
 import {loadInitialData} from "../helpers/initialDataLoad";
 import {saveToSNOW} from "../helpers/saveToSNOW";
-const isTestingIsolated = Cypress.env("isTestingIsolated") === "true";
+const isTestingIsolated = Cypress.env("isTestingIsolated")==="true";
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
@@ -17,7 +17,7 @@ const bootStrapAcquisitionPackageApi= ()=> {
     });
   }); 
 
-  if (isTestingIsolated) {
+  if (isTestingIsolated){
     loadInitialData();
     saveToSNOW();
   }

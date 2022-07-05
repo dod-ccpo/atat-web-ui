@@ -10,7 +10,7 @@ import { MilitaryRankApi } from "./militaryRanks";
 import { SystemChoicesApi } from "./systemChoices";
 import { ContractTypeApi, PeriodOfPerformanceApi } from "./contractDetails";
 import { GFEOverviewApi } from "./GFEOverview";
-import { RequirementsCostEstimateApi } from "./requriementsCostEstimate";
+import { RequirementsCostEstimateApi } from "./requirementsCostEstimate";
 import {StatesApi} from "./states";
 import {CountriesApi} from "./countries";
 import { FundingPlanApi } from "./fundingPlan";
@@ -25,6 +25,7 @@ import { ServiceOfferingApi } from "./serviceOffering";
 import { SelectedServiceOfferingApi } from "./selectedServiceOffering";
 import { ClassificationInstanceApi } from "./classificationInstance";
 import { TaskOrderApi } from "./taskOrder";
+import { CostsApi } from "./costs";
 
 export const api = {
 
@@ -54,6 +55,7 @@ export const api = {
   statesTable: new StatesApi(),
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
+  costsTable: new CostsApi(),
 }
 
 export default {

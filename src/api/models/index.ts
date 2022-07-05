@@ -273,3 +273,15 @@ export interface TaskOrderDTO extends BaseTableDTO {
     pop_start_date: string;
     funds_total: string;
 }
+
+export interface CostsDTO extends BaseTableDTO {
+  clin: string;
+  csp: string;
+  year_month: string;
+  task_order_number: string;
+  portfolio: string;
+  organization: string;
+  service_agency: string;
+  is_actual: string;
+  value: string;
+}

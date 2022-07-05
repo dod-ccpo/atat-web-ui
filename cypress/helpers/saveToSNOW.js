@@ -28,19 +28,19 @@ export function saveToSNOW(){
       'fixture': 'fairOpportunity',
       'apiURL': 'x_g_dis_atat_fair_opportunity'
     },
-    // {
-    //   'fixture': 'period',
-    //   'apiURL': 'x_g_dis_atat_period'
-    // },
+    {
+      'fixture': 'period',
+      'apiURL': 'x_g_dis_atat_period'
+    },
     // {
     //   'fixture': 'period_PATCH',
     //   'apiURL': 'x_g_dis_atat_period/**'
       
     // },   
-    // {
-    //   'fixture': 'periodOfPerformance',
-    //   'apiURL': 'x_g_dis_atat_period_of_performance'
-    // }, 
+    {
+      'fixture': 'periodOfPerformance',
+      'apiURL': 'x_g_dis_atat_period_of_performance'
+    }, 
     // {
     //   'fixture': 'periodOfPerformance_GET',
     //   'apiURL': 'x_g_dis_atat_period_of_performance/**',

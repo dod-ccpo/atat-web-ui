@@ -1,7 +1,7 @@
 import {    
   getCheckboxId,  
   getServiceOfferingNames,
-  getCheckboxIds
+  getCheckboxIds,
 } from "../helpers";
 import common from '../selectors/common.sel';
 import 'cypress-iframe';
@@ -56,4 +56,3 @@ Cypress.Commands.add("verifyOtherServiceOfferings", (categories) => {
     cy.textExists(cat.linkSelector, " Add requirements ");  
   })
 })
-
