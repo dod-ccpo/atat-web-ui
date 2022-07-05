@@ -151,7 +151,7 @@ describe("Test suite: No Classification Levels Workflow Scenarios ", () => {
     cy.findElement(performanceReqs.missingInfo).should("not.exist");    
   });
 
-  it("TC2: Click on ContractDetails Link in Performance Requirement page", () => {   
+  it("TC2: Click on Contract Details Link in Performance Requirement page", () => {   
     cy.textExists(performanceReqs.contractDetailsLink, "Contract Details section").click();
     const selectedClassLevelsLabels = [
       "Unclassified / Impact Level 5 (IL5)",
