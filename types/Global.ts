@@ -235,6 +235,7 @@ export interface fundingIncrements {
 export interface IFPData {
   initialFundingIncrementStr: string;
   fundingIncrements: fundingIncrements[];
+  remainingAmountStr: string;
 }
 
 export interface baseGInvoiceData {

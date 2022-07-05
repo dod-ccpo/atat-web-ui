@@ -507,7 +507,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
-    [StoreProperties.FundingPlan]: api.classificationLevelTable,
+    [StoreProperties.FundingPlan]: api.fundingPlanTable,
   }
 
   //mapping store propertties name to acquisition package properties

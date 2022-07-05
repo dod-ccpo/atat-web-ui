@@ -8,11 +8,30 @@ import {
 } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
 import Vue from "vue";
-import { TaskOrderDTO } from "@/api/models";
+import { FundingIncrementDTO, FundingPlanAmountsDTO, TaskOrderDTO } from "@/api/models";
 import api from "@/api";
+import AcquisitionPackage, { StoreProperties } from "../acquisitionPackage";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
 
+const saveIncrement = async (increment: fundingIncrements): Promise<FundingIncrementDTO> => {
+  try {
+    const fundingIncrement = {
+      amount: increment.amt,
+      description: increment.qtr,
+      order: increment.order + "",
+    }
+    const incrementSysId = increment.sysId;
+    const savedIncrement = incrementSysId?.length ?
+      await api.fundingIncrementTable.update(incrementSysId, fundingIncrement) :
+      await api.fundingIncrementTable.create(fundingIncrement);
+
+    return savedIncrement;
+
+  } catch (error) {
+    throw new Error(`an error occurred saving period ${error}`)
+  }
+}
 
 @Module({
   name: 'FinancialDetails',
@@ -29,8 +48,8 @@ export class FinancialDetailsStore extends VuexModule {
   fundingRequestType: string | null =  null;
   miprNumber: string | null = null;
   initialFundingIncrementStr = "";
-  initialFundingIncrement = 0; // EJY save number or string in store?
   fundingIncrements: fundingIncrements[] = [];
+  remainingAmountStr = "";
 
   useGInvoicing = "";
   gInvoiceNumber = "";
@@ -44,8 +63,8 @@ export class FinancialDetailsStore extends VuexModule {
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.estimatedTaskOrderValue),
     nameofProperty(this, (x) => x.fundingRequestType),
-    nameofProperty(this, (x)=> x.initialFundingIncrement),
     nameofProperty(this, (x)=> x.initialFundingIncrementStr),
+    nameofProperty(this, (x)=> x.remainingAmountStr),
     nameofProperty(this, (x)=> x.fundingIncrements),
     nameofProperty(this, (x)=> x.gtcNumber),
     nameofProperty(this, (x)=> x.orderNumber),
@@ -92,6 +111,7 @@ export class FinancialDetailsStore extends VuexModule {
     return {
       initialFundingIncrementStr: this.initialFundingIncrementStr,
       fundingIncrements: this.fundingIncrements,
+      remainingAmountStr: this.remainingAmountStr,
     }
   }
 
@@ -99,6 +119,7 @@ export class FinancialDetailsStore extends VuexModule {
   public setIFPData(data: IFPData): void {
     this.initialFundingIncrementStr = data.initialFundingIncrementStr;
     this.fundingIncrements = data.fundingIncrements;
+    this.remainingAmountStr = data.remainingAmountStr;
   }
 
   @Action({ rawError: true })
@@ -106,7 +127,6 @@ export class FinancialDetailsStore extends VuexModule {
     { data, removed }: { data: IFPData, removed: fundingIncrements[]}
   ): Promise<void> {
     try {
-      const initialAmount = data.initialFundingIncrementStr;
       const fundingIncrements: fundingIncrements[] = data.fundingIncrements;
 
       const removeIncrements = removed.map(
@@ -116,23 +136,26 @@ export class FinancialDetailsStore extends VuexModule {
         await Promise.all(removeIncrements);
       }
 
-      const existingIncrements = fundingIncrements.filter((obj) => {
-        return obj.sysId && obj.sysId !== "";
-      });
-      const newIncrements = fundingIncrements.filter((obj) => {
-        return obj.sysId === "";
-      });
-      
-      const addedIncrements = newIncrements.map(
-        incr => api.fundingIncrementTable.create({
-          amount: incr.amt,
-          description: incr.qtr,
-          order: incr.order + "",
-        })
-      );
-      if (addedIncrements) {
-        await Promise.all(addedIncrements);
+      const saveIncrements = fundingIncrements.map(incr => saveIncrement(incr));
+      const savedIncrements = await Promise.all(saveIncrements);
+
+      const incrementSysIds = savedIncrements.map(incr => incr.sys_id);
+
+      const fundingPlandata: FundingPlanAmountsDTO = {
+        // eslint-disable-next-line camelcase
+        remaining_amount: data.remainingAmountStr,
+        // eslint-disable-next-line camelcase
+        initial_amount: data.initialFundingIncrementStr,
+        // eslint-disable-next-line camelcase
+        remaining_amount_increments: incrementSysIds,
       }
+
+      await AcquisitionPackage.saveData({
+        fundingPlanData,
+        storeProperty: StoreProperties.FundingPlan
+
+      })
+
 
       this.setIFPData(data);
 
