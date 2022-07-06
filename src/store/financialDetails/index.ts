@@ -163,7 +163,7 @@ export class FinancialDetailsStore extends VuexModule {
     remainingAmountIncrements: string
   ): Promise<void> {
     const incrementSysIdsStr = remainingAmountIncrements;
-    const incrementSysIds = (incrementSysIdsStr.slice(1, -1)).split(',');
+    const incrementSysIds = incrementSysIdsStr.split(',');
 
     const requests = incrementSysIds.map(sysId => api.fundingIncrementTable.retrieve(sysId));
     const results = await Promise.all(requests);
@@ -184,7 +184,7 @@ export class FinancialDetailsStore extends VuexModule {
   @Action({ rawError: true })
   public async loadIFPData(): Promise<IFPData> {
     await this.ensureInitialized();
-    await this.loadFundingPlanData(); // just temporary here for test loading
+
     return {
       initialFundingIncrementStr: this.initialFundingIncrementStr || "",
       fundingIncrements: this.fundingIncrements,
@@ -229,8 +229,9 @@ export class FinancialDetailsStore extends VuexModule {
 
       const createOrUpdateIncrements = fundingIncrements.map(incr => saveIncrement(incr));
       const savedIncrements = await Promise.all(createOrUpdateIncrements);
-      const incrementSysIds = savedIncrements.map(incr => incr.sys_id);
-      // EJY should incrementSysIds be array or comma-delimited string??
+
+      // NOTE: pass "List" data type to SNOW as comma-delimited string, not array
+      const incrementSysIds = savedIncrements.map(incr => incr.sys_id).join(",");
 
       const IFPData = {
         initial_amount: data.initialFundingIncrementStr,

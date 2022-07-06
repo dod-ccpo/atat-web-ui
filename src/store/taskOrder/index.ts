@@ -90,7 +90,7 @@ export class TaskOrderStore extends VuexModule {
         this.setInitialized(true);
       }
     }
-
+    debugger;
     if (!this.initialized) {
       const taskOrder = {
         ...initial,
