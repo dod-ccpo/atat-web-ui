@@ -305,7 +305,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       (accumulator, current) =>  
         accumulator + Number(currencyStringToNumber(current.amt)), 0
     );
-    debugger;
     this.initialAmount = currencyStringToNumber(this.initialAmountStr);
     this.totalAmount = this.initialAmount 
       ? this.initialAmount + incrementsTotal

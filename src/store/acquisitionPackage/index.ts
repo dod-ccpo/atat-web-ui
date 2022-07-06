@@ -37,9 +37,7 @@ import { FileAttachmentServiceFactory } from "@/services/attachment";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
-// import FinancialDetails from "../financialDetails";
 import TaskOrder from "../taskOrder";
-
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
