@@ -5,8 +5,12 @@ const buildTableApiPath = (tableName)=> {
   //https://disastorefrontdev.servicenowservices.com/api/now/table/${tableName}
 }
 
+const testNames = window.Cypress.spec.name.toLowerCase().split("/");
+const testSuite = testNames[testNames.length-2];
+const spec = testNames[testNames.length-1].split(".")[0];
+const fixtureFolder = testSuite + "/" + spec;
+
 export function saveToSNOW(){
-  
   const acqPackageEndPoints = [
     {
       'fixture': 'projectOverview',
@@ -42,92 +46,188 @@ export function saveToSNOW(){
     },
   ]
 
-  const otherContractConsiderations =[
-    {
-      'fixture': 'contractConsiderations',
-      'apiURL': 'x_g_dis_atat_contract_considerations',
-      'times': 1,
-    },
-    {
-      'fixture': 'contractConsiderations_GET',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'GET',
-      'statusCode': 200,
-      'times': 1,
-    },
-    {
-      'fixture': 'contractConsiderations_GET_2',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'GET',
-      'statusCode': 200,
-      'times': 1
-    },
-    {
-      'fixture': 'contractConsiderations_PATCH',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'PATCH',
-      'statusCode': 200,
-      'times': 1
-    },
-    {
-      'fixture': 'contractConsiderations_PATCH_2',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'PATCH',
-      'statusCode': 200,
-      'times': 1
-    },
-    {
-      'fixture': 'taskOrder',
-      'apiURL': 'x_g_dis_atat_task_order',
-      'action': 'POST',
-      'statusCode': 200,
-      'times': 1
-    },
-    {
-      'fixture': 'taskOrder_GET',
-      'apiURL': 'x_g_dis_atat_task_order',
-      'action': 'GET',
-      'times': 1
-    },
-    {
-      'fixture': 'contractConsiderations_POST_2',
-      'apiURL': 'x_g_dis_atat_contract_considerations',
-      'times': 1,
-    },
-    {
-      'fixture': 'contractConsiderations_GET_3',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'GET',
-      'statusCode': 200,
-      'times': 1
-    },
-    {
-      'fixture': 'contractConsiderations_PATCH_3',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'PATCH',
-      'statusCode': 200,
-      'times': 1
-    },
-    {
-      'fixture': 'contractConsiderations_POST_3',
-      'apiURL': 'x_g_dis_atat_contract_considerations',
-      'times': 1,
-    },
-    {
-      'fixture': 'contractConsiderations_GET_4',
-      'apiURL': 'x_g_dis_atat_contract_considerations/**',
-      'action': 'GET',
-      'statusCode': 200,
-      'times': 1
-    },
-  ]
+  // let otherContractConsiderations =[
+  //   {
+  //     'fixture': 'contractConsiderations',
+  //     'apiURL': 'x_g_dis_atat_contract_considerations',
+  //     'times': 1,
+  //   },
+  //   {
+  //     'fixture': 'contractConsiderations_GET',
+  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
+  //     'action': 'GET',
+  //     'statusCode': 200,
+  //     'times': 1,
+  //   },
+  //   {
+  //     'fixture': 'contractConsiderations_GET_2',
+  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
+  //     'action': 'GET',
+  //     'statusCode': 200,
+  //     'times': 1
+  //   },
+  //   {
+  //     'fixture': 'contractConsiderations_PATCH',
+  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
+  //     'action': 'PATCH',
+  //     'statusCode': 200,
+  //     'times': 1
+  //   },
+  //   {
+  //     'fixture': 'contractConsiderations_PATCH_2',
+  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
+  //     'action': 'PATCH',
+  //     'statusCode': 200,
+  //     'times': 1
+  //   }
+  // ]
+  
+  if (spec === "conflictofinterest"){
+    acqPackageEndPoints.concat([
+      {
+        'fixture': fixtureFolder + '/taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_POST_2',
+        'apiURL': 'x_g_dis_atat_contract_considerations',
+        'times': 1,
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_GET_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1
+      },
+    ]);
+  }
+  if (spec === "packagingpackingshipping"){
+    acqPackageEndPoints.concat([
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_GET_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'GET',
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_POST_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations',
+        'action': 'POST',
+      },
+      {
+        'fixture': fixtureFolder + '/taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1
+      },
+    ]);
+  }
+  if (spec === "training"){
+    acqPackageEndPoints.concat([
+      {
+        'fixture': fixtureFolder + '/taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_POST_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations',
+        'times': 1,
+        'action': 'POST',
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_GET_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_PATCH_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_GET_2',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_PATCH_2',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1
+      },
+    ])
+  }
+  if (spec === "trainingcourse"){
+    acqPackageEndPoints.concat([
+      {
+        'fixture': fixtureFolder + '/taskOrder_POST',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/taskOrder_GET',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'GET',
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_GET_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_GET_2',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_POST_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations',
+        'times': 1,
+        'action': 'POST',
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_POST_2',
+        'apiURL': 'x_g_dis_atat_contract_considerations',
+        'times': 1,
+      },
+      {
+        'fixture': fixtureFolder + '/contractConsiderations_PATCH_1',
+        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1
+      }
+    ]);
+  }
+    
+  
+  
 
   
 
   acqPackageEndPoints.concat(
     contractDetailsEndPoints,
     financialDetailsEndPoints,
-    otherContractConsiderations
+    
   ).forEach((ep)=>{
     /**
      * middleware needed for routes to executed in 
