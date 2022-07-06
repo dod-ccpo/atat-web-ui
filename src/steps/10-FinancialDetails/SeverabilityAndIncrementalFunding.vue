@@ -12,7 +12,6 @@
             dependent upon each other. If you select Yes below, we will help you generate a
             projected schedule for your incremental funding next.
           </p>
-          {{selectedFundOption}}
           <ATATRadioGroup
             id="IncrementallyFundOptions"
             :card="true"
