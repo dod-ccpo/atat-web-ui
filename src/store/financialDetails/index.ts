@@ -8,7 +8,8 @@ import {
 } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
 import Vue from "vue";
-import { TaskOrderDTO } from "@/api/models";
+import { FundingRequestDTO, FundingRequestFSFormDTO, 
+  FundingRequestMIPRFormDTO, TaskOrderDTO } from "@/api/models";
 import api from "@/api";
 
 const ATAT_FINANCIAL_DETAILS__KEY = "ATAT_FINANCIAL_DETAILS__KEY";
@@ -38,12 +39,16 @@ export class FinancialDetailsStore extends VuexModule {
   gtcNumber: string | null = null;
   orderNumber: string | null = null;
   taskOrder: TaskOrderDTO | null = null;
+  fundingRequest: FundingRequestDTO | null = null;
+  fundingRequestFSForm: FundingRequestFSFormDTO | null = null;
+  fundingRequestMIPRForm: FundingRequestMIPRFormDTO | null = null;
 
 
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.estimatedTaskOrderValue),
     nameofProperty(this, (x) => x.fundingRequestType),
+    nameofProperty(this, (x)=>x.fundingRequest),
     nameofProperty(this, (x)=> x.initialFundingIncrement),
     nameofProperty(this, (x)=> x.initialFundingIncrementStr),
     nameofProperty(this, (x)=> x.fundingIncrements),
@@ -119,6 +124,18 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
 
+  @Action async saveFundingRequest(data: FundingRequestDTO): Promise<void> {
+     
+    const saveFundingRequest = (data.sys_id && data.sys_id.length > 0) ?
+      api.fundingRequestTable.update(data.sys_id, data) :
+      api.fundingRequestTable.create(data);
+
+    const savedFundingRequest = await saveFundingRequest;
+
+
+  }
+
+
   @Mutation
   public async setIFPData(data: IFPData): Promise<void> {
     this.initialFundingIncrementStr = data.initialFundingIncrementStr;
@@ -179,6 +196,16 @@ export class FinancialDetailsStore extends VuexModule {
   public setOrderNumber(value: string): void {
     this.orderNumber = value;
 
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+  }
+
+  @Mutation
+  public setFundingRequest(value: FundingRequestDTO): void {
+    this.fundingRequest = value;
     storeDataToSession(
       this,
       this.sessionProperties,

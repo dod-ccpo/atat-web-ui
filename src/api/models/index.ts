@@ -219,6 +219,23 @@ export interface FundingPlanDTO extends BaseTableDTO {
   file_name: string;
 }
 
+export interface FundingRequestFSFormDTO extends BaseTableDTO {
+
+      fs_form_7600a_filename: string;
+      fs_form_7600a_attachment: string;
+      fs_form_7600b_attachment: string;
+      fs_form_7600b_filename: string;
+      use_g_invoicing: string;
+      order_number: string;
+      gt_c_number: string;
+}
+
+export interface FundingRequestMIPRFormDTO extends BaseTableDTO {
+      mipr_number: string;
+      mipr_filename: string;
+      mipr_attachment: string;
+}
+
 export interface PeriodDTO extends BaseTableDTO {
     period_unit: string;
     period_unit_count: string;
@@ -247,7 +264,9 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
 
 export interface FundingRequestDTO extends BaseTableDTO {
   fundingRequestType: string;
-
+  fs_form: string;
+  funding_request_type: string;
+  mipr: string;
 }
 
 export interface FundingIncrementDTO extends BaseTableDTO{
