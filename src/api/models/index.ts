@@ -216,7 +216,6 @@ export interface FundingPlanDTO extends BaseTableDTO {
   attachment: string;
   extension: string;
   file_name: string;
-  remaining_amount: string;
   initial_amount: string;
   estimated_task_order_value?: string;
   remaining_amount_increments: string;

@@ -352,13 +352,13 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await FinancialDetails.loadIFPData();
     const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
     if (estimatedTOValue) {
       this.costEstimate = currencyStringToNumber(estimatedTOValue);
       this.costEstimateStr = toCurrencyString(this.costEstimate);
     }
 
+    const storeData = await FinancialDetails.loadIFPData();
     if (storeData) {
       this.savedData = storeData;
       this.fundingIncrements = [...storeData.fundingIncrements];

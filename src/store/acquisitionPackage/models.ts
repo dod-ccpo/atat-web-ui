@@ -7,8 +7,6 @@ import {
   CurrentContractDTO,
   FairOpportunityDTO,
   FundingIncrementDTO,
-  // FundingPlanAmountsDTO,
-  // FundingPlanDTO,
   GFEOverviewDTO,
   OrganizationDTO,
   PeriodOfPerformanceDTO,
@@ -29,8 +27,6 @@ export interface SessionData {
   currentContract: CurrentContractDTO;
   fairOpportunity: FairOpportunityDTO;
   fundingIncrement: FundingIncrementDTO,
-  // fundingPlan: FundingPlanDTO;
-  // fundingPlanAmounts: FundingPlanAmountsDTO;
   gfeOverview: GFEOverviewDTO;
   organization: OrganizationDTO;
   periodOfPerformance: PeriodOfPerformanceDTO;

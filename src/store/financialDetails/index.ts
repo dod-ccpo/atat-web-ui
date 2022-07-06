@@ -34,7 +34,6 @@ const initialFundingPlan: FundingPlanDTO = {
   attachment: "",
   extension: "",
   file_name: "",
-  remaining_amount: "",
   initial_amount: "",
   estimated_task_order_value: "",
   remaining_amount_increments: "",
@@ -57,7 +56,6 @@ export class FinancialDetailsStore extends VuexModule {
   miprNumber: string | null = null;
   initialFundingIncrementStr: string | undefined = "";
   fundingIncrements: fundingIncrement[] = [];
-  remainingAmountStr = "";
 
   useGInvoicing = "";
   gInvoiceNumber = "";
@@ -71,7 +69,6 @@ export class FinancialDetailsStore extends VuexModule {
     nameofProperty(this, (x) => x.estimatedTaskOrderValue),
     nameofProperty(this, (x) => x.fundingRequestType),
     nameofProperty(this, (x)=> x.initialFundingIncrementStr),
-    nameofProperty(this, (x)=> x.remainingAmountStr),
     nameofProperty(this, (x)=> x.fundingIncrements),
     nameofProperty(this, (x)=> x.fundingPlan),
     nameofProperty(this, (x)=> x.gtcNumber),
@@ -128,8 +125,6 @@ export class FinancialDetailsStore extends VuexModule {
     return;
   }
 
-  @Mutation
-
   @Action({ rawError: true })
   public async loadFundingPlanData(): Promise<void> {
     // get funding plan sysID from taskorder table if it exists
@@ -137,7 +132,6 @@ export class FinancialDetailsStore extends VuexModule {
       const taskOrder = await TaskOrder.getTaskOrder();
       const fundingPlanSysId = taskOrder.funding_plan;
 
-      // fundingPlanSysId = "889f49998764d110bc86b889cebb35da"; // for testing
       if (fundingPlanSysId) {
         const fundingPlan = await api.fundingPlanTable.retrieve(fundingPlanSysId as string);
         this.setFundingPlan(fundingPlan);
@@ -159,9 +153,7 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
   @Mutation
-  public async setFundingIncrements(
-    remainingAmountIncrements: string
-  ): Promise<void> {
+  public async setFundingIncrements(remainingAmountIncrements: string): Promise<void> {
     const incrementSysIdsStr = remainingAmountIncrements;
     const incrementSysIds = incrementSysIdsStr.split(',');
 
@@ -254,7 +246,7 @@ export class FinancialDetailsStore extends VuexModule {
       const fundingPlanSysId = savedFundingPlan.sys_id;
       const taskOrder = TaskOrder.taskOrder;
       if (taskOrder) {
-        Object.assign(taskOrder, { funding_plan: fundingPlanSysId })
+        Object.assign(taskOrder, { funding_plan: fundingPlanSysId });
         const taskOrderSysId = taskOrder.sys_id;
         if (taskOrderSysId) {
           api.taskOrderTable.update(taskOrderSysId, taskOrder);
