@@ -155,7 +155,7 @@ import TaskOrder from "@/store/taskOrder";
 
 export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeave) {
   private selectedFundOption = "";
-  private saved = "UNSELECTED";
+  private saved = "";
   private isPeriodsDataMissing = false;
   private isCostEstimateMissing = false;
   private routeNames = routeNames;
@@ -229,7 +229,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   }
 
   private hasChanged(): boolean {
-    const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "UNSELECTED";
+    const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "";
     return hasChanges(current, this.saved);
   }
 
