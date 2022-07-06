@@ -218,8 +218,6 @@ export class FinancialDetailsStore extends VuexModule {
     try {
       this.setIFPData(data);
 
-      const fundingIncrements: fundingIncrement[] = data.fundingIncrements;
-
       const removeIncrements = removed.map(
         incr => api.fundingIncrementTable.remove(incr.sysId || "")
       );
@@ -227,6 +225,7 @@ export class FinancialDetailsStore extends VuexModule {
         await Promise.all(removeIncrements);
       }
 
+      const fundingIncrements: fundingIncrement[] = data.fundingIncrements;
       const createOrUpdateIncrements = fundingIncrements.map(incr => saveIncrement(incr));
       const savedIncrements = await Promise.all(createOrUpdateIncrements);
 
