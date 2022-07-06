@@ -12,6 +12,7 @@
             dependent upon each other. If you select Yes below, we will help you generate a
             projected schedule for your incremental funding next.
           </p>
+          {{selectedFundOption}}
           <ATATRadioGroup
             id="IncrementallyFundOptions"
             :card="true"
@@ -202,7 +203,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
     const estimatedTOValue = FinancialDetails.estimatedTaskOrderValue;
     this.isCostEstimateMissing = !estimatedTOValue;
     const incrementallyFunded = TaskOrder?.value?.incrementally_funded;
-    this.saved = incrementallyFunded.length > 0 ? incrementallyFunded : "UNSELECTED";
+    this.saved = incrementallyFunded.length > 0 ? incrementallyFunded : "";
     this.selectedFundOption = this.saved;
   }
 
