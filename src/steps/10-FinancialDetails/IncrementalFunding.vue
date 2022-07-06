@@ -190,7 +190,7 @@ import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 
 import { PeriodDTO } from "@/api/models";
-import { SelectData, fundingIncrements, IFPData } from "../../../types/Global";
+import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -246,20 +246,18 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   // use in future ticket for validation returning to page to show error messages
   public hasReturnedToPage = false;
 
-  public fundingIncrements: fundingIncrements[] = [];
+  public fundingIncrements: fundingIncrement[] = [];
 
   private get currentData(): IFPData {
     return {
       initialFundingIncrementStr: this.initialAmountStr,
       fundingIncrements: this.fundingIncrements,
-      remainingAmountStr: this.amountRemainingStr,
     };
   };
 
   private savedData: IFPData = {
     initialFundingIncrementStr: "",
     fundingIncrements: [],
-    remainingAmountStr: "",
   }
 
   public fiscalQuarters: { text: string, order: number }[] = [];
@@ -283,7 +281,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
-  public removedIncrements: fundingIncrements[] = [];
+  public removedIncrements: fundingIncrement[] = [];
 
   public deleteFundingIncrement(index: number): void {
     if (this.savedData.fundingIncrements && this.fundingIncrements[index].sysId) {
@@ -375,7 +373,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.fundingIncrements = [...storeData.fundingIncrements];
       this.initialAmountStr = storeData.initialFundingIncrementStr;
       this.initialAmount = currencyStringToNumber(this.initialAmountStr);
-      this.amountRemainingStr = storeData.remainingAmountStr;
+      // this.amountRemainingStr = storeData.remainingAmountStr; // EJY calculate this
       this.amountRemaining = currencyStringToNumber(this.amountRemainingStr);
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
       this.calcAmounts("");
@@ -432,7 +430,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // set a flag if error has been shown. if so, user can continue
 
       // Set chronological order of fiscal quarters in fundingIncrements
-      let sortedIncrements: fundingIncrements[] = []; 
+      let sortedIncrements: fundingIncrement[] = []; 
       this.fundingIncrements.forEach((incr) => {
         incr.order = this.fiscalQuarters.findIndex(q => q.text === incr.qtr) + 1;
         sortedIncrements.push(incr);
@@ -446,8 +444,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
       this.fundingIncrements = sortedIncrements;
 
-      // EJY need to track removal of previously saved increments
-      debugger;
       if (this.hasChanged()) {
         FinancialDetails.saveIFPData(
           { 
@@ -459,7 +455,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     } catch (error) {
       console.log(error);
     }
-    // return false;
+
     return true;
   }
 

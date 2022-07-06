@@ -37,7 +37,7 @@ import { FileAttachmentServiceFactory } from "@/services/attachment";
 import DescriptionOfWork from "@/store/descriptionOfWork"
 import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
-import FinancialDetails from "../financialDetails";
+// import FinancialDetails from "../financialDetails";
 import TaskOrder from "../taskOrder";
 
 
@@ -417,7 +417,7 @@ export class AcquisitionPackageStore extends VuexModule {
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
-    await FinancialDetails.initialize();
+    // await FinancialDetails.initialize();
 
     if (this.initialized) {
       return;
