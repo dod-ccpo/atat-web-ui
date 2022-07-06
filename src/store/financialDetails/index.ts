@@ -204,6 +204,11 @@ export class FinancialDetailsStore extends VuexModule {
     }
   }
 
+  @Action
+  public async getEstimatedTaskOrderValue(): Promise<string | null> {
+    return this.estimatedTaskOrderValue;
+  }
+
 }
 
 const FinancialDetails = getModule(FinancialDetailsStore);
