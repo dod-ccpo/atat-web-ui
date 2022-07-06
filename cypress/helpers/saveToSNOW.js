@@ -45,42 +45,6 @@ export function saveToSNOW(){
       'apiURL': 'x_g_dis_atat_fair_opportunity'
     },
   ]
-
-  // let otherContractConsiderations =[
-  //   {
-  //     'fixture': 'contractConsiderations',
-  //     'apiURL': 'x_g_dis_atat_contract_considerations',
-  //     'times': 1,
-  //   },
-  //   {
-  //     'fixture': 'contractConsiderations_GET',
-  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
-  //     'action': 'GET',
-  //     'statusCode': 200,
-  //     'times': 1,
-  //   },
-  //   {
-  //     'fixture': 'contractConsiderations_GET_2',
-  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
-  //     'action': 'GET',
-  //     'statusCode': 200,
-  //     'times': 1
-  //   },
-  //   {
-  //     'fixture': 'contractConsiderations_PATCH',
-  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
-  //     'action': 'PATCH',
-  //     'statusCode': 200,
-  //     'times': 1
-  //   },
-  //   {
-  //     'fixture': 'contractConsiderations_PATCH_2',
-  //     'apiURL': 'x_g_dis_atat_contract_considerations/**',
-  //     'action': 'PATCH',
-  //     'statusCode': 200,
-  //     'times': 1
-  //   }
-  // ]
   
   if (spec === "conflictofinterest"){
     acqPackageEndPoints.concat([

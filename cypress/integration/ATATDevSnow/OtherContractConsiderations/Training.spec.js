@@ -4,7 +4,6 @@ import occ from "../../../selectors/occ.sel";
 
 
 describe("Test suite: OCC: Training substep", () => {
-  Cypress.on('log:added',  (logObject) => console.log(logObject))
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
