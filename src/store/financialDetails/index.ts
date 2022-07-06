@@ -196,20 +196,11 @@ export class FinancialDetailsStore extends VuexModule {
       const incrementSysIds = savedIncrements.map(incr => incr.sys_id);
 
       const IFPData = {
-        remaining_amount: data.remainingAmountStr,
         initial_amount: data.initialFundingIncrementStr,
         remaining_amount_increments: incrementSysIds,
       }
 
       Object.assign(this.fundingPlan, IFPData);
-
-      // const sysId = this.fundingPlan.sys_id || "";
-      // const saveFundingPlan = sysId
-      //   ? api.fundingPlanTable.update(sysId, this.fundingPlan)
-      //   : api.fundingPlanTable.create(this.fundingPlan);
-
-      // const savedFundingPlan = await saveFundingPlan;
-      // this.setFundingPlan(savedFundingPlan)
       const savedFundingPlan = await this.saveFundingPlan();
 
       storeDataToSession(
@@ -218,7 +209,7 @@ export class FinancialDetailsStore extends VuexModule {
         ATAT_FINANCIAL_DETAILS__KEY
       );
 
-      // save funding plan sys id to TaskOrder table
+      // save funding plan sys_id to TaskOrder table
       const fundingPlanSysId = savedFundingPlan.sys_id;
       const taskOrder = TaskOrder.taskOrder;
       if (taskOrder) {
@@ -228,14 +219,6 @@ export class FinancialDetailsStore extends VuexModule {
           api.taskOrderTable.update(taskOrderSysId, taskOrder);
         }
       }
-
-      // await AcquisitionPackage.setFundingPlanAmounts(fundingPlanData);
-
-      // await AcquisitionPackage.saveData({
-      //   data: fundingPlanData,
-      //   storeProperty: StoreProperties.FundingPlanAmounts
-      // });
-
 
     } catch(error) {
       throw new Error(`error occurred saving Incremental Funding Data: ${error}`);

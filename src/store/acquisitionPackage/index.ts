@@ -22,7 +22,6 @@ import {
   ContractTypeDTO,
   CurrentContractDTO,
   FairOpportunityDTO,
-  // FundingPlanAmountsDTO,
   GFEOverviewDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
@@ -56,8 +55,6 @@ export const StoreProperties = {
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
-  FundingPlan: "fundingPlan",
-  // FundingPlanAmounts: "fundingPlanAmounts",
 };
 
 const initialCurrentContract = ()=> {
@@ -103,18 +100,6 @@ const initialContractType = ()=> {
     contract_type_justification: "",
   }
 }
-
-// const initialFundingPlan = () => {
-//   return {
-//     attachment: "",
-//     extension: "",
-//     file_name: "",
-//     remaining_amount: "",
-//     initial_amount: "",
-//     estimated_task_order_value: "",
-//     remaining_amount_increments: [""],
-//   }
-// }
 
 const initialContact = () => {
   return {
@@ -230,8 +215,6 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
-      fundingPlan: store.fundingPlan // EJY
-      // fundingPlanAmounts: store.fundingPlanAmounts,
     })
   );
 };
@@ -278,8 +261,6 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
-  fundingPlan: string | null = null;
-  // fundingPlanAmounts: FundingPlanAmountsDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
@@ -369,19 +350,6 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  // @Action
-  // public async setFundingPlanAmounts(value: FundingPlanAmountsDTO): Promise<void> {
-  //   this.doSetFundingPlanAmounts(value);
-  // }
-
-  // @Mutation
-  // public doSetFundingPlanAmounts(value: FundingPlanAmountsDTO): void {
-  //   debugger;
-  //   this.fundingPlanAmounts = this.fundingPlanAmounts
-  //     ? Object.assign(this.fundingPlanAmounts, value)
-  //     : value;
-  // }
-
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
     this.contractType = this.contractType
@@ -404,11 +372,6 @@ export class AcquisitionPackageStore extends VuexModule {
   @Mutation
   public setFairOpportunity(value: FairOpportunityDTO): void {
     this.fairOpportunity = value;
-  }
-
-  @Mutation
-  public setFundingPlan(value: string): void {
-    this.fundingPlan = value;
   }
 
   @Mutation
@@ -446,7 +409,6 @@ export class AcquisitionPackageStore extends VuexModule {
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
-    // this.fundingPlanAmounts = sessionData.fundingPlanAmounts;
   }
 
   @Action({ rawError: true })
@@ -480,8 +442,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
-          // this.setFundingPlan(initialFundingPlan());
-          // this.setFundingPlanAmounts(initialFundingPlanAmounts())
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
           this.setGFEOverview(initialGFE());
@@ -541,8 +501,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
-    [StoreProperties.FundingPlan]: api.fundingPlanTable,
-    // [StoreProperties.FundingPlanAmounts]: api.fundingPlanAmountsTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -558,8 +516,6 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
-    [StoreProperties.FundingPlan]: "funding_plan",
-    // [StoreProperties.FundingPlanAmounts]: "funding_plan_amounts",
   }
 
   @Action({ rawError: true })
