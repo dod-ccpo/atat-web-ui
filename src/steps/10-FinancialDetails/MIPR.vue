@@ -5,7 +5,7 @@
         <h1 class="page-header">Let’s gather info about your MIPR</h1>
         <div class="mt-10">
           <ATATTextField
-            id="ProjectTitle"
+            id="MIPRNumber"
             :rules="[
                 $validators.required('Please enter the MIPR number located' +
                  ' on your authorized DD Form 448.')

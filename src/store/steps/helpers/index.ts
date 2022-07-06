@@ -44,7 +44,9 @@ export const mapStepConfigs = (
     }
     );
   };
-  config.forEach((routeConfig) => mapStep(routeConfig));
+  if (config) {
+    config.forEach((routeConfig) => mapStep(routeConfig));
+  }
 
   return map;
 };

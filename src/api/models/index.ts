@@ -249,3 +249,34 @@ export interface FundingRequestDTO extends BaseTableDTO {
   fundingRequestType: string;
 
 }
+
+export interface FundingIncrementDTO extends BaseTableDTO{
+  amount: string;
+  description: string;
+  order: string;
+}
+export interface TaskOrderDTO extends BaseTableDTO {
+    clins: string;
+    incrementally_funded: string;
+    funds_obligated: string;
+    acquisition_package: string;
+    task_order_number: string;
+    task_order_status: string;
+    portfolio: string;
+    funding_plan: string;
+    pop_end_date: string;
+    pop_start_date: string;
+    funds_total: string;
+}
+
+export interface CostsDTO extends BaseTableDTO {
+  clin: string;
+  csp: string;
+  year_month: string;
+  task_order_number: string;
+  portfolio: string;
+  organization: string;
+  service_agency: string;
+  is_actual: string;
+  value: string;
+}

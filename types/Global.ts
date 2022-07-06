@@ -229,6 +229,7 @@ export interface DOWServiceOfferingGroup {
 export interface fundingIncrements {
   qtr: string;
   amt: string;
+  order: number;
 }
 export interface IFPData {
   initialFundingIncrementStr: string;

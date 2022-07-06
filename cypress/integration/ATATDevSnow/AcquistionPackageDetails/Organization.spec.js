@@ -208,6 +208,9 @@ describe("Test suite: Acquisition Package: Organization ", () => {
           "Your DoDAAC must be 6 characters."
         );
       });
+
+    cy.findElement(org.usaRadioBtn).click({ force: true });
+
     //Street address is blank
     cy.verifyRequiredInput(
       org.streetTxtBox,
@@ -259,13 +262,14 @@ describe("Test suite: Acquisition Package: Organization ", () => {
       org.stateProvinceTxtBox,
       org.stateProvinceError,
       "Please enter a state/province."
-    );    
+    );  
     //Postal code is blank
     cy.verifyRequiredInput(
       org.postalCodeTxtBox,
       org.postalCodeError,
       "Please enter a postal code."
-    );      
+    ); 
+    cy.findElement(common.continueBtn).scrollIntoView().should("be.visible")
     //country dropdown is blank
     cy.verifyRequiredInput(
       org.countryInput,

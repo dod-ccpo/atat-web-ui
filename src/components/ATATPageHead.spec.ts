@@ -44,7 +44,7 @@ describe("Testing ATATSelect Component", () => {
       const personIcon = personButton.find(".v-icon");
       expect (personIcon.text()).toBe("person_add_alt_1");
 
-      const moreButton = wrapper.find("#More_Button");
+      const moreButton = wrapper.find("#MoreMenuButton");
       expect(moreButton).toBeDefined;
       const moreIcon = moreButton.find(".v-icon");
       expect (moreIcon.text()).toBe("more_horiz");

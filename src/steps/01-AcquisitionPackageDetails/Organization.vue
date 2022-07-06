@@ -233,7 +233,7 @@ export default class OrganizationInfo extends Mixins(SaveOnLeave) {
     },
     {
       id: "MilitaryAddress",
-      label: "Military/Diplomatic (APO, FPO or DPO)",
+      label: "Military/Diplomatic (APO, FPO, or DPO)",
       value: this.addressTypes.MIL,
     },
     {
