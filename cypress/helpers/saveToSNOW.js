@@ -11,43 +11,50 @@ const spec = testNames[testNames.length-1].split(".")[0];
 const fixtureFolder = testSuite + "/" + spec;
 
 export function saveToSNOW(){
-  const acqPackageEndPoints = [
+  let acqPackageEndPoints = [
     {
       'fixture': 'projectOverview',
-      'apiURL': 'x_g_dis_atat_project_overview'
+      'apiURL': 'x_g_dis_atat_project_overview',
+      'action': 'POST',
     },  
     {
       'fixture': 'organization',
-      'apiURL': 'x_g_dis_atat_organization'
+      'apiURL': 'x_g_dis_atat_organization',
+      'action': 'POST',
     },  
     {
       'fixture': 'contacts',
-      'apiURL': 'x_g_dis_atat_contacts'
+      'apiURL': 'x_g_dis_atat_contacts',
+      'action': 'POST',
     }
   ]
   const contractDetailsEndPoints = [
     {
       'fixture': 'fairOpportunity',
-      'apiURL': 'x_g_dis_atat_fair_opportunity'
+      'apiURL': 'x_g_dis_atat_fair_opportunity',
+      'action': 'POST',
     },
     {
       'fixture': 'period',
-      'apiURL': 'x_g_dis_atat_period'
+      'apiURL': 'x_g_dis_atat_period',
+      'action': 'POST',
     },
     {
       'fixture': 'periodOfPerformance',
-      'apiURL': 'x_g_dis_atat_period_of_performance'
+      'apiURL': 'x_g_dis_atat_period_of_performance',
+      'action': 'POST',
     },
   ]
   const financialDetailsEndPoints = [
     {
       'fixture': 'fairOpportunity',
-      'apiURL': 'x_g_dis_atat_fair_opportunity'
+      'apiURL': 'x_g_dis_atat_fair_opportunity',
+      'action': 'POST',
     },
   ]
   
   if (spec === "conflictofinterest"){
-    acqPackageEndPoints.concat([
+    acqPackageEndPoints =  acqPackageEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -56,8 +63,9 @@ export function saveToSNOW(){
         'times': 1
       },
       {
-        'fixture': fixtureFolder + '/contractConsiderations_POST_2',
+        'fixture': fixtureFolder + '/contractConsiderations_POST_1',
         'apiURL': 'x_g_dis_atat_contract_considerations',
+        'action': 'POST',
         'times': 1,
       },
       {
@@ -70,7 +78,7 @@ export function saveToSNOW(){
     ]);
   }
   if (spec === "packagingpackingshipping"){
-    acqPackageEndPoints.concat([
+    acqPackageEndPoints =  acqPackageEndPoints.concat([
       {
         'fixture': fixtureFolder + '/contractConsiderations_GET_1',
         'apiURL': 'x_g_dis_atat_contract_considerations/**',
@@ -91,7 +99,7 @@ export function saveToSNOW(){
     ]);
   }
   if (spec === "training"){
-    acqPackageEndPoints.concat([
+    acqPackageEndPoints =  acqPackageEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -100,7 +108,6 @@ export function saveToSNOW(){
       {
         'fixture': fixtureFolder + '/contractConsiderations_POST_1',
         'apiURL': 'x_g_dis_atat_contract_considerations',
-        'times': 1,
         'action': 'POST',
       },
       {
@@ -131,10 +138,10 @@ export function saveToSNOW(){
         'statusCode': 200,
         'times': 1
       },
-    ])
+    ]);
   }
   if (spec === "trainingcourse"){
-    acqPackageEndPoints.concat([
+    acqPackageEndPoints =  acqPackageEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -172,6 +179,7 @@ export function saveToSNOW(){
         'fixture': fixtureFolder + '/contractConsiderations_POST_2',
         'apiURL': 'x_g_dis_atat_contract_considerations',
         'times': 1,
+        'action': 'POST',
       },
       {
         'fixture': fixtureFolder + '/contractConsiderations_PATCH_1',
@@ -185,7 +193,7 @@ export function saveToSNOW(){
     
   
   
-
+  debugger;
   
 
   acqPackageEndPoints.concat(
@@ -198,7 +206,7 @@ export function saveToSNOW(){
      * the order listed
      */
     const routeMatcher = {
-      "method": ep.action || 'POST',
+      "method": ep.action,
       "url": buildTableApiPath(ep.apiURL),
       "middleware": true
     }
