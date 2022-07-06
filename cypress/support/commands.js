@@ -211,7 +211,7 @@ Cypress.Commands.add("clickLink", (selector) => {
 
 Cypress.Commands.add('radioBtn', (selector, value) => {
   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.findElement(selector).wait(0).should("have.value", value);  
+  cy.findElement(selector).wait(1000).should("have.value", value);  
 });
 
 Cypress.Commands.add("hoverToolTip", (selector, selector1, expectedText) => {
