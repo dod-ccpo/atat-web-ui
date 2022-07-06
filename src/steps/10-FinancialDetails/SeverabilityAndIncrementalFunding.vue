@@ -155,7 +155,7 @@ import TaskOrder from "@/store/taskOrder";
 
 export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeave) {
   private selectedFundOption = "";
-  private saved = "";
+  private savedFundOption = "";
   private isPeriodsDataMissing = false;
   private isCostEstimateMissing = false;
   private routeNames = routeNames;
@@ -199,11 +199,10 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
-    const estimatedTOValue = FinancialDetails.estimatedTaskOrderValue;
+    const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
     this.isCostEstimateMissing = !estimatedTOValue;
-    const incrementallyFunded = TaskOrder?.value?.incrementally_funded;
-    this.saved = incrementallyFunded.length > 0 ? incrementallyFunded : "";
-    this.selectedFundOption = this.saved;
+    this.savedFundOption = await TaskOrder.isIncrementallyFunded();
+    this.selectedFundOption = this.savedFundOption;
   }
 
   public async mounted(): Promise<void> {
@@ -230,7 +229,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
 
   private hasChanged(): boolean {
     const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "";
-    return hasChanges(current, this.saved);
+    return hasChanges(current, this.savedFundOption);
   }
 
   @Watch("selectedFundOption")

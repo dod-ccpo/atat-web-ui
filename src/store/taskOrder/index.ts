@@ -126,6 +126,12 @@ export class TaskOrderStore extends VuexModule {
       throw new Error(`error saving TaskOrder ${error}`);
     }
   }
+
+  @Action
+  public async isIncrementallyFunded(): Promise<string> {
+    return this.value.incrementally_funded;
+  }
+
 }
 
 const TaskOrder = getModule(TaskOrderStore);
