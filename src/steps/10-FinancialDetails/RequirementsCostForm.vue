@@ -65,8 +65,8 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        FinancialDetails.
-          setEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
+        await FinancialDetails.
+          saveEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
       }
     } catch (error) {
       console.log(error);

@@ -203,13 +203,14 @@ export class FinancialDetailsStore extends VuexModule {
 
       Object.assign(this.fundingPlan, IFPData);
 
-      const sysId = this.fundingPlan.sys_id || "";
-      const saveFundingPlan = sysId
-        ? api.fundingPlanTable.update(sysId, this.fundingPlan)
-        : api.fundingPlanTable.create(this.fundingPlan);
+      // const sysId = this.fundingPlan.sys_id || "";
+      // const saveFundingPlan = sysId
+      //   ? api.fundingPlanTable.update(sysId, this.fundingPlan)
+      //   : api.fundingPlanTable.create(this.fundingPlan);
 
-      const savedFundingPlan = await saveFundingPlan;
-      this.setFundingPlan(savedFundingPlan)
+      // const savedFundingPlan = await saveFundingPlan;
+      // this.setFundingPlan(savedFundingPlan)
+      const savedFundingPlan = await this.saveFundingPlan();
 
       storeDataToSession(
         this,
@@ -243,6 +244,20 @@ export class FinancialDetailsStore extends VuexModule {
   }
 
   @Action
+  public async saveFundingPlan(): Promise<FundingPlanDTO> {
+    debugger;
+
+    const sysId = this.fundingPlan.sys_id || "";
+    const saveFundingPlan = sysId
+      ? api.fundingPlanTable.update(sysId, this.fundingPlan)
+      : api.fundingPlanTable.create(this.fundingPlan);
+
+    const savedFundingPlan = await saveFundingPlan;
+    this.setFundingPlan(savedFundingPlan)
+    return savedFundingPlan;
+  }
+
+  @Action
   public async save7600({gtcNumber, orderNumber}: {gtcNumber: string, 
     orderNumber: string}): Promise<void> {
     this.setGTCNumber(gtcNumber);
@@ -264,15 +279,28 @@ export class FinancialDetailsStore extends VuexModule {
     return this.miprNumber || '';
   }
 
-  @Mutation
-  public setEstimatedTaskOrderValue(value: string): void {
-    this.estimatedTaskOrderValue = value;
+  @Action
+  public async saveEstimatedTaskOrderValue(value: string): Promise<void> {
+    this.setEstimatedTaskOrderValue(value);
 
+    Object.assign(this.fundingPlan, 
+      { estimated_task_order_value: value }
+    );
+    debugger;
+    
+    const savedFundingPlan = await this.saveFundingPlan();
+    debugger;
     storeDataToSession(
       this,
       this.sessionProperties,
       ATAT_FINANCIAL_DETAILS__KEY
     );
+
+  }
+
+  @Mutation
+  public setEstimatedTaskOrderValue(value: string): void {
+    this.estimatedTaskOrderValue = value;
   }
 
   @Mutation
