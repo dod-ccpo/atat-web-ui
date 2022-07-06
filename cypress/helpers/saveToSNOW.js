@@ -45,14 +45,15 @@ export function saveToSNOW(){
   const otherContractConsiderations =[
     {
       'fixture': 'contractConsiderations',
-      'apiURL': 'x_g_dis_atat_contract_considerations'
+      'apiURL': 'x_g_dis_atat_contract_considerations',
+      'times': 1,
     },
     {
       'fixture': 'contractConsiderations_GET',
       'apiURL': 'x_g_dis_atat_contract_considerations/**',
       'action': 'GET',
       'statusCode': 200,
-      'times': 1
+      'times': 1,
     },
     {
       'fixture': 'contractConsiderations_GET_2',
@@ -73,36 +74,84 @@ export function saveToSNOW(){
       'apiURL': 'x_g_dis_atat_contract_considerations/**',
       'action': 'PATCH',
       'statusCode': 200,
+      'times': 1
+    },
+    {
+      'fixture': 'taskOrder',
+      'apiURL': 'x_g_dis_atat_task_order',
+      'action': 'POST',
+      'statusCode': 200,
+      'times': 1
+    },
+    {
+      'fixture': 'taskOrder_GET',
+      'apiURL': 'x_g_dis_atat_task_order',
+      'action': 'GET',
+      'times': 1
+    },
+    {
+      'fixture': 'contractConsiderations_POST_2',
+      'apiURL': 'x_g_dis_atat_contract_considerations',
       'times': 1,
+    },
+    {
+      'fixture': 'contractConsiderations_GET_3',
+      'apiURL': 'x_g_dis_atat_contract_considerations/**',
+      'action': 'GET',
+      'statusCode': 200,
+      'times': 1
+    },
+    {
+      'fixture': 'contractConsiderations_PATCH_3',
+      'apiURL': 'x_g_dis_atat_contract_considerations/**',
+      'action': 'PATCH',
+      'statusCode': 200,
+      'times': 1
+    },
+    {
+      'fixture': 'contractConsiderations_POST_3',
+      'apiURL': 'x_g_dis_atat_contract_considerations',
+      'times': 1,
+    },
+    {
+      'fixture': 'contractConsiderations_GET_4',
+      'apiURL': 'x_g_dis_atat_contract_considerations/**',
+      'action': 'GET',
+      'statusCode': 200,
+      'times': 1
     },
   ]
 
+  
 
   acqPackageEndPoints.concat(
     contractDetailsEndPoints,
     financialDetailsEndPoints,
     otherContractConsiderations
   ).forEach((ep)=>{
-    // const action = ep.action || 'POST';
-    // cy.fixture("saveToSNOW/" + ep.fixture).then((data) => {
-    //   console.log('*** url ****');
-    //   console.log(ep.apiUrl);
-    //   console.log('*** data *****');
-    //   console.log(data)
+    /**
+     * middleware needed for routes to executed in 
+     * the order listed
+     */
+    const routeMatcher = {
+      "method": ep.action || 'POST',
+      "url": buildTableApiPath(ep.apiURL),
+      "middleware": true
+    }
+    if (ep.times){
+      routeMatcher.times = ep.times;
+    }
 
-    let fixtureObj = {
+    // craft static response
+    let staticResponse = {
       "fixture": "saveToSNOW/" + ep.fixture,
       "statusCode":  ep.statusCode || 201,
     }
 
-    if (ep.times){
-      fixtureObj.times = ep.times;
-    }
-    // console.log('*** url ****');
-    // console.log(ep.apiURL);
-    // console.log('***fixture obj*****');
-    // console.log(fixtureObj);
-    cy.intercept(buildTableApiPath(ep.apiURL), fixtureObj );
+    cy.intercept(routeMatcher,(req)=>{
+      req.reply(staticResponse)
+    }).as(ep.fixture);
+
   });
 
 }
