@@ -11,7 +11,6 @@
     "postbuild:cypress": "node cypress.postbuild.js",
     "build:isolated_tests": "vue-cli-service build --dest dist_testing",
     "build:testing": "npm run build:isolated_tests && npm run postbuild:cypress",
-    "start": "PORT=3001 react-scripts -r @cypress/instrument-cra start",
     "test:unit-watch": "vue-cli-service test:unit --watch ",
     "test": "jest",
     "test-file:watch": "jest --watch --no-cache src/components/ATATTextArea.spec.ts ",
