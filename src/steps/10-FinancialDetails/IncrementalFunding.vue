@@ -216,20 +216,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
-  public selectedTestItem = {};
-  public testItems = [
-    {
-      text: "Foo",
-      value: 1,
-      other: "asjdflakjfa;skl"
-    },
-    {
-      text: "Bar",
-      value: 2,
-      other: "fefefefefefefe"
-    }
-  ];
-
   public costEstimate = 0;
   public costEstimateStr = "";
   public amountRemaining = 0;
@@ -319,6 +305,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       (accumulator, current) =>  
         accumulator + Number(currencyStringToNumber(current.amt)), 0
     );
+    debugger;
     this.initialAmount = currencyStringToNumber(this.initialAmountStr);
     this.totalAmount = this.initialAmount 
       ? this.initialAmount + incrementsTotal
@@ -366,26 +353,25 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await FinancialDetails.loadIFPData();
+    const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
+    if (estimatedTOValue) {
+      this.costEstimate = currencyStringToNumber(estimatedTOValue);
+      this.costEstimateStr = toCurrencyString(this.costEstimate);
+    }
 
     if (storeData) {
       this.savedData = storeData;
       this.fundingIncrements = [...storeData.fundingIncrements];
       this.initialAmountStr = storeData.initialFundingIncrementStr;
       this.initialAmount = currencyStringToNumber(this.initialAmountStr);
-      // this.amountRemainingStr = storeData.remainingAmountStr; // EJY calculate this
-      this.amountRemaining = currencyStringToNumber(this.amountRemainingStr);
-      this.hasReturnedToPage = this.fundingIncrements.length > 0;
+
       this.calcAmounts("");
+
+      // use below for future validation ticket
+      this.hasReturnedToPage = this.fundingIncrements.length > 0;
     }
 
     await this.initializeIncrements();
-
-    if (FinancialDetails.estimatedTaskOrderValue) {
-      this.costEstimate = currencyStringToNumber(FinancialDetails.estimatedTaskOrderValue);
-      this.costEstimateStr = toCurrencyString(this.costEstimate);
-      this.amountRemaining = this.costEstimate;
-      this.amountRemainingStr = this.costEstimateStr;
-    }
 
     this.periods = Periods.periods;
     if (this.periods) {
