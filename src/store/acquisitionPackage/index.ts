@@ -223,7 +223,6 @@ const getStoreDataTableProperty = (
   storeProperty: string,
   store: AcquisitionPackageStore
 ): BaseTableDTO => {
-  debugger;
   // get specific property
   const dataProperty = (store as unknown as Record<string, BaseTableDTO>)[
     storeProperty
@@ -623,7 +622,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }): Promise<TableDTO> {
     try {
       await this.ensureInitialized();
-      debugger;
       // retrives Store TableDTO based property using property name as key
       const storeDataProperty = getStoreDataTableProperty(storeProperty, this);
       const sysId = storeDataProperty.sys_id || "";
@@ -671,8 +669,6 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.create(data);
       const savedData = await saveAction;
 
-      // EJY savedData is undefined, but data saving to database
-      debugger;
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
       if(acquisitionPackageProp === undefined)

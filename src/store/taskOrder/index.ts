@@ -51,10 +51,6 @@ export class TaskOrderStore extends VuexModule {
 
   @Action
   public async getTaskOrder(): Promise<TaskOrderDTO> {
-    debugger;
-    if (!this.initialized) {
-      debugger;
-    }
     return this.value;
   }
 

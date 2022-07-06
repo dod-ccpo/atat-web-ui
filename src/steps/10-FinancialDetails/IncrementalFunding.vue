@@ -366,7 +366,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public async loadOnEnter(): Promise<void> {
     const storeData = await FinancialDetails.loadIFPData();
-    debugger;
 
     if (storeData) {
       this.savedData = storeData;

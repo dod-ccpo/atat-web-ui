@@ -246,7 +246,6 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public deleteOptionPeriod(index: number): void {
-    debugger;
     const optionPeriod = this.optionPeriods[index];
     if(optionPeriod.id){
       this.removed.push(convertPoPToPeriod(optionPeriod));

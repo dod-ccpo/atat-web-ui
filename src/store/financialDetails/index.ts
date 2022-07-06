@@ -82,7 +82,6 @@ export class FinancialDetailsStore extends VuexModule {
   
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
-    debugger;
     if (!this.initialized) {
       await this.initialize();
     }
@@ -93,7 +92,6 @@ export class FinancialDetailsStore extends VuexModule {
     if (this.initialized) {
       return;
     }
-    debugger;
     await this.loadFundingPlanData();
 
     const sessionRestored = retrieveSession(ATAT_FINANCIAL_DETAILS__KEY);
@@ -149,7 +147,6 @@ export class FinancialDetailsStore extends VuexModule {
         
         const remainingAmountIncrements = fundingPlan.remaining_amount_increments;
         await this.setFundingIncrements(remainingAmountIncrements);
-        debugger;
 
         storeDataToSession(
           this,
@@ -181,7 +178,6 @@ export class FinancialDetailsStore extends VuexModule {
       }
       this.fundingIncrements.push(incrObj);
     });
-    debugger;
     return;
   }
 
@@ -227,15 +223,14 @@ export class FinancialDetailsStore extends VuexModule {
       const removeIncrements = removed.map(
         incr => api.fundingIncrementTable.remove(incr.sysId || "")
       );
-      debugger;
       if (removeIncrements) {
         await Promise.all(removeIncrements);
       }
-      debugger;
+
       const createOrUpdateIncrements = fundingIncrements.map(incr => saveIncrement(incr));
       const savedIncrements = await Promise.all(createOrUpdateIncrements);
-      debugger;
       const incrementSysIds = savedIncrements.map(incr => incr.sys_id);
+      // EJY should incrementSysIds be array or comma-delimited string??
 
       const IFPData = {
         initial_amount: data.initialFundingIncrementStr,
@@ -308,7 +303,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action
   public async getEstimatedTaskOrderValue(): Promise<string> {
-    debugger;
     this.ensureInitialized();
     return this.estimatedTaskOrderValue || "";
   }
@@ -331,7 +325,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Mutation
   public setEstimatedTaskOrderValue(value: string | undefined): void {
-    debugger;
     this.estimatedTaskOrderValue = value;
     storeDataToSession(
       this,
@@ -342,7 +335,6 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Mutation
   public setInitialAmount(value: string): void {
-    debugger;
     this.initialFundingIncrementStr = value;
     storeDataToSession(
       this,

@@ -85,7 +85,6 @@ export class PeriodsStore extends VuexModule {
     { periods, removed }: { periods: PeriodDTO[], removed: PeriodDTO[]}
   ): Promise<PeriodDTO[]> {
     try {
-      debugger;
       const removeRequests = removed.map(period => api.periodTable.remove(period.sys_id || ""));
       if (removeRequests) {
         await Promise.all(removeRequests);

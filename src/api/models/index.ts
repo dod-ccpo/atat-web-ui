@@ -220,7 +220,6 @@ export interface FundingPlanDTO extends BaseTableDTO {
   initial_amount: string;
   estimated_task_order_value?: string;
   remaining_amount_increments: string;
-  // remaining_amount_increments: (string | undefined)[];
 }
 export interface PeriodDTO extends BaseTableDTO {
   period_unit: string;
