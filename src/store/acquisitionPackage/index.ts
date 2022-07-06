@@ -22,7 +22,7 @@ import {
   ContractTypeDTO,
   CurrentContractDTO,
   FairOpportunityDTO,
-  FundingPlanAmountsDTO,
+  // FundingPlanAmountsDTO,
   GFEOverviewDTO,
   RequirementsCostEstimateDTO,
   OrganizationDTO,
@@ -57,7 +57,7 @@ export const StoreProperties = {
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
   FundingPlan: "fundingPlan",
-  FundingPlanAmounts: "fundingPlanAmounts",
+  // FundingPlanAmounts: "fundingPlanAmounts",
 };
 
 const initialCurrentContract = ()=> {
@@ -104,14 +104,17 @@ const initialContractType = ()=> {
   }
 }
 
-const initialFundingPlanAmounts = () => {
-  return {
-    remaining_amount: "",
-    initial_amount: "",
-    estimated_task_order_value: "",
-    remaining_amount_increments: [""],
-  }
-}
+// const initialFundingPlan = () => {
+//   return {
+//     attachment: "",
+//     extension: "",
+//     file_name: "",
+//     remaining_amount: "",
+//     initial_amount: "",
+//     estimated_task_order_value: "",
+//     remaining_amount_increments: [""],
+//   }
+// }
 
 const initialContact = () => {
   return {
@@ -227,7 +230,8 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
-      fundingPlanAmounts: store.fundingPlanAmounts,
+      fundingPlan: store.fundingPlan // EJY
+      // fundingPlanAmounts: store.fundingPlanAmounts,
     })
   );
 };
@@ -274,8 +278,8 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
-  fundingPlans: string | null = null;
-  fundingPlanAmounts: FundingPlanAmountsDTO | null = null;
+  fundingPlan: string | null = null;
+  // fundingPlanAmounts: FundingPlanAmountsDTO | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
@@ -365,18 +369,18 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
-  @Action
-  public async setFundingPlanAmounts(value: FundingPlanAmountsDTO): Promise<void> {
-    this.doSetFundingPlanAmounts(value);
-  }
+  // @Action
+  // public async setFundingPlanAmounts(value: FundingPlanAmountsDTO): Promise<void> {
+  //   this.doSetFundingPlanAmounts(value);
+  // }
 
-  @Mutation
-  public doSetFundingPlanAmounts(value: FundingPlanAmountsDTO): void {
-    debugger;
-    this.fundingPlanAmounts = this.fundingPlanAmounts
-      ? Object.assign(this.fundingPlanAmounts, value)
-      : value;
-  }
+  // @Mutation
+  // public doSetFundingPlanAmounts(value: FundingPlanAmountsDTO): void {
+  //   debugger;
+  //   this.fundingPlanAmounts = this.fundingPlanAmounts
+  //     ? Object.assign(this.fundingPlanAmounts, value)
+  //     : value;
+  // }
 
   @Mutation
   public setContractType(value: ContractTypeDTO): void {
@@ -403,8 +407,8 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setFundingPlans(value: string): void {
-    this.fundingPlans = value;
+  public setFundingPlan(value: string): void {
+    this.fundingPlan = value;
   }
 
   @Mutation
@@ -442,7 +446,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
-    this.fundingPlanAmounts = sessionData.fundingPlanAmounts;
+    // this.fundingPlanAmounts = sessionData.fundingPlanAmounts;
   }
 
   @Action({ rawError: true })
@@ -476,13 +480,13 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
-          this.setFundingPlans("");
+          // this.setFundingPlan(initialFundingPlan());
+          // this.setFundingPlanAmounts(initialFundingPlanAmounts())
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
           this.setGFEOverview(initialGFE());
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
-          this.setFundingPlanAmounts(initialFundingPlanAmounts())
           this.setSensitiveInformation(initialSensitiveInformation());
           this.setAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
@@ -538,7 +542,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
     [StoreProperties.FundingPlan]: api.fundingPlanTable,
-    [StoreProperties.FundingPlanAmounts]: api.fundingPlanAmountsTable,
+    // [StoreProperties.FundingPlanAmounts]: api.fundingPlanAmountsTable,
   }
 
   //mapping store propertties name to acquisition package properties
@@ -555,7 +559,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
     [StoreProperties.FundingPlan]: "funding_plan",
-    [StoreProperties.FundingPlanAmounts]: "funding_plan_amounts",
+    // [StoreProperties.FundingPlanAmounts]: "funding_plan_amounts",
   }
 
   @Action({ rawError: true })
@@ -711,6 +715,7 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.create(data);
       const savedData = await saveAction;
 
+      // EJY savedData is undefined, but data saving to database
       debugger;
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];

@@ -216,14 +216,18 @@ export interface FundingPlanDTO extends BaseTableDTO {
   attachment: string;
   extension: string;
   file_name: string;
-}
-
-export interface FundingPlanAmountsDTO extends BaseTableDTO {
   remaining_amount: string;
   initial_amount: string;
   estimated_task_order_value?: string;
   remaining_amount_increments: (string | undefined)[];
 }
+
+// export interface FundingPlanAmountsDTO extends BaseTableDTO {
+//   remaining_amount: string;
+//   initial_amount: string;
+//   estimated_task_order_value?: string;
+//   remaining_amount_increments: (string | undefined)[];
+// }
 
 export interface PeriodDTO extends BaseTableDTO {
   period_unit: string;
