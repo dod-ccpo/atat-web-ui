@@ -22,7 +22,7 @@
                         class="bg-info-lighter px-6 py-6 mr-5"
                         style="border-radius: 4px; width: 270px"
                       >
-                        <span class="h1 mb-0">$147,469.04</span>
+                        <span id="AvailableFunds" class="h1 mb-0">${{ availableFundsStr }}</span>
                         <p class="font-weight-bold body-lg mb-0 pb-5">Available Funds</p>
                         <p class="mb-0 pb-2">
                           Your remaining portfolio balance from all of your active task
@@ -31,7 +31,9 @@
                       </div>
                       <div class="pb-4">
                         <p class="text--base-darkest pt-4 mb-0">Total Portfolio Funds</p>
-                        <span class="h2 mb-0">$200,000.00</span>
+                        <span id="TotalPortfolioFunds" class="h2 mb-0">
+                          ${{ totalPortfolioFundsStr }}
+                        </span>
                         <p class="text--base-dark mb-0">
                           Total value of your active task orders
                         </p>
@@ -109,12 +111,14 @@ export default class PortfolioDashboard extends Vue {
       : "New Acquisition";
   }
 
-  public availableFunds = 0;
-  public availableFundsStr = "";
+  public totalPortfolioFunds = 0;
+  public totalPortfolioFundsStr = "";
   public fundsSpent = 0;
   public fundsSpentStr = "";
+  public availableFunds = 0;
+  public availableFundsStr = "";
   public fundsSpentPercent = 0;
-
+ 
   public timeToExpiration = "";
   public runOutOfFundsMonth = "";
 
@@ -134,8 +138,11 @@ export default class PortfolioDashboard extends Vue {
 
   public costs: CostsDTO[] = [];
 
-  // public calculateTotalCosts
-
+  public async calculateFundsSpent(): Promise<void> {
+    this.costs.forEach((cost) => {
+      this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
+    });
+  }
 
   portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
 
@@ -146,7 +153,13 @@ export default class PortfolioDashboard extends Vue {
     console.log({data});
 
     this.taskOrder = data.taskOrder
+    this.totalPortfolioFunds = parseFloat(this.taskOrder.funds_obligated);
+    this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
+
     this.costs = data.costs;
+    await this.calculateFundsSpent();
+    this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
+    this.availableFundsStr = toCurrencyString(this.availableFunds);
   }
 
 }
