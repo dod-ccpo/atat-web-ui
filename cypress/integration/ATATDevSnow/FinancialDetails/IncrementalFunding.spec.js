@@ -4,9 +4,12 @@ import fd from "../../../selectors/financialDetails.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 describe("Test suite: Financial Details Step: Severability and Incremental Funding substep", () => {
+  
+  
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
+  
   });
     
   it("TC1: Incremental Funding on the Vertical Stepper is active", () => {

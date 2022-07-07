@@ -8,6 +8,7 @@ const buildAttachmentApiPath = (attachment)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
   return `${baseAPIUrl}api/now/${attachment}`;
 }
+
 const testNames = window.Cypress.spec.name.toLowerCase().split("/");
 const testSuite = testNames[testNames.length-2];
 const spec = testNames[testNames.length-1].split(".")[0];
@@ -565,11 +566,10 @@ export function saveToSNOW(testCase){
      * middleware needed for routes to executed in 
      * the order listed
      */
-
-    const isAttachment = ep.apiURL.indexOf('attachment') > -1;
+    const isAttachmentAPI = ep.apiURL.indexOf('attachment') > -1;
     const routeMatcher = {
       "method": ep.action,
-      "url": isAttachment ? buildAttachmentApiPath(ep.apiURL): buildTableApiPath(ep.apiURL),
+      "url": isAttachmentAPI ? buildAttachmentApiPath(ep.apiURL): buildTableApiPath(ep.apiURL),
       "middleware": true
     }
     if (ep.times){
@@ -581,6 +581,7 @@ export function saveToSNOW(testCase){
       "fixture": "saveToSNOW/" + ep.fixture,
       "statusCode":  ep.statusCode || 201,
     }
+
     cy.intercept(routeMatcher,(req)=>{
       req.reply(staticResponse)
     }).as(ep.fixture);
