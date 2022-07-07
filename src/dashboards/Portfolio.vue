@@ -35,7 +35,7 @@
                         </div>
                       </v-col>
                       <v-col>
-                        <p class="text--base-darkest pt-4 mb-0">Total Portfolio Funds</p>
+                        <p class="text--base-darkest pt-1 mb-0">Total Portfolio Funds</p>
                         <span id="TotalPortfolioFunds" class="h2 mb-0">
                           ${{ totalPortfolioFundsStr }}
                         </span>
