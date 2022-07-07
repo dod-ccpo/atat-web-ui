@@ -1,0 +1,25 @@
+{
+    "result": {
+        "size_bytes": "16674",
+        "file_name": "dd1155.pdf",
+        "sys_mod_count": "0",
+        "average_image_color": "",
+        "image_width": "",
+        "sys_updated_on": "2022-07-07 19:58:02",
+        "sys_tags": "",
+        "table_name": "x_g_dis_atat_funding_plan",
+        "sys_id": "bf7753e987641510bc86b889cebb35f1",
+        "image_height": "",
+        "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
+        "download_link": "https://disastorefrontdev.servicenowservices.com/api/now/attachment/bf7753e987641510bc86b889cebb35f1/file",
+        "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryQAtHP1oB6JAoJDnN",
+        "sys_created_on": "2022-07-07 19:58:02",
+        "size_compressed": "7888",
+        "compressed": "true",
+        "state": "pending",
+        "table_sys_id": "bf7753e987641510bc86b889cebb35c1",
+        "chunk_size_bytes": "700000",
+        "hash": "9c80197fe3c295141b523afc8ac725528eac2f2639301d7a8892c3100b0c4771",
+        "sys_created_by": "tony.sumner-ctr@ccpo.mil"
+    }
+}

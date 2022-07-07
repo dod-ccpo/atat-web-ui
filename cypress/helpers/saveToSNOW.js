@@ -305,7 +305,118 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     acqPackageEndPoints =  acqPackageEndPoints.concat(incrementalFunding);
   };
- 
+
+  if (spec === "mipr"){
+    const mipr = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_attachment_POST_1',
+        'apiURL': 'attachment/file**',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_fundingPlan_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_plan/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_attachment_POST_1',
+        'apiURL': 'attachment/file**',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingPlan_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_plan/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 3,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_attachment_DELETE_1',
+        'apiURL': 'attachment/**',
+        'action': 'DELETE',
+        'times': 1,
+        'statusCode': 204,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingPlan_DELETE_1',
+        'apiURL': 'x_g_dis_atat_funding_plan/**',
+        'action': 'DELETE',
+        'times': 1,
+        'statusCode': 204,
+        'testCase' : 3
+      },
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    acqPackageEndPoints =  acqPackageEndPoints.concat(mipr);
+  };
+  if (spec === "requirementscostestimate"){
+    const requirementsCostEstimate = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_requirementsCostEstimate_POST_1',
+        'apiURL': 'x_g_dis_atat_requirements_cost_estimate',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    acqPackageEndPoints =  acqPackageEndPoints.concat(requirementsCostEstimate);
+  }
 
   /** otherContractConsiderations */
   if (spec === "conflictofinterest"){
