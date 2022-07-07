@@ -4,8 +4,6 @@ import fd from "../../../selectors/financialDetails.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 describe("Test suite: Financial Details Step: Severability and Incremental Funding substep", () => {
-  let counter = 0;
-
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();
@@ -175,7 +173,7 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
       
   });
   
-  it.only("TC6: Validations: Severability and Incremental Funding Substep ", () => {
+  it("TC6: Validations: Severability and Incremental Funding Substep ", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepIFLink, " Severability and Incremental Funding ").click();
