@@ -226,14 +226,15 @@ export interface DOWServiceOfferingGroup {
   serviceOfferings: DOWServiceOffering[];
 }
 
-export interface fundingIncrements {
+export interface fundingIncrement {
   qtr: string;
   amt: string;
   order: number;
+  sysId?: string;
 }
 export interface IFPData {
   initialFundingIncrementStr: string;
-  fundingIncrements: fundingIncrements[];
+  fundingIncrements: fundingIncrement[];
 }
 
 export interface baseGInvoiceData {

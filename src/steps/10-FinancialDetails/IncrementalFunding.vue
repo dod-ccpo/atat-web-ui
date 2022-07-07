@@ -24,7 +24,7 @@
                 </label>
                 <ATATTextField
                   id="InitialAmount"
-                  :value.sync="initialPaymentStr"
+                  :value.sync="initialAmountStr"
                   :alignRight="true"
                   :isCurrency="true"
                   :showErrorMessages="false"
@@ -55,21 +55,21 @@
               <hr class="my-6" />
 
               <div
-                v-for="(payment, index) in payments"
+                v-for="(fundingIncrement, index) in fundingIncrements"
                 :key="index"              
               >
 
                 <div class="d-flex justify-space-between align-center mb-4">
                   <ATATSelect
                     :id="'IncrementPeriod' + index"
-                    :items="getIncrementPeriodsForDropdown(index)"
+                    :items="getFiscalQuarters(index)"
                     width="190"
-                    :selectedValue.sync="payments[index].qtr"
+                    :selectedValue.sync="fundingIncrements[index].qtr"
                     class="mr-4"
                   />
                   <ATATTextField
                     :id="'Amount' + index"
-                    :value.sync="payments[index].amt"
+                    :value.sync="fundingIncrements[index].amt"
                     :alignRight="true"
                     :isCurrency="true"
                     :showErrorMessages="false"
@@ -83,8 +83,8 @@
                   />
                   <v-btn
                     icon
-                    @click="deletePayment(index)"
-                    :disabled="payments.length === 1"
+                    @click="deleteFundingIncrement(index)"
+                    :disabled="fundingIncrements.length === 1"
                   >
                     <v-icon> delete </v-icon>
                   </v-btn>
@@ -109,7 +109,7 @@
 
               <v-btn
                 id="AddIncrementButton"
-                v-if="payments.length < maxPayments"
+                v-if="fundingIncrements.length < maxPayments"
                 plain
                 text
                 class="_text-link mt-5"
@@ -190,7 +190,7 @@ import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 
 import { PeriodDTO } from "@/api/models";
-import { SelectData, fundingIncrements, IFPData } from "../../../types/Global";
+import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
@@ -216,14 +216,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
-  public incrementPeriods: SelectData[] = [];
-
   public costEstimate = 0;
   public costEstimateStr = "";
   public amountRemaining = 0;
   public amountRemainingStr = "";
-  public initialPayment = 0;
-  public initialPaymentStr = "";
+  public initialAmount = 0;
+  public initialAmountStr = "";
   public totalAmount: number | null = null;
 
   public errorMissingInitialIncrement = false;
@@ -234,12 +232,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   // use in future ticket for validation returning to page to show error messages
   public hasReturnedToPage = false;
 
-  public payments: { qtr: string, amt: string, order: number }[] = [];
+  public fundingIncrements: fundingIncrement[] = [];
 
   private get currentData(): IFPData {
     return {
-      initialFundingIncrementStr: this.initialPaymentStr,
-      fundingIncrements: this.payments,
+      initialFundingIncrementStr: this.initialAmountStr,
+      fundingIncrements: this.fundingIncrements,
     };
   };
 
@@ -247,6 +245,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     initialFundingIncrementStr: "",
     fundingIncrements: [],
   }
+
+  public fiscalQuarters: { text: string, order: number }[] = [];
 
   public async initializeIncrements(): Promise<void> {
     let qtr = this.currentQuarter;
@@ -258,51 +258,65 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // increment quarter
       qtr = qtr === 4 ? 1 : qtr + 1;
       const periodStr = ordinal + " QTR FY" + year;
-      this.incrementPeriods.push({ text: periodStr, value: periodStr});
+      this.fiscalQuarters.push({ text: periodStr, order: i + 1 });
 
-      if (i === 0 && this.payments.length === 0) {
+      if (i === 0 && this.fundingIncrements.length === 0) {
         // default to 1st option if no store data
-        this.payments.push({qtr: periodStr, amt: "", order: 1})
+        this.fundingIncrements.push({ qtr: periodStr, amt: "", order: 1, sysId: "" })
       }
     }
   }
 
-  public deletePayment(index: number): void {
-    this.payments.splice(index, 1);
+  public removedIncrements: fundingIncrement[] = [];
+
+  public deleteFundingIncrement(index: number): void {
+    if (this.savedData.fundingIncrements && this.fundingIncrements[index].sysId) {
+      const incr = this.savedData.fundingIncrements[index];
+      if (incr) {
+        this.removedIncrements.push(incr);
+      }
+    }
+
+    this.fundingIncrements.splice(index, 1);
     this.calcAmounts("");
   }
 
   public addIncrement(): void {
-    const lastPayment = this.payments.at(-1);
-    const lastSelectedQtr = lastPayment?.qtr;
-    let selectedQtrIndex = this.incrementPeriods.findIndex(p => p.text === lastSelectedQtr);
+    const lastFundingIncrement = this.fundingIncrements.at(-1);
+    const lastSelectedQtr = lastFundingIncrement?.qtr;
+    let selectedQtrIndex = this.fiscalQuarters.findIndex(p => p.text === lastSelectedQtr);
     let nextQtr;
-    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.incrementPeriods.length) {
-      nextQtr = this.incrementPeriods[selectedQtrIndex + 1].text;
+    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.fiscalQuarters.length) {
+      nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
     }
     if (nextQtr) {
-      const newIncrement = { qtr: nextQtr, amt: "", order: this.payments.length - 1 }
-      this.payments.push(newIncrement);
+      const newIncrement = { 
+        qtr: nextQtr, 
+        amt: "", 
+        order: this.fundingIncrements.length + 1,
+        sysId: "" 
+      }
+      this.fundingIncrements.push(newIncrement);
     }
   }
 
   public calcAmounts(field: string): void {
-    let incrementsTotal = this.payments.reduce(
+    let incrementsTotal = this.fundingIncrements.reduce(
       (accumulator, current) =>  
         accumulator + Number(currencyStringToNumber(current.amt)), 0
     );
-    this.initialPayment = currencyStringToNumber(this.initialPaymentStr);
-    this.totalAmount = this.initialPayment 
-      ? this.initialPayment + incrementsTotal
+    this.initialAmount = currencyStringToNumber(this.initialAmountStr);
+    this.totalAmount = this.initialAmount 
+      ? this.initialAmount + incrementsTotal
       : incrementsTotal;
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
     this.amountRemainingStr = this.amountRemaining ? toCurrencyString(this.amountRemaining) : "";
-    this.initialPaymentStr = this.initialPayment ? toCurrencyString(this.initialPayment) : "";
+    this.initialAmountStr = this.initialAmount ? toCurrencyString(this.initialAmount) : "";
     this.$nextTick(() => {
-      this.payments.forEach((pmt) => {
-        return pmt.amt = pmt.amt && pmt.amt !== "0.00" 
-          ? toCurrencyString(currencyStringToNumber(pmt.amt)) 
+      this.fundingIncrements.forEach((incr) => {
+        return incr.amt = incr.amt && incr.amt !== "0.00" 
+          ? toCurrencyString(currencyStringToNumber(incr.amt)) 
           : ""
       });
     });
@@ -310,52 +324,53 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     // validation on blur for initial and first increments required
     let amt;
     if (field === "initialIncrement") {
-      amt = parseFloat(this.initialPaymentStr);
+      amt = parseFloat(this.initialAmountStr);
       this.errorMissingInitialIncrement = amt === 0 || isNaN(amt);
     } else if (field === "increment0") {
-      amt = parseFloat(this.payments[0].amt);
+      amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
   }
 
-  public getIncrementPeriodsForDropdown(index: number): SelectData[] {
+  public getFiscalQuarters(index: number): SelectData[] {
     if (index === 0) {
-      return this.incrementPeriods;
+      return this.fiscalQuarters;
     } 
 
-    const firstSelectedQtr = this.payments[0].qtr;
+    const firstSelectedQtr = this.fundingIncrements[0].qtr;
     const firstSelectedQtrIndex 
-      = this.incrementPeriods.findIndex(p => p.text === firstSelectedQtr);
+      = this.fiscalQuarters.findIndex(p => p.text === firstSelectedQtr);
 
     let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
-    lastPossibleIndex = lastPossibleIndex > this.incrementPeriods.length 
-      ? this.incrementPeriods.length
+    lastPossibleIndex = lastPossibleIndex > this.fiscalQuarters.length 
+      ? this.fiscalQuarters.length
       : lastPossibleIndex;
-    let optionsArr = this.incrementPeriods.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
+    let optionsArr = this.fiscalQuarters.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
 
     return optionsArr;
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await FinancialDetails.getIFPData();
+    const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
+    if (estimatedTOValue) {
+      this.costEstimate = currencyStringToNumber(estimatedTOValue);
+      this.costEstimateStr = toCurrencyString(this.costEstimate);
+    }
+
+    const storeData = await FinancialDetails.loadIFPData();
     if (storeData) {
-      this.initialPaymentStr = storeData.initialFundingIncrementStr;
-      this.savedData.initialFundingIncrementStr = this.initialPaymentStr;
-      this.payments = storeData.fundingIncrements;
-      this.savedData.fundingIncrements = this.payments;
-      this.hasReturnedToPage = this.payments.length > 0;
+      this.savedData = storeData;
+      this.fundingIncrements = [...storeData.fundingIncrements];
+      this.initialAmountStr = storeData.initialFundingIncrementStr;
+      this.initialAmount = currencyStringToNumber(this.initialAmountStr);
+
       this.calcAmounts("");
+
+      // use below for future validation ticket
+      this.hasReturnedToPage = this.fundingIncrements.length > 0;
     }
 
     await this.initializeIncrements();
-
-    if (FinancialDetails.estimatedTaskOrderValue) {
-      this.costEstimate = currencyStringToNumber(FinancialDetails.estimatedTaskOrderValue);
-
-      this.costEstimateStr = toCurrencyString(this.costEstimate);
-      this.amountRemaining = this.costEstimate;
-      this.amountRemainingStr = this.costEstimateStr;
-    }
 
     this.periods = Periods.periods;
     if (this.periods) {
@@ -396,10 +411,30 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // FUTURE TICKET VALIDATION: first time user clicks continue:
       // • check if same quarter selected for more than one dropdown
       // • check if over/under funded - AC 4 which was crossed out
-      // set a flag if error has been show. if so, user can continue
+      // set a flag if error has been shown. if so, user can continue
+
+      // Set chronological order of fiscal quarters in fundingIncrements
+      let sortedIncrements: fundingIncrement[] = []; 
+      this.fundingIncrements.forEach((incr) => {
+        incr.order = this.fiscalQuarters.findIndex(q => q.text === incr.qtr) + 1;
+        sortedIncrements.push(incr);
+      });
+      sortedIncrements.sort((a,b) => { 
+        return a.order > b.order ? 1 : -1 
+      })
+      sortedIncrements.forEach((incr, i) => {
+        incr.order = i + 1;
+      });
+
+      this.fundingIncrements = sortedIncrements;
 
       if (this.hasChanged()) {
-        FinancialDetails.setIFPData(this.currentData);
+        FinancialDetails.saveIFPData(
+          { 
+            data: this.currentData, 
+            removed: this.removedIncrements 
+          }
+        );
       }
     } catch (error) {
       console.log(error);
