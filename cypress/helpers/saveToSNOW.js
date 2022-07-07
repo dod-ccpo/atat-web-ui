@@ -8,13 +8,12 @@ const buildAttachmentApiPath = (attachment)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
   return `${baseAPIUrl}api/now/${attachment}`;
 }
-
 const testNames = window.Cypress.spec.name.toLowerCase().split("/");
 const testSuite = testNames[testNames.length-2];
 const spec = testNames[testNames.length-1].split(".")[0];
 const fixtureFolder = testSuite + "/" + spec;
 
-export function saveToSNOW(){
+export function saveToSNOW(testCase){
   let acqPackageEndPoints = [
     {
       'fixture': 'projectOverview',
@@ -131,6 +130,182 @@ export function saveToSNOW(){
       },
     ])
   }
+  if (spec === "incrementalfunding"){
+    const incrementalFunding = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_2',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_requirementsCostEstimate_POST_1',
+        'apiURL': 'x_g_dis_atat_requirements_cost_estimate',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 1,
+        'statusCode': 200,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 1,
+        'statusCode': 200,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 1,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 1,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC6_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'testCase' : 6
+      },
+      {
+        'fixture': fixtureFolder + '/TC6_taskOrder_POST_2',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 6
+      },
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    acqPackageEndPoints =  acqPackageEndPoints.concat(incrementalFunding);
+  };
+ 
 
   /** otherContractConsiderations */
   if (spec === "conflictofinterest"){
@@ -295,7 +470,6 @@ export function saveToSNOW(){
       "fixture": "saveToSNOW/" + ep.fixture,
       "statusCode":  ep.statusCode || 201,
     }
-    debugger;
     cy.intercept(routeMatcher,(req)=>{
       req.reply(staticResponse)
     }).as(ep.fixture);
