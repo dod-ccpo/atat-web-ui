@@ -67,7 +67,6 @@ export default class ShortPoPWarning extends Vue {
   private totalTime = 0
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
-    console.log(periods)
     // this.savedData = periods.map(period=> {
     //
     //   return {

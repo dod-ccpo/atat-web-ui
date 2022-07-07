@@ -443,7 +443,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       id: null,
       order: 1,
     }];
-
+    console.log(this.totalPoPDuration)
 
     this.setTotalPoP();
   }
@@ -454,12 +454,11 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
       const valid = this.optionPeriods.every(peroid=>peroid.duration);
       const hasChanged = valid && hasChanges(this.savedData, this.currentData);
+      await AcquisitionPackage.setTotalPoPDuration(this.totalPoPDuration)
 
       if (hasChanged) {
         const removed = this.removed;
-        await Periods.savePeriod({periods: this.currentData, removed});
-        await AcquisitionPackage.setTotalPoPDuration(this.totalPoPDuration)
-      }
+        await Periods.savePeriod({periods: this.currentData, removed});}
     } catch (error) {
       throw new Error('error saving period data');
     }

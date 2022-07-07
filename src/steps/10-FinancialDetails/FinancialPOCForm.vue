@@ -153,7 +153,6 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
   }
 
   private hasChanged(): boolean {
-    console.log(this.savedData)
     return hasChanges(this.currentData, this.savedData);
   }
 
@@ -184,7 +183,6 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
     });
     const storeData = await AcquisitionPackage.loadContactInfo("Financial POC");
     this.savedData = storeData;
-    console.log(storeData)
     if (storeData) {
 
       this.selectedRole = storeData.role;
@@ -246,7 +244,6 @@ export default class FinancialPOCForm extends Mixins(SaveOnLeave) {
         this.savedData.phone = phoneNumber;
       }
     }
-    console.log(this.loaded)
     this.$nextTick(()=> this.loaded = true);
   }
 

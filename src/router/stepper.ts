@@ -105,6 +105,7 @@ import {
   Upload7600Resolver,
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
+  ShortPoPResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -659,6 +660,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.ShortPoPWarning,
         completePercentageWeight: 1,
         component: ShortPoPWarning,
+        routeResolver: ShortPoPResolver
       },
     ]
   },

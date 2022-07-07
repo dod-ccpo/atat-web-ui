@@ -509,6 +509,19 @@ export const IncrementalFundingResolver = (): string => {
   return routeNames.IncrementalFunding;
 }
 
+export const ShortPoPResolver = (current: string): string => {
+  const totalDuration = AcquisitionPackage.totalPOPDuration;
+  const cutOff = 274
+
+  if (totalDuration < cutOff) {
+    return routeNames.ShortPoPWarning;
+  }
+
+  return current === routeNames.FinancialPOCForm
+    ? routeNames.ReviewRequiredFormsStepOne
+    : routeNames.FinancialPOCForm
+}
+
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
   AcorsRouteResolver,
@@ -522,6 +535,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
+  ShortPoPResolver,
 };
 
 // add path resolvers here 
