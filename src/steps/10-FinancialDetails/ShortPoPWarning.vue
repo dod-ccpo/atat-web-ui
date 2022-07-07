@@ -64,42 +64,5 @@ import AcquisitionPackage from "@/store/acquisitionPackage";
 
 export default class ShortPoPWarning extends Vue {
   private routeNames = routeNames;
-  private totalTime = 0
-  public async loadOnEnter(): Promise<void> {
-    const periods = await Periods.loadPeriods();
-    // this.savedData = periods.map(period=> {
-    //
-    //   return {
-    //     option_order: period.option_order,
-    //     period_unit_count: period.period_unit_count,
-    //     period_unit: period.period_unit,
-    //     period_type: period.period_type,
-    //     sys_id: period.sys_id,
-    //   }
-    // });
-    //
-    // this.optionPeriods = periods.length ? periods.map(period=> {
-    //
-    //   const optionPeriod: PoP = {
-    //
-    //     duration: Number(period.period_unit_count || ""),
-    //     unitOfTime: period.period_unit,
-    //     id: period.sys_id || "",
-    //     order: Number(period.option_order),
-    //   };
-    //
-    //   return optionPeriod;
-    // }) : [ {
-    //   duration:null ,
-    //   unitOfTime: "Year",
-    //   id: null,
-    //   order: 1,
-    // }];
-
-  }
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-    this.totalTime = AcquisitionPackage.totalPOPDuration
-  }
 }
 </script>
