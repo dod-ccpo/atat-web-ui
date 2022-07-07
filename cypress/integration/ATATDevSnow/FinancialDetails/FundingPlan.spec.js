@@ -128,7 +128,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
   });
 
 
-  it("TC5: Select MIPR as Funding Request type", () => {
+  it.only("TC5: Select MIPR as Funding Request type", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;

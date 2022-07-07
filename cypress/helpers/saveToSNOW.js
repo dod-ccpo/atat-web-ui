@@ -1,8 +1,12 @@
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
-  return `${baseAPIUrl}/api/now/table/${tableName}`;
-  //https://disastorefrontdev.servicenowservices.com/api/now/table/${tableName}
+  return `${baseAPIUrl}api/now/table/${tableName}`;
+}
+
+const buildAttachmentApiPath = (attachment)=> {
+  const baseAPIUrl = Cypress.env("BASE_API_URL");
+  return `${baseAPIUrl}api/now/${attachment}`;
 }
 
 const testNames = window.Cypress.spec.name.toLowerCase().split("/");
@@ -45,14 +49,90 @@ export function saveToSNOW(){
       'action': 'POST',
     },
   ]
-  const financialDetailsEndPoints = [
-    {
-      'fixture': 'fairOpportunity',
-      'apiURL': 'x_g_dis_atat_fair_opportunity',
-      'action': 'POST',
-    },
-  ]
-  
+  // const financialDetailsEndPoints = [
+  //   {
+  //     'fixture': 'fairOpportunity',
+  //     'apiURL': 'x_g_dis_atat_fair_opportunity',
+  //     'action': 'POST',
+  //   },
+  // ]
+
+  /** financialDetails */
+  if (spec === "fundingplan"){
+    acqPackageEndPoints =  acqPackageEndPoints.concat([
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_2',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_2',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingPlan_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_plan/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_attachment_POST_1',
+        'apiURL': 'attachment/file**',
+        'action': 'POST',
+        'times': 1
+      },
+    ])
+  }
+
+  /** otherContractConsiderations */
   if (spec === "conflictofinterest"){
     acqPackageEndPoints =  acqPackageEndPoints.concat([
       {
@@ -190,24 +270,20 @@ export function saveToSNOW(){
       }
     ]);
   }
-    
-  
-  
-  debugger;
-  
 
   acqPackageEndPoints.concat(
     contractDetailsEndPoints,
-    financialDetailsEndPoints,
     
   ).forEach((ep)=>{
     /**
      * middleware needed for routes to executed in 
      * the order listed
      */
+
+    const isAttachment = ep.apiURL.indexOf('attachment') > -1;
     const routeMatcher = {
       "method": ep.action,
-      "url": buildTableApiPath(ep.apiURL),
+      "url": isAttachment ? buildAttachmentApiPath(ep.apiURL): buildTableApiPath(ep.apiURL),
       "middleware": true
     }
     if (ep.times){
@@ -219,7 +295,7 @@ export function saveToSNOW(){
       "fixture": "saveToSNOW/" + ep.fixture,
       "statusCode":  ep.statusCode || 201,
     }
-
+    debugger;
     cy.intercept(routeMatcher,(req)=>{
       req.reply(staticResponse)
     }).as(ep.fixture);
