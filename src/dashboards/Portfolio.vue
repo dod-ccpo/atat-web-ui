@@ -23,12 +23,12 @@
                     <v-row>
                       <v-col>
                         <div
-                          class="bg-info-lighter px-6 py-6 mr-5"
+                          class="bg-info-lighter px-6 py-6"
                           style="border-radius: 4px;"
                         >
                           <span id="AvailableFunds" class="h1 mb-0">${{ availableFundsStr }}</span>
                           <p class="font-weight-bold mb-0 pb-5">Available Funds</p>
-                          <p class="mb-0 pb-2 font-size-14">
+                          <p class="mb-0 font-size-14">
                             Your remaining portfolio balance from all of your active task
                             orders
                           </p>
