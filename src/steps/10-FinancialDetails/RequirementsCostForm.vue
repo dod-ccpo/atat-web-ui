@@ -53,20 +53,18 @@ export default class RequirementsCostForm extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await FinancialDetails.estimatedTaskOrderValue;
-    if (storeData) {
-      this.costEstimate = storeData || "";
+    const estimatedTaskOrderValue = await FinancialDetails.getEstimatedTaskOrderValue();
+    if (estimatedTaskOrderValue) {
+      this.costEstimate = estimatedTaskOrderValue;
+      this.savedData.estimatedTaskOrderValue = estimatedTaskOrderValue;
     }
-    const estimatedTaskOrderValue = FinancialDetails.estimatedTaskOrderValue;
-    this.savedData.estimatedTaskOrderValue = estimatedTaskOrderValue || "";
-
   };
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        FinancialDetails.
-          setEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
+        await FinancialDetails.
+          saveEstimatedTaskOrderValue(this.currentData.estimatedTaskOrderValue || "");
       }
     } catch (error) {
       console.log(error);

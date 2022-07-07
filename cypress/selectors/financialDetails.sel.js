@@ -27,18 +27,25 @@ module.exports = {
   bureauLink: "#PanelWrap ul li :nth-child(1)",
   ginvoiceLoginLink:":nth-child(7) > :nth-child(2) > a > span",
 
-  //Did tou use G-Invoicing for your funding request?
+  //Did you use G-Invoicing for your funding request?
   ginvoiceYesRadioBtn: "#Radio_Yes",
   ginvoiceNoRadioBtn: "#Radio_No",
   gInvoiceActiveRadioOption: "#GInvoicingOptions_radio_group_control .v-item--active",
   gInvoiceErrorRadioOption: "#GInvoicingOptions_radio_group_control  .field-error",
   yesLabel: "#GInvoicingOptions_radio_group_control :nth-child(1) > .v-label",
-  noLabel:"#GInvoicingOptions_radio_group_control :nth-child(2) > .v-label",
+  noLabel: "#GInvoicingOptions_radio_group_control :nth-child(2) > .v-label",
+  gInvoiceOrderNo: "#OrderNumber_Label",
+  orderNoSearchInput: "#OrderNumber_SearchInput",
+  orderNosearchAlertSucess: "#OrderNumber_SearchAlertSuccess",
+  orderNosearchError: "#SearchWrapper .field-error",
+  orderNoSearchBtn: "#OrderNumber_SearchButton",
+  
   //Let's Gather Info about your MIPR
   miprTextLabel: "#MIPRNumber_text_field_label",
   miprTooltipBtn: "#TooltipButton_MIPRNumber",
   miprTooltipText: "#TooltipText_MIPRNumber",
   miprTextbox: "#MIPRNumber_text_field",
+  miprTextboxError:"#MIPRNumber_text_field_control  .field-error",
   UploadLabel:"h3.mb-5",
   form: "form.v-form",
   fileUploadSection: ".atat-file-upload",
@@ -47,6 +54,23 @@ module.exports = {
   fundingfileuploadError: "form.v-form .field-error",
   uploadedFile0Link: "#FileLink00",
   uploadedFile0RemoveBtn: "#RemoveFile00",
+
+  //Let's gather info about your 7600A and 7600B
+  gtcNoLabel: "#GeneralTermsAndConditions_text_field_label",
+  gtcTooltipBtn: "#TooltipButton_GeneralTermsAndConditions",
+  gtcTooltipText: "#TooltipText_GeneralTermsAndConditions",
+  gtcNoInput: "#GeneralTermsAndConditions_text_field",
+  gtcNoError: "#GeneralTermsAndConditions_text_field_control  .field-error",
+  orderNoLabel: "#OrderNumber_text_field_label",
+  orderNoTooltipBtn: "#TooltipButton_OrderNumber",
+  orderNoTooltipText: "#TooltipText_OrderNumber",
+  orderNoInput: "#OrderNumber_text_field",
+  orderNoError: "#OrderNumber_text_field_control  .field-error",
+  uploadTitle: ".h4",
+  browserToUploadLink: "#BrowseToUpload",
+  uploadFileName0: "#File00",
+  uploadFileName1: "#File01",
+  uploadAlertText:"#UPload7600Alert",
   
   //severability and incremental funding
   iFundIntroTxt:"p.mb-10",

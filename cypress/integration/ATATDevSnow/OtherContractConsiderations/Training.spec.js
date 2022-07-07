@@ -4,7 +4,7 @@ import occ from "../../../selectors/occ.sel";
 
 
 describe("Test suite: OCC: Training substep", () => {
-
+  
   beforeEach(() => {
     bootstrapMockApis();
     cy.launchATAT();

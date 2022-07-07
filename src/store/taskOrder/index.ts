@@ -16,6 +16,7 @@ import {
   retrieveSession,
 } from "../helpers";
 import { convertColumnReferencesToValues } from "@/api/helpers";
+import FinancialDetails from "../financialDetails";
 
 const ATAT_TASK_ORDER_KEY = "ATAT_TASK_ORDER_KEY";
 
@@ -47,6 +48,11 @@ export class TaskOrderStore extends VuexModule {
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.taskOrder),
   ];
+
+  @Action
+  public async getTaskOrder(): Promise<TaskOrderDTO> {
+    return this.value;
+  }
 
   public get value(): TaskOrderDTO {
     return this.taskOrder || initial;
@@ -84,7 +90,6 @@ export class TaskOrderStore extends VuexModule {
         this.setInitialized(true);
       }
     }
-
     if (!this.initialized) {
       const taskOrder = {
         ...initial,
@@ -111,12 +116,22 @@ export class TaskOrderStore extends VuexModule {
       const savedTaskOrder = await saveTaskOrder;
 
       this.setTaskOrder(savedTaskOrder);
+      
+      if (savedTaskOrder.funding_plan) {
+        await FinancialDetails.loadFundingPlanData();
+      }
 
       return savedTaskOrder;
     } catch (error) {
       throw new Error(`error saving TaskOrder ${error}`);
     }
   }
+
+  @Action
+  public async isIncrementallyFunded(): Promise<string> {
+    return this.value.incrementally_funded;
+  }
+
 }
 
 const TaskOrder = getModule(TaskOrderStore);

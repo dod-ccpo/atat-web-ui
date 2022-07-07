@@ -4,6 +4,6 @@
     "chromeWebSecurity": false,
     "defaultCommandTimeout":10000,
     "pageLoadTimeout": 90000,
-    "numTestsKeptInMemory": 1     
+    "numTestsKeptInMemory": 1    
 
 }
