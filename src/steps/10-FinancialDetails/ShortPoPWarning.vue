@@ -50,6 +50,11 @@ import { routeNames } from "../../router/stepper";
 
 import { Component } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
+import Periods from "@/store/periods";
+import { PoP, SlideoutPanelContent } from "../../../types/Global";
+import PopLearnMore from "@/steps/04-ContractDetails/PopLearnMore.vue";
+import SlideoutPanel from "@/store/slideoutPanel";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -59,6 +64,43 @@ import ATATAlert from "@/components/ATATAlert.vue";
 
 export default class ShortPoPWarning extends Vue {
   private routeNames = routeNames;
+  private totalTime = 0
+  public async loadOnEnter(): Promise<void> {
+    const periods = await Periods.loadPeriods();
+    console.log(periods)
+    // this.savedData = periods.map(period=> {
+    //
+    //   return {
+    //     option_order: period.option_order,
+    //     period_unit_count: period.period_unit_count,
+    //     period_unit: period.period_unit,
+    //     period_type: period.period_type,
+    //     sys_id: period.sys_id,
+    //   }
+    // });
+    //
+    // this.optionPeriods = periods.length ? periods.map(period=> {
+    //
+    //   const optionPeriod: PoP = {
+    //
+    //     duration: Number(period.period_unit_count || ""),
+    //     unitOfTime: period.period_unit,
+    //     id: period.sys_id || "",
+    //     order: Number(period.option_order),
+    //   };
+    //
+    //   return optionPeriod;
+    // }) : [ {
+    //   duration:null ,
+    //   unitOfTime: "Year",
+    //   id: null,
+    //   order: 1,
+    // }];
 
+  }
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+    this.totalTime = AcquisitionPackage.totalPOPDuration
+  }
 }
 </script>

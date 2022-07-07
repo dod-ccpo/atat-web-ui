@@ -268,13 +268,17 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
-  
-  fundingRequestType: string | null =  null;
+  totalPOPDuration = 0;
 
   public initContact: ContactDTO = initialContact();
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
+  }
+
+  @Mutation
+  public setTotalPoPDuration(value: number): void {
+    this.totalPOPDuration = value;
   }
 
   @Mutation

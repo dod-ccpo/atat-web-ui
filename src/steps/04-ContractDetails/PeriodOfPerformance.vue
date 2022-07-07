@@ -148,6 +148,7 @@ import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
 import {hasChanges} from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 
 const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
@@ -457,6 +458,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       if (hasChanged) {
         const removed = this.removed;
         await Periods.savePeriod({periods: this.currentData, removed});
+        await AcquisitionPackage.setTotalPoPDuration(this.totalPoPDuration)
       }
     } catch (error) {
       throw new Error('error saving period data');
