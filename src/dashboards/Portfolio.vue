@@ -1,13 +1,27 @@
 <template>
-  <div class="pa-5">
-    <ATATPageHead headline="Future Portfolio Dashboard" />
-    <div id="app-content" class="d-flex flex-column">
-      <div class="mb-auto" style="margin-top: 100px; padding-bottom: 200px;">
-        Content...
-      </div>
-      <ATATFooter/>
-    </div>
-  </div>
+  <v-main class="_dashboard">
+    <ATATPageHead :headline="projectTitle"  />
+    <v-container class="container-max-width">
+      <v-row>
+        <v-col>
+
+          <div id="app-content" class="d-flex flex-column">
+            <div class="mb-auto" style="padding-bottom: 200px;">
+              
+              <div class="d-flex justify-space-between width-100">
+                <h2>Overview</h2>
+                <span class="text-base-dark">Last Sync: Nov. 15, 0100</span> 
+              </div>
+
+            </div>
+            <ATATFooter/>
+          </div>
+
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-main>
+
 </template>
 
 <script lang="ts">
@@ -19,6 +33,8 @@ import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 
+import AcquisitionPackage from "@/store/acquisitionPackage";
+
 @Component({
   components: {
     ATATFooter,
@@ -28,16 +44,19 @@ import ATATPageHead from "../components/ATATPageHead.vue";
 
 export default class PortfolioDashboard extends Vue {
 
-  portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
-
-
-  public async mounted(): Promise<void>{
-
-    const data = await this.portFolioDashBoardService.getdata('1000000001234');
-    console.log({data});
-
+  public get projectTitle(): string {
+    return AcquisitionPackage.projectTitle !== ""
+      ? AcquisitionPackage.projectTitle
+      : "New Acquisition";
   }
 
+  portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
+
+  public async mounted(): Promise<void>{
+    const data = await this.portFolioDashBoardService.getdata('1000000001234');
+    // for testing, console log returned data
+    console.log({data});
+  }
 
 }
 
