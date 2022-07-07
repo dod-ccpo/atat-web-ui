@@ -10,7 +10,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 @Component({})
 export default class DonutChart extends Vue {
-  @Prop({ required: true, default: "myDonutChart" }) public chartId!: string;
+  @Prop({ required: true, default: "MyDonutChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: ChartOptions;
   @Prop({ required: false, default: false })
@@ -60,7 +60,7 @@ export default class DonutChart extends Vue {
           ? { fontSize: 40, textY: 1.5 }
           : { fontSize: 200, textY: 2.2 };
         const text2divisors = self.isArcGauge
-          ? { fontSize: 130, textY: 1 }
+          ? { fontSize: 140, textY: 1 }
           : { fontSize: 330, textY: 1.75 };
 
         ctx.restore();

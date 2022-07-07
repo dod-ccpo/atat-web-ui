@@ -13,48 +13,57 @@
                 <span class="text-base-dark">Last Sync: Nov. 15, 0100</span> 
               </div>
 
-              <!-- EJY add IDs to everything for testing -->
-
               <v-row>
-                <v-col class="col-md-6 col-lg-8">
-                  <v-card class="no-shadow v-sheet--outlined height-100 pa-8">
+                <v-col class="col-sm-6 col-md-8">
+                  <v-card 
+                    id="PortfolioDetailsCard" 
+                    class="no-shadow v-sheet--outlined height-100 pa-8"
+                  >
                     <h3 class="mb-6">Portfolio Details</h3>
-                    <div class="d-flex flex-wrap align-stretch">
-                      <div
-                        class="bg-info-lighter px-6 py-6 mr-5"
-                        style="border-radius: 4px; width: 270px"
-                      >
-                        <span id="AvailableFunds" class="h1 mb-0">${{ availableFundsStr }}</span>
-                        <p class="font-weight-bold body-lg mb-0 pb-5">Available Funds</p>
-                        <p class="mb-0 pb-2">
-                          Your remaining portfolio balance from all of your active task
-                          orders
-                        </p>
-                      </div>
-                      <div class="pb-4">
+                    <v-row>
+                      <v-col>
+                        <div
+                          class="bg-info-lighter px-6 py-6 mr-5"
+                          style="border-radius: 4px;"
+                        >
+                          <span id="AvailableFunds" class="h1 mb-0">${{ availableFundsStr }}</span>
+                          <p class="font-weight-bold mb-0 pb-5">Available Funds</p>
+                          <p class="mb-0 pb-2 font-size-14">
+                            Your remaining portfolio balance from all of your active task
+                            orders
+                          </p>
+                        </div>
+                      </v-col>
+                      <v-col>
                         <p class="text--base-darkest pt-4 mb-0">Total Portfolio Funds</p>
                         <span id="TotalPortfolioFunds" class="h2 mb-0">
                           ${{ totalPortfolioFundsStr }}
                         </span>
-                        <p class="text--base-dark mb-0">
+                        <p class="text--base-dark mb-0 font-size-14">
                           Total value of your active task orders
                         </p>
-                        <v-divider class="mb-9 mt-8" />
-                        <p class="text--base-darkest mb-0">
+                        <v-divider class="my-4" />
+                        <p class="text--base-darkest mb-0 font-size-14">
                           Current Period of Performance
                         </p>
-                        <span class="h3 mb-0">
-                          {{ popStart }}&ndash;{{ popEnd }}</span>
-                        <p class="text--base-dark mb-0">{{ timeToExpiration }} to expiration</p>
-                      </div>
-                    </div>
+                        <span id="PoPDates" class="h3 mb-0">
+                          {{ popStart }}&ndash;{{ popEnd }}
+                        </span>
+                        <p class="text--base-dark mb-0 font-size-14">
+                          {{ timeToExpiration }} to expiration
+                        </p>
+                      </v-col>
+                    </v-row>
                   </v-card>
                 </v-col>
-                <v-col class="col-md-6 col-lg-4">
-                  <v-card class="no-shadow v-sheet--outlined height-100 pa-8">
+                <v-col class="col-sm-6 col-md-4">
+                  <v-card 
+                    id="FundingStatusCard" 
+                    class="no-shadow v-sheet--outlined height-100 pa-8"
+                  >
                     <h3 class="mb-6">Funding Status</h3>
                     <DonutChart
-                      chart-id="DonutChart1"
+                      chart-id="FundingStatusArcChart"
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
                       :is-arc-gauge="true"
@@ -63,12 +72,10 @@
                       :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
                     />
                     <v-divider class="my-4" />
-                    <p>
+                    <p class="mb-0 font-size-14">
                       At your current rate of spending, you will run out of funds by
                       <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}.</span>
                     </p>
-                    <!-- EJY button below to be included in future milestone -->
-                    <!-- <v-btn class="secondary-btn width-100">Set spending alerts</v-btn> -->
                   </v-card>
                 </v-col>
               </v-row>
@@ -84,28 +91,26 @@
 
 </template>
 
-<!-- eslint-disable camelcase -->
 <script lang="ts">
-
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
-
 import DonutChart from "../components/charts/DonutChart.vue";
 
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import TaskOrder from "@/store/taskOrder";
 import { toCurrencyString } from "@/helpers";
-
 import { CostsDTO, TaskOrderDTO } from "@/api/models";
+
 import { add } from "date-fns";
 import parseISO from "date-fns/parseISO";
+import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
-import formatISO from "date-fns/formatISO"
 
 @Component({
   components: {
@@ -125,7 +130,6 @@ export default class PortfolioDashboard extends Vue {
       : "New Acquisition";
   }
 
-
   public totalPortfolioFunds = 0;
   public totalPortfolioFundsStr = "";
   public fundsSpent = 0;
@@ -139,19 +143,7 @@ export default class PortfolioDashboard extends Vue {
   public timeToExpiration = "";
   public runOutOfFundsDate = "";
 
-  public taskOrder: TaskOrderDTO = {
-    clins: "",
-    incrementally_funded: "",
-    funds_obligated: "",
-    acquisition_package: "",
-    task_order_number: "",
-    task_order_status: "",
-    portfolio: "",
-    funding_plan: "",
-    pop_end_date: "",
-    pop_start_date: "",
-    funds_total: "",
-  }
+  public taskOrder: TaskOrderDTO = TaskOrder.value;
 
   public costs: CostsDTO[] = [];
 
@@ -164,7 +156,9 @@ export default class PortfolioDashboard extends Vue {
     this.costs.forEach((cost) => {
       this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
     });
-    // below for testing only - change value to see run out of funds date and arc chart change
+
+    // Below additional amount manually added for testing only.
+    // Change additional value to see run out of funds date and arc chart change
     this.fundsSpent = this.fundsSpent + 100000;
   }
 
@@ -205,7 +199,6 @@ export default class PortfolioDashboard extends Vue {
     const runOutISODate = formatISO(runOutOfFundsDate, { representation: 'date' })
     this.runOutOfFundsDate = this.createDateStr(runOutISODate);
   }
-
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
@@ -272,7 +265,6 @@ export default class PortfolioDashboard extends Vue {
       mode: null,
     },
   };
-
 
 }
 

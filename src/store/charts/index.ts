@@ -16,17 +16,17 @@ export class ChartsStore extends VuexModule {
     // Must maintain this sequence to maximize contrast between
     // neighboring colors to help with visual differentiation, optimizing
     // charts for users with color vision deficiencies.
-    cyan: "#00bde3",
-    blue: "#0076d6",
-    orange: "#fa9441",
-    magenta: "#d72d79",
-    "green-cool": "#70e17b",
-    "indigo-warm": "#b69fff",
-    yellow: "#face00",
-    "violet-warm": "#b04abd",
-    "mint-cool": "#7efbe1",
+    "purple": "#544496",
+    "blue": "#1AA7E0",
+    "orange": "#FA9441",
+    "magenta": "#D72D79",
+    "green-cool": "#70E17B",
+    "indigo-warm": "#B69FFF",
+    "yellow": "#FACE00",
+    "blue-warm": "#2672DE",
+    "mint-cool": "#7EFBE1",
     "orange-warm": "#914734",
-    gray: "#dfe1e2",
+    "gray": "#dfe1e2",
   };
 
   public chartAuxColors = {
