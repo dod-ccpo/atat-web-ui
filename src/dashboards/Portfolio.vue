@@ -79,6 +79,7 @@
 
 </template>
 
+<!-- eslint-disable camelcase -->
 <script lang="ts">
 
 import Vue from "vue";
@@ -89,6 +90,9 @@ import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 
 import AcquisitionPackage from "@/store/acquisitionPackage";
+import { toCurrencyString, currencyStringToNumber } from "@/helpers";
+
+import { CostsDTO, TaskOrderDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -105,12 +109,44 @@ export default class PortfolioDashboard extends Vue {
       : "New Acquisition";
   }
 
+  public availableFunds = 0;
+  public availableFundsStr = "";
+  public fundsSpent = 0;
+  public fundsSpentStr = "";
+  public fundsSpentPercent = 0;
+
+  public timeToExpiration = "";
+  public runOutOfFundsMonth = "";
+
+  public taskOrder: TaskOrderDTO = {
+    clins: "",
+    incrementally_funded: "",
+    funds_obligated: "",
+    acquisition_package: "",
+    task_order_number: "",
+    task_order_status: "",
+    portfolio: "",
+    funding_plan: "",
+    pop_end_date: "",
+    pop_start_date: "",
+    funds_total: "",
+  }
+
+  public costs: CostsDTO[] = [];
+
+  // public calculateTotalCosts
+
+
   portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
 
   public async mounted(): Promise<void>{
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
-    // for testing, console log returned data
+    
+    // delete console.log
     console.log({data});
+
+    this.taskOrder = data.taskOrder
+    this.costs = data.costs;
   }
 
 }
