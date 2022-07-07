@@ -73,7 +73,6 @@ export class FinancialDetailsStore extends VuexModule {
     nameofProperty(this, (x) => x.estimatedTaskOrderValue),
     nameofProperty(this, (x) => x.fundingRequestType),
     nameofProperty(this, (x)=>x.fundingRequest),
-    nameofProperty(this, (x)=> x.initialFundingIncrement),
     nameofProperty(this, (x)=> x.initialFundingIncrementStr),
     nameofProperty(this, (x)=> x.fundingIncrements),
     nameofProperty(this, (x)=> x.fundingPlan),
