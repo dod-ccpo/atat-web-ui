@@ -156,8 +156,10 @@ export default class PII extends  Mixins(SaveOnLeave) {
     try {
       if (this.hasChanged()) {
         await AcquisitionPackage
-          .saveData<SensitiveInformationDTO>( {data: this.currentData, 
-            storeProperty: StoreProperties.SensitiveInformation});
+          .saveData<SensitiveInformationDTO>({
+            data: this.currentData, 
+            storeProperty: StoreProperties.SensitiveInformation
+          });
       }
     } catch (error) {
       console.log(error);

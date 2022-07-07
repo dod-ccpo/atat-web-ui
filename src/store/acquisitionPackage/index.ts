@@ -14,31 +14,30 @@ import OrganiationData from "../organizationData";
 import { TableApiBase } from "@/api/tableApiBase";
 import {
   AcquisitionPackageDTO,
-  BaseTableDTO,
-  ContractConsiderationsDTO,
-  RequirementsCostEstimateDTO,
   AttachmentDTO,
+  BaseTableDTO,
+  ClassificationLevelDTO,
+  ContactDTO,
+  ContractConsiderationsDTO,
+  ContractTypeDTO,
+  CurrentContractDTO,
+  FairOpportunityDTO,
+  GFEOverviewDTO,
+  RequirementsCostEstimateDTO,
+  OrganizationDTO,
   PeriodDTO,
+  PeriodOfPerformanceDTO,
+  ProjectOverviewDTO,
+  SensitiveInformationDTO,
 } from "@/api/models";
+
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
-import { ProjectOverviewDTO } from "@/api/models";
-import { OrganizationDTO } from "@/api/models";
-import { ContactDTO } from "@/api/models";
-import { FairOpportunityDTO } from "@/api/models";
-import { CurrentContractDTO } from "@/api/models";
-import { SensitiveInformationDTO } from "@/api/models";
-import { PeriodOfPerformanceDTO } from "@/api/models";
-import { GFEOverviewDTO } from "@/api/models";
-import { ContractTypeDTO } from "@/api/models";
 import { FileAttachmentServiceFactory } from "@/services/attachment";
 import DescriptionOfWork from "@/store/descriptionOfWork"
-import { ClassificationLevelDTO } from "@/api/models";
 import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
-import FinancialDetails from "../financialDetails";
 import TaskOrder from "../taskOrder";
-
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -259,7 +258,6 @@ export class AcquisitionPackageStore extends VuexModule {
   acorInfo: ContactDTO | null = null;
   hasAlternativeContactRep: boolean | null = null;
   fairOpportunity: FairOpportunityDTO | null = null;
-  fundingPlans: string | null = null;
   currentContract: CurrentContractDTO | null = null;
   sensitiveInformation: SensitiveInformationDTO | null = null;
   periods: string | null = null;
@@ -268,7 +266,7 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
-  
+
   fundingRequestType: string | null =  null;
 
   public initContact: ContactDTO = initialContact();
@@ -374,11 +372,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   @Mutation
-  public setFundingPlans(value: string): void {
-    this.fundingPlans = value;
-  }
-
-  @Mutation
   public setGFEOverview(value: GFEOverviewDTO): void {
     this.gfeOverview = value;
   }
@@ -421,7 +414,6 @@ export class AcquisitionPackageStore extends VuexModule {
     await OrganiationData.initialize();
     await DescriptionOfWork.initialize();
     await Attachments.initialize();
-    await FinancialDetails.initialize();
 
     if (this.initialized) {
       return;
@@ -446,7 +438,6 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setContact({ data: initialContact(), type: "ACOR" });
           this.setCurrentContract(initialCurrentContract());
           this.setContractConsiderations(initialContractConsiderations());
-          this.setFundingPlans("");
           this.setFairOpportunity(initialFairOpportunity());
           this.setRequirementsCostEstimate({ surge_capabilities: "", estimatedTaskOrderValue: "" });
           this.setGFEOverview(initialGFE());
@@ -520,7 +511,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.Periods]: "periods",
     [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
-    [StoreProperties.ClassificationLevel]: "classification_level"
+    [StoreProperties.ClassificationLevel]: "classification_level",
   }
 
   @Action({ rawError: true })
@@ -674,6 +665,7 @@ export class AcquisitionPackageStore extends VuexModule {
         apiEndPoint.update(storeDataProperty.sys_id || "", data) :
         apiEndPoint.create(data);
       const savedData = await saveAction;
+
       this.setStoreData({data: savedData, storeProperty});
       const acquisitionPackageProp = this.acquisitionPackagePropertyMap[storeProperty];
       if(acquisitionPackageProp === undefined)
@@ -686,50 +678,6 @@ export class AcquisitionPackageStore extends VuexModule {
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving store data ${storeProperty}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  async loadFairOpportunity(): Promise<FairOpportunityDTO> {
-    try {
-      await this.ensureInitialized();
-
-      const sys_id = this.fairOpportunity?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const fairOpportunityData = await api.fairOpportunityTable.retrieve(
-          sys_id as string
-        );
-        this.setFairOpportunity(fairOpportunityData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          fair_opportunity: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.fairOpportunity as FairOpportunityDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading fair opportunity info ${error}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  /**
-   * Saves Fair Opportunity data to backend
-   */
-  async saveFairOpportunity(data: FairOpportunityDTO): Promise<void> {
-    try {
-      const sys_id = this.fairOpportunity?.sys_id || "";
-      const savedFairOpportunity =
-        sys_id.length > 0
-          ? await api.fairOpportunityTable.update(sys_id, { ...data, sys_id })
-          : await api.fairOpportunityTable.create(data);
-      this.setFairOpportunity(savedFairOpportunity);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        fair_opportunity: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving fair opportunity info ${error}`);
     }
   }
 
@@ -779,119 +727,6 @@ export class AcquisitionPackageStore extends VuexModule {
       } as AcquisitionPackageDTO);
     } catch (error) {
       throw new Error(`error occurred saving sensitive info data ${error}`);
-    }
-  }
-
-  /**
-   * Loads Period of Performance data from backend
-   */
-  @Action({ rawError: true })
-  async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO> {
-    try {
-      await this.ensureInitialized();
-
-      const sys_id = this.periodOfPerformance?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const periodOfPerformanceData =
-          await api.periodOfPerformanceTable.retrieve(sys_id as string);
-        this.setPeriodOfPerformance(periodOfPerformanceData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          period_of_performance: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.periodOfPerformance as PeriodOfPerformanceDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading PoP info data ${error}`);
-    }
-  }
-
-  /**
-   * Saves Period of Performance Information (FOIA) data to backend
-   */
-  @Action({ rawError: true })
-  async savePeriodOfPerformance(data: PeriodOfPerformanceDTO): Promise<void> {
-    try {
-      const sys_id = this.periodOfPerformance?.sys_id || "";
-      const savedPeriodOfPerformance =
-        sys_id.length > 0
-          ? await api.periodOfPerformanceTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.periodOfPerformanceTable.create(data);
-      this.setPeriodOfPerformance(savedPeriodOfPerformance);
-      this.setAcquisitionPackage({
-        ...this.periodOfPerformance,
-        period_of_performance: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving PoP data ${error}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  async loadGFEOverview(): Promise<GFEOverviewDTO> {
-    try {
-      await this.ensureInitialized();
-      const sys_id = this.gfeOverview?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const GFEOverviewData = await api.gfeOverviewTable.retrieve(
-          sys_id as string
-        );
-        this.setGFEOverview(GFEOverviewData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          gfe_overview: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.gfeOverview as GFEOverviewDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading GFE info ${error}`);
-    }
-  }
-
-  @Action({ rawError: true })
-  async saveGFEOverview(data: GFEOverviewDTO): Promise<void> {
-    try {
-      const sys_id = this.gfeOverview?.sys_id || "";
-      const savedGFEOverviewData =
-        sys_id.length > 0
-          ? await api.gfeOverviewTable.update(sys_id, { ...data, sys_id })
-          : await api.gfeOverviewTable.create(data);
-      this.setGFEOverview(savedGFEOverviewData);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        gfe_overview: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving GFE data ${error}`);
-    }
-  }
-  /**
-   * Loads Contract Type data from backend
-   */
-  @Action({ rawError: true })
-  async loadContractType(): Promise<ContractTypeDTO> {
-    try {
-      await this.ensureInitialized();
-      const sys_id = this.contractType?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const contractTypeData = await api.contractTypeTable.retrieve(
-          sys_id as string
-        );
-        this.setContractType(contractTypeData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          contract_type: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.contractType as ContractTypeDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading Contract Type data ${error}`);
     }
   }
 
@@ -945,80 +780,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   /**
-   * Loads Requirements Cost Estimate data from backend
-   */
-  @Action({ rawError: true })
-  async loadRequirementsCostEstimate(): Promise<RequirementsCostEstimateDTO> {
-    try {
-      await this.ensureInitialized();
-      const sys_id = this.requirementsCostEstimate?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const data = await api.requirementsCostEstimateTable.retrieve(
-          sys_id as string
-        );
-        this.setRequirementsCostEstimate(data);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          requirements_cost_estimate: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.requirementsCostEstimate as RequirementsCostEstimateDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading Contract Type data ${error}`);
-    }
-  }
-
-  /**
-   * Saves Requirements Cost Estimate data to backend
-   */
-  @Action({ rawError: true })
-  async saveRequirementsCostEstimate(
-    data: RequirementsCostEstimateDTO
-  ): Promise<void> {
-    try {
-      const sys_id = this.requirementsCostEstimate?.sys_id || "";
-      const savedData =
-        sys_id.length > 0
-          ? await api.requirementsCostEstimateTable.update(sys_id, {
-            ...data,
-            sys_id,
-          })
-          : await api.requirementsCostEstimateTable.create(data);
-      this.setRequirementsCostEstimate(savedData);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        requirements_cost_estimate: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(
-        `error occurred saving Requirements Cost Estimate data ${error}`
-      );
-    }
-  }
-
-  /**
-   * Saves Contract Type data to backend
-   */
-  @Action({ rawError: true })
-  async saveContractType(data: ContractTypeDTO): Promise<void> {
-    try {
-      const sys_id = this.contractType?.sys_id || "";
-      const savedContractType =
-        sys_id.length > 0
-          ? await api.contractTypeTable.update(sys_id, { ...data, sys_id })
-          : await api.contractTypeTable.create(data);
-      this.setContractType(savedContractType);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        contract_type: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving PoP data ${error}`);
-    }
-  }
-
-  /**
    * Loads Classification Level data from backend
    */
   @Action({rawError: true})
@@ -1040,59 +801,6 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.classificationLevel as ClassificationLevelDTO;
     } catch (error) {
       throw new Error(`error occurred loading classification level data ${error}`);
-    }
-  }
-
-  /**
-   * Saves Sensitive Information (FOIA) data to backend
-   */
-  @Action({rawError: true})
-  async saveClassificationLevel(data: ClassificationLevelDTO): Promise<void> {
-    try {
-      const sys_id = this.classificationLevel?.sys_id || "";
-      const savedClassificationLevel =
-          sys_id.length > 0
-            ? await api.classificationLevelTable.update(sys_id, {
-              ...data,
-              sys_id,
-            })
-            : await api.classificationLevelTable.create(data);
-      this.setClassificationLevel(savedClassificationLevel);
-      this.setAcquisitionPackage({
-        ...this.classificationLevel,
-        classification_level: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving classification level data ${error}`);
-    }
-  }
-
-  /**
-   * A method to retrieve data from tables that are used strictly for attaching files
-   * @param key string
-   * @returns attachment table data
-   */
-  @Action({ rawError: true })
-  async loadAttachments(key: string): Promise<AttachmentDTO[] | undefined> {
-    const storeData = this as unknown as Record<string, unknown>;
-
-    try {
-      //attachment table data is stored as a comma seperated
-      // string list on the acquisition package object and in the store
-      const tableIdList = storeData[key] as string;
-      const tableIds = tableIdList.length ? tableIdList.split(",") : [];
-
-      if (tableIds.length === 0) {
-        return [];
-      }
-
-      const requests = tableIds.map((id) => api.attachments.getByRecordId(id));
-      const data = await Promise.all(requests);
-      return data;
-    } catch (error) {
-      console.error(
-        `error ocurred loading attachment data for ${key} error: ${error}`
-      );
     }
   }
 
@@ -1167,5 +875,3 @@ export class AcquisitionPackageStore extends VuexModule {
 
 const AcquisitionPackage = getModule(AcquisitionPackageStore);
 export default AcquisitionPackage;
-
-

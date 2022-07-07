@@ -14,6 +14,7 @@ import { RequirementsCostEstimateApi } from "./requirementsCostEstimate";
 import {StatesApi} from "./states";
 import {CountriesApi} from "./countries";
 import { FundingPlanApi } from "./fundingPlan";
+import { FundingIncrementApi } from "./fundingIncrement"
 import { AttachmentApi } from "./attachments";
 import { TableApiBase } from "./tableApiBase";
 import { AttachableDTO } from "./models";
@@ -38,6 +39,7 @@ export const api = {
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
   fundingPlanTable :new FundingPlanApi(),
+  fundingIncrementTable: new FundingIncrementApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),
