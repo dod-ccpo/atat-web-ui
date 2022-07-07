@@ -87,6 +87,7 @@ import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
+import ShortPoPWarning from "@/steps/10-FinancialDetails/ShortPoPWarning.vue";
 
 import {
   AcorsRouteResolver,
@@ -161,7 +162,8 @@ export const routeNames = {
   GInvoicing:'G_Invoicing',
   Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
-  FinancialPOCForm: "Financial_POC_Form"
+  FinancialPOCForm: "Financial_POC_Form",
+  ShortPoPWarning: "Short_PoP_Warning",
 };
 
 /**
@@ -649,6 +651,14 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FinancialPOCForm,
         completePercentageWeight: 1,
         component: FinancialPOCForm,
+      },
+      {
+        menuText: "Short PoP Warning",
+        excludeFromMenu: true,
+        path: "pop-warning",
+        name: routeNames.ShortPoPWarning,
+        completePercentageWeight: 1,
+        component: ShortPoPWarning,
       },
     ]
   },
