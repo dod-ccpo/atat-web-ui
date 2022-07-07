@@ -4,8 +4,12 @@ header._atat-page-header {
   
   .v-toolbar__content {
     height: 6rem !important;
-    padding: 16px 24px !important;
     border-bottom: $base-lighter solid 1px !important;
+    padding: 16px 24px !important;
+
+    ._dashboard & {
+      padding: 16px 54px !important;
+    }
   }
 
   ._more-menu-button.v-btn.v-size--default {
