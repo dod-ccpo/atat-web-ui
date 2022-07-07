@@ -453,7 +453,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
 
       const valid = this.optionPeriods.every(peroid=>peroid.duration);
       const hasChanged = valid && hasChanges(this.savedData, this.currentData);
-      await AcquisitionPackage.setTotalPoPDuration(this.totalPoPDuration)
+      AcquisitionPackage.setTotalPoPDuration(this.totalPoPDuration)
 
       if (hasChanged) {
         const removed = this.removed;
