@@ -103,9 +103,6 @@ export default class AppPackageBuilder extends Vue {
       Steps.setCurrentStep(stepName);
       this.setNavButtons(step);
     }
-    
-    await AcquisitionPackage.initialize();
-
   }
 
   @Watch("$route")
