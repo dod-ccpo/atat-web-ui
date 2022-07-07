@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
@@ -19,6 +19,14 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public centerText1!: string;
   @Prop({ required: false, default: "" }) public centerText2!: string;
 
+  private myChart!: Chart;
+
+  @Watch("chartData", { deep: true })
+  public chartDataUpdate(newData: ChartData): void {
+    this.myChart.data = newData;
+    this.myChart.update();
+  }
+
   private mounted() {
     this.createChart();
   }
@@ -31,7 +39,7 @@ export default class DonutChart extends Vue {
         plugins.push(ChartDataLabels);
       }
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
-      new Chart(ctx, {
+      this.myChart = new Chart(ctx, {
         type: "doughnut",
         data: this.chartData,
         options: this.chartOptions,
@@ -57,7 +65,7 @@ export default class DonutChart extends Vue {
 
         ctx.restore();
         let fontSize = (height / text1divisors.fontSize).toFixed(2);
-        ctx.font = "bold " + fontSize + "em 'Roboto'";
+        ctx.font = "bold " + fontSize + "em 'Roboto Condensed'";
         ctx.textBaseline = "middle";
         let text = self.centerText1,
           textX = Math.round((width - ctx.measureText(text).width) / 2),

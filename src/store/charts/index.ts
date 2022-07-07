@@ -3,7 +3,7 @@ import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-dec
 import rootStore from "../index";
 
 @Module({
-  name: 'Charts',
+  name: 'ATATCharts',
   namespaced: true,
   dynamic: true,
   store: rootStore
@@ -37,8 +37,23 @@ export class ChartsStore extends VuexModule {
 
   public chartDataColorSequence = Object.values(this.chartDataColors);
 
+  public monthAbbreviations = [
+    "Jan.",
+    "Feb.",
+    "Mar.",
+    "Apr.",
+    "May",
+    "Jun.",
+    "Jul.",
+    "Aug.",
+    "Sept.",
+    "Oct.",
+    "Nov.",
+    "Dec.",
+  ];
+
 }
 
 
-const Charts = getModule(ChartsStore);
-export default Charts;
+const ATATCharts = getModule(ChartsStore);
+export default ATATCharts;

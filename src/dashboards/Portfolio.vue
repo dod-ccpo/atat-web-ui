@@ -43,8 +43,9 @@
                         <p class="text--base-darkest mb-0">
                           Current Period of Performance
                         </p>
-                        <span class="h3 mb-0">Jan. 1, 2021–Dec. 31, 2021</span>
-                        <p class="text--base-dark mb-0">8 months to expiration</p>
+                        <span class="h3 mb-0">
+                          {{ popStart }}&ndash;{{ popEnd }}</span>
+                        <p class="text--base-dark mb-0">{{ timeToExpiration }} to expiration</p>
                       </div>
                     </div>
                   </v-card>
@@ -57,14 +58,14 @@
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
                       :is-arc-gauge="true"
-                      center-text1="74%"
+                      :center-text1="fundsSpentPercent + '%'"
                       center-text2="Funds Spent"
-                      aria-label="Chart displaying 74% Funds Spent"
+                      :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
                     />
                     <v-divider class="my-4" />
                     <p>
                       At your current rate of spending, you will run out of funds by
-                      <strong>Sept. 23, 2021.</strong>
+                      <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}.</span>
                     </p>
                     <!-- EJY button below to be included in future milestone -->
                     <!-- <v-btn class="secondary-btn width-100">Set spending alerts</v-btn> -->
@@ -95,11 +96,16 @@ import ATATPageHead from "../components/ATATPageHead.vue";
 
 import DonutChart from "../components/charts/DonutChart.vue";
 
-import Charts from "@/store/charts";
+import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { toCurrencyString, currencyStringToNumber } from "@/helpers";
+import { toCurrencyString } from "@/helpers";
 
 import { CostsDTO, TaskOrderDTO } from "@/api/models";
+import { add } from "date-fns";
+import parseISO from "date-fns/parseISO";
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
+import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
+import formatISO from "date-fns/formatISO"
 
 @Component({
   components: {
@@ -110,6 +116,8 @@ import { CostsDTO, TaskOrderDTO } from "@/api/models";
 })
 
 export default class PortfolioDashboard extends Vue {
+
+  portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
@@ -125,12 +133,11 @@ export default class PortfolioDashboard extends Vue {
   public availableFunds = 0;
   public availableFundsStr = "";
   public fundsSpentPercent = 0;
-  public fundsNotSpentPercent = 0;
-  public fundsSpentChartValue = [0, 0];
  
- 
+  public popStart = "";
+  public popEnd = "";
   public timeToExpiration = "";
-  public runOutOfFundsMonth = "";
+  public runOutOfFundsDate = "";
 
   public taskOrder: TaskOrderDTO = {
     clins: "",
@@ -148,25 +155,61 @@ export default class PortfolioDashboard extends Vue {
 
   public costs: CostsDTO[] = [];
 
-  public chartDataColors = Charts.chartDataColors;
-  public chartDataColorSequence = Charts.chartDataColorSequence;
-  public chartAuxColors = Charts.chartAuxColors;
-
+  public chartDataColors = ATATCharts.chartDataColors;
+  public chartDataColorSequence = ATATCharts.chartDataColorSequence;
+  public chartAuxColors = ATATCharts.chartAuxColors;
+  public monthAbbreviations = ATATCharts.monthAbbreviations;
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
       this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
     });
+    // below for testing only - change value to see run out of funds date and arc chart change
+    this.fundsSpent = this.fundsSpent + 100000;
   }
 
-  portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
+  public createDateStr(dateStr: string): string {
+    const parsedDate = parseISO(dateStr, { additionalDigits: 1 })
+    const date = new Date(parsedDate.setHours(0,0,0,0));
+    const m = this.monthAbbreviations[date.getMonth()];
+    const y = date.getFullYear();
+    const d = date.getUTCDate()
+    return m + " " + d + ", " + y;
+  }
+
+  public calculateTimeToExpiration(): void {
+    const popEndDate = parseISO(this.taskOrder.pop_end_date, { additionalDigits: 1 })
+    const end = new Date(popEndDate.setHours(0,0,0,0));
+    const todayDate = new Date();
+    const today = new Date(todayDate.setHours(0,0,0,0));
+
+    const daysUntilEndDate = differenceInCalendarDays(end, today);
+    const monthsUntilEndDate = differenceInCalendarMonths(end, today);
+
+    const unitsRemaining = daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
+    const useMonths = daysUntilEndDate > 90;
+    const singular = unitsRemaining === 1;
+
+    let timeUnit = useMonths 
+      ? singular ? "month" : "months"
+      : singular ? "day" : "days";
+    this.timeToExpiration = unitsRemaining + " " + timeUnit;
+
+    // calculate when will run out of funds based on current rate of spending
+    const popStartDate = parseISO(this.taskOrder.pop_start_date, { additionalDigits: 1 })
+    const start = new Date(popStartDate.setHours(0,0,0,0));
+    const daysSinceStartDate = differenceInCalendarDays(today, start);
+    const dailySpend = this.fundsSpent / daysSinceStartDate;
+    const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend); 
+    const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent});
+    const runOutISODate = formatISO(runOutOfFundsDate, { representation: 'date' })
+    this.runOutOfFundsDate = this.createDateStr(runOutISODate);
+  }
+
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
     
-    // delete console.log
-    console.log({data});
-
     this.taskOrder = data.taskOrder
     this.totalPortfolioFunds = parseFloat(this.taskOrder.funds_obligated);
     this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
@@ -177,23 +220,26 @@ export default class PortfolioDashboard extends Vue {
     this.availableFundsStr = toCurrencyString(this.availableFunds);
 
     this.fundsSpentPercent = Math.round(this.fundsSpent / this.totalPortfolioFunds * 100);
-    this.fundsNotSpentPercent = 100 - this.fundsSpentPercent;
-    this.fundsSpentChartValue = [this.fundsSpentPercent, this.fundsNotSpentPercent]
-    this.arcGuageChartData.datasets[0].data = this.fundsSpentChartValue;
+    this.arcGuageChartData.datasets[0].data 
+      = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
+    
+    this.popStart = this.createDateStr(this.taskOrder.pop_start_date);
+    this.popEnd = this.createDateStr(this.taskOrder.pop_end_date);
+
+    this.calculateTimeToExpiration();
+
   }
 
   public async mounted(): Promise<void>{
-    debugger;
     await this.loadOnEnter();
   }
-
 
   public arcGuageChartData = {
     labels: ["Funds spent", "Funds remaining"],
     datasets: [
       {
         label: "Funding Status",
-        data: [50, 50], // need to dynamically update this
+        data: [0, 0],
         backgroundColor: [this.chartDataColors.blue, this.chartDataColors.gray],
         hoverOffset: 0,
         hoverBorderWidth: 0,
