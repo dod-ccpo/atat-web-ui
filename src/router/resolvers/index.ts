@@ -511,7 +511,7 @@ export const IncrementalFundingResolver = (): string => {
 
 export const ShortPoPResolver = (current: string): string => {
   const totalDuration = AcquisitionPackage.totalPOPDuration;
-  const cutOff = 274
+  const cutOff = 270
 
   if (totalDuration < cutOff) {
     return routeNames.ShortPoPWarning;
