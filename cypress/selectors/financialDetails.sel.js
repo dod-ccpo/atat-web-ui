@@ -34,6 +34,11 @@ module.exports = {
   gInvoiceErrorRadioOption: "#GInvoicingOptions_radio_group_control  .field-error",
   yesLabel: "#GInvoicingOptions_radio_group_control :nth-child(1) > .v-label",
   noLabel: "#GInvoicingOptions_radio_group_control :nth-child(2) > .v-label",
+  gInvoiceOrderNo: "#OrderNumber_Label",
+  orderNoSearchInput: "#OrderNumber_SearchInput",
+  orderNosearchAlertSucess: "#OrderNumber_SearchAlertSuccess",
+  orderNosearchError: "#SearchWrapper .field-error",
+  orderNoSearchBtn: "#OrderNumber_SearchButton",
   
   //Let's Gather Info about your MIPR
   miprTextLabel: "#MIPRNumber_text_field_label",
@@ -49,6 +54,23 @@ module.exports = {
   fundingfileuploadError: "form.v-form .field-error",
   uploadedFile0Link: "#FileLink00",
   uploadedFile0RemoveBtn: "#RemoveFile00",
+
+  //Let's gather info about your 7600A and 7600B
+  gtcNoLabel: "#GeneralTermsAndConditions_text_field_label",
+  gtcTooltipBtn: "#TooltipButton_GeneralTermsAndConditions",
+  gtcTooltipText: "#TooltipText_GeneralTermsAndConditions",
+  gtcNoInput: "#GeneralTermsAndConditions_text_field",
+  gtcNoError: "#GeneralTermsAndConditions_text_field_control  .field-error",
+  orderNoLabel: "#OrderNumber_text_field_label",
+  orderNoTooltipBtn: "#TooltipButton_OrderNumber",
+  orderNoTooltipText: "#TooltipText_OrderNumber",
+  orderNoInput: "#OrderNumber_text_field",
+  orderNoError: "#OrderNumber_text_field_control  .field-error",
+  uploadTitle: ".h4",
+  browserToUploadLink: "#BrowseToUpload",
+  uploadFileName0: "#File00",
+  uploadFileName1: "#File01",
+  uploadAlertText:"#UPload7600Alert",
   
   //severability and incremental funding
   iFundIntroTxt:"p.mb-10",
