@@ -50,11 +50,6 @@ import { routeNames } from "../../router/stepper";
 
 import { Component } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
-import Periods from "@/store/periods";
-import { PoP, SlideoutPanelContent } from "../../../types/Global";
-import PopLearnMore from "@/steps/04-ContractDetails/PopLearnMore.vue";
-import SlideoutPanel from "@/store/slideoutPanel";
-import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
