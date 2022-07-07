@@ -13,10 +13,12 @@
                 <span class="text-base-dark">Last Sync: Nov. 15, 0100</span> 
               </div>
 
+              <!-- EJY add IDs to everything for testing -->
+
               <v-row>
                 <v-col class="col-md-6 col-lg-8">
                   <v-card class="no-shadow v-sheet--outlined height-100 pa-8">
-                    <h3 class="mb-0 pb-6">Portfolio Details</h3>
+                    <h3 class="mb-6">Portfolio Details</h3>
                     <div class="d-flex flex-wrap align-stretch">
                       <div
                         class="bg-info-lighter px-6 py-6 mr-5"
@@ -49,8 +51,8 @@
                 </v-col>
                 <v-col class="col-md-6 col-lg-4">
                   <v-card class="no-shadow v-sheet--outlined height-100 pa-8">
-                    <h3 class="mb-2">Funding Status</h3>
-                    <!-- <donut-chart
+                    <h3 class="mb-6">Funding Status</h3>
+                    <DonutChart
                       chart-id="DonutChart1"
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
@@ -58,7 +60,7 @@
                       center-text1="74%"
                       center-text2="Funds Spent"
                       aria-label="Chart displaying 74% Funds Spent"
-                    /> -->
+                    />
                     <v-divider class="my-4" />
                     <p>
                       At your current rate of spending, you will run out of funds by
@@ -91,6 +93,9 @@ import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 
+import DonutChart from "../components/charts/DonutChart.vue";
+
+import Charts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
@@ -99,7 +104,8 @@ import { CostsDTO, TaskOrderDTO } from "@/api/models";
 @Component({
   components: {
     ATATFooter,
-    ATATPageHead
+    ATATPageHead,
+    DonutChart,
   }
 })
 
@@ -111,6 +117,7 @@ export default class PortfolioDashboard extends Vue {
       : "New Acquisition";
   }
 
+
   public totalPortfolioFunds = 0;
   public totalPortfolioFundsStr = "";
   public fundsSpent = 0;
@@ -118,6 +125,9 @@ export default class PortfolioDashboard extends Vue {
   public availableFunds = 0;
   public availableFundsStr = "";
   public fundsSpentPercent = 0;
+  public fundsNotSpentPercent = 0;
+  public fundsSpentChartValue = [0, 0];
+ 
  
   public timeToExpiration = "";
   public runOutOfFundsMonth = "";
@@ -138,6 +148,11 @@ export default class PortfolioDashboard extends Vue {
 
   public costs: CostsDTO[] = [];
 
+  public chartDataColors = Charts.chartDataColors;
+  public chartDataColorSequence = Charts.chartDataColorSequence;
+  public chartAuxColors = Charts.chartAuxColors;
+
+
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
       this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
@@ -146,7 +161,7 @@ export default class PortfolioDashboard extends Vue {
 
   portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
 
-  public async mounted(): Promise<void>{
+  public async loadOnEnter(): Promise<void> {
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
     
     // delete console.log
@@ -160,7 +175,58 @@ export default class PortfolioDashboard extends Vue {
     await this.calculateFundsSpent();
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
     this.availableFundsStr = toCurrencyString(this.availableFunds);
+
+    this.fundsSpentPercent = Math.round(this.fundsSpent / this.totalPortfolioFunds * 100);
+    this.fundsNotSpentPercent = 100 - this.fundsSpentPercent;
+    this.fundsSpentChartValue = [this.fundsSpentPercent, this.fundsNotSpentPercent]
+    this.arcGuageChartData.datasets[0].data = this.fundsSpentChartValue;
   }
+
+  public async mounted(): Promise<void>{
+    debugger;
+    await this.loadOnEnter();
+  }
+
+
+  public arcGuageChartData = {
+    labels: ["Funds spent", "Funds remaining"],
+    datasets: [
+      {
+        label: "Funding Status",
+        data: [50, 50], // need to dynamically update this
+        backgroundColor: [this.chartDataColors.blue, this.chartDataColors.gray],
+        hoverOffset: 0,
+        hoverBorderWidth: 0,
+        circumference: 180,
+        rotation: -90,
+        cutout: "80%",
+      },
+    ],
+  };
+
+  public arcGuageChartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    aspectRatio: 2,
+    elements: {
+      arc: {
+        borderWidth: 2,
+      },
+    },
+    hover: {
+      mode: null,
+    },
+  };
+
 
 }
 
