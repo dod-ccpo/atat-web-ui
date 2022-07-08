@@ -268,7 +268,6 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   }
   private hasChanged(): boolean {
     const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "";
-    // eslint-disable-next-line no-undef
     return hasChanges(current, this.savedFundOption);
   }
 

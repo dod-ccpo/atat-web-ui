@@ -156,20 +156,21 @@ export class FinancialDetailsStore extends VuexModule {
   public async setFundingIncrements(remainingAmountIncrements: string): Promise<void> {
     const incrementSysIdsStr = remainingAmountIncrements;
     const incrementSysIds = incrementSysIdsStr.split(',');
-
-    const requests = incrementSysIds.map(sysId => api.fundingIncrementTable.retrieve(sysId));
-    const results = await Promise.all(requests);
     this.fundingIncrements = [];
+    if(incrementSysIds.length) {
+      const requests = incrementSysIds.map(sysId => api.fundingIncrementTable.retrieve(sysId));
+      const results = await Promise.all(requests);
 
-    results.forEach((incr) => {
-      const incrObj: fundingIncrement = {
-        qtr: incr.description,
-        amt: incr.amount,
-        order: parseInt(incr.order),
-        sysId: incr.sys_id,
-      }
-      this.fundingIncrements.push(incrObj);
-    });
+      results.forEach((incr) => {
+        const incrObj: fundingIncrement = {
+          qtr: incr.description,
+          amt: incr.amount,
+          order: parseInt(incr.order),
+          sysId: incr.sys_id,
+        }
+        this.fundingIncrements.push(incrObj);
+      });
+    }
     return;
   }
 
@@ -217,13 +218,16 @@ export class FinancialDetailsStore extends VuexModule {
         await Promise.all(removeIncrements);
       }
 
+
       const fundingIncrements: fundingIncrement[] = data.fundingIncrements;
-      const createOrUpdateIncrements = fundingIncrements.map(incr => saveIncrement(incr));
-      const savedIncrements = await Promise.all(createOrUpdateIncrements);
-
-      // NOTE: pass "List" data type to SNOW as comma-delimited string, not array
-      const incrementSysIds = savedIncrements.map(incr => incr.sys_id).join(",");
-
+      let incrementSysIds = "";
+      if(fundingIncrements.length) {
+        debugger
+        const createOrUpdateIncrements = fundingIncrements.map(incr => saveIncrement(incr));
+        const savedIncrements = await Promise.all(createOrUpdateIncrements);
+        // NOTE: pass "List" data type to SNOW as comma-delimited string, not array
+        incrementSysIds = savedIncrements.map(incr => incr.sys_id).join(",");
+      }
       const IFPData = {
         initial_amount: data.initialFundingIncrementStr,
         remaining_amount_increments: incrementSysIds,
@@ -235,6 +239,7 @@ export class FinancialDetailsStore extends VuexModule {
       // add sysIds to this.fundingIncrements
       const remainingAmountIncrements = savedFundingPlan.remaining_amount_increments
       this.setFundingIncrements(remainingAmountIncrements);
+
 
       storeDataToSession(
         this,
@@ -261,6 +266,7 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action
   public async saveFundingPlan(): Promise<FundingPlanDTO> {
+
     const sysId = this.fundingPlan.sys_id || "";
     const saveFundingPlan = sysId
       ? api.fundingPlanTable.update(sysId, this.fundingPlan)
