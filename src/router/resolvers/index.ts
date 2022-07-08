@@ -5,6 +5,7 @@ import { routeNames } from "../stepper";
 import { RouteDirection, StepPathResolver, StepRouteResolver } from "@/store/steps/types";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
+import TaskOrder from "@/store/taskOrder";
 
 
 export const AcorsRouteResolver = (current: string): string => {
@@ -501,25 +502,46 @@ export const Upload7600Resolver = (current: string): string => {
     : routeNames.SeverabilityAndIncrementalFunding;
 }
 
-export const IncrementalFundingResolver = (): string => {
+export const IncrementalFundingResolver = (current: string): string => {
   // currently not saving yes/no if need incremental funding.
   // future ticket will have route resolve to either Incremental Funding Page
   // or the Financial POC Form page
   // for now, if either yes or no is selected, route to IFP page
-  return routeNames.IncrementalFunding;
+
+  const totalDuration = AcquisitionPackage.totalPOPDuration;
+  const isIncrementallyFunded = TaskOrder.value.incrementally_funded
+
+  if (totalDuration < 270) {
+    console.log('under 9 months', totalDuration)
+    return routeNames.SummaryPage;
+  }
+  if(isIncrementallyFunded === "NO") {
+    return routeNames.SummaryPage;
+  }
+  return current === routeNames.IncrementalFunding
+    ? routeNames.FinancialPOCForm
+    : routeNames.IncrementalFunding
 }
 
-export const ShortPoPResolver = (current: string): string => {
+export const FinancialPOCResolver =  (current: string): string => {
   const totalDuration = AcquisitionPackage.totalPOPDuration;
   const cutOff = 270;
+  const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
-  if (totalDuration < cutOff) {
-    return routeNames.ShortPoPWarning;
+  if (current === routeNames.SummaryPage && totalDuration < cutOff ||
+      current === routeNames.SummaryPage && isIncrementallyFunded === "NO") {
+    return routeNames.SeverabilityAndIncrementalFunding;
   }
 
   return current === routeNames.FinancialPOCForm
-    ? routeNames.ReviewRequiredFormsStepOne
+    ? routeNames.SummaryPage
     : routeNames.FinancialPOCForm
+
+
+
+  return current === routeNames.SeverabilityAndIncrementalFunding
+    ? routeNames.IncrementalFunding
+    : routeNames.SeverabilityAndIncrementalFunding
 }
 
 // add resolver here so that it can be found by invoker
@@ -535,7 +557,7 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   GInvoicingResolver,
   Upload7600Resolver,
   IncrementalFundingResolver,
-  ShortPoPResolver,
+  FinancialPOCResolver,
 };
 
 // add path resolvers here 

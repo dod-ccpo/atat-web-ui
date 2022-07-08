@@ -131,6 +131,7 @@
       {{ optionPeriodClicked.duration }} {{ optionPeriodClicked.unitOfTime }}
     </div>
   </div>
+
 </template>
 
 <script lang="ts">

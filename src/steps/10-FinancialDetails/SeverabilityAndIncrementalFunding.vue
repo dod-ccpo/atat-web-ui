@@ -1,6 +1,45 @@
 <template>
   <v-container class="container-max-width" fluid>
-    <v-row>
+    <v-row v-show="PoPUnder9Months">
+      <v-col class="col-12">
+        <h1 class="page-header">
+          Based on your period of performance, this effort does not qualify for an incremental
+          funding plan.
+        </h1>
+
+        <ATATAlert
+          id="PoPUnder9Months"
+          :showIcon="false"
+          class="copy-max-width my-10"
+          type="callout"
+        >
+          <template v-slot:content>
+            <h2>Why can’t I request to incrementally fund my task order?</h2>
+            <p class="mt-2">
+              An incremental funding plan provides the contracting office with assurance that
+              funds have been budgeted and will be available to fully fund all non-optional
+              services on a projected schedule.
+            </p>
+            <p class="mt-2">
+              To incrementally fund a task order, the period of performance must be at least 9
+              months. Based on what you previously told us, this contracting effort requires a
+              {{ basePeriod }} base period.
+            </p>
+            <p class="mt-2 mb-0">
+              If you would like to request incremental funding, please revisit the Contract
+              Details section to
+              <router-link
+                id="LinkToPoP"
+                :to="{name: routeNames.PeriodOfPerformance}"
+              >
+                update your period of performance.
+              </router-link>
+            </p>
+          </template>
+        </ATATAlert>
+      </v-col>
+    </v-row>
+    <v-row v-show="!PoPUnder9Months">
       <v-col class="col-12">
         <h1 class="page-header mb-3">
           Are you requesting to incrementally fund this requirement?
@@ -142,8 +181,10 @@ import Periods from "@/store/periods";
 import FinancialDetails from "@/store/financialDetails";
 import { routeNames } from "@/router/stepper";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { hasChanges } from "@/helpers";
 import TaskOrder from "@/store/taskOrder";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import { PeriodDTO } from "@/api/models";
+import { hasChanges } from "@/helpers";
 
 @Component({
   components: {
@@ -159,6 +200,13 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   private isPeriodsDataMissing = false;
   private isCostEstimateMissing = false;
   private routeNames = routeNames;
+  private base: PeriodDTO = {
+    /* eslint-disable camelcase */
+    period_unit: "",
+    period_unit_count: "",
+    period_type: "",
+    option_order: "",
+  };
   private incrementallyFundOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -196,6 +244,15 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
       : "Contract Details section";
   }
 
+  public get PoPUnder9Months(): boolean {
+    return AcquisitionPackage.totalPOPDuration < 270
+  }
+
+  public get basePeriod(): string {
+    return `${this.base.period_unit_count} ${this.base.period_unit.toLowerCase()}`
+
+  }
+
   public async loadOnEnter(): Promise<void> {
     const periods = await Periods.loadPeriods();
     this.isPeriodsDataMissing = (periods && periods.length === 0);
@@ -203,10 +260,16 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
     this.isCostEstimateMissing = !estimatedTOValue;
     this.savedFundOption = await TaskOrder.isIncrementallyFunded();
     this.selectedFundOption = this.savedFundOption;
+    this.base = periods[0];
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+  }
+  private hasChanged(): boolean {
+    const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "";
+    // eslint-disable-next-line no-undef
+    return hasChanges(current, this.savedFundOption);
   }
 
   protected async saveOnLeave(): Promise<boolean> {
@@ -217,7 +280,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
           ...TaskOrder.value,
           // eslint-disable-next-line camelcase
           incrementally_funded: this.selectedFundOption
-        }
+        };
         await TaskOrder.save(taskOrder);
       }
     } catch (error) {
@@ -227,10 +290,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
     return true;
   }
 
-  private hasChanged(): boolean {
-    const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "";
-    return hasChanges(current, this.savedFundOption);
-  }
+
 
   @Watch("selectedFundOption")
   protected showAlert(): boolean {

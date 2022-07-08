@@ -87,7 +87,7 @@ import ReviewRequiredForms from "../steps/11-ReviewRequiredForms/Index.vue";
 import ReviewRequiredFormsStepOne 
   from "../steps/11-ReviewRequiredForms/ReviewRequiredFormsStepOne.vue";
 import FinancialPOCForm from "@/steps/10-FinancialDetails/FinancialPOCForm.vue";
-import ShortPoPWarning from "@/steps/10-FinancialDetails/ShortPoPWarning.vue";
+import SummaryPage from "@/steps/10-FinancialDetails/SummaryPage.vue";
 
 import {
   AcorsRouteResolver,
@@ -105,7 +105,7 @@ import {
   Upload7600Resolver,
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
-  ShortPoPResolver,
+  FinancialPOCResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -164,7 +164,7 @@ export const routeNames = {
   Upload7600:'Upload_7600',
   FundingPlanType: "Funding_Plan_Type",
   FinancialPOCForm: "Financial_POC_Form",
-  ShortPoPWarning: "Short_PoP_Warning",
+  SummaryPage: "Summary_Page",
 };
 
 /**
@@ -635,6 +635,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.SeverabilityAndIncrementalFunding,
         completePercentageWeight: 1,
         component: SeverabilityAndIncrementalFunding,
+
       },
       {
         menuText: "Incremental Funding",
@@ -652,15 +653,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         name: routeNames.FinancialPOCForm,
         completePercentageWeight: 1,
         component: FinancialPOCForm,
+        routeResolver: FinancialPOCResolver
+
       },
       {
-        menuText: "Short PoP Warning",
+        menuText: "SummaryPage",
         excludeFromMenu: true,
-        path: "pop-warning",
-        name: routeNames.ShortPoPWarning,
+        path: "summary-page",
+        name: routeNames.SummaryPage,
         completePercentageWeight: 1,
-        component: ShortPoPWarning,
-        routeResolver: ShortPoPResolver
+        component: SummaryPage,
       },
     ]
   },

@@ -1,63 +1,44 @@
-<template>
-  <div class="mb-7">
-    <v-container class="container-max-width" fluid>
-      <v-row>
-        <v-col class="col-12">
-          <h1 class="page-header">
-            Based on your period of performance, this effort does not qualify for an incremental
-            funding plan.
-          </h1>
+<!--<template>-->
 
-          <ATATAlert
-            id="PoPUnder9Months"
-            :showIcon="false"
-            class="copy-max-width my-10"
-            type="callout"
-          >
-            <template v-slot:content>
-              <h2>Why can’t I request to incrementally fund my task order?</h2>
-              <p class="mt-2">
-                An incremental funding plan provides the contracting office with assurance that
-                funds have been budgeted and will be available to fully fund all non-optional
-                services on a projected schedule.
-              </p>
-              <p class="mt-2">
-                To incrementally fund a task order, the period of performance must be at least 9
-                months. Based on what you previously told us, this contracting effort requires a
-                [X-month] base period.
-              </p>
-              <p class="mt-2 mb-0">
-                If you would like to request incremental funding, please revisit the Contract
-                Details section to
-                <router-link
-                  id="LinkToPoP"
-                  :to="{name: routeNames.PeriodOfPerformance}"
-                >
-                  update your period of performance.
-                </router-link>
-              </p>
-            </template>
-          </ATATAlert>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
-</template>
+<!--</template>-->
 
-<script lang="ts">
-import Vue from "vue";
-import { routeNames } from "../../router/stepper";
+<!--<script lang="ts">-->
+<!--import Vue from "vue";-->
+<!--import { routeNames } from "../../router/stepper";-->
 
-import { Component } from "vue-property-decorator";
-import ATATAlert from "@/components/ATATAlert.vue";
+<!--import { Component } from "vue-property-decorator";-->
+<!--import ATATAlert from "@/components/ATATAlert.vue";-->
+<!--import Periods from "@/store/periods";-->
+<!--import { PeriodDTO } from "@/api/models";-->
+<!--import { SlideoutPanelContent } from "../../../types/Global";-->
+<!--import PopLearnMore from "@/steps/04-ContractDetails/PopLearnMore.vue";-->
 
-@Component({
-  components: {
-    ATATAlert
-  }
-})
+<!--@Component({-->
+<!--  components: {-->
+<!--    ATATAlert-->
+<!--  }-->
+<!--})-->
 
-export default class ShortPoPWarning extends Vue {
-  private routeNames = routeNames;
-}
-</script>
+<!--export default class ShortPoPWarning extends Vue {-->
+<!--  private routeNames = routeNames;-->
+<!--  private basePeriod: PeriodDTO[] = []-->
+
+<!--  public async loadOnEnter(): Promise<void> {-->
+<!--    const periods = await Periods.loadPeriods();-->
+<!--    this.basePeriod = periods.map(period=> {-->
+
+<!--      return {-->
+<!--        /* eslint-disable camelcase */-->
+<!--        option_order: period.option_order,-->
+<!--        period_unit_count: period.period_unit_count,-->
+<!--        period_unit: period.period_unit,-->
+<!--        period_type: period.period_type,-->
+<!--        sys_id: period.sys_id,-->
+<!--      }-->
+<!--    });-->
+<!--  }-->
+<!--  public async mounted(): Promise<void> {-->
+<!--    await this.loadOnEnter();-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
