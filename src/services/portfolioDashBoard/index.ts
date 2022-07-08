@@ -49,9 +49,7 @@ export class PortfolioDashBoardService{
           clin.idiq_clin_label = label.label
         }
          
-        return {
-          ...clin
-        }
+        return clin;
       });
       
       const popStartDate = taskOrder.pop_start_date;
