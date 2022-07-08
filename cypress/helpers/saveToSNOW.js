@@ -1167,8 +1167,163 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     acqPackageEndPoints =  acqPackageEndPoints.concat(pii);
   }
-
-
+ 
+  if (spec === "section508standards"){
+    const section508standards = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_PATCH_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_GET_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_PATCH_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_GET_3',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_PATCH_3',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3,
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 3,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_sensitiveInformation_PATCH_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 3,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4,
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 4,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5,
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 5,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_sensitiveInformation_GET_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 5,
+        'statusCode': 200,
+      },
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    acqPackageEndPoints =  acqPackageEndPoints.concat(section508standards);
+  }
 
   acqPackageEndPoints.concat(
     contractDetailsEndPoints,
