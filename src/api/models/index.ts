@@ -299,3 +299,14 @@ export interface CostsDTO extends BaseTableDTO {
   is_actual: string;
   value: string;
 }
+
+export interface ClinDTO extends BaseTableDTO {
+    funds_obligated: string;
+    clin_number: string;
+    idiq_clin: string;
+    idiq_clin_label?: string;
+    pop_end_date: string;
+    pop_start_date: string;
+    clin_status: string;
+    funds_total: string;
+}
