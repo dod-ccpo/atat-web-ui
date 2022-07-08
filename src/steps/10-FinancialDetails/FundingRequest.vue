@@ -73,8 +73,8 @@ import SlideoutPanel from "@/store/slideoutPanel/index";
 import GInvoiceLearnMore from "@/steps/10-FinancialDetails/GInvoiceLearnMore.vue";
 import { hasChanges } from "@/helpers";
 import FinancialDetails from "@/store/financialDetails";
-import { FundingRequestDTO } from "@/api/models";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { de } from "date-fns/locale";
 
 @Component({
   components: {
@@ -91,7 +91,7 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
     {
       id: "FSFCheckbox",
       label: "Fiscal Service Forms (7600A and 7600B)",
-      value: "FSF",
+      value: "FS_FORM",
       description: `Import from G-Invoicing or manually upload your completed forms.
         <div class='badge badge-blue d-inline-block mt-1'>Recommended</div>`
     },
@@ -102,14 +102,10 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
       description: "Manually upload your completed DD Form 448.",
     }
   ];
-  private savedData: FundingRequestDTO = {
-    fundingRequestType: "",
-  };
+  private savedData ="";
 
-  private get currentData(): FundingRequestDTO {
-    return {
-      fundingRequestType: this.selectedFundingTypes,
-    };
+  private get currentData(): string {
+    return this.selectedFundingTypes;
   };
 
   public async openSlideoutPanel(e: Event, panelType: string): Promise<void> {
@@ -127,8 +123,9 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
   };
 
   public async loadOnEnter(): Promise<void> {
-    this.selectedFundingTypes = await FinancialDetails.fundingRequestType || "";
-    this.savedData.fundingRequestType = await FinancialDetails.fundingRequestType || "";
+    await FinancialDetails.loadFundingRequest();
+    this.selectedFundingTypes = FinancialDetails.fundingRequestType || "";
+    this.savedData = await FinancialDetails.fundingRequestType || "";
   };
 
   public async mounted(): Promise<void> {
@@ -143,8 +140,8 @@ export default class FundingPlanType extends Mixins(SaveOnLeave) {
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      if (this.hasChanged()) {
-        FinancialDetails.setFundingRequestType(this.currentData.fundingRequestType || "");
+      if (this.hasChanged()) {                                       
+        await FinancialDetails.saveFundingRequestType(this.currentData || "");
       }
     } catch (error) {
       console.log(error);

@@ -23,8 +23,11 @@ export default class SaveOnLeave extends Vue {
     next: (n: void) => void
   ): Promise<void> {
     const goNext = await this.saveOnLeave();
-    if (goNext) {
-      next();
-    }
+    
+    this.$nextTick(()=> {
+      if (goNext) {
+        next();
+      }
+    })
   }
 }

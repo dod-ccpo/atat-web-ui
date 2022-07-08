@@ -5,7 +5,8 @@ import rootStore from "../index";
 
 import { baseGInvoiceData, fundingIncrement, IFPData } from "types/Global";
 import { nameofProperty, retrieveSession, storeDataToSession } from "../helpers";
-import { FundingIncrementDTO, FundingPlanDTO, TaskOrderDTO } from "@/api/models";
+import { FundingIncrementDTO, FundingPlanDTO, FundingRequestDTO, FundingRequestFSFormDTO, 
+  FundingRequestMIPRFormDTO, TaskOrderDTO } from "@/api/models";
 import TaskOrder from "../taskOrder";
 import api from "@/api";
 
@@ -39,6 +40,26 @@ const initialFundingPlan: FundingPlanDTO = {
   remaining_amount_increments: "",
 }
 
+const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
+     
+  fs_form_7600a_filename: "",
+  fs_form_7600a_attachment: "",
+  fs_form_7600b_attachment: "",
+  fs_form_7600b_filename: "",
+  use_g_invoicing: "",
+  order_number: "",
+  gt_c_number: "",
+}
+
+const saveFundingRequestToDISA = async (data: FundingRequestDTO):
+ Promise<FundingRequestDTO>=>{
+  const saveFundingRequest = (data.sys_id && data.sys_id.length > 0) ?
+    api.fundingRequestTable.update(data.sys_id, data) :
+    api.fundingRequestTable.create(data);
+  const savedFundingRequest = await saveFundingRequest;
+  return savedFundingRequest;
+}
+
 @Module({
   name: 'FinancialDetails',
   namespaced: true,
@@ -50,32 +71,61 @@ export class FinancialDetailsStore extends VuexModule {
   initialized = false;
 
   fundingPlan: FundingPlanDTO = this.fundingPlanValue;
-
   estimatedTaskOrderValue: string | undefined = "";
-  fundingRequestType: string | null =  null;
   miprNumber: string | null = null;
   initialFundingIncrementStr: string | undefined = "";
   fundingIncrements: fundingIncrement[] = [];
 
-  useGInvoicing = "";
-  gInvoiceNumber = "";
-
   gtcNumber: string | null = null;
   orderNumber: string | null = null;
   taskOrder: TaskOrderDTO | null = null;
+  fundingRequest: FundingRequestDTO | null = null;
+  fundingRequestFSForm: FundingRequestFSFormDTO | null = null;
+  fundingRequestMIPRForm: FundingRequestMIPRFormDTO | null = null;
 
   // store session properties
   protected sessionProperties: string[] = [
     nameofProperty(this, (x) => x.estimatedTaskOrderValue),
-    nameofProperty(this, (x) => x.fundingRequestType),
+    nameofProperty(this, (x)=>x.fundingRequest),
+    nameofProperty(this, (x)=>x.fundingRequestFSForm),
+    nameofProperty(this, (x)=>x.fundingRequestMIPRForm),
     nameofProperty(this, (x)=> x.initialFundingIncrementStr),
     nameofProperty(this, (x)=> x.fundingIncrements),
     nameofProperty(this, (x)=> x.fundingPlan),
     nameofProperty(this, (x)=> x.gtcNumber),
-    nameofProperty(this, (x)=> x.orderNumber),
-    nameofProperty(this, (x) => x.useGInvoicing),
-    nameofProperty(this, (x) => x.gInvoiceNumber),      
+    nameofProperty(this, (x)=> x.orderNumber),   
   ];
+
+
+  public get fundingRequestType(): string {
+
+    if(this.fundingRequest == null)
+    {
+      return "";
+    }
+
+    return this.fundingRequest.funding_request_type.length > 0 ? 
+    this.fundingRequest?.funding_request_type : "";
+  }  
+
+  public get gInvoicingData(): baseGInvoiceData {
+
+    if(this.fundingRequestFSForm == null)
+    {
+      return {
+
+        useGInvoicing: "",
+        gInvoiceNumber: "",
+      }
+    }
+
+    const {use_g_invoicing, gt_c_number} = this.fundingRequestFSForm;
+    return  {
+
+      useGInvoicing: use_g_invoicing,
+      gInvoiceNumber: gt_c_number,
+    }
+  }
   
   @Action({ rawError: true })
   async ensureInitialized(): Promise<void> {
@@ -86,53 +136,51 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Action({ rawError: true })
   public async initialize(): Promise<void> {
+
     if (this.initialized) {
       return;
     }
-    await this.loadFundingPlanData();
 
     const sessionRestored = retrieveSession(ATAT_FINANCIAL_DETAILS__KEY);
     if (sessionRestored) {
       this.setStoreData(sessionRestored);
     }
-    this.setInitialized(true);
-
-  }
-
-  @Mutation
-  private setInitialized(value: boolean) {
-    this.initialized = value;
-  }
-
-  @Action
-  public async getGInvoiceData(): Promise<baseGInvoiceData> {
-    return {
-      useGInvoicing: this.useGInvoicing,
-      gInvoiceNumber: this.gInvoiceNumber,
+    else{
+      await this.loadFundingPlanData();
     }
-  }
-
-  @Mutation
-  public async saveGInvoiceData(data: baseGInvoiceData): Promise<void> {
-    this.useGInvoicing = data.useGInvoicing;
-    this.gInvoiceNumber = data.gInvoiceNumber;
-    
     storeDataToSession(
       this,
       this.sessionProperties,
       ATAT_FINANCIAL_DETAILS__KEY
     );
-    return;
+    this.setInitialized(true);
+
+  }
+  
+  @Action
+  public async saveGInvoiceData(data: baseGInvoiceData): Promise<void> {
+    const fsForm: FundingRequestFSFormDTO = this.fundingRequestFSForm 
+    || initialFundingRequestFSForm
+
+    const formToSave = {
+      ...fsForm,
+      use_g_invoicing: data.useGInvoicing,
+      gt_c_number: data.gInvoiceNumber,
+    }
+
+    const savedForm = await this.saveFundingRequestFSForm(formToSave);
+    this.setFundingRequestFSForm(savedForm);
   }
 
   @Action({ rawError: true })
   public async loadFundingPlanData(): Promise<void> {
+
     // get funding plan sysID from taskorder table if it exists
     if (!this.fundingPlan.sys_id) {
       const taskOrder = await TaskOrder.getTaskOrder();
       const fundingPlanSysId = taskOrder.funding_plan;
 
-      if (fundingPlanSysId) {
+      if (fundingPlanSysId.length > 0) {
         const fundingPlan = await api.fundingPlanTable.retrieve(fundingPlanSysId as string);
         this.setFundingPlan(fundingPlan);
 
@@ -140,13 +188,7 @@ export class FinancialDetailsStore extends VuexModule {
         this.setInitialAmount(fundingPlan.initial_amount);
         
         const remainingAmountIncrements = fundingPlan.remaining_amount_increments;
-        await this.setFundingIncrements(remainingAmountIncrements);
-
-        storeDataToSession(
-          this,
-          this.sessionProperties,
-          ATAT_FINANCIAL_DETAILS__KEY
-        );      
+        await this.setFundingIncrements(remainingAmountIncrements); 
       } 
     }
     return;
@@ -170,7 +212,12 @@ export class FinancialDetailsStore extends VuexModule {
       }
       this.fundingIncrements.push(incrObj);
     });
-    return;
+
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );     
   }
 
   @Action({ rawError: true })
@@ -259,7 +306,7 @@ export class FinancialDetailsStore extends VuexModule {
 
   }
 
-  @Action
+  @Action({ rawError: true })
   public async saveFundingPlan(): Promise<FundingPlanDTO> {
     const sysId = this.fundingPlan.sys_id || "";
     const saveFundingPlan = sysId
@@ -271,14 +318,14 @@ export class FinancialDetailsStore extends VuexModule {
     return savedFundingPlan;
   }
 
-  @Action
+  @Action({ rawError: true })
   public async save7600({gtcNumber, orderNumber}: {gtcNumber: string, 
     orderNumber: string}): Promise<void> {
     this.setGTCNumber(gtcNumber);
     this.setOrderNumber(orderNumber);
   }
 
-  @Action
+  @Action({ rawError: true })
   public async load7600():Promise<{gtcNumber: string, 
     orderNumber: string}>{
 
@@ -288,18 +335,18 @@ export class FinancialDetailsStore extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   public async getMIPRNumber(): Promise<string>  {
     return this.miprNumber || '';
   }
 
-  @Action
+  @Action({ rawError: true })
   public async getEstimatedTaskOrderValue(): Promise<string> {
     this.ensureInitialized();
     return this.estimatedTaskOrderValue || "";
   }
 
-  @Action
+  @Action({ rawError: true })
   public async saveEstimatedTaskOrderValue(value: string): Promise<void> {
     this.setEstimatedTaskOrderValue(value);
 
@@ -314,6 +361,99 @@ export class FinancialDetailsStore extends VuexModule {
       ATAT_FINANCIAL_DETAILS__KEY
     );  
   }
+
+ @Action({rawError: true}) 
+  public async saveFundingRequest(data: FundingRequestDTO): Promise<void> {
+     
+    try {
+      const savedFundingRequest = await saveFundingRequestToDISA(data);
+      this.setFundingRequest(savedFundingRequest);
+    } catch (error) {
+
+      throw new Error(`error saving funding request ${error}`);
+    
+    }
+
+  }
+
+  @Action({rawError: true}) 
+ async loadFundingRequest():Promise<FundingRequestDTO>{
+   this.ensureInitialized();
+
+   try {
+     if(this.fundingRequest == null){
+       const fundingRequest: FundingRequestDTO = {
+         fs_form: "",
+         funding_request_type: "",
+         mipr: ""
+       }
+
+       return fundingRequest;
+     }
+
+     const fundingRequest = await api.fundingRequestTable
+       .retrieve(this.fundingRequest.sys_id);
+     this.setFundingRequest(fundingRequest);
+     return fundingRequest;
+   } catch (error) {
+     throw new Error(`error occurred retrieving funding request ${error}`);
+   }
+ }
+
+ @Action({rawError: true}) 
+  async loadFundingRequestFSForm():Promise<FundingRequestFSFormDTO>{
+    this.ensureInitialized();
+
+    try {
+      if(this.fundingRequestFSForm == null){
+        return initialFundingRequestFSForm;
+      }
+      const fundingRequestForm = await api.fundingRequestFSFormTable
+        .retrieve(this.fundingRequestFSForm.sys_id);
+      this.setFundingRequestFSForm(fundingRequestForm);
+      return fundingRequestForm;
+    } catch (error) {
+      throw new Error(`error occurred retrieving funding request form ${error}`);
+    }
+  }
+
+
+ @Action({rawError: true}) 
+ async saveFundingRequestType(value: string): Promise<void> {
+
+   const fundingRequest = this.fundingRequest === null ? 
+     {
+       fs_form: "",
+       funding_request_type: value,
+       mipr: ""
+     } : {
+       ...this.fundingRequest,
+       funding_request_type: value,
+     }
+  
+   const savedFundingRequest = await saveFundingRequestToDISA(fundingRequest);
+   this.setFundingRequest(savedFundingRequest);
+ }
+
+  @Action({rawError: true})
+ public async saveFundingRequestFSForm(data: 
+  FundingRequestFSFormDTO): Promise<FundingRequestFSFormDTO>{
+
+   try {
+
+     const saveFundingRequestFSForm = (data.sys_id && data.sys_id.length > 0) ?
+       api.fundingRequestFSFormTable.update(data.sys_id, data) :
+       api.fundingRequestFSFormTable.create(data);
+     const savedFundingRequestFSForm = await saveFundingRequestFSForm;
+     this.setFundingRequestFSForm(savedFundingRequestFSForm);
+     
+     return savedFundingRequestFSForm;
+      
+   } catch (error) {
+     throw new Error( `error occurred saving funding request form ${error}`);
+   }
+ }
+
 
   @Mutation
   public setEstimatedTaskOrderValue(value: string | undefined): void {
@@ -345,15 +485,6 @@ export class FinancialDetailsStore extends VuexModule {
     );
   }
 
-  @Mutation
-  public setFundingRequestType(value: string): void {
-    this.fundingRequestType = value;
-    storeDataToSession(
-      this,
-      this.sessionProperties,
-      ATAT_FINANCIAL_DETAILS__KEY
-    );
-  }
 
   @Mutation
   public setGTCNumber(value: string): void {
@@ -373,6 +504,43 @@ export class FinancialDetailsStore extends VuexModule {
       this.sessionProperties,
       ATAT_FINANCIAL_DETAILS__KEY
     );
+  }
+
+  @Mutation
+  public setFundingRequest(value: FundingRequestDTO): void {
+    this.fundingRequest = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+  }  
+  
+  @Mutation
+  public setFundingRequestFSForm(value: FundingRequestFSFormDTO): void {
+    this.fundingRequestFSForm = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+  }
+
+  @Mutation
+  public setFundingRequestMIPRForm(value: FundingRequestMIPRFormDTO): void {
+    this.fundingRequestMIPRForm = value;
+    storeDataToSession(
+      this,
+      this.sessionProperties,
+      ATAT_FINANCIAL_DETAILS__KEY
+    );
+  }
+
+
+
+  @Mutation
+  private setInitialized(value: boolean) {
+    this.initialized = value;
   }
 
   @Mutation
