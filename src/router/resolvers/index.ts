@@ -501,7 +501,7 @@ export const Upload7600Resolver = (current: string): string => {
     ? routeNames.GInvoicing
     : routeNames.SeverabilityAndIncrementalFunding;
 }
-
+const cutOff = 270;
 export const IncrementalFundingResolver = (current: string): string => {
   // currently not saving yes/no if need incremental funding.
   // future ticket will have route resolve to either Incremental Funding Page
@@ -511,12 +511,10 @@ export const IncrementalFundingResolver = (current: string): string => {
   const totalDuration = AcquisitionPackage.totalPOPDuration;
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
-  if (totalDuration < 270) {
+  if (totalDuration < cutOff || isIncrementallyFunded === "NO") {
     return routeNames.SummaryPage;
   }
-  if(isIncrementallyFunded === "NO") {
-    return routeNames.SummaryPage;
-  }
+
   return current === routeNames.IncrementalFunding
     ? routeNames.FinancialPOCForm
     : routeNames.IncrementalFunding
@@ -524,7 +522,6 @@ export const IncrementalFundingResolver = (current: string): string => {
 
 export const FinancialPOCResolver =  (current: string): string => {
   const totalDuration = AcquisitionPackage.totalPOPDuration;
-  const cutOff = 270;
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
   if (current === routeNames.SummaryPage && totalDuration < cutOff ||

@@ -23,7 +23,7 @@
             <p class="mt-2">
               To incrementally fund a task order, the period of performance must be at least 9
               months. Based on what you previously told us, this contracting effort requires a
-              {{ basePeriod }} base period.
+              base period of {{ basePeriod }}s.
             </p>
             <p class="mt-2 mb-0">
               If you would like to request incremental funding, please revisit the Contract
