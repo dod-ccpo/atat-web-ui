@@ -49,7 +49,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
           });
       });      
       
-    cy.radioBtn(fd.fsfRadioBtn, "FSF");
+    cy.radioBtn(fd.fsfRadioBtn, "FS_FORM");
     cy.radioBtn(fd.miprRadioBtn, "MIPR");
     const fsfLabel = "Fiscal Service Forms (7600A and 7600B)" +
       "Import from G-Invoicing or manually upload your completed forms." +
@@ -100,7 +100,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
     cy.verifyPageHeader("What type of funding request did you use for this acquisition?");    
-    cy.radioBtn(fd.fsfRadioBtn, "FSF").focus();
+    cy.radioBtn(fd.fsfRadioBtn, "FS_FORM").focus();
     cy.clickSomethingElse(fd.fundingRadioError)
       .then(() => {
         cy.checkErrorMessage(fd.fundingRadioError, "Please select a type of funding request.");
@@ -113,13 +113,13 @@ describe("Test suite: Financial Details Step: Funding Plan substep", () => {
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
     cy.verifyPageHeader("What type of funding request did you use for this acquisition?");    
-    cy.selectFundingRequest(fd.fsfRadioBtn, "FSF");
+    cy.selectFundingRequest(fd.fsfRadioBtn, "FS_FORM");
     const introText = "If you select Yes below, then we will" +
       " verify a few details and sync your funding request with this effort." +
       " Otherwise, you can manually upload forms from your computer. Learn more about G-Invoicing"
     cy.verifyTextMatches(common.introText, introText);
-    cy.radioBtn(fd. ginvoiceYesRadioBtn, "Yes");
-    cy.radioBtn(fd.ginvoiceNoRadioBtn, "No");
+    cy.radioBtn(fd. ginvoiceYesRadioBtn, "YES");
+    cy.radioBtn(fd.ginvoiceNoRadioBtn, "NO");
     const giYesLabel = "Yes. My General Terms & Conditions (GT&C) and Order are in G-Invoicing."
     cy.verifyTextMatches(fd.yesLabel, giYesLabel);
     const giNoLabel = "No. I would like to upload my 7600A and 7600B forms."

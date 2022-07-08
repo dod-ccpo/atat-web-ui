@@ -28,7 +28,7 @@
             :rules="[$validators.required('Please select an option')]"
           />
         </div>
-        <div v-show="useGInvoicing === 'Yes'">
+        <div v-show="useGInvoicing === 'YES'">
           <hr class="mt-5" />
             <ATATSearch
               id="OrderNumber"
@@ -141,10 +141,10 @@ export default class GInvoicing extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        if (this.currentData.useGInvoicing === "No") {
+        if (this.currentData.useGInvoicing === "NO") {
           this.currentData.gInvoiceNumber = "";
         }
-        FinancialDetails.saveGInvoiceData(this.currentData);
+        await FinancialDetails.saveGInvoiceData(this.currentData);
       }
     } catch (error) {
       console.log(error);
