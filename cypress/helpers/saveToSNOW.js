@@ -9,11 +9,26 @@ const buildAttachmentApiPath = (attachment)=> {
   return `${baseAPIUrl}api/now/${attachment}`;
 }
 
-const testNames = window.Cypress.spec.name.toLowerCase().split("/");
-const testSuite = testNames[testNames.length-2];
-const spec = testNames[testNames.length-1].split(".")[0];
-const fixtureFolder = testSuite + "/" + spec;
+const specPath = window.Cypress.spec.name.toLowerCase().split("/");
 
+/**
+ * 
+ * accommodates for .spec.ts files that have predefined 
+ * test suites (read: in folders), and those that don't
+ * @returns string: testSuite
+ */
+let testSuite = ()=>{
+  let _testSuite = specPath.length === 3 
+    ? specPath[specPath.length-2]
+    : specPath[specPath.length-1];
+    debugger;
+  return _testSuite.split(".")[0];
+}
+
+const spec = specPath[specPath.length-1].split(".")[0];
+const fixtureFolder = testSuite() + "/" + spec;
+
+debugger;
 export function saveToSNOW(testCase){
   let acqPackageEndPoints = [
     {
