@@ -466,8 +466,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       if (hasChanged) {
         const removed = this.removed;
         await Periods.savePeriods({periods: this.currentData, removed});
-        if(this.totalPoPDuration < cutOff){
-          console.log(FinancialDetails.fundingIncrements)
+        if(this.basePoPDuration < cutOff){
           FinancialDetails.saveIFPData(
             {
               data: {initialFundingIncrementStr: "",
