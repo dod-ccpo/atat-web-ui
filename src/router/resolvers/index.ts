@@ -512,7 +512,6 @@ export const IncrementalFundingResolver = (current: string): string => {
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
   if (totalDuration < 270) {
-    console.log('under 9 months', totalDuration)
     return routeNames.SummaryPage;
   }
   if(isIncrementallyFunded === "NO") {
