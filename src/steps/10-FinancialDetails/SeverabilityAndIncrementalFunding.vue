@@ -245,7 +245,7 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   }
 
   public get PoPUnder9Months(): boolean {
-    return AcquisitionPackage.totalPOPDuration < 270
+    return AcquisitionPackage.totalBasePoPDuration < 270
   }
 
   public get basePeriod(): string {

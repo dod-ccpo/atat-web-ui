@@ -154,10 +154,9 @@ export class FinancialDetailsStore extends VuexModule {
 
   @Mutation
   public async setFundingIncrements(remainingAmountIncrements: string): Promise<void> {
-    const incrementSysIdsStr = remainingAmountIncrements;
-    const incrementSysIds = incrementSysIdsStr.split(',');
     this.fundingIncrements = [];
-    if(incrementSysIds.length) {
+    if(remainingAmountIncrements.length) {
+      const incrementSysIds = remainingAmountIncrements.split(',');
       const requests = incrementSysIds.map(sysId => api.fundingIncrementTable.retrieve(sysId));
       const results = await Promise.all(requests);
 
@@ -222,7 +221,6 @@ export class FinancialDetailsStore extends VuexModule {
       const fundingIncrements: fundingIncrement[] = data.fundingIncrements;
       let incrementSysIds = "";
       if(fundingIncrements.length) {
-        debugger
         const createOrUpdateIncrements = fundingIncrements.map(incr => saveIncrement(incr));
         const savedIncrements = await Promise.all(createOrUpdateIncrements);
         // NOTE: pass "List" data type to SNOW as comma-delimited string, not array

@@ -508,7 +508,7 @@ export const IncrementalFundingResolver = (current: string): string => {
   // or the Financial POC Form page
   // for now, if either yes or no is selected, route to IFP page
 
-  const totalDuration = AcquisitionPackage.totalPOPDuration;
+  const totalDuration = AcquisitionPackage.totalBasePoPDuration;
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
   if (totalDuration < cutOff || isIncrementallyFunded === "NO") {
@@ -521,7 +521,7 @@ export const IncrementalFundingResolver = (current: string): string => {
 }
 
 export const FinancialPOCResolver =  (current: string): string => {
-  const totalDuration = AcquisitionPackage.totalPOPDuration;
+  const totalDuration = AcquisitionPackage.totalBasePoPDuration;
   const isIncrementallyFunded = TaskOrder.value.incrementally_funded
 
   if (current === routeNames.SummaryPage && totalDuration < cutOff ||

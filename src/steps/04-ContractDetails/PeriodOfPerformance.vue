@@ -205,6 +205,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public totalPoPDuration = 0;
+  public basePoPDuration = 0
 
   public selectedTimePeriod = "Year";
   public timePeriods: SelectData[] = [
@@ -225,8 +226,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public setTotalPoP(): void {
+    this.basePoPDuration = 0
     this.totalPoPDuration = 0;
-    this.optionPeriods.forEach((optionPeriod) => {
+    this.optionPeriods.forEach((optionPeriod, idx) => {
       if (optionPeriod.duration) {
         let multiplier = 1;
         switch (optionPeriod.unitOfTime) {
@@ -243,6 +245,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           multiplier = 1;
         }
         const thisDays = optionPeriod.duration * multiplier;
+        if(idx === 0){
+          this.basePoPDuration += thisDays
+        }
         this.totalPoPDuration += thisDays;
       }
     });
@@ -456,7 +461,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
       const valid = this.optionPeriods.every(peroid=>peroid.duration);
       const cutOff = 270;
       const hasChanged = valid && hasChanges(this.savedData, this.currentData);
-      AcquisitionPackage.setTotalPoPDuration(this.totalPoPDuration)
+      AcquisitionPackage.setBasePoPDuration(this.basePoPDuration)
 
       if (hasChanged) {
         const removed = this.removed;
