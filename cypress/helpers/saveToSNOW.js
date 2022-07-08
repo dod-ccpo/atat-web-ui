@@ -557,6 +557,7 @@ export function saveToSNOW(testCase){
       }
     ]);
   }
+    
 
   acqPackageEndPoints.concat(
     contractDetailsEndPoints,
