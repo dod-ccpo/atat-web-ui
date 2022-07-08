@@ -191,10 +191,6 @@ export function saveToSNOW(){
     ]);
   }
     
-  
-  
-  debugger;
-  
 
   acqPackageEndPoints.concat(
     contractDetailsEndPoints,

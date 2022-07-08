@@ -26,6 +26,8 @@ import { ClassificationInstanceApi } from "./classificationInstance";
 import { TaskOrderApi } from "./taskOrder";
 import { CostsApi } from "./costs";
 import { FundingRequestApi } from "./fundingRequest";
+import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
+import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
 
 export const api = {
 
@@ -42,6 +44,8 @@ export const api = {
   fundingPlanTable :new FundingPlanApi(),
   fundingRequestTable: new FundingRequestApi(),
   fundingIncrementTable: new FundingIncrementApi(),
+  fundingRequestFSFormTable: new FundingRequestFSFormApi(),
+  FundingRequestMIPRFormTable: new FundingRequestMIPRFormApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),

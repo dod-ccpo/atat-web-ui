@@ -264,7 +264,6 @@ export interface ClassificationInstanceDTO extends BaseTableDTO {
 }
 
 export interface FundingRequestDTO extends BaseTableDTO {
-  fundingRequestType: string;
   fs_form: string;
   funding_request_type: string;
   mipr: string;

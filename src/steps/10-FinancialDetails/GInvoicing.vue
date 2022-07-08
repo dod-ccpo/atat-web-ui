@@ -92,12 +92,12 @@ export default class GInvoicing extends Mixins(SaveOnLeave) {
     {
       id: "Yes",
       label: "Yes. My General Terms &amp; Conditions (GT&amp;C) and Order are in G-Invoicing.",
-      value: "Yes",
+      value: "YES",
     },
     {
       id: "No",
       label: "No. I would like to upload my 7600A and 7600B forms.",
-      value: "No",
+      value: "NO",
     }
   ];  
 
@@ -126,7 +126,8 @@ export default class GInvoicing extends Mixins(SaveOnLeave) {
       title: "Learn More",
     };
     await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
-    const storeData = await FinancialDetails.getGInvoiceData();
+    await FinancialDetails.loadFundingRequestFSForm();
+    const storeData = FinancialDetails.gInvoicingData;
     if (storeData) {
       this.useGInvoicing = storeData.useGInvoicing;
       this.gInvoiceNumber = storeData.gInvoiceNumber;
