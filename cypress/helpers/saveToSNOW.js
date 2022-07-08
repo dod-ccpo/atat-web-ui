@@ -669,6 +669,76 @@ export function saveToSNOW(testCase){
     acqPackageEndPoints =  acqPackageEndPoints.concat(baa);
   }
 
+  /** standardsAndComplaince */
+  if (spec === "foia"){
+    const foia = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_PATCH_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_GET_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_PATCH_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_GET_3',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 2,
+        'statusCode': 200,
+      },
+     
+     
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    acqPackageEndPoints =  acqPackageEndPoints.concat(foia);
+  }
+
 
 
   acqPackageEndPoints.concat(
