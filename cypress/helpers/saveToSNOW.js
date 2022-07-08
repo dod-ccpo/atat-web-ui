@@ -49,13 +49,6 @@ export function saveToSNOW(testCase){
       'action': 'POST',
     },
   ]
-  // const financialDetailsEndPoints = [
-  //   {
-  //     'fixture': 'fairOpportunity',
-  //     'apiURL': 'x_g_dis_atat_fair_opportunity',
-  //     'action': 'POST',
-  //   },
-  // ]
 
   /** financialDetails */
   if (spec === "fundingplan"){
@@ -317,6 +310,7 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     acqPackageEndPoints =  acqPackageEndPoints.concat(incrementalFunding);
   };
+
   if (spec === "mipr"){
     const mipr = [
       {
@@ -428,7 +422,6 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     acqPackageEndPoints =  acqPackageEndPoints.concat(requirementsCostEstimate);
   }
-
 
   /** otherContractConsiderations */
   if (spec === "conflictofinterest"){
