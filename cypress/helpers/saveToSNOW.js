@@ -924,7 +924,7 @@ export function saveToSNOW(testCase){
         'statusCode': 200,
       },
       {
-        'fixture': fixtureFolder + '/TC6_sensitiveInformation_PATCH_1',
+        'fixture': fixtureFolder + '/TC7_sensitiveInformation_PATCH_1',
         'apiURL': 'x_g_dis_atat_sensitive_information/**',
         'action': 'PATCH',
         'times': 1,
@@ -940,7 +940,7 @@ export function saveToSNOW(testCase){
         'statusCode': 200,
       },
       {
-        'fixture': fixtureFolder + '/TC6_sensitiveInformation_PATCH_2',
+        'fixture': fixtureFolder + '/TC7_sensitiveInformation_PATCH_2',
         'apiURL': 'x_g_dis_atat_sensitive_information/**',
         'action': 'PATCH',
         'times': 1,
@@ -955,10 +955,119 @@ export function saveToSNOW(testCase){
         'testCase' : 7,
         'statusCode': 200,
       },
+      {
+        'fixture': fixtureFolder + '/TC8_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 8
+      },
+      {
+        'fixture': fixtureFolder + '/TC8_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 8
+      },
+      {
+        'fixture': fixtureFolder + '/TC8_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 8,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC8_sensitiveInformation_PATCH_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 8,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC8_sensitiveInformation_GET_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 8,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC8_sensitiveInformation_PATCH_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 8,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC8_sensitiveInformation_GET_3',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 8,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC9_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 9
+      },
+      {
+        'fixture': fixtureFolder + '/TC9_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 9
+      },
+      {
+        'fixture': fixtureFolder + '/TC9_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 9,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC9_sensitiveInformation_PATCH_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 9,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC9_sensitiveInformation_GET_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 9,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC9_sensitiveInformation_PATCH_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'times': 1,
+        'testCase' : 9,
+        'statusCode': 200,
+      },
+      {
+        'fixture': fixtureFolder + '/TC9_sensitiveInformation_GET_3',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'times': 1,
+        'testCase' : 9,
+        'statusCode': 200,
+      },
 
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     acqPackageEndPoints =  acqPackageEndPoints.concat(foia);
   }
+  
 
 
 
