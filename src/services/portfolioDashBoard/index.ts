@@ -1,6 +1,7 @@
 import api from "@/api";
 import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
+import { TABLENAME as ClinTable } from "@/api/clin";
 
 export interface PortFolioDashBoardDTO {
      taskOrder: TaskOrderDTO;
@@ -33,7 +34,25 @@ export class PortfolioDashBoardService{
       //grab all of the task order clins
       const clinIds = taskOrder.clins.split(',');
       const clinRequests = clinIds.map(clin=> api.clinTable.retrieve(clin));
-      const clins = await Promise.all(clinRequests);
+      let clins = await Promise.all(clinRequests);
+
+      // eslint-disable-next-line camelcase
+      const clin_labels = await api.systemChoices.getChoices(ClinTable, "idiq_clin");
+
+      clins = clins.map(clin=> {
+
+        // eslint-disable-next-line camelcase
+        const label = clin_labels.find(label=>label.value === clin.idiq_clin);
+        if(label){
+
+          // eslint-disable-next-line camelcase
+          clin.idiq_clin_label = label.label
+        }
+         
+        return {
+          ...clin
+        }
+      });
       
       const popStartDate = taskOrder.pop_start_date;
       const popEndDate = taskOrder.pop_end_date;
