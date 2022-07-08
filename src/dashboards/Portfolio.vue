@@ -286,43 +286,55 @@ export default class PortfolioDashboard extends Vue {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
     const uniqueClins = [...new Set(this.costs.map(cost => cost.clin))].sort();
     
-    // const foo = [
-    //   {
-    //     '0001': {
-    //       '2022-01-01': 500,
-    //       '2022-02-01': 350,
-    //       '2022-03-01': 400,
-    //     }
+
+    const sampleClinData = {
+      '0001': {
+        'label': "Unclassified XaaS",
+        'costs': {
+          '2022-01-01': "500",
+          '2022-02-01': "350",
+          '2022-03-01': "400",
+        }
+      },
+      '0002': {
         
+        '2022-01-01': "240",
+        '2022-02-01': "0",
+        '2022-03-01': "100",
+      }
+    }
+
+
+    // const sampleClinData = {
+    //   '0001': {
+    //     '2022-01-01': "500",
+    //     '2022-02-01': "350",
+    //     '2022-03-01': "400",
     //   },
-    //   {
-    //     '0002': {
-    //       '2022-01-01': 240,
-    //       '2022-02-01': 0,
-    //       '2022-03-01': 100,
-    //     }
+    //   '0002': {
+    //     '2022-01-01': "240",
+    //     '2022-02-01': "0",
+    //     '2022-03-01': "100",
     //   }
-    // ]
-    // const bar = {
+    // }
+
+    // sample 6 month PoP with 3 months of data
+    // const sampleDataForChart = {
     //   'ALL' : { actual: [1590, 850, 500], projected: [null, null, 500, null, null, 0] },
     //   '0001': { actual: [1250, 750, 400], projected: [null, null, 400, null, null, 0] },
     //   '0002': { actual: [340, 100, 100], projected: [null, null, 100, null, null, 0] }
     // }
 
-    let clinData = []
+    let clinData: Record<string, Record<string, string>> = {};
     uniqueClins.forEach((clinNo) => {
-      // let thisClinData = { [clinNo] : {} }
       let clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
-        const clin = this.costs.filter((cost) => {
-          return cost.clin === clinNo && cost.year_month === date;
-        });
-        if (clin.length) {
-          clinValues[date] = clin[0].value;
+        const clin = this.costs.find(cost => cost.clin === clinNo && cost.year_month === date);
+        if (clin) {
+          clinValues[date] = clin.value;
         }
       });
-      const clin = { [clinNo]: clinValues }
-      clinData.push({ [clinNo]: clinValues });
+      clinData[clinNo] = clinValues;
     });
 
     const popStartISO = this.taskOrder.pop_start_date;
@@ -339,10 +351,74 @@ export default class PortfolioDashboard extends Vue {
       month = add(popStartDate, { months: i + 1 });
       periodDates.push(month);
       periodDatesISO.push(formatISO(month, { representation: 'date' }));
-      
     }
-    debugger;
 
+    let monthlyCostsActual: Record<string, (number | null)[]> = {};
+    let monthlyCostsProjected: Record<string, (number | null)[]> = {}
+
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const finalMonth = popEndDate.getMonth() + 1;
+
+    uniqueClins.forEach((clinNo) => {
+      const thisClinData = clinData[clinNo];
+      const actual: (number | null)[] = [];
+      const projected: (number | null)[] = [];
+
+      periodDatesISO.forEach((monthISO) => {
+        const value = parseFloat(thisClinData[monthISO]);
+        const thisMonthAmount = !isNaN(value) ? value : null;
+
+        const month = (parseISO(monthISO)).getMonth() + 1;
+        const isCurrentMonth = month === currentMonth;
+        const isFinalMonth = month === finalMonth;
+        const isActual = month <= currentMonth;
+
+        const actualVal = isActual ? thisMonthAmount : null;
+        actual.push(actualVal);
+
+        const projectedVal = isCurrentMonth
+          ? thisMonthAmount : isFinalMonth ? 0 : null;
+        projected.push(projectedVal);
+      });
+
+      monthlyCostsActual[clinNo] = actual;
+      monthlyCostsProjected[clinNo] = projected;
+      
+    });
+    
+    console.log("actual", monthlyCostsActual);
+
+    const actualBurn: Record<string, (number | null)[]> = {};
+    const projectedBurn: Record<string, (number | null)[]> = {};
+    
+    uniqueClins.forEach((clinNo) => {
+      monthlyCostsActual[clinNo] = monthlyCostsActual[clinNo].reverse();
+      monthlyCostsProjected[clinNo] = monthlyCostsProjected[clinNo].reverse();
+
+      const actual:(number | null)[] = [];
+      const projected:(number | null)[] = [];
+      monthlyCostsActual[clinNo].forEach((amount, i) => {
+
+        if (i === 0) {
+          actual.push(amount);
+          projected.push(amount);
+        } else {
+          let prevActual = actual[i - 1];
+          if (prevActual === null) {
+            actual.push(amount);
+          } else {
+            const currentActualToAdd = amount === null ? 0 : amount;
+            const amountToAdd = currentActualToAdd + prevActual;
+            actual.push(amountToAdd);
+          }
+        }
+      });
+      console.log("actual burn", actual)
+      debugger;
+    });
+
+    debugger;
 
     return;
   }
