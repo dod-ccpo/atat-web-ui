@@ -83,6 +83,7 @@
                   />
                   <v-btn
                     icon
+                    :id="'DeleteIncrement' + index"
                     @click="deleteFundingIncrement(index)"
                     :disabled="fundingIncrements.length === 1"
                   >
