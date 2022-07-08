@@ -20,12 +20,12 @@
               funds have been budgeted and will be available to fully fund all non-optional
               services on a projected schedule.
             </p>
-            <p class="mt-2">
+            <p>
               To incrementally fund a task order, the period of performance must be at least 9
               months. Based on what you previously told us, this contracting effort requires a
               base period of {{ basePeriod }}s.
             </p>
-            <p class="mt-2 mb-0">
+            <p class="mb-0">
               If you would like to request incremental funding, please revisit the Contract
               Details section to
               <router-link
