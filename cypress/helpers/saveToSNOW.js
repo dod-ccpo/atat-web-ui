@@ -59,77 +59,88 @@ export function saveToSNOW(testCase){
 
   /** financialDetails */
   if (spec === "fundingplan"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    const fundingPlan = [
       {
         'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 1
       },
       {
         'fixture': fixtureFolder + '/TC1_taskOrder_POST_2',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 1
       },
       {
         'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 2
       },
       {
         'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 3
       },
       {
         'fixture': fixtureFolder + '/TC3_taskOrder_POST_2',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 3
       },
       {
         'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 4
       },
       {
         'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 5
       },
       {
         'fixture': fixtureFolder + '/TC5_fundingPlan_POST_1',
         'apiURL': 'x_g_dis_atat_funding_plan',
         'action': 'POST',
         'statusCode': 201,
-        'times': 1
+        'times': 1,
+        'testCase' : 5
       },
       {
         'fixture': fixtureFolder + '/TC5_fundingPlan_PATCH_1',
         'apiURL': 'x_g_dis_atat_funding_plan/**',
         'action': 'PATCH',
         'statusCode': 200,
-        'times': 1
+        'times': 1,
+        'testCase' : 5
       },
       {
         'fixture': fixtureFolder + '/TC5_attachment_POST_1',
         'apiURL': 'attachment/file**',
         'action': 'POST',
-        'times': 1
+        'times': 1,
+        'testCase' : 5
       },
-    ])
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    acqPackageEndPoints =  acqPackageEndPoints.concat(fundingPlan);
   }
   if (spec === "incrementalfunding"){
     const incrementalFunding = [
@@ -306,7 +317,6 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     acqPackageEndPoints =  acqPackageEndPoints.concat(incrementalFunding);
   };
-
   if (spec === "mipr"){
     const mipr = [
       {
@@ -418,6 +428,7 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     acqPackageEndPoints =  acqPackageEndPoints.concat(requirementsCostEstimate);
   }
+
 
   /** otherContractConsiderations */
   if (spec === "conflictofinterest"){
@@ -557,6 +568,108 @@ export function saveToSNOW(testCase){
       }
     ]);
   }
+
+  /** standardsAndComplaince */
+  if (spec === "baa"){
+    const baa = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      }, 
+      {
+        'fixture': fixtureFolder + '/TC3_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_sensitiveInformation_PATCH_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_sensitiveInformation_GET_2',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },   
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_sensitiveInformation_POST_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      }, 
+      {
+        'fixture': fixtureFolder + '/TC4_sensitiveInformation_GET_1',
+        'apiURL': 'x_g_dis_atat_sensitive_information/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+     
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    acqPackageEndPoints =  acqPackageEndPoints.concat(baa);
+  }
+
+
 
   acqPackageEndPoints.concat(
     contractDetailsEndPoints,
