@@ -12,7 +12,7 @@ describe("Test suite: Funding Plan substep: G-Invoicing work flow", () => {
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
     cy.verifyPageHeader("What type of funding request did you use for this acquisition?");    
-    cy.selectFundingRequest(fd.fsfRadioBtn, "FSF");    
+    cy.selectFundingRequest(fd.fsfRadioBtn, "FS_FORM");    
         
   }); 
   
@@ -21,13 +21,13 @@ describe("Test suite: Funding Plan substep: G-Invoicing work flow", () => {
       " verify a few details and sync your funding request with this effort." +
       " Otherwise, you can manually upload forms from your computer. Learn more about G-Invoicing"
     cy.verifyTextMatches(common.introText, introText);
-    cy.radioBtn(fd.ginvoiceYesRadioBtn, "Yes");
-    cy.radioBtn(fd.ginvoiceNoRadioBtn, "No");
+    cy.radioBtn(fd.ginvoiceYesRadioBtn, "YES");
+    cy.radioBtn(fd.ginvoiceNoRadioBtn, "NO");
     const giYesLabel = "Yes. My General Terms & Conditions (GT&C) and Order are in G-Invoicing."
     cy.verifyTextMatches(fd.yesLabel, giYesLabel);
     const giNoLabel = "No. I would like to upload my 7600A and 7600B forms."
     cy.verifyTextMatches(fd.noLabel, giNoLabel);
-    cy.selectGInvoiceFRequest(fd.ginvoiceYesRadioBtn, "Yes");
+    cy.selectGInvoiceFRequest(fd.ginvoiceYesRadioBtn, "YES");
     const orderNoValue= "O2212-000-000-000000";
     cy.enterTextInTextField(fd.orderNoSearchInput, orderNoValue);
     cy.findElement(fd.orderNoSearchBtn).click()
@@ -44,12 +44,12 @@ describe("Test suite: Funding Plan substep: G-Invoicing work flow", () => {
   });
   
   it("TC2: Validations: G-Invoicing for your funding request screen", () => {
-    cy.radioBtn(fd.ginvoiceYesRadioBtn, "Yes").focus();
+    cy.radioBtn(fd.ginvoiceYesRadioBtn, "YES").focus();
     cy.clickSomethingElse(fd. gInvoiceErrorRadioOption)
       .then(() => {
         cy.checkErrorMessage(fd.gInvoiceErrorRadioOption, "Please select an option");
       });
-    cy.selectGInvoiceFRequest(fd.ginvoiceYesRadioBtn, "Yes");
+    cy.selectGInvoiceFRequest(fd.ginvoiceYesRadioBtn, "YES");
     //enter the wrong Orderno.
     const orderNoValue= "ast";
     cy.enterTextInTextField(fd.orderNoSearchInput, orderNoValue);
@@ -66,7 +66,7 @@ describe("Test suite: Funding Plan substep: G-Invoicing work flow", () => {
   });
     
   it("TC3: Asserts: Let’s gather info about your 7600A and 7600B ", () => {
-    cy.selectGInvoiceFRequest(fd.ginvoiceNoRadioBtn, "No");
+    cy.selectGInvoiceFRequest(fd.ginvoiceNoRadioBtn, "NO");
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(" Let’s gather info about your 7600A and 7600B ");
     cy.textExists(fd.gtcNoLabel, " General Terms & Conditions (GT&C) Number ");
@@ -106,7 +106,7 @@ describe("Test suite: Funding Plan substep: G-Invoicing work flow", () => {
   });   
 
   it("TC4: Validations:  Upload 7600A and 7600B screen", () => {
-    cy.selectGInvoiceFRequest(fd.ginvoiceNoRadioBtn, "No");
+    cy.selectGInvoiceFRequest(fd.ginvoiceNoRadioBtn, "NO");
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(" Let’s gather info about your 7600A and 7600B ");
     //if the General Number field is blank
@@ -199,7 +199,7 @@ describe("Test suite: Funding Plan substep: G-Invoicing work flow", () => {
   });  
   
   it("TC5: Upload 7600A/B file & Remove Uploaded file", () => {
-    cy.selectGInvoiceFRequest(fd.ginvoiceNoRadioBtn, "No");
+    cy.selectGInvoiceFRequest(fd.ginvoiceNoRadioBtn, "NO");
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader(" Let’s gather info about your 7600A and 7600B ");
     const gNumber="A2212-111-110-000000"
