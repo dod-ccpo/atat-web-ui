@@ -19,11 +19,23 @@ const bootStrapAcquisitionPackageApi= ()=> {
     });
   }); 
 
-  if (isTestingIsolated){
+  if (isTestingIsolated & isIsolatedTestRunnable()){
     loadInitialData();
     saveToSNOW(testCase);
   }
 
+}
+
+function isIsolatedTestRunnable(){
+  const isolatedTestsToRun = [
+    "AcquistionPackageDetails", 
+    "FinancialDetails",
+    "OtherContractConsiderations",
+    "StandardsandCompliance"];
+  const currentTest = window.Cypress.spec.name.split("/");
+  const currentTestSuite = currentTest[currentTest.length-2];
+  
+  return isolatedTestsToRun.some((test)=> test === currentTestSuite);
 }
 
 export function bootstrapMockApis(){
