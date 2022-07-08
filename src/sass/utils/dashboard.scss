@@ -5,4 +5,11 @@
   .container-max-width {
     margin: 0 auto !important;
   }
+
+  .v-input--checkbox {
+    label {
+      font-size: 12px !important;
+      margin-right: 20px;
+    }
+  }
 }

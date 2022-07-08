@@ -38,18 +38,18 @@ export class ChartsStore extends VuexModule {
   public chartDataColorSequence = Object.values(this.chartDataColors);
 
   public monthAbbreviations = [
-    "Jan.",
-    "Feb.",
-    "Mar.",
-    "Apr.",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
     "May",
-    "Jun.",
-    "Jul.",
-    "Aug.",
-    "Sept.",
-    "Oct.",
-    "Nov.",
-    "Dec.",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
 
 }

@@ -80,6 +80,89 @@
                 </v-col>
               </v-row>
 
+
+
+              <v-row id="BurndownChartWrap">
+                <v-col>
+                  <v-card class="no-shadow v-sheet--outlined pa-8">
+                    <h3 class="mb-4">Actual and Projected Burn Rate</h3>
+                    <p class="text--base-dark font-size-14">
+                      Track your rate of spend and available funds throughout the current
+                      period of performance. Forecasted future costs are based on
+                      historical trends and show approximately when you are projected to
+                      exceed your portfolio’s budget.
+                    </p>
+                    <v-row class="mb-0">
+                      <v-col class="font-size-14">Funds available</v-col>
+                      <v-col id="BurnPoPs" class="text-right font-size-14">
+                        Current Period: {{ popStart }}&ndash;{{ popEnd }}
+                      </v-col>
+                    </v-row>
+                    <line-chart
+                      chart-id="LineChart1"
+                      ref="lineChart"
+                      :chart-data="lineChartData"
+                      :chart-options="lineChartOptions"
+                      :dataset-to-toggle="datasetToToggle"
+                      :toggle-dataset="toggleDataset"
+                    />
+                    <div class="d-block text-center">
+                      <v-radio-group
+                        row
+                        class="
+                          checkbox-group-row
+                          center-checkboxes
+                          chart-legend-checkboxes
+                          label-small
+                          no-messages
+                          compact
+                          mt-4
+                        "
+                      >
+                        <v-checkbox
+                          id="TotalForAllClins_checkbox"
+                          v-model="totalCLINsChecked"
+                          label="Total of All CLINs"
+                          hide-details="true"
+                          :ripple="false"
+                          class="color_chart_1"
+                          @change="doToggleDataset(0)"
+                          :color="chartDataColors[0]"
+                        ></v-checkbox>
+
+                        <!-- EJY stubbed, to add back in future ticket -->
+                        <v-checkbox
+                          label="Unclassified XaaS"
+                          v-model="unclassifiedXaaSChecked"
+                          hide-details="true"
+                          :ripple="false"
+                          class="color_chart_2"
+                          @change="doToggleDataset(2)"
+                          :color="chartDataColors[2]"
+                        ></v-checkbox>
+
+                        <!-- <v-checkbox
+                          label="Unclassified Cloud Support Package"
+                          v-model="unclassifiedCloudSupportPackageChecked"
+                          hide-details="true"
+                          :ripple="false"
+                          class="color_chart_3"
+                          @change="doToggleDataset(4)"
+                        ></v-checkbox> -->
+                      </v-radio-group>
+                    </div>
+
+                    <div class="bg-base-lightest py-1 px-6 text-center mt-4 font-size-12">
+                      NOTE: Solid lines denote actual spend from previous months. Dashed
+                      lines denote projected burn for upcoming months.
+                    </div>
+                  </v-card>
+                </v-col>
+              </v-row>
+
+
+
+
             </div>
             <ATATFooter/>
           </div>
@@ -99,6 +182,8 @@ import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 import DonutChart from "../components/charts/DonutChart.vue";
+import LineChart from "../components/charts/LineChart.vue";
+
 
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
@@ -117,6 +202,7 @@ import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
     ATATFooter,
     ATATPageHead,
     DonutChart,
+    LineChart,
   }
 })
 
@@ -144,7 +230,6 @@ export default class PortfolioDashboard extends Vue {
   public runOutOfFundsDate = "";
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
-
   public costs: CostsDTO[] = [];
 
   public chartDataColors = ATATCharts.chartDataColors;
@@ -156,10 +241,6 @@ export default class PortfolioDashboard extends Vue {
     this.costs.forEach((cost) => {
       this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
     });
-
-    // Below additional amount manually added for testing only.
-    // Change additional value to see run out of funds date and arc chart change
-    this.fundsSpent = this.fundsSpent + 100000;
   }
 
   public createDateStr(dateStr: string): string {
@@ -208,6 +289,14 @@ export default class PortfolioDashboard extends Vue {
     this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
 
     this.costs = data.costs;
+
+    this.costs.forEach((cost) => {
+      // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+      // NOTE!!! do not use "* 7.5" for actual data - sample data values are very small
+      // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+      cost.value = (parseInt(cost.value) * 7.5).toString();
+    })
+
     await this.calculateFundsSpent();
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
     this.availableFundsStr = toCurrencyString(this.availableFunds);
@@ -265,6 +354,175 @@ export default class PortfolioDashboard extends Vue {
       mode: null,
     },
   };
+
+
+  public totalCLINsChecked = true;
+  public unclassifiedXaaSChecked = true;
+  public unclassifiedCloudSupportPackageChecked = false;
+
+  public datasetToToggle: number | null = null;
+  public toggleDataset = false;
+
+  private doToggleDataset(datasetIndex: number) {
+    this.datasetToToggle = datasetIndex;
+    this.toggleDataset = !this.toggleDataset;
+  }
+
+  private lineChartData = {
+    labels: [
+      "Sept",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan 2022",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sept",
+    ],
+    datasets: [
+      {
+        dataSetId: "TotalCLINs",
+        label: "Total for all CLINs",
+        data: [230, 190, 188, 170, 160, null, null, null],
+        fill: false,
+        borderColor: this.chartDataColorSequence[0],
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: this.chartDataColorSequence[0],
+        pointHoverBackgroundColor: "#FFFFFF",
+        pointBorderWidth: 2,
+        pointHoverBorderWidth: 2,
+        lineTension: 0,
+      },
+      {
+        dataSetId: "TotalCLINs",
+        label: "Total for all CLINs Projected Burn",
+        spanGaps: true,
+        data: [
+          null,
+          null,
+          null,
+          null,
+          160,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          0,
+        ],
+        fill: false,
+        borderWidth: 2,
+        borderColor: this.chartDataColorSequence[0],
+        borderDash: [6, 4],
+        pointRadius: 0,
+      },
+      {
+        label: "Unclassified XaaS",
+        data: [190, 180, 175, 120, 100, null, null, null],
+        fill: false,
+        borderColor: this.chartDataColorSequence[1],
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: this.chartDataColorSequence[1],
+        pointHoverBackgroundColor: "#FFFFFF",
+        pointBorderWidth: 2,
+        pointHoverBorderWidth: 2,
+        lineTension: 0,
+      },
+      {
+        label: "Unclassified XaaS Projected Burn",
+        spanGaps: true,
+        data: [
+          null,
+          null,
+          null,
+          null,
+          100,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          0,
+        ],
+        fill: false,
+        borderWidth: 2,
+        borderColor: this.chartDataColorSequence[1],
+        borderDash: [6, 4],
+        pointRadius: 0,
+      },
+    ],
+  };
+
+  public lineChartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    animation: {
+      duration: 0,
+    },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    aspectRatio: 2.75,
+    scales: {
+      x: {
+        grid: {
+          display: true,
+          borderDash: [3, 3],
+          borderWidth: 2,
+          borderColor: this.chartAuxColors["lineChart-axis"],
+          lineWidth: function(context: any) {
+            return context.tick.label === "Jan 2022" ? 1 : 3;
+          },
+          tickWidth: 0,
+          color: function (context: any) {
+            return context.tick.label === "Jan 2022"
+              ? "#A9AEB1"
+              : "transparent";
+          },
+        },
+        ticks: {
+          maxTicksLimit: 7,
+          maxRotation: 0,
+          minRotation: 0,
+        },
+      },
+      y: {
+        stepSize: 50, // needs to be dynamic based on data
+        min: 0,
+        max: 250, // needs to be dynamic based on data
+        grid: {
+          borderColor: "transparent",
+          tickWidth: 0,
+        },
+        ticks: {
+          callback: function (value: number): string {
+            return "$" + value + "k";
+          },
+        },
+      },
+    },
+  };
+
+
+
 
 }
 
