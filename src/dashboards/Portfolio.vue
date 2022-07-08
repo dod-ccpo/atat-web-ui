@@ -195,6 +195,7 @@ import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
+import { format, parse } from "path/posix";
 
 @Component({
   components: {
@@ -285,46 +286,63 @@ export default class PortfolioDashboard extends Vue {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
     const uniqueClins = [...new Set(this.costs.map(cost => cost.clin))].sort();
     
-    debugger;
-
-    const foo = [
-      {
-        '0001': {
-          '2022-01-01': 500,
-          '2022-02-01': 350,
-          '2022-03-01': 400,
-        }
+    // const foo = [
+    //   {
+    //     '0001': {
+    //       '2022-01-01': 500,
+    //       '2022-02-01': 350,
+    //       '2022-03-01': 400,
+    //     }
         
-      },
-      {
-        '0002': {
-          '2022-01-01': 240,
-          '2022-02-01': 0,
-          '2022-03-01': 100,
-        }
-      }
-    ]
-    const bar = {
-      'ALL' : { actual: [1590, 850, 500], projected: [null, null, 500, null, null, 0] },
-      '0001': { actual: [1250, 750, 400], projected: [null, null, 400, null, null, 0] },
-      '0002': { actual: [340, 100, 100], projected: [null, null, 100, null, null, 0] }
-    }
+    //   },
+    //   {
+    //     '0002': {
+    //       '2022-01-01': 240,
+    //       '2022-02-01': 0,
+    //       '2022-03-01': 100,
+    //     }
+    //   }
+    // ]
+    // const bar = {
+    //   'ALL' : { actual: [1590, 850, 500], projected: [null, null, 500, null, null, 0] },
+    //   '0001': { actual: [1250, 750, 400], projected: [null, null, 400, null, null, 0] },
+    //   '0002': { actual: [340, 100, 100], projected: [null, null, 100, null, null, 0] }
+    // }
 
     let clinData = []
     uniqueClins.forEach((clinNo) => {
       // let thisClinData = { [clinNo] : {} }
-      let thisClinData: Record<string, string> = {};
+      let clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.filter((cost) => {
           return cost.clin === clinNo && cost.year_month === date;
         });
         if (clin.length) {
-          thisClinData[date] = clin[0].value;
+          clinValues[date] = clin[0].value;
         }
-        debugger;
       });
-      debugger;
-    })
+      const clin = { [clinNo]: clinValues }
+      clinData.push({ [clinNo]: clinValues });
+    });
+
+    const popStartISO = this.taskOrder.pop_start_date;
+    const popStartDate = parseISO(popStartISO);
+    const periodDatesISO = [popStartISO];
+    const periodDates = [popStartDate];
+
+    const popEndISO = this.taskOrder.pop_end_date;
+    const popEndDate = parseISO(popEndISO);
+
+    let month = popStartDate;
+    const monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
+    for (let i = 0; i < monthsToAdd; i++) {
+      month = add(popStartDate, { months: i + 1 });
+      periodDates.push(month);
+      periodDatesISO.push(formatISO(month, { representation: 'date' }));
+      
+    }
+    debugger;
+
 
     return;
   }
