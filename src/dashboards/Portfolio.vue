@@ -81,7 +81,6 @@
               </v-row>
 
 
-
               <v-row id="BurndownChartWrap">
                 <v-col>
                   <v-card class="no-shadow v-sheet--outlined pa-8">
@@ -243,13 +242,14 @@ export default class PortfolioDashboard extends Vue {
     });
   }
 
-  public createDateStr(dateStr: string): string {
+  public createDateStr(dateStr: string, period: boolean): string {
     const parsedDate = parseISO(dateStr, { additionalDigits: 1 })
     const date = new Date(parsedDate.setHours(0,0,0,0));
     const m = this.monthAbbreviations[date.getMonth()];
     const y = date.getFullYear();
-    const d = date.getUTCDate()
-    return m + " " + d + ", " + y;
+    const d = date.getUTCDate();
+    const p = period? "." : "";
+    return m + p + " " + d + ", " + y;
   }
 
   public calculateTimeToExpiration(): void {
@@ -278,7 +278,55 @@ export default class PortfolioDashboard extends Vue {
     const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend); 
     const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent});
     const runOutISODate = formatISO(runOutOfFundsDate, { representation: 'date' })
-    this.runOutOfFundsDate = this.createDateStr(runOutISODate);
+    this.runOutOfFundsDate = this.createDateStr(runOutISODate, true);
+  }
+
+  public calculateBurnDown(): void {
+    const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
+    const uniqueClins = [...new Set(this.costs.map(cost => cost.clin))].sort();
+    
+    debugger;
+
+    const foo = [
+      {
+        '0001': {
+          '2022-01-01': 500,
+          '2022-02-01': 350,
+          '2022-03-01': 400,
+        }
+        
+      },
+      {
+        '0002': {
+          '2022-01-01': 240,
+          '2022-02-01': 0,
+          '2022-03-01': 100,
+        }
+      }
+    ]
+    const bar = {
+      'ALL' : { actual: [1590, 850, 500], projected: [null, null, 500, null, null, 0] },
+      '0001': { actual: [1250, 750, 400], projected: [null, null, 400, null, null, 0] },
+      '0002': { actual: [340, 100, 100], projected: [null, null, 100, null, null, 0] }
+    }
+
+    let clinData = []
+    uniqueClins.forEach((clinNo) => {
+      // let thisClinData = { [clinNo] : {} }
+      let thisClinData: Record<string, string> = {};
+      uniqueDates.forEach((date) => {
+        const clin = this.costs.filter((cost) => {
+          return cost.clin === clinNo && cost.year_month === date;
+        });
+        if (clin.length) {
+          thisClinData[date] = clin[0].value;
+        }
+        debugger;
+      });
+      debugger;
+    })
+
+    return;
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -305,10 +353,12 @@ export default class PortfolioDashboard extends Vue {
     this.arcGuageChartData.datasets[0].data 
       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
     
-    this.popStart = this.createDateStr(this.taskOrder.pop_start_date);
-    this.popEnd = this.createDateStr(this.taskOrder.pop_end_date);
+    this.popStart = this.createDateStr(this.taskOrder.pop_start_date, true);
+    this.popEnd = this.createDateStr(this.taskOrder.pop_end_date, true);
 
     this.calculateTimeToExpiration();
+
+    this.calculateBurnDown();
 
   }
 
@@ -388,7 +438,7 @@ export default class PortfolioDashboard extends Vue {
       {
         dataSetId: "TotalCLINs",
         label: "Total for all CLINs",
-        data: [230, 190, 188, 170, 160, null, null, null],
+        data: [230, 190, 188, 170, 160],
         fill: false,
         borderColor: this.chartDataColorSequence[0],
         borderWidth: 2,
@@ -426,7 +476,7 @@ export default class PortfolioDashboard extends Vue {
       },
       {
         label: "Unclassified XaaS",
-        data: [190, 180, 175, 120, 100, null, null, null],
+        data: [190, 180, 175, 120, 100],
         fill: false,
         borderColor: this.chartDataColorSequence[1],
         borderWidth: 2,
