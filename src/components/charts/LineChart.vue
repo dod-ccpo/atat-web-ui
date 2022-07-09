@@ -17,6 +17,12 @@ export default class LineChart extends Vue {
 
   private myChart!: Chart;
 
+  @Watch("chartData", { deep: true })
+  public chartDataUpdate(newData: ChartData): void {
+    this.myChart.data = newData;
+    this.myChart.update();
+  }
+
   @Watch("toggleDataset")
   protected doToggleDataset(): void {
     const i = this.datasetToToggle;

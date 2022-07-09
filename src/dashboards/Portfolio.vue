@@ -100,7 +100,7 @@
                     <line-chart
                       chart-id="LineChart1"
                       ref="lineChart"
-                      :chart-data="lineChartData"
+                      :chart-data="burnChartData"
                       :chart-options="lineChartOptions"
                       :dataset-to-toggle="datasetToToggle"
                       :toggle-dataset="toggleDataset"
@@ -188,14 +188,15 @@ import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
 import { toCurrencyString } from "@/helpers";
-import { CostsDTO, TaskOrderDTO } from "@/api/models";
+import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
 import { add } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
-import { format, parse } from "path/posix";
+// import { format, parse } from "path/posix";
+import { lineChartData, lineChartDataSet } from "types/Global";
 
 @Component({
   components: {
@@ -231,11 +232,22 @@ export default class PortfolioDashboard extends Vue {
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
+  public clins: ClinDTO[] = [];
 
   public chartDataColors = ATATCharts.chartDataColors;
   public chartDataColorSequence = ATATCharts.chartDataColorSequence;
   public chartAuxColors = ATATCharts.chartAuxColors;
   public monthAbbreviations = ATATCharts.monthAbbreviations;
+  
+  // public burnChartData: lineChartData = {};
+  public burnChartXLabels: string[] = []; // EJY always months?
+  public burnChartYMax = 0;
+  // EJY need to set lineChartOptions.scales.y.max
+  public burnChartYStepSize = 0; // EJY one fifth or forth of Y Max?
+  // EJY need to set lineChartOptions.scales.y.stepSize
+  public burnChartYLabelSuffix = "k"; // EJY BASE ON TOTAL either "k" or "m"
+  // EJY need to set lineChartOptions.scales.y.ticks callback
+
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
@@ -284,47 +296,8 @@ export default class PortfolioDashboard extends Vue {
 
   public calculateBurnDown(): void {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
-    const uniqueClins = [...new Set(this.costs.map(cost => cost.clin))].sort();
+    const uniqueClins = [...new Set(this.clins.map(clin => clin.clin_number))].sort();
     
-
-    const sampleClinData = {
-      '0001': {
-        'label': "Unclassified XaaS",
-        'costs': {
-          '2022-01-01': "500",
-          '2022-02-01': "350",
-          '2022-03-01': "400",
-        }
-      },
-      '0002': {
-        
-        '2022-01-01': "240",
-        '2022-02-01': "0",
-        '2022-03-01': "100",
-      }
-    }
-
-
-    // const sampleClinData = {
-    //   '0001': {
-    //     '2022-01-01': "500",
-    //     '2022-02-01': "350",
-    //     '2022-03-01': "400",
-    //   },
-    //   '0002': {
-    //     '2022-01-01': "240",
-    //     '2022-02-01': "0",
-    //     '2022-03-01': "100",
-    //   }
-    // }
-
-    // sample 6 month PoP with 3 months of data
-    // const sampleDataForChart = {
-    //   'ALL' : { actual: [1590, 850, 500], projected: [null, null, 500, null, null, 0] },
-    //   '0001': { actual: [1250, 750, 400], projected: [null, null, 400, null, null, 0] },
-    //   '0002': { actual: [340, 100, 100], projected: [null, null, 100, null, null, 0] }
-    // }
-
     let clinData: Record<string, Record<string, string>> = {};
     uniqueClins.forEach((clinNo) => {
       let clinValues: Record<string, string> = {};
@@ -347,97 +320,143 @@ export default class PortfolioDashboard extends Vue {
 
     let month = popStartDate;
     const monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
+
+
     for (let i = 0; i < monthsToAdd; i++) {
       month = add(popStartDate, { months: i + 1 });
       periodDates.push(month);
       periodDatesISO.push(formatISO(month, { representation: 'date' }));
     }
 
-    let monthlyCostsActual: Record<string, (number | null)[]> = {};
-    let monthlyCostsProjected: Record<string, (number | null)[]> = {}
+    const startMonthNo = popStartDate.getMonth();
+    const popEndYear = popEndDate.getFullYear();
+    for (let i = startMonthNo; i < monthsToAdd + 1; i++) {
+      const monthAbbr = i <= 12 
+        ? this.monthAbbreviations[i]
+        : this.monthAbbreviations[12 - i];
+      this.burnChartXLabels.push(monthAbbr);
+    }
+
+    debugger;
+
+    let actualBurn: Record<string, (number | null)[]> = {};
+    let projectedBurn: Record<string, (number | null)[]> = {}
+    const totalActualBurnData: (number | null)[] = [];
+    const totalProjectedBurnData: (number | null)[] = [null];
 
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
     const finalMonth = popEndDate.getMonth() + 1;
 
     uniqueClins.forEach((clinNo) => {
-      const thisClinData = clinData[clinNo];
-      const actual: (number | null)[] = [];
-      const projected: (number | null)[] = [];
+      const thisClin = this.clins.find(clin => clin.clin_number === clinNo);
+      if (thisClin) {
+        let fundsObligated = thisClin.funds_obligated;
+        let fundsAvailable = !isNaN(parseInt(fundsObligated)) 
+          ? parseInt(fundsObligated)
+          : 0;
 
-      periodDatesISO.forEach((monthISO) => {
-        const value = parseFloat(thisClinData[monthISO]);
-        const thisMonthAmount = !isNaN(value) ? value : null;
+        if (fundsAvailable) {
+          const thisClinData = clinData[clinNo];
+          const actual: (number | null)[] = [];
+          const projected: (number | null)[] = [];
 
-        const month = (parseISO(monthISO)).getMonth() + 1;
-        const isCurrentMonth = month === currentMonth;
-        const isFinalMonth = month === finalMonth;
-        const isActual = month <= currentMonth;
+          periodDatesISO.forEach((monthISO, i) => {
+            const value = parseFloat(thisClinData[monthISO]);
+            const thisMonthAmount = !isNaN(value) ? value : null;
+            fundsAvailable = thisMonthAmount 
+              ? fundsAvailable - thisMonthAmount 
+              : fundsAvailable;
 
-        const actualVal = isActual ? thisMonthAmount : null;
-        actual.push(actualVal);
+            const month = (parseISO(monthISO)).getMonth() + 1;
+            const isCurrentMonth = month === currentMonth;
+            const isFinalMonth = month === finalMonth;
+            const isActual = month <= currentMonth;
+            
+            const actualVal = isActual ? fundsAvailable : null;
+            actual.push(actualVal);
 
-        const projectedVal = isCurrentMonth
-          ? thisMonthAmount : isFinalMonth ? 0 : null;
-        projected.push(projectedVal);
-      });
+            const projectedVal = isCurrentMonth
+              ? fundsAvailable 
+              : isFinalMonth ? 0 : null;
+            projected.push(projectedVal);
 
-      monthlyCostsActual[clinNo] = actual;
-      monthlyCostsProjected[clinNo] = projected;
-      
-    });
-    
-    console.log("actual", monthlyCostsActual);
+            const monthTotalActual = totalActualBurnData[i];
+            if (!monthTotalActual) {
+              totalActualBurnData[i] = actualVal;
+            } else if (actualVal) {
+              totalActualBurnData[i] = actualVal + monthTotalActual;
+            }
+            const monthTotalProjected = totalProjectedBurnData[i];
+            if (!monthTotalProjected) {
+              totalProjectedBurnData[i] = projectedVal;
+            } else if (projectedVal) {
+              totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
+            }
 
-    const actualBurn: Record<string, (number | null)[]> = {};
-    const projectedBurn: Record<string, (number | null)[]> = {};
-    
-    uniqueClins.forEach((clinNo) => {
-      monthlyCostsActual[clinNo] = monthlyCostsActual[clinNo].reverse();
-      monthlyCostsProjected[clinNo] = monthlyCostsProjected[clinNo].reverse();
 
-      const actual:(number | null)[] = [];
-      const projected:(number | null)[] = [];
-      monthlyCostsActual[clinNo].forEach((amount, i) => {
+          });
+          console.log("totalActualBurnData", totalActualBurnData);
+          console.log("totalProjectedBurnData", totalProjectedBurnData);
+          actualBurn[clinNo] = actual;
+          projectedBurn[clinNo] = projected;
 
-        if (i === 0) {
-          actual.push(amount);
-          projected.push(amount);
-        } else {
-          let prevActual = actual[i - 1];
-          if (prevActual === null) {
-            actual.push(amount);
-          } else {
-            const currentActualToAdd = amount === null ? 0 : amount;
-            const amountToAdd = currentActualToAdd + prevActual;
-            actual.push(amountToAdd);
-          }
         }
-      });
-      console.log("actual burn", actual)
-      debugger;
+      }
     });
+    
+    console.log("actualBurn", actualBurn);
+    console.log("projectedBurn", projectedBurn);
 
     debugger;
 
+    this.burnChartData.labels = this.burnChartXLabels;
+    this.burnChartData.datasets = [];
+
+    let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonData;
+    const totalActualData = {
+      dataSetId: "TotalCLINsActual",
+      label: "Total for all CLINs",
+      data: totalActualBurnData,
+    };
+    Object.assign(clinTotalActualDataSet, totalActualData);
+    this.burnChartData.datasets.push(clinTotalActualDataSet);
+
+    let clinTotalProjectedDataSet: lineChartDataSet = this.burnChartProjectedCommonData;
+    const totalProjectedData = {
+      dataSetId: "TotalClinsProjected",
+      label: "Total for all CLINs Projected",
+      data: totalProjectedBurnData,
+    };
+    Object.assign(clinTotalProjectedDataSet, totalProjectedData);
+    this.burnChartData.datasets.push(clinTotalProjectedDataSet);
+
+
+
+
     return;
+  }
+
+  public async calculateTotalFunds(): Promise<void> {
+    // total funds is sum of each IDIQ CLIN's funds obligated
+    this.clins.forEach((clin) => {
+      this.totalPortfolioFunds = this.totalPortfolioFunds + parseInt(clin.funds_obligated);
+    });
+    this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
   }
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
     
     this.taskOrder = data.taskOrder
-    this.totalPortfolioFunds = parseFloat(this.taskOrder.funds_obligated);
-    this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
-
     this.costs = data.costs;
+    this.clins = data.clins;
+
+    await this.calculateTotalFunds();
 
     this.costs.forEach((cost) => {
-      // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-      // NOTE!!! do not use "* 7.5" for actual data - sample data values are very small
-      // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-      cost.value = (parseInt(cost.value) * 7.5).toString();
-    })
+      cost.value = (parseInt(cost.value)).toString();
+    });
 
     await this.calculateFundsSpent();
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
@@ -512,21 +531,37 @@ export default class PortfolioDashboard extends Vue {
     this.toggleDataset = !this.toggleDataset;
   }
 
-  private lineChartData = {
+  public burnChartActualCommonData = {
+    dataSetId: "", // EJY DYNAMIC
+    label: "", // EJY DYNAMIC
+    data: [], // EJY DYNAMIC
+    spanGaps: true,
+    fill: false,
+    borderColor: this.chartDataColorSequence[0],
+    borderWidth: 2,
+    pointRadius: 3,
+    pointBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverBackgroundColor: "#FFFFFF",
+    pointBorderWidth: 2,
+    pointHoverBorderWidth: 2,
+    lineTension: 0,
+  };
+  public burnChartProjectedCommonData = {
+    dataSetId: "",  
+    label: "",
+    data: [],
+    spanGaps: true,
+    fill: false,
+    borderWidth: 2,
+    borderColor: this.chartDataColorSequence[0],
+    borderDash: [6, 4],
+    pointRadius: 0,
+  };
+
+  private burnChartData: lineChartData = {
     labels: [
-      "Sept",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan 2022",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sept",
+      "Sept","Oct","Nov","Dec","Jan 2022", // EJY add year to Jan IF NOT first position
+      "Feb","Mar","Apr","May","Jun","Jul","Aug","Sept",
     ],
     datasets: [
       {
@@ -547,21 +582,7 @@ export default class PortfolioDashboard extends Vue {
         dataSetId: "TotalCLINs",
         label: "Total for all CLINs Projected Burn",
         spanGaps: true,
-        data: [
-          null,
-          null,
-          null,
-          null,
-          160,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          0,
-        ],
+        data: [null,null,null,null,160,null,null,null,null,null,null,null,0,],
         fill: false,
         borderWidth: 2,
         borderColor: this.chartDataColorSequence[0],
@@ -570,6 +591,7 @@ export default class PortfolioDashboard extends Vue {
       },
       {
         label: "Unclassified XaaS",
+        dataSetId: "UXAAS",
         data: [190, 180, 175, 120, 100],
         fill: false,
         borderColor: this.chartDataColorSequence[1],
@@ -583,22 +605,9 @@ export default class PortfolioDashboard extends Vue {
       },
       {
         label: "Unclassified XaaS Projected Burn",
+        dataSetId: "UXAASP",
         spanGaps: true,
-        data: [
-          null,
-          null,
-          null,
-          null,
-          100,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          0,
-        ],
+        data: [null,null,null,null,100,null,null,null,null,null,null,null,0,],
         fill: false,
         borderWidth: 2,
         borderColor: this.chartDataColorSequence[1],
@@ -607,7 +616,7 @@ export default class PortfolioDashboard extends Vue {
       },
     ],
   };
-
+  
   public lineChartOptions = {
     plugins: {
       legend: {
@@ -633,11 +642,11 @@ export default class PortfolioDashboard extends Vue {
           borderWidth: 2,
           borderColor: this.chartAuxColors["lineChart-axis"],
           lineWidth: function(context: any) {
-            return context.tick.label === "Jan 2022" ? 1 : 3;
+            return context.tick.label === "Jul" ? 1 : 3; // EJY DYNAMIC
           },
           tickWidth: 0,
           color: function (context: any) {
-            return context.tick.label === "Jan 2022"
+            return context.tick.label === "Jul" // EJY DYNAMIC
               ? "#A9AEB1"
               : "transparent";
           },
@@ -649,16 +658,17 @@ export default class PortfolioDashboard extends Vue {
         },
       },
       y: {
-        stepSize: 50, // needs to be dynamic based on data
+        stepSize: 50000, // EJY needs to be dynamic based on data
         min: 0,
-        max: 250, // needs to be dynamic based on data
+        max: 300000, // EJY needs to be dynamic based on data
         grid: {
           borderColor: "transparent",
           tickWidth: 0,
         },
         ticks: {
           callback: function (value: number): string {
-            return "$" + value + "k";
+            return "$" + value; // EJY need to set callback after calculations are done
+            // return "$" + value + "k"; // EJY need to set callback after calculations are done
           },
         },
       },
