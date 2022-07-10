@@ -1,0 +1,22 @@
+#lineChartTooltip {
+  padding: 16px !important;
+  
+  th {
+    text-align: left;
+    padding-bottom: 8px;
+
+    h1 {
+      color: $white;
+    }
+
+    hr {
+      margin: 8px 0;
+    }
+  }
+
+  tbody {
+    tr td:last-of-type {
+      text-align: right;
+    }
+  }
+}

@@ -104,6 +104,7 @@
                       :chart-options="lineChartOptions"
                       :dataset-to-toggle="datasetToToggle"
                       :toggle-dataset="toggleDataset"
+                      :tooltipHeaderData="tooltipHeaderData"
                     />
                     <div class="d-block text-center">
                       <v-radio-group
@@ -239,7 +240,11 @@ export default class PortfolioDashboard extends Vue {
   // EJY need to set lineChartOptions.scales.y.stepSize
   public burnChartYLabelSuffix = "k"; // EJY BASE ON TOTAL either "k" or "m"
   // EJY need to set lineChartOptions.scales.y.ticks callback
-
+  public tooltipHeaderData: Record<string, string> = {}
+  //   title: "Total Funds Available",
+  //   amount: this.availableFundsStr,
+  //   legend: "Funds Spent",
+  // };
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
@@ -489,6 +494,13 @@ export default class PortfolioDashboard extends Vue {
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
     this.availableFundsStr = toCurrencyString(this.availableFunds);
 
+    this.tooltipHeaderData = {
+      title: "Total Funds Available",
+      amount: this.availableFundsStr,
+      legend: "Funds Spent",
+    };
+
+
     this.fundsSpentPercent = Math.round(this.fundsSpent / this.totalPortfolioFunds * 100);
     this.arcGuageChartData.datasets[0].data 
       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
@@ -587,63 +599,8 @@ export default class PortfolioDashboard extends Vue {
   };
 
   private burnChartData: lineChartData = {
-    labels: [
-      "Sept","Oct","Nov","Dec","Jan 2022", // EJY add year to Jan IF NOT first position
-      "Feb","Mar","Apr","May","Jun","Jul","Aug","Sept",
-    ],
+    labels: [""],
     datasets: [],
-  //   datasets: [
-  //     {
-  //       dataSetId: "TotalCLINs",
-  //       label: "Total for all CLINs",
-  //       data: [230, 190, 188, 170, 160],
-  //       fill: false,
-  //       borderColor: this.chartDataColorSequence[0],
-  //       borderWidth: 2,
-  //       pointRadius: 3,
-  //       pointBackgroundColor: this.chartDataColorSequence[0],
-  //       pointHoverBackgroundColor: "#FFFFFF",
-  //       pointBorderWidth: 2,
-  //       pointHoverBorderWidth: 2,
-  //       lineTension: 0,
-  //     },
-  //     {
-  //       dataSetId: "TotalCLINs",
-  //       label: "Total for all CLINs Projected Burn",
-  //       spanGaps: true,
-  //       data: [null,null,null,null,160,null,null,null,null,null,null,null,0,],
-  //       fill: false,
-  //       borderWidth: 2,
-  //       borderColor: this.chartDataColorSequence[0],
-  //       borderDash: [6, 4],
-  //       pointRadius: 0,
-  //     },
-  //     {
-  //       label: "Unclassified XaaS",
-  //       dataSetId: "UXAAS",
-  //       data: [190, 180, 175, 120, 100],
-  //       fill: false,
-  //       borderColor: this.chartDataColorSequence[1],
-  //       borderWidth: 2,
-  //       pointRadius: 3,
-  //       pointBackgroundColor: this.chartDataColorSequence[1],
-  //       pointHoverBackgroundColor: "#FFFFFF",
-  //       pointBorderWidth: 2,
-  //       pointHoverBorderWidth: 2,
-  //       lineTension: 0,
-  //     },
-  //     {
-  //       label: "Unclassified XaaS Projected Burn",
-  //       dataSetId: "UXAASP",
-  //       spanGaps: true,
-  //       data: [null,null,null,null,100,null,null,null,null,null,null,null,0,],
-  //       fill: false,
-  //       borderWidth: 2,
-  //       borderColor: this.chartDataColorSequence[1],
-  //       borderDash: [6, 4],
-  //       pointRadius: 0,
-  //     },
-  //   ],
   };
   
   public lineChartOptions = {
@@ -671,11 +628,11 @@ export default class PortfolioDashboard extends Vue {
           borderWidth: 2,
           borderColor: this.chartAuxColors["lineChart-axis"],
           lineWidth: function(context: any) {
-            return context.tick.label === "Jul" ? 1 : 3; // EJY DYNAMIC
+            return context.tick.label === "July" ? 1 : 3; // EJY DYNAMIC
           },
           tickWidth: 0,
           color: function (context: any) {
-            return context.tick.label === "Jul" // EJY DYNAMIC
+            return context.tick.label === "July" // EJY DYNAMIC
               ? "#A9AEB1"
               : "transparent";
           },

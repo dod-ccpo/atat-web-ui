@@ -14,8 +14,15 @@ export default class LineChart extends Vue {
   @Prop({ required: true, default: {} }) public chartOptions!: any;
   @Prop({ required: false }) public datasetToToggle!: number;
   @Prop({ required: false }) public toggleDataset!: boolean;
-
+  @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
   private myChart!: Chart;
+
+  @Watch("tooltipHeaderData", { deep: true })
+  public tooltipHeaderDataUpdate(newData: Record<string, string>): void {
+    debugger;
+    // this.myChart.data = newData;
+    // this.myChart.update();
+  }
 
   @Watch("chartData", { deep: true })
   public chartDataUpdate(newData: ChartData): void {
@@ -104,6 +111,7 @@ export default class LineChart extends Vue {
   };
 
   public externalTooltipHandler = (context: any) => {
+    debugger;
     // Tooltip Element
     const { chart, tooltip } = context;
     const tooltipEl = this.getOrCreateTooltip(chart);
@@ -113,86 +121,118 @@ export default class LineChart extends Vue {
       tooltipEl.style.opacity = 0;
       return;
     }
+
     // Set Text
     if (tooltip.body) {
-      const titleLines = tooltip.title || [];
       const bodyLines = tooltip.body.map((b: any) => b.lines);
+      const projectedCount = bodyLines.filter(
+        (l: string[]) => l[0].toLowerCase().indexOf("projected") > -1
+      ).length;
+      // debugger;
+      if (bodyLines.length !== projectedCount) {
 
-      const tableHead = document.createElement("thead");
+        if (bodyLines.length) {
 
-      titleLines.forEach((title: string) => {
-        const tr = document.createElement("tr");
-        tr.style.borderWidth = "0";
+          const titleLines = tooltip.title || [];
+          debugger;
 
-        const th = document.createElement("th");
-        th.style.borderWidth = "0";
-        th.colSpan = 2;
-        const text = document.createTextNode(title);
+          const tableHead = document.createElement("thead");
 
-        th.appendChild(text);
-        tr.appendChild(th);
-        tableHead.appendChild(tr);
-      });
+          titleLines.forEach((title: string) => {
+            const tr = document.createElement("tr");
+            tr.style.borderWidth = "0";
 
-      const tableBody = document.createElement("tbody");
-      bodyLines.forEach((body: any, i: any) => {
-        if (body[0].toLowerCase().indexOf("burn") === -1) {
-          const colors = tooltip.labelColors[i];
+            const th = document.createElement("th");
+            th.style.borderWidth = "0";
+            th.colSpan = 2;
 
-          const span = document.createElement("span");
-          span.style.background = colors.backgroundColor;
-          span.style.borderColor = "#ffffff";
-          span.style.borderStyle = "solid";
-          span.style.borderWidth = "1px";
-          span.style.marginRight = "12px";
-          span.style.height = "14px";
-          span.style.width = "14px";
-          span.style.display = "inline-block";
+            const currentYear = (new Date()).getFullYear();
+            // EJY need to increase year if Jan and not first label;
+            const text = document.createTextNode(title + " " + currentYear);
+            const headerTitle = document.createTextNode(this.tooltipHeaderData.title);
+            const amount = document.createTextNode("$" + this.tooltipHeaderData.amount);
+            const h1 = document.createElement("h1");
+            h1.appendChild(amount);
+            const legend = document.createTextNode(this.tooltipHeaderData.legend);
+            const hr1 = document.createElement("hr");
+            const hr2 = document.createElement("hr");
 
-          const tr = document.createElement("tr");
-          tr.style.backgroundColor = "inherit";
-          tr.style.borderWidth = "0";
 
-          const td = document.createElement("td");
-          td.style.borderWidth = "0";
-          const sep = body[0].indexOf(":");
-          const labelText = body[0].slice(0, sep);
-          const labelValue = "$" + body[0].slice(sep + 2, body[0].length);
-          const text = document.createTextNode(labelText);
-          const val = document.createTextNode(labelValue);
+            th.appendChild(text);
+            th.appendChild(hr1);
+            th.appendChild(headerTitle);
+            th.appendChild(h1);
+            th.appendChild(hr2);
+            th.appendChild(legend);
 
-          td.appendChild(span);
-          td.appendChild(text);
-          tr.appendChild(td);
+            tr.appendChild(th);
+            tableHead.appendChild(tr);
+          });
 
-          const td2 = document.createElement("td");
-          td2.style.paddingLeft = "8px";
-          td2.appendChild(val);
-          tr.appendChild(td2);
+          const tableBody = document.createElement("tbody");
+          bodyLines.forEach((body: any, i: any) => {
+            const sep = body[0].indexOf(":");
+            const labelText = body[0].slice(0, sep);
+            if (
+              body[0].toLowerCase().indexOf("burn") === -1 
+              && labelText.toLowerCase().indexOf("projected") === -1
+            ) {
+              const colors = tooltip.labelColors[i];
 
-          tableBody.appendChild(tr);
+              const span = document.createElement("span");
+              span.style.background = colors.backgroundColor;
+              span.style.borderColor = "#ffffff";
+              span.style.borderStyle = "solid";
+              span.style.borderWidth = "1px";
+              span.style.marginRight = "12px";
+              span.style.height = "14px";
+              span.style.width = "14px";
+              span.style.display = "inline-block";
+
+              const tr = document.createElement("tr");
+              tr.style.backgroundColor = "inherit";
+              tr.style.borderWidth = "0";
+
+              const td = document.createElement("td");
+              td.style.borderWidth = "0";
+              const labelValue = "$" + body[0].slice(sep + 2, body[0].length);
+              const text = document.createTextNode(labelText);
+              const val = document.createTextNode(labelValue);
+
+              td.appendChild(span);
+              td.appendChild(text);
+              tr.appendChild(td);
+
+              const td2 = document.createElement("td");
+              td2.style.paddingLeft = "8px";
+              td2.appendChild(val);
+              tr.appendChild(td2);
+
+              tableBody.appendChild(tr);
+            }
+          });
+
+          const tableRoot = tooltipEl.querySelector("table#lineChartTooltipTable");
+          // Remove old children
+          while (tableRoot.firstChild) {
+            tableRoot.firstChild.remove();
+          }
+          // Add new children
+          tableRoot.appendChild(tableHead);
+          tableRoot.appendChild(tableBody);
         }
-      });
 
-      const tableRoot = tooltipEl.querySelector("table#lineChartTooltipTable");
-      // Remove old children
-      while (tableRoot.firstChild) {
-        tableRoot.firstChild.remove();
-      }
-      // Add new children
-      tableRoot.appendChild(tableHead);
-      tableRoot.appendChild(tableBody);
+        const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+
+        // Display, position, and set styles for font
+        tooltipEl.style.opacity = 1;
+        tooltipEl.style.left = positionX + tooltip.caretX + "px";
+        tooltipEl.style.top = positionY + tooltip.caretY + "px";
+        tooltipEl.style.font = tooltip.options.bodyFont.string;
+        tooltipEl.style.padding =
+          tooltip.options.padding + "px " + tooltip.options.padding + "px";
+      };
     }
-
-    const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
-
-    // Display, position, and set styles for font
-    tooltipEl.style.opacity = 1;
-    tooltipEl.style.left = positionX + tooltip.caretX + "px";
-    tooltipEl.style.top = positionY + tooltip.caretY + "px";
-    tooltipEl.style.font = tooltip.options.bodyFont.string;
-    tooltipEl.style.padding =
-      tooltip.options.padding + "px " + tooltip.options.padding + "px";
-  };
+  }
 }
 </script>
