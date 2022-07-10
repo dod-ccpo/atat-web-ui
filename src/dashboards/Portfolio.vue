@@ -120,7 +120,7 @@
                       >
                         <v-checkbox
                           id="TotalForAllClins_checkbox"
-                          v-model="totalCLINsChecked"
+                          v-model="checked[0]"
                           label="Total of All CLINs"
                           hide-details="true"
                           :ripple="false"
@@ -129,25 +129,18 @@
                           :color="chartDataColors[0]"
                         ></v-checkbox>
 
-                        <!-- EJY stubbed, to add back in future ticket -->
                         <v-checkbox
-                          label="Unclassified XaaS"
-                          v-model="unclassifiedXaaSChecked"
+                          v-for="(clin, index) in clins"
+                          :key="index"
+                          v-model="checked[index + 1]"
+                          :label="clins[index].idiq_clin_label"
+                          :class="'color_chart_' + (index + 2)"
                           hide-details="true"
                           :ripple="false"
-                          class="color_chart_2"
-                          @change="doToggleDataset(2)"
-                          :color="chartDataColors[2]"
-                        ></v-checkbox>
+                          @change="doToggleDataset((index + 1) * 2)"
+                          :color="chartDataColors[index + 1]"
+                        />
 
-                        <!-- <v-checkbox
-                          label="Unclassified Cloud Support Package"
-                          v-model="unclassifiedCloudSupportPackageChecked"
-                          hide-details="true"
-                          :ripple="false"
-                          class="color_chart_3"
-                          @change="doToggleDataset(4)"
-                        ></v-checkbox> -->
                       </v-radio-group>
                     </div>
 
@@ -158,9 +151,6 @@
                   </v-card>
                 </v-col>
               </v-row>
-
-
-
 
             </div>
             <ATATFooter/>
@@ -197,6 +187,8 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 // import { format, parse } from "path/posix";
 import { lineChartData, lineChartDataSet } from "types/Global";
+import { getIdText } from "@/helpers";
+import _ from 'lodash';
 
 @Component({
   components: {
@@ -261,7 +253,9 @@ export default class PortfolioDashboard extends Vue {
     const m = this.monthAbbreviations[date.getMonth()];
     const y = date.getFullYear();
     const d = date.getUTCDate();
-    const p = period? "." : "";
+    const neverPeriodMonths = ["May", "June", "July"];
+    const noPeriodMonth = neverPeriodMonths.indexOf(m) !== -1;
+    const p = period && !noPeriodMonth ? "." : "";
     return m + p + " " + d + ", " + y;
   }
 
@@ -405,13 +399,10 @@ export default class PortfolioDashboard extends Vue {
       }
     });
     
-    console.log("actualBurn", actualBurn);
-    console.log("projectedBurn", projectedBurn);
-
-    debugger;
-
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
+
+    let burnChartDataSets: lineChartDataSet[] = [];
 
     let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonData;
     const totalActualData = {
@@ -420,7 +411,8 @@ export default class PortfolioDashboard extends Vue {
       data: totalActualBurnData,
     };
     Object.assign(clinTotalActualDataSet, totalActualData);
-    this.burnChartData.datasets.push(clinTotalActualDataSet);
+    burnChartDataSets.push(clinTotalActualDataSet);
+    this.checked.push(true);
 
     let clinTotalProjectedDataSet: lineChartDataSet = this.burnChartProjectedCommonData;
     const totalProjectedData = {
@@ -429,10 +421,44 @@ export default class PortfolioDashboard extends Vue {
       data: totalProjectedBurnData,
     };
     Object.assign(clinTotalProjectedDataSet, totalProjectedData);
-    this.burnChartData.datasets.push(clinTotalProjectedDataSet);
+    burnChartDataSets.push(clinTotalProjectedDataSet);
 
+    uniqueClins.forEach((clinNo, i) => {
+      this.checked.push(true);
 
+      const color = this.chartDataColorSequence[i + 1];
+      const clin = this.clins.find(clin => clin.idiq_clin === clinNo);
+      if (clin && this.burnChartData.datasets) {
+        const clinActualData = {
+          label: clin.idiq_clin_label,
+          dataSetId: clin.idiq_clin_label 
+            ? getIdText(clin.idiq_clin_label + "Actual") 
+            : clinNo + "Data",
+          data: actualBurn[clinNo],
+        };
+        let clinActualDataSet = _.clone(this.burnChartActualCommonData);
+        clinActualDataSet.borderColor = color;
+        clinActualDataSet.pointBackgroundColor = color;
 
+        Object.assign(clinActualDataSet, clinActualData);
+        burnChartDataSets.push(clinActualDataSet);
+        
+        const clinProjectedData = {
+          label: clin.idiq_clin_label + " Projected",
+          dataSetId: clin.idiq_clin_label 
+            ? getIdText(clin.idiq_clin_label + "Projected") : clinNo + "DataProjected",
+          data: projectedBurn[clinNo],
+        };
+        let clinProjectedDataSet: lineChartDataSet = _.clone(this.burnChartProjectedCommonData);
+        clinProjectedDataSet.borderColor = color;
+        clinProjectedDataSet.pointBackgroundColor = color;
+        Object.assign(clinProjectedDataSet, clinProjectedData);
+        burnChartDataSets.push(clinProjectedDataSet)
+
+      }
+      console.log("burnChartDataSets", burnChartDataSets)
+    });
+    this.burnChartData.datasets = burnChartDataSets;
 
     return;
   }
@@ -451,6 +477,7 @@ export default class PortfolioDashboard extends Vue {
     this.taskOrder = data.taskOrder
     this.costs = data.costs;
     this.clins = data.clins;
+    this.clins.sort((a, b) => (a.idiq_clin > b.idiq_clin) ? 1 : -1);
 
     await this.calculateTotalFunds();
 
@@ -522,6 +549,7 @@ export default class PortfolioDashboard extends Vue {
   public totalCLINsChecked = true;
   public unclassifiedXaaSChecked = true;
   public unclassifiedCloudSupportPackageChecked = false;
+  public checked: boolean[] = [];
 
   public datasetToToggle: number | null = null;
   public toggleDataset = false;
@@ -563,58 +591,59 @@ export default class PortfolioDashboard extends Vue {
       "Sept","Oct","Nov","Dec","Jan 2022", // EJY add year to Jan IF NOT first position
       "Feb","Mar","Apr","May","Jun","Jul","Aug","Sept",
     ],
-    datasets: [
-      {
-        dataSetId: "TotalCLINs",
-        label: "Total for all CLINs",
-        data: [230, 190, 188, 170, 160],
-        fill: false,
-        borderColor: this.chartDataColorSequence[0],
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: this.chartDataColorSequence[0],
-        pointHoverBackgroundColor: "#FFFFFF",
-        pointBorderWidth: 2,
-        pointHoverBorderWidth: 2,
-        lineTension: 0,
-      },
-      {
-        dataSetId: "TotalCLINs",
-        label: "Total for all CLINs Projected Burn",
-        spanGaps: true,
-        data: [null,null,null,null,160,null,null,null,null,null,null,null,0,],
-        fill: false,
-        borderWidth: 2,
-        borderColor: this.chartDataColorSequence[0],
-        borderDash: [6, 4],
-        pointRadius: 0,
-      },
-      {
-        label: "Unclassified XaaS",
-        dataSetId: "UXAAS",
-        data: [190, 180, 175, 120, 100],
-        fill: false,
-        borderColor: this.chartDataColorSequence[1],
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: this.chartDataColorSequence[1],
-        pointHoverBackgroundColor: "#FFFFFF",
-        pointBorderWidth: 2,
-        pointHoverBorderWidth: 2,
-        lineTension: 0,
-      },
-      {
-        label: "Unclassified XaaS Projected Burn",
-        dataSetId: "UXAASP",
-        spanGaps: true,
-        data: [null,null,null,null,100,null,null,null,null,null,null,null,0,],
-        fill: false,
-        borderWidth: 2,
-        borderColor: this.chartDataColorSequence[1],
-        borderDash: [6, 4],
-        pointRadius: 0,
-      },
-    ],
+    datasets: [],
+  //   datasets: [
+  //     {
+  //       dataSetId: "TotalCLINs",
+  //       label: "Total for all CLINs",
+  //       data: [230, 190, 188, 170, 160],
+  //       fill: false,
+  //       borderColor: this.chartDataColorSequence[0],
+  //       borderWidth: 2,
+  //       pointRadius: 3,
+  //       pointBackgroundColor: this.chartDataColorSequence[0],
+  //       pointHoverBackgroundColor: "#FFFFFF",
+  //       pointBorderWidth: 2,
+  //       pointHoverBorderWidth: 2,
+  //       lineTension: 0,
+  //     },
+  //     {
+  //       dataSetId: "TotalCLINs",
+  //       label: "Total for all CLINs Projected Burn",
+  //       spanGaps: true,
+  //       data: [null,null,null,null,160,null,null,null,null,null,null,null,0,],
+  //       fill: false,
+  //       borderWidth: 2,
+  //       borderColor: this.chartDataColorSequence[0],
+  //       borderDash: [6, 4],
+  //       pointRadius: 0,
+  //     },
+  //     {
+  //       label: "Unclassified XaaS",
+  //       dataSetId: "UXAAS",
+  //       data: [190, 180, 175, 120, 100],
+  //       fill: false,
+  //       borderColor: this.chartDataColorSequence[1],
+  //       borderWidth: 2,
+  //       pointRadius: 3,
+  //       pointBackgroundColor: this.chartDataColorSequence[1],
+  //       pointHoverBackgroundColor: "#FFFFFF",
+  //       pointBorderWidth: 2,
+  //       pointHoverBorderWidth: 2,
+  //       lineTension: 0,
+  //     },
+  //     {
+  //       label: "Unclassified XaaS Projected Burn",
+  //       dataSetId: "UXAASP",
+  //       spanGaps: true,
+  //       data: [null,null,null,null,100,null,null,null,null,null,null,null,0,],
+  //       fill: false,
+  //       borderWidth: 2,
+  //       borderColor: this.chartDataColorSequence[1],
+  //       borderDash: [6, 4],
+  //       pointRadius: 0,
+  //     },
+  //   ],
   };
   
   public lineChartOptions = {
