@@ -612,6 +612,12 @@ export default class PortfolioDashboard extends Vue {
         display: false,
       },
     },
+    options: { // EJY this is not working
+      tooltips: {
+        caretSize: 5,
+        yAlign: "center"
+      }
+    },
     animation: {
       duration: 0,
     },

@@ -1,6 +1,7 @@
 #lineChartTooltip {
   padding: 16px !important;
-  
+  max-width: 270px;
+
   th {
     text-align: left;
     padding-bottom: 8px;
@@ -15,8 +16,21 @@
   }
 
   tbody {
-    tr td:last-of-type {
-      text-align: right;
+    td {
+      vertical-align: top;  
+      font-size: 14px;    
+      line-height: 1.67rem;
+      padding-bottom: 4px;
     }
+
+    tr {
+      td:nth-child(2) {
+        padding-right: 8px;
+      }
+
+      td:last-of-type {
+        text-align: right;
+      }
+    } 
   }
 }

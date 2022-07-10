@@ -144,13 +144,15 @@ export default class LineChart extends Vue {
 
             const th = document.createElement("th");
             th.style.borderWidth = "0";
-            th.colSpan = 2;
+            th.colSpan = 3;
 
             const currentYear = (new Date()).getFullYear();
             // EJY need to increase year if Jan and not first label;
             const text = document.createTextNode(title + " " + currentYear);
             const headerTitle = document.createTextNode(this.tooltipHeaderData.title);
-            const amount = document.createTextNode("$" + this.tooltipHeaderData.amount);
+            const amount = document.createTextNode(
+              "$" + this.tooltipHeaderData.amount.slice(0, -3)
+            );
             const h1 = document.createElement("h1");
             h1.appendChild(amount);
             const legend = document.createTextNode(this.tooltipHeaderData.legend);
@@ -184,29 +186,32 @@ export default class LineChart extends Vue {
               span.style.borderColor = "#ffffff";
               span.style.borderStyle = "solid";
               span.style.borderWidth = "1px";
-              span.style.marginRight = "12px";
-              span.style.height = "14px";
-              span.style.width = "14px";
+              span.style.marginRight = "4px";
+              span.style.height = "16px";
+              span.style.width = "16px";
               span.style.display = "inline-block";
+              // EJY get color square aligned with text
 
               const tr = document.createElement("tr");
               tr.style.backgroundColor = "inherit";
               tr.style.borderWidth = "0";
 
-              const td = document.createElement("td");
-              td.style.borderWidth = "0";
-              const labelValue = "$" + body[0].slice(sep + 2, body[0].length);
-              const text = document.createTextNode(labelText);
-              const val = document.createTextNode(labelValue);
-
-              td.appendChild(span);
-              td.appendChild(text);
-              tr.appendChild(td);
+              const td1 = document.createElement("td");
+              td1.style.borderWidth = "0";
+              td1.appendChild(span);
+              tr.appendChild(td1);
 
               const td2 = document.createElement("td");
-              td2.style.paddingLeft = "8px";
-              td2.appendChild(val);
+              const text = document.createTextNode(labelText);
+              td2.appendChild(text);
               tr.appendChild(td2);
+
+              const td3 = document.createElement("td");
+              td3.style.paddingLeft = "8px";
+              const labelValue = "$" + body[0].slice(sep + 2, body[0].length);
+              const val = document.createTextNode(labelValue);
+              td3.appendChild(val);
+              tr.appendChild(td3);
 
               tableBody.appendChild(tr);
             }
