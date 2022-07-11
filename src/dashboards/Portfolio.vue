@@ -241,10 +241,6 @@ export default class PortfolioDashboard extends Vue {
   public burnChartYLabelSuffix = "k"; // EJY BASE ON TOTAL either "k" or "m"
   // EJY need to set lineChartOptions.scales.y.ticks callback
   public tooltipHeaderData: Record<string, string> = {}
-  //   title: "Total Funds Available",
-  //   amount: this.availableFundsStr,
-  //   legend: "Funds Spent",
-  // };
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
@@ -308,7 +304,7 @@ export default class PortfolioDashboard extends Vue {
       });
       clinCosts[clinNo] = clinValues;
     });
-    debugger;
+    // debugger;
     const popStartISO = this.taskOrder.pop_start_date;
     const popStartDate = parseISO(popStartISO);
     const periodDatesISO = [popStartISO];
@@ -335,9 +331,6 @@ export default class PortfolioDashboard extends Vue {
       let monthAbbr = i <= 11 
         ? this.monthAbbreviations[i]
         : this.monthAbbreviations[12 - i];
-
-      debugger;
-
       if (monthAbbr === "Jan") {
         monthAbbr = januaryCount === 0 
           ? monthAbbr + " " + popEndYear 
@@ -346,7 +339,6 @@ export default class PortfolioDashboard extends Vue {
       }
       this.burnChartXLabels.push(monthAbbr);
     }
-    debugger;
 
     let actualBurn: Record<string, (number | null)[]> = {};
     let projectedBurn: Record<string, (number | null)[]> = {}
@@ -355,7 +347,6 @@ export default class PortfolioDashboard extends Vue {
 
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
-    const finalMonth = popEndDate.getMonth() + 1;
 
     uniqueClins.forEach((clinNo) => {
       const thisClin = this.clins.find(clin => clin.clin_number === clinNo);
@@ -379,7 +370,6 @@ export default class PortfolioDashboard extends Vue {
             
             const month = (parseISO(monthISO)).getMonth() + 1;
             const isCurrentMonth = month === currentMonth;
-            const isFinalMonth = month === finalMonth;
             const isActual = month < currentMonth;
             
             const actualVal = isActual ? fundsAvailable : null;
@@ -387,12 +377,11 @@ export default class PortfolioDashboard extends Vue {
 
             const projectedVal = isCurrentMonth
               ? fundsAvailable 
-              // : isFinalMonth ? 0 : null;
               : null;
             projected.push(projectedVal);
             
             const monthTotalActual = totalActualBurnData[i + 1];
-            debugger;
+            // debugger;
             if (!monthTotalActual) {
               totalActualBurnData[i + 1] = actualVal;
             } else if (actualVal) {
@@ -417,7 +406,7 @@ export default class PortfolioDashboard extends Vue {
       }
     });
     totalProjectedBurnData.push(0);
-    
+
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
 
@@ -483,11 +472,14 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async calculateTotalFunds(): Promise<void> {
-    // total funds is sum of each IDIQ CLIN's funds obligated
+    // total portfolio funds is sum of each IDIQ CLIN's funds obligated
     this.clins.forEach((clin) => {
       this.totalPortfolioFunds = this.totalPortfolioFunds + parseInt(clin.funds_obligated);
     });
     this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
+
+    this.lineChartOptions.scales.y.max = this.totalPortfolioFunds;
+    this.lineChartOptions.scales.y.stepSize = this.totalPortfolioFunds / 6;
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -586,9 +578,9 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public burnChartActualCommonData = {
-    dataSetId: "", // EJY DYNAMIC
-    label: "", // EJY DYNAMIC
-    data: [], // EJY DYNAMIC
+    dataSetId: "",
+    label: "",
+    data: [],
     spanGaps: true,
     fill: false,
     borderColor: this.chartDataColorSequence[0],
@@ -647,15 +639,17 @@ export default class PortfolioDashboard extends Vue {
           borderDash: [3, 3],
           borderWidth: 2,
           borderColor: this.chartAuxColors["lineChart-axis"],
-          lineWidth: function(context: any) {
-            return context.tick.label === "July" ? 1 : 3; // EJY DYNAMIC
-          },
+          lineWidth: 3,
+          // lineWidth: function(context: any) {
+          //   return context.tick.label === "July" ? 1 : 3;
+          // },
           tickWidth: 0,
-          color: function (context: any) {
-            return context.tick.label === "July" // EJY DYNAMIC
-              ? "#A9AEB1"
-              : "transparent";
-          },
+          color: "transparent",
+          // color: function (context: any) {
+          //   return context.tick.label === "July"
+          //     ? "#A9AEB1"
+          //     : "transparent";
+          // },
         },
         ticks: {
           maxTicksLimit: 7,
@@ -664,7 +658,7 @@ export default class PortfolioDashboard extends Vue {
         },
       },
       y: {
-        stepSize: 50000, // EJY needs to be dynamic based on data
+        stepSize: 20000,//50000, // EJY needs to be dynamic based on data
         min: 0,
         max: 300000, // EJY needs to be dynamic based on data
         grid: {

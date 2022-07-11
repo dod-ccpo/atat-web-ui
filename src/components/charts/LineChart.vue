@@ -6,11 +6,12 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData, ChartOptions } from "chart.js/auto";
+import { lineChartData, lineChartDataSet } from "types/Global";
 
 @Component({})
 export default class LineChart extends Vue {
   @Prop({ required: true, default: "myLineChart" }) public chartId!: string;
-  @Prop({ required: true, default: {} }) public chartData!: ChartData;
+  @Prop({ required: true, default: {} }) public chartData!: lineChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: any;
   @Prop({ required: false }) public datasetToToggle!: number;
   @Prop({ required: false }) public toggleDataset!: boolean;
@@ -129,6 +130,9 @@ export default class LineChart extends Vue {
         (l: string[]) => l[0].toLowerCase().indexOf("projected") > -1
       ).length;
       // debugger;
+      const currentYear = new Date().getFullYear();
+      const nextYear = (currentYear + 1) + "";
+      const nextYearIndex = this.chartData.labels?.filter((s: string) => s.includes(nextYear));
       if (bodyLines.length !== projectedCount) {
 
         if (bodyLines.length) {
@@ -136,21 +140,23 @@ export default class LineChart extends Vue {
           const titleLines = tooltip.title || [];
           debugger;
 
+
           const tableHead = document.createElement("thead");
           const headTr = document.createElement("tr");
           const th = document.createElement("th");
+
 
           titleLines.forEach((title: string) => {
             headTr.style.borderWidth = "0";
 
             th.style.borderWidth = "0";
             th.colSpan = 3;
-
-            const currentYear = (new Date()).getFullYear();
-            // EJY below won't work for next year months
-            const text = title.indexOf("Jan") === -1 
+          
+            // EJY HERE HERE
+            const text = title.indexOf("Jan") > -1 
               ? document.createTextNode(title + " " + currentYear)
               : document.createTextNode(title);
+
             th.appendChild(text);
             const hr = document.createElement("hr");
             th.appendChild(hr);
@@ -180,7 +186,6 @@ export default class LineChart extends Vue {
               headTr.appendChild(th);
               tableHead.appendChild(headTr);
             } else {
-              // const sep = body[0].indexOf(":");
               const labelText = body[0].slice(0, sep);
               if (
                 body[0].toLowerCase().indexOf("burn") === -1 
