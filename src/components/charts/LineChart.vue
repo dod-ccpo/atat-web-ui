@@ -137,83 +137,90 @@ export default class LineChart extends Vue {
           debugger;
 
           const tableHead = document.createElement("thead");
+          const headTr = document.createElement("tr");
+          const th = document.createElement("th");
 
           titleLines.forEach((title: string) => {
-            const tr = document.createElement("tr");
-            tr.style.borderWidth = "0";
+            headTr.style.borderWidth = "0";
 
-            const th = document.createElement("th");
             th.style.borderWidth = "0";
             th.colSpan = 3;
 
             const currentYear = (new Date()).getFullYear();
-            // EJY need to increase year if Jan and not first label;
-            const text = document.createTextNode(title + " " + currentYear);
-            const headerTitle = document.createTextNode(this.tooltipHeaderData.title);
-            const amount = document.createTextNode(
-              "$" + this.tooltipHeaderData.amount.slice(0, -3)
-            );
-            const h1 = document.createElement("h1");
-            h1.appendChild(amount);
-            const legend = document.createTextNode(this.tooltipHeaderData.legend);
-            const hr1 = document.createElement("hr");
-            const hr2 = document.createElement("hr");
-
-
+            // EJY below won't work for next year months
+            const text = title.indexOf("Jan") === -1 
+              ? document.createTextNode(title + " " + currentYear)
+              : document.createTextNode(title);
             th.appendChild(text);
-            th.appendChild(hr1);
-            th.appendChild(headerTitle);
-            th.appendChild(h1);
-            th.appendChild(hr2);
-            th.appendChild(legend);
+            const hr = document.createElement("hr");
+            th.appendChild(hr);
 
-            tr.appendChild(th);
-            tableHead.appendChild(tr);
           });
 
           const tableBody = document.createElement("tbody");
           bodyLines.forEach((body: any, i: any) => {
             const sep = body[0].indexOf(":");
-            const labelText = body[0].slice(0, sep);
-            if (
-              body[0].toLowerCase().indexOf("burn") === -1 
-              && labelText.toLowerCase().indexOf("projected") === -1
-            ) {
-              const colors = tooltip.labelColors[i];
+            const amount = "$" + body[0].slice(sep + 2, body[0].length);
 
-              const span = document.createElement("span");
-              span.style.background = colors.backgroundColor;
-              span.style.borderColor = "#ffffff";
-              span.style.borderStyle = "solid";
-              span.style.borderWidth = "1px";
-              span.style.marginRight = "4px";
-              span.style.height = "16px";
-              span.style.width = "16px";
-              span.style.display = "inline-block";
-              // EJY get color square aligned with text
+            if (i === 0) {
+              const div = document.createElement("div");
+              div.style.fontWeight = "400";
+              const headerTitle = document.createTextNode(this.tooltipHeaderData.title);
+              div.appendChild(headerTitle);
+              th.appendChild(div);
 
-              const tr = document.createElement("tr");
-              tr.style.backgroundColor = "inherit";
-              tr.style.borderWidth = "0";
+              const totalAmount = document.createTextNode(amount);
+              const h1 = document.createElement("h1");
+              h1.appendChild(totalAmount);
+              th.appendChild(h1);
+              const hr = document.createElement("hr");
+              th.appendChild(hr);
+              const legend = document.createTextNode(this.tooltipHeaderData.legend);
+              th.appendChild(legend);
+              headTr.appendChild(th);
+              tableHead.appendChild(headTr);
+            } else {
+              // const sep = body[0].indexOf(":");
+              const labelText = body[0].slice(0, sep);
+              if (
+                body[0].toLowerCase().indexOf("burn") === -1 
+                && labelText.toLowerCase().indexOf("projected") === -1
+              ) {
+                const colors = tooltip.labelColors[i];
 
-              const td1 = document.createElement("td");
-              td1.style.borderWidth = "0";
-              td1.appendChild(span);
-              tr.appendChild(td1);
+                const span = document.createElement("span");
+                span.style.background = colors.backgroundColor;
+                span.style.borderColor = "#ffffff";
+                span.style.borderStyle = "solid";
+                span.style.borderWidth = "1px";
+                span.style.marginRight = "4px";
+                span.style.height = "16px";
+                span.style.width = "16px";
+                span.style.display = "inline-block";
+                // EJY get color square aligned with text
 
-              const td2 = document.createElement("td");
-              const text = document.createTextNode(labelText);
-              td2.appendChild(text);
-              tr.appendChild(td2);
+                const tr = document.createElement("tr");
+                tr.style.backgroundColor = "inherit";
+                tr.style.borderWidth = "0";
 
-              const td3 = document.createElement("td");
-              td3.style.paddingLeft = "8px";
-              const labelValue = "$" + body[0].slice(sep + 2, body[0].length);
-              const val = document.createTextNode(labelValue);
-              td3.appendChild(val);
-              tr.appendChild(td3);
+                const td1 = document.createElement("td");
+                td1.style.borderWidth = "0";
+                td1.appendChild(span);
+                tr.appendChild(td1);
 
-              tableBody.appendChild(tr);
+                const td2 = document.createElement("td");
+                const text = document.createTextNode(labelText);
+                td2.appendChild(text);
+                tr.appendChild(td2);
+
+                const td3 = document.createElement("td");
+                td3.style.paddingLeft = "8px";
+                const val = document.createTextNode(amount);
+                td3.appendChild(val);
+                tr.appendChild(td3);
+
+                tableBody.appendChild(tr);
+              }
             }
           });
 
