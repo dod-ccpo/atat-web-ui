@@ -87,5 +87,37 @@ module.exports = {
   alertInfoMessage: "#AlertInfo",
   updatePOPLink: "#PoPLink",
   updateRCELink: "#CostEstimateLink",
-  contractDetailsLink:"#AlertLink"
+  contractDetailsLink: "#AlertLink",
+  popUnder9monthsText: "#PoPUnder9Months",
+  linkToPoP: "#LinkToPoP",
+  
+  //Let's create an incremental funding plan for your base period
+  initialFILabel: "label", 
+  initalFITextbox: "#InitialAmount_text_field",
+  initalFIError: "#InitialIncrementError",
+  incrementalPeriod0Dropdown: "#IncrementPeriod0_dropdown",
+  incrementalPeriod0DropdownIcon: "#IncrementPeriod0_dropdown_field_control" +
+    " .v-input__append-inner > .v-icon",
+  incrementalPeriod0DropdownList:"#IncrementPeriod0_dropdown_field_control .v-list-item",
+  incrementalPeriod0AmountTextbox:"#Amount0_text_field",
+  incrementalPeriod0Error: "#FirstIncrementError",
+  incrementalPeriod1:"#IncrementPeriod1_dropdown_field_control",
+  deleteBtn0: "#DeleteIncrement0",
+  deleteBtn1:"#DeleteIncrement1",
+  addIncrementalbtn: "#AddIncrementButton",
+  periodLength: "#PeriodLength",
+  totalCostEst:"#TotalCostEstimate",
+  basePeriodValue: ".pa-6 .h3",
+  basePeriodText: ".pa-6 p.mb-0",
+  amountRemaining:"#AmountRemaining",
+  total: "#TotalAmount_text_field",
+  
+  //Tell us about your financial POC
+  contactRoleTxt: "#ContactAffiliation_radio_group_control legend",
+  contactRadioBtnActive: "#ContactAffiliation_radio_group_control .v-item--active", 
+  emailLabel: "#EmailAddress_text_field_label",
+  emailMessage: "#EmailAddress_text_field_control .help-text.mt-2",
+  emailTextbox:"#EmailAddress_text_field",
+  phoneNumberLabel: "#PhoneNumber_TextFieldLabel",
+  phoneInputBox:"#PhoneNumber_textField"
 }
