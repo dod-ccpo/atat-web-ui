@@ -35,10 +35,10 @@
         :validate-on-blur="validateOnBlur"
         @update:error="setErrorMessage"
         @click:clear="clearErrorMessages"
+        @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
       />
-
       <v-btn
         :id="id + '_SearchButton'" 
         class="primary _search-button"
