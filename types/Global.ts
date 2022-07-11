@@ -253,6 +253,7 @@ export interface lineChartDataSet {
   pointRadius: number;
   pointBackgroundColor?: string;
   pointHoverBackgroundColor?: string;
+  pointHoverBorderColor?: string;
   pointBorderWidth?: number;
   pointHoverBorderWidth?: number;
   lineTension?: number;

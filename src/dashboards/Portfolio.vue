@@ -80,7 +80,6 @@
                 </v-col>
               </v-row>
 
-
               <v-row id="BurndownChartWrap">
                 <v-col>
                   <v-card class="no-shadow v-sheet--outlined pa-8">
@@ -174,7 +173,6 @@ import ATATPageHead from "../components/ATATPageHead.vue";
 import DonutChart from "../components/charts/DonutChart.vue";
 import LineChart from "../components/charts/LineChart.vue";
 
-
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
@@ -186,7 +184,6 @@ import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
-// import { format, parse } from "path/posix";
 import { lineChartData, lineChartDataSet } from "types/Global";
 import { getIdText } from "@/helpers";
 import _ from 'lodash';
@@ -229,17 +226,17 @@ export default class PortfolioDashboard extends Vue {
 
   public chartDataColors = ATATCharts.chartDataColors;
   public chartDataColorSequence = ATATCharts.chartDataColorSequence;
+  public chartDataColorsTranslucent = this.chartDataColorSequence.map((color) => {
+    return color + "33";
+  });
+
   public chartAuxColors = ATATCharts.chartAuxColors;
   public monthAbbreviations = ATATCharts.monthAbbreviations;
   
-  // public burnChartData: lineChartData = {};
-  public burnChartXLabels: string[] = []; // EJY always months?
+  public burnChartXLabels: string[] = [];
   public burnChartYMax = 0;
-  // EJY need to set lineChartOptions.scales.y.max
-  public burnChartYStepSize = 0; // EJY one fifth or forth of Y Max?
-  // EJY need to set lineChartOptions.scales.y.stepSize
-  public burnChartYLabelSuffix = "k"; // EJY BASE ON TOTAL either "k" or "m"
-  // EJY need to set lineChartOptions.scales.y.ticks callback
+  public burnChartYStepSize = 0;
+  public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {}
 
   public async calculateFundsSpent(): Promise<void> {
@@ -254,7 +251,7 @@ export default class PortfolioDashboard extends Vue {
     const m = this.monthAbbreviations[date.getMonth()];
     const y = date.getFullYear();
     const d = date.getUTCDate();
-    const neverPeriodMonths = ["May", "June", "July"];
+    const neverPeriodMonths = ["March", "April", "May", "June", "July"];
     const noPeriodMonth = neverPeriodMonths.indexOf(m) !== -1;
     const p = period && !noPeriodMonth ? "." : "";
     return m + p + " " + d + ", " + y;
@@ -304,7 +301,7 @@ export default class PortfolioDashboard extends Vue {
       });
       clinCosts[clinNo] = clinValues;
     });
-    // debugger;
+
     const popStartISO = this.taskOrder.pop_start_date;
     const popStartDate = parseISO(popStartISO);
     const periodDatesISO = [popStartISO];
@@ -327,7 +324,6 @@ export default class PortfolioDashboard extends Vue {
     const popEndYear = popEndDate.getFullYear();
     let januaryCount = 0;
     for (let i = startMonthNo; i < startMonthNo + monthsToAdd + 2; i++) {
-      console.log("i", i)
       let monthAbbr = i <= 11 
         ? this.monthAbbreviations[i]
         : this.monthAbbreviations[12 - i];
@@ -381,7 +377,6 @@ export default class PortfolioDashboard extends Vue {
             projected.push(projectedVal);
             
             const monthTotalActual = totalActualBurnData[i + 1];
-            // debugger;
             if (!monthTotalActual) {
               totalActualBurnData[i + 1] = actualVal;
             } else if (actualVal) {
@@ -394,22 +389,19 @@ export default class PortfolioDashboard extends Vue {
             } else if (projectedVal) {
               totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
             }
-
           });
-          console.log("totalActualBurnData", totalActualBurnData);
-          console.log("totalProjectedBurnData", totalProjectedBurnData);
+
           actualBurn[clinNo] = actual;
           projected.push(0);
           projectedBurn[clinNo] = projected;
-
         }
       }
     });
+
     totalProjectedBurnData.push(0);
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
-
     let burnChartDataSets: lineChartDataSet[] = [];
 
     let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonData;
@@ -447,6 +439,8 @@ export default class PortfolioDashboard extends Vue {
         let clinActualDataSet = _.clone(this.burnChartActualCommonData);
         clinActualDataSet.borderColor = color;
         clinActualDataSet.pointBackgroundColor = color;
+        clinActualDataSet.pointHoverBackgroundColor = color;
+        clinActualDataSet.pointHoverBorderColor = this.chartDataColorsTranslucent[i + 1]
 
         Object.assign(clinActualDataSet, clinActualData);
         burnChartDataSets.push(clinActualDataSet);
@@ -462,12 +456,9 @@ export default class PortfolioDashboard extends Vue {
         clinProjectedDataSet.pointBackgroundColor = color;
         Object.assign(clinProjectedDataSet, clinProjectedData);
         burnChartDataSets.push(clinProjectedDataSet)
-
       }
-      console.log("burnChartDataSets", burnChartDataSets)
     });
     this.burnChartData.datasets = burnChartDataSets;
-
     return;
   }
 
@@ -481,14 +472,13 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartYMax = Math.round(this.totalPortfolioFunds / 100000) * 100000;
     this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
 
-
     this.lineChartOptions.scales.y.max = this.burnChartYMax;
     this.lineChartOptions.scales.y.ticks.stepSize = this.burnChartYStepSize;
   }
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
-    
+
     this.taskOrder = data.taskOrder
     this.costs = data.costs;
     this.clins = data.clins;
@@ -510,7 +500,6 @@ export default class PortfolioDashboard extends Vue {
       legend: "Funds Available",
     };
 
-
     this.fundsSpentPercent = Math.round(this.fundsSpent / this.totalPortfolioFunds * 100);
     this.arcGuageChartData.datasets[0].data 
       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
@@ -521,7 +510,6 @@ export default class PortfolioDashboard extends Vue {
     this.calculateTimeToExpiration();
 
     this.calculateBurnDown();
-
   }
 
   public async mounted(): Promise<void>{
@@ -567,7 +555,6 @@ export default class PortfolioDashboard extends Vue {
     },
   };
 
-
   public totalCLINsChecked = true;
   public unclassifiedXaaSChecked = true;
   public unclassifiedCloudSupportPackageChecked = false;
@@ -589,11 +576,13 @@ export default class PortfolioDashboard extends Vue {
     fill: false,
     borderColor: this.chartDataColorSequence[0],
     borderWidth: 2,
-    pointRadius: 3,
+    pointRadius: 4,
     pointBackgroundColor: this.chartDataColorSequence[0],
-    pointHoverBackgroundColor: "#FFFFFF",
-    pointBorderWidth: 2,
-    pointHoverBorderWidth: 2,
+    pointHoverBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverRadius: 4,
+    pointBorderWidth: 0,
+    pointHoverBorderWidth: 12,
+    pointHoverBorderColor: this.chartDataColorsTranslucent[0],
     lineTension: 0,
   };
   public burnChartProjectedCommonData = {
@@ -622,12 +611,6 @@ export default class PortfolioDashboard extends Vue {
         display: false,
       },
     },
-    options: { // EJY this is not working
-      tooltips: {
-        caretSize: 5,
-        yAlign: "center"
-      }
-    },
     animation: {
       duration: 0,
     },
@@ -644,16 +627,8 @@ export default class PortfolioDashboard extends Vue {
           borderWidth: 2,
           borderColor: this.chartAuxColors["lineChart-axis"],
           lineWidth: 3,
-          // lineWidth: function(context: any) {
-          //   return context.tick.label === "July" ? 1 : 3;
-          // },
           tickWidth: 0,
           color: "transparent",
-          // color: function (context: any) {
-          //   return context.tick.label === "July"
-          //     ? "#A9AEB1"
-          //     : "transparent";
-          // },
         },
         ticks: {
           maxTicksLimit: 7,
@@ -671,16 +646,12 @@ export default class PortfolioDashboard extends Vue {
         ticks: {
           stepSize: 0,
           callback: function (value: number): string {
-            return "$" + value; // EJY need to set callback after calculations are done
-            // return "$" + value + "k"; // EJY need to set callback after calculations are done
+            return "$" + value / 1000 + "k";
           },
         },
       },
     },
   };
-
-
-
 
 }
 

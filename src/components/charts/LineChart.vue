@@ -5,25 +5,17 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import Chart, { ChartData, ChartOptions } from "chart.js/auto";
-import { lineChartData, lineChartDataSet } from "types/Global";
+import Chart, { ChartData } from "chart.js/auto";
 
 @Component({})
 export default class LineChart extends Vue {
   @Prop({ required: true, default: "myLineChart" }) public chartId!: string;
-  @Prop({ required: true, default: {} }) public chartData!: lineChartData;
+  @Prop({ required: true, default: {} }) public chartData!: ChartData;
   @Prop({ required: true, default: {} }) public chartOptions!: any;
   @Prop({ required: false }) public datasetToToggle!: number;
   @Prop({ required: false }) public toggleDataset!: boolean;
   @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
   private myChart!: Chart;
-
-  @Watch("tooltipHeaderData", { deep: true })
-  public tooltipHeaderDataUpdate(newData: Record<string, string>): void {
-    debugger;
-    // this.myChart.data = newData;
-    // this.myChart.update();
-  }
 
   @Watch("chartData", { deep: true })
   public chartDataUpdate(newData: ChartData): void {
@@ -84,7 +76,6 @@ export default class LineChart extends Vue {
     }
   }
 
-
   public getOrCreateTooltip = (chart: any) => {
     let tooltipEl = chart.canvas.parentNode.querySelector("div#lineChartTooltip");
 
@@ -112,7 +103,6 @@ export default class LineChart extends Vue {
   };
 
   public externalTooltipHandler = (context: any) => {
-    debugger;
     // Tooltip Element
     const { chart, tooltip } = context;
     const tooltipEl = this.getOrCreateTooltip(chart);
@@ -129,10 +119,15 @@ export default class LineChart extends Vue {
       const projectedCount = bodyLines.filter(
         (l: string[]) => l[0].toLowerCase().indexOf("projected") > -1
       ).length;
-      // debugger;
       const currentYear = new Date().getFullYear();
       const nextYear = (currentYear + 1) + "";
-      const nextYearIndex = this.chartData.labels?.findIndex((s: string) => s.includes(nextYear));
+      const nextYearIndex = this.chartData.labels?.findIndex((s) => {
+        if (typeof s === "string") {
+          return s.includes(nextYear)
+        }
+        return false;
+      });
+
       if (bodyLines.length !== projectedCount) {
 
         if (bodyLines.length) {
@@ -149,7 +144,7 @@ export default class LineChart extends Vue {
             if (title.indexOf("Jan") > -1) {
               title = [title.slice(0,3), ". 1, ", title.slice(4)].join("");
             } else if (labelIndex && nextYearIndex) {
-              const notAbbreviated = ["May", "June", "July"];
+              const notAbbreviated = ["March", "April", "May", "June", "July"];
               const dayText = notAbbreviated.indexOf(title) > -1
                 ? " 1, " : ". 1, ";
               title = labelIndex > nextYearIndex
@@ -202,7 +197,6 @@ export default class LineChart extends Vue {
                 span.style.height = "16px";
                 span.style.width = "16px";
                 span.style.display = "inline-block";
-                // EJY get color square aligned with text
 
                 const tr = document.createElement("tr");
                 tr.style.backgroundColor = "inherit";
