@@ -497,7 +497,7 @@ export default class PortfolioDashboard extends Vue {
     this.tooltipHeaderData = {
       title: "Total Funds Available",
       amount: this.availableFundsStr,
-      legend: "Funds Spent",
+      legend: "Funds Available",
     };
 
 
