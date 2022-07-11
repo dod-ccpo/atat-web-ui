@@ -131,6 +131,7 @@
       {{ optionPeriodClicked.duration }} {{ optionPeriodClicked.unitOfTime }}
     </div>
   </div>
+
 </template>
 
 <script lang="ts">
@@ -143,11 +144,13 @@ import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import PopLearnMore from "./PopLearnMore.vue";
 import SlideoutPanel from "@/store/slideoutPanel/index";
-import { PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
+import { fundingIncrement, PoP, SelectData, SlideoutPanelContent } from "../../../types/Global";
 import { getIdText } from "@/helpers";
 import { PeriodDTO } from "@/api/models";
 import Periods from "@/store/periods";
 import {hasChanges} from "@/helpers";
+import AcquisitionPackage from "@/store/acquisitionPackage";
+import FinancialDetails from "@/store/financialDetails";
 
 
 const convertPoPToPeriod= (pop:PoP): PeriodDTO=>{
@@ -202,6 +205,7 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public totalPoPDuration = 0;
+  public basePoPDuration = 0
 
   public selectedTimePeriod = "Year";
   public timePeriods: SelectData[] = [
@@ -222,8 +226,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
   }
 
   public setTotalPoP(): void {
+    this.basePoPDuration = 0
     this.totalPoPDuration = 0;
-    this.optionPeriods.forEach((optionPeriod) => {
+    this.optionPeriods.forEach((optionPeriod, idx) => {
       if (optionPeriod.duration) {
         let multiplier = 1;
         switch (optionPeriod.unitOfTime) {
@@ -240,6 +245,9 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           multiplier = 1;
         }
         const thisDays = optionPeriod.duration * multiplier;
+        if(idx === 0){
+          this.basePoPDuration += thisDays
+        }
         this.totalPoPDuration += thisDays;
       }
     });
@@ -451,11 +459,22 @@ export default class PeriodOfPerformance extends Mixins(SaveOnLeave) {
           
 
       const valid = this.optionPeriods.every(peroid=>peroid.duration);
+      const cutOff = 270;
       const hasChanged = valid && hasChanges(this.savedData, this.currentData);
+      AcquisitionPackage.setBasePoPDuration(this.basePoPDuration)
 
       if (hasChanged) {
         const removed = this.removed;
         await Periods.savePeriods({periods: this.currentData, removed});
+        if(this.basePoPDuration < cutOff){
+          FinancialDetails.saveIFPData(
+            {
+              data: {initialFundingIncrementStr: "",
+                fundingIncrements: []},
+              removed: FinancialDetails.fundingIncrements
+            }
+          );
+        }
       }
     } catch (error) {
       throw new Error('error saving period data');

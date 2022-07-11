@@ -56,7 +56,8 @@
 
               <div
                 v-for="(fundingIncrement, index) in fundingIncrements"
-                :key="index"              
+                :key="index"
+                :id="'Increment' + index"
               >
 
                 <div class="d-flex justify-space-between align-center mb-4">
@@ -149,7 +150,9 @@
                     <ATATSVGIcon name="calendar" :width="34" :height="37" color="primary" />
                   </div>
                   <div>
-                    <span class="h3">Base period length: {{ periodLengthStr }}</span>
+                    <span id="PeriodLength" class="h3">
+                      Base period length: {{ periodLengthStr }}
+                    </span>
                     <p class="mb-0">
                       Your funding plan may not exceed this PoP.
                     </p>
@@ -162,9 +165,13 @@
                     <ATATSVGIcon name="monetizationOn" :width="34" :height="34" color="primary" />
                   </div>
                   <div>
-                    <span class="h3">Total cost estimate: ${{ costEstimateStr }}</span>
+                    <span id="TotalCostEstimate" class="h3">
+                      Total cost estimate: ${{ costEstimateStr }}
+                    </span>
                     <p class="mb-0">
-                      You need to add <strong>${{ amountRemainingStr }}</strong> 
+                      You need to add <span id="AmountRemaining" class="bold">
+                      ${{ amountRemainingStr }}
+                    </span>
                       to fully fund your base period.
                     </p>
                   </div>
