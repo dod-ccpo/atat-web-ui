@@ -297,18 +297,18 @@ export default class PortfolioDashboard extends Vue {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
     const uniqueClins = [...new Set(this.clins.map(clin => clin.clin_number))].sort();
     
-    let clinData: Record<string, Record<string, string>> = {};
+    let clinCosts: Record<string, Record<string, string>> = {};
     uniqueClins.forEach((clinNo) => {
       let clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(cost => cost.clin === clinNo && cost.year_month === date);
-        if (clin) {
+        if (clin && clin.is_actual === "true") {
           clinValues[date] = clin.value;
         }
       });
-      clinData[clinNo] = clinValues;
+      clinCosts[clinNo] = clinValues;
     });
-
+    debugger;
     const popStartISO = this.taskOrder.pop_start_date;
     const popStartDate = parseISO(popStartISO);
     const periodDatesISO = [popStartISO];
@@ -340,7 +340,7 @@ export default class PortfolioDashboard extends Vue {
 
     let actualBurn: Record<string, (number | null)[]> = {};
     let projectedBurn: Record<string, (number | null)[]> = {}
-    const totalActualBurnData: (number | null)[] = [];
+    const totalActualBurnData: (number | null)[] = [this.totalPortfolioFunds];
     const totalProjectedBurnData: (number | null)[] = [null];
 
     const now = new Date();
@@ -356,21 +356,21 @@ export default class PortfolioDashboard extends Vue {
           : 0;
 
         if (fundsAvailable) {
-          const thisClinData = clinData[clinNo];
-          const actual: (number | null)[] = [];
-          const projected: (number | null)[] = [];
+          const thisclinCosts = clinCosts[clinNo];
+          const actual: (number | null)[] = [parseFloat(thisClin.funds_obligated)];
+          const projected: (number | null)[] = [null];
 
           periodDatesISO.forEach((monthISO, i) => {
-            const value = parseFloat(thisClinData[monthISO]);
+            const value = parseFloat(thisclinCosts[monthISO]);
             const thisMonthAmount = !isNaN(value) ? value : null;
             fundsAvailable = thisMonthAmount 
               ? fundsAvailable - thisMonthAmount 
               : fundsAvailable;
-
+            
             const month = (parseISO(monthISO)).getMonth() + 1;
             const isCurrentMonth = month === currentMonth;
             const isFinalMonth = month === finalMonth;
-            const isActual = month <= currentMonth;
+            const isActual = month < currentMonth;
             
             const actualVal = isActual ? fundsAvailable : null;
             actual.push(actualVal);
@@ -379,20 +379,21 @@ export default class PortfolioDashboard extends Vue {
               ? fundsAvailable 
               : isFinalMonth ? 0 : null;
             projected.push(projectedVal);
-
-            const monthTotalActual = totalActualBurnData[i];
+            
+            const monthTotalActual = totalActualBurnData[i+1];
+            debugger;
             if (!monthTotalActual) {
-              totalActualBurnData[i] = actualVal;
+              totalActualBurnData[i+1] = actualVal;
             } else if (actualVal) {
-              totalActualBurnData[i] = actualVal + monthTotalActual;
+              totalActualBurnData[i+1] = actualVal + monthTotalActual;
             }
+
             const monthTotalProjected = totalProjectedBurnData[i];
             if (!monthTotalProjected) {
               totalProjectedBurnData[i] = projectedVal;
             } else if (projectedVal) {
               totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
             }
-
 
           });
           console.log("totalActualBurnData", totalActualBurnData);
