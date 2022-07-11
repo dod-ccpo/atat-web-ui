@@ -267,6 +267,7 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
+  totalBasePoPDuration = 0;
 
   fundingRequestType: string | null =  null;
 
@@ -274,6 +275,11 @@ export class AcquisitionPackageStore extends VuexModule {
 
   public getTitle(): string {
     return this.projectOverview?.title || "";
+  }
+
+  @Mutation
+  public setBasePoPDuration(value: number): void {
+    this.totalBasePoPDuration = value;
   }
 
   @Mutation
