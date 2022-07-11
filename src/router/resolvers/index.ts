@@ -479,7 +479,7 @@ export const MIPRResolver = (current: string): string => {
 
 export const GInvoicingResolver = (current: string): string => {
   const fundingType = FinancialDetails.fundingRequestType;
-  if (fundingType === "FSF") {
+  if (fundingType === "FS_FORM") {
     return routeNames.GInvoicing;
   }
   
@@ -489,7 +489,7 @@ export const GInvoicingResolver = (current: string): string => {
 }
 
 export const Upload7600Resolver = (current: string): string => {
-  const useGInvoicing = FinancialDetails.useGInvoicing === "Yes";
+  const useGInvoicing = FinancialDetails.gInvoicingData.useGInvoicing === "YES";
   if (!useGInvoicing) {
     const fundingType = FinancialDetails.fundingRequestType;
     return fundingType === "MIPR" 

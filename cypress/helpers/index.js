@@ -10,6 +10,8 @@ const buildTableApiPath = (tableName)=> {
 
 const bootStrapAcquisitionPackageApi= ()=> {
   const acquisitionPackageApiEndpoint = buildTableApiPath('x_g_dis_atat_acquisition_package');
+  const testCase = window.Cypress.currentTest.title.split(":")[0].trim().replace("TC","");
+
   cy.fixture("acquistionPackage").then((data) => {
     cy.intercept('POST', acquisitionPackageApiEndpoint, {
       statusCode: 201,
@@ -17,17 +19,28 @@ const bootStrapAcquisitionPackageApi= ()=> {
     });
   }); 
 
-  if (isTestingIsolated){
+  if (isTestingIsolated & isIsolatedTestRunnable()){
     loadInitialData();
-    saveToSNOW();
+    saveToSNOW(testCase);
   }
 
 }
 
+function isIsolatedTestRunnable(){
+  const isolatedTestsToRun = [
+    "AcquistionPackageDetails", 
+    "FinancialDetails",
+    "OtherContractConsiderations",
+    "StandardsandCompliance"];
+  const currentTest = window.Cypress.spec.name.split("/");
+  const currentTestSuite = currentTest[currentTest.length-2];
+  
+  return isolatedTestsToRun.some((test)=> test === currentTestSuite);
+}
+
 export function bootstrapMockApis(){
-  
+ 
   bootStrapAcquisitionPackageApi();    
-  
 }
 
 export const cleanText = (text) => {

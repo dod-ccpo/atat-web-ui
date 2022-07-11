@@ -25,6 +25,10 @@ import { SelectedServiceOfferingApi } from "./selectedServiceOffering";
 import { ClassificationInstanceApi } from "./classificationInstance";
 import { TaskOrderApi } from "./taskOrder";
 import { CostsApi } from "./costs";
+import { FundingRequestApi } from "./fundingRequest";
+import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
+import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
+import { ClinAPi } from "./clin";
 
 export const api = {
 
@@ -39,7 +43,10 @@ export const api = {
   contractConsiderationsTable: new ContractConsiderationsApi(),
   fairOpportunityTable: new FairOpportunityApi(),
   fundingPlanTable :new FundingPlanApi(),
+  fundingRequestTable: new FundingRequestApi(),
   fundingIncrementTable: new FundingIncrementApi(),
+  fundingRequestFSFormTable: new FundingRequestFSFormApi(),
+  FundingRequestMIPRFormTable: new FundingRequestMIPRFormApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),
@@ -54,6 +61,7 @@ export const api = {
   countriesTable: new CountriesApi(),
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
+  clinTable: new ClinAPi(),
 }
 
 export default {
