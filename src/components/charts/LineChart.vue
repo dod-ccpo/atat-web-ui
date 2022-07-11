@@ -132,35 +132,35 @@ export default class LineChart extends Vue {
       // debugger;
       const currentYear = new Date().getFullYear();
       const nextYear = (currentYear + 1) + "";
-      const nextYearIndex = this.chartData.labels?.filter((s: string) => s.includes(nextYear));
+      const nextYearIndex = this.chartData.labels?.findIndex((s: string) => s.includes(nextYear));
       if (bodyLines.length !== projectedCount) {
 
         if (bodyLines.length) {
-
           const titleLines = tooltip.title || [];
-          debugger;
-
-
           const tableHead = document.createElement("thead");
           const headTr = document.createElement("tr");
           const th = document.createElement("th");
-
+          headTr.style.borderWidth = "0";
+          th.style.borderWidth = "0";
+          th.colSpan = 3;
 
           titleLines.forEach((title: string) => {
-            headTr.style.borderWidth = "0";
-
-            th.style.borderWidth = "0";
-            th.colSpan = 3;
-          
-            // EJY HERE HERE
-            const text = title.indexOf("Jan") > -1 
-              ? document.createTextNode(title + " " + currentYear)
-              : document.createTextNode(title);
+            const labelIndex = this.chartData.labels?.indexOf(title);
+            if (title.indexOf("Jan") > -1) {
+              title = [title.slice(0,3), ". 1, ", title.slice(4)].join("");
+            } else if (labelIndex && nextYearIndex) {
+              const notAbbreviated = ["May", "June", "July"];
+              const dayText = notAbbreviated.indexOf(title) > -1
+                ? " 1, " : ". 1, ";
+              title = labelIndex > nextYearIndex
+                ? title + dayText + nextYear
+                : title + dayText + currentYear;
+            }
+            const text = document.createTextNode(title);
 
             th.appendChild(text);
             const hr = document.createElement("hr");
             th.appendChild(hr);
-
           });
 
           const tableBody = document.createElement("tbody");

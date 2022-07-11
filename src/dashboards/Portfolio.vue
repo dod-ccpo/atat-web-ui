@@ -478,8 +478,12 @@ export default class PortfolioDashboard extends Vue {
     });
     this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
 
-    this.lineChartOptions.scales.y.max = this.totalPortfolioFunds;
-    this.lineChartOptions.scales.y.stepSize = this.totalPortfolioFunds / 6;
+    this.burnChartYMax = Math.round(this.totalPortfolioFunds / 100000) * 100000;
+    this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
+
+
+    this.lineChartOptions.scales.y.max = this.burnChartYMax;
+    this.lineChartOptions.scales.y.ticks.stepSize = this.burnChartYStepSize;
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -658,14 +662,14 @@ export default class PortfolioDashboard extends Vue {
         },
       },
       y: {
-        stepSize: 20000,//50000, // EJY needs to be dynamic based on data
         min: 0,
-        max: 300000, // EJY needs to be dynamic based on data
+        max: 0,
         grid: {
           borderColor: "transparent",
           tickWidth: 0,
         },
         ticks: {
+          stepSize: 0,
           callback: function (value: number): string {
             return "$" + value; // EJY need to set callback after calculations are done
             // return "$" + value + "k"; // EJY need to set callback after calculations are done
