@@ -71,7 +71,7 @@
         class="mr-2"
       />
       <span class="text-base">
-        Locating your order in G-Invoicing
+        Locating your order in {{ searchType }}
       </span>
     </div>
 
@@ -84,13 +84,13 @@
     >
       <template v-slot:content>
         <p>
-          We could not find your order within G-Invoicing. Please enter a valid 
-          order number and search again. 
+          We could not find your order within {{ searchType }}. Please enter a valid
+          order number and search again.
         </p>
         <p class="mb-0">
-          If you confirmed your order number within G-Invoicing and continue to 
-          receive this message, please reach out to our User Engagement Team for 
-          support.          
+          If you confirmed your order number within {{ searchType }} and continue to
+          receive this message, please reach out to our User Engagement Team for
+          support.
         </p>
       </template>
     </ATATAlert>
@@ -104,7 +104,7 @@
     >
       <template v-slot:content>
         <p class="mb-0">
-          Good news! We found your order within G-Invoicing and synced your funding 
+          Good news! We found your order within {{ searchType }} and synced your funding
           details with this acquisition.          
         </p>
       </template>
@@ -155,6 +155,9 @@ export default class ATATSearch extends Vue {
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
+  @Prop({ default: "G-Invoicing" }) private searchType!: string;
+
+
 
   @PropSync("value", { default: "" }) private _value!: string;
 

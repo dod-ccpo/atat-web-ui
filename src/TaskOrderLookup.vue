@@ -1,9 +1,42 @@
 <template>
   <div class="pa-5">
-    <ATATPageHead headline="Future Task Order Lookup Page" />
-    <div id="app-content" class="d-flex flex-column">
-      <div class="mb-auto" style="margin-top: 100px; padding-bottom: 200px;">
-        Content...
+    <ATATPageHead headline="Future Task Order Lookup Page"/>
+    <div class="v-main__wrap">
+      <div id="app-content" class="d-flex flex-column">
+        <div class="mb-auto" style="padding-bottom: 200px;">
+          <v-row class="mt-10">
+            <v-col class="col-12">
+              <h1 class="page-header mb-3">
+                Import funding details for your awarded Task Order
+              </h1>
+              <div class="copy-max-width">
+                <p class="mb-10">
+                  Please verify a few details about your awarded task order and we will import the
+                  CLIN funding info from Electronic Data Access (EDA).
+                </p>
+                <ATATSearch
+                  id="TaskOrderNumber"
+                  helpText="Format: Must be either 13 or 17 digits"
+                  label="Task Order Number"
+                  placeHolder="Find your task order in EDA"
+                  :tooltipText="toolTipText"
+                  searchType="EDA"
+                  :hideHelpTextOnError="true"
+                  :validate-on-blur="true"
+                  :value.sync="taskOrder"
+                  :rules="[
+                    $validators.required('Please enter your awarded task order number.'),
+                    $validators.isMaskValid(
+                      ['^\\d{13,17}$'],
+                      `Your task order number must be either 13 or 17 characters.`,
+                      true
+                    )
+                  ]"
+                />
+              </div>
+            </v-col>
+          </v-row>
+        </div>
       </div>
       <ATATFooter/>
     </div>
@@ -17,14 +50,24 @@ import { Component } from "vue-property-decorator";
 
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue";
+import ATATSearch from "@/components/ATATSearch.vue";
 
 @Component({
   components: {
+    ATATSearch,
     ATATFooter,
     ATATPageHead
   }
 })
 
-export default class TaskOrderLookup extends Vue {}
-
+export default class TaskOrderLookup extends Vue {
+  private toolTipText = `<p class="mb-1">This is a 13-character value for new task orders, or
+    a 17-character value for task order modifications.</p>
+    <p class="mb-1">If your Contracting Office used:</p>
+    <ul>
+      <li class="pb-1">Form 1149: Enter the “Order Number”</li>
+        <li>Form 1155: Enter the “Delivery Order/Call No."</li>
+    </ul>`
+  private taskOrder = ''
+}
 </script>
