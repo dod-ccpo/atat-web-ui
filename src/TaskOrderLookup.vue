@@ -1,6 +1,6 @@
 <template>
   <div class="pa-5">
-    <ATATPageHead headline="Future Task Order Lookup Page"/>
+    <ATATPageHead :headline="projectTitle"/>
     <div class="v-main__wrap">
       <div id="app-content" class="d-flex flex-column">
         <div class="mb-auto" style="padding-bottom: 200px;">
@@ -51,6 +51,7 @@ import { Component } from "vue-property-decorator";
 import ATATFooter from "./components/ATATFooter.vue";
 import ATATPageHead from "./components/ATATPageHead.vue";
 import ATATSearch from "@/components/ATATSearch.vue";
+import AcquisitionPackage from "@/store/acquisitionPackage";
 
 @Component({
   components: {
@@ -69,5 +70,11 @@ export default class TaskOrderLookup extends Vue {
         <li>Form 1155: Enter the “Delivery Order/Call No."</li>
     </ul>`;
   private taskOrder = '';
+
+  public get projectTitle(): string {
+    return AcquisitionPackage.projectTitle !== ""
+      ? AcquisitionPackage.projectTitle
+      : "New Acquisition";
+  }
 }
 </script>
