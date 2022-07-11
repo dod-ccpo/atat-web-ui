@@ -16,7 +16,7 @@
     "test-file:watch": "jest --watch --no-cache src/components/ATATTextArea.spec.ts ",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
-    "cypress:console": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/StandardsandCompliance/*.spec.js'"
+    "cypress:console": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/Background.spec.js'"
   },
   "dependencies": {
     "@types/inputmask": "^5.0.3",
