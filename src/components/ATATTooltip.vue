@@ -27,7 +27,6 @@
         {{ tooltipTitle }}
       </span>
       <div v-html="tooltipText">
-<!--        {{ tooltipText }}-->
       </div>
     </div>
   </v-tooltip>

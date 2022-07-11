@@ -67,7 +67,7 @@ export default class TaskOrderLookup extends Vue {
     <ul>
       <li class="pb-1">Form 1149: Enter the “Order Number”</li>
         <li>Form 1155: Enter the “Delivery Order/Call No."</li>
-    </ul>`
-  private taskOrder = ''
+    </ul>`;
+  private taskOrder = '';
 }
 </script>
