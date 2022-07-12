@@ -152,6 +152,78 @@
                 </v-col>
               </v-row>
 
+              <v-row>
+                <v-col>
+                  <v-card class="no-shadow v-sheet--outlined pa-8 pb-2">
+                    <h3>Breakdown of Actual and Estimated Spend</h3>
+                    <p class="font-size-14">
+                      The chart below shows the proportion of funds spent and 
+                      funds estimated to be invoiced compared to the total funds 
+                      available in this portfolio. The data includes money spent 
+                      on all active task orders during this period of performance.
+                    </p>
+                    <v-row>
+                      <v-col class="col-sm-6 ml-n6">
+                        <donut-chart
+                          chart-id="SpendDonutChart"
+                          :chart-data="donutChartData"
+                          :chart-options="donutChartOptions"
+                          :use-chart-data-labels="true"
+                          :center-text1="'$' + totalPortfolioFundsStr.slice(0, -3)"
+                          center-text2="Total Portfolio Funds"
+                          :amount="totalPortfolioFunds"
+                        />
+                      </v-col>
+                      <v-col class="col-sm-6 d-flex align-center">
+                        <div class="width-100">
+                          <div
+                            v-for="(label, index) in donutChartData.labels"
+                            :key="index" 
+                            class="d-flex justify-space-between font-size-14"
+                          >
+                            <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
+                              <span 
+                                class="_legend-square"
+                                :style="'background-color: ' + donutChartColors[index]"
+                              >
+                              </span>
+                              <strong>{{ label }}</strong>
+                            </div>
+                            <div class="pr-4 py-2">
+                              {{ getLegendAmount(index) }}
+                            </div>
+                            <div style="width: 50px;" class="text-right font-weight-700 py-2">
+                              {{ donutChartData.datasets[0].data[index] }}%
+                            </div>
+                          </div>  
+
+                          <hr style="margin: 8px 0;" />
+                          <div class="d-flex justify-space-between font-size-14">
+                            <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
+                              <strong class="d-inline-block mr-1 mb-2">
+                                Total Portfolio Funds
+                              </strong>
+                              <ATATTooltip 
+                                :tooltipText="spendingTooltipText"
+                                id="SpendingTooltip"
+                              />
+
+                            </div>
+                            <div class="pr-4 py-2 font-weight-700">
+                              ${{ totalPortfolioFundsStr }}
+                            </div>
+                            <div style="width: 50px;">
+                            </div>
+                          </div>  
+
+                        </div>
+                        
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-col>
+              </v-row>
+
             </div>
             <ATATFooter/>
           </div>
@@ -170,6 +242,7 @@ import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
+import ATATTooltip from "@/components/ATATTooltip.vue"
 import DonutChart from "../components/charts/DonutChart.vue";
 import LineChart from "../components/charts/LineChart.vue";
 
@@ -192,6 +265,7 @@ import _ from 'lodash';
   components: {
     ATATFooter,
     ATATPageHead,
+    ATATTooltip,
     DonutChart,
     LineChart,
   }
@@ -238,6 +312,11 @@ export default class PortfolioDashboard extends Vue {
   public burnChartYStepSize = 0;
   public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {}
+
+  public currentMonthEstimatedSpend = 0;
+  public currentMonthEstimatedSpendStr = "";
+  public currentMonthEstimatedSpendPercent = 0;
+  public estimatedRemainingPercent = 0;
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
@@ -286,6 +365,8 @@ export default class PortfolioDashboard extends Vue {
     this.runOutOfFundsDate = this.createDateStr(runOutISODate, true);
   }
 
+  public donutChartPercentages: number[] = [];
+
   public calculateBurnDown(): void {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
     const uniqueClins = [...new Set(this.clins.map(clin => clin.clin_number))].sort();
@@ -297,10 +378,31 @@ export default class PortfolioDashboard extends Vue {
         const clin = this.costs.find(cost => cost.clin === clinNo && cost.year_month === date);
         if (clin && clin.is_actual === "true") {
           clinValues[date] = clin.value;
+        } else if (clin) {
+          this.currentMonthEstimatedSpend += parseFloat(clin.value);
+          this.currentMonthEstimatedSpendStr
+            = toCurrencyString(this.currentMonthEstimatedSpend);
         }
       });
       clinCosts[clinNo] = clinValues;
     });
+    
+    this.currentMonthEstimatedSpendPercent 
+      = Math.round((Number(
+        (this.currentMonthEstimatedSpend / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
+
+    this.estimatedRemainingPercent 
+      // = 100 - this.currentMonthEstimatedSpendPercent - this.fundsSpentPercent;
+      = Math.round((Number(
+        (100 - this.currentMonthEstimatedSpendPercent - this.fundsSpentPercent).toFixed(3)))
+        * 10) / 10;
+
+    this.donutChartPercentages = [
+      this.fundsSpentPercent, 
+      this.currentMonthEstimatedSpendPercent,
+      this.estimatedRemainingPercent
+    ];
+    this.donutChartData.datasets[0].data = this.donutChartPercentages;
 
     const popStartISO = this.taskOrder.pop_start_date;
     const popStartDate = parseISO(popStartISO);
@@ -312,7 +414,6 @@ export default class PortfolioDashboard extends Vue {
 
     let month = popStartDate;
     let monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
-    
 
     for (let i = 0; i < monthsToAdd; i++) {
       month = add(popStartDate, { months: i + 1 });
@@ -652,6 +753,63 @@ export default class PortfolioDashboard extends Vue {
       },
     },
   };
+
+  public donutChartColors = [
+    this.chartDataColorSequence[0],
+    this.chartDataColorSequence[1],
+    this.chartDataColors.gray,
+  ];
+
+  public donutChartData = {
+    labels: [
+      "Funds spent", 
+      "Estimated funds to be invoiced", 
+      "Estimated funds available"
+    ],
+    datasets: [
+      {
+        label: "Funding Status",
+        data: this.donutChartPercentages,
+        backgroundColor: this.donutChartColors,
+        hoverBackgroundColor: this.donutChartColors,
+        hoverBorderColor: this.donutChartColors,
+        hoverBorderRadius: 0,
+        hoverOffset: 10,
+        hoverBorderWidth: 0,
+        cutout: "67%",
+      },
+    ],
+  };
+
+  public donutChartOptions = {
+    layout: {
+      padding: 20,
+    },
+    aspectRatio: 1.25,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        color: "#000",
+        align: "end",
+        anchor: "end",
+        offset: 10,
+        formatter: function (value: number): string {
+          return value ? value + "%" : "";
+        },
+      },
+    },
+  };
+
+  public getLegendAmount(index: number): string {
+    const amount = this.totalPortfolioFunds * this.donutChartData.datasets[0].data[index] / 100;
+    let amountStr = "$" + toCurrencyString(amount);
+    return amountStr;
+  }
+
+  public spendingTooltipText = `This is the total value of all active task 
+    orders funding this portfolio`;
 
 }
 
