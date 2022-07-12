@@ -67,7 +67,8 @@
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
                       :is-arc-gauge="true"
-                      :center-text1="fundsSpentPercent + '%'"
+                      :show-hover-legend="false"
+                      :center-text1="roundDecimal(fundsSpentPercent, 0) + '%'"
                       center-text2="Funds Spent"
                       :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
                     />
@@ -154,7 +155,7 @@
 
               <v-row>
                 <v-col>
-                  <v-card class="_no-shadow v-sheet--outlined pa-8 pb-2">
+                  <v-card class="_no-shadow v-sheet--outlined pa-8">
                     <h3>Spend Summary</h3>
                     <p class="font-size-14">
                       View a breakdown of how much you spend on cloud resources, 
@@ -168,27 +169,54 @@
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
                           Last month
-                          <span class="h1 d-block">${{ lastMonthSpendStr }}</span>
-                          <ATATSVGIcon 
-                            name="trendingUp"
-                            width="20"
-                            height="13"
-                            color="error"
-                          />
-                          {{ lastMonthSpendPercent }}%
+                          <span class="h1 d-block my-2">${{ lastMonthSpendStr }}</span>
+                          <span class="d-flex align-center">
+                            <ATATSVGIcon 
+                              :name="lastMonthSpendTrendPercent > 0 
+                                ? 'trendingUp' : 'trendingDown'"
+                              width="20"
+                              height="13"
+                              class="mr-2"
+                              :color="lastMonthSpendTrendPercent > 0 ? 'error' : 'success'"
+                            />
+                            <span class="font-size-12 text-base-dark">
+                              <span :class="lastMonthSpendTrendPercent > 0 
+                                ? 'text-error' : 'text-success-dark' "
+                              >
+                                {{ getSpendPercent(lastMonthSpendTrendPercent) }}%
+                              </span>
+                              vs monthly average
+                            </span>
+                          </span>
                         </v-card>
                       </v-col>
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
                           End-of-month forecast
-                          <span class="h1 d-block">${{ endOfMonthForecastStr }}</span>
-                          <ATATSVGIcon 
-                            name="trendingDown"
-                            width="20"
-                            height="13"
-                            color="success"
-                          />
-                          {{ endOfMonthForecastPercent }}%
+                          <span class="h1 d-block my-2">${{ endOfMonthForecastStr }}</span>
+                          <span 
+                            class="d-flex align-center"
+                            :class="endOfMonthForecastTrendPercent > 0 
+                              ? 'text-error' : 'text-success-dark' "
+                          >
+                            <ATATSVGIcon 
+                              :name="endOfMonthForecastTrendPercent > 0 
+                                ? 'trendingUp' : 'trendingDown'"
+                              width="20"
+                              height="13"
+                              class="mr-2"
+                              :color="endOfMonthForecastTrendPercent > 0 ? 'error' : 'success-dark'"
+                            />
+                            <span class="font-size-12 text-base-dark">
+                              <span :class="endOfMonthForecastTrendPercent > 0 
+                                ? 'text-error' : 'text-success-dark' "
+                              >
+                                {{ getSpendPercent(endOfMonthForecastTrendPercent) }}%
+                              </span>
+                              vs monthly average
+                            </span>
+
+                          </span>
                         </v-card>
 
                       </v-col>
@@ -211,7 +239,7 @@
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
                           End-of-period forecast
-                          <span class="h1 d-block">${{ lastMonthSpendStr }}</span>
+                          <span class="h1 d-block mt-2">${{ endOfPeriodForecastStr }}</span>
                         </v-card>
 
                       </v-col>                      
@@ -262,7 +290,7 @@
                               {{ getLegendAmount(index) }}
                             </div>
                             <div style="width: 50px;" class="text-right font-weight-700 py-2">
-                              {{ donutChartData.datasets[0].data[index] }}%
+                              {{ roundDecimal(donutChartData.datasets[0].data[index], 1) }}%
                             </div>
                           </div>  
 
@@ -369,17 +397,20 @@ export default class PortfolioDashboard extends Vue {
   public monthlySpendAverageStr = "";
   public lastMonthSpend = 0;
   public lastMonthSpendStr = "";
-  public lastMonthSpendPercent = 0;
+  public lastMonthSpendTrendPercent = 0;
   public endOfMonthForecast = 0;
   public endOfMonthForecastStr = "";
-  public endOfMonthForecastPercent = 0;
+  public endOfMonthForecastTrendPercent = 0; // for spending summary
+  public estimatedFundsToBeInvoicedPercent = 0; // for donut chart
   public estimatedRemainingPercent = 0;
+  public endOfPeriodForecast = 0;
+  public endOfPeriodForecastStr = "";
+  public monthsForEndOfPeriodForecast = 0;
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
   public idiqClins: ClinDTO[] = [];
-
-  public clinSpending: Record<string, string>[] = [];
+  public idiqClinTotalSpending: Record<string, number> = {};
 
   public chartDataColors = ATATCharts.chartDataColors;
   public chartDataColorSequence = ATATCharts.chartDataColorSequence;
@@ -425,6 +456,8 @@ export default class PortfolioDashboard extends Vue {
     const daysUntilEndDate = differenceInCalendarDays(end, today);
     const monthsUntilEndDate = differenceInCalendarMonths(end, today);
 
+    this.monthsForEndOfPeriodForecast = monthsUntilEndDate - 1;
+
     const unitsRemaining = daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
@@ -468,21 +501,18 @@ export default class PortfolioDashboard extends Vue {
       clinCosts[clinNo] = clinValues;
     });
     
-    this.endOfMonthForecastPercent 
-      = Math.round((Number(
-        (this.endOfMonthForecast / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
-
+    this.estimatedFundsToBeInvoicedPercent
+      = this.endOfMonthForecast / this.totalPortfolioFunds * 100;
+    
     this.estimatedRemainingPercent 
-      // = 100 - this.endOfMonthForecastPercent - this.fundsSpentPercent;
-      = Math.round((Number(
-        (100 - this.endOfMonthForecastPercent - this.fundsSpentPercent).toFixed(3)))
-        * 10) / 10;
+      = 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent;
 
     this.donutChartPercentages = [
       this.fundsSpentPercent, 
-      this.endOfMonthForecastPercent,
+      this.estimatedFundsToBeInvoicedPercent,
       this.estimatedRemainingPercent
     ];
+
     this.donutChartData.datasets[0].data = this.donutChartPercentages;
 
     const popStartISO = this.taskOrder.pop_start_date;
@@ -580,25 +610,43 @@ export default class PortfolioDashboard extends Vue {
         }
       }
     });
-    debugger;
-    // EJY come back to this - populate clinSpending
-    // uniqueIdiqClins.forEach((idiqClinNo) => {
-    //   actualBurn.forEach((idiqClinNo) => {
-    //     this.clinSpending[idiqClinNo]
-    //   });
-    // })
 
     totalProjectedBurnData.push(0);
 
+    uniqueIdiqClins.forEach((idiqClinNo) => {
+      const thisIdiqClinSpending: number[] = []
+      actualBurn[idiqClinNo].forEach(
+        amt => amt !== null ? thisIdiqClinSpending.push(amt) : null
+      );
+      const idiqClinTotalSpend = thisIdiqClinSpending.reduce(
+        (partialSum, a) => partialSum + a, 0
+      );
+      this.idiqClinTotalSpending[idiqClinNo] = idiqClinTotalSpend;
+    });
+    
     const monthsWithSpend = totalActualBurnData.filter(amt => amt !== null);
     const len = monthsWithSpend.length;
     this.monthlySpendAverage = Math.round(this.fundsSpent / len * 100) / 100;
     this.monthlySpendAverageStr = "$" + toCurrencyString(this.monthlySpendAverage);
+    if (len && len >= 2) {
+      const twoMoAgoAvl = monthsWithSpend[len - 2];
+      const lastMoAvl = monthsWithSpend[len - 1];
+      if (twoMoAgoAvl && lastMoAvl) {
+        this.lastMonthSpend = twoMoAgoAvl - lastMoAvl;
+        this.lastMonthSpendStr = toCurrencyString(this.lastMonthSpend);
+        // EJY calculate percent trend based on monthlySpendAverage
+        this.lastMonthSpendTrendPercent 
+          = (this.lastMonthSpend - this.monthlySpendAverage) / this.monthlySpendAverage * 100;
+      }
+    }
+    
+    this.endOfMonthForecastTrendPercent 
+      = (this.endOfMonthForecast - this.monthlySpendAverage) / this.monthlySpendAverage * 100;
 
-    // this.endOfMonthForecastPercent 
-    //   = Math.round(this.endOfMonthForecast / this.monthlySpendAverage * 100) / 100;
-
-    debugger;
+    const m = this.monthsForEndOfPeriodForecast;
+    this.endOfPeriodForecast 
+      = this.fundsSpent + this.endOfMonthForecast + (this.monthlySpendAverage * m);
+    this.endOfPeriodForecastStr = toCurrencyString(this.endOfPeriodForecast);
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
@@ -701,7 +749,7 @@ export default class PortfolioDashboard extends Vue {
       legend: "Funds Available",
     };
 
-    this.fundsSpentPercent = Math.round(this.fundsSpent / this.totalPortfolioFunds * 100);
+    this.fundsSpentPercent = this.fundsSpent / this.totalPortfolioFunds * 100;
     this.arcGuageChartData.datasets[0].data 
       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
     
@@ -896,7 +944,7 @@ export default class PortfolioDashboard extends Vue {
         anchor: "end",
         offset: 10,
         formatter: function (value: number): string {
-          return value ? value + "%" : "";
+          return value ? parseFloat(value.toFixed(1)) + "%" : "";
         },
       },
     },
@@ -914,6 +962,17 @@ export default class PortfolioDashboard extends Vue {
   public periodToDateTooltipText = `This is the total spend from the start of 
     the current period of performance through last month. It does not include 
     funds that will be invoiced this month.`;
+
+  public roundDecimal(value: number, decimals: number): number {
+    decimals = decimals || 0;
+    value = value || 0;
+    return parseFloat(value.toFixed(decimals));
+  }
+
+  public getSpendPercent(value: number): number {
+    const roundedVal = this.roundDecimal(value, 2);
+    return Math.abs(roundedVal);
+  }
 
 }
 
