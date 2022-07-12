@@ -46,7 +46,7 @@ export const api = {
   fundingRequestTable: new FundingRequestApi(),
   fundingIncrementTable: new FundingIncrementApi(),
   fundingRequestFSFormTable: new FundingRequestFSFormApi(),
-  FundingRequestMIPRFormTable: new FundingRequestMIPRFormApi(),
+  fundingRequestMIPRFormTable: new FundingRequestMIPRFormApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),
