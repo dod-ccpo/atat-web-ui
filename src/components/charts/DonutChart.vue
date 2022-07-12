@@ -125,7 +125,7 @@ export default class DonutChart extends Vue {
       colorBlock.style.height = "16px";
       colorBlock.style.width = "16px";
       colorBlock.style.display = "inline-block";
-      colorBlock.style.marginRight = "4px";
+      colorBlock.style.marginRight = "8px";
 
       const label = labelText.slice(0, sep);
       const text = document.createTextNode(label)
