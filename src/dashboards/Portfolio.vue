@@ -175,6 +175,7 @@
                             height="13"
                             color="error"
                           />
+                          {{ lastMonthSpendPercent }}%
                         </v-card>
                       </v-col>
                       <v-col>
@@ -368,6 +369,7 @@ export default class PortfolioDashboard extends Vue {
   public monthlySpendAverageStr = "";
   public lastMonthSpend = 0;
   public lastMonthSpendStr = "";
+  public lastMonthSpendPercent = 0;
   public endOfMonthForecast = 0;
   public endOfMonthForecastStr = "";
   public endOfMonthForecastPercent = 0;
@@ -462,9 +464,9 @@ export default class PortfolioDashboard extends Vue {
       clinCosts[clinNo] = clinValues;
     });
     
-    this.endOfMonthForecastPercent 
-      = Math.round((Number(
-        (this.endOfMonthForecast / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
+    // this.endOfMonthForecastPercent 
+    //   = Math.round((Number(
+    //     (this.endOfMonthForecast / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
 
     this.estimatedRemainingPercent 
       // = 100 - this.endOfMonthForecastPercent - this.fundsSpentPercent;
@@ -583,10 +585,16 @@ export default class PortfolioDashboard extends Vue {
       const twoMoAgoAmt = monthsWithSpend[len - 2];
       const lastMoAmt = monthsWithSpend[len - 1];
       if (twoMoAgoAmt && lastMoAmt) {
+        // EJY LAST MONTH SPEND
         this.lastMonthSpend = twoMoAgoAmt - lastMoAmt;
         this.lastMonthSpendStr = toCurrencyString(this.lastMonthSpend);
+        this.lastMonthSpendPercent 
+          = Math.round(this.lastMonthSpend / this.monthlySpendAverage * 100) / 100;
       }
     }
+
+    this.endOfMonthForecastPercent 
+      = Math.round(this.endOfMonthForecast / this.monthlySpendAverage * 100) / 100;
 
     debugger;
 
