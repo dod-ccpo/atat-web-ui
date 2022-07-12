@@ -157,10 +157,10 @@
                   <v-card class="no-shadow v-sheet--outlined pa-8">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
-                      The chart below shows the proportion of funds spent and funds
-                      estimated to be invoiced this month compared to the total funds
-                      available in this portfolio. The data includes money spent on all
-                      active task orders during this period of performance.
+                      The chart below shows the proportion of funds spent and 
+                      funds estimated to be invoiced compared to the total funds 
+                      available in this portfolio. The data includes money spent 
+                      on all active task orders during this period of performance.
                     </p>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">

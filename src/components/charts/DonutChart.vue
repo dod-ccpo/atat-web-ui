@@ -139,8 +139,6 @@ export default class DonutChart extends Vue {
       percentSpan.style.fontSize = "14px";
       percentSpan.appendChild(amountNode);
 
-      debugger;
-
       const tooltipDiv = tooltipEl.querySelector("div#DonutChartTooltipDiv");
       // Remove old children
       while (tooltipDiv.firstChild) {
@@ -160,14 +158,11 @@ export default class DonutChart extends Vue {
       tooltipEl.style.font = tooltip.options.bodyFont.string;
       tooltipEl.style.padding =
         tooltip.options.padding + "px " + tooltip.options.padding + "px";
-
-      debugger;
     }
   }
 
   public getOrCreateTooltip = (chart: any) => {
     let tooltipEl = chart.canvas.parentNode.querySelector("div#DonutChartTooltip");
-    debugger;
     if (!tooltipEl) {
       tooltipEl = document.createElement("div");
       tooltipEl.setAttribute("id", "DonutChartTooltip");
