@@ -17,6 +17,7 @@
 import './commands'
 import './DOW'
 import "cypress-real-events/support";
+import '@cypress/code-coverage/support';
 require('cypress-plugin-tab')
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

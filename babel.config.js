@@ -1,5 +1,11 @@
+// instrument .js and .vue files
 module.exports = {
   presets: [
-    '@vue/cli-plugin-babel/preset'
+    '@vue/app'
+  ],
+  plugins: [
+    ['babel-plugin-istanbul', {
+      extension: ['.js', '.vue']
+    }]
   ]
 }

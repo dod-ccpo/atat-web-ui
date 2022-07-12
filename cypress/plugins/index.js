@@ -20,7 +20,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config()
 // eslint-disable-next-line no-unused-vars
+/* eslint @typescript-eslint/no-var-requires: "off" */
 module.exports = (on, config) => {
+  require('@cypress/code-coverage/task')(on, config)
+  on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'))
   config.env.testURL = process.env.testURL;
   config.env.localTestURL = process.env.localTestURL;
   config.env.isTestingLocally = process.env.isTestingLocally;
@@ -32,5 +35,6 @@ module.exports = (on, config) => {
   config.env.snowUser = process.env.SNOWUSER;
   config.env.snowPass = process.env.SNOWPASS;
   config.env.disaNoIframeUrl = process.env.disaNoIframeUrl;
+  
   return config;
 }
