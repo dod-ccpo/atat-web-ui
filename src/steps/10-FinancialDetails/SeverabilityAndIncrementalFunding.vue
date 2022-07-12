@@ -245,12 +245,15 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   }
 
   public get PoPUnder9Months(): boolean {
-    return AcquisitionPackage.totalBasePoPDuration < 270
+    return AcquisitionPackage.totalBasePoPDuration < 270 
+      && AcquisitionPackage.totalBasePoPDuration > 0;
   }
 
   public get basePeriod(): string {
-    return `${this.base.period_unit_count} ${this.base.period_unit.toLowerCase()}`
-
+    const hasBasePeriod = this.base && this.base.period_unit_count && this.base.period_unit;
+    return hasBasePeriod
+      ? `${this.base.period_unit_count} ${this.base.period_unit.toLowerCase()}`
+      : ""
   }
 
   public async loadOnEnter(): Promise<void> {
