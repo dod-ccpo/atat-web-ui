@@ -209,7 +209,7 @@
                               />
 
                             </div>
-                            <div class="pr-4 py-2">
+                            <div class="pr-4 py-2 font-weight-700">
                               ${{ totalPortfolioFundsStr }}
                             </div>
                             <div style="width: 50px;">
