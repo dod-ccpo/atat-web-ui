@@ -130,10 +130,10 @@
                         ></v-checkbox>
 
                         <v-checkbox
-                          v-for="(clin, index) in clins"
+                          v-for="(idiqClin, index) in idiqClins"
                           :key="index"
                           v-model="checked[index + 1]"
-                          :label="clins[index].idiq_clin_label"
+                          :label="idiqClins[index].idiq_clin_label"
                           :class="'color_chart_' + (index + 2)"
                           hide-details="true"
                           :ripple="false"
@@ -308,7 +308,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
+import { PortfolioDashBoardService } from "../services/portfolioDashBoard";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
@@ -377,7 +377,7 @@ export default class PortfolioDashboard extends Vue {
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
-  public clins: ClinDTO[] = [];
+  public idiqClins: ClinDTO[] = [];
 
   public clinSpending: Record<string, string>[] = [];
 
@@ -449,10 +449,11 @@ export default class PortfolioDashboard extends Vue {
 
   public calculateBurnDown(): void {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
-    const uniqueClins = [...new Set(this.clins.map(clin => clin.clin_number))].sort();
+    const uniqueCostClins = [...new Set(this.costs.map(cost => cost.clin))].sort();
+    const uniqueIdiqClins = [...new Set(this.idiqClins.map(clin => clin.idiq_clin))].sort();
     
     let clinCosts: Record<string, Record<string, string>> = {};
-    uniqueClins.forEach((clinNo) => {
+    uniqueCostClins.forEach((clinNo) => {
       let clinValues: Record<string, string> = {};
       uniqueDates.forEach((date) => {
         const clin = this.costs.find(cost => cost.clin === clinNo && cost.year_month === date);
@@ -525,17 +526,18 @@ export default class PortfolioDashboard extends Vue {
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
 
-    uniqueClins.forEach((clinNo) => {
-      const thisClin = this.clins.find(clin => clin.clin_number === clinNo);
-      if (thisClin) {
-        let fundsObligated = thisClin.funds_obligated;
+    uniqueIdiqClins.forEach((idiqClinNo) => {
+      const thisIdiqClin = this.idiqClins.find(clin => clin.idiq_clin === idiqClinNo);
+      if (thisIdiqClin) {
+        const costClinNo = thisIdiqClin.clin_number;
+        let fundsObligated = thisIdiqClin.funds_obligated;
         let fundsAvailable = !isNaN(parseInt(fundsObligated)) 
           ? parseInt(fundsObligated)
           : 0;
 
         if (fundsAvailable) {
-          const thisclinCosts = clinCosts[clinNo];
-          const actual: (number | null)[] = [parseFloat(thisClin.funds_obligated)];
+          const thisclinCosts = clinCosts[costClinNo];
+          const actual: (number | null)[] = [parseFloat(thisIdiqClin.funds_obligated)];
           const projected: (number | null)[] = [];
 
           periodDatesISO.forEach((monthISO, i) => {
@@ -572,9 +574,9 @@ export default class PortfolioDashboard extends Vue {
             }
           });
 
-          actualBurn[clinNo] = actual;
+          actualBurn[idiqClinNo] = actual;
           projected.push(0);
-          projectedBurn[clinNo] = projected;
+          projectedBurn[idiqClinNo] = projected;
         }
       }
     });
@@ -621,18 +623,18 @@ export default class PortfolioDashboard extends Vue {
     Object.assign(clinTotalProjectedDataSet, totalProjectedData);
     burnChartDataSets.push(clinTotalProjectedDataSet);
 
-    uniqueClins.forEach((clinNo, i) => {
+    uniqueIdiqClins.forEach((idiqClinNo, i) => {
       this.checked.push(true);
 
       const color = this.chartDataColorSequence[i + 1];
-      const clin = this.clins.find(clin => clin.idiq_clin === clinNo);
+      const clin = this.idiqClins.find(clin => clin.idiq_clin === idiqClinNo);
       if (clin && this.burnChartData.datasets) {
         const clinActualData = {
           label: clin.idiq_clin_label,
           dataSetId: clin.idiq_clin_label 
             ? getIdText(clin.idiq_clin_label + "Actual") 
-            : clinNo + "Data",
-          data: actualBurn[clinNo],
+            : idiqClinNo + "Data",
+          data: actualBurn[idiqClinNo],
         };
         let clinActualDataSet = _.clone(this.burnChartActualCommonData);
         clinActualDataSet.borderColor = color;
@@ -646,8 +648,8 @@ export default class PortfolioDashboard extends Vue {
         const clinProjectedData = {
           label: clin.idiq_clin_label + " Projected",
           dataSetId: clin.idiq_clin_label 
-            ? getIdText(clin.idiq_clin_label + "Projected") : clinNo + "DataProjected",
-          data: projectedBurn[clinNo],
+            ? getIdText(clin.idiq_clin_label + "Projected") : idiqClinNo + "DataProjected",
+          data: projectedBurn[idiqClinNo],
         };
         let clinProjectedDataSet: lineChartDataSet = _.clone(this.burnChartProjectedCommonData);
         clinProjectedDataSet.borderColor = color;
@@ -662,12 +664,12 @@ export default class PortfolioDashboard extends Vue {
 
   public async calculateTotalFunds(): Promise<void> {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
-    this.clins.forEach((clin) => {
+    this.idiqClins.forEach((clin) => {
       this.totalPortfolioFunds = this.totalPortfolioFunds + parseInt(clin.funds_obligated);
     });
     this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
 
-    this.burnChartYMax = Math.round(this.totalPortfolioFunds / 100000) * 100000;
+    this.burnChartYMax = Math.ceil(this.totalPortfolioFunds / 100000) * 100000;
     this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
 
     this.lineChartOptions.scales.y.max = this.burnChartYMax;
@@ -679,8 +681,8 @@ export default class PortfolioDashboard extends Vue {
 
     this.taskOrder = data.taskOrder
     this.costs = data.costs;
-    this.clins = data.clins;
-    this.clins.sort((a, b) => (a.idiq_clin > b.idiq_clin) ? 1 : -1);
+    this.idiqClins = data.clins;
+    this.idiqClins.sort((a, b) => (a.idiq_clin > b.idiq_clin) ? 1 : -1);
 
     await this.calculateTotalFunds();
 
@@ -845,7 +847,7 @@ export default class PortfolioDashboard extends Vue {
         ticks: {
           stepSize: 0,
           callback: function (value: number): string {
-            return "$" + value / 1000 + "k";
+            return "$" + Math.round(value / 1000) + "k";
           },
         },
       },
