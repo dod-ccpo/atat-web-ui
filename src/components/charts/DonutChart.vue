@@ -7,17 +7,19 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { toCurrencyString } from "@/helpers";
 
 @Component({})
 export default class DonutChart extends Vue {
   @Prop({ required: true, default: "MyDonutChart" }) public chartId!: string;
   @Prop({ required: true, default: {} }) public chartData!: ChartData;
-  @Prop({ required: true, default: {} }) public chartOptions!: ChartOptions;
+  @Prop({ required: true, default: {} }) public chartOptions!: any;
   @Prop({ required: false, default: false })
   public useChartDataLabels!: boolean;
   @Prop({ required: false, default: false }) public isArcGauge!: boolean;
   @Prop({ required: false, default: "" }) public centerText1!: string;
   @Prop({ required: false, default: "" }) public centerText2!: string;
+  @Prop({ required: false, default: "" }) public amount!: number;
 
   private myChart!: Chart;
 
@@ -28,6 +30,14 @@ export default class DonutChart extends Vue {
   }
 
   private mounted() {
+    const toolTipExternalOptions = {
+      enabled: false,
+      position: "nearest",
+      external: this.externalTooltipHandler,
+    };
+
+    this.chartOptions.plugins.tooltip = toolTipExternalOptions;
+
     this.createChart();
   }
 
@@ -58,10 +68,10 @@ export default class DonutChart extends Vue {
 
         const text1divisors = self.isArcGauge
           ? { fontSize: 40, textY: 1.5 }
-          : { fontSize: 200, textY: 2.2 };
+          : { fontSize: 160, textY: 2.2 };
         const text2divisors = self.isArcGauge
           ? { fontSize: 140, textY: 1 }
-          : { fontSize: 330, textY: 1.75 };
+          : { fontSize: 350, textY: 1.75 };
 
         ctx.restore();
         let fontSize = (height / text1divisors.fontSize).toFixed(2);
@@ -87,5 +97,95 @@ export default class DonutChart extends Vue {
     };
     return centertext;
   }
+  public externalTooltipHandler = (context: any) => {
+    const { chart, tooltip } = context;
+    const tooltipEl = this.getOrCreateTooltip(chart);
+
+    // Hide if no tooltip
+    if (tooltip.opacity === 0) {
+      tooltipEl.style.opacity = 0;
+      return;
+    }
+
+    if (tooltip.body) {
+      const bodyLines = tooltip.body.map((b: any) => b.lines);
+      const labelText = bodyLines[0][0];
+      const sep = labelText.indexOf(":");
+      const color = tooltip.labelColors[0].backgroundColor;
+
+      const colorBlock = document.createElement("span");
+      colorBlock.style.background = color;
+      colorBlock.style.borderColor = "#ffffff";
+      colorBlock.style.borderStyle = "solid";
+      colorBlock.style.borderWidth = "1px";
+      colorBlock.style.marginRight = "4px";
+      colorBlock.style.height = "16px";
+      colorBlock.style.width = "16px";
+      colorBlock.style.display = "inline-block";
+      colorBlock.style.marginRight = "4px";
+
+      const label = labelText.slice(0, sep);
+      const text = document.createTextNode(label)
+      const labelSpan = document.createElement("span");
+      labelSpan.style.fontWeight = "700";
+      labelSpan.style.fontSize = "14px";
+      labelSpan.style.marginRight = "16px";
+      labelSpan.appendChild(text);
+
+      const percentNo = parseFloat(labelText.slice(sep + 2, labelText.length));
+      const amount = "$" + toCurrencyString(this.amount * percentNo / 100);
+      const amountNode = document.createTextNode(amount)
+      const percentSpan = document.createElement("span");
+      percentSpan.style.fontSize = "14px";
+      percentSpan.appendChild(amountNode);
+
+      const tooltipDiv = tooltipEl.querySelector("div#DonutChartTooltipDiv");
+      // Remove old children
+      while (tooltipDiv.firstChild) {
+        tooltipDiv.firstChild.remove();
+      }
+
+      tooltipDiv.appendChild(colorBlock);
+      tooltipDiv.appendChild(labelSpan);
+      tooltipDiv.appendChild(percentSpan);
+
+      const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+
+      // Display, position, and set styles for font
+      tooltipEl.style.opacity = 1;
+      tooltipEl.style.left = positionX + tooltip.caretX + "px";
+      tooltipEl.style.top = positionY + tooltip.caretY + "px";
+      tooltipEl.style.font = tooltip.options.bodyFont.string;
+      tooltipEl.style.padding =
+        tooltip.options.padding + "px " + tooltip.options.padding + "px";
+    }
+  }
+
+  public getOrCreateTooltip = (chart: any) => {
+    let tooltipEl = chart.canvas.parentNode.querySelector("div#DonutChartTooltip");
+    if (!tooltipEl) {
+      tooltipEl = document.createElement("div");
+      tooltipEl.setAttribute("id", "DonutChartTooltip");
+      tooltipEl.style.background = "rgba(27, 27, 27, 0.9)";
+      tooltipEl.style.borderRadius = "3px";
+      tooltipEl.style.color = "white";
+      tooltipEl.style.opacity = 1;
+      tooltipEl.style.pointerEvents = "none";
+      tooltipEl.style.position = "absolute";
+      tooltipEl.style.transform = "translate(8%, -50%)";
+      tooltipEl.style.transition = "all .1s ease";
+
+      const div = document.createElement("div");
+      div.setAttribute("id", "DonutChartTooltipDiv");
+      div.style.margin = "0px";
+      div.style.display = "flex";
+      div.style.alignItems = "center";
+
+      tooltipEl.appendChild(div);
+      chart.canvas.parentNode.appendChild(tooltipEl);
+    }
+
+    return tooltipEl;
+  };
 }
 </script>

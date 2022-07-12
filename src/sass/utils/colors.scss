@@ -59,3 +59,29 @@ $accent-cool-lighter: #f4f5f5;
 $black: #000000;
 $offwhite: #fbfbfb;
 $white: #ffffff;
+
+// chart/data visualization colors
+$chart_purple: $primary;
+$chart_blue: #1AA7E0;
+$chart_orange: #FA9441;
+$chart_magenta: #D72D79;
+$chart_green-cool: #70E17B;
+$chart_indigo-warm: #B69FFF;
+$chart_yellow: #FACE00;
+$chart_blue-warm: #2672DE;
+$chart_mint-cool: #7EFBE1;
+$chart_orange-warm: #914734;
+
+$chart_gray: $base_lighter;
+
+// chart/data visualization color sequence
+$chart_color1: $chart_purple;
+$chart_color2: $chart_blue;
+$chart_color3: $chart_orange;
+$chart_color4: $chart_magenta;
+$chart_color5: $chart_green-cool;
+$chart_color6: $chart_indigo-warm;
+$chart_color7: $chart_yellow;
+$chart_color8: $chart_blue-warm;
+$chart_color9: $chart_mint-cool;
+$chart_color10: $chart_orange-warm;

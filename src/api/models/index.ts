@@ -301,12 +301,12 @@ export interface CostsDTO extends BaseTableDTO {
 }
 
 export interface ClinDTO extends BaseTableDTO {
-    funds_obligated: string;
-    clin_number: string;
-    idiq_clin: string;
-    idiq_clin_label?: string;
-    pop_end_date: string;
-    pop_start_date: string;
-    clin_status: string;
-    funds_total: string;
+  funds_obligated: string;
+  clin_number: string;
+  idiq_clin: string;
+  idiq_clin_label?: string;
+  pop_end_date: string;
+  pop_start_date: string;
+  clin_status: string;
+  funds_total: string;
 }
