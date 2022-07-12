@@ -121,3 +121,12 @@ export function getCheckboxIds(obj) {
   });
   return checkboxIds;
 }
+
+export function numberWithCommas(x) {
+  if (!isNaN(x)) {
+    return x.toLocaleString(
+      undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    );
+  }
+  return "";
+}
