@@ -171,6 +171,7 @@
                           :use-chart-data-labels="true"
                           :center-text1="'$' + totalPortfolioFundsStr.slice(0, -3)"
                           center-text2="Total Portfolio Funds"
+                          :amount="totalPortfolioFunds"
                         />
                       </v-col>
                       <v-col class="col-sm-6 d-flex align-center">
@@ -216,13 +217,12 @@
                           </div>  
 
                         </div>
-                       
+                        
                       </v-col>
                     </v-row>
                   </v-card>
                 </v-col>
               </v-row>
-
 
             </div>
             <ATATFooter/>
@@ -403,7 +403,6 @@ export default class PortfolioDashboard extends Vue {
       this.estimatedRemainingPercent
     ];
     this.donutChartData.datasets[0].data = this.donutChartPercentages;
-    debugger;
 
     const popStartISO = this.taskOrder.pop_start_date;
     const popStartDate = parseISO(popStartISO);
