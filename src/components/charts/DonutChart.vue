@@ -175,7 +175,7 @@ export default class DonutChart extends Vue {
       tooltipEl.style.opacity = 1;
       tooltipEl.style.pointerEvents = "none";
       tooltipEl.style.position = "absolute";
-      tooltipEl.style.transform = "translate(8%, -50%)";
+      tooltipEl.style.transform = "translate(0, -50%)";
 
       const div = document.createElement("div");
       div.setAttribute("id", "DonutChartTooltipDiv");
