@@ -204,7 +204,7 @@
                               label="PeriodToDate"
                             />
                             </div>
-                          <span class="h1 d-block">${{ lastMonthSpendStr }}</span>
+                          <span class="h1 d-block">${{ fundsSpentStr }}</span>
                         </v-card>
 
                       </v-col>
@@ -375,10 +375,11 @@ export default class PortfolioDashboard extends Vue {
   public endOfMonthForecastPercent = 0;
   public estimatedRemainingPercent = 0;
 
-
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
   public clins: ClinDTO[] = [];
+
+  public clinSpending: Record<string, string>[] = [];
 
   public chartDataColors = ATATCharts.chartDataColors;
   public chartDataColorSequence = ATATCharts.chartDataColorSequence;
@@ -397,7 +398,9 @@ export default class PortfolioDashboard extends Vue {
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
-      this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
+      if (cost.is_actual === "true") {
+        this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
+      }
     });
   }
 
@@ -464,9 +467,9 @@ export default class PortfolioDashboard extends Vue {
       clinCosts[clinNo] = clinValues;
     });
     
-    // this.endOfMonthForecastPercent 
-    //   = Math.round((Number(
-    //     (this.endOfMonthForecast / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
+    this.endOfMonthForecastPercent 
+      = Math.round((Number(
+        (this.endOfMonthForecast / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
 
     this.estimatedRemainingPercent 
       // = 100 - this.endOfMonthForecastPercent - this.fundsSpentPercent;
@@ -575,26 +578,23 @@ export default class PortfolioDashboard extends Vue {
         }
       }
     });
+    debugger;
+    // EJY come back to this - populate clinSpending
+    // uniqueIdiqClins.forEach((idiqClinNo) => {
+    //   actualBurn.forEach((idiqClinNo) => {
+    //     this.clinSpending[idiqClinNo]
+    //   });
+    // })
 
     totalProjectedBurnData.push(0);
+
     const monthsWithSpend = totalActualBurnData.filter(amt => amt !== null);
     const len = monthsWithSpend.length;
     this.monthlySpendAverage = Math.round(this.fundsSpent / len * 100) / 100;
     this.monthlySpendAverageStr = "$" + toCurrencyString(this.monthlySpendAverage);
-    if (monthsWithSpend && len > 1) {
-      const twoMoAgoAmt = monthsWithSpend[len - 2];
-      const lastMoAmt = monthsWithSpend[len - 1];
-      if (twoMoAgoAmt && lastMoAmt) {
-        // EJY LAST MONTH SPEND
-        this.lastMonthSpend = twoMoAgoAmt - lastMoAmt;
-        this.lastMonthSpendStr = toCurrencyString(this.lastMonthSpend);
-        this.lastMonthSpendPercent 
-          = Math.round(this.lastMonthSpend / this.monthlySpendAverage * 100) / 100;
-      }
-    }
 
-    this.endOfMonthForecastPercent 
-      = Math.round(this.endOfMonthForecast / this.monthlySpendAverage * 100) / 100;
+    // this.endOfMonthForecastPercent 
+    //   = Math.round(this.endOfMonthForecast / this.monthlySpendAverage * 100) / 100;
 
     debugger;
 
@@ -689,6 +689,7 @@ export default class PortfolioDashboard extends Vue {
     });
 
     await this.calculateFundsSpent();
+    this.fundsSpentStr = toCurrencyString(this.fundsSpent);
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
     this.availableFundsStr = toCurrencyString(this.availableFunds);
 
