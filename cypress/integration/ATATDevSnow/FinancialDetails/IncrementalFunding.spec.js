@@ -81,11 +81,8 @@ describe("Test suite: Financial Details Step: Severability and Incremental Fundi
         cy.verifyTextMatches(fd.IFPFAQ2ContentText, expectedFAQ2ContentTxt);
         cy.clickLink( fd.IFPFAQ2Link);
       });
-    cy.radioBtn(fd.iFundNoRadio, "NO").click({ force: true });
+    cy.selectIncrementalFundingPlan(fd.iFundNoRadio, "NO");
     
-    cy.btnClick(common.continueBtn, " Continue ");    
-    
-    cy.verifyPageHeader("Let’s create an incremental funding plan for your base period ")
   });
   
   it("TC3: Warning Message,if PoP & Cost estimate are missing", () => {

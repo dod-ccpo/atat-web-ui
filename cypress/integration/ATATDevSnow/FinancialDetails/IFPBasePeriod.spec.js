@@ -37,7 +37,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     cy.selectIncrementalFundingPlan(fd.iFundYesRadio, "YES");
     cy.textExists(fd.initialFILabel, " Initial funding increment ");
     const basePeriodValue = "Base period length: " + baseValue + " months";
-    const costEstimateValue = "Total cost estimate: $" +numberWithCommas(reqCostEstimateValue)+".00"
+    const costEstimateValue = "Total cost estimate: $" +numberWithCommas(reqCostEstimateValue)
     cy.findElement(fd.periodLength).should("contain", basePeriodValue);
     cy.findElement(fd.totalCostEst).should("contain", costEstimateValue);
     //enter the Initial Funding Increment Value
@@ -48,7 +48,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
       cy.clickSomethingElse(fd.addIncrementalbtn);
       //verify the total amount remaining
       cy.findElement(fd.amountRemaining).should("contain", totalCostText);        
-      cy.findElement(fd.total).should("have.value", numberWithCommas(ifundingIncValue)+".00")
+      cy.findElement(fd.total).should("have.value", numberWithCommas(ifundingIncValue))
         .and("not.enabled");
     });
     cy.dropDownClick(fd.incrementalPeriod0DropdownIcon);
@@ -66,7 +66,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     cy.verifyTextArray(fd.incrementalPeriod0DropdownList, incrementalPeriod0DropdownList);
     cy.findElement(fd.incrementalPeriod0AmountTextbox).type(ip0Value);
     cy.clickSomethingElse(fd.addIncrementalbtn);
-    cy.findElement(fd.total).should("have.value", numberWithCommas(total)+".00")
+    cy.findElement(fd.total).should("have.value", numberWithCommas(total))
       .and("not.enabled");
     cy.incrementalFundingExists();
     cy.btnClick(common.continueBtn, " Continue ");    
@@ -92,7 +92,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     cy.activeStep(common.subStepIFText); 
     cy.selectIncrementalFundingPlan(fd.iFundYesRadio, "YES");
     const basePeriodValue = "Base period length: " + baseValue + " year";
-    const costEstimateValue ="Total cost estimate: $" +numberWithCommas(reqCostEstimateValue)+".00";
+    const costEstimateValue ="Total cost estimate: $" +numberWithCommas(reqCostEstimateValue);
     cy.findElement(fd.basePeriodValue).each(($el) => {
       const text = $el.text()
       cy.log(text)

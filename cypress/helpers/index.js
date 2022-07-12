@@ -123,5 +123,10 @@ export function getCheckboxIds(obj) {
 }
 
 export function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (!isNaN(x)) {
+    return x.toLocaleString(
+      undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    );
+  }
+  return "";
 }
