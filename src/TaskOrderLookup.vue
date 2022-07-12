@@ -27,7 +27,7 @@
                   :rules="[
                     $validators.required('Please enter your awarded task order number.'),
                     $validators.isMaskValid(
-                      ['^\\d{13,17}$'],
+                      ['^\\d{13}(\\d{4})?$'],
                       `Your task order number must be either 13 or 17 characters.`,
                       true
                     )
