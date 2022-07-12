@@ -15,7 +15,8 @@ const spec = testNames[testNames.length-1].split(".")[0];
 const fixtureFolder = testSuite + "/" + spec;
 
 export function saveToSNOW(testCase){
-  let acqPackageEndPoints = [
+  let currentTestEndPoints = [];
+  let acquistionpackagedetails = [
     {
       'fixture': 'projectOverview',
       'apiURL': 'x_g_dis_atat_project_overview',
@@ -31,8 +32,10 @@ export function saveToSNOW(testCase){
       'apiURL': 'x_g_dis_atat_contacts',
       'action': 'POST',
     }
-  ]
-  const contractDetailsEndPoints = [
+  ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+  currentTestEndPoints =  currentTestEndPoints.concat(acquistionpackagedetails);
+
+  let contractdetails = [
     {
       'fixture': 'fairOpportunity',
       'apiURL': 'x_g_dis_atat_fair_opportunity',
@@ -48,7 +51,8 @@ export function saveToSNOW(testCase){
       'apiURL': 'x_g_dis_atat_period_of_performance',
       'action': 'POST',
     },
-  ]
+  ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+  currentTestEndPoints =  currentTestEndPoints.concat(contractdetails);
 
   /** financialDetails */
   if (spec === "fundingplan"){
@@ -133,7 +137,7 @@ export function saveToSNOW(testCase){
         'testCase' : 5
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(fundingPlan);
+    currentTestEndPoints =  currentTestEndPoints.concat(fundingPlan);
   }
   if (spec === "incrementalfunding"){
     const incrementalFunding = [
@@ -308,7 +312,7 @@ export function saveToSNOW(testCase){
         'testCase' : 6
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(incrementalFunding);
+    currentTestEndPoints =  currentTestEndPoints.concat(incrementalFunding);
   };
 
   if (spec === "mipr"){
@@ -394,7 +398,7 @@ export function saveToSNOW(testCase){
         'testCase' : 3
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(mipr);
+    currentTestEndPoints =  currentTestEndPoints.concat(mipr);
   };
   if (spec === "requirementscostestimate"){
     const requirementsCostEstimate = [
@@ -420,12 +424,12 @@ export function saveToSNOW(testCase){
         'testCase' : 2
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(requirementsCostEstimate);
+    currentTestEndPoints =  currentTestEndPoints.concat(requirementsCostEstimate);
   }
 
   /** otherContractConsiderations */
   if (spec === "conflictofinterest"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -449,7 +453,7 @@ export function saveToSNOW(testCase){
     ]);
   }
   if (spec === "packagingpackingshipping"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/contractConsiderations_GET_1',
         'apiURL': 'x_g_dis_atat_contract_considerations/**',
@@ -470,7 +474,7 @@ export function saveToSNOW(testCase){
     ]);
   }
   if (spec === "training"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -512,7 +516,7 @@ export function saveToSNOW(testCase){
     ]);
   }
   if (spec === "trainingcourse"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -562,7 +566,6 @@ export function saveToSNOW(testCase){
     ]);
   }
     
-
   /** standardsAndComplaince */
   if (spec === "baa"){
     const baa = [
@@ -660,7 +663,7 @@ export function saveToSNOW(testCase){
       },
      
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(baa);
+    currentTestEndPoints =  currentTestEndPoints.concat(baa);
   }
   if (spec === "foia"){
     const foia = [
@@ -1057,9 +1060,8 @@ export function saveToSNOW(testCase){
       },
 
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(foia);
+    currentTestEndPoints =  currentTestEndPoints.concat(foia);
   }
-
   if (spec === "pii"){
     const pii = [
       {
@@ -1159,9 +1161,8 @@ export function saveToSNOW(testCase){
         'statusCode': 200,
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(pii);
+    currentTestEndPoints =  currentTestEndPoints.concat(pii);
   }
- 
   if (spec === "section508standards"){
     const section508standards = [
       {
@@ -1316,13 +1317,10 @@ export function saveToSNOW(testCase){
         'statusCode': 200,
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(section508standards);
+    currentTestEndPoints =  currentTestEndPoints.concat(section508standards);
   }
 
-  acqPackageEndPoints.concat(
-    contractDetailsEndPoints,
-    
-  ).forEach((ep)=>{
+  currentTestEndPoints.forEach((ep)=>{
     /**
      * middleware needed for routes to executed in 
      * the order listed
