@@ -58,10 +58,10 @@ export default class DonutChart extends Vue {
 
         const text1divisors = self.isArcGauge
           ? { fontSize: 40, textY: 1.5 }
-          : { fontSize: 200, textY: 2.2 };
+          : { fontSize: 160, textY: 2.2 };
         const text2divisors = self.isArcGauge
           ? { fontSize: 140, textY: 1 }
-          : { fontSize: 330, textY: 1.75 };
+          : { fontSize: 350, textY: 1.75 };
 
         ctx.restore();
         let fontSize = (height / text1divisors.fontSize).toFixed(2);
