@@ -80,6 +80,78 @@
                 </v-col>
               </v-row>
 
+              <v-row id="BurndownChartWrap">
+                <v-col>
+                  <v-card class="no-shadow v-sheet--outlined pa-8">
+                    <h3 class="mb-4">Actual and Projected Burn Rate</h3>
+                    <p class="text--base-dark font-size-14">
+                      Track your rate of spend and available funds throughout the current
+                      period of performance. Forecasted future costs are based on
+                      historical trends and show approximately when you are projected to
+                      exceed your portfolio’s budget.
+                    </p>
+                    <v-row class="mb-0">
+                      <v-col class="font-size-14">Funds available</v-col>
+                      <v-col id="BurnPoPs" class="text-right font-size-14">
+                        Current Period: {{ popStart }}&ndash;{{ popEnd }}
+                      </v-col>
+                    </v-row>
+                    <line-chart
+                      chart-id="LineChart1"
+                      ref="lineChart"
+                      :chart-data="burnChartData"
+                      :chart-options="lineChartOptions"
+                      :dataset-to-toggle="datasetToToggle"
+                      :toggle-dataset="toggleDataset"
+                      :tooltipHeaderData="tooltipHeaderData"
+                    />
+                    <div class="d-block text-center">
+                      <v-radio-group
+                        row
+                        class="
+                          checkbox-group-row
+                          center-checkboxes
+                          chart-legend-checkboxes
+                          label-small
+                          no-messages
+                          compact
+                          mt-4
+                        "
+                      >
+                        <v-checkbox
+                          id="TotalForAllClins_checkbox"
+                          v-model="checked[0]"
+                          label="Total of All CLINs"
+                          hide-details="true"
+                          :ripple="false"
+                          class="color_chart_1"
+                          @change="doToggleDataset(0)"
+                          :color="chartDataColors[0]"
+                        ></v-checkbox>
+
+                        <v-checkbox
+                          v-for="(clin, index) in clins"
+                          :key="index"
+                          v-model="checked[index + 1]"
+                          :label="clins[index].idiq_clin_label"
+                          :class="'color_chart_' + (index + 2)"
+                          hide-details="true"
+                          :ripple="false"
+                          @change="doToggleDataset((index + 1) * 2)"
+                          :color="chartDataColors[index + 1]"
+                        />
+
+                      </v-radio-group>
+                    </div>
+
+                    <div class="bg-base-lightest py-1 px-6 text-center mt-4 font-size-12">
+                      NOTE: Solid lines denote actual spend from previous months. Dashed
+                      lines denote projected burn for upcoming months.
+                    </div>
+                  </v-card>
+                </v-col>
+              </v-row>
+
             </div>
             <ATATFooter/>
           </div>
@@ -99,24 +171,29 @@ import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 import DonutChart from "../components/charts/DonutChart.vue";
+import LineChart from "../components/charts/LineChart.vue";
 
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
 import { toCurrencyString } from "@/helpers";
-import { CostsDTO, TaskOrderDTO } from "@/api/models";
+import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
 import { add } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
+import { lineChartData, lineChartDataSet } from "types/Global";
+import { getIdText } from "@/helpers";
+import _ from 'lodash';
 
 @Component({
   components: {
     ATATFooter,
     ATATPageHead,
     DonutChart,
+    LineChart,
   }
 })
 
@@ -144,31 +221,40 @@ export default class PortfolioDashboard extends Vue {
   public runOutOfFundsDate = "";
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
-
   public costs: CostsDTO[] = [];
+  public clins: ClinDTO[] = [];
 
   public chartDataColors = ATATCharts.chartDataColors;
   public chartDataColorSequence = ATATCharts.chartDataColorSequence;
+  public chartDataColorsTranslucent = this.chartDataColorSequence.map((color) => {
+    return color + "33";
+  });
+
   public chartAuxColors = ATATCharts.chartAuxColors;
   public monthAbbreviations = ATATCharts.monthAbbreviations;
+  
+  public burnChartXLabels: string[] = [];
+  public burnChartYMax = 0;
+  public burnChartYStepSize = 0;
+  public burnChartYLabelSuffix = "k";
+  public tooltipHeaderData: Record<string, string> = {}
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
       this.fundsSpent = this.fundsSpent + parseFloat(cost.value);
     });
-
-    // Below additional amount manually added for testing only.
-    // Change additional value to see run out of funds date and arc chart change
-    this.fundsSpent = this.fundsSpent + 100000;
   }
 
-  public createDateStr(dateStr: string): string {
+  public createDateStr(dateStr: string, period: boolean): string {
     const parsedDate = parseISO(dateStr, { additionalDigits: 1 })
     const date = new Date(parsedDate.setHours(0,0,0,0));
     const m = this.monthAbbreviations[date.getMonth()];
     const y = date.getFullYear();
-    const d = date.getUTCDate()
-    return m + " " + d + ", " + y;
+    const d = date.getUTCDate();
+    const neverPeriodMonths = ["March", "April", "May", "June", "July"];
+    const noPeriodMonth = neverPeriodMonths.indexOf(m) !== -1;
+    const p = period && !noPeriodMonth ? "." : "";
+    return m + p + " " + d + ", " + y;
   }
 
   public calculateTimeToExpiration(): void {
@@ -197,30 +283,233 @@ export default class PortfolioDashboard extends Vue {
     const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend); 
     const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent});
     const runOutISODate = formatISO(runOutOfFundsDate, { representation: 'date' })
-    this.runOutOfFundsDate = this.createDateStr(runOutISODate);
+    this.runOutOfFundsDate = this.createDateStr(runOutISODate, true);
+  }
+
+  public calculateBurnDown(): void {
+    const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
+    const uniqueClins = [...new Set(this.clins.map(clin => clin.clin_number))].sort();
+    
+    let clinCosts: Record<string, Record<string, string>> = {};
+    uniqueClins.forEach((clinNo) => {
+      let clinValues: Record<string, string> = {};
+      uniqueDates.forEach((date) => {
+        const clin = this.costs.find(cost => cost.clin === clinNo && cost.year_month === date);
+        if (clin && clin.is_actual === "true") {
+          clinValues[date] = clin.value;
+        }
+      });
+      clinCosts[clinNo] = clinValues;
+    });
+
+    const popStartISO = this.taskOrder.pop_start_date;
+    const popStartDate = parseISO(popStartISO);
+    const periodDatesISO = [popStartISO];
+    const periodDates = [popStartDate];
+
+    const popEndISO = this.taskOrder.pop_end_date;
+    const popEndDate = parseISO(popEndISO);
+
+    let month = popStartDate;
+    let monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
+    
+
+    for (let i = 0; i < monthsToAdd; i++) {
+      month = add(popStartDate, { months: i + 1 });
+      periodDates.push(month);
+      periodDatesISO.push(formatISO(month, { representation: 'date' }));
+    }
+
+    const startMonthNo = popStartDate.getMonth();
+    const popEndYear = popEndDate.getFullYear();
+    let januaryCount = 0;
+    for (let i = startMonthNo; i < startMonthNo + monthsToAdd + 2; i++) {
+      let monthAbbr = i <= 11 
+        ? this.monthAbbreviations[i]
+        : this.monthAbbreviations[12 - i];
+      if (monthAbbr === "Jan") {
+        monthAbbr = januaryCount === 0 
+          ? monthAbbr + " " + popEndYear 
+          : monthAbbr + " " + (popEndYear + 1);
+        januaryCount++;
+      }
+      this.burnChartXLabels.push(monthAbbr);
+    }
+
+    let actualBurn: Record<string, (number | null)[]> = {};
+    let projectedBurn: Record<string, (number | null)[]> = {}
+    const totalActualBurnData: (number | null)[] = [this.totalPortfolioFunds];
+    const totalProjectedBurnData: (number | null)[] = [null];
+
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+
+    uniqueClins.forEach((clinNo) => {
+      const thisClin = this.clins.find(clin => clin.clin_number === clinNo);
+      if (thisClin) {
+        let fundsObligated = thisClin.funds_obligated;
+        let fundsAvailable = !isNaN(parseInt(fundsObligated)) 
+          ? parseInt(fundsObligated)
+          : 0;
+
+        if (fundsAvailable) {
+          const thisclinCosts = clinCosts[clinNo];
+          const actual: (number | null)[] = [parseFloat(thisClin.funds_obligated)];
+          const projected: (number | null)[] = [];
+
+          periodDatesISO.forEach((monthISO, i) => {
+            const value = parseFloat(thisclinCosts[monthISO]);
+            const thisMonthAmount = !isNaN(value) ? value : null;
+            fundsAvailable = thisMonthAmount 
+              ? fundsAvailable - thisMonthAmount 
+              : fundsAvailable;
+            
+            const month = (parseISO(monthISO)).getMonth() + 1;
+            const isCurrentMonth = month === currentMonth;
+            const isActual = month < currentMonth;
+            
+            const actualVal = isActual ? fundsAvailable : null;
+            actual.push(actualVal);
+
+            const projectedVal = isCurrentMonth
+              ? fundsAvailable 
+              : null;
+            projected.push(projectedVal);
+            
+            const monthTotalActual = totalActualBurnData[i + 1];
+            if (!monthTotalActual) {
+              totalActualBurnData[i + 1] = actualVal;
+            } else if (actualVal) {
+              totalActualBurnData[i + 1] = actualVal + monthTotalActual;
+            }
+
+            const monthTotalProjected = totalProjectedBurnData[i];
+            if (!monthTotalProjected) {
+              totalProjectedBurnData[i] = projectedVal;
+            } else if (projectedVal) {
+              totalProjectedBurnData[i] = projectedVal + monthTotalProjected;
+            }
+          });
+
+          actualBurn[clinNo] = actual;
+          projected.push(0);
+          projectedBurn[clinNo] = projected;
+        }
+      }
+    });
+
+    totalProjectedBurnData.push(0);
+
+    this.burnChartData.labels = this.burnChartXLabels;
+    this.burnChartData.datasets = [];
+    let burnChartDataSets: lineChartDataSet[] = [];
+
+    let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonData;
+    const totalActualData = {
+      dataSetId: "TotalCLINsActual",
+      label: "Total for all CLINs",
+      data: totalActualBurnData,
+    };
+    Object.assign(clinTotalActualDataSet, totalActualData);
+    burnChartDataSets.push(clinTotalActualDataSet);
+    this.checked.push(true);
+
+    let clinTotalProjectedDataSet: lineChartDataSet = this.burnChartProjectedCommonData;
+    const totalProjectedData = {
+      dataSetId: "TotalClinsProjected",
+      label: "Total for all CLINs Projected",
+      data: totalProjectedBurnData,
+    };
+    Object.assign(clinTotalProjectedDataSet, totalProjectedData);
+    burnChartDataSets.push(clinTotalProjectedDataSet);
+
+    uniqueClins.forEach((clinNo, i) => {
+      this.checked.push(true);
+
+      const color = this.chartDataColorSequence[i + 1];
+      const clin = this.clins.find(clin => clin.idiq_clin === clinNo);
+      if (clin && this.burnChartData.datasets) {
+        const clinActualData = {
+          label: clin.idiq_clin_label,
+          dataSetId: clin.idiq_clin_label 
+            ? getIdText(clin.idiq_clin_label + "Actual") 
+            : clinNo + "Data",
+          data: actualBurn[clinNo],
+        };
+        let clinActualDataSet = _.clone(this.burnChartActualCommonData);
+        clinActualDataSet.borderColor = color;
+        clinActualDataSet.pointBackgroundColor = color;
+        clinActualDataSet.pointHoverBackgroundColor = color;
+        clinActualDataSet.pointHoverBorderColor = this.chartDataColorsTranslucent[i + 1]
+
+        Object.assign(clinActualDataSet, clinActualData);
+        burnChartDataSets.push(clinActualDataSet);
+        
+        const clinProjectedData = {
+          label: clin.idiq_clin_label + " Projected",
+          dataSetId: clin.idiq_clin_label 
+            ? getIdText(clin.idiq_clin_label + "Projected") : clinNo + "DataProjected",
+          data: projectedBurn[clinNo],
+        };
+        let clinProjectedDataSet: lineChartDataSet = _.clone(this.burnChartProjectedCommonData);
+        clinProjectedDataSet.borderColor = color;
+        clinProjectedDataSet.pointBackgroundColor = color;
+        Object.assign(clinProjectedDataSet, clinProjectedData);
+        burnChartDataSets.push(clinProjectedDataSet)
+      }
+    });
+    this.burnChartData.datasets = burnChartDataSets;
+    return;
+  }
+
+  public async calculateTotalFunds(): Promise<void> {
+    // total portfolio funds is sum of each IDIQ CLIN's funds obligated
+    this.clins.forEach((clin) => {
+      this.totalPortfolioFunds = this.totalPortfolioFunds + parseInt(clin.funds_obligated);
+    });
+    this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
+
+    this.burnChartYMax = Math.round(this.totalPortfolioFunds / 100000) * 100000;
+    this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
+
+    this.lineChartOptions.scales.y.max = this.burnChartYMax;
+    this.lineChartOptions.scales.y.ticks.stepSize = this.burnChartYStepSize;
   }
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
-    
-    this.taskOrder = data.taskOrder
-    this.totalPortfolioFunds = parseFloat(this.taskOrder.funds_obligated);
-    this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
 
+    this.taskOrder = data.taskOrder
     this.costs = data.costs;
+    this.clins = data.clins;
+    this.clins.sort((a, b) => (a.idiq_clin > b.idiq_clin) ? 1 : -1);
+
+    await this.calculateTotalFunds();
+
+    this.costs.forEach((cost) => {
+      cost.value = (parseInt(cost.value)).toString();
+    });
+
     await this.calculateFundsSpent();
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
     this.availableFundsStr = toCurrencyString(this.availableFunds);
+
+    this.tooltipHeaderData = {
+      title: "Total Funds Available",
+      amount: this.availableFundsStr,
+      legend: "Funds Available",
+    };
 
     this.fundsSpentPercent = Math.round(this.fundsSpent / this.totalPortfolioFunds * 100);
     this.arcGuageChartData.datasets[0].data 
       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
     
-    this.popStart = this.createDateStr(this.taskOrder.pop_start_date);
-    this.popEnd = this.createDateStr(this.taskOrder.pop_end_date);
+    this.popStart = this.createDateStr(this.taskOrder.pop_start_date, true);
+    this.popEnd = this.createDateStr(this.taskOrder.pop_end_date, true);
 
     this.calculateTimeToExpiration();
 
+    this.calculateBurnDown();
   }
 
   public async mounted(): Promise<void>{
@@ -263,6 +552,104 @@ export default class PortfolioDashboard extends Vue {
     },
     hover: {
       mode: null,
+    },
+  };
+
+  public totalCLINsChecked = true;
+  public unclassifiedXaaSChecked = true;
+  public unclassifiedCloudSupportPackageChecked = false;
+  public checked: boolean[] = [];
+
+  public datasetToToggle: number | null = null;
+  public toggleDataset = false;
+
+  private doToggleDataset(datasetIndex: number) {
+    this.datasetToToggle = datasetIndex;
+    this.toggleDataset = !this.toggleDataset;
+  }
+
+  public burnChartActualCommonData = {
+    dataSetId: "",
+    label: "",
+    data: [],
+    spanGaps: true,
+    fill: false,
+    borderColor: this.chartDataColorSequence[0],
+    borderWidth: 2,
+    pointRadius: 4,
+    pointBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverRadius: 4,
+    pointBorderWidth: 0,
+    pointHoverBorderWidth: 12,
+    pointHoverBorderColor: this.chartDataColorsTranslucent[0],
+    lineTension: 0,
+  };
+  public burnChartProjectedCommonData = {
+    dataSetId: "",  
+    label: "",
+    data: [],
+    spanGaps: true,
+    fill: false,
+    borderWidth: 2,
+    borderColor: this.chartDataColorSequence[0],
+    borderDash: [6, 4],
+    pointRadius: 0,
+  };
+
+  private burnChartData: lineChartData = {
+    labels: [""],
+    datasets: [],
+  };
+  
+  public lineChartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    animation: {
+      duration: 0,
+    },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    aspectRatio: 2.75,
+    scales: {
+      x: {
+        grid: {
+          display: true,
+          borderDash: [3, 3],
+          borderWidth: 2,
+          borderColor: this.chartAuxColors["lineChart-axis"],
+          lineWidth: 3,
+          tickWidth: 0,
+          color: "transparent",
+        },
+        ticks: {
+          maxTicksLimit: 7,
+          maxRotation: 0,
+          minRotation: 0,
+        },
+      },
+      y: {
+        min: 0,
+        max: 0,
+        grid: {
+          borderColor: "transparent",
+          tickWidth: 0,
+        },
+        ticks: {
+          stepSize: 0,
+          callback: function (value: number): string {
+            return "$" + value / 1000 + "k";
+          },
+        },
+      },
     },
   };
 

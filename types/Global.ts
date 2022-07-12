@@ -241,3 +241,25 @@ export interface baseGInvoiceData {
   useGInvoicing: string;
   gInvoiceNumber: string;
 }
+
+export interface lineChartDataSet {
+  dataSetId: string;
+  label: string;
+  data: (number | null)[];
+  spanGaps?: boolean;
+  fill: boolean;
+  borderColor: string;
+  borderWidth: number;
+  pointRadius: number;
+  pointBackgroundColor?: string;
+  pointHoverBackgroundColor?: string;
+  pointHoverBorderColor?: string;
+  pointBorderWidth?: number;
+  pointHoverBorderWidth?: number;
+  lineTension?: number;
+  borderDash?: number[];
+}
+export interface lineChartData {
+  labels?: string[];
+  datasets?: lineChartDataSet[];
+}

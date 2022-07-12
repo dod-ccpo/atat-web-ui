@@ -11,6 +11,7 @@
       :id="'Checkbox_' + getIdText(item.id)"
       :class="[
         card ? '_checkbox-card' : '_checkbox',
+        color ? '_checkbox-' + color : '',
         { 'flex-column _has-other': item.value === otherValue },
         { '_other-selected': showOtherEntry(item.value) }
       ]"
@@ -116,6 +117,7 @@ export default class ATATCheckboxGroup extends Vue {
   @Prop() private groupLabel!: string;
   @Prop({ default: () => []}) private rules!: Array<unknown>;
   @Prop({ default: "textfield" }) private otherEntryType?: string;
+  @Prop({ default: "" }) private color!: string;
 
   // data, methods, watchers, etc.
   private validateOtherOnBlur = true;
