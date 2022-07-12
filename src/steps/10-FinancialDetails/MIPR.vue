@@ -81,10 +81,8 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
   // files returned from the child component
 
   async loadOnEnter(): Promise<void> {
-    console.log('load')
     try {
       this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
-      console.log(this.saved)
       this.MIPRNumber = this.saved.mipr_number;
       const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
       const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
