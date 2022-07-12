@@ -17,6 +17,7 @@ import { Component } from "vue-property-decorator";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
+import {JWCCDashboardService} from "@/services/jwccDashboard";
 
 @Component({
   components: {
@@ -25,6 +26,25 @@ import ATATPageHead from "../components/ATATPageHead.vue";
   }
 })
 
-export default class JWCCDashboard extends Vue {}
+export default class JWCCDashboard extends Vue {
+
+  jWCCDashboardService = new JWCCDashboardService();
+
+
+  public async mounted(): Promise<void>{
+    await this.loadOnEnter();
+  }
+
+  
+  public async loadOnEnter(): Promise<void> {
+
+    const data = await this.jWCCDashboardService.getFundSpentToDate('1000000001234');
+
+    console.log({data});
+
+  }
+
+
+}
 
 </script>
