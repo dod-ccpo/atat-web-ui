@@ -154,7 +154,7 @@
 
               <v-row>
                 <v-col>
-                  <v-card class="no-shadow v-sheet--outlined pa-8">
+                  <v-card class="no-shadow v-sheet--outlined pa-8 pb-2">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
                       The chart below shows the proportion of funds spent and 
