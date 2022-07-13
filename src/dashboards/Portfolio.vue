@@ -338,13 +338,6 @@
                         <v-expansion-panel-header>
                           <a class="no-text-decoration d-flex align-center">
                             Task Order #{{this.taskOrder.task_order_number}}
-                            <ATATSVGIcon
-                              class="pl-3 text-primary"
-                              width="8"
-                              height="13"
-                              name="chevronRight"
-                              color="primary"
-                              ></ATATSVGIcon>
                           </a>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
@@ -352,33 +345,161 @@
                           >
                             <template v-slot:default>
                               <thead class="bg-base-lightest">
-                              <tr >
-                                <th id="ClinNumber">Clin</th>
-                                <th id="status">Status</th>
-                                <th id="PoP">Period Of Performance</th>
-                                <th id="TotalFundsSpent">Total Funds Spent (%)</th>
-                                <th id="LastMonthsSpend">Last Month's Spend</th>
+                              <tr>
+                                <th>
+                                  <div class="font-size-12 text-base-darker" id="ClinNumber">Clin
+                                  </div>
+                                  </th>
+                                <th>
+                                  <div class="font-size-12 text-base-darker" id="status">Status
+                                  </div>
+                                  </th>
+                                <th>
+                                  <div class="font-size-12 text-base-darker" id="PoP">
+                                  Period Of Performance
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="
+                                    font-size-12 text-base-darker d-flex justify-end align-center "
+                                    id="TotalFundsSpent">
+                                      Total Funds Spent (%)
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="
+                                    font-size-12 text-base-darker d-flex justify-end align-center "
+                                       id="LastMonthsSpend">
+                                    Last Month's Spend
+                                  </div>
+                                </th>
                               </tr>
                               </thead>
                               <tbody>
                               <tr v-for="(item, index) in tableItems" :key="index">
                                 <td>
                                   <div class=" d-flex flex-column body">
-                                    {{ item.clinNumber }}
-                                    <span class="help-text">{{item.clinLabel}}</span>
+                                    <span class="font-size-14 text-base-darker">
+                                      {{ item.clinNumber }}
+                                    </span>
+                                    <span class="font-size-12 text-base ">
+                                      {{item.clinLabel}}({{item.clinNumber}})
+                                    </span>
                                   </div>
                                 </td>
                                 <td>
-                                  {{ item.clinStatus }}
+                                  <div class='badge badge-green d-inline-block mt-1'>
+                                    {{ item.clinStatus }}
+                                  </div>
                                 </td>
                                 <td>
+                                  <div class=" d-flex flex-column body">
+                                    <span class="font-size-14 text-base-darker">
                                   {{item.periodOfPerformance}}
+                                    </span>
+                                  <span class="font-size-12 text-base ">
+                                    {{item.timeTilExpiration}} to expiration
+                                  </span>
+                                  </div>
                                 </td>
                                 <td>
-                                  {{item.totalFundsSpent}}
+                                  <div class=" d-flex flex-column ">
+                                    <span class="font-size-14 text-base-darker d-flex justify-end">
+                                      ${{ item.totalFundsSpent}}
+                                    <span class="font-size-12 text-base pl-2 d-flex justify-end">
+                                      ({{roundDecimal(getSpendPercent(
+                                      (+item.totalFundsSpent.replace(/,/g, '')) /
+                                      (+item.totalFundsObligated.replace(/,/g, ''))),1) * 100 }}%)
+                                    </span>
+                                    </span>
+                                    <span class="font-size-12 text-base d-flex justify-end">
+                                    {{getCurrencyString(
+                                      (+item.totalFundsObligated.replace(/,/g, ''))
+                                      - ((+item.totalFundsSpent.replace(/,/g, '')))
+                                    )}} remaining
+                                  </span>
+                                  </div>
                                 </td>
                                 <td>
-                                  {{item.lastMonthSpent}}
+                                  <div class=" d-flex flex-column">
+                                    <span class="font-size-14 text-base-darker d-flex justify-end">
+                                       ${{item.lastMonthSpent}}
+                                    </span>
+                                    <span class="d-flex justify-end">
+                                      <span
+                                        class="font-size-12"
+                                        :class="item.spendTrend > 0
+                                        ? 'text-error' : 'text-success-dark' ">
+                                       <span>
+                                        <ATATSVGIcon
+                                          class="text-primary d-inline-block"
+                                          style="height:4px"
+                                          width="7"
+                                          height="3"
+                                          name="triangle"
+                                          color="primary"
+                                        ></ATATSVGIcon>
+                                      </span>
+                                        {{roundDecimal(getSpendPercent(
+                                        item.spendTrend),0) }}%
+                                      </span>
+                                      <span class="font-size-12 text-base ">
+                                      vs monthly avg
+                                      </span>
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                              <td></td>
+                              <td></td>
+                                <td class="d-flex justify-end align-start">
+                                 <span class="pr-8 font-size-14 text-base-darkest font-weight-700">
+                                   Total
+                                 </span>
+                                </td>
+                                <td>
+                                  <div class=" d-flex flex-column body">
+                                    <span
+                                     class="
+                                     font-size-14 text-base-darker
+                                     font-weight-700 d-flex justify-end "
+                                    >
+                                      {{ getCurrencyString(totalSpendingObj.totalFundsSpent)}}
+                                    <span class="font-size-12 text-base font-weight-400">
+                                      ({{roundDecimal(getSpendPercent(
+                                      totalSpendingObj.totalFundsSpent /
+                                      totalSpendingObj.totalFundsObligated),1) * 100 }}%)
+                                    </span>
+                                    </span>
+                                    <span class="
+                                    font-size-12 text-base d-flex justify-end ">
+                                    {{getCurrencyString(totalSpendingObj.totalFundsObligated
+                                      - totalSpendingObj.totalFundsSpent) }} remaining
+                                  </span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class=" d-flex flex-column body">
+                                    <span
+                                     class="
+                                     font-size-14 d-flex justify-end
+                                       text-base-darker font-weight-700">
+                                    {{ getCurrencyString(totalSpendingObj.lastMonthSpent)}}
+                                    </span>
+                                    <span class="d-flex justify-end">
+                                      <span
+                                        class="font-size-12"
+                                        :class="totalSpendingObj.spendTrend > 0
+                                        ? 'text-error' : 'text-success-dark' ">
+                                        {{roundDecimal(getSpendPercent(
+                                        totalSpendingObj.spendTrend),0) }}%
+                                      </span>
+                                    <span class="font-size-12 text-base ">
+                                      vs monthly avg
+                                    </span>
+                                    </span>
+                                  </div>
                                 </td>
                               </tr>
                               </tbody>
@@ -504,6 +625,7 @@ export default class PortfolioDashboard extends Vue {
     totalFundsObligated:string;
     lastMonthSpent:string;
     clinAverage: number
+    spendTrend: number;
   }[] = []
   public createDateStr(dateStr: string, period: boolean): string {
     const parsedDate = parseISO(dateStr, { additionalDigits: 1 })
@@ -790,10 +912,21 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.datasets = burnChartDataSets;
     return;
   }
+  public totalSpendingObj: {
+    totalFundsSpent:number;
+    totalFundsObligated:number,
+    lastMonthSpent:number;
+    clinAverage: number
+    spendTrend: number;
+  } = {
+    totalFundsSpent:0,
+    totalFundsObligated:0,
+    lastMonthSpent:0,
+    clinAverage: 0,
+    spendTrend: 0,
+  }
 
   public createTableItems(): void{
-    let totalsFundsSpent= ""
-
     this.idiqClins.forEach((clin,) => {
       let obj:{
         clinNumber:string;
@@ -803,7 +936,9 @@ export default class PortfolioDashboard extends Vue {
         totalFundsSpent:string;
         totalFundsObligated:string,
         lastMonthSpent:string;
-        clinAverage: number
+        clinAverage: number;
+        timeTilExpiration: string;
+        spendTrend:number;
       } = {
         clinNumber:"",
         clinStatus:"",
@@ -813,26 +948,57 @@ export default class PortfolioDashboard extends Vue {
         totalFundsObligated:"",
         lastMonthSpent:"",
         clinAverage: 0,
+        timeTilExpiration: "",
+        spendTrend:0
       }
-      obj.clinNumber = clin.clin_number,
-      obj.clinStatus = clin.clin_status,
-      obj.clinLabel = clin.idiq_clin_label || "",
+      obj.clinNumber = clin.clin_number;
+      obj.clinStatus = clin.clin_status;
+      obj.clinLabel = clin.idiq_clin_label || "";
       obj.periodOfPerformance = `${this.createDateStr(clin.pop_start_date,true)} -
-        ${this.createDateStr(clin.pop_end_date,true)}`,
+        ${this.createDateStr(clin.pop_end_date,true)}`;
       obj.totalFundsSpent =
-        this.getCurrencyString(this.idiqClinSpendData[clin.clin_number].idiqClinTotalSpend),
-      obj.totalFundsObligated = this.getCurrencyString(parseInt(clin.funds_total)),
+        toCurrencyString(this.idiqClinSpendData[clin.clin_number].idiqClinTotalSpend,true);
+      obj.totalFundsObligated = toCurrencyString(parseInt(clin.funds_total));
       obj.lastMonthSpent =
-        this.getCurrencyString(this.idiqClinSpendData[clin.clin_number].lastMonthSpend),
-      obj.clinAverage = this.idiqClinSpendData[clin.clin_number].avgMonthlySpend,
-      totalsFundsSpent +=
-        this.getCurrencyString(this.idiqClinSpendData[clin.clin_number].idiqClinTotalSpend)
+        toCurrencyString(this.idiqClinSpendData[clin.clin_number].lastMonthSpend);
+      obj.clinAverage = this.idiqClinSpendData[clin.clin_number].avgMonthlySpend;
+      obj.timeTilExpiration = this.timeTilExpiration(clin.pop_end_date)
+      obj.spendTrend = this.idiqClinSpendData[clin.clin_number].lastMonthSpend /
+        this.idiqClinSpendData[clin.clin_number].avgMonthlySpend
       this.tableItems.push(obj);
+      /// create object for totals
+      this.totalSpendingObj.totalFundsSpent +=
+        this.idiqClinSpendData[clin.clin_number].idiqClinTotalSpend;
+      this.totalSpendingObj.totalFundsObligated += parseInt(clin.funds_total);
+      this.totalSpendingObj.lastMonthSpent +=
+        this.idiqClinSpendData[clin.clin_number].lastMonthSpend;
+      this.totalSpendingObj.clinAverage += this.idiqClinSpendData[clin.clin_number].avgMonthlySpend;
+      this.totalSpendingObj.spendTrend = (this.totalSpendingObj.lastMonthSpent) /
+        (this.totalSpendingObj.clinAverage)
     })
+    console.log(this.tableItems)
+  }
+  public timeTilExpiration(endDate: string): string {
+    const popEndDate = parseISO(endDate, { additionalDigits: 1 })
+    const end = new Date(popEndDate.setHours(0,0,0,0));
+    const todayDate = new Date();
+    const today = new Date(todayDate.setHours(0,0,0,0));
+    const daysUntilEndDate = differenceInCalendarDays(end, today);
+    const monthsUntilEndDate = differenceInCalendarMonths(end, today);
 
+    this.monthsForEndOfPeriodForecast = monthsUntilEndDate - 1;
 
+    const unitsRemaining = daysUntilEndDate <= 90 ? daysUntilEndDate : monthsUntilEndDate;
+    const useMonths = daysUntilEndDate > 90;
+    const singular = unitsRemaining === 1;
+
+    let timeUnit = useMonths
+      ? singular ? "month" : "months"
+      : singular ? "day" : "days";
+    return unitsRemaining + " " + timeUnit;
 
   }
+
   public async calculateTotalFunds(): Promise<void> {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
     this.idiqClins.forEach((clin) => {
