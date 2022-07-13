@@ -140,6 +140,7 @@ import { Component } from "vue-property-decorator";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
+import { DashboardService } from "@/services/dashboards";
 
 @Component({
   components: {
@@ -159,6 +160,23 @@ export default class JWCCDashboard extends Vue {
     potentially be exercised in option periods.`;
   public avgMonthlySpendTooltipText = `Average amount that is spent and invoiced 
     each month on all JWCC task orders`;
+
+  dashboardService: DashboardService = new DashboardService();
+
+
+  public async mounted(): Promise<void>{
+    await this.loadOnEnter();
+  }
+
+  
+  public async loadOnEnter(): Promise<void> {
+
+    const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
+
+    console.log({data});
+
+  }
+
 
 }
 
