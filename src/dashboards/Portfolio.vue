@@ -6,7 +6,7 @@
         <v-col>
 
           <div id="app-content" class="d-flex flex-column">
-            <div class="mb-auto" style="padding-bottom: 200px;">
+            <div class="mb-auto" style="padding-bottom: 80px;">
 
               <div class="d-flex justify-space-between width-100 mb-6">
                 <h2>Overview</h2>
