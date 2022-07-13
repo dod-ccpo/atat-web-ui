@@ -404,12 +404,14 @@ export default class PortfolioDashboard extends Vue {
   public estimatedFundsToBeInvoicedPercent = 0; // for donut chart
   public estimatedRemainingPercent = 0;
   public endOfPeriodForecast = 0;
+  public monthsIntoPoP = 0;
   public monthsForEndOfPeriodForecast = 0;
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
   public idiqClins: ClinDTO[] = [];
-  public idiqClinTotalSpending: Record<string, number> = {};
+  public idiqClinSpendData: Record<string, Record<string, number>> = {}
+
 
   public chartDataColors = ATATCharts.chartDataColors;
   public chartDataColorSequence = ATATCharts.chartDataColorSequence;
@@ -467,8 +469,9 @@ export default class PortfolioDashboard extends Vue {
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
 
     // calculate when will run out of funds based on current rate of spending
-    const popStartDate = parseISO(this.taskOrder.pop_start_date, { additionalDigits: 1 })
+    const popStartDate = parseISO(this.taskOrder.pop_start_date, { additionalDigits: 1 });
     const start = new Date(popStartDate.setHours(0,0,0,0));
+    this.monthsIntoPoP = differenceInCalendarMonths(today, start);
     const daysSinceStartDate = differenceInCalendarDays(today, start);
     const dailySpend = this.fundsSpent / daysSinceStartDate;
     const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend); 
@@ -611,16 +614,32 @@ export default class PortfolioDashboard extends Vue {
     totalProjectedBurnData.push(0);
 
     uniqueIdiqClins.forEach((idiqClinNo) => {
+      const thisIdiqClin = this.idiqClins.find((obj) => obj.idiq_clin === idiqClinNo);
+      const costClinNo = thisIdiqClin?.clin_number;
+      const costClinsForThisIdiqClin = this.costs.filter((cost) => {
+        return cost.clin === costClinNo && cost.value && cost.is_actual === "true"
+      });
       const thisIdiqClinSpending: number[] = []
-      actualBurn[idiqClinNo].forEach(
-        amt => amt !== null ? thisIdiqClinSpending.push(amt) : null
+      costClinsForThisIdiqClin.forEach(
+        obj => obj.value !== null ? thisIdiqClinSpending.push(parseInt(obj.value)) : null
       );
       const idiqClinTotalSpend = thisIdiqClinSpending.reduce(
         (partialSum, a) => partialSum + a, 0
       );
-      this.idiqClinTotalSpending[idiqClinNo] = idiqClinTotalSpend;
-    });
-    
+
+      const len = costClinsForThisIdiqClin.length;
+      const lastMonthSpend = parseFloat(costClinsForThisIdiqClin[len - 1].value);
+      const avgMonthlySpend = Math.round((idiqClinTotalSpend / this.monthsIntoPoP) * 100) / 100;
+
+      const idiqClinSpendData = {
+        idiqClinTotalSpend,
+        lastMonthSpend,
+        avgMonthlySpend,
+      };
+      this.idiqClinSpendData[idiqClinNo] = idiqClinSpendData;
+
+    }, this);
+
     const monthsWithSpend = totalActualBurnData.filter(amt => amt !== null);
     const len = monthsWithSpend.length;
     this.monthlySpendAverage = Math.round(this.fundsSpent / len * 100) / 100;
@@ -722,6 +741,8 @@ export default class PortfolioDashboard extends Vue {
 
     this.taskOrder = data.taskOrder
     this.costs = data.costs;
+    this.costs.sort((a, b) => (a.clin > b.clin) ? 1 : -1);
+    this.costs.sort((a, b) => (a.year_month > b.year_month) ? 1 : -1);
     this.idiqClins = data.clins;
     this.idiqClins.sort((a, b) => (a.idiq_clin > b.idiq_clin) ? 1 : -1);
 
