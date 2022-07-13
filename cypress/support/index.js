@@ -19,5 +19,12 @@ import './DOW'
 import "cypress-real-events/support";
 import '@cypress/code-coverage/support';
 require('cypress-plugin-tab')
+
+/**
+ * used to prevent selected tests from running
+ */
+import registerCypressGrep from 'cypress-grep'
+registerCypressGrep()
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

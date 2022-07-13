@@ -24,6 +24,9 @@ require("dotenv").config()
 module.exports = (on, config) => {
   require('@cypress/code-coverage/task')(on, config)
   on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'))
+  
+  require('cypress-grep/src/plugin')(on,config)
+  
   config.env.testURL = process.env.testURL;
   config.env.localTestURL = process.env.localTestURL;
   config.env.isTestingLocally = process.env.isTestingLocally;
