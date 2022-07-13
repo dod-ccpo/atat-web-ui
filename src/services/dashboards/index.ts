@@ -3,6 +3,8 @@ import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import {groupBy} from "lodash";
+import { stringify } from "querystring";
+import { Dictionary } from "vue-router/types/router";
 
 export interface PortFolioDashBoardDTO {
      taskOrder: TaskOrderDTO;
@@ -23,6 +25,12 @@ export interface CostGroup {
   costs: CostsDTO[];
   total: number;
 }
+
+export interface CSPSpending {
+   name: string;
+   total: number;
+}
+
 
 
 const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
@@ -58,6 +66,27 @@ const getCostAverage = (costGroups:CostGroup[]) => {
   return getCostsTotal(costGroups) / costGroups.length;
 }
 
+
+const getCSPTotals = (costs:CostsDTO[]): Record<string, CSPSpending> =>{
+  const cspGroups =groupBy(costs, 'csp.name');
+  const cspSpendings: Record<string, CSPSpending> = {
+  };
+  
+  for (const [key, value] of Object.entries(cspGroups)) {
+    const total = value.reduce<number>((prev, current)=> {
+      const total = prev + current.is_actual ? Number(current.value) : 0;
+      return total;  
+    }, 0);
+
+    cspSpendings[key]  = {
+      name: key,
+      total,
+    }
+  }
+
+  return cspSpendings;
+
+}
 
 
 
@@ -110,11 +139,16 @@ export class DashboardService{
       let costsQuery = `task_order_number=${taskOrderNumber}`;
       costsQuery+= `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
       costsQuery+= `@javascript:gs.dateGenerate('${popEndDate}','end')`;
+
+      const fields="clin,csp,csp.name,year_month"
+      +"task_order_number,portfolio,organization,service_agency,is_actual,value";
       
       const costsRequestConfig: AxiosRequestConfig = {
         params: {
           // eslint-disable-next-line camelcase
-          sysparm_query: costsQuery
+          sysparm_query: costsQuery,
+          // eslint-disable-next-line camelcase
+          sysparm_fields: fields,
         }
       }
       
@@ -165,7 +199,8 @@ export class DashboardService{
     return {
       ...combined,
       costGroups,
-      fundsSpentToDate: getCostsTotal(costGroups)
+      fundsSpentToDate: getCostsTotal(costGroups),
+      fundsSpentByCSP :  getCSPTotals(combined.costs),
     }
   }
 
