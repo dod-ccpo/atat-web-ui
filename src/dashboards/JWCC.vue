@@ -1,6 +1,6 @@
 <template>
   <div class="pa-5">
-    <ATATPageHead headline="Future JWCC Dashboard" />
+    <ATATPageHead headline="JWCC Dashboard" />
     <div id="app-content" class="d-flex flex-column">
       <div class="mb-auto" style="margin-top: 100px; padding-bottom: 200px;">
         Content...
