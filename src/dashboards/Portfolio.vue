@@ -330,15 +330,15 @@
 
               <v-row>
                 <v-col>
-                  <div class="ClinTable">
+                  <div class="_clinTable">
                     <span class="h3 justify-center">Active Task Orders</span>
                     <v-expansion-panels class="pt-6"
                       ripple="false">
                       <v-expansion-panel>
                         <v-expansion-panel-header>
-                          <a class="no-text-decoration d-flex align-center">
+                          <div class="font-size-20 text-primary _header-text">
                             Task Order #{{this.taskOrder.task_order_number}}
-                          </a>
+                          </div>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                           <v-simple-table
@@ -378,7 +378,7 @@
                               <tbody>
                               <tr v-for="(item, index) in tableItems" :key="index">
                                 <td>
-                                  <div class=" d-flex flex-column body">
+                                  <div class=" d-flex flex-column ">
                                     <span class="font-size-14 text-base-darker">
                                       {{ item.clinNumber }}
                                     </span>
@@ -388,12 +388,13 @@
                                   </div>
                                 </td>
                                 <td>
-                                  <div class='badge badge-green d-inline-block mt-1'>
+                                  <span class=
+                                   "badge badge-green d-inline-block d-flex align-center">
                                     {{ item.clinStatus }}
-                                  </div>
+                                  </span>
                                 </td>
                                 <td>
-                                  <div class=" d-flex flex-column body">
+                                  <div class=" d-flex flex-column ">
                                     <span class="font-size-14 text-base-darker">
                                   {{item.periodOfPerformance}}
                                     </span>
@@ -427,10 +428,10 @@
                                     </span>
                                     <span class="d-flex justify-end">
                                       <span
-                                        class="font-size-12"
+                                        class="
+                                        font-size-12 d-flex pr-1 align-center pr-1 font-weight-700"
                                         :class="item.spendTrend > 0
                                         ? 'text-error' : 'text-success-dark' ">
-                                       <span>
                                         <ATATSVGIcon
                                           class="text-primary d-inline-block"
                                           style="height:4px"
@@ -439,7 +440,6 @@
                                           name="triangle"
                                           color="primary"
                                         ></ATATSVGIcon>
-                                      </span>
                                         {{roundDecimal(getSpendPercent(
                                         item.spendTrend),0) }}%
                                       </span>
@@ -454,33 +454,35 @@
                               <td></td>
                               <td></td>
                                 <td class="d-flex justify-end align-start">
-                                 <span class="pr-8 font-size-14 text-base-darkest font-weight-700">
+                                 <span class="
+                                 pr-12 font-size-14 text-base-darkest font-weight-700 ">
                                    Total
                                  </span>
                                 </td>
                                 <td>
-                                  <div class=" d-flex flex-column body">
+                                  <div class=" d-flex flex-column ">
                                     <span
                                      class="
                                      font-size-14 text-base-darker
                                      font-weight-700 d-flex justify-end "
                                     >
                                       {{ getCurrencyString(totalSpendingObj.totalFundsSpent)}}
-                                    <span class="font-size-12 text-base font-weight-400">
+                                    <span class="
+                                    font-size-12 text-base font-weight-400 pl-2 ">
                                       ({{roundDecimal(getSpendPercent(
                                       totalSpendingObj.totalFundsSpent /
                                       totalSpendingObj.totalFundsObligated),1) * 100 }}%)
                                     </span>
                                     </span>
                                     <span class="
-                                    font-size-12 text-base d-flex justify-end ">
+                                    font-size-12 text-base d-flex justify-end">
                                     {{getCurrencyString(totalSpendingObj.totalFundsObligated
                                       - totalSpendingObj.totalFundsSpent) }} remaining
                                   </span>
                                   </div>
                                 </td>
                                 <td>
-                                  <div class=" d-flex flex-column body">
+                                  <div class=" d-flex flex-column ">
                                     <span
                                      class="
                                      font-size-14 d-flex justify-end
@@ -489,11 +491,23 @@
                                     </span>
                                     <span class="d-flex justify-end">
                                       <span
-                                        class="font-size-12"
+                                        class="
+                                        font-size-12 d-flex pr-1 align-center font-weight-700"
                                         :class="totalSpendingObj.spendTrend > 0
-                                        ? 'text-error' : 'text-success-dark' ">
-                                        {{roundDecimal(getSpendPercent(
-                                        totalSpendingObj.spendTrend),0) }}%
+                                        ? 'text-error' : 'text-success-dark' "
+                                      >
+                                          <ATATSVGIcon
+                                            class="text-primary d-inline-block"
+                                            style="height:4px"
+                                            width="7"
+                                            height="3"
+                                            name="triangle"
+                                            color="primary"
+                                          ></ATATSVGIcon>
+                                        <span>
+                                          {{roundDecimal(getSpendPercent(
+                                          totalSpendingObj.spendTrend),0) }}%
+                                        </span>
                                       </span>
                                     <span class="font-size-12 text-base ">
                                       vs monthly avg
