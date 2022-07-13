@@ -26,7 +26,9 @@
                           class="bg-info-lighter px-6 py-6"
                           style="border-radius: 4px;"
                         >
-                          <span id="AvailableFunds" class="h1 mb-0">${{ availableFundsStr }}</span>
+                          <span id="AvailableFunds" class="h1 mb-0">
+                            {{ getCurrencyString(availableFunds) }}
+                          </span>
                           <p class="font-weight-bold mb-0 pb-5">Available Funds</p>
                           <p class="mb-0 font-size-14">
                             Your remaining portfolio balance from all of your active task
@@ -37,7 +39,7 @@
                       <v-col>
                         <p class="text--base-darkest pt-1 mb-0">Total Portfolio Funds</p>
                         <span id="TotalPortfolioFunds" class="h2 mb-0">
-                          ${{ totalPortfolioFundsStr }}
+                          {{ getCurrencyString(totalPortfolioFunds) }}
                         </span>
                         <p class="text--base-dark mb-0 font-size-14">
                           Total value of your active task orders
@@ -160,16 +162,19 @@
                     <p class="font-size-14">
                       View a breakdown of how much you spend on cloud resources, 
                       tools, and services compared to the 
-                      <strong>monthly average of {{ monthlySpendAverageStr }}.</strong> 
+                      <strong>
+                        monthly average of {{ getCurrencyString(monthlySpendAverage) }}.
+                      </strong> 
                       Use forecasts to project upcoming spend and ensure your 
                       portfolio is funded appropriately.
                     </p>
-
                     <v-row>
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
                           Last month
-                          <span class="h1 d-block my-2">${{ lastMonthSpendStr }}</span>
+                          <span class="h1 d-block my-2">
+                            {{ getCurrencyString(lastMonthSpend) }}
+                          </span>
                           <span class="d-flex align-center">
                             <ATATSVGIcon 
                               :name="lastMonthSpendTrendPercent > 0 
@@ -193,7 +198,9 @@
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
                           End-of-month forecast
-                          <span class="h1 d-block my-2">${{ endOfMonthForecastStr }}</span>
+                          <span class="h1 d-block my-2">
+                            {{ getCurrencyString(endOfMonthForecast) }}
+                          </span>
                           <span 
                             class="d-flex align-center"
                             :class="endOfMonthForecastTrendPercent > 0 
@@ -215,10 +222,8 @@
                               </span>
                               vs monthly average
                             </span>
-
                           </span>
                         </v-card>
-
                       </v-col>
                     </v-row>
                     <v-row>
@@ -232,19 +237,20 @@
                               label="PeriodToDate"
                             />
                             </div>
-                          <span class="h1 d-block">${{ fundsSpentStr }}</span>
+                          <span class="h1 d-block">
+                            {{ getCurrencyString(fundsSpent) }}
+                          </span>
                         </v-card>
-
                       </v-col>
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
                           End-of-period forecast
-                          <span class="h1 d-block mt-2">${{ endOfPeriodForecastStr }}</span>
+                          <span class="h1 d-block mt-2">
+                            {{ getCurrencyString(endOfPeriodForecast) }}
+                          </span>
                         </v-card>
-
                       </v-col>                      
                     </v-row>
-
                   </v-card>
                 </v-col>
               </v-row>
@@ -266,7 +272,7 @@
                           :chart-data="donutChartData"
                           :chart-options="donutChartOptions"
                           :use-chart-data-labels="true"
-                          :center-text1="'$' + totalPortfolioFundsStr.slice(0, -3)"
+                          :center-text1="getCurrencyString(totalPortfolioFunds, false)"
                           center-text2="Total Portfolio Funds"
                           :amount="totalPortfolioFunds"
                         />
@@ -308,7 +314,7 @@
 
                             </div>
                             <div class="pr-4 py-2 font-weight-700">
-                              ${{ totalPortfolioFundsStr }}
+                              {{ getCurrencyString(totalPortfolioFunds) }}
                             </div>
                             <div style="width: 50px;">
                             </div>
@@ -382,11 +388,8 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public totalPortfolioFunds = 0;
-  public totalPortfolioFundsStr = "";
   public fundsSpent = 0;
-  public fundsSpentStr = "";
   public availableFunds = 0;
-  public availableFundsStr = "";
   public fundsSpentPercent = 0;
  
   public popStart = "";
@@ -394,17 +397,13 @@ export default class PortfolioDashboard extends Vue {
   public timeToExpiration = "";
   public runOutOfFundsDate = "";
   public monthlySpendAverage = 0;
-  public monthlySpendAverageStr = "";
   public lastMonthSpend = 0;
-  public lastMonthSpendStr = "";
   public lastMonthSpendTrendPercent = 0;
   public endOfMonthForecast = 0;
-  public endOfMonthForecastStr = "";
   public endOfMonthForecastTrendPercent = 0; // for spending summary
   public estimatedFundsToBeInvoicedPercent = 0; // for donut chart
   public estimatedRemainingPercent = 0;
   public endOfPeriodForecast = 0;
-  public endOfPeriodForecastStr = "";
   public monthsForEndOfPeriodForecast = 0;
 
   public taskOrder: TaskOrderDTO = TaskOrder.value;
@@ -494,8 +493,6 @@ export default class PortfolioDashboard extends Vue {
           clinValues[date] = clin.value;
         } else if (clin) {
           this.endOfMonthForecast += parseFloat(clin.value);
-          this.endOfMonthForecastStr
-            = toCurrencyString(this.endOfMonthForecast);
         }
       });
       clinCosts[clinNo] = clinValues;
@@ -627,14 +624,12 @@ export default class PortfolioDashboard extends Vue {
     const monthsWithSpend = totalActualBurnData.filter(amt => amt !== null);
     const len = monthsWithSpend.length;
     this.monthlySpendAverage = Math.round(this.fundsSpent / len * 100) / 100;
-    this.monthlySpendAverageStr = "$" + toCurrencyString(this.monthlySpendAverage);
+
     if (len && len >= 2) {
       const twoMoAgoAvl = monthsWithSpend[len - 2];
       const lastMoAvl = monthsWithSpend[len - 1];
       if (twoMoAgoAvl && lastMoAvl) {
         this.lastMonthSpend = twoMoAgoAvl - lastMoAvl;
-        this.lastMonthSpendStr = toCurrencyString(this.lastMonthSpend);
-        // EJY calculate percent trend based on monthlySpendAverage
         this.lastMonthSpendTrendPercent 
           = (this.lastMonthSpend - this.monthlySpendAverage) / this.monthlySpendAverage * 100;
       }
@@ -646,7 +641,6 @@ export default class PortfolioDashboard extends Vue {
     const m = this.monthsForEndOfPeriodForecast;
     this.endOfPeriodForecast 
       = this.fundsSpent + this.endOfMonthForecast + (this.monthlySpendAverage * m);
-    this.endOfPeriodForecastStr = toCurrencyString(this.endOfPeriodForecast);
 
     this.burnChartData.labels = this.burnChartXLabels;
     this.burnChartData.datasets = [];
@@ -715,7 +709,6 @@ export default class PortfolioDashboard extends Vue {
     this.idiqClins.forEach((clin) => {
       this.totalPortfolioFunds = this.totalPortfolioFunds + parseInt(clin.funds_obligated);
     });
-    this.totalPortfolioFundsStr = toCurrencyString(this.totalPortfolioFunds);
 
     this.burnChartYMax = Math.ceil(this.totalPortfolioFunds / 100000) * 100000;
     this.burnChartYStepSize = Math.round(this.burnChartYMax / 6);
@@ -739,13 +732,11 @@ export default class PortfolioDashboard extends Vue {
     });
 
     await this.calculateFundsSpent();
-    this.fundsSpentStr = toCurrencyString(this.fundsSpent);
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
-    this.availableFundsStr = toCurrencyString(this.availableFunds);
 
     this.tooltipHeaderData = {
       title: "Total Funds Available",
-      amount: this.availableFundsStr,
+      amount: this.getCurrencyString(this.availableFunds),
       legend: "Funds Available",
     };
 
@@ -952,8 +943,7 @@ export default class PortfolioDashboard extends Vue {
 
   public getLegendAmount(index: number): string {
     const amount = this.totalPortfolioFunds * this.donutChartData.datasets[0].data[index] / 100;
-    let amountStr = "$" + toCurrencyString(amount);
-    return amountStr;
+    return this.getCurrencyString(amount);
   }
 
   public spendingTooltipText = `This is the total value of all active task 
@@ -974,6 +964,9 @@ export default class PortfolioDashboard extends Vue {
     return Math.abs(roundedVal);
   }
 
+  public getCurrencyString(value: number, decimals?: boolean): string {
+    return "$" + toCurrencyString(value, decimals);
+  }
 }
 
 </script>
