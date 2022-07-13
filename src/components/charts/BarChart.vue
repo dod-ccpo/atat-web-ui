@@ -46,22 +46,22 @@ export default class BarChart extends Vue {
     }
   }
 
-//   public fontHandler(self: any): any {
+  //   public fontHandler(self: any): any {
 
-//     const fontHandler: any = {
-//       id: "fontHandler",
-//       beforeDraw: function(chart: any) {
-//         const ctx = chart.ctx;
-//         ctx.font = "bold 2em 'Roboto Condensed'";
+  //     const fontHandler: any = {
+  //       id: "fontHandler",
+  //       beforeDraw: function(chart: any) {
+  //         const ctx = chart.ctx;
+  //         ctx.font = "bold 2em 'Roboto Condensed'";
 
-//       }
-//     }
+  //       }
+  //     }
 
-//     return fontHandler;
-  
-//   }
+  //     return fontHandler;
+    
+  //   }
 
-// }
+}
 
 
 </script>
