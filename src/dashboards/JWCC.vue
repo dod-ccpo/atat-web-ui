@@ -20,7 +20,7 @@
                           style="border-radius: 4px;"
                         >
                           <span id="AvailableFunds" class="h1 mb-1 d-block">
-                            {{ getCurrencyString(fundsSpentToDate) }}
+                            {{ getCurrencyString(fundsSpentToDate, false) }}
                           </span>
                           <p class="h3 mb-0 pb-1">JWCC funds spent to date</p>
                           <p class="mb-0 font-size-14">
@@ -33,7 +33,7 @@
                             Active task orders
                           </div>
                           <div class="font-weight-700">
-                            500
+                            {{ activeTaskOrderCount }}
                           </div>
                         </div>
 
@@ -49,7 +49,7 @@
                             />
                           </div>
                           <div class="font-weight-700">
-                            $500,000,000
+                            {{ getCurrencyString(totalObligatedFunds, false) }}
                           </div>
                         </div>
 
@@ -66,7 +66,7 @@
                             />
                           </div>
                           <div class="font-weight-700">
-                            $7,000,000,000
+                            {{ getCurrencyString(totalTaskOrderValue, false) }}
                           </div>
                         </div>
 
@@ -82,18 +82,15 @@
                             />
                           </div>
                           <div class="font-weight-700">
-                            $1,234,567
+                            {{ getCurrencyString(averageMonthlySpend) }}
                           </div>
                         </div>
 
-
                       </v-col>
                     </v-row>                    
-                    
-
-
                   </v-card>
                 </v-col>
+
                 <v-col cols="8">
                   <v-card
                     id="SpendingOverviewCard" 
@@ -139,12 +136,12 @@ import { Component } from "vue-property-decorator";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
-import ATATTooltip from "@/components/ATATTooltip.vue"
+import ATATTooltip from "../components/ATATTooltip.vue"
 
 import { DashboardService } from "@/services/dashboards";
-
 import { toCurrencyString } from "@/helpers";
-import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
+import { CostsDTO } from "@/api/models";
+import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 
 @Component({
   components: {
@@ -163,6 +160,7 @@ export default class JWCCDashboard extends Vue {
   public totalTaskOrderValue = 0;
   public averageMonthlySpend = 0;
   public fundsSpentToDate = 0;
+  public monthsIntoPeriod = 0; // for MVP, period is always Jan 1 to Dec 31
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
@@ -173,7 +171,12 @@ export default class JWCCDashboard extends Vue {
     this.fundsSpentToDate = data.fundsSpentToDate;
     this.costs = data.costs;
     
-
+    const today = new Date(new Date().setHours(0,0,0,0));
+    const thisYear = today.getFullYear();
+    // for MVP, period start will always be Jan 1 of current year
+    const periodStart = new Date(thisYear + "-01-01T00:00:00");
+    this.monthsIntoPeriod = differenceInCalendarMonths(today, periodStart);
+    this.averageMonthlySpend = Math.round(this.fundsSpentToDate / this.monthsIntoPeriod);
   }
 
   public async mounted(): Promise<void>{
