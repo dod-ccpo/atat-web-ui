@@ -14,7 +14,6 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     Spending overview card
-
                   </v-card>
                 </v-col>
                 <v-col cols="8">
@@ -23,7 +22,6 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Spend Rate by DoD Organizations</h3>
-                    
                   </v-card>
                 </v-col>
               </v-row>
@@ -35,34 +33,17 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Monthly Spend Summary</h3>
-
                   </v-card>
                 </v-col>
                 <v-col cols="5">
                   <v-card
-                    id="SpendingOverviewCard" 
+                    id="FundsSpentByCSPCard" 
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Funds Spent by Cloud Service Provider</h3>
-                    
                   </v-card>
                 </v-col>
               </v-row>
-
-              <v-row>
-                <v-col>
-                  <v-card
-                    id="SpendingOverviewCard" 
-                    class="_no-shadow v-sheet--outlined height-100 pa-8"
-                  >
-                    <h3 class="mb-6">Monthly Spend Summary</h3>
-
-                  </v-card>
-
-                </v-col>
-              </v-row>
-
-
 
             </div>
             <ATATFooter/>
