@@ -47,7 +47,7 @@ const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
           return total;  
         }, 0),
         totalProjected: value.reduce<number>((prev, current)=> {
-          return Number(current.value);
+          return prev +  Number(current);
         }, 0),
       }
     )
