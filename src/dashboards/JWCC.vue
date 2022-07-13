@@ -166,7 +166,7 @@ import ATATTooltip from "../components/ATATTooltip.vue"
 
 import { DashboardService } from "@/services/dashboards";
 import { toCurrencyString } from "@/helpers";
-import { CostsDTO } from "@/api/models";
+import { CostsDTO, CostGroupDTO } from "@/api/models";
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 
 @Component({
@@ -191,7 +191,10 @@ export default class JWCCDashboard extends Vue {
   public monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
 
   public activeTaskOrderCount = 0;
+  
   public costs: CostsDTO[] = [];
+  public costGroups: CostGroupDTO[] = [];
+
   public totalObligatedFunds = 0;
   public totalTaskOrderValue = 0;
   public averageMonthlySpend = 0;
@@ -199,6 +202,9 @@ export default class JWCCDashboard extends Vue {
   public monthsIntoPeriod = 0; // for MVP, period is always Jan 1 to Dec 31
   public currentMonthYearStr = "";
   public prevMonthYearStr = "";
+
+  public today = new Date(new Date().setHours(0,0,0,0));
+  public currentYear = this.today.getFullYear();
 
   public getMonthYearString(monthIndex: number, year: number): string {
     let monthAbbr = this.monthAbbreviations[monthIndex];
@@ -209,17 +215,13 @@ export default class JWCCDashboard extends Vue {
   }
 
   public async setMonthlySpendSummaryBarChartData(): Promise<void> {
-    const today = new Date(new Date().setHours(0,0,0,0));
-    const thisYear = today.getFullYear();
-    const thisMonthIndex = today.getMonth();
-
-    this.currentMonthYearStr = this.getMonthYearString(thisMonthIndex, thisYear);
-
+    const thisMonthIndex = this.today.getMonth();
+    this.currentMonthYearStr = this.getMonthYearString(thisMonthIndex, this.currentYear);
     let prevMonthIndex = thisMonthIndex - 1;
-    let prevMonthsYear = thisYear;
+    let prevMonthsYear = this.currentYear;
     if (prevMonthIndex < 0) {
       prevMonthIndex = 11;
-      prevMonthsYear = thisYear - 1;
+      prevMonthsYear = prevMonthsYear - 1;
     };
     this.prevMonthYearStr = this.getMonthYearString(prevMonthIndex, prevMonthsYear);
 
@@ -227,6 +229,10 @@ export default class JWCCDashboard extends Vue {
       ["Last Month", "(" + this.prevMonthYearStr + ")"],
       ["End-of-month Forecast", "(" + this.currentMonthYearStr + ")"],
     ];
+    const len = this.costGroups.length;
+    const prevMonthSpend = this.costGroups[len - 2].total;
+    const projectedSpend = this.costGroups[len - 1].total;
+    this.barChartMonthlySpendData.datasets[0].data = [prevMonthSpend, projectedSpend];
 
   }
 
@@ -238,15 +244,13 @@ export default class JWCCDashboard extends Vue {
     this.totalTaskOrderValue = data.totalTaskOrderValue;
     this.fundsSpentToDate = data.fundsSpentToDate;
     this.costs = data.costs;
-    
+    this.costGroups = data.costGroups;
+   
     await this.setMonthlySpendSummaryBarChartData();
 
-
-    const today = new Date(new Date().setHours(0,0,0,0));
-    const thisYear = today.getFullYear();
     // for MVP, period start will always be Jan 1 of current year
-    const periodStart = new Date(thisYear + "-01-01T00:00:00");
-    this.monthsIntoPeriod = differenceInCalendarMonths(today, periodStart);
+    const periodStart = new Date(this.currentYear + "-01-01T00:00:00");
+    this.monthsIntoPeriod = differenceInCalendarMonths(this.today, periodStart);
     this.averageMonthlySpend = Math.round(this.fundsSpentToDate / this.monthsIntoPeriod);
 
   }
