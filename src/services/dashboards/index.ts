@@ -21,14 +21,14 @@ export interface TaskOrderAggregate {
 export interface CostGroup {
   yearMonth: string;
   costs: CostsDTO[];
-  total: number;
+  totalActual: number;
+  totalProjected: number;
 }
 
 export interface CSPSpending {
    name: string;
    total: number;
 }
-
 
 
 const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
@@ -41,11 +41,14 @@ const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
       {
         yearMonth: key,
         costs: value,
-        total: value.reduce<number>((prev, current)=> {
+        totalActual: value.reduce<number>((prev, current)=> {
           const cost = current.is_actual ==="true" ? Number(current.value) : 0;
           const total:number = prev + cost;
           return total;  
-        }, 0)
+        }, 0),
+        totalProjected: value.reduce<number>((prev, current)=> {
+          return Number(current.value);
+        }, 0),
       }
     )
   }
@@ -55,14 +58,10 @@ const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
 }
 
 
-const getCostsTotal = (costGroups:CostGroup[])=> {
+const getCostsTotalActual = (costGroups:CostGroup[])=> {
   return  costGroups.reduce((accum, cg)=> {
-    return accum + cg.total
+    return accum + cg.totalActual
   }, 0);
-}
-
-const getCostAverage = (costGroups:CostGroup[]) => {
-  return getCostsTotal(costGroups) / costGroups.length;
 }
 
 
@@ -200,8 +199,9 @@ export class DashboardService{
     return {
       ...combined,
       costGroups,
-      fundsSpentToDate: getCostsTotal(costGroups),
+      fundsSpentToDate: getCostsTotalActual(costGroups),
       fundsSpentByCSP :  getCSPTotals(combined.costs),
+
     }
   }
 
