@@ -1,5 +1,5 @@
 <template>
-  <svg viewBox="0 0 7 3" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 7 4" xmlns="http://www.w3.org/2000/svg">
 
     <!-- eslint-disable -->
     <path d="M0.666748 4.15999L4.00008 0.82666L7.33341 4.15999H0.666748Z"

@@ -383,11 +383,14 @@
                                       {{ item.clinNumber }}
                                     </span>
                                     <span class="font-size-12 text-base ">
-                                      {{item.clinLabel}}({{item.clinNumber}})
+                                      {{item.clinLabel}}
+                                      <span class="pl-1">
+                                      ({{item.idiqClin}})
+                                      </span>
                                     </span>
                                   </div>
                                 </td>
-                                <td>
+                                <td class="_v-align-top">
                                   <span class=
                                    "badge badge-green d-inline-block d-flex align-center">
                                     {{ item.clinStatus }}
@@ -407,7 +410,10 @@
                                   <div class=" d-flex flex-column ">
                                     <span class="font-size-14 text-base-darker d-flex justify-end">
                                       ${{ item.totalFundsSpent}}
-                                    <span class="font-size-12 text-base pl-2 d-flex justify-end">
+                                    <span
+                                      class="font-size-12 text-base pl-4 d-flex justify-end"
+                                      style="width: 48px"
+                                    >
                                       ({{roundDecimal(getSpendPercent(
                                       (+item.totalFundsSpent.replace(/,/g, '')) /
                                       (+item.totalFundsObligated.replace(/,/g, ''))),1) * 100 }}%)
@@ -433,10 +439,10 @@
                                         :class="item.spendTrend > 0
                                         ? 'text-error' : 'text-success-dark' ">
                                         <ATATSVGIcon
-                                          class="text-primary d-inline-block"
+                                          class="text-primary d-inline-block mr-1"
                                           style="height:4px"
                                           width="7"
-                                          height="3"
+                                          height="4"
                                           name="triangle"
                                           color="primary"
                                         ></ATATSVGIcon>
@@ -497,10 +503,10 @@
                                         ? 'text-error' : 'text-success-dark' "
                                       >
                                           <ATATSVGIcon
-                                            class="text-primary d-inline-block"
+                                            class="text-primary d-inline-block mr-1 "
                                             style="height:4px"
                                             width="7"
-                                            height="3"
+                                            height="4"
                                             name="triangle"
                                             color="primary"
                                           ></ATATSVGIcon>
@@ -606,7 +612,7 @@ export default class PortfolioDashboard extends Vue {
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
   public idiqClins: ClinDTO[] = [];
-  public idiqClinSpendData: Record<string, Record<string, number>> = {}
+  public idiqClinSpendData: Record<string, Record<string, number | string>> = {}
 
 
   public chartDataColors = ATATCharts.chartDataColors;
@@ -836,10 +842,12 @@ export default class PortfolioDashboard extends Vue {
       const lastMonthSpend = parseFloat(costClinsForThisIdiqClin[len - 1].value);
       const avgMonthlySpend = Math.round((idiqClinTotalSpend / this.monthsIntoPoP) * 100) / 100;
 
+      const costClinNumber = costClinNo || "";
       const idiqClinSpendData = {
         idiqClinTotalSpend,
         lastMonthSpend,
         avgMonthlySpend,
+        costClinNumber,
       };
       this.idiqClinSpendData[idiqClinNo] = idiqClinSpendData;
 
@@ -941,7 +949,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public createTableItems(): void{
-    this.idiqClins.forEach((clin,) => {
+    this.idiqClins.forEach((idiqClin) => {
       let obj:{
         clinNumber:string;
         clinStatus:string;
@@ -953,6 +961,7 @@ export default class PortfolioDashboard extends Vue {
         clinAverage: number;
         timeTilExpiration: string;
         spendTrend:number;
+        idiqClin: string;
       } = {
         clinNumber:"",
         clinStatus:"",
@@ -963,30 +972,34 @@ export default class PortfolioDashboard extends Vue {
         lastMonthSpent:"",
         clinAverage: 0,
         timeTilExpiration: "",
-        spendTrend:0
+        spendTrend:0,
+        idiqClin: "",
+
       }
-      obj.clinNumber = clin.clin_number;
-      obj.clinStatus = clin.clin_status;
-      obj.clinLabel = clin.idiq_clin_label || "";
-      obj.periodOfPerformance = `${this.createDateStr(clin.pop_start_date,true)} -
-        ${this.createDateStr(clin.pop_end_date,true)}`;
+      obj.clinNumber = idiqClin.clin_number;
+      obj.clinStatus = idiqClin.clin_status;
+      obj.clinLabel = idiqClin.idiq_clin_label || "";
+      obj.periodOfPerformance = `${this.createDateStr(idiqClin.pop_start_date,true)} -
+        ${this.createDateStr(idiqClin.pop_end_date,true)}`;
       obj.totalFundsSpent =
-        toCurrencyString(this.idiqClinSpendData[clin.clin_number].idiqClinTotalSpend,true);
-      obj.totalFundsObligated = toCurrencyString(parseInt(clin.funds_total));
+        toCurrencyString(this.idiqClinSpendData[idiqClin.idiq_clin].idiqClinTotalSpend,true);
+      obj.totalFundsObligated = toCurrencyString(parseInt(idiqClin.funds_total));
       obj.lastMonthSpent =
-        toCurrencyString(this.idiqClinSpendData[clin.clin_number].lastMonthSpend);
-      obj.clinAverage = this.idiqClinSpendData[clin.clin_number].avgMonthlySpend;
-      obj.timeTilExpiration = this.timeTilExpiration(clin.pop_end_date)
-      obj.spendTrend = this.idiqClinSpendData[clin.clin_number].lastMonthSpend /
-        this.idiqClinSpendData[clin.clin_number].avgMonthlySpend
+        toCurrencyString(this.idiqClinSpendData[idiqClin.idiq_clin].lastMonthSpend);
+      obj.clinAverage = this.idiqClinSpendData[idiqClin.idiq_clin].avgMonthlySpend;
+      obj.timeTilExpiration = this.timeTilExpiration(idiqClin.pop_end_date)
+      obj.spendTrend = this.idiqClinSpendData[idiqClin.idiq_clin].lastMonthSpend /
+        this.idiqClinSpendData[idiqClin.idiq_clin].avgMonthlySpend
+      // obj.idiqClin =
       this.tableItems.push(obj);
       /// create object for totals
       this.totalSpendingObj.totalFundsSpent +=
-        this.idiqClinSpendData[clin.clin_number].idiqClinTotalSpend;
-      this.totalSpendingObj.totalFundsObligated += parseInt(clin.funds_total);
+        this.idiqClinSpendData[idiqClin.idiq_clin].idiqClinTotalSpend;
+      this.totalSpendingObj.totalFundsObligated += parseInt(idiqClin.funds_total);
       this.totalSpendingObj.lastMonthSpent +=
-        this.idiqClinSpendData[clin.clin_number].lastMonthSpend;
-      this.totalSpendingObj.clinAverage += this.idiqClinSpendData[clin.clin_number].avgMonthlySpend;
+        this.idiqClinSpendData[idiqClin.idiq_clin].lastMonthSpend;
+      this.totalSpendingObj.clinAverage +=
+        this.idiqClinSpendData[idiqClin.idiq_clin].avgMonthlySpend;
       this.totalSpendingObj.spendTrend = (this.totalSpendingObj.lastMonthSpent) /
         (this.totalSpendingObj.clinAverage)
     })
