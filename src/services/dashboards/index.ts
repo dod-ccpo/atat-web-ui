@@ -140,7 +140,7 @@ export class DashboardService{
       costsQuery+= `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
       costsQuery+= `@javascript:gs.dateGenerate('${popEndDate}','end')`;
 
-      const fields="clin,csp,csp.name,year_month"
+      const fields="clin,csp,csp.name,year_month,"
       +"task_order_number,portfolio,organization,service_agency,is_actual,value";
       
       const costsRequestConfig: AxiosRequestConfig = {
