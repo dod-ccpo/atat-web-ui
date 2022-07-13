@@ -94,7 +94,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import {PortfolioDashBoardService} from "@/services/portfolioDashboard";
+import {PortfolioDashBoardService} from "../services/portfolioDashboard";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
