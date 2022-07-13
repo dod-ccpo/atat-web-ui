@@ -232,8 +232,15 @@
                       ripple="false">
                       <v-expansion-panel>
                         <v-expansion-panel-header>
-                          <a class="no-text-decoration">
+                          <a class="no-text-decoration d-flex align-center">
                             Task Order #{{this.taskOrder.task_order_number}}
+                            <ATATSVGIcon
+                              class="pl-3 text-primary"
+                              width="8"
+                              height="13"
+                              name="chevronRight"
+                              color="primary"
+                              ></ATATSVGIcon>
                           </a>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
@@ -295,6 +302,7 @@ import { PortfolioDashBoardService } from "@/services/portfolioDashBoard";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
+import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DonutChart from "../components/charts/DonutChart.vue";
 import LineChart from "../components/charts/LineChart.vue";
@@ -317,6 +325,7 @@ import _ from 'lodash';
   components: {
     ATATFooter,
     ATATPageHead,
+    ATATSVGIcon,
     ATATTooltip,
     DonutChart,
     LineChart,
@@ -802,7 +811,7 @@ export default class PortfolioDashboard extends Vue {
       obj.clinStatus = clin.clin_status,
       obj.periodOfPerformance = `${this.createDateStr(clin.pop_start_date,true)} -
         ${this.createDateStr(clin.pop_end_date,true)}`,
-      obj.totalFundsSpent = clin.funds_obligated,
+      obj.totalFundsSpent = toCurrencyString(parseInt(clin.funds_obligated)),
       obj.lastMonthSpent = clin.funds_total,
       this.tableItems.push(obj);
     })

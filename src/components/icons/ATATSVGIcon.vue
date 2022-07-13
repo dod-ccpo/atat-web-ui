@@ -15,6 +15,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import Calendar from "@/components/icons/Calendar.vue";
+import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
 import Currency from "@/components/icons/Currency.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
@@ -29,6 +30,7 @@ import UploadFile from "@/components/icons/UploadFile.vue";
 @Component({
   components:{
     Calendar,
+    ChevronRight,
     Close,
     Currency,
     ExclamationMark,
