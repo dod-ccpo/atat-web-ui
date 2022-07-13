@@ -32,7 +32,7 @@ export interface CSPSpending {
 
 
 const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
-  costs.sort((a,b)=> Date.parse(b.year_month) - Date.parse(a.year_month));
+  costs.sort((a,b)=> Date.parse(a.year_month) - Date.parse(b.year_month));
   const groups = groupBy(costs, 'year_month');
   const costGroups: CostGroup[] = [];
 
@@ -183,7 +183,7 @@ export class DashboardService{
       const totalTaskOrderValue = prev.totalTaskOrderValue
       + current.taskOrder.funds_total.length > 0 ? Number(current.taskOrder.funds_total) : 0;
       const costs = [...prev.costs, ...current.costs]
-        .sort((a,b)=> Date.parse(b.year_month) - Date.parse(a.year_month));
+        .sort((a,b)=> Date.parse(a.year_month) - Date.parse(b.year_month));
 
       return {
         activeTaskOrders,

@@ -10,7 +10,9 @@
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        class="mb-2 pa-0 tooltip-button no-border"
+        class=" pa-0 tooltip-button no-border"
+        :class="buttonClass"
+        :style="buttonStyle"
         icon
         :id="'TooltipButton_' + id" 
         x-small
@@ -43,6 +45,8 @@ export default class ATATTooltip extends Vue {
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "id_is_missing" }) private id!: string;
   @Prop({ default: "Label is missing" }) private label!: string;
+  @Prop({ default: "" }) private buttonClass!: string;
+  @Prop({ default: "" }) private buttonStyle!: string;
 }
 
 </script>
