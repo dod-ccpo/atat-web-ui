@@ -16,6 +16,6 @@ import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class TrendingDown extends Vue {
-  @Prop({default: "498e43", required: true}) private color!:string;
+  @Prop({ default: "498e43", required: false }) private color!:string;
 }
 </script>

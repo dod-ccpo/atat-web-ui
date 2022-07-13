@@ -16,6 +16,6 @@ import { Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class TrendingUp extends Vue {
-  @Prop({default: "c60634", required: true}) private color!:string;
+  @Prop({ default: "c60634", required: false }) private color!:string;
 }
 </script>
