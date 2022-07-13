@@ -36,10 +36,8 @@
 
   .text-white { color: $white };
 
-  .text-base-error         { color: $error !important; }
-  .text-base-error-dark    { color: $error-dark !important; }
-  .text-base-error-darker  { color: $error-darker !important; }
-  .text-base-success       { color: $success !important; }
+  .text-error           { color: $error !important; }
+  .text-success-dark    { color: $success-dark !important; }
 
   .border-base-darkest  { border-color: $base-darkest !important; }
   .border-base-darker   { border-color: $base-darker !important; }
