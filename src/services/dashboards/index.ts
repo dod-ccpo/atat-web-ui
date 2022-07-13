@@ -62,7 +62,7 @@ const getCostAverage = (costGroups:CostGroup[]) => {
 
 
 
-export class PortfolioDashBoardService{
+export class DashboardService{
 
 
   public async getdata(taskOrderNumber: string): Promise<PortFolioDashBoardDTO>{
@@ -164,7 +164,6 @@ export class PortfolioDashBoardService{
 
     return {
       ...combined,
-      averageMonthlySpend: getCostAverage(costGroups),
       costGroups,
       fundsSpentToDate: getCostsTotal(costGroups)
     }

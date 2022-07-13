@@ -61,7 +61,7 @@ import { Component } from "vue-property-decorator";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
-import { PortfolioDashBoardService } from "@/services/portfolioDashboard";
+import { DashboardService } from "@/services/dashboards";
 
 @Component({
   components: {
@@ -72,7 +72,7 @@ import { PortfolioDashBoardService } from "@/services/portfolioDashboard";
 
 export default class JWCCDashboard extends Vue {
 
-  portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
+  dashboardService: DashboardService = new DashboardService();
 
 
   public async mounted(): Promise<void>{
@@ -82,7 +82,7 @@ export default class JWCCDashboard extends Vue {
   
   public async loadOnEnter(): Promise<void> {
 
-    const data = await this.portFolioDashBoardService.getTotals(['1000000001234', '1000000009999']);
+    const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
 
     console.log({data});
 
