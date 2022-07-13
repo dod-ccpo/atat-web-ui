@@ -42,7 +42,7 @@ import Vue from "vue";
 import { Component, Mixins } from "vue-property-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { AttachmentTables } from "@/api";
-import { AttachmentDTO } from "@/api/models";
+import { AttachmentDTO, FundingRequestMIPRFormDTO } from "@/api/models";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 import ATATTextField from "@/components/ATATTextField.vue";
@@ -61,7 +61,12 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
   private invalidFiles: invalidFile[] = [];
   private validFileFormats = ["xlsx", "xls", "pdf"];
   private maxFileSizeInBytes = 1073741824;
-  private saved = "";
+  private saved: FundingRequestMIPRFormDTO = {
+    /* eslint-disable camelcase */
+    mipr_number:"",
+    mipr_attachment: "",
+    mipr_filename: ""
+  };
   private MIPRNumber = ""
   private toolTip = `This number is assigned by your agency’s accounting and finance office.
    It is located in Box 5 on the MIPR form (DD Form 448).`
@@ -77,8 +82,8 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
 
   async loadOnEnter(): Promise<void> {
     try {
-      this.saved = await FinancialDetails.getMIPRNumber();
-      this.MIPRNumber = this.saved;
+      this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
+      this.MIPRNumber = this.saved.mipr_number;
       const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
       const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
         const file = new File([], attachment.file_name, {
@@ -105,8 +110,13 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
     }
   }
 
-  get current(): string {
-    return this.MIPRNumber
+  get current(): FundingRequestMIPRFormDTO {
+    return {
+      /* eslint-disable camelcase */
+      mipr_number:this.MIPRNumber,
+      mipr_attachment: this.uploadedFiles[0].attachmentId,
+      mipr_filename: this.uploadedFiles[0].fileName || ""
+    }
   }
   private hasChanged(): boolean {
     return hasChanges(this.current, this.saved);
@@ -114,7 +124,7 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        FinancialDetails.setMIPRNumber(this.current);
+        FinancialDetails.saveFundingRequestMIPRForm(this.current);
       }
     } catch (error) {
       console.log(error);

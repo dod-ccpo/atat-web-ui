@@ -1,6 +1,6 @@
 <template>
   <v-container class="container-max-width" fluid>
-    <v-row v-show="PoPUnder9Months">
+    <v-row v-if="PoPUnder9Months">
       <v-col class="col-12">
         <h1 class="page-header">
           Based on your period of performance, this effort does not qualify for an incremental
@@ -39,7 +39,7 @@
         </ATATAlert>
       </v-col>
     </v-row>
-    <v-row v-show="!PoPUnder9Months">
+    <v-row v-else>
       <v-col class="col-12">
         <h1 class="page-header mb-3">
           Are you requesting to incrementally fund this requirement?
@@ -245,12 +245,15 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   }
 
   public get PoPUnder9Months(): boolean {
-    return AcquisitionPackage.totalBasePoPDuration < 270
+    return AcquisitionPackage.totalBasePoPDuration < 270 
+      && AcquisitionPackage.totalBasePoPDuration > 0;
   }
 
   public get basePeriod(): string {
-    return `${this.base.period_unit_count} ${this.base.period_unit.toLowerCase()}`
-
+    const hasBasePeriod = this.base && this.base.period_unit_count && this.base.period_unit;
+    return hasBasePeriod
+      ? `${this.base.period_unit_count} ${this.base.period_unit.toLowerCase()}`
+      : ""
   }
 
   public async loadOnEnter(): Promise<void> {
