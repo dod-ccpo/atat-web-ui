@@ -615,7 +615,6 @@ export default class PortfolioDashboard extends Vue {
 
     uniqueIdiqClins.forEach((idiqClinNo) => {
       const thisIdiqClin = this.idiqClins.find((obj) => obj.idiq_clin === idiqClinNo);
-      debugger;
       const costClinNo = thisIdiqClin?.clin_number;
       const costClinsForThisIdiqClin = this.costs.filter((cost) => {
         return cost.clin === costClinNo && cost.value && cost.is_actual === "true"
