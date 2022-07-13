@@ -3,8 +3,6 @@ import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 import { AxiosRequestConfig } from "axios";
 import { TABLENAME as ClinTable } from "@/api/clin";
 import {groupBy} from "lodash";
-import { stringify } from "querystring";
-import { Dictionary } from "vue-router/types/router";
 
 export interface PortFolioDashBoardDTO {
      taskOrder: TaskOrderDTO;
@@ -45,9 +43,7 @@ const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
         costs: value,
         total: value.reduce<number>((prev, current)=> {
           const cost = current.is_actual ==="true" ? Number(current.value) : 0;
-          const total = prev + cost;
-          return total;  
-
+          const total:number = prev + cost;
           return total;  
         }, 0)
       }
@@ -71,8 +67,6 @@ const getCostAverage = (costGroups:CostGroup[]) => {
 
 
 const getCSPTotals = (costs:CostsDTO[]): Record<string, CSPSpending> =>{
-
-  debugger;
 
   const cspGroups =groupBy(costs, 'csp.name');
   const cspSpendings: Record<string, CSPSpending> = {
