@@ -126,7 +126,42 @@
                     id="FundsSpentByCSPCard" 
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
-                    <h3 class="mb-6">Funds Spent by Cloud Service Provider</h3>
+                    <h3 class="mb-2">Funds Spent by Cloud Service Provider</h3>
+                    <p class="font-weight-400 font-size-14">
+                      Compare the total funds spent across each CSP. 
+                      The data includes spend on all JWCC portfolios to date.
+                    </p>
+                    <DonutChart
+                      chart-id="CSPSpendingDonutChart"
+                      :chart-data="donutChartData"
+                      :chart-options="donutChartOptions"
+                      :use-chart-data-labels="true"
+                      :centerText1="abbreviateCurrencyFormatter(cspTotal)"
+                      centerText2="Total Funds Spent"
+                      :amount="cspTotal"
+                    />
+                    <div class="width-100">
+                      <div
+                        v-for="(label, index) in donutChartData.labels"
+                        :key="index"
+                        class="d-flex justify-space-between font-size-14"
+                      >
+                        <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
+                          <span
+                            class="_legend-square"
+                            :style="'background-color: ' + donutChartColors[index]"
+                          >
+                          </span>
+                          <strong>{{ label }}</strong>
+                        </div>
+                        <div class="pr-4 py-2 font-weight-400">
+                          {{ getLegendAmount(cspTotal, donutChartData.datasets[0].data[index]) }}
+                        </div>
+                        <div style="width: 50px;" class="text-right font-weight-700 py-2">
+                          {{ roundDecimal(donutChartData.datasets[0].data[index], 0) }}%
+                        </div>
+                      </div>
+                    </div>
                   </v-card>
                 </v-col>
               </v-row>
@@ -165,9 +200,11 @@ import ATATCharts from "@/store/charts";
 import ATATTooltip from "../components/ATATTooltip.vue"
 
 import { DashboardService } from "@/services/dashboards";
-import { toCurrencyString } from "@/helpers";
 import { CostsDTO, CostGroupDTO } from "@/api/models";
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
+import DonutChart from "../components/charts/DonutChart.vue"
+
+import { toCurrencyString, getLegendAmount, roundDecimal } from "@/helpers";
 
 @Component({
   components: {
@@ -175,6 +212,7 @@ import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
     ATATPageHead,
     BarChart,
     ATATTooltip,
+    DonutChart,
   }
 })
 
@@ -238,6 +276,9 @@ export default class JWCCDashboard extends Vue {
     const max = Math.ceil((largestVal + 25000) / 25000) * 25000;
     this.barChartMonthlySpendOptions.scales.y.max = max;
   }
+  
+  public getLegendAmount = getLegendAmount;
+  public roundDecimal = roundDecimal;
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
@@ -345,6 +386,91 @@ export default class JWCCDashboard extends Vue {
   public avgMonthlySpendTooltipText = `Average amount that is spent and invoiced 
     each month on all JWCC task orders`;
 
+  public cspAmounts = ["4080000.00", "3162000.00", "1836000.00", "1122000.00"]
+  public cspTotal = this.cspAmounts.reduce(
+    (sum, current) => sum + parseFloat(current),
+    0.0
+  )
+
+  public donutChartPercentages: number[] = this.cspAmounts.map(
+    (amount) => (parseFloat(amount) / this.cspTotal * 100)
+  );
+
+  public chartDataColors = ATATCharts.chartDataColors;
+  public chartDataColorSequence = ATATCharts.chartDataColorSequence;
+  public chartDataColorsTranslucent = this.chartDataColorSequence.map((color) => {
+    return color + "33";
+  });
+
+  public donutChartColors = [
+    this.chartDataColorSequence[0],
+    this.chartDataColorSequence[1],
+    this.chartDataColorSequence[2],
+    this.chartDataColorSequence[3],
+  ];
+
+  public donutChartData = {
+    labels: [
+      "CSP 1",
+      "CSP 2",
+      "CSP 3",
+      "CSP 4"   
+    ],
+    datasets: [
+      {
+        label: "Funding Status",
+        data: this.donutChartPercentages,
+        backgroundColor: this.donutChartColors,
+        hoverBackgroundColor: this.donutChartColors,
+        hoverBorderColor: this.donutChartColors,
+        hoverBorderRadius: 0,
+        hoverOffset: 10,
+        hoverBorderWidth: 0,
+        cutout: "67%",
+      },
+    ],
+  };
+
+  public donutChartOptions = {
+    layout: {
+      padding: 20,
+    },
+    aspectRatio: 1.25,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        color: "#000",
+        align: "end",
+        anchor: "end",
+        offset: 10,
+        formatter: function (value: number): string {
+          return value ? parseFloat(value.toFixed(1)) + "%" : "";
+        },
+      },
+    },
+  };
+
+
+  // provides abbreviated currency such as $10.4M or $44.2K
+  public abbreviateCurrencyFormatter(value: number): string {
+    const amountWithNoDecimals = value.toString().split(".")[0]
+
+    // anything less than $40 will show up as 0.0K
+    let amountString;
+    if (amountWithNoDecimals.length >= 7) {
+      const abbreviatedAmountInMillions = (Number(amountWithNoDecimals) / 100000).toFixed(0)
+      amountString = "$"
+        + abbreviatedAmountInMillions.slice(0, abbreviatedAmountInMillions.length - 1)
+        + "." + abbreviatedAmountInMillions.slice(-1)
+        + "M"
+    } else {
+      const abbreviatedAmountInThousands = (Number(amountWithNoDecimals) / 1000).toFixed(1)
+      amountString = "$" + abbreviatedAmountInThousands + "K"
+    }
+    return  amountString
+  }
 }
 
 </script>
