@@ -44,7 +44,10 @@ const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
         yearMonth: key,
         costs: value,
         total: value.reduce<number>((prev, current)=> {
-          const total = prev + current.is_actual ? Number(current.value) : 0;
+          const cost = current.is_actual ==="true" ? Number(current.value) : 0;
+          const total = prev + cost;
+          return total;  
+
           return total;  
         }, 0)
       }
@@ -68,13 +71,17 @@ const getCostAverage = (costGroups:CostGroup[]) => {
 
 
 const getCSPTotals = (costs:CostsDTO[]): Record<string, CSPSpending> =>{
+
+  debugger;
+
   const cspGroups =groupBy(costs, 'csp.name');
   const cspSpendings: Record<string, CSPSpending> = {
   };
   
   for (const [key, value] of Object.entries(cspGroups)) {
     const total = value.reduce<number>((prev, current)=> {
-      const total = prev + current.is_actual ? Number(current.value) : 0;
+      const cost = current.is_actual ==="true" ? Number(current.value) : 0;
+      const total = prev + cost;
       return total;  
     }, 0);
 
