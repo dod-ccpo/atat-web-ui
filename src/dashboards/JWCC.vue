@@ -1,7 +1,7 @@
 <template>
-  <v-main class="_dashboard bg-base-lightest">
+  <v-main class="_dashboard _jwcc bg-base-lightest">
     <ATATPageHead headline="JWCC Dashboard" />
-    <v-container class="container-max-width bg-base-lightest">
+    <v-container class="max-width-1200 bg-base-lightest">
       <v-row>
         <v-col>
           <div id="app-content">
@@ -13,7 +13,28 @@
                     id="SpendingOverviewCard" 
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
-                    Spending overview card
+                    <v-row>
+                      <v-col>
+                        <div
+                          class="bg-primary-lighter px-6 py-6 mb-8"
+                          style="border-radius: 4px;"
+                        >
+                          <span id="AvailableFunds" class="h1 mb-1 d-block">
+                            $10,200,000
+                          </span>
+                          <p class="h3 mb-0 pb-1">JWCC funds spent to date</p>
+                          <p class="mb-0 font-size-14">
+                            Across all organizations, task orders, and portfolios
+                          </p>
+                        </div>
+                        Active task orders
+
+
+                      </v-col>
+                    </v-row>                    
+                    
+
+
                   </v-card>
                 </v-col>
                 <v-col cols="8">
