@@ -20,7 +20,7 @@
                           style="border-radius: 4px;"
                         >
                           <span id="AvailableFunds" class="h1 mb-1 d-block">
-                            $10,200,000
+                            {{ getCurrencyString(fundsSpentToDate) }}
                           </span>
                           <p class="h3 mb-0 pb-1">JWCC funds spent to date</p>
                           <p class="mb-0 font-size-14">
@@ -140,7 +140,11 @@ import { Component } from "vue-property-decorator";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
+
 import { DashboardService } from "@/services/dashboards";
+
+import { toCurrencyString } from "@/helpers";
+import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
 @Component({
   components: {
@@ -151,6 +155,35 @@ import { DashboardService } from "@/services/dashboards";
 })
 
 export default class JWCCDashboard extends Vue {
+  dashboardService: DashboardService = new DashboardService();
+
+  public activeTaskOrderCount = 0;
+  public costs: CostsDTO[] = [];
+  public totalObligatedFunds = 0;
+  public totalTaskOrderValue = 0;
+  public averageMonthlySpend = 0;
+  public fundsSpentToDate = 0;
+
+  public async loadOnEnter(): Promise<void> {
+    const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
+    console.log({data});
+    this.activeTaskOrderCount = data.activeTaskOrders;
+    this.totalObligatedFunds = data.totalObligatedFunds;
+    this.totalTaskOrderValue = data.totalTaskOrderValue;
+    this.fundsSpentToDate = data.fundsSpentToDate;
+    this.costs = data.costs;
+    
+
+  }
+
+  public async mounted(): Promise<void>{
+    await this.loadOnEnter();
+  }
+
+  public getCurrencyString(value: number, decimals?: boolean): string {
+    return "$" + toCurrencyString(value, decimals);
+  }
+
   public totalObligatedFundsTooltipText = `This is the legal amount allocated by the 
     government to fund all task orders awarded under JWCC. This is a portion of the 
     total value of JWCC task orders.`;
@@ -160,23 +193,6 @@ export default class JWCCDashboard extends Vue {
     potentially be exercised in option periods.`;
   public avgMonthlySpendTooltipText = `Average amount that is spent and invoiced 
     each month on all JWCC task orders`;
-
-  dashboardService: DashboardService = new DashboardService();
-
-
-  public async mounted(): Promise<void>{
-    await this.loadOnEnter();
-  }
-
-  
-  public async loadOnEnter(): Promise<void> {
-
-    const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
-
-    console.log({data});
-
-  }
-
 
 }
 
