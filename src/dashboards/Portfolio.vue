@@ -1,6 +1,6 @@
 <template>
   <v-main class="_dashboard bg-base-lightest">
-    <ATATPageHead :headline="projectTitle"  />
+    <ATATPageHead :headline="projectTitle"/>
     <v-container class="container-max-width bg-base-lightest">
       <v-row>
         <v-col>
@@ -10,13 +10,13 @@
 
               <div class="d-flex justify-space-between width-100 mb-6">
                 <h2>Overview</h2>
-                <span class="text-base-dark">Last Sync: Nov. 15, 0100</span> 
+                <span class="text-base-dark">Last Sync: Nov. 15, 0100</span>
               </div>
 
               <v-row>
                 <v-col class="col-sm-6 col-md-8">
-                  <v-card 
-                    id="PortfolioDetailsCard" 
+                  <v-card
+                    id="PortfolioDetailsCard"
                     class="no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Portfolio Details</h3>
@@ -42,7 +42,7 @@
                         <p class="text--base-dark mb-0 font-size-14">
                           Total value of your active task orders
                         </p>
-                        <v-divider class="my-4" />
+                        <v-divider class="my-4"/>
                         <p class="text--base-darkest mb-0 font-size-14">
                           Current Period of Performance
                         </p>
@@ -57,21 +57,21 @@
                   </v-card>
                 </v-col>
                 <v-col class="col-sm-6 col-md-4">
-                  <v-card 
-                    id="FundingStatusCard" 
+                  <v-card
+                    id="FundingStatusCard"
                     class="no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Funding Status</h3>
                     <DonutChart
-                      chart-id="FundingStatusArcChart"
+                      :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
+                      :center-text1="fundsSpentPercent + '%'"
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
                       :is-arc-gauge="true"
-                      :center-text1="fundsSpentPercent + '%'"
                       center-text2="Funds Spent"
-                      :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
+                      chart-id="FundingStatusArcChart"
                     />
-                    <v-divider class="my-4" />
+                    <v-divider class="my-4"/>
                     <p class="mb-0 font-size-14">
                       At your current rate of spending, you will run out of funds by
                       <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}.</span>
@@ -97,17 +97,16 @@
                       </v-col>
                     </v-row>
                     <line-chart
-                      chart-id="LineChart1"
                       ref="lineChart"
                       :chart-data="burnChartData"
                       :chart-options="lineChartOptions"
                       :dataset-to-toggle="datasetToToggle"
                       :toggle-dataset="toggleDataset"
                       :tooltipHeaderData="tooltipHeaderData"
+                      chart-id="LineChart1"
                     />
                     <div class="d-block text-center">
                       <v-radio-group
-                        row
                         class="
                           checkbox-group-row
                           center-checkboxes
@@ -117,28 +116,29 @@
                           compact
                           mt-4
                         "
+                        row
                       >
                         <v-checkbox
                           id="TotalForAllClins_checkbox"
                           v-model="checked[0]"
-                          label="Total of All CLINs"
-                          hide-details="true"
+                          :color="chartDataColors[0]"
                           :ripple="false"
                           class="color_chart_1"
+                          hide-details="true"
+                          label="Total of All CLINs"
                           @change="doToggleDataset(0)"
-                          :color="chartDataColors[0]"
                         ></v-checkbox>
 
                         <v-checkbox
                           v-for="(clin, index) in clins"
                           :key="index"
                           v-model="checked[index + 1]"
-                          :label="clins[index].idiq_clin_label"
                           :class="'color_chart_' + (index + 2)"
-                          hide-details="true"
-                          :ripple="false"
-                          @change="doToggleDataset((index + 1) * 2)"
                           :color="chartDataColors[index + 1]"
+                          :label="clins[index].idiq_clin_label"
+                          :ripple="false"
+                          hide-details="true"
+                          @change="doToggleDataset((index + 1) * 2)"
                         />
 
                       </v-radio-group>
@@ -157,34 +157,34 @@
                   <v-card class="no-shadow v-sheet--outlined pa-8 pb-2">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
-                      The chart below shows the proportion of funds spent and 
-                      funds estimated to be invoiced compared to the total funds 
-                      available in this portfolio. The data includes money spent 
+                      The chart below shows the proportion of funds spent and
+                      funds estimated to be invoiced compared to the total funds
+                      available in this portfolio. The data includes money spent
                       on all active task orders during this period of performance.
                     </p>
                     <v-row>
                       <v-col class="col-sm-6 ml-n6">
                         <donut-chart
-                          chart-id="SpendDonutChart"
+                          :amount="totalPortfolioFunds"
+                          :center-text1="'$' + totalPortfolioFundsStr.slice(0, -3)"
                           :chart-data="donutChartData"
                           :chart-options="donutChartOptions"
                           :use-chart-data-labels="true"
-                          :center-text1="'$' + totalPortfolioFundsStr.slice(0, -3)"
                           center-text2="Total Portfolio Funds"
-                          :amount="totalPortfolioFunds"
+                          chart-id="SpendDonutChart"
                         />
                       </v-col>
                       <v-col class="col-sm-6 d-flex align-center">
                         <div class="width-100">
                           <div
                             v-for="(label, index) in donutChartData.labels"
-                            :key="index" 
+                            :key="index"
                             class="d-flex justify-space-between font-size-14"
                           >
-                            <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
-                              <span 
-                                class="_legend-square"
+                            <div class="pr-4 py-2 d-flex align-center" style="flex: 1">
+                              <span
                                 :style="'background-color: ' + donutChartColors[index]"
+                                class="_legend-square"
                               >
                               </span>
                               <strong>{{ label }}</strong>
@@ -192,20 +192,20 @@
                             <div class="pr-4 py-2">
                               {{ getLegendAmount(index) }}
                             </div>
-                            <div style="width: 50px;" class="text-right font-weight-700 py-2">
+                            <div class="text-right font-weight-700 py-2" style="width: 50px;">
                               {{ donutChartData.datasets[0].data[index] }}%
                             </div>
-                          </div>  
+                          </div>
 
-                          <hr style="margin: 8px 0;" />
+                          <hr style="margin: 8px 0;"/>
                           <div class="d-flex justify-space-between font-size-14">
-                            <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
+                            <div class="pr-4 py-2 d-flex align-center" style="flex: 1">
                               <strong class="d-inline-block mr-1 mb-2">
                                 Total Portfolio Funds
                               </strong>
-                              <ATATTooltip 
-                                :tooltipText="spendingTooltipText"
+                              <ATATTooltip
                                 id="SpendingTooltip"
+                                :tooltipText="spendingTooltipText"
                               />
 
                             </div>
@@ -214,16 +214,69 @@
                             </div>
                             <div style="width: 50px;">
                             </div>
-                          </div>  
+                          </div>
 
                         </div>
-                        
+
                       </v-col>
                     </v-row>
                   </v-card>
                 </v-col>
               </v-row>
 
+              <v-row>
+                <v-col>
+                  <div class="ClinTable">
+                    <span class="h3 justify-center">Active Task Orders</span>
+                    <v-expansion-panels class="pt-6"
+                      ripple="false">
+                      <v-expansion-panel>
+                        <v-expansion-panel-header>
+                          <a class="no-text-decoration">
+                            Task Order #{{this.taskOrder.task_order_number}}
+                          </a>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <v-simple-table
+                          >
+                            <template v-slot:default>
+                              <thead class="bg-base-lightest">
+                              <tr >
+                                <th id="ClinNumber">Clin</th>
+                                <th id="status">Status</th>
+                                <th id="PoP">Period Of Performance</th>
+                                <th id="TotalFundsSpent">Total Funds Spent (%)</th>
+                                <th id="LastMonthsSpend">Last Month's Spend</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr v-for="(item, index) in tableItems" :key="index">
+                                <td>
+                                  {{ item.clinNumber }}
+                                </td>
+                                <td>
+                                  {{ item.clinStatus }}
+                                </td>
+                                <td>
+                                  {{item.periodOfPerformance}}
+                                </td>
+                                <td>
+                                  {{item.totalFundsSpent}}
+
+                                </td>
+                                <td>
+                                  {{item.lastMonthSpent}}
+                                </td>
+                              </tr>
+                              </tbody>
+                            </template>
+                          </v-simple-table>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </div>
+                </v-col>
+              </v-row>
             </div>
             <ATATFooter/>
           </div>
@@ -238,7 +291,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import {PortfolioDashBoardService} from "@/services/portfolioDashBoard";
+import { PortfolioDashBoardService } from "@/services/portfolioDashBoard";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
@@ -249,8 +302,8 @@ import LineChart from "../components/charts/LineChart.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
-import { toCurrencyString } from "@/helpers";
-import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
+import { getIdText, toCurrencyString } from "@/helpers";
+import { ClinDTO, CostsDTO, TaskOrderDTO } from "@/api/models";
 
 import { add } from "date-fns";
 import parseISO from "date-fns/parseISO";
@@ -258,7 +311,6 @@ import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 import { lineChartData, lineChartDataSet } from "types/Global";
-import { getIdText } from "@/helpers";
 import _ from 'lodash';
 
 @Component({
@@ -274,13 +326,6 @@ import _ from 'lodash';
 export default class PortfolioDashboard extends Vue {
 
   portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
-
-  public get projectTitle(): string {
-    return AcquisitionPackage.projectTitle !== ""
-      ? AcquisitionPackage.projectTitle
-      : "New Acquisition";
-  }
-
   public totalPortfolioFunds = 0;
   public totalPortfolioFundsStr = "";
   public fundsSpent = 0;
@@ -288,35 +333,214 @@ export default class PortfolioDashboard extends Vue {
   public availableFunds = 0;
   public availableFundsStr = "";
   public fundsSpentPercent = 0;
- 
   public popStart = "";
   public popEnd = "";
   public timeToExpiration = "";
   public runOutOfFundsDate = "";
-
   public taskOrder: TaskOrderDTO = TaskOrder.value;
   public costs: CostsDTO[] = [];
   public clins: ClinDTO[] = [];
-
   public chartDataColors = ATATCharts.chartDataColors;
   public chartDataColorSequence = ATATCharts.chartDataColorSequence;
   public chartDataColorsTranslucent = this.chartDataColorSequence.map((color) => {
     return color + "33";
   });
-
   public chartAuxColors = ATATCharts.chartAuxColors;
   public monthAbbreviations = ATATCharts.monthAbbreviations;
-  
   public burnChartXLabels: string[] = [];
   public burnChartYMax = 0;
   public burnChartYStepSize = 0;
   public burnChartYLabelSuffix = "k";
   public tooltipHeaderData: Record<string, string> = {}
-
   public currentMonthEstimatedSpend = 0;
   public currentMonthEstimatedSpendStr = "";
   public currentMonthEstimatedSpendPercent = 0;
   public estimatedRemainingPercent = 0;
+  public donutChartPercentages: number[] = [];
+  public arcGuageChartData = {
+    labels: ["Funds spent", "Funds remaining"],
+    datasets: [
+      {
+        label: "Funding Status",
+        data: [0, 0],
+        backgroundColor: [this.chartDataColors.blue, this.chartDataColors.gray],
+        hoverOffset: 0,
+        hoverBorderWidth: 0,
+        circumference: 180,
+        rotation: -90,
+        cutout: "80%",
+      },
+    ],
+  };
+  public arcGuageChartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    aspectRatio: 2,
+    elements: {
+      arc: {
+        borderWidth: 2,
+      },
+    },
+    hover: {
+      mode: null,
+    },
+  };
+  public totalCLINsChecked = true;
+  public unclassifiedXaaSChecked = true;
+  public unclassifiedCloudSupportPackageChecked = false;
+  public checked: boolean[] = [];
+  public datasetToToggle: number | null = null;
+  public toggleDataset = false;
+  public burnChartActualCommonData = {
+    dataSetId: "",
+    label: "",
+    data: [],
+    spanGaps: true,
+    fill: false,
+    borderColor: this.chartDataColorSequence[0],
+    borderWidth: 2,
+    pointRadius: 4,
+    pointBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverRadius: 4,
+    pointBorderWidth: 0,
+    pointHoverBorderWidth: 12,
+    pointHoverBorderColor: this.chartDataColorsTranslucent[0],
+    lineTension: 0,
+  };
+  public burnChartProjectedCommonData = {
+    dataSetId: "",
+    label: "",
+    data: [],
+    spanGaps: true,
+    fill: false,
+    borderWidth: 2,
+    borderColor: this.chartDataColorSequence[0],
+    borderDash: [6, 4],
+    pointRadius: 0,
+  };
+  public lineChartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    animation: {
+      duration: 0,
+    },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    aspectRatio: 2.75,
+    scales: {
+      x: {
+        grid: {
+          display: true,
+          borderDash: [3, 3],
+          borderWidth: 2,
+          borderColor: this.chartAuxColors["lineChart-axis"],
+          lineWidth: 3,
+          tickWidth: 0,
+          color: "transparent",
+        },
+        ticks: {
+          maxTicksLimit: 7,
+          maxRotation: 0,
+          minRotation: 0,
+        },
+      },
+      y: {
+        min: 0,
+        max: 0,
+        grid: {
+          borderColor: "transparent",
+          tickWidth: 0,
+        },
+        ticks: {
+          stepSize: 0,
+          callback: function (value: number): string {
+            return "$" + value / 1000 + "k";
+          },
+        },
+      },
+    },
+  };
+  public donutChartColors = [
+    this.chartDataColorSequence[0],
+    this.chartDataColorSequence[1],
+    this.chartDataColors.gray,
+  ];
+  public donutChartData = {
+    labels: [
+      "Funds spent",
+      "Estimated funds to be invoiced",
+      "Estimated funds available"
+    ],
+    datasets: [
+      {
+        label: "Funding Status",
+        data: this.donutChartPercentages,
+        backgroundColor: this.donutChartColors,
+        hoverBackgroundColor: this.donutChartColors,
+        hoverBorderColor: this.donutChartColors,
+        hoverBorderRadius: 0,
+        hoverOffset: 10,
+        hoverBorderWidth: 0,
+        cutout: "67%",
+      },
+    ],
+  };
+  public donutChartOptions = {
+    layout: {
+      padding: 20,
+    },
+    aspectRatio: 1.25,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        color: "#000",
+        align: "end",
+        anchor: "end",
+        offset: 10,
+        formatter: function (value: number): string {
+          return value ? value + "%" : "";
+        },
+      },
+    },
+  };
+  public spendingTooltipText = `This is the total value of all active task
+    orders funding this portfolio`;
+  private burnChartData: lineChartData = {
+    labels: [""],
+    datasets: [],
+  };
+  public tableItems: {
+    clinNumber:string;
+    clinStatus:string;
+    periodOfPerformance:string;
+    totalFundsSpent:string;
+    lastMonthSpent:string;
+  }[] = []
+  public get projectTitle(): string {
+    return AcquisitionPackage.projectTitle !== ""
+      ? AcquisitionPackage.projectTitle
+      : "New Acquisition";
+  }
 
   public async calculateFundsSpent(): Promise<void> {
     this.costs.forEach((cost) => {
@@ -325,8 +549,9 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public createDateStr(dateStr: string, period: boolean): string {
-    const parsedDate = parseISO(dateStr, { additionalDigits: 1 })
-    const date = new Date(parsedDate.setHours(0,0,0,0));
+
+    const parsedDate = parseISO(dateStr, {additionalDigits: 1})
+    const date = new Date(parsedDate.setHours(0, 0, 0, 0));
     const m = this.monthAbbreviations[date.getMonth()];
     const y = date.getFullYear();
     const d = date.getUTCDate();
@@ -337,10 +562,10 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public calculateTimeToExpiration(): void {
-    const popEndDate = parseISO(this.taskOrder.pop_end_date, { additionalDigits: 1 })
-    const end = new Date(popEndDate.setHours(0,0,0,0));
+    const popEndDate = parseISO(this.taskOrder.pop_end_date, {additionalDigits: 1})
+    const end = new Date(popEndDate.setHours(0, 0, 0, 0));
     const todayDate = new Date();
-    const today = new Date(todayDate.setHours(0,0,0,0));
+    const today = new Date(todayDate.setHours(0, 0, 0, 0));
 
     const daysUntilEndDate = differenceInCalendarDays(end, today);
     const monthsUntilEndDate = differenceInCalendarMonths(end, today);
@@ -349,28 +574,26 @@ export default class PortfolioDashboard extends Vue {
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
 
-    let timeUnit = useMonths 
+    let timeUnit = useMonths
       ? singular ? "month" : "months"
       : singular ? "day" : "days";
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
 
     // calculate when will run out of funds based on current rate of spending
-    const popStartDate = parseISO(this.taskOrder.pop_start_date, { additionalDigits: 1 })
-    const start = new Date(popStartDate.setHours(0,0,0,0));
+    const popStartDate = parseISO(this.taskOrder.pop_start_date, {additionalDigits: 1})
+    const start = new Date(popStartDate.setHours(0, 0, 0, 0));
     const daysSinceStartDate = differenceInCalendarDays(today, start);
     const dailySpend = this.fundsSpent / daysSinceStartDate;
-    const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend); 
-    const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent});
-    const runOutISODate = formatISO(runOutOfFundsDate, { representation: 'date' })
+    const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
+    const runOutOfFundsDate = add(today, {days: daysUntilAllFundsSpent});
+    const runOutISODate = formatISO(runOutOfFundsDate, {representation: 'date'})
     this.runOutOfFundsDate = this.createDateStr(runOutISODate, true);
   }
-
-  public donutChartPercentages: number[] = [];
 
   public calculateBurnDown(): void {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
     const uniqueClins = [...new Set(this.clins.map(clin => clin.clin_number))].sort();
-    
+
     let clinCosts: Record<string, Record<string, string>> = {};
     uniqueClins.forEach((clinNo) => {
       let clinValues: Record<string, string> = {};
@@ -386,19 +609,18 @@ export default class PortfolioDashboard extends Vue {
       });
       clinCosts[clinNo] = clinValues;
     });
-    
-    this.currentMonthEstimatedSpendPercent 
-      = Math.round((Number(
-        (this.currentMonthEstimatedSpend / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
 
-    this.estimatedRemainingPercent 
+    this.currentMonthEstimatedSpendPercent = Math.round((Number(
+      (this.currentMonthEstimatedSpend / this.totalPortfolioFunds).toFixed(3)) * 100) * 10) / 10;
+
+    this.estimatedRemainingPercent
       // = 100 - this.currentMonthEstimatedSpendPercent - this.fundsSpentPercent;
       = Math.round((Number(
         (100 - this.currentMonthEstimatedSpendPercent - this.fundsSpentPercent).toFixed(3)))
-        * 10) / 10;
+      * 10) / 10;
 
     this.donutChartPercentages = [
-      this.fundsSpentPercent, 
+      this.fundsSpentPercent,
       this.currentMonthEstimatedSpendPercent,
       this.estimatedRemainingPercent
     ];
@@ -416,21 +638,21 @@ export default class PortfolioDashboard extends Vue {
     let monthsToAdd = differenceInCalendarMonths(popEndDate, popStartDate);
 
     for (let i = 0; i < monthsToAdd; i++) {
-      month = add(popStartDate, { months: i + 1 });
+      month = add(popStartDate, {months: i + 1});
       periodDates.push(month);
-      periodDatesISO.push(formatISO(month, { representation: 'date' }));
+      periodDatesISO.push(formatISO(month, {representation: 'date'}));
     }
 
     const startMonthNo = popStartDate.getMonth();
     const popEndYear = popEndDate.getFullYear();
     let januaryCount = 0;
     for (let i = startMonthNo; i < startMonthNo + monthsToAdd + 2; i++) {
-      let monthAbbr = i <= 11 
+      let monthAbbr = i <= 11
         ? this.monthAbbreviations[i]
         : this.monthAbbreviations[12 - i];
       if (monthAbbr === "Jan") {
-        monthAbbr = januaryCount === 0 
-          ? monthAbbr + " " + popEndYear 
+        monthAbbr = januaryCount === 0
+          ? monthAbbr + " " + popEndYear
           : monthAbbr + " " + (popEndYear + 1);
         januaryCount++;
       }
@@ -449,7 +671,7 @@ export default class PortfolioDashboard extends Vue {
       const thisClin = this.clins.find(clin => clin.clin_number === clinNo);
       if (thisClin) {
         let fundsObligated = thisClin.funds_obligated;
-        let fundsAvailable = !isNaN(parseInt(fundsObligated)) 
+        let fundsAvailable = !isNaN(parseInt(fundsObligated))
           ? parseInt(fundsObligated)
           : 0;
 
@@ -461,22 +683,22 @@ export default class PortfolioDashboard extends Vue {
           periodDatesISO.forEach((monthISO, i) => {
             const value = parseFloat(thisclinCosts[monthISO]);
             const thisMonthAmount = !isNaN(value) ? value : null;
-            fundsAvailable = thisMonthAmount 
-              ? fundsAvailable - thisMonthAmount 
+            fundsAvailable = thisMonthAmount
+              ? fundsAvailable - thisMonthAmount
               : fundsAvailable;
-            
+
             const month = (parseISO(monthISO)).getMonth() + 1;
             const isCurrentMonth = month === currentMonth;
             const isActual = month < currentMonth;
-            
+
             const actualVal = isActual ? fundsAvailable : null;
             actual.push(actualVal);
 
             const projectedVal = isCurrentMonth
-              ? fundsAvailable 
+              ? fundsAvailable
               : null;
             projected.push(projectedVal);
-            
+
             const monthTotalActual = totalActualBurnData[i + 1];
             if (!monthTotalActual) {
               totalActualBurnData[i + 1] = actualVal;
@@ -532,8 +754,8 @@ export default class PortfolioDashboard extends Vue {
       if (clin && this.burnChartData.datasets) {
         const clinActualData = {
           label: clin.idiq_clin_label,
-          dataSetId: clin.idiq_clin_label 
-            ? getIdText(clin.idiq_clin_label + "Actual") 
+          dataSetId: clin.idiq_clin_label
+            ? getIdText(clin.idiq_clin_label + "Actual")
             : clinNo + "Data",
           data: actualBurn[clinNo],
         };
@@ -545,10 +767,10 @@ export default class PortfolioDashboard extends Vue {
 
         Object.assign(clinActualDataSet, clinActualData);
         burnChartDataSets.push(clinActualDataSet);
-        
+
         const clinProjectedData = {
           label: clin.idiq_clin_label + " Projected",
-          dataSetId: clin.idiq_clin_label 
+          dataSetId: clin.idiq_clin_label
             ? getIdText(clin.idiq_clin_label + "Projected") : clinNo + "DataProjected",
           data: projectedBurn[clinNo],
         };
@@ -563,6 +785,28 @@ export default class PortfolioDashboard extends Vue {
     return;
   }
 
+  public createTableItems(): void{
+    this.clins.forEach((clin) => {
+      let obj:{
+        clinNumber:string;
+        clinStatus:string;
+        periodOfPerformance:string;
+        totalFundsSpent:string;
+        lastMonthSpent:string;
+      } = { clinNumber:"",
+        clinStatus:"",
+        periodOfPerformance:"",
+        totalFundsSpent:"",
+        lastMonthSpent:""}
+      obj.clinNumber = clin.clin_number, 
+      obj.clinStatus = clin.clin_status,
+      obj.periodOfPerformance = `${this.createDateStr(clin.pop_start_date,true)} -
+        ${this.createDateStr(clin.pop_end_date,true)}`,
+      obj.totalFundsSpent = clin.funds_obligated,
+      obj.lastMonthSpent = clin.funds_total,
+      this.tableItems.push(obj);
+    })
+  }
   public async calculateTotalFunds(): Promise<void> {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
     this.clins.forEach((clin) => {
@@ -579,18 +823,18 @@ export default class PortfolioDashboard extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.portFolioDashBoardService.getdata('1000000001234');
-
     this.taskOrder = data.taskOrder
     this.costs = data.costs;
     this.clins = data.clins;
     this.clins.sort((a, b) => (a.idiq_clin > b.idiq_clin) ? 1 : -1);
+    console.log(this.clins)
 
     await this.calculateTotalFunds();
 
     this.costs.forEach((cost) => {
       cost.value = (parseInt(cost.value)).toString();
     });
-
+    this.createTableItems();
     await this.calculateFundsSpent();
     this.availableFunds = this.totalPortfolioFunds - this.fundsSpent;
     this.availableFundsStr = toCurrencyString(this.availableFunds);
@@ -602,9 +846,9 @@ export default class PortfolioDashboard extends Vue {
     };
 
     this.fundsSpentPercent = Math.round(this.fundsSpent / this.totalPortfolioFunds * 100);
-    this.arcGuageChartData.datasets[0].data 
+    this.arcGuageChartData.datasets[0].data
       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
-    
+
     this.popStart = this.createDateStr(this.taskOrder.pop_start_date, true);
     this.popEnd = this.createDateStr(this.taskOrder.pop_end_date, true);
 
@@ -613,194 +857,9 @@ export default class PortfolioDashboard extends Vue {
     this.calculateBurnDown();
   }
 
-  public async mounted(): Promise<void>{
+  public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
-  public arcGuageChartData = {
-    labels: ["Funds spent", "Funds remaining"],
-    datasets: [
-      {
-        label: "Funding Status",
-        data: [0, 0],
-        backgroundColor: [this.chartDataColors.blue, this.chartDataColors.gray],
-        hoverOffset: 0,
-        hoverBorderWidth: 0,
-        circumference: 180,
-        rotation: -90,
-        cutout: "80%",
-      },
-    ],
-  };
-
-  public arcGuageChartOptions = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: false,
-      },
-      datalabels: {
-        display: false,
-      },
-    },
-    aspectRatio: 2,
-    elements: {
-      arc: {
-        borderWidth: 2,
-      },
-    },
-    hover: {
-      mode: null,
-    },
-  };
-
-  public totalCLINsChecked = true;
-  public unclassifiedXaaSChecked = true;
-  public unclassifiedCloudSupportPackageChecked = false;
-  public checked: boolean[] = [];
-
-  public datasetToToggle: number | null = null;
-  public toggleDataset = false;
-
-  private doToggleDataset(datasetIndex: number) {
-    this.datasetToToggle = datasetIndex;
-    this.toggleDataset = !this.toggleDataset;
-  }
-
-  public burnChartActualCommonData = {
-    dataSetId: "",
-    label: "",
-    data: [],
-    spanGaps: true,
-    fill: false,
-    borderColor: this.chartDataColorSequence[0],
-    borderWidth: 2,
-    pointRadius: 4,
-    pointBackgroundColor: this.chartDataColorSequence[0],
-    pointHoverBackgroundColor: this.chartDataColorSequence[0],
-    pointHoverRadius: 4,
-    pointBorderWidth: 0,
-    pointHoverBorderWidth: 12,
-    pointHoverBorderColor: this.chartDataColorsTranslucent[0],
-    lineTension: 0,
-  };
-  public burnChartProjectedCommonData = {
-    dataSetId: "",  
-    label: "",
-    data: [],
-    spanGaps: true,
-    fill: false,
-    borderWidth: 2,
-    borderColor: this.chartDataColorSequence[0],
-    borderDash: [6, 4],
-    pointRadius: 0,
-  };
-
-  private burnChartData: lineChartData = {
-    labels: [""],
-    datasets: [],
-  };
-  
-  public lineChartOptions = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-      datalabels: {
-        display: false,
-      },
-    },
-    animation: {
-      duration: 0,
-    },
-    interaction: {
-      mode: "index",
-      intersect: false,
-    },
-    aspectRatio: 2.75,
-    scales: {
-      x: {
-        grid: {
-          display: true,
-          borderDash: [3, 3],
-          borderWidth: 2,
-          borderColor: this.chartAuxColors["lineChart-axis"],
-          lineWidth: 3,
-          tickWidth: 0,
-          color: "transparent",
-        },
-        ticks: {
-          maxTicksLimit: 7,
-          maxRotation: 0,
-          minRotation: 0,
-        },
-      },
-      y: {
-        min: 0,
-        max: 0,
-        grid: {
-          borderColor: "transparent",
-          tickWidth: 0,
-        },
-        ticks: {
-          stepSize: 0,
-          callback: function (value: number): string {
-            return "$" + value / 1000 + "k";
-          },
-        },
-      },
-    },
-  };
-
-  public donutChartColors = [
-    this.chartDataColorSequence[0],
-    this.chartDataColorSequence[1],
-    this.chartDataColors.gray,
-  ];
-
-  public donutChartData = {
-    labels: [
-      "Funds spent", 
-      "Estimated funds to be invoiced", 
-      "Estimated funds available"
-    ],
-    datasets: [
-      {
-        label: "Funding Status",
-        data: this.donutChartPercentages,
-        backgroundColor: this.donutChartColors,
-        hoverBackgroundColor: this.donutChartColors,
-        hoverBorderColor: this.donutChartColors,
-        hoverBorderRadius: 0,
-        hoverOffset: 10,
-        hoverBorderWidth: 0,
-        cutout: "67%",
-      },
-    ],
-  };
-
-  public donutChartOptions = {
-    layout: {
-      padding: 20,
-    },
-    aspectRatio: 1.25,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      datalabels: {
-        color: "#000",
-        align: "end",
-        anchor: "end",
-        offset: 10,
-        formatter: function (value: number): string {
-          return value ? value + "%" : "";
-        },
-      },
-    },
-  };
 
   public getLegendAmount(index: number): string {
     const amount = this.totalPortfolioFunds * this.donutChartData.datasets[0].data[index] / 100;
@@ -808,8 +867,10 @@ export default class PortfolioDashboard extends Vue {
     return amountStr;
   }
 
-  public spendingTooltipText = `This is the total value of all active task 
-    orders funding this portfolio`;
+  private doToggleDataset(datasetIndex: number) {
+    this.datasetToToggle = datasetIndex;
+    this.toggleDataset = !this.toggleDataset;
+  }
 
 }
 
