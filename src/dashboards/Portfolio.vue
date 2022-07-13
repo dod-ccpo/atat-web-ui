@@ -10,13 +10,13 @@
 
               <div class="d-flex justify-space-between width-100 mb-6">
                 <h2>Overview</h2>
-                <span class="text-base-dark">Last Sync: Nov. 15, 0100</span> 
+                <span class="text-base-dark">Last Sync: Nov. 15, 0100</span>
               </div>
 
               <v-row>
                 <v-col class="col-sm-6 col-md-8">
-                  <v-card 
-                    id="PortfolioDetailsCard" 
+                  <v-card
+                    id="PortfolioDetailsCard"
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Portfolio Details</h3>
@@ -59,8 +59,8 @@
                   </v-card>
                 </v-col>
                 <v-col class="col-sm-6 col-md-4">
-                  <v-card 
-                    id="FundingStatusCard" 
+                  <v-card
+                    id="FundingStatusCard"
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Funding Status</h3>
@@ -260,9 +260,9 @@
                   <v-card class="_no-shadow v-sheet--outlined pa-8 pb-2">
                     <h3>Breakdown of Actual and Estimated Spend</h3>
                     <p class="font-size-14">
-                      The chart below shows the proportion of funds spent and 
-                      funds estimated to be invoiced compared to the total funds 
-                      available in this portfolio. The data includes money spent 
+                      The chart below shows the proportion of funds spent and
+                      funds estimated to be invoiced compared to the total funds
+                      available in this portfolio. The data includes money spent
                       on all active task orders during this period of performance.
                     </p>
                     <v-row>
@@ -281,11 +281,11 @@
                         <div class="width-100">
                           <div
                             v-for="(label, index) in donutChartData.labels"
-                            :key="index" 
+                            :key="index"
                             class="d-flex justify-space-between font-size-14"
                           >
                             <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
-                              <span 
+                              <span
                                 class="_legend-square"
                                 :style="'background-color: ' + donutChartColors[index]"
                               >
@@ -298,7 +298,7 @@
                             <div style="width: 50px;" class="text-right font-weight-700 py-2">
                               {{ roundDecimal(donutChartData.datasets[0].data[index], 1) }}%
                             </div>
-                          </div>  
+                          </div>
 
                           <hr style="margin: 8px 0;" />
                           <div class="d-flex justify-space-between font-size-14">
@@ -306,7 +306,7 @@
                               <strong class="d-inline-block mr-1 mb-2">
                                 Total Portfolio Funds
                               </strong>
-                              <ATATTooltip 
+                              <ATATTooltip
                                 :tooltipText="spendingTooltipText"
                                 id="SpendingTooltip"
                                 label="Spending"
@@ -318,10 +318,10 @@
                             </div>
                             <div style="width: 50px;">
                             </div>
-                          </div>  
+                          </div>
 
                         </div>
-                        
+
                       </v-col>
                     </v-row>
                   </v-card>
@@ -377,7 +377,7 @@
                               </thead>
                               <tbody>
                               <tr v-for="(item, index) in tableItems" :key="index">
-                                <td>
+                                <td id="ClinData">
                                   <div class=" d-flex flex-column ">
                                     <span class="font-size-14 text-base-darker">
                                       {{ item.costClinNumber }}
@@ -387,13 +387,13 @@
                                     </span>
                                   </div>
                                 </td>
-                                <td class="_v-align-top">
+                                <td id="ClinStatus" class="_v-align-top">
                                   <span class=
                                    "badge badge-green d-inline-block d-flex align-center">
                                     {{ item.clinStatus }}
                                   </span>
                                 </td>
-                                <td>
+                                <td id="ClinPoP">
                                   <div class=" d-flex flex-column ">
                                     <span class="font-size-14 text-base-darker">
                                   {{item.periodOfPerformance}}
@@ -403,7 +403,7 @@
                                   </span>
                                   </div>
                                 </td>
-                                <td>
+                                <td id="ClinTotalFundsSpent">
                                   <div class=" d-flex flex-column ">
                                     <span class="font-size-14 text-base-darker d-flex justify-end">
                                       ${{ item.totalFundsSpent}}
@@ -424,7 +424,7 @@
                                   </span>
                                   </div>
                                 </td>
-                                <td>
+                                <td id="ClinLastMonthSpent">
                                   <div class=" d-flex flex-column">
                                     <span class="font-size-14 text-base-darker d-flex justify-end">
                                        ${{item.lastMonthSpent}}
@@ -456,13 +456,15 @@
                               <tr>
                               <td></td>
                               <td></td>
-                                <td class="d-flex justify-end align-start">
+                                <td id="Total" class="d-flex justify-end align-start">
                                  <span class="
                                  pr-12 font-size-14 text-base-darkest font-weight-700 ">
                                    Total
                                  </span>
                                 </td>
-                                <td>
+                                <td
+                                  id="TotalSpent"
+                                >
                                   <div class=" d-flex flex-column ">
                                     <span
                                      class="
@@ -484,7 +486,9 @@
                                   </span>
                                   </div>
                                 </td>
-                                <td>
+                                <td
+                                  id="TotalLastMonthSpent"
+                                >
                                   <div class=" d-flex flex-column ">
                                     <span
                                      class="
@@ -553,7 +557,7 @@ import LineChart from "../components/charts/LineChart.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
-import { toCurrencyString } from "@/helpers";
+import { toCurrencyString, getIdText } from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
 import { add } from "date-fns";
@@ -562,7 +566,6 @@ import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 import { lineChartData, lineChartDataSet } from "types/Global";
-import { getIdText } from "@/helpers";
 import _ from 'lodash';
 
 @Component({
@@ -590,7 +593,7 @@ export default class PortfolioDashboard extends Vue {
   public fundsSpent = 0;
   public availableFunds = 0;
   public fundsSpentPercent = 0;
- 
+
   public popStart = "";
   public popEnd = "";
   public timeToExpiration = "";
@@ -672,7 +675,7 @@ export default class PortfolioDashboard extends Vue {
     const useMonths = daysUntilEndDate > 90;
     const singular = unitsRemaining === 1;
 
-    let timeUnit = useMonths 
+    let timeUnit = useMonths
       ? singular ? "month" : "months"
       : singular ? "day" : "days";
     this.timeToExpiration = unitsRemaining + " " + timeUnit;
@@ -683,7 +686,7 @@ export default class PortfolioDashboard extends Vue {
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
     const daysSinceStartDate = differenceInCalendarDays(today, start);
     const dailySpend = this.fundsSpent / daysSinceStartDate;
-    const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend); 
+    const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
     const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent});
     const runOutISODate = formatISO(runOutOfFundsDate, { representation: 'date' })
     this.runOutOfFundsDate = this.createDateStr(runOutISODate, true);
@@ -695,7 +698,7 @@ export default class PortfolioDashboard extends Vue {
     const uniqueDates = [...new Set(this.costs.map(cost => cost.year_month))].sort();
     const uniqueCostClins = [...new Set(this.costs.map(cost => cost.clin))].sort();
     const uniqueIdiqClins = [...new Set(this.idiqClins.map(clin => clin.idiq_clin))].sort();
-    
+
     let clinCosts: Record<string, Record<string, string>> = {};
     uniqueCostClins.forEach((clinNo) => {
       let clinValues: Record<string, string> = {};
@@ -709,15 +712,15 @@ export default class PortfolioDashboard extends Vue {
       });
       clinCosts[clinNo] = clinValues;
     });
-    
+
     this.estimatedFundsToBeInvoicedPercent
       = this.endOfMonthForecast / this.totalPortfolioFunds * 100;
 
-    this.estimatedRemainingPercent 
+    this.estimatedRemainingPercent
       = 100 - this.fundsSpentPercent - this.estimatedFundsToBeInvoicedPercent;
 
     this.donutChartPercentages = [
-      this.fundsSpentPercent, 
+      this.fundsSpentPercent,
       this.estimatedFundsToBeInvoicedPercent,
       this.estimatedRemainingPercent
     ];
@@ -745,12 +748,12 @@ export default class PortfolioDashboard extends Vue {
     const popEndYear = popEndDate.getFullYear();
     let januaryCount = 0;
     for (let i = startMonthNo; i < startMonthNo + monthsToAdd + 2; i++) {
-      let monthAbbr = i <= 11 
+      let monthAbbr = i <= 11
         ? this.monthAbbreviations[i]
         : this.monthAbbreviations[12 - i];
       if (monthAbbr === "Jan") {
-        monthAbbr = januaryCount === 0 
-          ? monthAbbr + " " + popEndYear 
+        monthAbbr = januaryCount === 0
+          ? monthAbbr + " " + popEndYear
           : monthAbbr + " " + (popEndYear + 1);
         januaryCount++;
       }
@@ -770,7 +773,7 @@ export default class PortfolioDashboard extends Vue {
       if (thisIdiqClin) {
         const costClinNo = thisIdiqClin.clin_number;
         let fundsObligated = thisIdiqClin.funds_obligated;
-        let fundsAvailable = !isNaN(parseInt(fundsObligated)) 
+        let fundsAvailable = !isNaN(parseInt(fundsObligated))
           ? parseInt(fundsObligated)
           : 0;
 
@@ -782,22 +785,22 @@ export default class PortfolioDashboard extends Vue {
           periodDatesISO.forEach((monthISO, i) => {
             const value = parseFloat(thisclinCosts[monthISO]);
             const thisMonthAmount = !isNaN(value) ? value : null;
-            fundsAvailable = thisMonthAmount 
-              ? fundsAvailable - thisMonthAmount 
+            fundsAvailable = thisMonthAmount
+              ? fundsAvailable - thisMonthAmount
               : fundsAvailable;
-            
+
             const month = (parseISO(monthISO)).getMonth() + 1;
             const isCurrentMonth = month === currentMonth;
             const isActual = month < currentMonth;
-            
+
             const actualVal = isActual ? fundsAvailable : null;
             actual.push(actualVal);
 
             const projectedVal = isCurrentMonth
-              ? fundsAvailable 
+              ? fundsAvailable
               : null;
             projected.push(projectedVal);
-            
+
             const monthTotalActual = totalActualBurnData[i + 1];
             if (!monthTotalActual) {
               totalActualBurnData[i + 1] = actualVal;
@@ -900,8 +903,8 @@ export default class PortfolioDashboard extends Vue {
       if (clin && this.burnChartData.datasets) {
         const clinActualData = {
           label: clin.idiq_clin_label,
-          dataSetId: clin.idiq_clin_label 
-            ? getIdText(clin.idiq_clin_label + "Actual") 
+          dataSetId: clin.idiq_clin_label
+            ? getIdText(clin.idiq_clin_label + "Actual")
             : idiqClinNo + "Data",
           data: actualBurn[idiqClinNo],
         };
@@ -913,10 +916,10 @@ export default class PortfolioDashboard extends Vue {
 
         Object.assign(clinActualDataSet, clinActualData);
         burnChartDataSets.push(clinActualDataSet);
-        
+
         const clinProjectedData = {
           label: clin.idiq_clin_label + " Projected",
-          dataSetId: clin.idiq_clin_label 
+          dataSetId: clin.idiq_clin_label
             ? getIdText(clin.idiq_clin_label + "Projected") : idiqClinNo + "DataProjected",
           data: projectedBurn[idiqClinNo],
         };
@@ -1066,9 +1069,9 @@ export default class PortfolioDashboard extends Vue {
     };
 
     this.fundsSpentPercent = this.fundsSpent / this.totalPortfolioFunds * 100;
-    this.arcGuageChartData.datasets[0].data 
+    this.arcGuageChartData.datasets[0].data
       = [this.fundsSpentPercent, 100 - this.fundsSpentPercent];
-    
+
     this.popStart = this.createDateStr(this.taskOrder.pop_start_date, true);
     this.popEnd = this.createDateStr(this.taskOrder.pop_end_date, true);
 
@@ -1152,7 +1155,7 @@ export default class PortfolioDashboard extends Vue {
     lineTension: 0,
   };
   public burnChartProjectedCommonData = {
-    dataSetId: "",  
+    dataSetId: "",
     label: "",
     data: [],
     spanGaps: true,
@@ -1167,7 +1170,7 @@ export default class PortfolioDashboard extends Vue {
     labels: [""],
     datasets: [],
   };
-  
+
   public lineChartOptions = {
     plugins: {
       legend: {
@@ -1272,7 +1275,7 @@ export default class PortfolioDashboard extends Vue {
     return this.getCurrencyString(amount);
   }
 
-  public spendingTooltipText = `This is the total value of all active task 
+  public spendingTooltipText = `This is the total value of all active task
     orders funding this portfolio`;
 
   public periodToDateTooltipText = `This is the total spend from the start of
