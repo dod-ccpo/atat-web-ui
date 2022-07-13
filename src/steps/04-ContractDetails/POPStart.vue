@@ -93,7 +93,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 })
 export default class POPStart extends Mixins(SaveOnLeave) {
   private requestedPopStartDate 
-    = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";;
+    = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
   private selectedPoPStartDateOption 
     = AcquisitionPackage.periodOfPerformance?.pop_start_request || "";
   private startPoPDateOptions: RadioButton[] = [

@@ -197,6 +197,8 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 
+import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
+
 import { PeriodDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
@@ -222,6 +224,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public maxPayments = 1;
   public periodLengthStr = "";
 
+   private requestedPopStartDate 
+    = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || new Date();
+
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
   public costEstimate = 0;
@@ -230,6 +235,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public amountRemainingStr = "";
   public initialAmount = 0;
   public initialAmountStr = "";
+  
   public totalAmount: number | null = null;
 
   public errorMissingInitialIncrement = false;
