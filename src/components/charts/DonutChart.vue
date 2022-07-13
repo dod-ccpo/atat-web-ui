@@ -20,6 +20,7 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public centerText1!: string;
   @Prop({ required: false, default: "" }) public centerText2!: string;
   @Prop({ required: false, default: "" }) public amount!: number;
+  @Prop({ required: false, default: true }) public showHoverLegend!: boolean;
 
   private myChart!: Chart;
 
@@ -30,13 +31,15 @@ export default class DonutChart extends Vue {
   }
 
   private mounted() {
-    const toolTipExternalOptions = {
-      enabled: false,
-      position: "nearest",
-      external: this.externalTooltipHandler,
-    };
+    if (this.showHoverLegend) {
+      const toolTipExternalOptions = {
+        enabled: false,
+        position: "nearest",
+        external: this.externalTooltipHandler,
+      };
 
-    this.chartOptions.plugins.tooltip = toolTipExternalOptions;
+      this.chartOptions.plugins.tooltip = toolTipExternalOptions;
+    }
 
     this.createChart();
   }

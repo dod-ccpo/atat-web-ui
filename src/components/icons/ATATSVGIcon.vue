@@ -22,8 +22,10 @@ import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Pdf from "@/components/icons/Pdf.vue";
-import Search from "@/components/icons/Search.vue";
 import Remove from "@/components/icons/Remove.vue";
+import Search from "@/components/icons/Search.vue";
+import TrendingDown from "@/components/icons/TrendingDown.vue";
+import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
 
 @Component({
@@ -38,6 +40,8 @@ import UploadFile from "@/components/icons/UploadFile.vue";
     Pdf,
     Remove,
     Search,
+    TrendingDown,
+    TrendingUp,
     UploadFile,
   }
 })
@@ -71,6 +75,7 @@ export default class ATATSVGIcon extends Vue {
     { "primary": "544496" },
     { "info": "009ddd" },
     { "success": "62bd59" },
+    { "success-dark": "498e43" },    
     { "error": "c60634" },
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
