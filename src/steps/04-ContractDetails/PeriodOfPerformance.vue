@@ -118,7 +118,7 @@
             :class="{ 'd-flex': totalPoPDuration > maxTotalPoPDuration }"
             v-show="totalPoPDuration > maxTotalPoPDuration"
           >
-            <v-icon class="text-base-error icon-20"> error </v-icon>
+            <v-icon class="text-error icon-20"> error </v-icon>
             <div class="field-error ml-2">
               The total length of your base and option periods should be 5 years
               or less.
