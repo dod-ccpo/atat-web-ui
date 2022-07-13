@@ -26,7 +26,8 @@
       <span v-if="tooltipTitle" class="font-weight-bold d-block mb-1">
         {{ tooltipTitle }}
       </span>
-      {{ tooltipText }}
+      <div v-html="tooltipText">
+      </div>
     </div>
   </v-tooltip>
 </template>
