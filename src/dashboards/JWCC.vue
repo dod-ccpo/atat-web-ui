@@ -177,6 +177,53 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Funds Spent by Organization</h3>
+                    <p class="font-size-14">
+                      Compare the total funds spent across each DoD organization. The data includes
+                      spend on all JWCC portfolios to date.
+                    </p>
+                    <v-row>
+                      <v-col class="col-sm-6 ml-n6">
+                        <donut-chart
+                          chart-id="OrganizationDonutChart"
+                          :chart-data="organizationDonutChartData"
+                          :use-chart-data-labels="true"
+                          :chart-options="organizationDonutChartOptions"
+                          :centerText1="abbreviateCurrencyFormatter(fundsSpentToDate)"
+                          center-text2="Total Portfolio Funds"
+                          :amount="fundsSpentToDate"
+                        />
+                      </v-col>
+                      <v-col class="d-flex align-center">
+                        <div class="width-100 mt-4">
+                          <div
+                            v-for="(label, index) in organizationDonutChartData.labels"
+                            :key="index"
+                            class="d-flex justify-space-between font-size-14"
+                          >
+                            <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
+                          <span
+                            class="_legend-square"
+                            :style="'background-color: ' + donutChartColors[index]"
+                          >
+                          </span>
+                              <strong>{{ label }}</strong>
+                            </div>
+                            <div class="pr-4 py-2 font-weight-400">
+                              {{ getLegendAmount(
+                              fundsSpentToDate,
+                              organizationDonutChartData.datasets[0].data[index]
+                            )
+                              }}
+                            </div>
+                            <div style="width: 50px;" class="text-right font-weight-700 py-2">
+                              {{
+                                roundDecimal(organizationDonutChartData.datasets[0].data[index], 0)
+                              }}%
+                            </div>
+                          </div>
+                        </div>
+                      </v-col>
+                    </v-row>
                   </v-card>
                 </v-col>
 
@@ -199,7 +246,6 @@ import { Component } from "vue-property-decorator";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 import BarChart from "../components/charts/BarChart.vue";
-
 import ATATCharts from "@/store/charts";
 import ATATTooltip from "../components/ATATTooltip.vue"
 
@@ -230,7 +276,7 @@ export default class JWCCDashboard extends Vue {
   public chartAuxColors = ATATCharts.chartAuxColors;
   public monthAbbreviations = ATATCharts.monthAbbreviations;
   public monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
-
+  public cloudServiceDonutChartPercentages: number[] = [];
   public activeTaskOrderCount = 0;
   
   public costs: CostsDTO[] = [];
@@ -296,8 +342,15 @@ export default class JWCCDashboard extends Vue {
     this.fundsSpentToDate = data.fundsSpentToDate;
     this.costs = data.costs;
     this.costGroups = data.costGroups;
-
+    this.fundsSpentByAgency = Object.values(data.fundsSpentByServiceAgency)
+    this.fundsSpentByAgency.forEach((agency)=>{
+      this.agencyNames.push(this.agencyLabelFormatter(agency.name as string))
+      this.agencyAmounts.push(agency.total as string)
+    })
+    this.organizationDonutData = this.organizationDonutChartPercent()
+    this.organizationDonutChartData.datasets[0].data = this.organizationDonutData
     await this.setMonthlySpendSummaryBarChartData();
+
 
     this.fundsSpentByCSP = Object.values(data.fundsSpentByCSP);
     this.fundsSpentByCSP.forEach((csp) =>
@@ -388,6 +441,68 @@ export default class JWCCDashboard extends Vue {
       },
     }
   }
+  public fundsSpentByAgency: Record<string, string | number>[] = [];
+  public agencyNames: string[] = [];
+  public agencyAmounts: string[] = [];
+  public organizationDonutData: number[] = [];
+  public agencyLabelFormatter(str: string):string {
+    switch (str) {
+    case "US_NAVY":
+      return "Navy";
+    case "US_ARMY":
+      return "Army";
+    default:
+      return 'name not in function'
+    }
+  }
+  public organizationDonutChartOptions = {
+    layout: {
+      padding: 20,
+    },
+    aspectRatio: 1.25,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        color: "#000",
+        align: "end",
+        anchor: "end",
+        offset: 10,
+        formatter: function (value: number): string {
+          return value ? parseFloat(value.toFixed(1)) + "%" : "";
+        },
+      },
+    },
+  };
+  public organizationDonutChartColors = [
+    this.chartDataColorSequence[0],
+    this.chartDataColorSequence[1],
+  ];
+  public organizationDonutChartData = {
+    labels:this.agencyNames,
+    datasets: [
+      {
+        label: "Funding Status",
+        data: this.organizationDonutData,
+        backgroundColor: this.organizationDonutChartColors,
+        hoverBackgroundColor: this.organizationDonutChartColors,
+        hoverBorderColor: this.organizationDonutChartColors,
+        hoverBorderRadius: 0,
+        hoverOffset: 10,
+        hoverBorderWidth: 0,
+        cutout: "67%",
+      },
+    ],
+  };
+
+  public organizationDonutChartPercent(): number[] {
+    const percentages = this.agencyAmounts.map(
+      (amount) => (parseFloat(amount) / this.fundsSpentToDate * 100)
+    );
+    return percentages;
+  }
+
 
   public totalObligatedFundsTooltipText = `This is the legal amount allocated by the 
     government to fund all task orders awarded under JWCC. This is a portion of the 
