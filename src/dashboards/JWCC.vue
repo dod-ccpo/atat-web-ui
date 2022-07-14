@@ -206,6 +206,12 @@ export default class JWCCDashboard extends Vue {
   public today = new Date(new Date().setHours(0,0,0,0));
   public currentYear = this.today.getFullYear();
 
+  public orgSpendRateLineChartData: {
+    org: string;
+    burnupData: Record<string, number>[]
+  }[] = [];
+
+
   public getMonthYearString(monthIndex: number, year: number): string {
     let monthAbbr = this.monthAbbreviations[monthIndex];
     monthAbbr = this.monthsNotAbbreviated.indexOf(monthAbbr) > -1 
@@ -239,6 +245,14 @@ export default class JWCCDashboard extends Vue {
     this.barChartMonthlySpendOptions.scales.y.max = max;
   }
 
+  public async calculateSpendRateLineChartData(): Promise<void> {
+    // debugger
+    // loop thru costs or costGroups and sum up each month's costs
+    // add them to previous month value for current month value
+    
+    return;
+  }
+
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
     console.log({data});
@@ -255,6 +269,8 @@ export default class JWCCDashboard extends Vue {
     const periodStart = new Date(this.currentYear + "-01-01T00:00:00");
     this.monthsIntoPeriod = differenceInCalendarMonths(this.today, periodStart);
     this.averageMonthlySpend = Math.round(this.fundsSpentToDate / this.monthsIntoPeriod);
+
+    await this.calculateSpendRateLineChartData();
   }
 
   public async mounted(): Promise<void>{
