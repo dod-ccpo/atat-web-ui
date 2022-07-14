@@ -1645,6 +1645,56 @@ export function saveToSNOW(testCase){
     currentTestEndPoints =  currentTestEndPoints.concat(background);
   }
 
+  if (spec === "common"){
+    debugger;
+    const common = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC6_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 6
+      },
+      
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(common);
+  }
+
   currentTestEndPoints.forEach((ep)=>{
     /**
      * middleware needed for routes to executed in 
