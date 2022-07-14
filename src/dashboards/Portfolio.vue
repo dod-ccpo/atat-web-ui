@@ -370,7 +370,7 @@
                                   <div class="
                                     font-size-12 text-base-darker d-flex justify-end align-center "
                                        id="LastMonthsSpend">
-                                    Last Month's Spend
+                                    Last Month’s Spend
                                   </div>
                                 </th>
                               </tr>
