@@ -450,6 +450,14 @@ export default class JWCCDashboard extends Vue {
       return "Navy";
     case "US_ARMY":
       return "Army";
+    case "US_AIR_FORCE":
+      return "Air Force";
+    case "US_MARINE_CORPS":
+      return "Marine Corps";
+    case "FOURTH_ESTATE":
+      return "Other";
+    case "SPACE_FORCE":
+      return "Space Force";
     default:
       return 'name not in function'
     }
@@ -477,6 +485,10 @@ export default class JWCCDashboard extends Vue {
   public organizationDonutChartColors = [
     this.chartDataColorSequence[0],
     this.chartDataColorSequence[1],
+    this.chartDataColorSequence[2],
+    this.chartDataColorSequence[3],
+    this.chartDataColorSequence[4],
+    this.chartDataColorSequence[5],
   ];
   public organizationDonutChartData = {
     labels:this.agencyNames,
