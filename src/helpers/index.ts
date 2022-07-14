@@ -81,3 +81,18 @@ export const currencyStringToNumber = (str: string): number => {
   return str ? parseFloat(str.replaceAll(",","")) : 0;
 }
 
+
+export const getCurrencyString = (value: number, decimals?: boolean): string => {
+  return "$" + toCurrencyString(value, decimals);
+}
+
+export const roundDecimal = (value: number, decimals: number): number => {
+  decimals = decimals || 0;
+  value = value || 0;
+  return parseFloat(value.toFixed(decimals));
+}
+
+export const getLegendAmount = ( total: number, indexValue: number): string => {
+  const amount = total * indexValue / 100;
+  return getCurrencyString(amount);
+}

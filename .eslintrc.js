@@ -26,7 +26,7 @@ module.exports = {
     "valid-typeof": "warn",
     "indent": ["error", 2],
     "camelcase": ["error", {}],
-    "max-len": ["error", { "code": 100}]
+    "max-len": ["error", { "code": 100}],
   },
   overrides: [
     {

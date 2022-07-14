@@ -11,7 +11,7 @@ import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: No Classification Levels Workflow Scenarios ", () => {
+describe("Test suite: No Classification Levels Workflow Scenarios", { tags: '@iso-ignore' },  () => {
   let serviceOfferingGroups; 
   let periodCount=2
   beforeEach(() => {
