@@ -83,6 +83,27 @@
                 </v-col>
               </v-row>
 
+              <v-row>
+                <v-col>
+                  <ATATAlert
+                    id="FinancialDetailsAlert"
+                    type="info"
+                    class="container-max-width my-10"
+                  >
+                    <template v-slot:content>
+                      <p class="mb-0">
+                        NOTE: All financial data depicted are estimates to assist with tracking
+                        cloud spend. Login to your CSP console to get detailed cost analysis and
+                        breakdowns.
+                        <a role="button" id="LearnMoreFinancialInfo" @click="openSlideoutPanel">
+                          Learn more
+                        </a>
+                      </p>
+                    </template>
+                  </ATATAlert>
+                </v-col>
+              </v-row>
+
               <v-row id="BurndownChartWrap">
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
@@ -344,6 +365,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { DashboardService } from "../services/dashboards";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 import ATATSVGIcon from "../components/icons/ATATSVGIcon.vue";
@@ -362,12 +384,15 @@ import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
-import { lineChartData, lineChartDataSet } from "types/Global";
+import { lineChartData, lineChartDataSet, SlideoutPanelContent } from "types/Global";
 import { getIdText } from "@/helpers";
 import _ from 'lodash';
+import SlideoutPanel from "@/store/slideoutPanel";
+import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 
 @Component({
   components: {
+    ATATAlert,
     ATATFooter,
     ATATPageHead,
     ATATSVGIcon,
@@ -722,6 +747,12 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.datasets = burnChartDataSets;
     return;
   }
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
 
   public async calculateTotalFunds(): Promise<void> {
     // total portfolio funds is sum of each IDIQ CLIN's funds obligated
@@ -774,6 +805,11 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async mounted(): Promise<void>{
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: FinancialDataLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 
