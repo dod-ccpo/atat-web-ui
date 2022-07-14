@@ -300,6 +300,13 @@ export interface CostsDTO extends BaseTableDTO {
   value: string;
 }
 
+export interface CostGroupDTO {
+  totalActual: number;
+  totalProjected: number;
+  yearMonth: string;
+  costs: CostsDTO[];
+}
+
 export interface ClinDTO extends BaseTableDTO {
   funds_obligated: string;
   clin_number: string;
