@@ -335,7 +335,6 @@ export default class JWCCDashboard extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
-    console.log({data});
     this.activeTaskOrderCount = data.activeTaskOrders;
     this.totalObligatedFunds = data.totalObligatedFunds;
     this.totalTaskOrderValue = data.totalTaskOrderValue;
