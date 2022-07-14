@@ -23,10 +23,10 @@ const bootStrapAcquisitionPackageApi= ()=> {
     loadInitialData();
     saveToSNOW(testCase);
   }
+
 }
 
 export function bootstrapMockApis(){
- 
   bootStrapAcquisitionPackageApi();    
 }
 

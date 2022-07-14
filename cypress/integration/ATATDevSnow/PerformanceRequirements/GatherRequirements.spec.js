@@ -11,7 +11,7 @@ import contractDetails from "../../../selectors/contractDetails.sel";
 import performanceReqs from "../../../selectors/performanceReqs.sel";
 
 
-describe("Test suite: Gather Requirements screen ", () => {
+describe("Test suite: Gather Requirements screen ",{ tags: '@iso-ignore' },  () => {
   let serviceOfferingGroups; 
 
   beforeEach(() => {

@@ -342,7 +342,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { PortfolioDashBoardService } from "../services/portfolioDashBoard";
+import { DashboardService } from "../services/dashboards";
 
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
@@ -379,7 +379,7 @@ import _ from 'lodash';
 
 export default class PortfolioDashboard extends Vue {
 
-  portFolioDashBoardService: PortfolioDashBoardService = new PortfolioDashBoardService();
+  dashboardService: DashboardService = new DashboardService();
 
   public get projectTitle(): string {
     return AcquisitionPackage.projectTitle !== ""
@@ -737,7 +737,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const data = await this.portFolioDashBoardService.getdata('1000000001234');
+    const data = await this.dashboardService.getdata('1000000001234');
 
     this.taskOrder = data.taskOrder
     this.costs = data.costs;
