@@ -181,8 +181,8 @@
                       Compare the total funds spent across each DoD organization. The data includes
                       spend on all JWCC portfolios to date.
                     </p>
-                    <v-row>
-                      <v-col class="col-sm-6 ml-n6 pl-15 d-flex">
+                    <v-row class="ps-15">
+                      <v-col class="col-sm-6 ml-n1 pl-15">
                         <donut-chart
                           chart-id="OrganizationDonutChart"
                           :chart-data="organizationDonutChartData"
@@ -193,7 +193,7 @@
                           :amount="fundsSpentToDate"
                         />
                       </v-col>
-                      <v-col class="d-flex align-center pr-15">
+                      <v-col class="d-flex align-center mr-13 pr-15">
                         <div class="width-100 mt-4">
                           <div
                             v-for="(label, index) in organizationDonutChartData.labels"
@@ -208,7 +208,7 @@
                           </span>
                               <strong>{{ label }}</strong>
                             </div>
-                            <div class="pr-4 py-2 font-weight-400">
+                            <div class=" py-2 font-weight-400">
                               {{ getLegendAmount(
                               fundsSpentToDate,
                               organizationDonutChartData.datasets[0].data[index]
