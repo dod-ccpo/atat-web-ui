@@ -200,7 +200,7 @@ export class DashboardService{
       costGroups,
       fundsSpentToDate: getCostsTotalActual(costGroups),
       fundsSpentByCSP :  getEntityTotals(combined.costs, "csp.name"),
-      fundsSpentyByServiceAgency: getEntityTotals(combined.costs, "service_agency"),
+      fundsSpentByServiceAgency: getEntityTotals(combined.costs, "service_agency"),
 
     }
   }
