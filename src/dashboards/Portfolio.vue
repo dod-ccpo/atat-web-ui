@@ -1,4 +1,8 @@
 <template>
+  <div  style="overflow: hidden;">
+    <ATATSlideoutPanel v-if="panelContent">
+      <component :is="panelContent"></component>
+    </ATATSlideoutPanel>
   <v-main class="_dashboard bg-base-lightest">
     <ATATPageHead :headline="projectTitle"  />
     <v-container class="container-max-width bg-base-lightest">
@@ -357,6 +361,7 @@
       </v-row>
     </v-container>
   </v-main>
+  </div>
 
 </template>
 
@@ -368,6 +373,7 @@ import { DashboardService } from "../services/dashboards";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
+import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATSVGIcon from "../components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DonutChart from "../components/charts/DonutChart.vue";
@@ -395,6 +401,7 @@ import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMor
     ATATAlert,
     ATATFooter,
     ATATPageHead,
+    ATATSlideoutPanel,
     ATATSVGIcon,
     ATATTooltip,
     DonutChart,
@@ -1002,6 +1009,10 @@ export default class PortfolioDashboard extends Vue {
     const amount = this.totalPortfolioFunds * this.donutChartData.datasets[0].data[index] / 100;
     return this.getCurrencyString(amount);
   }
+
+  private get panelContent() {
+    return SlideoutPanel.slideoutPanelComponent;
+  };
 
   public spendingTooltipText = `This is the total value of all active task 
     orders funding this portfolio`;
