@@ -8,7 +8,7 @@ import contact from "../../../selectors/contact.sel";
 import fd from "../../../selectors/financialDetails.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: Financial Details Step: Financial POC", () => {
+describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-ignore' },() => {
   let contactInfo;
 
   beforeEach(() => {

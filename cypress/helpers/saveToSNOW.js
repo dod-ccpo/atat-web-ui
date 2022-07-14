@@ -27,7 +27,8 @@ const spec = specPath[specPath.length-1].split(".")[0];
 const fixtureFolder = testSuite() + "/" + spec;
 
 export function saveToSNOW(testCase){
-  let acqPackageEndPoints = [
+  let currentTestEndPoints = [];
+  let acquistionpackagedetails = [
     {
       'fixture': 'projectOverview',
       'apiURL': 'x_g_dis_atat_project_overview',
@@ -43,24 +44,238 @@ export function saveToSNOW(testCase){
       'apiURL': 'x_g_dis_atat_contacts',
       'action': 'POST',
     }
-  ]
-  const contractDetailsEndPoints = [
-    {
-      'fixture': 'fairOpportunity',
-      'apiURL': 'x_g_dis_atat_fair_opportunity',
-      'action': 'POST',
-    },
-    {
-      'fixture': 'period',
-      'apiURL': 'x_g_dis_atat_period',
-      'action': 'POST',
-    },
-    {
-      'fixture': 'periodOfPerformance',
-      'apiURL': 'x_g_dis_atat_period_of_performance',
-      'action': 'POST',
-    },
-  ]
+  ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+  currentTestEndPoints =  currentTestEndPoints.concat(acquistionpackagedetails);
+  /** contract details */
+  if (spec === "classificationrequirements"){
+    let classificationrequirements = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_classificationLevel_GET_1',
+        'apiURL': 'x_g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_classificationLevel_GET_1',
+        'apiURL': 'x_g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_classificationLevel_GET_1',
+        'apiURL': 'x_g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_classificationLevel_GET_1',
+        'apiURL': 'x_g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_classificationLevel_GET_1',
+        'apiURL': 'x_g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },
+
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(classificationrequirements);
+  }
+
+  if (spec === "contracttype"){
+    let contractType = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_contractType_POST_1',
+        'apiURL': 'x_g_dis_atat_contract_type',
+        'action': 'POST',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_classificationLevel_GET_1',
+        'apiURL': 'x_g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(contractType);
+  }
+  if (spec === "workflow"){
+    let workflow = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_PATCH_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_PATCH_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_contractType_POST_1',
+        'apiURL': 'x_g_dis_atat_contract_type',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_classificationLevel_GET_1',
+        'apiURL': 'x__g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_3',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+    
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(workflow);
+  }
 
   /** financialDetails */
   if (spec === "fundingplan"){
@@ -145,7 +360,7 @@ export function saveToSNOW(testCase){
         'testCase' : 5
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(fundingPlan);
+    currentTestEndPoints =  currentTestEndPoints.concat(fundingPlan);
   }
   if (spec === "incrementalfunding"){
     const incrementalFunding = [
@@ -320,7 +535,7 @@ export function saveToSNOW(testCase){
         'testCase' : 6
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(incrementalFunding);
+    currentTestEndPoints =  currentTestEndPoints.concat(incrementalFunding);
   };
 
   if (spec === "mipr"){
@@ -406,7 +621,7 @@ export function saveToSNOW(testCase){
         'testCase' : 3
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(mipr);
+    currentTestEndPoints =  currentTestEndPoints.concat(mipr);
   };
   if (spec === "requirementscostestimate"){
     const requirementsCostEstimate = [
@@ -432,12 +647,12 @@ export function saveToSNOW(testCase){
         'testCase' : 2
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(requirementsCostEstimate);
+    currentTestEndPoints =  currentTestEndPoints.concat(requirementsCostEstimate);
   }
 
   /** otherContractConsiderations */
   if (spec === "conflictofinterest"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -461,7 +676,7 @@ export function saveToSNOW(testCase){
     ]);
   }
   if (spec === "packagingpackingshipping"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/contractConsiderations_GET_1',
         'apiURL': 'x_g_dis_atat_contract_considerations/**',
@@ -482,7 +697,7 @@ export function saveToSNOW(testCase){
     ]);
   }
   if (spec === "training"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -524,7 +739,7 @@ export function saveToSNOW(testCase){
     ]);
   }
   if (spec === "trainingcourse"){
-    acqPackageEndPoints =  acqPackageEndPoints.concat([
+    currentTestEndPoints =  currentTestEndPoints.concat([
       {
         'fixture': fixtureFolder + '/taskOrder_POST',
         'apiURL': 'x_g_dis_atat_task_order',
@@ -574,7 +789,6 @@ export function saveToSNOW(testCase){
     ]);
   }
     
-
   /** standardsAndComplaince */
   if (spec === "baa"){
     const baa = [
@@ -672,7 +886,7 @@ export function saveToSNOW(testCase){
       },
      
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(baa);
+    currentTestEndPoints =  currentTestEndPoints.concat(baa);
   }
   if (spec === "foia"){
     const foia = [
@@ -1069,9 +1283,8 @@ export function saveToSNOW(testCase){
       },
 
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(foia);
+    currentTestEndPoints =  currentTestEndPoints.concat(foia);
   }
-
   if (spec === "pii"){
     const pii = [
       {
@@ -1171,9 +1384,8 @@ export function saveToSNOW(testCase){
         'statusCode': 200,
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(pii);
+    currentTestEndPoints =  currentTestEndPoints.concat(pii);
   }
- 
   if (spec === "section508standards"){
     const section508standards = [
       {
@@ -1328,9 +1540,10 @@ export function saveToSNOW(testCase){
         'statusCode': 200,
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(section508standards);
+    currentTestEndPoints =  currentTestEndPoints.concat(section508standards);
   }
 
+  
   if (spec === "background"){
     debugger;
     const background = [
@@ -1429,14 +1642,60 @@ export function saveToSNOW(testCase){
         'testCase' : 6
       },
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    acqPackageEndPoints =  acqPackageEndPoints.concat(background);
-
+    currentTestEndPoints =  currentTestEndPoints.concat(background);
   }
 
-  acqPackageEndPoints.concat(
-    contractDetailsEndPoints,
-    
-  ).forEach((ep)=>{
+  if (spec === "common"){
+    debugger;
+    const common = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC6_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 6
+      },
+      
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(common);
+  }
+
+  currentTestEndPoints.forEach((ep)=>{
     /**
      * middleware needed for routes to executed in 
      * the order listed

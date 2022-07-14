@@ -280,6 +280,9 @@ $sizes: 16, 18, 20, 22, 24, 26, 28, 32, 50, 60, 65, 200;
   &.badge-blue {
     background-color: $info-dark;
   }
+  &.badge-green {
+    background-color: $success;
+  }
 }
 
 ._semibold {

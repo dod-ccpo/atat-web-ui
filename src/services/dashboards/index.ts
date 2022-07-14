@@ -25,7 +25,7 @@ export interface CostGroup {
   totalProjected: number;
 }
 
-export interface CSPSpending {
+export interface EntitySpending {
    name: string;
    total: number;
 }
@@ -67,12 +67,10 @@ const getCostsTotalActual = (costGroups:CostGroup[])=> {
 }
 
 
-const getCSPTotals = (costs:CostsDTO[]): Record<string, CSPSpending> =>{
-
-  const cspGroups =groupBy(costs, 'csp.name');
-  const cspSpendings: Record<string, CSPSpending> = {
+const getEntityTotals = (costs:CostsDTO[], entityName: string): Record<string, EntitySpending> =>{
+  const cspGroups =groupBy(costs, entityName);
+  const cspSpendings: Record<string, EntitySpending> = {
   };
-  
   for (const [key, value] of Object.entries(cspGroups)) {
     const total = value.reduce<number>((prev, current)=> {
       const cost = current.is_actual ==="true" ? Number(current.value) : 0;
@@ -89,7 +87,6 @@ const getCSPTotals = (costs:CostsDTO[]): Record<string, CSPSpending> =>{
   return cspSpendings;
 
 }
-
 
 
 
@@ -202,7 +199,8 @@ export class DashboardService{
       ...combined,
       costGroups,
       fundsSpentToDate: getCostsTotalActual(costGroups),
-      fundsSpentByCSP :  getCSPTotals(combined.costs),
+      fundsSpentByCSP :  getEntityTotals(combined.costs, "csp.name"),
+      fundsSpentByServiceAgency: getEntityTotals(combined.costs, "service_agency"),
 
     }
   }
