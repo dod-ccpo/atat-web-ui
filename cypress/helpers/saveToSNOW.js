@@ -186,6 +186,96 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     currentTestEndPoints =  currentTestEndPoints.concat(contractType);
   }
+  if (spec === "workflow"){
+    let workflow = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_PATCH_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_PATCH_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_contractType_POST_1',
+        'apiURL': 'x_g_dis_atat_contract_type',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_classificationLevel_GET_1',
+        'apiURL': 'x__g_dis_atat_classification_level',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_3',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+    
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(workflow);
+  }
 
   /** financialDetails */
   if (spec === "fundingplan"){
