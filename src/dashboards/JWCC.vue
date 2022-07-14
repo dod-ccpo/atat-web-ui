@@ -133,16 +133,16 @@
                     </p>
                     <DonutChart
                       chart-id="CSPSpendingDonutChart"
-                      :chart-data="donutChartData"
+                      :chart-data="cspDonutChartData"
                       :chart-options="donutChartOptions"
                       :use-chart-data-labels="true"
-                      :centerText1="abbreviateCurrencyFormatter(cspTotal)"
+                      :centerText1="abbreviateCurrencyFormatter(fundsSpentToDate)"
                       centerText2="Total Funds Spent"
-                      :amount="cspTotal"
+                      :amount="fundsSpentToDate"
                     />
-                    <div class="width-100">
+                    <div class="width-100 mt-4">
                       <div
-                        v-for="(label, index) in donutChartData.labels"
+                        v-for="(label, index) in cspDonutChartData.labels"
                         :key="index"
                         class="d-flex justify-space-between font-size-14"
                       >
@@ -155,10 +155,14 @@
                           <strong>{{ label }}</strong>
                         </div>
                         <div class="pr-4 py-2 font-weight-400">
-                          {{ getLegendAmount(cspTotal, donutChartData.datasets[0].data[index]) }}
+                          {{ getLegendAmount(
+                              fundsSpentToDate,
+                              cspDonutChartData.datasets[0].data[index]
+                             )
+                          }}
                         </div>
                         <div style="width: 50px;" class="text-right font-weight-700 py-2">
-                          {{ roundDecimal(donutChartData.datasets[0].data[index], 0) }}%
+                          {{ roundDecimal(cspDonutChartData.datasets[0].data[index], 0) }}%
                         </div>
                       </div>
                     </div>
@@ -276,6 +280,9 @@ export default class JWCCDashboard extends Vue {
     this.barChartMonthlySpendOptions.scales.y.max = max;
   }
   
+  public fundsSpentByCSP: Record<string, string | number>[] = [];
+  public cspLabels: string[] = []
+  public cspAmounts: string[] = []
   public getLegendAmount = getLegendAmount;
   public roundDecimal = roundDecimal;
   public getCurrencyString = getCurrencyString;
@@ -292,6 +299,16 @@ export default class JWCCDashboard extends Vue {
 
     await this.setMonthlySpendSummaryBarChartData();
 
+    this.fundsSpentByCSP = Object.values(data.fundsSpentByCSP);
+    this.fundsSpentByCSP.forEach((csp) =>
+      this.cspLabels.push((csp.name as string).replace("_"," "))
+    );
+    this.fundsSpentByCSP.forEach((csp) => this.cspAmounts.push(csp.total as string));
+    this.cspDonutData = this.cspDonutChartPercentages();
+    this.cspDonutChartData.datasets[0].data = this.cspDonutData;
+    
+    const today = new Date(new Date().setHours(0,0,0,0));
+    const thisYear = today.getFullYear();
     // for MVP, period start will always be Jan 1 of current year
     const periodStart = new Date(this.currentYear + "-01-01T00:00:00");
     this.monthsIntoPeriod = differenceInCalendarMonths(this.today, periodStart);
@@ -382,16 +399,13 @@ export default class JWCCDashboard extends Vue {
   public avgMonthlySpendTooltipText = `Average amount that is spent and invoiced 
     each month on all JWCC task orders`;
 
-  public cspAmounts = ["4080000.00", "3162000.00", "1836000.00", "1122000.00"]
-  public cspTotal = this.cspAmounts.reduce(
-    (sum, current) => sum + parseFloat(current),
-    0.0
-  )
-
-  public donutChartPercentages: number[] = this.cspAmounts.map(
-    (amount) => (parseFloat(amount) / this.cspTotal * 100)
-  );
-
+  public cspDonutData: number[] = []
+  public cspDonutChartPercentages(): number[] {
+    const percentages = this.cspAmounts.map(
+      (amount) => (parseFloat(amount) / this.fundsSpentToDate * 100)
+    );
+    return percentages;
+  }
   public donutChartColors = [
     this.chartDataColorSequence[0],
     this.chartDataColorSequence[1],
@@ -399,17 +413,12 @@ export default class JWCCDashboard extends Vue {
     this.chartDataColorSequence[3],
   ];
 
-  public donutChartData = {
-    labels: [
-      "CSP 1",
-      "CSP 2",
-      "CSP 3",
-      "CSP 4"   
-    ],
+  public cspDonutChartData = {
+    labels: this.cspLabels,
     datasets: [
       {
         label: "Funding Status",
-        data: this.donutChartPercentages,
+        data: this.cspDonutData,
         backgroundColor: this.donutChartColors,
         hoverBackgroundColor: this.donutChartColors,
         hoverBorderColor: this.donutChartColors,
@@ -436,7 +445,7 @@ export default class JWCCDashboard extends Vue {
         anchor: "end",
         offset: 10,
         formatter: function (value: number): string {
-          return value ? parseFloat(value.toFixed(1)) + "%" : "";
+          return value ? parseFloat(value.toFixed(0)) + "%" : "";
         },
       },
     },

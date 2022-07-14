@@ -133,6 +133,7 @@ export default class DonutChart extends Vue {
       labelSpan.style.fontWeight = "700";
       labelSpan.style.fontSize = "14px";
       labelSpan.style.marginRight = "16px";
+      labelSpan.style.whiteSpace = "nowrap";
       labelSpan.appendChild(text);
 
       const percentNo = parseFloat(labelText.slice(sep + 2, labelText.length));
