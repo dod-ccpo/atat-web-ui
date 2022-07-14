@@ -182,14 +182,14 @@
                       spend on all JWCC portfolios to date.
                     </p>
                     <v-row>
-                      <v-col class="col-sm-6 ml-n6 pl-15">
+                      <v-col class="col-sm-6 ml-n6 pl-15 d-flex">
                         <donut-chart
                           chart-id="OrganizationDonutChart"
                           :chart-data="organizationDonutChartData"
                           :use-chart-data-labels="true"
                           :chart-options="organizationDonutChartOptions"
                           :centerText1="abbreviateCurrencyFormatter(fundsSpentToDate)"
-                          center-text2="Total Portfolio Funds"
+                          center-text2="Total Funds Spent"
                           :amount="fundsSpentToDate"
                         />
                       </v-col>
