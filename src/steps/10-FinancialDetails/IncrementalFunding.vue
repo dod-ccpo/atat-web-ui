@@ -59,7 +59,7 @@
                 :key="index"
                 :id="'Increment' + index"
               >
-
+{{ index }}
                 <div class="d-flex justify-space-between align-center mb-4">
                   <ATATSelect
                     :id="'IncrementPeriod' + index"
@@ -67,6 +67,11 @@
                     width="190"
                     :selectedValue.sync="fundingIncrements[index].qtr"
                     class="mr-4"
+                    @input="changeQuarter()"
+                    :rules="[
+                      () =>(erroredSelectIndex === -1 && erroredSelectIndex !== index) 
+                        || 'Duplicate'
+                    ]"
                   />
                   <ATATTextField
                     :id="'Amount' + index"
@@ -106,7 +111,11 @@
                   />
                   <div class="field-error ml-2">{{ errorMissingFirstIncrementMessage }}</div>
                 </div>
-
+                <ATATErrorValidation 
+                  :id="'errorValidationDiv_' + index" 
+                  :errorMessages="errorMessages" 
+                  v-if="errorMessages.length>0" 
+                />
               </div>
 
               <v-btn
@@ -188,18 +197,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue"
 
 import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
+import PeriodOfPerformance from "@/store/periods";
 
-import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
-
-import { PeriodDTO } from "@/api/models";
+import { PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
@@ -212,28 +221,29 @@ import { add, format, isValid } from "date-fns";
     ATATSelect,
     ATATSVGIcon,
     ATATTextField,
+    ATATErrorValidation
   }
 })
 
 export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public today = new Date();
-  public currentQuarter = Math.floor(((this.today.getMonth() + 3) / 3) + 1);
   public currentYear = this.today.getFullYear();
 
   public periods: PeriodDTO[] | null = [];
   public maxPayments = 1;
   public periodLengthStr = "";
-
-   private requestedPopStartDate = () =>{
-     let _requestedPopStartDate = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date;
-     debugger;
-     return format(
-       (_requestedPopStartDate !== undefined ? new Date(_requestedPopStartDate) :  new Date()), 
-       "MM/dd/yyyy"
-     );
-   }
+  public requestedPopStartDate = PeriodOfPerformance.periodOfPerformance?.requested_pop_start_date;
+  public startDate = ():Date => {
+    return this.requestedPopStartDate !== "" && this.requestedPopStartDate !== undefined 
+      ? new Date(this.requestedPopStartDate) 
+      : new Date();
+  }
  
+  public currentQuarter = ():number=> {
+    return Math.floor(((this.startDate().getMonth() + 3) / 3) + 1);
+  }
+  
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
   public costEstimate = 0;
@@ -242,13 +252,16 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public amountRemainingStr = "";
   public initialAmount = 0;
   public initialAmountStr = "";
+  private currentSelectedValue = "";
   
   public totalAmount: number | null = null;
 
+  private errorMessages: string[] = [];
   public errorMissingInitialIncrement = false;
   public errorMissingInitialIncrementMessage = "Please enter the amount of your initial funding.";
   public errorMissingFirstIncrement = false;
   public errorMissingFirstIncrementMessage = "Please enter the amount of your first increment.";
+  public erroredSelectIndex = -1;
 
   // use in future ticket for validation returning to page to show error messages
   public hasReturnedToPage = false;
@@ -270,8 +283,21 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public fiscalQuarters: { text: string, order: number }[] = [];
 
+
+  
+  public changeQuarter(): void{
+    this.erroredSelectIndex = -1;
+    debugger;
+    const quarters = this.fundingIncrements.filter((inc) => inc.qtr === this.currentSelectedValue);
+    const _isQuarterDuplicated = quarters.length > 1;
+    if (_isQuarterDuplicated){
+      this.erroredSelectIndex = quarters[quarters.length-1].order;
+    };
+   
+  }
+  
   public async initializeIncrements(): Promise<void> {
-    let qtr = this.currentQuarter;
+    let qtr = this.currentQuarter();
     let year = parseInt(this.currentYear.toString().slice(-2));
     for (let i = 0; i < 6; i++) {
       const ordinal = this.ordinals[qtr - 1];
@@ -355,10 +381,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public getFiscalQuarters(index: number): SelectData[] {
-    if (index === 0) {
-      return this.fiscalQuarters;
-    } 
-
+    this.currentSelectedValue = this.fundingIncrements[0].qtr;
     const firstSelectedQtr = this.fundingIncrements[0].qtr;
     const firstSelectedQtrIndex 
       = this.fiscalQuarters.findIndex(p => p.text === firstSelectedQtr);
@@ -369,8 +392,15 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       : lastPossibleIndex;
     let optionsArr = this.fiscalQuarters.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
 
+    // debugger;
+    if (index === 0) {
+      return this.fiscalQuarters;
+    }
     return optionsArr;
+ 
   }
+
+
 
   public async loadOnEnter(): Promise<void> {
     const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
@@ -394,7 +424,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
     await this.initializeIncrements();
 
-    this.periods = Periods.periods;
+    this.periods = await Periods.loadPeriods();
     if (this.periods) {
       const basePeriod = this.periods.find(p => p.period_type === "BASE");
       if (basePeriod) {
@@ -424,8 +454,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
-  public async mounted(): Promise<void> {
-    this.requestedPopStartDate();
+  public async created(): Promise<void> {
     await this.loadOnEnter();
   }
 
