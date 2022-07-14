@@ -57,7 +57,7 @@
         </h4>
         <ATATFileUpload
           :validFileFormats="validFileFormats"
-          attachmentServiceName="FundingPlans"
+          attachmentServiceName="FundingRequestFSForm"
           :maxFileSizeInBytes="maxFileSizeInBytes"
           id="FundingPlan"
           @delete="onRemoveAttachment"
@@ -103,7 +103,6 @@ import { invalidFile, uploadingFile } from "types/Global";
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { AttachmentTables } from "@/api";
 import Attachments from "@/store/attachments";
-import { isValid } from "date-fns";
 import { AttachmentDTO } from "@/api/models";
 import FinancialDetails from "@/store/financialDetails";
 import { hasChanges } from "@/helpers";

@@ -1,10 +1,38 @@
 /* eslint-disable camelcase */
 import { FundingRequestFSFormApi } from "@/api/fundingRequestFSForm";
 import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
-import { AttachmentServiceBase } from "..";
+import { AttachmentServiceCallbacks, RecordManager } from "..";
+import { AttachmentServiceBase } from "../base";
+import FinancialDetails from "@/store/financialDetails";
+import api from "@/api";
+
+
+const recordManager : RecordManager<FundingRequestFSFormDTO> = {
+  retrieveOrCreate: async function (): Promise<FundingRequestFSFormDTO> {
+
+    if (FinancialDetails.fundingRequestFSForm == null) {
+      const record = await api.fundingRequestFSFormTable.create();
+      return record;
+    }
+
+    return FinancialDetails.fundingRequestFSForm;
+
+  },
+  save: async function (record: string): Promise<void> {
+    const data = JSON.parse(record) as FundingRequestFSFormDTO;
+    FinancialDetails.setFundingRequestFSForm(data);
+  }
+}
 
 export class FundingRequestFSAttachmentService extends 
   AttachmentServiceBase<FundingRequestFSFormApi, FundingRequestFSFormDTO>{
+
+  constructor(serviceKey: string, tableName: string, tableApi: FundingRequestFSFormApi) {
+    super(serviceKey, tableName, tableApi);
+  }
+
+  protected recordManager: RecordManager<FundingRequestFSFormDTO> = recordManager;
+  
 
   protected updateRecord(record: FundingRequestFSFormDTO, attachmentSysId: string, 
     fileName: string): FundingRequestFSFormDTO {
@@ -22,7 +50,7 @@ export class FundingRequestFSAttachmentService extends
       record.fs_form_7600a_filename = fileName;
       // eslint-disable-next-line camelcase
       record.fs_form_7600a_attachment = attachmentSysId;
-    }
+    };
 
     return record;
      
@@ -60,7 +88,9 @@ export class FundingRequestFSAttachmentService extends
       record.fs_form_7600b_attachment = "";
       record.fs_form_7600b_filename = "";
     }
+
     await this.tableApi.update(attachment.table_sys_id, record);
+    AttachmentServiceCallbacks.invokeRemoveCallbacks(this.serviceKey, attachment);
   }
   
 
