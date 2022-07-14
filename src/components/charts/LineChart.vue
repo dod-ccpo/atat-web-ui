@@ -14,6 +14,7 @@ export default class LineChart extends Vue {
   @Prop({ required: true, default: {} }) public chartOptions!: any;
   @Prop({ required: false }) public datasetToToggle!: number;
   @Prop({ required: false }) public toggleDataset!: boolean;
+  @Prop({ required: false, default: false }) public hasProjected?: boolean;
   @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
   private myChart!: Chart;
 
@@ -28,12 +29,17 @@ export default class LineChart extends Vue {
     debugger;
     const i = this.datasetToToggle;
     const isDatasetVisible = this.myChart.isDatasetVisible(i);
+    debugger;
     if (isDatasetVisible) {
       this.myChart.hide(i); // actual spend (solid)
-      this.myChart.hide(i + 1); // burndown (dashed)
+      if (this.hasProjected) {
+        this.myChart.hide(i + 1); // burndown (dashed)
+      }
     } else {
       this.myChart.show(i);
-      this.myChart.show(i + 1);
+      if (this.hasProjected) {
+        this.myChart.show(i + 1);
+      }
     }
   }
 

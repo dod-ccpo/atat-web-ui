@@ -107,6 +107,7 @@
                       :dataset-to-toggle="datasetToToggle"
                       :toggle-dataset="toggleDataset"
                       :tooltipHeaderData="tooltipHeaderData"
+                      :hasProjected="true"
                     />
                     <div class="d-block text-center">
                       <v-radio-group
