@@ -205,6 +205,7 @@ import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
+import { add, format, isValid } from "date-fns";
 
 @Component({
   components: {
@@ -224,9 +225,15 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public maxPayments = 1;
   public periodLengthStr = "";
 
-   private requestedPopStartDate 
-    = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || new Date();
-
+   private requestedPopStartDate = () =>{
+     let _requestedPopStartDate = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date;
+     debugger;
+     return format(
+       (_requestedPopStartDate !== undefined ? new Date(_requestedPopStartDate) :  new Date()), 
+       "MM/dd/yyyy"
+     );
+   }
+ 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
   public costEstimate = 0;
@@ -256,6 +263,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   };
 
   private savedData: IFPData = {
+    
     initialFundingIncrementStr: "",
     fundingIncrements: [],
   }
@@ -417,6 +425,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public async mounted(): Promise<void> {
+    this.requestedPopStartDate();
     await this.loadOnEnter();
   }
 
