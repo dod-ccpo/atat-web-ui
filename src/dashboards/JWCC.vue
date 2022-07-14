@@ -230,9 +230,15 @@ export default class JWCCDashboard extends Vue {
       ["End-of-month Forecast", "(" + this.currentMonthYearStr + ")"],
     ];
     const len = this.costGroups.length;
-    const prevMonthSpend = this.costGroups[len - 2].total;
-    const projectedSpend = this.costGroups[len - 1].total;
-    this.barChartMonthlySpendData.datasets[0].data = [prevMonthSpend, projectedSpend];
+    const prevMonthSpend = this.costGroups[len - 2].totalActual;
+    const projectedSpend = this.costGroups[len - 1].totalProjected;
+    const chartData = [prevMonthSpend, projectedSpend];
+    this.barChartMonthlySpendData.datasets[0].data = chartData;
+
+    // future ticket will make more dynamic based on data
+    const largestVal = Math.max(...chartData);
+    const max = Math.ceil((largestVal + 25000) / 25000) * 25000;
+    this.barChartMonthlySpendOptions.scales.y.max = max;
 
   }
 
@@ -269,8 +275,8 @@ export default class JWCCDashboard extends Vue {
     datasets: [
       {
         barPercentage: 0.5,
-        barThickness: 100,
-        maxBarThickness: 100,
+        barThickness: 150,
+        maxBarThickness: 150,
         minBarLength: 2,
         data: [83123, 95987],
         backgroundColor: [this.chartDataColorSequence[0], this.chartDataColorSequence[0]],
@@ -315,12 +321,11 @@ export default class JWCCDashboard extends Vue {
           borderColor: this.chartAuxColors["lineChart-axis"],
           tickWidth: 0,
           color: "transparent",
-
         }
       },
       y: {
         min: 0,
-        max: 125000,
+        max: 0,
         grid: {
           borderColor: "transparent",
           tickWidth: 0,
@@ -335,8 +340,6 @@ export default class JWCCDashboard extends Vue {
     }
   }
 
-
-
   public totalObligatedFundsTooltipText = `This is the legal amount allocated by the 
     government to fund all task orders awarded under JWCC. This is a portion of the 
     total value of JWCC task orders.`;
@@ -346,9 +349,6 @@ export default class JWCCDashboard extends Vue {
     potentially be exercised in option periods.`;
   public avgMonthlySpendTooltipText = `Average amount that is spent and invoiced 
     each month on all JWCC task orders`;
-
-
-
 
 }
 

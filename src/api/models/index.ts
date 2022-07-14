@@ -301,7 +301,8 @@ export interface CostsDTO extends BaseTableDTO {
 }
 
 export interface CostGroupDTO {
-  total: number;
+  totalActual: number;
+  totalProjected: number;
   yearMonth: string;
   costs: CostsDTO[];
 }
