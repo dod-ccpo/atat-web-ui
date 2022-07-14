@@ -1130,9 +1130,6 @@ export default class PortfolioDashboard extends Vue {
     },
   };
 
-  // public totalCLINsChecked = true;
-  // public unclassifiedXaaSChecked = true;
-  // public unclassifiedCloudSupportPackageChecked = false;
   public checked: boolean[] = [];
 
   public datasetToToggle: number | null = null;

@@ -108,7 +108,7 @@
                       :chartData="agencySpendLineChartData"
                       :chartOptions="lineChartOptions"
                       :dataset-to-toggle="datasetToToggle"
-                      :toggleDataset="toggleDataset"
+                      :toggle-dataset="toggleDataset"
                       :tooltipHeaderData="agencySpendChartTooltipHeaderData"
                     />
                     <div class="d-block text-center">
@@ -322,7 +322,7 @@ export default class JWCCDashboard extends Vue {
   private doToggleDataset(datasetIndex: number) {
     debugger;
     this.datasetToToggle = datasetIndex;
-    this.toggleDataset = !this.datasetToToggle;
+    this.toggleDataset = !this.toggleDataset;
   }
 
   public agencySpendChartTooltipHeaderData: Record<string, string> = {}
