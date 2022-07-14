@@ -291,7 +291,11 @@ export default class JWCCDashboard extends Vue {
   };
 
   public barChartMonthlySpendOptions = {
+    hover: {
+      mode: null,
+    },
     plugins: {
+      tooltip: { enabled: false },
       legend: { display: false },
       datalabels: {
         formatter: function(value: number): string {
@@ -305,10 +309,6 @@ export default class JWCCDashboard extends Vue {
       }
     },
     animation: { duration: 0 },
-    title: {
-      display: true,
-      text: 'Foo and Bar'
-    },
     scales: {
       x: {
         grid: {
