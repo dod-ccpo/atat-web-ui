@@ -180,11 +180,8 @@ export class AttachmentServiceBase<
     this.tableApi = tableApi;
   }
 
-  //record.attachment = attachmentSysId;
-  // record.file_name = fileName;
-  // record.extension = fileExtension;
-  protected updateRecord(record: TModel, attachmentSysId: string, 
-    fileName: string): TModel {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected updateRecord(record: TModel, attachmentSysId: string, fileName: string): TModel {
     throw new Error('not implemented exception');
   }
 
