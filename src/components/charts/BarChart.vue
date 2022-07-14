@@ -7,7 +7,6 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Chart, { ChartData, ChartOptions } from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-// import { toCurrencyString } from "@/helpers";
 
 @Component({})
 export default class BarChart extends Vue {
