@@ -28,7 +28,8 @@ import Search from "@/components/icons/Search.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
-import Triangle from "@/components/icons/Triangle.vue";
+import TriangleUp from "@/components/icons/TriangleUp.vue";
+import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components:{
@@ -43,7 +44,8 @@ import Triangle from "@/components/icons/Triangle.vue";
     Pdf,
     Remove,
     Search,
-    Triangle,
+    TriangleUp,
+    TriangleDown,
     TrendingDown,
     TrendingUp,
     UploadFile,

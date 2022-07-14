@@ -396,7 +396,7 @@
                                 <td id="ClinPoP">
                                   <div class=" d-flex flex-column ">
                                     <span class="font-size-14 text-base-darker">
-                                  {{item.periodOfPerformance}}
+                                      {{ item.popStart }}&ndash;{{ item.popEnd }}
                                     </span>
                                   <span class="font-size-12 text-base ">
                                     {{item.timeTilExpiration}} to expiration
@@ -440,7 +440,8 @@
                                           style="height:4px"
                                           width="7"
                                           height="4"
-                                          name="triangle"
+                                          :name="item.spendTrend > 0
+                                            ? 'triangleUp' : 'triangleDown' "
                                           color="primary"
                                         ></ATATSVGIcon>
                                         {{roundDecimal(getSpendPercent(
@@ -473,7 +474,7 @@
                                     >
                                       {{ getCurrencyString(totalSpendingObj.totalFundsSpent)}}
                                     <span class="
-                                    font-size-12 text-base font-weight-400 pl-2 ">
+                                    font-size-12 text-base font-weight-400 pl-4 ">
                                       ({{roundDecimal(getSpendPercent(
                                       totalSpendingObj.totalFundsSpent /
                                       totalSpendingObj.totalFundsObligated),2) * 100 }}%)
@@ -508,7 +509,8 @@
                                             style="height:4px"
                                             width="7"
                                             height="4"
-                                            name="triangle"
+                                            :name="totalSpendingObj.spendTrend > 0
+                                            ? 'triangleUp' : 'triangleDown' "
                                             color="primary"
                                           ></ATATSVGIcon>
                                         <span>
@@ -640,7 +642,8 @@ export default class PortfolioDashboard extends Vue {
     costClinNumber:string;
     clinStatus:string;
     clinLabel:string;
-    periodOfPerformance:string;
+    popStart:string;
+    popEnd:string;
     totalFundsSpent:string;
     totalFundsObligated:string;
     lastMonthSpent:string;
@@ -852,12 +855,12 @@ export default class PortfolioDashboard extends Vue {
 
     }, this);
     const monthsWithSpend = totalActualBurnData.filter(amt => amt !== null);
-    const len = monthsWithSpend.length;
+    const len = monthsWithSpend.length -1;
     this.monthlySpendAverage = Math.round(this.fundsSpent / len * 100) / 100;
 
     if (len && len >= 2) {
-      const twoMoAgoAvl = monthsWithSpend[len - 2];
-      const lastMoAvl = monthsWithSpend[len - 1];
+      const twoMoAgoAvl = monthsWithSpend[len - 1];
+      const lastMoAvl = monthsWithSpend[len];
       if (twoMoAgoAvl && lastMoAvl) {
         this.lastMonthSpend = twoMoAgoAvl - lastMoAvl;
         this.lastMonthSpendTrendPercent
@@ -953,7 +956,8 @@ export default class PortfolioDashboard extends Vue {
         costClinNumber:string;
         clinStatus:string;
         clinLabel:string;
-        periodOfPerformance:string;
+        popStart:string;
+        popEnd:string;
         totalFundsSpent:string;
         totalFundsObligated:string,
         lastMonthSpent:string;
@@ -965,7 +969,8 @@ export default class PortfolioDashboard extends Vue {
         costClinNumber:"",
         clinStatus:"",
         clinLabel:"",
-        periodOfPerformance:"",
+        popStart:"",
+        popEnd:"",
         totalFundsSpent:"",
         totalFundsObligated:"",
         lastMonthSpent:"",
@@ -978,8 +983,9 @@ export default class PortfolioDashboard extends Vue {
       const idiqClinNo = idiqClin.idiq_clin
       obj.clinStatus = idiqClin.clin_status;
       obj.clinLabel = idiqClin.idiq_clin_label || "";
-      obj.periodOfPerformance = `${this.createDateStr(idiqClin.pop_start_date,true)} -
-        ${this.createDateStr(idiqClin.pop_end_date,true)}`;
+      obj.popStart = this.createDateStr(idiqClin.pop_start_date,true)
+      obj.popEnd = this.createDateStr(idiqClin.pop_end_date,true)
+
       obj.totalFundsSpent =
         toCurrencyString(this.idiqClinSpendData[idiqClinNo].idiqClinTotalSpend,true);
       obj.totalFundsObligated = toCurrencyString(parseInt(idiqClin.funds_obligated));
@@ -1004,7 +1010,7 @@ export default class PortfolioDashboard extends Vue {
         this.idiqClinSpendData[idiqClinNo].lastMonthSpend;
       this.totalSpendingObj.clinAverage +=
         this.idiqClinSpendData[idiqClinNo].avgMonthlySpend;
-      this.totalSpendingObj.spendTrend += (this.totalSpendingObj.lastMonthSpent -
+      this.totalSpendingObj.spendTrend = (this.totalSpendingObj.lastMonthSpent -
         this.totalSpendingObj.clinAverage) / this.totalSpendingObj.clinAverage * 100;
     })
 
