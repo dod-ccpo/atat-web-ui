@@ -413,7 +413,7 @@
                                     >
                                       ({{roundDecimal(getSpendPercent(
                                       (+item.totalFundsSpent.replace(/,/g, '')) /
-                                      (+item.totalFundsObligated.replace(/,/g, ''))),1) * 100 }}%)
+                                      (+item.totalFundsObligated.replace(/,/g, ''))),2) * 100 }}%)
                                     </span>
                                     </span>
                                     <span class="font-size-12 text-base d-flex justify-end">
@@ -476,7 +476,7 @@
                                     font-size-12 text-base font-weight-400 pl-2 ">
                                       ({{roundDecimal(getSpendPercent(
                                       totalSpendingObj.totalFundsSpent /
-                                      totalSpendingObj.totalFundsObligated),1) * 100 }}%)
+                                      totalSpendingObj.totalFundsObligated),2) * 100 }}%)
                                     </span>
                                     </span>
                                     <span class="
@@ -982,14 +982,15 @@ export default class PortfolioDashboard extends Vue {
         ${this.createDateStr(idiqClin.pop_end_date,true)}`;
       obj.totalFundsSpent =
         toCurrencyString(this.idiqClinSpendData[idiqClinNo].idiqClinTotalSpend,true);
-      obj.totalFundsObligated = toCurrencyString(parseInt(idiqClin.funds_total));
+      obj.totalFundsObligated = toCurrencyString(parseInt(idiqClin.funds_obligated));
       obj.lastMonthSpent =
         toCurrencyString(this.idiqClinSpendData[idiqClinNo].lastMonthSpend);
       obj.idiqClin = idiqClinNo;
       obj.clinAverage = this.idiqClinSpendData[idiqClinNo].avgMonthlySpend;
-      obj.timeTilExpiration = this.timeTilExpiration(idiqClin.pop_end_date)
-      obj.spendTrend = this.idiqClinSpendData[idiqClinNo].lastMonthSpend /
-        this.idiqClinSpendData[idiqClinNo].avgMonthlySpend
+      obj.timeTilExpiration = this.timeTilExpiration(idiqClin.pop_end_date);
+      obj.spendTrend = (this.idiqClinSpendData[idiqClinNo].lastMonthSpend -
+        this.idiqClinSpendData[idiqClinNo].avgMonthlySpend) /
+        this.idiqClinSpendData[idiqClinNo].avgMonthlySpend * 100;
       const thisIdiqClin = this.idiqClins.find((obj) => obj.idiq_clin === idiqClinNo);
       if(thisIdiqClin){
         obj.costClinNumber = thisIdiqClin.clin_number
@@ -998,16 +999,15 @@ export default class PortfolioDashboard extends Vue {
       /// create object for totals
       this.totalSpendingObj.totalFundsSpent +=
         this.idiqClinSpendData[idiqClinNo].idiqClinTotalSpend;
-      this.totalSpendingObj.totalFundsObligated += parseInt(idiqClin.funds_total);
+      this.totalSpendingObj.totalFundsObligated += parseInt(idiqClin.funds_obligated);
       this.totalSpendingObj.lastMonthSpent +=
         this.idiqClinSpendData[idiqClinNo].lastMonthSpend;
       this.totalSpendingObj.clinAverage +=
         this.idiqClinSpendData[idiqClinNo].avgMonthlySpend;
-      this.totalSpendingObj.spendTrend = (this.totalSpendingObj.lastMonthSpent) /
-        (this.totalSpendingObj.clinAverage)
-
+      this.totalSpendingObj.spendTrend += (this.totalSpendingObj.lastMonthSpent -
+        this.totalSpendingObj.clinAverage) / this.totalSpendingObj.clinAverage * 100;
     })
-    console.log(this.tableItems)
+
   }
 
   public timeTilExpiration(endDate: string): string {
