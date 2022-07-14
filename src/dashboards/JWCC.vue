@@ -107,8 +107,8 @@
                       ref="agencySpendLineChart"
                       :chartData="agencySpendLineChartData"
                       :chartOptions="lineChartOptions"
-                      :dataset-to-toggle="agencyLineChartDatasetToToggle"
-                      :toggle-dataset="agencyLineChartToggleDataset"
+                      :dataset-to-toggle="datasetToToggle"
+                      :toggleDataset="toggleDataset"
                       :tooltipHeaderData="agencySpendChartTooltipHeaderData"
                     />
                     <div class="d-block text-center">
@@ -128,13 +128,13 @@
                         <v-checkbox
                           v-for="(idiqClin, index) in agencySpendLineChartData.datasets"
                           :key="index"
-                          v-model="agencyChecked[index]"
+                          v-model="agencyChecked[index + 1]"
                           :label="agencyLabels[index]"
                           :class="'color_chart_' + (index + 2)"
                           hide-details="true"
                           :ripple="false"
-                          @change="doToggleDataset(index)"
-                          :color="chartDataColors[index]"
+                          @change="doToggleDataset(index + 1)"
+                          :color="chartDataColors[index + 1]"
                         />
 
                       </v-radio-group>
@@ -306,6 +306,8 @@ export default class JWCCDashboard extends Vue {
     labels: [],
     datasets: [],
   };
+
+  public disaKey = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
   public agencyLabelKeys: Record<string, string> = {
     "US_ARMY": "Army",
     "US_NAVY": "Navy",
@@ -314,20 +316,16 @@ export default class JWCCDashboard extends Vue {
   public agencyLabels: string[] = [];
   public agencyChecked: boolean[] = [];
 
-  public agencyLineChartDatasetToToggle: number | null = null;
-  public agencyLineChartToggleDataset = false;
+  public datasetToToggle: number | null = null;
+  public toggleDataset = false;
 
   private doToggleDataset(datasetIndex: number) {
-    this.agencyLineChartDatasetToToggle = datasetIndex;
-    this.agencyLineChartToggleDataset = !this.agencyLineChartDatasetToToggle;
+    debugger;
+    this.datasetToToggle = datasetIndex;
+    this.toggleDataset = !this.datasetToToggle;
   }
 
-
   public agencySpendChartTooltipHeaderData: Record<string, string> = {}
-
-
-
-
 
   public getMonthYearString(monthIndex: number, year: number): string {
     let monthAbbr = this.monthAbbreviations[monthIndex];
@@ -373,13 +371,19 @@ export default class JWCCDashboard extends Vue {
     // loop thru costGroups and sum up each month's costs by agency
     // add them to previous month value for current month total
     const agencies = Object.keys(this.fundsSpentByServiceAgency).sort();
+    // DISA/Fourth Estate/Other should be last item in agencies
+    const disaIndex = agencies.indexOf(this.disaKey);
+    if (disaIndex > -1) {
+      agencies.splice(disaIndex, 1);
+      agencies.push(this.disaKey);
+    }
 
     agencies.forEach((agency: string, i: number) => {
       this.agencyChecked.push(true);
       const agencyLabel = this.agencyLabelKeys[agency];
       this.agencyLabels.push(agencyLabel);
 
-      const agencyMonthlyCostTotals: number[] = [0];
+      const agencyMonthlySpendTotals: number[] = [0];
       this.costGroups.forEach((costGroup, index) => {
         // last costGroup is projected costs. do not use for line chart data
         if (index !== this.costGroups.length - 1) {
@@ -390,18 +394,18 @@ export default class JWCCDashboard extends Vue {
             const amt = obj.value ? parseInt(obj.value) : 0;
             return a + amt;
           }, 0);
-          const total = monthTotal + agencyMonthlyCostTotals[index];
-          agencyMonthlyCostTotals.push(total);
+          const total = monthTotal + agencyMonthlySpendTotals[index];
+          agencyMonthlySpendTotals.push(total);
         }
       });
-      this.agencySpendData[agency] = agencyMonthlyCostTotals;
+      this.agencySpendData[agency] = agencyMonthlySpendTotals;
 
       let lineChartDataSet = _.clone(this.lineChartCommonDataSet);
       const color = this.chartDataColorSequence[i + 1];
       const dataSetProps = {
-        dataSetId: getIdText(agency),
+        dataSetId: agency,
         label: agencyLabel,
-        data: agencyMonthlyCostTotals,
+        data: agencyMonthlySpendTotals,
         borderColor: color,
         pointBackgroundColor: color,
         pointHoverBackgroundColor: color,
@@ -410,6 +414,29 @@ export default class JWCCDashboard extends Vue {
       Object.assign(lineChartDataSet, dataSetProps);
       this.agencySpendLineChartData.datasets?.push(lineChartDataSet);
     }, this);
+
+    this.agencyChecked.unshift(false); // never show total line on chart
+    const spendLineChartTotals: number[] = [0];
+    this.costGroups.forEach((costGroup, i) => {
+      if (i !== this.costGroups.length - 1) {
+        const currMonthAmt = costGroup.totalActual;
+        const prevMonthAmt = spendLineChartTotals[i];
+        const monthTotal = currMonthAmt + prevMonthAmt;
+        spendLineChartTotals.push(monthTotal);
+      }
+    });
+    let totalLineChartDataSet = _.clone(this.lineChartCommonDataSet);
+    const dataSetProps = {
+      dataSetId: "Total",
+      label: "Total JWCC funds spent",
+      data: spendLineChartTotals,
+      borderColor: "transparent",
+      pointBackgroundColor: "transparent",
+      pointHoverBackgroundColor: "transparent",
+      pointHoverBorderColor: "transparent"
+    }
+    Object.assign(totalLineChartDataSet, dataSetProps)
+    this.agencySpendLineChartData.datasets?.unshift(totalLineChartDataSet)
 
     const lineChartXLabels = []; // x labels are months. Jan gets year.
     // for MVP, PoP will always be Jan to Dec of current year.
@@ -443,6 +470,7 @@ export default class JWCCDashboard extends Vue {
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getTotals(
       ['1000000001234', '1000000004321', '1000000009999']
+      // ['1000000001234', '1000000004321']
     );
     console.log({data});
 
@@ -602,7 +630,7 @@ export default class JWCCDashboard extends Vue {
       },
       y: {
         min: 0,
-        max: 120000000,
+        max: 500000,
         grid: {
           borderColor: "transparent",
           tickWidth: 0,
