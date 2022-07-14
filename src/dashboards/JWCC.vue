@@ -304,7 +304,8 @@ export default class JWCCDashboard extends Vue {
     burnupData: Record<string, number>[]
   }[] = [];
 
-  public fundsSpentByServiceAgency: Record<string, Record<string, string | number>[]>[] = [];
+  public fundsSpentByServiceAgency: { name: string;  total: number; }[] = [];
+
   public agencySpendData: Record<string, number[]> = {} 
   private agencySpendLineChartData: lineChartData = {
     labels: [],
@@ -316,8 +317,8 @@ export default class JWCCDashboard extends Vue {
     "US_ARMY": "Army",
     "US_NAVY": "Navy",
     "DEFENSE_INFORMATION_SYSTEMS_AGENCY": "Other",
-    "US_MARINE_CORPS": "Marines",
-    "US_AIR_FORCE_EUROPE": "Space Force",
+    "US_MARINE_CORPS": "Marine Corps",
+    "US_SPACE_FORCE": "Space Force",
     "US_AIR_FORCE": "Air Force",
   };
   public agencyLabels: string[] = [];
@@ -327,7 +328,6 @@ export default class JWCCDashboard extends Vue {
   public toggleDataset = false;
 
   private doToggleDataset(datasetIndex: number) {
-    debugger;
     this.datasetToToggle = datasetIndex;
     this.toggleDataset = !this.toggleDataset;
   }
@@ -377,7 +377,8 @@ export default class JWCCDashboard extends Vue {
   public async calculateSpendRateLineChartData(): Promise<void> {
     // loop thru costGroups and sum up each month's costs by agency
     // add them to previous month value for current month total
-    const agencies = Object.keys(this.fundsSpentByServiceAgency).sort();
+    // const agencies = Object.keys(this.fundsSpentByServiceAgency).sort();
+    const agencies = this.fundsSpentByServiceAgency.map(a => a.name);
     // DISA/Fourth Estate/Other should be last item in agencies
     const disaIndex = agencies.indexOf(this.disaKey);
     if (disaIndex > -1) {
@@ -391,6 +392,10 @@ export default class JWCCDashboard extends Vue {
       this.agencyLabels.push(agencyLabel);
 
       const agencyMonthlySpendTotals: number[] = [0];
+      
+      // for demo only, cost data uses USAF but we are showing as Space Force
+      agency = agency === "US_SPACE_FORCE" ? "US_AIR_FORCE_EUROPE" : agency;
+
       this.costGroups.forEach((costGroup, index) => {
         // last costGroup is projected costs. do not use for line chart data
         if (index !== this.costGroups.length - 1) {
@@ -405,6 +410,10 @@ export default class JWCCDashboard extends Vue {
           agencyMonthlySpendTotals.push(total);
         }
       });
+      
+      // for demo only - swap key back to space force
+      agency = agency === "US_AIR_FORCE_EUROPE" ? "US_SPACE_FORCE" : agency;
+
       this.agencySpendData[agency] = agencyMonthlySpendTotals;
 
       let lineChartDataSet = _.clone(this.lineChartCommonDataSet);
@@ -466,9 +475,9 @@ export default class JWCCDashboard extends Vue {
     this.agencySpendLineChartData.labels = lineChartXLabels;
 
     this.agencySpendChartTooltipHeaderData = {
-      title: "Total Funds Available",
+      title: "Total JWCC funds spent",
       amount: this.getCurrencyString(this.fundsSpentToDate),
-      legend: "Funds Available",
+      legend: "Funds spent by DoD organization",
     };
 
     return;
@@ -491,8 +500,26 @@ export default class JWCCDashboard extends Vue {
     this.fundsSpentToDate = data.fundsSpentToDate;
     this.costs = data.costs;
     this.costGroups = data.costGroups;
+
     this.fundsSpentByServiceAgency = data.fundsSpentByServiceAgency;
-    // EJY SORT THIS HERE BY NAME NOT KEY
+    const spendByAgency = Object.values(this.fundsSpentByServiceAgency);
+
+    // Space Force temporarily using USAF Europe for demo purposes only since
+    // space force has no key currently in SNOW data
+    const spaceForceIndex = spendByAgency.findIndex(
+      o => o.name.toString() === "US_AIR_FORCE_EUROPE"
+    );
+    spendByAgency[spaceForceIndex].name = "US_SPACE_FORCE";
+
+    // DISA/Fourth Estate should always be last in array
+    const disaIndex = spendByAgency.findIndex(o => o.name.toString() === this.disaKey);
+    const disaObj = spendByAgency.find(o => o.name.toString() === this.disaKey);
+    spendByAgency.splice(disaIndex, 1);
+    spendByAgency.sort((a, b) => a.name > b.name ? 1 : -1);
+    if (disaObj) {
+      spendByAgency.push(disaObj);
+    }
+    this.fundsSpentByServiceAgency = spendByAgency;
 
     await this.setMonthlySpendSummaryBarChartData();
 
@@ -504,8 +531,6 @@ export default class JWCCDashboard extends Vue {
     this.cspDonutData = this.cspDonutChartPercentages();
     this.cspDonutChartData.datasets[0].data = this.cspDonutData;
     
-    const today = new Date(new Date().setHours(0,0,0,0));
-    const thisYear = today.getFullYear();
     // for MVP, period start will always be Jan 1 of current year
     const periodStart = new Date(this.currentYear + "-01-01T00:00:00");
     this.monthsIntoPeriod = differenceInCalendarMonths(this.today, periodStart);

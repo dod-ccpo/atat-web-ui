@@ -26,10 +26,8 @@ export default class LineChart extends Vue {
 
   @Watch("toggleDataset")
   protected doToggleDataset(): void {
-    debugger;
     const i = this.datasetToToggle;
     const isDatasetVisible = this.myChart.isDatasetVisible(i);
-    debugger;
     if (isDatasetVisible) {
       this.myChart.hide(i); // actual spend (solid)
       if (this.hasProjected) {
@@ -113,30 +111,45 @@ export default class LineChart extends Vue {
     // Tooltip Element
     const { chart, tooltip } = context;
     const tooltipEl = this.getOrCreateTooltip(chart);
-
     // Hide if no tooltip
     if (tooltip.opacity === 0) {
       tooltipEl.style.opacity = 0;
       return;
     }
-    debugger;
     // Set Text
     if (tooltip.body) {
       const bodyLines = tooltip.body.map((b: any) => b.lines);
       const projectedCount = bodyLines.filter(
         (l: string[]) => l[0].toLowerCase().indexOf("projected") > -1
       ).length;
-      const currentYear = new Date().getFullYear();
-      const nextYear = (currentYear + 1) + "";
-      const nextYearIndex = this.chartData.labels?.findIndex((s) => {
-        if (typeof s === "string") {
-          return s.includes(nextYear)
-        }
-        return false;
-        
-      });
 
-      if (bodyLines.length !== projectedCount) {
+      let showToolTip = true;
+      const firstLabel = bodyLines[0][0];
+      if (firstLabel) {
+        const firstIsTotal = firstLabel.indexOf("Total") > -1;
+        if (firstIsTotal) {
+          const sep = firstLabel.indexOf(":");
+          const amount = firstLabel.slice(sep + 2, firstLabel.length)
+          if (amount === "0") {
+            showToolTip = false;
+            tooltipEl.style.opacity = 0;
+            return;
+          }
+        }
+      }
+
+      if (bodyLines.length !== projectedCount && showToolTip) {
+
+        const currentYear = new Date().getFullYear();
+        const nextYear = (currentYear + 1) + "";
+
+        const nextYearIndex = this.chartData.labels?.findIndex((s) => {
+          if (typeof s === "string") {
+            return s.includes(nextYear)
+          }
+          return false;
+        });
+
 
         if (bodyLines.length) {
           const titleLines = tooltip.title || [];
@@ -174,7 +187,6 @@ export default class LineChart extends Vue {
             if (i === 0) {
               const div = document.createElement("div");
               div.style.fontWeight = "400";
-              debugger;
               const headerTitle = document.createTextNode(this.tooltipHeaderData.title);
               div.appendChild(headerTitle);
               th.appendChild(div);
