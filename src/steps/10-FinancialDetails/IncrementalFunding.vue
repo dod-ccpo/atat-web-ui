@@ -403,6 +403,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
 
   public async loadOnEnter(): Promise<void> {
+
+    debugger;
+    
     const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
     if (estimatedTOValue) {
       this.costEstimate = currencyStringToNumber(estimatedTOValue);
@@ -458,6 +461,9 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     await this.loadOnEnter();
   }
 
+  public async mounted(): Promise<void> {
+    await this.loadOnEnter();
+  }
   protected async saveOnLeave(): Promise<boolean> {
     try {
       // FUTURE TICKET VALIDATION: first time user clicks continue:

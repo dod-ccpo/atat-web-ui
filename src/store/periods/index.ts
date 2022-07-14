@@ -37,6 +37,15 @@ const savePeriod = async (period: PeriodDTO): Promise<PeriodDTO> => {
   }
 };
 
+const initialPeriodOfPerformance: PeriodOfPerformanceDTO = {
+  pop_start_request:"",
+  requested_pop_start_date: "",
+  time_frame: "",
+  recurring_requirement: "",
+  option_periods: "",
+  base_period: ""
+}
+
 @Module({
   name: "PeriodsStore",
   namespaced: true,
@@ -141,6 +150,48 @@ export class PeriodsStore extends VuexModule {
     }
   }
 
+  @Action({rawError: true})
+  public async loadPeriodOfPerformance(): Promise<PeriodOfPerformanceDTO>{
+
+    await this.ensureInitialized();
+
+    debugger;
+
+    if(this.periodOfPerformance && this.periodOfPerformance.sys_id 
+      && this.periodOfPerformance.sys_id.length > 0)
+    {
+      const periodOfPerformance =  await 
+      api.periodOfPerformanceTable.retrieve(this.periodOfPerformance.sys_id);
+      this.setPeriodOfPerformance(periodOfPerformance);
+
+      if(periodOfPerformance && this.periods != null){
+          
+        const basePeriod = this.periods.find(
+          (period) => period.period_type === "BASE"
+        );
+        const optionPeriods = this.periods.filter(
+          (period) => period.period_type === "OPTION"
+        );
+
+        const pop: PeriodOfPerformanceDTO = {
+          time_frame: this.periodOfPerformance?.time_frame || "",
+          pop_start_request: this.periodOfPerformance?.pop_start_request || "",
+          requested_pop_start_date: this.periodOfPerformance?.requested_pop_start_date  || "",
+          base_period: basePeriod?.sys_id || "",
+          option_periods: optionPeriods.map((period) => period.sys_id).join(","),
+        };
+
+        return pop;
+      }
+      
+      return periodOfPerformance;
+
+    }
+
+    return initialPeriodOfPerformance;
+
+  }
+
   @Action({ rawError: true })
   public async savePeriods({
     periods,
@@ -174,6 +225,9 @@ export class PeriodsStore extends VuexModule {
       );
 
       const pop: PeriodOfPerformanceDTO = {
+        time_frame: this.periodOfPerformance?.time_frame || "",
+        pop_start_request: this.periodOfPerformance?.pop_start_request || "",
+        requested_pop_start_date: this.periodOfPerformance?.requested_pop_start_date  || "",
         base_period: basePeriod?.sys_id || "",
         option_periods: optionPeriods.map((period) => period.sys_id).join(","),
       };
@@ -192,6 +246,18 @@ export class PeriodsStore extends VuexModule {
       throw new Error(`error occurred saving periods ${error}`);
     }
   }
+
+  @Action({rawError: true})
+  public async savePeriodOfPerformance(value: PeriodOfPerformanceDTO) : Promise<void>{
+    const popSysId = value?.sys_id || "";
+    const savePop = popSysId.length > 0 ? 
+      api.periodOfPerformanceTable.update(popSysId || "", value):
+      api.periodOfPerformanceTable.create(value);
+
+    const savedPop= await savePop;
+    this.setPeriodOfPerformance(savedPop);
+
+  } 
 
   @Mutation
   public setStoreData(sessionData: string): void {
