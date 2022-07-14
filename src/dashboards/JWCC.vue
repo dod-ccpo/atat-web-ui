@@ -163,7 +163,12 @@ export default class JWCCDashboard extends Vue {
   public monthsIntoPeriod = 0; // for MVP, period is always Jan 1 to Dec 31
 
   public async loadOnEnter(): Promise<void> {
-    const data = await this.dashboardService.getTotals(['1000000004321', '1000000009999']);
+    const data = await this.dashboardService.getTotals([ '1000000001234', 
+      '1000000004321', 
+      '1000000009999', 
+      '1000000009876', 
+      '1000000008888',
+      '1000000008765']);
     console.log({data});
     this.activeTaskOrderCount = data.activeTaskOrders;
     this.totalObligatedFunds = data.totalObligatedFunds;
