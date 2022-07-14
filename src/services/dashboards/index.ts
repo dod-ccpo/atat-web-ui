@@ -176,10 +176,12 @@ export class DashboardService{
     const combined = data.reduce<TaskOrderAggregate>((prev: TaskOrderAggregate, current)=>{
       const aggregate = prev as TaskOrderAggregate;
       const activeTaskOrders = aggregate.activeTaskOrders +1;
-      const totalObligatedFunds = prev.totalObligatedFunds 
-      + current.taskOrder.funds_obligated.length > 0 ? Number(current.taskOrder.funds_obligated): 0;
-      const totalTaskOrderValue = prev.totalTaskOrderValue
-      + current.taskOrder.funds_total.length > 0 ? Number(current.taskOrder.funds_total) : 0;
+      const fundsObligated = current.taskOrder.funds_obligated.length 
+      > 0 ? Number(current.taskOrder.funds_obligated): 0;
+      const totalObligatedFunds = prev.totalObligatedFunds + fundsObligated;
+      const fundsTotal = current.taskOrder.funds_total.length 
+      > 0 ? Number(current.taskOrder.funds_total) : 0;
+      const totalTaskOrderValue = prev.totalTaskOrderValue + fundsTotal;
       const costs = [...prev.costs, ...current.costs]
         .sort((a,b)=> Date.parse(a.year_month) - Date.parse(b.year_month));
 
