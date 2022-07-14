@@ -299,13 +299,7 @@ export default class JWCCDashboard extends Vue {
   public today = new Date(new Date().setHours(0,0,0,0));
   public currentYear = this.today.getFullYear();
 
-  public orgSpendRateLineChartData: {
-    org: string;
-    burnupData: Record<string, number>[]
-  }[] = [];
-
   public fundsSpentByServiceAgency: { name: string;  total: number; }[] = [];
-
   public agencySpendData: Record<string, number[]> = {} 
   private agencySpendLineChartData: lineChartData = {
     labels: [],
@@ -314,12 +308,12 @@ export default class JWCCDashboard extends Vue {
 
   public disaKey = "DEFENSE_INFORMATION_SYSTEMS_AGENCY";
   public agencyLabelKeys: Record<string, string> = {
-    "US_ARMY": "Army",
-    "US_NAVY": "Navy",
-    "DEFENSE_INFORMATION_SYSTEMS_AGENCY": "Other",
-    "US_MARINE_CORPS": "Marine Corps",
-    "US_SPACE_FORCE": "Space Force",
     "US_AIR_FORCE": "Air Force",
+    "US_ARMY": "Army",
+    "US_MARINE_CORPS": "Marine Corps",
+    "US_NAVY": "Navy",
+    "US_SPACE_FORCE": "Space Force",
+    "DEFENSE_INFORMATION_SYSTEMS_AGENCY": "Other",
   };
   public agencyLabels: string[] = [];
   public agencyChecked: boolean[] = [];
@@ -375,17 +369,10 @@ export default class JWCCDashboard extends Vue {
   public getCurrencyString = getCurrencyString;
 
   public async calculateSpendRateLineChartData(): Promise<void> {
+    const agencies = this.fundsSpentByServiceAgency.map(a => a.name);
+
     // loop thru costGroups and sum up each month's costs by agency
     // add them to previous month value for current month total
-    // const agencies = Object.keys(this.fundsSpentByServiceAgency).sort();
-    const agencies = this.fundsSpentByServiceAgency.map(a => a.name);
-    // DISA/Fourth Estate/Other should be last item in agencies
-    const disaIndex = agencies.indexOf(this.disaKey);
-    if (disaIndex > -1) {
-      agencies.splice(disaIndex, 1);
-      agencies.push(this.disaKey);
-    }
-
     agencies.forEach((agency: string, i: number) => {
       this.agencyChecked.push(true);
       const agencyLabel = this.agencyLabelKeys[agency];
