@@ -203,8 +203,7 @@ import { DashboardService } from "@/services/dashboards";
 import { CostsDTO, CostGroupDTO } from "@/api/models";
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 import DonutChart from "../components/charts/DonutChart.vue"
-
-import { toCurrencyString, getLegendAmount, roundDecimal } from "@/helpers";
+import { getCurrencyString, getLegendAmount, roundDecimal } from "@/helpers";
 
 @Component({
   components: {
@@ -279,6 +278,7 @@ export default class JWCCDashboard extends Vue {
   
   public getLegendAmount = getLegendAmount;
   public roundDecimal = roundDecimal;
+  public getCurrencyString = getCurrencyString;
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
@@ -300,10 +300,6 @@ export default class JWCCDashboard extends Vue {
 
   public async mounted(): Promise<void>{
     await this.loadOnEnter();
-  }
-
-  public getCurrencyString(value: number, decimals?: boolean): string {
-    return "$" + toCurrencyString(value, decimals);
   }
 
   public barChartMonthlySpendData = {
@@ -395,12 +391,6 @@ export default class JWCCDashboard extends Vue {
   public donutChartPercentages: number[] = this.cspAmounts.map(
     (amount) => (parseFloat(amount) / this.cspTotal * 100)
   );
-
-  public chartDataColors = ATATCharts.chartDataColors;
-  public chartDataColorSequence = ATATCharts.chartDataColorSequence;
-  public chartDataColorsTranslucent = this.chartDataColorSequence.map((color) => {
-    return color + "33";
-  });
 
   public donutChartColors = [
     this.chartDataColorSequence[0],
