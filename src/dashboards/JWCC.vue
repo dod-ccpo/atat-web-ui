@@ -211,7 +211,6 @@ export default class JWCCDashboard extends Vue {
     monthAbbr = this.monthsNotAbbreviated.indexOf(monthAbbr) > -1 
       ? monthAbbr : monthAbbr + "."; 
     return monthAbbr + " " + year;
-
   }
 
   public async setMonthlySpendSummaryBarChartData(): Promise<void> {
@@ -235,11 +234,9 @@ export default class JWCCDashboard extends Vue {
     const chartData = [prevMonthSpend, projectedSpend];
     this.barChartMonthlySpendData.datasets[0].data = chartData;
 
-    // future ticket will make more dynamic based on data
     const largestVal = Math.max(...chartData);
     const max = Math.ceil((largestVal + 25000) / 25000) * 25000;
     this.barChartMonthlySpendOptions.scales.y.max = max;
-
   }
 
   public async loadOnEnter(): Promise<void> {
@@ -251,14 +248,13 @@ export default class JWCCDashboard extends Vue {
     this.fundsSpentToDate = data.fundsSpentToDate;
     this.costs = data.costs;
     this.costGroups = data.costGroups;
-   
+
     await this.setMonthlySpendSummaryBarChartData();
 
     // for MVP, period start will always be Jan 1 of current year
     const periodStart = new Date(this.currentYear + "-01-01T00:00:00");
     this.monthsIntoPeriod = differenceInCalendarMonths(this.today, periodStart);
     this.averageMonthlySpend = Math.round(this.fundsSpentToDate / this.monthsIntoPeriod);
-
   }
 
   public async mounted(): Promise<void>{
@@ -268,7 +264,6 @@ export default class JWCCDashboard extends Vue {
   public getCurrencyString(value: number, decimals?: boolean): string {
     return "$" + toCurrencyString(value, decimals);
   }
-
 
   public barChartMonthlySpendData = {
     labels: [["Last Month","(April 2022)"], ["End-of-month Forecast", "(May 2022)"]],

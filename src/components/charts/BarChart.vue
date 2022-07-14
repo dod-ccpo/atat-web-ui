@@ -30,7 +30,6 @@ export default class BarChart extends Vue {
 
   public createChart(): void {
     if (this.chartId) {
-      // const fontHandler = this.fontHandler(this);
       let plugins: any = [];
       const ctx = document.getElementById(this.chartId) as HTMLCanvasElement;
       if (this.useChartDataLabels) {
