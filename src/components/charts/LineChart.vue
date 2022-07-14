@@ -112,7 +112,7 @@ export default class LineChart extends Vue {
       tooltipEl.style.opacity = 0;
       return;
     }
-
+    debugger;
     // Set Text
     if (tooltip.body) {
       const bodyLines = tooltip.body.map((b: any) => b.lines);
@@ -126,6 +126,7 @@ export default class LineChart extends Vue {
           return s.includes(nextYear)
         }
         return false;
+        
       });
 
       if (bodyLines.length !== projectedCount) {
@@ -166,6 +167,7 @@ export default class LineChart extends Vue {
             if (i === 0) {
               const div = document.createElement("div");
               div.style.fontWeight = "400";
+              debugger;
               const headerTitle = document.createTextNode(this.tooltipHeaderData.title);
               div.appendChild(headerTitle);
               th.appendChild(div);

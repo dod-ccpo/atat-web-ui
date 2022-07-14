@@ -82,7 +82,7 @@
                             />
                           </div>
                           <div class="font-weight-700">
-                            {{ getCurrencyString(averageMonthlySpend) }}
+                            {{ getCurrencyString(averageMonthlySpend, false) }}
                           </div>
                         </div>
 
@@ -97,6 +97,48 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Spend Rate by DoD Organizations</h3>
+                    <p class="font-size-14">
+                      Select one of more agencies to compare spend rates across 
+                      DoD services and agencies. The data includes funds spend 
+                      on all JWCC portfolios to date.
+                    </p>
+                    <LineChart 
+                      chartId="AgencySpendLineChart"
+                      ref="agencySpendLineChart"
+                      :chartData="agencySpendLineChartData"
+                      :chartOptions="lineChartOptions"
+                      :dataset-to-toggle="agencyLineChartDatasetToToggle"
+                      :toggle-dataset="agencyLineChartToggleDataset"
+                      :tooltipHeaderData="agencySpendChartTooltipHeaderData"
+                    />
+                    <div class="d-block text-center">
+                      <v-radio-group
+                        row
+                        class="
+                          checkbox-group-row
+                          center-checkboxes
+                          chart-legend-checkboxes
+                          label-small
+                          no-messages
+                          compact
+                          mt-4
+                          ml-10
+                        "
+                      >
+                        <v-checkbox
+                          v-for="(idiqClin, index) in agencySpendLineChartData.datasets"
+                          :key="index"
+                          v-model="agencyChecked[index]"
+                          :label="agencyLabels[index]"
+                          :class="'color_chart_' + (index + 2)"
+                          hide-details="true"
+                          :ripple="false"
+                          @change="doToggleDataset(index)"
+                          :color="chartDataColors[index]"
+                        />
+
+                      </v-radio-group>
+                    </div>
                   </v-card>
                 </v-col>
               </v-row>
@@ -162,19 +204,25 @@ import ATATPageHead from "../components/ATATPageHead.vue";
 import BarChart from "../components/charts/BarChart.vue";
 
 import ATATCharts from "@/store/charts";
+import LineChart from "../components/charts/LineChart.vue";
 import ATATTooltip from "../components/ATATTooltip.vue"
 
 import { DashboardService } from "@/services/dashboards";
 import { toCurrencyString } from "@/helpers";
 import { CostsDTO, CostGroupDTO } from "@/api/models";
+import { lineChartData, lineChartDataSet } from "types/Global";
+
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
+import _ from 'lodash';
+import { getIdText } from "@/helpers";
 
 @Component({
   components: {
     ATATFooter,
     ATATPageHead,
-    BarChart,
     ATATTooltip,
+    BarChart,
+    LineChart,
   }
 })
 
@@ -211,6 +259,34 @@ export default class JWCCDashboard extends Vue {
     burnupData: Record<string, number>[]
   }[] = [];
 
+  public fundsSpentByServiceAgency: Record<string, Record<string, string | number>[]>[] = [];
+  public agencySpendData: Record<string, number[]> = {} 
+  private agencySpendLineChartData: lineChartData = {
+    labels: [],
+    datasets: [],
+  };
+  public agencyLabelKeys: Record<string, string> = {
+    "US_ARMY": "Army",
+    "US_NAVY": "Navy",
+    "DEFENSE_INFORMATION_SYSTEMS_AGENCY": "Other",
+  };
+  public agencyLabels: string[] = [];
+  public agencyChecked: boolean[] = [];
+
+  public agencyLineChartDatasetToToggle: number | null = null;
+  public agencyLineChartToggleDataset = false;
+
+  private doToggleDataset(datasetIndex: number) {
+    this.agencyLineChartDatasetToToggle = datasetIndex;
+    this.agencyLineChartToggleDataset = !this.agencyLineChartDatasetToToggle;
+  }
+
+
+  public agencySpendChartTooltipHeaderData: Record<string, string> = {}
+
+
+
+
 
   public getMonthYearString(monthIndex: number, year: number): string {
     let monthAbbr = this.monthAbbreviations[monthIndex];
@@ -246,22 +322,89 @@ export default class JWCCDashboard extends Vue {
   }
 
   public async calculateSpendRateLineChartData(): Promise<void> {
-    // debugger
-    // loop thru costs or costGroups and sum up each month's costs
-    // add them to previous month value for current month value
-    
+    // loop thru costGroups and sum up each month's costs by agency
+    // add them to previous month value for current month total
+    const agencies = Object.keys(this.fundsSpentByServiceAgency).sort();
+
+    agencies.forEach((agency: string, i: number) => {
+      this.agencyChecked.push(true);
+      const agencyLabel = this.agencyLabelKeys[agency];
+      this.agencyLabels.push(agencyLabel);
+
+      const agencyMonthlyCostTotals: number[] = [0];
+      this.costGroups.forEach((costGroup, index) => {
+        // last costGroup is projected costs. do not use for line chart data
+        if (index !== this.costGroups.length - 1) {
+          const thisAgencyCosts = costGroup.costs.filter((obj) => {
+            return obj.service_agency === agency;
+          });
+          const monthTotal = thisAgencyCosts.reduce((a, obj) => {
+            const amt = obj.value ? parseInt(obj.value) : 0;
+            return a + amt;
+          }, 0);
+          const total = monthTotal + agencyMonthlyCostTotals[index];
+          agencyMonthlyCostTotals.push(total);
+        }
+      });
+      this.agencySpendData[agency] = agencyMonthlyCostTotals;
+
+      let lineChartDataSet = _.clone(this.lineChartCommonDataSet);
+      const color = this.chartDataColorSequence[i + 1];
+      const dataSetProps = {
+        dataSetId: getIdText(agency),
+        label: agencyLabel,
+        data: agencyMonthlyCostTotals,
+        borderColor: color,
+        pointBackgroundColor: color,
+        pointHoverBackgroundColor: color,
+        pointHoverBorderColor: this.chartDataColorsTranslucent[i + 1]
+      }
+      Object.assign(lineChartDataSet, dataSetProps);
+      this.agencySpendLineChartData.datasets?.push(lineChartDataSet);
+    }, this);
+
+    const lineChartXLabels = []; // x labels are months. Jan gets year.
+    // for MVP, PoP will always be Jan to Dec of current year.
+    // labels will be Jan of current year to Jan of next year.
+    const periodStart = new Date(this.currentYear + "-01-01T00:00:00");
+    const monthNo = periodStart.getMonth();
+    let januaryCount = 0;
+    for (let i = monthNo; i < monthNo + 13; i++) {
+      let monthAbbr = i <= 11 
+        ? this.monthAbbreviations[i]
+        : this.monthAbbreviations[12 - i];
+      if (monthAbbr === "Jan") {
+        monthAbbr = januaryCount === 0 
+          ? monthAbbr + " " + this.currentYear 
+          : monthAbbr + " " + (this.currentYear + 1);
+        januaryCount++;
+      }
+      lineChartXLabels.push(monthAbbr);
+    }
+    this.agencySpendLineChartData.labels = lineChartXLabels;
+
+    this.agencySpendChartTooltipHeaderData = {
+      title: "Total Funds Available",
+      amount: this.getCurrencyString(this.fundsSpentToDate),
+      legend: "Funds Available",
+    };
+
     return;
   }
 
   public async loadOnEnter(): Promise<void> {
-    const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
+    const data = await this.dashboardService.getTotals(
+      ['1000000001234', '1000000004321', '1000000009999']
+    );
     console.log({data});
+
     this.activeTaskOrderCount = data.activeTaskOrders;
     this.totalObligatedFunds = data.totalObligatedFunds;
     this.totalTaskOrderValue = data.totalTaskOrderValue;
     this.fundsSpentToDate = data.fundsSpentToDate;
     this.costs = data.costs;
     this.costGroups = data.costGroups;
+    this.fundsSpentByServiceAgency = data.fundsSpentByServiceAgency;
 
     await this.setMonthlySpendSummaryBarChartData();
 
@@ -350,6 +493,76 @@ export default class JWCCDashboard extends Vue {
       },
     }
   }
+
+  public lineChartCommonDataSet: lineChartDataSet = {
+    dataSetId: "",
+    label: "",
+    data: [],
+    spanGaps: true,
+    fill: false,
+    borderColor: this.chartDataColorSequence[0],
+    borderWidth: 2,
+    pointRadius: 4,
+    pointBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverBackgroundColor: this.chartDataColorSequence[0],
+    pointHoverRadius: 4,
+    pointBorderWidth: 0,
+    pointHoverBorderWidth: 12,
+    pointHoverBorderColor: this.chartDataColorsTranslucent[0],
+    lineTension: 0,
+  }
+
+  public lineChartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    animation: {
+      duration: 0,
+    },
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    aspectRatio: 2.75,
+    scales: {
+      x: {
+        grid: {
+          display: true,
+          borderDash: [3, 3],
+          borderWidth: 2,
+          borderColor: this.chartAuxColors["lineChart-axis"],
+          lineWidth: 3,
+          tickWidth: 0,
+          color: "transparent",
+        },
+        ticks: {
+          maxTicksLimit: 7,
+          maxRotation: 0,
+          minRotation: 0,
+        },
+      },
+      y: {
+        min: 0,
+        max: 120000000,
+        grid: {
+          borderColor: "transparent",
+          tickWidth: 0,
+        },
+        ticks: {
+          stepSize: 100000,
+          callback: function (value: number): string {
+            return "$" + Math.round(value / 1000) + "k";
+          },
+        },
+      },
+    },
+  };
+
 
   public totalObligatedFundsTooltipText = `This is the legal amount allocated by the 
     government to fund all task orders awarded under JWCC. This is a portion of the 

@@ -99,7 +99,7 @@
                         Current Period: {{ popStart }}&ndash;{{ popEnd }}
                       </v-col>
                     </v-row>
-                    <line-chart
+                    <LineChart
                       chart-id="LineChart1"
                       ref="lineChart"
                       :chart-data="burnChartData"
@@ -665,7 +665,7 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.datasets = [];
     let burnChartDataSets: lineChartDataSet[] = [];
 
-    let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonData;
+    let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonDataSet;
     const totalActualData = {
       dataSetId: "TotalCLINsActual",
       label: "Total for all CLINs",
@@ -675,7 +675,7 @@ export default class PortfolioDashboard extends Vue {
     burnChartDataSets.push(clinTotalActualDataSet);
     this.checked.push(true);
 
-    let clinTotalProjectedDataSet: lineChartDataSet = this.burnChartProjectedCommonData;
+    let clinTotalProjectedDataSet: lineChartDataSet = this.burnChartProjectedCommonDataSet;
     const totalProjectedData = {
       dataSetId: "TotalClinsProjected",
       label: "Total for all CLINs Projected",
@@ -697,7 +697,7 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "Data",
           data: actualBurn[idiqClinNo],
         };
-        let clinActualDataSet = _.clone(this.burnChartActualCommonData);
+        let clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
         clinActualDataSet.borderColor = color;
         clinActualDataSet.pointBackgroundColor = color;
         clinActualDataSet.pointHoverBackgroundColor = color;
@@ -712,7 +712,7 @@ export default class PortfolioDashboard extends Vue {
             ? getIdText(clin.idiq_clin_label + "Projected") : idiqClinNo + "DataProjected",
           data: projectedBurn[idiqClinNo],
         };
-        let clinProjectedDataSet: lineChartDataSet = _.clone(this.burnChartProjectedCommonData);
+        let clinProjectedDataSet: lineChartDataSet = _.clone(this.burnChartProjectedCommonDataSet);
         clinProjectedDataSet.borderColor = color;
         clinProjectedDataSet.pointBackgroundColor = color;
         Object.assign(clinProjectedDataSet, clinProjectedData);
@@ -816,9 +816,9 @@ export default class PortfolioDashboard extends Vue {
     },
   };
 
-  public totalCLINsChecked = true;
-  public unclassifiedXaaSChecked = true;
-  public unclassifiedCloudSupportPackageChecked = false;
+  // public totalCLINsChecked = true;
+  // public unclassifiedXaaSChecked = true;
+  // public unclassifiedCloudSupportPackageChecked = false;
   public checked: boolean[] = [];
 
   public datasetToToggle: number | null = null;
@@ -829,7 +829,7 @@ export default class PortfolioDashboard extends Vue {
     this.toggleDataset = !this.toggleDataset;
   }
 
-  public burnChartActualCommonData = {
+  public burnChartActualCommonDataSet = {
     dataSetId: "",
     label: "",
     data: [],
@@ -846,7 +846,7 @@ export default class PortfolioDashboard extends Vue {
     pointHoverBorderColor: this.chartDataColorsTranslucent[0],
     lineTension: 0,
   };
-  public burnChartProjectedCommonData = {
+  public burnChartProjectedCommonDataSet = {
     dataSetId: "",  
     label: "",
     data: [],
