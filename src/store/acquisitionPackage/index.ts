@@ -39,6 +39,8 @@ import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
+import { PeriodOfPerformanceApi } from "@/api/contractDetails";
+import Periods from "../periods";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -460,6 +462,8 @@ export class AcquisitionPackageStore extends VuexModule {
         console.log(`error creating acquisition package ${error}`);
       }
     }
+
+    await Periods.initialize();
   }
 
   // service or agency selected on Organiation page
