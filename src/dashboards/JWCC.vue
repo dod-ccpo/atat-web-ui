@@ -182,7 +182,7 @@
                       spend on all JWCC portfolios to date.
                     </p>
                     <v-row>
-                      <v-col class="col-sm-6 ml-n6">
+                      <v-col class="col-sm-6 ml-n6 pl-15">
                         <donut-chart
                           chart-id="OrganizationDonutChart"
                           :chart-data="organizationDonutChartData"
@@ -193,7 +193,7 @@
                           :amount="fundsSpentToDate"
                         />
                       </v-col>
-                      <v-col class="d-flex align-center">
+                      <v-col class="d-flex align-center pr-15">
                         <div class="width-100 mt-4">
                           <div
                             v-for="(label, index) in organizationDonutChartData.labels"
