@@ -21,7 +21,13 @@ export interface TaskOrderAggregate {
 export interface CostGroup {
   yearMonth: string;
   costs: CostsDTO[];
-  total: number;
+  totalActual: number;
+  totalProjected: number;
+}
+
+export interface CSPSpending {
+   name: string;
+   total: number;
 }
 
 
@@ -35,10 +41,16 @@ const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
       {
         yearMonth: key,
         costs: value,
-        total: value.reduce<number>((prev, current)=> {
-          const total = prev + current.is_actual ? Number(current.value) : 0;
+        totalActual: value.reduce<number>((prev, current)=> {
+          const cost = current.is_actual ==="true" ? Number(current.value) : 0;
+          const total:number = prev + cost;
           return total;  
-        }, 0)
+        }, 0),
+        totalProjected: value.reduce<number>((prev, current)=> {
+          const cost = current.is_actual ==="true" ? 0: Number(current.value);
+          const total:number = prev + cost;
+          return total;  
+        }, 0),
       }
     )
   }
@@ -48,16 +60,35 @@ const buildCostGroups = (costs:CostsDTO[]): CostGroup[] => {
 }
 
 
-const getCostsTotal = (costGroups:CostGroup[])=> {
+const getCostsTotalActual = (costGroups:CostGroup[])=> {
   return  costGroups.reduce((accum, cg)=> {
-    return accum + cg.total
+    return accum + cg.totalActual
   }, 0);
 }
 
-const getCostAverage = (costGroups:CostGroup[]) => {
-  return getCostsTotal(costGroups) / costGroups.length;
-}
 
+const getCSPTotals = (costs:CostsDTO[]): Record<string, CSPSpending> =>{
+
+  const cspGroups =groupBy(costs, 'csp.name');
+  const cspSpendings: Record<string, CSPSpending> = {
+  };
+  
+  for (const [key, value] of Object.entries(cspGroups)) {
+    const total = value.reduce<number>((prev, current)=> {
+      const cost = current.is_actual ==="true" ? Number(current.value) : 0;
+      const total = prev + cost;
+      return total;  
+    }, 0);
+
+    cspSpendings[key]  = {
+      name: key,
+      total,
+    }
+  }
+
+  return cspSpendings;
+
+}
 
 
 
@@ -110,11 +141,16 @@ export class DashboardService{
       let costsQuery = `task_order_number=${taskOrderNumber}`;
       costsQuery+= `^year_monthBETWEENjavascript:gs.dateGenerate('${popStartDate}','start')`;
       costsQuery+= `@javascript:gs.dateGenerate('${popEndDate}','end')`;
+
+      const fields="clin,csp,csp.name,year_month,"
+      +"task_order_number,portfolio,organization,service_agency,is_actual,value";
       
       const costsRequestConfig: AxiosRequestConfig = {
         params: {
           // eslint-disable-next-line camelcase
-          sysparm_query: costsQuery
+          sysparm_query: costsQuery,
+          // eslint-disable-next-line camelcase
+          sysparm_fields: fields,
         }
       }
       
@@ -165,7 +201,9 @@ export class DashboardService{
     return {
       ...combined,
       costGroups,
-      fundsSpentToDate: getCostsTotal(costGroups)
+      fundsSpentToDate: getCostsTotalActual(costGroups),
+      fundsSpentByCSP :  getCSPTotals(combined.costs),
+
     }
   }
 
