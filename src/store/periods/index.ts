@@ -155,8 +155,6 @@ export class PeriodsStore extends VuexModule {
 
     await this.ensureInitialized();
 
-    debugger;
-
     if(this.periodOfPerformance && this.periodOfPerformance.sys_id 
       && this.periodOfPerformance.sys_id.length > 0)
     {

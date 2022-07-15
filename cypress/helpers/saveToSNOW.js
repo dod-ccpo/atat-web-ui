@@ -1545,7 +1545,6 @@ export function saveToSNOW(testCase){
 
   
   if (spec === "background"){
-    debugger;
     const background = [
       {
         'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
@@ -1646,7 +1645,6 @@ export function saveToSNOW(testCase){
   }
 
   if (spec === "common"){
-    debugger;
     const common = [
       {
         'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',

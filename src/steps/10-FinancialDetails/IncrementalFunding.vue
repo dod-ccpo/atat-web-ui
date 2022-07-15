@@ -193,12 +193,17 @@
                     <span id="TotalCostEstimate" class="h3">
                       Total cost estimate: ${{ costEstimateStr }}
                     </span>
-                    <p class="mb-0">
+                    <p class="mb-0" v-if="!isFundingMet">
+                      <!-- adjust message for overfunded or funding met -->
                       You need to add
                       <span id="AmountRemaining" class="bold">
                         ${{ amountRemainingStr }}
                       </span>
                       to fully fund your base period.
+                    </p>
+                    <p class="mb-0" v-else>
+                      Your funding plan accounts for the total cost estimate for
+                      your base period.
                     </p>
                   </div>
                 </div>
@@ -206,27 +211,19 @@
             </div>
           </div>
         </div>
-        <v-btn
-          class="mt-10 pull-right"
-          color="primary"
-          @click="validateOnContinue()"
+        <ATATAlert
+          id="OverUnderFundedAlert"
+          class="width-70 mt-5"
+          v-if=" isIFPOverfunded|| isIFPUnderfunded "
         >
-          Validate Duplicate Quarters
-        </v-btn>
-
-         <ATATAlert
-              id="OverUnderFundedAlert"
-              class="width-70"
-              v-if=" isIFPOverfunded|| isIFPUnderfunded "
-            >
-              <template slot="content">
-                <p class="mb-0">
-                  Based on your requirement’s cost estimate, your plan is
-                  <strong>{{ isIFPOverfunded ? 'over' : 'under'}}funded</strong>. 
-                  Please adjust your increments to ensure the total equals ${{ costEstimateStr }} 
-                </p>
-              </template>
-          </ATATAlert>
+          <template slot="content">
+            <p class="mb-0">
+              Based on your requirement’s cost estimate, your plan is
+              <strong>{{ isIFPOverfunded ? 'over' : 'under'}}funded</strong>. 
+              Please adjust your increments to ensure the total equals ${{ costEstimateStr }} 
+            </p>
+          </template>
+        </ATATAlert>
       </v-col>
     </v-row>
   </v-container>
@@ -326,23 +323,37 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
   public fiscalQuarters: { text: string; order: number }[] = [];
 
-  public validateOnContinue(): void {
-    this.validateDuplicateQuarters();
+  public hasValidatedOnContinue = false;
+  public allowContinue = true;
+
+  public async validateOnContinue(): Promise<void> {
+    this.calcAmounts("initialIncrement");
+    this.calcAmounts("increment0");
+    await this.validateDuplicateQuarters();
     this.isUnderfunded(); 
+    this.isOverfunded();
+
+    if (!this.hasValidatedOnContinue && (this.duplicateListingsIndices.length > 0 
+      || this.isIFPUnderfunded || this.isIFPOverfunded)
+    ) {
+      this.allowContinue = false;
+    } else {
+      this.allowContinue = true;
+    }
   }
 
-  public validateDuplicateQuarters(): void {
-    this.$nextTick(()=>{
-      this.duplicateListingsIndices = [];
-      this.fundingIncrements
-        .map((inc) => inc.qtr)
-        .filter((el, index, array )=>{
-          if (array.lastIndexOf(el) > index){
-            this.duplicateListingsIndices.push(index +1);
-            this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)
-          }
-        });
-    });
+  public async validateDuplicateQuarters(): Promise<void> {
+    // this.$nextTick(()=>{
+    this.duplicateListingsIndices = [];
+    this.fundingIncrements
+      .map((inc) => inc.qtr)
+      .filter((el, index, array )=>{
+        if (array.lastIndexOf(el) > index){
+          this.duplicateListingsIndices.push(index +1);
+          this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)
+        }
+      });
+    // });
   }
 
   private onPeriodChange(index: number) {
@@ -425,6 +436,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     }
   }
 
+  public isFundingMet = false;
+
   public calcAmounts(field: string): void {
     let incrementsTotal = this.fundingIncrements.reduce(
       (accumulator, current) =>
@@ -435,6 +448,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.totalAmount = this.initialAmount
       ? this.initialAmount + incrementsTotal
       : incrementsTotal;
+    this.isFundingMet = this.totalAmount >= this.costEstimate;
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
     this.amountRemainingStr = this.amountRemaining
@@ -538,49 +552,58 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         }
       }
     }
+
+    this.$nextTick(async () => {
+      await this.validateDuplicateQuarters();
+    })
+
   }
 
-  public async created(): Promise<void> {
-    await this.loadOnEnter();
-  }
+  // public async created(): Promise<void> {
+  //   await this.loadOnEnter();
+  // }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      // FUTURE TICKET VALIDATION: first time user clicks continue:
-      // • check if same quarter selected for more than one dropdown
-      // • check if over/under funded - AC 4 which was crossed out
-      // set a flag if error has been shown. if so, user can continue
-
-      // Set chronological order of fiscal quarters in fundingIncrements
-      let sortedIncrements: fundingIncrement[] = [];
-      this.fundingIncrements.forEach((incr) => {
-        incr.order =
-          this.fiscalQuarters.findIndex((q) => q.text === incr.qtr) + 1;
-        sortedIncrements.push(incr);
-      });
-      sortedIncrements.sort((a, b) => {
-        return a.order > b.order ? 1 : -1;
-      });
-      sortedIncrements.forEach((incr, i) => {
-        incr.order = i + 1;
-      });
-
-      this.fundingIncrements = sortedIncrements;
-
-      if (this.hasChanged()) {
-        FinancialDetails.saveIFPData({
-          data: this.currentData,
-          removed: this.removedIncrements,
+      if (!this.hasValidatedOnContinue) {
+        await this.validateOnContinue();
+        this.hasValidatedOnContinue = true;
+      } else {
+        this.allowContinue = true;
+      }
+      
+      if (this.allowContinue) {
+        // Set chronological order of fiscal quarters in fundingIncrements
+        let sortedIncrements: fundingIncrement[] = [];
+        this.fundingIncrements.forEach((incr) => {
+          incr.order =
+            this.fiscalQuarters.findIndex((q) => q.text === incr.qtr) + 1;
+          sortedIncrements.push(incr);
         });
+        sortedIncrements.sort((a, b) => {
+          return a.order > b.order ? 1 : -1;
+        });
+        sortedIncrements.forEach((incr, i) => {
+          incr.order = i + 1;
+        });
+
+        this.fundingIncrements = sortedIncrements;
+
+        if (this.hasChanged()) {
+          FinancialDetails.saveIFPData({
+            data: this.currentData,
+            removed: this.removedIncrements,
+          });
+        }
       }
     } catch (error) {
       console.log(error);
     }
 
-    return true;
+    return this.allowContinue;
   }
 
   private hasChanged(): boolean {
