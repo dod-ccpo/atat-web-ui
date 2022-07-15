@@ -269,6 +269,10 @@ export default class SeverabilityAndIncrementalFunding extends Mixins(SaveOnLeav
   public async created(): Promise<void> {  
     await this.loadOnEnter();
   }
+  public async mounted(): Promise<void> {  
+    await this.loadOnEnter();
+  }
+
 
   private hasChanged(): boolean {
     const current = this.selectedFundOption.length > 0 ? this.selectedFundOption : "";
