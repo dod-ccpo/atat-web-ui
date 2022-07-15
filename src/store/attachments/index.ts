@@ -33,7 +33,6 @@ import {
 })
 export class AttachmentStore extends VuexModule {
   private initialized = false;
-  private fundingRequestFSFormAttachmentService = AttachmentServiceTypes.FundingRequestFSForm;
   // store session properties
   protected sessionProperties: string[] = [FUNDING_REQUEST_FSFORM_TABLE, 
     FUNDING_REQUEST_MIPRFORM_TABLE];
