@@ -104,8 +104,8 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATFileList from "@/components/ATATFileList.vue";
 import {
-  FileAttachmentService,
-  FileAttachmentServiceFactory,
+  AttachmentService,
+  AttachmentServiceFactory,
 } from "@/services/attachment";
 import { invalidFile, uploadingFile } from "types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
@@ -159,7 +159,7 @@ export default class ATATFileUpload extends Vue {
   private fileUploadControl!: HTMLInputElement;
   private isHovering = false;
   private isFullSize = true;
-  private fileAttachmentService?: FileAttachmentService;
+  private fileAttachmentService?: AttachmentService;
   private errorMessages: string[] = [];
   private validateOnBlur = true;
   
@@ -442,7 +442,7 @@ export default class ATATFileUpload extends Vue {
     window.addEventListener("dragover", this.preventDrop, false);
 
     //try to grab the attachment service via the service factory
-    this.fileAttachmentService = FileAttachmentServiceFactory(
+    this.fileAttachmentService = AttachmentServiceFactory(
       this.attachmentServiceName
     );
     

@@ -27,7 +27,7 @@
           :validFileFormats="validFileFormats"
           :validFiles.sync="uploadedFiles"
           :helpText="fileUploadHelpText"
-          attachmentServiceName="FundingPlans"
+          :attachmentServiceName="attachmentServiceName"
           @delete="onRemoveAttachment"
           :multiplesAllowed="false"
           :requiredMessage="requiredMessage"
@@ -43,12 +43,14 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import { AttachmentTables } from "@/api";
 import { AttachmentDTO, FundingRequestMIPRFormDTO } from "@/api/models";
+import { TABLENAME as FUNDING_REQUEST_MIPRFORM_TABLE } from "@/api/fundingRequestMIPRForm";
 import { invalidFile, uploadingFile } from "types/Global";
 import Attachments from "@/store/attachments";
 import ATATTextField from "@/components/ATATTextField.vue";
-import FinancialDetails from "@/store/financialDetails";
+import FinancialDetails, { initialFundingRequestMIPRForm } from "@/store/financialDetails";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import { AttachmentServiceCallbacks } from "@/services/attachment";
 
 @Component({
   components: {
@@ -57,6 +59,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 export default class MIPR extends Mixins(SaveOnLeave)  {
+    private attachmentServiceName = FUNDING_REQUEST_MIPRFORM_TABLE;
   private uploadedFiles: uploadingFile[] = [];
   private invalidFiles: invalidFile[] = [];
   private validFileFormats = ["xlsx", "xls", "pdf"];
@@ -84,7 +87,7 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
     try {
       this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
       this.MIPRNumber = this.saved.mipr_number;
-      const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
+      const attachments = await Attachments.getAttachments(this.attachmentServiceName);
       const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
         const file = new File([], attachment.file_name, {
           lastModified: Date.parse(attachment.sys_created_on || "")
@@ -124,7 +127,11 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        FinancialDetails.saveFundingRequestMIPRForm(this.current);
+        const updated: FundingRequestMIPRFormDTO = {
+          ...this.saved || initialFundingRequestMIPRForm,
+          ...this.current
+        };
+        FinancialDetails.saveFundingRequestMIPRForm(updated);
       }
     } catch (error) {
       console.log(error);
@@ -135,7 +142,7 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
   async onRemoveAttachment(file: uploadingFile): Promise<void> {
     try {
       if (file) {
-        const key = AttachmentTables.FundingPlans;
+        const key = this.attachmentServiceName;
         const attachmentId = file.attachmentId;
         const recordId = file.recordId;
         await Attachments.removeAttachment({
@@ -151,6 +158,17 @@ export default class MIPR extends Mixins(SaveOnLeave)  {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+
+    //listen for attachment service upload callbacks
+    //and update attachments
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      FUNDING_REQUEST_MIPRFORM_TABLE,
+      async () => {
+        //reload data when files are uploaded
+        this.saved = await FinancialDetails.loadFundingRequestMIPRForm();
+        this.MIPRNumber = this.saved.mipr_number;
+      }
+    );
   }
 
   // `ATATFileUpload.vue`

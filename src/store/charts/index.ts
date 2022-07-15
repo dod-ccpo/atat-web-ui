@@ -47,7 +47,6 @@ export class ChartsStore extends VuexModule {
     "gray": "#dfe1e2",
   };
 
-
   public chartAuxColors = {
     "lineChart-axis": "#3d4551",
     "lineChart-border": "#dfe1e2",
@@ -55,8 +54,6 @@ export class ChartsStore extends VuexModule {
   };
 
   public chartDataColorSequence = Object.values(this.chartDataColors);
-
-
 
   public monthAbbreviations = [
     "Jan",
@@ -73,8 +70,9 @@ export class ChartsStore extends VuexModule {
     "Dec",
   ];
 
-}
+  public monthsNotAbbreviated = ["March", "April", "May", "June", "July"];
 
+}
 
 const ATATCharts = getModule(ChartsStore);
 export default ATATCharts;

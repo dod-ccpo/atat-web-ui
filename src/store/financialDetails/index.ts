@@ -40,7 +40,7 @@ const initialFundingPlan: FundingPlanDTO = {
   remaining_amount_increments: "",
 }
 
-const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
+export const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
 
   fs_form_7600a_filename: "",
   fs_form_7600a_attachment: "",
@@ -50,7 +50,8 @@ const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
   order_number: "",
   gt_c_number: "",
 }
-const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
+
+export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
   mipr_number: "",
   mipr_filename: "",
   mipr_attachment: "",
@@ -422,6 +423,8 @@ export class FinancialDetailsStore extends VuexModule {
       const fundingRequestForm = await api.fundingRequestFSFormTable
         .retrieve(this.fundingRequestFSForm.sys_id);
       this.setFundingRequestFSForm(fundingRequestForm);
+      this.setGTCNumber(fundingRequestForm.gt_c_number);
+      this.setOrderNumber(fundingRequestForm.order_number);
       return fundingRequestForm;
     } catch (error) {
       throw new Error(`error occurred retrieving funding request form ${error}`);

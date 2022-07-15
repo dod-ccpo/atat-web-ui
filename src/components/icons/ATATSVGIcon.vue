@@ -15,6 +15,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import Calendar from "@/components/icons/Calendar.vue";
+import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
 import Currency from "@/components/icons/Currency.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
@@ -27,10 +28,13 @@ import Search from "@/components/icons/Search.vue";
 import TrendingDown from "@/components/icons/TrendingDown.vue";
 import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
+import TriangleUp from "@/components/icons/TriangleUp.vue";
+import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components:{
     Calendar,
+    ChevronRight,
     Close,
     Currency,
     ExclamationMark,
@@ -40,6 +44,8 @@ import UploadFile from "@/components/icons/UploadFile.vue";
     Pdf,
     Remove,
     Search,
+    TriangleUp,
+    TriangleDown,
     TrendingDown,
     TrendingUp,
     UploadFile,

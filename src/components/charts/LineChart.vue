@@ -14,6 +14,7 @@ export default class LineChart extends Vue {
   @Prop({ required: true, default: {} }) public chartOptions!: any;
   @Prop({ required: false }) public datasetToToggle!: number;
   @Prop({ required: false }) public toggleDataset!: boolean;
+  @Prop({ required: false, default: false }) public hasProjected?: boolean;
   @Prop({ required: false }) public tooltipHeaderData!: Record<string, string>;
   private myChart!: Chart;
 
@@ -29,10 +30,14 @@ export default class LineChart extends Vue {
     const isDatasetVisible = this.myChart.isDatasetVisible(i);
     if (isDatasetVisible) {
       this.myChart.hide(i); // actual spend (solid)
-      this.myChart.hide(i + 1); // burndown (dashed)
+      if (this.hasProjected) {
+        this.myChart.hide(i + 1); // burndown (dashed)
+      }
     } else {
       this.myChart.show(i);
-      this.myChart.show(i + 1);
+      if (this.hasProjected) {
+        this.myChart.show(i + 1);
+      }
     }
   }
 
@@ -106,29 +111,45 @@ export default class LineChart extends Vue {
     // Tooltip Element
     const { chart, tooltip } = context;
     const tooltipEl = this.getOrCreateTooltip(chart);
-
     // Hide if no tooltip
     if (tooltip.opacity === 0) {
       tooltipEl.style.opacity = 0;
       return;
     }
-
     // Set Text
     if (tooltip.body) {
       const bodyLines = tooltip.body.map((b: any) => b.lines);
       const projectedCount = bodyLines.filter(
         (l: string[]) => l[0].toLowerCase().indexOf("projected") > -1
       ).length;
-      const currentYear = new Date().getFullYear();
-      const nextYear = (currentYear + 1) + "";
-      const nextYearIndex = this.chartData.labels?.findIndex((s) => {
-        if (typeof s === "string") {
-          return s.includes(nextYear)
-        }
-        return false;
-      });
 
-      if (bodyLines.length !== projectedCount) {
+      let showToolTip = true;
+      const firstLabel = bodyLines[0][0];
+      if (firstLabel) {
+        const firstIsTotal = firstLabel.indexOf("Total") > -1;
+        if (firstIsTotal) {
+          const sep = firstLabel.indexOf(":");
+          const amount = firstLabel.slice(sep + 2, firstLabel.length)
+          if (amount === "0") {
+            showToolTip = false;
+            tooltipEl.style.opacity = 0;
+            return;
+          }
+        }
+      }
+
+      if (bodyLines.length !== projectedCount && showToolTip) {
+
+        const currentYear = new Date().getFullYear();
+        const nextYear = (currentYear + 1) + "";
+
+        const nextYearIndex = this.chartData.labels?.findIndex((s) => {
+          if (typeof s === "string") {
+            return s.includes(nextYear)
+          }
+          return false;
+        });
+
 
         if (bodyLines.length) {
           const titleLines = tooltip.title || [];

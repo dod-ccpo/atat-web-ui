@@ -13,10 +13,10 @@
       :nudge-left="0"
     >
       <template v-slot:activator="{ on, attrs }">
-        <div class="d-flex align-center" v-if="label">
+        <div class="d-flex align-center mb-2" v-if="label">
           <label
             :id="id + 'DatePickerLabel'"
-            class="form-field-label mb-2 mr-1"
+            class="form-field-label mr-1"
             :for="id + 'DatePickerTextField'"
           >
             {{ label }}
