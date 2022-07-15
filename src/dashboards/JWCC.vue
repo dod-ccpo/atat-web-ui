@@ -533,22 +533,6 @@ export default class JWCCDashboard extends Vue {
     this.fundsSpentToDate = data.fundsSpentToDate;
     this.costs = data.costs;
     this.costGroups = data.costGroups;
-    this.fundsSpentByAgency = Object.values(data.fundsSpentByServiceAgency)
-    console.log(this.fundsSpentByAgency)
-    this.fundsSpentByAgency.forEach((agency, idx)=>{
-      if(agency.name == "DEFENSE_INFORMATION_SYSTEMS_AGENCY") {
-        this.disaRecord = agency
-      }else{
-        this.agencyNames.push(this.agencyLabelFormatter(agency.name as string))
-        this.agencyAmounts.push(agency.total as string)
-      }
-      if(idx === this.fundsSpentByAgency.length - 1) {
-        this.agencyNames.push(this.agencyLabelFormatter(this.disaRecord.name as string))
-        this.agencyAmounts.push(this.disaRecord.total as string)
-      }
-    })
-    this.organizationDonutData = this.organizationDonutChartPercent()
-    this.organizationDonutChartData.datasets[0].data = this.organizationDonutData
 
     this.fundsSpentByServiceAgency = data.fundsSpentByServiceAgency;
     const spendByAgency = Object.values(this.fundsSpentByServiceAgency);
@@ -569,9 +553,13 @@ export default class JWCCDashboard extends Vue {
       spendByAgency.push(disaObj);
     }
     this.fundsSpentByServiceAgency = spendByAgency;
-
+    this.fundsSpentByServiceAgency.forEach((agency)=>{
+      this.agencyNames.push(this.agencyLabelFormatter(agency.name as string))
+      this.agencyAmounts.push(agency.total)
+    })
+    this.organizationDonutData = this.organizationDonutChartPercent()
+    this.organizationDonutChartData.datasets[0].data = this.organizationDonutData
     await this.setMonthlySpendSummaryBarChartData();
-
 
     this.fundsSpentByCSP = Object.values(data.fundsSpentByCSP);
     this.fundsSpentByCSP.forEach((csp) =>
@@ -737,10 +725,9 @@ export default class JWCCDashboard extends Vue {
       },
     }
   }
-  public disaRecord: Record<string, string | number> = {}
-  public fundsSpentByAgency: Record<string, string | number>[] = [];
+
   public agencyNames: string[] = [];
-  public agencyAmounts: string[] = [];
+  public agencyAmounts: number[] = [];
   public organizationDonutData: number[] = [];
   public agencyLabelFormatter(str: string):string {
     switch (str) {
