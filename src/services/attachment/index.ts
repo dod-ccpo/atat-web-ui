@@ -10,7 +10,7 @@ import {
 } from "@/api/fundingPlan";
 import { TABLENAME as FundingRequestFSFormTableName } from "@/api/fundingRequestFSForm";
 import { FundingRequestFSAttachmentService } from "./fundingRequestFSForm";
-import { AttachmentService, AttachmentServiceBase } from "./base";
+import {  AttachmentServiceBase } from "./base";
 
 export const AttachmentServiceCallbacks =  (()=>{
 
@@ -169,8 +169,8 @@ export interface RecordManager<TModel extends BaseTableDTO> {
 
 export const AttachmentServiceTypes = {
   FundingPlans: "FundingPlans",
-  FundingRequestFSForm: "FundingRequestFSForm"
-};
+  FundingRequestFSForm: FundingRequestFSFormTableName
+}
 
 export const FileAttachmentServiceFactory = (
   attachmentServiceType: string
@@ -191,8 +191,6 @@ export const FileAttachmentServiceFactory = (
 
 export const AttachmentServiceFactory = (attachmentServiceType: string): 
 AttachmentServiceBase<TableApiBase<BaseTableDTO>,BaseTableDTO> => {
-
-  debugger;
 
   switch(attachmentServiceType){
 

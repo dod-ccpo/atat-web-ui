@@ -9,11 +9,13 @@ import {
 import rootStore from "../index";
 
 import { FundingPlansTable } from "@/api";
+import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 import { AttachmentDTO } from "@/api/models";
 import {
   AttachmentServiceCallbacks,
   AttachmentServiceTypes,
   FileAttachmentServiceFactory,
+  AttachmentServiceFactory,
 } from "@/services/attachment";
 
 import Vue from "vue";
@@ -32,11 +34,12 @@ import {
 })
 export class AttachmentStore extends VuexModule {
   private initialized = false;
-
+  private fundingRequestFSFormAttachmentService = AttachmentServiceTypes.FundingRequestFSForm;
   // store session properties
-  protected sessionProperties: string[] = [FundingPlansTable];
+  protected sessionProperties: string[] = [FundingPlansTable, FUNDING_REQUEST_FSFORM_TABLE];
 
   public [FundingPlansTable]: AttachmentDTO[] = [];
+  public [FUNDING_REQUEST_FSFORM_TABLE]: AttachmentDTO[] =[];
 
   @Mutation
   public setStoreData(sessionData: string): void {
@@ -83,11 +86,8 @@ export class AttachmentStore extends VuexModule {
     const storeData = this as unknown as Record<string, unknown>;
 
     try {
-      // convert first letter of key to uppercase because the file attachment
-      // service factory expects keys in CamelCased upper case starting letters
-      const convertedKey = key[0].toUpperCase() + key.substring(1);
       // locate attachment service
-      const attachmentService = FileAttachmentServiceFactory(convertedKey);
+      const attachmentService = AttachmentServiceFactory(key);
 
       // remove attachment
       await attachmentService.remove({
@@ -134,10 +134,10 @@ export class AttachmentStore extends VuexModule {
     //listen for attachment service upload callbacks
     //and update attachments
     AttachmentServiceCallbacks.registerUploadCallBack(
-      AttachmentServiceTypes.FundingPlans,
+      FUNDING_REQUEST_FSFORM_TABLE,
       (attachment) => {
         this.addAttachment({
-          key: FundingPlansTable,
+          key: FUNDING_REQUEST_FSFORM_TABLE,
           attachment,
         })
       }

@@ -7,16 +7,12 @@ import FinancialDetails from "@/store/financialDetails";
 import api from "@/api";
 
 
+// record manager to coordinate record creation saving with attachment service
 const recordManager : RecordManager<FundingRequestFSFormDTO> = {
   retrieveOrCreate: async function (): Promise<FundingRequestFSFormDTO> {
-
-    if (FinancialDetails.fundingRequestFSForm == null) {
-      const record = await api.fundingRequestFSFormTable.create();
-      return record;
-    }
-
-    return FinancialDetails.fundingRequestFSForm;
-
+    debugger;
+    const record = await  FinancialDetails.loadFundingRequestFSForm();
+    return record;
   },
   save: async function (record: string): Promise<void> {
     const data = JSON.parse(record) as FundingRequestFSFormDTO;
@@ -37,7 +33,6 @@ export class FundingRequestFSAttachmentService extends
   protected updateRecord(record: FundingRequestFSFormDTO, attachmentSysId: string, 
     fileName: string): FundingRequestFSFormDTO {
 
-    //todo these fields need to be renamed 
     if(record.fs_form_7600a_filename.length > 0)
     {
       // eslint-disable-next-line camelcase

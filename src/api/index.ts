@@ -71,7 +71,6 @@ export default {
 export const FundingPlansTable = "fundingPlans";
 
 export const AttachmentTables = {
-
   FundingPlans: FundingPlansTable
 }
 

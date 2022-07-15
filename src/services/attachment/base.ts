@@ -68,9 +68,6 @@ async upload(
     onProgress
   );
 
-  AttachmentServiceCallbacks
-    .invokeUploadCallbacks(this.serviceKey, {...attachment, ...updatedAttachment});
-
   const attachmentSysId = updatedAttachment?.sys_id || "";
 
   record = this.updateRecord(record, attachmentSysId,fileName);
@@ -82,6 +79,9 @@ async upload(
   if(this.recordManager){
     this.recordManager.save(JSON.stringify(record));
   }
+
+  AttachmentServiceCallbacks
+    .invokeUploadCallbacks(this.serviceKey, {...attachment, ...updatedAttachment});
 
   //return the attachment and table data
   return {

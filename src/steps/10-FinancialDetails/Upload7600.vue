@@ -57,7 +57,7 @@
         </h4>
         <ATATFileUpload
           :validFileFormats="validFileFormats"
-          attachmentServiceName="FundingRequestFSForm"
+          :attachmentServiceName="attachmentServiceName"
           :maxFileSizeInBytes="maxFileSizeInBytes"
           id="FundingPlan"
           @delete="onRemoveAttachment"
@@ -97,15 +97,16 @@ import ATATFileUpload from "../../components/ATATFileUpload.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import { invalidFile, uploadingFile } from "types/Global";
+import { TABLENAME as FUNDING_REQUEST_FSFORM_TABLE } from "@/api/fundingRequestFSForm";
 
 // import { hasChanges } from "@/helpers";
 // import AcquisitionPackage from "@/store/acquisitionPackage";
 import SaveOnLeave from "@/mixins/saveOnLeave";
-import { AttachmentTables } from "@/api";
 import Attachments from "@/store/attachments";
-import { AttachmentDTO } from "@/api/models";
-import FinancialDetails from "@/store/financialDetails";
+import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
+import FinancialDetails, {initialFundingRequestFSForm} from "@/store/financialDetails";
 import { hasChanges } from "@/helpers";
+import { AttachmentServiceCallbacks } from "@/services/attachment";
 
 let generalTermsAndConditionsToolTips = "This is a unique 20-character value";
 generalTermsAndConditionsToolTips +=
@@ -129,6 +130,7 @@ const GTCMRegex = /A[0-9]{4}-[0-9]{3}-[0-9]{3}-[0-9]{6}(\.[0-9])?$/gm;
   },
 })
 export default class Upload7600 extends Mixins(SaveOnLeave) {
+  private attachmentServiceName = FUNDING_REQUEST_FSFORM_TABLE;
   private generalTermsAndConditionsToolTips = generalTermsAndConditionsToolTips;
   private orderNumberToolTips = orderNumberToolTips;
   private uploadedFiles: uploadingFile[] = [];
@@ -138,6 +140,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   private gtcNumber = "";
   private orderNumber = "";
   private showWarning = false;
+  private loaded: FundingRequestFSFormDTO | null = null;
  
   private requiredMessage =
     "You must include an authorized 7600A and 7600B for this acquisition. " +
@@ -185,7 +188,7 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
   async onRemoveAttachment(file: uploadingFile): Promise<void> {
     try {
       if (file) {
-        const key = AttachmentTables.FundingPlans;
+        const key = this.attachmentServiceName;
         const attachmentId = file.attachmentId;
         const recordId = file.recordId;
         await Attachments.removeAttachment({
@@ -193,6 +196,9 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
           attachmentId,
           recordId,
         });
+
+        //get updated data
+        await this.loadFundingRequestData();
       }
     } catch (error) {
       console.error(`error removing attachment with id ${file?.attachmentId}`);
@@ -205,34 +211,43 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
       this.uploadedFiles.length > 0 && this.uploadedFiles.length < 2;
   }
 
+  async loadFundingRequestData(): Promise<void>{
+    this.loaded = await FinancialDetails.loadFundingRequestFSForm();
+    this.saved =await FinancialDetails.load7600();
+    this.gtcNumber = this.saved.gtcNumber;
+    this.orderNumber = this.saved.orderNumber;
+  }
+
+  async loadAttachments(): Promise<void>{
+
+    const attachments = await Attachments.getAttachments(this.attachmentServiceName);
+    const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
+      const file = new File([], attachment.file_name, {
+        lastModified: Date.parse(attachment.sys_created_on || "")
+      });
+      const upload: uploadingFile = {
+        attachmentId: attachment.sys_id || "",
+        fileName: attachment.file_name,
+        file: file,
+        created: file.lastModified,
+        progressStatus: 100,
+        link: attachment.download_link || "",
+        recordId: attachment.table_sys_id,
+        isErrored: false,
+        isUploaded: true
+      }
+
+      return upload;
+    });
+
+    this.uploadedFiles = [...uploadedFiles];
+  }
+
   async loadOnEnter(): Promise<void> {
     try {
 
-      this.saved =await FinancialDetails.load7600();
-      this.gtcNumber = this.saved.gtcNumber;
-      this.orderNumber = this.saved.orderNumber;
-
-      const attachments = await Attachments.getAttachments(AttachmentTables.FundingPlans);
-      const uploadedFiles = attachments.map((attachment: AttachmentDTO) => {
-        const file = new File([], attachment.file_name, {
-          lastModified: Date.parse(attachment.sys_created_on || "")
-        });
-        const upload: uploadingFile = {
-          attachmentId: attachment.sys_id || "",
-          fileName: attachment.file_name,
-          file: file,
-          created: file.lastModified,
-          progressStatus: 100,
-          link: attachment.download_link || "",
-          recordId: attachment.table_sys_id,
-          isErrored: false,
-          isUploaded: true
-        }
-
-        return upload;
-      });
-
-      this.uploadedFiles = [...uploadedFiles];
+      await this.loadFundingRequestData();
+      await this.loadAttachments();
 
     } catch (error) {
       throw new Error("an error occurred loading funding plans data");
@@ -241,12 +256,27 @@ export default class Upload7600 extends Mixins(SaveOnLeave) {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+
+    //listen for attachment service upload callbacks
+    //and update attachments
+    AttachmentServiceCallbacks.registerUploadCallBack(
+      FUNDING_REQUEST_FSFORM_TABLE,
+      async () => {
+        await this.loadFundingRequestData();
+      }
+    );
   }
 
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        FinancialDetails.save7600(this.current);
+    
+        let data: FundingRequestFSFormDTO = {
+          ...this.loaded || initialFundingRequestFSForm,
+          order_number: this.current.orderNumber,
+          gt_c_number: this.current.gtcNumber,
+        }
+        FinancialDetails.saveFundingRequestFSForm(data);
       }
     } catch (error) {
       console.log(error);
