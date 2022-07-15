@@ -250,6 +250,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import { add, format, isValid } from "date-fns";
 import { parseISO } from "date-fns/fp";
+import formatISO from "date-fns/formatISO"
 
 @Component({
   components: {
@@ -512,8 +513,6 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.costEstimateStr = toCurrencyString(this.costEstimate);
     }
 
-    
-
     const storeData = await FinancialDetails.loadIFPData();
     if (storeData) {
       this.savedData = storeData;
@@ -526,18 +525,16 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // use below for future validation ticket
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
     }
-
     
     this.periodOfPerformance = await PeriodOfPerformance.loadPeriodOfPerformance();
     const requestedPopStartDate = this.periodOfPerformance.requested_pop_start_date;
-    
     this.startDate = 
       await new Date(
-        format(parseISO(requestedPopStartDate !== "" ? requestedPopStartDate : new Date()), 
-          'MM/dd/yyyy')
+        format(parseISO(requestedPopStartDate !== "" 
+          ? requestedPopStartDate : formatISO(new Date())
+        ), 'MM/dd/yyyy')
       );
     console.log(this.startDate)
-   
     
     await this.initializeIncrements();
 
