@@ -195,7 +195,7 @@
                         <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
                           <span
                             class="_legend-square"
-                            :style="'background-color: ' + donutChartColors[index]"
+                            :style="'background-color: ' + chartDataColorSequence[index]"
                           >
                           </span>
                           <strong>{{ label }}</strong>
@@ -514,8 +514,13 @@ export default class JWCCDashboard extends Vue {
     this.fundsSpentByCSP.forEach((csp) =>
       this.cspLabels.push((csp.name as string).replace("_"," "))
     );
+    const cspSpending: number[] = this.fundsSpentByCSP.map((o) => {
+      return o.total !== "undefined" ? parseInt(o.total.toString()) : 0
+    });
+
     this.fundsSpentByCSP.forEach((csp) => this.cspAmounts.push(csp.total as string));
     this.cspDonutData = this.cspDonutChartPercentages();
+
     this.cspDonutChartData.datasets[0].data = this.cspDonutData;
     
     // for MVP, period start will always be Jan 1 of current year
@@ -538,7 +543,7 @@ export default class JWCCDashboard extends Vue {
         barThickness: 150,
         maxBarThickness: 150,
         minBarLength: 2,
-        data: [83123, 95987],
+        data: [0, 0],
         backgroundColor: [this.chartDataColorSequence[0], this.chartDataColorSequence[0]],
         datalabels: {
           color: "#161b1e",
@@ -556,6 +561,7 @@ export default class JWCCDashboard extends Vue {
   };
 
   public barChartMonthlySpendOptions = {
+    aspectRatio: 1.2,
     hover: {
       mode: null,
     },
@@ -591,7 +597,7 @@ export default class JWCCDashboard extends Vue {
           tickWidth: 0,
         },
         ticks: {
-          stepSize: 25000,
+          stepSize: 100000,
           callback: function (value: number): string {
             return "$" + Math.round(value / 1000) + "k";
           },
@@ -687,12 +693,6 @@ export default class JWCCDashboard extends Vue {
     );
     return percentages;
   }
-  public donutChartColors = [
-    this.chartDataColorSequence[0],
-    this.chartDataColorSequence[1],
-    this.chartDataColorSequence[2],
-    this.chartDataColorSequence[3],
-  ];
 
   public cspDonutChartData = {
     labels: this.cspLabels,
@@ -700,9 +700,9 @@ export default class JWCCDashboard extends Vue {
       {
         label: "Funding Status",
         data: this.cspDonutData,
-        backgroundColor: this.donutChartColors,
-        hoverBackgroundColor: this.donutChartColors,
-        hoverBorderColor: this.donutChartColors,
+        backgroundColor: this.chartDataColorSequence,
+        hoverBackgroundColor: this.chartDataColorSequence,
+        hoverBorderColor: this.chartDataColorSequence,
         hoverBorderRadius: 0,
         hoverOffset: 10,
         hoverBorderWidth: 0,
