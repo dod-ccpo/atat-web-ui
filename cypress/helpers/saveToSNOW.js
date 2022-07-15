@@ -1332,7 +1332,6 @@ export function saveToSNOW(testCase){
   }
 
   if (spec === "background"){
-    debugger;
     const background = [
       {
         'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',

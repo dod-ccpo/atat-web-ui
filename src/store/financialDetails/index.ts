@@ -50,7 +50,8 @@ export const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
   order_number: "",
   gt_c_number: "",
 }
-const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
+
+export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
   mipr_number: "",
   mipr_filename: "",
   mipr_attachment: "",

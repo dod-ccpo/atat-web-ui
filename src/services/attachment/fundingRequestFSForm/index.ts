@@ -4,19 +4,38 @@ import { AttachmentDTO, FundingRequestFSFormDTO } from "@/api/models";
 import { AttachmentServiceCallbacks, RecordManager } from "..";
 import { AttachmentServiceBase } from "../base";
 import FinancialDetails from "@/store/financialDetails";
-import api from "@/api";
-
 
 // record manager to coordinate record creation saving with attachment service
 const recordManager : RecordManager<FundingRequestFSFormDTO> = {
   retrieveOrCreate: async function (): Promise<FundingRequestFSFormDTO> {
-    debugger;
-    const record = await  FinancialDetails.loadFundingRequestFSForm();
+    const record = await FinancialDetails.loadFundingRequestFSForm();
     return record;
   },
   save: async function (record: string): Promise<void> {
     const data = JSON.parse(record) as FundingRequestFSFormDTO;
     FinancialDetails.setFundingRequestFSForm(data);
+  },
+  updateRecord: function (record: string, attachmentSysId: string, 
+    fileName: string): FundingRequestFSFormDTO {
+    const data = JSON.parse(record) as FundingRequestFSFormDTO;
+
+    // the assumption being made here is if the 7600 a file attachment 
+    // has a value, then it's already been uploaded to
+    if(data.fs_form_7600b_attachment.length > 0)
+    {
+      // eslint-disable-next-line camelcase
+      data.fs_form_7600b_filename = fileName;
+      // eslint-disable-next-line camelcase
+      data.fs_form_7600b_attachment = attachmentSysId;
+    }
+    else{
+      // eslint-disable-next-line camelcase
+      data.fs_form_7600a_filename = fileName;
+      // eslint-disable-next-line camelcase
+      data.fs_form_7600a_attachment = attachmentSysId;
+    };
+
+    return data;
   }
 }
 
@@ -29,28 +48,6 @@ export class FundingRequestFSAttachmentService extends
 
   protected recordManager: RecordManager<FundingRequestFSFormDTO> = recordManager;
   
-
-  protected updateRecord(record: FundingRequestFSFormDTO, attachmentSysId: string, 
-    fileName: string): FundingRequestFSFormDTO {
-
-    if(record.fs_form_7600a_filename.length > 0)
-    {
-      // eslint-disable-next-line camelcase
-      record.fs_form_7600b_filename = fileName;
-      // eslint-disable-next-line camelcase
-      record.fs_form_7600b_attachment = attachmentSysId;
-    }
-    else{
-      // eslint-disable-next-line camelcase
-      record.fs_form_7600a_filename = fileName;
-      // eslint-disable-next-line camelcase
-      record.fs_form_7600a_attachment = attachmentSysId;
-    };
-
-    return record;
-     
-  }
-
   async remove(attachment:AttachmentDTO): Promise<void>{
 
     if(!attachment){
