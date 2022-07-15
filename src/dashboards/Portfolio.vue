@@ -1,4 +1,8 @@
 <template>
+  <div  style="overflow: hidden;">
+    <ATATSlideoutPanel v-if="panelContent">
+      <component :is="panelContent"></component>
+    </ATATSlideoutPanel>
   <v-main class="_dashboard bg-base-lightest">
     <ATATPageHead :headline="projectTitle"  />
     <v-container class="container-max-width bg-base-lightest">
@@ -83,6 +87,27 @@
                 </v-col>
               </v-row>
 
+              <v-row>
+                <v-col>
+                  <ATATAlert
+                    id="FinancialDetailsAlert"
+                    type="info"
+                    class="container-max-width my-10"
+                  >
+                    <template v-slot:content>
+                      <p class="mb-0">
+                        NOTE: All financial data depicted are estimates to assist with tracking
+                        cloud spend. Login to your CSP console to get detailed cost analysis and
+                        breakdowns.
+                        <a role="button" id="LearnMoreFinancialInfo" @click="openSlideoutPanel">
+                          Learn more
+                        </a>
+                      </p>
+                    </template>
+                  </ATATAlert>
+                </v-col>
+              </v-row>
+
               <v-row id="BurndownChartWrap">
                 <v-col>
                   <v-card class="_no-shadow v-sheet--outlined pa-8">
@@ -99,7 +124,7 @@
                         Current Period: {{ popStart }}&ndash;{{ popEnd }}
                       </v-col>
                     </v-row>
-                    <line-chart
+                    <LineChart
                       chart-id="LineChart1"
                       ref="lineChart"
                       :chart-data="burnChartData"
@@ -107,6 +132,7 @@
                       :dataset-to-toggle="datasetToToggle"
                       :toggle-dataset="toggleDataset"
                       :tooltipHeaderData="tooltipHeaderData"
+                      :hasProjected="true"
                     />
                     <div class="d-block text-center">
                       <v-radio-group
@@ -303,7 +329,7 @@
                           <hr style="margin: 8px 0;" />
                           <div class="d-flex justify-space-between font-size-14">
                             <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
-                              <strong class="d-inline-block mr-1 mb-2">
+                              <strong class="d-inline-block mr-1">
                                 Total Portfolio Funds
                               </strong>
                               <ATATTooltip
@@ -314,7 +340,7 @@
 
                             </div>
                             <div class="pr-4 py-2 font-weight-700">
-                              {{ getCurrencyString(totalPortfolioFunds) }}
+                              {{ getCurrencyString(totalPortfolioFunds, false) }}
                             </div>
                             <div style="width: 50px;">
                             </div>
@@ -541,6 +567,7 @@
       </v-row>
     </v-container>
   </v-main>
+  </div>
 
 </template>
 
@@ -549,8 +576,10 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { DashboardService } from "../services/dashboards";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
+import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATSVGIcon from "../components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DonutChart from "../components/charts/DonutChart.vue";
@@ -567,13 +596,17 @@ import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
-import { lineChartData, lineChartDataSet } from "types/Global";
+import { lineChartData, lineChartDataSet, SlideoutPanelContent } from "types/Global";
 import _ from 'lodash';
+import SlideoutPanel from "@/store/slideoutPanel";
+import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 
 @Component({
   components: {
+    ATATAlert,
     ATATFooter,
     ATATPageHead,
+    ATATSlideoutPanel,
     ATATSVGIcon,
     ATATTooltip,
     DonutChart,
@@ -879,7 +912,7 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.datasets = [];
     let burnChartDataSets: lineChartDataSet[] = [];
 
-    let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonData;
+    let clinTotalActualDataSet: lineChartDataSet = this.burnChartActualCommonDataSet;
     const totalActualData = {
       dataSetId: "TotalCLINsActual",
       label: "Total for all CLINs",
@@ -889,7 +922,7 @@ export default class PortfolioDashboard extends Vue {
     burnChartDataSets.push(clinTotalActualDataSet);
     this.checked.push(true);
 
-    let clinTotalProjectedDataSet: lineChartDataSet = this.burnChartProjectedCommonData;
+    let clinTotalProjectedDataSet: lineChartDataSet = this.burnChartProjectedCommonDataSet;
     const totalProjectedData = {
       dataSetId: "TotalClinsProjected",
       label: "Total for all CLINs Projected",
@@ -911,7 +944,7 @@ export default class PortfolioDashboard extends Vue {
             : idiqClinNo + "Data",
           data: actualBurn[idiqClinNo],
         };
-        let clinActualDataSet = _.clone(this.burnChartActualCommonData);
+        let clinActualDataSet = _.clone(this.burnChartActualCommonDataSet);
         clinActualDataSet.borderColor = color;
         clinActualDataSet.pointBackgroundColor = color;
         clinActualDataSet.pointHoverBackgroundColor = color;
@@ -926,7 +959,7 @@ export default class PortfolioDashboard extends Vue {
             ? getIdText(clin.idiq_clin_label + "Projected") : idiqClinNo + "DataProjected",
           data: projectedBurn[idiqClinNo],
         };
-        let clinProjectedDataSet: lineChartDataSet = _.clone(this.burnChartProjectedCommonData);
+        let clinProjectedDataSet: lineChartDataSet = _.clone(this.burnChartProjectedCommonDataSet);
         clinProjectedDataSet.borderColor = color;
         clinProjectedDataSet.pointBackgroundColor = color;
         Object.assign(clinProjectedDataSet, clinProjectedData);
@@ -935,6 +968,12 @@ export default class PortfolioDashboard extends Vue {
     });
     this.burnChartData.datasets = burnChartDataSets;
     return;
+  }
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
   }
   public totalSpendingObj: {
     totalFundsSpent:number;
@@ -1088,6 +1127,11 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async mounted(): Promise<void>{
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: FinancialDataLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 
@@ -1130,9 +1174,6 @@ export default class PortfolioDashboard extends Vue {
     },
   };
 
-  public totalCLINsChecked = true;
-  public unclassifiedXaaSChecked = true;
-  public unclassifiedCloudSupportPackageChecked = false;
   public checked: boolean[] = [];
 
   public datasetToToggle: number | null = null;
@@ -1143,7 +1184,7 @@ export default class PortfolioDashboard extends Vue {
     this.toggleDataset = !this.toggleDataset;
   }
 
-  public burnChartActualCommonData = {
+  public burnChartActualCommonDataSet = {
     dataSetId: "",
     label: "",
     data: [],
@@ -1160,8 +1201,8 @@ export default class PortfolioDashboard extends Vue {
     pointHoverBorderColor: this.chartDataColorsTranslucent[0],
     lineTension: 0,
   };
-  public burnChartProjectedCommonData = {
-    dataSetId: "",
+  public burnChartProjectedCommonDataSet = {
+    dataSetId: "",  
     label: "",
     data: [],
     spanGaps: true,
@@ -1278,8 +1319,12 @@ export default class PortfolioDashboard extends Vue {
 
   public getLegendAmount(index: number): string {
     const amount = this.totalPortfolioFunds * this.donutChartData.datasets[0].data[index] / 100;
-    return this.getCurrencyString(amount);
+    return this.getCurrencyString(amount, false);
   }
+
+  private get panelContent() {
+    return SlideoutPanel.slideoutPanelComponent;
+  };
 
   public spendingTooltipText = `This is the total value of all active task
     orders funding this portfolio`;
@@ -1300,7 +1345,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public getCurrencyString(value: number, decimals?: boolean): string {
-    return "$" + toCurrencyString(value);
+    return "$" + toCurrencyString(value, decimals);
   }
 }
 
