@@ -103,8 +103,8 @@
             class="_simple-card d-flex flex-column justify-space-between"
             :id="getIdText(group.value) + '_Wrapper'"
           >
-            <div class="d-flex justify-space-between">
-              <div class="h3 mb-2 " :id="getIdText(group.value) + '_Heading'" >
+            <div class="d-flex justify-space-between mb-2">
+              <div class="h3" :id="getIdText(group.value) + '_Heading'" >
                 {{ group.label }}
               </div>
 

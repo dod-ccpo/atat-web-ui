@@ -1,10 +1,10 @@
 <template>
   <div id="SearchWrapper">
 
-    <div class="d-flex align-center" v-if="label">
+    <div class="d-flex align-center mb-2" v-if="label">
       <label
         :id="id + '_Label'"
-        class="form-field-label mb-2 mr-1"
+        class="form-field-label mr-1"
         :for="id + '_SearchInput'"
       >
         {{ label }}
