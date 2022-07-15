@@ -1,10 +1,10 @@
 <template>
   <div id="SearchWrapper">
 
-    <div class="d-flex align-center" v-if="label">
+    <div class="d-flex align-center mb-2" v-if="label">
       <label
         :id="id + '_Label'"
-        class="form-field-label mb-2 mr-1"
+        class="form-field-label mr-1"
         :for="id + '_SearchInput'"
       >
         {{ label }}
@@ -35,10 +35,10 @@
         :validate-on-blur="validateOnBlur"
         @update:error="setErrorMessage"
         @click:clear="clearErrorMessages"
+        @blur="onBlur"
         autocomplete="off"
         @keydown.enter="search"
       />
-
       <v-btn
         :id="id + '_SearchButton'" 
         class="primary _search-button"
@@ -71,7 +71,7 @@
         class="mr-2"
       />
       <span class="text-base">
-        Locating your order in G-Invoicing
+        Locating your order in {{ searchType }}
       </span>
     </div>
 
@@ -84,13 +84,13 @@
     >
       <template v-slot:content>
         <p>
-          We could not find your order within G-Invoicing. Please enter a valid 
-          order number and search again. 
+          We could not find your order within {{ searchType }}. Please enter a valid
+          order number and search again.
         </p>
         <p class="mb-0">
-          If you confirmed your order number within G-Invoicing and continue to 
-          receive this message, please reach out to our User Engagement Team for 
-          support.          
+          If you confirmed your order number within {{ searchType }} and continue to
+          receive this message, please reach out to our User Engagement Team for
+          support.
         </p>
       </template>
     </ATATAlert>
@@ -104,7 +104,7 @@
     >
       <template v-slot:content>
         <p class="mb-0">
-          Good news! We found your order within G-Invoicing and synced your funding 
+          Good news! We found your order within {{ searchType }} and synced your funding
           details with this acquisition.          
         </p>
       </template>
@@ -120,6 +120,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import api from "@/api";
 
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
@@ -155,6 +156,9 @@ export default class ATATSearch extends Vue {
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: true }) private showErrorMessages?: boolean;
   @Prop({ default: false }) private validateOnBlur!: boolean;
+  @Prop({ default: "G-Invoicing" }) private searchType!: string;
+
+
 
   @PropSync("value", { default: "" }) private _value!: string;
 
@@ -184,7 +188,7 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    if (this.errorMessages.length === 0 && this._value) {
+    if (this.searchType !=="EDA" && this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.
       this.showLoader = true;
@@ -199,6 +203,34 @@ export default class ATATSearch extends Vue {
         this.showErrorAlert = !this.showSuccessAlert;
       }, 3000);
     }
+    
+    if(this.searchType === "EDA"){
+
+      try {
+
+        this.showLoader = true;
+        this.showLoader = true;
+        this.showSuccessAlert = false;
+        this.showErrorAlert = false;
+        this.showHelpText = false;
+
+        const response = await api.edaApi.search(this._value);
+        if(response.success){
+          this.showSuccessAlert = true;
+        }
+        else{
+          this.showErrorAlert = true;
+        }
+        
+      } catch (error) {
+        this.showErrorAlert = true;
+      }finally{
+
+        this.showLoader = false;
+      }
+
+    }
+
   }
 
   private setErrorMessage(): void {

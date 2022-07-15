@@ -973,3 +973,74 @@ Cypress.Commands.add("selectGInvoiceFRequest", (radioSelector, value) => {
           
     })
 });
+
+Cypress.Commands.add("incrementalFundingExists", () => {
+  cy.findElement(common. wrap)
+    .then((main) => {
+      if (main.find("#IncrementPeriod1_dropdown_field_control").length > 0) {
+        cy.log("IncrementPeriod1 FOUND");
+        cy.findElement(fd.deleteBtn0)
+          .should("exist")
+          .and("not.be.disabled");
+        cy.findElement(fd.deleteBtn1)
+          .should("exist")
+          .and("not.be.disabled");                                
+      } else {
+        cy.log("IncrementPeriod1 NOT FOUND!");
+        cy.findElement(fd.deleteBtn0)
+          .should("exist")
+          .and("be.disabled")
+      }
+    });
+
+});
+
+Cypress.Commands.add("financialPOCAffiliation", (selector,value) => {
+  cy.radioBtn(selector, value).click({ force: true });
+  cy.findElement(fd.contactRadioBtnActive)
+    .then(($radioBtn) => {
+      cy.log($radioBtn.text());
+      const selectedOption = $radioBtn.text();
+      if (selectedOption === "radio_button_checkedMilitary") {
+        cy.findElement(contact.serviceBranchControl)
+          .should("exist")
+          .and("be.visible")
+          .and("contain", " Service Branch ");
+        cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
+        cy.findElement(contact.serviceDropDownList).first().click();
+        cy.findElement(contact.rankAutoCompleteWrapper)
+          .should("exist")
+          .and("be.visible")
+          .and("contain", "Rank");        
+      }
+      if (selectedOption === "radio_button_checkedCivilian") {
+        cy.findElement(contact.salutationDropDownLabel)
+          .should('exist')
+          .and("be.visible")
+          .and("contain", "Salutation");
+        cy.findElement(contact.serviceBranchControl)
+          .should("exist")
+          .and("not.visible");
+      }
+    });  
+});
+
+Cypress.Commands.add("selectIncrementalFundingPlan", (radioSelector, value) => {
+  cy.radioBtn(radioSelector, value).click({ force: true });
+  cy.findElement(fd.iFundActiveBtn)
+    .then(($radioBtn) => {      
+      const selectedOption = cleanText($radioBtn.text());     
+      cy.log(selectedOption);
+      const ifpYesOption = "radio_button_checkedYes." +
+        " I need to provide an incremental funding plan." 
+      cy.btnClick(common.continueBtn, " Continue ");
+      if (selectedOption === ifpYesOption) {
+        cy.verifyPageHeader("Let’s create an incremental funding plan for your base period")
+        
+      } else {
+        cy.textExists("div.mb-auto","future summary page");
+        
+      }
+          
+    })
+});

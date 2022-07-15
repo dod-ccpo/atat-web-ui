@@ -65,7 +65,7 @@ $positions: 'static' 'relative' 'fixed' 'absolute' 'sticky';
 }
 
 // max width wrapper classes
-$widths: 500, 640, 740, 760;
+$widths: 500, 640, 740, 760, 1200;
 @each $width in $widths {
   .max-width-#{$width} {
     max-width: #{$width}px !important;
@@ -138,4 +138,8 @@ $widths: 500, 640, 740, 760;
 
 .drag-img-fake {
   opacity: 0 !important;
+}
+
+._no-shadow {
+  box-shadow: none !important;
 }

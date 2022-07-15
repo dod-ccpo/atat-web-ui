@@ -29,6 +29,7 @@ import { FundingRequestApi } from "./fundingRequest";
 import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
 import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
 import { ClinAPi } from "./clin";
+import { EDAApi } from "./eda";
 
 export const api = {
 
@@ -46,7 +47,7 @@ export const api = {
   fundingRequestTable: new FundingRequestApi(),
   fundingIncrementTable: new FundingIncrementApi(),
   fundingRequestFSFormTable: new FundingRequestFSFormApi(),
-  FundingRequestMIPRFormTable: new FundingRequestMIPRFormApi(),
+  fundingRequestMIPRFormTable: new FundingRequestMIPRFormApi(),
   currentContractTable: new CurrentContractApi(),
   sensitiveInformationTable: new SensitiveInformationApi(),
   serviceOfferingTable: new ServiceOfferingApi(),
@@ -62,6 +63,7 @@ export const api = {
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
   clinTable: new ClinAPi(),
+  edaApi: new EDAApi()
 }
 
 export default {
@@ -71,7 +73,6 @@ export default {
 export const FundingPlansTable = "fundingPlans";
 
 export const AttachmentTables = {
-
   FundingPlans: FundingPlansTable
 }
 

@@ -40,7 +40,7 @@ const initialFundingPlan: FundingPlanDTO = {
   remaining_amount_increments: "",
 }
 
-const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
+export const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
 
   fs_form_7600a_filename: "",
   fs_form_7600a_attachment: "",
@@ -49,6 +49,12 @@ const initialFundingRequestFSForm: FundingRequestFSFormDTO = {
   use_g_invoicing: "",
   order_number: "",
   gt_c_number: "",
+}
+
+export const initialFundingRequestMIPRForm: FundingRequestMIPRFormDTO = {
+  mipr_number: "",
+  mipr_filename: "",
+  mipr_attachment: "",
 }
 
 const saveFundingRequestToDISA = async (data: FundingRequestDTO):
@@ -417,29 +423,47 @@ export class FinancialDetailsStore extends VuexModule {
       const fundingRequestForm = await api.fundingRequestFSFormTable
         .retrieve(this.fundingRequestFSForm.sys_id);
       this.setFundingRequestFSForm(fundingRequestForm);
+      this.setGTCNumber(fundingRequestForm.gt_c_number);
+      this.setOrderNumber(fundingRequestForm.order_number);
       return fundingRequestForm;
     } catch (error) {
       throw new Error(`error occurred retrieving funding request form ${error}`);
     }
   }
 
+  @Action({rawError: true})
+ async loadFundingRequestMIPRForm():Promise<FundingRequestMIPRFormDTO>{
+   this.ensureInitialized();
+
+   try {
+     if(this.fundingRequestMIPRForm == null){
+       return initialFundingRequestMIPRForm;
+     }
+     const fundingRequestForm = await api.fundingRequestMIPRFormTable
+       .retrieve(this.fundingRequestMIPRForm.sys_id);
+     this.setFundingRequestMIPRForm(fundingRequestForm);
+     return fundingRequestForm;
+   } catch (error) {
+     throw new Error(`error occurred retrieving funding request form ${error}`);
+   }
+ }
 
  @Action({rawError: true})
- async saveFundingRequestType(value: string): Promise<void> {
+  async saveFundingRequestType(value: string): Promise<void> {
 
-   const fundingRequest = this.fundingRequest === null ?
-     {
-       fs_form: "",
-       funding_request_type: value,
-       mipr: ""
-     } : {
-       ...this.fundingRequest,
-       funding_request_type: value,
-     }
+    const fundingRequest = this.fundingRequest === null ?
+      {
+        fs_form: "",
+        funding_request_type: value,
+        mipr: ""
+      } : {
+        ...this.fundingRequest,
+        funding_request_type: value,
+      }
 
-   const savedFundingRequest = await saveFundingRequestToDISA(fundingRequest);
-   this.setFundingRequest(savedFundingRequest);
- }
+    const savedFundingRequest = await saveFundingRequestToDISA(fundingRequest);
+    this.setFundingRequest(savedFundingRequest);
+  }
 
   @Action({rawError: true})
  public async saveFundingRequestFSForm(data:
@@ -460,6 +484,24 @@ export class FinancialDetailsStore extends VuexModule {
    }
  }
 
+  @Action({rawError: true})
+  public async saveFundingRequestMIPRForm(data:
+  FundingRequestMIPRFormDTO): Promise<FundingRequestMIPRFormDTO>{
+
+    try {
+
+      const saveFundingRequesMIPRForm = (data.sys_id && data.sys_id.length > 0) ?
+        api.fundingRequestMIPRFormTable.update(data.sys_id, data) :
+        api.fundingRequestMIPRFormTable.create(data);
+      const savedFundingRequestMIPRForm = await saveFundingRequesMIPRForm;
+      this.setFundingRequestMIPRForm(savedFundingRequestMIPRForm);
+
+      return savedFundingRequestMIPRForm;
+
+    } catch (error) {
+      throw new Error( `error occurred saving funding request form ${error}`);
+    }
+  }
 
   @Mutation
   public setEstimatedTaskOrderValue(value: string | undefined): void {

@@ -51,6 +51,7 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 import AppSections from "@/store/appSections";
+import SlideoutPanel from "@/store/slideoutPanel";
 
 @Component({})
 
@@ -61,7 +62,8 @@ export default class ATATPageHead extends Vue {
   public moreMenuItems = AppSections.appSectionMenuItems;
   public activeAppSection = AppSections.activeAppSection;
 
-  public moreMenuClick(index: number): void {
+  public async moreMenuClick(index: number): Promise<void> {
+    await SlideoutPanel.closeSlideoutPanel()
     const selectedSection = this.moreMenuItems[index].title;
     AppSections.changeActiveSection(selectedSection);
   }

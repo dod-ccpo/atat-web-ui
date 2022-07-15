@@ -19,27 +19,14 @@ const bootStrapAcquisitionPackageApi= ()=> {
     });
   }); 
 
-  if (isTestingIsolated & isIsolatedTestRunnable()){
+  if (isTestingIsolated){
     loadInitialData();
     saveToSNOW(testCase);
   }
 
 }
 
-function isIsolatedTestRunnable(){
-  const isolatedTestsToRun = [
-    "AcquistionPackageDetails", 
-    "FinancialDetails",
-    "OtherContractConsiderations",
-    "StandardsandCompliance"];
-  const currentTest = window.Cypress.spec.name.split("/");
-  const currentTestSuite = currentTest[currentTest.length-2];
-  
-  return isolatedTestsToRun.some((test)=> test === currentTestSuite);
-}
-
 export function bootstrapMockApis(){
- 
   bootStrapAcquisitionPackageApi();    
 }
 
@@ -120,4 +107,13 @@ export function getCheckboxIds(obj) {
     checkboxIds.push(id);    
   });
   return checkboxIds;
+}
+
+export function numberWithCommas(x) {
+  if (!isNaN(x)) {
+    return x.toLocaleString(
+      undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    );
+  }
+  return "";
 }

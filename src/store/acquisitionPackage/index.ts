@@ -33,12 +33,12 @@ import {
 
 import { SelectData } from "types/Global";
 import { SessionData } from "./models";
-import { FileAttachmentServiceFactory } from "@/services/attachment";
 import DescriptionOfWork from "@/store/descriptionOfWork"
-import ClassificationRequirements from "@/store/classificationRequirements"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
+import { AttachmentService } from "@/services/attachment/base";
+import { AttachmentServiceFactory } from "@/services/attachment";
 
 const ATAT_ACQUISTION_PACKAGE_KEY = "ATAT_ACQUISTION_PACKAGE_KEY";
 
@@ -834,7 +834,7 @@ export class AcquisitionPackageStore extends VuexModule {
       // service factory expects keys in CamelCased upper case starting letters
       const convertedKey = key[0].toUpperCase() + key.substring(1);
       // locate attachment service
-      const attachmentService = FileAttachmentServiceFactory(convertedKey);
+      const attachmentService = AttachmentServiceFactory(convertedKey);
 
       // remove attachment
       await attachmentService.remove({

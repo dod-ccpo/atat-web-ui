@@ -15,6 +15,7 @@ import Vue from "vue";
 import { Component, Prop, PropSync } from "vue-property-decorator";
 
 import Calendar from "@/components/icons/Calendar.vue";
+import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
 import Currency from "@/components/icons/Currency.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
@@ -22,13 +23,18 @@ import ExclamationMark from "@/components/icons/ExclamationMark.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Pdf from "@/components/icons/Pdf.vue";
-import Search from "@/components/icons/Search.vue";
 import Remove from "@/components/icons/Remove.vue";
+import Search from "@/components/icons/Search.vue";
+import TrendingDown from "@/components/icons/TrendingDown.vue";
+import TrendingUp from "@/components/icons/TrendingUp.vue";
 import UploadFile from "@/components/icons/UploadFile.vue";
+import TriangleUp from "@/components/icons/TriangleUp.vue";
+import TriangleDown from "@/components/icons/TriangleDown.vue";
 
 @Component({
   components:{
     Calendar,
+    ChevronRight,
     Close,
     Currency,
     ExclamationMark,
@@ -38,6 +44,10 @@ import UploadFile from "@/components/icons/UploadFile.vue";
     Pdf,
     Remove,
     Search,
+    TriangleUp,
+    TriangleDown,
+    TrendingDown,
+    TrendingUp,
     UploadFile,
   }
 })
@@ -71,6 +81,7 @@ export default class ATATSVGIcon extends Vue {
     { "primary": "544496" },
     { "info": "009ddd" },
     { "success": "62bd59" },
+    { "success-dark": "498e43" },    
     { "error": "c60634" },
     { "disabled": "c9c9c9" },
     { "disabled-dark": "adadad"},
