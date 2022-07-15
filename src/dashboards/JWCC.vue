@@ -99,7 +99,7 @@
                     <h3 class="mb-6">Spend Rate by DoD Organizations</h3>
                     <p class="font-size-14">
                       Select one of more agencies to compare spend rates across 
-                      DoD services and agencies. The data includes funds spend 
+                      DoD services and agencies. The data includes funds spent 
                       on all JWCC portfolios to date.
                     </p>
                     <LineChart 
