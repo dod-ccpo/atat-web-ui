@@ -729,24 +729,6 @@ export default class JWCCDashboard extends Vue {
   public agencyNames: string[] = [];
   public agencyAmounts: number[] = [];
   public organizationDonutData: number[] = [];
-  public agencyLabelFormatter(str: string):string {
-    switch (str) {
-    case "US_NAVY":
-      return "Navy";
-    case "US_ARMY":
-      return "Army";
-    case "US_AIR_FORCE":
-      return "Air Force";
-    case "US_MARINE_CORPS":
-      return "Marine";
-    case "DEFENSE_INFORMATION_SYSTEMS_AGENCY":
-      return "Other";
-    case "US_AIR_FORCE_EUROPE":
-      return "Space Force";
-    default:
-      return 'Unknown'
-    }
-  }
   public organizationDonutChartOptions = {
     layout: {
       padding: 20,
