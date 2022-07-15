@@ -73,7 +73,6 @@
                       :chart-data="arcGuageChartData"
                       :chart-options="arcGuageChartOptions"
                       :is-arc-gauge="true"
-                      :show-hover-legend="false"
                       :center-text1="roundDecimal(fundsSpentPercent, 0) + '%'"
                       center-text2="Funds Spent"
                       :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
