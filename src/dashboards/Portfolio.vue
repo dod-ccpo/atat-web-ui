@@ -256,7 +256,7 @@
                       <v-col>
                         <v-card class="bg-base-lightest _no-shadow pa-4">
                           <div class="d-flex align-center">
-                            <span class="d-block mr-1 mb-2">Period-to-date</span>
+                            <span class="d-block mr-1">Period-to-date</span>
                             <ATATTooltip
                               id="PeriodToDateTooltip"
                               :tooltipText="periodToDateTooltipText"

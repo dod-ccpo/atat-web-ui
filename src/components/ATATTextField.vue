@@ -1,9 +1,9 @@
 <template>
   <div :id="id + '_text_field_control'" class="atat-text-field">
-    <div class="d-flex align-center" v-if="label">
+    <div class="d-flex align-center mb-2" v-if="label">
       <label
         :id="id + '_text_field_label'"
-        class="form-field-label mb-2 mr-1"
+        class="form-field-label mr-1"
         :for="id + '_text_field'"
       >
         {{ label }}
