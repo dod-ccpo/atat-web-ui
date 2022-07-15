@@ -181,8 +181,8 @@
                       Compare the total funds spent across each DoD organization. The data includes
                       spend on all JWCC portfolios to date.
                     </p>
-                    <v-row class="ps-15">
-                      <v-col class="col-sm-6 ml-n1 pl-15">
+                    <v-row class="px-15">
+                      <v-col class="col-sm-6 ml-n1 pl-2 pr-10">
                         <donut-chart
                           chart-id="OrganizationDonutChart"
                           :chart-data="organizationDonutChartData"
@@ -203,7 +203,7 @@
                             <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
                           <span
                             class="_legend-square"
-                            :style="'background-color: ' + donutChartColors[index]"
+                            :style="'background-color: ' + organizationDonutChartColors[index]"
                           >
                           </span>
                               <strong>{{ label }}</strong>
@@ -334,7 +334,9 @@ export default class JWCCDashboard extends Vue {
   public getCurrencyString = getCurrencyString;
 
   public async loadOnEnter(): Promise<void> {
-    const data = await this.dashboardService.getTotals(['1000000001234', '1000000009999']);
+    const data = await this.dashboardService.getTotals(
+      ['1000000001234', '1000000004321', '1000000009999', '1000000009876',
+        '1000000008888','1000000008765']);
     this.activeTaskOrderCount = data.activeTaskOrders;
     this.totalObligatedFunds = data.totalObligatedFunds;
     this.totalTaskOrderValue = data.totalTaskOrderValue;
@@ -342,9 +344,18 @@ export default class JWCCDashboard extends Vue {
     this.costs = data.costs;
     this.costGroups = data.costGroups;
     this.fundsSpentByAgency = Object.values(data.fundsSpentByServiceAgency)
-    this.fundsSpentByAgency.forEach((agency)=>{
-      this.agencyNames.push(this.agencyLabelFormatter(agency.name as string))
-      this.agencyAmounts.push(agency.total as string)
+    console.log(this.fundsSpentByAgency)
+    this.fundsSpentByAgency.forEach((agency, idx)=>{
+      if(agency.name == "DEFENSE_INFORMATION_SYSTEMS_AGENCY") {
+        this.disaRecord = agency
+      }else{
+        this.agencyNames.push(this.agencyLabelFormatter(agency.name as string))
+        this.agencyAmounts.push(agency.total as string)
+      }
+      if(idx === this.fundsSpentByAgency.length - 1) {
+        this.agencyNames.push(this.agencyLabelFormatter(this.disaRecord.name as string))
+        this.agencyAmounts.push(this.disaRecord.total as string)
+      }
     })
     this.organizationDonutData = this.organizationDonutChartPercent()
     this.organizationDonutChartData.datasets[0].data = this.organizationDonutData
@@ -440,6 +451,7 @@ export default class JWCCDashboard extends Vue {
       },
     }
   }
+  public disaRecord: Record<string, string | number> = {}
   public fundsSpentByAgency: Record<string, string | number>[] = [];
   public agencyNames: string[] = [];
   public agencyAmounts: string[] = [];
@@ -453,13 +465,13 @@ export default class JWCCDashboard extends Vue {
     case "US_AIR_FORCE":
       return "Air Force";
     case "US_MARINE_CORPS":
-      return "Marine Corps";
-    case "FOURTH_ESTATE":
+      return "Marine";
+    case "DEFENSE_INFORMATION_SYSTEMS_AGENCY":
       return "Other";
-    case "SPACE_FORCE":
+    case "US_AIR_FORCE_EUROPE":
       return "Space Force";
     default:
-      return 'name not in function'
+      return 'Unknown'
     }
   }
   public organizationDonutChartOptions = {
