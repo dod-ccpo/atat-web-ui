@@ -26,11 +26,12 @@
                   :value.sync="taskOrder"
                   :rules="[
                     $validators.required('Please enter your awarded task order number.'),
-                    $validators.isMaskValid(
-                      ['^\\d{13}(\\d{4})?$'],
-                      `Your task order number must be either 13 or 17 characters.`,
-                      true
-                    )
+                    $validators.minLength(13,
+                    `Your task order number must be either 13 or 17 characters.`
+                    ),
+                    $validators.maxLength(17,
+                      `Your task order number must be either 13 or 17 characters.`
+                    ),
                   ]"
                 />
               </div>

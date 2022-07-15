@@ -29,6 +29,7 @@ import { FundingRequestApi } from "./fundingRequest";
 import { FundingRequestFSFormApi } from "./fundingRequestFSForm";
 import { FundingRequestMIPRFormApi } from "./fundingRequestMIPRForm";
 import { ClinAPi } from "./clin";
+import { EDAApi } from "./eda";
 
 export const api = {
 
@@ -62,6 +63,7 @@ export const api = {
   taskOrderTable: new TaskOrderApi(),
   costsTable: new CostsApi(),
   clinTable: new ClinAPi(),
+  edaApi: new EDAApi()
 }
 
 export default {
