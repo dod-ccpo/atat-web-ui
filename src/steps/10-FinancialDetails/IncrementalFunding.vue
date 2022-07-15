@@ -209,28 +209,43 @@
         <v-btn
           class="mt-10 pull-right"
           color="primary"
-          @click="validateDuplicateQuarters()"
+          @click="validateOnContinue()"
         >
           Validate Duplicate Quarters
         </v-btn>
+
+         <ATATAlert
+              id="OverUnderFundedAlert"
+              class="width-70"
+              v-if=" isIFPOverfunded|| isIFPUnderfunded "
+            >
+              <template slot="content">
+                <p class="mb-0">
+                  Based on your requirement’s cost estimate, your plan is
+                  <strong>{{ isIFPOverfunded ? 'over' : 'under'}}funded</strong>. 
+                  Please adjust your increments to ensure the total equals ${{ costEstimateStr }} 
+                </p>
+              </template>
+          </ATATAlert>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 import PeriodOfPerformance from "@/store/periods";
 
-import { PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
+import { PeriodDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
@@ -244,6 +259,7 @@ import { add, format, isValid } from "date-fns";
     ATATSVGIcon,
     ATATTextField,
     ATATErrorValidation,
+    ATATAlert
   },
 })
 export default class IncrementalFunding extends Mixins(SaveOnLeave) {
@@ -275,8 +291,10 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public initialAmount = 0;
   public initialAmountStr = "";
   private currentSelectedValue = "";
+  private isIFPUnderfunded = false;
+  private isIFPOverfunded = false;
 
-  public totalAmount: number | null = null;
+  public totalAmount = 0;
 
   private errorMessages: string[] = [];
   public errorMissingInitialIncrement = false;
@@ -307,6 +325,11 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   };
 
   public fiscalQuarters: { text: string; order: number }[] = [];
+
+  public validateOnContinue(): void {
+    this.validateDuplicateQuarters();
+    this.isUnderfunded(); 
+  }
 
   public validateDuplicateQuarters(): void {
     this.$nextTick(()=>{
@@ -370,6 +393,14 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.calcAmounts("");
   }
 
+  public isOverfunded():void{
+    this.isIFPOverfunded = this.costEstimate < this.totalAmount;
+  }
+
+  public isUnderfunded():void{
+    this.isIFPUnderfunded = this.costEstimate > this.totalAmount;
+  }
+
   public addIncrement(): void {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastFundingIncrement?.qtr;
@@ -430,6 +461,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
+    this.isOverfunded();
   }
 
   public getFiscalQuarters(index: number): SelectData[] {
