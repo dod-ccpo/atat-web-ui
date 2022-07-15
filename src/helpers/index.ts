@@ -67,7 +67,7 @@ export const sanitizeOfferingName = (offeringName: string): string => {
 
 // formats a number to currency string with commas and 2 decimal places
 export const toCurrencyString = (num: number, decimals?: boolean): string => {
-  const d = decimals === false ? 0 : 2;
+  const d = decimals === false  ? 0 : 2;
   if (!isNaN(num)) {
     return num.toLocaleString(
       undefined, { minimumFractionDigits: d, maximumFractionDigits: d }
@@ -81,3 +81,18 @@ export const currencyStringToNumber = (str: string): number => {
   return str ? parseFloat(str.replaceAll(",","")) : 0;
 }
 
+
+export const getCurrencyString = (value: number, decimals?: boolean): string => {
+  return "$" + toCurrencyString(value, decimals);
+}
+
+export const roundDecimal = (value: number, decimals: number): number => {
+  decimals = decimals || 0;
+  value = value || 0;
+  return parseFloat(value.toFixed(decimals));
+}
+
+export const getLegendAmount = (total: number, indexValue: number): string => {
+  const amount = Math.round(total * indexValue / 100);
+  return getCurrencyString(amount, false);
+}

@@ -242,13 +242,14 @@ import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
 import PeriodOfPerformance from "@/store/periods";
 
-import { PeriodDTO } from "@/api/models";
+import { PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
 import { add, format, isValid } from "date-fns";
+import { parseISO } from "date-fns/fp";
 
 @Component({
   components: {
@@ -267,16 +268,13 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public maxPayments = 1;
   public periodLengthStr = "";
   public requestedPopStartDate =
-    PeriodOfPerformance.periodOfPerformance?.requested_pop_start_date;
-  public startDate = (): Date => {
-    return this.requestedPopStartDate !== "" &&
-      this.requestedPopStartDate !== undefined
-      ? new Date(this.requestedPopStartDate)
-      : new Date();
-  };
+    Periods.periodOfPerformance?.requested_pop_start_date;
+  public periodOfPerformance!: PeriodOfPerformanceDTO; 
+  public startDate = new Date();//(): Date => {
 
-  public currentQuarter = (): number => {
-    return Math.floor((this.startDate().getMonth() + 3) / 3 + 1);
+  public currentQuarter():number {
+    const currentMonth = this.startDate.getMonth() + 1;
+    return Math.ceil((currentMonth <= 9 ? currentMonth + 3 : currentMonth - 9)/3);
   };
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
@@ -364,12 +362,17 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   }
 
   public async initializeIncrements(): Promise<void> {
-    let qtr = this.currentQuarter();
-    let year = parseInt(this.currentYear.toString().slice(-2));
+    let qtr = await this.currentQuarter();
+    console.log("qtr " + qtr)
+    console.log("this.startDate " + this.startDate);
+    let year = parseInt(format(this.startDate, "yy"));
+    console.log("year " + year);
     for (let i = 0; i < 6; i++) {
-      const ordinal = this.ordinals[qtr - 1];
+      const ordinal = this.ordinals[qtr-1];
       // increment year if at first quarter and not first in the loop
-      year = qtr === 1 && i !== 0 ? year + 1 : year;
+      year = qtr === 1 ? year + 1 : year;
+      
+    
       // increment quarter
       qtr = qtr === 4 ? 1 : qtr + 1;
       const periodStr = ordinal + " QTR FY" + year;
@@ -509,6 +512,8 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.costEstimateStr = toCurrencyString(this.costEstimate);
     }
 
+    
+
     const storeData = await FinancialDetails.loadIFPData();
     if (storeData) {
       this.savedData = storeData;
@@ -522,6 +527,18 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
     }
 
+    
+    this.periodOfPerformance = await PeriodOfPerformance.loadPeriodOfPerformance();
+    const requestedPopStartDate = this.periodOfPerformance.requested_pop_start_date;
+    
+    this.startDate = 
+      await new Date(
+        format(parseISO(requestedPopStartDate !== "" ? requestedPopStartDate : new Date()), 
+          'MM/dd/yyyy')
+      );
+    console.log(this.startDate)
+   
+    
     await this.initializeIncrements();
 
     this.periods = await Periods.loadPeriods();
@@ -552,16 +569,11 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         }
       }
     }
-
     this.$nextTick(async () => {
       await this.validateDuplicateQuarters();
-    })
+    });
 
   }
-
-  // public async created(): Promise<void> {
-  //   await this.loadOnEnter();
-  // }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
@@ -574,7 +586,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       } else {
         this.allowContinue = true;
       }
-      
+
       if (this.allowContinue) {
         // Set chronological order of fiscal quarters in fundingIncrements
         let sortedIncrements: fundingIncrement[] = [];
