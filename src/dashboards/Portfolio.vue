@@ -329,7 +329,7 @@
                           <hr style="margin: 8px 0;" />
                           <div class="d-flex justify-space-between font-size-14">
                             <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
-                              <strong class="d-inline-block mr-1 mb-2">
+                              <strong class="d-inline-block mr-1">
                                 Total Portfolio Funds
                               </strong>
                               <ATATTooltip
@@ -340,7 +340,7 @@
 
                             </div>
                             <div class="pr-4 py-2 font-weight-700">
-                              {{ getCurrencyString(totalPortfolioFunds) }}
+                              {{ getCurrencyString(totalPortfolioFunds, false) }}
                             </div>
                             <div style="width: 50px;">
                             </div>
@@ -1319,7 +1319,7 @@ export default class PortfolioDashboard extends Vue {
 
   public getLegendAmount(index: number): string {
     const amount = this.totalPortfolioFunds * this.donutChartData.datasets[0].data[index] / 100;
-    return this.getCurrencyString(amount);
+    return this.getCurrencyString(amount, false);
   }
 
   private get panelContent() {
@@ -1345,7 +1345,7 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public getCurrencyString(value: number, decimals?: boolean): string {
-    return "$" + toCurrencyString(value);
+    return "$" + toCurrencyString(value, decimals);
   }
 }
 

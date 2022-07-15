@@ -517,13 +517,10 @@ export default class JWCCDashboard extends Vue {
     const cspSpending: number[] = this.fundsSpentByCSP.map((o) => {
       return o.total !== "undefined" ? parseInt(o.total.toString()) : 0
     });
-    debugger;
 
     this.fundsSpentByCSP.forEach((csp) => this.cspAmounts.push(csp.total as string));
-    debugger;
     this.cspDonutData = this.cspDonutChartPercentages();
 
-    // this.cspDonutChartData.datasets[0].data = cspSpending; // this.cspDonutData;
     this.cspDonutChartData.datasets[0].data = this.cspDonutData;
     
     // for MVP, period start will always be Jan 1 of current year
@@ -694,7 +691,6 @@ export default class JWCCDashboard extends Vue {
     const percentages = this.cspAmounts.map(
       (amount) => (parseFloat(amount) / this.fundsSpentToDate * 100)
     );
-    debugger;
     return percentages;
   }
 
