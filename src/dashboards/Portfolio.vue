@@ -77,6 +77,7 @@
                       :center-text1="roundDecimal(fundsSpentPercent, 0) + '%'"
                       center-text2="Funds Spent"
                       :aria-label="'Chart displaying '+ fundsSpentPercent +'% of Funds Spent'"
+                      :show-label-on-hover="false"
                     />
                     <v-divider class="my-4" />
                     <p class="mb-0 font-size-14">
