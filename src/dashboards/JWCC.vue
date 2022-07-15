@@ -554,7 +554,7 @@ export default class JWCCDashboard extends Vue {
     }
     this.fundsSpentByServiceAgency = spendByAgency;
     this.fundsSpentByServiceAgency.forEach((agency)=>{
-      this.agencyNames.push(this.agencyLabelFormatter(agency.name as string))
+      this.agencyNames.push(this.agencyLabelKeys[agency.name as string])
       this.agencyAmounts.push(agency.total)
     })
     this.organizationDonutData = this.organizationDonutChartPercent()
