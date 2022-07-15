@@ -64,7 +64,6 @@
                 :key="index"
                 :id="'Increment' + index"
               >
-                {{ index }}
                 <div class="mb-4">
                   <div class="d-flex justify-space-between align-center mb-4">
                     <ATATSelect
@@ -73,16 +72,13 @@
                       width="190"
                       :selectedValue.sync="fundingIncrements[index].qtr"
                       :class="[
-                        duplicateListingsIndex.some(
+                        duplicateListingsIndices.some(
                           (erroredIdx) => erroredIdx - 1 === index
                         )
-                          ? 'error--text'
+                          ? 'customized-error-control error--text'
                           : '',
                         'mr-4',
                       ]"
-                      @update:error = 'duplicateListingsIndex.some(
-                          (erroredIdx) => erroredIdx - 1 === index
-                        )'
                       @blur="onPeriodChange(index)"
                       :showErrorMessages="false"
                     />
@@ -107,43 +103,28 @@
                     </v-btn>
                   </div>
                   <div>
+                    <!-- error validation for duped quarters -->
                     <ATATErrorValidation
-                      :id="'errorValidationDiv_' + index"
-                      :errorMessages="duplicateErrorMessage"
+                      :id="'isDuplicated_' + index"
+                      class="atat-text-field-error"
+                      :errorMessages="[duplicateErrorMessage]"
                       v-if="
-                        duplicateListingsIndex.some(
+                        duplicateListingsIndices.some(
                           (erroredIdx) => erroredIdx - 1 === index
-                        )
+                        ) && index === duplicateListingsIndices[duplicateListingsIndices.length-1]-1
                       "
+                    />
+
+                    <!-- error validation for missing first increment -->
+                    <ATATErrorValidation
+                      :id="'isDuplicated_' + index"
+                      class="atat-text-field-error"
+                      :errorMessages="[errorMissingFirstIncrementMessage]"
+                      v-if="errorMissingFirstIncrement && index === 0"
                     />
                   </div>
                 </div>
-
-                <div
-                  v-if="errorMissingFirstIncrement && index === 0"
-                  class="
-                    d-flex
-                    justify-start
-                    align-top
-                    atat-text-field-error
-                    mb-4
-                    mt-3
-                  "
-                  id="FirstIncrementError"
-                >
-                  <ATATSVGIcon
-                    style="margin-top: 2px"
-                    name="exclamationMark"
-                    :width="18"
-                    :height="18"
-                    color="error"
-                  />
-                  <div class="field-error ml-2">
-                    {{ errorMissingFirstIncrementMessage }}
-                  </div>
-                </div>
               </div>
-
               <v-btn
                 id="AddIncrementButton"
                 v-if="fundingIncrements.length < maxPayments"
@@ -304,9 +285,7 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public errorMissingFirstIncrement = false;
   public errorMissingFirstIncrementMessage =
     "Please enter the amount of your first increment.";
-  public erroredSelectIndex = -1;
-  public duplicateQuarters = false;
-  public duplicateListingsIndex: (number | undefined)[] = [];
+  public duplicateListingsIndices: number[] = [];
   public duplicateErrorMessage =
     "Adjust your projected increment date to remove duplicate increments.";
 
@@ -330,22 +309,24 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public fiscalQuarters: { text: string; order: number }[] = [];
 
   public validateDuplicateQuarters(): void {
-    debugger;
-    this.erroredSelectIndex = -1;
-    this.duplicateQuarters = false;
-    this.duplicateListingsIndex = [];
-    this.duplicateListingsIndex = this.fundingIncrements
-      .filter((dupes) => dupes.qtr === this.currentSelectedValue)
-      .map((inc) => inc.order);
-    console.log(this.duplicateListingsIndex);
-    // this.duplicateQuarters = quarters.length > 1;
-    // if (this.duplicateQuarters) {
-    //   this.erroredSelectIndex = quarters[quarters.length - 1].order-1;
-    // }
+    this.$nextTick(()=>{
+      this.duplicateListingsIndices = [];
+      this.fundingIncrements
+        .map((inc) => inc.qtr)
+        .filter((el, index, array )=>{
+          if (array.lastIndexOf(el) > index){
+            this.duplicateListingsIndices.push(index +1);
+            this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)
+          }
+        });
+    });
   }
 
   private onPeriodChange(index: number) {
-    this.currentSelectedValue = this.fundingIncrements[index].qtr;
+    this.$nextTick(()=>{
+      this.currentSelectedValue = this.fundingIncrements[index].qtr;
+    })
+    
   }
 
   public async initializeIncrements(): Promise<void> {
