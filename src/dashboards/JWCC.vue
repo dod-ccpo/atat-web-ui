@@ -98,11 +98,11 @@
                   >
                     <h3 class="mb-6">Spend Rate by DoD Organizations</h3>
                     <p class="font-size-14">
-                      Select one of more agencies to compare spend rates across 
-                      DoD services and agencies. The data includes funds spent 
+                      Select one of more agencies to compare spend rates across
+                      DoD services and agencies. The data includes funds spent
                       on all JWCC portfolios to date.
                     </p>
-                    <LineChart 
+                    <LineChart
                       chartId="AgencySpendLineChart"
                       ref="agencySpendLineChart"
                       :chartData="agencySpendLineChartData"
@@ -223,6 +223,53 @@
                     class="_no-shadow v-sheet--outlined height-100 pa-8"
                   >
                     <h3 class="mb-6">Funds Spent by Organization</h3>
+                    <p class="font-size-14">
+                      Compare the total funds spent across each DoD organization. The data includes
+                      spend on all JWCC portfolios to date.
+                    </p>
+                    <v-row class="px-15">
+                      <v-col class="col-sm-6 ml-n1 pl-2 pr-10">
+                        <donut-chart
+                          chart-id="OrganizationDonutChart"
+                          :chart-data="organizationDonutChartData"
+                          :use-chart-data-labels="true"
+                          :chart-options="organizationDonutChartOptions"
+                          :centerText1="abbreviateCurrencyFormatter(fundsSpentToDate)"
+                          center-text2="Total Funds Spent"
+                          :amount="fundsSpentToDate"
+                        />
+                      </v-col>
+                      <v-col class="d-flex align-center mr-13 pr-15">
+                        <div class="width-100 mt-4">
+                          <div
+                            v-for="(label, index) in organizationDonutChartData.labels"
+                            :key="index"
+                            class="d-flex justify-space-between font-size-14"
+                          >
+                            <div style="flex: 1" class="pr-4 py-2 d-flex align-center">
+                          <span
+                            class="_legend-square"
+                            :style="'background-color: ' + organizationDonutChartColors[index]"
+                          >
+                          </span>
+                              <strong>{{ label }}</strong>
+                            </div>
+                            <div class=" py-2 font-weight-400">
+                              {{ getLegendAmount(
+                              fundsSpentToDate,
+                              organizationDonutChartData.datasets[0].data[index]
+                            )
+                              }}
+                            </div>
+                            <div style="width: 50px;" class="text-right font-weight-700 py-2">
+                              {{
+                                roundDecimal(organizationDonutChartData.datasets[0].data[index], 0)
+                              }}%
+                            </div>
+                          </div>
+                        </div>
+                      </v-col>
+                    </v-row>
                   </v-card>
                 </v-col>
 
@@ -245,7 +292,6 @@ import { Component } from "vue-property-decorator";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
 import BarChart from "../components/charts/BarChart.vue";
-
 import ATATCharts from "@/store/charts";
 import LineChart from "../components/charts/LineChart.vue";
 import ATATTooltip from "../components/ATATTooltip.vue"
@@ -282,7 +328,7 @@ export default class JWCCDashboard extends Vue {
   public chartAuxColors = ATATCharts.chartAuxColors;
   public monthAbbreviations = ATATCharts.monthAbbreviations;
   public monthsNotAbbreviated = ATATCharts.monthsNotAbbreviated;
-
+  public cloudServiceDonutChartPercentages: number[] = [];
   public activeTaskOrderCount = 0;
   
   public costs: CostsDTO[] = [];
@@ -300,7 +346,7 @@ export default class JWCCDashboard extends Vue {
   public currentYear = this.today.getFullYear();
 
   public fundsSpentByServiceAgency: { name: string;  total: number; }[] = [];
-  public agencySpendData: Record<string, number[]> = {} 
+  public agencySpendData: Record<string, number[]> = {}
   private agencySpendLineChartData: lineChartData = {
     labels: [],
     datasets: [],
@@ -379,7 +425,7 @@ export default class JWCCDashboard extends Vue {
       this.agencyLabels.push(agencyLabel);
 
       const agencyMonthlySpendTotals: number[] = [0];
-      
+
       // for demo only, cost data uses USAF but we are showing as Space Force
       agency = agency === "US_SPACE_FORCE" ? "US_AIR_FORCE_EUROPE" : agency;
 
@@ -397,7 +443,7 @@ export default class JWCCDashboard extends Vue {
           agencyMonthlySpendTotals.push(total);
         }
       });
-      
+
       // for demo only - swap key back to space force
       agency = agency === "US_AIR_FORCE_EUROPE" ? "US_SPACE_FORCE" : agency;
 
@@ -448,12 +494,12 @@ export default class JWCCDashboard extends Vue {
     const monthNo = periodStart.getMonth();
     let januaryCount = 0;
     for (let i = monthNo; i < monthNo + 13; i++) {
-      let monthAbbr = i <= 11 
+      let monthAbbr = i <= 11
         ? this.monthAbbreviations[i]
         : this.monthAbbreviations[12 - i];
       if (monthAbbr === "Jan") {
-        monthAbbr = januaryCount === 0 
-          ? monthAbbr + " " + this.currentYear 
+        monthAbbr = januaryCount === 0
+          ? monthAbbr + " " + this.currentYear
           : monthAbbr + " " + (this.currentYear + 1);
         januaryCount++;
       }
@@ -472,10 +518,10 @@ export default class JWCCDashboard extends Vue {
 
   public async loadOnEnter(): Promise<void> {
     const data = await this.dashboardService.getTotals([
-      '1000000001234', 
-      '1000000004321', 
-      '1000000009999', 
-      '1000000009876', 
+      '1000000001234',
+      '1000000004321',
+      '1000000009999',
+      '1000000009876',
       '1000000008888',
       '1000000008765'
     ]);
@@ -507,7 +553,12 @@ export default class JWCCDashboard extends Vue {
       spendByAgency.push(disaObj);
     }
     this.fundsSpentByServiceAgency = spendByAgency;
-
+    this.fundsSpentByServiceAgency.forEach((agency)=>{
+      this.agencyNames.push(this.agencyLabelKeys[agency.name as string])
+      this.agencyAmounts.push(agency.total)
+    })
+    this.organizationDonutData = this.organizationDonutChartPercent()
+    this.organizationDonutChartData.datasets[0].data = this.organizationDonutData
     await this.setMonthlySpendSummaryBarChartData();
 
     this.fundsSpentByCSP = Object.values(data.fundsSpentByCSP);
@@ -522,7 +573,7 @@ export default class JWCCDashboard extends Vue {
     this.cspDonutData = this.cspDonutChartPercentages();
 
     this.cspDonutChartData.datasets[0].data = this.cspDonutData;
-    
+
     // for MVP, period start will always be Jan 1 of current year
     const periodStart = new Date(this.currentYear + "-01-01T00:00:00");
     this.monthsIntoPeriod = differenceInCalendarMonths(this.today, periodStart);
@@ -672,8 +723,63 @@ export default class JWCCDashboard extends Vue {
           },
         },
       },
+    }
+  }
+
+  public agencyNames: string[] = [];
+  public agencyAmounts: number[] = [];
+  public organizationDonutData: number[] = [];
+  public organizationDonutChartOptions = {
+    layout: {
+      padding: 20,
+    },
+    aspectRatio: 1.25,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        color: "#000",
+        align: "end",
+        anchor: "end",
+        offset: 10,
+        formatter: function (value: number): string {
+          return value ? parseFloat(value.toFixed(1)) + "%" : "";
+        },
+      },
     },
   };
+  public organizationDonutChartColors = [
+    this.chartDataColorSequence[0],
+    this.chartDataColorSequence[1],
+    this.chartDataColorSequence[2],
+    this.chartDataColorSequence[3],
+    this.chartDataColorSequence[4],
+    this.chartDataColorSequence[5],
+  ];
+  public organizationDonutChartData = {
+    labels:this.agencyNames,
+    datasets: [
+      {
+        label: "Funding Status",
+        data: this.organizationDonutData,
+        backgroundColor: this.organizationDonutChartColors,
+        hoverBackgroundColor: this.organizationDonutChartColors,
+        hoverBorderColor: this.organizationDonutChartColors,
+        hoverBorderRadius: 0,
+        hoverOffset: 10,
+        hoverBorderWidth: 0,
+        cutout: "67%",
+      },
+    ],
+  };
+
+  public organizationDonutChartPercent(): number[] {
+    const percentages = this.agencyAmounts.map(
+      (amount) => (parseFloat(amount) / this.fundsSpentToDate * 100)
+    );
+    return percentages;
+  }
 
 
   public totalObligatedFundsTooltipText = `This is the legal amount allocated by the 
