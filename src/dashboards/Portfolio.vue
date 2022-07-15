@@ -1,4 +1,8 @@
 <template>
+  <div  style="overflow: hidden;">
+    <ATATSlideoutPanel v-if="panelContent">
+      <component :is="panelContent"></component>
+    </ATATSlideoutPanel>
   <v-main class="_dashboard bg-base-lightest">
     <ATATPageHead :headline="projectTitle"  />
     <v-container class="container-max-width bg-base-lightest">
@@ -80,6 +84,27 @@
                       <span class="nowrap font-weight-700">{{ runOutOfFundsDate }}.</span>
                     </p>
                   </v-card>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col>
+                  <ATATAlert
+                    id="FinancialDetailsAlert"
+                    type="info"
+                    class="container-max-width my-10"
+                  >
+                    <template v-slot:content>
+                      <p class="mb-0">
+                        NOTE: All financial data depicted are estimates to assist with tracking
+                        cloud spend. Login to your CSP console to get detailed cost analysis and
+                        breakdowns.
+                        <a role="button" id="LearnMoreFinancialInfo" @click="openSlideoutPanel">
+                          Learn more
+                        </a>
+                      </p>
+                    </template>
+                  </ATATAlert>
                 </v-col>
               </v-row>
 
@@ -542,6 +567,7 @@
       </v-row>
     </v-container>
   </v-main>
+  </div>
 
 </template>
 
@@ -550,8 +576,10 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { DashboardService } from "../services/dashboards";
 
+import ATATAlert from "@/components/ATATAlert.vue";
 import ATATFooter from "../components/ATATFooter.vue";
 import ATATPageHead from "../components/ATATPageHead.vue";
+import ATATSlideoutPanel from "@/components/ATATSlideoutPanel.vue";
 import ATATSVGIcon from "../components/icons/ATATSVGIcon.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import DonutChart from "../components/charts/DonutChart.vue";
@@ -568,13 +596,17 @@ import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
 import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
-import { lineChartData, lineChartDataSet } from "types/Global";
+import { lineChartData, lineChartDataSet, SlideoutPanelContent } from "types/Global";
 import _ from 'lodash';
+import SlideoutPanel from "@/store/slideoutPanel";
+import FinancialDataLearnMore from "@/components/slideOuts/FinancialDataLearnMore.vue";
 
 @Component({
   components: {
+    ATATAlert,
     ATATFooter,
     ATATPageHead,
+    ATATSlideoutPanel,
     ATATSVGIcon,
     ATATTooltip,
     DonutChart,
@@ -937,6 +969,12 @@ export default class PortfolioDashboard extends Vue {
     this.burnChartData.datasets = burnChartDataSets;
     return;
   }
+  public openSlideoutPanel(e: Event): void {
+    if (e && e.currentTarget) {
+      const opener = e.currentTarget as HTMLElement;
+      SlideoutPanel.openSlideoutPanel(opener.id);
+    }
+  }
   public totalSpendingObj: {
     totalFundsSpent:number;
     totalFundsObligated:number,
@@ -1089,6 +1127,11 @@ export default class PortfolioDashboard extends Vue {
   }
 
   public async mounted(): Promise<void>{
+    const slideoutPanelContent: SlideoutPanelContent = {
+      component: FinancialDataLearnMore,
+      title: "Learn More",
+    }
+    await SlideoutPanel.setSlideoutPanelComponent(slideoutPanelContent);
     await this.loadOnEnter();
   }
 
@@ -1278,6 +1321,10 @@ export default class PortfolioDashboard extends Vue {
     const amount = this.totalPortfolioFunds * this.donutChartData.datasets[0].data[index] / 100;
     return this.getCurrencyString(amount);
   }
+
+  private get panelContent() {
+    return SlideoutPanel.slideoutPanelComponent;
+  };
 
   public spendingTooltipText = `This is the total value of all active task
     orders funding this portfolio`;
