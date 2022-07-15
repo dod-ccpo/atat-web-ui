@@ -317,3 +317,8 @@ export interface ClinDTO extends BaseTableDTO {
   clin_status: string;
   funds_total: string;
 }
+
+export interface EDAResponse {
+  success: boolean;
+  message: string;
+}
