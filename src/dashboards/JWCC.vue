@@ -776,9 +776,8 @@ export default class JWCCDashboard extends Vue {
 
   public organizationDonutChartPercent(): number[] {
     const percentages = this.agencyAmounts.map(
-      (amount) => Math.floor(parseFloat(amount) / this.fundsSpentToDate * 100)
+      (amount) => Math.round(amount / this.fundsSpentToDate * 100)
     );
-    console.log(percentages)
     return percentages;
   }
 
