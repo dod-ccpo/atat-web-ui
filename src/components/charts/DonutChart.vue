@@ -121,7 +121,7 @@ export default class DonutChart extends Vue {
       colorBlock.style.borderColor = "#ffffff";
       colorBlock.style.borderStyle = "solid";
       colorBlock.style.borderWidth = "1px";
-      colorBlock.style.marginRight = "4px";
+      colorBlock.style.marginRight = "8px";
       colorBlock.style.height = "16px";
       colorBlock.style.width = "16px";
       colorBlock.style.display = "inline-block";
