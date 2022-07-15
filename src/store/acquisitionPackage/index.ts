@@ -37,6 +37,8 @@ import DescriptionOfWork from "@/store/descriptionOfWork"
 import Attachments from "../attachments";
 import TaskOrder from "../taskOrder";
 import FinancialDetails from "../financialDetails";
+import { PeriodOfPerformanceApi } from "@/api/contractDetails";
+import Periods from "../periods";
 import { AttachmentService } from "@/services/attachment/base";
 import { AttachmentServiceFactory } from "@/services/attachment";
 
@@ -460,6 +462,8 @@ export class AcquisitionPackageStore extends VuexModule {
         console.log(`error creating acquisition package ${error}`);
       }
     }
+
+    await Periods.initialize();
   }
 
   // service or agency selected on Organiation page
