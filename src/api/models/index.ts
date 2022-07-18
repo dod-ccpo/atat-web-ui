@@ -43,6 +43,12 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_order_expiration_date?: string;
 }
 
+export interface CurrentEnvironmentDTO extends BaseTableDTO {
+  current_environment_exists?: string;
+  environment_instances?: string;
+  additional_information?: string;
+}
+
 export interface ContactDTO extends BaseTableDTO {
   type: string; // Mission Owner, COR, ACOR
   role: string; // Military, Civilian, Contractor
