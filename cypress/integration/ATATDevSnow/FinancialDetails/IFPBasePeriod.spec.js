@@ -62,7 +62,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
         "4th QTR FY23",
         "1st QTR FY24"
       ]
-      const ip0Value = reqCostEstimateValue-ifundingIncValue
+      const ip0Value = reqCostEstimateValue - ifundingIncValue
       const total =  ifundingIncValue + ip0Value
       cy.verifyTextArray(fd.incrementalPeriod0DropdownList, incrementalPeriod0DropdownList);
       cy.findElement(fd.incrementalPeriod0AmountTextbox).type(ip0Value);
