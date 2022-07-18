@@ -99,8 +99,8 @@ module.exports = {
   incrementalPeriod0DropdownIcon: "#IncrementPeriod0_dropdown_field_control" +
     " .v-input__append-inner > .v-icon",
   incrementalPeriod0DropdownList:"#IncrementPeriod0_dropdown_field_control .v-list-item",
-  incrementalPeriod0AmountTextbox:"#Amount0_text_field",
-  incrementalPeriod0Error: "#FirstIncrementError",
+  incrementalPeriod0AmountTextbox:"#Amount0_text_field",  
+  incrementalPeriod0Error: "#Increment0 .field-error",
   incrementalPeriod1:"#IncrementPeriod1_dropdown_field_control",
   deleteBtn0: "#DeleteIncrement0",
   deleteBtn1:"#DeleteIncrement1",

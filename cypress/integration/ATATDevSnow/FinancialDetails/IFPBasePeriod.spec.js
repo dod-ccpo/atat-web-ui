@@ -62,7 +62,7 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
         "4th QTR FY23",
         "1st QTR FY24"
       ]
-      const ip0Value = randomNumberBetween(100, 999)
+      const ip0Value = reqCostEstimateValue-ifundingIncValue
       const total =  ifundingIncValue + ip0Value
       cy.verifyTextArray(fd.incrementalPeriod0DropdownList, incrementalPeriod0DropdownList);
       cy.findElement(fd.incrementalPeriod0AmountTextbox).type(ip0Value);
@@ -94,12 +94,8 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
       cy.selectIncrementalFundingPlan(fd.iFundYesRadio, "YES");
       const basePeriodValue = "Base period length: " + baseValue + " year";
       const costEstimateValue ="Total cost estimate: $" +numberWithCommas(reqCostEstimateValue);
-      cy.findElement(fd.basePeriodValue).each(($el) => {
-        const text = $el.text()
-        cy.log(text)
-      })
-        .should("contain", basePeriodValue)
-        .and("contain", costEstimateValue);
+      cy.findElement(fd.periodLength).should("contain", basePeriodValue);
+      cy.findElement(fd.totalCostEst).should("contain", costEstimateValue);
       cy.textExists(fd.addIncrementalbtn, "Add funding increment").click().then(() => {
         cy.findElement("#IncrementPeriod1_dropdown_field_control").should("be.visible")
         cy.incrementalFundingExists();
