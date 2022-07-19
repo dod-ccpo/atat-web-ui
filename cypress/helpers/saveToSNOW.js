@@ -630,7 +630,7 @@ export function saveToSNOW(testCase){
       },
       {
         'fixture': fixtureFolder + '/TC5_attachment_DELETE_1',
-        'apiURL': 'attachment/file**',
+        'apiURL': 'attachment/**',
         'action': 'DELETE',
         'statusCode': 204,
         'times': 1,
