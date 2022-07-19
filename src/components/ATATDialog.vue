@@ -18,7 +18,7 @@
         <v-btn
           class="link-button no-focus-shift"
           :ripple="false"
-          @click="cancelItem"
+          @click="onCancel"
           id="dialog_cancel"
           name="cancelDialog"
         >{{ cancelText }}
@@ -27,7 +27,7 @@
           color="primary"
           :ripple="false"
           id="dialog_ok"
-          :disabled="disabled"
+          :disabled="OKdisabled"
           @click="onOK"
         >
           {{ okText }}
@@ -51,12 +51,10 @@ export default class ATATDialog extends Vue {
   @Prop({default: "OK"}) private okText!: string;
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
-  @Prop({ default: false }) private disabled!: boolean;
+  @Prop({ default: false }) private OKdisabled!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
 
-
-  @PropSync("showDialog")
-  private _showDialog!: boolean;
+  @PropSync("showDialog") private _showDialog!: boolean;
 
   @Watch("showDialog")
   setFocus(newVal: boolean): void {
@@ -78,8 +76,10 @@ export default class ATATDialog extends Vue {
     return this.title;
   }
 
-  private cancelItem() {
+  private onCancel() {
+    this.$emit("cancel");
     this._showDialog = false;
+    debugger;
     this.returnFocus(this.focusOnCancel);
   }
 

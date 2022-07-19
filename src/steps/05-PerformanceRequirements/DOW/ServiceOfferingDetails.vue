@@ -79,54 +79,16 @@
       </v-row>
     </v-container>
 
-    <ATATDialog
-      :showDialog.sync="showDialog"
-      title="What classification level(s)are required for your
-        cloud resources and/or services?"
-      no-click-animation
-      okText="Change Levels"
-      width="670"
-      :disabled="!hasChangedPackageClassificationLevels()"
-      @ok="classificationOptionsChangedInModal"
-    >
-      <template #content>
-        <p class="body">
-          Changes to the selections below will be reflected in the overall Classification
-          Requirements section. If you select more than one, we will ask you to specify a
-          level for each performance requirement.
-        </p>
-        <p class="body mb-5">
-          Select all that apply to your contracting effort.
-        </p>
-        <ATATCheckboxGroup
-          id="ClassificationLevelCheckboxesModal"
-          :value.sync="modalSelectedOptions"
-          :hasOtherValue="true"
-          :items="modalCheckboxItems"
-          name="checkboxes"
-          :card="false"
-          :truncate="false"
-          class="copy-max-width"
-          :rules="[
-            $validators.required('Please select at least one classification level.')
-          ]"
-        />
-        <ATATAlert
-          id="ClassificationRequirementsAlert"
-          v-show="isIL6Selected === 'true'"
-          type="warning"
-          class="copy-max-width mt-10"
-        >
-          <template v-slot:content>
-            <p class="mb-0 body">
-              Contracts requiring access to classified information (IL6 level and above)
-              must complete a <strong>DD Form 254, DoD Contract Security Classification
-              Specification.</strong> We will walk you through uploading this form next.
-            </p>
-          </template>
-        </ATATAlert>
-      </template>
-    </ATATDialog>
+    <ClassificationsModal 
+      :showDialog="showDialog"
+
+    />
+      <!-- :modalSelectedOptions.sync="modalSelectedOptions"
+      :modalSelectionsOnOpen="modalSelectionsOnOpen"
+      :modalCheckboxItems="modalCheckboxItems"
+      :IL6SysId="IL6SysId"
+      :isIL6Selected="isIL6Selected" -->
+
 
   </div>
 </template>
@@ -135,10 +97,11 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
-import ATATDialog from "@/components/ATATDialog.vue";
+// import ATATDialog from "@/components/ATATDialog.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
+import ClassificationsModal from "./ClassificationsModal.vue";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 
@@ -159,8 +122,9 @@ import _ from "lodash";
   components: {
     ATATAlert,
     ATATCheckboxGroup,
-    ATATDialog,
+    // ATATDialog,
     ATATExpandableLink,
+    ClassificationsModal,
     RequirementsForm,
   }
 })
@@ -173,7 +137,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   private showDialog = false;
   public modalSelectedOptions: string[] = [];
   private modalCheckboxItems: Checkbox[] = [];
-  public isIL6Selected = "";
+  public isIL6Selected = false;
   public IL6SysId = "";
 
   public classificationLevelsFromStore: ClassificationLevelDTO[] = [];
@@ -193,8 +157,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   public modalSelectionsOnOpen: string[] = [];
   public openModal(): void {
+    debugger;
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
-    this.showDialog = true
+    this.showDialog = true;
   }
 
   public get singleClassificationLabel(): string {
@@ -267,12 +232,14 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.instancesFormData.sort((a,b) => (a.impactLevel > b.impactLevel) ? 1 : -1);   
   }
 
-  @Watch("modalSelectedOptions")
-  public modalSelectedOptionsChange(newVal: string[]): void {
-    this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? "true" : "false";
-  };
+  // EJY moved to modal component
+  // @Watch("modalSelectedOptions")
+  // public modalSelectedOptionsChange(newVal: string[]): void {
+  //   this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? true : false;
+  // };
 
   public async classificationOptionsChangedInModal(): Promise<void> {
+    debugger;
     // remove any previously selected classifications no longer selected in modal
     const keepSelected = this.modalSelectedOptions;
     this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
@@ -314,11 +281,12 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     return arr;
   };
 
-  private hasChangedPackageClassificationLevels(): boolean {
-    const arr1 = [...this.modalSelectionsOnOpen].sort();
-    const arr2 = [...this.modalSelectedOptions].sort();
-    return !_.isEqual(arr1, arr2) && this.modalSelectedOptions.length !== 0;
-  };
+  // EJY moved to modal component
+  // private hasChangedPackageClassificationLevels(): boolean {
+  //   const arr1 = [...this.modalSelectionsOnOpen].sort();
+  //   const arr2 = [...this.modalSelectedOptions].sort();
+  //   return !_.isEqual(arr1, arr2) && this.modalSelectedOptions.length !== 0;
+  // };
 
   private createCheckboxItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
@@ -337,8 +305,8 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       if (e.sys_id) {
         this.avlClassificationLevelSysIds.push(e.sys_id);
       }
-      if (e.impact_level === "IL6") {
-        this.isIL6Selected = "true";
+      if (e.impact_level === this.IL6SysId) {
+        this.isIL6Selected = true;
       }
     });
     this.headerCheckboxItems 
@@ -378,6 +346,9 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     const IL6Checkbox 
       = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "";
+
+    // // set up header checkbox items and list of sysIds for available classification levels
+    // await this.setAvailableClassificationLevels();
 
     // load existing classification instances for this service offering
     this.classificationInstances 
