@@ -815,56 +815,6 @@ export class AcquisitionPackageStore extends VuexModule {
   }
 
   /**
-   * Loads Classification Level data from backend
-   */
-  @Action({rawError: true})
-  async loadClassificationLevel(): Promise<ClassificationLevelDTO> {
-    try {
-      await this.ensureInitialized();
-
-      const sys_id = this.classificationLevel?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const classificationLevelData =
-            await api.classificationLevelTable.retrieve(sys_id as string);
-        this.setClassificationLevel(classificationLevelData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          classification_level: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.classificationLevel as ClassificationLevelDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading classification level data ${error}`);
-    }
-  }
-
-  /**
-   * Loads Current Environment data from backend
-   */
-  @Action({ rawError: true })
-  async loadCurrentEnvironment(): Promise<CurrentEnvironmentDTO> {
-    try {
-      await this.ensureInitialized();
-
-      const sys_id = this.currentEnvironment?.sys_id || "";
-
-      if (sys_id.length > 0) {
-        const currentEnvironmentData =
-            await api.currentEnvironmentTable.retrieve(sys_id as string);
-        this.setCurrentEnvironment(currentEnvironmentData);
-        this.setAcquisitionPackage({
-          ...this.acquisitionPackage,
-          current_environment: sys_id,
-        } as AcquisitionPackageDTO);
-      }
-      return this.currentEnvironment as CurrentEnvironmentDTO;
-    } catch (error) {
-      throw new Error(`error occurred loading current environment data ${error}`);
-    }
-  }
-
-  /**
    * Saves Current Environment data to backend
    */
   @Action({ rawError: true })
