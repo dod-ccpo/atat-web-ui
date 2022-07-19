@@ -814,30 +814,6 @@ export class AcquisitionPackageStore extends VuexModule {
     }
   }
 
-  /**
-   * Saves Current Environment data to backend
-   */
-  @Action({ rawError: true })
-  async saveCurrentEnvironment(data: CurrentEnvironmentDTO): Promise<void> {
-    try {
-      const sys_id = this.currentEnvironment?.sys_id || "";
-      const savedCurrentEnvironment =
-          sys_id.length > 0
-            ? await api.currentEnvironmentTable.update(sys_id, {
-              ...data,
-              sys_id,
-            })
-            : await api.currentEnvironmentTable.create(data);
-      this.setCurrentEnvironment(savedCurrentEnvironment);
-      this.setAcquisitionPackage({
-        ...this.acquisitionPackage,
-        current_environment: sys_id,
-      } as AcquisitionPackageDTO);
-    } catch (error) {
-      throw new Error(`error occurred saving current environment data ${error}`);
-    }
-  }
-
   @Action({ rawError: true })
   async removeAttachment({
     key,
