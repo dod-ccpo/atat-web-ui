@@ -337,18 +337,18 @@ export function saveToSNOW(testCase){
         'testCase' : 5
       },
       {
-        'fixture': fixtureFolder + '/TC5_fundingPlan_POST_1',
-        'apiURL': 'x_g_dis_atat_funding_plan',
+        'fixture': fixtureFolder + '/TC5_fundingRequest_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request',
         'action': 'POST',
         'statusCode': 201,
         'times': 1,
         'testCase' : 5
       },
       {
-        'fixture': fixtureFolder + '/TC5_fundingPlan_PATCH_1',
-        'apiURL': 'x_g_dis_atat_funding_plan/**',
-        'action': 'PATCH',
-        'statusCode': 200,
+        'fixture': fixtureFolder + '/TC5_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'statusCode': 201,
         'times': 1,
         'testCase' : 5
       },
@@ -362,6 +362,291 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     currentTestEndPoints =  currentTestEndPoints.concat(fundingPlan);
   }
+  if (spec === "ginvoicing"){
+    const gInvoicing = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_fundingRequest_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_fundingRequestFSForm_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_fundingRequest_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequest_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_GET_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_GET_2',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_attachment_POST_1',
+        'apiURL': 'attachment/file**',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_PATCH_2',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_GET_3',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_attachment_POST_2',
+        'apiURL': 'attachment/file**',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_PATCH_3',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_GET_4',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingRequest_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingRequestFSForm_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingRequestFSForm_GET_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingRequestFSForm_GET_2',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_attachment_POST_1',
+        'apiURL': 'attachment/file**',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingRequestFSForm_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingRequestFSForm_GET_3',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingRequest_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingRequestFSForm_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingRequestFSForm_GET_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingRequestFSForm_GET_2',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_attachment_POST_1',
+        'apiURL': 'attachment/file**',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' :5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingRequestFSForm_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingRequestFSForm_GET_3',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_attachment_DELETE_1',
+        'apiURL': 'attachment/file**',
+        'action': 'DELETE',
+        'statusCode': 204,
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + '/TC5_fundingRequestFSForm_GET_4',
+        'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 5
+      },      
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(gInvoicing);
+  };
   if (spec === "incrementalfunding"){
     const incrementalFunding = [
       {
