@@ -328,7 +328,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CurrentEnvironment,
         completePercentageWeight: 5,
         completed: false,
-      },{
+      },
+      {
         menuText: "Current Environment Location",
         path: "current-environment-location",
         excludeFromMenu: true,
@@ -337,7 +338,8 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         routeResolver: CurrentContractEnvRouteResolver,
-      },{
+      },
+      {
         menuText: "Summary",
         path: "background-summary",
         excludeFromMenu: true,
