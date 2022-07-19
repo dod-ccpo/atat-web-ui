@@ -29,6 +29,7 @@ import {
   PeriodOfPerformanceDTO,
   ProjectOverviewDTO,
   SensitiveInformationDTO,
+  CurrentEnvironmentDTO,
 } from "@/api/models";
 
 import { SelectData } from "types/Global";
@@ -56,6 +57,7 @@ export const StoreProperties = {
   RequirementsCostEstimate:"requirementsCostEstimate",
   SensitiveInformation: "sensitiveInformation",
   ClassificationLevel: "ClassificationRequirements",
+  CurrentEnvironment: "currentEnvironment"
 };
 
 const initialCurrentContract = ()=> {
@@ -197,6 +199,14 @@ const initialClassificationLevel = () => {
   }
 }
 
+const initialCurrentEnvironment = () => {
+  return {
+    current_environment_exists: "",
+    environment_instances: "",
+    additional_information: "",
+  }
+}
+
 const saveSessionData = (store: AcquisitionPackageStore) => {
   sessionStorage.setItem(
     ATAT_ACQUISTION_PACKAGE_KEY,
@@ -216,6 +226,7 @@ const saveSessionData = (store: AcquisitionPackageStore) => {
       periodOfPerformance: store.periodOfPerformance,
       requirementsCostEstimate: store.requirementsCostEstimate,
       sensitiveInformation: store.sensitiveInformation,
+      currentEnvironment: store.currentEnvironment,
     })
   );
 };
@@ -269,6 +280,7 @@ export class AcquisitionPackageStore extends VuexModule {
   contractType: ContractTypeDTO | null = null;
   requirementsCostEstimate: RequirementsCostEstimateDTO | null = null;
   classificationLevel: ClassificationLevelDTO | null = null;
+  currentEnvironment: CurrentEnvironmentDTO | null = null;
   totalBasePoPDuration = 0;
 
   fundingRequestType: string | null =  null;
@@ -392,6 +404,13 @@ export class AcquisitionPackageStore extends VuexModule {
       : value;
   }
 
+  @Mutation
+  public setCurrentEnvironment(value: CurrentEnvironmentDTO): void {
+    this.currentEnvironment = this.currentEnvironment
+      ? Object.assign(this.currentEnvironment, value)
+      : value;
+  }
+
   @Action
   public sampleAdditionalButtonActionInStore(actionArgs: string[]): void {
     console.log("in store: actionArgs", actionArgs);
@@ -415,6 +434,7 @@ export class AcquisitionPackageStore extends VuexModule {
     this.sensitiveInformation = sessionData.sensitiveInformation;
     this.gfeOverview = sessionData.gfeOverview;
     this.classificationLevel = sessionData.classificationLevel;
+    this.currentEnvironment = sessionData.currentEnvironment;
   }
 
   @Action({ rawError: true })
@@ -454,6 +474,7 @@ export class AcquisitionPackageStore extends VuexModule {
           this.setPeriods([]);
           this.setPeriodOfPerformance(initialPeriodOfPerformance());
           this.setSensitiveInformation(initialSensitiveInformation());
+          this.setCurrentEnvironment(initialCurrentEnvironment())
           this.setAcquisitionPackage(acquisitionPackage);
           await TaskOrder.initialize(acquisitionPackage.sys_id || "");
           this.setInitialized(true);
@@ -508,6 +529,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.PeriodOfPerformance]: api.periodOfPerformanceTable,
     [StoreProperties.RequirementsCostEstimate]: api.requirementsCostEstimateTable,
     [StoreProperties.SensitiveInformation]: api.sensitiveInformationTable,
+    [StoreProperties.CurrentEnvironment]: api.currentEnvironmentTable,
     [StoreProperties.ClassificationLevel]: api.classificationLevelTable,
   }
 
@@ -524,6 +546,7 @@ export class AcquisitionPackageStore extends VuexModule {
     [StoreProperties.RequirementsCostEstimate]: "requirements_cost_estimate",
     [StoreProperties.SensitiveInformation]: "sensitive_information",
     [StoreProperties.ClassificationLevel]: "classification_level",
+    [StoreProperties.CurrentEnvironment]: "current_environment",
   }
 
   @Action({ rawError: true })
@@ -813,6 +836,55 @@ export class AcquisitionPackageStore extends VuexModule {
       return this.classificationLevel as ClassificationLevelDTO;
     } catch (error) {
       throw new Error(`error occurred loading classification level data ${error}`);
+    }
+  }
+
+  /**
+   * Loads Current Environment data from backend
+   */
+  @Action({ rawError: true })
+  async loadCurrentEnvironment(): Promise<CurrentEnvironmentDTO> {
+    try {
+      await this.ensureInitialized();
+
+      const sys_id = this.currentEnvironment?.sys_id || "";
+
+      if (sys_id.length > 0) {
+        const currentEnvironmentData =
+            await api.currentEnvironmentTable.retrieve(sys_id as string);
+        this.setCurrentEnvironment(currentEnvironmentData);
+        this.setAcquisitionPackage({
+          ...this.acquisitionPackage,
+          current_environment: sys_id,
+        } as AcquisitionPackageDTO);
+      }
+      return this.currentEnvironment as CurrentEnvironmentDTO;
+    } catch (error) {
+      throw new Error(`error occurred loading current environment data ${error}`);
+    }
+  }
+
+  /**
+   * Saves Current Environment data to backend
+   */
+  @Action({ rawError: true })
+  async saveCurrentEnvironment(data: CurrentEnvironmentDTO): Promise<void> {
+    try {
+      const sys_id = this.currentEnvironment?.sys_id || "";
+      const savedCurrentEnvironment =
+          sys_id.length > 0
+            ? await api.currentEnvironmentTable.update(sys_id, {
+              ...data,
+              sys_id,
+            })
+            : await api.currentEnvironmentTable.create(data);
+      this.setCurrentEnvironment(savedCurrentEnvironment);
+      this.setAcquisitionPackage({
+        ...this.acquisitionPackage,
+        current_environment: sys_id,
+      } as AcquisitionPackageDTO);
+    } catch (error) {
+      throw new Error(`error occurred saving current environment data ${error}`);
     }
   }
 

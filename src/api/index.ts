@@ -66,7 +66,7 @@ export const api = {
   costsTable: new CostsApi(),
   clinTable: new ClinAPi(),
   edaApi: new EDAApi(),
-  currentEnvironment: new CurrentEnvironmentAPI(),
+  currentEnvironmentTable: new CurrentEnvironmentAPI(),
 }
 
 export default {

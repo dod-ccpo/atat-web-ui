@@ -23,6 +23,9 @@ import CurrentContractDetails
   from "../steps/03-Background/CurrentContract/CurrentContractDetails.vue";
 import CurrentEnvironment 
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
+import CurrentEnvironmentLocation
+  from "@/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.vue";
+import BackgroundSummary from "../steps/03-Background/Summary.vue"
 
 // Step 4 - Contract Details
 /* 4.0 */   import ContractDetails from "../steps/04-ContractDetails/Index.vue";
@@ -165,6 +168,8 @@ export const routeNames = {
   FundingPlanType: "Funding_Plan_Type",
   FinancialPOCForm: "Financial_POC_Form",
   SummaryPage: "Summary_Page",
+  CurrentEnvironmentLocation: "Current_Environment_Location",
+  BackgroundSummary: "Background_Summary"
 };
 
 /**
@@ -323,7 +328,23 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CurrentEnvironment,
         completePercentageWeight: 5,
         completed: false,
+      },{
+        menuText: "Current Environment Location",
+        path: "current-environment-location",
+        excludeFromMenu: true,
+        name: routeNames.CurrentEnvironmentLocation,
+        component: CurrentEnvironmentLocation,
+        completePercentageWeight: 5,
+        completed: false,
         routeResolver: CurrentContractEnvRouteResolver,
+      },{
+        menuText: "Summary",
+        path: "background-summary",
+        excludeFromMenu: true,
+        name: routeNames.BackgroundSummary,
+        component: BackgroundSummary,
+        completePercentageWeight: 5,
+        completed: false,
       },
     ]
   },
