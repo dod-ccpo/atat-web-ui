@@ -81,14 +81,14 @@
 
     <ClassificationsModal 
       :showDialog="showDialog"
-
-    />
-      <!-- :modalSelectedOptions.sync="modalSelectedOptions"
+      @cancelClicked="modalCancelClicked"
+      @okClicked="modalOkClicked"
+      :modalSelectedOptions.sync="modalSelectedOptions"
       :modalSelectionsOnOpen="modalSelectionsOnOpen"
       :modalCheckboxItems="modalCheckboxItems"
       :IL6SysId="IL6SysId"
-      :isIL6Selected="isIL6Selected" -->
-
+      :isIL6Selected.sync="isIL6Selected"
+    />
 
   </div>
 </template>
@@ -238,7 +238,13 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   //   this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? true : false;
   // };
 
-  public async classificationOptionsChangedInModal(): Promise<void> {
+  public modalCancelClicked(): void {
+    this.showDialog = false;
+    debugger;
+  }
+
+  public async modalOkClicked(): Promise<void> {
+    this.showDialog = false;
     debugger;
     // remove any previously selected classifications no longer selected in modal
     const keepSelected = this.modalSelectedOptions;
@@ -250,6 +256,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     await ClassificationRequirements.setSelectedClassificationLevels(arr);
     await this.setAvailableClassificationLevels();
     await this.buildNewClassificationInstances();
+    this.checkSingleClassification();
   }
 
   public async clearUnselected(): Promise<void> {
@@ -317,6 +324,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
   public checkSingleClassification(): void {
     // if only one classification level selected in Contract Details, set
     // it as "selected" for instance forms
+    debugger;
     if (this.avlInstancesLength === 1 && this.avlClassificationLevelObjects[0].sys_id) {
       const sysId = this.avlClassificationLevelObjects[0].sys_id;
       this.selectedHeaderLevelSysIds.push(sysId);

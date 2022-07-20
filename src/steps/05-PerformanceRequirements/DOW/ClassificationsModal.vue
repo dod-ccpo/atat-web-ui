@@ -1,14 +1,14 @@
 <template>
   <ATATDialog
     :showDialog.sync="_showModal"
-    title="What classification level(s)are required for your
+    title="What classification level(s) are required for your
       cloud resources and/or services?"
     no-click-animation
     okText="Change Levels"
     width="670"
     :OKdisabled="!hasChangedPackageClassificationLevels()"
     @ok="OKClicked"
-    @cancel="cancelClicked"
+    @cancelClicked="cancelClicked"
   >
     <template #content>
       <p class="body">
@@ -19,7 +19,7 @@
       <p class="body mb-5">
         Select all that apply to your contracting effort.
       </p>
-      <!-- <ATATCheckboxGroup
+      <ATATCheckboxGroup
         id="ClassificationLevelCheckboxesModal"
         :value.sync="_modalSelectedOptions"
         :hasOtherValue="false"
@@ -45,7 +45,7 @@
             Specification.</strong> We will walk you through uploading this form next.
           </p>
         </template>
-      </ATATAlert> -->
+      </ATATAlert>
     </template>
   </ATATDialog>
 </template>
@@ -70,49 +70,41 @@ import _ from "lodash";
 })
 
 export default class ClassificationsModal extends Vue {
-  // @Prop({ required: true }) public modalCheckboxItems!: Checkbox[];
+  @Prop({ required: true }) public modalCheckboxItems!: Checkbox[];
   @Prop({ required: false }) public IL6SysId?: string;
-  // @Prop( { required: true }) public modalSelectionsOnOpen!: string[];
-
-  // @Prop() public showDialog!: boolean;
-  // @PropSync("modalSelectedOptions") public _modalSelectedOptions!: string[];
+  @Prop( { required: true }) public modalSelectionsOnOpen!: string[];
+  @PropSync("modalSelectedOptions") public _modalSelectedOptions!: string[];
   @PropSync("isIL6Selected") public _isIL6Selected?: boolean;
   @PropSync("showDialog") public _showModal?: boolean;
   
-  // @Watch("modalSelectedOptions")
-  // public modalSelectedOptionsChange(newVal: string[]): void {
-  //   if (this.IL6SysId) {
-  //     this._isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? true : false;
-  //   }
-  // };
+  @Watch("modalSelectedOptions")
+  public modalSelectedOptionsChange(newVal: string[]): void {
+    if (this.IL6SysId) {
+      this._isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? true : false;
+    }
+  };
 
-  @Watch("showDialog")
-  public showDialogChange(newVal: boolean): void {
-    debugger;
-    this._showModal = newVal;
-  }
+  // @Watch("showDialog")
+  // public showDialogChange(newVal: boolean): void {
+  //   this._showModal = newVal;
+  // }
 
   private hasChangedPackageClassificationLevels(): boolean {
-    // const arr1 = [...this.modalSelectionsOnOpen].sort();
-    // const arr2 = [...this._modalSelectedOptions].sort();
-    // return !_.isEqual(arr1, arr2) && this._modalSelectedOptions.length !== 0;
-    return true;
+    const arr1 = [...this.modalSelectionsOnOpen].sort();
+    const arr2 = [...this._modalSelectedOptions].sort();
+    return !_.isEqual(arr1, arr2) && this._modalSelectedOptions.length !== 0;
   };
 
   public OKClicked(): void {
-    debugger;
     this._showModal = false;
-    this.$emit("classificationOptionsChangedInModal");
+    this.$emit("okClicked");
   }
 
   public cancelClicked(): void {
-    debugger;
     this._showModal = false;
-    // SET SELECTED OPTIONS BACK TO WHAT IT WAS ON OPEN?
-
+    this._modalSelectedOptions = this.modalSelectionsOnOpen;
+    this.$emit("cancelClicked");
   }
-
 }
-
 
 </script>
