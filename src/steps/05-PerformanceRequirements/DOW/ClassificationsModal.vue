@@ -84,11 +84,6 @@ export default class ClassificationsModal extends Vue {
     }
   };
 
-  // @Watch("showDialog")
-  // public showDialogChange(newVal: boolean): void {
-  //   this._showModal = newVal;
-  // }
-
   private hasChangedPackageClassificationLevels(): boolean {
     const arr1 = [...this.modalSelectionsOnOpen].sort();
     const arr2 = [...this._modalSelectedOptions].sort();
@@ -98,6 +93,7 @@ export default class ClassificationsModal extends Vue {
   public OKClicked(): void {
     this._showModal = false;
     this.$emit("okClicked");
+    debugger;
   }
 
   public cancelClicked(): void {

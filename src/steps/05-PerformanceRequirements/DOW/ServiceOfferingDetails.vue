@@ -97,7 +97,6 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import RequirementsForm from './RequirementsForm.vue'
-// import ATATDialog from "@/components/ATATDialog.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue"
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
@@ -122,7 +121,6 @@ import _ from "lodash";
   components: {
     ATATAlert,
     ATATCheckboxGroup,
-    // ATATDialog,
     ATATExpandableLink,
     ClassificationsModal,
     RequirementsForm,
@@ -335,9 +333,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     // get classification levels selected in step 4 Contract Details
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-
-    // TODO: if no classification levels selected in step 4, show warning alert
-    // ticket AT-7502
 
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.avlClassificationLevelObjects) {

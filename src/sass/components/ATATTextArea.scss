@@ -4,7 +4,7 @@
     border: 1px solid $base;
     border-radius: 4px;
   }
-  textarea{
+    textarea{
       @extend %body;
   }
   .v-messages.error--text {
@@ -14,5 +14,11 @@
     display: flex;
     justify-content: flex-end;
     padding-right: 0 !important;
+  }
+}
+
+.atat-textarea {
+  label {
+    font-weight: 500 !important;
   }
 }

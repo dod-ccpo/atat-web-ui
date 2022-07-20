@@ -9,13 +9,24 @@
       v-model="_selectedValue"
     >
       <fieldset>
-        <legend
-          v-if="legend"
-          class="form-field-label mb-3 pb-0"
-          :class="{ 'd-sr-only': legendSrOnly }"
-        >
-          {{ legend }}
-        </legend>
+        <div class="d-flex mb-3">
+          <legend
+            v-if="legend"
+            class="form-field-label pb-0 mr-2"
+            :class="{ 'd-sr-only': legendSrOnly }"
+          >
+            {{ legend }}
+          </legend>
+
+          <ATATTooltip 
+            v-if="tooltipText"
+            :tooltipText="tooltipText"
+            :tooltipTitle="tooltipTitle"
+            :id="id"
+            :label="getTooltipLabel()"
+          />
+        </div>
+
         <v-radio
           v-for="item in items"
           :id="'Radio_' + getIdText(item.id)"
@@ -51,13 +62,16 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import { RadioButton } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATTooltip from "@/components/ATATTooltip.vue"
+
+import { RadioButton } from "../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
   components: {
     ATATErrorValidation,
+    ATATTooltip,
   }
 })
 
@@ -80,6 +94,9 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: false }) private legendSrOnly!: boolean;
   @Prop({ default: "" }) private width!: string;
   @Prop() private name!: string;
+  @Prop() private tooltipText?: string;
+  @Prop() private tooltipTitle?: string;
+  @Prop( {default: "tooltip"}) private tooltipLabel?: string;
 
   // data
   private errorMessages: string[] = [];
@@ -94,6 +111,10 @@ export default class ATATRadioGroup extends Vue {
 
   private getIdText(string: string) {
     return getIdText(string);
+  }
+
+  private getTooltipLabel(): string {
+    return this.tooltipLabel || this.legend;
   }
 
   // computed
