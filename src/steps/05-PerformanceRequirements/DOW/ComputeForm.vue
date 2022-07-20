@@ -5,8 +5,9 @@
       In this section, we’ll collect details about each compute instance that you need. 
       If you need multiple, we’ll walk through them one at a time. 
       <span v-if="avlClassificationLevelObjects.length === 1">
-        You previously specified <strong>XXXXXXXX</strong> as the classification level 
-        for all requirements. If you need any instances within a different level, 
+        You previously specified <strong>{{ singleClassificationLevelName }} </strong> 
+        as the classification level for all requirements. If you need any instances
+        within a different level, 
         <a 
           role="button" 
           id="UpdateClassification"
@@ -77,22 +78,25 @@
       otherEntryType="textfield"
     />
 
-    <ATATTextArea 
-      id="DescriptionOfNeed"
-      class="mt-8"
-      label="Description of your anticipated need or usage"
-      :value.sync="descriptionOfNeed"
-      :rules="[
-        $validators.required(
-          'Please describe your anticipated need or usage'
-        ),
-        $validators.maxLength(
-          300,
-          'Please limit your description to 300 characters or less'
-        ),
-      ]"
-      maxChars="300"
-    />
+    <v-row class="mt-8">
+      <v-col class="col-md-12 col-lg-9">
+        <ATATTextArea 
+          id="DescriptionOfNeed"
+          label="Description of your anticipated need or usage"
+          :value.sync="descriptionOfNeed"
+          :rules="[
+            $validators.required(
+              'Please describe your anticipated need or usage'
+            ),
+            $validators.maxLength(
+              300,
+              'Please limit your description to 300 characters or less'
+            ),
+          ]"
+          maxChars="300"
+        />
+      </v-col>
+    </v-row>
 
     <ATATRadioGroup
       class="copy-max-width mb-10"
@@ -142,14 +146,82 @@
     </div>
 
     <hr />
-    <h2 id="FormSection2Heading">2. Instance configurations</h2>
+    <h2 id="FormSection2Heading" class="mb-5">2. Instance configurations</h2>
 
-    
+    <v-row class="mt-8">
+      <v-col class="col-md-12 col-lg-9">
+        <ATATTextField
+          id="OperatingSystemAndLicensing"
+          label="Operating system and licensing"
+          :tooltipText="operatingSystemTooltipText"
+          :value.sync="operatingSystemAndLicensing"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="col-sm-12 col-md-6 col-lg-3">
+        <ATATTextField
+          id="NumberOfVCPUs"
+          label="Number of vCPUs"
+          :tooltipText="VCPUTooltipText"
+          :value.sync="numberOfVCPUs"
+        />
+      </v-col>
+      <v-col class="col-sm-12 col-md-6 col-lg-3">
+        <ATATTextField
+          id="Memory"
+          label="Memory"
+          :tooltipText="memoryTooltipText"
+          :value.sync="memory"
+        />
+      </v-col>
+      <v-col class="col-sm-12 col-md-6 col-lg-3">
+        <ATATSelect
+          id="StorageType"
+          label="Storage type"
+          :items="storageTypes"
+          :selectedValue.sync="selectedStorageType"
+        />
+
+      </v-col>
+      <v-col class="col-sm-12 col-md-6 col-lg-3">
+        <ATATTextField
+          id="StorageAmount"
+          label="Storage amount"
+          :tooltipText="storageAmountTooltipText"
+          :value.sync="storageAmount"
+        />
+      </v-col>
+    </v-row>
+
+    <ATATRadioGroup
+      class="mt-8 mb-10"
+      id="PerformanceTier"
+      legend="Performance tier"
+      :items="performanceTiers"
+      :value.sync="selectedPerformanceTier"
+      :rules="[
+        $validators.required('Please select an option to specify your requirements.')
+      ]"
+      :tooltipText="performanceTierTooltipText"
+    />
+
+    <v-row class="mt-8">
+      <v-col class="col-sm-12 col-md-6 col-lg-3">
+        <ATATTextField
+          id="NumberOfInstancesNeeded"
+          label="Number of instances needed"
+          :tooltipText="numberOfInstancesTooltipText"
+          :value.sync="numberOfInstancesNeeded"
+        />
+      </v-col>
+    </v-row>
+
 
     <ClassificationsModal 
       :showDialog="showDialog"
       @cancelClicked="modalCancelClicked"
-      @okClicked="modalOkClicked"
+      @okClicked="classificationLevelsChanged"
       :modalSelectedOptions.sync="modalSelectedOptions"
       :modalSelectionsOnOpen="modalSelectionsOnOpen"
       :modalCheckboxItems="modalCheckboxItems"
@@ -167,8 +239,9 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
+import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
-import ATATTextField from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import ClassificationsModal from "./ClassificationsModal.vue";
@@ -179,8 +252,8 @@ import { PeriodDTO } from "@/api/models";
 
 import { 
   Checkbox, 
-  DOWClassificationInstance, 
-  RadioButton 
+  RadioButton,
+  SelectData  
 } from "../../../../types/Global";
 
 import ClassificationRequirements from "@/store/classificationRequirements";
@@ -197,6 +270,7 @@ import {
     ATATAlert,
     ATATCheckboxGroup,
     ATATRadioGroup,
+    ATATSelect,
     ATATTextArea,
     ATATTextField,
     ATATTooltip,
@@ -215,7 +289,8 @@ export default class ComputeForm extends Vue {
   public allClassificationLevels:ClassificationLevelDTO[] = [];
   public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
   public classificationRadioOptions: RadioButton[] = [];
-  public selectedClassificationLevel = "";
+  public selectedClassificationLevel: string | undefined = "";
+  public singleClassificationLevelName: string | undefined = "";
 
   public selectedEnvironmentType = "";
   public EnvironmentTypeOptions: RadioButton[] = [
@@ -289,6 +364,44 @@ export default class ComputeForm extends Vue {
   public availablePeriodCheckboxItems: Checkbox[] = [];
   public periodsDisabled = true;
   public selectedPeriods: string[] = [];
+  public operatingSystemAndLicensing = "";
+  public numberOfVCPUs = "";
+  public memory = "";
+  public storageAmount = "";
+  public selectedStorageType = "";
+  public storageTypes: SelectData[] = [
+    { text: "General Purpose SSD", value: "General Purpose SSD" },
+    { text: "Provisioned IOPS SSD", value: "Provisioned IOPS SSD" },
+    { text: "Nearline", value: "Nearline" },
+    { text: "Offline", value: "Offline" },
+    { text: "Other", value: "Other" },
+  ];
+
+  public selectedPerformanceTier = "";
+  public performanceTiers: RadioButton[] = [
+    {
+      id: "PerformancePremium",
+      label: "High performance (Premium)",
+      value: "Premium",
+    },
+    {
+      id: "PerformanceStandard",
+      label: "Medium performance (Standard)",
+      value: "Standard",
+    },
+    {
+      id: "PerformanceBasic",
+      label: "Low performance (Basic)",
+      value: "Basic",
+    },
+    {
+      id: "PerformanceOther",
+      label: "Other",
+      value: "Other",
+    },
+  ];
+
+  public numberOfInstancesNeeded = "";
 
 
 
@@ -305,12 +418,38 @@ export default class ComputeForm extends Vue {
     debugger;
   }
 
-  public async modalOkClicked(): Promise<void> {
+  public setAvlClassificationLevels(): void {
+    this.classificationRadioOptions 
+      = this.createCheckboxOrRadioItems(this.avlClassificationLevelObjects, "Radio");
+  }
+
+  public async classificationLevelsChanged(): Promise<void> {
     this.showDialog = false;
     debugger;
-    // update lead paragraph
-    // determine what to show in radio group if > 1 selected
-    // else hide radio group and set classification level for this instance 
+    this.avlClassificationLevelObjects = [];
+    this.modalSelectedOptions.forEach((sysId) => {
+      const classififcationObj = this.allClassificationLevels.find(obj => obj.sys_id === sysId);
+      if (classififcationObj) {
+        this.avlClassificationLevelObjects.push(classififcationObj);
+      }
+    });
+    this.setAvlClassificationLevels();
+
+    if (this.avlClassificationLevelObjects.length === 1) {
+      this.selectedClassificationLevel = this.avlClassificationLevelObjects[0].sys_id;
+      const sysId = this.selectedClassificationLevel;
+      const singleSelection 
+        = this.modalCheckboxItems.find((obj) => obj.value === sysId);
+      this.singleClassificationLevelName = singleSelection?.label;
+      debugger;
+    } else if (this.selectedClassificationLevel) {
+      // if the classification level that was selected was removed via the modal,
+      // clear out this.selectedClassificationLevel
+      const selectedSysId = this.selectedClassificationLevel;
+      if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
+        this.selectedClassificationLevel = "";
+      }
+    }
 
 
     // remove any previously selected classifications no longer selected in modal
@@ -319,7 +458,9 @@ export default class ComputeForm extends Vue {
     //   return keepSelected.indexOf(sysId) > -1;
     // });
     // const arr = this.currentPackageClassificationLevels;
-    // await ClassificationRequirements.setSelectedClassificationLevels(arr);
+    await ClassificationRequirements.setSelectedClassificationLevels(
+      this.avlClassificationLevelObjects
+    );
     // await this.setAvailableClassificationLevels();
     // await this.buildNewClassificationInstances();
     // this.checkSingleClassification();
@@ -378,8 +519,7 @@ export default class ComputeForm extends Vue {
     const IL6Checkbox 
       = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "";
-    this.classificationRadioOptions 
-      = this.createCheckboxOrRadioItems(this.avlClassificationLevelObjects, "Radio");
+    this.setAvlClassificationLevels();
     debugger;
 
     const periods = await Periods.loadPeriods();
@@ -412,6 +552,27 @@ export default class ComputeForm extends Vue {
 
   public classificationTooltipText = `The levels listed below are based on classification 
     requirements you previously specified in the Contract Details section.`;
+
+  public operatingSystemTooltipText = `Specify the type of OS you want to run your 
+    instance on. Provide details about your licensing scenario, to include the number 
+    of licenses.`;
+
+  public VCPUTooltipText = `A vCPU, or virtual centrallized processing unit, represents 
+    a portion or share of the underlying, physical CPU that is assigned to a particular 
+    virtual machine.`;
+
+  public memoryTooltipText = `Enter the amount of Random Access Memory (RAM) you need 
+    to store data short-term for performing computing operations.`;
+
+  public storageAmountTooltipText = `Enter the amount of storage you need to access 
+    and store data on a long-term basis.`;
+
+  public performanceTierTooltipText = `This refers to your network speed and service 
+    availability. If you have size and performance details, select Other and enter 
+    your specifications.`;
+
+  public numberOfInstancesTooltipText = `Specify the number of instances you need 
+    with these configurations.`;
 
 }
 
