@@ -1,9 +1,7 @@
 // const path = require('path')
 // const HtmlWebPackPlugin = require('html-webpack-plugin')
-const servicenowConfig = require('./servicenow.config')
-// const { merge } = require('webpack-merge');
-
-// const ROOT_PATH = path.join(__dirname, '../')
+const servicenowConfig = require('./servicenow.config');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const DEFAULTS = {
   ASSET_SIZE_LIMIT: 10000
@@ -33,13 +31,27 @@ module.exports = {
             vendors: {
               chunks: 'all',
               minChunks: 1,
-              maxSize: 0,
+              maxSize: 4000000,
               name: 'vendor',
               test: /([\\/]node_modules[\\/])|(assets\/)/,
               priority: -10,
             },
           },
         },
+        // minimizer: [new UglifyJsPlugin({
+        //   include: /^vendor/,
+        //   uglifyOptions: {
+        //     warnings: false,
+        //     parse: {},
+        //     compress: {},
+        //     mangle: false, // Note `mangle.properties` is `false` by default.
+        //     output: null,
+        //     toplevel: false,
+        //     nameCache: null,
+        //     ie8: false,
+        //     keep_fnames: false,
+        //   },
+        // })],
       }
 
       config.output.filename = 'js/[name]-[hash]-js'
