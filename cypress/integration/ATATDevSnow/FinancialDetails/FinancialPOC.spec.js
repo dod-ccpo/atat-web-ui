@@ -25,7 +25,7 @@ describe("Test suite: Financial Details Step: Financial POC",() => {
   it("TC1: Tell us about your financial POC: Select Civilian", () => {
     cy.findElement(contractDetails.baseDropdownMonth).click();
     //Enter the Value for Base
-    const baseValue=randomNumberBetween(9,12)
+    const baseValue="11"
     cy.findElement(contractDetails.baseInputTxtBox).type(baseValue);
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader("Do you want to request a PoP start date?");

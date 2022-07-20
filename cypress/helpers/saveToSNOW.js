@@ -324,7 +324,7 @@ export function saveToSNOW(testCase){
         'fixture': fixtureFolder + '/TC1_fundingPlan_POST_1',
         'apiURL': 'x_g_dis_atat_funding_plan',
         'action': 'POST',
-        'statusCode': 200,
+        'statusCode': 201,
         'times': 1,
         'testCase' : 1
       },
@@ -476,7 +476,7 @@ export function saveToSNOW(testCase){
         'fixture': fixtureFolder + '/TC2_fundingPlan_POST_1',
         'apiURL': 'x_g_dis_atat_funding_plan',
         'action': 'POST',
-        'statusCode': 200,
+        'statusCode': 201,
         'times': 1,
         'testCase' : 2
       },
@@ -949,6 +949,474 @@ export function saveToSNOW(testCase){
     ].filter((fixture)=>fixture.testCase === parseInt(testCase));
     currentTestEndPoints =  currentTestEndPoints.concat(gInvoicing);
   };
+  if (spec === "ifpbaseperiod"){
+    const ifpBasePeriod = [
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_3',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_4',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },      
+      {
+        'fixture': fixtureFolder + '/TC1_period_GET_2',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_5',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_6',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_period_GET_3',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_fundingIncrement_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_increment',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_fundingPlan_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_plan/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },   
+      {
+        'fixture': fixtureFolder + '/TC1_fundingIncrement_GET_1',
+        'apiURL': 'x_g_dis_atat_funding_increment/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC1_taskOrder_PATCH_2',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 1
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_GET_3',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_GET_4',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },      
+      {
+        'fixture': fixtureFolder + '/TC2_period_GET_2',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_GET_5',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_periodOfPerformance_GET_6',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC2_period_GET_3',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 2
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_GET_3',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_GET_4',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },      
+      {
+        'fixture': fixtureFolder + '/TC3_period_GET_2',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_GET_5',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_periodOfPerformance_GET_6',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC3_period_GET_3',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 3
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingPlan_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_plan',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_taskOrder_PATCH_1',
+        'apiURL': 'x_g_dis_atat_task_order/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_fundingPlan_PATCH_1',
+        'apiURL': 'x_g_dis_atat_funding_plan/**',
+        'action': 'PATCH',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_GET_3',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_GET_4',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
+        'fixture': fixtureFolder + '/TC4_periodOfPerformance_GET_5',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'statusCode': 200,
+        'times': 1,
+        'testCase' : 4
+      },
+      
+    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+    currentTestEndPoints =  currentTestEndPoints.concat(ifpBasePeriod);
+  };
+
   if (spec === "incrementalfunding"){
     const incrementalFunding = [
       {

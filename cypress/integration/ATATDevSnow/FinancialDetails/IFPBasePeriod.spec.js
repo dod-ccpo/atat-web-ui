@@ -8,7 +8,7 @@ import fd from "../../../selectors/financialDetails.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
 describe("Test suite: Financial Details Step: Incremental FP for your base period", 
-  { tags: '@iso-ignore' },  () => {
+  () => {
 
     beforeEach(() => {
       bootstrapMockApis();
@@ -21,8 +21,8 @@ describe("Test suite: Financial Details Step: Incremental FP for your base perio
     
     it("TC1: Let’s create an incremental funding plan for your base period", () => {
       cy.findElement(contractDetails.baseDropdownMonth).click();
-      //Enter the Value for Base
-      const baseValue=randomNumberBetween(9,12)
+      //Enter the Value for Base      
+      const baseValue= "11"
       cy.findElement(contractDetails.baseInputTxtBox).type(baseValue);
       cy.btnClick(common.continueBtn, " Continue ");
       cy.verifyPageHeader("Do you want to request a PoP start date?");
