@@ -11,7 +11,7 @@
             location for each instance later.
           </p>
           <ATATRadioGroup
-            id="TrainingOptions"
+            id="EnvLocationButtons"
             :card="true"
             :items="envLocationOption"
             :rules="[$validators.required('Please select an option')]"
@@ -40,6 +40,7 @@ import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
   },
 })
 export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
+  /* eslint-disable camelcase */
   public currentEnvironmentLocation
     = AcquisitionPackage.currentEnvironment?.additional_information || ""
   private envLocationOption: RadioButton[] = [
@@ -65,13 +66,11 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
     },
   ];
   private savedData: CurrentEnvironmentDTO = {
-    // eslint-disable-next-line camelcase
     additional_information: "",
   }
 
   private get currentData(): CurrentEnvironmentDTO {
     return {
-      // eslint-disable-next-line camelcase
       additional_information: this.currentEnvironmentLocation || "",
     };
   }
@@ -83,7 +82,6 @@ export default class CurrentEnvironmentLocation extends Mixins(SaveOnLeave) {
       );
     if (storeData) {
       this.savedData = {
-        // eslint-disable-next-line camelcase
         additional_information: storeData.additional_information,
       }
     }

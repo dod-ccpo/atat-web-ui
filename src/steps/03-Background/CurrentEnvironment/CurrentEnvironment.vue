@@ -14,7 +14,7 @@
             performance requirements later.
           </p>
           <ATATRadioGroup
-            id="TrainingOptions"
+            id="ExistingEnvOptions"
             :card="true"
             :items="existingEnvOption"
             :rules="[$validators.required('Please select an option')]"
