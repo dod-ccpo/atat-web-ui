@@ -8,7 +8,7 @@ import contact from "../../../selectors/contact.sel";
 import fd from "../../../selectors/financialDetails.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-ignore' },() => {
+describe("Test suite: Financial Details Step: Financial POC",() => {
   let contactInfo;
 
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-igno
     cy.dropDownClick(contractDetails.baseDropdownIcon);    
   });
     
-  it.only("TC1: Tell us about your financial POC: Select Civilian", () => {
+  it("TC1: Tell us about your financial POC: Select Civilian", () => {
     cy.findElement(contractDetails.baseDropdownMonth).click();
     //Enter the Value for Base
     const baseValue=randomNumberBetween(9,12)
