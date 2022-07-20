@@ -527,6 +527,17 @@ export default class JWCCDashboard extends Vue {
     ]);
     console.log({data});
 
+    const newData = await this.dashboardService.getTaskOrderTotals([
+      '1000000001234',
+      '1000000004321',
+      '1000000009999',
+      '1000000009876',
+      '1000000008888',
+      '1000000008765'
+    ]);
+
+    console.log ({newData});
+
     this.activeTaskOrderCount = data.activeTaskOrders;
     this.totalObligatedFunds = data.totalObligatedFunds;
     this.totalTaskOrderValue = data.totalTaskOrderValue;
