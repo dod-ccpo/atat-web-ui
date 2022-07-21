@@ -1,0 +1,25 @@
+{
+  "result": {
+    "size_bytes": "16674",
+    "file_name": "dd1155.pdf",
+    "sys_mod_count": "0",
+    "average_image_color": "",
+    "image_width": "",
+    "sys_updated_on": "2022-07-19 12:47:55",
+    "sys_tags": "",
+    "table_name": "x_g_dis_atat_funding_request_fs_form",
+    "sys_id": "e0282bdd87701150ec3b777acebb35b8",
+    "image_height": "",
+    "sys_updated_by": "prasanthi.alaparthi-ctr@ccpo.mil",
+    "download_link": "https://disastorefrontdev.servicenowservices.com/api/now/attachment/e0282bdd87701150ec3b777acebb35b8/file",
+    "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryLSMiPlhVyLV22Aab",
+    "sys_created_on": "2022-07-19 12:47:55",
+    "size_compressed": "7888",
+    "compressed": "true",
+    "state": "pending",
+    "table_sys_id": "0f182bdd87701150ec3b777acebb35ab",
+    "chunk_size_bytes": "700000",
+    "hash": "6f1def76f6b3959f3bf60d97fa8fac377db4feeacfea5d74e43f96c038be5f74",
+    "sys_created_by": "prasanthi.alaparthi-ctr@ccpo.mil"
+  }
+}

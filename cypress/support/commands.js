@@ -995,7 +995,7 @@ Cypress.Commands.add("incrementalFundingExists", () => {
 
 });
 
-Cypress.Commands.add("financialPOCAffiliation", (selector,value) => {
+Cypress.Commands.add("financialPOCAffiliation", (selector,value,sbSelector) => {
   cy.radioBtn(selector, value).click({ force: true });
   cy.findElement(fd.contactRadioBtnActive)
     .then(($radioBtn) => {
@@ -1007,11 +1007,15 @@ Cypress.Commands.add("financialPOCAffiliation", (selector,value) => {
           .and("be.visible")
           .and("contain", " Service Branch ");
         cy.findElement(contact.serviceBranchDropDownIcon).click({ force: true });
-        cy.findElement(contact.serviceDropDownList).first().click();
-        cy.findElement(contact.rankAutoCompleteWrapper)
-          .should("exist")
-          .and("be.visible")
-          .and("contain", "Rank");        
+        cy.findElement(sbSelector)
+          .click()
+          .then(() => {
+            cy.findElement(contact.rankAutoCompleteWrapper)
+              .should("exist")
+              .and("be.visible")
+              .and("contain", "Rank");
+              
+          })
       }
       if (selectedOption === "radio_button_checkedCivilian") {
         cy.findElement(contact.salutationDropDownLabel)
