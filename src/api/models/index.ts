@@ -28,6 +28,7 @@ export interface AcquisitionPackageDTO extends BaseTableDTO {
   funding_plans: string;
   classification_level: string;
   required_services: string;
+  current_environment: string;
 }
 
 export interface ClassificationLevelDTO extends BaseTableDTO {
@@ -41,6 +42,12 @@ export interface CurrentContractDTO extends BaseTableDTO {
   contract_number?: string;
   task_delivery_order_number?: string;
   contract_order_expiration_date?: string;
+}
+
+export interface CurrentEnvironmentDTO extends BaseTableDTO {
+  current_environment_exists?: string;
+  environment_instances?: string;
+  additional_information?: string;
 }
 
 export interface ContactDTO extends BaseTableDTO {
