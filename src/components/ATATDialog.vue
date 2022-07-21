@@ -27,7 +27,7 @@
           color="primary"
           :ripple="false"
           id="dialog_ok"
-          :disabled="OKdisabled"
+          :disabled="OKDisabled"
           @click="onOK"
         >
           {{ okText }}
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import {Component, Prop, PropSync} from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
@@ -51,7 +51,7 @@ export default class ATATDialog extends Vue {
   @Prop({default: "OK"}) private okText!: string;
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
-  @Prop({ default: false }) private OKdisabled!: boolean;
+  @Prop({ default: false }) private OKDisabled!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
 
   @PropSync("showDialog") private _showDialog!: boolean;

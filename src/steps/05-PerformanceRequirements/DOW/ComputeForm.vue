@@ -10,7 +10,7 @@
         within a different level, 
         <a 
           role="button" 
-          id="UpdateClassification"
+          id="UpdateClassificationFromIntro"
           tabindex="0"
           @click="openModal"
           @keydown.enter="openModal"
@@ -46,7 +46,7 @@
       />
       <a 
         role="button" 
-        id="UpdateClassification"
+        id="UpdateClassificationFromRadios"
         tabindex="0"
         @click="openModal"
         @keydown.enter="openModal"
@@ -146,6 +146,7 @@
     </div>
 
     <hr />
+
     <h2 id="FormSection2Heading" class="mb-5">2. Instance configurations</h2>
 
     <v-row class="mt-7">
@@ -183,7 +184,6 @@
           :items="storageTypes"
           :selectedValue.sync="selectedStorageType"
         />
-
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
@@ -210,7 +210,6 @@
       :otherValue="otherPerformanceTierValue"
       :otherValueEntered.sync="otherPerformanceTierValueEntered"
       :otherValueRequiredMessage="otherPerformanceTierValueRequiredMessage"
-
     />
 
     <v-row>
@@ -223,7 +222,6 @@
         />
       </v-col>
     </v-row>
-
 
     <ClassificationsModal 
       :showDialog="showDialog"
@@ -241,7 +239,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, PropSync } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -268,11 +266,7 @@ import {
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 
-import { 
-  buildClassificationCheckboxList, 
-  buildClassificationLabel,
-  hasChanges,
-} from "@/helpers";
+import { buildClassificationCheckboxList } from "@/helpers";
 
 @Component({
   components: {
@@ -288,11 +282,11 @@ import {
 })
 
 export default class ComputeForm extends Vue {
-  private routeNames = routeNames;
+  public routeNames = routeNames;
   public modalSelectionsOnOpen: string[] = [];
-  private showDialog = false;
+  public showDialog = false;
   public modalSelectedOptions: string[] = [];
-  private modalCheckboxItems: Checkbox[] = [];
+  public modalCheckboxItems: Checkbox[] = [];
   public isIL6Selected = false;
   public IL6SysId = "";
   public allClassificationLevels:ClassificationLevelDTO[] = [];
@@ -307,7 +301,7 @@ export default class ComputeForm extends Vue {
     isOpen: true,
     hasUndo: false,
     hasIcon: true,
-  }
+  };
 
   public selectedEnvironmentType = "";
   public EnvironmentTypeOptions: RadioButton[] = [
@@ -355,8 +349,8 @@ export default class ComputeForm extends Vue {
       label: "Other",
       value: "Other",
     },
-
   ];
+
   public otherRegionValue = "Other";
   public otherRegionValueEntered = "";
   public otherRegionValueRequiredMessage = "Please enter your other region(s).";
@@ -477,17 +471,17 @@ export default class ComputeForm extends Vue {
     periods.sort((a, b) => a.option_order > b.option_order ? 1 : -1);
     
     const arr: Checkbox[] = [];
-    periods.forEach((period, idx) => {
-      const label = idx === 0 ? "Base period" : `Option period ${idx}`;
+    periods.forEach((period, i) => {
+      const label = i === 0 ? "Base period" : `Option period ${i}`;
       const option: Checkbox = {
         id: period.period_type,
         label,
         value: period.sys_id || "",
-      }
-      arr.push(option)
+      };
+      arr.push(option);
     })
-    return arr
-  };
+    return arr;
+  }
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";

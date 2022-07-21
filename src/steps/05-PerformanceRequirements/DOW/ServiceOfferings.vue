@@ -127,7 +127,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
       this.selectedOptions.push(...validSelections);
 
-      this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry
+      this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     }
 
   } 

@@ -6,7 +6,7 @@
     no-click-animation
     okText="Change Levels"
     width="670"
-    :OKdisabled="!hasChangedPackageClassificationLevels()"
+    :OKDisabled="!hasChangedPackageClassificationLevels()"
     @ok="OKClicked"
     @cancelClicked="cancelClicked"
   >
