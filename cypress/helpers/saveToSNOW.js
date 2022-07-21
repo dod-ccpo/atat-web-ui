@@ -2,8 +2,6 @@
 import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
 
-
-
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
   return `${baseAPIUrl}api/now/table/${tableName}`;
