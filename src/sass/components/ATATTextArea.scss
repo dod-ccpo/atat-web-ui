@@ -4,8 +4,8 @@
     border: 1px solid $base;
     border-radius: 4px;
   }
-    textarea{
-      @extend %body;
+  textarea{
+    @extend %body;
   }
   .v-messages.error--text {
     display: none;

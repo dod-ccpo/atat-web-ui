@@ -64,7 +64,7 @@
                 :rows="3"
                 :validateItOnBlur="validateOtherOnBlur"
                 :value.sync="_otherValueEntered"
-                :rules="textareaRequiredRule"
+                :rules="otherRequiredRule"
               />
               <ATATTextField
                 v-if="otherEntryType === 'textfield'"
@@ -74,7 +74,7 @@
                 class="mb-6 mt-2 _input-wrapper-max-width"
                 :validateItOnBlur="validateOtherOnBlur"
                 :value.sync="_otherValueEntered"
-                :rules="textareaRequiredRule"
+                :rules="otherRequiredRule"
               />
 
             </div>
@@ -143,7 +143,7 @@ export default class ATATRadioGroup extends Vue {
   private validateOtherOnBlur = true;
   private hideOtherInput = false;
 
-  private textareaRequiredRule = this.otherValueRequiredMessage 
+  private otherRequiredRule = this.otherValueRequiredMessage 
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
 

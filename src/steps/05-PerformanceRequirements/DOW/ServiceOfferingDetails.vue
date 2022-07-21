@@ -332,9 +332,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "";
 
-    // // set up header checkbox items and list of sysIds for available classification levels
-    // await this.setAvailableClassificationLevels();
-
     // load existing classification instances for this service offering
     this.classificationInstances 
       = await DescriptionOfWork.getClassificationInstances();

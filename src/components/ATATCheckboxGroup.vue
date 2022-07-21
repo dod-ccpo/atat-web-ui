@@ -54,7 +54,7 @@
           :rows="3"
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
-          :rules="textareaRequiredRule"
+          :rules="otherRequiredRule"
         />
         <ATATTextField
           v-if="otherEntryType === 'textfield'"
@@ -64,7 +64,7 @@
           class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
-          :rules="textareaRequiredRule"
+          :rules="otherRequiredRule"
         />
       </template>
 
@@ -135,7 +135,7 @@ export default class ATATCheckboxGroup extends Vue {
     this.checkboxRules = this.rules;
   }
 
-  private textareaRequiredRule = this.otherValueRequiredMessage 
+  private otherRequiredRule = this.otherValueRequiredMessage 
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
 

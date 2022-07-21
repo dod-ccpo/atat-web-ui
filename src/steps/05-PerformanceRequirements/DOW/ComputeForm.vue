@@ -499,7 +499,7 @@ export default class ComputeForm extends Vue {
       });
     }
 
-    // set up header checkbox items and list of sysIds for available classification levels
+    // set available classification levels for radio buttons if > 1 level selected
     await this.setAvailableClassificationLevels();
     // get list of all possible classification levels to generate checkbox list and labels
     this.allClassificationLevels
