@@ -59,7 +59,7 @@
                 v-if="otherEntryType === 'textarea'"
                 ref="atatTextInput"
                 v-show="showOtherEntry(item.value)"
-                id="OtherEntry"
+                :id="otherId"
                 class="width-100 mb-6"
                 :rows="3"
                 :validateItOnBlur="validateOtherOnBlur"
@@ -70,7 +70,7 @@
                 v-if="otherEntryType === 'textfield'"
                 ref="atatTextInput"
                 v-show="showOtherEntry(item.value)"
-                id="OtherEntry"
+                :id="otherId"
                 class="mb-6 mt-2 _input-wrapper-max-width"
                 :validateItOnBlur="validateOtherOnBlur"
                 :value.sync="_otherValueEntered"
@@ -176,6 +176,10 @@ export default class ATATRadioGroup extends Vue {
     return classes;
   }
 
+  get otherId(): string {
+    return getIdText(this.otherValue);
+  }
+
   // events
   private onClick(): void {
     this.clearErrorMessage();
@@ -194,8 +198,8 @@ export default class ATATRadioGroup extends Vue {
       this.hideOtherInput = false;
       Vue.nextTick(() => {
         const id = this.otherEntryType === "textarea" 
-          ? "OtherEntry_text_area" 
-          : "OtherEntry_text_field";
+          ? this.otherId + "_text_area" 
+          : this.otherId + "_text_field";
         document.getElementById(id)?.focus();
       });
     } else {

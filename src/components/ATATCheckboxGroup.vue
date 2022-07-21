@@ -49,7 +49,7 @@
           v-if="otherEntryType === 'textarea'"
           ref="atatTextInput"
           v-show="showOtherEntry(item.value)"
-          id="OtherEntry"
+          :id="otherId"
           class="width-100 ml-5 mb-6"
           :rows="3"
           :validateItOnBlur="validateOtherOnBlur"
@@ -60,7 +60,7 @@
           v-if="otherEntryType === 'textfield'"
           ref="atatTextInput"
           v-show="showOtherEntry(item.value)"
-          id="OtherEntry"
+          :id="otherId"
           class="ml-5 mb-6 mt-2 _input-wrapper-max-width"
           :validateItOnBlur="validateOtherOnBlur"
           :value.sync="_otherValueEntered"
@@ -139,6 +139,10 @@ export default class ATATCheckboxGroup extends Vue {
     ? [this.$validators.required(this.otherValueRequiredMessage)]
     : [];
 
+  get otherId(): string {
+    return getIdText(this.otherValue);
+  }
+
   @Watch("_selected")
   protected selectedOptionsChanged(newVal: string[]): void {
     const otherIndex = newVal.indexOf(this.otherValue) > -1;
@@ -146,8 +150,8 @@ export default class ATATCheckboxGroup extends Vue {
     if (otherIndex && !otherPrevSelectedIndex) {
       Vue.nextTick(() => {
         const id = this.otherEntryType === "textarea" 
-          ? "OtherEntry_text_area" 
-          : "OtherEntry_text_field";
+          ? this.otherId + "_text_area" 
+          : this.otherId + "_text_field";
         document.getElementById(id)?.focus();
       });
     }
