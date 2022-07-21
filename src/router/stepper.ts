@@ -25,6 +25,8 @@ import CurrentEnvironment
   from "../steps/03-Background/CurrentEnvironment/CurrentEnvironment.vue";
 import CurrentEnvironmentLocation
   from "@/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.vue";
+import ClassificationLevels
+  from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.vue";
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
 
 // Step 4 - Contract Details
@@ -169,6 +171,7 @@ export const routeNames = {
   FinancialPOCForm: "Financial_POC_Form",
   SummaryPage: "Summary_Page",
   CurrentEnvironmentLocation: "Current_Environment_Location",
+  ClassificationLevels: "Classification_Levels",
   BackgroundSummary: "Background_Summary"
 };
 
@@ -338,6 +341,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
         routeResolver: CurrentContractEnvRouteResolver,
+      },
+      {
+        menuText: "Classification Levels",
+        path: "classification-levels",
+        excludeFromMenu: true,
+        name: routeNames.ClassificationLevels,
+        component: ClassificationLevels,
+        completePercentageWeight: 5,
+        completed: false,
       },
       {
         menuText: "Summary",

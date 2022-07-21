@@ -32,7 +32,7 @@ export class TableApiBase<TableDTO> extends baseApi {
     return this.instance.get(this.urlWithSysId(sys_id), config);
   }
 
-  private async get(config:AxiosRequestConfig): Promise<AxiosResponse>{
+  private async get(config?:AxiosRequestConfig): Promise<AxiosResponse>{
     return this.instance.get(this.endPoint, config);
   }
 
@@ -138,6 +138,20 @@ export class TableApiBase<TableDTO> extends baseApi {
         throw new Error(
           `unable to delete item from ${this.tableName} with sys_id: ${sys_id}`
         );
+      }
+    } catch (error) {
+      throw new Error(`unable to retrieve ${this.tableName} : ${error}`);
+    }
+  }
+
+  async getQuery(config?: AxiosRequestConfig): Promise<TableDTO[]> {
+    try {
+      const response = await this.get(config);
+      if (response.status === 200) {
+        const { result } = response.data;
+        return result as TableDTO[];
+      } else {
+        throw new Error(`unable to retrieve ${this.tableName}`);
       }
     } catch (error) {
       throw new Error(`unable to retrieve ${this.tableName} : ${error}`);
