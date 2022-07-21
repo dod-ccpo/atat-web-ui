@@ -36,7 +36,9 @@
         <v-col
           v-else-if="isCompute"
         >
-          <ComputeForm />
+          <ComputeForm
+            :computeData.sync="computeData"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -51,7 +53,7 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ComputeForm from "./ComputeForm.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
-import { Checkbox, DOWServiceOffering } from "../../../../types/Global";
+import { Checkbox, ComputeData, DOWServiceOffering } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
@@ -87,6 +89,25 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public isCompute = false;
   public isGeneral = false;
   public isServiceOfferingList = true;
+
+  public computeData: ComputeData = {
+    instanceNumber: "",
+    environmentType: "",
+    classificationLevel: "",
+    deployedRegions: [],
+    deployedRegionsOther: "",
+    needOrUsageDescription: "",
+    entireDuration: "",
+    periodsNeeded: [],
+    operatingSystemAndLicensing: "",
+    numberOfVCPUs: "",
+    memory: "",
+    storageType: "",
+    storageAmount: "",
+    performanceTier: "",
+    performanceTierOther: "",
+    numberOfInstancesNeeded: "1",
+  }
 
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;

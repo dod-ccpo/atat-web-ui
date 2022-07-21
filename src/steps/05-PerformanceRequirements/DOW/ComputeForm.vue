@@ -25,7 +25,7 @@
     <ATATRadioGroup
       id="EnvironmnetType"
       legend="What type of environment is this instance?"
-      :value.sync="selectedEnvironmentType"
+      :value.sync="_computeData.environmentType"
       :items="EnvironmentTypeOptions"
       name="EnvironmnetType"
       class="mt-3 mb-8"
@@ -36,7 +36,7 @@
       <ATATRadioGroup
         id="ClassificationLevel"
         legend="What classification level is this instance deployed in?"
-        :value.sync="selectedClassificationLevel"
+        :value.sync="_computeData.classificationLevel"
         :items="classificationRadioOptions"
         name="ClassificationLevel"
         class="mt-3 mb-2"
@@ -67,13 +67,13 @@
     <ATATCheckboxGroup 
       id="Regions"
       aria-describedby="CheckboxGroupLabel"
-      :value.sync="selectedRegions"
+      :value.sync="_computeData.deployedRegions"
       :items="regionCheckboxOption"
       :card="false"
       class="copy-max-width"
       :hasOtherValue="true"
       :otherValue="otherRegionValue"
-      :otherValueEntered.sync="otherRegionValueEntered"
+      :otherValueEntered.sync="_computeData.deployedRegionsOther"
       :otherValueRequiredMessage="otherRegionValueRequiredMessage"
       otherEntryType="textfield"
     />
@@ -83,7 +83,7 @@
         <ATATTextArea 
           id="DescriptionOfNeed"
           label="Description of your anticipated need or usage"
-          :value.sync="descriptionOfNeed"
+          :value.sync="_computeData.needOrUsageDescription"
           :rules="[
             $validators.required(
               'Please describe your anticipated need or usage'
@@ -103,19 +103,19 @@
       id="NeededForEntireDuration"
       legend="Is this instance needed for the entire duration of your task order?"
       :items="requirementOptions"
-      :value.sync="neededForEntireDuration"
+      :value.sync="_computeData.entireDuration"
       :rules="[
         $validators.required('Please select an option to specify your requirements.')
       ]"
     />
-    <div v-if="neededForEntireDuration === 'NO'">
+    <div v-if="_computeData.entireDuration === 'NO'">
       <p id="PeriodsLabel" class="_checkbox-group-label">
         In which base and/or option periods do you need this requirement?
       </p>
       <ATATCheckboxGroup
         id="PeriodsCheckboxes"
         aria-describedby="PeriodsLabel"
-        :value.sync="selectedPeriods"
+        :value.sync="_computeData.periodsNeeded"
         :items="availablePeriodCheckboxItems"
         :card="false"
         :disabled="periodsDisabled"
@@ -155,7 +155,7 @@
           id="OperatingSystemAndLicensing"
           label="Operating system and licensing"
           :tooltipText="operatingSystemTooltipText"
-          :value.sync="operatingSystemAndLicensing"
+          :value.sync="_computeData.operatingSystemAndLicensing"
         />
       </v-col>
     </v-row>
@@ -165,7 +165,7 @@
           id="NumberOfVCPUs"
           label="Number of vCPUs"
           :tooltipText="VCPUTooltipText"
-          :value.sync="numberOfVCPUs"
+          :value.sync="_computeData.numberOfVCPUs"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -173,7 +173,7 @@
           id="Memory"
           label="Memory"
           :tooltipText="memoryTooltipText"
-          :value.sync="memory"
+          :value.sync="_computeData.memory"
           appendText="GB"
         />
       </v-col>
@@ -182,7 +182,7 @@
           id="StorageType"
           label="Storage type"
           :items="storageTypes"
-          :selectedValue.sync="selectedStorageType"
+          :selectedValue.sync="_computeData.storageType"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -190,7 +190,7 @@
           id="StorageAmount"
           label="Storage amount"
           :tooltipText="storageAmountTooltipText"
-          :value.sync="storageAmount"
+          :value.sync="_computeData.storageAmount"
           appendText="GB"
         />
       </v-col>
@@ -201,14 +201,14 @@
       id="PerformanceTier"
       legend="Performance tier"
       :items="performanceTiers"
-      :value.sync="selectedPerformanceTier"
+      :value.sync="_computeData.performanceTier"
       :rules="[
         $validators.required('Please select an option to specify your requirements.')
       ]"
       :tooltipText="performanceTierTooltipText"
       :hasOtherValue="true"
       :otherValue="otherPerformanceTierValue"
-      :otherValueEntered.sync="otherPerformanceTierValueEntered"
+      :otherValueEntered.sync="_computeData.performanceTierOther"
       :otherValueRequiredMessage="otherPerformanceTierValueRequiredMessage"
     />
 
@@ -218,7 +218,7 @@
           id="NumberOfInstancesNeeded"
           label="Number of instances needed"
           :tooltipText="numberOfInstancesTooltipText"
-          :value.sync="numberOfInstancesNeeded"
+          :value.sync="_computeData.numberOfInstancesNeeded"
         />
       </v-col>
     </v-row>
@@ -239,7 +239,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, PropSync } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -258,6 +258,7 @@ import Toast from "@/store/toast";
 
 import { 
   Checkbox, 
+  ComputeData,
   RadioButton,
   SelectData,
   ToastObj,
@@ -282,6 +283,8 @@ import { buildClassificationCheckboxList } from "@/helpers";
 })
 
 export default class ComputeForm extends Vue {
+  @PropSync("computeData") public _computeData!: ComputeData;
+
   public routeNames = routeNames;
   public modalSelectionsOnOpen: string[] = [];
   public showDialog = false;
@@ -292,7 +295,7 @@ export default class ComputeForm extends Vue {
   public allClassificationLevels:ClassificationLevelDTO[] = [];
   public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
   public classificationRadioOptions: RadioButton[] = [];
-  public selectedClassificationLevel: string | undefined = "";
+  // public selectedClassificationLevel: string | undefined = "";
   public singleClassificationLevelName: string | undefined = "";
 
   public classificationLevelToast: ToastObj = {
@@ -303,7 +306,7 @@ export default class ComputeForm extends Vue {
     hasIcon: true,
   };
 
-  public selectedEnvironmentType = "";
+  // public selectedEnvironmentType = "";
   public EnvironmentTypeOptions: RadioButton[] = [
     {
       id: "DevTesting",
@@ -322,7 +325,7 @@ export default class ComputeForm extends Vue {
     },
   ];
 
-  public selectedRegions: string[] = [];
+  // public selectedRegions: string[] = [];
   public regionCheckboxOption: Checkbox[] = [
     {
       id: "CONUSEast",
@@ -347,17 +350,21 @@ export default class ComputeForm extends Vue {
     {
       id: "Other",
       label: "Other",
-      value: "Other",
+      value: "OtherRegion",
     },
   ];
 
-  public otherRegionValue = "Other";
-  public otherRegionValueEntered = "";
+  public otherRegionValue = "OtherRegion";
+  // public otherRegionValueEntered = "";
   public otherRegionValueRequiredMessage = "Please enter your other region(s).";
 
-  public descriptionOfNeed = "";
+  // public descriptionOfNeed = "";
 
-  public neededForEntireDuration = "";
+  // public neededForEntireDuration = "";
+
+  // EJY if user selects "NO" after previously selecting "YES" and selecting
+  // periods, remove periods from needed array
+  
   public requirementOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -373,11 +380,11 @@ export default class ComputeForm extends Vue {
 
   public availablePeriodCheckboxItems: Checkbox[] = [];
   public periodsDisabled = true;
-  public selectedPeriods: string[] = [];
-  public operatingSystemAndLicensing = "";
-  public numberOfVCPUs = "";
-  public memory = "";
-  public storageAmount = "";
+  // public selectedPeriods: string[] = [];
+  // public operatingSystemAndLicensing = "";
+  // public numberOfVCPUs = "";
+  // public memory = "";
+  // public storageAmount = "";
   public selectedStorageType = "";
   public storageTypes: SelectData[] = [
     { text: "General Purpose SSD", value: "General Purpose SSD" },
@@ -387,9 +394,9 @@ export default class ComputeForm extends Vue {
     { text: "Other", value: "Other" },
   ];
 
-  public selectedPerformanceTier = "";
+  // public selectedPerformanceTier = "";
   public otherPerformanceTierValue = "OtherPerformance";
-  public otherPerformanceTierValueEntered = "";
+  // public otherPerformanceTierValueEntered = "";
   public otherPerformanceTierValueRequiredMessage 
     = "Please enter your other performance tier.";
 
@@ -416,7 +423,7 @@ export default class ComputeForm extends Vue {
     },
   ];
 
-  public numberOfInstancesNeeded = "1";
+  // public numberOfInstancesNeeded = "1";
 
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
@@ -444,17 +451,17 @@ export default class ComputeForm extends Vue {
     this.setAvlClassificationLevels();
 
     if (this.avlClassificationLevelObjects.length === 1) {
-      this.selectedClassificationLevel = this.avlClassificationLevelObjects[0].sys_id;
-      const sysId = this.selectedClassificationLevel;
+      this._computeData.classificationLevel = this.avlClassificationLevelObjects[0].sys_id;
+      const sysId = this._computeData.classificationLevel;
       const singleSelection 
         = this.modalCheckboxItems.find((obj) => obj.value === sysId);
       this.singleClassificationLevelName = singleSelection?.label;
-    } else if (this.selectedClassificationLevel) {
+    } else if (this._computeData.classificationLevel) {
       // if the classification level that was selected was removed via the modal,
-      // clear out this.selectedClassificationLevel
-      const selectedSysId = this.selectedClassificationLevel;
+      // clear out this._computeData.classificationLevel
+      const selectedSysId = this._computeData.classificationLevel;
       if (this.modalSelectedOptions.indexOf(selectedSysId) === -1) {
-        this.selectedClassificationLevel = "";
+        this._computeData.classificationLevel = "";
       }
     }
 
@@ -521,7 +528,7 @@ export default class ComputeForm extends Vue {
     if (periods && periods.length > 0) {
       this.periodsDisabled = false;
       this.availablePeriodCheckboxItems = this.createPeriodCheckboxItems(periods);
-      this.selectedPeriods.push(this.availablePeriodCheckboxItems[0].value);
+      this._computeData.periodsNeeded.push(this.availablePeriodCheckboxItems[0].value);
     } else {
       this.availablePeriodCheckboxItems = [
         {
