@@ -155,7 +155,6 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
 
   public modalSelectionsOnOpen: string[] = [];
   public openModal(): void {
-    debugger;
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
     this.showDialog = true;
   }
@@ -230,20 +229,12 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     this.instancesFormData.sort((a,b) => (a.impactLevel > b.impactLevel) ? 1 : -1);   
   }
 
-  // EJY moved to modal component
-  // @Watch("modalSelectedOptions")
-  // public modalSelectedOptionsChange(newVal: string[]): void {
-  //   this.isIL6Selected = newVal.indexOf(this.IL6SysId) > -1 ? true : false;
-  // };
-
   public modalCancelClicked(): void {
     this.showDialog = false;
-    debugger;
   }
 
   public async modalOkClicked(): Promise<void> {
     this.showDialog = false;
-    debugger;
     // remove any previously selected classifications no longer selected in modal
     const keepSelected = this.modalSelectedOptions;
     this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
@@ -284,14 +275,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       arr.push(value[0]);
     })
     return arr;
-  };
-
-  // EJY moved to modal component
-  // private hasChangedPackageClassificationLevels(): boolean {
-  //   const arr1 = [...this.modalSelectionsOnOpen].sort();
-  //   const arr2 = [...this.modalSelectedOptions].sort();
-  //   return !_.isEqual(arr1, arr2) && this.modalSelectedOptions.length !== 0;
-  // };
+  }
 
   private createCheckboxItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
@@ -316,13 +300,11 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
     });
     this.headerCheckboxItems 
       = this.createCheckboxItems(this.avlClassificationLevelObjects, "");
-    
   }
 
   public checkSingleClassification(): void {
     // if only one classification level selected in Contract Details, set
     // it as "selected" for instance forms
-    debugger;
     if (this.avlInstancesLength === 1 && this.avlClassificationLevelObjects[0].sys_id) {
       const sysId = this.avlClassificationLevelObjects[0].sys_id;
       this.selectedHeaderLevelSysIds.push(sysId);
@@ -379,14 +361,11 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       this.periods = periods
     }
 
-    // TODO: if no PoP periods selected in step 4 Contract Details, show warning alert
-    // ticket AT-7502
-
-  };
+  }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter()
-  };
+  }
 
   public savedData: DOWClassificationInstance[] = [];
 
@@ -418,7 +397,7 @@ export default class ServiceOfferingDetails extends Mixins(SaveOnLeave) {
       console.log(error);
     }
     return true;
-  };
+  }
 
 
 };

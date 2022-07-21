@@ -30,7 +30,11 @@
         <v-radio
           v-for="item in items"
           :id="'Radio_' + getIdText(item.id)"
-          :class="radioClasses"
+          :class="[
+            radioClasses,
+            { '_has-other': item.value === otherValue },
+            { '_other-selected': showOtherEntry(item.value) }
+          ]"
           :key="item.id"
           :value="item.value"
           :style="{ width: width + 'px' }"
@@ -39,13 +43,40 @@
           @blur="onBlur"
           @click="onClick"
         >
-          <template v-if="item.description || card" v-slot:label>
+          <template v-if="item.description || card || item.value === otherValue" v-slot:label>
             <div class="d-flex flex-column">
               <div
-                :class="[item.description ? 'card-label' : 'mb-0']"
+                :class="[
+                  item.description ? 'card-label' : 'mb-0',
+                  {'mb-0': item.value === otherValue}
+                ]"
                 v-html="item.label"
               ></div>
-              <div class="mb-0" v-html="item.description"></div>
+
+              <div v-if="item.description" class="mb-0" v-html="item.description"></div>
+              
+              <ATATTextArea
+                v-if="otherEntryType === 'textarea'"
+                ref="atatTextInput"
+                v-show="showOtherEntry(item.value)"
+                id="OtherEntry"
+                class="width-100 mb-6"
+                :rows="3"
+                :validateItOnBlur="validateOtherOnBlur"
+                :value.sync="_otherValueEntered"
+                :rules="textareaRequiredRule"
+              />
+              <ATATTextField
+                v-if="otherEntryType === 'textfield'"
+                ref="atatTextInput"
+                v-show="showOtherEntry(item.value)"
+                id="OtherEntry"
+                class="mb-6 mt-2 _input-wrapper-max-width"
+                :validateItOnBlur="validateOtherOnBlur"
+                :value.sync="_otherValueEntered"
+                :rules="textareaRequiredRule"
+              />
+
             </div>
           </template>
           <template v-else v-slot:label>
@@ -63,6 +94,8 @@
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
 import { RadioButton } from "../../types/Global";
@@ -71,6 +104,8 @@ import { getIdText } from "@/helpers";
 @Component({
   components: {
     ATATErrorValidation,
+    ATATTextArea,
+    ATATTextField,
     ATATTooltip,
   }
 })
@@ -96,11 +131,22 @@ export default class ATATRadioGroup extends Vue {
   @Prop() private name!: string;
   @Prop() private tooltipText?: string;
   @Prop() private tooltipTitle?: string;
-  @Prop( {default: "tooltip"}) private tooltipLabel?: string;
+  @Prop() private tooltipLabel?: string;
+  @Prop({ default: false }) private hasOtherValue!: boolean;
+  @Prop({ default: "" }) private otherValueRequiredMessage!: string;
+  @Prop({ default: "" }) private otherValue!: string;
+  @Prop({ default: "textfield" }) private otherEntryType?: string;
+  @PropSync("otherValueEntered") private _otherValueEntered!: string;
 
   // data
   private errorMessages: string[] = [];
-  
+  private validateOtherOnBlur = true;
+  private hideOtherInput = false;
+
+  private textareaRequiredRule = this.otherValueRequiredMessage 
+    ? [this.$validators.required(this.otherValueRequiredMessage)]
+    : [];
+
   // methods
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
@@ -117,7 +163,13 @@ export default class ATATRadioGroup extends Vue {
     return this.tooltipLabel || this.legend;
   }
 
-  // computed
+  private showOtherEntry(value: string): boolean {
+    return this.hasOtherValue 
+      && value === this.otherValue
+      && this._selectedValue.indexOf(this.otherValue) > -1
+      && !this.hideOtherInput;
+  }
+
   get radioClasses(): string {
     let classes = this.card ? "_radio-button-card" : "_radio-button";
     classes += this.errorMessages.length > 0 ? ' error--text v-input--has-state' : '';
@@ -135,8 +187,23 @@ export default class ATATRadioGroup extends Vue {
 
   // watch
   @Watch("_selectedValue")
-  protected valueChange(): void {
+  protected valueChange(newVal: string): void {
     this.$emit("radioButtonSelected", this._selectedValue);
+    if (newVal === this.otherValue) {
+      this.validateOtherOnBlur = true;
+      this.hideOtherInput = false;
+      Vue.nextTick(() => {
+        const id = this.otherEntryType === "textarea" 
+          ? "OtherEntry_text_area" 
+          : "OtherEntry_text_field";
+        document.getElementById(id)?.focus();
+      });
+    } else {
+      this.validateOtherOnBlur = false;
+      this.hideOtherInput = true;
+      this._otherValueEntered = "";
+    }
   }
 }
+
 </script>

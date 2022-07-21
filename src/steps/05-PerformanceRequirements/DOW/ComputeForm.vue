@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="page-header mb-3">Let’s start by gathering your Compute requirements</h1>
-    <p>
+    <p class="copy-max-width mb-10">
       In this section, we’ll collect details about each compute instance that you need. 
       If you need multiple, we’ll walk through them one at a time. 
       <span v-if="avlClassificationLevelObjects.length === 1">
@@ -148,7 +148,7 @@
     <hr />
     <h2 id="FormSection2Heading" class="mb-5">2. Instance configurations</h2>
 
-    <v-row class="mt-8">
+    <v-row class="mt-7">
       <v-col class="col-md-12 col-lg-9">
         <ATATTextField
           id="OperatingSystemAndLicensing"
@@ -158,7 +158,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mt-7">
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
           id="NumberOfVCPUs"
@@ -173,6 +173,7 @@
           label="Memory"
           :tooltipText="memoryTooltipText"
           :value.sync="memory"
+          appendText="GB"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -190,12 +191,13 @@
           label="Storage amount"
           :tooltipText="storageAmountTooltipText"
           :value.sync="storageAmount"
+          appendText="GB"
         />
       </v-col>
     </v-row>
 
     <ATATRadioGroup
-      class="mt-8 mb-10"
+      class="my-10"
       id="PerformanceTier"
       legend="Performance tier"
       :items="performanceTiers"
@@ -204,9 +206,14 @@
         $validators.required('Please select an option to specify your requirements.')
       ]"
       :tooltipText="performanceTierTooltipText"
+      :hasOtherValue="true"
+      :otherValue="otherPerformanceTierValue"
+      :otherValueEntered.sync="otherPerformanceTierValueEntered"
+      :otherValueRequiredMessage="otherPerformanceTierValueRequiredMessage"
+
     />
 
-    <v-row class="mt-8">
+    <v-row>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
         <ATATTextField
           id="NumberOfInstancesNeeded"
@@ -342,8 +349,7 @@ export default class ComputeForm extends Vue {
   ];
   public otherRegionValue = "Other";
   public otherRegionValueEntered = "";
-  // EJY - Need error message if no entry for other
-  public otherRegionValueRequiredMessage = "EJY - Need error message if no entry for other";
+  public otherRegionValueRequiredMessage = "Please enter your other region(s).";
 
   public descriptionOfNeed = "";
 
@@ -378,6 +384,11 @@ export default class ComputeForm extends Vue {
   ];
 
   public selectedPerformanceTier = "";
+  public otherPerformanceTierValue = "OtherPerformance";
+  public otherPerformanceTierValueEntered = "";
+  public otherPerformanceTierValueRequiredMessage 
+    = "Please enter your other performance tier.";
+
   public performanceTiers: RadioButton[] = [
     {
       id: "PerformancePremium",
@@ -397,25 +408,19 @@ export default class ComputeForm extends Vue {
     {
       id: "PerformanceOther",
       label: "Other",
-      value: "Other",
+      value: "OtherPerformance",
     },
   ];
 
   public numberOfInstancesNeeded = "";
 
-
-
-
-
   public openModal(): void {
-    debugger;
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
     this.showDialog = true;
   }
 
   public modalCancelClicked(): void {
     this.showDialog = false;
-    debugger;
   }
 
   public setAvlClassificationLevels(): void {
@@ -425,7 +430,6 @@ export default class ComputeForm extends Vue {
 
   public async classificationLevelsChanged(): Promise<void> {
     this.showDialog = false;
-    debugger;
     this.avlClassificationLevelObjects = [];
     this.modalSelectedOptions.forEach((sysId) => {
       const classififcationObj = this.allClassificationLevels.find(obj => obj.sys_id === sysId);
@@ -441,7 +445,6 @@ export default class ComputeForm extends Vue {
       const singleSelection 
         = this.modalCheckboxItems.find((obj) => obj.value === sysId);
       this.singleClassificationLevelName = singleSelection?.label;
-      debugger;
     } else if (this.selectedClassificationLevel) {
       // if the classification level that was selected was removed via the modal,
       // clear out this.selectedClassificationLevel
@@ -451,19 +454,9 @@ export default class ComputeForm extends Vue {
       }
     }
 
-
-    // remove any previously selected classifications no longer selected in modal
-    // const keepSelected = this.modalSelectedOptions;
-    // this.selectedHeaderLevelSysIds = this.selectedHeaderLevelSysIds.filter((sysId) => {
-    //   return keepSelected.indexOf(sysId) > -1;
-    // });
-    // const arr = this.currentPackageClassificationLevels;
     await ClassificationRequirements.setSelectedClassificationLevels(
       this.avlClassificationLevelObjects
     );
-    // await this.setAvailableClassificationLevels();
-    // await this.buildNewClassificationInstances();
-    // this.checkSingleClassification();
     
   }
 
@@ -492,14 +485,12 @@ export default class ComputeForm extends Vue {
   public async setAvailableClassificationLevels(): Promise<void> {
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-    debugger;   
   }
 
   public async loadOnEnter(): Promise<void> {
     // get classification levels selected in step 4 Contract Details
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-    debugger;
 
     // set checked items in modal to classification levels selected in step 4 Contract Details
     if(this.avlClassificationLevelObjects) {
@@ -507,7 +498,7 @@ export default class ComputeForm extends Vue {
         this.modalSelectedOptions.push(val.sys_id || "")
       });
     }
-    debugger;
+
     // set up header checkbox items and list of sysIds for available classification levels
     await this.setAvailableClassificationLevels();
     // get list of all possible classification levels to generate checkbox list and labels
@@ -515,12 +506,10 @@ export default class ComputeForm extends Vue {
       = await ClassificationRequirements.getAllClassificationLevels();
     this.modalCheckboxItems 
       = this.createCheckboxOrRadioItems(this.allClassificationLevels, "Modal");
-    debugger;
     const IL6Checkbox 
       = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "";
     this.setAvlClassificationLevels();
-    debugger;
 
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
@@ -550,8 +539,8 @@ export default class ComputeForm extends Vue {
     continental U.S. (OCONUS). If you need a certain location, select Other and enter 
     your specifications.`;
 
-  public classificationTooltipText = `The levels listed below are based on classification 
-    requirements you previously specified in the Contract Details section.`;
+  public classificationTooltipText = `The levels listed below are based on the overall 
+    classification requirements you previously specified.`;
 
   public operatingSystemTooltipText = `Specify the type of OS you want to run your 
     instance on. Provide details about your licensing scenario, to include the number 

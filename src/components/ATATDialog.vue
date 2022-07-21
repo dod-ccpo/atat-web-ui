@@ -56,17 +56,6 @@ export default class ATATDialog extends Vue {
 
   @PropSync("showDialog") private _showDialog!: boolean;
 
-  // @Watch("showDialog")
-  // setFocus(newVal: boolean): void {
-  //   if (newVal) {
-  //     this.$nextTick(() => {
-  //       setTimeout(function () {
-  //         document.getElementById("modalDeleteTitle")?.focus();
-  //       }, 100);
-  //     });
-  //   }
-  // }
-
   get getTitle(): string {
     if(this.truncate){
       if (this.title && this.title.length > 60) {
@@ -79,14 +68,12 @@ export default class ATATDialog extends Vue {
   private onCancel() {
     this.$emit("cancelClicked");
     this._showDialog = false;
-    debugger;
     this.returnFocus(this.focusOnCancel);
   }
 
   private onOK() {
     this.$emit("ok");
     this._showDialog = false;
-    debugger;
     this.returnFocus(this.focusOnOk);
   }
 

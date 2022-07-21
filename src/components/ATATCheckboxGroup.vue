@@ -33,7 +33,7 @@
             v-if="item.label" 
             :class="[
               {'card-label': item.label}, 
-              {'mb-0': item.label === otherValue }
+              {'mb-0': item.value === otherValue}
             ]"
           >
             {{ item.label }}
@@ -145,7 +145,10 @@ export default class ATATCheckboxGroup extends Vue {
     const otherPrevSelectedIndex = this.prevSelected.indexOf(this.otherValue) > -1;
     if (otherIndex && !otherPrevSelectedIndex) {
       Vue.nextTick(() => {
-        document.getElementById("OtherEntry_text_area")?.focus();
+        const id = this.otherEntryType === "textarea" 
+          ? "OtherEntry_text_area" 
+          : "OtherEntry_text_field";
+        document.getElementById(id)?.focus();
       });
     }
     if (newVal.indexOf(this.noneValue) > -1) {

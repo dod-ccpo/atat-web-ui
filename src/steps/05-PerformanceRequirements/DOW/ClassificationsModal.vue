@@ -93,7 +93,6 @@ export default class ClassificationsModal extends Vue {
   public OKClicked(): void {
     this._showModal = false;
     this.$emit("okClicked");
-    debugger;
   }
 
   public cancelClicked(): void {

@@ -50,6 +50,11 @@
           class="pt-1 mr-1"
         />
       </template>
+      <template v-slot:append v-if="appendText">
+        <span class="_append-text">
+          {{ appendText }}
+        </span>
+      </template>
     </v-text-field>
     <ATATErrorValidation :errorMessages="errorMessages" v-if="showErrorMessages" />
     <div v-if="showHelpText()" class="help-text mt-2">
@@ -94,6 +99,7 @@ export default class ATATTextField extends Vue  {
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
   @Prop({ default: "" }) private appendIcon!: string;
+  @Prop({ default: "" }) private appendText!: string;
   @Prop({ default: "" }) private placeHolder!: string;
   @Prop({ default: () => [] }) private rules!: Array<unknown>;
   @Prop({ default: ""}) private suffix!: string;
