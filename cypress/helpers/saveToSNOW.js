@@ -631,6 +631,14 @@ export function saveToSNOW(testCase){
         'testCase' : 4
       },
       {
+        'fixture': fixtureFolder + '/TC4_fundingRequest_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request',
+        'action': 'POST',
+        'statusCode': 201,
+        'times': 1,
+        'testCase' : 4
+      },
+      {
         'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
@@ -647,8 +655,8 @@ export function saveToSNOW(testCase){
         'testCase' : 5
       },
       {
-        'fixture': fixtureFolder + '/TC5_fundingPlan_POST_1',
-        'apiURL': 'x_g_dis_atat_funding_plan',
+        'fixture': fixtureFolder + '/TC5_fundingRequesrMIPR_POST_1',
+        'apiURL': 'x_g_dis_atat_funding_request_mipr',
         'action': 'POST',
         'statusCode': 201,
         'times': 1,
