@@ -1,3 +1,7 @@
+// import { classificationRequirements, contractType, workflow } from "../helpers/mockedAPICalls/contractDetails";
+import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
+
+
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
@@ -7,6 +11,12 @@ const buildTableApiPath = (tableName)=> {
 const buildAttachmentApiPath = (attachment)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
   return `${baseAPIUrl}api/now/${attachment}`;
+}
+
+const filterTestCases = (testCases, testCase) => {
+  return testCases.filter(
+    (fixture)=>fixture.testCase === parseInt(testCase)
+  );
 }
 
 const specPath = window.Cypress.spec.name.toLowerCase().split("/");
@@ -26,7 +36,7 @@ let testSuite = ()=>{
 const spec = specPath[specPath.length-1].split(".")[0];
 const fixtureFolder = testSuite() + "/" + spec;
 
-export function saveToSNOW(testCase){
+const saveToSNOW = (testCase)=>{
   let currentTestEndPoints = [];
   let acquistionpackagedetails = [
     {
@@ -44,238 +54,15 @@ export function saveToSNOW(testCase){
       'apiURL': 'x_g_dis_atat_contacts',
       'action': 'POST',
     }
-  ].filter((fixture)=>fixture.testCase === parseInt(testCase));
+  ];
   currentTestEndPoints =  currentTestEndPoints.concat(acquistionpackagedetails);
   /** contract details */
-  if (spec === "classificationrequirements"){
-    let classificationrequirements = [
-      {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_classificationLevel_GET_1',
-        'apiURL': 'x_g_dis_atat_classification_level',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 2
-      },
-      {
-        'fixture': fixtureFolder + '/TC2_classificationLevel_GET_1',
-        'apiURL': 'x_g_dis_atat_classification_level',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 2
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_classificationLevel_GET_1',
-        'apiURL': 'x_g_dis_atat_classification_level',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 4
-      },
-      {
-        'fixture': fixtureFolder + '/TC4_classificationLevel_GET_1',
-        'apiURL': 'x_g_dis_atat_classification_level',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 4
-      },
-      {
-        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 5
-      },
-      {
-        'fixture': fixtureFolder + '/TC5_classificationLevel_GET_1',
-        'apiURL': 'x_g_dis_atat_classification_level',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 5
-      },
-
-    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    currentTestEndPoints =  currentTestEndPoints.concat(classificationrequirements);
+  if (testSuite() === "contractdetails"){
+    currentTestEndPoints = currentTestEndPoints.concat(
+      filterTestCases(contractDetails(fixtureFolder)[spec], testCase)
+    );
   }
-
-  if (spec === "contracttype"){
-    let contractType = [
-      {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 2
-      },
-      {
-        'fixture': fixtureFolder + '/TC2_periodOfPerformance_POST_1',
-        'apiURL': 'x_g_dis_atat_period_of_performance',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 2
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_periodOfPerformance_POST_1',
-        'apiURL': 'x_g_dis_atat_period_of_performance',
-        'action': 'POST',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_contractType_POST_1',
-        'apiURL': 'x_g_dis_atat_contract_type',
-        'action': 'POST',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_classificationLevel_GET_1',
-        'apiURL': 'x_g_dis_atat_classification_level',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 3
-      },
-    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    currentTestEndPoints =  currentTestEndPoints.concat(contractType);
-  }
-  if (spec === "workflow"){
-    let workflow = [
-      {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_period_POST_1',
-        'apiURL': 'x_g_dis_atat_period',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_periodOfPerformance_POST_1',
-        'apiURL': 'x_g_dis_atat_period_of_performance',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_1',
-        'apiURL': 'x_g_dis_atat_period_of_performance/**',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_periodOfPerformance_PATCH_1',
-        'apiURL': 'x_g_dis_atat_period_of_performance/**',
-        'action': 'PATCH',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_2',
-        'apiURL': 'x_g_dis_atat_period_of_performance/**',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_periodOfPerformance_PATCH_2',
-        'apiURL': 'x_g_dis_atat_period_of_performance/**',
-        'action': 'PATCH',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_contractType_POST_1',
-        'apiURL': 'x_g_dis_atat_contract_type',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_classificationLevel_GET_1',
-        'apiURL': 'x__g_dis_atat_classification_level',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_periodOfPerformance_GET_3',
-        'apiURL': 'x_g_dis_atat_period_of_performance/**',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC1_period_GET_1',
-        'apiURL': 'x_g_dis_atat_period/**',
-        'action': 'GET',
-        'statusCode': 200,
-        'times': 1,
-        'testCase' : 1
-      },
-    
-    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    currentTestEndPoints =  currentTestEndPoints.concat(workflow);
-  }
+  
 
   /** financialDetails */
   if (spec === "financialpoc"){
@@ -2308,3 +2095,5 @@ export function saveToSNOW(testCase){
   });
 
 }
+
+export { saveToSNOW };
