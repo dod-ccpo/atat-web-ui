@@ -24,7 +24,7 @@ describe("Test suite: Financial Details:Requirements Cost Estimate",
         
     });
 
-    it("TC2: Surge Capabilities-Asserts and Validations Tell us more about the scope of your project",
+    it("TC2: Surge Capabilities-Asserts & Validations Tell us more about the scope of your project",
       () => {
 
         cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
