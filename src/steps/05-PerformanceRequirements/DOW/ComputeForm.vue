@@ -422,7 +422,7 @@ export default class ComputeForm extends Vue {
     },
   ];
 
-  public numberOfInstancesNeeded = "";
+  public numberOfInstancesNeeded = "1";
 
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
