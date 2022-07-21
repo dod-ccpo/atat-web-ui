@@ -161,57 +161,6 @@ export class DashboardService {
     }
   }
 
-  public async getTotals(taskOrderNumbers: string[]): Promise<any> {
-    const calls = taskOrderNumbers.map((to) => this.getdata(to));
-    const data = await Promise.all(calls);
-    const initial: TaskOrderAggregate = {
-      activeTaskOrders: 0,
-      totalObligatedFunds: 0,
-      totalTaskOrderValue: 0,
-      costs: [],
-    };
-    const combined = data.reduce<TaskOrderAggregate>(
-      (prev: TaskOrderAggregate, current) => {
-        const aggregate = prev as TaskOrderAggregate;
-        const activeTaskOrders = aggregate.activeTaskOrders + 1;
-        const fundsObligated =
-          current.taskOrder.funds_obligated.length > 0
-            ? Number(current.taskOrder.funds_obligated)
-            : 0;
-        const totalObligatedFunds = prev.totalObligatedFunds + fundsObligated;
-        const fundsTotal =
-          current.taskOrder.funds_total.length > 0
-            ? Number(current.taskOrder.funds_total)
-            : 0;
-        const totalTaskOrderValue = prev.totalTaskOrderValue + fundsTotal;
-        const costs = [...prev.costs, ...current.costs].sort(
-          (a, b) => Date.parse(a.year_month) - Date.parse(b.year_month)
-        );
-
-        return {
-          activeTaskOrders,
-          totalObligatedFunds,
-          totalTaskOrderValue,
-          costs,
-        };
-      },
-      initial
-    );
-
-    const costGroups = buildCostGroups(combined.costs);
-
-    return {
-      ...combined,
-      costGroups,
-      fundsSpentToDate: getCostsTotalActual(costGroups),
-      fundsSpentByCSP: getEntityTotals(combined.costs, "csp.name"),
-      fundsSpentByServiceAgency: getEntityTotals(
-        combined.costs,
-        "service_agency"
-      ),
-    };
-  }
-
   public async getCostsData(taskOrders: TaskOrderDTO[]): Promise<CostsDTO[]> {
     //grab the earliest and the latest pop-start date available
     const earliestPopStart = taskOrders.reduce((prev, current) => {
@@ -224,7 +173,7 @@ export class DashboardService {
     const latestPopEnd = taskOrders.reduce((prev, current) => {
       const currentPoPEnd = Date.parse(current.pop_end_date);
       const prevPopEnd = Date.parse(prev);
-      const dt = currentPoPEnd < prevPopEnd ? current.pop_end_date : prev;
+      const dt = currentPoPEnd > prevPopEnd ? current.pop_end_date : prev;
       return dt;
     }, taskOrders[0].pop_end_date);
 
@@ -259,7 +208,7 @@ export class DashboardService {
     return costs;
   }
 
-  public async getTaskOrderTotals(taskOrderNumbers: string[]): Promise<any> {
+  public async getTotals(taskOrderNumbers: string[]): Promise<any> {
     const taskOrderQuery = taskOrderNumbers.reduce((prev, current) => {
       const query = prev
         ? `${prev}^ORtask_order_number=${current}`
