@@ -256,11 +256,13 @@ import ClassificationsModal from "./ClassificationsModal.vue";
 import { routeNames } from "../../../router/stepper"
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
+import Toast from "@/store/toast";
 
 import { 
   Checkbox, 
   RadioButton,
-  SelectData  
+  SelectData,
+  ToastObj,
 } from "../../../../types/Global";
 
 import ClassificationRequirements from "@/store/classificationRequirements";
@@ -298,6 +300,14 @@ export default class ComputeForm extends Vue {
   public classificationRadioOptions: RadioButton[] = [];
   public selectedClassificationLevel: string | undefined = "";
   public singleClassificationLevelName: string | undefined = "";
+
+  public classificationLevelToast: ToastObj = {
+    type: "success",
+    message: "Classification requirements updated",
+    isOpen: true,
+    hasUndo: false,
+    hasIcon: true,
+  }
 
   public selectedEnvironmentType = "";
   public EnvironmentTypeOptions: RadioButton[] = [
@@ -457,6 +467,8 @@ export default class ComputeForm extends Vue {
     await ClassificationRequirements.setSelectedClassificationLevels(
       this.avlClassificationLevelObjects
     );
+
+    Toast.setToast(this.classificationLevelToast);
     
   }
 
@@ -525,9 +537,6 @@ export default class ComputeForm extends Vue {
         }
       ]
     }
-
-
-
   }
 
   public async mounted(): Promise<void> {
