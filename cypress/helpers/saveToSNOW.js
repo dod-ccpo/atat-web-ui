@@ -771,7 +771,7 @@ export function saveToSNOW(testCase){
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_PATCH_1',
+        'fixture': fixtureFolder + '/TC3_fundReqFSForm_PATCH_1',
         'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
         'action': 'PATCH',
         'statusCode': 200,
@@ -779,7 +779,7 @@ export function saveToSNOW(testCase){
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC3_fundingRequestFSForm_PATCH_2',
+        'fixture': fixtureFolder + '/TC3_fundReqFSForm_PATCH_2',
         'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
         'action': 'PATCH',
         'statusCode': 200,
@@ -867,7 +867,7 @@ export function saveToSNOW(testCase){
         'testCase' : 4
       },
       {
-        'fixture': fixtureFolder + '/TC4_fundingRequestFSForm_PATCH_1',
+        'fixture': fixtureFolder + '/TC4_fundReqFSForm_PATCH_1',
         'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
         'action': 'PATCH',
         'statusCode': 200,
@@ -931,7 +931,7 @@ export function saveToSNOW(testCase){
         'testCase' :5
       },
       {
-        'fixture': fixtureFolder + '/TC5_fundingRequestFSForm_PATCH_1',
+        'fixture': fixtureFolder + '/TC5_fundReqFSForm_PATCH_1',
         'apiURL': 'x_g_dis_atat_funding_request_fs_form/**',
         'action': 'PATCH',
         'statusCode': 200,
