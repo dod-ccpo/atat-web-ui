@@ -47,7 +47,7 @@ describe("Testing ATATDialog Component", () => {
 
       const cancelBtn = wrapper.find('#dialog_cancel');
       cancelBtn.trigger('click');
-      expect(wrapper.vm.cancelItem).toBeDefined();
+      expect(wrapper.vm.onCancel).toBeDefined();
     });
 
     it("fires off onOk event", async () => {
