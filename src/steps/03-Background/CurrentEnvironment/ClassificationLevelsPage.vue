@@ -53,7 +53,7 @@ export default class ClassificationLevelsPage extends Vue {
   public classifications: ClassificationLevelDTO[] = []
 
   private createCheckboxItems(data: ClassificationLevelDTO[]) {
-    return buildClassificationCheckboxList(data, "");
+    return buildClassificationCheckboxList(data, "",true);
   }
 
   public async loadOnEnter(): Promise<void> {

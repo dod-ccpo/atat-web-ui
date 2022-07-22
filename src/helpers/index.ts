@@ -23,7 +23,7 @@ export const convertSystemChoiceToSelect =
     });
 
 export const buildClassificationCheckboxList
-    = (data: ClassificationLevelDTO[], idSuffix: string): Checkbox[] => {
+    = (data: ClassificationLevelDTO[], idSuffix: string, descriptionNeeded:boolean): Checkbox[] => {
       const arr: Checkbox[] = [];
       idSuffix = idSuffix || "";
       data.forEach((classLevel) => {
@@ -36,7 +36,7 @@ export const buildClassificationCheckboxList
             id: classLevel.impact_level + idSuffix || classLevel.classification,
             value: classLevel.sys_id,
             label: label,
-            description: description,
+            description: descriptionNeeded === true? description : "",
           }
           arr.push(classificationCheckbox)
         }
