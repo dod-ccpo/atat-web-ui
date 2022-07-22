@@ -8,7 +8,7 @@ import contact from "../../../selectors/contact.sel";
 import fd from "../../../selectors/financialDetails.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-ignore' },() => {
+describe("Test suite: Financial Details Step: Financial POC",() => {
   let contactInfo;
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-igno
   it("TC1: Tell us about your financial POC: Select Civilian", () => {
     cy.findElement(contractDetails.baseDropdownMonth).click();
     //Enter the Value for Base
-    const baseValue=randomNumberBetween(9,12)
+    const baseValue="11"
     cy.findElement(contractDetails.baseInputTxtBox).type(baseValue);
     cy.btnClick(common.continueBtn, " Continue ");
     cy.verifyPageHeader("Do you want to request a PoP start date?");
@@ -42,12 +42,8 @@ describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-igno
     cy.textExists(fd.initialFILabel, " Initial funding increment ");
     const basePeriodValue = "Base period length: " + baseValue + " months";
     const costEstValue = "Total cost estimate: $" +numberWithCommas(reqCostEstimateValue) ;
-    cy.findElement(fd.basePeriodValue).each(($el) => {
-      const text = $el.text()
-      cy.log(text)
-    })
-      .should("contain", basePeriodValue)
-      .and("contain", costEstValue);
+    cy.findElement(fd.periodLength).should("contain", basePeriodValue);
+    cy.findElement(fd.totalCostEst).should("contain", costEstValue);
     //enter the Initial Funding Increment Value
     const ifundingIncValue = randomNumberBetween(100,1000);
     const totalCostEst = reqCostEstimateValue - ifundingIncValue;
@@ -59,7 +55,7 @@ describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-igno
         .and("not.enabled");
     });
     cy.dropDownClick(fd.incrementalPeriod0DropdownIcon);   
-    const ip0Value = randomNumberBetween(100, 999)
+    const ip0Value = reqCostEstimateValue - ifundingIncValue
     const total =  ifundingIncValue + ip0Value
     cy.findElement(fd.incrementalPeriod0AmountTextbox).type(ip0Value);
     cy.clickSomethingElse(fd.addIncrementalbtn);
@@ -155,16 +151,21 @@ describe("Test suite: Financial Details Step: Financial POC", { tags: '@iso-igno
     cy.selectIncrementalFundingPlan(fd.iFundYesRadio, "YES");
     const basePeriodValue = "Base period length: " + baseValue + " year";
     const costEstValue = "Total cost estimate: $" +numberWithCommas(reqCostEstimateValue) ;
-    cy.findElement(fd.basePeriodValue).each(($el) => {
-      const text = $el.text()
-      cy.log(text)
-    })
-      .should("contain", basePeriodValue)
-      .and("contain", costEstValue);
-    cy.textExists(fd.addIncrementalbtn, "Add funding increment").click().then(() => {
-      cy.findElement("#IncrementPeriod1_dropdown_field_control").should("be.visible")
-      cy.incrementalFundingExists();
-    })
+    cy.findElement(fd.periodLength).should("contain", basePeriodValue);
+    cy.findElement(fd.totalCostEst).should("contain", costEstValue);
+    //enter the Initial Funding Increment Value
+    const ifundingIncValue = randomNumberBetween(100,1000);
+    const totalCostEst = reqCostEstimateValue - ifundingIncValue;
+    const totalCostText =  numberWithCommas(totalCostEst)      
+    cy.findElement(fd.initalFITextbox).type(ifundingIncValue).then(() => {
+      cy.clickSomethingElse(fd.addIncrementalbtn);
+      cy.findElement(fd.amountRemaining).should("contain", totalCostText); 
+      cy.findElement(fd.total).should("have.value", numberWithCommas(ifundingIncValue))
+        .and("not.enabled");
+    });
+    cy.dropDownClick(fd.incrementalPeriod0DropdownIcon);   
+    const ip0Value = reqCostEstimateValue - ifundingIncValue
+    cy.findElement(fd.incrementalPeriod0AmountTextbox).type(ip0Value);
     cy.btnClick(common.continueBtn, " Continue ");
     
     cy.verifyPageHeader("Tell us about your financial POC ");

@@ -41,14 +41,14 @@ export const CurrentContractDetailsRouteResolver = (current: string): string => 
 };
 
 export const CurrentContractEnvRouteResolver = (current: string): string => {
-  const hasCurrentContract 
-    = AcquisitionPackage.currentContract?.current_contract_exists === "YES";
-  if (hasCurrentContract) {
-    return routeNames.CurrentEnvironment;
+  const hasCurrentEnv
+    = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
+  if (hasCurrentEnv) {
+    return routeNames.CurrentEnvironmentLocation;
   }
-  return current === routeNames.PeriodOfPerformance
-    ? routeNames.CurrentContract
-    : routeNames.PeriodOfPerformance;
+  return current === routeNames.CurrentEnvironment
+    ? routeNames.BackgroundSummary
+    : routeNames.CurrentEnvironment;
 };
 
 export const PIIRecordResolver = (current: string): string => {
