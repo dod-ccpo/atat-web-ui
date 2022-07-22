@@ -589,20 +589,19 @@ export class DescriptionOfWorkStore extends VuexModule {
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
     if (computeIndex > -1) {
-      if (!Object.prototype.hasOwnProperty.call(
-        this.DOWObject[computeIndex], "computeData"
-      )) {
-        this.DOWObject[computeIndex].computeData = [];
-        this.DOWObject[computeIndex].computeData?.push(computeData);
+      const computeObj = this.DOWObject[computeIndex];
+      if (!Object.prototype.hasOwnProperty.call(computeObj, "computeData")) {
+        computeObj.computeData = [];
+        computeObj.computeData?.push(computeData);
       } else {
         const instanceNumber = computeData.instanceNumber;
-        const existingInstance = this.DOWObject[computeIndex].computeData?.find(
+        const existingInstance = computeObj.computeData?.find(
           o => o.instanceNumber === instanceNumber
         );
         if (existingInstance ) {
           Object.assign(existingInstance, computeData);
         } else {
-          this.DOWObject[computeIndex].computeData?.push(computeData);
+          computeObj.computeData?.push(computeData);
         }
       }
 

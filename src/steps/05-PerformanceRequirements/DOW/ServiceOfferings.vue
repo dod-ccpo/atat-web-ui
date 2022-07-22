@@ -151,7 +151,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     } else if (this.isCompute) {
       const computeIndex = DescriptionOfWork.DOWObject.findIndex(
-        o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+        obj => obj.serviceOfferingGroupId.toLowerCase() === "compute"
       );
       debugger;
       if (computeIndex > -1) {
@@ -159,7 +159,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         if (computeDataArray && computeDataArray.length > 0) {
           const currentComputeInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
           const computeData = computeDataArray.find(
-            o => o.instanceNumber === currentComputeInstanceNumber
+            obj => obj.instanceNumber === currentComputeInstanceNumber
           );
           if (computeData) {
             this.computeData = computeData;
