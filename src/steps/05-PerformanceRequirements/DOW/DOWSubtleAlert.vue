@@ -23,7 +23,7 @@ export default class DOWSubtleAlert extends Vue {
   @Prop({default: false}) private isPeriodsDataMissing!: boolean;
   @Prop({default: false}) private isClassificationDataMissing!: boolean;
 
-  private routeNames = routeNames
+  private routeNames = routeNames;
 
   public get isPoPAndClassificationMissing(): boolean {
     return this.isClassificationDataMissing && this.isPeriodsDataMissing;
@@ -43,11 +43,11 @@ export default class DOWSubtleAlert extends Vue {
       : this.isClassificationDataMissing
         ? "classification requirements are"
         : "period of performance is";
-  }
+  };
 
   public get modalVerb(): string {
     return this.isOnlyPoPyMissing ? "may not" : "won’t"
-  }
+  };
 
   public get route(): string {
     return this.isOnlyClassificationMissing
@@ -55,6 +55,6 @@ export default class DOWSubtleAlert extends Vue {
       : this.routeNames.PeriodOfPerformance;
   };
 
-};
-</script>
+}
 
+</script>
