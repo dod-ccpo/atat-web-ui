@@ -277,7 +277,10 @@ import {
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 
-import { buildClassificationCheckboxList } from "@/helpers";
+import { 
+  buildClassificationCheckboxList, 
+  buildClassificationLabel 
+} from "@/helpers";
 
 @Component({
   components: {
@@ -459,10 +462,8 @@ export default class ComputeForm extends Vue {
 
     if (this.avlClassificationLevelObjects.length === 1) {
       this.selectedClassificationLevel = this.avlClassificationLevelObjects[0].sys_id;
-      const sysId = this.selectedClassificationLevel;
-      const singleSelection 
-        = this.modalCheckboxItems.find((obj) => obj.value === sysId);
-      this.singleClassificationLevelName = singleSelection?.label;
+      this.singleClassificationLevelName 
+        = buildClassificationLabel(this.avlClassificationLevelObjects[0], 'short')
     } else if (this.selectedClassificationLevel) {
       // if the classification level that was selected was removed via the modal,
       // clear out this.selectedClassificationLevel
@@ -511,12 +512,15 @@ export default class ComputeForm extends Vue {
     // get classification levels selected in step 4 Contract Details
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
-
     // set checked items in modal to classification levels selected in step 4 Contract Details
-    if(this.avlClassificationLevelObjects) {
+    if (this.avlClassificationLevelObjects) {
       this.avlClassificationLevelObjects.forEach((val) => {
         this.modalSelectedOptions.push(val.sys_id || "")
       });
+      if (this.avlClassificationLevelObjects.length === 1) {
+        this.singleClassificationLevelName 
+          = buildClassificationLabel(this.avlClassificationLevelObjects[0], 'short')
+      }
     }
 
     // set available classification levels for radio buttons if > 1 level selected
@@ -543,15 +547,14 @@ export default class ComputeForm extends Vue {
           value: "",
         }
       ];
-      this.showSubtleAlert = true;
       this.isPeriodsDataMissing = true;
     }
 
     const classifications = await classificationRequirements.getSelectedClassificationLevels();
-    if (classifications && classifications.length === 0) {
-      this.showSubtleAlert = true;
-      this.isClassificationDataMissing = true;
-    };
+    this.isClassificationDataMissing = classifications.length === 0 ? true : false;
+
+    this.showSubtleAlert 
+      = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
 
   }
 
