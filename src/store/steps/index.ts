@@ -24,6 +24,8 @@ export class StepsStore extends VuexModule implements StepsState {
     stepMap: Map<string, StepInfo> = mapStepConfigs(stepperRoutes);
 
     altBackButtonText = "";
+    altAdditionalButtonText = "";
+    additionalButtonId = "";
 
     @Mutation
     public setAltBackButtonText(text: string): void {
@@ -33,6 +35,27 @@ export class StepsStore extends VuexModule implements StepsState {
     @Mutation
     public clearAltBackButtonText(): void {
       this.altBackButtonText = "";
+    }
+
+    @Action
+    public setAdditionalButtonText(
+      { buttonText, buttonId }: Record<string, string>
+    ): void {
+      this.doSetAdditionalButtonText({ buttonText, buttonId });
+    }
+
+    @Mutation
+    public doSetAdditionalButtonText(
+      { buttonText, buttonId }: Record<string, string>
+    ): void {
+      this.altAdditionalButtonText = buttonText;
+      this.additionalButtonId = buttonId;
+    }
+
+    @Mutation
+    public resetAdditionalButtonText(): void {
+      this.altAdditionalButtonText = "";
+      this.additionalButtonId = "";
     }
 
     @Mutation
@@ -45,6 +68,18 @@ export class StepsStore extends VuexModule implements StepsState {
         this.currentStep.backButtonText = this.altBackButtonText 
           ? this.altBackButtonText 
           : "Back";
+        if (
+          this.currentStep.additionalButtons.length > 0
+          && this.altAdditionalButtonText
+          && this.additionalButtonId
+        ) {
+          const i = this.currentStep.additionalButtons.findIndex(
+            obj => obj.buttonId === this.additionalButtonId
+          );
+          if (i > -1) {
+            this.currentStep.additionalButtons[i].buttonText = this.altAdditionalButtonText;
+          }
+        }
       }
     }
 
@@ -66,7 +101,6 @@ export class StepsStore extends VuexModule implements StepsState {
     @Action({ rawError: true })
     public async resolveRoute(direction: RouteDirection): Promise<string 
     | StepRouteResolver | StepPathResolver | undefined> {
-
       const nextStepName = direction === RouteDirection.NEXT 
         ? (this.currentStep?.next || '') 
         : (this.currentStep?.prev || '');

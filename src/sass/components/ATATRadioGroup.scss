@@ -1,6 +1,8 @@
 .v-input--radio-group {
-  fieldset {
-    border: none !important;
+  .v-input--radio-group__input {
+    > fieldset {
+      border: none;
+    }      
   }
 }
 ._radio-focus {
@@ -85,6 +87,13 @@
       color: $disabled !important;
     }
   }
+  
+  .atat-text-field-error {
+    .v-icon, .field-error {
+      color: $error !important;
+    }
+  }
+
 }
 
 ._radio-button-card {
