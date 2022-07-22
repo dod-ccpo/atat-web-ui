@@ -27,6 +27,9 @@ import CurrentEnvironmentLocation
   from "@/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.vue";
 import ClassificationLevels
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.vue";
+import CloudPage from "@/steps/03-Background/CurrentEnvironment/CloudPage.vue";
+import Hybrid from "@/steps/03-Background/CurrentEnvironment/Hybrid.vue";
+import OnPremisesPage from "@/steps/03-Background/CurrentEnvironment/On-Premise.vue";
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
 
 // Step 4 - Contract Details
@@ -111,6 +114,8 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
+  CurrentEnvResolver,
+  ClassificationLevelResolver,
 } from "./resolvers";
 
 export const routeNames = {
@@ -172,7 +177,10 @@ export const routeNames = {
   SummaryPage: "Summary_Page",
   CurrentEnvironmentLocation: "Current_Environment_Location",
   ClassificationLevels: "Classification_Levels",
-  BackgroundSummary: "Background_Summary"
+  BackgroundSummary: "Background_Summary",
+  CloudPage:"Cloud_Page",
+  Hybrid: "Hybrid",
+  OnPremisesPage:"OnPremises_Page"
 };
 
 /**
@@ -350,7 +358,37 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ClassificationLevels,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: ClassificationLevelResolver
       },
+      // {
+      //   menuText: "CloudPage",
+      //   path: "cloud-page",
+      //   excludeFromMenu: true,
+      //   name: routeNames.CloudPage,
+      //   component: CloudPage,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      // },
+      // {
+      //   menuText: "OnPremises",
+      //   path: "onpremises",
+      //   excludeFromMenu: true,
+      //   name: routeNames.OnPremisesPage,
+      //   component: OnPremisesPage,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      //
+      // },
+      // {
+      //   menuText: "Hybrid",
+      //   path: "hybrid",
+      //   excludeFromMenu: true,
+      //   name: routeNames.ClassificationLevels,
+      //   component: Hybrid,
+      //   completePercentageWeight: 5,
+      //   completed: false,
+      //
+      // },
       {
         menuText: "Summary",
         path: "background-summary",
