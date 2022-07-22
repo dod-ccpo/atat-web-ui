@@ -113,7 +113,6 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
-  ClassificationLevelResolver,
 
 } from "./resolvers";
 
@@ -355,7 +354,6 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: ClassificationLevels,
         completePercentageWeight: 5,
         completed: false,
-        routeResolver: ClassificationLevelResolver
       },
       {
         menuText: "Environment Details Page",

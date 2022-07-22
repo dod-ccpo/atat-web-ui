@@ -540,20 +540,6 @@ export const FinancialPOCResolver =  (current: string): string => {
     : routeNames.SeverabilityAndIncrementalFunding
 }
 
-export const ClassificationLevelResolver = (current: string): string => {
-  const hasCurrentEnv
-      = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
-  if (!hasCurrentEnv) {
-    return routeNames.CurrentEnvironment;
-  }
-  if(current === routeNames.EnvironmentDetailsPage ){
-    return routeNames.ClassificationLevels
-  }
-
-  return current === routeNames.CurrentEnvironmentLocation
-    ? routeNames.ClassificationLevels
-    : routeNames.CurrentEnvironmentLocation;
-};
 
 // add resolver here so that it can be found by invoker
 const routeResolvers: Record<string, StepRouteResolver> = {
@@ -569,7 +555,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
-  ClassificationLevelResolver,
 };
 
 // add path resolvers here 
