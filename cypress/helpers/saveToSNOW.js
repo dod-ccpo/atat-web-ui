@@ -1,4 +1,5 @@
 // import { classificationRequirements, contractType, workflow } from "../helpers/mockedAPICalls/contractDetails";
+import { acquisitionPackageDetails } from "../helpers/mockedAPICalls/acquisitionPackageDetails";
 import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
 
@@ -34,27 +35,34 @@ let testSuite = ()=>{
 }
 const spec = specPath[specPath.length-1].split(".")[0];
 const fixtureFolder = testSuite() + "/" + spec;
-
+debugger;
 const saveToSNOW = (testCase)=>{
   let currentTestEndPoints = [];
-  let acquistionpackagedetails = [
-    {
-      'fixture': 'projectOverview',
-      'apiURL': 'x_g_dis_atat_project_overview',
-      'action': 'POST',
-    },  
-    {
-      'fixture': 'organization',
-      'apiURL': 'x_g_dis_atat_organization',
-      'action': 'POST',
-    },  
-    {
-      'fixture': 'contacts',
-      'apiURL': 'x_g_dis_atat_contacts',
-      'action': 'POST',
-    }
-  ];
-  currentTestEndPoints =  currentTestEndPoints.concat(acquistionpackagedetails);
+  // let acquistionpackagedetails = [
+  //   {
+  //     'fixture': 'projectOverview',
+  //     'apiURL': 'x_g_dis_atat_project_overview',
+  //     'action': 'POST',
+  //   },  
+  //   {
+  //     'fixture': 'organization',
+  //     'apiURL': 'x_g_dis_atat_organization',
+  //     'action': 'POST',
+  //   },  
+  //   // {
+  //   //   'fixture': 'contacts',
+  //   //   'apiURL': 'x_g_dis_atat_contacts',
+  //   //   'action': 'POST',
+  //   // }
+  // ];
+
+  /** contract details */
+  if (testSuite() === "acquisitionpackagedetails"){
+    currentTestEndPoints = currentTestEndPoints.concat(
+      filterTestCases(acquisitionPackageDetails(fixtureFolder)[spec], testCase)
+    );
+  }
+  // currentTestEndPoints =  currentTestEndPoints.concat(acquisitionPackageDetails);
   
   /** contract details */
   if (testSuite() === "contractdetails"){
