@@ -449,6 +449,12 @@ export default class ComputeForm extends Vue {
       = this.createCheckboxOrRadioItems(this.avlClassificationLevelObjects, "Radio");
   }
 
+  public setSingleClassification(): void {
+    this.selectedClassificationLevel = this.avlClassificationLevelObjects[0].sys_id;
+    this.singleClassificationLevelName 
+      = buildClassificationLabel(this.avlClassificationLevelObjects[0], 'short')
+  }
+
   public async classificationLevelsChanged(): Promise<void> {
     this.showDialog = false;
     this.avlClassificationLevelObjects = [];
@@ -461,9 +467,7 @@ export default class ComputeForm extends Vue {
     this.setAvlClassificationLevels();
 
     if (this.avlClassificationLevelObjects.length === 1) {
-      this.selectedClassificationLevel = this.avlClassificationLevelObjects[0].sys_id;
-      this.singleClassificationLevelName 
-        = buildClassificationLabel(this.avlClassificationLevelObjects[0], 'short')
+      this.setSingleClassification();
     } else if (this.selectedClassificationLevel) {
       // if the classification level that was selected was removed via the modal,
       // clear out this.selectedClassificationLevel
@@ -518,8 +522,7 @@ export default class ComputeForm extends Vue {
         this.modalSelectedOptions.push(val.sys_id || "")
       });
       if (this.avlClassificationLevelObjects.length === 1) {
-        this.singleClassificationLevelName 
-          = buildClassificationLabel(this.avlClassificationLevelObjects[0], 'short')
+        this.setSingleClassification();
       }
     }
 
