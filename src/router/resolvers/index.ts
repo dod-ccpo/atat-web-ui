@@ -540,24 +540,13 @@ export const FinancialPOCResolver =  (current: string): string => {
     : routeNames.SeverabilityAndIncrementalFunding
 }
 
-export const CurrentEnvResolver = (current: string): string => {
-  const environment =
-      AcquisitionPackage.currentEnvironment?.additional_information;
-
-  if(current == routeNames.ClassificationLevels && environment === "Cloud computing environment") {
-    return routeNames.CloudPage
-  }
-
-  return current === routeNames.ClassificationLevels ?
-    routeNames.CurrentEnvironmentLocation : routeNames.ClassificationLevels;
-};
 export const ClassificationLevelResolver = (current: string): string => {
   const hasCurrentEnv
       = AcquisitionPackage.currentEnvironment?.current_environment_exists === "true";
   if (!hasCurrentEnv) {
     return routeNames.CurrentEnvironment;
   }
-  if(current === routeNames.BackgroundSummary){
+  if(current === routeNames.EnvironmentDetailsPage ){
     return routeNames.ClassificationLevels
   }
 
@@ -580,7 +569,6 @@ const routeResolvers: Record<string, StepRouteResolver> = {
   Upload7600Resolver,
   IncrementalFundingResolver,
   FinancialPOCResolver,
-  CurrentEnvResolver,
   ClassificationLevelResolver,
 };
 
