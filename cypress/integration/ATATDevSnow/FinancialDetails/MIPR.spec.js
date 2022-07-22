@@ -2,7 +2,7 @@ import { bootstrapMockApis,randomNumber} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import fd from "../../../selectors/financialDetails.sel";
 
-describe("Test suite: Funding Plan substep: MIPR work flow", { tags: '@iso-ignore' }, () => {
+describe("Test suite: Funding Plan substep: MIPR work flow",  () => {
 
   beforeEach(() => {
     bootstrapMockApis();

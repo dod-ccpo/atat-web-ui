@@ -53,7 +53,7 @@
         </template>
       </v-select>
   
-      <ATATErrorValidation :errorMessages="errorMessages" />
+      <ATATErrorValidation :errorMessages="errorMessages"  v-if="showErrorMessages" />
 
     </v-flex>
   </div>
@@ -93,10 +93,12 @@ export default class ATATSelect extends Vue {
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: false }) private returnObject!: boolean;
   @Prop({ default: "" }) private width!: string;
+  @Prop({ default: true }) private showErrorMessages?: boolean;
 
   //data
   private rounded = false;
   private selected = "";
+  private errorMessages: string[] = [];
 
   @Emit("onChange")
   private onChange(val: string): void {
@@ -107,17 +109,15 @@ export default class ATATSelect extends Vue {
   private onInput(v: string) {
     this._selectedValue = v;
   }
-  private errorMessages: string[] = [];
 
   private setErrorMessage(): void {
     setTimeout(()=>{
       this.errorMessages = this.$refs.atatSelect.errorBucket;
-    });
+    }, 0);
   }
 
   //@Events
   private onBlur(value: string) : void {
-   
     this.setErrorMessage();
     this.$emit('blur', value);
   }

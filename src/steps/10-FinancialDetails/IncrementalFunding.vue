@@ -7,21 +7,19 @@
         </h1>
         <div class="copy-max-width">
           <p>
-            To fund the award of this effort, your organization will need to provide 
-            an initial increment of funds to the Contracting Office. The remaining 
-            funds needed to fully fund your cost estimate for non-optional line items 
-            may be provided in subsequent increments. In the fields below, add funding 
-            increments and specify the projected date (on a fiscal year quarterly 
-            basis) for which funds will be provided. A projected funding schedule 
-            will be generated.
+            To fund the award of this effort, your organization will need to
+            provide an initial increment of funds to the Contracting Office. The
+            remaining funds needed to fully fund your cost estimate for
+            non-optional line items may be provided in subsequent increments. In
+            the fields below, add funding increments and specify the projected
+            date (on a fiscal year quarterly basis) for which funds will be
+            provided. A projected funding schedule will be generated.
           </p>
 
           <div class="d-flex">
-            <div style="width: 450px;">
+            <div style="width: 450px">
               <div class="d-flex justify-space-between align-center">
-                <label for="InitialAmount">
-                  Initial funding increment
-                </label>
+                <label for="InitialAmount"> Initial funding increment </label>
                 <ATATTextField
                   id="InitialAmount"
                   :value.sync="initialAmountStr"
@@ -30,26 +28,33 @@
                   :showErrorMessages="false"
                   width="190"
                   class="mr-2"
-                  :rules="[
-                    $validators.required('', true)
-                  ]"
+                  :rules="[$validators.required('', true)]"
                   @blur="calcAmounts('initialIncrement')"
                 />
                 <span class="d-block" style="width: 9px"></span>
               </div>
-              <div 
-                v-if="errorMissingInitialIncrement" 
-                class="d-flex justify-start align-top atat-text-field-error mb-1 mt-3"
+              <div
+                v-if="errorMissingInitialIncrement"
+                class="
+                  d-flex
+                  justify-start
+                  align-top
+                  atat-text-field-error
+                  mb-1
+                  mt-3
+                "
                 id="InitialIncrementError"
               >
-                <ATATSVGIcon 
-                  style="margin-top: 2px;"
-                  name="exclamationMark" 
-                  :width="18" 
-                  :height="18" 
-                  color="error" 
+                <ATATSVGIcon
+                  style="margin-top: 2px"
+                  name="exclamationMark"
+                  :width="18"
+                  :height="18"
+                  color="error"
                 />
-                <div class="field-error ml-2">{{ errorMissingInitialIncrementMessage }}</div>
+                <div class="field-error ml-2">
+                  {{ errorMissingInitialIncrementMessage }}
+                </div>
               </div>
 
               <hr class="my-6" />
@@ -59,56 +64,67 @@
                 :key="index"
                 :id="'Increment' + index"
               >
+                <div class="mb-4">
+                  <div class="d-flex justify-space-between align-center mb-4">
+                    <ATATSelect
+                      :id="'IncrementPeriod' + index"
+                      :items="getFiscalQuarters(index)"
+                      width="190"
+                      :selectedValue.sync="fundingIncrements[index].qtr"
+                      :class="[
+                        duplicateListingsIndices.some(
+                          (erroredIdx) => erroredIdx - 1 === index
+                        )
+                          ? 'customized-error-control error--text'
+                          : '',
+                        'mr-4',
+                      ]"
+                      @blur="onPeriodChange(index)"
+                      :showErrorMessages="false"
+                    />
+                    <ATATTextField
+                      :id="'Amount' + index"
+                      :value.sync="fundingIncrements[index].amt"
+                      :alignRight="true"
+                      :isCurrency="true"
+                      :showErrorMessages="false"
+                      width="190"
+                      class="mr-2"
+                      @blur="calcAmounts('increment' + index)"
+                      :rules="[$validators.required('', true)]"
+                    />
+                    <v-btn
+                      icon
+                      :id="'DeleteIncrement' + index"
+                      @click="deleteFundingIncrement(index)"
+                      :disabled="fundingIncrements.length === 1"
+                    >
+                      <v-icon> delete </v-icon>
+                    </v-btn>
+                  </div>
+                  <div>
+                    <!-- error validation for duped quarters -->
+                    <ATATErrorValidation
+                      :id="'isDuplicated_' + index"
+                      class="atat-text-field-error"
+                      :errorMessages="[duplicateErrorMessage]"
+                      v-if="
+                        duplicateListingsIndices.some(
+                          (erroredIdx) => erroredIdx - 1 === index
+                        ) && index === duplicateListingsIndices[duplicateListingsIndices.length-1]-1
+                      "
+                    />
 
-                <div class="d-flex justify-space-between align-center mb-4">
-                  <ATATSelect
-                    :id="'IncrementPeriod' + index"
-                    :items="getFiscalQuarters(index)"
-                    width="190"
-                    :selectedValue.sync="fundingIncrements[index].qtr"
-                    class="mr-4"
-                  />
-                  <ATATTextField
-                    :id="'Amount' + index"
-                    :value.sync="fundingIncrements[index].amt"
-                    :alignRight="true"
-                    :isCurrency="true"
-                    :showErrorMessages="false"
-                    width="190"
-                    class="mr-2"
-                    @blur="calcAmounts('increment' + index)"
-                    :rules="[
-                      $validators.required('', true)
-                    ]"
-
-                  />
-                  <v-btn
-                    icon
-                    :id="'DeleteIncrement' + index"
-                    @click="deleteFundingIncrement(index)"
-                    :disabled="fundingIncrements.length === 1"
-                  >
-                    <v-icon> delete </v-icon>
-                  </v-btn>
-                </div>    
-
-                <div 
-                  v-if="errorMissingFirstIncrement && index === 0" 
-                  class="d-flex justify-start align-top atat-text-field-error mb-4 mt-3"
-                  id="FirstIncrementError"
-                >
-                  <ATATSVGIcon 
-                    style="margin-top: 2px;"
-                    name="exclamationMark" 
-                    :width="18" 
-                    :height="18" 
-                    color="error" 
-                  />
-                  <div class="field-error ml-2">{{ errorMissingFirstIncrementMessage }}</div>
+                    <!-- error validation for missing first increment -->
+                    <ATATErrorValidation
+                      :id="'isDuplicated_' + index"
+                      class="atat-text-field-error"
+                      :errorMessages="[errorMissingFirstIncrementMessage]"
+                      v-if="errorMissingFirstIncrement && index === 0"
+                    />
+                  </div>
                 </div>
-
               </div>
-
               <v-btn
                 id="AddIncrementButton"
                 v-if="fundingIncrements.length < maxPayments"
@@ -125,9 +141,7 @@
               <hr class="my-6" />
 
               <div class="d-flex justify-end align-center">
-                <label for="TotalAmount" class="mr-4">
-                  Total
-                </label>
+                <label for="TotalAmount" class="mr-4"> Total </label>
 
                 <ATATTextField
                   id="TotalAmount"
@@ -143,11 +157,17 @@
             </div>
 
             <div class="ml-10 width-100">
-              <div class="bg-primary-lighter width-100 border-rounded-more pa-6">
-
+              <div
+                class="bg-primary-lighter width-100 border-rounded-more pa-6"
+              >
                 <div class="d-flex">
                   <div class="pr-5">
-                    <ATATSVGIcon name="calendar" :width="34" :height="37" color="primary" />
+                    <ATATSVGIcon
+                      name="calendar"
+                      :width="34"
+                      :height="37"
+                      color="primary"
+                    />
                   </div>
                   <div>
                     <span id="PeriodLength" class="h3">
@@ -162,26 +182,48 @@
 
                 <div class="d-flex">
                   <div class="pr-5">
-                    <ATATSVGIcon name="monetizationOn" :width="34" :height="34" color="primary" />
+                    <ATATSVGIcon
+                      name="monetizationOn"
+                      :width="34"
+                      :height="34"
+                      color="primary"
+                    />
                   </div>
                   <div>
                     <span id="TotalCostEstimate" class="h3">
                       Total cost estimate: ${{ costEstimateStr }}
                     </span>
-                    <p class="mb-0">
-                      You need to add <span id="AmountRemaining" class="bold">
-                      ${{ amountRemainingStr }}
-                    </span>
+                    <p class="mb-0" v-if="!isFundingMet">
+                      <!-- adjust message for overfunded or funding met -->
+                      You need to add
+                      <span id="AmountRemaining" class="bold">
+                        ${{ amountRemainingStr }}
+                      </span>
                       to fully fund your base period.
+                    </p>
+                    <p class="mb-0" v-else>
+                      Your funding plan accounts for the total cost estimate for
+                      your base period.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
-          
         </div>
+        <ATATAlert
+          id="OverUnderFundedAlert"
+          class="width-70 mt-5"
+          v-if=" isIFPOverfunded|| isIFPUnderfunded "
+        >
+          <template slot="content">
+            <p class="mb-0">
+              Based on your requirement’s cost estimate, your plan is
+              <strong>{{ isIFPOverfunded ? 'over' : 'under'}}funded</strong>. 
+              Please adjust your increments to ensure the total equals ${{ costEstimateStr }} 
+            </p>
+          </template>
+        </ATATAlert>
       </v-col>
     </v-row>
   </v-container>
@@ -193,34 +235,48 @@ import { Component, Mixins } from "vue-property-decorator";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATAlert from "@/components/ATATAlert.vue";
 
 import FinancialDetails from "@/store/financialDetails";
 import Periods from "@/store/periods";
+import PeriodOfPerformance from "@/store/periods";
 
-import { PeriodDTO } from "@/api/models";
+import { PeriodDTO, PeriodOfPerformanceDTO } from "@/api/models";
 import { SelectData, fundingIncrement, IFPData } from "../../../types/Global";
 import { toCurrencyString, currencyStringToNumber } from "@/helpers";
 
 import SaveOnLeave from "@/mixins/saveOnLeave";
 import { hasChanges } from "@/helpers";
+import { add, format, isValid } from "date-fns";
+import { parseISO } from "date-fns/fp";
+import formatISO from "date-fns/formatISO"
 
 @Component({
   components: {
     ATATSelect,
     ATATSVGIcon,
     ATATTextField,
-  }
+    ATATErrorValidation,
+    ATATAlert
+  },
 })
-
 export default class IncrementalFunding extends Mixins(SaveOnLeave) {
-
   public today = new Date();
-  public currentQuarter = Math.floor(((this.today.getMonth() + 3) / 3) + 1);
   public currentYear = this.today.getFullYear();
 
   public periods: PeriodDTO[] | null = [];
   public maxPayments = 1;
   public periodLengthStr = "";
+  public requestedPopStartDate =
+    Periods.periodOfPerformance?.requested_pop_start_date;
+  public periodOfPerformance!: PeriodOfPerformanceDTO; 
+  public startDate = new Date();//(): Date => {
+
+  public currentQuarter():number {
+    const currentMonth = this.startDate.getMonth() + 1;
+    return Math.ceil((currentMonth <= 9 ? currentMonth + 3 : currentMonth - 9)/3);
+  };
 
   public ordinals = ["1st", "2nd", "3rd", "4th"];
 
@@ -230,12 +286,22 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public amountRemainingStr = "";
   public initialAmount = 0;
   public initialAmountStr = "";
-  public totalAmount: number | null = null;
+  private currentSelectedValue = "";
+  private isIFPUnderfunded = false;
+  private isIFPOverfunded = false;
 
+  public totalAmount = 0;
+
+  private errorMessages: string[] = [];
   public errorMissingInitialIncrement = false;
-  public errorMissingInitialIncrementMessage = "Please enter the amount of your initial funding.";
+  public errorMissingInitialIncrementMessage =
+    "Please enter the amount of your initial funding.";
   public errorMissingFirstIncrement = false;
-  public errorMissingFirstIncrementMessage = "Please enter the amount of your first increment.";
+  public errorMissingFirstIncrementMessage =
+    "Please enter the amount of your first increment.";
+  public duplicateListingsIndices: number[] = [];
+  public duplicateErrorMessage =
+    "Adjust your projected increment date to remove duplicate increments.";
 
   // use in future ticket for validation returning to page to show error messages
   public hasReturnedToPage = false;
@@ -247,22 +313,67 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       initialFundingIncrementStr: this.initialAmountStr,
       fundingIncrements: this.fundingIncrements,
     };
-  };
+  }
 
   private savedData: IFPData = {
     initialFundingIncrementStr: "",
     fundingIncrements: [],
+  };
+
+  public fiscalQuarters: { text: string; order: number }[] = [];
+
+  public hasValidatedOnContinue = false;
+  public allowContinue = true;
+
+  public async validateOnContinue(): Promise<void> {
+    this.calcAmounts("initialIncrement");
+    this.calcAmounts("increment0");
+    await this.validateDuplicateQuarters();
+    this.isUnderfunded(); 
+    this.isOverfunded();
+
+    if (!this.hasValidatedOnContinue && (this.duplicateListingsIndices.length > 0 
+      || this.isIFPUnderfunded || this.isIFPOverfunded)
+    ) {
+      this.allowContinue = false;
+    } else {
+      this.allowContinue = true;
+    }
   }
 
-  public fiscalQuarters: { text: string, order: number }[] = [];
+  public async validateDuplicateQuarters(): Promise<void> {
+    // this.$nextTick(()=>{
+    this.duplicateListingsIndices = [];
+    this.fundingIncrements
+      .map((inc) => inc.qtr)
+      .filter((el, index, array )=>{
+        if (array.lastIndexOf(el) > index){
+          this.duplicateListingsIndices.push(index +1);
+          this.duplicateListingsIndices.push(array.lastIndexOf(el) +1)
+        }
+      });
+    // });
+  }
+
+  private onPeriodChange(index: number) {
+    this.$nextTick(()=>{
+      this.currentSelectedValue = this.fundingIncrements[index].qtr;
+    })
+    
+  }
 
   public async initializeIncrements(): Promise<void> {
-    let qtr = this.currentQuarter;
-    let year = parseInt(this.currentYear.toString().slice(-2));
+    let qtr = await this.currentQuarter();
+    console.log("qtr " + qtr)
+    console.log("this.startDate " + this.startDate);
+    let year = parseInt(format(this.startDate, "yy"));
+    console.log("year " + year);
     for (let i = 0; i < 6; i++) {
-      const ordinal = this.ordinals[qtr - 1];
+      const ordinal = this.ordinals[qtr-1];
       // increment year if at first quarter and not first in the loop
-      year = qtr === 1 && i !== 0 ? year + 1 : year;
+      year = qtr === 1 ? year + 1 : year;
+      
+    
       // increment quarter
       qtr = qtr === 4 ? 1 : qtr + 1;
       const periodStr = ordinal + " QTR FY" + year;
@@ -270,7 +381,12 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
 
       if (i === 0 && this.fundingIncrements.length === 0) {
         // default to 1st option if no store data
-        this.fundingIncrements.push({ qtr: periodStr, amt: "", order: 1, sysId: "" })
+        this.fundingIncrements.push({
+          qtr: periodStr,
+          amt: "",
+          order: 1,
+          sysId: "",
+        });
       }
     }
   }
@@ -278,7 +394,10 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
   public removedIncrements: fundingIncrement[] = [];
 
   public deleteFundingIncrement(index: number): void {
-    if (this.savedData.fundingIncrements && this.fundingIncrements[index].sysId) {
+    if (
+      this.savedData.fundingIncrements &&
+      this.fundingIncrements[index].sysId
+    ) {
       const incr = this.savedData.fundingIncrements[index];
       if (incr) {
         this.removedIncrements.push(incr);
@@ -289,43 +408,65 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
     this.calcAmounts("");
   }
 
+  public isOverfunded():void{
+    this.isIFPOverfunded = this.costEstimate < this.totalAmount;
+  }
+
+  public isUnderfunded():void{
+    this.isIFPUnderfunded = this.costEstimate > this.totalAmount;
+  }
+
   public addIncrement(): void {
     const lastFundingIncrement = this.fundingIncrements.at(-1);
     const lastSelectedQtr = lastFundingIncrement?.qtr;
-    let selectedQtrIndex = this.fiscalQuarters.findIndex(p => p.text === lastSelectedQtr);
+    let selectedQtrIndex = this.fiscalQuarters.findIndex(
+      (p) => p.text === lastSelectedQtr
+    );
     let nextQtr;
-    if (selectedQtrIndex > -1 && selectedQtrIndex !== this.fiscalQuarters.length) {
+    if (
+      selectedQtrIndex > -1 &&
+      selectedQtrIndex !== this.fiscalQuarters.length
+    ) {
       nextQtr = this.fiscalQuarters[selectedQtrIndex + 1].text;
     }
     if (nextQtr) {
-      const newIncrement = { 
-        qtr: nextQtr, 
-        amt: "", 
+      const newIncrement = {
+        qtr: nextQtr,
+        amt: "",
         order: this.fundingIncrements.length + 1,
-        sysId: "" 
-      }
+        sysId: "",
+      };
       this.fundingIncrements.push(newIncrement);
     }
   }
 
+  public isFundingMet = false;
+
   public calcAmounts(field: string): void {
     let incrementsTotal = this.fundingIncrements.reduce(
-      (accumulator, current) =>  
-        accumulator + Number(currencyStringToNumber(current.amt)), 0
+      (accumulator, current) =>
+        accumulator + Number(currencyStringToNumber(current.amt)),
+      0
     );
     this.initialAmount = currencyStringToNumber(this.initialAmountStr);
-    this.totalAmount = this.initialAmount 
+    this.totalAmount = this.initialAmount
       ? this.initialAmount + incrementsTotal
       : incrementsTotal;
+    this.isFundingMet = this.totalAmount >= this.costEstimate;
 
     this.amountRemaining = this.costEstimate - this.totalAmount;
-    this.amountRemainingStr = this.amountRemaining ? toCurrencyString(this.amountRemaining) : "";
-    this.initialAmountStr = this.initialAmount ? toCurrencyString(this.initialAmount) : "";
+    this.amountRemainingStr = this.amountRemaining
+      ? toCurrencyString(this.amountRemaining)
+      : "";
+    this.initialAmountStr = this.initialAmount
+      ? toCurrencyString(this.initialAmount)
+      : "";
     this.$nextTick(() => {
       this.fundingIncrements.forEach((incr) => {
-        return incr.amt = incr.amt && incr.amt !== "0.00" 
-          ? toCurrencyString(currencyStringToNumber(incr.amt)) 
-          : ""
+        return (incr.amt =
+          incr.amt && incr.amt !== "0.00"
+            ? toCurrencyString(currencyStringToNumber(incr.amt))
+            : "");
       });
     });
 
@@ -338,28 +479,35 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       amt = parseFloat(this.fundingIncrements[0].amt);
       this.errorMissingFirstIncrement = amt === 0 || isNaN(amt);
     }
+    this.isOverfunded();
   }
 
   public getFiscalQuarters(index: number): SelectData[] {
-    if (index === 0) {
-      return this.fiscalQuarters;
-    } 
-
+    this.currentSelectedValue = this.fundingIncrements[index].qtr;
     const firstSelectedQtr = this.fundingIncrements[0].qtr;
-    const firstSelectedQtrIndex 
-      = this.fiscalQuarters.findIndex(p => p.text === firstSelectedQtr);
+    const firstSelectedQtrIndex = this.fiscalQuarters.findIndex(
+      (p) => p.text === firstSelectedQtr
+    );
 
     let lastPossibleIndex = firstSelectedQtrIndex + this.maxPayments;
-    lastPossibleIndex = lastPossibleIndex > this.fiscalQuarters.length 
-      ? this.fiscalQuarters.length
-      : lastPossibleIndex;
-    let optionsArr = this.fiscalQuarters.slice(firstSelectedQtrIndex + 1, lastPossibleIndex) 
+    lastPossibleIndex =
+      lastPossibleIndex > this.fiscalQuarters.length
+        ? this.fiscalQuarters.length
+        : lastPossibleIndex;
+    let optionsArr = this.fiscalQuarters.slice(
+      firstSelectedQtrIndex + 1,
+      lastPossibleIndex
+    );
 
+    if (index === 0) {
+      return this.fiscalQuarters;
+    }
     return optionsArr;
   }
 
   public async loadOnEnter(): Promise<void> {
-    const estimatedTOValue = await FinancialDetails.getEstimatedTaskOrderValue();
+    const estimatedTOValue =
+      await FinancialDetails.getEstimatedTaskOrderValue();
     if (estimatedTOValue) {
       this.costEstimate = currencyStringToNumber(estimatedTOValue);
       this.costEstimateStr = toCurrencyString(this.costEstimate);
@@ -377,12 +525,22 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
       // use below for future validation ticket
       this.hasReturnedToPage = this.fundingIncrements.length > 0;
     }
-
+    
+    this.periodOfPerformance = await PeriodOfPerformance.loadPeriodOfPerformance();
+    const requestedPopStartDate = this.periodOfPerformance.requested_pop_start_date;
+    this.startDate = 
+      await new Date(
+        format(parseISO(requestedPopStartDate !== "" 
+          ? requestedPopStartDate : formatISO(new Date())
+        ), 'MM/dd/yyyy')
+      );
+    console.log(this.startDate)
+    
     await this.initializeIncrements();
 
-    this.periods = Periods.periods;
+    this.periods = await Periods.loadPeriods();
     if (this.periods) {
-      const basePeriod = this.periods.find(p => p.period_type === "BASE");
+      const basePeriod = this.periods.find((p) => p.period_type === "BASE");
       if (basePeriod) {
         const unitCount: number = parseInt(basePeriod.period_unit_count);
         let unit = basePeriod.period_unit.toLowerCase();
@@ -391,14 +549,14 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         }
         this.periodLengthStr = unitCount + " " + unit;
         switch (unit) {
-        case "days": 
-          this.maxPayments = unitCount > 270 ? 5: 4;
+        case "days":
+          this.maxPayments = unitCount > 270 ? 5 : 4;
           break;
         case "weeks":
-          this.maxPayments = unitCount > 36 ? 5: 4;
+          this.maxPayments = unitCount > 36 ? 5 : 4;
           break;
         case "months":
-          this.maxPayments = unitCount > 9 ? 5: 4;
+          this.maxPayments = unitCount > 9 ? 5 : 4;
           break;
         case "year":
           this.maxPayments = 5;
@@ -408,53 +566,57 @@ export default class IncrementalFunding extends Mixins(SaveOnLeave) {
         }
       }
     }
+    this.$nextTick(async () => {
+      await this.validateDuplicateQuarters();
+    });
+
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
-
   protected async saveOnLeave(): Promise<boolean> {
     try {
-      // FUTURE TICKET VALIDATION: first time user clicks continue:
-      // • check if same quarter selected for more than one dropdown
-      // • check if over/under funded - AC 4 which was crossed out
-      // set a flag if error has been shown. if so, user can continue
+      if (!this.hasValidatedOnContinue) {
+        await this.validateOnContinue();
+        this.hasValidatedOnContinue = true;
+      } else {
+        this.allowContinue = true;
+      }
 
-      // Set chronological order of fiscal quarters in fundingIncrements
-      let sortedIncrements: fundingIncrement[] = []; 
-      this.fundingIncrements.forEach((incr) => {
-        incr.order = this.fiscalQuarters.findIndex(q => q.text === incr.qtr) + 1;
-        sortedIncrements.push(incr);
-      });
-      sortedIncrements.sort((a,b) => { 
-        return a.order > b.order ? 1 : -1 
-      })
-      sortedIncrements.forEach((incr, i) => {
-        incr.order = i + 1;
-      });
+      if (this.allowContinue) {
+        // Set chronological order of fiscal quarters in fundingIncrements
+        let sortedIncrements: fundingIncrement[] = [];
+        this.fundingIncrements.forEach((incr) => {
+          incr.order =
+            this.fiscalQuarters.findIndex((q) => q.text === incr.qtr) + 1;
+          sortedIncrements.push(incr);
+        });
+        sortedIncrements.sort((a, b) => {
+          return a.order > b.order ? 1 : -1;
+        });
+        sortedIncrements.forEach((incr, i) => {
+          incr.order = i + 1;
+        });
 
-      this.fundingIncrements = sortedIncrements;
+        this.fundingIncrements = sortedIncrements;
 
-      if (this.hasChanged()) {
-        FinancialDetails.saveIFPData(
-          { 
-            data: this.currentData, 
-            removed: this.removedIncrements 
-          }
-        );
+        if (this.hasChanged()) {
+          FinancialDetails.saveIFPData({
+            data: this.currentData,
+            removed: this.removedIncrements,
+          });
+        }
       }
     } catch (error) {
       console.log(error);
     }
 
-    return true;
+    return this.allowContinue;
   }
 
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
-
-
 }
 </script>

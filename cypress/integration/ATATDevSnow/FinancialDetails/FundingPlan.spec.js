@@ -2,7 +2,7 @@ import { bootstrapMockApis,randomNumber} from "../../../helpers";
 import common from "../../../selectors/common.sel";
 import fd from "../../../selectors/financialDetails.sel";
 
-describe("Test suite: Financial Details Step: Funding Plan substep", { tags: '@iso-ignore' },() => {
+describe("Test suite: Financial Details Step: Funding Plan substep",() => {
 
 
   beforeEach(() => {

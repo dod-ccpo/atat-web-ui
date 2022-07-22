@@ -82,6 +82,7 @@ import { PeriodOfPerformanceDTO } from "@/api/models";
 import AcquisitionPackage, { StoreProperties } from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import SaveOnLeave from "@/mixins/saveOnLeave";
+import Periods from "@/store/periods";
 
 @Component({
   components: {
@@ -92,10 +93,16 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
   },
 })
 export default class POPStart extends Mixins(SaveOnLeave) {
-  private requestedPopStartDate 
-    = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";;
-  private selectedPoPStartDateOption 
-    = AcquisitionPackage.periodOfPerformance?.pop_start_request || "";
+  // private requestedPopStartDate 
+  //   = AcquisitionPackage.periodOfPerformance?.requested_pop_start_date || "";
+  // private selectedPoPStartDateOption 
+  //   = AcquisitionPackage.periodOfPerformance?.pop_start_request || "";
+
+  private requestedPopStartDate = "";
+  private selectedPoPStartDateOption = "";
+  private loaded: PeriodOfPerformanceDTO | null  = null;
+
+  
   private startPoPDateOptions: RadioButton[] = [
     {
       id: "YesStartDate",
@@ -151,10 +158,13 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   }
 
   public async loadOnEnter(): Promise<void> {
-    const storeData = await AcquisitionPackage
-      .loadData<PeriodOfPerformanceDTO>({storeProperty: StoreProperties.PeriodOfPerformance});
+    const storeData = await Periods.loadPeriodOfPerformance();
 
     if (storeData) {
+      this.loaded = storeData;
+
+      this.selectedPoPStartDateOption = storeData.pop_start_request || "";
+      this.requestedPopStartDate = storeData.requested_pop_start_date || "";
       this.savedData = {
         time_frame: storeData.time_frame || "",
         pop_start_request: storeData.pop_start_request || "",
@@ -166,9 +176,15 @@ export default class POPStart extends Mixins(SaveOnLeave) {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
-        await AcquisitionPackage.saveData<PeriodOfPerformanceDTO>(
-          {data: this.currentData, 
-            storeProperty: StoreProperties.PeriodOfPerformance});
+
+        let pops: PeriodOfPerformanceDTO  = {  
+          ...this.loaded,
+          time_frame: this.currentData.time_frame || "",
+          pop_start_request: this.currentData.pop_start_request || "",
+          requested_pop_start_date: this.currentData.requested_pop_start_date  || "",
+        }
+
+        await Periods.savePeriodOfPerformance(pops);
       }
     } catch (error) {
       console.log(error);
@@ -176,8 +192,13 @@ export default class POPStart extends Mixins(SaveOnLeave) {
 
     return true;
   }
+  public async created(): Promise<void> {
+    await this.loadOnEnter();
+  }
+
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   }
+
 }
 </script>

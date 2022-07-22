@@ -120,6 +120,7 @@ import ATATAlert from "@/components/ATATAlert.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import api from "@/api";
 
 import { mask } from "types/Global";
 import Inputmask from "inputmask/";
@@ -187,7 +188,7 @@ export default class ATATSearch extends Vue {
   }
 
   private async search(): Promise<void> {
-    if (this.errorMessages.length === 0 && this._value) {
+    if (this.searchType !=="EDA" && this.errorMessages.length === 0 && this._value) {
 
       // simulate success on first search, error on second.
       this.showLoader = true;
@@ -202,6 +203,34 @@ export default class ATATSearch extends Vue {
         this.showErrorAlert = !this.showSuccessAlert;
       }, 3000);
     }
+    
+    if(this.searchType === "EDA"){
+
+      try {
+
+        this.showLoader = true;
+        this.showLoader = true;
+        this.showSuccessAlert = false;
+        this.showErrorAlert = false;
+        this.showHelpText = false;
+
+        const response = await api.edaApi.search(this._value);
+        if(response.success){
+          this.showSuccessAlert = true;
+        }
+        else{
+          this.showErrorAlert = true;
+        }
+        
+      } catch (error) {
+        this.showErrorAlert = true;
+      }finally{
+
+        this.showLoader = false;
+      }
+
+    }
+
   }
 
   private setErrorMessage(): void {

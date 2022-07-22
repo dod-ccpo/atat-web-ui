@@ -20,7 +20,7 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public centerText1!: string;
   @Prop({ required: false, default: "" }) public centerText2!: string;
   @Prop({ required: false, default: "" }) public amount!: number;
-  @Prop({ required: false, default: true }) public showHoverLegend!: boolean;
+  @Prop({ required: false, default: true}) showLabelOnHover!: boolean;
 
   private myChart!: Chart;
 
@@ -31,7 +31,7 @@ export default class DonutChart extends Vue {
   }
 
   private mounted() {
-    if (this.showHoverLegend) {
+    if (this.showLabelOnHover) {
       const toolTipExternalOptions = {
         enabled: false,
         position: "nearest",
@@ -121,11 +121,11 @@ export default class DonutChart extends Vue {
       colorBlock.style.borderColor = "#ffffff";
       colorBlock.style.borderStyle = "solid";
       colorBlock.style.borderWidth = "1px";
-      colorBlock.style.marginRight = "4px";
+      colorBlock.style.marginRight = "8px";
       colorBlock.style.height = "16px";
       colorBlock.style.width = "16px";
       colorBlock.style.display = "inline-block";
-      colorBlock.style.marginRight = "4px";
+      colorBlock.style.marginRight = "8px";
 
       const label = labelText.slice(0, sep);
       const text = document.createTextNode(label)
@@ -176,8 +176,7 @@ export default class DonutChart extends Vue {
       tooltipEl.style.opacity = 1;
       tooltipEl.style.pointerEvents = "none";
       tooltipEl.style.position = "absolute";
-      tooltipEl.style.transform = "translate(8%, -50%)";
-      tooltipEl.style.transition = "all .1s ease";
+      tooltipEl.style.transform = "translate(0, -50%)";
 
       const div = document.createElement("div");
       div.setAttribute("id", "DonutChartTooltipDiv");
