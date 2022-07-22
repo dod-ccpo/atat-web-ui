@@ -91,7 +91,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public isServiceOfferingList = true;
 
   public computeData: ComputeData = {
-    instanceNumber: "",
+    instanceNumber: 1,
     environmentType: "",
     classificationLevel: "",
     deployedRegions: [],
@@ -150,8 +150,26 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     } else if (this.isCompute) {
-      // EJY HERE
-      // LOAD COMPUTE DATA FROM STORE AND POPULATE computeData object
+      const computeIndex = DescriptionOfWork.DOWObject.findIndex(
+        o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+      );
+      debugger;
+      if (computeIndex > -1) {
+        const computeDataArray = DescriptionOfWork.DOWObject[computeIndex].computeData;
+        if (computeDataArray && computeDataArray.length > 0) {
+          const currentComputeInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
+          const computeData = computeDataArray.find(
+            o => o.instanceNumber === currentComputeInstanceNumber
+          );
+          if (computeData) {
+            this.computeData = computeData;
+          }
+
+        } else {
+          this.computeData.instanceNumber = 1;
+          DescriptionOfWork.setCurrentComputeInstanceNumber(1);
+        }
+      }
     }
 
   } 
@@ -170,8 +188,8 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
               { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
             );
           } else if (this.isCompute) {
-            // EJY HERE
-            // SAVE COMPUTE DATA TO STORE - PUSH computeData INTO DOWObject
+            debugger;
+            await DescriptionOfWork.setComputeData(this.computeData);
           }
         }
 
@@ -179,8 +197,7 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
         if (this.isServiceOfferingList) {
           await DescriptionOfWork.saveUserSelectedServices();
         } else if (this.isCompute) {
-          // save computeData to backend
-          // work to be completed in ticket AT-7767
+          // save computeData to backend in ticket AT-7767
         }
       }
     } catch (error) {
