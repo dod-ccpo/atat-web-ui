@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1 class="page-header mb-3">Let’s start by gathering your Compute requirements</h1>
-    <p class="copy-max-width mb-10">
+    <p 
+      class="copy-max-width"
+      :class="showSubtleAlert ? 'mb-4' : 'mb-10'"
+    >
       In this section, we’ll collect details about each compute instance that you need. 
       If you need multiple, we’ll walk through them one at a time. 
       <span v-if="avlClassificationLevelObjects.length === 1">
@@ -18,6 +21,12 @@
         >update your Classification Requirements</a>.
       </span>
     </p>
+
+    <DOWSubtleAlert
+      v-show="showSubtleAlert"
+      :isClassificationDataMissing="isClassificationDataMissing"
+      :isPeriodsDataMissing="isPeriodsDataMissing"
+    />
 
     <h2 class="mb-5" id="FormSection1Heading">
       1. Tell us about Instance #1
@@ -118,7 +127,7 @@
         :value.sync="selectedPeriods"
         :items="availablePeriodCheckboxItems"
         :card="false"
-        :disabled="periodsDisabled"
+        :disabled="isPeriodsDataMissing"
         :rules="[
           $validators.required('Please select at least one base or option period' +
             ' to specify your requirement’s duration level.')
@@ -127,7 +136,7 @@
       />
       <ATATAlert
         id="PeriodRequirementsAlert"
-        v-show="periodsDisabled === true"
+        v-show="isPeriodsDataMissing === true"
         type="warning"
         class="copy-max-width mb-10"
       >
@@ -249,11 +258,13 @@ import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 import ATATTooltip from "@/components/ATATTooltip.vue"
 
+import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 import ClassificationsModal from "./ClassificationsModal.vue";
 
 import { routeNames } from "../../../router/stepper"
 import Periods from "@/store/periods";
 import { PeriodDTO } from "@/api/models";
+import classificationRequirements from "@/store/classificationRequirements";
 import Toast from "@/store/toast";
 
 import { 
@@ -278,10 +289,12 @@ import { buildClassificationCheckboxList } from "@/helpers";
     ATATTextField,
     ATATTooltip,
     ClassificationsModal,
+    DOWSubtleAlert,
   }
 })
 
 export default class ComputeForm extends Vue {
+  public showSubtleAlert = false;
   public routeNames = routeNames;
   public modalSelectionsOnOpen: string[] = [];
   public showDialog = false;
@@ -372,7 +385,8 @@ export default class ComputeForm extends Vue {
   ];
 
   public availablePeriodCheckboxItems: Checkbox[] = [];
-  public periodsDisabled = true;
+  public isPeriodsDataMissing = false;
+  public isClassificationDataMissing = false;
   public selectedPeriods: string[] = [];
   public operatingSystemAndLicensing = "";
   public numberOfVCPUs = "";
@@ -519,7 +533,6 @@ export default class ComputeForm extends Vue {
 
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
-      this.periodsDisabled = false;
       this.availablePeriodCheckboxItems = this.createPeriodCheckboxItems(periods);
       this.selectedPeriods.push(this.availablePeriodCheckboxItems[0].value);
     } else {
@@ -529,8 +542,17 @@ export default class ComputeForm extends Vue {
           label: "Base period",
           value: "",
         }
-      ]
+      ];
+      this.showSubtleAlert = true;
+      this.isPeriodsDataMissing = true;
     }
+
+    const classifications = await classificationRequirements.getSelectedClassificationLevels();
+    if (classifications && classifications.length === 0) {
+      this.showSubtleAlert = true;
+      this.isClassificationDataMissing = true;
+    };
+
   }
 
   public async mounted(): Promise<void> {
