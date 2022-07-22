@@ -239,7 +239,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, PropSync } from "vue-property-decorator";
+import { Component, PropSync, Watch } from "vue-property-decorator";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
@@ -283,6 +283,7 @@ import { buildClassificationCheckboxList } from "@/helpers";
 })
 
 export default class ComputeForm extends Vue {
+
   @PropSync("computeData") public _computeData!: ComputeData;
 
   public routeNames = routeNames;
@@ -295,7 +296,6 @@ export default class ComputeForm extends Vue {
   public allClassificationLevels:ClassificationLevelDTO[] = [];
   public avlClassificationLevelObjects: ClassificationLevelDTO[] = [];
   public classificationRadioOptions: RadioButton[] = [];
-  // public selectedClassificationLevel: string | undefined = "";
   public singleClassificationLevelName: string | undefined = "";
 
   public classificationLevelToast: ToastObj = {
@@ -306,7 +306,6 @@ export default class ComputeForm extends Vue {
     hasIcon: true,
   };
 
-  // public selectedEnvironmentType = "";
   public EnvironmentTypeOptions: RadioButton[] = [
     {
       id: "DevTesting",
@@ -325,7 +324,6 @@ export default class ComputeForm extends Vue {
     },
   ];
 
-  // public selectedRegions: string[] = [];
   public regionCheckboxOption: Checkbox[] = [
     {
       id: "CONUSEast",
@@ -355,16 +353,8 @@ export default class ComputeForm extends Vue {
   ];
 
   public otherRegionValue = "OtherRegion";
-  // public otherRegionValueEntered = "";
   public otherRegionValueRequiredMessage = "Please enter your other region(s).";
 
-  // public descriptionOfNeed = "";
-
-  // public neededForEntireDuration = "";
-
-  // EJY if user selects "NO" after previously selecting "YES" and selecting
-  // periods, remove periods from needed array
-  
   public requirementOptions: RadioButton[] = [
     {
       id: "Yes",
@@ -378,14 +368,18 @@ export default class ComputeForm extends Vue {
     },
   ];
 
+  // when user selects "YES", remove periods from needed array. 
+  // when user selects "NO", pre-select base period
+  @Watch("_computeData.entireDuration")
+  public entireDurationChanged(newVal: string): void {
+    this._computeData.periodsNeeded = newVal === "NO"
+      ? [this.availablePeriodCheckboxItems[0].value]
+      : [];
+  }
+
   public availablePeriodCheckboxItems: Checkbox[] = [];
   public periodsDisabled = true;
-  // public selectedPeriods: string[] = [];
-  // public operatingSystemAndLicensing = "";
-  // public numberOfVCPUs = "";
-  // public memory = "";
-  // public storageAmount = "";
-  public selectedStorageType = "";
+
   public storageTypes: SelectData[] = [
     { text: "General Purpose SSD", value: "General Purpose SSD" },
     { text: "Provisioned IOPS SSD", value: "Provisioned IOPS SSD" },
@@ -394,9 +388,7 @@ export default class ComputeForm extends Vue {
     { text: "Other", value: "Other" },
   ];
 
-  // public selectedPerformanceTier = "";
   public otherPerformanceTierValue = "OtherPerformance";
-  // public otherPerformanceTierValueEntered = "";
   public otherPerformanceTierValueRequiredMessage 
     = "Please enter your other performance tier.";
 
@@ -422,8 +414,6 @@ export default class ComputeForm extends Vue {
       value: "OtherPerformance",
     },
   ];
-
-  // public numberOfInstancesNeeded = "1";
 
   public openModal(): void {
     this.modalSelectionsOnOpen = this.modalSelectedOptions;
@@ -528,7 +518,6 @@ export default class ComputeForm extends Vue {
     if (periods && periods.length > 0) {
       this.periodsDisabled = false;
       this.availablePeriodCheckboxItems = this.createPeriodCheckboxItems(periods);
-      this._computeData.periodsNeeded.push(this.availablePeriodCheckboxItems[0].value);
     } else {
       this.availablePeriodCheckboxItems = [
         {
@@ -536,12 +525,12 @@ export default class ComputeForm extends Vue {
           label: "Base period",
           value: "",
         }
-      ]
+      ];
     }
   }
 
   public async mounted(): Promise<void> {
-    await this.loadOnEnter()
+    await this.loadOnEnter();
   };
 
   public regionTooltipText = `This is the geographic location where your public cloud 

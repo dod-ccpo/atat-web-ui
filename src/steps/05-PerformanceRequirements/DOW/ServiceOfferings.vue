@@ -149,6 +149,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       this.selectedOptions.push(...validSelections);
 
       this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
+    } else if (this.isCompute) {
+      // EJY HERE
+      // LOAD COMPUTE DATA FROM STORE AND POPULATE computeData object
     }
 
   } 
@@ -162,12 +165,23 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       if (this.serviceGroupOnLoad) {
         // save to store if user hasn't clicked "I don't need these cloud resources" button
         if (this.serviceGroupOnLoad === DescriptionOfWork.currentGroupId) {
-          await DescriptionOfWork.setSelectedOfferings(
-            { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
-          );
+          if (this.isServiceOfferingList) {
+            await DescriptionOfWork.setSelectedOfferings(
+              { selectedOfferingSysIds: this.selectedOptions, otherValue: this.otherValueEntered }
+            );
+          } else if (this.isCompute) {
+            // EJY HERE
+            // SAVE COMPUTE DATA TO STORE - PUSH computeData INTO DOWObject
+          }
         }
+
         //save to backend
-        await DescriptionOfWork.saveUserSelectedServices();
+        if (this.isServiceOfferingList) {
+          await DescriptionOfWork.saveUserSelectedServices();
+        } else if (this.isCompute) {
+          // save computeData to backend
+          // work to be completed in ticket AT-7767
+        }
       }
     } catch (error) {
       throw new Error('error saving requirement data');
