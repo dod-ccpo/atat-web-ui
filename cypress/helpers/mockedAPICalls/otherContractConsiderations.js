@@ -198,7 +198,7 @@ const otherContractConsiderations = (fixtureFolder) => {
       },
       {
         'fixture': fixtureFolder + '/TC3_contractConsiderations_POST_1',
-        'apiURL': 'x_g_dis_atat_contract_considerations/**',
+        'apiURL': 'x_g_dis_atat_contract_considerations',
         'action': 'POST',
         'times': 1,
         'testCase' : 3
