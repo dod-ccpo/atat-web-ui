@@ -18,7 +18,7 @@
         <v-btn
           class="link-button no-focus-shift"
           :ripple="false"
-          @click="cancelItem"
+          @click="onCancel"
           id="dialog_cancel"
           name="cancelDialog"
         >{{ cancelText }}
@@ -27,7 +27,7 @@
           color="primary"
           :ripple="false"
           id="dialog_ok"
-          :disabled="disabled"
+          :disabled="OKDisabled"
           @click="onOK"
         >
           {{ okText }}
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, PropSync, Watch} from "vue-property-decorator";
+import {Component, Prop, PropSync} from "vue-property-decorator";
 import Vue from "vue";
 
 @Component({})
@@ -51,23 +51,10 @@ export default class ATATDialog extends Vue {
   @Prop({default: "OK"}) private okText!: string;
   @Prop() private focusOnCancel!: string;
   @Prop() private focusOnOk!: string;
-  @Prop({ default: false }) private disabled!: boolean;
+  @Prop({ default: false }) private OKDisabled!: boolean;
   @Prop({ default: false }) private truncate!: boolean;
 
-
-  @PropSync("showDialog")
-  private _showDialog!: boolean;
-
-  @Watch("showDialog")
-  setFocus(newVal: boolean): void {
-    if (newVal) {
-      this.$nextTick(() => {
-        setTimeout(function () {
-          document.getElementById("modalDeleteTitle")?.focus();
-        }, 100);
-      });
-    }
-  }
+  @PropSync("showDialog") private _showDialog!: boolean;
 
   get getTitle(): string {
     if(this.truncate){
@@ -78,7 +65,8 @@ export default class ATATDialog extends Vue {
     return this.title;
   }
 
-  private cancelItem() {
+  private onCancel() {
+    this.$emit("cancelClicked");
     this._showDialog = false;
     this.returnFocus(this.focusOnCancel);
   }

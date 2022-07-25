@@ -1,5 +1,5 @@
 <template>
-  <div :id="id + '_text_field_control'" class="atat-text-field">
+  <div :id="id + '_text_field_control'" class="atat-text-field atat-textarea">
     <div class="d-flex align-center" v-if="label">
       <label
         :id="id + '_text_field_label'"
