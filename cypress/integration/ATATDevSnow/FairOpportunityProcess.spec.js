@@ -25,7 +25,8 @@ describe("Test suite: Fair Opportunity Process",  () => {
   it("TC2: Exceptions: Radio options: Validations", () => {
     cy.clickSideStepper(common.stepFairOppLink, " Fair Opportunity Process ");
     //validation message for the radio options
-    cy.findElement(fairOpportunity.radioOneCSP).focus().tab().tab().tab().then(() => {
+    cy.findElement(fairOpportunity.radioOneCSP).focus()
+    cy.clickSomethingElse(fairOpportunity.exceptionRadioOptError).then(() => {
       cy.checkErrorMessage(fairOpportunity.exceptionRadioOptError, "Please select an option");
     });
     

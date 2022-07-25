@@ -2,7 +2,10 @@
   <div class="mb-7">
     <v-container fluid class="container-max-width">
       <v-row>
-        <v-col class="col-12">
+        <v-col
+          v-if="isServiceOfferingList"
+          class="col-12"
+        >
           <h1 class="page-header">
             What type of {{ requirementName }} do you need?
           </h1>
@@ -30,6 +33,11 @@
 
           </div>
         </v-col>
+        <v-col
+          v-else-if="isCompute"
+        >
+          <ComputeForm />
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -40,7 +48,7 @@ import SaveOnLeave from "@/mixins/saveOnLeave";
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
-
+import ComputeForm from "./ComputeForm.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 import { Checkbox, DOWServiceOffering } from "../../../../types/Global";
@@ -49,6 +57,7 @@ import { getIdText } from "@/helpers";
 @Component({
   components: {
     ATATCheckboxGroup,
+    ComputeForm,
   }
 })
 
@@ -75,39 +84,52 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
   public serviceOfferings: DOWServiceOffering[] = [];
   public serviceGroupOnLoad = "";
 
+  public isCompute = false;
+  public isGeneral = false;
+  public isServiceOfferingList = true;
+
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
-    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
-    this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
-    if (this.serviceOfferings.length) {
-      this.serviceOfferings.forEach((offering) => {
-        const checkboxItem: Checkbox = {
-          id: getIdText(offering.name),
-          label: offering.name,
-          value: offering.sys_id,
-          description: offering.description,
-        }
-        this.checkboxItems.push(checkboxItem);
-        if (checkboxItem.value === "Other") {
-          this.otherValueEntered = offering.otherOfferingName || "";
-        }
-      });
+    // only Compute and General XaaS categories differ in requirements
+    this.isCompute = this.serviceGroupOnLoad.toLowerCase() === "compute";
+    this.isGeneral = this.serviceGroupOnLoad.toLowerCase() === "general_xaas";
+    // all other categories have a similar workflow with checkbox list of service offerings
+    this.isServiceOfferingList = !this.isCompute && !this.isGeneral;
+
+    if (this.isServiceOfferingList) {
+      this.requirementName = await DescriptionOfWork.getOfferingGroupName();
+      this.serviceOfferings = await DescriptionOfWork.getServiceOfferings();
+      if (this.serviceOfferings.length) {
+        this.serviceOfferings.forEach((offering) => {
+          const checkboxItem: Checkbox = {
+            id: getIdText(offering.name),
+            label: offering.name,
+            value: offering.sys_id,
+            description: offering.description,
+          }
+          this.checkboxItems.push(checkboxItem);
+          if (checkboxItem.value === "Other") {
+            this.otherValueEntered = offering.otherOfferingName || "";
+          }
+        });
+      }
+
+      this.requirementName = await DescriptionOfWork.getOfferingGroupName();
+
+      const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
+      
+      const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
+        const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
+        const selected = itemIndex >=0 ? [...accumulator, 
+          this.checkboxItems[itemIndex].value] : accumulator;
+        return selected;
+      }, []);
+
+      this.selectedOptions.push(...validSelections);
+
+      this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry;
     }
 
-    this.requirementName = await DescriptionOfWork.getOfferingGroupName();
-
-    const selectedOfferings = DescriptionOfWork.selectedServiceOfferings;
-    
-    const validSelections = selectedOfferings.reduce<string[]>((accumulator, current)=>{  
-      const itemIndex = this.checkboxItems.findIndex(item=>item.label === current);
-      const selected = itemIndex >=0 ? [...accumulator, 
-        this.checkboxItems[itemIndex].value] : accumulator;
-      return selected;
-    }, []);
-
-    this.selectedOptions.push(...validSelections);
-
-    this.otherValueEntered = DescriptionOfWork.otherServiceOfferingEntry
   } 
 
   public async mounted(): Promise<void> {

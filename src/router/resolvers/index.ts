@@ -297,6 +297,15 @@ export const OfferGroupOfferingsPathResolver = (
     }     
   }
 
+  const dontNeedButtonText = DescriptionOfWork.currentGroupId.toLowerCase() === "compute"
+    ? "I don’t need compute resources"
+    : "I don’t need these cloud resources";
+
+  Steps.setAdditionalButtonText({
+    buttonText: dontNeedButtonText, 
+    buttonId: "DontNeedResources"
+  });
+
   //default  
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
@@ -304,7 +313,6 @@ export const OfferGroupOfferingsPathResolver = (
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
-
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
     return "period-of-performance/period-of-performance";
@@ -394,7 +402,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
   DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
-
   if(current === routeNames.PropertyDetails){
     if(DescriptionOfWork.DOWObject.length > 0){
       DescriptionOfWork.setReturnToDOWSummary(false);
