@@ -4,7 +4,10 @@ import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
 import { otherContractConsiderations } from "../helpers/mockedAPICalls/otherContractConsiderations";
 import { standardsAndCompliance } from "./mockedAPICalls/standardsAndCompliance";
-import { background } from "./mockedAPICalls/Background";
+import { background } from "./mockedAPICalls/background";
+import { common } from "./mockedAPICalls/common";
+
+
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
@@ -100,56 +103,13 @@ const saveToSNOW = (testCase)=>{
     );
   }
 
-
-
+  /** common */
   if (spec === "common"){
-    const common = [
-      {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 2
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 4
-      },
-      {
-        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 5
-      },
-      {
-        'fixture': fixtureFolder + '/TC6_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 6
-      },
-      
-    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    currentTestEndPoints =  currentTestEndPoints.concat(common);
+    currentTestEndPoints = currentTestEndPoints.concat(
+      filterTestCases(common(fixtureFolder)[spec], testCase)
+    );
   }
+
 
   /** fairOpportunityProcess */
   if (spec === "fairopportunityprocess") {

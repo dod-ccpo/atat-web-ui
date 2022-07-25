@@ -441,6 +441,13 @@ const standardsAndCompliance = (fixtureFolder) => {
         'statusCode': 200,
       },
       {
+        'fixture': fixtureFolder + '/TC9_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 9
+      },
+      {
         'fixture': fixtureFolder + '/TC9_sensitiveInformation_POST_1',
         'apiURL': 'x_g_dis_atat_sensitive_information',
         'action': 'POST',
