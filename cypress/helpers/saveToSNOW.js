@@ -4,6 +4,7 @@ import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
 import { otherContractConsiderations } from "../helpers/mockedAPICalls/otherContractConsiderations";
 import { standardsAndCompliance } from "./mockedAPICalls/standardsAndCompliance";
+import { background } from "./mockedAPICalls/Background";
 
 const buildTableApiPath = (tableName)=> {
   const baseAPIUrl = Cypress.env("BASE_API_URL");
@@ -37,7 +38,6 @@ let testSuite = ()=>{
 }
 const spec = specPath[specPath.length-1].split(".")[0];
 const fixtureFolder = testSuite() + "/" + spec;
-debugger;
 const saveToSNOW = (testCase)=>{
   let currentTestEndPoints = [];
   // let acquistionpackagedetails = [
@@ -93,108 +93,14 @@ const saveToSNOW = (testCase)=>{
     );
   }
 
-  /** background */  
-
-  
+  /** background */ 
   if (spec === "background"){
-    const background = [
-      {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 1
-      },
-      {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 2
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_currentContractAndRecurringInformation_POST_1',
-        'apiURL': 'x_g_dis_atat_current_contract_and_recurring_information',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 3
-      },
-      {
-        'fixture': fixtureFolder + '/TC3_currentContractAndRecurringInformation_GET_1',
-        'apiURL': 'x_g_dis_atat_current_contract_and_recurring_information',
-        'action': 'GET',
-        'times': 1,
-        'statusCode': 200,
-        'testCase' : 3,
-      },
-      {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 4
-      },
-      {
-        'fixture': fixtureFolder + '/TC4_currentContractAndRecurringInformation_POST_1',
-        'apiURL': 'x_g_dis_atat_current_contract_and_recurring_information',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 4
-      },
-      {
-        'fixture': fixtureFolder + '/TC4_currentContractAndRecurringInformation_GET_1',
-        'apiURL': 'x_g_dis_atat_current_contract_and_recurring_information',
-        'action': 'GET',
-        'times': 1,
-        'statusCode': 200,
-        'testCase' : 4,
-      },
-      {
-        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 5
-      },
-      {
-        'fixture': fixtureFolder + '/TC5_currentContractAndRecurringInformation_POST_1',
-        'apiURL': 'x_g_dis_atat_current_contract_and_recurring_information',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 5
-      },
-      {
-        'fixture': fixtureFolder + '/TC5_currentContractAndRecurringInformation_GET_1',
-        'apiURL': 'x_g_dis_atat_current_contract_and_recurring_information',
-        'action': 'GET',
-        'times': 1,
-        'statusCode': 200,
-        'testCase' : 5,
-      },
-      {
-        'fixture': fixtureFolder + '/TC6_taskOrder_POST_1',
-        'apiURL': 'x_g_dis_atat_task_order',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 6
-      },
-      {
-        'fixture': fixtureFolder + '/TC6_currentContractAndRecurringInformation_POST_1',
-        'apiURL': 'x_g_dis_atat_current_contract_and_recurring_information',
-        'action': 'POST',
-        'times': 1,
-        'testCase' : 6
-      },
-    ].filter((fixture)=>fixture.testCase === parseInt(testCase));
-    currentTestEndPoints =  currentTestEndPoints.concat(background);
+    currentTestEndPoints = currentTestEndPoints.concat(
+      filterTestCases(background(fixtureFolder)[spec], testCase)
+    );
   }
+
+
 
   if (spec === "common"){
     const common = [
