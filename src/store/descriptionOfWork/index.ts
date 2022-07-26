@@ -603,11 +603,14 @@ export class DescriptionOfWorkStore extends VuexModule {
           computeObj.computeData?.push(computeData);
         }
       }
+      this.computeInstancesTouched.push(computeData.instanceNumber);
 
     } else {
       throw new Error("Error saving Compute data to store");
     }
   }
+
+  computeInstancesTouched: number[] = [];
 
   @Mutation
   public setCurrentOffering(value: { name: string, sysId: string }): void {

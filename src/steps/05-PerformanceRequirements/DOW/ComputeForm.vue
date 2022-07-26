@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-form ref="computeForm" lazy-validation>
     <h1 class="page-header mb-3">Let’s start by gathering your Compute requirements</h1>
     <p class="copy-max-width mb-10">
       In this section, we’ll collect details about each compute instance that you need. 
@@ -29,7 +29,7 @@
       :items="EnvironmentTypeOptions"
       name="EnvironmnetType"
       class="mt-3 mb-8"
-      :rules="[$validators.required('Please select an option')]"
+      :rules="[$validators.required('Please select a type of environment.')]"
     />
 
     <div v-if="avlClassificationLevelObjects.length > 1" class="mb-8">
@@ -42,7 +42,7 @@
         class="mt-3 mb-2"
         :tooltipText="classificationTooltipText"
         tooltipLabel="Classification level for this instance"
-        :rules="[$validators.required('Please select an option')]"
+        :rules="[$validators.required('Please select a classification level.')]"
       />
       <a 
         role="button" 
@@ -86,7 +86,7 @@
           :value.sync="_computeData.needOrUsageDescription"
           :rules="[
             $validators.required(
-              'Please describe your anticipated need or usage'
+              'Please provide a description for this requirement.'
             ),
             $validators.maxLength(
               300,
@@ -105,7 +105,7 @@
       :items="requirementOptions"
       :value.sync="_computeData.entireDuration"
       :rules="[
-        $validators.required('Please select an option to specify your requirements.')
+        $validators.required('Please select an option to specify your requirement’s duration.')
       ]"
     />
     <div v-if="_computeData.entireDuration === 'NO'">
@@ -156,6 +156,10 @@
           label="Operating system and licensing"
           :tooltipText="operatingSystemTooltipText"
           :value.sync="_computeData.operatingSystemAndLicensing"
+          :rules="[
+            $validators.required('Please describe your OS and licensing requirements.')
+          ]"
+
         />
       </v-col>
     </v-row>
@@ -166,6 +170,10 @@
           label="Number of vCPUs"
           :tooltipText="VCPUTooltipText"
           :value.sync="_computeData.numberOfVCPUs"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 0.')
+          ]"
+
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -175,6 +183,9 @@
           :tooltipText="memoryTooltipText"
           :value.sync="_computeData.memory"
           appendText="GB"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 0.')
+          ]"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -183,6 +194,9 @@
           label="Storage type"
           :items="storageTypes"
           :selectedValue.sync="_computeData.storageType"
+          :rules="[
+            $validators.required('Select a storage type.')
+          ]"
         />
       </v-col>
       <v-col class="col-sm-12 col-md-6 col-lg-3">
@@ -192,6 +206,9 @@
           :tooltipText="storageAmountTooltipText"
           :value.sync="_computeData.storageAmount"
           appendText="GB"
+          :rules="[
+            $validators.required('Please enter a number greater than or equal to 0.')
+          ]"
         />
       </v-col>
     </v-row>
@@ -203,7 +220,7 @@
       :items="performanceTiers"
       :value.sync="_computeData.performanceTier"
       :rules="[
-        $validators.required('Please select an option to specify your requirements.')
+        $validators.required('Please select your performance tier.')
       ]"
       :tooltipText="performanceTierTooltipText"
       :hasOtherValue="true"
@@ -219,6 +236,9 @@
           label="Number of instances needed"
           :tooltipText="numberOfInstancesTooltipText"
           :value.sync="_computeData.numberOfInstancesNeeded"
+          :rules="[
+            $validators.required('Enter a number greater than or equal to 1.')
+          ]"
         />
       </v-col>
     </v-row>
@@ -234,7 +254,7 @@
       :isIL6Selected.sync="isIL6Selected"
     />
 
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -268,6 +288,7 @@ import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 
 import { buildClassificationCheckboxList, buildClassificationLabel } from "@/helpers";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -538,11 +559,30 @@ export default class ComputeForm extends Vue {
         }
       ];
     }
+    
+    if (DescriptionOfWork.computeInstancesTouched.indexOf(
+      this._computeData.instanceNumber) > -1) {
+      // user is returning to this page, validate on load
+      this.validateForm();
+    }
   }
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
   };
+
+  get Form(): Vue & { validate: () => boolean } {
+    return this.$refs.computeForm as Vue & { validate: () => boolean };
+  }
+
+  public async validateForm(): Promise<boolean> {
+    let valid = false;
+
+    await this.$nextTick(() => {
+      valid = this.Form.validate();
+    });
+    return valid;
+  }
 
   public regionTooltipText = `This is the geographic location where your public cloud 
     resources are located, e.g., within the continental U.S. (CONUS) or outside of the 
