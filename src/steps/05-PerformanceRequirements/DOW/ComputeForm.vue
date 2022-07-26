@@ -488,7 +488,6 @@ export default class ComputeForm extends Vue {
     );
 
     Toast.setToast(this.classificationLevelToast);
-    
   }
 
   private createPeriodCheckboxItems(periods: PeriodDTO[]) {
@@ -563,7 +562,6 @@ export default class ComputeForm extends Vue {
 
     this.showSubtleAlert 
       = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
-
   }
 
   public async mounted(): Promise<void> {
