@@ -185,6 +185,7 @@
                       :centerText1="abbreviateCurrencyFormatter(fundsSpentToDate)"
                       centerText2="Total Funds Spent"
                       :amount="fundsSpentToDate"
+                      :individualAmtsArr="cspObj"
                     />
                     <div class="width-100 mt-4">
                       <div
@@ -229,7 +230,7 @@
                     </p>
                     <v-row class="px-15">
                       <v-col class="col-sm-6 ml-n1 pl-2 pr-10">
-                        <donut-chart
+                        <DonutChart
                           chart-id="OrganizationDonutChart"
                           :chart-data="organizationDonutChartData"
                           :use-chart-data-labels="true"
@@ -237,6 +238,7 @@
                           :centerText1="abbreviateCurrencyFormatter(fundsSpentToDate)"
                           center-text2="Total Funds Spent"
                           :amount="fundsSpentToDate"
+                          :individualAmtsArr="agencyObj"
                         />
                       </v-col>
                       <v-col class="d-flex align-center mr-13 pr-15">
@@ -300,7 +302,7 @@ import differenceInCalendarMonths from 'date-fns/differenceInCalendarMonths';
 import _ from 'lodash';
 import { getIdText } from "@/helpers";
 import DonutChart from "../components/charts/DonutChart.vue"
-import { getCurrencyString, getLegendAmount, roundDecimal } from "@/helpers";
+import { getCurrencyString, getLegendAmount, roundDecimal, roundTo100 } from "@/helpers";
 
 @Component({
   components: {
@@ -403,9 +405,9 @@ export default class JWCCDashboard extends Vue {
     this.barChartMonthlySpendOptions.scales.y.max = max;
   }
 
-  public fundsSpentByCSP: Record<string, string | number>[] = [];
+  public fundsSpentByCSP: { name: string;  total: number; }[] = [];
   public cspLabels: string[] = []
-  public cspAmounts: string[] = []
+  public cspAmounts: number[] = []
   public getLegendAmount = getLegendAmount;
   public roundDecimal = roundDecimal;
   public getCurrencyString = getCurrencyString;
@@ -554,20 +556,20 @@ export default class JWCCDashboard extends Vue {
     this.fundsSpentByServiceAgency.forEach((agency)=>{
       this.agencyNames.push(this.agencyLabelKeys[agency.name as string])
       this.agencyAmounts.push(agency.total)
+      this.agencyObj[this.agencyLabelKeys[agency.name as string]] = agency.total;
     })
     this.organizationDonutData = this.organizationDonutChartPercent()
     this.organizationDonutChartData.datasets[0].data = this.organizationDonutData
     await this.setMonthlySpendSummaryBarChartData();
 
     this.fundsSpentByCSP = Object.values(data.fundsSpentByCSP);
-    this.fundsSpentByCSP.forEach((csp) =>
+    this.fundsSpentByCSP.forEach((csp) => {
       this.cspLabels.push((csp.name as string).replace("_"," "))
+      this.cspAmounts.push(csp.total)
+      this.cspObj[(csp.name as string).replace("_", " ")] = csp.total;
+    }
     );
-    const cspSpending: number[] = this.fundsSpentByCSP.map((o) => {
-      return o.total !== "undefined" ? parseInt(o.total.toString()) : 0
-    });
 
-    this.fundsSpentByCSP.forEach((csp) => this.cspAmounts.push(csp.total as string));
     this.cspDonutData = this.cspDonutChartPercentages();
 
     this.cspDonutChartData.datasets[0].data = this.cspDonutData;
@@ -724,6 +726,7 @@ export default class JWCCDashboard extends Vue {
     }
   }
 
+  public agencyObj: {[key:string]:number} = {}
   public agencyNames: string[] = [];
   public agencyAmounts: number[] = [];
   public organizationDonutData: number[] = [];
@@ -774,9 +777,10 @@ export default class JWCCDashboard extends Vue {
 
   public organizationDonutChartPercent(): number[] {
     const percentages = this.agencyAmounts.map(
-      (amount) => (amount / this.fundsSpentToDate * 100)
+      (amount) => amount / this.fundsSpentToDate * 100
     );
-    return percentages;
+    const roundedPercentages = roundTo100(percentages)
+    return roundedPercentages
   }
 
 
@@ -790,12 +794,14 @@ export default class JWCCDashboard extends Vue {
   public avgMonthlySpendTooltipText = `Average amount that is spent and invoiced 
     each month on all JWCC task orders`;
 
+  public cspObj: {[key:string]:number} = {}
   public cspDonutData: number[] = []
   public cspDonutChartPercentages(): number[] {
     const percentages = this.cspAmounts.map(
-      (amount) => (parseFloat(amount) / this.fundsSpentToDate * 100)
+      (amount) => amount / this.fundsSpentToDate * 100
     );
-    return percentages;
+    const roundedPercentages = roundTo100(percentages)
+    return roundedPercentages
   }
 
   public cspDonutChartData = {
