@@ -808,6 +808,175 @@ const performanceRequirements = (fixtureFolder) => {
         'statusCode': 200,
         'testCase' : 4
       },
+      {
+        'fixture': fixtureFolder + 'TC5_taskOrder_POST_1',
+        'apiURL': 'x_g_dis_atat_task_order',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_POST_1',
+        'apiURL': 'x_g_dis_atat_period',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_of_performance_POST_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_of_performance_GET_1',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_classification_level_GET_1',
+        'apiURL': 'x_g_dis_atat_classification_level',
+        'action': 'GET',
+        'times': 1,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_of_performance_GET_2',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 1,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_GET_1',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'times': 1,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_selected_service_offering_POST_1',
+        'apiURL': 'x_g_dis_atat_selected_service_offering',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_of_performance_GET_3',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_GET_2',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_selected_service_offering_DELETE_1',
+        'apiURL': 'x_g_dis_atat_selected_service_offering/**',
+        'action': 'DELETE',
+        'times': 1,
+        'statusCode': 204,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_selected_service_offering_POST_2',
+        'apiURL': 'x_g_dis_atat_selected_service_offering',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_of_performance_GET_4',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_GET_3',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_selected_service_offering_DELETE_2',
+        'apiURL': 'x_g_dis_atat_selected_service_offering/**',
+        'action': 'DELETE',
+        'times': 1,
+        'statusCode': 204,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_selected_service_offering_POST_3',
+        'apiURL': 'x_g_dis_atat_selected_service_offering',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_of_performance_GET_5',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_GET_4',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_selected_service_offering_DELETE_3',
+        'apiURL': 'x_g_dis_atat_selected_service_offering/**',
+        'action': 'DELETE',
+        'times': 1,
+        'statusCode': 204,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_selected_service_offering_POST_4',
+        'apiURL': 'x_g_dis_atat_selected_service_offering',
+        'action': 'POST',
+        'times': 1,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_of_performance_GET_6',
+        'apiURL': 'x_g_dis_atat_period_of_performance/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
+      {
+        'fixture': fixtureFolder + 'TC5_period_GET_5',
+        'apiURL': 'x_g_dis_atat_period/**',
+        'action': 'GET',
+        'times': 2,
+        'statusCode': 200,
+        'testCase' : 5
+      },
     ]
   };
 }
