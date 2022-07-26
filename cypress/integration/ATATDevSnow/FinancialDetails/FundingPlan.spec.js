@@ -20,7 +20,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep",() => {
       
   });
 
-  it("TC2: Asserts: Funding Request type", () => {
+  it.only("TC2: Asserts: Funding Request type", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
@@ -49,7 +49,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep",() => {
           });
       });      
       
-    cy.radioBtn(fd.fsfRadioBtn, "FS_FORM");
+    // cy.radioBtn(fd.fsfRadioBtn, "FS_FORM");
     cy.radioBtn(fd.miprRadioBtn, "MIPR");
     const fsfLabel = "Fiscal Service Forms (7600A and 7600B)" +
       "Import from G-Invoicing or manually upload your completed forms." +
