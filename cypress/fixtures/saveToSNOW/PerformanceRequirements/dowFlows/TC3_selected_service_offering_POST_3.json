@@ -1,0 +1,17 @@
+{
+    "result": {
+        "sys_id": "a1ef813787f49550ec3b777acebb355f",
+        "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
+        "sys_created_on": "2022-07-26 20:07:36",
+        "sys_mod_count": "0",
+        "classification_instances": "",
+        "sys_updated_on": "2022-07-26 20:07:36",
+        "sys_tags": "",
+        "other_service_offering": "",
+        "service_offering": {
+            "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_service_offering/0d52f6f387d34590ec3b777acebb35d4",
+            "value": "0d52f6f387d34590ec3b777acebb35d4"
+        },
+        "sys_created_by": "tony.sumner-ctr@ccpo.mil"
+    }
+}

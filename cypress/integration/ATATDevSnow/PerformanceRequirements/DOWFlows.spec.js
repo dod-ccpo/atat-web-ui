@@ -58,7 +58,7 @@ describe("Test suite: DOW Workflows for each Category option", () => {
     }
   });
 
-  it.only("TC2: Applications checkboxes and headings", () => {
+  it("TC2: Applications checkboxes and headings", () => {
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       categoryLabels.push(obj.label);
@@ -97,7 +97,7 @@ describe("Test suite: DOW Workflows for each Category option", () => {
     
     }
   });
-  it("TC4: Security checkboxes and headings", () => {
+  it.only("TC4: Security checkboxes and headings", () => {
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       categoryLabels.push(obj.label);
