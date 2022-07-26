@@ -20,7 +20,7 @@ describe("Test suite: Financial Details Step: Funding Plan substep",() => {
       
   });
 
-  it.only("TC2: Asserts: Funding Request type", () => {
+  it("TC2: Asserts: Funding Request type", () => {
     cy.clickSideStepper(common.stepFinancialDetailsLink, " Financial Details ");
     //Verify the Substeps are  visible
     cy.textExists(common.subStepFundingPlanText, " Funding Plan ").click();;
