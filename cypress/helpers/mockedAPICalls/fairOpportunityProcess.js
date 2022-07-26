@@ -9,7 +9,7 @@ const fairOpportunityProcess = (fixtureFolder) => {
   return {
     fairopportunityprocess: [
       {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC1_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -17,7 +17,7 @@ const fairOpportunityProcess = (fixtureFolder) => {
         'testCase': 1
       },
       {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC2_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -25,7 +25,7 @@ const fairOpportunityProcess = (fixtureFolder) => {
         'testCase': 2
       },
       {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC3_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -33,7 +33,7 @@ const fairOpportunityProcess = (fixtureFolder) => {
         'testCase': 3
       },
       {
-        'fixture': fixtureFolder + '/TC3_fairOpportunity_POST_1',
+        'fixture': fixtureFolder + 'TC3_fairOpportunity_POST_1',
         'apiURL': 'x_g_dis_atat_fair_opportunity',
         'action': 'POST',
         'statusCode': 201,

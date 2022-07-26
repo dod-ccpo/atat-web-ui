@@ -8,7 +8,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
   return {
     acor: [
       {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC1_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -16,7 +16,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC1_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC1_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -24,7 +24,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC1_contacts_POST_2',
+        'fixture': fixtureFolder + 'TC1_contacts_POST_2',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -32,7 +32,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC2_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -40,7 +40,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC2_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC2_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -48,7 +48,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC2_contacts_POST_2',
+        'fixture': fixtureFolder + 'TC2_contacts_POST_2',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -56,7 +56,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC3_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -64,7 +64,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC3_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC3_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -72,7 +72,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC3_contacts_POST_2',
+        'fixture': fixtureFolder + 'TC3_contacts_POST_2',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -80,7 +80,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC4_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -88,7 +88,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 4
       },
       {
-        'fixture': fixtureFolder + '/TC4_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC4_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -96,7 +96,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 4
       },
       {
-        'fixture': fixtureFolder + '/TC4_contacts_POST_2',
+        'fixture': fixtureFolder + 'TC4_contacts_POST_2',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -106,7 +106,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
     ],
     contactinformation:[
       {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC1_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -114,7 +114,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC2_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -122,7 +122,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC2_projOverview_POST_1',
+        'fixture': fixtureFolder + 'TC2_projOverview_POST_1',
         'apiURL': 'x_g_dis_atat_project_overview',
         'action': 'POST',
         'statusCode': 201,
@@ -130,7 +130,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC3_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -138,7 +138,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC4_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -146,7 +146,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 4
       },
       {
-        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC5_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -154,7 +154,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 5
       },
       {
-        'fixture': fixtureFolder + '/TC6_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC6_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -162,7 +162,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 6
       },
       {
-        'fixture': fixtureFolder + '/TC7_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC7_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -172,7 +172,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
     ],
     cor: [
       {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC1_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -180,7 +180,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC1_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC1_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -188,7 +188,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC2_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -196,7 +196,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC2_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC2_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -204,7 +204,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC3_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -212,7 +212,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC3_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC3_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -220,7 +220,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC3_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC3_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -228,7 +228,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC4_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -236,7 +236,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 4
       },
       {
-        'fixture': fixtureFolder + '/TC4_contacts_POST_1',
+        'fixture': fixtureFolder + 'TC4_contacts_POST_1',
         'apiURL': 'x_g_dis_atat_contacts',
         'action': 'POST',
         'statusCode': 201,
@@ -246,7 +246,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
     ],
     organization: [
       {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC1_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -254,7 +254,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC2_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -262,7 +262,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC2_projOverview_POST_1',
+        'fixture': fixtureFolder + 'TC2_projOverview_POST_1',
         'apiURL': 'x_g_dis_atat_project_overview',
         'action': 'POST',
         'statusCode': 201,
@@ -270,7 +270,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC3_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -278,7 +278,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC4_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -286,7 +286,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 4
       },
       {
-        'fixture': fixtureFolder + '/TC5_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC5_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -294,7 +294,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 5
       },
       {
-        'fixture': fixtureFolder + '/TC6_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC6_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -302,7 +302,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 6
       },
       {
-        'fixture': fixtureFolder + '/TC7_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC7_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -310,7 +310,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 7
       },
       {
-        'fixture': fixtureFolder + '/TC8_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC8_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -321,7 +321,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
     ],
     projectoverview: [
       {
-        'fixture': fixtureFolder + '/TC1_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC1_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -329,7 +329,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 1
       },
       {
-        'fixture': fixtureFolder + '/TC2_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC2_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -337,7 +337,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 2
       },
       {
-        'fixture': fixtureFolder + '/TC3_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC3_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,
@@ -345,7 +345,7 @@ const acquisitionPackageDetails = (fixtureFolder) => {
         'testCase' : 3
       },
       {
-        'fixture': fixtureFolder + '/TC4_taskOrder_POST_1',
+        'fixture': fixtureFolder + 'TC4_taskOrder_POST_1',
         'apiURL': 'x_g_dis_atat_task_order',
         'action': 'POST',
         'statusCode': 201,

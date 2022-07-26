@@ -5,7 +5,7 @@ import {
 import common from "../../../selectors/common.sel";
 import contractDetails from "../../../selectors/contractDetails.sel";
 
-describe("Test suite: DOW Workflows for each Category option", { tags: '@iso-ignore' }, () => {
+describe("Test suite: DOW Workflows for each Category option", () => {
 
   let serviceOfferingGroups;
 
@@ -58,7 +58,7 @@ describe("Test suite: DOW Workflows for each Category option", { tags: '@iso-ign
     }
   });
 
-  it("TC2: Applications checkboxes and headings", () => {
+  it.only("TC2: Applications checkboxes and headings", () => {
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       categoryLabels.push(obj.label);

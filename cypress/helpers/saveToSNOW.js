@@ -1,9 +1,9 @@
-// import { classificationRequirements, contractType, workflow } from "../helpers/mockedAPICalls/contractDetails";
 import { acquisitionPackageDetails } from "../helpers/mockedAPICalls/acquisitionPackageDetails";
 import { contractDetails } from  "../helpers/mockedAPICalls/contractDetails";
 import { financialDetails } from "../helpers/mockedAPICalls/financialDetails";
 import { otherContractConsiderations } from "../helpers/mockedAPICalls/otherContractConsiderations";
 import { standardsAndCompliance } from "./mockedAPICalls/standardsAndCompliance";
+import { performanceRequirements } from "./mockedAPICalls/PerformanceRequirements";
 import { background } from "./mockedAPICalls/background";
 import { common } from "./mockedAPICalls/common";
 import { fairOpportunityProcess } from "./mockedAPICalls/fairOpportunityProcess";
@@ -41,7 +41,7 @@ let testSuite = ()=>{
   return _testSuite.split(".")[0];
 }
 const spec = specPath[specPath.length-1].split(".")[0];
-const fixtureFolder = testSuite() + "/" + spec;
+const fixtureFolder = testSuite() + "/" + spec + "/";
 const saveToSNOW = (testCase)=>{
   let currentTestEndPoints = [];
   // let acquistionpackagedetails = [
@@ -94,6 +94,13 @@ const saveToSNOW = (testCase)=>{
   if (testSuite() === "standardsandcompliance"){
     currentTestEndPoints = currentTestEndPoints.concat(
       filterTestCases(standardsAndCompliance(fixtureFolder)[spec], testCase)
+    );
+  }
+
+  /** performance requirements */
+  if (testSuite() === "performancerequirements"){
+    currentTestEndPoints = currentTestEndPoints.concat(
+      filterTestCases(performanceRequirements(fixtureFolder)[spec], testCase)
     );
   }
 
