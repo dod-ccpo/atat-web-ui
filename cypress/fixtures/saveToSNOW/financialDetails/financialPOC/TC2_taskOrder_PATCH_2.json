@@ -1,0 +1,29 @@
+{
+  "result": {
+    "clins": "",
+    "incrementally_funded": "YES",
+    "funds_obligated": "0",
+    "sys_mod_count": "2",
+    "acquisition_package": {
+      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_acquisition_package/{link=https://disastorefrontdev.",
+      "value": "{link=https://disastorefrontdev."
+    },
+    "task_order_number": "",
+    "sys_updated_on": "2022-07-20 13:55:34",
+    "sys_tags": "",
+    "task_order_status": "",
+    "sys_id": "7621c5f587305150ec3b777acebb3562",
+    "funding_request": "",
+    "sys_updated_by": "prasanthi.alaparthi-ctr@ccpo.mil",
+    "portfolio": "",
+    "sys_created_on": "2022-07-20 13:55:24",
+    "funding_plan": {
+      "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_funding_plan/ef2189f587305150ec3b777acebb3557",
+      "value": "ef2189f587305150ec3b777acebb3557"
+    },
+    "pop_end_date": "",
+    "pop_start_date": "",
+    "funds_total": "0",
+    "sys_created_by": "prasanthi.alaparthi-ctr@ccpo.mil"
+  }
+}

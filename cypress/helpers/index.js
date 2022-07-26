@@ -18,7 +18,6 @@ const bootStrapAcquisitionPackageApi= ()=> {
       body: data,
     });
   }); 
-
   if (isTestingIsolated){
     loadInitialData();
     saveToSNOW(testCase);

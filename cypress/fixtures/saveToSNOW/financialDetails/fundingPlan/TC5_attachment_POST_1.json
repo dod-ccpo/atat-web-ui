@@ -1,26 +1,25 @@
 {
-    "result": {
-        "clins": "",
-        "incrementally_funded": "",
-        "funds_obligated": "0",
-        "sys_mod_count": "0",
-        "acquisition_package": {
-            "link": "https://disastorefrontdev.servicenowservices.com/api/now/table/x_g_dis_atat_acquisition_package/8a8fa8e3875a8510ec3b777acebb3513",
-            "value": "8a8fa8e3875a8510ec3b777acebb3513"
-        },
-        "task_order_number": "",
-        "sys_updated_on": "2022-07-07 12:49:16",
-        "sys_tags": "",
-        "task_order_status": "",
-        "sys_id": "97553d6187ac1510ec3b777acebb3523",
-        "funding_request": "",
-        "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
-        "portfolio": "",
-        "sys_created_on": "2022-07-07 12:49:16",
-        "funding_plan": "",
-        "pop_end_date": "",
-        "pop_start_date": "",
-        "funds_total": "0",
-        "sys_created_by": "tony.sumner-ctr@ccpo.mil"
-    }
+  "result": {
+    "size_bytes": "16674",
+    "file_name": "dd1155.pdf",
+    "sys_mod_count": "0",
+    "average_image_color": "",
+    "image_width": "",
+    "sys_updated_on": "2022-07-14 15:45:38",
+    "sys_tags": "",
+    "table_name": "x_g_dis_atat_funding_plan",
+    "sys_id": "32d0eab787a85910bc86b889cebb351c",
+    "image_height": "",
+    "sys_updated_by": "prasanthi.alaparthi-ctr@ccpo.mil",
+    "download_link": "https://disastorefrontdev.servicenowservices.com/api/now/attachment/32d0eab787a85910bc86b889cebb351c/file",
+    "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryhwUrUwQRCcAzRiAa",
+    "sys_created_on": "2022-07-14 15:45:38",
+    "size_compressed": "7888",
+    "compressed": "true",
+    "state": "pending",
+    "table_sys_id": "bad0aab787a85910bc86b889cebb35ec",
+    "chunk_size_bytes": "700000",
+    "hash": "1f260f3ee218b830fc71a4adfddb897393c9d082c84b3a71e07ef25277b41ada",
+    "sys_created_by": "prasanthi.alaparthi-ctr@ccpo.mil"
+  }
 }
