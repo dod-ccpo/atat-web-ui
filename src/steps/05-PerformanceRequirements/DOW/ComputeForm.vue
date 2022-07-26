@@ -398,12 +398,7 @@ export default class ComputeForm extends Vue {
 
   public isPeriodsDataMissing = false;
   public isClassificationDataMissing = false;
-  // public selectedPeriods: string[] = [];
-  // public operatingSystemAndLicensing = "";
-  // public numberOfVCPUs = "";
-  // public memory = "";
-  // public storageAmount = "";
-  // public selectedStorageType = "";
+
   public storageTypes: SelectData[] = [
     { text: "General Purpose SSD", value: "General Purpose SSD" },
     { text: "Provisioned IOPS SSD", value: "Provisioned IOPS SSD" },
@@ -493,7 +488,6 @@ export default class ComputeForm extends Vue {
     );
 
     Toast.setToast(this.classificationLevelToast);
-    
   }
 
   private createPeriodCheckboxItems(periods: PeriodDTO[]) {
@@ -533,9 +527,6 @@ export default class ComputeForm extends Vue {
         this.modalSelectedOptions.push(val.sys_id || "")
       });
       this.checkSingleClassification();
-      // if (this.avlClassificationLevelObjects.length === 1) {
-      //   this.setSingleClassification();
-      // }
     }
 
     // set available classification levels for radio buttons if > 1 level selected
@@ -571,7 +562,6 @@ export default class ComputeForm extends Vue {
 
     this.showSubtleAlert 
       = this.isPeriodsDataMissing || this.isClassificationDataMissing ? true : false;
-
   }
 
   public async mounted(): Promise<void> {
