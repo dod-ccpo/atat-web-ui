@@ -815,7 +815,7 @@ Cypress.Commands.add("selectTrainingOption", (radioSelector, value) => {
       const selectedOption = $radioBtn.text();
       cy.log(selectedOption);
       cy.btnExists(common.continueBtn, ' Continue ').click();
-      if (selectedOption === "radio_button_checkedYes.​") {
+      if (selectedOption === "radio_button_checkedYes.") {
         //naviagtes to "Tell us about your mandatory training screen"
         cy.textExists(common.header, " Tell us about your mandatory training ");
       } else {

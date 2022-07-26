@@ -16,7 +16,7 @@
     "test-file:watch": "jest --watch --no-cache src/components/ATATTextArea.spec.ts ",
     "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.js' --collectCoverageFrom='src/**/*.vue'",
     "test:e2e": "node ./node_modules/cypress/bin/cypress run",
-    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/StandardsandCompliance/*.spec.js'",
+    "cypress:single-test": "npm run test:e2e --  --spec 'cypress/integration/ATATDevSnow/OtherContractConsiderations/Trainin*.spec.js'",
     "cypress:isolated-tests": "npx cypress run --env grepTags=-@iso-ignore"
   },
   "dependencies": {
