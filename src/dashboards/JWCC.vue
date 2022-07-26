@@ -202,9 +202,8 @@
                           <strong>{{ label }}</strong>
                         </div>
                         <div class="pr-4 py-2 font-weight-400">
-                          {{ getLegendAmount(
-                          fundsSpentToDate,
-                          cspDonutChartData.datasets[0].data[index]
+                          {{ getCurrencyString(
+                          cspAmounts[index], false
                         )
                           }}
                         </div>

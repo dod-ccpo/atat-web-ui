@@ -590,7 +590,7 @@ import LineChart from "../components/charts/LineChart.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
-import { toCurrencyString, getIdText } from "@/helpers";
+import { toCurrencyString, getIdText, roundTo100 } from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
 import { add } from "date-fns";
@@ -767,7 +767,7 @@ export default class PortfolioDashboard extends Vue {
       "Estimated funds to be invoiced": this.endOfMonthForecast,
       "Estimated funds available": this.totalPortfolioFunds * this.estimatedRemainingPercent / 100,
     }
-    this.donutChartData.datasets[0].data = this.donutChartPercentages;
+    this.donutChartData.datasets[0].data = roundTo100(this.donutChartPercentages,true);
 
     const popStartISO = this.taskOrder.pop_start_date;
     const popStartDate = parseISO(popStartISO);
