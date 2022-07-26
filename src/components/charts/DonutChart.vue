@@ -137,7 +137,7 @@ export default class DonutChart extends Vue {
       labelSpan.style.marginRight = "16px";
       labelSpan.style.whiteSpace = "nowrap";
       labelSpan.appendChild(text);
-
+      console.log(this.individualAmtsArr)
       const percentNo = parseFloat(labelText.slice(sep + 2, labelText.length));
       const amount = "$" + toCurrencyString(this.individualAmtsArr[label]).slice(0, -3);
       const amountNode = document.createTextNode(amount)

@@ -301,6 +301,8 @@
                           :center-text1="getCurrencyString(totalPortfolioFunds, false)"
                           center-text2="Total Portfolio Funds"
                           :amount="totalPortfolioFunds"
+                          :individualAmtsArr="portfolioFundsObj"
+
                         />
                       </v-col>
                       <v-col class="col-sm-6 d-flex align-center">
@@ -760,7 +762,11 @@ export default class PortfolioDashboard extends Vue {
       this.estimatedFundsToBeInvoicedPercent,
       this.estimatedRemainingPercent
     ];
-
+    this.portfolioFundsObj = {
+      "Funds spent": this.fundsSpent,
+      "Estimated funds to be invoiced": this.endOfMonthForecast,
+      "Estimated funds available": this.totalPortfolioFunds * this.estimatedRemainingPercent / 100,
+    }
     this.donutChartData.datasets[0].data = this.donutChartPercentages;
 
     const popStartISO = this.taskOrder.pop_start_date;
@@ -1274,7 +1280,7 @@ export default class PortfolioDashboard extends Vue {
     this.chartDataColorSequence[1],
     this.chartDataColors.gray,
   ];
-
+  public portfolioFundsObj: {[key:string]:number} = {}
   public donutChartData = {
     labels: [
       "Funds spent",
