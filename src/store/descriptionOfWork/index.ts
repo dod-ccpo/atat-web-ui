@@ -584,7 +584,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public doSetComputeData(computeData: ComputeData): void {
-    debugger;
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );

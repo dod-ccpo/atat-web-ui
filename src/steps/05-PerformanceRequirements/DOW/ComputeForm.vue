@@ -267,7 +267,7 @@ import {
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ClassificationLevelDTO } from "@/api/models";
 
-import { buildClassificationCheckboxList } from "@/helpers";
+import { buildClassificationCheckboxList, buildClassificationLabel } from "@/helpers";
 
 @Component({
   components: {
@@ -429,6 +429,19 @@ export default class ComputeForm extends Vue {
       = this.createCheckboxOrRadioItems(this.avlClassificationLevelObjects, "Radio");
   }
 
+  public checkSingleClassification(): void {
+    // if only one classification level selected in Contract Details or the 
+    // classifications modal, set it as the "selected" classification level
+    if (
+      this.avlClassificationLevelObjects.length === 1
+      && this.avlClassificationLevelObjects[0].sys_id
+    ) {
+      const classificationObj = this.avlClassificationLevelObjects[0];
+      this._computeData.classificationLevel = classificationObj.sys_id;
+      this.singleClassificationLevelName = buildClassificationLabel(classificationObj, "short");
+    }
+  }
+
   public async classificationLevelsChanged(): Promise<void> {
     this.showDialog = false;
     this.avlClassificationLevelObjects = [];
@@ -441,11 +454,7 @@ export default class ComputeForm extends Vue {
     this.setAvlClassificationLevels();
 
     if (this.avlClassificationLevelObjects.length === 1) {
-      this._computeData.classificationLevel = this.avlClassificationLevelObjects[0].sys_id;
-      const sysId = this._computeData.classificationLevel;
-      const singleSelection 
-        = this.modalCheckboxItems.find((obj) => obj.value === sysId);
-      this.singleClassificationLevelName = singleSelection?.label;
+      this.checkSingleClassification();
     } else if (this._computeData.classificationLevel) {
       // if the classification level that was selected was removed via the modal,
       // clear out this._computeData.classificationLevel
@@ -512,7 +521,9 @@ export default class ComputeForm extends Vue {
     const IL6Checkbox 
       = this.modalCheckboxItems.find(e => e.label.indexOf("IL6") > -1);
     this.IL6SysId = IL6Checkbox?.value || "";
+    
     this.setAvlClassificationLevels();
+    this.checkSingleClassification();
 
     const periods = await Periods.loadPeriods();
     if (periods && periods.length > 0) {
