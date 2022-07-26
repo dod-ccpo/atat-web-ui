@@ -1,0 +1,19 @@
+{
+  "result": {
+    "packaging_shipping_other": "false",
+    "contractor_required_training": "",
+    "packaging_shipping_other_explanation": "",
+    "conflict_of_interest_explanation": "",
+    "potential_conflict_of_interest": "NO",
+    "sys_mod_count": "0",
+    "sys_updated_on": "2022-07-25 14:37:54",
+    "sys_tags": "",
+    "sys_id": "42daf2df87745550ec3b777acebb357a",
+    "sys_updated_by": "tony.sumner-ctr@ccpo.mil",
+    "required_training_courses": "",
+    "sys_created_on": "2022-07-25 14:37:54",
+    "packaging_shipping_none_apply": "false",
+    "contractor_provided_transfer": "false",
+    "sys_created_by": "tony.sumner-ctr@ccpo.mil"
+  }
+}
