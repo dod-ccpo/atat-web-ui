@@ -314,11 +314,15 @@ export const OfferGroupOfferingsPathResolver = (
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
-  debugger;
   Steps.clearAltBackButtonText();
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
     return "period-of-performance/period-of-performance";
+  }
+  debugger;
+  const groupId = DescriptionOfWork.currentGroupId;
+  if (groupId.toLowerCase() === "compute") {
+    return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`
   }
 
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
@@ -364,7 +368,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     }
   }
 
-  const groupId = DescriptionOfWork.currentGroupId;
   if (DescriptionOfWork.currentGroupRemoved) {
     DescriptionOfWork.setCurrentGroupRemoved(false);
     if (groupId && !DescriptionOfWork.lastGroupRemoved) {
@@ -397,8 +400,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     DescriptionOfWork.setCurrentOfferingGroupId(group);
     return OfferGroupOfferingsPathResolver(serviceOffering , direction);
   }
-
-  // EJY check here if COMPUTE
 
   DescriptionOfWork.setReturnToDOWSummary(false);
   return descriptionOfWorkSummaryPath
