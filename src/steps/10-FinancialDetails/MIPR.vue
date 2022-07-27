@@ -20,6 +20,7 @@
         <h3 class="mb-5">Upload your MIPR (DD Form 448)</h3>
         <ATATFileUpload
           id="FundingPlan"
+          tabindex="-1"
           :invalidFiles.sync="invalidFiles"
           :maxFileSizeInBytes="maxFileSizeInBytes"
           :maxNumberOfFiles="1"
