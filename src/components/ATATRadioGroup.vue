@@ -9,17 +9,32 @@
       v-model="_selectedValue"
     >
       <fieldset>
-        <legend
-          v-if="legend"
-          class="form-field-label mb-3 pb-0"
-          :class="{ 'd-sr-only': legendSrOnly }"
-        >
-          {{ legend }}
-        </legend>
+        <div class="d-flex mb-3">
+          <legend
+            v-if="legend"
+            class="form-field-label pb-0 mr-2"
+            :class="{ 'd-sr-only': legendSrOnly }"
+          >
+            {{ legend }}
+          </legend>
+
+          <ATATTooltip 
+            v-if="tooltipText"
+            :tooltipText="tooltipText"
+            :tooltipTitle="tooltipTitle"
+            :id="id"
+            :label="getTooltipLabel()"
+          />
+        </div>
+
         <v-radio
           v-for="item in items"
           :id="'Radio_' + getIdText(item.id)"
-          :class="radioClasses"
+          :class="[
+            radioClasses,
+            { '_has-other': item.value === otherValue },
+            { '_other-selected': showOtherEntry(item.value) }
+          ]"
           :key="item.id"
           :value="item.value"
           :style="{ width: width + 'px' }"
@@ -28,13 +43,40 @@
           @blur="onBlur"
           @click="onClick"
         >
-          <template v-if="item.description || card" v-slot:label>
+          <template v-if="item.description || card || item.value === otherValue" v-slot:label>
             <div class="d-flex flex-column">
               <div
-                :class="[item.description ? 'card-label' : 'mb-0']"
+                :class="[
+                  item.description ? 'card-label' : 'mb-0',
+                  {'mb-0': item.value === otherValue}
+                ]"
                 v-html="item.label"
               ></div>
-              <div class="mb-0" v-html="item.description"></div>
+
+              <div v-if="item.description" class="mb-0" v-html="item.description"></div>
+              
+              <ATATTextArea
+                v-if="otherEntryType === 'textarea'"
+                ref="atatTextInput"
+                v-show="showOtherEntry(item.value)"
+                :id="otherId"
+                class="width-100 mb-6"
+                :rows="3"
+                :validateItOnBlur="validateOtherOnBlur"
+                :value.sync="_otherValueEntered"
+                :rules="otherRequiredRule"
+              />
+              <ATATTextField
+                v-if="otherEntryType === 'textfield'"
+                ref="atatTextInput"
+                v-show="showOtherEntry(item.value)"
+                :id="otherId"
+                class="mb-6 mt-2 _input-wrapper-max-width"
+                :validateItOnBlur="validateOtherOnBlur"
+                :value.sync="_otherValueEntered"
+                :rules="otherRequiredRule"
+              />
+
             </div>
           </template>
           <template v-else v-slot:label>
@@ -51,13 +93,20 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, PropSync, Watch } from "vue-property-decorator";
-import { RadioButton } from "../../types/Global";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
+import ATATTextArea from "@/components/ATATTextArea.vue";
+import ATATTextField from "@/components/ATATTextField.vue";
+import ATATTooltip from "@/components/ATATTooltip.vue"
+
+import { RadioButton } from "../../types/Global";
 import { getIdText } from "@/helpers";
 
 @Component({
   components: {
     ATATErrorValidation,
+    ATATTextArea,
+    ATATTextField,
+    ATATTooltip,
   }
 })
 
@@ -80,10 +129,24 @@ export default class ATATRadioGroup extends Vue {
   @Prop({ default: false }) private legendSrOnly!: boolean;
   @Prop({ default: "" }) private width!: string;
   @Prop() private name!: string;
+  @Prop() private tooltipText?: string;
+  @Prop() private tooltipTitle?: string;
+  @Prop() private tooltipLabel?: string;
+  @Prop({ default: false }) private hasOtherValue!: boolean;
+  @Prop({ default: "" }) private otherValueRequiredMessage!: string;
+  @Prop({ default: "" }) private otherValue!: string;
+  @Prop({ default: "textfield" }) private otherEntryType?: string;
+  @PropSync("otherValueEntered") private _otherValueEntered!: string;
 
   // data
   private errorMessages: string[] = [];
-  
+  private validateOtherOnBlur = true;
+  private hideOtherInput = false;
+
+  private otherRequiredRule = this.otherValueRequiredMessage 
+    ? [this.$validators.required(this.otherValueRequiredMessage)]
+    : [];
+
   // methods
   private setErrorMessage(): void {
     this.errorMessages = this.$refs.radioButtonGroup.errorBucket;
@@ -96,11 +159,25 @@ export default class ATATRadioGroup extends Vue {
     return getIdText(string);
   }
 
-  // computed
+  private getTooltipLabel(): string {
+    return this.tooltipLabel || this.legend;
+  }
+
+  private showOtherEntry(value: string): boolean {
+    return this.hasOtherValue 
+      && value === this.otherValue
+      && this._selectedValue.indexOf(this.otherValue) > -1
+      && !this.hideOtherInput;
+  }
+
   get radioClasses(): string {
     let classes = this.card ? "_radio-button-card" : "_radio-button";
     classes += this.errorMessages.length > 0 ? ' error--text v-input--has-state' : '';
     return classes;
+  }
+
+  get otherId(): string {
+    return getIdText(this.otherValue);
   }
 
   // events
@@ -114,8 +191,23 @@ export default class ATATRadioGroup extends Vue {
 
   // watch
   @Watch("_selectedValue")
-  protected valueChange(): void {
+  protected valueChange(newVal: string): void {
     this.$emit("radioButtonSelected", this._selectedValue);
+    if (newVal === this.otherValue) {
+      this.validateOtherOnBlur = true;
+      this.hideOtherInput = false;
+      Vue.nextTick(() => {
+        const id = this.otherEntryType === "textarea" 
+          ? this.otherId + "_text_area" 
+          : this.otherId + "_text_field";
+        document.getElementById(id)?.focus();
+      });
+    } else {
+      this.validateOtherOnBlur = false;
+      this.hideOtherInput = true;
+      this._otherValueEntered = "";
+    }
   }
 }
+
 </script>
