@@ -23,7 +23,12 @@
                 between the mission owner and the business associate to provide assurance 
                 that the business associate will appropriately safeguard PHI when 
                 it is transmitted or maintained in electronic (e-PHI) or any other form. 
-                <a role="button" id="LearnMoreBAA" @click="openSlideoutPanel">
+                <a role="button"
+                   id="LearnMoreBAA"
+                   tabindex="0"
+                   @click="openSlideoutPanel"
+                   @keydown.enter="openSlideoutPanel"
+                   @keydown.space="openSlideoutPanel">
                   Learn more about business associates and BAAs.
                 </a>
               </p>

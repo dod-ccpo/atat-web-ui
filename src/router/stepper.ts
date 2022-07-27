@@ -27,6 +27,8 @@ import CurrentEnvironmentLocation
   from "@/steps/03-Background/CurrentEnvironment/CurrentEnvironmentLocation.vue";
 import ClassificationLevels
   from "@/steps/03-Background/CurrentEnvironment/ClassificationLevelsPage.vue";
+import EnvironmentDetailsPage
+  from "@/steps/03-Background/CurrentEnvironment/EnvironmentDetailsPage.vue";
 import BackgroundSummary from "../steps/03-Background/Summary.vue"
 
 // Step 4 - Contract Details
@@ -111,6 +113,7 @@ import {
   IncrementalFundingResolver,
   RequirementsPathResolver as PerformanceRequirementsPathResolver,
   FinancialPOCResolver,
+
 } from "./resolvers";
 
 export const routeNames = {
@@ -172,7 +175,8 @@ export const routeNames = {
   SummaryPage: "Summary_Page",
   CurrentEnvironmentLocation: "Current_Environment_Location",
   ClassificationLevels: "Classification_Levels",
-  BackgroundSummary: "Background_Summary"
+  BackgroundSummary: "Background_Summary",
+  EnvironmentDetailsPage:"Environment_Details_Page",
 };
 
 /**
@@ -351,6 +355,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 5,
         completed: false,
       },
+      {
+        menuText: "Environment Details Page",
+        path: "environment-details-page",
+        excludeFromMenu: true,
+        name: routeNames.EnvironmentDetailsPage,
+        component: EnvironmentDetailsPage,
+        completePercentageWeight: 5,
+        completed: false,
+      },
+
       {
         menuText: "Summary",
         path: "background-summary",

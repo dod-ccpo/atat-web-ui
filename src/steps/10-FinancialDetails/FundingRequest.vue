@@ -11,7 +11,12 @@
               To complete this section, you will need an authorized funding request to transfer
               funds from your agency to DITCO. We recommend using G-Invoicing to generate your 7600A
               and 7600B, but you will also be able to upload form(s) directly from your computer.
-              <a id="LearnMoreFunding" role="button" @click="openSlideoutPanel($event, 'Funding')">
+              <a id="LearnMoreFunding"
+                 role="button"
+                 tabindex="0"
+                 @click="openSlideoutPanel($event, 'Funding')"
+                 @keydown.enter="openSlideoutPanel($event, 'Funding')"
+                 @keydown.space="openSlideoutPanel($event, 'Funding')">
                 <span class="">Learn more about funding requests</span>
               </a>
             </p>
@@ -38,8 +43,12 @@
                   G-Invoicing is the long-term solution for Federal Program Agencies (FPAs) to
                   manage their intragovernmental (IGT) Buy/Sell transactions. This is the preferred
                   system for generating and maintaining your GT&amp;Cs and Orders with DITCO.
-                  <a id="LearnMoreGInvoicing" role="button"
-                     @click="openSlideoutPanel($event, 'Ginvoice')">
+                  <a id="LearnMoreGInvoicing"
+                     role="button"
+                     tabindex="0"
+                     @click="openSlideoutPanel($event, 'Ginvoice')"
+                     @keydown.enter="openSlideoutPanel($event, 'Ginvoice')"
+                     @keydown.space="openSlideoutPanel($event, 'Ginvoice')">
                     <span>Learn more about G-Invoicing</span>
                   </a>
                 </p>

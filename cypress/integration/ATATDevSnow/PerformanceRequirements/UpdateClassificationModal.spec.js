@@ -75,7 +75,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ",
       cy.textExists(performanceReqs.updateLink, "update your Classification Requirements").click()
         .then(() => {
           cy.findElement(performanceReqs.updateModal).should("be.visible");
-          const modalTitle = "What classification level(s)are required" +
+          const modalTitle = "What classification level(s) are required" +
           " for your cloud resources and/or services?"
           cy.verifyTextMatches(
             performanceReqs.modaltitle,
@@ -158,7 +158,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ",
       cy.textExists(performanceReqs.updateLink, "update your Classification Requirements").click()
         .then(() => {
           cy.findElement(performanceReqs.updateModal).should("be.visible");
-          const modalTitle = "What classification level(s)are required" +
+          const modalTitle = "What classification level(s) are required" +
           " for your cloud resources and/or services?"
           cy.verifyTextMatches(
             performanceReqs.modaltitle,
@@ -191,7 +191,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ",
         "Secret / Impact Level 6 (IL6)"
       ];    
     
-      cy.selectCheckBoxes([contractDetails.level4,contractDetails.level5,contractDetails.level6]);   
+      cy.selectCheckBoxes([contractDetails.level4,contractDetails.level5,contractDetails.level6]);
     
       cy.verifyCheckBoxLabels('input[type=checkbox]:checked', selectedClassLevelsLabels);
     
@@ -233,7 +233,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ",
       cy.textExists(performanceReqs.updateLink, "update your Classification Requirements").click()
         .then(() => {
           cy.findElement(performanceReqs.updateModal).should("be.visible");
-          const modalTitle = "What classification level(s)are required" +
+          const modalTitle = "What classification level(s) are required" +
           " for your cloud resources and/or services?"
           cy.verifyTextMatches(
             performanceReqs.modaltitle,
@@ -309,7 +309,7 @@ describe("Test suite: Gather Requirements-Update Classification modal ",
       cy.textExists(performanceReqs.updateLink, "update your Classification Requirements").click()
         .then(() => {
           cy.findElement(performanceReqs.updateModal).should("be.visible");
-          const modalTitle = "What classification level(s)are required" +
+          const modalTitle = "What classification level(s) are required" +
           " for your cloud resources and/or services?"
           cy.verifyTextMatches(
             performanceReqs.modaltitle,

@@ -36,6 +36,7 @@
         <a
           :href="fiscalServiceHref"
           target="_blank"
+          id="BFSLink"
         >
          Bureau of Fiscal Service, G-Invoicing
         </a>
@@ -44,8 +45,9 @@
         <a
           :href="gInvoiceLoginHref"
           target="_blank"
+          id="GInvoicingLoginLink"
         >
-          <span> G-Invoicing Login</span>
+          G-Invoicing Login
         </a>
       </li>
     </ul>
