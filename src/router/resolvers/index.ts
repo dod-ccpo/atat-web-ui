@@ -111,6 +111,7 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 export const RequirementsPathResolver = (current: string, direction: string): string =>
 {
+  debugger;
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
@@ -161,6 +162,7 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
+  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
 
@@ -305,13 +307,14 @@ export const OfferGroupOfferingsPathResolver = (
     buttonText: dontNeedButtonText, 
     buttonId: "DontNeedResources"
   });
-
+  debugger;
   //default  
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
 
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
+  debugger;
   Steps.clearAltBackButtonText();
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
@@ -395,11 +398,14 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
     return OfferGroupOfferingsPathResolver(serviceOffering , direction);
   }
 
+  // EJY check here if COMPUTE
+
   DescriptionOfWork.setReturnToDOWSummary(false);
   return descriptionOfWorkSummaryPath
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
+  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
   if(current === routeNames.PropertyDetails){
