@@ -593,7 +593,7 @@ import TaskOrder from "@/store/taskOrder";
 import { toCurrencyString, getIdText, roundTo100 } from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
-import { add } from "date-fns";
+import { add, startOfMonth, subDays } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
@@ -722,7 +722,9 @@ export default class PortfolioDashboard extends Vue {
     const popStartDate = parseISO(this.taskOrder.pop_start_date, { additionalDigits: 1 });
     const start = new Date(popStartDate.setHours(0,0,0,0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
-    const daysSinceStartDate = differenceInCalendarDays(today, start);
+    let endOfSpending = startOfMonth(today);
+    endOfSpending = subDays(endOfSpending, 1);
+    const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
     const dailySpend = this.fundsSpent / daysSinceStartDate;
     const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
     const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent});
