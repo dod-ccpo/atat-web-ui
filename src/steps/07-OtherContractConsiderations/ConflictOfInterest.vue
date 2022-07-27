@@ -16,8 +16,10 @@
               role="button"
               id="CoILearnMore"
               class="_text-link"
+              tabindex="0"
               @click="openSlideoutPanel"
-            >
+              @keydown.enter="openSlideoutPanel"
+              @keydown.space="openSlideoutPanel">
               Learn more about COI.
             </a>
           </p>

@@ -14,7 +14,10 @@
               role="button"
               id="GInvoicingLearnMore"
               class="_text-link"
+              tabindex="0"
               @click="openSlideoutPanel"
+              @keydown.enter="openSlideoutPanel"
+              @keydown.space="openSlideoutPanel">
             >
               Learn more about G-Invoicing
             </a>
