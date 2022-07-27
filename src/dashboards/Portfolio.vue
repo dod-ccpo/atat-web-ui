@@ -321,7 +321,7 @@
                               <strong>{{ label }}</strong>
                             </div>
                             <div class="pr-4 py-2">
-                              {{ getLegendAmount(index) }}
+                              {{ getCurrencyString(portfolioFundsObj[label], false) }}
                             </div>
                             <div style="width: 50px;" class="text-right font-weight-700 py-2">
                               {{ roundDecimal(donutChartData.datasets[0].data[index], 1) }}%
