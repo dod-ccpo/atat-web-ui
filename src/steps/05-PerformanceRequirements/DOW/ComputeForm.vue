@@ -282,6 +282,7 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel 
 } from "@/helpers";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -518,6 +519,10 @@ export default class ComputeForm extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+
+    const foo = DescriptionOfWork.computeObject;
+    debugger;
+
     // get classification levels selected in step 4 Contract Details
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
