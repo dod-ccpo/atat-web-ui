@@ -151,7 +151,7 @@ describe("Test suite: DOW Workflows for each Category option", () => {
 
   });
 
-  it.only("TC7: Edge Computing and Tactical Edge(TE) checkboxes and headings", () => {
+  it("TC7: Edge Computing and Tactical Edge(TE) checkboxes and headings", () => {
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       categoryLabels.push(obj.label);
@@ -169,7 +169,7 @@ describe("Test suite: DOW Workflows for each Category option", () => {
 
   });
 
-  it("TC8: Internet of Things (IoT) checkboxes and headings", () => {
+  it.only("TC8: Internet of Things (IoT) checkboxes and headings", () => {
     const categoryLabels = [];
     serviceOfferingGroups.forEach((obj) => {
       categoryLabels.push(obj.label);
