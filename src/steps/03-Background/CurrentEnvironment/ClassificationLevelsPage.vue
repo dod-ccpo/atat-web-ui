@@ -12,7 +12,7 @@
               about each instance later.
             </p>
             <p id="SelectMessage" class="mb-4">
-              Select all that apply to your contracting effort.
+              Select all that apply to your current environment.
             </p>
           </div>
           <ATATCheckboxGroup
