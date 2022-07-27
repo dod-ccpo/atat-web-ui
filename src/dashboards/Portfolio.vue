@@ -99,7 +99,11 @@
                         NOTE: All financial data depicted are estimates to assist with tracking
                         cloud spend. Login to your CSP console to get detailed cost analysis and
                         breakdowns.
-                        <a role="button" id="LearnMoreFinancialInfo" @click="openSlideoutPanel">
+                        <a role="button" id="LearnMoreFinancialInfo"
+                           tabindex="0"
+                           @click="openSlideoutPanel"
+                           @keydown.enter="openSlideoutPanel"
+                           @keydown.space="openSlideoutPanel">
                           Learn more
                         </a>
                       </p>
