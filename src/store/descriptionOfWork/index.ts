@@ -20,7 +20,8 @@ import Vue from "vue";
 import { 
   DOWServiceOfferingGroup, 
   DOWServiceOffering, 
-  DOWClassificationInstance 
+  DOWClassificationInstance,
+  ComputeData
 } from "../../../types/Global";
 
 import _, { differenceWith, last } from "lodash";
@@ -567,6 +568,47 @@ export class DescriptionOfWorkStore extends VuexModule {
       = instancesData;
   }
 
+  // set (if selecting from table to edit) or increment (if adding new instance) 
+  // currentComputeInstanceNumber when working on AT-7765
+  currentComputeInstanceNumber = 0;
+
+  @Mutation
+  public setCurrentComputeInstanceNumber(number: number): void {
+    this.currentComputeInstanceNumber = number;
+  }
+
+  @Action
+  public async setComputeData(computeData: ComputeData): Promise<void> {
+    this.doSetComputeData(computeData);
+  }
+
+  @Mutation
+  public doSetComputeData(computeData: ComputeData): void {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      const computeObj = this.DOWObject[computeIndex];
+      if (!Object.prototype.hasOwnProperty.call(computeObj, "computeData")) {
+        computeObj.computeData = [];
+        computeObj.computeData?.push(computeData);
+      } else {
+        const instanceNumber = computeData.instanceNumber;
+        const existingInstance = computeObj.computeData?.find(
+          o => o.instanceNumber === instanceNumber
+        );
+        if (existingInstance ) {
+          Object.assign(existingInstance, computeData);
+        } else {
+          computeObj.computeData?.push(computeData);
+        }
+      }
+
+    } else {
+      throw new Error("Error saving Compute data to store");
+    }
+  }
+
   @Mutation
   public setCurrentOffering(value: { name: string, sysId: string }): void {
     this.currentOfferingName = value.name;
@@ -906,7 +948,6 @@ export class DescriptionOfWorkStore extends VuexModule {
       throw new Error( `error occurred while saving service proxy`)
     }
 
-
   }
 
   @Action({rawError: true})
@@ -925,18 +966,12 @@ export class DescriptionOfWorkStore extends VuexModule {
       console.error(error);
       throw new Error(`error occurred saving services ${error}`);
     }
-
-
   }
 
   //synchronizes back end with DOW
   @Action({rawError: true})
   public async saveUserSelectedServices(): Promise<void>{
-
     try {
-
-      
-
       const requiredServices = this.userSelectedServiceOfferings;
       const dowOfferingGroups = this.DOWObject;
 
@@ -974,7 +1009,6 @@ export class DescriptionOfWorkStore extends VuexModule {
             servicesToRemove.push(service);
           }
         });
-    
    
         if(servicesToRemove.length){
           await this.removeUserSelectedServices(servicesToRemove);

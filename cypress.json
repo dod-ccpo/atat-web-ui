@@ -4,7 +4,7 @@
     "chromeWebSecurity": false,
     "defaultCommandTimeout":10000,
     "pageLoadTimeout": 90000,
-    "numTestsKeptInMemory": 10,
+    "numTestsKeptInMemory": 1,
     "env":{
         "BABEL_ENV":"e2e"
     }
