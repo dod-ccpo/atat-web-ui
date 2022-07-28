@@ -24,7 +24,7 @@ import {
   ComputeData
 } from "../../../types/Global";
 
-import _, { differenceWith, last } from "lodash";
+import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 
 
@@ -568,7 +568,7 @@ export class DescriptionOfWorkStore extends VuexModule {
       = instancesData;
   }
 
-  // COMPUTE data and methods
+  // COMPUTE data/methods
 
   currentComputeInstanceNumber = 0;
 
@@ -656,7 +656,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public async doSetComputeData(computeData: ComputeData): Promise<void> {
-    // debugger;
     const computeObj: DOWServiceOfferingGroup = this.computeObject;
     // WHY IS THIS UNDEFINED???
     debugger;
@@ -664,8 +663,6 @@ export class DescriptionOfWorkStore extends VuexModule {
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
-    debugger;
-
     if (computeIndex > -1) {
       const computeObj = this.DOWObject[computeIndex];
       if (
@@ -711,6 +708,37 @@ export class DescriptionOfWorkStore extends VuexModule {
     }
     return [];
   }
+
+  @Action
+  public async deleteComputeInstance(instanceNumber: number): Promise<void> {
+    this.doDeleteComputeInstance(instanceNumber);
+  }
+
+  @Mutation
+  public doDeleteComputeInstance(instanceNumber: number): void {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      const computeObj = this.DOWObject[computeIndex];
+      if (
+        computeObj 
+        && Object.prototype.hasOwnProperty.call(computeObj, "computeData")
+        && computeObj.computeData
+      ) {
+        // 
+        const instanceIndex = computeObj.computeData.findIndex(
+          obj => obj.instanceNumber === instanceNumber
+        );
+        computeObj.computeData.splice(instanceIndex, 1);
+        for (let i = instanceIndex; i < computeObj.computeData.length; i++) {
+          computeObj.computeData[i].instanceNumber = computeObj.computeData[i].instanceNumber - 1;
+        }
+      }
+    }
+  }
+
+  // END COMPUTE data/methods
 
   @Mutation
   public setCurrentOffering(value: { name: string, sysId: string }): void {
