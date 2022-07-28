@@ -173,6 +173,7 @@ export default class AppPackageBuilder extends Vue {
 
   private async additionalButtonClick(button: AdditionalButton) {
     if (button.emitText) {
+      this.$emit(button.emitText);
       this.$emit("AdditionalButtonClicked", button.emitText);
     }
 

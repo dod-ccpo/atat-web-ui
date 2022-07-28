@@ -610,13 +610,11 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async setCurrentComputeInstanceNumber(number: number): Promise<void> {
-    debugger;
     this.doSetCurrentComputeInstanceNumber(number);
   }
 
   @Mutation
   public async doSetCurrentComputeInstanceNumber(number: number): Promise<void> {
-    debugger;
     this.currentComputeInstanceNumber = number;
   }
 
@@ -627,15 +625,12 @@ export class DescriptionOfWorkStore extends VuexModule {
       const instance = computeData.find(
         obj => obj.instanceNumber === instanceNumber
       );
-      debugger;
       return instance || _.clone(this.emptyComputeInstance);
     }
-    debugger;
     return _.clone(this.emptyComputeInstance);
   }
 
   public get computeObject(): DOWServiceOfferingGroup {
-    debugger;
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
@@ -656,13 +651,10 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Mutation
   public async doSetComputeData(computeData: ComputeData): Promise<void> {
-    const computeObj: DOWServiceOfferingGroup = this.computeObject;
-    // WHY IS THIS UNDEFINED???
-    debugger;
-
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
+
     if (computeIndex > -1) {
       const computeObj = this.DOWObject[computeIndex];
       if (
@@ -692,7 +684,6 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async getComputeInstances(): Promise<ComputeData[]> {
-    debugger;
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
@@ -734,6 +725,43 @@ export class DescriptionOfWorkStore extends VuexModule {
         for (let i = instanceIndex; i < computeObj.computeData.length; i++) {
           computeObj.computeData[i].instanceNumber = computeObj.computeData[i].instanceNumber - 1;
         }
+      }
+    }
+  }
+
+  confirmComputeDelete = false;
+
+  public get confirmComputeDeleteVal(): boolean {
+    return this.confirmComputeDelete;
+  }
+
+  @Action
+  public setConfirmComputeDelete(bool: boolean): void {
+    this.doSetConfirmComputeDelete(bool);
+  }
+  @Mutation
+  public doSetConfirmComputeDelete(bool: boolean): void {
+    this.confirmComputeDelete = bool;
+  }
+
+  @Action
+  public async deleteCompute(): Promise<void> {
+    this.doDeleteCompute();
+  }
+
+  @Mutation
+  public doDeleteCompute(): void {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      this.DOWObject.splice(computeIndex, 1);
+      if (this.DOWObject.length) {
+
+        const nextGroupId = this.DOWObject.length === computeIndex
+          ? this.DOWObject[computeIndex - 1].serviceOfferingGroupId
+          : this.DOWObject[computeIndex].serviceOfferingGroupId;
+        this.currentGroupId = nextGroupId;
       }
     }
   }

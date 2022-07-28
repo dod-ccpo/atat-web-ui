@@ -26,6 +26,7 @@ export class StepsStore extends VuexModule implements StepsState {
     altBackButtonText = "";
     altAdditionalButtonText = "";
     additionalButtonId = "";
+    additionalButtonHide = false;
 
     @Mutation
     public setAltBackButtonText(text: string): void {
@@ -58,6 +59,16 @@ export class StepsStore extends VuexModule implements StepsState {
       this.additionalButtonId = "";
     }
 
+    @Action
+    public setAdditionalButtonHide(bool: boolean): void {
+      this.doSetAdditioinalButtonHide(bool);
+    }
+
+    @Mutation
+    public doSetAdditioinalButtonHide(bool: boolean): void {
+      this.additionalButtonHide = bool;
+    }
+
     @Mutation
     [Mutations.SET_CURRENT_STEP](stepName: string): void {
       const step = this.stepMap.get(stepName);
@@ -70,14 +81,17 @@ export class StepsStore extends VuexModule implements StepsState {
           : "Back";
         if (
           this.currentStep.additionalButtons.length > 0
-          && this.altAdditionalButtonText
-          && this.additionalButtonId
+          && ((this.altAdditionalButtonText && this.additionalButtonId) 
+          || this.additionalButtonHide)
         ) {
           const i = this.currentStep.additionalButtons.findIndex(
             obj => obj.buttonId === this.additionalButtonId
           );
           if (i > -1) {
-            this.currentStep.additionalButtons[i].buttonText = this.altAdditionalButtonText;
+            if (this.altAdditionalButtonText) {
+              this.currentStep.additionalButtons[i].buttonText = this.altAdditionalButtonText;
+            }
+            this.currentStep.additionalButtons[i].hide = this.additionalButtonHide;
           }
         }
       }

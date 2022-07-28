@@ -111,7 +111,6 @@ const getOfferingGroupServicesPath = (groupId: string)=>
 
 export const RequirementsPathResolver = (current: string, direction: string): string =>
 {
-  debugger;
   const atBeginningOfSericeOfferings = DescriptionOfWork.isAtBeginningOfServiceOfferings;
   const atBeginningOfOfferingGroups = DescriptionOfWork.isAtBeginningOfServiceGroups;
   const missingClassification = DescriptionOfWork.missingClassificationLevels;
@@ -162,7 +161,6 @@ export const RequirementsPathResolver = (current: string, direction: string): st
 export const OfferGroupOfferingsPathResolver = (
   current: string, direction: string
 ): string => {
-  debugger;
   DescriptionOfWork.setBackToContractDetails(false);
   Steps.clearAltBackButtonText();
 
@@ -194,7 +192,6 @@ export const OfferGroupOfferingsPathResolver = (
     || onlyNoneApplySelected 
     || atLastNoneApply 
     || lastGroupRemoved
-  debugger;
 
   if (!addGroupFromSummary 
     && ((currentGroupRemovedForNav && lastGroupRemoved) 
@@ -301,6 +298,7 @@ export const OfferGroupOfferingsPathResolver = (
       }
     }     
   }
+  
 
   const dontNeedButtonText = isCompute
     ? "I don’t need compute resources"
@@ -311,13 +309,22 @@ export const OfferGroupOfferingsPathResolver = (
     buttonId: "DontNeedResources"
   });
 
-  if (isCompute && current !== routeNames.ServiceOfferingDetails) {
-    const computeData = DescriptionOfWork.computeObject.computeData;
-    if (computeData && computeData.length) {
-      return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
+  Steps.setAdditionalButtonHide(false);
+  const computeData = DescriptionOfWork.computeObject.computeData;
+
+  if (isCompute) {
+    const currentInstanceNumber = DescriptionOfWork.currentComputeInstanceNumber;
+    if (current !== routeNames.ServiceOfferingDetails) {
+      if (computeData && computeData.length) {
+        return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
+      }
+    } else if (computeData && computeData.length > 0 
+      && !(currentInstanceNumber === 1 && computeData.length === 1) 
+    ) {
+      // if more than one compute instance, hide the "I don't need compute resources" button
+      Steps.setAdditionalButtonHide(true);
     }
   }
-
   //default  
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
@@ -325,11 +332,11 @@ export const OfferGroupOfferingsPathResolver = (
 //this will always return the path for the current group and the current offering
 export const OfferingDetailsPathResolver = (current: string, direction: string): string => {
   Steps.clearAltBackButtonText();
+  Steps.setAdditionalButtonHide(false);
   if (DescriptionOfWork.summaryBackToContractDetails) {
     DescriptionOfWork.setBackToContractDetails(false);
     return "period-of-performance/period-of-performance";
   }
-  debugger;
   const groupId = DescriptionOfWork.currentGroupId;
   if (groupId.toLowerCase() === "compute") {
     // EJY do we need to handle coming backward to this page?
@@ -417,7 +424,6 @@ export const OfferingDetailsPathResolver = (current: string, direction: string):
 }
 
 export const DowSummaryPathResolver = (current: string, direction: string): string =>{
-  debugger;
   DescriptionOfWork.setBackToContractDetails(current === routeNames.PropertyDetails);
   Steps.clearAltBackButtonText();
   if(current === routeNames.PropertyDetails){

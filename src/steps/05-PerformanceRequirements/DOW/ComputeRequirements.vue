@@ -67,29 +67,47 @@
       </v-row>
     </v-container>
 
-  <ATATDialog
-    :showDialog="showDialog"
-    :title="'Delete Instance #' + instanceNumberToDelete + '?'"
-    no-click-animation
-    okText="Delete instance"
-    width="450"
-    @ok="deleteInstance"
-    @cancelClicked="showDialog = false"
-  >
-    <template #content>
-      <p class="body">
-        This instance will be removed from your compute requirements. Any details 
-        about this instance will not be saved.
-      </p>
-    </template>
-  </ATATDialog>
+    <ATATDialog
+      :showDialog="showDeleteInstanceDialog"
+      :title="'Delete Instance #' + instanceNumberToDelete + '?'"
+      no-click-animation
+      okText="Delete instance"
+      width="450"
+      @ok="deleteInstance"
+      @cancelClicked="showDeleteInstanceDialog = false"
+    >
+      <template #content>
+        <p class="body">
+          This instance will be removed from your compute requirements. Any details 
+          about this instance will not be saved.
+        </p>
+      </template>
+    </ATATDialog>
+
+    <ATATDialog
+      :showDialog="showDeleteComputeDialog"
+      :title="'Delete all compute instances?'"
+      no-click-animation
+      okText="Delete compute"
+      width="450"
+      @ok="deleteCompute"
+      @cancelClicked="cancelDeleteCompute"
+    >
+      <template #content>
+        <p class="body">
+          This action will remove the "Compute" category from your performance requirements.
+          Any details about your instance<span v-if="tableData.length > 1">s</span> 
+          will not be saved.
+        </p>
+      </template>
+    </ATATDialog>
 
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -98,7 +116,6 @@ import DescriptionOfWork from "@/store/descriptionOfWork";
 import ClassificationRequirements from "@/store/classificationRequirements";
 import { ComputeData, ComputeInstanceTableData } from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
-
 
 @Component({
   components: {
@@ -126,11 +143,25 @@ export default class ComputeRequirements extends Vue {
   public tableData: ComputeInstanceTableData[] = [];
 
   public nextOfferingGroupStr = "";
-  public showDialog = false;
+  public showDeleteInstanceDialog = false;
   public instanceNumberToDelete = 0;
+  public showDeleteComputeDialog = false;
 
-  public goToComputeForm(): void {
-    // route to ServiceOfferings
+  get confirmComputeDelete(): boolean {
+    return DescriptionOfWork.confirmComputeDeleteVal;
+  }
+
+  @Watch("confirmComputeDelete")
+  public confirmComputeDeleteChanged(newVal: boolean): void {
+    if (newVal && this.tableData.length > 1) {
+      this.showDeleteComputeDialog = newVal;
+    } else if (newVal) {
+      this.deleteCompute();
+    }
+  }
+
+  public navigate(): void {
+    // route to ServiceOfferings or DOW Summary
     this.$router.push({
       name: "pathResolver",
       params: {
@@ -140,30 +171,38 @@ export default class ComputeRequirements extends Vue {
     }).catch(() => console.log("avoiding redundant navigation"));
   }
 
-  // EJY need to route to Compute Requirements page from Summary page
-  // EJY if have been to the summary page, 
-
   public async addComputeInstance(): Promise<void> {
     const lastInstanceNumber = await DescriptionOfWork.getLastComputeInstanceNumber();
     await DescriptionOfWork.setCurrentComputeInstanceNumber(lastInstanceNumber + 1);
-    this.goToComputeForm();
+    this.navigate();
   }
 
   public editInstance(item: ComputeInstanceTableData): void {
     DescriptionOfWork.setCurrentComputeInstanceNumber(item.instanceNumber);
     DescriptionOfWork.setCurrentOfferingGroupId("COMPUTE");
-    this.goToComputeForm();
+    this.navigate();
   }
 
   public confirmDeleteInstance(item: ComputeInstanceTableData): void {
     this.instanceNumberToDelete = item.instanceNumber;
-    this.showDialog = true;
+    this.showDeleteInstanceDialog = true;
   }
 
   public async deleteInstance(): Promise<void> {
     await DescriptionOfWork.deleteComputeInstance(this.instanceNumberToDelete);
     await this.buildTableData();
-    this.showDialog = false;
+    this.showDeleteInstanceDialog = false;
+  }
+
+  public async deleteCompute(): Promise<void> {
+    await DescriptionOfWork.deleteCompute();
+    DescriptionOfWork.setConfirmComputeDelete(false);
+    this.navigate();
+  }
+
+  public cancelDeleteCompute(): void {
+    this.showDeleteComputeDialog = false;
+    DescriptionOfWork.setConfirmComputeDelete(false);
   }
 
   public async buildTableData(): Promise<void> {
