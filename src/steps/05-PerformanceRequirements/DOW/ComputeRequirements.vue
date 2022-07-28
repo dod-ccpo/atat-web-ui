@@ -22,6 +22,7 @@
             :items-per-page="5"
             class="elevation-0 _compute-instances"
             :hide-default-footer="true"
+            no-data-text="You do not have any requirements yet."
           >
             <!-- eslint-disable vue/valid-v-slot -->
             <template v-slot:item.type="{ item }">
@@ -37,7 +38,7 @@
               </button>
 
               <button
-                @click="deleteInstance(item)"
+                @click="confirmDeleteInstance(item)"
                 class="ml-2"
               >
                 <ATATSVGIcon name="remove" height="18" width="14" />
@@ -60,11 +61,29 @@
               name="control-point" 
               class="mr-2"
             />
-            Add another instance
+            Add <span v-if="tableData.length">another</span> instance
           </v-btn>  
         </v-col>
       </v-row>
     </v-container>
+
+  <ATATDialog
+    :showDialog="showDialog"
+    :title="'Delete Instance #' + instanceNumberToDelete + '?'"
+    no-click-animation
+    okText="Delete instance"
+    width="450"
+    @ok="deleteInstance"
+    @cancelClicked="showDialog = false"
+  >
+    <template #content>
+      <p class="body">
+        This instance will be removed from your compute requirements. Any details 
+        about this instance will not be saved.
+      </p>
+    </template>
+  </ATATDialog>
+
   </div>
 </template>
 
@@ -72,17 +91,18 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 
-import DescriptionOfWork from "@/store/descriptionOfWork";
-import ClassificationRequirements from "@/store/classificationRequirements";
-
-import { ComputeData, ComputeInstanceTableData } from "../../../../types/Global";
+import ATATDialog from "@/components/ATATDialog.vue";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 
+import DescriptionOfWork from "@/store/descriptionOfWork";
+import ClassificationRequirements from "@/store/classificationRequirements";
+import { ComputeData, ComputeInstanceTableData } from "../../../../types/Global";
 import { buildClassificationLabel } from "@/helpers";
 
 
 @Component({
   components: {
+    ATATDialog,
     ATATSVGIcon
   }
 })
@@ -106,6 +126,8 @@ export default class ComputeRequirements extends Vue {
   public tableData: ComputeInstanceTableData[] = [];
 
   public nextOfferingGroupStr = "";
+  public showDialog = false;
+  public instanceNumberToDelete = 0;
 
   public goToComputeForm(): void {
     // route to ServiceOfferings
@@ -133,12 +155,20 @@ export default class ComputeRequirements extends Vue {
     this.goToComputeForm();
   }
 
-  public deleteInstance(item: string): void {
-    debugger;
-    // show modal confirmation
+  public confirmDeleteInstance(item: ComputeInstanceTableData): void {
+    this.instanceNumberToDelete = item.instanceNumber;
+    this.showDialog = true;
   }
 
-  public async loadOnEnter(): Promise<void> {
+  public async deleteInstance(): Promise<void> {
+    await DescriptionOfWork.deleteComputeInstance(this.instanceNumberToDelete);
+    await this.buildTableData();
+    this.instanceNumberToDelete = 0;
+    this.showDialog = false;
+  }
+
+  public async buildTableData(): Promise<void> {
+    this.tableData = [];
     this.computeInstances = await DescriptionOfWork.getComputeInstances();
     this.computeInstances.forEach((instance) => {
       const otherRegionIndex = instance.deployedRegions.indexOf("OtherRegion");
@@ -186,7 +216,11 @@ export default class ComputeRequirements extends Vue {
       this.tableData.push(instanceData);
     })
     // ensure sorted by instance number
-    this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);
+    this.tableData.sort((a, b) => a.instanceNumber > b.instanceNumber ? 1 : -1);    
+  }
+
+  public async loadOnEnter(): Promise<void> {
+    await this.buildTableData();
 
     const DOWObject = DescriptionOfWork.DOWObject;
     if (DOWObject && DOWObject.length > 1) {
