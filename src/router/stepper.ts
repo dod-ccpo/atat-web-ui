@@ -475,6 +475,16 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: ComputeRequirements,
         routeResolver: OfferingDetailsPathResolver,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need compute resources",
+            buttonId: "DontNeedResources",
+            buttonClass: "secondary",
+            actionName: "confirmComputeDeletion",
+            emitText: "confirmDeleteCompute",
+          },
+        ],
+
       },
       {
         menuText: "DOW Summary",

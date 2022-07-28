@@ -6,11 +6,13 @@ import router from "@/router";
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
   deleteServiceOfferingGroup: "deleteServiceOfferingGroup",
+  confirmComputeDeletion: "confirmComputeDeletion",
 }
 
 const actions =  {
   [actionHandlerNames.sampleAdditionalButtonAction]: sampleAdditionalButtonAction,
   [actionHandlerNames.deleteServiceOfferingGroup]: deleteServiceOfferingGroup,
+  [actionHandlerNames.confirmComputeDeletion]: confirmComputeDeletion,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -36,7 +38,11 @@ async function deleteServiceOfferingGroup() {
       direction: "next"
     },
   }).catch(() => console.log("avoiding redundant navigation"));
+}
 
+// used in Compute when user clicks "I don't need compute resources" button
+async function confirmComputeDeletion() {
+  DescriptionOfWork.setConfirmComputeDelete(true);
 }
 
 export default actionHandler;

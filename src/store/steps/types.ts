@@ -20,6 +20,7 @@ export interface AdditionalButton {
     emitText?: string;
     actionName?: string;
     actionArgs?: string[];
+    hide?: boolean;
 }
 
 export interface StepsState {
