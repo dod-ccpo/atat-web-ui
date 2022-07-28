@@ -568,13 +568,70 @@ export class DescriptionOfWorkStore extends VuexModule {
       = instancesData;
   }
 
-  // set (if selecting from table to edit) or increment (if adding new instance) 
-  // currentComputeInstanceNumber when working on AT-7765
+  // COMPUTE data and methods
+
   currentComputeInstanceNumber = 0;
 
+  emptyComputeInstance: ComputeData = {
+    instanceNumber: this.currentComputeInstanceNumber,
+    environmentType: "",
+    classificationLevel: "",
+    deployedRegions: [],
+    deployedRegionsOther: "",
+    needOrUsageDescription: "",
+    entireDuration: "",
+    periodsNeeded: [],
+    operatingSystemAndLicensing: "",
+    numberOfVCPUs: "",
+    memory: "",
+    storageType: "",
+    storageAmount: "",
+    performanceTier: "",
+    performanceTierOther: "",
+    numberOfInstancesNeeded: "1",
+  }
+
+  @Action
+  public async getLastComputeInstanceNumber(): Promise<number> {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      const computeData = this.DOWObject[computeIndex].computeData;
+      if (computeData && computeData.length > 0) {
+        const instanceNumbers = computeData.map(obj => obj.instanceNumber);
+        return  Math.max(...instanceNumbers);
+      }
+    }
+    return 1;
+
+  }
+
+
+  @Action
+  public async setCurrentComputeInstanceNumber(number: number): Promise<void> {
+    debugger;
+    this.doSetCurrentComputeInstanceNumber(number);
+  }
+
   @Mutation
-  public setCurrentComputeInstanceNumber(number: number): void {
+  public async doSetCurrentComputeInstanceNumber(number: number): Promise<void> {
+    debugger;
     this.currentComputeInstanceNumber = number;
+  }
+
+  @Action
+  public async getComputeInstance(instanceNumber: number): Promise<ComputeData> {
+    const computeData = this.computeObject.computeData;
+    if (computeData && computeData.length) {
+      const instance = computeData.find(
+        obj => obj.instanceNumber === instanceNumber
+      );
+      debugger;
+      return instance || _.clone(this.emptyComputeInstance);
+    }
+    debugger;
+    return _.clone(this.emptyComputeInstance);
   }
 
   public get computeObject(): DOWServiceOfferingGroup {
@@ -600,7 +657,10 @@ export class DescriptionOfWorkStore extends VuexModule {
   @Mutation
   public async doSetComputeData(computeData: ComputeData): Promise<void> {
     // debugger;
-    // const computeObj: DOWServiceOfferingGroup = this.computeObject;
+    const computeObj: DOWServiceOfferingGroup = this.computeObject;
+    // WHY IS THIS UNDEFINED???
+    debugger;
+
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
@@ -635,14 +695,14 @@ export class DescriptionOfWorkStore extends VuexModule {
 
   @Action
   public async getComputeInstances(): Promise<ComputeData[]> {
-    // const computeObj = this.computeObject;
+    debugger;
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
     if (computeIndex > -1) {
       const computeObj = this.DOWObject[computeIndex];
       if (
-        !Object.prototype.hasOwnProperty.call(computeObj, "computeData")
+        Object.prototype.hasOwnProperty.call(computeObj, "computeData")
         && computeObj.computeData
         && computeObj.computeData.length > 0
       ) {
