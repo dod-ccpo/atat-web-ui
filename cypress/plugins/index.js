@@ -13,6 +13,8 @@
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
+const { startDevServer } = require("@cypress/webpack-dev-server");
+const webpackConfig = require("@vue/cli-service/webpack.config");
 
 /**
  * @type {Cypress.PluginConfig}
@@ -24,6 +26,12 @@ require("dotenv").config()
 module.exports = (on, config) => {
   require('@cypress/code-coverage/task')(on, config)
   on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'))
+  on("dev-server:start", (options) =>
+    startDevServer({
+      options,
+      webpackConfig,
+    })
+  );
   
   require('cypress-grep/src/plugin')(on,config)
   
