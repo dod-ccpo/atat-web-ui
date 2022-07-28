@@ -252,7 +252,7 @@ export const OfferGroupOfferingsPathResolver = (
 
       DescriptionOfWork.setCurrentOfferingGroupId(previousGroup);
       const lastServiceOfferingForGroup = DescriptionOfWork.lastOfferingForGroup;
-   
+
       if (lastServiceOfferingForGroup === undefined) {
         throw new Error(`unable to get last offering for group ${previousGroup}`);
       }

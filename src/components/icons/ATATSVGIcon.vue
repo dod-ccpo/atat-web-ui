@@ -17,9 +17,11 @@ import { Component, Prop, PropSync } from "vue-property-decorator";
 import Calendar from "@/components/icons/Calendar.vue";
 import ChevronRight from "@/components/icons/ChevronRight.vue";
 import Close from "@/components/icons/Close.vue";
+import ControlPoint from "@/components/icons/ControlPoint.vue";
 import Currency from "@/components/icons/Currency.vue";
 import ExternalLink from "@/components/icons/ExternalLink.vue";
 import ExclamationMark from "@/components/icons/ExclamationMark.vue";
+import Edit from "@/components/icons/Edit.vue";
 import FilePresent from "@/components/icons/FilePresent.vue";
 import MonetizationOn from "@/components/icons/MonetizationOn.vue";
 import Pdf from "@/components/icons/Pdf.vue";
@@ -36,7 +38,9 @@ import TriangleDown from "@/components/icons/TriangleDown.vue";
     Calendar,
     ChevronRight,
     Close,
+    ControlPoint,
     Currency,
+    Edit,
     ExclamationMark,
     ExternalLink,
     FilePresent,

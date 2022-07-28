@@ -510,7 +510,7 @@ export default class ComputeForm extends Vue {
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
-    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix) : [];
+    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false) : [];
   }
 
   public async setAvailableClassificationLevels(): Promise<void> {
