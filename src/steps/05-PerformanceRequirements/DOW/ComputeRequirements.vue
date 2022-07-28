@@ -163,7 +163,6 @@ export default class ComputeRequirements extends Vue {
   public async deleteInstance(): Promise<void> {
     await DescriptionOfWork.deleteComputeInstance(this.instanceNumberToDelete);
     await this.buildTableData();
-    this.instanceNumberToDelete = 0;
     this.showDialog = false;
   }
 

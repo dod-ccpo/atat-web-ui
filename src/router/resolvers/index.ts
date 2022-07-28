@@ -170,7 +170,10 @@ export const OfferGroupOfferingsPathResolver = (
   // if no options selected on category page, or if only "None apply" checkboxes checked, 
   // or if last group was removed, send to summary page
   const DOWObject = DescriptionOfWork.DOWObject;
-  const atLastNoneApply = DescriptionOfWork.currentGroupId === DescriptionOfWork.cloudNoneValue;
+  const currentGroupId = DescriptionOfWork.currentGroupId;
+  const isCompute = currentGroupId.toLowerCase() === "compute";
+
+  const atLastNoneApply = currentGroupId === DescriptionOfWork.cloudNoneValue;
   const onlyNoneApplySelected = DOWObject.every((e) => {
     return e.serviceOfferingGroupId.indexOf("NONE") > -1;
   });
@@ -178,7 +181,9 @@ export const OfferGroupOfferingsPathResolver = (
 
   // if reviewing service group from store, set "atServicesEnd" to false 
   const reviewGroupFromSummary = DescriptionOfWork.reviewGroupFromSummary;
-  const atServicesEnd = reviewGroupFromSummary ? false : DescriptionOfWork.isEndOfServiceOfferings;
+  const atServicesEnd = reviewGroupFromSummary || isCompute 
+    ? false 
+    : DescriptionOfWork.isEndOfServiceOfferings;
   DescriptionOfWork.setReviewGroupFromSummary(false);
 
   const returnToDOWSummary = DescriptionOfWork.returnToDOWSummary;
@@ -189,6 +194,7 @@ export const OfferGroupOfferingsPathResolver = (
     || onlyNoneApplySelected 
     || atLastNoneApply 
     || lastGroupRemoved
+  debugger;
 
   if (!addGroupFromSummary 
     && ((currentGroupRemovedForNav && lastGroupRemoved) 
@@ -215,7 +221,7 @@ export const OfferGroupOfferingsPathResolver = (
     // direct the user back to the performance requirements step
     if (current === routeNames.ServiceOfferingDetails && 
       atBeginningOfOfferingGroups && atBeginningOfSericeOfferings){
-      return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
+      return getOfferingGroupServicesPath(currentGroupId);
     }
 
     if (atBeginningOfOfferingGroups && atBeginningOfSericeOfferings && 
@@ -227,13 +233,12 @@ export const OfferGroupOfferingsPathResolver = (
     //get the next service offering and display it in service offering details
     if (atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings){
       const previousServiceOffering = DescriptionOfWork.previousServiceOffering;
-      const groupId = DescriptionOfWork.currentGroupId;
       if (previousServiceOffering === undefined) {
         throw new Error('unable to get previous service offering group');
       }
       DescriptionOfWork.setCurrentOffering(previousServiceOffering);
 
-      return getServiceOfferingsDetailsPath(groupId, previousServiceOffering.name);
+      return getServiceOfferingsDetailsPath(currentGroupId, previousServiceOffering.name);
     }
 
     //at the beginning of service offerings for a given offering group
@@ -242,7 +247,7 @@ export const OfferGroupOfferingsPathResolver = (
       //send the user to the step to select the Service Offerings (Service Offerings)
       if (current === routeNames.ServiceOfferingDetails) {
         //display service offering group page
-        return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
+        return getOfferingGroupServicesPath(currentGroupId);
       }
 
       const previousGroup = DescriptionOfWork.prevOfferingGroup;
@@ -263,8 +268,6 @@ export const OfferGroupOfferingsPathResolver = (
     //not at the beginning of service offerings or offering groups
     //get the next server offering and display in service offering details
     if (!atBeginningOfOfferingGroups && !atBeginningOfSericeOfferings) {
-      const groupId = DescriptionOfWork.currentGroupId;
-
       //can we get the previous service offering for this group?
       const canGetPreviousOffering = DescriptionOfWork.canGetPreviousServiceOffering;
 
@@ -277,7 +280,7 @@ export const OfferGroupOfferingsPathResolver = (
 
         DescriptionOfWork.setCurrentOffering(serviceOffering);
 
-        return getServiceOfferingsDetailsPath(groupId, serviceOffering.name);
+        return getServiceOfferingsDetailsPath(currentGroupId, serviceOffering.name);
       } else {
         //we couldn't get the previous offering so try to get the previous offering group
         const previousGroup = DescriptionOfWork.prevOfferingGroup;
@@ -299,7 +302,7 @@ export const OfferGroupOfferingsPathResolver = (
     }     
   }
 
-  const dontNeedButtonText = DescriptionOfWork.currentGroupId.toLowerCase() === "compute"
+  const dontNeedButtonText = isCompute
     ? "I don’t need compute resources"
     : "I don’t need these cloud resources";
 
@@ -307,7 +310,14 @@ export const OfferGroupOfferingsPathResolver = (
     buttonText: dontNeedButtonText, 
     buttonId: "DontNeedResources"
   });
-  debugger;
+
+  if (isCompute && current !== routeNames.ServiceOfferingDetails) {
+    const computeData = DescriptionOfWork.computeObject.computeData;
+    if (computeData && computeData.length) {
+      return `${basePerformanceRequirementsPath}/service-offerings/compute/requirements`;
+    }
+  }
+
   //default  
   return getOfferingGroupServicesPath(DescriptionOfWork.currentGroupId);
 }
