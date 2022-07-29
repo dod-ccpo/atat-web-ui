@@ -13,13 +13,12 @@
             <span v-if="nextOfferingGroupStr">{{ nextOfferingGroupStr }}</span> 
             <span v-else>performance requirements</span>
             requirements.
-            <!-- EJY what if only selecting Compute? -->
           </p>
 
           <v-data-table
             :headers="tableHeaders"
             :items="tableData"
-            :items-per-page="5"
+            :items-per-page="-1"
             class="elevation-0 _compute-instances"
             :hide-default-footer="true"
             no-data-text="You do not have any requirements yet."
@@ -153,7 +152,7 @@ export default class ComputeRequirements extends Vue {
 
   @Watch("confirmComputeDelete")
   public confirmComputeDeleteChanged(newVal: boolean): void {
-    if (newVal && this.tableData.length > 1) {
+    if (newVal && this.tableData.length > 0) {
       this.showDeleteComputeDialog = newVal;
     } else if (newVal) {
       this.deleteCompute();
