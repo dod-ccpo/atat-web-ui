@@ -569,7 +569,28 @@ export default class ComputeForm extends Vue {
 
   public async mounted(): Promise<void> {
     await this.loadOnEnter();
+    this.setErrorMessage();
+
   };
+
+  $refs!: {
+    computeForm: Vue & {
+      resetValidation: () => void;
+      errorBucket: string[];
+      reset: () => void;
+      validate: () => boolean;
+    };
+  };
+
+  public errorMessages: string[] = []
+  private setErrorMessage(): void {
+    const formChildren = this.$refs.computeForm.$children;
+    debugger;
+    Vue.nextTick(()=>{
+      this.errorMessages = this.$refs.computeForm.errorBucket;
+      debugger;
+    });
+  }
 
   get Form(): Vue & { validate: () => boolean } {
     return this.$refs.computeForm as Vue & { validate: () => boolean };
@@ -578,7 +599,7 @@ export default class ComputeForm extends Vue {
   public async validateForm(): Promise<boolean> {
     let valid = false;
 
-    await this.$nextTick(() => {
+    this.$nextTick(() => {
       valid = this.Form.validate();
     });
     return valid;
