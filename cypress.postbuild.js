@@ -18,8 +18,6 @@ const materialIconsRegEx = /\s*other_assets\/MaterialIcons/g
 const robotoFontsRegex = /\s*other_assets\/roboto-/g
 const imgRegex = /\s*img\//g
 
-//https://flaviocopes.com/is-not-a-function/
-
 ;(async function() {
   await decorateIndexHTML(PATH_TO_DIST_HTML)
   updateAppWebPackPaths()
