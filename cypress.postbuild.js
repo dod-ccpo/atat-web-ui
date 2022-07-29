@@ -6,6 +6,7 @@ const path = require('path');
 const dirTree = require('directory-tree')
 const clear = require('clear')
 const { minify } = require("terser");
+const html = require('html-minifier-terser');
 // const minify = require("babel-minify");
 const {
   Console
@@ -21,7 +22,7 @@ const imgRegex = /\s*img\//g
 //https://flaviocopes.com/is-not-a-function/
 
 ;(async function() {
-  decorateIndexHTML(PATH_TO_DIST_HTML)
+  await decorateIndexHTML(PATH_TO_DIST_HTML)
   updateAppWebPackPaths()
   await minifyJavascript()
   outputResults()
@@ -51,7 +52,7 @@ function resolveMetaTags(inputHTML) {
 }
 
 
-function decorateIndexHTML(pathToHTML) {
+async function decorateIndexHTML(pathToHTML) {
   clear();
   console.log('Cypress Test Post build ');
   const indexHTMLContent = fs.readFileSync(pathToHTML, 'utf-8')
@@ -61,14 +62,17 @@ function decorateIndexHTML(pathToHTML) {
   } else {
     let decoratedHTML = indexHTMLContent
     decoratedHTML = transformScripts(decoratedHTML)
+    decoratedHTML = await html.minify(decoratedHTML, {});
     fs.writeFileSync(pathToHTML, decoratedHTML)
   }
 }
 
 async function minifyJavascript(){
+
   console.log('minify javascript');
   try {
 
+ 
     const files = fs.readdirSync('./dist_testing/js');
     const dirPath = path.join(__dirname, '/dist_testing/js');
     const jsFiles = files.map(file=> (`${dirPath}\\${file}`));
