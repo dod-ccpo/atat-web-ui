@@ -332,7 +332,6 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel 
 } from "@/helpers";
-
 import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({

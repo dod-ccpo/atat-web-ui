@@ -21,6 +21,8 @@ export default class DonutChart extends Vue {
   @Prop({ required: false, default: "" }) public centerText2!: string;
   @Prop({ required: false, default: "" }) public amount!: number;
   @Prop({ required: false, default: true}) showLabelOnHover!: boolean;
+  @Prop({ required: false, default: "" }) public individualAmtsArr!: {[key:string]:number} ;
+
 
   private myChart!: Chart;
 
@@ -137,7 +139,7 @@ export default class DonutChart extends Vue {
       labelSpan.appendChild(text);
 
       const percentNo = parseFloat(labelText.slice(sep + 2, labelText.length));
-      const amount = "$" + toCurrencyString(this.amount * percentNo / 100).slice(0, -3);
+      const amount = "$" + toCurrencyString(this.individualAmtsArr[label]).slice(0, -3);
       const amountNode = document.createTextNode(amount)
       const percentSpan = document.createElement("span");
       percentSpan.style.fontSize = "14px";
