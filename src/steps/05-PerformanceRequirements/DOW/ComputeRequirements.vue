@@ -130,11 +130,11 @@ export default class ComputeRequirements extends Vue {
     { text: "", value: "instanceNumber", width: "50" },
     { text: "Type", value: "type" },
     { text: "Location", value: "location" },
+    { text: "Classification", value: "classification" },
     { text: "Quantity", value: "qty" },
     { text: "vCPU", value: "vCPU" },
     { text: "Memory", value: "memory" },
     { text: "Storage", value: "storage" },
-    { text: "Classification", value: "classification" },
     { text: "Performance", value: "performance" },
     { text: "", value: "actions", width: "75" },
   ];
@@ -243,11 +243,11 @@ export default class ComputeRequirements extends Vue {
         instanceNumber: instance.instanceNumber,
         type: instance.environmentType,
         location: deployedRegions,
+        classification: classificationLevel,
         qty: instance.numberOfInstancesNeeded,
         vCPU: instance.numberOfVCPUs,
         memory: instance.memory ? `${instance.memory} GB` : "",
         storage: instance.storageAmount ? `${instance.storageAmount} GB` : "" ,
-        classification: classificationLevel,
         performance: performanceTier,
       };
       this.tableData.push(instanceData);
