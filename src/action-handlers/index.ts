@@ -6,11 +6,13 @@ import router from "@/router";
 const actionHandlerNames = {
   sampleAdditionalButtonAction: "sampleAdditionalButtonAction",
   deleteServiceOfferingGroup: "deleteServiceOfferingGroup",
+  confirmComputeDeletion: "confirmComputeDeletion",
 }
 
 const actions =  {
   [actionHandlerNames.sampleAdditionalButtonAction]: sampleAdditionalButtonAction,
   [actionHandlerNames.deleteServiceOfferingGroup]: deleteServiceOfferingGroup,
+  [actionHandlerNames.confirmComputeDeletion]: confirmComputeDeletion,
 };
 
 async function actionHandler(actionName: string, actionArgs: string[]): Promise<void> {
@@ -18,9 +20,10 @@ async function actionHandler(actionName: string, actionArgs: string[]): Promise<
 } 
 
 function sampleAdditionalButtonAction(actionArgs: string[]) {
-  console.log('args in actionHandler:', actionArgs);
-  const [foo, bar] = actionArgs;
-  console.log("in action-handler: foo: " + foo + "bar: " + bar);
+  // commented code for demonstration purposes only
+  // console.log('args in actionHandler:', actionArgs);
+  // const [foo, bar] = actionArgs;
+  // console.log("in action-handler: foo: " + foo + "bar: " + bar);
   AcquisitionPackage.sampleAdditionalButtonActionInStore(actionArgs);
   alert("\"Cancel\" will navigate to JWCC intro when completed.");
 }
@@ -36,7 +39,11 @@ async function deleteServiceOfferingGroup() {
       direction: "next"
     },
   }).catch(() => console.log("avoiding redundant navigation"));
+}
 
+// used in Compute when user clicks "I don't need compute resources" button
+async function confirmComputeDeletion() {
+  DescriptionOfWork.setConfirmComputeDelete(true);
 }
 
 export default actionHandler;

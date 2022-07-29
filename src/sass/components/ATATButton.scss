@@ -50,7 +50,7 @@
       background-color: $primary-darker !important;
     }
   }
-
+  
   &.secondary.theme--light {
     background-color: $white !important;
     border: 2px solid $primary !important;
@@ -63,6 +63,14 @@
     &:active {
       background-color: rgba($primary, 20%) !important;
     }
+  }
+
+  &._normal {
+    font-weight: normal !important;
+  }
+
+  &._small-text {
+    font-size: 1.4rem !important;
   }
 
   &.link-button, &.tertirary {

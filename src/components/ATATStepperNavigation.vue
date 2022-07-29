@@ -23,6 +23,7 @@
             role="link" 
             class="ml-4"
             :id="button.buttonId"
+            :class="{ 'd-none': button.hide }"
           >
             {{ button.buttonText }}
           </v-btn>

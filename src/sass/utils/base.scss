@@ -152,6 +152,7 @@ textarea {
     padding: 0px;
     margin-bottom:0px;
   }
+
  .v-data-table__wrapper {
    tbody {
      line-height: 1.2em !important;
@@ -163,6 +164,7 @@ textarea {
         }
       }
        td {
+        font-size: 1.5rem !important;
          padding-top: 16px !important;
          padding-bottom: 16px !important;
          .badge-green {
@@ -174,6 +176,46 @@ textarea {
    }
  }
 }
+
+._compute-instances.v-data-table > .v-data-table__wrapper > table > tbody {
+  > tr {
+    &.v-data-table__empty-wrapper {
+      height: 120px;
+      
+      td {
+        font-weight: normal !important;
+        font-size: 1.6rem;
+        color: $base-dark;
+      }
+    }
+
+    > td {
+      font-size: 1.4rem;
+      padding: 8px;
+    
+      &:first-of-type {
+        font-weight: 500;
+      }
+      
+      &:nth-of-type(2) {
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+._compute-instances.v-data-table > .v-data-table__wrapper > table > thead > tr {
+  background-color: $base-lightest;
+  & > th {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: $base-dark;
+    border-bottom: none !important;
+    white-space: nowrap;
+    padding: 8px;
+  } 
+}
+
 ._v-align-top {
   vertical-align: top !important;
 }

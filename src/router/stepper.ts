@@ -44,14 +44,16 @@ import BackgroundSummary from "../steps/03-Background/Summary.vue"
 import PerformanceRequirementsIndex from "../steps/05-PerformanceRequirements/Index.vue";
 import RequirementCategories
   from "../steps/05-PerformanceRequirements/DOW/RequirementCategories.vue";
-import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue"
+import ServiceOfferings from "../steps/05-PerformanceRequirements/DOW/ServiceOfferings.vue";
 import ServiceOfferingDetails 
-  from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue"
+  from "../steps/05-PerformanceRequirements/DOW/ServiceOfferingDetails.vue";
+import ComputeRequirements 
+  from "../steps/05-PerformanceRequirements/DOW/ComputeRequirements.vue";
 import DOWSummary 
-  from "../steps/05-PerformanceRequirements/DOW/Summary.vue"
+  from "../steps/05-PerformanceRequirements/DOW/Summary.vue";
 
 // Step 6 - Government Furnished Equipment
-import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue"
+import GovtFurnishedEquipment from "../steps/06-GovtFurnishedEquipment/Index.vue";
 import PropertyDetails from "../steps/06-GovtFurnishedEquipment/PropertyDetails.vue";
 import Justification from "../steps/06-GovtFurnishedEquipment/Justification.vue";
 
@@ -135,6 +137,7 @@ export const routeNames = {
   RequirementCategories: "Requirement_Categories",
   ServiceOfferings: "Service_Offerings",
   ServiceOfferingDetails: "Service_Offering_Details",
+  ComputeRequirements: "Compute_Requirements",
   DOWSummary: "DOW_Summary",
   OptimizeCurrentEnvironment: "Optimize_Current_Environment",
   AnythingASAServiceXaas:"Anything_as_a_Service_Xaas",
@@ -463,6 +466,25 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         completePercentageWeight: 1,
         component: ServiceOfferingDetails,
         routeResolver: OfferingDetailsPathResolver,
+      },
+      {
+        menuText: "Compute Requirements",
+        path: "service-offerings/compute/requirements",
+        excludeFromMenu: true,
+        name: routeNames.ServiceOfferingDetails,
+        completePercentageWeight: 1,
+        component: ComputeRequirements,
+        routeResolver: OfferingDetailsPathResolver,
+        additionalButtons: [
+          {
+            buttonText: "I don’t need compute resources",
+            buttonId: "DontNeedResources",
+            buttonClass: "secondary",
+            actionName: "confirmComputeDeletion",
+            emitText: "confirmDeleteCompute",
+          },
+        ],
+
       },
       {
         menuText: "DOW Summary",

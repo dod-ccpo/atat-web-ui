@@ -305,6 +305,8 @@
                           :center-text1="getCurrencyString(totalPortfolioFunds, false)"
                           center-text2="Total Portfolio Funds"
                           :amount="totalPortfolioFunds"
+                          :individualAmtsArr="portfolioFundsObj"
+
                         />
                       </v-col>
                       <v-col class="col-sm-6 d-flex align-center">
@@ -323,7 +325,7 @@
                               <strong>{{ label }}</strong>
                             </div>
                             <div class="pr-4 py-2">
-                              {{ getLegendAmount(index) }}
+                              {{ getCurrencyString(portfolioFundsObj[label], false) }}
                             </div>
                             <div style="width: 50px;" class="text-right font-weight-700 py-2">
                               {{ roundDecimal(donutChartData.datasets[0].data[index], 1) }}%
@@ -592,10 +594,10 @@ import LineChart from "../components/charts/LineChart.vue";
 import ATATCharts from "@/store/charts";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import TaskOrder from "@/store/taskOrder";
-import { toCurrencyString, getIdText } from "@/helpers";
+import { toCurrencyString, getIdText, roundTo100 } from "@/helpers";
 import { CostsDTO, TaskOrderDTO, ClinDTO } from "@/api/models";
 
-import { add } from "date-fns";
+import { add, startOfMonth, subDays } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import formatISO from "date-fns/formatISO"
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
@@ -724,7 +726,9 @@ export default class PortfolioDashboard extends Vue {
     const popStartDate = parseISO(this.taskOrder.pop_start_date, { additionalDigits: 1 });
     const start = new Date(popStartDate.setHours(0,0,0,0));
     this.monthsIntoPoP = differenceInCalendarMonths(today, start);
-    const daysSinceStartDate = differenceInCalendarDays(today, start);
+    let endOfSpending = startOfMonth(today);
+    endOfSpending = subDays(endOfSpending, 1);
+    const daysSinceStartDate = differenceInCalendarDays(endOfSpending, start);
     const dailySpend = this.fundsSpent / daysSinceStartDate;
     const daysUntilAllFundsSpent = Math.round(this.availableFunds / dailySpend);
     const runOutOfFundsDate = add(today, { days: daysUntilAllFundsSpent});
@@ -764,8 +768,12 @@ export default class PortfolioDashboard extends Vue {
       this.estimatedFundsToBeInvoicedPercent,
       this.estimatedRemainingPercent
     ];
-
-    this.donutChartData.datasets[0].data = this.donutChartPercentages;
+    this.portfolioFundsObj = {
+      "Funds spent": this.fundsSpent,
+      "Estimated funds to be invoiced": this.endOfMonthForecast,
+      "Estimated funds available": this.totalPortfolioFunds * this.estimatedRemainingPercent / 100,
+    }
+    this.donutChartData.datasets[0].data = roundTo100(this.donutChartPercentages,true);
 
     const popStartISO = this.taskOrder.pop_start_date;
     const popStartDate = parseISO(popStartISO);
@@ -1278,7 +1286,7 @@ export default class PortfolioDashboard extends Vue {
     this.chartDataColorSequence[1],
     this.chartDataColors.gray,
   ];
-
+  public portfolioFundsObj: {[key:string]:number} = {}
   public donutChartData = {
     labels: [
       "Funds spent",

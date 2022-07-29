@@ -1,11 +1,19 @@
 <template>
   <div>
-    <h1 class="page-header mb-3">Let’s start by gathering your Compute requirements</h1>
+    <h1 class="page-header mb-3">
+      <span v-if="firstTimeHere">Let’s start by gathering your Compute requirements</span>
+      <span v-else>
+        Let’s gather some details for Compute Instance #{{ _computeData.instanceNumber }}
+      </span>
+    </h1>
     <p 
       class="copy-max-width"
       :class="showSubtleAlert ? 'mb-4' : 'mb-10'"
     >
-      In this section, we’ll collect details about each compute instance that you need. 
+      <span v-if="firstTimeHere">
+        In this section, we’ll collect details about each compute instance that you need. 
+      </span>
+
       If you need multiple, we’ll walk through them one at a time. 
       <span v-if="avlClassificationLevelObjects.length === 1">
         You previously specified <strong>{{ singleClassificationLevelName }} </strong> 
@@ -26,10 +34,17 @@
       v-show="showSubtleAlert"
       :isClassificationDataMissing="isClassificationDataMissing"
       :isPeriodsDataMissing="isPeriodsDataMissing"
+      class="copy-max-width"
     />
 
     <h2 class="mb-5" id="FormSection1Heading">
-      1. Tell us about Instance #{{ _computeData.instanceNumber }}
+      1. 
+      <span v-if="firstTimeHere">
+        Tell us about Instance #{{ _computeData.instanceNumber }}
+      </span>
+      <span v-else>
+        Instance details
+      </span>
     </h2>
     <ATATRadioGroup
       id="EnvironmnetType"
@@ -282,6 +297,7 @@ import {
   buildClassificationCheckboxList, 
   buildClassificationLabel 
 } from "@/helpers";
+import DescriptionOfWork from "@/store/descriptionOfWork";
 
 @Component({
   components: {
@@ -300,7 +316,7 @@ import {
 export default class ComputeForm extends Vue {
 
   @PropSync("computeData") public _computeData!: ComputeData;
-
+  public firstTimeHere = false;
   public showSubtleAlert = false;
   public routeNames = routeNames;
   public modalSelectionsOnOpen: string[] = [];
@@ -509,7 +525,7 @@ export default class ComputeForm extends Vue {
 
   private createCheckboxOrRadioItems(data: ClassificationLevelDTO[], idSuffix: string) {
     idSuffix = idSuffix || "";
-    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix) : [];
+    return data.length > 1 ? buildClassificationCheckboxList(data, idSuffix, false) : [];
   }
 
   public async setAvailableClassificationLevels(): Promise<void> {
@@ -518,6 +534,9 @@ export default class ComputeForm extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
+    const computeObj = DescriptionOfWork.computeObject;
+    this.firstTimeHere = !computeObj.computeData || computeObj.computeData.length === 0;
+
     // get classification levels selected in step 4 Contract Details
     this.avlClassificationLevelObjects 
       = await ClassificationRequirements.getSelectedClassificationLevels();
