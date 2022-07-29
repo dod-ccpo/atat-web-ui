@@ -284,3 +284,15 @@ export interface ComputeData {
   performanceTierOther: string; // missing from AC
   numberOfInstancesNeeded: string;
 }
+
+export interface ComputeInstanceTableData {
+  instanceNumber: number;
+  type: string;
+  location: string;
+  qty: string;
+  vCPU: string;
+  memory: string;
+  storage: string;
+  classification: string;
+  performance: string;
+}

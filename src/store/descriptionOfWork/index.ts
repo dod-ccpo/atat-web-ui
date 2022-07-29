@@ -24,7 +24,7 @@ import {
   ComputeData
 } from "../../../types/Global";
 
-import _, { differenceWith, last } from "lodash";
+import _, { differenceWith, first, last } from "lodash";
 import ClassificationRequirements from "@/store/classificationRequirements";
 
 
@@ -568,13 +568,78 @@ export class DescriptionOfWorkStore extends VuexModule {
       = instancesData;
   }
 
-  // set (if selecting from table to edit) or increment (if adding new instance) 
-  // currentComputeInstanceNumber when working on AT-7765
+  // COMPUTE data/methods
+
   currentComputeInstanceNumber = 0;
 
+  emptyComputeInstance: ComputeData = {
+    instanceNumber: this.currentComputeInstanceNumber,
+    environmentType: "",
+    classificationLevel: "",
+    deployedRegions: [],
+    deployedRegionsOther: "",
+    needOrUsageDescription: "",
+    entireDuration: "",
+    periodsNeeded: [],
+    operatingSystemAndLicensing: "",
+    numberOfVCPUs: "",
+    memory: "",
+    storageType: "",
+    storageAmount: "",
+    performanceTier: "",
+    performanceTierOther: "",
+    numberOfInstancesNeeded: "1",
+  }
+
+  @Action
+  public async getLastComputeInstanceNumber(): Promise<number> {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      const computeData = this.DOWObject[computeIndex].computeData;
+      if (computeData && computeData.length > 0) {
+        const instanceNumbers = computeData.map(obj => obj.instanceNumber);
+        return  Math.max(...instanceNumbers);
+      }
+    }
+    return 1;
+  }
+
+  @Action
+  public async setCurrentComputeInstanceNumber(number: number): Promise<void> {
+    this.doSetCurrentComputeInstanceNumber(number);
+  }
+
   @Mutation
-  public setCurrentComputeInstanceNumber(number: number): void {
+  public async doSetCurrentComputeInstanceNumber(number: number): Promise<void> {
     this.currentComputeInstanceNumber = number;
+  }
+
+  @Action
+  public async getComputeInstance(instanceNumber: number): Promise<ComputeData> {
+    const computeData = this.computeObject.computeData;
+    if (computeData && computeData.length) {
+      const instance = computeData.find(
+        obj => obj.instanceNumber === instanceNumber
+      );
+      return instance || _.clone(this.emptyComputeInstance);
+    }
+    return _.clone(this.emptyComputeInstance);
+  }
+
+  public get computeObject(): DOWServiceOfferingGroup {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      return this.DOWObject[computeIndex];
+    } 
+    return {
+      serviceOfferingGroupId: "",
+      sequence: 0,
+      serviceOfferings: []
+    };
   }
 
   @Action
@@ -583,34 +648,133 @@ export class DescriptionOfWorkStore extends VuexModule {
   }
 
   @Mutation
-  public doSetComputeData(computeData: ComputeData): void {
+  public async doSetComputeData(computeData: ComputeData): Promise<void> {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+
+    if (computeIndex > -1) {
+      const computeObj = this.DOWObject[computeIndex];
+      if (
+        computeObj 
+        && Object.prototype.hasOwnProperty.call(computeObj, "serviceOfferingGroupId")
+        && computeObj.serviceOfferingGroupId
+      ) {
+        if (!Object.prototype.hasOwnProperty.call(computeObj, "computeData")) {
+          computeObj.computeData = [];
+          computeObj.computeData?.push(computeData);
+        } else {
+          const instanceNumber = computeData.instanceNumber;
+          const existingInstance = computeObj.computeData?.find(
+            o => o.instanceNumber === instanceNumber
+          );
+          if (existingInstance ) {
+            Object.assign(existingInstance, computeData);
+          } else {
+            computeObj.computeData?.push(computeData);
+          }
+        }
+        this.computeInstancesTouched.push(computeData.instanceNumber);
+
+      } else {
+        throw new Error("Error saving Compute data to store");
+      }
+    }
+  }
+
+  @Action
+  public async getComputeInstances(): Promise<ComputeData[]> {
     const computeIndex = this.DOWObject.findIndex(
       o => o.serviceOfferingGroupId.toLowerCase() === "compute"
     );
     if (computeIndex > -1) {
       const computeObj = this.DOWObject[computeIndex];
-      if (!Object.prototype.hasOwnProperty.call(computeObj, "computeData")) {
-        computeObj.computeData = [];
-        computeObj.computeData?.push(computeData);
-      } else {
-        const instanceNumber = computeData.instanceNumber;
-        const existingInstance = computeObj.computeData?.find(
-          o => o.instanceNumber === instanceNumber
+      if (
+        Object.prototype.hasOwnProperty.call(computeObj, "computeData")
+        && computeObj.computeData
+        && computeObj.computeData.length > 0
+      ) {
+        return computeObj.computeData;
+      }
+    }
+    return [];
+  }
+
+  @Action
+  public async deleteComputeInstance(instanceNumber: number): Promise<void> {
+    this.doDeleteComputeInstance(instanceNumber);
+  }
+
+  @Mutation
+  public doDeleteComputeInstance(instanceNumber: number): void {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      const computeObj = this.DOWObject[computeIndex];
+      if (
+        computeObj 
+        && Object.prototype.hasOwnProperty.call(computeObj, "computeData")
+        && computeObj.computeData
+      ) {
+        // 
+        const instanceIndex = computeObj.computeData.findIndex(
+          obj => obj.instanceNumber === instanceNumber
         );
-        if (existingInstance ) {
-          Object.assign(existingInstance, computeData);
-        } else {
-          computeObj.computeData?.push(computeData);
+        computeObj.computeData.splice(instanceIndex, 1);
+        for (let i = instanceIndex; i < computeObj.computeData.length; i++) {
+          computeObj.computeData[i].instanceNumber = computeObj.computeData[i].instanceNumber - 1;
         }
       }
-      this.computeInstancesTouched.push(computeData.instanceNumber);
+    }
+    // remove instanceNumber from touched ones - this.computeInstancesTouched
+    // decrease each instance number after instanceNumber
+    this.computeInstancesTouched.sort((a, b) => a > b ? 1 : -1);
+    const deleteIndex = this.computeInstancesTouched.indexOf(instanceNumber);
+    this.computeInstancesTouched.splice(deleteIndex, 1);
+    this.computeInstancesTouched.map(i => i >= deleteIndex ? i + 1 : i);
+    debugger;
+  }
 
-    } else {
-      throw new Error("Error saving Compute data to store");
+  confirmComputeDelete = false;
+
+  public get confirmComputeDeleteVal(): boolean {
+    return this.confirmComputeDelete;
+  }
+
+  @Action
+  public setConfirmComputeDelete(bool: boolean): void {
+    this.doSetConfirmComputeDelete(bool);
+  }
+  @Mutation
+  public doSetConfirmComputeDelete(bool: boolean): void {
+    this.confirmComputeDelete = bool;
+  }
+
+  @Action
+  public async deleteCompute(): Promise<void> {
+    this.doDeleteCompute();
+  }
+
+  @Mutation
+  public doDeleteCompute(): void {
+    const computeIndex = this.DOWObject.findIndex(
+      o => o.serviceOfferingGroupId.toLowerCase() === "compute"
+    );
+    if (computeIndex > -1) {
+      this.DOWObject.splice(computeIndex, 1);
+      if (this.DOWObject.length) {
+
+        const nextGroupId = this.DOWObject.length === computeIndex
+          ? this.DOWObject[computeIndex - 1].serviceOfferingGroupId
+          : this.DOWObject[computeIndex].serviceOfferingGroupId;
+        this.currentGroupId = nextGroupId;
+      }
     }
   }
 
   computeInstancesTouched: number[] = [];
+  // END COMPUTE data/methods
 
   @Mutation
   public setCurrentOffering(value: { name: string, sysId: string }): void {

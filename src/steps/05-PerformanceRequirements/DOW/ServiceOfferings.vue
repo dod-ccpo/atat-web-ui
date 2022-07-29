@@ -6,10 +6,18 @@
           v-if="isServiceOfferingList"
           class="col-12"
         >
-          <h1 class="page-header">
+          <h1 
+            class="page-header"
+            :class="{'mb-4' : showSubtleAlert}"
+          >
             What type of {{ requirementName }} do you need?
           </h1>
           <div class="copy-max-width">
+            <DOWSubtleAlert
+              v-show="showSubtleAlert"
+              :isClassificationDataMissing="isClassificationDataMissing"
+              :isPeriodsDataMissing="isPeriodsDataMissing"
+            />
             <p id="CheckboxGroupLabel">
               Select all that apply to your contracting effort.
             </p>
@@ -52,6 +60,10 @@ import { Component, Mixins, Watch } from "vue-property-decorator";
 import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ComputeForm from "./ComputeForm.vue";
 import DescriptionOfWork from "@/store/descriptionOfWork";
+import Periods from "@/store/periods";
+import classificationRequirements from "@/store/classificationRequirements";
+
+import DOWSubtleAlert from "./DOWSubtleAlert.vue";
 
 import { Checkbox, ComputeData, DOWServiceOffering } from "../../../../types/Global";
 import { getIdText } from "@/helpers";
@@ -60,6 +72,7 @@ import { getIdText } from "@/helpers";
   components: {
     ATATCheckboxGroup,
     ComputeForm,
+    DOWSubtleAlert,
   }
 })
 
@@ -108,6 +121,9 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
     performanceTierOther: "",
     numberOfInstancesNeeded: "1",
   }
+  public showSubtleAlert = false;
+  public isPeriodsDataMissing = false;
+  public isClassificationDataMissing = false;
 
   public async loadOnEnter(): Promise<void> {
     this.serviceGroupOnLoad = DescriptionOfWork.currentGroupId;
@@ -162,8 +178,12 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
           );
           if (computeData) {
             this.computeData = computeData;
+          } else {
+            const newComputeData 
+              = await DescriptionOfWork.getComputeInstance(0);
+            newComputeData.instanceNumber = currentComputeInstanceNumber;
+            this.computeData = newComputeData;
           }
-
         } else {
           this.computeData.instanceNumber = 1;
           DescriptionOfWork.setCurrentComputeInstanceNumber(1);
@@ -171,6 +191,11 @@ export default class ServiceOfferings extends Mixins(SaveOnLeave) {
       }
     }
 
+    const periods = await Periods.loadPeriods();
+    const classifications = await classificationRequirements.getSelectedClassificationLevels();
+    this.isPeriodsDataMissing = periods.length === 0 ? true : false;
+    this.isClassificationDataMissing = classifications.length === 0 ? true : false;
+    this.showSubtleAlert = this.isPeriodsDataMissing || this.isClassificationDataMissing;
   } 
 
   public async mounted(): Promise<void> {

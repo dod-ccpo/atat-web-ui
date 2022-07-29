@@ -26,7 +26,12 @@
                 Information (CUI) to alert the recipient that an exemption may apply. FOIA 
                 requests for any documents marked CUI will be referred to the mission owner’s 
                 FOIA office for response. 
-                <a role="button" id="FOIALearnMore" @click="openSlideoutPanel" >
+                <a role="button"
+                   id="FOIALearnMore"
+                   tabindex="0"
+                   @click="openSlideoutPanel"
+                   @keydown.enter="openSlideoutPanel"
+                   @keydown.space="openSlideoutPanel">
                   Learn more about FOIA.
                 </a>
               </p>

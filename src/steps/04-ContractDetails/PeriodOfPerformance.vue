@@ -18,14 +18,15 @@
               <a 
                 role="button" 
                 id="PopLearnMore" 
-                class="_text-link" 
+                class="_text-link"
+                tabindex="0"
                 @click="openSlideoutPanel"
-              >
+                @keydown.enter="openSlideoutPanel"
+                @keydown.space="openSlideoutPanel">
                 Learn more about PoPs on the JWCC contract.
               </a>
             </p>
           </div>
-
           <div class="mb-4 _semibold" style="padding-left: 101px">
             Period of Performance length
           </div>
