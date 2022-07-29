@@ -1,7 +1,5 @@
-// const path = require('path')
-// const HtmlWebPackPlugin = require('html-webpack-plugin')
-const servicenowConfig = require('./servicenow.config');
-const TerserPlugin = require("terser-webpack-plugin");
+const servicenowConfig = require('./servicenow.config')
+
 
 const DEFAULTS = {
   ASSET_SIZE_LIMIT: 10000
@@ -26,48 +24,31 @@ module.exports = {
       // }
 
       config.optimization = {
+        minimize: true,
         splitChunks: {
           cacheGroups: {
             vendors: {
               chunks: 'all',
               minChunks: 1,
-              maxSize: 4000000,
+              maxSize: 0,
               name: 'vendor',
               test: /([\\/]node_modules[\\/])|(assets\/)/,
               priority: -10,
             },
           },
         },
-        minimize: false,
-        minimizer: [new TerserPlugin({
-            test: /\-js(\?.*)?$/i,
-            terserOptions: {
-              ecma: undefined,
-              parse: {},
-              compress: {},
-              mangle: {
-                keep_classnames: true,
-                keep_fnames: true,
-                module: true,
-
-                // properties:{
-                //   keep_quoted: true,
-                // }
-              }, // Note `mangle.properties` is `false` by default.
-              module: true
-            },
-          }), 
-        ],
       }
+
       config.output.filename = 'js/[name]-[hash]-js'
       config.output.chunkFilename = 'js/[name]-[chunkhash]-js'
+
     }
   },
   chainWebpack: config => {
 
-    let BASE_API_URL = process.env.BASE_API_URL;
+    let BASE_API_URL =  process.env.BASE_API_URL;
     BASE_API_URL += BASE_API_URL.endsWith("/") ? "api" : "/api";
-    let SNOWUSER = process.env.NODE_ENV === 'development' ? process.env.SNOWUSER : '';
+    let SNOWUSER = process.env.NODE_ENV === 'development' ? process.env.SNOWUSER :'';
     let SNOWPASS = process.env.NODE_ENV === 'development' ? process.env.SNOWPASS : '';
 
     config.plugin('define').tap((definitions) => {
@@ -93,15 +74,17 @@ module.exports = {
             options: {
               name: 'img/[name]-[hash:6]-[ext]',
             }
+
           }
+
         }));
 
-      config.module
+        config.module
         .rule("svg")
         .use("file-loader")
         .loader("file-loader")
         .tap(options => Object.assign(options, {
-          name: 'img/[name]-[hash:6]-[ext]',
+              name: 'img/[name]-[hash:6]-[ext]',
         }));
 
       config.module
